@@ -12,17 +12,17 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "changesafety stagemap update",
+    "changesafety changerecord update",
 )
 class Update(AAZCommand):
-    """Update a StageMap
+    """Update a ChangeRecord
     """
 
     _aaz_info = {
-        "version": "2025-09-01-preview",
+        "version": "2026-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/managementgroups/{}/providers/microsoft.changesafety/stagemaps/{}", "2025-09-01-preview"],
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.changesafety/stagemaps/{}", "2025-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.changesafety/changerecords/{}", "2026-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.changesafety/changerecords/{}", "2026-01-01-preview"],
         ]
     }
 
@@ -44,38 +44,148 @@ class Update(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.management_group_name = AAZStrArg(
-            options=["--management-group-name"],
-            help="The name of the management group. The name is case insensitive.",
-            fmt=AAZStrArgFormat(
-                max_length=90,
-                min_length=1,
-            ),
-        )
-        _args_schema.stage_map_name = AAZStrArg(
-            options=["--stage-map-name"],
-            help="The name of the StageMap",
+        _args_schema.change_record_name = AAZStrArg(
+            options=["-n", "--name", "--change-record-name"],
+            help="The name of the ChangeRecord resource.",
             required=True,
+            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,100}$",
                 max_length=100,
                 min_length=3,
             ),
         )
+        _args_schema.resource_group = AAZResourceGroupNameArg()
 
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
+        _args_schema.additional_data = AAZObjectArg(
+            options=["--additional-data"],
+            arg_group="Properties",
+            help="Additional metadata for the change required for various orchestration tools.",
+            nullable=True,
+            blank={},
+        )
+        _args_schema.anticipated_end_time = AAZDateTimeArg(
+            options=["--anticipated-end-time"],
+            arg_group="Properties",
+            help="Expected completion time when the change should be finished, in ISO 8601 format.",
+            fmt=AAZDateTimeFormat(
+                protocol="iso",
+            ),
+        )
+        _args_schema.anticipated_start_time = AAZDateTimeArg(
+            options=["--anticipated-start-time"],
+            arg_group="Properties",
+            help="Expected start time when the change execution should begin, in ISO 8601 format.",
+            fmt=AAZDateTimeFormat(
+                protocol="iso",
+            ),
+        )
+        _args_schema.change_definition = AAZObjectArg(
+            options=["--change-definition"],
+            arg_group="Properties",
+            help="Change request body and/or resource selection criteria used to identify the targeted resources.",
+        )
+        _args_schema.change_type = AAZStrArg(
+            options=["--change-type"],
+            arg_group="Properties",
+            help="Describes the nature of the change.",
+            enum={"AppDeployment": "AppDeployment", "Config": "Config", "ManualTouch": "ManualTouch", "PolicyDeployment": "PolicyDeployment"},
+        )
+        _args_schema.comments = AAZStrArg(
+            options=["--comments"],
+            arg_group="Properties",
+            help="Comments about the last update to the ChangeRecord resource.",
+            nullable=True,
+            fmt=AAZStrArgFormat(
+                max_length=2000,
+            ),
+        )
+        _args_schema.description = AAZStrArg(
+            options=["--description"],
+            arg_group="Properties",
+            help="Brief description about the change.",
+            nullable=True,
+            fmt=AAZStrArgFormat(
+                max_length=2000,
+            ),
+        )
+        _args_schema.links = AAZListArg(
+            options=["--links"],
+            arg_group="Properties",
+            help="Collection of related links for the change.",
+            nullable=True,
+        )
+        _args_schema.orchestration_tool = AAZStrArg(
+            options=["--orchestration-tool"],
+            arg_group="Properties",
+            help="Tool used for deployment orchestration of this change.",
+            nullable=True,
+        )
         _args_schema.parameters = AAZDictArg(
             options=["--parameters"],
             arg_group="Properties",
-            help="StageMap parameters schema for each stage.",
+            help="Schema of parameters that will be provided for each stageProgression.",
             nullable=True,
         )
-        _args_schema.stages = AAZListArg(
-            options=["--stages"],
+        _args_schema.release_label = AAZStrArg(
+            options=["--release-label"],
             arg_group="Properties",
-            help="Array of stages objects.",
+            help="Label for the release associated with this change.",
+            nullable=True,
+        )
+        _args_schema.rollout_type = AAZStrArg(
+            options=["--rollout-type"],
+            arg_group="Properties",
+            help="Describes the type of the rollout used for the change.",
+            enum={"Emergency": "Emergency", "Hotfix": "Hotfix", "Normal": "Normal"},
+        )
+        _args_schema.stage_map = AAZObjectArg(
+            options=["--stage-map"],
+            arg_group="Properties",
+            help="Reference to the StageMap, defining progression.",
+            nullable=True,
+        )
+
+        change_definition = cls._args_schema.change_definition
+        change_definition.details = AAZObjectArg(
+            options=["details"],
+            help="Free form object containing additional details for the change definition.",
+            blank={},
+        )
+        change_definition.kind = AAZStrArg(
+            options=["kind"],
+            help="Kind of the change definition.",
+            enum={"ApiOperations": "ApiOperations", "Targets": "Targets"},
+        )
+        change_definition.name = AAZStrArg(
+            options=["name"],
+            help="Name of the change definition.",
+        )
+
+        links = cls._args_schema.links
+        links.Element = AAZObjectArg(
+            nullable=True,
+        )
+
+        _element = cls._args_schema.links.Element
+        _element.description = AAZStrArg(
+            options=["description"],
+            help="Description or note about the link.",
+            nullable=True,
+            fmt=AAZStrArgFormat(
+                max_length=2000,
+            ),
+        )
+        _element.name = AAZStrArg(
+            options=["name"],
+            help="name of the link.",
+        )
+        _element.uri = AAZStrArg(
+            options=["uri"],
+            help="URL or comma separated URLs for the link.",
         )
 
         parameters = cls._args_schema.parameters
@@ -186,80 +296,42 @@ class Update(AAZCommand):
             nullable=True,
         )
 
-        stages = cls._args_schema.stages
-        stages.Element = AAZObjectArg(
-            nullable=True,
-        )
-
-        _element = cls._args_schema.stages.Element
-        _element.name = AAZStrArg(
-            options=["name"],
-            help="Name of the individual stage.",
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-]{3,100}$",
-                max_length=100,
-                min_length=3,
-            ),
-        )
-        _element.nested_stage_map = AAZObjectArg(
-            options=["nested-stage-map"],
-            help="Nested stage map details.",
-            nullable=True,
-        )
-        _element.sequence = AAZIntArg(
-            options=["sequence"],
-            help="Positive integer defining the orchestration order of the stages.",
-            fmt=AAZIntArgFormat(
-                minimum=1,
-            ),
-        )
-        _element.stage_variables = AAZDictArg(
-            options=["stage-variables"],
-            help="Variables to apply on the change of that stage. Key value pairs supporting any JSON values.",
-            nullable=True,
-        )
-
-        nested_stage_map = cls._args_schema.stages.Element.nested_stage_map
-        nested_stage_map.parameters = AAZDictArg(
+        stage_map = cls._args_schema.stage_map
+        stage_map.parameters = AAZDictArg(
             options=["parameters"],
             help="Key value pairs of parameter names & their values for the stageMap referenced by the resourceId field.",
             nullable=True,
         )
-        nested_stage_map.resource_id = AAZStrArg(
+        stage_map.resource_id = AAZStrArg(
             options=["resource-id"],
             help="ARM resource ID for the nested stagemap resource.",
             nullable=True,
         )
 
-        parameters = cls._args_schema.stages.Element.nested_stage_map.parameters
+        parameters = cls._args_schema.stage_map.parameters
         parameters.Element = AAZAnyTypeArg(
-            nullable=True,
-        )
-
-        stage_variables = cls._args_schema.stages.Element.stage_variables
-        stage_variables.Element = AAZAnyTypeArg(
             nullable=True,
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        condition_0 = has_value(self.ctx.args.management_group_name) and has_value(self.ctx.args.stage_map_name)
-        condition_1 = has_value(self.ctx.args.stage_map_name) and has_value(self.ctx.subscription_id)
-        condition_2 = has_value(self.ctx.args.management_group_name) and has_value(self.ctx.args.stage_map_name)
-        condition_3 = has_value(self.ctx.args.stage_map_name) and has_value(self.ctx.subscription_id)
+        condition_0 = has_value(self.ctx.args.change_record_name) and has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_1 = has_value(self.ctx.args.change_record_name) and has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
+        condition_2 = has_value(self.ctx.args.change_record_name) and has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_3 = has_value(self.ctx.args.change_record_name) and has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
         if condition_0:
-            self.StageMapsGetAtManagementGroupLevel(ctx=self.ctx)()
+            self.ChangeRecordsGetAtSubscriptionLevel(ctx=self.ctx)()
         if condition_1:
-            self.StageMapsGetAtSubscriptionLevel(ctx=self.ctx)()
+            self.ChangeRecordsGet(ctx=self.ctx)()
         self.pre_instance_update(self.ctx.vars.instance)
         self.InstanceUpdateByJson(ctx=self.ctx)()
         self.InstanceUpdateByGeneric(ctx=self.ctx)()
         self.post_instance_update(self.ctx.vars.instance)
         if condition_2:
-            self.StageMapsCreateOrUpdateAtManagementGroupLevel(ctx=self.ctx)()
+            self.ChangeRecordsCreateOrUpdateAtSubscriptionLevel(ctx=self.ctx)()
         if condition_3:
-            self.StageMapsCreateOrUpdateAtSubscriptionLevel(ctx=self.ctx)()
+            self.ChangeRecordsCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -282,7 +354,7 @@ class Update(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class StageMapsGetAtManagementGroupLevel(AAZHttpOperation):
+    class ChangeRecordsGetAtSubscriptionLevel(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -296,7 +368,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/managementGroups/{managementGroupName}/providers/Microsoft.ChangeSafety/stageMaps/{stageMapName}",
+                "/subscriptions/{subscriptionId}/providers/Microsoft.ChangeSafety/changeRecords/{changeRecordName}",
                 **self.url_parameters
             )
 
@@ -312,86 +384,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "managementGroupName", self.ctx.args.management_group_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "stageMapName", self.ctx.args.stage_map_name,
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def query_parameters(self):
-            parameters = {
-                **self.serialize_query_param(
-                    "api-version", "2025-09-01-preview",
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
-            }
-            return parameters
-
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
-
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_stage_map_read(cls._schema_on_200)
-
-            return cls._schema_on_200
-
-    class StageMapsGetAtSubscriptionLevel(AAZHttpOperation):
-        CLIENT_TYPE = "MgmtClient"
-
-        def __call__(self, *args, **kwargs):
-            request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200]:
-                return self.on_200(session)
-
-            return self.on_error(session.http_response)
-
-        @property
-        def url(self):
-            return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/Microsoft.ChangeSafety/stageMaps/{stageMapName}",
-                **self.url_parameters
-            )
-
-        @property
-        def method(self):
-            return "GET"
-
-        @property
-        def error_format(self):
-            return "MgmtErrorFormat"
-
-        @property
-        def url_parameters(self):
-            parameters = {
-                **self.serialize_url_param(
-                    "stageMapName", self.ctx.args.stage_map_name,
+                    "changeRecordName", self.ctx.args.change_record_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -405,7 +398,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01-preview",
+                    "api-version", "2026-01-01-preview",
                     required=True,
                 ),
             }
@@ -436,11 +429,94 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_stage_map_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_change_record_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
-    class StageMapsCreateOrUpdateAtManagementGroupLevel(AAZHttpOperation):
+    class ChangeRecordsGet(AAZHttpOperation):
+        CLIENT_TYPE = "MgmtClient"
+
+        def __call__(self, *args, **kwargs):
+            request = self.make_request()
+            session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [200]:
+                return self.on_200(session)
+
+            return self.on_error(session.http_response)
+
+        @property
+        def url(self):
+            return self.client.format_url(
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ChangeSafety/changeRecords/{changeRecordName}",
+                **self.url_parameters
+            )
+
+        @property
+        def method(self):
+            return "GET"
+
+        @property
+        def error_format(self):
+            return "MgmtErrorFormat"
+
+        @property
+        def url_parameters(self):
+            parameters = {
+                **self.serialize_url_param(
+                    "changeRecordName", self.ctx.args.change_record_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def query_parameters(self):
+            parameters = {
+                **self.serialize_query_param(
+                    "api-version", "2026-01-01-preview",
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Accept", "application/json",
+                ),
+            }
+            return parameters
+
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
+            )
+
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+            _UpdateHelper._build_schema_change_record_read(cls._schema_on_200)
+
+            return cls._schema_on_200
+
+    class ChangeRecordsCreateOrUpdateAtSubscriptionLevel(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -454,7 +530,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/managementGroups/{managementGroupName}/providers/Microsoft.ChangeSafety/stageMaps/{stageMapName}",
+                "/subscriptions/{subscriptionId}/providers/Microsoft.ChangeSafety/changeRecords/{changeRecordName}",
                 **self.url_parameters
             )
 
@@ -470,11 +546,11 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "managementGroupName", self.ctx.args.management_group_name,
+                    "changeRecordName", self.ctx.args.change_record_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "stageMapName", self.ctx.args.stage_map_name,
+                    "subscriptionId", self.ctx.subscription_id,
                     required=True,
                 ),
             }
@@ -484,7 +560,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01-preview",
+                    "api-version", "2026-01-01-preview",
                     required=True,
                 ),
             }
@@ -527,11 +603,11 @@ class Update(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-            _UpdateHelper._build_schema_stage_map_read(cls._schema_on_200_201)
+            _UpdateHelper._build_schema_change_record_read(cls._schema_on_200_201)
 
             return cls._schema_on_200_201
 
-    class StageMapsCreateOrUpdateAtSubscriptionLevel(AAZHttpOperation):
+    class ChangeRecordsCreateOrUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -545,7 +621,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/Microsoft.ChangeSafety/stageMaps/{stageMapName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ChangeSafety/changeRecords/{changeRecordName}",
                 **self.url_parameters
             )
 
@@ -561,7 +637,11 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "stageMapName", self.ctx.args.stage_map_name,
+                    "changeRecordName", self.ctx.args.change_record_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "resourceGroupName", self.ctx.args.resource_group,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -575,7 +655,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01-preview",
+                    "api-version", "2026-01-01-preview",
                     required=True,
                 ),
             }
@@ -618,7 +698,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-            _UpdateHelper._build_schema_stage_map_read(cls._schema_on_200_201)
+            _UpdateHelper._build_schema_change_record_read(cls._schema_on_200_201)
 
             return cls._schema_on_200_201
 
@@ -637,8 +717,35 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_prop("additionalData", AAZObjectType, ".additional_data")
+                properties.set_prop("anticipatedEndTime", AAZStrType, ".anticipated_end_time", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("anticipatedStartTime", AAZStrType, ".anticipated_start_time", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("changeDefinition", AAZObjectType, ".change_definition", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("changeType", AAZStrType, ".change_type", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("comments", AAZStrType, ".comments")
+                properties.set_prop("description", AAZStrType, ".description")
+                properties.set_prop("links", AAZListType, ".links")
+                properties.set_prop("orchestrationTool", AAZStrType, ".orchestration_tool")
                 properties.set_prop("parameters", AAZDictType, ".parameters")
-                properties.set_prop("stages", AAZListType, ".stages", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("releaseLabel", AAZStrType, ".release_label")
+                properties.set_prop("rolloutType", AAZStrType, ".rollout_type", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("stageMap", AAZObjectType, ".stage_map")
+
+            change_definition = _builder.get(".properties.changeDefinition")
+            if change_definition is not None:
+                change_definition.set_prop("details", AAZObjectType, ".details", typ_kwargs={"flags": {"required": True}})
+                change_definition.set_prop("kind", AAZStrType, ".kind", typ_kwargs={"flags": {"required": True}})
+                change_definition.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
+
+            links = _builder.get(".properties.links")
+            if links is not None:
+                links.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.links[]")
+            if _elements is not None:
+                _elements.set_prop("description", AAZStrType, ".description")
+                _elements.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("uri", AAZStrType, ".uri", typ_kwargs={"flags": {"required": True}})
 
             parameters = _builder.get(".properties.parameters")
             if parameters is not None:
@@ -704,29 +811,14 @@ class Update(AAZCommand):
             if allowed_values is not None:
                 allowed_values.set_elements(AAZStrType, ".")
 
-            stages = _builder.get(".properties.stages")
-            if stages is not None:
-                stages.set_elements(AAZObjectType, ".")
+            stage_map = _builder.get(".properties.stageMap")
+            if stage_map is not None:
+                stage_map.set_prop("parameters", AAZDictType, ".parameters")
+                stage_map.set_prop("resourceId", AAZStrType, ".resource_id")
 
-            _elements = _builder.get(".properties.stages[]")
-            if _elements is not None:
-                _elements.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("nestedStageMap", AAZObjectType, ".nested_stage_map")
-                _elements.set_prop("sequence", AAZIntType, ".sequence", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("stageVariables", AAZDictType, ".stage_variables")
-
-            nested_stage_map = _builder.get(".properties.stages[].nestedStageMap")
-            if nested_stage_map is not None:
-                nested_stage_map.set_prop("parameters", AAZDictType, ".parameters")
-                nested_stage_map.set_prop("resourceId", AAZStrType, ".resource_id")
-
-            parameters = _builder.get(".properties.stages[].nestedStageMap.parameters")
+            parameters = _builder.get(".properties.stageMap.parameters")
             if parameters is not None:
                 parameters.set_elements(AAZAnyType, ".")
-
-            stage_variables = _builder.get(".properties.stages[].stageVariables")
-            if stage_variables is not None:
-                stage_variables.set_elements(AAZAnyType, ".")
 
             return _instance_value
 
@@ -742,59 +834,121 @@ class Update(AAZCommand):
 class _UpdateHelper:
     """Helper class for Update"""
 
-    _schema_stage_map_read = None
+    _schema_change_record_read = None
 
     @classmethod
-    def _build_schema_stage_map_read(cls, _schema):
-        if cls._schema_stage_map_read is not None:
-            _schema.id = cls._schema_stage_map_read.id
-            _schema.name = cls._schema_stage_map_read.name
-            _schema.properties = cls._schema_stage_map_read.properties
-            _schema.system_data = cls._schema_stage_map_read.system_data
-            _schema.type = cls._schema_stage_map_read.type
+    def _build_schema_change_record_read(cls, _schema):
+        if cls._schema_change_record_read is not None:
+            _schema.id = cls._schema_change_record_read.id
+            _schema.name = cls._schema_change_record_read.name
+            _schema.properties = cls._schema_change_record_read.properties
+            _schema.system_data = cls._schema_change_record_read.system_data
+            _schema.type = cls._schema_change_record_read.type
             return
 
-        cls._schema_stage_map_read = _schema_stage_map_read = AAZObjectType()
+        cls._schema_change_record_read = _schema_change_record_read = AAZObjectType()
 
-        stage_map_read = _schema_stage_map_read
-        stage_map_read.id = AAZStrType(
+        change_record_read = _schema_change_record_read
+        change_record_read.id = AAZStrType(
             flags={"read_only": True},
         )
-        stage_map_read.name = AAZStrType(
+        change_record_read.name = AAZStrType(
             flags={"read_only": True},
         )
-        stage_map_read.properties = AAZObjectType()
-        stage_map_read.system_data = AAZObjectType(
+        change_record_read.properties = AAZObjectType()
+        change_record_read.system_data = AAZObjectType(
             serialized_name="systemData",
             flags={"read_only": True},
         )
-        stage_map_read.type = AAZStrType(
+        change_record_read.type = AAZStrType(
             flags={"read_only": True},
         )
 
-        properties = _schema_stage_map_read.properties
+        properties = _schema_change_record_read.properties
+        properties.additional_data = AAZObjectType(
+            serialized_name="additionalData",
+        )
+        properties.anticipated_end_time = AAZStrType(
+            serialized_name="anticipatedEndTime",
+            flags={"required": True},
+        )
+        properties.anticipated_start_time = AAZStrType(
+            serialized_name="anticipatedStartTime",
+            flags={"required": True},
+        )
+        properties.change_definition = AAZObjectType(
+            serialized_name="changeDefinition",
+            flags={"required": True},
+        )
+        properties.change_type = AAZStrType(
+            serialized_name="changeType",
+            flags={"required": True},
+        )
+        properties.comments = AAZStrType()
+        properties.description = AAZStrType()
+        properties.links = AAZListType()
+        properties.orchestration_tool = AAZStrType(
+            serialized_name="orchestrationTool",
+        )
         properties.parameters = AAZDictType()
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
             flags={"read_only": True},
         )
-        properties.stages = AAZListType(
+        properties.release_label = AAZStrType(
+            serialized_name="releaseLabel",
+        )
+        properties.rollout_type = AAZStrType(
+            serialized_name="rolloutType",
+            flags={"required": True},
+        )
+        properties.stage_map = AAZObjectType(
+            serialized_name="stageMap",
+        )
+        properties.stage_map_snapshot = AAZListType(
+            serialized_name="stageMapSnapshot",
+            flags={"read_only": True},
+        )
+        properties.status = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        change_definition = _schema_change_record_read.properties.change_definition
+        change_definition.details = AAZObjectType(
+            flags={"required": True},
+        )
+        change_definition.kind = AAZStrType(
+            flags={"required": True},
+        )
+        change_definition.name = AAZStrType(
             flags={"required": True},
         )
 
-        parameters = _schema_stage_map_read.properties.parameters
+        links = _schema_change_record_read.properties.links
+        links.Element = AAZObjectType()
+
+        _element = _schema_change_record_read.properties.links.Element
+        _element.description = AAZStrType()
+        _element.name = AAZStrType(
+            flags={"required": True},
+        )
+        _element.uri = AAZStrType(
+            flags={"required": True},
+        )
+
+        parameters = _schema_change_record_read.properties.parameters
         parameters.Element = AAZObjectType()
 
-        _element = _schema_stage_map_read.properties.parameters.Element
+        _element = _schema_change_record_read.properties.parameters.Element
         _element.metadata = AAZDictType()
         _element.type = AAZStrType(
             flags={"required": True},
         )
 
-        metadata = _schema_stage_map_read.properties.parameters.Element.metadata
+        metadata = _schema_change_record_read.properties.parameters.Element.metadata
         metadata.Element = AAZStrType()
 
-        disc_array = _schema_stage_map_read.properties.parameters.Element.discriminate_by("type", "array")
+        disc_array = _schema_change_record_read.properties.parameters.Element.discriminate_by("type", "array")
         disc_array.allowed_values = AAZListType(
             serialized_name="allowedValues",
         )
@@ -802,13 +956,13 @@ class _UpdateHelper:
             serialized_name="defaultValue",
         )
 
-        allowed_values = _schema_stage_map_read.properties.parameters.Element.discriminate_by("type", "array").allowed_values
+        allowed_values = _schema_change_record_read.properties.parameters.Element.discriminate_by("type", "array").allowed_values
         allowed_values.Element = AAZAnyType()
 
-        default_value = _schema_stage_map_read.properties.parameters.Element.discriminate_by("type", "array").default_value
+        default_value = _schema_change_record_read.properties.parameters.Element.discriminate_by("type", "array").default_value
         default_value.Element = AAZAnyType()
 
-        disc_number = _schema_stage_map_read.properties.parameters.Element.discriminate_by("type", "number")
+        disc_number = _schema_change_record_read.properties.parameters.Element.discriminate_by("type", "number")
         disc_number.allowed_values = AAZListType(
             serialized_name="allowedValues",
         )
@@ -816,10 +970,10 @@ class _UpdateHelper:
             serialized_name="defaultValue",
         )
 
-        allowed_values = _schema_stage_map_read.properties.parameters.Element.discriminate_by("type", "number").allowed_values
+        allowed_values = _schema_change_record_read.properties.parameters.Element.discriminate_by("type", "number").allowed_values
         allowed_values.Element = AAZIntType()
 
-        disc_object = _schema_stage_map_read.properties.parameters.Element.discriminate_by("type", "object")
+        disc_object = _schema_change_record_read.properties.parameters.Element.discriminate_by("type", "object")
         disc_object.allowed_values = AAZListType(
             serialized_name="allowedValues",
         )
@@ -827,13 +981,13 @@ class _UpdateHelper:
             serialized_name="defaultValue",
         )
 
-        allowed_values = _schema_stage_map_read.properties.parameters.Element.discriminate_by("type", "object").allowed_values
+        allowed_values = _schema_change_record_read.properties.parameters.Element.discriminate_by("type", "object").allowed_values
         allowed_values.Element = AAZDictType()
 
-        _element = _schema_stage_map_read.properties.parameters.Element.discriminate_by("type", "object").allowed_values.Element
+        _element = _schema_change_record_read.properties.parameters.Element.discriminate_by("type", "object").allowed_values.Element
         _element.Element = AAZAnyType()
 
-        disc_string = _schema_stage_map_read.properties.parameters.Element.discriminate_by("type", "string")
+        disc_string = _schema_change_record_read.properties.parameters.Element.discriminate_by("type", "string")
         disc_string.allowed_values = AAZListType(
             serialized_name="allowedValues",
         )
@@ -841,39 +995,22 @@ class _UpdateHelper:
             serialized_name="defaultValue",
         )
 
-        allowed_values = _schema_stage_map_read.properties.parameters.Element.discriminate_by("type", "string").allowed_values
+        allowed_values = _schema_change_record_read.properties.parameters.Element.discriminate_by("type", "string").allowed_values
         allowed_values.Element = AAZStrType()
 
-        stages = _schema_stage_map_read.properties.stages
-        stages.Element = AAZObjectType()
-
-        _element = _schema_stage_map_read.properties.stages.Element
-        _element.name = AAZStrType(
-            flags={"required": True},
-        )
-        _element.nested_stage_map = AAZObjectType(
-            serialized_name="nestedStageMap",
-        )
-        _element.sequence = AAZIntType(
-            flags={"required": True},
-        )
-        _element.stage_variables = AAZDictType(
-            serialized_name="stageVariables",
-        )
-
-        nested_stage_map = _schema_stage_map_read.properties.stages.Element.nested_stage_map
-        nested_stage_map.parameters = AAZDictType()
-        nested_stage_map.resource_id = AAZStrType(
+        stage_map = _schema_change_record_read.properties.stage_map
+        stage_map.parameters = AAZDictType()
+        stage_map.resource_id = AAZStrType(
             serialized_name="resourceId",
         )
 
-        parameters = _schema_stage_map_read.properties.stages.Element.nested_stage_map.parameters
+        parameters = _schema_change_record_read.properties.stage_map.parameters
         parameters.Element = AAZAnyType()
 
-        stage_variables = _schema_stage_map_read.properties.stages.Element.stage_variables
-        stage_variables.Element = AAZAnyType()
+        stage_map_snapshot = _schema_change_record_read.properties.stage_map_snapshot
+        stage_map_snapshot.Element = AAZAnyType()
 
-        system_data = _schema_stage_map_read.system_data
+        system_data = _schema_change_record_read.system_data
         system_data.created_at = AAZStrType(
             serialized_name="createdAt",
         )
@@ -893,11 +1030,11 @@ class _UpdateHelper:
             serialized_name="lastModifiedByType",
         )
 
-        _schema.id = cls._schema_stage_map_read.id
-        _schema.name = cls._schema_stage_map_read.name
-        _schema.properties = cls._schema_stage_map_read.properties
-        _schema.system_data = cls._schema_stage_map_read.system_data
-        _schema.type = cls._schema_stage_map_read.type
+        _schema.id = cls._schema_change_record_read.id
+        _schema.name = cls._schema_change_record_read.name
+        _schema.properties = cls._schema_change_record_read.properties
+        _schema.system_data = cls._schema_change_record_read.system_data
+        _schema.type = cls._schema_change_record_read.type
 
 
 __all__ = ["Update"]

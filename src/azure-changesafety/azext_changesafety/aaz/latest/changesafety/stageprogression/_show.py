@@ -12,17 +12,17 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "change-safety stage-progression show",
+    "changesafety stageprogression show",
 )
 class Show(AAZCommand):
     """Get a StageProgression
     """
 
     _aaz_info = {
-        "version": "2025-09-01-preview",
+        "version": "2026-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.changesafety/changestates/{}/stageprogressions/{}", "2025-09-01-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.changesafety/changestates/{}/stageprogressions/{}", "2025-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.changesafety/changerecords/{}/stageprogressions/{}", "2026-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.changesafety/changerecords/{}/stageprogressions/{}", "2026-01-01-preview"],
         ]
     }
 
@@ -42,7 +42,7 @@ class Show(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.change_state_name = AAZStrArg(
+        _args_schema.change_record_name = AAZStrArg(
             options=["--change-record-name"],
             help="The name of the ChangeRecord resource.",
             required=True,
@@ -56,7 +56,7 @@ class Show(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg()
         _args_schema.stage_progression_name = AAZStrArg(
             options=["-n", "--name", "--stage-progression-name"],
-            help="name of the stageProgression",
+            help="Name of the stageProgression",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
@@ -69,12 +69,12 @@ class Show(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        condition_0 = has_value(self.ctx.args.change_state_name) and has_value(self.ctx.args.stage_progression_name) and has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
-        condition_1 = has_value(self.ctx.args.change_state_name) and has_value(self.ctx.args.resource_group) and has_value(self.ctx.args.stage_progression_name) and has_value(self.ctx.subscription_id)
+        condition_0 = has_value(self.ctx.args.change_record_name) and has_value(self.ctx.args.stage_progression_name) and has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_1 = has_value(self.ctx.args.change_record_name) and has_value(self.ctx.args.resource_group) and has_value(self.ctx.args.stage_progression_name) and has_value(self.ctx.subscription_id)
         if condition_0:
-            self.StageProgressionsGetAtSubscriptionLevel(ctx=self.ctx)()
+            self.ChangeRecordStageProgressionsGetAtSubscriptionLevel(ctx=self.ctx)()
         if condition_1:
-            self.StageProgressionsGet(ctx=self.ctx)()
+            self.ChangeRecordStageProgressionsGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -89,7 +89,7 @@ class Show(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class StageProgressionsGetAtSubscriptionLevel(AAZHttpOperation):
+    class ChangeRecordStageProgressionsGetAtSubscriptionLevel(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -103,7 +103,7 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/Microsoft.ChangeSafety/changeStates/{changeStateName}/stageProgressions/{stageProgressionName}",
+                "/subscriptions/{subscriptionId}/providers/Microsoft.ChangeSafety/changeRecords/{changeRecordName}/stageProgressions/{stageProgressionName}",
                 **self.url_parameters
             )
 
@@ -119,7 +119,7 @@ class Show(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "changeStateName", self.ctx.args.change_state_name,
+                    "changeRecordName", self.ctx.args.change_record_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -137,7 +137,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01-preview",
+                    "api-version", "2026-01-01-preview",
                     required=True,
                 ),
             }
@@ -250,7 +250,7 @@ class Show(AAZCommand):
 
             return cls._schema_on_200
 
-    class StageProgressionsGet(AAZHttpOperation):
+    class ChangeRecordStageProgressionsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -264,7 +264,7 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ChangeSafety/changeStates/{changeStateName}/stageProgressions/{stageProgressionName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ChangeSafety/changeRecords/{changeRecordName}/stageProgressions/{stageProgressionName}",
                 **self.url_parameters
             )
 
@@ -280,7 +280,7 @@ class Show(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "changeStateName", self.ctx.args.change_state_name,
+                    "changeRecordName", self.ctx.args.change_record_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -302,7 +302,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01-preview",
+                    "api-version", "2026-01-01-preview",
                     required=True,
                 ),
             }

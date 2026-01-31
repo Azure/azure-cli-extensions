@@ -19,10 +19,10 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-01-preview",
+        "version": "2026-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.changesafety/changestates/{}/stageprogressions/{}", "2025-09-01-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.changesafety/changestates/{}/stageprogressions/{}", "2025-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.changesafety/changerecords/{}/stageprogressions/{}", "2026-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.changesafety/changerecords/{}/stageprogressions/{}", "2026-01-01-preview"],
         ]
     }
 
@@ -44,7 +44,7 @@ class Update(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.change_state_name = AAZStrArg(
+        _args_schema.change_record_name = AAZStrArg(
             options=["--change-record-name"],
             help="The name of the ChangeRecord resource.",
             required=True,
@@ -58,7 +58,7 @@ class Update(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg()
         _args_schema.stage_progression_name = AAZStrArg(
             options=["-n", "--name", "--stage-progression-name"],
-            help="name of the stageProgression",
+            help="Name of the stageProgression",
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
@@ -157,22 +157,22 @@ class Update(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        condition_0 = has_value(self.ctx.args.change_state_name) and has_value(self.ctx.args.stage_progression_name) and has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
-        condition_1 = has_value(self.ctx.args.change_state_name) and has_value(self.ctx.args.resource_group) and has_value(self.ctx.args.stage_progression_name) and has_value(self.ctx.subscription_id)
-        condition_2 = has_value(self.ctx.args.change_state_name) and has_value(self.ctx.args.stage_progression_name) and has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
-        condition_3 = has_value(self.ctx.args.change_state_name) and has_value(self.ctx.args.resource_group) and has_value(self.ctx.args.stage_progression_name) and has_value(self.ctx.subscription_id)
+        condition_0 = has_value(self.ctx.args.change_record_name) and has_value(self.ctx.args.stage_progression_name) and has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_1 = has_value(self.ctx.args.change_record_name) and has_value(self.ctx.args.resource_group) and has_value(self.ctx.args.stage_progression_name) and has_value(self.ctx.subscription_id)
+        condition_2 = has_value(self.ctx.args.change_record_name) and has_value(self.ctx.args.stage_progression_name) and has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_3 = has_value(self.ctx.args.change_record_name) and has_value(self.ctx.args.resource_group) and has_value(self.ctx.args.stage_progression_name) and has_value(self.ctx.subscription_id)
         if condition_0:
-            self.StageProgressionsGetAtSubscriptionLevel(ctx=self.ctx)()
+            self.ChangeRecordStageProgressionsGetAtSubscriptionLevel(ctx=self.ctx)()
         if condition_1:
-            self.StageProgressionsGet(ctx=self.ctx)()
+            self.ChangeRecordStageProgressionsGet(ctx=self.ctx)()
         self.pre_instance_update(self.ctx.vars.instance)
         self.InstanceUpdateByJson(ctx=self.ctx)()
         self.InstanceUpdateByGeneric(ctx=self.ctx)()
         self.post_instance_update(self.ctx.vars.instance)
         if condition_2:
-            self.StageProgressionsCreateOrUpdateAtSubscriptionLevel(ctx=self.ctx)()
+            self.ChangeRecordStageProgressionsCreateOrUpdateAtSubscriptionLevel(ctx=self.ctx)()
         if condition_3:
-            self.StageProgressionsCreateOrUpdate(ctx=self.ctx)()
+            self.ChangeRecordStageProgressionsCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -195,7 +195,7 @@ class Update(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class StageProgressionsGetAtSubscriptionLevel(AAZHttpOperation):
+    class ChangeRecordStageProgressionsGetAtSubscriptionLevel(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -209,7 +209,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/Microsoft.ChangeSafety/changeStates/{changeStateName}/stageProgressions/{stageProgressionName}",
+                "/subscriptions/{subscriptionId}/providers/Microsoft.ChangeSafety/changeRecords/{changeRecordName}/stageProgressions/{stageProgressionName}",
                 **self.url_parameters
             )
 
@@ -225,7 +225,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "changeStateName", self.ctx.args.change_state_name,
+                    "changeRecordName", self.ctx.args.change_record_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -243,7 +243,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01-preview",
+                    "api-version", "2026-01-01-preview",
                     required=True,
                 ),
             }
@@ -274,11 +274,11 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_stage_progression_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_change_record_stage_progression_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
-    class StageProgressionsGet(AAZHttpOperation):
+    class ChangeRecordStageProgressionsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -292,7 +292,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ChangeSafety/changeStates/{changeStateName}/stageProgressions/{stageProgressionName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ChangeSafety/changeRecords/{changeRecordName}/stageProgressions/{stageProgressionName}",
                 **self.url_parameters
             )
 
@@ -308,7 +308,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "changeStateName", self.ctx.args.change_state_name,
+                    "changeRecordName", self.ctx.args.change_record_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -330,7 +330,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01-preview",
+                    "api-version", "2026-01-01-preview",
                     required=True,
                 ),
             }
@@ -361,11 +361,11 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_stage_progression_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_change_record_stage_progression_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
-    class StageProgressionsCreateOrUpdateAtSubscriptionLevel(AAZHttpOperation):
+    class ChangeRecordStageProgressionsCreateOrUpdateAtSubscriptionLevel(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -379,7 +379,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/Microsoft.ChangeSafety/changeStates/{changeStateName}/stageProgressions/{stageProgressionName}",
+                "/subscriptions/{subscriptionId}/providers/Microsoft.ChangeSafety/changeRecords/{changeRecordName}/stageProgressions/{stageProgressionName}",
                 **self.url_parameters
             )
 
@@ -395,7 +395,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "changeStateName", self.ctx.args.change_state_name,
+                    "changeRecordName", self.ctx.args.change_record_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -413,7 +413,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01-preview",
+                    "api-version", "2026-01-01-preview",
                     required=True,
                 ),
             }
@@ -456,11 +456,11 @@ class Update(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-            _UpdateHelper._build_schema_stage_progression_read(cls._schema_on_200_201)
+            _UpdateHelper._build_schema_change_record_stage_progression_read(cls._schema_on_200_201)
 
             return cls._schema_on_200_201
 
-    class StageProgressionsCreateOrUpdate(AAZHttpOperation):
+    class ChangeRecordStageProgressionsCreateOrUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -474,7 +474,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ChangeSafety/changeStates/{changeStateName}/stageProgressions/{stageProgressionName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ChangeSafety/changeRecords/{changeRecordName}/stageProgressions/{stageProgressionName}",
                 **self.url_parameters
             )
 
@@ -490,7 +490,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "changeStateName", self.ctx.args.change_state_name,
+                    "changeRecordName", self.ctx.args.change_record_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -512,7 +512,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01-preview",
+                    "api-version", "2026-01-01-preview",
                     required=True,
                 ),
             }
@@ -555,7 +555,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-            _UpdateHelper._build_schema_stage_progression_read(cls._schema_on_200_201)
+            _UpdateHelper._build_schema_change_record_stage_progression_read(cls._schema_on_200_201)
 
             return cls._schema_on_200_201
 
@@ -614,37 +614,37 @@ class Update(AAZCommand):
 class _UpdateHelper:
     """Helper class for Update"""
 
-    _schema_stage_progression_read = None
+    _schema_change_record_stage_progression_read = None
 
     @classmethod
-    def _build_schema_stage_progression_read(cls, _schema):
-        if cls._schema_stage_progression_read is not None:
-            _schema.id = cls._schema_stage_progression_read.id
-            _schema.name = cls._schema_stage_progression_read.name
-            _schema.properties = cls._schema_stage_progression_read.properties
-            _schema.system_data = cls._schema_stage_progression_read.system_data
-            _schema.type = cls._schema_stage_progression_read.type
+    def _build_schema_change_record_stage_progression_read(cls, _schema):
+        if cls._schema_change_record_stage_progression_read is not None:
+            _schema.id = cls._schema_change_record_stage_progression_read.id
+            _schema.name = cls._schema_change_record_stage_progression_read.name
+            _schema.properties = cls._schema_change_record_stage_progression_read.properties
+            _schema.system_data = cls._schema_change_record_stage_progression_read.system_data
+            _schema.type = cls._schema_change_record_stage_progression_read.type
             return
 
-        cls._schema_stage_progression_read = _schema_stage_progression_read = AAZObjectType()
+        cls._schema_change_record_stage_progression_read = _schema_change_record_stage_progression_read = AAZObjectType()
 
-        stage_progression_read = _schema_stage_progression_read
-        stage_progression_read.id = AAZStrType(
+        change_record_stage_progression_read = _schema_change_record_stage_progression_read
+        change_record_stage_progression_read.id = AAZStrType(
             flags={"read_only": True},
         )
-        stage_progression_read.name = AAZStrType(
+        change_record_stage_progression_read.name = AAZStrType(
             flags={"read_only": True},
         )
-        stage_progression_read.properties = AAZObjectType()
-        stage_progression_read.system_data = AAZObjectType(
+        change_record_stage_progression_read.properties = AAZObjectType()
+        change_record_stage_progression_read.system_data = AAZObjectType(
             serialized_name="systemData",
             flags={"read_only": True},
         )
-        stage_progression_read.type = AAZStrType(
+        change_record_stage_progression_read.type = AAZStrType(
             flags={"read_only": True},
         )
 
-        properties = _schema_stage_progression_read.properties
+        properties = _schema_change_record_stage_progression_read.properties
         properties.additional_data = AAZObjectType(
             serialized_name="additionalData",
         )
@@ -669,10 +669,10 @@ class _UpdateHelper:
             flags={"required": True},
         )
 
-        links = _schema_stage_progression_read.properties.links
+        links = _schema_change_record_stage_progression_read.properties.links
         links.Element = AAZObjectType()
 
-        _element = _schema_stage_progression_read.properties.links.Element
+        _element = _schema_change_record_stage_progression_read.properties.links.Element
         _element.description = AAZStrType()
         _element.name = AAZStrType(
             flags={"required": True},
@@ -681,13 +681,13 @@ class _UpdateHelper:
             flags={"required": True},
         )
 
-        parameters = _schema_stage_progression_read.properties.parameters
+        parameters = _schema_change_record_stage_progression_read.properties.parameters
         parameters.Element = AAZAnyType()
 
-        stage_variables = _schema_stage_progression_read.properties.stage_variables
+        stage_variables = _schema_change_record_stage_progression_read.properties.stage_variables
         stage_variables.Element = AAZAnyType()
 
-        system_data = _schema_stage_progression_read.system_data
+        system_data = _schema_change_record_stage_progression_read.system_data
         system_data.created_at = AAZStrType(
             serialized_name="createdAt",
         )
@@ -707,11 +707,11 @@ class _UpdateHelper:
             serialized_name="lastModifiedByType",
         )
 
-        _schema.id = cls._schema_stage_progression_read.id
-        _schema.name = cls._schema_stage_progression_read.name
-        _schema.properties = cls._schema_stage_progression_read.properties
-        _schema.system_data = cls._schema_stage_progression_read.system_data
-        _schema.type = cls._schema_stage_progression_read.type
+        _schema.id = cls._schema_change_record_stage_progression_read.id
+        _schema.name = cls._schema_change_record_stage_progression_read.name
+        _schema.properties = cls._schema_change_record_stage_progression_read.properties
+        _schema.system_data = cls._schema_change_record_stage_progression_read.system_data
+        _schema.type = cls._schema_change_record_stage_progression_read.type
 
 
 __all__ = ["Update"]

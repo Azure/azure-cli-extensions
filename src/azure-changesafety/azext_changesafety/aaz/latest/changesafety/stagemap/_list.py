@@ -12,24 +12,25 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "changesafety stagemap show",
+    "changesafety stagemap list",
 )
-class Show(AAZCommand):
-    """Get a StageMap
+class List(AAZCommand):
+    """List StageMap resources by resource group
     """
 
     _aaz_info = {
-        "version": "2025-09-01-preview",
+        "version": "2026-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/managementgroups/{}/providers/microsoft.changesafety/stagemaps/{}", "2025-09-01-preview"],
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.changesafety/stagemaps/{}", "2025-09-01-preview"],
+            ["mgmt-plane", "/managementgroups/{}/providers/microsoft.changesafety/stagemaps", "2026-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.changesafety/stagemaps", "2026-01-01-preview"],
         ]
     }
 
+    AZ_SUPPORT_PAGINATION = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_paging(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -50,26 +51,16 @@ class Show(AAZCommand):
                 min_length=1,
             ),
         )
-        _args_schema.stage_map_name = AAZStrArg(
-            options=["--stage-map-name"],
-            help="The name of the StageMap",
-            required=True,
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-]{3,100}$",
-                max_length=100,
-                min_length=3,
-            ),
-        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        condition_0 = has_value(self.ctx.args.management_group_name) and has_value(self.ctx.args.stage_map_name)
-        condition_1 = has_value(self.ctx.args.stage_map_name) and has_value(self.ctx.subscription_id)
+        condition_0 = has_value(self.ctx.args.management_group_name)
+        condition_1 = has_value(self.ctx.subscription_id)
         if condition_0:
-            self.StageMapsGetAtManagementGroupLevel(ctx=self.ctx)()
+            self.StageMapsListByManagementGroup(ctx=self.ctx)()
         if condition_1:
-            self.StageMapsGetAtSubscriptionLevel(ctx=self.ctx)()
+            self.StageMapsListBySubscription(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -81,10 +72,11 @@ class Show(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
+        return result, next_link
 
-    class StageMapsGetAtManagementGroupLevel(AAZHttpOperation):
+    class StageMapsListByManagementGroup(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -98,7 +90,7 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/managementGroups/{managementGroupName}/providers/Microsoft.ChangeSafety/stageMaps/{stageMapName}",
+                "/managementGroups/{managementGroupName}/providers/Microsoft.ChangeSafety/stageMaps",
                 **self.url_parameters
             )
 
@@ -117,10 +109,6 @@ class Show(AAZCommand):
                     "managementGroupName", self.ctx.args.management_group_name,
                     required=True,
                 ),
-                **self.serialize_url_param(
-                    "stageMapName", self.ctx.args.stage_map_name,
-                    required=True,
-                ),
             }
             return parameters
 
@@ -128,7 +116,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01-preview",
+                    "api-version", "2026-01-01-preview",
                     required=True,
                 ),
             }
@@ -161,22 +149,33 @@ class Show(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
+            )
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
+
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.name = AAZStrType(
+            _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType()
-            _schema_on_200.system_data = AAZObjectType(
+            _element.properties = AAZObjectType()
+            _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200.type = AAZStrType(
+            _element.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.properties
+            properties = cls._schema_on_200.value.Element.properties
             properties.parameters = AAZDictType()
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -186,19 +185,19 @@ class Show(AAZCommand):
                 flags={"required": True},
             )
 
-            parameters = cls._schema_on_200.properties.parameters
+            parameters = cls._schema_on_200.value.Element.properties.parameters
             parameters.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.properties.parameters.Element
+            _element = cls._schema_on_200.value.Element.properties.parameters.Element
             _element.metadata = AAZDictType()
             _element.type = AAZStrType(
                 flags={"required": True},
             )
 
-            metadata = cls._schema_on_200.properties.parameters.Element.metadata
+            metadata = cls._schema_on_200.value.Element.properties.parameters.Element.metadata
             metadata.Element = AAZStrType()
 
-            disc_array = cls._schema_on_200.properties.parameters.Element.discriminate_by("type", "array")
+            disc_array = cls._schema_on_200.value.Element.properties.parameters.Element.discriminate_by("type", "array")
             disc_array.allowed_values = AAZListType(
                 serialized_name="allowedValues",
             )
@@ -206,13 +205,13 @@ class Show(AAZCommand):
                 serialized_name="defaultValue",
             )
 
-            allowed_values = cls._schema_on_200.properties.parameters.Element.discriminate_by("type", "array").allowed_values
+            allowed_values = cls._schema_on_200.value.Element.properties.parameters.Element.discriminate_by("type", "array").allowed_values
             allowed_values.Element = AAZAnyType()
 
-            default_value = cls._schema_on_200.properties.parameters.Element.discriminate_by("type", "array").default_value
+            default_value = cls._schema_on_200.value.Element.properties.parameters.Element.discriminate_by("type", "array").default_value
             default_value.Element = AAZAnyType()
 
-            disc_number = cls._schema_on_200.properties.parameters.Element.discriminate_by("type", "number")
+            disc_number = cls._schema_on_200.value.Element.properties.parameters.Element.discriminate_by("type", "number")
             disc_number.allowed_values = AAZListType(
                 serialized_name="allowedValues",
             )
@@ -220,10 +219,10 @@ class Show(AAZCommand):
                 serialized_name="defaultValue",
             )
 
-            allowed_values = cls._schema_on_200.properties.parameters.Element.discriminate_by("type", "number").allowed_values
+            allowed_values = cls._schema_on_200.value.Element.properties.parameters.Element.discriminate_by("type", "number").allowed_values
             allowed_values.Element = AAZIntType()
 
-            disc_object = cls._schema_on_200.properties.parameters.Element.discriminate_by("type", "object")
+            disc_object = cls._schema_on_200.value.Element.properties.parameters.Element.discriminate_by("type", "object")
             disc_object.allowed_values = AAZListType(
                 serialized_name="allowedValues",
             )
@@ -231,13 +230,13 @@ class Show(AAZCommand):
                 serialized_name="defaultValue",
             )
 
-            allowed_values = cls._schema_on_200.properties.parameters.Element.discriminate_by("type", "object").allowed_values
+            allowed_values = cls._schema_on_200.value.Element.properties.parameters.Element.discriminate_by("type", "object").allowed_values
             allowed_values.Element = AAZDictType()
 
-            _element = cls._schema_on_200.properties.parameters.Element.discriminate_by("type", "object").allowed_values.Element
+            _element = cls._schema_on_200.value.Element.properties.parameters.Element.discriminate_by("type", "object").allowed_values.Element
             _element.Element = AAZAnyType()
 
-            disc_string = cls._schema_on_200.properties.parameters.Element.discriminate_by("type", "string")
+            disc_string = cls._schema_on_200.value.Element.properties.parameters.Element.discriminate_by("type", "string")
             disc_string.allowed_values = AAZListType(
                 serialized_name="allowedValues",
             )
@@ -245,13 +244,13 @@ class Show(AAZCommand):
                 serialized_name="defaultValue",
             )
 
-            allowed_values = cls._schema_on_200.properties.parameters.Element.discriminate_by("type", "string").allowed_values
+            allowed_values = cls._schema_on_200.value.Element.properties.parameters.Element.discriminate_by("type", "string").allowed_values
             allowed_values.Element = AAZStrType()
 
-            stages = cls._schema_on_200.properties.stages
+            stages = cls._schema_on_200.value.Element.properties.stages
             stages.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.properties.stages.Element
+            _element = cls._schema_on_200.value.Element.properties.stages.Element
             _element.name = AAZStrType(
                 flags={"required": True},
             )
@@ -265,19 +264,19 @@ class Show(AAZCommand):
                 serialized_name="stageVariables",
             )
 
-            nested_stage_map = cls._schema_on_200.properties.stages.Element.nested_stage_map
+            nested_stage_map = cls._schema_on_200.value.Element.properties.stages.Element.nested_stage_map
             nested_stage_map.parameters = AAZDictType()
             nested_stage_map.resource_id = AAZStrType(
                 serialized_name="resourceId",
             )
 
-            parameters = cls._schema_on_200.properties.stages.Element.nested_stage_map.parameters
+            parameters = cls._schema_on_200.value.Element.properties.stages.Element.nested_stage_map.parameters
             parameters.Element = AAZAnyType()
 
-            stage_variables = cls._schema_on_200.properties.stages.Element.stage_variables
+            stage_variables = cls._schema_on_200.value.Element.properties.stages.Element.stage_variables
             stage_variables.Element = AAZAnyType()
 
-            system_data = cls._schema_on_200.system_data
+            system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -299,7 +298,7 @@ class Show(AAZCommand):
 
             return cls._schema_on_200
 
-    class StageMapsGetAtSubscriptionLevel(AAZHttpOperation):
+    class StageMapsListBySubscription(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -313,7 +312,7 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/Microsoft.ChangeSafety/stageMaps/{stageMapName}",
+                "/subscriptions/{subscriptionId}/providers/Microsoft.ChangeSafety/stageMaps",
                 **self.url_parameters
             )
 
@@ -329,10 +328,6 @@ class Show(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "stageMapName", self.ctx.args.stage_map_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
                 ),
@@ -343,7 +338,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01-preview",
+                    "api-version", "2026-01-01-preview",
                     required=True,
                 ),
             }
@@ -376,22 +371,33 @@ class Show(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
+            )
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
+
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.name = AAZStrType(
+            _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType()
-            _schema_on_200.system_data = AAZObjectType(
+            _element.properties = AAZObjectType()
+            _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200.type = AAZStrType(
+            _element.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.properties
+            properties = cls._schema_on_200.value.Element.properties
             properties.parameters = AAZDictType()
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -401,19 +407,19 @@ class Show(AAZCommand):
                 flags={"required": True},
             )
 
-            parameters = cls._schema_on_200.properties.parameters
+            parameters = cls._schema_on_200.value.Element.properties.parameters
             parameters.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.properties.parameters.Element
+            _element = cls._schema_on_200.value.Element.properties.parameters.Element
             _element.metadata = AAZDictType()
             _element.type = AAZStrType(
                 flags={"required": True},
             )
 
-            metadata = cls._schema_on_200.properties.parameters.Element.metadata
+            metadata = cls._schema_on_200.value.Element.properties.parameters.Element.metadata
             metadata.Element = AAZStrType()
 
-            disc_array = cls._schema_on_200.properties.parameters.Element.discriminate_by("type", "array")
+            disc_array = cls._schema_on_200.value.Element.properties.parameters.Element.discriminate_by("type", "array")
             disc_array.allowed_values = AAZListType(
                 serialized_name="allowedValues",
             )
@@ -421,13 +427,13 @@ class Show(AAZCommand):
                 serialized_name="defaultValue",
             )
 
-            allowed_values = cls._schema_on_200.properties.parameters.Element.discriminate_by("type", "array").allowed_values
+            allowed_values = cls._schema_on_200.value.Element.properties.parameters.Element.discriminate_by("type", "array").allowed_values
             allowed_values.Element = AAZAnyType()
 
-            default_value = cls._schema_on_200.properties.parameters.Element.discriminate_by("type", "array").default_value
+            default_value = cls._schema_on_200.value.Element.properties.parameters.Element.discriminate_by("type", "array").default_value
             default_value.Element = AAZAnyType()
 
-            disc_number = cls._schema_on_200.properties.parameters.Element.discriminate_by("type", "number")
+            disc_number = cls._schema_on_200.value.Element.properties.parameters.Element.discriminate_by("type", "number")
             disc_number.allowed_values = AAZListType(
                 serialized_name="allowedValues",
             )
@@ -435,10 +441,10 @@ class Show(AAZCommand):
                 serialized_name="defaultValue",
             )
 
-            allowed_values = cls._schema_on_200.properties.parameters.Element.discriminate_by("type", "number").allowed_values
+            allowed_values = cls._schema_on_200.value.Element.properties.parameters.Element.discriminate_by("type", "number").allowed_values
             allowed_values.Element = AAZIntType()
 
-            disc_object = cls._schema_on_200.properties.parameters.Element.discriminate_by("type", "object")
+            disc_object = cls._schema_on_200.value.Element.properties.parameters.Element.discriminate_by("type", "object")
             disc_object.allowed_values = AAZListType(
                 serialized_name="allowedValues",
             )
@@ -446,13 +452,13 @@ class Show(AAZCommand):
                 serialized_name="defaultValue",
             )
 
-            allowed_values = cls._schema_on_200.properties.parameters.Element.discriminate_by("type", "object").allowed_values
+            allowed_values = cls._schema_on_200.value.Element.properties.parameters.Element.discriminate_by("type", "object").allowed_values
             allowed_values.Element = AAZDictType()
 
-            _element = cls._schema_on_200.properties.parameters.Element.discriminate_by("type", "object").allowed_values.Element
+            _element = cls._schema_on_200.value.Element.properties.parameters.Element.discriminate_by("type", "object").allowed_values.Element
             _element.Element = AAZAnyType()
 
-            disc_string = cls._schema_on_200.properties.parameters.Element.discriminate_by("type", "string")
+            disc_string = cls._schema_on_200.value.Element.properties.parameters.Element.discriminate_by("type", "string")
             disc_string.allowed_values = AAZListType(
                 serialized_name="allowedValues",
             )
@@ -460,13 +466,13 @@ class Show(AAZCommand):
                 serialized_name="defaultValue",
             )
 
-            allowed_values = cls._schema_on_200.properties.parameters.Element.discriminate_by("type", "string").allowed_values
+            allowed_values = cls._schema_on_200.value.Element.properties.parameters.Element.discriminate_by("type", "string").allowed_values
             allowed_values.Element = AAZStrType()
 
-            stages = cls._schema_on_200.properties.stages
+            stages = cls._schema_on_200.value.Element.properties.stages
             stages.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.properties.stages.Element
+            _element = cls._schema_on_200.value.Element.properties.stages.Element
             _element.name = AAZStrType(
                 flags={"required": True},
             )
@@ -480,19 +486,19 @@ class Show(AAZCommand):
                 serialized_name="stageVariables",
             )
 
-            nested_stage_map = cls._schema_on_200.properties.stages.Element.nested_stage_map
+            nested_stage_map = cls._schema_on_200.value.Element.properties.stages.Element.nested_stage_map
             nested_stage_map.parameters = AAZDictType()
             nested_stage_map.resource_id = AAZStrType(
                 serialized_name="resourceId",
             )
 
-            parameters = cls._schema_on_200.properties.stages.Element.nested_stage_map.parameters
+            parameters = cls._schema_on_200.value.Element.properties.stages.Element.nested_stage_map.parameters
             parameters.Element = AAZAnyType()
 
-            stage_variables = cls._schema_on_200.properties.stages.Element.stage_variables
+            stage_variables = cls._schema_on_200.value.Element.properties.stages.Element.stage_variables
             stage_variables.Element = AAZAnyType()
 
-            system_data = cls._schema_on_200.system_data
+            system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -515,8 +521,8 @@ class Show(AAZCommand):
             return cls._schema_on_200
 
 
-class _ShowHelper:
-    """Helper class for Show"""
+class _ListHelper:
+    """Helper class for List"""
 
 
-__all__ = ["Show"]
+__all__ = ["List"]
