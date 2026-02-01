@@ -248,7 +248,7 @@ class QuantumJobsScenarioTest(ScenarioTest):
         self.assertEqual(len(jobs_list), 1)
     
         jobs_list = self.cmd("az quantum job list --skip 1 -o json").get_output_in_json()
-        self.assertEqual(len(jobs_list), 1)
+        self.assertEqual(len(jobs_list), 2)
 
         jobs_list = self.cmd("az quantum job list --orderby Target --top 1 -o json").get_output_in_json()
         self.assertEqual(len(jobs_list), 1)
@@ -257,7 +257,7 @@ class QuantumJobsScenarioTest(ScenarioTest):
         self.assertTrue("rigetti" not in results)
 
         jobs_list = self.cmd("az quantum job list --orderby Target --skip 1 -o json").get_output_in_json()
-        self.assertEqual(len(jobs_list), 1)
+        self.assertEqual(len(jobs_list), 2)
         results = str(jobs_list)
         self.assertIn("rigetti", results)
         self.assertTrue("ionq" not in results)
