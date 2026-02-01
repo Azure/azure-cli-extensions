@@ -2,7 +2,7 @@
 
 Release History
 ===============
-1.3.2
+1.4.0
 - add a new command `az redisenterprise test-connection` to test the connection to a cluster.
 
 1.3.1
