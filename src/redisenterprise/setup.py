@@ -10,7 +10,7 @@ from setuptools import setup, find_packages
 
 
 # HISTORY.rst entry.
-VERSION = '1.3.1'
+VERSION = '1.4.0'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -26,7 +26,7 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = []
+DEPENDENCIES = ['redis>=7.1.0,<8.0.0', 'PyJWT>=2.1.0']
 
 with open('README.md', 'r', encoding='utf-8') as f:
     README = f.read()

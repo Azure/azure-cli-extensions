@@ -18,6 +18,7 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
         g.custom_show_command('show', 'redisenterprise_show')
         from .custom import RedisEnterpriseUpdate
         self.command_table["redisenterprise update"] = RedisEnterpriseUpdate(loader=self)
+        g.custom_command('test-connection', 'redisenterprise_test_connection')
     with self.command_group("redisenterprise database"):
         from .custom import DatabaseFlush, DatabaseCreate, DatabaseDelete, DatabaseExport, DatabaseForceUnlink
         from .custom import DatabaseImport, DatabaseListKey, DatabaseRegenerateKey
