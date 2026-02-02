@@ -22,7 +22,7 @@ helps['managedcleanroom frontend'] = """
         These commands support two authentication methods:
         1. MSAL device code flow (az managedcleanroom frontend login)
         2. Azure CLI authentication (az login)
-        
+
         You must configure the Analytics Frontend API endpoint URL before using these commands.
 """
 
@@ -31,11 +31,11 @@ helps['managedcleanroom frontend login'] = """
     short-summary: Authenticate using Microsoft device code flow
     long-summary: |
         Performs interactive device code authentication using MSAL (Microsoft Authentication Library).
-        
+
         You will be prompted to visit https://microsoft.com/devicelogin and enter a code
         to complete authentication. Once successful, the token is cached locally for
         subsequent commands.
-        
+
         Use 'az managedcleanroom frontend logout' to clear the cached token.
     examples:
         - name: Login using device code flow
@@ -54,36 +54,34 @@ helps['managedcleanroom frontend logout'] = """
     long-summary: |
         Clears the locally cached MSAL authentication token. You'll need to login again
         using 'az managedcleanroom frontend login' to use frontend commands.
-        
+
         Note: This does NOT affect Azure CLI authentication (az login). If you're using
         Azure CLI authentication, use 'az logout' instead.
-        
+
         Cache location: ~/.managedcleanroom/msal_cache/token_cache.json
     examples:
         - name: Logout and clear MSAL cache
           text: az managedcleanroom frontend logout
-        - name: Verify logout status
-          text: az managedcleanroom frontend configure
 """
 
 helps['managedcleanroom frontend configure'] = """
     type: command
     short-summary: Configure or view Analytics Frontend API settings
     long-summary: |
-        Configure the API endpoint URL or view current configuration including 
+        Configure the API endpoint URL or view current configuration including
         authentication method, user identity, and MSAL configuration.
-        
+
         Authentication priority:
         1. MSAL token (from 'az managedcleanroom frontend login') - checked first
         2. Azure CLI token (from 'az login') - fallback
-        
+
         Configuration options:
         - Environment variables (highest priority):
           - MANAGEDCLEANROOM_CLIENT_ID
           - MANAGEDCLEANROOM_TENANT_ID
           - MANAGEDCLEANROOM_SCOPES
           - MANAGEDCLEANROOM_ENDPOINT
-        
+
         - Azure CLI config (persistent):
           - managedcleanroom-frontend.client_id
           - managedcleanroom-frontend.tenant_id
@@ -96,14 +94,6 @@ helps['managedcleanroom frontend configure'] = """
           text: az managedcleanroom frontend configure --endpoint https://api.example.com
         - name: Set local development endpoint
           text: az managedcleanroom frontend configure --endpoint http://localhost:61001
-        - name: Configure custom MSAL client ID (persistent)
-          text: az config set managedcleanroom-frontend.client_id="your-production-client-id"
-        - name: Configure custom client ID (temporary override)
-          text: |
-            export MANAGEDCLEANROOM_CLIENT_ID="test-client-id"
-            az managedcleanroom frontend configure
-        - name: View all Azure CLI configuration
-          text: az config list --local
 """
 
 
@@ -438,4 +428,3 @@ helps['managedcleanroom frontend attestation cleanroom'] = """
         - name: Get cleanroom attestation report
           text: az managedcleanroom frontend attestation cleanroom -c <collaboration-id>
 """
-
