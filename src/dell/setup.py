@@ -38,7 +38,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
 setup(
     name='dell',
     version=VERSION,
-    description='Microsoft Azure Command-Line Tools Dell Extension.',
+    description='Azure CLI extension for managing Dell.Storage filesystem resources.',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     author='Microsoft Corporation',
