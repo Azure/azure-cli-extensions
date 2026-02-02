@@ -3798,6 +3798,21 @@ helps['aks approuting zone list'] = """
     long-summary: This command lists the DNS zone resources used in App Routing.
 """
 
+helps['aks approuting defaultdomain'] = """
+    type: group
+    short-summary: Commands to manage App Routing Default Domain.
+    long-summary: A group of commands to manage App Routing Default Domain in given cluster.
+"""
+
+helps['aks approuting defaultdomain show'] = """
+    type: command
+    short-summary: Show the Default Domain configuration for App Routing.
+    long-summary: This command shows the Default Domain configuration including the domain name assigned to the cluster.
+    examples:
+      - name: Show the default domain for a cluster.
+        text: az aks approuting defaultdomain show --resource-group MyResourceGroup --name MyManagedCluster
+"""
+
 helps['aks check-network'] = """
     type: group
     short-summary: Commands to troubleshoot network connectivity in managed Kubernetes cluster.

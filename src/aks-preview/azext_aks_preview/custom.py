@@ -4449,6 +4449,21 @@ def aks_approuting_zone_list(
     raise CLIError('App routing addon is not enabled')
 
 
+def aks_approuting_default_domain_show(
+        cmd,
+        client,
+        resource_group_name,
+        name
+):
+    mc = client.get(resource_group_name, name)
+
+    if mc.ingress_profile and mc.ingress_profile.web_app_routing and mc.ingress_profile.web_app_routing.enabled:
+        if mc.ingress_profile.web_app_routing.default_domain:
+            return mc.ingress_profile.web_app_routing.default_domain
+        raise CLIError('Default domain is not configured for this cluster')
+    raise CLIError('App routing addon is not enabled')
+
+
 # pylint: disable=unused-argument
 def _aks_applicationloadbalancer_update(
         cmd,
