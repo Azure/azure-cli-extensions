@@ -28,7 +28,11 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = []
+DEPENDENCIES = [
+    'azure-core>=1.24.0',
+    'typing-extensions>=4.0.0',
+    'msal>=1.20.0',
+]
 
 with open('README.md', 'r', encoding='utf-8') as f:
     README = f.read()

@@ -20,6 +20,7 @@ class ManagedcleanroomCommandsLoader(AzCommandsLoader):
 
     def load_command_table(self, args):
         from azext_managedcleanroom.commands import load_command_table
+        from azext_managedcleanroom._frontend_commands import load_frontend_command_table
         from azure.cli.core.aaz import load_aaz_command_table
         try:
             from . import aaz
@@ -32,6 +33,7 @@ class ManagedcleanroomCommandsLoader(AzCommandsLoader):
                 args=args
             )
         load_command_table(self, args)
+        load_frontend_command_table(self, args)
         return self.command_table
 
     def load_arguments(self, command):

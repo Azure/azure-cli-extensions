@@ -9,3 +9,433 @@
 # pylint: disable=too-many-lines
 
 from knack.help_files import helps  # pylint: disable=unused-import
+
+
+# ============================================================================
+# Frontend Group Help
+# ============================================================================
+
+helps['managedcleanroom frontend'] = """
+    type: group
+    short-summary: Commands to interact with Analytics Frontend API
+    long-summary: |
+        These commands support two authentication methods:
+        1. MSAL device code flow (az managedcleanroom frontend login)
+        2. Azure CLI authentication (az login)
+        
+        You must configure the Analytics Frontend API endpoint URL before using these commands.
+"""
+
+helps['managedcleanroom frontend login'] = """
+    type: command
+    short-summary: Authenticate using Microsoft device code flow
+    long-summary: |
+        Performs interactive device code authentication using MSAL (Microsoft Authentication Library).
+        
+        You will be prompted to visit https://microsoft.com/devicelogin and enter a code
+        to complete authentication. Once successful, the token is cached locally for
+        subsequent commands.
+        
+        Use 'az managedcleanroom frontend logout' to clear the cached token.
+    examples:
+        - name: Login using device code flow
+          text: az managedcleanroom frontend login
+        - name: Login with explicit flag (same as above)
+          text: az managedcleanroom frontend login --use-microsoft-identity
+        - name: Configure custom client ID before login
+          text: |
+            az config set managedcleanroom-frontend.client_id="your-client-id"
+            az managedcleanroom frontend login
+"""
+
+helps['managedcleanroom frontend logout'] = """
+    type: command
+    short-summary: Logout and clear cached credentials
+    long-summary: |
+        Clears the locally cached MSAL authentication token. You'll need to login again
+        using 'az managedcleanroom frontend login' to use frontend commands.
+        
+        Note: This does NOT affect Azure CLI authentication (az login). If you're using
+        Azure CLI authentication, use 'az logout' instead.
+        
+        Cache location: ~/.managedcleanroom/msal_cache/token_cache.json
+    examples:
+        - name: Logout and clear MSAL cache
+          text: az managedcleanroom frontend logout
+        - name: Verify logout status
+          text: az managedcleanroom frontend configure
+"""
+
+helps['managedcleanroom frontend configure'] = """
+    type: command
+    short-summary: Configure or view Analytics Frontend API settings
+    long-summary: |
+        Configure the API endpoint URL or view current configuration including 
+        authentication method, user identity, and MSAL configuration.
+        
+        Authentication priority:
+        1. MSAL token (from 'az managedcleanroom frontend login') - checked first
+        2. Azure CLI token (from 'az login') - fallback
+        
+        Configuration options:
+        - Environment variables (highest priority):
+          - MANAGEDCLEANROOM_CLIENT_ID
+          - MANAGEDCLEANROOM_TENANT_ID
+          - MANAGEDCLEANROOM_SCOPES
+          - MANAGEDCLEANROOM_ENDPOINT
+        
+        - Azure CLI config (persistent):
+          - managedcleanroom-frontend.client_id
+          - managedcleanroom-frontend.tenant_id
+          - managedcleanroom-frontend.scopes
+          - managedcleanroom-frontend.endpoint
+    examples:
+        - name: View current configuration and authentication status
+          text: az managedcleanroom frontend configure
+        - name: Set API endpoint URL
+          text: az managedcleanroom frontend configure --endpoint https://api.example.com
+        - name: Set local development endpoint
+          text: az managedcleanroom frontend configure --endpoint http://localhost:61001
+        - name: Configure custom MSAL client ID (persistent)
+          text: az config set managedcleanroom-frontend.client_id="your-production-client-id"
+        - name: Configure custom client ID (temporary override)
+          text: |
+            export MANAGEDCLEANROOM_CLIENT_ID="test-client-id"
+            az managedcleanroom frontend configure
+        - name: View all Azure CLI configuration
+          text: az config list --local
+"""
+
+
+# ============================================================================
+# Collaboration Help
+# ============================================================================
+
+helps['managedcleanroom frontend collaboration'] = """
+    type: group
+    short-summary: Manage frontend collaborations
+"""
+
+helps['managedcleanroom frontend collaboration list'] = """
+    type: command
+    short-summary: List all collaborations
+    examples:
+        - name: List all collaborations
+          text: az managedcleanroom frontend collaboration list
+"""
+
+helps['managedcleanroom frontend collaboration show'] = """
+    type: command
+    short-summary: Show collaboration details
+    examples:
+        - name: Show collaboration details
+          text: az managedcleanroom frontend collaboration show --collaboration-id <id>
+"""
+
+
+# ============================================================================
+# Workloads Help
+# ============================================================================
+
+helps['managedcleanroom frontend collaboration workloads'] = """
+    type: group
+    short-summary: Manage collaboration workloads
+"""
+
+helps['managedcleanroom frontend collaboration workloads list'] = """
+    type: command
+    short-summary: List workloads for a collaboration
+    examples:
+        - name: List workloads
+          text: az managedcleanroom frontend collaboration workloads list -c <collaboration-id>
+"""
+
+
+# ============================================================================
+# Analytics Help
+# ============================================================================
+
+helps['managedcleanroom frontend collaboration analytics'] = """
+    type: group
+    short-summary: Manage collaboration analytics
+"""
+
+helps['managedcleanroom frontend collaboration analytics show'] = """
+    type: command
+    short-summary: Show analytics information
+    examples:
+        - name: Show analytics information for a collaboration
+          text: az managedcleanroom frontend collaboration analytics show -c <collaboration-id>
+"""
+
+helps['managedcleanroom frontend collaboration analytics deploymentinfo'] = """
+    type: command
+    short-summary: Get deployment information
+    examples:
+        - name: Get deployment info
+          text: az managedcleanroom frontend collaboration analytics deploymentinfo -c <collaboration-id>
+"""
+
+helps['managedcleanroom frontend collaboration analytics cleanroompolicy'] = """
+    type: command
+    short-summary: Get cleanroom policy
+    examples:
+        - name: Get cleanroom policy
+          text: az managedcleanroom frontend collaboration analytics cleanroompolicy -c <collaboration-id>
+"""
+
+
+# ============================================================================
+# OIDC Help
+# ============================================================================
+
+helps['managedcleanroom frontend collaboration oidc'] = """
+    type: group
+    short-summary: Manage OIDC configuration
+"""
+
+helps['managedcleanroom frontend collaboration oidc issuerinfo'] = """
+    type: group
+    short-summary: Manage OIDC issuer information
+"""
+
+helps['managedcleanroom frontend collaboration oidc issuerinfo show'] = """
+    type: command
+    short-summary: Show OIDC issuer information
+    examples:
+        - name: Show OIDC issuer info
+          text: az managedcleanroom frontend collaboration oidc issuerinfo show -c <collaboration-id>
+"""
+
+
+# ============================================================================
+# Invitation Help
+# ============================================================================
+
+helps['managedcleanroom frontend collaboration invitation'] = """
+    type: group
+    short-summary: Manage collaboration invitations
+"""
+
+helps['managedcleanroom frontend collaboration invitation list'] = """
+    type: command
+    short-summary: List invitations for a collaboration
+    examples:
+        - name: List invitations
+          text: az managedcleanroom frontend collaboration invitation list -c <collaboration-id>
+"""
+
+helps['managedcleanroom frontend collaboration invitation show'] = """
+    type: command
+    short-summary: Show invitation details
+    examples:
+        - name: Show invitation details
+          text: az managedcleanroom frontend collaboration invitation show -c <cid> -i <invitation-id>
+"""
+
+helps['managedcleanroom frontend collaboration invitation accept'] = """
+    type: command
+    short-summary: Accept an invitation
+    examples:
+        - name: Accept an invitation
+          text: az managedcleanroom frontend collaboration invitation accept -c <cid> -i <invitation-id>
+"""
+
+
+# ============================================================================
+# Dataset Help
+# ============================================================================
+
+helps['managedcleanroom frontend collaboration dataset'] = """
+    type: group
+    short-summary: Manage collaboration datasets
+"""
+
+helps['managedcleanroom frontend collaboration dataset list'] = """
+    type: command
+    short-summary: List datasets for a collaboration
+    examples:
+        - name: List datasets
+          text: az managedcleanroom frontend collaboration dataset list -c <collaboration-id>
+"""
+
+helps['managedcleanroom frontend collaboration dataset show'] = """
+    type: command
+    short-summary: Show dataset details
+    examples:
+        - name: Show dataset details
+          text: az managedcleanroom frontend collaboration dataset show -c <cid> -d <dataset-id>
+"""
+
+helps['managedcleanroom frontend collaboration dataset publish'] = """
+    type: command
+    short-summary: Publish a dataset
+    examples:
+        - name: Publish a dataset
+          text: az managedcleanroom frontend collaboration dataset publish -c <cid> -d <dataset-id>
+"""
+
+
+# ============================================================================
+# Consent Help
+# ============================================================================
+
+helps['managedcleanroom frontend collaboration consent'] = """
+    type: group
+    short-summary: Manage consent documents
+"""
+
+helps['managedcleanroom frontend collaboration consent check'] = """
+    type: command
+    short-summary: Check consent document status
+    examples:
+        - name: Check consent status
+          text: az managedcleanroom frontend collaboration consent check -c <cid> --document-id <doc-id>
+"""
+
+helps['managedcleanroom frontend collaboration consent set'] = """
+    type: command
+    short-summary: Set consent document action
+    examples:
+        - name: Approve consent
+          text: az managedcleanroom frontend collaboration consent set -c <cid> --document-id <doc-id> -a approve
+"""
+
+
+# ============================================================================
+# Query Help
+# ============================================================================
+
+helps['managedcleanroom frontend collaboration query'] = """
+    type: group
+    short-summary: Manage collaboration queries
+"""
+
+helps['managedcleanroom frontend collaboration query list'] = """
+    type: command
+    short-summary: List queries for a collaboration
+    examples:
+        - name: List queries
+          text: az managedcleanroom frontend collaboration query list -c <collaboration-id>
+"""
+
+helps['managedcleanroom frontend collaboration query show'] = """
+    type: command
+    short-summary: Show query details
+    examples:
+        - name: Show query details
+          text: az managedcleanroom frontend collaboration query show -c <cid> -q <query-id>
+"""
+
+helps['managedcleanroom frontend collaboration query publish'] = """
+    type: command
+    short-summary: Publish a query
+    examples:
+        - name: Publish a query
+          text: az managedcleanroom frontend collaboration query publish -c <cid> -q <query-id>
+"""
+
+helps['managedcleanroom frontend collaboration query run'] = """
+    type: command
+    short-summary: Run a query
+    examples:
+        - name: Run a query
+          text: az managedcleanroom frontend collaboration query run -c <cid> -q <query-id>
+"""
+
+
+# ============================================================================
+# Query Vote Help
+# ============================================================================
+
+helps['managedcleanroom frontend collaboration query vote'] = """
+    type: group
+    short-summary: Manage query voting
+"""
+
+helps['managedcleanroom frontend collaboration query vote accept'] = """
+    type: command
+    short-summary: Accept a query vote
+    examples:
+        - name: Accept query vote
+          text: az managedcleanroom frontend collaboration query vote accept -c <cid> -q <query-id>
+"""
+
+helps['managedcleanroom frontend collaboration query vote reject'] = """
+    type: command
+    short-summary: Reject a query vote
+    examples:
+        - name: Reject query vote
+          text: az managedcleanroom frontend collaboration query vote reject -c <cid> -q <query-id>
+"""
+
+
+# ============================================================================
+# Query Run History Help
+# ============================================================================
+
+helps['managedcleanroom frontend collaboration query runhistory'] = """
+    type: group
+    short-summary: View query run history
+"""
+
+helps['managedcleanroom frontend collaboration query runhistory list'] = """
+    type: command
+    short-summary: List query run history
+    examples:
+        - name: List query runs
+          text: az managedcleanroom frontend collaboration query runhistory list -c <cid> -q <query-id>
+"""
+
+helps['managedcleanroom frontend collaboration query runhistory show'] = """
+    type: command
+    short-summary: Show query run details
+    examples:
+        - name: Show query run details
+          text: az managedcleanroom frontend collaboration query runhistory show -c <cid> -r <run-id>
+"""
+
+
+# ============================================================================
+# Audit Help
+# ============================================================================
+
+helps['managedcleanroom frontend collaboration audit'] = """
+    type: group
+    short-summary: View audit events
+"""
+
+helps['managedcleanroom frontend collaboration audit list'] = """
+    type: command
+    short-summary: List audit events for a collaboration
+    examples:
+        - name: List audit events
+          text: az managedcleanroom frontend collaboration audit list -c <collaboration-id>
+"""
+
+
+# ============================================================================
+# Attestation Help
+# ============================================================================
+
+helps['managedcleanroom frontend collaboration attestation'] = """
+    type: group
+    short-summary: View attestation reports
+"""
+
+helps['managedcleanroom frontend collaboration attestation cgs'] = """
+    type: command
+    short-summary: Get CGS attestation report
+    examples:
+        - name: Get CGS attestation report
+          text: az managedcleanroom frontend collaboration attestation cgs -c <collaboration-id>
+"""
+
+helps['managedcleanroom frontend collaboration attestation cleanroom'] = """
+    type: command
+    short-summary: Get cleanroom attestation report
+    examples:
+        - name: Get cleanroom attestation report
+          text: az managedcleanroom frontend collaboration attestation cleanroom -c <collaboration-id>
+"""
+
