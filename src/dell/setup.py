@@ -45,7 +45,8 @@ setup(
     author_email='azpycli@microsoft.com',
     url='https://github.com/Azure/azure-cli-extensions/tree/main/src/dell',
     classifiers=CLASSIFIERS,
-    packages=find_packages(exclude=["tests"]),
+    packages=find_packages(
+        exclude=["*.tests", "*.tests.*", "tests", "tests.*"]),
     package_data={'azext_dell': ['azext_metadata.json']},
     install_requires=DEPENDENCIES
 )
