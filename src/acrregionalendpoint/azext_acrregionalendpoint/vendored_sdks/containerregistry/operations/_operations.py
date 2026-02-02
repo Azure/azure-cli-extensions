@@ -6119,9 +6119,9 @@ class ConnectedRegistriesOperations:
         return LROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
     @distributed_trace
-    def resync(  # pylint: disable=inconsistent-return-statements
+    def resync(
         self, resource_group_name: str, registry_name: str, connected_registry_name: str, **kwargs: Any
-    ) -> None:
+    ) -> _models.ConnectedRegistry:
         """Resync the connected registry instance.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
@@ -6131,8 +6131,8 @@ class ConnectedRegistriesOperations:
         :type registry_name: str
         :param connected_registry_name: The name of the connected registry. Required.
         :type connected_registry_name: str
-        :return: None
-        :rtype: None
+        :return: ConnectedRegistry
+        :rtype: ~azure.mgmt.containerregistry.models.ConnectedRegistry
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         error_map: MutableMapping = {
@@ -6146,7 +6146,7 @@ class ConnectedRegistriesOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = kwargs.pop("params", {}) or {}
 
-        cls: ClsType[None] = kwargs.pop("cls", None)
+        cls: ClsType[_models.ConnectedRegistry] = kwargs.pop("cls", None)
 
         _request = build_connected_registries_resync_request(
             resource_group_name=resource_group_name,
@@ -6174,8 +6174,12 @@ class ConnectedRegistriesOperations:
             )
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
+        deserialized = self._deserialize("ConnectedRegistry", pipeline_response.http_response)
+
         if cls:
-            return cls(pipeline_response, None, {})  # type: ignore
+            return cls(pipeline_response, deserialized, {})  # type: ignore
+
+        return deserialized  # type: ignore
 
 
 class CredentialSetsOperations:

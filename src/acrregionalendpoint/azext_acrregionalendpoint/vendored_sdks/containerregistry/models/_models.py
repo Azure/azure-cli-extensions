@@ -520,8 +520,8 @@ class CacheRule(ProxyResource):
     :vartype credential_set_resource_id: str
     :ivar source_repository: Source repository pulled from upstream.
     :vartype source_repository: str
-    :ivar target_repository: Target repository specified in docker pull command.
-     Eg: docker pull myregistry.azurecr.io/{targetRepository}:{tag}.
+    :ivar target_repository: Target repository specified in docker pull command. Eg: docker pull
+     myregistry.azurecr.io/{targetRepository}:{tag}.
     :vartype target_repository: str
     :ivar creation_date: The creation date of the cache rule.
     :vartype creation_date: ~datetime.datetime
@@ -569,8 +569,8 @@ class CacheRule(ProxyResource):
         :paramtype credential_set_resource_id: str
         :keyword source_repository: Source repository pulled from upstream.
         :paramtype source_repository: str
-        :keyword target_repository: Target repository specified in docker pull command.
-         Eg: docker pull myregistry.azurecr.io/{targetRepository}:{tag}.
+        :keyword target_repository: Target repository specified in docker pull command. Eg: docker pull
+         myregistry.azurecr.io/{targetRepository}:{tag}.
         :paramtype target_repository: str
         """
         super().__init__(**kwargs)
@@ -967,8 +967,8 @@ class CredentialSet(ProxyResource):
     :vartype identity: ~azure.mgmt.containerregistry.models.IdentityProperties
     :ivar login_server: The credentials are stored for this upstream or login server.
     :vartype login_server: str
-    :ivar auth_credentials: List of authentication credentials stored for an upstream.
-     Usually consists of a primary and an optional secondary credential.
+    :ivar auth_credentials: List of authentication credentials stored for an upstream. Usually
+     consists of a primary and an optional secondary credential.
     :vartype auth_credentials: list[~azure.mgmt.containerregistry.models.AuthCredential]
     :ivar creation_date: The creation date of credential store resource.
     :vartype creation_date: ~datetime.datetime
@@ -1012,8 +1012,8 @@ class CredentialSet(ProxyResource):
         :paramtype identity: ~azure.mgmt.containerregistry.models.IdentityProperties
         :keyword login_server: The credentials are stored for this upstream or login server.
         :paramtype login_server: str
-        :keyword auth_credentials: List of authentication credentials stored for an upstream.
-         Usually consists of a primary and an optional secondary credential.
+        :keyword auth_credentials: List of authentication credentials stored for an upstream. Usually
+         consists of a primary and an optional secondary credential.
         :paramtype auth_credentials: list[~azure.mgmt.containerregistry.models.AuthCredential]
         """
         super().__init__(**kwargs)
@@ -1060,8 +1060,8 @@ class CredentialSetUpdateParameters(_serialization.Model):
     :ivar identity: Identities associated with the resource. This is used to access the KeyVault
      secrets.
     :vartype identity: ~azure.mgmt.containerregistry.models.IdentityProperties
-    :ivar auth_credentials: List of authentication credentials stored for an upstream.
-     Usually consists of a primary and an optional secondary credential.
+    :ivar auth_credentials: List of authentication credentials stored for an upstream. Usually
+     consists of a primary and an optional secondary credential.
     :vartype auth_credentials: list[~azure.mgmt.containerregistry.models.AuthCredential]
     """
 
@@ -1081,8 +1081,8 @@ class CredentialSetUpdateParameters(_serialization.Model):
         :keyword identity: Identities associated with the resource. This is used to access the KeyVault
          secrets.
         :paramtype identity: ~azure.mgmt.containerregistry.models.IdentityProperties
-        :keyword auth_credentials: List of authentication credentials stored for an upstream.
-         Usually consists of a primary and an optional secondary credential.
+        :keyword auth_credentials: List of authentication credentials stored for an upstream. Usually
+         consists of a primary and an optional secondary credential.
         :paramtype auth_credentials: list[~azure.mgmt.containerregistry.models.AuthCredential]
         """
         super().__init__(**kwargs)
@@ -1693,9 +1693,9 @@ class ExportPipelineTargetProperties(_serialization.Model):
 
     :ivar type: The type of target for the export pipeline.
     :vartype type: str
-    :ivar uri: The target uri of the export pipeline.
-     When 'AzureStorageBlob': "https://accountName.blob.core.windows.net/containerName/blobName"
-     When 'AzureStorageBlobContainer':  "https://accountName.blob.core.windows.net/containerName".
+    :ivar uri: The target uri of the export pipeline. When 'AzureStorageBlob':
+     "https://accountName.blob.core.windows.net/containerName/blobName" When
+     'AzureStorageBlobContainer':  "https://accountName.blob.core.windows.net/containerName".
     :vartype uri: str
     :ivar key_vault_uri: They key vault secret uri to obtain the target storage SAS token.
     :vartype key_vault_uri: str
@@ -1723,9 +1723,9 @@ class ExportPipelineTargetProperties(_serialization.Model):
         """
         :keyword type: The type of target for the export pipeline.
         :paramtype type: str
-        :keyword uri: The target uri of the export pipeline.
-         When 'AzureStorageBlob': "https://accountName.blob.core.windows.net/containerName/blobName"
-         When 'AzureStorageBlobContainer':  "https://accountName.blob.core.windows.net/containerName".
+        :keyword uri: The target uri of the export pipeline. When 'AzureStorageBlob':
+         "https://accountName.blob.core.windows.net/containerName/blobName" When
+         'AzureStorageBlobContainer':  "https://accountName.blob.core.windows.net/containerName".
         :paramtype uri: str
         :keyword key_vault_uri: They key vault secret uri to obtain the target storage SAS token.
         :paramtype key_vault_uri: str
@@ -1879,8 +1879,7 @@ class IdentityProperties(_serialization.Model):
      "SystemAssigned, UserAssigned", and "None".
     :vartype type: str or ~azure.mgmt.containerregistry.models.ResourceIdentityType
     :ivar user_assigned_identities: The list of user identities associated with the resource. The
-     user identity
-     dictionary key references will be ARM resource ids in the form:
+     user identity dictionary key references will be ARM resource ids in the form:
      '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/
      providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}'.
     :vartype user_assigned_identities: dict[str,
@@ -1911,8 +1910,7 @@ class IdentityProperties(_serialization.Model):
          "SystemAssigned, UserAssigned", and "None".
         :paramtype type: str or ~azure.mgmt.containerregistry.models.ResourceIdentityType
         :keyword user_assigned_identities: The list of user identities associated with the resource.
-         The user identity
-         dictionary key references will be ARM resource ids in the form:
+         The user identity dictionary key references will be ARM resource ids in the form:
          '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/
          providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}'.
         :paramtype user_assigned_identities: dict[str,
@@ -2104,9 +2102,9 @@ class ImportPipelineSourceProperties(_serialization.Model):
 
     :ivar type: The type of source for the import pipeline. "AzureStorageBlobContainer"
     :vartype type: str or ~azure.mgmt.containerregistry.models.PipelineSourceType
-    :ivar uri: The source uri of the import pipeline.
-     When 'AzureStorageBlob': "https://accountName.blob.core.windows.net/containerName/blobName"
-     When 'AzureStorageBlobContainer': "https://accountName.blob.core.windows.net/containerName".
+    :ivar uri: The source uri of the import pipeline. When 'AzureStorageBlob':
+     "https://accountName.blob.core.windows.net/containerName/blobName" When
+     'AzureStorageBlobContainer': "https://accountName.blob.core.windows.net/containerName".
     :vartype uri: str
     :ivar key_vault_uri: They key vault secret uri to obtain the source storage SAS token.
     :vartype key_vault_uri: str
@@ -2134,9 +2132,9 @@ class ImportPipelineSourceProperties(_serialization.Model):
         """
         :keyword type: The type of source for the import pipeline. "AzureStorageBlobContainer"
         :paramtype type: str or ~azure.mgmt.containerregistry.models.PipelineSourceType
-        :keyword uri: The source uri of the import pipeline.
-         When 'AzureStorageBlob': "https://accountName.blob.core.windows.net/containerName/blobName"
-         When 'AzureStorageBlobContainer': "https://accountName.blob.core.windows.net/containerName".
+        :keyword uri: The source uri of the import pipeline. When 'AzureStorageBlob':
+         "https://accountName.blob.core.windows.net/containerName/blobName" When
+         'AzureStorageBlobContainer': "https://accountName.blob.core.windows.net/containerName".
         :paramtype uri: str
         :keyword key_vault_uri: They key vault secret uri to obtain the source storage SAS token.
         :paramtype key_vault_uri: str
@@ -2162,10 +2160,10 @@ class ImportSource(_serialization.Model):
     :vartype registry_uri: str
     :ivar credentials: Credentials used when importing from a registry uri.
     :vartype credentials: ~azure.mgmt.containerregistry.models.ImportSourceCredentials
-    :ivar source_image: Repository name of the source image.
-     Specify an image by repository ('hello-world'). This will use the 'latest' tag.
-     Specify an image by tag ('hello-world:latest').
-     Specify an image by sha256-based manifest digest ('hello-world@sha256:abc123'). Required.
+    :ivar source_image: Repository name of the source image. Specify an image by repository
+     ('hello-world'). This will use the 'latest' tag. Specify an image by tag
+     ('hello-world:latest'). Specify an image by sha256-based manifest digest
+     ('hello-world@sha256:abc123'). Required.
     :vartype source_image: str
     """
 
@@ -2196,10 +2194,10 @@ class ImportSource(_serialization.Model):
         :paramtype registry_uri: str
         :keyword credentials: Credentials used when importing from a registry uri.
         :paramtype credentials: ~azure.mgmt.containerregistry.models.ImportSourceCredentials
-        :keyword source_image: Repository name of the source image.
-         Specify an image by repository ('hello-world'). This will use the 'latest' tag.
-         Specify an image by tag ('hello-world:latest').
-         Specify an image by sha256-based manifest digest ('hello-world@sha256:abc123'). Required.
+        :keyword source_image: Repository name of the source image. Specify an image by repository
+         ('hello-world'). This will use the 'latest' tag. Specify an image by tag
+         ('hello-world:latest'). Specify an image by sha256-based manifest digest
+         ('hello-world@sha256:abc123'). Required.
         :paramtype source_image: str
         """
         super().__init__(**kwargs)
@@ -2850,10 +2848,10 @@ class PipelineRunRequest(_serialization.Model):
 
     :ivar pipeline_resource_id: The resource ID of the pipeline to run.
     :vartype pipeline_resource_id: str
-    :ivar artifacts: List of source artifacts to be transferred by the pipeline.
-     Specify an image by repository ('hello-world'). This will use the 'latest' tag.
-     Specify an image by tag ('hello-world:latest').
-     Specify an image by sha256-based manifest digest ('hello-world@sha256:abc123').
+    :ivar artifacts: List of source artifacts to be transferred by the pipeline. Specify an image
+     by repository ('hello-world'). This will use the 'latest' tag. Specify an image by tag
+     ('hello-world:latest'). Specify an image by sha256-based manifest digest
+     ('hello-world@sha256:abc123').
     :vartype artifacts: list[str]
     :ivar source: The source properties of the pipeline run.
     :vartype source: ~azure.mgmt.containerregistry.models.PipelineRunSourceProperties
@@ -2884,10 +2882,10 @@ class PipelineRunRequest(_serialization.Model):
         """
         :keyword pipeline_resource_id: The resource ID of the pipeline to run.
         :paramtype pipeline_resource_id: str
-        :keyword artifacts: List of source artifacts to be transferred by the pipeline.
-         Specify an image by repository ('hello-world'). This will use the 'latest' tag.
-         Specify an image by tag ('hello-world:latest').
-         Specify an image by sha256-based manifest digest ('hello-world@sha256:abc123').
+        :keyword artifacts: List of source artifacts to be transferred by the pipeline. Specify an
+         image by repository ('hello-world'). This will use the 'latest' tag. Specify an image by tag
+         ('hello-world:latest'). Specify an image by sha256-based manifest digest
+         ('hello-world@sha256:abc123').
         :paramtype artifacts: list[str]
         :keyword source: The source properties of the pipeline run.
         :paramtype source: ~azure.mgmt.containerregistry.models.PipelineRunSourceProperties
@@ -4602,9 +4600,8 @@ class ScopeMap(ProxyResource):
     :ivar provisioning_state: Provisioning state of the resource. Known values are: "Creating",
      "Updating", "Deleting", "Succeeded", "Failed", and "Canceled".
     :vartype provisioning_state: str or ~azure.mgmt.containerregistry.models.ProvisioningState
-    :ivar actions: The list of scoped permissions for registry artifacts.
-     E.g. repositories/repository-name/content/read,
-     repositories/repository-name/metadata/write.
+    :ivar actions: The list of scoped permissions for registry artifacts. E.g.
+     repositories/repository-name/content/read, repositories/repository-name/metadata/write.
     :vartype actions: list[str]
     """
 
@@ -4636,9 +4633,8 @@ class ScopeMap(ProxyResource):
         """
         :keyword description: The user friendly description of the scope map.
         :paramtype description: str
-        :keyword actions: The list of scoped permissions for registry artifacts.
-         E.g. repositories/repository-name/content/read,
-         repositories/repository-name/metadata/write.
+        :keyword actions: The list of scoped permissions for registry artifacts. E.g.
+         repositories/repository-name/content/read, repositories/repository-name/metadata/write.
         :paramtype actions: list[str]
         """
         super().__init__(**kwargs)
@@ -4684,9 +4680,8 @@ class ScopeMapUpdateParameters(_serialization.Model):
 
     :ivar description: The user friendly description of the scope map.
     :vartype description: str
-    :ivar actions: The list of scope permissions for registry artifacts.
-     E.g. repositories/repository-name/pull,
-     repositories/repository-name/delete.
+    :ivar actions: The list of scope permissions for registry artifacts. E.g.
+     repositories/repository-name/pull, repositories/repository-name/delete.
     :vartype actions: list[str]
     """
 
@@ -4701,9 +4696,8 @@ class ScopeMapUpdateParameters(_serialization.Model):
         """
         :keyword description: The user friendly description of the scope map.
         :paramtype description: str
-        :keyword actions: The list of scope permissions for registry artifacts.
-         E.g. repositories/repository-name/pull,
-         repositories/repository-name/delete.
+        :keyword actions: The list of scope permissions for registry artifacts. E.g.
+         repositories/repository-name/pull, repositories/repository-name/delete.
         :paramtype actions: list[str]
         """
         super().__init__(**kwargs)
