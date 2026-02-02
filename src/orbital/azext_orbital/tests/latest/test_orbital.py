@@ -10,6 +10,7 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 class OrbitalScenario(ScenarioTest):
 
+    @record_only()
     def test_available_ground_stations(self):
         available_ground_stations = self.cmd("az orbital available-ground-station list --capability EarthObservation").get_output_in_json()
         assert len(available_ground_stations) > 0
@@ -23,6 +24,7 @@ class OrbitalScenario(ScenarioTest):
         assert available_ground_station['latitudeDegrees'] is not None
         assert available_ground_station['altitudeMeters'] is not None
 
+    @record_only()
     @ResourceGroupPreparer(name_prefix="orbital_cli", parameter_name_for_location="location")
     def test_spacecrafts(self, resource_group):
         tleLine1 = "1 27424U 02022A   21354.42153147  .00000392  00000-0  97092-4 0  9992"
@@ -58,6 +60,7 @@ class OrbitalScenario(ScenarioTest):
         assert spacecraft['links'] is not None
         self.cmd("az orbital spacecraft delete --name {spacecraft-name} --resource-group {resource-group} --yes")
 
+    @record_only()
     @AllowLargeResponse(size_kb=9999)
     @ResourceGroupPreparer(name_prefix="test_contact_profiles", parameter_name_for_location="location")
     def test_contact_profiles(self, resource_group):
@@ -91,6 +94,7 @@ class OrbitalScenario(ScenarioTest):
         assert contact_profile['links'] is not None
         self.cmd("az orbital contact-profile delete --name {contact-profile-name} --resource-group {resource-group} --yes")
 
+    @record_only()
     def test_contacts(self):
         self.kwargs.update({
             "resource-group": "Rgp",
