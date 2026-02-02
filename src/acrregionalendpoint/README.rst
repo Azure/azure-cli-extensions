@@ -23,7 +23,7 @@ Create a registry with regional endpoints enabled:
 
 .. code-block:: bash
 
-    az acr create --resource-group myResourceGroup --name myRegistry --sku Premium --location westus --regional-endpoints Enabled
+    az acr create --resource-group myResourceGroup --name myRegistry --sku Premium --location westus --regional-endpoints enabled
 
 **az acr update**
 
@@ -32,10 +32,10 @@ Enable or disable regional endpoints on an existing registry:
 .. code-block:: bash
 
     # Enable regional endpoints
-    az acr update --name myRegistry --regional-endpoints Enabled
+    az acr update --name myRegistry --regional-endpoints enabled
 
     # Disable regional endpoints
-    az acr update --name myRegistry --regional-endpoints Disabled
+    az acr update --name myRegistry --regional-endpoints disabled
 
 **az acr login**
 
@@ -46,8 +46,8 @@ Log in to an Azure Container Registry through the Docker CLI:
     # Login to main endpoint (default)
     az acr login --name myRegistry
 
-    # Login to all endpoints (main + regional endpoints)
-    az acr login --name myRegistry --all-endpoints
+    # Login to the specific regional endpoint
+    az acr login --name myRegistry --endpoint eastus
 
 **az acr import**
 
@@ -94,7 +94,7 @@ Requirements
 
 * Regional endpoints require **Premium SKU**
 * Regional endpoints cannot be used with Docker Content Trust (DCT)
-* Subscription must be registered for the Regional Endpoint feature flag
+* Subscription must be registered for the **RegionalEndpoints** feature flag
 
 Notes
 -----

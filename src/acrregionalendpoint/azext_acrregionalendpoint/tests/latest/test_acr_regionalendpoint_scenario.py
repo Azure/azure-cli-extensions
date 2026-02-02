@@ -98,9 +98,9 @@ class AcrRegionalEndpointScenarioTest(ScenarioTest):
                          self.check('regionalEndpoints', 'Enabled'),
                          self.check('provisioningState', 'Succeeded')])
 
-        # using --expose-token and --all-endpoints at the same time is not supported
+        # using --expose-token and --endpoint at the same time is not supported
         with self.assertRaises(CLIError) as ex:
-            self.cmd('acr login -n {} --expose-token --all-endpoints'.format(registry_name))
+            self.cmd('acr login -n {} --expose-token --endpoint centraluseuap'.format(registry_name))
 
         self.cmd('acr delete -g {rg} -n {registry_name} --yes')
 

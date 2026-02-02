@@ -11,25 +11,25 @@ from knack.util import CLIError
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.profiles import ResourceType
-from azure.cli.command_modules.acr._constants import get_managed_sku, get_premium_sku
+from azure.cli.command_modules.acr._constants import AbacRoleAssignmentMode, get_managed_sku, get_premium_sku
 from azure.cli.command_modules.acr._utils import validate_sku_update
-from azure.cli.command_modules.acr.custom import acr_update_custom, _check_wincred
+from azure.cli.command_modules.acr.custom import _check_wincred
 from azure.cli.command_modules.acr.network_rule import NETWORK_RULE_NOT_SUPPORTED
 
 from .vendored_sdks.containerregistry.models import (
-    NetworkRuleSet,
     RegionalEndpoints,
     Registry,
-    RegistryUpdateParameters,
-    Sku
+    RegistryUpdateParameters
 )
 
 logger = get_logger(__name__)
-ACR_AFEC_REGIONAL_ENDPOINT = "RegionalEndpoint"
+ACR_AFEC_REGIONAL_ENDPOINT = "RegionalEndpoints"
 ACR_RESOURCE_PROVIDER = "Microsoft.ContainerRegistry"
 REGIONAL_ENDPOINTS_NOT_SUPPORTED = "Regional endpoints are only supported for managed registries in Premium SKU."
 REGIONAL_ENDPOINTS_NOT_SUPPORTED_FOR_DCT = "Regional endpoints cannot be enabled when Content Trust is enabled. " \
                                            "Please disable Content Trust and try again."
+DENY_ACTION = 'Deny'
+DOMAIN_NAME_LABEL_SCOPE_UNSECURE = 'Unsecure'
 
 
 def acr_create_preview(cmd,
@@ -52,11 +52,7 @@ def acr_create_preview(cmd,
                        dnl_scope=None,
                        role_assignment_mode=None,
                        regional_endpoints=None):
-    from azure.cli.command_modules.acr.custom import (
-        _configure_cmk, _configure_metadata_search, _configure_public_network_access,
-        _configure_domain_name_label_scope, _configure_role_assignment_mode, _handle_export_policy,
-        _handle_network_bypass, _create_diagnostic_settings
-    )
+    from azure.cli.command_modules.acr.custom import (_create_diagnostic_settings)
 
     if default_action and sku not in get_premium_sku(cmd):
         raise CLIError(NETWORK_RULE_NOT_SUPPORTED)
@@ -70,6 +66,7 @@ def acr_create_preview(cmd,
     if re.match(r'\w*[-]\w*', registry_name):
         raise InvalidArgumentValueError("argument error: Registry name cannot contain dashes.")
 
+    Sku, NetworkRuleSet = cmd.get_models('Sku', 'NetworkRuleSet')
     registry = Registry(location=location, sku=Sku(name=sku), admin_user_enabled=admin_enabled,
                         zone_redundancy=zone_redundancy, tags=tags)
 
@@ -245,14 +242,14 @@ def acr_login_preview(cmd,
                       username=None,
                       password=None,
                       expose_token=False,
-                      all_endpoints=False):
-    if expose_token and all_endpoints:
-        raise CLIError("`--expose-token` cannot be combined with `--all-endpoints`.")
-
+                      endpoint=None):
     from azure.cli.command_modules.acr._docker_utils import get_login_credentials, EMPTY_GUID
     if expose_token:
         if username or password:
             raise CLIError("`--expose-token` cannot be combined with `--username` or `--password`.")
+
+        if endpoint:
+            raise CLIError("`--expose-token` cannot be combined with `--endpoint`.")
 
         login_server, _, password = get_login_credentials(
             cmd=cmd,
@@ -309,20 +306,22 @@ def acr_login_preview(cmd,
         logger.warning('Uppercase characters are detected in the registry name. When using its server url in '
                        'docker commands, to avoid authentication errors, use all lowercase.')
 
-    if all_endpoints:
-        registry, resource_group_name = get_registry_by_name(cmd.cli_ctx, registry_name, resource_group_name)
+    if endpoint:
+        registry, _ = get_registry_by_name(cmd.cli_ctx, registry_name, resource_group_name)
+        matching_endpoint = None
+
         if registry.regional_endpoints == RegionalEndpoints.ENABLED and registry.regional_endpoint_host_names:
-            login_server_list = [login_server] + registry.regional_endpoint_host_names
-            logger.warning("Regional endpoints are enabled. Logging in to %d endpoints.", len(login_server_list))
-            for url in login_server_list:
-                # Multiple endpoints, show detailed logging for each
-                logger.warning("Logging in to %s", url)
-                _perform_registry_login(url, docker_command, username, password)
+            # Build the expected regional endpoint prefix: registryname.region.geo.
+            regional_endpoint_prefix = f"{registry_name}.{endpoint}.geo.".lower()
+            matching_endpoint = next(
+                (url for url in registry.regional_endpoint_host_names
+                 if url.lower().startswith(regional_endpoint_prefix)), None)
+
+        if matching_endpoint:
+            logger.warning("Logging in to regional endpoint: %s", matching_endpoint)
+            _perform_registry_login(matching_endpoint, docker_command, username, password)
         else:
-            # No regional endpoints configured; fall back to logging into the primary login server
-            logger.warning("No regional endpoints are enabled for this registry. "
-                           "Logging in only to the primary endpoint.")
-            _perform_registry_login(login_server, docker_command, username, password)
+            logger.error("Regional endpoint for '%s' not found. Aborting login.", endpoint)
     else:
         _perform_registry_login(login_server, docker_command, username, password)
 
@@ -408,3 +407,144 @@ def acr_show_endpoints_preview(cmd,
             })
 
     return info
+
+
+# Helper functions copied from azure.cli.command_modules.acr.custom
+# These are duplicated here to ensure this extension remains self-contained and
+# to avoid potential breaking changes if the main CLI module's implementation changes.
+def _configure_public_network_access(cmd, registry, enabled):
+    PublicNetworkAccess = cmd.get_models('PublicNetworkAccess')
+    registry.public_network_access = (PublicNetworkAccess.enabled if enabled else PublicNetworkAccess.disabled)
+    if enabled:
+        registry.public_network_access = PublicNetworkAccess.enabled
+    else:
+        registry.public_network_access = PublicNetworkAccess.disabled
+        _configure_default_action(cmd, registry, DENY_ACTION)
+        logger.warning('Disabling the public endpoint overrides all firewall configurations.')
+
+
+def _configure_default_action(cmd, registry, action):
+    NetworkRuleSet = cmd.get_models('NetworkRuleSet')
+    registry.network_rule_set = NetworkRuleSet(default_action=action)
+
+
+def _configure_cmk(cmd, registry, resource_group_name, identity, key_encryption_key):
+    from azure.cli.core.commands.client_factory import get_subscription_id
+
+    if bool(identity) != bool(key_encryption_key):
+        raise CLIError("Usage error: --identity and --key-encryption-key must be both supplied")
+
+    from azure.cli.command_modules.acr.custom import _ensure_identity_resource_id
+    identity = _ensure_identity_resource_id(subscription_id=get_subscription_id(cmd.cli_ctx),
+                                            resource_group=resource_group_name,
+                                            resource=identity)
+
+    from azure.cli.command_modules.acr._utils import resolve_identity_client_id
+    identity_client_id = resolve_identity_client_id(cmd.cli_ctx, identity)
+
+    KeyVaultProperties, EncryptionProperty = cmd.get_models('KeyVaultProperties', 'EncryptionProperty')
+    registry.encryption = EncryptionProperty(status='enabled', key_vault_properties=KeyVaultProperties(
+        key_identifier=key_encryption_key, identity=identity_client_id))
+
+    ResourceIdentityType, IdentityProperties = cmd.get_models('ResourceIdentityType', 'IdentityProperties')
+    registry.identity = IdentityProperties(type=ResourceIdentityType.user_assigned,
+                                           user_assigned_identities={identity: {}})
+
+
+def _configure_metadata_search(cmd, registry, enabled):
+    MetadataSearch = cmd.get_models('MetadataSearch')
+    registry.metadata_search = (MetadataSearch.enabled if enabled else MetadataSearch.disabled)
+
+
+def _configure_domain_name_label_scope(cmd, registry, scope):
+    registry.auto_generated_domain_name_label_scope = _get_domain_name_label_scope(cmd, scope)
+
+
+def _get_domain_name_label_scope(cmd, scope):
+    if DomainNameLabelScope := cmd.get_models('AutoGeneratedDomainNameLabelScope'):
+        return DomainNameLabelScope(scope).value
+    return DOMAIN_NAME_LABEL_SCOPE_UNSECURE
+
+
+def _configure_role_assignment_mode(cmd, registry, role_assignment_mode):
+    RoleAssignmentMode = cmd.get_models('RoleAssignmentMode')
+    mode = RoleAssignmentMode.LEGACY_REGISTRY_PERMISSIONS
+    if role_assignment_mode == AbacRoleAssignmentMode.ABAC.value:
+        mode = RoleAssignmentMode.ABAC_REPOSITORY_PERMISSIONS
+        logger.warning(
+            "Warning: You have successfully updated the registry authentication mode to enable RBAC "
+            "Registry + ABAC Repository Permissions. ACR Tasks within the registry that do not have "
+            "an assigned identity for source registry access will not have data plane access to the "
+            "registry. To configure source registry data plane access for your existing Tasks, you "
+            "must explicitly assign an Entra identity for accessing the source registry using the "
+            "'--source-registry-auth-id' flag in 'az acr task update'. Please refer to "
+            "https://aka.ms/acr/auth/abac for more details.")
+    registry.role_assignment_mode = mode
+
+
+def _handle_network_bypass(cmd, registry, allow_trusted_services):
+    if allow_trusted_services is not None:
+        NetworkRuleBypassOptions = cmd.get_models('NetworkRuleBypassOptions')
+        registry.network_rule_bypass_options = (NetworkRuleBypassOptions.azure_services
+                                                if allow_trusted_services else NetworkRuleBypassOptions.none)
+
+
+def _handle_export_policy(cmd, registry, allow_exports):
+    if allow_exports is not None:
+        Policies, ExportPolicy, ExportPolicyStatus = cmd.get_models('Policies', 'ExportPolicy', 'ExportPolicyStatus')
+
+        if registry.policies is None:
+            registry.policies = Policies()
+
+        status = ExportPolicyStatus.DISABLED if not allow_exports else ExportPolicyStatus.ENABLED
+        try:
+            registry.policies.export_policy.status = status
+        except AttributeError:
+            registry.policies.export_policy = ExportPolicy(status=status)
+
+
+def acr_update_custom(cmd,
+                      instance,
+                      sku=None,
+                      admin_enabled=None,
+                      default_action=None,
+                      data_endpoint_enabled=None,
+                      public_network_enabled=None,
+                      allow_trusted_services=None,
+                      anonymous_pull_enabled=None,
+                      allow_exports=None,
+                      tags=None,
+                      allow_metadata_search=None,
+                      role_assignment_mode=None):
+    if sku is not None:
+        Sku = cmd.get_models('Sku')
+        instance.sku = Sku(name=sku)
+
+    if admin_enabled is not None:
+        instance.admin_user_enabled = admin_enabled
+
+    if tags is not None:
+        instance.tags = tags
+
+    if data_endpoint_enabled is not None:
+        instance.data_endpoint_enabled = data_endpoint_enabled
+
+    if public_network_enabled is not None:
+        _configure_public_network_access(cmd, instance, public_network_enabled)
+
+    if anonymous_pull_enabled is not None:
+        instance.anonymous_pull_enabled = anonymous_pull_enabled
+
+    if default_action is not None:
+        _configure_default_action(cmd, instance, default_action)
+
+    if allow_metadata_search is not None:
+        _configure_metadata_search(cmd, instance, allow_metadata_search)
+
+    if role_assignment_mode is not None:
+        _configure_role_assignment_mode(cmd, instance, role_assignment_mode)
+
+    _handle_network_bypass(cmd, instance, allow_trusted_services)
+    _handle_export_policy(cmd, instance, allow_exports)
+
+    return instance

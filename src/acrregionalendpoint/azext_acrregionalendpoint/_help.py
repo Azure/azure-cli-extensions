@@ -50,7 +50,7 @@ examples:
   - name: Get an Azure Container Registry access token
     text: >
         az acr login -n myregistry --expose-token
-  - name: Log in to all endpoints of an Azure Container Registry
+  - name: Log in to a specific regional endpoint of an Azure Container Registry
     text: >
-        az acr login -n myregistry --all-endpoints
+        az acr login -n myregistry --endpoint eastus
 """

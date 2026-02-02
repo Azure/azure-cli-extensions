@@ -4,7 +4,9 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 
-from azure.cli.core.commands.parameters import get_enum_type
+from azure.cli.core.commands.parameters import (
+    get_enum_type, get_location_completion_list, get_location_name_type
+)
 from .vendored_sdks.containerregistry.models import RegionalEndpoints
 
 
@@ -27,8 +29,10 @@ def load_arguments_preview(self, _):
 
     with self.argument_context("acr login") as c:
         c.argument(
-            "all_endpoints",
-            action='store_true',
+            "endpoint",
+            completer=get_location_completion_list,
+            type=get_location_name_type(self.cli_ctx),
             is_preview=True,
-            help="Enable login to all regional endpoints of the container registry."
+            help="Log in to a specific regional endpoint of the container registry. Specify the region name "
+                 "(e.g., eastus, westus2). Only applicable when regional endpoints are enabled."
         )
