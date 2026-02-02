@@ -32,7 +32,6 @@ def ml_deployment_template_list(cmd, registry_name=None):
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, registry_name=registry_name
     )
-
     try:
         deployment_templates = ml_client.deployment_templates.list()
         # Handle DeploymentTemplate serialization - try as_dict() first, then _to_dict()
@@ -54,12 +53,11 @@ def ml_deployment_template_list(cmd, registry_name=None):
         log_and_raise_error(err, debug)
 
 
-def ml_deployment_template_get(cmd, name, version=None, registry_name=None):
+def ml_deployment_template_show(cmd, name, version=None, registry_name=None):
     """Get a specific deployment template by name and version."""
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, registry_name=registry_name
     )
-
     try:
         deployment_template = ml_client.deployment_templates.get(name=name, version=version)
         # Handle DeploymentTemplate serialization
@@ -96,7 +94,6 @@ def ml_deployment_template_create(
             params_override.append({"name": name})
         if version:
             params_override.append({"version": version})
-
         if load_deployment_template:
             deployment_template = load_deployment_template(source=file, params_override=params_override)
         else:
@@ -120,7 +117,7 @@ def ml_deployment_template_create(
         if no_wait:
             module_logger.warning(
                 "Deployment template create/update request initiated. "
-                "Status can be checked using `az ml deployment-template get -n %s -v %s`",
+                "Status can be checked using `az ml deployment-template show -n %s -v %s`",
                 deployment_template.name if hasattr(deployment_template, 'name') else name or "unknown",
                 deployment_template.version if hasattr(deployment_template, 'version') else version or "unknown"
             )
@@ -199,7 +196,6 @@ def ml_deployment_template_archive(
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, registry_name=registry_name
     )
-
     try:
         ml_client.deployment_templates.archive(name=name, version=version)
     except Exception as err:  # pylint: disable=broad-except
@@ -218,7 +214,6 @@ def ml_deployment_template_restore(
     ml_client, debug = get_ml_client(
         cli_ctx=cmd.cli_ctx, registry_name=registry_name
     )
-
     try:
         ml_client.deployment_templates.restore(name=name, version=version)
     except Exception as err:  # pylint: disable=broad-except

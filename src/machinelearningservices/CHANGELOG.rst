@@ -1,3 +1,17 @@
+## 2026-01-06
+
+### Azure Machine Learning CLI (v2) v 2.41.0
+
+- Drop Python 3.7, 3.8 and 3.9 support
+
+## 2025-11-11
+
+### Azure Machine Learning CLI (v2) v 2.40.1
+- `az ml deployment-template show` instead of `az ml deployment-template get`
+  - Show details of a specific deployment template by name and version.
+- Make deployment templates as preview feature
+
+
 ## 2025-11-04
 
 ### Azure Machine Learning CLI (v2) v 2.40.0

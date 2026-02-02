@@ -3408,6 +3408,20 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self.raw_param.get("attach_zones")
 
+    def get_enable_application_load_balancer(self) -> bool:
+        """Obtain the value of enable_application_load_balancer.
+
+        :return: bool
+        """
+        return self.raw_param.get("enable_application_load_balancer")
+
+    def get_disable_application_load_balancer(self) -> bool:
+        """Obtain the value of disable_application_load_balancer.
+
+        :return: bool
+        """
+        return self.raw_param.get("disable_application_load_balancer")
+
     def get_enable_app_routing(self) -> bool:
         """Obtain the value of enable_app_routing.
 
@@ -4005,6 +4019,23 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         self._ensure_mc(mc)
 
         mc.storage_profile = self.context.get_storage_profile()
+
+        return mc
+
+    def set_up_ingress_application_load_balancer(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up application load balancer profile in ingress profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        addons = self.context.get_enable_addons()
+        if "application-load-balancer" in addons or self.context.get_enable_application_load_balancer():
+            if mc.ingress_profile is None:
+                mc.ingress_profile = self.models.ManagedClusterIngressProfile()  # pylint: disable=no-member
+            mc.ingress_profile.application_load_balancer = (
+                self.models.ManagedClusterIngressProfileApplicationLoadBalancer(enabled=True)  # pylint: disable=no-member
+            )
 
         return mc
 
@@ -4717,6 +4748,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_kms_pmk_and_cmk(mc)
         # set up cluster snapshot
         mc = self.set_up_creationdata_of_cluster_snapshot(mc)
+        # set up application load balancer profile
+        mc = self.set_up_ingress_application_load_balancer(mc)
         # set up app routing profile
         mc = self.set_up_ingress_web_app_routing(mc)
         # set up gateway api profile
@@ -6610,6 +6643,49 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
+    def update_application_load_balancer_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update application load balancer (Application Gateway for Containers) profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        # get parameters from context
+        enable_application_load_balancer = self.context.get_enable_application_load_balancer()
+        disable_application_load_balancer = self.context.get_disable_application_load_balancer()
+
+        # Check for mutually exclusive arguments
+        if enable_application_load_balancer and disable_application_load_balancer:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-application-load-balancer and "
+                "--disable-application-load-balancer at the same time."
+            )
+
+        # update ManagedCluster object with application load balancer settings
+        if enable_application_load_balancer or disable_application_load_balancer:
+            mc.ingress_profile = (
+                mc.ingress_profile or
+                self.models.ManagedClusterIngressProfile()  # pylint: disable=no-member
+            )
+            mc.ingress_profile.application_load_balancer = (
+                mc.ingress_profile.application_load_balancer or
+                self.models.ManagedClusterIngressProfileApplicationLoadBalancer()  # pylint: disable=no-member
+            )
+            if enable_application_load_balancer:
+                if mc.ingress_profile.application_load_balancer.enabled:
+                    raise CLIError(
+                        "Application Load Balancer (Application Gateway for Containers) is already enabled.\n"
+                    )
+                mc.ingress_profile.application_load_balancer.enabled = True
+            elif disable_application_load_balancer:
+                if mc.ingress_profile.application_load_balancer.enabled is False:
+                    raise CLIError(
+                        "Application Load Balancer (Application Gateway for Containers) is already disabled.\n"
+                    )
+                mc.ingress_profile.application_load_balancer.enabled = False
+
+        return mc
+
     # pylint: disable=too-many-branches
     def update_app_routing_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Update app routing profile for the ManagedCluster object.
@@ -7255,6 +7331,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_nat_gateway_profile(mc)
         # update kube proxy config
         mc = self.update_kube_proxy_config(mc)
+        # update application load balancer profile
+        mc = self.update_application_load_balancer_profile(mc)
         # update ingress profile gateway api
         mc = self.update_ingress_profile_gateway_api(mc)
         # update custom ca trust certificates

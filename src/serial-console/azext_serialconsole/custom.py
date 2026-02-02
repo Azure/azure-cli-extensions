@@ -551,6 +551,9 @@ class SerialConsole:
         if self.load_websocket_url():
             def on_message(ws, _):
                 GV.trycount += 1
+                if GV.first_message:
+                    ws.send(self.access_token)
+                    GV.first_message = False
                 if func():
                     GV.loading = False
                     GV.terminating_app = True

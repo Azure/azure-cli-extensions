@@ -13,27 +13,19 @@ interactions:
       ParameterSetName:
       - -g --private-cloud-name
       User-Agent:
-      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.82.0 azsdk-python-core/1.37.0 Python/3.10.11 (Windows-10-10.0.26200-SP0)
     method: GET
-    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.AVS/privateClouds/a/pureStoragePolicies?api-version=2024-09-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.AVS/privateClouds/a/pureStoragePolicies?api-version=2025-09-01
   response:
     body:
       string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/pureStoragePolicies/storagePolicy1","name":"storagePolicy1","type":"Microsoft.AVS/privateClouds/pureStoragePolicies","properties":{"storagePolicyDefinition":"storagePolicyDefinition1","storagePoolId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/PureStorage.Block/storagePools/storagePool1","provisioningState":"Succeeded"}}]}'
     headers:
-      access-control-allow-credentials:
-      - 'true'
-      access-control-allow-headers:
-      - '*'
-      access-control-allow-methods:
-      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
-      access-control-allow-origin:
-      - '*'
       content-length:
       - '501'
       content-type:
       - application/json
       date:
-      - Mon, 16 Jun 2025 01:46:21 GMT
+      - Fri, 16 Jan 2026 17:40:53 GMT
       server:
       - Rocket
     status:
@@ -53,27 +45,19 @@ interactions:
       ParameterSetName:
       - -g --private-cloud-name -n
       User-Agent:
-      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.82.0 azsdk-python-core/1.37.0 Python/3.10.11 (Windows-10-10.0.26200-SP0)
     method: GET
-    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.AVS/privateClouds/a/pureStoragePolicies/storagePolicyName?api-version=2024-09-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.AVS/privateClouds/a/pureStoragePolicies/storagePolicyName?api-version=2025-09-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/pureStoragePolicies/storagePolicy1","name":"storagePolicy1","type":"Microsoft.AVS/privateClouds/pureStoragePolicies","properties":{"storagePolicyDefinition":"storagePolicyDefinition1","storagePoolId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/PureStorage.Block/storagePools/storagePool1","provisioningState":"Succeeded"}}'
     headers:
-      access-control-allow-credentials:
-      - 'true'
-      access-control-allow-headers:
-      - '*'
-      access-control-allow-methods:
-      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
-      access-control-allow-origin:
-      - '*'
       content-length:
       - '489'
       content-type:
       - application/json
       date:
-      - Mon, 16 Jun 2025 01:46:25 GMT
+      - Fri, 16 Jan 2026 17:40:55 GMT
       server:
       - Rocket
     status:
@@ -98,27 +82,19 @@ interactions:
       ParameterSetName:
       - -g --private-cloud-name -n --storage-policy-definition --storage-pool-id
       User-Agent:
-      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.82.0 azsdk-python-core/1.37.0 Python/3.10.11 (Windows-10-10.0.26200-SP0)
     method: PUT
-    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.AVS/privateClouds/a/pureStoragePolicies/storagePolicyName?api-version=2024-09-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.AVS/privateClouds/a/pureStoragePolicies/storagePolicyName?api-version=2025-09-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/pureStoragePolicies/storagePolicy1","name":"storagePolicy1","type":"Microsoft.AVS/privateClouds/pureStoragePolicies","properties":{"storagePolicyDefinition":"storagePolicyDefinition1","storagePoolId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/PureStorage.Block/storagePools/storagePool1","provisioningState":"Succeeded"}}'
     headers:
-      access-control-allow-credentials:
-      - 'true'
-      access-control-allow-headers:
-      - '*'
-      access-control-allow-methods:
-      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
-      access-control-allow-origin:
-      - '*'
       content-length:
       - '489'
       content-type:
       - application/json
       date:
-      - Mon, 16 Jun 2025 01:46:27 GMT
+      - Fri, 16 Jan 2026 17:40:58 GMT
       server:
       - Rocket
     status:
@@ -140,27 +116,17 @@ interactions:
       ParameterSetName:
       - -g --private-cloud-name -n --yes
       User-Agent:
-      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-11-10.0.26100-SP0)
+      - AZURECLI/2.82.0 azsdk-python-core/1.37.0 Python/3.10.11 (Windows-10-10.0.26200-SP0)
     method: DELETE
-    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.AVS/privateClouds/a/pureStoragePolicies/storagePolicyName?api-version=2024-09-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.AVS/privateClouds/a/pureStoragePolicies/storagePolicyName?api-version=2025-09-01
   response:
     body:
       string: ''
     headers:
-      access-control-allow-credentials:
-      - 'true'
-      access-control-allow-headers:
-      - '*'
-      access-control-allow-methods:
-      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
-      access-control-allow-origin:
-      - '*'
       content-length:
       - '0'
-      content-type:
-      - application/json
       date:
-      - Mon, 16 Jun 2025 01:46:29 GMT
+      - Fri, 16 Jan 2026 17:41:00 GMT
       server:
       - Rocket
     status:

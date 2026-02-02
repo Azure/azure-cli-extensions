@@ -109,6 +109,19 @@ def privatecloud_deletecmkenryption(cmd, resource_group_name, private_cloud, yes
     })
 
 
+def privatecloud_delete_vcf_license(cmd, resource_group_name, private_cloud, yes=False):
+    from knack.prompting import prompt_y_n
+    msg = 'This will delete the VCF license from the private cloud. Are you sure?'
+    if not yes and not prompt_y_n(msg, default="n"):
+        return None
+    from .operations.private_cloud import PrivateCloudUpdate
+    return PrivateCloudUpdate(cli_ctx=cmd.cli_ctx)(command_args={
+        "private_cloud_name": private_cloud,
+        "resource_group": resource_group_name,
+        "vcf_license": None,
+    })
+
+
 def check_quota_availability(cmd, location):
     from .aaz.latest.vmware.location import CheckQuotaAvailability
     return CheckQuotaAvailability(cli_ctx=cmd.cli_ctx)(command_args={

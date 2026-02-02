@@ -26,6 +26,7 @@ from azext_aks_preview._format import (
     aks_addon_show_table_format,
     aks_agentpool_list_table_format,
     aks_agentpool_show_table_format,
+    aks_agentpool_rollback_versions_table_format,
     aks_machine_list_table_format,
     aks_machine_show_table_format,
     aks_operation_show_table_format,
@@ -274,6 +275,12 @@ def load_command_table(self, _):
         g.custom_command("update", "aks_agentpool_update", supports_no_wait=True)
         g.custom_command("delete", "aks_agentpool_delete", supports_no_wait=True)
         g.custom_command("get-upgrades", "aks_agentpool_get_upgrade_profile")
+        g.custom_command(
+            "get-rollback-versions",
+            "aks_agentpool_get_rollback_versions",
+            table_transformer=aks_agentpool_rollback_versions_table_format
+        )
+        g.custom_command("rollback", "aks_agentpool_rollback", supports_no_wait=True)
         g.custom_command("stop", "aks_agentpool_stop", supports_no_wait=True)
         g.custom_command("start", "aks_agentpool_start", supports_no_wait=True)
         g.custom_command(
@@ -459,6 +466,14 @@ def load_command_table(self, _):
         g.custom_command("start", "aks_mesh_upgrade_start", supports_no_wait=True)
         g.custom_command("complete", "aks_mesh_upgrade_complete", supports_no_wait=True)
         g.custom_command("rollback", "aks_mesh_upgrade_rollback", supports_no_wait=True)
+
+    # AKS applicationloadbalancer (Application Gateway for Containers) commands
+    with self.command_group(
+        "aks applicationloadbalancer", managed_clusters_sdk, client_factory=cf_managed_clusters
+    ) as g:
+        g.custom_command("enable", "aks_applicationloadbalancer_enable")
+        g.custom_command("disable", "aks_applicationloadbalancer_disable", confirmation=True)
+        g.custom_command("update", "aks_applicationloadbalancer_update")
 
     # AKS approuting commands
     with self.command_group(

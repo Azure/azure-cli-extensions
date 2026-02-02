@@ -22,9 +22,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-09-01",
+        "version": "2025-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/oracle.database/locations/{}/autonomousdbversions", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/oracle.database/locations/{}/autonomousdbversions", "2025-09-01"],
         ]
     }
 
@@ -112,7 +112,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2025-09-01",
                     required=True,
                 ),
             }
@@ -162,9 +162,7 @@ class List(AAZCommand):
             _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
+            _element.properties = AAZObjectType()
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -179,22 +177,18 @@ class List(AAZCommand):
             )
             properties.is_default_for_free = AAZBoolType(
                 serialized_name="isDefaultForFree",
-                flags={"read_only": True},
             )
             properties.is_default_for_paid = AAZBoolType(
                 serialized_name="isDefaultForPaid",
-                flags={"read_only": True},
             )
             properties.is_free_tier_enabled = AAZBoolType(
                 serialized_name="isFreeTierEnabled",
-                flags={"read_only": True},
             )
             properties.is_paid_enabled = AAZBoolType(
                 serialized_name="isPaidEnabled",
-                flags={"read_only": True},
             )
             properties.version = AAZStrType(
-                flags={"required": True, "read_only": True},
+                flags={"required": True},
             )
 
             system_data = cls._schema_on_200.value.Element.system_data

@@ -18252,7 +18252,7 @@ spec:
         get_cmd = f'rest --method get --url https://management.azure.com{dcr_resource_id}?api-version=2022-06-01'
         self.cmd(get_cmd, checks=[
             self.check('properties.destinations.logAnalytics[0].workspaceResourceId', f'{workspace_resource_id}'),
-            self.check('properties.dataFlows[0].streams[-1]', 'Microsoft-RetinaNetworkFlowLogs'),
+            self.check('properties.dataFlows[0].streams[-1]', 'Microsoft-ContainerNetworkLogs'),
         ])
 
         disable_cmd = "aks update --resource-group={resource_group} --name={name} --disable-container-network-logs -o json"
@@ -18681,6 +18681,120 @@ spec:
             "aks delete -g {resource_group} -n {aks_name} --yes --no-wait",
             checks=[self.is_empty()],
         )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17,
+        name_prefix="clitest",
+        location="eastus2euap",
+    )
+    def test_aks_applicationloadbalancer_enable_disable(
+        self, resource_group, resource_group_location
+    ):
+        """This test case exercises enabling and disabling application load balancer (Application Gateway for Containers) in an AKS cluster."""
+
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+
+        # create cluster with application load balancer
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "aks_name": aks_name,
+                "location": resource_group_location,
+                "node_vm_sku": "standard_d4a_v4",
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={aks_name} --location={location} "
+            "--node-vm-size={node_vm_sku} "
+            "--enable-oidc-issuer "
+            "--enable-workload-identity "
+            "--enable-gateway-api "
+            "--enable-application-load-balancer "
+            "--ssh-key-value={ssh_key_value}"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("ingressProfile.applicationLoadBalancer.enabled", True)
+            ],
+        )
+
+        # disable application load balancer
+        disable_applicationloadbalancer_cmd = "aks update --resource-group={resource_group} --name={aks_name} --disable-application-load-balancer --disable-gateway-api"
+        self.cmd(
+            disable_applicationloadbalancer_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("ingressProfile.applicationLoadBalancer.enabled", False),
+            ],
+        )
+
+        # delete cluster
+        delete_cmd = "aks delete --resource-group={resource_group} --name={aks_name} --yes --no-wait"
+        self.cmd(delete_cmd, checks=[self.is_empty()])
+
+    @live_only()
+    @AllowLargeResponse(8192)
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17,
+        name_prefix="clitest",
+        location="eastus",
+    )
+    def test_aks_applicationloadbalancer_update(self, resource_group, resource_group_location):
+        """This test case exercises enabling and updating the application load balancer (Application Gateway for Containers) in an AKS cluster."""
+
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+
+        aks_name = self.create_random_name("cliakstest", 16)
+
+
+        _, k8s_version = self._get_versions(resource_group_location)
+
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "aks_name": aks_name,
+                "location": resource_group_location,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "k8s_version": k8s_version
+            }
+        )
+
+        # create cluster with application load balancer enabled
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={aks_name} --location={location} --kubernetes-version {k8s_version} "
+            "--ssh-key-value={ssh_key_value} --enable-gateway-api --enable-application-load-balancer"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("ingressProfile.applicationLoadBalancer.enabled", True)
+            ],
+        )
+
+        # update (currently makes a PUT no-op)
+        update_cmd = (
+            "aks applicationloadbalancer update --resource-group={resource_group} --name={aks_name} "
+        )
+
+        self.cmd(
+            update_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("ingressProfile.applicationLoadBalancer.enabled", True)
+            ],
+        )
+
+        # delete cluster
+        delete_cmd = "aks delete --resource-group={resource_group} --name={aks_name} --yes --no-wait"
+        self.cmd(delete_cmd, checks=[self.is_empty()])
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
@@ -20545,7 +20659,7 @@ spec:
 
         create_subnet_cmd = f"network vnet subnet create --resource-group {nrg} " \
                             f"--vnet-name {vnet_name} --name AzureBastionSubnet " \
-                            f"--address-prefixes 10.238.0.0/16"
+                            f"--address-prefixes 10.225.0.0/26"
         self.cmd(create_subnet_cmd, checks=[self.check("provisioningState", "Succeeded")])
 
         create_pip_cmd = f"network public-ip create -g {nrg} -n aks-bastion-pip --sku Standard"
@@ -21414,7 +21528,7 @@ spec:
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="centraluseuap"
     )
-    def test_aks_create_with_gateway_api_and_azureservicemesh(
+    def test_aks_create_and_update_with_gateway_api_and_azureservicemesh(
         self, resource_group, resource_group_location
     ):
         aks_name = self.create_random_name("cliakstest", 16)
@@ -21475,65 +21589,8 @@ spec:
             ],
         )
 
+    # TODO (indusridhar): Add tests for `test_aks_nodepool_get_rollback_versions` and `test_aks_nodepool_rollback`
+    # after AKS RP Jan 2026 release is complete and recently_used_versions field is populated in upgrade profile API
 
-    @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="centraluseuap"
-    )
-    def test_aks_managed_gateway_requires_service_mesh(
-        self, resource_group, resource_group_location
-    ):
-        """
-        Verify that enabling managed Gateway API requires a Gateway API implementation (e.g., Azure Service Mesh).
-
-        This test:
-        - Attempts and fails to create a cluster with --enable-gateway-api without ASM enabled.
-        - Creates a minimal cluster.
-        - Attempts and fails to update it with --enable-gateway-api (still without ASM).
-        """
-
-        # reset the count so in replay mode the random names will start with 0
-        self.test_resources_count = 0
-
-        aks_name = self.create_random_name("cliakstest", 16)
-        self.kwargs.update(
-            {
-                "resource_group": resource_group,
-                "name": aks_name,
-                "ssh_key_value": self.generate_ssh_keys(),
-                "location": resource_group_location,
-            }
-        )
-
-        # Attempt and expect failure to create a cluster with Gateway API but without ASM
-        create_with_gateway_cmd = (
-            "aks create --resource-group={resource_group} --name={name} "
-            "--enable-gateway-api "
-            "--ssh-key-value={ssh_key_value} -o json "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedGatewayAPIPreview "
-        )
-        self.cmd(create_with_gateway_cmd, expect_failure=True)
-
-        # Create a minimal cluster without Gateway API or ASM
-        create_minimal_cmd = (
-            "aks create --resource-group={resource_group} --name={name} "
-            "--ssh-key-value={ssh_key_value} -o json"
-        )
-        self.cmd(
-            create_minimal_cmd,
-            checks=[
-                self.check("provisioningState", "Succeeded"),
-            ],
-        )
-
-        # Attempt and expect failure to enable Gateway API on an existing cluster without ASM
-        update_enable_gateway_cmd = (
-            "aks update --resource-group={resource_group} --name={name} "
-            "--enable-gateway-api "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedGatewayAPIPreview "
-        )
-        self.cmd(update_enable_gateway_cmd, expect_failure=True)
-
-        # Cleanup
-        delete_cmd = "aks delete --resource-group={resource_group} --name={name} --yes --no-wait"
-        self.cmd(delete_cmd, checks=[self.is_empty()])
+    # TODO (zheweihu): add test `test_aks_create_and_update_with_gateway_api_without_azureservicemesh`
+    # once https://msazure.visualstudio.com/CloudNativeCompute/_git/aks-rp/pullrequest/14404771 is rolled out

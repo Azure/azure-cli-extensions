@@ -58,7 +58,7 @@ azure.cli.command_modules.acs.addonconfiguration.ContainerInsightsStreams = [
     "Microsoft-ContainerInventory",
     "Microsoft-ContainerNodeInventory",
     "Microsoft-Perf",
-    "Microsoft-RetinaNetworkFlowLogs",
+    "Microsoft-ContainerNetworkLogs",
 ]
 
 
@@ -253,6 +253,11 @@ def update_addons(
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
         operation_group="managed_clusters",
     )
+    ManagedClusterIngressProfileApplicationLoadBalancer = cmd.get_models(
+        "ManagedClusterIngressProfileApplicationLoadBalancer",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="managed_clusters",
+    )
     ManagedClusterIngressProfileWebAppRouting = cmd.get_models(
         "ManagedClusterIngressProfileWebAppRouting",
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
@@ -261,6 +266,19 @@ def update_addons(
 
     # for each addons argument
     for addon_arg in addon_args:
+        if addon_arg == "applicationloadbalancer":
+            # application load balancer settings are in ingress profile, not addon profile
+            if instance.ingress_profile is None:
+                instance.ingress_profile = ManagedClusterIngressProfile()
+            if instance.ingress_profile.application_load_balancer is None:
+                instance.ingress_profile.application_load_balancer = (
+                    ManagedClusterIngressProfileApplicationLoadBalancer()
+                )
+
+            instance.ingress_profile.application_load_balancer.enabled = enable
+
+            continue
+
         if addon_arg == "web_application_routing":
             # web app routing settings are in ingress profile, not addon profile, so deal
             # with it separately

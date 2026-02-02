@@ -4,6 +4,9 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 
+import json
+import argparse
+import sys
 from knack.arguments import CLIArgumentType
 from azext_confcom._validators import (
     validate_params_file,
@@ -42,6 +45,32 @@ def load_arguments(self, _):
     with self.argument_context("confcom") as c:
         c.argument("tags", tags_type)
         c.argument("confcom_name", confcom_name_type, options_list=["--name", "-n"])
+
+    with self.argument_context("confcom fragment attach") as c:
+        c.positional(
+            "signed_fragment",
+            nargs='?',
+            type=argparse.FileType('rb'),
+            default=sys.stdin.buffer,
+            help="Signed fragment to attach",
+        )
+        c.argument(
+            "manifest_tag",
+            help="Manifest tag for the fragment",
+        )
+
+    with self.argument_context("confcom fragment push") as c:
+        c.positional(
+            "signed_fragment",
+            nargs='?',
+            type=argparse.FileType('rb'),
+            default=sys.stdin.buffer,
+            help="Signed fragment to push",
+        )
+        c.argument(
+            "manifest_tag",
+            help="Manifest tag for the fragment",
+        )
 
     with self.argument_context("confcom acipolicygen") as c:
         c.argument(
@@ -198,6 +227,14 @@ def load_arguments(self, _):
             required=False,
             help="Exclude default fragments in the generated policy",
         )
+        c.argument(
+            "container_definitions",
+            options_list=['--with-containers'],
+            action='append',
+            type=json.loads,
+            required=False,
+            help='Container definitions to include in the policy'
+        )
 
     with self.argument_context("confcom acifragmentgen") as c:
         c.argument(
@@ -345,6 +382,21 @@ def load_arguments(self, _):
             help="Path to JSON file to write fragment import information. This is used with --generate-import. If not specified, the import statement will print to the console",
             validator=validate_fragment_json,
         )
+        c.argument(
+            "container_definitions",
+            options_list=['--with-containers'],
+            action='append',
+            required=False,
+            type=json.loads,
+            help='Container definitions to include in the policy'
+        )
+        c.argument(
+            "out_signed_fragment",
+            action="store_true",
+            default=False,
+            required=False,
+            help="Emit only the signed fragment bytes",
+        )
 
     with self.argument_context("confcom katapolicygen") as c:
         c.argument(
@@ -416,4 +468,33 @@ def load_arguments(self, _):
             required=False,
             help="Path to containerd socket if not using the default",
             validator=validate_katapolicygen_input,
+        )
+
+    with self.argument_context("confcom containers from_image") as c:
+        c.positional(
+            "image",
+            type=str,
+            help="Image to create container definition from",
+        )
+        c.argument(
+            "platform",
+            options_list=("--platform",),
+            required=False,
+            default="aci",
+            type=str,
+            help="Platform to create container definition for",
+        )
+
+    with self.argument_context("confcom containers from_vn2") as c:
+        c.positional(
+            "template",
+            type=str,
+            help="Template to create container definitions from",
+        )
+        c.argument(
+            "container_name",
+            options_list=['--name', "-n"],
+            required=False,
+            type=str,
+            help='The name of the container in the template to use. If omitted, all containers are returned.'
         )

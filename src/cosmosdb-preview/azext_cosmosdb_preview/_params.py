@@ -194,19 +194,19 @@ SQL_GREMLIN_CONFLICT_RESOLUTION_POLICY_EXAMPLE = """--conflict-resolution-policy
 
 SQL_THROUGHPUT_BUCKETS_EXAMPLE = """--throughput-buckets "[
     { \\"id\\": 1, \\"maxThroughputPercentage\\" : 10 },
-    { \\"id\\": 2, \\"maxThroughputPercentage\\" : 20 }
+    { \\"id\\": 2, \\"maxThroughputPercentage\\" : 20, \\"isDefaultBucket\\": true }
 ]"
 """
 
 
 FLEETSPACE_PROPERTIES_EXAMPLE = """--body "{
     \\"properties\\": {
+        \\"serviceTier\\": \\"GeneralPurpose\\",
+        \\"dataRegions\\": [\\"West US 2\\"],
         \\"throughputPoolConfiguration\\": {
             \\"minThroughput\\": 100000,
-            \\"maxThroughput\\": 300000,
-            \\"serviceTier\\": \\"GeneralPurpose\\",
-            \\"dataRegions\\": [\\"West US 2\\"]
-        },
+            \\"maxThroughput\\": 300000
+        }
     }
 }"
 """
@@ -854,10 +854,10 @@ def load_arguments(self, _):
         c.argument('fleetspace_name', options_list=['--fleetspace-name', '-n'], help='Name of the Fleetspace resource.', required=True)
 
     with self.argument_context('cosmosdb fleetspace create') as c:
-        c.argument('fleetspace_body', options_list=['--body', '-b'], validator=validate_fleetspace_body, completer=FilesCompleter(), help="Fleetspace body with properties.throughputPoolConfiguration (fields: minThroughput, maxThroughput, serviceTier, dataRegions). You can enter it as a string or as a file, e.g., --body @fleetspace.json or " + FLEETSPACE_PROPERTIES_EXAMPLE)
+        c.argument('fleetspace_body', options_list=['--body', '-b'], validator=validate_fleetspace_body, completer=FilesCompleter(), help="Fleetspace body with properties.serviceTier (required), properties.dataRegions (required), and properties.throughputPoolConfiguration (fields: minThroughput, maxThroughput). You can enter it as a string or as a file, e.g., --body @fleetspace.json or " + FLEETSPACE_PROPERTIES_EXAMPLE)
 
     with self.argument_context('cosmosdb fleetspace update') as c:
-        c.argument('fleetspace_body', options_list=['--body', '-b'], validator=validate_fleetspace_body, completer=FilesCompleter(), help="Fleetspace body with properties.throughputPoolConfiguration (fields: minThroughput, maxThroughput, serviceTier, dataRegions). You can enter it as a string or as a file, e.g., --body @fleetspace.json or " + FLEETSPACE_PROPERTIES_EXAMPLE)
+        c.argument('fleetspace_body', options_list=['--body', '-b'], validator=validate_fleetspace_body, completer=FilesCompleter(), help="Fleetspace body with properties.serviceTier (optional), properties.dataRegions (optional), and properties.throughputPoolConfiguration (fields: minThroughput, maxThroughput). You can enter it as a string or as a file, e.g., --body @fleetspace.json or " + FLEETSPACE_PROPERTIES_EXAMPLE)
 
     # Cosmos DB Fleetspace account
     with self.argument_context('cosmosdb fleetspace account') as c:
