@@ -124,12 +124,12 @@ helps['managedcleanroom frontend collaboration list'] = """
           text: az managedcleanroom frontend collaboration list
 """
 
-helps['managedcleanroom frontend collaboration show'] = """
+helps['managedcleanroom frontend show'] = """
     type: command
     short-summary: Show collaboration details
     examples:
         - name: Show collaboration details
-          text: az managedcleanroom frontend collaboration show --collaboration-id <id>
+          text: az managedcleanroom frontend show --collaboration-id <id>
 """
 
 
@@ -137,17 +137,17 @@ helps['managedcleanroom frontend collaboration show'] = """
 # Workloads Help
 # ============================================================================
 
-helps['managedcleanroom frontend collaboration workloads'] = """
+helps['managedcleanroom frontend workloads'] = """
     type: group
     short-summary: Manage collaboration workloads
 """
 
-helps['managedcleanroom frontend collaboration workloads list'] = """
+helps['managedcleanroom frontend workloads list'] = """
     type: command
     short-summary: List workloads for a collaboration
     examples:
         - name: List workloads
-          text: az managedcleanroom frontend collaboration workloads list -c <collaboration-id>
+          text: az managedcleanroom frontend workloads list -c <collaboration-id>
 """
 
 
@@ -155,33 +155,33 @@ helps['managedcleanroom frontend collaboration workloads list'] = """
 # Analytics Help
 # ============================================================================
 
-helps['managedcleanroom frontend collaboration analytics'] = """
+helps['managedcleanroom frontend analytics'] = """
     type: group
     short-summary: Manage collaboration analytics
 """
 
-helps['managedcleanroom frontend collaboration analytics show'] = """
+helps['managedcleanroom frontend analytics show'] = """
     type: command
     short-summary: Show analytics information
     examples:
         - name: Show analytics information for a collaboration
-          text: az managedcleanroom frontend collaboration analytics show -c <collaboration-id>
+          text: az managedcleanroom frontend analytics show -c <collaboration-id>
 """
 
-helps['managedcleanroom frontend collaboration analytics deploymentinfo'] = """
+helps['managedcleanroom frontend analytics deploymentinfo'] = """
     type: command
     short-summary: Get deployment information
     examples:
         - name: Get deployment info
-          text: az managedcleanroom frontend collaboration analytics deploymentinfo -c <collaboration-id>
+          text: az managedcleanroom frontend analytics deploymentinfo -c <collaboration-id>
 """
 
-helps['managedcleanroom frontend collaboration analytics cleanroompolicy'] = """
+helps['managedcleanroom frontend analytics cleanroompolicy'] = """
     type: command
     short-summary: Get cleanroom policy
     examples:
         - name: Get cleanroom policy
-          text: az managedcleanroom frontend collaboration analytics cleanroompolicy -c <collaboration-id>
+          text: az managedcleanroom frontend analytics cleanroompolicy -c <collaboration-id>
 """
 
 
@@ -189,22 +189,22 @@ helps['managedcleanroom frontend collaboration analytics cleanroompolicy'] = """
 # OIDC Help
 # ============================================================================
 
-helps['managedcleanroom frontend collaboration oidc'] = """
+helps['managedcleanroom frontend oidc'] = """
     type: group
     short-summary: Manage OIDC configuration
 """
 
-helps['managedcleanroom frontend collaboration oidc issuerinfo'] = """
+helps['managedcleanroom frontend oidc issuerinfo'] = """
     type: group
     short-summary: Manage OIDC issuer information
 """
 
-helps['managedcleanroom frontend collaboration oidc issuerinfo show'] = """
+helps['managedcleanroom frontend oidc issuerinfo show'] = """
     type: command
     short-summary: Show OIDC issuer information
     examples:
         - name: Show OIDC issuer info
-          text: az managedcleanroom frontend collaboration oidc issuerinfo show -c <collaboration-id>
+          text: az managedcleanroom frontend oidc issuerinfo show -c <collaboration-id>
 """
 
 
@@ -212,33 +212,33 @@ helps['managedcleanroom frontend collaboration oidc issuerinfo show'] = """
 # Invitation Help
 # ============================================================================
 
-helps['managedcleanroom frontend collaboration invitation'] = """
+helps['managedcleanroom frontend invitation'] = """
     type: group
     short-summary: Manage collaboration invitations
 """
 
-helps['managedcleanroom frontend collaboration invitation list'] = """
+helps['managedcleanroom frontend invitation list'] = """
     type: command
     short-summary: List invitations for a collaboration
     examples:
         - name: List invitations
-          text: az managedcleanroom frontend collaboration invitation list -c <collaboration-id>
+          text: az managedcleanroom frontend invitation list -c <collaboration-id>
 """
 
-helps['managedcleanroom frontend collaboration invitation show'] = """
+helps['managedcleanroom frontend invitation show'] = """
     type: command
     short-summary: Show invitation details
     examples:
         - name: Show invitation details
-          text: az managedcleanroom frontend collaboration invitation show -c <cid> -i <invitation-id>
+          text: az managedcleanroom frontend invitation show -c <cid> -i <invitation-id>
 """
 
-helps['managedcleanroom frontend collaboration invitation accept'] = """
+helps['managedcleanroom frontend invitation accept'] = """
     type: command
     short-summary: Accept an invitation
     examples:
         - name: Accept an invitation
-          text: az managedcleanroom frontend collaboration invitation accept -c <cid> -i <invitation-id>
+          text: az managedcleanroom frontend invitation accept -c <cid> -i <invitation-id>
 """
 
 
@@ -246,33 +246,33 @@ helps['managedcleanroom frontend collaboration invitation accept'] = """
 # Dataset Help
 # ============================================================================
 
-helps['managedcleanroom frontend collaboration dataset'] = """
+helps['managedcleanroom frontend dataset'] = """
     type: group
     short-summary: Manage collaboration datasets
 """
 
-helps['managedcleanroom frontend collaboration dataset list'] = """
+helps['managedcleanroom frontend dataset list'] = """
     type: command
     short-summary: List datasets for a collaboration
     examples:
         - name: List datasets
-          text: az managedcleanroom frontend collaboration dataset list -c <collaboration-id>
+          text: az managedcleanroom frontend dataset list -c <collaboration-id>
 """
 
-helps['managedcleanroom frontend collaboration dataset show'] = """
+helps['managedcleanroom frontend dataset show'] = """
     type: command
     short-summary: Show dataset details
     examples:
         - name: Show dataset details
-          text: az managedcleanroom frontend collaboration dataset show -c <cid> -d <dataset-id>
+          text: az managedcleanroom frontend dataset show -c <cid> -d <dataset-id>
 """
 
-helps['managedcleanroom frontend collaboration dataset publish'] = """
+helps['managedcleanroom frontend dataset publish'] = """
     type: command
     short-summary: Publish a dataset
     examples:
         - name: Publish a dataset
-          text: az managedcleanroom frontend collaboration dataset publish -c <cid> -d <dataset-id>
+          text: az managedcleanroom frontend dataset publish -c <cid> -d <dataset-id>
 """
 
 
@@ -280,25 +280,25 @@ helps['managedcleanroom frontend collaboration dataset publish'] = """
 # Consent Help
 # ============================================================================
 
-helps['managedcleanroom frontend collaboration consent'] = """
+helps['managedcleanroom frontend consent'] = """
     type: group
     short-summary: Manage consent documents
 """
 
-helps['managedcleanroom frontend collaboration consent check'] = """
+helps['managedcleanroom frontend consent check'] = """
     type: command
     short-summary: Check consent document status
     examples:
         - name: Check consent status
-          text: az managedcleanroom frontend collaboration consent check -c <cid> --document-id <doc-id>
+          text: az managedcleanroom frontend consent check -c <cid> --document-id <doc-id>
 """
 
-helps['managedcleanroom frontend collaboration consent set'] = """
+helps['managedcleanroom frontend consent set'] = """
     type: command
     short-summary: Set consent document action
     examples:
         - name: Approve consent
-          text: az managedcleanroom frontend collaboration consent set -c <cid> --document-id <doc-id> -a approve
+          text: az managedcleanroom frontend consent set -c <cid> --document-id <doc-id> -a approve
 """
 
 
@@ -306,41 +306,41 @@ helps['managedcleanroom frontend collaboration consent set'] = """
 # Query Help
 # ============================================================================
 
-helps['managedcleanroom frontend collaboration query'] = """
+helps['managedcleanroom frontend query'] = """
     type: group
     short-summary: Manage collaboration queries
 """
 
-helps['managedcleanroom frontend collaboration query list'] = """
+helps['managedcleanroom frontend query list'] = """
     type: command
     short-summary: List queries for a collaboration
     examples:
         - name: List queries
-          text: az managedcleanroom frontend collaboration query list -c <collaboration-id>
+          text: az managedcleanroom frontend query list -c <collaboration-id>
 """
 
-helps['managedcleanroom frontend collaboration query show'] = """
+helps['managedcleanroom frontend query show'] = """
     type: command
     short-summary: Show query details
     examples:
         - name: Show query details
-          text: az managedcleanroom frontend collaboration query show -c <cid> -q <query-id>
+          text: az managedcleanroom frontend query show -c <cid> -q <query-id>
 """
 
-helps['managedcleanroom frontend collaboration query publish'] = """
+helps['managedcleanroom frontend query publish'] = """
     type: command
     short-summary: Publish a query
     examples:
         - name: Publish a query
-          text: az managedcleanroom frontend collaboration query publish -c <cid> -q <query-id>
+          text: az managedcleanroom frontend query publish -c <cid> -q <query-id>
 """
 
-helps['managedcleanroom frontend collaboration query run'] = """
+helps['managedcleanroom frontend query run'] = """
     type: command
     short-summary: Run a query
     examples:
         - name: Run a query
-          text: az managedcleanroom frontend collaboration query run -c <cid> -q <query-id>
+          text: az managedcleanroom frontend query run -c <cid> -q <query-id>
 """
 
 
@@ -348,25 +348,25 @@ helps['managedcleanroom frontend collaboration query run'] = """
 # Query Vote Help
 # ============================================================================
 
-helps['managedcleanroom frontend collaboration query vote'] = """
+helps['managedcleanroom frontend query vote'] = """
     type: group
     short-summary: Manage query voting
 """
 
-helps['managedcleanroom frontend collaboration query vote accept'] = """
+helps['managedcleanroom frontend query vote accept'] = """
     type: command
     short-summary: Accept a query vote
     examples:
         - name: Accept query vote
-          text: az managedcleanroom frontend collaboration query vote accept -c <cid> -q <query-id>
+          text: az managedcleanroom frontend query vote accept -c <cid> -q <query-id>
 """
 
-helps['managedcleanroom frontend collaboration query vote reject'] = """
+helps['managedcleanroom frontend query vote reject'] = """
     type: command
     short-summary: Reject a query vote
     examples:
         - name: Reject query vote
-          text: az managedcleanroom frontend collaboration query vote reject -c <cid> -q <query-id>
+          text: az managedcleanroom frontend query vote reject -c <cid> -q <query-id>
 """
 
 
@@ -374,25 +374,25 @@ helps['managedcleanroom frontend collaboration query vote reject'] = """
 # Query Run History Help
 # ============================================================================
 
-helps['managedcleanroom frontend collaboration query runhistory'] = """
+helps['managedcleanroom frontend query runhistory'] = """
     type: group
     short-summary: View query run history
 """
 
-helps['managedcleanroom frontend collaboration query runhistory list'] = """
+helps['managedcleanroom frontend query runhistory list'] = """
     type: command
     short-summary: List query run history
     examples:
         - name: List query runs
-          text: az managedcleanroom frontend collaboration query runhistory list -c <cid> -q <query-id>
+          text: az managedcleanroom frontend query runhistory list -c <cid> -q <query-id>
 """
 
-helps['managedcleanroom frontend collaboration query runhistory show'] = """
+helps['managedcleanroom frontend query runhistory show'] = """
     type: command
     short-summary: Show query run details
     examples:
         - name: Show query run details
-          text: az managedcleanroom frontend collaboration query runhistory show -c <cid> -r <run-id>
+          text: az managedcleanroom frontend query runhistory show -c <cid> -r <run-id>
 """
 
 
@@ -400,17 +400,17 @@ helps['managedcleanroom frontend collaboration query runhistory show'] = """
 # Audit Help
 # ============================================================================
 
-helps['managedcleanroom frontend collaboration audit'] = """
+helps['managedcleanroom frontend audit'] = """
     type: group
     short-summary: View audit events
 """
 
-helps['managedcleanroom frontend collaboration audit list'] = """
+helps['managedcleanroom frontend audit list'] = """
     type: command
     short-summary: List audit events for a collaboration
     examples:
         - name: List audit events
-          text: az managedcleanroom frontend collaboration audit list -c <collaboration-id>
+          text: az managedcleanroom frontend audit list -c <collaboration-id>
 """
 
 
@@ -418,24 +418,24 @@ helps['managedcleanroom frontend collaboration audit list'] = """
 # Attestation Help
 # ============================================================================
 
-helps['managedcleanroom frontend collaboration attestation'] = """
+helps['managedcleanroom frontend attestation'] = """
     type: group
     short-summary: View attestation reports
 """
 
-helps['managedcleanroom frontend collaboration attestation cgs'] = """
+helps['managedcleanroom frontend attestation cgs'] = """
     type: command
     short-summary: Get CGS attestation report
     examples:
         - name: Get CGS attestation report
-          text: az managedcleanroom frontend collaboration attestation cgs -c <collaboration-id>
+          text: az managedcleanroom frontend attestation cgs -c <collaboration-id>
 """
 
-helps['managedcleanroom frontend collaboration attestation cleanroom'] = """
+helps['managedcleanroom frontend attestation cleanroom'] = """
     type: command
     short-summary: Get cleanroom attestation report
     examples:
         - name: Get cleanroom attestation report
-          text: az managedcleanroom frontend collaboration attestation cleanroom -c <collaboration-id>
+          text: az managedcleanroom frontend attestation cleanroom -c <collaboration-id>
 """
 

@@ -48,84 +48,84 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
         help='Consent action (approve/reject)'
     )
     
-    # Base collaboration context
-    with self.argument_context('managedcleanroom frontend collaboration show') as c:
+    # Show command context (moved to frontend level)
+    with self.argument_context('managedcleanroom frontend show') as c:
         c.argument('collaboration_id', collaboration_id_type)
     
     # Workloads context
-    with self.argument_context('managedcleanroom frontend collaboration workloads') as c:
+    with self.argument_context('managedcleanroom frontend workloads') as c:
         c.argument('collaboration_id', collaboration_id_type)
     
     # Analytics context
-    with self.argument_context('managedcleanroom frontend collaboration analytics') as c:
+    with self.argument_context('managedcleanroom frontend analytics') as c:
         c.argument('collaboration_id', collaboration_id_type)
     
     # OIDC context
-    with self.argument_context('managedcleanroom frontend collaboration oidc issuerinfo') as c:
+    with self.argument_context('managedcleanroom frontend oidc issuerinfo') as c:
         c.argument('collaboration_id', collaboration_id_type)
     
     # Invitation context
-    with self.argument_context('managedcleanroom frontend collaboration invitation') as c:
+    with self.argument_context('managedcleanroom frontend invitation') as c:
         c.argument('collaboration_id', collaboration_id_type)
     
-    with self.argument_context('managedcleanroom frontend collaboration invitation show') as c:
+    with self.argument_context('managedcleanroom frontend invitation show') as c:
         c.argument('invitation_id', invitation_id_type)
     
-    with self.argument_context('managedcleanroom frontend collaboration invitation accept') as c:
+    with self.argument_context('managedcleanroom frontend invitation accept') as c:
         c.argument('invitation_id', invitation_id_type)
     
     # Dataset context
-    with self.argument_context('managedcleanroom frontend collaboration dataset') as c:
+    with self.argument_context('managedcleanroom frontend dataset') as c:
         c.argument('collaboration_id', collaboration_id_type)
     
-    with self.argument_context('managedcleanroom frontend collaboration dataset show') as c:
+    with self.argument_context('managedcleanroom frontend dataset show') as c:
         c.argument('dataset_id', dataset_id_type)
     
-    with self.argument_context('managedcleanroom frontend collaboration dataset publish') as c:
+    with self.argument_context('managedcleanroom frontend dataset publish') as c:
         c.argument('dataset_id', dataset_id_type)
     
     # Consent context
-    with self.argument_context('managedcleanroom frontend collaboration consent') as c:
+    with self.argument_context('managedcleanroom frontend consent') as c:
         c.argument('collaboration_id', collaboration_id_type)
         c.argument('document_id', document_id_type)
     
-    with self.argument_context('managedcleanroom frontend collaboration consent set') as c:
+    with self.argument_context('managedcleanroom frontend consent set') as c:
         c.argument('action', action_type)
     
     # Query context
-    with self.argument_context('managedcleanroom frontend collaboration query') as c:
+    with self.argument_context('managedcleanroom frontend query') as c:
         c.argument('collaboration_id', collaboration_id_type)
     
-    with self.argument_context('managedcleanroom frontend collaboration query show') as c:
+    with self.argument_context('managedcleanroom frontend query show') as c:
         c.argument('query_id', query_id_type)
     
-    with self.argument_context('managedcleanroom frontend collaboration query publish') as c:
+    with self.argument_context('managedcleanroom frontend query publish') as c:
         c.argument('query_id', query_id_type)
     
-    with self.argument_context('managedcleanroom frontend collaboration query run') as c:
+    with self.argument_context('managedcleanroom frontend query run') as c:
         c.argument('query_id', query_id_type)
     
     # Query vote context
-    with self.argument_context('managedcleanroom frontend collaboration query vote') as c:
+    with self.argument_context('managedcleanroom frontend query vote') as c:
         c.argument('collaboration_id', collaboration_id_type)
         c.argument('query_id', query_id_type)
     
     # Query runhistory context
-    with self.argument_context('managedcleanroom frontend collaboration query runhistory') as c:
+    with self.argument_context('managedcleanroom frontend query runhistory') as c:
         c.argument('collaboration_id', collaboration_id_type)
     
-    with self.argument_context('managedcleanroom frontend collaboration query runhistory list') as c:
+    with self.argument_context('managedcleanroom frontend query runhistory list') as c:
         c.argument('query_id', query_id_type)
     
-    with self.argument_context('managedcleanroom frontend collaboration query runhistory show') as c:
+    with self.argument_context('managedcleanroom frontend query runhistory show') as c:
         c.argument('run_id', run_id_type)
     
     # Audit context
-    with self.argument_context('managedcleanroom frontend collaboration audit') as c:
+    with self.argument_context('managedcleanroom frontend audit') as c:
         c.argument('collaboration_id', collaboration_id_type)
     
     # Attestation context
-    with self.argument_context('managedcleanroom frontend collaboration attestation') as c:
+    with self.argument_context('managedcleanroom frontend attestation') as c:
         c.argument('collaboration_id', collaboration_id_type)
     
     # Configuration context
