@@ -33,7 +33,13 @@ class Delete(AAZCommand):
 
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, None)
+        # Handle 204 case specially since it doesn't require LRO polling
+        operations_result = list(self._execute_operations())
+        if operations_result:
+            return self.build_lro_poller(lambda: (x for x in operations_result), None)
+        else:
+            # 204 case - operation completed immediately
+            return None
 
     _args_schema = None
 
@@ -62,7 +68,10 @@ class Delete(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.FileSystemsDelete(ctx=self.ctx)()
+        result = self.FileSystemsDelete(ctx=self.ctx)()
+        if result is not None:  # LRO case (202, 200, 201)
+            yield result
+        # For 204 case, we yield nothing and handle it in _handler
         self.post_operations()
 
     @register_callback
@@ -90,14 +99,8 @@ class Delete(AAZCommand):
                     path_format_arguments=self.url_parameters,
                 )
             if session.http_response.status_code in [204]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_204,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
+                self.on_204(session)
+                return
             if session.http_response.status_code in [200, 201]:
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,

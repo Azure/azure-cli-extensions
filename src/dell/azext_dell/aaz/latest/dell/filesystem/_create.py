@@ -71,6 +71,7 @@ class Create(AAZCommand):
             options=["--delegated-subnet-cidr"],
             arg_group="Properties",
             help="Domain range for the delegated subnet",
+            required=True,
             fmt=AAZStrArgFormat(
                 pattern="^([0-9]{1,3}\\.){3}[0-9]{1,3}/(16|24)$",
             ),
@@ -79,16 +80,19 @@ class Create(AAZCommand):
             options=["--delegated-subnet-id"],
             arg_group="Properties",
             help="Delegated subnet id for Vnet injection",
+            required=True,
         )
         _args_schema.dell_reference_number = AAZStrArg(
             options=["--dell-reference-number"],
             arg_group="Properties",
             help="DellReferenceNumber of the resource",
+            required=True,
         )
         _args_schema.encryption = AAZObjectArg(
             options=["--encryption"],
             arg_group="Properties",
             help="EncryptionProperties of the resource",
+            required=True,
         )
         _args_schema.file_system_id = AAZStrArg(
             options=["--file-system-id"],
@@ -99,6 +103,7 @@ class Create(AAZCommand):
             options=["--marketplace"],
             arg_group="Properties",
             help="Marketplace details",
+            required=True,
         )
         _args_schema.one_fs_url = AAZStrArg(
             options=["--one-fs-url"],
@@ -114,6 +119,7 @@ class Create(AAZCommand):
             options=["--user"],
             arg_group="Properties",
             help="User Details",
+            required=True,
         )
 
         capacity = cls._args_schema.capacity

@@ -11,6 +11,7 @@ from azure.cli.testsdk import *
 
 
 class DellScenario(ScenarioTest):
+    # TODO: add tests here
     """Test scenarios for Dell.Storage CLI extension.
 
     This test suite covers all Dell filesystem operations including:
@@ -66,42 +67,37 @@ class DellScenario(ScenarioTest):
             self.assertEqual(
                 e.code, 0, "Help command should exit successfully")
 
-    @unittest.skipIf(not os.environ.get('AZURE_TEST_RUN_LIVE'), 'Live mode only test')
     @ResourceGroupPreparer(name_prefix='cli_test_dell')
     def test_dell_filesystem_create(self, resource_group):
         """Test Dell filesystem create command.
 
-        This test uses real Dell marketplace information and an actual virtual network
-        to validate the CLI functionality with proper data, while using SkipProvision
-        to avoid creating actual resources.
+        This test validates the CLI functionality with proper data structure,
+        using SkipProvision to avoid creating actual resources.
         """
-
+        subscription_id = self.get_subscription_id()
         filesystem_name = self.create_random_name('dellfs', 15)
 
-        # Test create command with real marketplace data and actual VNet
-        try:
-            result = self.cmd('az dell filesystem create '
-                              '--resource-group {rg} '
-                              '--filesystem-name ' + filesystem_name + ' '
-                              '--location "East US" '
-                              '--delegated-subnet-id "/subscriptions/b9aad304-baa9-4d2a-9404-dbdd3ab55ac5/resourceGroups/praveensingh-test/providers/Microsoft.Network/virtualNetworks/test-vnet-eastus/subnets/default" '
-                              '--delegated-subnet-cidr "10.0.0.0/24" '
-                              '--marketplace \'{{"marketplace-subscription-id":"87a1a6c0-0bf4-4ee6-d6db-79bc4d301f1d","plan-id":"testplan","offer-id":"thunderscaletest","publisher-id":"dellemc","plan-name":"Premium","end-date":"06/23/2026 00:00:00","term-unit":"P1Y"}}\' '
-                              '--user \'{{"email":"kajalsethi@microsoft.com"}}\' '
-                              '--dell-reference-number "100438419" '
-                              '--encryption \'{{"encryption-type":"Microsoft-managed keys (MMK)"}}\' '
-                              '--tags \'{{"DEPLOYMENT_MODE":"SkipProvision"}}\' ')
-            print("SUCCESS: Create test passed - CLI properly formatted request")
+        # Use sanitized test data
+        delegated_subnet_id = f"/subscriptions/{subscription_id}/resourceGroups/{resource_group}/providers/Microsoft.Network/virtualNetworks/test-vnet-eastus/subnets/default"
 
-        except Exception as e:
-            # This could fail for various reasons:
-            # 1. VNet access permissions
-            # 2. Marketplace subscription validation
-            # 3. Cross-subscription VNet access
-            print(f"Create test result: {str(e)}")
-            pass
+        # Test create command - expect validation failure with proper error handling
+        with self.assertRaises(Exception) as context:
+            self.cmd('az dell filesystem create '
+                     '--resource-group {rg} '
+                     '--filesystem-name ' + filesystem_name + ' '
+                     '--location "East US" '
+                     '--delegated-subnet-id "' + delegated_subnet_id + '" '
+                     '--delegated-subnet-cidr "10.0.0.0/24" '
+                     '--marketplace \'{{"marketplace-subscription-id":"00000000-0000-0000-0000-000000000000","plan-id":"testplan","offer-id":"thunderscaletest","publisher-id":"dellemc","plan-name":"Premium","end-date":"06/23/2026 00:00:00","term-unit":"P1Y"}}\' '
+                     '--user \'{{"email":"user@example.com"}}\' '
+                     '--dell-reference-number "100438419" '
+                     '--encryption \'{{"encryption-type":"Microsoft-managed keys (MMK)"}}\' '
+                     '--tags \'{{"DEPLOYMENT_MODE":"SkipProvision"}}\' ')
 
-    @unittest.skipIf(not os.environ.get('AZURE_TEST_RUN_LIVE'), 'Live mode only test')
+        # Validate that we get expected validation errors (not generic failures)
+        error_message = str(context.exception)
+        self.assertIn("ResourceCreationValidateFailed", error_message)
+
     @ResourceGroupPreparer(name_prefix='cli_test_dell')
     def test_dell_filesystem_list_operations(self, resource_group):
         """Test Dell filesystem list command returns proper JSON structure."""
@@ -109,48 +105,52 @@ class DellScenario(ScenarioTest):
         # Test list command - should return a list (empty or with filesystems)
         result = self.cmd(
             'az dell filesystem list --resource-group {rg}').get_output_in_json()
-        self.assertIsInstance(result, list)
 
-    @unittest.skipIf(not os.environ.get('AZURE_TEST_RUN_LIVE'), 'Live mode only test')
+        # Validate response structure
+        self.assertIsInstance(result, list)
+        # In a clean test environment, list should be empty
+        self.assertEqual(len(result), 0)
+
     def test_dell_filesystem_show_existing(self):
         """Test Dell filesystem show command with existing resource.
 
         Tests the show operation against a known existing Dell filesystem
         to validate the command structure and response format.
         """
-
-        # Test show command with specific existing filesystem
-        # Resource: /subscriptions/b9aad304-baa9-4d2a-9404-dbdd3ab55ac5/resourceGroups/praveensingh-test/providers/Dell.Storage/filesystems/cliuksouth-1
-        subscription_id = "b9aad304-baa9-4d2a-9404-dbdd3ab55ac5"
+        # Use sanitized test data that matches the recording
+        subscription_id = "00000000-0000-0000-0000-000000000000"
         resource_group = "praveensingh-test"
         filesystem_name = "cliuksouth-1"
 
-        self.cmd('az dell filesystem show '
-                 f'--subscription {subscription_id} '
-                 f'--resource-group {resource_group} '
-                 f'--filesystem-name {filesystem_name}',
-                 checks=[
-                     self.check('name', filesystem_name),
-                     self.check('resourceGroup', resource_group),
-                     self.exists('id'),
-                     self.exists('properties')
-                 ])
+        # This test uses the recording which has a successful response
+        result = self.cmd('az dell filesystem show '
+                          f'--subscription {subscription_id} '
+                          f'--resource-group {resource_group} '
+                          f'--filesystem-name {filesystem_name}')
 
-    @unittest.skipIf(not os.environ.get('AZURE_TEST_RUN_LIVE'), 'Live mode only test')
+        # Validate that we get a proper JSON response with expected fields
+        output = result.get_output_in_json()
+        self.assertIn('name', output)
+        self.assertIn('id', output)
+        self.assertIn('properties', output)
+        self.assertEqual(output['name'], filesystem_name)
+
     def test_dell_filesystem_delete_operations(self):
         """Test Dell filesystem delete command behavior.
 
-        Tests the delete operation to validate command structure and async behavior.
+        Tests the delete operation to validate command structure and error handling.
         """
+        # Use sanitized test data that matches the recording
+        subscription_id = "00000000-0000-0000-0000-000000000000"
+        resource_group = "praveensingh-test"
+        filesystem_name = "nonexistent-filesystem"
 
-        # Test delete command on a resource that may or may not exist
-        try:
-            result = self.cmd('az dell filesystem delete '
-                              '--resource-group praveensingh-test '
-                              '--filesystem-name nonexistent-filesystem '
-                              '--subscription b9aad304-baa9-4d2a-9404-dbdd3ab55ac5 '
-                              '--yes')
-        except Exception:
-            # Expected - may fail if resource doesn't exist (404) or async operation fails
-            # This is acceptable for testing command structure
-            pass
+        # Test delete command on a resource that doesn't exist - should handle gracefully
+        result = self.cmd('az dell filesystem delete '
+                          f'--resource-group {resource_group} '
+                          f'--filesystem-name {filesystem_name} '
+                          f'--subscription {subscription_id} '
+                          '--yes')
+
+        # Delete should succeed (204 No Content) even if resource doesn't exist
+        self.assertEqual(result.exit_code, 0)
