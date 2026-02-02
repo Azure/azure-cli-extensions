@@ -1112,6 +1112,9 @@ helps['containerapp list'] = """
     - name: List container apps by environment type.
       text: |
           az containerapp list --environment-type connected
+    - name: List Azure Functions on Container Apps only.
+      text: |
+          az containerapp list --kind functionapp
 """
 
 # Connected Environment Commands
