@@ -6867,6 +6867,20 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         if nginx:
             self._update_app_routing_nginx(mc, nginx)
 
+        # modify default domain
+        enable_default_domain = self.context.get_enable_default_domain()
+        disable_default_domain = self.context.get_disable_default_domain()
+        if enable_default_domain or disable_default_domain:
+            if mc.ingress_profile.web_app_routing.enabled:
+                enable = not disable_default_domain
+                mc.ingress_profile.web_app_routing.default_domain = (
+                    self.models.ManagedClusterIngressDefaultDomainProfile(
+                        enabled=enable
+                    )
+                )
+            else:
+                raise CLIError('App Routing must be enabled to modify the default domain.\n')
+
         return mc
 
     def _enable_keyvault_secret_provider_addon(self, mc: ManagedCluster) -> None:
