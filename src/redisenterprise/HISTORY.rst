@@ -2,6 +2,12 @@
 
 Release History
 ===============
+1.4.0
+- add a new command `az redisenterprise test-connection` to test the connection to a cluster.
+
+1.3.1
+- Fixed an issue where updating sku from Azure Cache for Enterprise to Azure Managed Redis SKU was not working as expected.
+
 1.3.0
 - Added a new required property: PublicNetworkAccess for Cluster.
 - Updated the default value of AccessKeysAuthentication property for Database to 'Disabled'.
