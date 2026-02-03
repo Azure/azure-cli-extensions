@@ -13,6 +13,11 @@ Pending
 +++++++
 * `az aks safeguards`: Update Deployment Safeguards commands to API version 2025-07-01 and add idempotency check for create operation.
 
+19.0.0b21
++++++++
+* `az aks nodepool get-rollback-versions`: New command to get available rollback versions for an agent pool.
+* `az aks nodepool rollback`: New command to rollback an agent pool to the most recently used configuration (N-1).
+
 19.0.0b20
 +++++++
 * `az aks bastion`: Add new option `--kubeconfig-path` to allow users to specify an existing kubeconfig file

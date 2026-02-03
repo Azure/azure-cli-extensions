@@ -3,6 +3,14 @@
 Release History
 ===============
 
+1.7.0
+++++++
+* Add containers from_vn2 command to generate container definitions from a VN2 template.
+
+1.6.0
+++++++
+* Added confcom containers from_image command to generate container definitions from an image reference
+
 1.5.1
 ++++++
 * Bumped the Kata genpolicy version to gen4

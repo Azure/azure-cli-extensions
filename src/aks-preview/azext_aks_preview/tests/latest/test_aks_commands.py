@@ -20659,7 +20659,7 @@ spec:
 
         create_subnet_cmd = f"network vnet subnet create --resource-group {nrg} " \
                             f"--vnet-name {vnet_name} --name AzureBastionSubnet " \
-                            f"--address-prefixes 10.238.0.0/16"
+                            f"--address-prefixes 10.225.0.0/26"
         self.cmd(create_subnet_cmd, checks=[self.check("provisioningState", "Succeeded")])
 
         create_pip_cmd = f"network public-ip create -g {nrg} -n aks-bastion-pip --sku Standard"
@@ -21588,6 +21588,9 @@ spec:
                 self.check("ingressProfile.gatewayApi.installation", "Standard"),
             ],
         )
+
+    # TODO (indusridhar): Add tests for `test_aks_nodepool_get_rollback_versions` and `test_aks_nodepool_rollback`
+    # after AKS RP Jan 2026 release is complete and recently_used_versions field is populated in upgrade profile API
 
     # TODO (zheweihu): add test `test_aks_create_and_update_with_gateway_api_without_azureservicemesh`
     # once https://msazure.visualstudio.com/CloudNativeCompute/_git/aks-rp/pullrequest/14404771 is rolled out

@@ -25,6 +25,8 @@ from azext_confcom.template_util import (
     print_existing_policy_from_yaml, print_func, str_to_sha256)
 from azext_confcom.command.fragment_attach import fragment_attach as _fragment_attach
 from azext_confcom.command.fragment_push import fragment_push as _fragment_push
+from azext_confcom.command.containers_from_image import containers_from_image as _containers_from_image
+from azext_confcom.command.containers_from_vn2 import containers_from_vn2 as _containers_from_vn2
 from knack.log import get_logger
 from pkg_resources import parse_version
 
@@ -552,3 +554,23 @@ def fragment_push(
         signed_fragment=signed_fragment,
         manifest_tag=manifest_tag
     )
+
+
+def containers_from_image(
+    image: str,
+    platform: str,
+) -> None:
+    _containers_from_image(
+        image=image,
+        platform=platform,
+    )
+
+
+def containers_from_vn2(
+    template: str,
+    container_name: Optional[str] = None,
+) -> None:
+    print(_containers_from_vn2(
+        template=template,
+        container_name=container_name,
+    ))
