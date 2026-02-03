@@ -4,13 +4,13 @@ Release History
 
 2.2.0
 ++++++
-Adding --tags parameter to vm repair create and vm repair repair-and-restore commands to allow users to tag the repair VM for organizational requirements
-Adding --copy-tags parameter to vm repair create and vm repair repair-and-restore commands to allow users to copy tags from the source VM to the repair VM
-Adding --size parameter to vm repair create and vm repair repair-and-restore commands to allow users to specify the size of the repair VM
-Changing the default to only create a public IP when --associate-public-ip flag is set
+Adding `--tags` parameter to `vm repair create` and `vm repair repair-and-restore` commands to allow users to tag the repair VM for organizational requirements
+Adding `--copy-tags` parameter to `vm repair create` and `vm repair repair-and-restore` commands to allow users to copy tags from the source VM to the repair VM
+Adding `--size` parameter to `vm repair create` and `vm repair repair-and-restore` commands to allow users to specify the size of the repair VM
+Changing the default to only create a public IP when `--associate-public-ip` flag is set
 Updating Linux image list for new versions and removing EoL versions
 TODO: update public docs after release to match new behaviors
-TODO: remove --yes parameter in future release after users have adapted to new behavior
+TODO: remove `--yes` parameter in future release after users have adapted to new behavior
 
 2.1.3
 ++++++
