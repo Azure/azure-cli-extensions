@@ -142,7 +142,7 @@ def check_if_extension_is_installed(cmd, resource_group, cluster_name) -> bool:
         extension_type = extension.extension_type.lower()
         if extension_type != CONST_ACSTOR_V1_K8S_EXTENSION_NAME:
             return_val = False
-    except:  # pylint: disable=bare-except
+    except Exception:  # pylint: disable=broad-except
         return_val = False
 
     return return_val
@@ -239,7 +239,7 @@ def get_extension_installed_and_cluster_configs_v1(
                         is_ephemeralDisk_nvme_enabled = True
                         break
 
-    except:  # pylint: disable=bare-except
+    except Exception:  # pylint: disable=broad-except
         is_extension_installed = False
 
     return (
@@ -287,7 +287,7 @@ def get_extension_installed_and_cluster_configs(
                 config_settings.get("csiDriverConfigs.azuresan-csi-driver.enabled", "False") == "True"
             )
 
-    except:  # pylint: disable=bare-except
+    except Exception:  # pylint: disable=broad-except
         is_extension_installed = False
 
     return (
