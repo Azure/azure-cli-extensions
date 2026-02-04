@@ -5829,7 +5829,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                                 storage_options = disable_azure_container_storage_param
                                 storage_option_param_str = " ".join(storage_options)
                                 if len(storage_options) > 2:
-                                    storage_options = [storage_options[:-1].join("', '"), storage_options[-1]]
+                                    storage_options = ["', '".join(storage_options[:-1]), storage_options[-1]]
                                 storage_option_display = "' and '".join(storage_options)
                             msg = (
                                 "Please make sure there are no existing PVs and PVCs that are provisioned by Azure"
