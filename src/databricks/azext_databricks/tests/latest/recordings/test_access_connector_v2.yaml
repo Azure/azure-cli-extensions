@@ -13,12 +13,12 @@ interactions:
       ParameterSetName:
       - -n -g
       User-Agent:
-      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+      - AZURECLI/2.82.0 azsdk-python-core/1.37.0 Python/3.11.9 (Windows-10-10.0.26200-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_access_connector000001?api-version=2024-11-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_access_connector000001","name":"cli_test_access_connector000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","test":"test_access_connector_v2","date":"2025-12-20T00:28:42Z","module":"databricks"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_access_connector000001","name":"cli_test_access_connector000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","test":"test_access_connector_v2","date":"2026-01-28T23:44:53Z","module":"databricks"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -27,7 +27,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 20 Dec 2025 00:28:47 GMT
+      - Wed, 28 Jan 2026 23:44:56 GMT
       expires:
       - '-1'
       pragma:
@@ -39,9 +39,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-global-reads:
-      - '16499'
+      - '3749'
       x-msedge-ref:
-      - 'Ref A: 63F7DAE972F0417592E5297877358E3A Ref B: CO6AA3150219045 Ref C: 2025-12-20T00:28:47Z'
+      - 'Ref A: 16364FB6F37643D187B56FDAA858707E Ref B: CO6AA3150217035 Ref C: 2026-01-28T23:44:56Z'
     status:
       code: 200
       message: OK
@@ -63,12 +63,12 @@ interactions:
       ParameterSetName:
       - -n -g
       User-Agent:
-      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+      - AZURECLI/2.82.0 azsdk-python-core/1.37.0 Python/3.11.9 (Windows-10-10.0.26200-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_access_connector000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/my-test-identity?api-version=2024-11-30
   response:
     body:
-      string: '{"location":"westus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_access_connector000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/my-test-identity","name":"my-test-identity","type":"Microsoft.ManagedIdentity/userAssignedIdentities","properties":{"isolationScope":"None","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","principalId":"95323a3f-db91-4bf8-8513-4f42a3ed084e","clientId":"68621eaf-3497-4dc3-a48a-c47cf444017a"}}'
+      string: '{"location":"westus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_access_connector000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/my-test-identity","name":"my-test-identity","type":"Microsoft.ManagedIdentity/userAssignedIdentities","properties":{"isolationScope":"None","tenantId":"b2ad95e6-8830-4405-a60e-12944d7ac939","principalId":"a82288ec-c5eb-4142-b4e7-95a4838fa8d5","clientId":"a16727ca-59f1-4cc4-b2b8-1e09f4456701"}}'
     headers:
       cache-control:
       - no-cache
@@ -77,7 +77,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 20 Dec 2025 00:28:49 GMT
+      - Wed, 28 Jan 2026 23:44:57 GMT
       expires:
       - '-1'
       location:
@@ -91,13 +91,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=a70a66b6-f372-4fcc-9f09-6c5e1e64c3dd/westus/30b4f99c-07ad-4cb8-b976-975d7391577f
+      - tenantId=b2ad95e6-8830-4405-a60e-12944d7ac939,objectId=444fc911-d78c-459a-a60c-b91f4398edb8/westus/e884d911-d809-4e6f-98a1-ccdec7f4c8bb
       x-ms-ratelimit-remaining-subscription-global-writes:
-      - '11999'
+      - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '799'
+      - '199'
       x-msedge-ref:
-      - 'Ref A: B2CAB835B9594F72B84FB9098B0518BD Ref B: CO6AA3150220047 Ref C: 2025-12-20T00:28:48Z'
+      - 'Ref A: ADAF8092D4BC4106B530B03102606ABE Ref B: MWH011020807029 Ref C: 2026-01-28T23:44:56Z'
     status:
       code: 201
       message: Created
@@ -120,32 +120,32 @@ interactions:
       ParameterSetName:
       - --resource-group --name --location --identity-type --user-assigned-identities
       User-Agent:
-      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+      - AZURECLI/2.82.0 azsdk-python-core/1.37.0 Python/3.11.9 (Windows-10-10.0.26200-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_access_connector000001/providers/Microsoft.Databricks/accessConnectors/my-test-access-connector?api-version=2025-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_access_connector000001/providers/Microsoft.Databricks/accessConnectors/my-test-access-connector?api-version=2026-01-01
   response:
     body:
       string: "{\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_access_connector000001/providers/Microsoft.Databricks/accessConnectors/my-test-access-connector\",\r\n
         \ \"name\": \"my-test-access-connector\",\r\n  \"type\": \"Microsoft.Databricks/accessConnectors\",\r\n
         \ \"location\": \"westus\",\r\n  \"identity\": {\r\n    \"userAssignedIdentities\":
         {\r\n      \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_access_connector000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/my-test-identity\":
-        {\r\n        \"principalId\": \"95323a3f-db91-4bf8-8513-4f42a3ed084e\",\r\n
-        \       \"clientId\": \"68621eaf-3497-4dc3-a48a-c47cf444017a\"\r\n      }\r\n
+        {\r\n        \"principalId\": \"a82288ec-c5eb-4142-b4e7-95a4838fa8d5\",\r\n
+        \       \"clientId\": \"a16727ca-59f1-4cc4-b2b8-1e09f4456701\"\r\n      }\r\n
         \   },\r\n    \"type\": \"UserAssigned\"\r\n  },\r\n  \"properties\": {\r\n
         \   \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"systemData\": {\r\n
-        \   \"createdBy\": \"test@example.com\",\r\n    \"createdByType\": \"User\",\r\n
-        \   \"createdAt\": \"2025-12-20T00:28:51.3366418+00:00\",\r\n    \"lastModifiedBy\":
-        \"test@example.com\",\r\n    \"lastModifiedByType\": \"User\",\r\n    \"lastModifiedAt\":
-        \"2025-12-20T00:28:51.3366418+00:00\"\r\n  }\r\n}"
+        \   \"createdBy\": \"laurenyeeann@gmail.com\",\r\n    \"createdByType\": \"User\",\r\n
+        \   \"createdAt\": \"2026-01-28T23:44:59.228723+00:00\",\r\n    \"lastModifiedBy\":
+        \"laurenyeeann@gmail.com\",\r\n    \"lastModifiedByType\": \"User\",\r\n    \"lastModifiedAt\":
+        \"2026-01-28T23:44:59.228723+00:00\"\r\n  }\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1063'
+      - '1073'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 20 Dec 2025 00:28:52 GMT
+      - Wed, 28 Jan 2026 23:45:00 GMT
       expires:
       - '-1'
       pragma:
@@ -157,11 +157,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=a70a66b6-f372-4fcc-9f09-6c5e1e64c3dd/eastus/178c1ebf-26ad-4743-a4c2-579386cd0937
+      - tenantId=b2ad95e6-8830-4405-a60e-12944d7ac939,objectId=444fc911-d78c-459a-a60c-b91f4398edb8/westus/4e3a32fe-13c6-4692-a44f-8ff542fd6675
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '99'
       x-msedge-ref:
-      - 'Ref A: 88DB397E0C6B4B38BCB917654EE7175C Ref B: MWH011020808029 Ref C: 2025-12-20T00:28:50Z'
+      - 'Ref A: 70B319DAF48741E8B20B814ABE1B08E8 Ref B: CO6AA3150218009 Ref C: 2026-01-28T23:44:58Z'
     status:
       code: 201
       message: Created
@@ -181,9 +181,9 @@ interactions:
       ParameterSetName:
       - --resource-group --name
       User-Agent:
-      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+      - AZURECLI/2.82.0 azsdk-python-core/1.37.0 Python/3.11.9 (Windows-10-10.0.26200-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_access_connector000001/providers/Microsoft.Databricks/accessConnectors/my-test-access-connector?api-version=2025-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_access_connector000001/providers/Microsoft.Databricks/accessConnectors/my-test-access-connector?api-version=2026-01-01
   response:
     body:
       string: ''
@@ -193,7 +193,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Sat, 20 Dec 2025 00:28:55 GMT
+      - Wed, 28 Jan 2026 23:45:02 GMT
       expires:
       - '-1'
       pragma:
@@ -205,13 +205,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=a70a66b6-f372-4fcc-9f09-6c5e1e64c3dd/westus/c8f26753-3a6d-4019-bf9b-12821a384ae0
+      - tenantId=b2ad95e6-8830-4405-a60e-12944d7ac939,objectId=444fc911-d78c-459a-a60c-b91f4398edb8/westus/49849ea1-cec8-4aeb-aa72-54cb94ff3ce8
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '799'
+      - '199'
       x-ms-ratelimit-remaining-subscription-global-deletes:
-      - '11999'
+      - '2999'
       x-msedge-ref:
-      - 'Ref A: B9DA2B688F9B4AEB960BDAFF04C89BBC Ref B: MWH011020807054 Ref C: 2025-12-20T00:28:54Z'
+      - 'Ref A: 99323C7698F34A698FD84B5A4D394C79 Ref B: CO6AA3150218049 Ref C: 2026-01-28T23:45:01Z'
     status:
       code: 200
       message: OK
@@ -233,29 +233,29 @@ interactions:
       ParameterSetName:
       - --resource-group --name --location --identity-type
       User-Agent:
-      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+      - AZURECLI/2.82.0 azsdk-python-core/1.37.0 Python/3.11.9 (Windows-10-10.0.26200-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_access_connector000001/providers/Microsoft.Databricks/accessConnectors/my-test-access-connector?api-version=2025-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_access_connector000001/providers/Microsoft.Databricks/accessConnectors/my-test-access-connector?api-version=2026-01-01
   response:
     body:
       string: "{\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_access_connector000001/providers/Microsoft.Databricks/accessConnectors/my-test-access-connector\",\r\n
         \ \"name\": \"my-test-access-connector\",\r\n  \"type\": \"Microsoft.Databricks/accessConnectors\",\r\n
         \ \"location\": \"westus\",\r\n  \"identity\": {\r\n    \"type\": \"None\"\r\n
         \ },\r\n  \"properties\": {\r\n    \"provisioningState\": \"Succeeded\"\r\n
-        \ },\r\n  \"systemData\": {\r\n    \"createdBy\": \"test@example.com\",\r\n
-        \   \"createdByType\": \"User\",\r\n    \"createdAt\": \"2025-12-20T00:28:56.6154036+00:00\",\r\n
-        \   \"lastModifiedBy\": \"test@example.com\",\r\n    \"lastModifiedByType\":
-        \"User\",\r\n    \"lastModifiedAt\": \"2025-12-20T00:28:56.6154036+00:00\"\r\n
+        \ },\r\n  \"systemData\": {\r\n    \"createdBy\": \"laurenyeeann@gmail.com\",\r\n
+        \   \"createdByType\": \"User\",\r\n    \"createdAt\": \"2026-01-28T23:45:04.6608576+00:00\",\r\n
+        \   \"lastModifiedBy\": \"laurenyeeann@gmail.com\",\r\n    \"lastModifiedByType\":
+        \"User\",\r\n    \"lastModifiedAt\": \"2026-01-28T23:45:04.6608576+00:00\"\r\n
         \ }\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '694'
+      - '706'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 20 Dec 2025 00:28:57 GMT
+      - Wed, 28 Jan 2026 23:45:05 GMT
       expires:
       - '-1'
       pragma:
@@ -267,11 +267,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=a70a66b6-f372-4fcc-9f09-6c5e1e64c3dd/westus/4830015f-c087-4a3c-9137-35719bca5aed
+      - tenantId=b2ad95e6-8830-4405-a60e-12944d7ac939,objectId=444fc911-d78c-459a-a60c-b91f4398edb8/westus/294dde89-2552-46e7-a04f-45b111be37d1
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '99'
       x-msedge-ref:
-      - 'Ref A: 713F8C17143B43AEB5EC2C716DE5F3A7 Ref B: MWH011020808060 Ref C: 2025-12-20T00:28:56Z'
+      - 'Ref A: D3E7AB3A865548D38BDECB86815D7912 Ref B: CO6AA3150220035 Ref C: 2026-01-28T23:45:04Z'
     status:
       code: 201
       message: Created
@@ -289,29 +289,29 @@ interactions:
       ParameterSetName:
       - --resource-group --name --identity-type --user-assigned-identities
       User-Agent:
-      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+      - AZURECLI/2.82.0 azsdk-python-core/1.37.0 Python/3.11.9 (Windows-10-10.0.26200-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_access_connector000001/providers/Microsoft.Databricks/accessConnectors/my-test-access-connector?api-version=2025-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_access_connector000001/providers/Microsoft.Databricks/accessConnectors/my-test-access-connector?api-version=2026-01-01
   response:
     body:
       string: "{\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_access_connector000001/providers/Microsoft.Databricks/accessConnectors/my-test-access-connector\",\r\n
         \ \"name\": \"my-test-access-connector\",\r\n  \"type\": \"Microsoft.Databricks/accessConnectors\",\r\n
         \ \"location\": \"westus\",\r\n  \"identity\": {\r\n    \"type\": \"None\"\r\n
         \ },\r\n  \"properties\": {\r\n    \"provisioningState\": \"Succeeded\"\r\n
-        \ },\r\n  \"systemData\": {\r\n    \"createdBy\": \"test@example.com\",\r\n
-        \   \"createdByType\": \"User\",\r\n    \"createdAt\": \"2025-12-20T00:28:56.6154036+00:00\",\r\n
-        \   \"lastModifiedBy\": \"test@example.com\",\r\n    \"lastModifiedByType\":
-        \"User\",\r\n    \"lastModifiedAt\": \"2025-12-20T00:28:56.6154036+00:00\"\r\n
+        \ },\r\n  \"systemData\": {\r\n    \"createdBy\": \"laurenyeeann@gmail.com\",\r\n
+        \   \"createdByType\": \"User\",\r\n    \"createdAt\": \"2026-01-28T23:45:04.6608576+00:00\",\r\n
+        \   \"lastModifiedBy\": \"laurenyeeann@gmail.com\",\r\n    \"lastModifiedByType\":
+        \"User\",\r\n    \"lastModifiedAt\": \"2026-01-28T23:45:04.6608576+00:00\"\r\n
         \ }\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '694'
+      - '706'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 20 Dec 2025 00:28:58 GMT
+      - Wed, 28 Jan 2026 23:45:05 GMT
       expires:
       - '-1'
       pragma:
@@ -325,7 +325,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '249'
       x-msedge-ref:
-      - 'Ref A: AAA1DDC7B6204B2FAF8482A9A430171B Ref B: MWH011020806060 Ref C: 2025-12-20T00:28:58Z'
+      - 'Ref A: 0EDB9F47E64A4BF1B41ECE30778379DF Ref B: CO6AA3150217053 Ref C: 2026-01-28T23:45:06Z'
     status:
       code: 200
       message: OK
@@ -348,32 +348,32 @@ interactions:
       ParameterSetName:
       - --resource-group --name --identity-type --user-assigned-identities
       User-Agent:
-      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+      - AZURECLI/2.82.0 azsdk-python-core/1.37.0 Python/3.11.9 (Windows-10-10.0.26200-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_access_connector000001/providers/Microsoft.Databricks/accessConnectors/my-test-access-connector?api-version=2025-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_access_connector000001/providers/Microsoft.Databricks/accessConnectors/my-test-access-connector?api-version=2026-01-01
   response:
     body:
       string: "{\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_access_connector000001/providers/Microsoft.Databricks/accessConnectors/my-test-access-connector\",\r\n
         \ \"name\": \"my-test-access-connector\",\r\n  \"type\": \"Microsoft.Databricks/accessConnectors\",\r\n
         \ \"location\": \"westus\",\r\n  \"identity\": {\r\n    \"userAssignedIdentities\":
         {\r\n      \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_access_connector000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/my-test-identity\":
-        {\r\n        \"principalId\": \"95323a3f-db91-4bf8-8513-4f42a3ed084e\",\r\n
-        \       \"clientId\": \"68621eaf-3497-4dc3-a48a-c47cf444017a\"\r\n      }\r\n
+        {\r\n        \"principalId\": \"a82288ec-c5eb-4142-b4e7-95a4838fa8d5\",\r\n
+        \       \"clientId\": \"a16727ca-59f1-4cc4-b2b8-1e09f4456701\"\r\n      }\r\n
         \   },\r\n    \"type\": \"UserAssigned\"\r\n  },\r\n  \"properties\": {\r\n
         \   \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"systemData\": {\r\n
-        \   \"createdBy\": \"test@example.com\",\r\n    \"createdByType\": \"User\",\r\n
-        \   \"createdAt\": \"2025-12-20T00:28:56.6154036+00:00\",\r\n    \"lastModifiedBy\":
-        \"test@example.com\",\r\n    \"lastModifiedByType\": \"User\",\r\n    \"lastModifiedAt\":
-        \"2025-12-20T00:28:58.9442678+00:00\"\r\n  }\r\n}"
+        \   \"createdBy\": \"laurenyeeann@gmail.com\",\r\n    \"createdByType\": \"User\",\r\n
+        \   \"createdAt\": \"2026-01-28T23:45:04.6608576+00:00\",\r\n    \"lastModifiedBy\":
+        \"laurenyeeann@gmail.com\",\r\n    \"lastModifiedByType\": \"User\",\r\n    \"lastModifiedAt\":
+        \"2026-01-28T23:45:07.3131004+00:00\"\r\n  }\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1063'
+      - '1075'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 20 Dec 2025 00:28:59 GMT
+      - Wed, 28 Jan 2026 23:45:08 GMT
       expires:
       - '-1'
       pragma:
@@ -385,11 +385,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=a70a66b6-f372-4fcc-9f09-6c5e1e64c3dd/westus/f5c858da-320d-481c-97d5-7b9e6d382111
+      - tenantId=b2ad95e6-8830-4405-a60e-12944d7ac939,objectId=444fc911-d78c-459a-a60c-b91f4398edb8/westus/9d1fcbea-3495-4df1-b133-31dd1571cf14
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '99'
       x-msedge-ref:
-      - 'Ref A: 8FA07E56FEC34B98804555B1D764A3B7 Ref B: MWH011020806034 Ref C: 2025-12-20T00:28:58Z'
+      - 'Ref A: 478826433D664AA5BB753CAFA7E4A735 Ref B: MWH011020806054 Ref C: 2026-01-28T23:45:06Z'
     status:
       code: 200
       message: OK
@@ -409,9 +409,9 @@ interactions:
       ParameterSetName:
       - --resource-group --name
       User-Agent:
-      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
+      - AZURECLI/2.82.0 azsdk-python-core/1.37.0 Python/3.11.9 (Windows-10-10.0.26200-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_access_connector000001/providers/Microsoft.Databricks/accessConnectors/my-test-access-connector?api-version=2025-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_access_connector000001/providers/Microsoft.Databricks/accessConnectors/my-test-access-connector?api-version=2026-01-01
   response:
     body:
       string: ''
@@ -421,7 +421,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Sat, 20 Dec 2025 00:29:01 GMT
+      - Wed, 28 Jan 2026 23:45:10 GMT
       expires:
       - '-1'
       pragma:
@@ -433,13 +433,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=a70a66b6-f372-4fcc-9f09-6c5e1e64c3dd/westus/edb7e91b-79c2-4ab4-ab99-b3f636110528
+      - tenantId=b2ad95e6-8830-4405-a60e-12944d7ac939,objectId=444fc911-d78c-459a-a60c-b91f4398edb8/westus2/51500d8f-c3ad-4931-897e-799bda73674f
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '799'
+      - '199'
       x-ms-ratelimit-remaining-subscription-global-deletes:
-      - '11999'
+      - '2999'
       x-msedge-ref:
-      - 'Ref A: 79033C48BE374D0CB88FB2C57F85F724 Ref B: MWH011020807054 Ref C: 2025-12-20T00:29:00Z'
+      - 'Ref A: F37E05574BCE4F0188EC19D7719A5647 Ref B: CO1EDGE2005 Ref C: 2026-01-28T23:45:09Z'
     status:
       code: 200
       message: OK
