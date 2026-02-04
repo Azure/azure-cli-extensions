@@ -177,17 +177,25 @@ def frontend_collaboration_dataset_show(cmd, collaboration_id, dataset_id):
         collaboration_id, dataset_id)
 
 
-def frontend_collaboration_dataset_publish(cmd, collaboration_id, dataset_id):
+def frontend_collaboration_dataset_publish(
+        cmd, collaboration_id, dataset_id, body):
     """Publish a dataset
 
     :param cmd: CLI command context
     :param collaboration_id: Collaboration identifier
     :param dataset_id: Dataset identifier
+    :param body: Publish configuration JSON (string, dict, or @file)
     :return: Publish result
     """
+    import json
+
+    # Handle body parameter - convert string to dict if needed
+    if isinstance(body, str):
+        body = json.loads(body)
+
     client = get_frontend_client(cmd)
     return client.collaboration.analytics_dataset_id_publish_post(
-        collaboration_id, dataset_id)
+        collaboration_id, dataset_id, body)
 
 
 # ============================================================================
@@ -251,17 +259,25 @@ def frontend_collaboration_query_show(cmd, collaboration_id, query_id):
         collaboration_id, query_id)
 
 
-def frontend_collaboration_query_publish(cmd, collaboration_id, query_id):
+def frontend_collaboration_query_publish(
+        cmd, collaboration_id, query_id, body):
     """Publish a query
 
     :param cmd: CLI command context
     :param collaboration_id: Collaboration identifier
     :param query_id: Query identifier
+    :param body: Publish configuration JSON (string, dict, or @file)
     :return: Publish result
     """
+    import json
+
+    # Handle body parameter - convert string to dict if needed
+    if isinstance(body, str):
+        body = json.loads(body)
+
     client = get_frontend_client(cmd)
     return client.collaboration.analytics_queries_query_id_publish_post(
-        collaboration_id, query_id)
+        collaboration_id, query_id, body)
 
 
 def frontend_collaboration_query_run(cmd, collaboration_id, query_id):

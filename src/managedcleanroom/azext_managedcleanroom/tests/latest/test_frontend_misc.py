@@ -24,9 +24,9 @@ from azext_managedcleanroom._frontend_custom import (
 
 class TestFrontendMisc(unittest.TestCase):
     """Test cases for miscellaneous commands"""
-    
+
     # Invitation Tests
-    
+
     @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
     def test_list_invitations(self, mock_get_client):
         """Test listing invitations for a collaboration"""
@@ -47,19 +47,20 @@ class TestFrontendMisc(unittest.TestCase):
             }
         ]
         mock_get_client.return_value = mock_client
-        
+
         # Execute
         result = frontend_collaboration_invitation_list(
             cmd=Mock(),
             collaboration_id="test-collab-123"
         )
-        
+
         # Verify
         self.assertEqual(len(result), 2)
         self.assertEqual(result[0]["invitationId"], "invite-1")
         self.assertEqual(result[1]["invitationId"], "invite-2")
-        mock_client.collaboration.invitations_get.assert_called_once_with("test-collab-123")
-    
+        mock_client.collaboration.invitations_get.assert_called_once_with(
+            "test-collab-123")
+
     @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
     def test_show_invitation(self, mock_get_client):
         """Test showing a specific invitation"""
@@ -72,14 +73,14 @@ class TestFrontendMisc(unittest.TestCase):
             "status": "pending"
         }
         mock_get_client.return_value = mock_client
-        
+
         # Execute
         result = frontend_collaboration_invitation_show(
             cmd=Mock(),
             collaboration_id="test-collab-123",
             invitation_id="test-invitation-123"
         )
-        
+
         # Verify
         self.assertEqual(result["invitationId"], "test-invitation-123")
         self.assertEqual(result["collaborationId"], "test-collab-123")
@@ -87,7 +88,7 @@ class TestFrontendMisc(unittest.TestCase):
         mock_client.collaboration.invitation_id_get.assert_called_once_with(
             "test-collab-123", "test-invitation-123"
         )
-    
+
     @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
     def test_accept_invitation(self, mock_get_client):
         """Test accepting an invitation"""
@@ -99,22 +100,21 @@ class TestFrontendMisc(unittest.TestCase):
             "acceptedAt": "2024-01-01T00:00:00Z"
         }
         mock_get_client.return_value = mock_client
-        
+
         # Execute
         result = frontend_collaboration_invitation_accept(
             cmd=Mock(),
             collaboration_id="test-collab-123",
             invitation_id="test-invitation-123"
         )
-        
+
         # Verify
         self.assertEqual(result["status"], "accepted")
         mock_client.collaboration.invitation_id_accept_post.assert_called_once_with(
-            "test-collab-123", "test-invitation-123"
-        )
-    
+            "test-collab-123", "test-invitation-123")
+
     # Consent Tests
-    
+
     @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
     def test_check_consent(self, mock_get_client):
         """Test checking consent status"""
@@ -126,33 +126,29 @@ class TestFrontendMisc(unittest.TestCase):
             "consentedAt": "2024-01-01T00:00:00Z"
         }
         mock_get_client.return_value = mock_client
-        
+
         # Execute
         result = frontend_collaboration_consent_check(
             cmd=Mock(),
             collaboration_id="test-collab-123",
             document_id="doc-123"
         )
-        
+
         # Verify
         self.assertEqual(result["documentId"], "doc-123")
         self.assertTrue(result["consentGiven"])
         mock_client.collaboration.check_consent_document_id_get.assert_called_once_with(
-            "test-collab-123", "doc-123"
-        )
-    
+            "test-collab-123", "doc-123")
+
     @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
     def test_set_consent(self, mock_get_client):
         """Test setting consent action"""
         # Mock the client and its method chain
         mock_client = Mock()
         mock_client.collaboration.set_consent_document_id_action_post.return_value = {
-            "documentId": "doc-123",
-            "action": "grant",
-            "updatedAt": "2024-01-01T00:00:00Z"
-        }
+            "documentId": "doc-123", "action": "grant", "updatedAt": "2024-01-01T00:00:00Z"}
         mock_get_client.return_value = mock_client
-        
+
         # Execute
         result = frontend_collaboration_consent_set(
             cmd=Mock(),
@@ -160,15 +156,14 @@ class TestFrontendMisc(unittest.TestCase):
             document_id="doc-123",
             action="grant"
         )
-        
+
         # Verify
         self.assertEqual(result["action"], "grant")
         mock_client.collaboration.set_consent_document_id_action_post.assert_called_once_with(
-            "test-collab-123", "doc-123", "grant"
-        )
-    
+            "test-collab-123", "doc-123", "grant")
+
     # Audit Test
-    
+
     @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
     def test_list_audit_logs(self, mock_get_client):
         """Test listing audit logs"""
@@ -189,21 +184,22 @@ class TestFrontendMisc(unittest.TestCase):
             }
         ]
         mock_get_client.return_value = mock_client
-        
+
         # Execute
         result = frontend_collaboration_audit_list(
             cmd=Mock(),
             collaboration_id="test-collab-123"
         )
-        
+
         # Verify
         self.assertEqual(len(result), 2)
         self.assertEqual(result[0]["logId"], "test-log-123")
         self.assertEqual(result[1]["logId"], "log-456")
-        mock_client.collaboration.analytics_auditevents_get.assert_called_once_with("test-collab-123")
-    
+        mock_client.collaboration.analytics_auditevents_get.assert_called_once_with(
+            "test-collab-123")
+
     # Attestation Tests
-    
+
     @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
     def test_get_attestation_cgs(self, mock_get_client):
         """Test getting CGS attestation"""
@@ -215,18 +211,19 @@ class TestFrontendMisc(unittest.TestCase):
             "issuedAt": "2024-01-01T00:00:00Z"
         }
         mock_get_client.return_value = mock_client
-        
+
         # Execute
         result = frontend_collaboration_attestation_cgs(
             cmd=Mock(),
             collaboration_id="test-collab-123"
         )
-        
+
         # Verify
         self.assertEqual(result["attestationType"], "cgs")
         self.assertIn("token", result)
-        mock_client.collaboration.attestationreport_cgs_get.assert_called_once_with("test-collab-123")
-    
+        mock_client.collaboration.attestationreport_cgs_get.assert_called_once_with(
+            "test-collab-123")
+
     @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
     def test_get_attestation_cleanroom(self, mock_get_client):
         """Test getting cleanroom attestation"""
@@ -236,20 +233,20 @@ class TestFrontendMisc(unittest.TestCase):
             "attestationType": "cleanroom",
             "token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...",
             "issuedAt": "2024-01-01T00:00:00Z",
-            "cleanroomId": "cleanroom-123"
-        }
+            "cleanroomId": "cleanroom-123"}
         mock_get_client.return_value = mock_client
-        
+
         # Execute
         result = frontend_collaboration_attestation_cleanroom(
             cmd=Mock(),
             collaboration_id="test-collab-123"
         )
-        
+
         # Verify
         self.assertEqual(result["attestationType"], "cleanroom")
         self.assertIn("cleanroomId", result)
-        mock_client.collaboration.attestationreport_cleanroom_get.assert_called_once_with("test-collab-123")
+        mock_client.collaboration.attestationreport_cleanroom_get.assert_called_once_with(
+            "test-collab-123")
 
 
 if __name__ == '__main__':

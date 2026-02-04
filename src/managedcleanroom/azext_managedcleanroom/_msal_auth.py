@@ -14,7 +14,8 @@ logger = get_logger(__name__)
 
 # MSAL Configuration Constants
 # TODO (sakshamgarg): Need to register a new app in AAD and use that for authentication
-# for the device code flow. The current client ID is used only for testing purposes.
+# for the device code flow. The current client ID is used only for testing
+# purposes.
 DEFAULT_MS_CLIENT_ID = "8a3849c1-81c5-4d62-b83e-3bb2bb11251a"
 DEFAULT_MS_TENANT_ID = "common"
 DEFAULT_MS_SCOPES = "User.Read"

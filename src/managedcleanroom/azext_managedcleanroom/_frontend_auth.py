@@ -105,7 +105,8 @@ def get_frontend_client(cmd, endpoint=None):
             'Or use the --endpoint flag with your command.')
 
     logger.debug(
-        "Creating Analytics Frontend API client for endpoint: %s", api_endpoint)
+        "Creating Analytics Frontend API client for endpoint: %s",
+        api_endpoint)
 
     # Check if this is a local development endpoint
     is_local = api_endpoint.startswith(

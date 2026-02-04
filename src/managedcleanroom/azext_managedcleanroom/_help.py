@@ -260,9 +260,28 @@ helps['managedcleanroom frontend dataset show'] = """
 helps['managedcleanroom frontend dataset publish'] = """
     type: command
     short-summary: Publish a dataset
+    long-summary: |
+        Publishes a dataset with configuration including dataset access point,
+        protection settings, encryption secrets, and identity configuration.
+
+        The body parameter must contain a JSON object with:
+        - data.datasetAccessPoint: Dataset access configuration
+          - name: Access point name
+          - path: Dataset path
+          - protection: Protection configuration with proxyMode, proxyType, etc.
     examples:
-        - name: Publish a dataset
-          text: az managedcleanroom frontend dataset publish -c <cid> -d <dataset-id>
+        - name: Publish a dataset with configuration from file
+          text: |
+            az managedcleanroom frontend dataset publish \\
+              --collaboration-id <cid> \\
+              --dataset-id <dataset-id> \\
+              --body @publish-config.json
+        - name: Publish a dataset with inline JSON
+          text: |
+            az managedcleanroom frontend dataset publish \\
+              --collaboration-id <cid> \\
+              --dataset-id <dataset-id> \\
+              --body '{"data": {"datasetAccessPoint": {"name": "my-dataset", "path": "/data/path", "protection": {}}}}'
 """
 
 
@@ -320,9 +339,27 @@ helps['managedcleanroom frontend query show'] = """
 helps['managedcleanroom frontend query publish'] = """
     type: command
     short-summary: Publish a query
+    long-summary: |
+        Publishes a query with configuration including input datasets, output dataset,
+        and query execution segments.
+
+        The body parameter must contain a JSON object with:
+        - inputDatasets: Array of input dataset configurations
+        - outputDataset: Output dataset configuration
+        - queryData: Query execution data with segments
     examples:
-        - name: Publish a query
-          text: az managedcleanroom frontend query publish -c <cid> -q <query-id>
+        - name: Publish a query with configuration from file
+          text: |
+            az managedcleanroom frontend query publish \\
+              --collaboration-id <cid> \\
+              --query-id <query-id> \\
+              --body @query-publish-config.json
+        - name: Publish a query with inline JSON
+          text: |
+            az managedcleanroom frontend query publish \\
+              --collaboration-id <cid> \\
+              --query-id <query-id> \\
+              --body '{"inputDatasets": [{"datasetDocumentId": "...", "view": "..."}], "outputDataset": {}, "queryData": {"segments": []}}'
 """
 
 helps['managedcleanroom frontend query run'] = """

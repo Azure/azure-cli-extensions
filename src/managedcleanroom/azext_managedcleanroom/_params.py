@@ -83,6 +83,11 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
 
     with self.argument_context('managedcleanroom frontend dataset publish') as c:
         c.argument('dataset_id', dataset_id_type)
+        c.argument(
+            'body',
+            type=str,
+            help='JSON string or @file path containing publish configuration. '
+            'Must include datasetAccessPoint with name, path, and protection details.')
 
     # Consent context
     with self.argument_context('managedcleanroom frontend consent') as c:
@@ -101,6 +106,11 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
 
     with self.argument_context('managedcleanroom frontend query publish') as c:
         c.argument('query_id', query_id_type)
+        c.argument(
+            'body',
+            type=str,
+            help='JSON string or @file path containing publish configuration. '
+            'Must include inputDatasets, outputDataset, and queryData.')
 
     with self.argument_context('managedcleanroom frontend query run') as c:
         c.argument('query_id', query_id_type)

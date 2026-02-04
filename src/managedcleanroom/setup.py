@@ -49,7 +49,8 @@ setup(
     author_email='azpycli@microsoft.com',
     url='https://github.com/Azure/azure-cli-extensions/tree/main/src/managedcleanroom',
     classifiers=CLASSIFIERS,
-    packages=find_packages(exclude=["tests"]),
-    package_data={'azext_managedcleanroom': ['azext_metadata.json']},
-    install_requires=DEPENDENCIES
-)
+    packages=find_packages(
+        exclude=["tests"]),
+    package_data={
+        'azext_managedcleanroom': ['azext_metadata.json']},
+    install_requires=DEPENDENCIES)
