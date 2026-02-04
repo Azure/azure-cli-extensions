@@ -767,7 +767,7 @@ def perform_azure_container_storage_update(
                 logger.warning(op_text)
         except Exception as ex:     # pylint: disable=broad-except
             if is_extension_installed:
-                logger.error("Azure Container Storage failed to update.\nError: %s.", ex)
+                logger.error("Azure Container Storage failed to update.\nError: %s", ex)
             else:
                 logger.error("Azure Container Storage failed to install.\nError: %s", ex)
                 delete_extension_auto = True

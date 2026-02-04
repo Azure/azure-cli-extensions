@@ -15,6 +15,11 @@ Pending
 * `az aks create/update`: Add `--enable-azure-monitor-logs` support to container network logs validation.
 * `az aks create/update`: Add `--enable-default-domain` and `--disable-default-domain` parameters to manage the default domain feature for web app routing.
 
+19.0.0b23
++++++++
+* `az aks create`: Add ephemeralDisk and elasticSan storage options to `--enable-azure-container-storage` for the latest version of Azure Container Storage.
+* `az aks update`: Add ephemeralDisk and elasticSan storage options to `--enable-azure-container-storage` and `--disable-azure-container-storage` for the latest version of Azure Container Storage.
+
 19.0.0b22
 +++++++
 * `az aks create/update`: Automatically enable `--enable-high-log-scale-mode` when `--enable-container-network-logs` is specified. Raises an error if user explicitly disables HLSM while enabling CNL.
