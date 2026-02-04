@@ -952,13 +952,28 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
             # Check if monitoring addon is enabled:
             # - Already configured in mc.addon_profiles, OR
-            # - Being enabled via --enable-addons parameter (for cluster create scenario)
+            # - Being enabled via --enable-addons parameter (for cluster create scenario),
+            #   OR via the dedicated --enable-azure-monitor-logs flag.
             monitoring_already_enabled = (
                 mc.addon_profiles and
                 mc.addon_profiles.get("omsagent") and
                 mc.addon_profiles["omsagent"].enabled
             )
-            monitoring_being_enabled = "monitoring" in (self.raw_param.get("enable_addons") or "")
+            # Derive monitoring being enabled from normalized addon list and/or
+            # the explicit --enable-azure-monitor-logs flag.
+            enable_addons = None
+            try:
+                # Prefer normalized addons if helper is available.
+                enable_addons = self._get_enable_addons()
+            except AttributeError:
+                # Fallback to the raw parameter if helper is not present.
+                enable_addons = self.raw_param.get("enable_addons")
+            if isinstance(enable_addons, str):
+                enable_addons = [a.strip() for a in enable_addons.split(",") if a.strip()]
+            monitoring_being_enabled = (
+                (enable_addons and CONST_MONITORING_ADDON_NAME_CAMELCASE in enable_addons)
+                or bool(self.raw_param.get("enable_azure_monitor_logs"))
+            )
             monitoring_enabled = monitoring_already_enabled or monitoring_being_enabled
 
             if not acns_enabled or not monitoring_enabled:
