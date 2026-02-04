@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "palo-alto cloudngfw local-rulestack list-app-id",
 )
 class ListAppId(AAZCommand):
-    """List of AppIds for LocalRulestack ApiVersion
+    """List of AppIds for Palo Alto Networks local rulestack ApiVersion.
 
     :example: List of AppIds for LocalRulestack ApiVersion
         az palo-alto cloudngfw local-rulestack list-app-id -g MyResourceGroup -n MyLocalRulestacks
     """
 
     _aaz_info = {
-        "version": "2022-08-29",
+        "version": "2025-10-08",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/localrulestacks/{}/listappids", "2022-08-29"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/localrulestacks/{}/listappids", "2025-10-08"],
         ]
     }
 
@@ -148,7 +148,7 @@ class ListAppId(AAZCommand):
                     "top", self.ctx.args.top,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2022-08-29",
+                    "api-version", "2025-10-08",
                     required=True,
                 ),
             }

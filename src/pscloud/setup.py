@@ -10,7 +10,11 @@ from setuptools import setup, find_packages
 
 
 # HISTORY.rst entry.
-VERSION = '1.0.0b1'
+STABLE_VERSION = '1.0.1'
+PREVIEW_VERSION = '1.0.0b1'
+
+# Currently using stable version
+VERSION = STABLE_VERSION
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers

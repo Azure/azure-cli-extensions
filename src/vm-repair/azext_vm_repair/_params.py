@@ -36,7 +36,7 @@ def load_arguments(self, _):
         c.argument('yes', help='Option to skip prompt for associating public ip in no Tty mode')
         c.argument('disable_trusted_launch', help='Option to disable Trusted Launch security type on the repair vm by setting the security type to Standard.')
         c.argument('os_disk_type', help='Change the OS Disk storage type from the default of PremiumSSD_LRS to the given value.')
-        
+
     with self.argument_context('vm repair restore') as c:
         c.argument('repair_vm_id', help='Repair VM resource id.')
         c.argument('disk_name', help='Name of fixed data disk. Defaults to the first data disk in the repair VM.')
@@ -64,7 +64,7 @@ def load_arguments(self, _):
         c.argument('repair_vm_name', help='Name of repair VM.')
         c.argument('copy_disk_name', help='Name of OS disk copy.')
         c.argument('repair_group_name', help='Name for new or existing resource group that will contain repair VM.')
-    
+
     with self.argument_context('vm repair repair-button') as c:
         c.argument('button_command', help='Button_command for repair VM.')
         c.argument('repair_username', help='Admin username for repair VM.')

@@ -15,6 +15,7 @@ import re
 import requests
 import shutil
 import packaging.version as SemVer
+import random
 
 from enum import Enum
 from urllib.request import urlopen
@@ -22,6 +23,7 @@ from urllib.request import urlopen
 from azure.cli.command_modules.acr.custom import acr_show
 from azure.cli.command_modules.containerapp._utils import safe_get, _ensure_location_allowed, \
     _generate_log_analytics_if_not_provided
+from azure.cli.command_modules.containerapp._clients import ContainerAppClient
 from azure.cli.command_modules.containerapp._client_factory import handle_raw_exception
 from azure.cli.core._profile import Profile
 from azure.cli.core.azclierror import (ValidationError, ResourceNotFoundError, CLIError, InvalidArgumentValueError)
@@ -831,3 +833,82 @@ def create_acrpull_role_assignment_if_needed(cmd, registry_server, registry_iden
                         raise UnauthorizedError(message) from e
                 else:
                     time.sleep(5)
+
+
+def get_min_replicas_from_revision(cmd, resource_group_name, container_app_name, revision_name):
+    revision_def = ContainerAppClient.show_revision(
+        cmd=cmd,
+        resource_group_name=resource_group_name,
+        container_app_name=container_app_name,
+        name=revision_name
+    )
+    min_replicas = safe_get(revision_def, "properties", "template", "scale", "minReplicas", default=None)
+    return min_replicas
+
+
+def get_random_replica(cmd, resource_group_name, container_app_name, revision_name):
+    logger.debug(f"Getting random replica for container app: name='{container_app_name}', resource_group='{resource_group_name}', revision='{revision_name}'")
+
+    try:
+        replicas = ContainerAppClient.list_replicas(
+            cmd=cmd,
+            resource_group_name=resource_group_name,
+            container_app_name=container_app_name,
+            revision_name=revision_name
+        )
+    except Exception as e:
+        logger.debug(f"Failed to list replicas for revision '{revision_name}': {str(e)}")
+        handle_raw_exception(e)
+
+    if not replicas:
+        logger.debug(f"No replicas found for revision '{revision_name}' - unable to proceed")
+        logger.debug(f"checking min replica count for revision='{revision_name}'")
+
+        min_replicas = get_min_replicas_from_revision(
+            cmd,
+            resource_group_name,
+            container_app_name,
+            revision_name
+        )
+        if min_replicas is None or min_replicas == 0:
+            logger.debug(f"The revision '{revision_name}' has minReplicas set to 0.")
+            raise CLIError(f"The revision '{revision_name}' has minReplicas set to 0. Ensure that there is at least one replica. To update minimum replica: Run 'az containerapp update --name {container_app_name} --resource-group {resource_group_name} --min-replica 1'")
+
+        raise CLIError(f"No replicas found for revision '{revision_name}' of container app '{container_app_name}'.")
+
+    # Filter replicas by running state
+    running_replicas = [
+        replica for replica in replicas
+        if replica.get("properties", {}).get("runningState") == "Running"
+    ]
+
+    if not running_replicas:
+        raise ValidationError(f"No running replicas found for revision '{revision_name}' of container app '{container_app_name}'.")
+
+    # Select the replica with the latest creation time
+    # createdTime is in ISO 8601 format (e.g., "2025-10-03T00:56:33Z") which is lexicographically sortable
+    replica = max(running_replicas, key=lambda r: r.get("properties", {}).get("createdTime", "1900-01-01T00:00:00Z"))
+    replica_name = replica.get("name")
+    container_name = replica.get("properties", {}).get("containers", [{}])[0].get("name")
+
+    logger.debug(f"Selected random replica: '{replica_name}' with container: '{container_name}'")
+
+    if not replica_name:
+        logger.debug(f"Could not extract replica name from selected replica: {replica}")
+        raise CLIError(f"Could not determine replica name for revision '{revision_name}' of container app '{container_app_name}'.")
+
+    return replica_name, container_name
+
+
+def execute_function_admin_command(cmd, resource_group_name, name, command, revision_name=None, replica_name=None, container_name=None):
+    from .custom import containerapp_debug
+
+    return containerapp_debug(
+        cmd=cmd,
+        resource_group_name=resource_group_name,
+        name=name,
+        container=container_name,
+        revision=revision_name,
+        replica=replica_name,
+        debug_command=command
+    )

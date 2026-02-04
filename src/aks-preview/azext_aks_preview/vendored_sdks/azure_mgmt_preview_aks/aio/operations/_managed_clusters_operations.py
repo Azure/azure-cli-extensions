@@ -8,7 +8,7 @@
 # --------------------------------------------------------------------------
 from collections.abc import MutableMapping
 from io import IOBase
-from typing import Any, AsyncIterator, Callable, IO, Optional, TypeVar, Union, cast, overload
+from typing import Any, AsyncIterable, AsyncIterator, Callable, Dict, IO, Optional, TypeVar, Union, cast, overload
 import urllib.parse
 
 from azure.core import AsyncPipelineClient
@@ -33,7 +33,7 @@ from azure.mgmt.core.exceptions import ARMErrorFormat
 from azure.mgmt.core.polling.async_arm_polling import AsyncARMPolling
 
 from ... import models as _models
-from ..._utils.serialization import Deserializer, Serializer
+from ..._serialization import Deserializer, Serializer
 from ...operations._managed_clusters_operations import (
     build_abort_latest_operation_request,
     build_create_or_update_request,
@@ -70,8 +70,7 @@ from ...operations._managed_clusters_operations import (
 from .._configuration import ContainerServiceClientConfiguration
 
 T = TypeVar("T")
-ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, dict[str, Any]], Any]]
-List = list
+ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
 
 class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
@@ -149,7 +148,7 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
         return deserialized  # type: ignore
 
     @distributed_trace
-    def list(self, **kwargs: Any) -> AsyncItemPaged["_models.ManagedCluster"]:
+    def list(self, **kwargs: Any) -> AsyncIterable["_models.ManagedCluster"]:
         """Gets a list of managed clusters in the specified subscription.
 
         Gets a list of managed clusters in the specified subscription.
@@ -229,7 +228,7 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
     @distributed_trace
     def list_by_resource_group(
         self, resource_group_name: str, **kwargs: Any
-    ) -> AsyncItemPaged["_models.ManagedCluster"]:
+    ) -> AsyncIterable["_models.ManagedCluster"]:
         """Lists managed clusters in the specified subscription and resource group.
 
         Lists managed clusters in the specified subscription and resource group.
@@ -2531,7 +2530,7 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
     @distributed_trace
     def list_outbound_network_dependencies_endpoints(  # pylint: disable=name-too-long
         self, resource_group_name: str, resource_name: str, **kwargs: Any
-    ) -> AsyncItemPaged["_models.OutboundEnvironmentEndpoint"]:
+    ) -> AsyncIterable["_models.OutboundEnvironmentEndpoint"]:
         """Gets a list of egress endpoints (network endpoints of all outbound dependencies) in the
         specified managed cluster.
 
@@ -2680,7 +2679,7 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
     @distributed_trace
     def list_guardrails_versions(
         self, location: str, **kwargs: Any
-    ) -> AsyncItemPaged["_models.GuardrailsAvailableVersion"]:
+    ) -> AsyncIterable["_models.GuardrailsAvailableVersion"]:
         """Gets a list of supported Guardrails versions in the specified subscription and location.
 
         Contains list of Guardrails version along with its support info and whether it is a default
@@ -2824,7 +2823,7 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
     @distributed_trace
     def list_safeguards_versions(
         self, location: str, **kwargs: Any
-    ) -> AsyncItemPaged["_models.SafeguardsAvailableVersion"]:
+    ) -> AsyncIterable["_models.SafeguardsAvailableVersion"]:
         """Gets a list of supported Safeguards versions in the specified subscription and location.
 
         Contains list of Safeguards version along with its support info and whether it is a default
@@ -2907,9 +2906,7 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
         return AsyncItemPaged(get_next, extract_data)
 
     @distributed_trace
-    def list_mesh_revision_profiles(
-        self, location: str, **kwargs: Any
-    ) -> AsyncItemPaged["_models.MeshRevisionProfile"]:
+    def list_mesh_revision_profiles(self, location: str, **kwargs: Any) -> AsyncIterable["_models.MeshRevisionProfile"]:
         """Lists mesh revision profiles for all meshes in the specified location.
 
         Contains extra metadata on each revision, including supported revisions, cluster compatibility
@@ -3051,7 +3048,7 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
     @distributed_trace
     def list_mesh_upgrade_profiles(
         self, resource_group_name: str, resource_name: str, **kwargs: Any
-    ) -> AsyncItemPaged["_models.MeshUpgradeProfile"]:
+    ) -> AsyncIterable["_models.MeshUpgradeProfile"]:
         """Lists available upgrades for all service meshes in a specific cluster.
 
         Lists available upgrades for all service meshes in a specific cluster.

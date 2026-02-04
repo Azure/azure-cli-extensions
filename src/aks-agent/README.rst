@@ -7,31 +7,48 @@ Introduction
 
 The AKS Agent extension provides the "az aks agent" command, an AI-powered assistant that helps analyze and troubleshoot Azure Kubernetes Service (AKS) clusters using Large Language Models (LLMs). The agent combines cluster context, configurable toolsets, and LLMs to answer natural-language questions about your cluster (for example, "Why are my pods not starting?") and can investigate issues in both interactive and non-interactive (batch) modes.
 
-New in this version: **az aks agent-init** command for easy LLM model configuration!
+New in this version: **az aks agent-init** command for flexible agent deployment!
 
-You can now use `az aks agent-init` to interactively add and configure LLM models before asking questions. This command guides you through the setup process, allowing you to add multiple models as needed. When asking questions with `az aks agent`, you can:
+The `az aks agent-init` command supports two deployment modes:
 
-- Use `--config-file` to specify your own model configuration file
-- Use `--model` to select a previously configured model
-- If neither is provided, the last configured LLM will be used by default
+- **Cluster mode**: Deploys the AKS agent as a Helm chart directly in your AKS cluster with enterprise-grade security (Kubernetes RBAC, workload identity, encrypted secrets)
+- **Local mode**: Runs the AKS agent in a Docker container on your local machine with automatic credential and kubeconfig mounting
 
-This makes it much easier to manage and switch between multiple models for your AKS troubleshooting workflows.
+During initialization, you'll be prompted to:
+
+- Choose between cluster or local deployment mode
+- Configure your LLM provider and model interactively
+- For cluster mode: specify namespace and service account for RBAC
+- Validate connectivity and save the configuration
+
+When asking questions with `az aks agent`:
+
+- The agent automatically uses the last configured model
+- Use `--model` to select a specific model when you have multiple models configured
+- For local mode: Ensure Docker is installed and running
+
+This architecture provides flexibility to choose between production-ready cluster deployment or convenient local troubleshooting workflows.
 
 Key capabilities
 ----------------
 
 
+- **Flexible Deployment**: Choose between cluster mode (Helm chart) or local mode (Docker container) with `az aks agent-init`.
+- **Interactive Configuration**: Guided setup for deployment mode, namespace selection, and service account configuration.
+- **Secure Access**: Cluster mode uses Kubernetes RBAC for cluster resources and Azure workload identity for Azure resources.
+- **LLM Configuration**: Interactively configure LLM models with credentials stored securely (Kubernetes secrets for cluster mode, local files for local mode).
+- Support for multiple LLM providers (Azure OpenAI, OpenAI, Anthropic, Gemini, etc.).
+- Automatically uses the last configured model by default.
+- Optionally use --model to select a specific model when you have multiple models configured.
 - Interactive and non-interactive modes (use --no-interactive for batch runs).
-- Support for multiple LLM providers (Azure OpenAI, OpenAI, etc.) via interactive configuration.
-- **Easy model setup with `az aks agent-init`**: interactively add and configure LLM models, run multiple times to add more models.
-- Configurable via a JSON/YAML config file provided with --config-file, or select a model with --model.
-- If no config or model is specified, the last configured LLM is used automatically.
 - Control echo and tool output visibility with --no-echo-request and --show-tool-output.
 - Refresh the available toolsets with --refresh-toolsets.
-- Stay in traditional toolset mode by default, or opt in to aks-mcp integration with ``--aks-mcp`` when you need the enhanced capabilities.
 
 Prerequisites
 -------------
+- **For cluster mode**: Kubernetes cluster access with sufficient permissions to create namespaces, deployments, and RBAC resources
+- **For local mode**: Docker installed and running on your local machine
+
 No need to manually set environment variables! All model and credential information can be configured interactively using `az aks agent-init`.
 For more details about supported model providers and required
 variables, see: https://docs.litellm.ai/docs/providers
@@ -47,14 +64,32 @@ Install the extension
 
     az extension add --name aks-agent
 
-Configure LLM models interactively
-----------------------------------
+Initialize and configure the AKS agent
+---------------------------------------
 
 .. code-block:: bash
 
-    az aks agent-init
+    az aks agent-init --resource-group MyResourceGroup --name MyManagedCluster
 
-This command will guide you through adding a new LLM model. You can run it multiple times to add more models or update existing models. All configured models are saved locally and can be selected when asking questions.
+This command will interactively guide you through the initialization process:
+
+1. **Choose deployment mode**: Select between cluster mode (agent runs as Helm chart in AKS) or local mode (agent runs in Docker container on your machine)
+2. **Configure LLM model**: Select and validate LLM provider with credentials stored securely
+3. **Cluster mode setup**:
+   
+   - Specify the namespace for deployment (e.g., aks-agent)
+   - Provide service account name for Kubernetes RBAC
+   - Deploy the AKS agent Helm chart in your cluster
+   - Configure Kubernetes RBAC for secure cluster resource access
+   - Optionally configure Azure workload identity for Azure resource access
+
+4. **Local mode setup**:
+   
+   - Configure Docker-based agent execution
+   - Store configuration files locally for cluster-specific access
+   - Mount Azure credentials and kubeconfig automatically
+
+You can run it multiple times to update configurations or add more models.
 
 Run the agent (Azure OpenAI example) :
 -----------------------------------
@@ -70,12 +105,6 @@ Run the agent (Azure OpenAI example) :
 .. code-block:: bash
 
     az aks agent "Why are my pods not starting?" --name MyManagedCluster --resource-group MyResourceGroup --model azure/my-gpt4.1-deployment
-
-**3. Use a custom config file:**
-
-.. code-block:: bash
-
-    az aks agent "Why are my pods not starting?" --config-file /path/to/your/model_config.yaml
 
 
 Run the agent (OpenAI example)
@@ -93,34 +122,27 @@ Run the agent (OpenAI example)
     
     az aks agent "Why are my pods not starting?" --name MyManagedCluster --resource-group MyResourceGroup --model gpt-4o
 
-**3. Use a custom config file:**
-
-.. code-block:: bash
-
-    az aks agent "Why are my pods not starting?" --config-file /path/to/your/model_config.yaml
-
 Run in non-interactive batch mode
 ---------------------------------
 
 .. code-block:: bash
 
-    az aks agent "Diagnose networking issues" --no-interactive --max-steps 15 --model azure/my-gpt4.1-deployment
+    az aks agent "Diagnose networking issues" --no-interactive --name MyManagedCluster --resource-group MyResourceGroup --model azure/my-gpt4.1-deployment
 
-Opt in to MCP mode
-------------------
+Clean up the AKS agent
+-----------------------
 
-Traditional toolsets remain the default. Enable the aks-mcp integration when you want the enhanced toolsets by passing ``--aks-mcp``. You can return to traditional mode on a subsequent run with ``--no-aks-mcp``.
+To uninstall the AKS agent and clean up all Kubernetes resources:
 
 .. code-block:: bash
 
-    az aks agent --aks-mcp "Check node health with MCP" --name MyManagedCluster --resource-group MyResourceGroup --model azure/my-gpt4.1-deployment
+    az aks agent-cleanup --resource-group MyResourceGroup --name MyManagedCluster
 
-Using a configuration file
---------------------------
+This command will:
 
-Pass a config file with --config-file to predefine model, credentials, and toolsets. See
-the example config and more detailed examples in the help definition at
-`src/aks-agent/azext_aks_agent/_help.py`.
+1. Uninstall the AKS agent Helm chart from your cluster
+2. Remove all associated Kubernetes resources (deployments, pods, secrets, RBAC configurations)
+3. Clean up the LLM configuration secrets
 
 More help
 ---------

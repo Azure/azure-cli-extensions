@@ -22,9 +22,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2021-03-01",
+        "version": "2025-06-11",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}/tagrules", "2021-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}/tagrules", "2025-06-11"],
         ]
     }
 
@@ -49,6 +49,11 @@ class List(AAZCommand):
             options=["-n", "--name", "--monitor-name"],
             help="Monitor resource name",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9_][a-zA-Z0-9_-]+$",
+                max_length=32,
+                min_length=2,
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -121,7 +126,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2021-03-01",
+                    "api-version", "2025-06-11",
                     required=True,
                 ),
             }
@@ -157,7 +162,9 @@ class List(AAZCommand):
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
             )
-            _schema_on_200.value = AAZListType()
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
@@ -179,6 +186,13 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
+            properties.agent_rules = AAZObjectType(
+                serialized_name="agentRules",
+            )
+            properties.automuting = AAZBoolType()
+            properties.custom_metrics = AAZBoolType(
+                serialized_name="customMetrics",
+            )
             properties.log_rules = AAZObjectType(
                 serialized_name="logRules",
             )
@@ -189,6 +203,18 @@ class List(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+
+            agent_rules = cls._schema_on_200.value.Element.properties.agent_rules
+            agent_rules.enable_agent_monitoring = AAZBoolType(
+                serialized_name="enableAgentMonitoring",
+            )
+            agent_rules.filtering_tags = AAZListType(
+                serialized_name="filteringTags",
+            )
+
+            filtering_tags = cls._schema_on_200.value.Element.properties.agent_rules.filtering_tags
+            filtering_tags.Element = AAZObjectType()
+            _ListHelper._build_schema_filtering_tag_read(filtering_tags.Element)
 
             log_rules = cls._schema_on_200.value.Element.properties.log_rules
             log_rules.filtering_tags = AAZListType(

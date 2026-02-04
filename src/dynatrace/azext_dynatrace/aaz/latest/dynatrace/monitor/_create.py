@@ -22,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-04-27",
+        "version": "2024-04-24",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}", "2023-04-27"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}", "2024-04-24"],
         ]
     }
 
@@ -49,6 +49,9 @@ class Create(AAZCommand):
             options=["-n", "--name", "--monitor-name"],
             help="Monitor resource name",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9_-]*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -62,11 +65,17 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="Properties of the Dynatrace environment.",
         )
+        _args_schema.mp_saas_auto_renew = AAZStrArg(
+            options=["--mp-saas-auto-renew"],
+            arg_group="Properties",
+            help="Marketplace resource autorenew flag",
+            enum={"Off": "Off", "On": "On"},
+        )
         _args_schema.subscription_status = AAZStrArg(
             options=["--subscription-status"],
             arg_group="Properties",
             help="Marketplace subscription status.",
-            enum={"Active": "Active", "Suspended": "Suspended"},
+            enum={"Active": "Active", "Suspended": "Suspended", "Unsubscribed": "Unsubscribed"},
         )
         _args_schema.monitoring_status = AAZStrArg(
             options=["--monitoring-status"],
@@ -78,13 +87,11 @@ class Create(AAZCommand):
             options=["--plan-data"],
             arg_group="Properties",
             help="Billing plan information.",
-            required=True,
         )
         _args_schema.user_info = AAZObjectArg(
             options=["--user-info"],
             arg_group="Properties",
             help="User info.",
-            required=True,
         )
 
         environment = cls._args_schema.environment
@@ -109,6 +116,10 @@ class Create(AAZCommand):
         account_info.account_id = AAZStrArg(
             options=["account-id"],
             help="Account Id of the account this environment is linked to",
+        )
+        account_info.company_name = AAZStrArg(
+            options=["company-name"],
+            help="Name of the customer account / company",
         )
         account_info.region_id = AAZStrArg(
             options=["region-id"],
@@ -159,22 +170,21 @@ class Create(AAZCommand):
         plan_data.billing_cycle = AAZStrArg(
             options=["billing-cycle"],
             help="different billing cycles like MONTHLY/WEEKLY. this could be enum",
-            required=True,
         )
         plan_data.effective_date = AAZDateTimeArg(
             options=["effective-date"],
             help="date when plan was applied",
-            required=True,
+            fmt=AAZDateTimeFormat(
+                protocol="iso",
+            ),
         )
         plan_data.plan_details = AAZStrArg(
             options=["plan-details"],
             help="plan id as published by Dynatrace",
-            required=True,
         )
         plan_data.usage_type = AAZStrArg(
             options=["usage-type"],
             help="different usage type like PAYG/COMMITTED. this could be enum",
-            required=True,
         )
 
         user_info = cls._args_schema.user_info
@@ -185,7 +195,6 @@ class Create(AAZCommand):
         user_info.email_address = AAZStrArg(
             options=["email-address"],
             help="Email of the user used by Dynatrace for contacting them if needed",
-            required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[A-Za-z0-9._%+-]+@(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}$",
             ),
@@ -193,12 +202,10 @@ class Create(AAZCommand):
         user_info.first_name = AAZStrArg(
             options=["first-name"],
             help="First Name of the user",
-            required=True,
         )
         user_info.last_name = AAZStrArg(
             options=["last-name"],
             help="Last Name of the user",
-            required=True,
         )
         user_info.phone_number = AAZStrArg(
             options=["phone-number"],
@@ -231,30 +238,33 @@ class Create(AAZCommand):
         )
 
         identity = cls._args_schema.identity
+        identity.mi_system_assigned = AAZStrArg(
+            options=["system-assigned", "mi-system-assigned"],
+            help="Set the system managed identity.",
+            blank="True",
+        )
         identity.type = AAZStrArg(
             options=["type"],
             help="The type of managed identity assigned to this resource.",
             required=True,
             enum={"SystemAndUserAssigned": "SystemAndUserAssigned", "SystemAssigned": "SystemAssigned", "UserAssigned": "UserAssigned"},
         )
+        identity.mi_user_assigned = AAZListArg(
+            options=["user-assigned", "mi-user-assigned"],
+            help="Set the user managed identities.",
+            blank=[],
+        )
         identity.user_assigned_identities = AAZDictArg(
             options=["user-assigned-identities"],
             help="The identities assigned to this resource by the user.",
         )
 
-        user_assigned_identities = cls._args_schema.identity.user_assigned_identities
-        user_assigned_identities.Element = AAZObjectArg()
+        mi_user_assigned = cls._args_schema.identity.mi_user_assigned
+        mi_user_assigned.Element = AAZStrArg()
 
-        _element = cls._args_schema.identity.user_assigned_identities.Element
-        _element.client_id = AAZStrArg(
-            options=["client-id"],
-            help="The active directory client identifier for this principal.",
-            required=True,
-        )
-        _element.principal_id = AAZStrArg(
-            options=["principal-id"],
-            help="The active directory identifier for this principal.",
-            required=True,
+        user_assigned_identities = cls._args_schema.identity.user_assigned_identities
+        user_assigned_identities.Element = AAZObjectArg(
+            blank={},
         )
 
         tags = cls._args_schema.tags
@@ -342,7 +352,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-27",
+                    "api-version", "2024-04-24",
                     required=True,
                 ),
             }
@@ -376,23 +386,25 @@ class Create(AAZCommand):
             if identity is not None:
                 identity.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
                 identity.set_prop("userAssignedIdentities", AAZDictType, ".user_assigned_identities")
+                identity.set_prop("userAssigned", AAZListType, ".mi_user_assigned", typ_kwargs={"flags": {"action": "create"}})
+                identity.set_prop("systemAssigned", AAZStrType, ".mi_system_assigned", typ_kwargs={"flags": {"action": "create"}})
 
             user_assigned_identities = _builder.get(".identity.userAssignedIdentities")
             if user_assigned_identities is not None:
                 user_assigned_identities.set_elements(AAZObjectType, ".")
 
-            _elements = _builder.get(".identity.userAssignedIdentities{}")
-            if _elements is not None:
-                _elements.set_prop("clientId", AAZStrType, ".client_id", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("principalId", AAZStrType, ".principal_id", typ_kwargs={"flags": {"required": True}})
+            user_assigned = _builder.get(".identity.userAssigned")
+            if user_assigned is not None:
+                user_assigned.set_elements(AAZStrType, ".")
 
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("dynatraceEnvironmentProperties", AAZObjectType, ".environment")
+                properties.set_prop("marketplaceSaasAutoRenew", AAZStrType, ".mp_saas_auto_renew")
                 properties.set_prop("marketplaceSubscriptionStatus", AAZStrType, ".subscription_status")
                 properties.set_prop("monitoringStatus", AAZStrType, ".monitoring_status")
-                properties.set_prop("planData", AAZObjectType, ".plan_data", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("userInfo", AAZObjectType, ".user_info", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("planData", AAZObjectType, ".plan_data")
+                properties.set_prop("userInfo", AAZObjectType, ".user_info")
 
             dynatrace_environment_properties = _builder.get(".properties.dynatraceEnvironmentProperties")
             if dynatrace_environment_properties is not None:
@@ -404,6 +416,7 @@ class Create(AAZCommand):
             account_info = _builder.get(".properties.dynatraceEnvironmentProperties.accountInfo")
             if account_info is not None:
                 account_info.set_prop("accountId", AAZStrType, ".account_id")
+                account_info.set_prop("companyName", AAZStrType, ".company_name")
                 account_info.set_prop("regionId", AAZStrType, ".region_id")
 
             environment_info = _builder.get(".properties.dynatraceEnvironmentProperties.environmentInfo")
@@ -426,17 +439,17 @@ class Create(AAZCommand):
 
             plan_data = _builder.get(".properties.planData")
             if plan_data is not None:
-                plan_data.set_prop("billingCycle", AAZStrType, ".billing_cycle", typ_kwargs={"flags": {"required": True}})
-                plan_data.set_prop("effectiveDate", AAZStrType, ".effective_date", typ_kwargs={"flags": {"required": True}})
-                plan_data.set_prop("planDetails", AAZStrType, ".plan_details", typ_kwargs={"flags": {"required": True}})
-                plan_data.set_prop("usageType", AAZStrType, ".usage_type", typ_kwargs={"flags": {"required": True}})
+                plan_data.set_prop("billingCycle", AAZStrType, ".billing_cycle")
+                plan_data.set_prop("effectiveDate", AAZStrType, ".effective_date")
+                plan_data.set_prop("planDetails", AAZStrType, ".plan_details")
+                plan_data.set_prop("usageType", AAZStrType, ".usage_type")
 
             user_info = _builder.get(".properties.userInfo")
             if user_info is not None:
                 user_info.set_prop("country", AAZStrType, ".country")
-                user_info.set_prop("emailAddress", AAZStrType, ".email_address", typ_kwargs={"flags": {"required": True}})
-                user_info.set_prop("firstName", AAZStrType, ".first_name", typ_kwargs={"flags": {"required": True}})
-                user_info.set_prop("lastName", AAZStrType, ".last_name", typ_kwargs={"flags": {"required": True}})
+                user_info.set_prop("emailAddress", AAZStrType, ".email_address")
+                user_info.set_prop("firstName", AAZStrType, ".first_name")
+                user_info.set_prop("lastName", AAZStrType, ".last_name")
                 user_info.set_prop("phoneNumber", AAZStrType, ".phone_number")
 
             tags = _builder.get(".tags")
@@ -507,11 +520,11 @@ class Create(AAZCommand):
             _element = cls._schema_on_200_201.identity.user_assigned_identities.Element
             _element.client_id = AAZStrType(
                 serialized_name="clientId",
-                flags={"required": True},
+                flags={"read_only": True},
             )
             _element.principal_id = AAZStrType(
                 serialized_name="principalId",
-                flags={"required": True},
+                flags={"read_only": True},
             )
 
             properties = cls._schema_on_200_201.properties
@@ -526,6 +539,9 @@ class Create(AAZCommand):
                 serialized_name="liftrResourcePreference",
                 flags={"read_only": True},
             )
+            properties.marketplace_saas_auto_renew = AAZStrType(
+                serialized_name="marketplaceSaasAutoRenew",
+            )
             properties.marketplace_subscription_status = AAZStrType(
                 serialized_name="marketplaceSubscriptionStatus",
             )
@@ -534,7 +550,6 @@ class Create(AAZCommand):
             )
             properties.plan_data = AAZObjectType(
                 serialized_name="planData",
-                flags={"required": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -542,7 +557,6 @@ class Create(AAZCommand):
             )
             properties.user_info = AAZObjectType(
                 serialized_name="userInfo",
-                flags={"required": True},
             )
 
             dynatrace_environment_properties = cls._schema_on_200_201.properties.dynatrace_environment_properties
@@ -562,6 +576,9 @@ class Create(AAZCommand):
             account_info = cls._schema_on_200_201.properties.dynatrace_environment_properties.account_info
             account_info.account_id = AAZStrType(
                 serialized_name="accountId",
+            )
+            account_info.company_name = AAZStrType(
+                serialized_name="companyName",
             )
             account_info.region_id = AAZStrType(
                 serialized_name="regionId",
@@ -605,34 +622,27 @@ class Create(AAZCommand):
             plan_data = cls._schema_on_200_201.properties.plan_data
             plan_data.billing_cycle = AAZStrType(
                 serialized_name="billingCycle",
-                flags={"required": True},
             )
             plan_data.effective_date = AAZStrType(
                 serialized_name="effectiveDate",
-                flags={"required": True},
             )
             plan_data.plan_details = AAZStrType(
                 serialized_name="planDetails",
-                flags={"required": True},
             )
             plan_data.usage_type = AAZStrType(
                 serialized_name="usageType",
-                flags={"required": True},
             )
 
             user_info = cls._schema_on_200_201.properties.user_info
             user_info.country = AAZStrType()
             user_info.email_address = AAZStrType(
                 serialized_name="emailAddress",
-                flags={"required": True},
             )
             user_info.first_name = AAZStrType(
                 serialized_name="firstName",
-                flags={"required": True},
             )
             user_info.last_name = AAZStrType(
                 serialized_name="lastName",
-                flags={"required": True},
             )
             user_info.phone_number = AAZStrType(
                 serialized_name="phoneNumber",

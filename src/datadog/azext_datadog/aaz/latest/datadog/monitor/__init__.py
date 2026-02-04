@@ -11,6 +11,7 @@
 from .__cmd_group import *
 from ._create import *
 from ._delete import *
+from ._get_billing_info import *
 from ._get_default_key import *
 from ._list import *
 from ._list_api_key import *

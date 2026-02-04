@@ -8,7 +8,7 @@ from unittest.mock import Mock, patch
 
 from azext_aks_preview.__init__ import register_aks_preview_resource_type
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
-from azext_aks_preview._consts import CONST_WORKLOAD_RUNTIME_OCI_CONTAINER, CONST_SSH_ACCESS_LOCALUSER, CONST_VIRTUAL_MACHINES
+from azext_aks_preview._consts import CONST_WORKLOAD_RUNTIME_OCI_CONTAINER, CONST_WORKLOAD_RUNTIME_KATA_VM_ISOLATION, CONST_WORKLOAD_RUNTIME_OLD_KATA_VM_ISOLATION, CONST_SSH_ACCESS_LOCALUSER, CONST_VIRTUAL_MACHINES
 from azext_aks_preview.agentpool_decorator import (
     AKSPreviewAgentPoolAddDecorator,
     AKSPreviewAgentPoolContext,
@@ -618,6 +618,35 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
         ctx_1.attach_agentpool(agentpool_1)
         self.assertEqual(ctx_1.get_disable_fips_image(), True)
 
+    def common_get_enable_kata_image(self):
+        # testing new kata naming convention
+        ctx_1 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({
+                "workload_runtime": CONST_WORKLOAD_RUNTIME_KATA_VM_ISOLATION,
+            }),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        agentpool_1 = self.create_initialized_agentpool_instance(workload_runtime=CONST_WORKLOAD_RUNTIME_KATA_VM_ISOLATION)
+        ctx_1.attach_agentpool(agentpool_1)
+        self.assertEqual(ctx_1.get_workload_runtime(), CONST_WORKLOAD_RUNTIME_KATA_VM_ISOLATION)
+
+        # tesing old kata naming convention
+        ctx_2 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({
+                "workload_runtime": CONST_WORKLOAD_RUNTIME_OLD_KATA_VM_ISOLATION,
+            }),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        agentpool_2 = self.create_initialized_agentpool_instance(workload_runtime=CONST_WORKLOAD_RUNTIME_OLD_KATA_VM_ISOLATION)
+        ctx_2.attach_agentpool(agentpool_2)
+        self.assertEqual(ctx_2.get_workload_runtime(), CONST_WORKLOAD_RUNTIME_OLD_KATA_VM_ISOLATION)
+
     def common_get_agentpool_windows_profile(self):
         ctx_1 = AKSPreviewAgentPoolContext(
             self.cmd,
@@ -1034,11 +1063,14 @@ class AKSPreviewAgentPoolContextStandaloneModeTestCase(
     def test_get_disable_vtpm(self):
         self.common_get_disable_vtpm()
 
-    def common_get_enable_fips_image(self):
+    def test_common_get_enable_fips_image(self):
         self.common_get_enable_fips_image()
 
-    def common_get_disable_fips_image(self):
+    def test_common_get_disable_fips_image(self):
         self.common_get_disable_fips_image()
+
+    def test_common_get_enable_kata_image(self):
+        self.common_get_enable_kata_image()
 
     def test_get_agentpool_windows_profile(self):
         self.common_get_agentpool_windows_profile()
@@ -1116,8 +1148,11 @@ class AKSPreviewAgentPoolContextManagedClusterModeTestCase(
     def test_get_enable_vtpm(self):
         self.common_get_enable_vtpm()
 
-    def common_get_enable_fips_image(self):
+    def test_common_get_enable_fips_image(self):
         self.common_get_enable_fips_image()
+
+    def test_common_get_enable_kata_image(self):
+        self.common_get_enable_kata_image()
 
     def test_get_agentpool_windows_profile(self):
         self.common_get_agentpool_windows_profile()
@@ -2625,6 +2660,31 @@ class AKSPreviewAgentPoolUpdateDecoratorCommonTestCase(unittest.TestCase):
         finally:
             os.unlink(config_file_path)
 
+    def common_update_gpu_profile(self):
+        dec_1 = AKSPreviewAgentPoolUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"gpu_driver": "None"},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        # fail on passing the wrong agentpool object
+        with self.assertRaises(CLIInternalError):
+            dec_1.update_gpu_profile(None)
+        agentpool_1 = self.create_initialized_agentpool_instance(
+            gpu_profile=self.models.GPUProfile(
+                driver="Install",
+            )
+        )
+        dec_1.context.attach_agentpool(agentpool_1)
+        dec_agentpool_1 = dec_1.update_gpu_profile(agentpool_1)
+        ground_truth_agentpool_1 = self.create_initialized_agentpool_instance(
+            gpu_profile=self.models.GPUProfile(
+                driver="None",
+            )
+        )
+        self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)        
+
     def common_test_process_dns_overrides_helper(self):
         from azext_aks_preview._helpers import process_dns_overrides
         
@@ -2708,6 +2768,9 @@ class AKSPreviewAgentPoolUpdateDecoratorStandaloneModeTestCase(
 
     def test_update_localdns_profile(self):
         self.common_update_localdns_profile()
+
+    def test_update_gpu_profile(self):
+        self.common_update_gpu_profile()
 
     def test_process_dns_overrides_helper(self):
         self.common_test_process_dns_overrides_helper()
@@ -2801,6 +2864,9 @@ class AKSPreviewAgentPoolUpdateDecoratorManagedClusterModeTestCase(
 
     def test_process_dns_overrides_helper(self):
         self.common_test_process_dns_overrides_helper()
+
+    def test_update_gpu_profile(self):
+        self.common_update_gpu_profile()
 
     def test_update_agentpool_profile_preview(self):
         import inspect

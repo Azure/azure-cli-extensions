@@ -18,11 +18,14 @@ class BackupVaultScenarioTest(ScenarioTest):
             'location': 'centraluseuap',
             'vaultName': 'cli-test-backup-vault',
             'uamiVaultName': 'cli-test-backup-uami-vault',
+            'rg': 'clitest-dpp-rg'
         })
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='clitest-dpp-backupvault-', location='centraluseuap')
     def test_dataprotection_backup_vault_create_and_delete(test):
+        test.kwargs.update({
+            'rg': 'dataprotectionclitest-rg'
+        })
         test.cmd('az dataprotection backup-vault create '
                  '-g "{rg}" --vault-name "{vaultName}" -l "{location}" '
                  '--storage-settings datastore-type="VaultStore" type="GeoRedundant" --type "SystemAssigned" '
@@ -47,7 +50,6 @@ class BackupVaultScenarioTest(ScenarioTest):
         test.cmd('az dataprotection backup-vault delete -g "{rg}" --vault-name "{vaultName}" -y')
         
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='clitest-dpp-backupvault-', location='centraluseuap')
     def test_dataprotection_backup_vault_create_with_uami_update_and_delete(test):
         test.kwargs.update({
             'uamiUrl': "/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourcegroups/clitest-dpp-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/cmk-cli-test-uami",
@@ -91,13 +93,12 @@ class BackupVaultScenarioTest(ScenarioTest):
         test.cmd('az dataprotection backup-vault delete -g "{rg}" --vault-name "{uamiVaultName}" -y')
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='clitest-dpp-backupvault-', location='centraluseuap')
     def test_dataprotection_backup_vault_create_with_cmk_update_and_delete(test):
         test.kwargs.update({
             'cmkKeyUri': "https://cmk-cli-test-keyvault.vault.azure.net/keys/cmk-cli-key1/24efffaddbe84838a1c39b6135edbdf5",
             'cmkKeyUriUpdate': "https://cmk-cli-test-keyvault.vault.azure.net/keys/cmk-cli-key2/864fe3c0fcf14d75bd7d576a148ba51c",
             'cmkUami': "/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourcegroups/clitest-dpp-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/cmk-cli-test-uami",
-            'cmkUamiName': "cmk-cli-test-uami",
+            'cmkUamiName': "cmk-cli-test-uami"
         })
         test.cmd('az dataprotection backup-vault create '
                  '-g "{rg}" --vault-name "{vaultName}" -l "{location}" '
@@ -120,7 +121,6 @@ class BackupVaultScenarioTest(ScenarioTest):
         test.cmd('az dataprotection backup-vault delete -g "{rg}" --vault-name "{vaultName}" -y')
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='clitest-dpp-backupvault-', location='centraluseuap')
     def test_dataprotection_backup_vault_update(test):
         test.cmd('az dataprotection backup-vault create '
                  '-g "{rg}" --vault-name "{vaultName}" -l "{location}" '

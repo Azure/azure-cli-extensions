@@ -2,6 +2,11 @@
 
 Release History
 ===============
+1.2.0
+++++++
+* Bump from 2025-05-01 to 2025-10-01-preview
+* Adds managed domain list option for dns security rule, allowing usage of threat intel managed security rules.
+
 1.1.0
 ++++++
 * Bump from 2023-07-01-preview to 2025-05-01

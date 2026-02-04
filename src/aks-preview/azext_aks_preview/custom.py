@@ -120,6 +120,7 @@ from azext_aks_preview.managednamespace import (
 )
 from azext_aks_preview.machine import (
     add_machine,
+    update_machine,
 )
 from azext_aks_preview.jwtauthenticator import (
     aks_jwtauthenticator_add_internal,
@@ -1024,6 +1025,7 @@ def aks_create(
     enable_sgxquotehelper=False,
     enable_secret_rotation=False,
     rotation_poll_interval=None,
+    enable_application_load_balancer=False,
     enable_app_routing=False,
     app_routing_default_nginx_controller=None,
     # nodepool paramerters
@@ -1398,6 +1400,9 @@ def aks_update(
     # managed gateway installation
     enable_gateway_api=False,
     disable_gateway_api=False,
+    # application load balancer
+    enable_application_load_balancer=False,
+    disable_application_load_balancer=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1577,8 +1582,8 @@ def aks_scale(cmd,  # pylint: disable=unused-argument
             "Please specify nodepool name or use az aks nodepool command to scale node pool"
         )
 
-    for agent_profile in instance.agent_pool_profiles:
-        if agent_profile.name == nodepool_name or (nodepool_name == "" and len(instance.agent_pool_profiles) == 1):
+    for agent_profile in (instance.agent_pool_profiles or []):
+        if agent_profile.name == nodepool_name or (nodepool_name == "" and instance.agent_pool_profiles and len(instance.agent_pool_profiles) == 1):
             if agent_profile.enable_auto_scaling:
                 raise CLIError(
                     "Cannot scale cluster autoscaler enabled node pool.")
@@ -1628,7 +1633,7 @@ def aks_upgrade(cmd,
     _fill_defaults_for_pod_identity_profile(instance.pod_identity_profile)
 
     vmas_cluster = False
-    for agent_profile in instance.agent_pool_profiles:
+    for agent_profile in (instance.agent_pool_profiles or []):
         if agent_profile.type.lower() == "availabilityset":
             vmas_cluster = True
             break
@@ -1645,7 +1650,7 @@ def aks_upgrade(cmd,
 
         # This only provide convenience for customer at client side so they can run az aks upgrade to upgrade all
         # nodepools of a cluster. The SDK only support upgrade single nodepool at a time.
-        for agent_pool_profile in instance.agent_pool_profiles:
+        for agent_pool_profile in (instance.agent_pool_profiles or []):
             if vmas_cluster:
                 raise CLIError('This cluster is not using VirtualMachineScaleSets. Node image upgrade only operation '
                                'can only be applied on VirtualMachineScaleSets and VirtualMachines(Preview) cluster.')
@@ -1707,14 +1712,16 @@ def aks_upgrade(cmd,
             upgrade_all = True
         else:
             msg = (
-                "Since control-plane-only argument is specified, this will upgrade only the control plane to "
-                f"{instance.kubernetes_version}. Node pool will not change. Continue?"
+                "Since --control-plane-only parameter is specified, this will upgrade only the kubernetes version of the control plane to  "
+                f"{instance.kubernetes_version}. Kubernetes versions of the node pools will remain unchanged, "
+                "but node image version may be upgraded if there has been cluster config change that requires VM reimage. "
+                "Continue?"
             )
             if not yes and not prompt_y_n(msg, default="n"):
                 return None
 
     if upgrade_all:
-        for agent_profile in instance.agent_pool_profiles:
+        for agent_profile in (instance.agent_pool_profiles or []):
             agent_profile.orchestrator_version = kubernetes_version
             agent_profile.creation_data = None
 
@@ -1974,6 +1981,7 @@ def aks_agentpool_update(
     # local DNS
     localdns_config=None,
     node_vm_size=None,
+    gpu_driver=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -2212,6 +2220,114 @@ def aks_agentpool_get_upgrade_profile(cmd,   # pylint: disable=unused-argument
                                       cluster_name,
                                       nodepool_name):
     return client.get_upgrade_profile(resource_group_name, cluster_name, nodepool_name)
+
+
+def aks_agentpool_get_rollback_versions(cmd,   # pylint: disable=unused-argument
+                                        client,
+                                        resource_group_name,
+                                        cluster_name,
+                                        nodepool_name):
+    """Get rollback versions for a nodepool."""
+    upgrade_profile = client.get_upgrade_profile(resource_group_name, cluster_name, nodepool_name)
+    return upgrade_profile.recently_used_versions
+
+
+def aks_agentpool_rollback(cmd,   # pylint: disable=unused-argument
+                           client,
+                           resource_group_name,
+                           cluster_name,
+                           nodepool_name,
+                           aks_custom_headers=None,
+                           if_match=None,
+                           if_none_match=None,
+                           no_wait=False):
+    """Rollback a nodepool to the most recent previous version configuration."""
+    from azext_aks_preview._client_factory import cf_managed_clusters
+
+    # Warn users when auto-upgrade is enabled
+    if cmd and getattr(cmd, "cli_ctx", None):
+        try:
+            managed_clusters_client = cf_managed_clusters(cmd.cli_ctx)
+            managed_cluster = managed_clusters_client.get(resource_group_name, cluster_name)
+            auto_upgrade_profile = getattr(managed_cluster, "auto_upgrade_profile", None)
+
+            upgrade_channel = getattr(auto_upgrade_profile, "upgrade_channel", None) if auto_upgrade_profile else None
+            node_os_upgrade_channel = (
+                getattr(auto_upgrade_profile, "node_os_upgrade_channel", None)
+                if auto_upgrade_profile
+                else None
+            )
+
+            upgrade_channel_enabled = upgrade_channel and str(upgrade_channel).lower() != "none"
+            node_os_channel_enabled = node_os_upgrade_channel and str(node_os_upgrade_channel).lower() not in [
+                "none",
+                "unmanaged",
+            ]
+
+            if upgrade_channel_enabled or node_os_channel_enabled:
+                logger.warning(
+                    "Auto-upgrade is enabled on cluster '%s' (upgradeChannel=%s, nodeOSUpgradeChannel=%s). "
+                    "Rollback will not succeed until auto-upgrade is disabled. Please disable auto-upgrade to roll back the node pool.",
+                    cluster_name,
+                    upgrade_channel or "none",
+                    node_os_upgrade_channel or "Unmanaged",
+                )
+        except Exception as ex:  # pylint: disable=broad-except
+            logger.debug("Unable to retrieve auto-upgrade configuration before rollback: %s", ex)
+
+    logger.info("Fetching the most recent rollback version...")
+
+    # Get upgrade profile to retrieve recently used versions
+    upgrade_profile = client.get_upgrade_profile(resource_group_name, cluster_name, nodepool_name)
+
+    if not upgrade_profile.recently_used_versions or len(upgrade_profile.recently_used_versions) == 0:
+        raise CLIError(
+            "No rollback versions available. The nodepool must have been upgraded at least once "
+            "to have rollback history available."
+        )
+
+    # Sort by timestamp (most recent first) and get the most recent version
+    sorted_versions = sorted(
+        upgrade_profile.recently_used_versions,
+        key=lambda v: v.timestamp if v.timestamp else datetime.datetime.min,
+        reverse=True
+    )
+    most_recent = sorted_versions[0]
+
+    kubernetes_version = most_recent.orchestrator_version
+    node_image_version = most_recent.node_image_version
+
+    logger.info(
+        "Rolling back to the most recent version: "
+        "Kubernetes version: %s, Node image version: %s (timestamp: %s)",
+        kubernetes_version, node_image_version, most_recent.timestamp
+    )
+
+    # Get the current agent pool
+    current_agentpool = client.get(resource_group_name, cluster_name, nodepool_name)
+
+    # Update the agent pool configuration with rollback versions
+    current_agentpool.orchestrator_version = kubernetes_version
+    current_agentpool.node_image_version = node_image_version
+
+    # Set custom headers if provided
+    headers = get_aks_custom_headers(aks_custom_headers)
+    if if_match:
+        headers['If-Match'] = if_match
+    if if_none_match:
+        headers['If-None-Match'] = if_none_match
+
+    # Perform the rollback by updating the agent pool
+    # Server-side will validate the versions
+    return sdk_no_wait(
+        no_wait,
+        client.begin_create_or_update,
+        resource_group_name,
+        cluster_name,
+        nodepool_name,
+        current_agentpool,
+        headers=headers if headers else None
+    )
 
 
 def aks_agentpool_stop(cmd,   # pylint: disable=unused-argument
@@ -2611,6 +2727,33 @@ def aks_machine_add(
     return add_machine(cmd, client, raw_parameters, no_wait)
 
 
+# pylint: disable=unused-argument
+def aks_machine_update(
+    cmd,
+    client,
+    resource_group_name,
+    cluster_name,
+    nodepool_name,
+    machine_name=None,
+    tags=None,
+    node_taints=None,
+    labels=None,
+    no_wait=False,
+):
+    existedMachine = None
+    try:
+        existedMachine = client.get(resource_group_name, cluster_name, nodepool_name, machine_name)
+    except ResourceNotFoundError:
+        raise ClientRequestError(
+            f"Machine '{machine_name}' does not exist. Please use 'az aks machine list' to get current list of machines."
+        )
+
+    if existedMachine:
+        # DO NOT MOVE: get all the original parameters and save them as a dictionary
+        raw_parameters = locals()
+        return update_machine(client, raw_parameters, existedMachine, no_wait)
+
+
 def aks_addon_list_available():
     available_addons = []
     for k, v in ADDONS.items():
@@ -2634,6 +2777,12 @@ def aks_addon_list(cmd, client, resource_group_name, name):
                 mc.ingress_profile and
                 mc.ingress_profile.web_app_routing and
                 mc.ingress_profile.web_app_routing.enabled
+            )
+        elif addon_name == "application-load-balancer":
+            enabled = bool(
+                mc.ingress_profile and
+                mc.ingress_profile.application_load_balancer and
+                mc.ingress_profile.application_load_balancer.enabled
             )
         else:
             if addon_name == "virtual-node":
@@ -2669,6 +2818,20 @@ def aks_addon_show(cmd, client, resource_group_name, name, addon):
             "name": addon,
             "api_key": addon_key,
             "config": mc.ingress_profile.web_app_routing,
+        }
+
+    # application-load-balancer is a special case, the configuration is stored in a separate profile
+    if addon == "application-load-balancer":
+        if (
+            not mc.ingress_profile and
+            not mc.ingress_profile.application_load_balancer and
+            not mc.ingress_profile.application_load_balancer.enabled
+        ):
+            raise InvalidArgumentValueError(f'Addon "{addon}" is not enabled in this cluster.')
+        return {
+            "name": addon,
+            "api_key": addon_key,
+            "config": mc.ingress_profile.application_load_balancer,
         }
 
     # normal addons
@@ -3016,12 +3179,13 @@ def aks_enable_addons(
         if enable_virtual_node:
             # All agent pool will reside in the same vnet, we will grant vnet level Contributor role
             # in later function, so using a random agent pool here is OK
-            random_agent_pool = result.agent_pool_profiles[0]
-            if random_agent_pool.vnet_subnet_id != "":
-                add_virtual_node_role_assignment(
-                    cmd, result, random_agent_pool.vnet_subnet_id)
-            # Else, the cluster is not using custom VNet, the permission is already granted in AKS RP,
-            # we don't need to handle it in client side in this case.
+            if result.agent_pool_profiles and len(result.agent_pool_profiles) > 0:
+                random_agent_pool = result.agent_pool_profiles[0]
+                if random_agent_pool.vnet_subnet_id != "":
+                    add_virtual_node_role_assignment(
+                        cmd, result, random_agent_pool.vnet_subnet_id)
+                # Else, the cluster is not using custom VNet, the permission is already granted in AKS RP,
+                # we don't need to handle it in client side in this case.
 
     else:
         result = sdk_no_wait(no_wait, client.begin_create_or_update,
@@ -3067,6 +3231,11 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
         operation_group="managed_clusters",
     )
+    ManagedClusterIngressProfileApplicationLoadBalancer = cmd.get_models(
+        "ManagedClusterIngressProfileApplicationLoadBalancer",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="managed_clusters",
+    )
     ManagedClusterIngressProfileWebAppRouting = cmd.get_models(
         "ManagedClusterIngressProfileWebAppRouting",
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
@@ -3082,6 +3251,16 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
 
     # for each addons argument
     for addon_arg in addon_args:
+        if addon_arg == "applicationloadbalancer":
+            # application load balancer routing settings are in ingress profile, not addon profile
+            if instance.ingress_profile is None:
+                instance.ingress_profile = ManagedClusterIngressProfile()
+            if instance.ingress_profile.application_load_balancer is None:
+                instance.ingress_profile.application_load_balancer = ManagedClusterIngressProfileApplicationLoadBalancer()
+            instance.ingress_profile.application_load_balancer.enabled = enable
+
+            continue
+
         if addon_arg == "web_application_routing":
             # web app routing settings are in ingress profile, not addon profile, so deal
             # with it separately
@@ -4086,6 +4265,47 @@ def _aks_mesh_update(
     return aks_update_decorator.update_mc(mc)
 
 
+def aks_applicationloadbalancer_enable(
+        cmd,
+        client,
+        resource_group_name,
+        name
+):
+    return _aks_applicationloadbalancer_update(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        enable_application_load_balancer=True)
+
+
+def aks_applicationloadbalancer_disable(
+        cmd,
+        client,
+        resource_group_name,
+        name
+):
+    return _aks_applicationloadbalancer_update(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        disable_application_load_balancer=True)
+
+
+def aks_applicationloadbalancer_update(
+        cmd,
+        client,
+        resource_group_name,
+        name
+):
+    return _aks_applicationloadbalancer_update(
+        cmd,
+        client,
+        resource_group_name,
+        name)
+
+
 def aks_approuting_enable(
         cmd,
         client,
@@ -4216,6 +4436,36 @@ def aks_approuting_zone_list(
             return dns_zone_list
         raise CLIError('No dns zone attached to the cluster')
     raise CLIError('App routing addon is not enabled')
+
+
+# pylint: disable=unused-argument
+def _aks_applicationloadbalancer_update(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        enable_application_load_balancer=None,
+        disable_application_load_balancer=None
+):
+    from azure.cli.command_modules.acs._consts import DecoratorEarlyExitException
+    from azext_aks_preview.managed_cluster_decorator import AKSPreviewManagedClusterUpdateDecorator
+
+    raw_parameters = locals()
+
+    aks_update_decorator = AKSPreviewManagedClusterUpdateDecorator(
+        cmd=cmd,
+        client=client,
+        raw_parameters=raw_parameters,
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+    )
+
+    try:
+        mc = aks_update_decorator.fetch_mc()
+        mc = aks_update_decorator.update_application_load_balancer_profile(mc)
+    except DecoratorEarlyExitException:
+        return None
+
+    return aks_update_decorator.update_mc(mc)
 
 
 # pylint: disable=unused-argument
@@ -4441,6 +4691,9 @@ def aks_check_network_outbound(
     cluster = aks_show(cmd, client, resource_group_name, cluster_name, None)
     if not cluster:
         raise ValidationError("Can not get cluster information!")
+
+    if not cluster.agent_pool_profiles or len(cluster.agent_pool_profiles) == 0:
+        raise ValidationError("No agent pool profiles found in the cluster!")
 
     vm_set_type = cluster.agent_pool_profiles[0].type
     if not vm_set_type:
@@ -4937,7 +5190,7 @@ def aks_loadbalancer_rebalance_nodes(
     return aks_loadbalancer_rebalance_internal(managed_clusters_client, parameters)
 
 
-def aks_bastion(cmd, client, resource_group_name, name, bastion=None, port=None, admin=False, yes=False):
+def aks_bastion(cmd, client, resource_group_name, name, bastion=None, port=None, admin=False, kubeconfig_path=None, yes=False):
     import asyncio
     import tempfile
 
@@ -4949,28 +5202,61 @@ def aks_bastion(cmd, client, resource_group_name, name, bastion=None, port=None,
         logger.error(ex)
         return
 
-    with tempfile.TemporaryDirectory() as temp_dir:
+    temp_dir = None
+    # Validate kubeconfig if provided, otherwise create temp
+    if kubeconfig_path:
+        if not os.path.exists(kubeconfig_path):
+            raise CLIError(f"Kubeconfig file '{kubeconfig_path}' does not exist.")
+        logger.info("Using kubeconfig from: %s", kubeconfig_path)
+    else:
+        temp_dir = tempfile.mkdtemp()
         logger.info("creating temporary directory: %s", temp_dir)
-        try:
-            kubeconfig_path = os.path.join(temp_dir, ".kube", "config")
-            mc = client.get(resource_group_name, name)
-            mc_id = mc.id
-            nrg = mc.node_resource_group
-            bastion_resource = aks_bastion_parse_bastion_resource(bastion, [nrg])
-            port = aks_bastion_get_local_port(port)
+        kubeconfig_path = os.path.join(temp_dir, ".kube", "config")
+
+    try:
+        mc = client.get(resource_group_name, name)
+        mc_id = mc.id
+        nrg = mc.node_resource_group
+        bastion_resource = aks_bastion_parse_bastion_resource(bastion, [nrg])
+        port = aks_bastion_get_local_port(port)
+
+        # Fetch credentials only if kubeconfig not provided
+        is_new_kubeconfig = temp_dir is not None
+        if is_new_kubeconfig:
             aks_get_credentials(cmd, client, resource_group_name, name, admin=admin, path=kubeconfig_path)
-            aks_bastion_set_kubeconfig(kubeconfig_path, port)
-            asyncio.run(
-                aks_bastion_runner(
-                    bastion_resource,
-                    port,
-                    mc_id,
-                    kubeconfig_path,
-                    test_hook=os.getenv("AKS_BASTION_TEST_HOOK"),
-                )
+
+        # Pass cluster_name only for existing kubeconfigs to search for exact match
+        # For new kubeconfigs, don't pass cluster_name so it uses current context
+        aks_bastion_set_kubeconfig(
+            kubeconfig_path,
+            port,
+            cluster_name=name if not is_new_kubeconfig else None
+        )
+
+        # Warn user about kubeconfig modifications after successful modification
+        if not is_new_kubeconfig:
+            logger.warning(
+                "The server URL for cluster '%s' in your kubeconfig has been modified to point to the bastion tunnel. "
+                "Once the bastion tunnel is closed, this cluster configuration will no longer work. "
+                "To re-establish connectivity via bastion, rerun this command; this will update the server URL in your kubeconfig to point to a new bastion tunnel. "
+                "If you no longer want to use the bastion tunnel, restore your original kubeconfig from backup instead.",
+                name
             )
-        finally:
-            aks_batsion_clean_up()
+
+        asyncio.run(
+            aks_bastion_runner(
+                bastion_resource,
+                port,
+                mc_id,
+                kubeconfig_path,
+                test_hook=os.getenv("AKS_BASTION_TEST_HOOK"),
+            )
+        )
+    finally:
+        aks_batsion_clean_up()
+        if temp_dir:
+            import shutil
+            shutil.rmtree(temp_dir, ignore_errors=True)
 
 
 aks_identity_binding_create = aks_ib_cmd_create

@@ -127,7 +127,8 @@ from azext_aks_preview._consts import (
     CONST_WEEKINDEX_SECOND,
     CONST_WEEKINDEX_THIRD,
     CONST_WEEKLY_MAINTENANCE_SCHEDULE,
-    CONST_WORKLOAD_RUNTIME_KATA_MSHV_VM_ISOLATION,
+    CONST_WORKLOAD_RUNTIME_KATA_VM_ISOLATION,
+    CONST_WORKLOAD_RUNTIME_OLD_KATA_VM_ISOLATION,
     CONST_WORKLOAD_RUNTIME_KATA_CC_ISOLATION,
     CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
     CONST_WORKLOAD_RUNTIME_WASM_WASI,
@@ -314,7 +315,8 @@ scale_down_modes = [CONST_SCALE_DOWN_MODE_DELETE, CONST_SCALE_DOWN_MODE_DEALLOCA
 workload_runtimes = [
     CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
     CONST_WORKLOAD_RUNTIME_WASM_WASI,
-    CONST_WORKLOAD_RUNTIME_KATA_MSHV_VM_ISOLATION,
+    CONST_WORKLOAD_RUNTIME_KATA_VM_ISOLATION,
+    CONST_WORKLOAD_RUNTIME_OLD_KATA_VM_ISOLATION,
     CONST_WORKLOAD_RUNTIME_KATA_CC_ISOLATION,
 ]
 gpu_instance_profiles = [
@@ -780,6 +782,7 @@ def load_arguments(self, _):
         c.argument("enable_secret_rotation", action="store_true")
         c.argument("rotation_poll_interval")
         c.argument("enable_sgxquotehelper", action="store_true")
+        c.argument("enable_application_load_balancer", action="store_true", is_preview=True)
         c.argument("enable_app_routing", action="store_true", is_preview=True)
         c.argument(
             "app_routing_default_nginx_controller",
@@ -1763,6 +1766,18 @@ def load_arguments(self, _):
             action="store_true",
             help="Disable managed installation of Gateway API CRDs."
         )
+        c.argument(
+            "enable_application_load_balancer",
+            action="store_true",
+            is_preview=True,
+            help="Enable Application Load Balancer (Application Gateway for Containers)."
+        )
+        c.argument(
+            "disable_application_load_balancer",
+            action="store_true",
+            is_preview=True,
+            help="Disable Application Load Balancer (Application Gateway for Containers)."
+        )
 
     with self.argument_context("aks upgrade") as c:
         c.argument("kubernetes_version", completer=get_k8s_upgrades_completion_list)
@@ -2127,6 +2142,10 @@ def load_arguments(self, _):
             options_list=["--node-vm-size", "-s"],
             completer=get_vm_size_completion_list,
         )
+        c.argument(
+            "gpu_driver",
+            arg_type=get_enum_type(gpu_driver_install_modes)
+        )
 
     with self.argument_context("aks nodepool upgrade") as c:
         # upgrade strategy
@@ -2179,6 +2198,14 @@ def load_arguments(self, _):
 
     with self.argument_context("aks nodepool manual-scale delete") as c:
         c.argument("current_vm_sizes", is_preview=True)
+
+    with self.argument_context("aks nodepool get-rollback-versions") as c:
+        pass  # Uses common nodepool parameters
+
+    with self.argument_context("aks nodepool rollback") as c:
+        c.argument("aks_custom_headers", nargs="*")
+        c.argument("if_match")
+        c.argument("if_none_match")
 
     with self.argument_context("aks machine") as c:
         c.argument("cluster_name", help="The cluster name.")
@@ -2247,6 +2274,14 @@ def load_arguments(self, _):
             validator=validate_k8s_version,
             help="Version of Kubernetes to use for the machine.",
         )
+
+    with self.argument_context("aks machine update") as c:
+        c.argument(
+            "machine_name", help="The machine name."
+        )
+        c.argument("tags", tags_type, help="The tags to set on the machine.")
+        c.argument("node_taints", validator=validate_nodepool_taints)
+        c.argument("labels", nargs="*", help="Labels to set on the machine.")
 
     with self.argument_context("aks operation") as c:
         c.argument(
@@ -3081,6 +3116,7 @@ def load_arguments(self, _):
         c.argument("bastion")
         c.argument("port", type=int)
         c.argument("admin", action="store_true")
+        c.argument("kubeconfig_path")
         c.argument(
             "yes",
             options_list=["--yes", "-y"],

@@ -22,9 +22,9 @@ class ValidateForBackup(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-04-01",
+        "version": "2025-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/validateforbackup", "2024-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/validateforbackup", "2025-07-01"],
         ]
     }
 
@@ -239,12 +239,25 @@ class ValidateForBackup(AAZCommand):
         backup_datasource_parameters_list.Element = AAZObjectArg()
 
         _element = cls._args_schema.backup_instance.policy_info.policy_parameters.backup_datasource_parameters_list.Element
+        _element.adls_blob_backup_datasource_parameters = AAZObjectArg(
+            options=["adls-blob-backup-datasource-parameters"],
+        )
         _element.blob_backup_datasource_parameters = AAZObjectArg(
             options=["blob-backup-datasource-parameters"],
         )
         _element.kubernetes_cluster_backup_datasource_parameters = AAZObjectArg(
             options=["kubernetes-cluster-backup-datasource-parameters"],
         )
+
+        adls_blob_backup_datasource_parameters = cls._args_schema.backup_instance.policy_info.policy_parameters.backup_datasource_parameters_list.Element.adls_blob_backup_datasource_parameters
+        adls_blob_backup_datasource_parameters.containers_list = AAZListArg(
+            options=["containers-list"],
+            help="List of containers to be backed up during configuration of backup of blobs",
+            required=True,
+        )
+
+        containers_list = cls._args_schema.backup_instance.policy_info.policy_parameters.backup_datasource_parameters_list.Element.adls_blob_backup_datasource_parameters.containers_list
+        containers_list.Element = AAZStrArg()
 
         blob_backup_datasource_parameters = cls._args_schema.backup_instance.policy_info.policy_parameters.backup_datasource_parameters_list.Element.blob_backup_datasource_parameters
         blob_backup_datasource_parameters.containers_list = AAZListArg(
@@ -282,6 +295,10 @@ class ValidateForBackup(AAZCommand):
             options=["included-resource-types"],
             help="Gets or sets the include resource types property. This property sets the resource types to be included during restore.",
         )
+        kubernetes_cluster_backup_datasource_parameters.included_volume_types = AAZListArg(
+            options=["included-volume-types"],
+            help="Gets or sets the include volume types property. This property sets the volume types to be included during backup.",
+        )
         kubernetes_cluster_backup_datasource_parameters.label_selectors = AAZListArg(
             options=["label-selectors"],
             help="Gets or sets the LabelSelectors property. This property sets the resource with such label selectors to be included during restore.",
@@ -317,6 +334,11 @@ class ValidateForBackup(AAZCommand):
         included_resource_types = cls._args_schema.backup_instance.policy_info.policy_parameters.backup_datasource_parameters_list.Element.kubernetes_cluster_backup_datasource_parameters.included_resource_types
         included_resource_types.Element = AAZStrArg()
 
+        included_volume_types = cls._args_schema.backup_instance.policy_info.policy_parameters.backup_datasource_parameters_list.Element.kubernetes_cluster_backup_datasource_parameters.included_volume_types
+        included_volume_types.Element = AAZStrArg(
+            enum={"AzureDisk": "AzureDisk", "AzureFileShareSMB": "AzureFileShareSMB"},
+        )
+
         label_selectors = cls._args_schema.backup_instance.policy_info.policy_parameters.backup_datasource_parameters_list.Element.kubernetes_cluster_backup_datasource_parameters.label_selectors
         label_selectors.Element = AAZStrArg()
 
@@ -349,20 +371,18 @@ class ValidateForBackup(AAZCommand):
     @classmethod
     def _build_args_base_resource_properties_create(cls, _schema):
         if cls._args_base_resource_properties_create is not None:
-            _schema.object_type = cls._args_base_resource_properties_create.object_type
+            _schema.default_resource_properties = cls._args_base_resource_properties_create.default_resource_properties
             return
 
         cls._args_base_resource_properties_create = AAZObjectArg()
 
         base_resource_properties_create = cls._args_base_resource_properties_create
-        base_resource_properties_create.object_type = AAZStrArg(
-            options=["object-type"],
-            help="Type of the specific object - used for deserializing",
-            required=True,
-            enum={"DefaultResourceProperties": "DefaultResourceProperties"},
+        base_resource_properties_create.default_resource_properties = AAZObjectArg(
+            options=["default-resource-properties"],
+            blank={},
         )
 
-        _schema.object_type = cls._args_base_resource_properties_create.object_type
+        _schema.default_resource_properties = cls._args_base_resource_properties_create.default_resource_properties
 
     def _execute_operations(self):
         self.pre_operations()
@@ -445,7 +465,7 @@ class ValidateForBackup(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-04-01",
+                    "api-version", "2025-07-01",
                     required=True,
                 ),
             }
@@ -542,10 +562,20 @@ class ValidateForBackup(AAZCommand):
 
             _elements = _builder.get(".backupInstance.policyInfo.policyParameters.backupDatasourceParametersList[]")
             if _elements is not None:
+                _elements.set_const("objectType", "AdlsBlobBackupDatasourceParameters", AAZStrType, ".adls_blob_backup_datasource_parameters", typ_kwargs={"flags": {"required": True}})
                 _elements.set_const("objectType", "BlobBackupDatasourceParameters", AAZStrType, ".blob_backup_datasource_parameters", typ_kwargs={"flags": {"required": True}})
                 _elements.set_const("objectType", "KubernetesClusterBackupDatasourceParameters", AAZStrType, ".kubernetes_cluster_backup_datasource_parameters", typ_kwargs={"flags": {"required": True}})
+                _elements.discriminate_by("objectType", "AdlsBlobBackupDatasourceParameters")
                 _elements.discriminate_by("objectType", "BlobBackupDatasourceParameters")
                 _elements.discriminate_by("objectType", "KubernetesClusterBackupDatasourceParameters")
+
+            disc_adls_blob_backup_datasource_parameters = _builder.get(".backupInstance.policyInfo.policyParameters.backupDatasourceParametersList[]{objectType:AdlsBlobBackupDatasourceParameters}")
+            if disc_adls_blob_backup_datasource_parameters is not None:
+                disc_adls_blob_backup_datasource_parameters.set_prop("containersList", AAZListType, ".adls_blob_backup_datasource_parameters.containers_list", typ_kwargs={"flags": {"required": True}})
+
+            containers_list = _builder.get(".backupInstance.policyInfo.policyParameters.backupDatasourceParametersList[]{objectType:AdlsBlobBackupDatasourceParameters}.containersList")
+            if containers_list is not None:
+                containers_list.set_elements(AAZStrType, ".")
 
             disc_blob_backup_datasource_parameters = _builder.get(".backupInstance.policyInfo.policyParameters.backupDatasourceParametersList[]{objectType:BlobBackupDatasourceParameters}")
             if disc_blob_backup_datasource_parameters is not None:
@@ -563,6 +593,7 @@ class ValidateForBackup(AAZCommand):
                 disc_kubernetes_cluster_backup_datasource_parameters.set_prop("includeClusterScopeResources", AAZBoolType, ".kubernetes_cluster_backup_datasource_parameters.include_cluster_scope_resources", typ_kwargs={"flags": {"required": True}})
                 disc_kubernetes_cluster_backup_datasource_parameters.set_prop("includedNamespaces", AAZListType, ".kubernetes_cluster_backup_datasource_parameters.included_namespaces")
                 disc_kubernetes_cluster_backup_datasource_parameters.set_prop("includedResourceTypes", AAZListType, ".kubernetes_cluster_backup_datasource_parameters.included_resource_types")
+                disc_kubernetes_cluster_backup_datasource_parameters.set_prop("includedVolumeTypes", AAZListType, ".kubernetes_cluster_backup_datasource_parameters.included_volume_types")
                 disc_kubernetes_cluster_backup_datasource_parameters.set_prop("labelSelectors", AAZListType, ".kubernetes_cluster_backup_datasource_parameters.label_selectors")
                 disc_kubernetes_cluster_backup_datasource_parameters.set_prop("snapshotVolumes", AAZBoolType, ".kubernetes_cluster_backup_datasource_parameters.snapshot_volumes", typ_kwargs={"flags": {"required": True}})
 
@@ -590,6 +621,10 @@ class ValidateForBackup(AAZCommand):
             included_resource_types = _builder.get(".backupInstance.policyInfo.policyParameters.backupDatasourceParametersList[]{objectType:KubernetesClusterBackupDatasourceParameters}.includedResourceTypes")
             if included_resource_types is not None:
                 included_resource_types.set_elements(AAZStrType, ".")
+
+            included_volume_types = _builder.get(".backupInstance.policyInfo.policyParameters.backupDatasourceParametersList[]{objectType:KubernetesClusterBackupDatasourceParameters}.includedVolumeTypes")
+            if included_volume_types is not None:
+                included_volume_types.set_elements(AAZStrType, ".")
 
             label_selectors = _builder.get(".backupInstance.policyInfo.policyParameters.backupDatasourceParametersList[]{objectType:KubernetesClusterBackupDatasourceParameters}.labelSelectors")
             if label_selectors is not None:
@@ -651,7 +686,8 @@ class _ValidateForBackupHelper:
     def _build_schema_base_resource_properties_create(cls, _builder):
         if _builder is None:
             return
-        _builder.set_prop("objectType", AAZStrType, ".object_type", typ_kwargs={"flags": {"required": True}})
+        _builder.set_const("objectType", "DefaultResourceProperties", AAZStrType, ".default_resource_properties", typ_kwargs={"flags": {"required": True}})
+        _builder.discriminate_by("objectType", "DefaultResourceProperties")
 
 
 __all__ = ["ValidateForBackup"]

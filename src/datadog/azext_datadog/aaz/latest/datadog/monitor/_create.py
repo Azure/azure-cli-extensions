@@ -25,9 +25,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-10-20",
+        "version": "2025-06-11",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}", "2023-10-20"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}", "2025-06-11"],
         ]
     }
 
@@ -52,6 +52,11 @@ class Create(AAZCommand):
             options=["-n", "--name", "--monitor-name"],
             help="Monitor resource name",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9_][a-zA-Z0-9_-]+$",
+                max_length=32,
+                min_length=2,
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -66,6 +71,7 @@ class Create(AAZCommand):
         )
         _args_schema.location = AAZResourceLocationArg(
             arg_group="Body",
+            help="The geo-location where the resource lives",
             fmt=AAZResourceLocationArgFormat(
                 resource_group_arg="resource_group",
             ),
@@ -77,6 +83,7 @@ class Create(AAZCommand):
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
             arg_group="Body",
+            help="Resource tags.",
         )
 
         identity = cls._args_schema.identity
@@ -118,13 +125,19 @@ class Create(AAZCommand):
         )
 
         org_properties = cls._args_schema.org_properties
-        org_properties.api_key = AAZStrArg(
+        org_properties.api_key = AAZPasswordArg(
             options=["api-key"],
             help="Api key associated to the Datadog organization.",
+            blank=AAZPromptPasswordInput(
+                msg="Password:",
+            ),
         )
-        org_properties.application_key = AAZStrArg(
+        org_properties.application_key = AAZPasswordArg(
             options=["application-key"],
             help="Application key associated to the Datadog organization.",
+            blank=AAZPromptPasswordInput(
+                msg="Password:",
+            ),
         )
         org_properties.cspm = AAZBoolArg(
             options=["cspm"],
@@ -138,13 +151,19 @@ class Create(AAZCommand):
             options=["id"],
             help="Id of the Datadog organization.",
         )
-        org_properties.linking_auth_code = AAZStrArg(
+        org_properties.linking_auth_code = AAZPasswordArg(
             options=["linking-auth-code"],
             help="The auth code used to linking to an existing datadog organization.",
+            blank=AAZPromptPasswordInput(
+                msg="Password:",
+            ),
         )
-        org_properties.linking_client_id = AAZStrArg(
+        org_properties.linking_client_id = AAZPasswordArg(
             options=["linking-client-id"],
             help="The client_id from an existing in exchange for an auth token to link organization.",
+            blank=AAZPromptPasswordInput(
+                msg="Password:",
+            ),
         )
         org_properties.name = AAZStrArg(
             options=["name"],
@@ -153,6 +172,10 @@ class Create(AAZCommand):
         org_properties.redirect_uri = AAZStrArg(
             options=["redirect-uri"],
             help="The redirect uri for linking.",
+        )
+        org_properties.resource_collection = AAZBoolArg(
+            options=["resource-collection"],
+            help="The configuration which describes the state of resource collection. This collects configuration information for all resources in a subscription.",
         )
 
         user_info = cls._args_schema.user_info
@@ -260,7 +283,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-20",
+                    "api-version", "2025-06-11",
                     required=True,
                 ),
             }
@@ -299,7 +322,7 @@ class Create(AAZCommand):
             if properties is not None:
                 properties.set_prop("datadogOrganizationProperties", AAZObjectType, ".org_properties")
                 properties.set_prop("monitoringStatus", AAZStrType, ".monitoring_status")
-                properties.set_prop("userInfo", AAZObjectType, ".user_info", typ_kwargs={"flags": {"secret": True}})
+                properties.set_prop("userInfo", AAZObjectType, ".user_info")
 
             datadog_organization_properties = _builder.get(".properties.datadogOrganizationProperties")
             if datadog_organization_properties is not None:
@@ -312,6 +335,7 @@ class Create(AAZCommand):
                 datadog_organization_properties.set_prop("linkingClientId", AAZStrType, ".linking_client_id", typ_kwargs={"flags": {"secret": True}})
                 datadog_organization_properties.set_prop("name", AAZStrType, ".name")
                 datadog_organization_properties.set_prop("redirectUri", AAZStrType, ".redirect_uri")
+                datadog_organization_properties.set_prop("resourceCollection", AAZBoolType, ".resource_collection")
 
             user_info = _builder.get(".properties.userInfo")
             if user_info is not None:
@@ -404,13 +428,15 @@ class Create(AAZCommand):
             )
             properties.user_info = AAZObjectType(
                 serialized_name="userInfo",
-                flags={"secret": True},
             )
 
             datadog_organization_properties = cls._schema_on_200_201.properties.datadog_organization_properties
             datadog_organization_properties.cspm = AAZBoolType()
             datadog_organization_properties.id = AAZStrType()
             datadog_organization_properties.name = AAZStrType()
+            datadog_organization_properties.resource_collection = AAZBoolType(
+                serialized_name="resourceCollection",
+            )
 
             user_info = cls._schema_on_200_201.properties.user_info
             user_info.email_address = AAZStrType(

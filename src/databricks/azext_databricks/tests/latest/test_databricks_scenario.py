@@ -545,8 +545,6 @@ class DatabricksClientScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_databricks_update_v2')
     @KeyVaultPreparer(location='eastus', additional_params="--enable-rbac-authorization=false")
     def test_databricks_update_v2(self, resource_group, key_vault):
-        with open("/tmp/kv", mode="w") as f:
-            f.write(key_vault)
         self.kwargs.update({
             'kv': key_vault,
             'workspace_name': self.create_random_name(prefix='workspace', length=16),
@@ -614,7 +612,7 @@ class DatabricksClientScenarioTest(ScenarioTest):
                  '--resource-group {rg} '
                  '--name {workspace_name} '
                  '--enable-compliance-security-profile '
-                 '''--compliance-standard='["HIPAA","PCI_DSS"]' '''
+                 '''--compliance-standard='["HIPAA","PCI_DSS","HITRUST"]' '''
                  '--enable-automatic-cluster-update '
                  '--enable-enhanced-security-monitoring ',
                  checks=[self.check('name', '{workspace_name}'),
@@ -627,7 +625,90 @@ class DatabricksClientScenarioTest(ScenarioTest):
                  '--name {workspace_name} '
                  '-y',
                  checks=[])
+    
+    @AllowLargeResponse(size_kb=10240)
+    @ResourceGroupPreparer(name_prefix='cli_test_databricks_serverless', location="eastus")
+    def test_databricks_serverless(self, resource_group):
+        self.kwargs.update({
+            'workspace_name': 'serverless-test-workspace'
+        })
 
+        self.cmd('az databricks workspace create '
+                 '--resource-group {rg} '
+                 '--name {workspace_name} '
+                 '--location eastus '
+                 '--compute-mode Serverless '
+                 '--sku premium '
+                 '--public-network-access Disabled ',
+                 checks=[self.check('name', '{workspace_name}'),
+                         self.check('computeMode', 'Serverless'),
+                         self.check('sku.name', 'premium')])
+
+        self.cmd('az databricks workspace update '
+                 '--resource-group {rg} '
+                 '--name {workspace_name} '
+                 '--compute-mode Serverless '
+                 '--enable-automatic-cluster-update '
+                 '--enable-enhanced-security-monitoring ',
+                 checks=[self.check('name', '{workspace_name}'),
+                         self.check('enhancedSecurityCompliance.automaticClusterUpdate.value', 'Enabled'),
+                         self.check('enhancedSecurityCompliance.enhancedSecurityMonitoring.value', 'Enabled')])
+        
+        self.cmd('az databricks workspace show '
+                 '--resource-group {rg} '
+                 '--name {workspace_name}',
+                 checks=[self.check('name', '{workspace_name}'),
+                         self.check('computeMode', 'Serverless')])
+
+        self.cmd('az databricks workspace delete '
+                 '--resource-group {rg} '
+                 '--name {workspace_name} '
+                 '-y',
+                 checks=[])
+        
+    @AllowLargeResponse(size_kb=10240)
+    @ResourceGroupPreparer(name_prefix='cli_test_databricks_expected_failures', location="eastus")
+    def test_databricks_serverless_failures(self, resource_group):
+        self.kwargs.update({
+            'workspace_name': 'expected-failure-workspace'
+        })
+
+        self.cmd('az databricks workspace create '
+                 '--resource-group {rg} '
+                 '--name failed-workspace '
+                 '--location eastus '
+                 '--compute-mode Serverless '
+                 '--sku Pxlekmx '
+                 '--public-network-access Disabled ',
+                 expect_failure=True)
+
+        with self.assertRaises(SystemExit):
+            self.cmd('az databricks workspace create '
+                     '--resource-group {rg} '
+                     '--name failed-workspace '
+                     '--location eastus '
+                     '--compute-mode Invalid '
+                     '--sku premium '
+                     '--public-network-access Disabled ',
+                     expect_failure=True)
+
+        self.cmd('az databricks workspace create '
+                 '--resource-group {rg} '
+                 '--name failed-workspace '
+                 '--location eastus '
+                 '--compute-mode Serverless '
+                 '--sku premium '
+                 '--enable-no-public-ip',
+                 expect_failure=True)
+        
+        self.cmd('az databricks workspace create '
+                 '--resource-group {rg} '
+                 '--name failed-workspace '
+                 '--location eastus '
+                 '--compute-mode Serverless '
+                 '--sku premium '
+                 '--required-nsg-rules AllRules',
+                 expect_failure=True)
 
 class DatabricksVNetPeeringScenarioTest(ScenarioTest):
 
@@ -665,7 +746,7 @@ class DatabricksVNetPeeringScenarioTest(ScenarioTest):
             self.check('remoteVirtualNetwork.id', '{vnet_id}'),
             self.check('peeringState', 'Initiated')
         ])
-        self.cmd('az databricks workspace vnet-peering delete -n {peering_name} --workspace-name {workspace_name} -g {rg}')
+        self.cmd('az databricks workspace vnet-peering delete -n {peering_name} --workspace-name {workspace_name} -g {rg} --no-wait')
 
         # user vnet id to create
         peering = self.cmd('az databricks workspace vnet-peering create -n {peering_name} --workspace-name {workspace_name} -g {rg} --remote-vnet {vnet_id}', checks=[
@@ -727,7 +808,7 @@ class DatabricksVNetPeeringScenarioTest(ScenarioTest):
         ])
 
         # delete the peering
-        self.cmd('az databricks workspace vnet-peering delete -n {peering_name} --workspace-name {workspace_name} -g {rg}')
+        self.cmd('az databricks workspace vnet-peering delete -n {peering_name} --workspace-name {workspace_name} -g {rg} --no-wait')
         self.cmd('az databricks workspace vnet-peering list --workspace-name {workspace_name} -g {rg}', checks=[
             self.check('length(@)', 0)
         ])
