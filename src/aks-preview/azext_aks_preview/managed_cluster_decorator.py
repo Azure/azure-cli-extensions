@@ -971,7 +971,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             if isinstance(enable_addons, str):
                 enable_addons = [a.strip() for a in enable_addons.split(",") if a.strip()]
             monitoring_being_enabled = (
-                (enable_addons and CONST_MONITORING_ADDON_NAME_CAMELCASE in enable_addons)
+                (enable_addons and "monitoring" in enable_addons)
                 or bool(self.raw_param.get("enable_azure_monitor_logs"))
             )
             monitoring_enabled = monitoring_already_enabled or monitoring_being_enabled
