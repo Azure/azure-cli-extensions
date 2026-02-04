@@ -941,17 +941,22 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 "Cannot specify --enable-container-network-logs and "
                 "--disable-container-network-logs at the same time."
             )
-        if (
-            enable_cnl and
-            (not self.raw_param.get("enable_acns", False) and
-                not (mc.network_profile and mc.network_profile.advanced_networking and
-                     mc.network_profile.advanced_networking.enabled)) or
-            not (mc.addon_profiles and mc.addon_profiles.get("omsagent") and mc.addon_profiles["omsagent"].enabled)
-        ):
-            raise InvalidArgumentValueError(
-                "Container network logs requires '--enable-acns', advanced networking "
-                "to be enabled, and the monitoring addon to be enabled."
+        if enable_cnl:
+            acns_enabled = (
+                self.raw_param.get("enable_acns", False) or
+                (mc.network_profile and mc.network_profile.advanced_networking and
+                 mc.network_profile.advanced_networking.enabled)
             )
+            monitoring_enabled = (
+                mc.addon_profiles and
+                mc.addon_profiles.get("omsagent") and
+                mc.addon_profiles["omsagent"].enabled
+            )
+            if not acns_enabled or not monitoring_enabled:
+                raise InvalidArgumentValueError(
+                    "Container network logs requires '--enable-acns', advanced networking "
+                    "to be enabled, and the monitoring addon to be enabled."
+                )
         enable_cnl = bool(enable_cnl) if enable_cnl is not None else False
         disable_cnl = bool(disable_cnl) if disable_cnl is not None else False
         return enable_cnl or not disable_cnl
