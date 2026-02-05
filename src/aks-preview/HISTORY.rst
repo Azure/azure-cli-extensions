@@ -16,6 +16,7 @@ Pending
 19.0.0b22
 +++++++
 * `az aks create/update`: Automatically enable `--enable-high-log-scale-mode` when `--enable-container-network-logs` is specified. Raises an error if user explicitly disables HLSM while enabling CNL.
+* `az aks create/update`: Add `--enable-default-domain` and `--disable-default-domain` parameters to manage the default domain feature for web app routing.
 
 19.0.0b21
 +++++++
