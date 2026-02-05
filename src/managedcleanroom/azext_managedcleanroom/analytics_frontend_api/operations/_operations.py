@@ -843,7 +843,7 @@ def build_collaboration_attestationreport_cleanroom_get_request(  # pylint: disa
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
-    _url = "/collaborations/{collaboration_id}/attestationreport/cleanroom"
+    _url = "/collaborations/{collaboration_id}/analytics/attestationreport/cleanroom"
     path_format_arguments = {
         "collaboration_id": _SERIALIZER.url(
             "collaboration_id", collaboration_id, "str"), }

@@ -11,7 +11,7 @@ from azure.cli.core.commands import CliCommandType
 def load_frontend_command_table(loader, _):
     """Register all Analytics Frontend API commands
 
-    Registers 26 commands across 11 command groups for frontend collaboration analytics.
+    Registers 26 commands across command groups for frontend collaboration.
 
     :param loader: Command loader instance
     """
@@ -53,7 +53,7 @@ def load_frontend_command_table(loader, _):
         g.custom_command('accept', 'frontend_collaboration_invitation_accept')
 
     # Dataset commands
-    with loader.command_group('managedcleanroom frontend dataset', custom_command_type=frontend_custom) as g:
+    with loader.command_group('managedcleanroom frontend analytics dataset', custom_command_type=frontend_custom) as g:
         g.custom_command('list', 'frontend_collaboration_dataset_list')
         g.custom_show_command('show', 'frontend_collaboration_dataset_show')
         g.custom_command('publish', 'frontend_collaboration_dataset_publish')
@@ -64,34 +64,42 @@ def load_frontend_command_table(loader, _):
         g.custom_command('set', 'frontend_collaboration_consent_set')
 
     # Query commands
-    with loader.command_group('managedcleanroom frontend query', custom_command_type=frontend_custom) as g:
+    with loader.command_group('managedcleanroom frontend analytics query', custom_command_type=frontend_custom) as g:
         g.custom_command('list', 'frontend_collaboration_query_list')
         g.custom_show_command('show', 'frontend_collaboration_query_show')
         g.custom_command('publish', 'frontend_collaboration_query_publish')
         g.custom_command('run', 'frontend_collaboration_query_run')
 
     # Query vote commands
-    with loader.command_group('managedcleanroom frontend query vote', custom_command_type=frontend_custom) as g:
+    with loader.command_group(
+            'managedcleanroom frontend analytics query vote',
+            custom_command_type=frontend_custom) as g:
         g.custom_command('accept', 'frontend_collaboration_query_vote_accept')
         g.custom_command('reject', 'frontend_collaboration_query_vote_reject')
 
     # Query run history commands
-    with loader.command_group('managedcleanroom frontend query runhistory', custom_command_type=frontend_custom) as g:
-        g.custom_command(
-            'list', 'frontend_collaboration_query_runhistory_list')
+    with loader.command_group(
+            'managedcleanroom frontend analytics query runhistory',
+            custom_command_type=frontend_custom) as g:
+        g.custom_command('list', 'frontend_collaboration_query_runhistory_list')
 
-    # Query run result commands (new command group)
-    with loader.command_group('managedcleanroom frontend query runresult', custom_command_type=frontend_custom) as g:
-        g.custom_show_command(
-            'show', 'frontend_collaboration_query_runresult_show')
+    # Query run result commands
+    with loader.command_group(
+            'managedcleanroom frontend analytics query runresult',
+            custom_command_type=frontend_custom) as g:
+        g.custom_show_command('show', 'frontend_collaboration_query_runresult_show')
 
-    # Audit commands
-    with loader.command_group('managedcleanroom frontend audit', custom_command_type=frontend_custom) as g:
+    # Audit commands (under analytics)
+    with loader.command_group('managedcleanroom frontend analytics audit', custom_command_type=frontend_custom) as g:
         g.custom_command('list', 'frontend_collaboration_audit_list')
 
     # Attestation commands
     with loader.command_group('managedcleanroom frontend attestation', custom_command_type=frontend_custom) as g:
         g.custom_command('cgs', 'frontend_collaboration_attestation_cgs')
+
+    with loader.command_group(
+            'managedcleanroom frontend analytics attestationreport',
+            custom_command_type=frontend_custom) as g:
         g.custom_command(
             'cleanroom',
             'frontend_collaboration_attestation_cleanroom')

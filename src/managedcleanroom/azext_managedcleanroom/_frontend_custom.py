@@ -319,32 +319,46 @@ def frontend_collaboration_query_run(
 # ============================================================================
 
 def frontend_collaboration_query_vote_accept(
-        cmd, collaboration_id, document_id):
+        cmd, collaboration_id, document_id, body=None):
     """Accept query vote
 
     :param cmd: CLI command context
     :param collaboration_id: Collaboration identifier
     :param document_id: Query document identifier
+    :param body: Optional vote configuration JSON (string, dict, or @file)
     :return: Vote result
     """
+    import json
+
+    # Handle body parameter - convert string to dict if needed
+    if body and isinstance(body, str):
+        body = json.loads(body)
+
     client = get_frontend_client(cmd)
     return client.collaboration.analytics_queries_document_id_vote_accept_post(
-        collaboration_id, document_id
+        collaboration_id, document_id, body=body
     )
 
 
 def frontend_collaboration_query_vote_reject(
-        cmd, collaboration_id, document_id):
+        cmd, collaboration_id, document_id, body=None):
     """Reject query vote
 
     :param cmd: CLI command context
     :param collaboration_id: Collaboration identifier
     :param document_id: Query document identifier
+    :param body: Optional vote configuration JSON (string, dict, or @file)
     :return: Vote result
     """
+    import json
+
+    # Handle body parameter - convert string to dict if needed
+    if body and isinstance(body, str):
+        body = json.loads(body)
+
     client = get_frontend_client(cmd)
     return client.collaboration.analytics_queries_document_id_vote_reject_post(
-        collaboration_id, document_id
+        collaboration_id, document_id, body=body
     )
 
 

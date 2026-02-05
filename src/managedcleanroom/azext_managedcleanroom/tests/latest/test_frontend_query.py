@@ -170,7 +170,7 @@ class TestFrontendQuery(unittest.TestCase):
         # Verify
         self.assertEqual(result["voteStatus"], "accepted")
         mock_client.collaboration.analytics_queries_document_id_vote_accept_post.assert_called_once_with(
-            "test-collab-123", "test-query-123")
+            "test-collab-123", "test-query-123", body=None)
 
     @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
     def test_vote_reject_query(self, mock_get_client):
@@ -191,7 +191,7 @@ class TestFrontendQuery(unittest.TestCase):
         # Verify
         self.assertEqual(result["voteStatus"], "rejected")
         mock_client.collaboration.analytics_queries_document_id_vote_reject_post.assert_called_once_with(
-            "test-collab-123", "test-query-123")
+            "test-collab-123", "test-query-123", body=None)
 
     # Query Run History Tests
 

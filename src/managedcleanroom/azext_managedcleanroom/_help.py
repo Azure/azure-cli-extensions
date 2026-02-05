@@ -236,28 +236,28 @@ helps['managedcleanroom frontend invitation accept'] = """
 # Dataset Help
 # ============================================================================
 
-helps['managedcleanroom frontend dataset'] = """
+helps['managedcleanroom frontend analytics dataset'] = """
     type: group
     short-summary: Manage collaboration datasets
 """
 
-helps['managedcleanroom frontend dataset list'] = """
+helps['managedcleanroom frontend analytics dataset list'] = """
     type: command
     short-summary: List datasets for a collaboration
     examples:
         - name: List datasets
-          text: az managedcleanroom frontend dataset list -c <collaboration-id>
+          text: az managedcleanroom frontend analytics dataset list -c <collaboration-id>
 """
 
-helps['managedcleanroom frontend dataset show'] = """
+helps['managedcleanroom frontend analytics dataset show'] = """
     type: command
     short-summary: Show dataset details
     examples:
         - name: Show dataset details
-          text: az managedcleanroom frontend dataset show -c <cid> -d <document-id>
+          text: az managedcleanroom frontend analytics dataset show -c <cid> -d <document-id>
 """
 
-helps['managedcleanroom frontend dataset publish'] = """
+helps['managedcleanroom frontend analytics dataset publish'] = """
     type: command
     short-summary: Publish a dataset
     long-summary: |
@@ -272,15 +272,15 @@ helps['managedcleanroom frontend dataset publish'] = """
     examples:
         - name: Publish a dataset with configuration from file
           text: |
-            az managedcleanroom frontend dataset publish \\
-              --collaboration-id <cid> \\
-              --document-id <document-id> \\
+            az managedcleanroom frontend analytics dataset publish \
+              --collaboration-id <cid> \
+              --document-id <document-id> \
               --body @publish-config.json
         - name: Publish a dataset with inline JSON
           text: |
-            az managedcleanroom frontend dataset publish \\
-              --collaboration-id <cid> \\
-              --document-id <document-id> \\
+            az managedcleanroom frontend analytics dataset publish \
+              --collaboration-id <cid> \
+              --document-id <document-id> \
               --body '{"data": {"datasetAccessPoint": {"name": "my-dataset", "path": "/data/path", "protection": {}}}}'
 """
 
@@ -317,28 +317,28 @@ helps['managedcleanroom frontend consent set'] = """
 # Query Help
 # ============================================================================
 
-helps['managedcleanroom frontend query'] = """
+helps['managedcleanroom frontend analytics query'] = """
     type: group
     short-summary: Manage collaboration queries
 """
 
-helps['managedcleanroom frontend query list'] = """
+helps['managedcleanroom frontend analytics query list'] = """
     type: command
     short-summary: List queries for a collaboration
     examples:
         - name: List queries
-          text: az managedcleanroom frontend query list -c <collaboration-id>
+          text: az managedcleanroom frontend analytics query list -c <collaboration-id>
 """
 
-helps['managedcleanroom frontend query show'] = """
+helps['managedcleanroom frontend analytics query show'] = """
     type: command
     short-summary: Show query details
     examples:
         - name: Show query details
-          text: az managedcleanroom frontend query show -c <cid> -d <document-id>
+          text: az managedcleanroom frontend analytics query show -c <cid> -d <document-id>
 """
 
-helps['managedcleanroom frontend query publish'] = """
+helps['managedcleanroom frontend analytics query publish'] = """
     type: command
     short-summary: Publish a query
     long-summary: |
@@ -352,19 +352,19 @@ helps['managedcleanroom frontend query publish'] = """
     examples:
         - name: Publish a query with configuration from file
           text: |
-            az managedcleanroom frontend query publish \\
-              --collaboration-id <cid> \\
-              --document-id <document-id> \\
+            az managedcleanroom frontend analytics query publish \
+              --collaboration-id <cid> \
+              --document-id <document-id> \
               --body @query-publish-config.json
         - name: Publish a query with inline JSON
           text: |
-            az managedcleanroom frontend query publish \\
-              --collaboration-id <cid> \\
-              --document-id <document-id> \\
+            az managedcleanroom frontend analytics query publish \
+              --collaboration-id <cid> \
+              --document-id <document-id> \
               --body '{"inputDatasets": [{"datasetDocumentId": "...", "view": "..."}], "outputDataset": {}, "queryData": {"segments": []}}'
 """
 
-helps['managedcleanroom frontend query run'] = """
+helps['managedcleanroom frontend analytics query run'] = """
     type: command
     short-summary: Run a query
     long-summary: |
@@ -388,20 +388,20 @@ helps['managedcleanroom frontend query run'] = """
     examples:
         - name: Run query with auto-generated run ID
           text: |
-            az managedcleanroom frontend query run \\
-              --collaboration-id <cid> \\
+            az managedcleanroom frontend analytics query run \
+              --collaboration-id <cid> \
               --document-id <document-id>
         - name: Run query with specific configuration
           text: |
-            az managedcleanroom frontend query run \\
-              --collaboration-id <cid> \\
-              --document-id <document-id> \\
+            az managedcleanroom frontend analytics query run \
+              --collaboration-id <cid> \
+              --document-id <document-id> \
               --body '{"runId": "my-run-001", "dryRun": false, "useOptimizer": true}'
         - name: Run query with configuration from file
           text: |
-            az managedcleanroom frontend query run \\
-              --collaboration-id <cid> \\
-              --document-id <document-id> \\
+            az managedcleanroom frontend analytics query run \
+              --collaboration-id <cid> \
+              --document-id <document-id> \
               --body @run-config.json
 """
 
@@ -410,25 +410,71 @@ helps['managedcleanroom frontend query run'] = """
 # Query Vote Help
 # ============================================================================
 
-helps['managedcleanroom frontend query vote'] = """
+helps['managedcleanroom frontend analytics query vote'] = """
     type: group
     short-summary: Manage query voting
 """
 
-helps['managedcleanroom frontend query vote accept'] = """
+helps['managedcleanroom frontend analytics query vote accept'] = """
     type: command
     short-summary: Accept a query vote
+    long-summary: |
+        Accepts a query vote for the specified collaboration and query document.
+        Optionally accepts a --body parameter for additional vote configuration.
+    parameters:
+        - name: --body
+          type: string
+          short-summary: Optional vote configuration (JSON string or @file path)
+          long-summary: |
+            Optional JSON configuration containing:
+            - reason: Text explanation for accepting the vote
+            - metadata: Additional metadata for the vote
     examples:
         - name: Accept query vote
-          text: az managedcleanroom frontend query vote accept -c <cid> --document-id <document-id>
+          text: az managedcleanroom frontend analytics query vote accept -c <cid> --document-id <document-id>
+        - name: Accept query vote with reason
+          text: |
+            az managedcleanroom frontend analytics query vote accept \
+              -c <cid> \
+              --document-id <document-id> \
+              --body '{"reason": "Query meets all compliance requirements"}'
+        - name: Accept query vote with configuration from file
+          text: |
+            az managedcleanroom frontend analytics query vote accept \
+              -c <cid> \
+              --document-id <document-id> \
+              --body @vote-config.json
 """
 
-helps['managedcleanroom frontend query vote reject'] = """
+helps['managedcleanroom frontend analytics query vote reject'] = """
     type: command
     short-summary: Reject a query vote
+    long-summary: |
+        Rejects a query vote for the specified collaboration and query document.
+        Optionally accepts a --body parameter for additional vote configuration.
+    parameters:
+        - name: --body
+          type: string
+          short-summary: Optional vote configuration (JSON string or @file path)
+          long-summary: |
+            Optional JSON configuration containing:
+            - reason: Text explanation for rejecting the vote
+            - metadata: Additional metadata for the vote
     examples:
         - name: Reject query vote
-          text: az managedcleanroom frontend query vote reject -c <cid> --document-id <document-id>
+          text: az managedcleanroom frontend analytics query vote reject -c <cid> --document-id <document-id>
+        - name: Reject query vote with reason
+          text: |
+            az managedcleanroom frontend analytics query vote reject \
+              -c <cid> \
+              --document-id <document-id> \
+              --body '{"reason": "Query violates data access policy"}'
+        - name: Reject query vote with configuration from file
+          text: |
+            az managedcleanroom frontend analytics query vote reject \
+              -c <cid> \
+              --document-id <document-id> \
+              --body @vote-config.json
 """
 
 
@@ -436,25 +482,25 @@ helps['managedcleanroom frontend query vote reject'] = """
 # Query Run History Help
 # ============================================================================
 
-helps['managedcleanroom frontend query runhistory'] = """
+helps['managedcleanroom frontend analytics query runhistory'] = """
     type: group
     short-summary: View query run history
 """
 
-helps['managedcleanroom frontend query runhistory list'] = """
+helps['managedcleanroom frontend analytics query runhistory list'] = """
     type: command
     short-summary: List query run history
     examples:
         - name: List query runs
-          text: az managedcleanroom frontend query runhistory list -c <cid> --document-id <document-id>
+          text: az managedcleanroom frontend analytics query runhistory list -c <cid> --document-id <document-id>
 """
 
-helps['managedcleanroom frontend query runresult'] = """
+helps['managedcleanroom frontend analytics query runresult'] = """
     type: group
     short-summary: View query run results
 """
 
-helps['managedcleanroom frontend query runresult show'] = """
+helps['managedcleanroom frontend analytics query runresult show'] = """
     type: command
     short-summary: Show details of a query run result
     long-summary: |
@@ -462,7 +508,7 @@ helps['managedcleanroom frontend query runresult show'] = """
         Note: This is different from runhistory list which shows all runs for a query.
     examples:
         - name: Show run result
-          text: az managedcleanroom frontend query runresult show -c <cid> --job-id <job-id>
+          text: az managedcleanroom frontend analytics query runresult show -c <cid> --job-id <job-id>
 """
 
 
@@ -470,17 +516,17 @@ helps['managedcleanroom frontend query runresult show'] = """
 # Audit Help
 # ============================================================================
 
-helps['managedcleanroom frontend audit'] = """
+helps['managedcleanroom frontend analytics audit'] = """
     type: group
     short-summary: View audit events
 """
 
-helps['managedcleanroom frontend audit list'] = """
+helps['managedcleanroom frontend analytics audit list'] = """
     type: command
     short-summary: List audit events for a collaboration
     examples:
         - name: List audit events
-          text: az managedcleanroom frontend audit list -c <collaboration-id>
+          text: az managedcleanroom frontend analytics audit list -c <collaboration-id>
 """
 
 
@@ -501,10 +547,15 @@ helps['managedcleanroom frontend attestation cgs'] = """
           text: az managedcleanroom frontend attestation cgs -c <collaboration-id>
 """
 
-helps['managedcleanroom frontend attestation cleanroom'] = """
+helps['managedcleanroom frontend analytics attestationreport'] = """
+    type: group
+    short-summary: View attestation reports
+"""
+
+helps['managedcleanroom frontend analytics attestationreport cleanroom'] = """
     type: command
     short-summary: Get cleanroom attestation report
     examples:
         - name: Get cleanroom attestation report
-          text: az managedcleanroom frontend attestation cleanroom -c <collaboration-id>
+          text: az managedcleanroom frontend analytics attestationreport cleanroom -c <collaboration-id>
 """
