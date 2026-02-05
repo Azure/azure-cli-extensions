@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+19.0.0b22
++++++++
+* `az aks create/update`: Add `--enable-default-domain` and `--disable-default-domain` parameters to manage the default domain feature for web app routing.
+
 19.0.0b21
 +++++++
 * `az aks nodepool get-rollback-versions`: New command to get available rollback versions for an agent pool.
