@@ -12,7 +12,7 @@ from azure.core.pipeline import policies
 VERSION = "unknown"
 
 
-class AnalyticsFrontendAPIConfiguration:  # pylint: disable=too-many-instance-attributes
+class AnalyticsFrontendAPIConfiguration:  # pylint: disable=too-many-instance-attributes, too-few-public-methods
     """Configuration for AnalyticsFrontendAPI.
 
     Note that all parameters used to create this instance are saved as instance

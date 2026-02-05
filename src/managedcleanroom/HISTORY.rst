@@ -7,6 +7,7 @@ Release History
 ++++++
 * Initial release.
 
-1.1.0b1
+1.0.0b2
+++++++
 * Add frontend commandlets
 * Add MSAL device code flow authentication
