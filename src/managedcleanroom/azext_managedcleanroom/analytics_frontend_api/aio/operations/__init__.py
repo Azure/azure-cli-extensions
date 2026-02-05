@@ -4,6 +4,8 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 # pylint: disable=wrong-import-position
+# flake8: noqa
+
 
 from typing import TYPE_CHECKING
 
