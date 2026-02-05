@@ -13,71 +13,78 @@ from unittest.mock import Mock
 def create_mock_response(status_code=200, json_data=None, ok=True):
     """
     Create a mock HTTP response object.
-    
+
     Args:
         status_code: HTTP status code (default: 200)
         json_data: Data to return from .json() call
         ok: Boolean indicating if request was successful
-    
+
     Returns:
         Mock response object
     """
     mock_response = Mock()
     mock_response.status_code = status_code
     mock_response.ok = ok
-    
+
     if json_data is not None:
         mock_response.json.return_value = json_data
     else:
         mock_response.json.return_value = {}
-    
+
     return mock_response
 
 
-def create_mock_client(get_response=None, post_response=None, put_response=None):
+def create_mock_client(
+        get_response=None,
+        post_response=None,
+        put_response=None):
     """
     Create a mock HTTP client with configurable responses.
-    
+
     Args:
         get_response: Response to return for GET requests
         post_response: Response to return for POST requests
         put_response: Response to return for PUT requests
-    
+
     Returns:
         Mock client object
     """
     mock_client = Mock()
-    
+
     if get_response is not None:
         mock_client.get.return_value = get_response
     else:
         mock_client.get.return_value = create_mock_response()
-    
+
     if post_response is not None:
         mock_client.post.return_value = post_response
     else:
         mock_client.post.return_value = create_mock_response()
-    
+
     if put_response is not None:
         mock_client.put.return_value = put_response
     else:
         mock_client.put.return_value = create_mock_response()
-    
+
     return mock_client
 
 
-def create_mock_msal_token(access_token="mock_msal_token_abc123", expires_in=3600, 
-                           name="Test User", email="test@example.com", oid="test-oid-123"):
+def create_mock_msal_token(
+        access_token="mock_msal_token_abc123",
+        expires_in=3600,
+        name="Test User",
+        email="test@example.com",
+        oid="test-oid-123"):
     """
     Create a mock MSAL token response.
-    
+
     Args:
         access_token: The access token string
         expires_in: Token expiration time in seconds
         name: User's display name
         email: User's email
         oid: User's object ID
-    
+
     Returns:
         Dictionary with MSAL token structure
     """
@@ -97,10 +104,10 @@ def create_mock_msal_token(access_token="mock_msal_token_abc123", expires_in=360
 def create_mock_azure_cli_token(token="mock_az_cli_token_xyz789"):
     """
     Create a mock Azure CLI credential token.
-    
+
     Args:
         token: The token string
-    
+
     Returns:
         Mock token object with .token attribute
     """
@@ -109,16 +116,18 @@ def create_mock_azure_cli_token(token="mock_az_cli_token_xyz789"):
     return mock_token
 
 
-def create_mock_msal_config(client_id="test-client-id", tenant_id="test-tenant-id", 
-                            scopes=None):
+def create_mock_msal_config(
+        client_id="test-client-id",
+        tenant_id="test-tenant-id",
+        scopes=None):
     """
     Create a mock MSAL configuration.
-    
+
     Args:
         client_id: Azure AD application client ID
         tenant_id: Azure AD tenant ID
         scopes: List of OAuth scopes
-    
+
     Returns:
         Dictionary with MSAL config structure
     """
@@ -126,7 +135,7 @@ def create_mock_msal_config(client_id="test-client-id", tenant_id="test-tenant-i
         scopes = ["User.Read"]
     elif isinstance(scopes, str):
         scopes = [scopes]
-    
+
     return {
         "client_id": client_id,
         "tenant_id": tenant_id,

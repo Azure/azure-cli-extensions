@@ -23,29 +23,19 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
         help='Invitation identifier'
     )
 
-    dataset_id_type = CLIArgumentType(
-        options_list=['--dataset-id', '-d'],
-        help='Dataset identifier'
-    )
-
-    query_id_type = CLIArgumentType(
-        options_list=['--query-id', '-q'],
-        help='Query identifier'
-    )
-
     document_id_type = CLIArgumentType(
-        options_list=['--document-id'],
-        help='Consent document identifier'
+        options_list=['--document-id', '-d'],
+        help='Document identifier (dataset, query, or consent document)'
     )
 
-    run_id_type = CLIArgumentType(
-        options_list=['--run-id', '-r'],
-        help='Query run identifier'
+    job_id_type = CLIArgumentType(
+        options_list=['--job-id', '-j'],
+        help='Query job identifier (for run results)'
     )
 
-    action_type = CLIArgumentType(
-        options_list=['--action', '-a'],
-        help='Consent action (approve/reject)'
+    consent_action_type = CLIArgumentType(
+        options_list=['--consent-action', '-a'],
+        help='Consent action (enable/disable)'
     )
 
     # Show command context
@@ -79,10 +69,10 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
         c.argument('collaboration_id', collaboration_id_type)
 
     with self.argument_context('managedcleanroom frontend dataset show') as c:
-        c.argument('dataset_id', dataset_id_type)
+        c.argument('document_id', document_id_type)
 
     with self.argument_context('managedcleanroom frontend dataset publish') as c:
-        c.argument('dataset_id', dataset_id_type)
+        c.argument('document_id', document_id_type)
         c.argument(
             'body',
             type=str,
@@ -95,17 +85,17 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
         c.argument('document_id', document_id_type)
 
     with self.argument_context('managedcleanroom frontend consent set') as c:
-        c.argument('action', action_type)
+        c.argument('consent_action', consent_action_type)
 
     # Query context
     with self.argument_context('managedcleanroom frontend query') as c:
         c.argument('collaboration_id', collaboration_id_type)
 
     with self.argument_context('managedcleanroom frontend query show') as c:
-        c.argument('query_id', query_id_type)
+        c.argument('document_id', document_id_type)
 
     with self.argument_context('managedcleanroom frontend query publish') as c:
-        c.argument('query_id', query_id_type)
+        c.argument('document_id', document_id_type)
         c.argument(
             'body',
             type=str,
@@ -113,22 +103,29 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
             'Must include inputDatasets, outputDataset, and queryData.')
 
     with self.argument_context('managedcleanroom frontend query run') as c:
-        c.argument('query_id', query_id_type)
+        c.argument('document_id', document_id_type)
+        c.argument(
+            'body', type=str, help='JSON string or @file path containing run configuration. '
+            'Optional fields: runId (auto-generated if not provided), dryRun, startDate, endDate, useOptimizer.')
 
     # Query vote context
     with self.argument_context('managedcleanroom frontend query vote') as c:
         c.argument('collaboration_id', collaboration_id_type)
-        c.argument('query_id', query_id_type)
+        c.argument('document_id', document_id_type)
 
     # Query runhistory context
     with self.argument_context('managedcleanroom frontend query runhistory') as c:
         c.argument('collaboration_id', collaboration_id_type)
 
     with self.argument_context('managedcleanroom frontend query runhistory list') as c:
-        c.argument('query_id', query_id_type)
+        c.argument('document_id', document_id_type)
 
-    with self.argument_context('managedcleanroom frontend query runhistory show') as c:
-        c.argument('run_id', run_id_type)
+    # Query runresult context (new command group)
+    with self.argument_context('managedcleanroom frontend query runresult') as c:
+        c.argument('collaboration_id', collaboration_id_type)
+
+    with self.argument_context('managedcleanroom frontend query runresult show') as c:
+        c.argument('job_id', job_id_type)
 
     # Audit context
     with self.argument_context('managedcleanroom frontend audit') as c:

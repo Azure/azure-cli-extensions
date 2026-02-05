@@ -79,8 +79,11 @@ def load_frontend_command_table(loader, _):
     with loader.command_group('managedcleanroom frontend query runhistory', custom_command_type=frontend_custom) as g:
         g.custom_command(
             'list', 'frontend_collaboration_query_runhistory_list')
+
+    # Query run result commands (new command group)
+    with loader.command_group('managedcleanroom frontend query runresult', custom_command_type=frontend_custom) as g:
         g.custom_show_command(
-            'show', 'frontend_collaboration_query_runhistory_show')
+            'show', 'frontend_collaboration_query_runresult_show')
 
     # Audit commands
     with loader.command_group('managedcleanroom frontend audit', custom_command_type=frontend_custom) as g:

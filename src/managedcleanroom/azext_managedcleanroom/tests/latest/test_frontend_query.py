@@ -18,7 +18,7 @@ from azext_managedcleanroom._frontend_custom import (
     frontend_collaboration_query_vote_accept,
     frontend_collaboration_query_vote_reject,
     frontend_collaboration_query_runhistory_list,
-    frontend_collaboration_query_runhistory_show
+    frontend_collaboration_query_runresult_show
 )
 
 
@@ -56,7 +56,7 @@ class TestFrontendQuery(unittest.TestCase):
         """Test showing a specific query"""
         # Mock the client and its method chain
         mock_client = Mock()
-        mock_client.collaboration.analytics_queries_query_id_get.return_value = {
+        mock_client.collaboration.analytics_queries_document_id_get.return_value = {
             "queryId": "test-query-123",
             "name": "Revenue Analysis",
             "status": "approved",
@@ -67,14 +67,14 @@ class TestFrontendQuery(unittest.TestCase):
         result = frontend_collaboration_query_show(
             cmd=Mock(),
             collaboration_id="test-collab-123",
-            query_id="test-query-123"
+            document_id="test-query-123"
         )
 
         # Verify
         self.assertEqual(result["queryId"], "test-query-123")
         self.assertEqual(result["name"], "Revenue Analysis")
         self.assertEqual(result["status"], "approved")
-        mock_client.collaboration.analytics_queries_query_id_get.assert_called_once_with(
+        mock_client.collaboration.analytics_queries_document_id_get.assert_called_once_with(
             "test-collab-123", "test-query-123")
 
     @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
@@ -82,7 +82,7 @@ class TestFrontendQuery(unittest.TestCase):
         """Test publishing a query"""
         # Mock the client and its method chain
         mock_client = Mock()
-        mock_client.collaboration.analytics_queries_query_id_publish_post.return_value = {
+        mock_client.collaboration.analytics_queries_document_id_publish_post.return_value = {
             "queryId": "test-query-123",
             "status": "published",
             "publishedAt": "2024-01-01T00:00:00Z"
@@ -100,25 +100,29 @@ class TestFrontendQuery(unittest.TestCase):
         result = frontend_collaboration_query_publish(
             cmd=Mock(),
             collaboration_id="test-collab-123",
-            query_id="test-query-123",
+            document_id="test-query-123",
             body=test_body
         )
 
         # Verify
         self.assertEqual(result["queryId"], "test-query-123")
         self.assertEqual(result["status"], "published")
-        mock_client.collaboration.analytics_queries_query_id_publish_post.assert_called_once_with(
+        mock_client.collaboration.analytics_queries_document_id_publish_post.assert_called_once_with(
             "test-collab-123", "test-query-123", test_body)
 
     # Query Execution Test
 
+    @patch('uuid.uuid4')
     @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
-    def test_run_query_success(self, mock_get_client):
+    def test_run_query_success(self, mock_get_client, mock_uuid4):
         """Test executing a query"""
+        # Mock UUID generation
+        mock_uuid4.return_value = "generated-run-id-123"
+
         # Mock the client and its method chain
         mock_client = Mock()
-        mock_client.collaboration.analytics_queries_query_id_run_post.return_value = {
-            "runId": "run-123",
+        mock_client.collaboration.analytics_queries_document_id_run_post.return_value = {
+            "runId": "generated-run-id-123",
             "queryId": "test-query-123",
             "status": "running",
             "startTime": "2024-01-01T00:00:00Z"}
@@ -128,14 +132,22 @@ class TestFrontendQuery(unittest.TestCase):
         result = frontend_collaboration_query_run(
             cmd=Mock(),
             collaboration_id="test-collab-123",
-            query_id="test-query-123"
+            document_id="test-query-123"
         )
 
         # Verify
-        self.assertEqual(result["runId"], "run-123")
+        self.assertEqual(result["runId"], "generated-run-id-123")
         self.assertEqual(result["status"], "running")
-        mock_client.collaboration.analytics_queries_query_id_run_post.assert_called_once_with(
-            "test-collab-123", "test-query-123")
+        # Verify the body with auto-generated runId was passed
+        mock_client.collaboration.analytics_queries_document_id_run_post.assert_called_once()
+        call_args = mock_client.collaboration.analytics_queries_document_id_run_post.call_args
+        # Check positional args
+        self.assertEqual(call_args[0][0], "test-collab-123")
+        self.assertEqual(call_args[0][1], "test-query-123")
+        # Check keyword args
+        self.assertIn("body", call_args[1])
+        self.assertIn("runId", call_args[1]["body"])
+        self.assertEqual(call_args[1]["body"]["runId"], "generated-run-id-123")
 
     # Query Voting Tests
 
@@ -144,23 +156,20 @@ class TestFrontendQuery(unittest.TestCase):
         """Test accepting a query vote"""
         # Mock the client and its method chain
         mock_client = Mock()
-        mock_client.collaboration.analytics_queries_query_id_vote_accept_post.return_value = {
-            "queryId": "test-query-123",
-            "voteStatus": "accepted",
-            "votedAt": "2024-01-01T00:00:00Z"
-        }
+        mock_client.collaboration.analytics_queries_document_id_vote_accept_post.return_value = {
+            "queryId": "test-query-123", "voteStatus": "accepted", "votedAt": "2024-01-01T00:00:00Z"}
         mock_get_client.return_value = mock_client
 
         # Execute
         result = frontend_collaboration_query_vote_accept(
             cmd=Mock(),
             collaboration_id="test-collab-123",
-            query_id="test-query-123"
+            document_id="test-query-123"
         )
 
         # Verify
         self.assertEqual(result["voteStatus"], "accepted")
-        mock_client.collaboration.analytics_queries_query_id_vote_accept_post.assert_called_once_with(
+        mock_client.collaboration.analytics_queries_document_id_vote_accept_post.assert_called_once_with(
             "test-collab-123", "test-query-123")
 
     @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
@@ -168,23 +177,20 @@ class TestFrontendQuery(unittest.TestCase):
         """Test rejecting a query vote"""
         # Mock the client and its method chain
         mock_client = Mock()
-        mock_client.collaboration.analytics_queries_query_id_vote_reject_post.return_value = {
-            "queryId": "test-query-123",
-            "voteStatus": "rejected",
-            "votedAt": "2024-01-01T00:00:00Z"
-        }
+        mock_client.collaboration.analytics_queries_document_id_vote_reject_post.return_value = {
+            "queryId": "test-query-123", "voteStatus": "rejected", "votedAt": "2024-01-01T00:00:00Z"}
         mock_get_client.return_value = mock_client
 
         # Execute
         result = frontend_collaboration_query_vote_reject(
             cmd=Mock(),
             collaboration_id="test-collab-123",
-            query_id="test-query-123"
+            document_id="test-query-123"
         )
 
         # Verify
         self.assertEqual(result["voteStatus"], "rejected")
-        mock_client.collaboration.analytics_queries_query_id_vote_reject_post.assert_called_once_with(
+        mock_client.collaboration.analytics_queries_document_id_vote_reject_post.assert_called_once_with(
             "test-collab-123", "test-query-123")
 
     # Query Run History Tests
@@ -194,7 +200,7 @@ class TestFrontendQuery(unittest.TestCase):
         """Test listing query execution history"""
         # Mock the client and its method chain
         mock_client = Mock()
-        mock_client.collaboration.analytics_queries_query_id_runhistory_get.return_value = [
+        mock_client.collaboration.analytics_queries_document_id_runhistory_get.return_value = [
             {
                 "runId": "run-1",
                 "queryId": "test-query-123",
@@ -211,23 +217,23 @@ class TestFrontendQuery(unittest.TestCase):
         result = frontend_collaboration_query_runhistory_list(
             cmd=Mock(),
             collaboration_id="test-collab-123",
-            query_id="test-query-123"
+            document_id="test-query-123"
         )
 
         # Verify
         self.assertEqual(len(result), 2)
         self.assertEqual(result[0]["runId"], "run-1")
         self.assertEqual(result[1]["runId"], "run-2")
-        mock_client.collaboration.analytics_queries_query_id_runhistory_get.assert_called_once_with(
+        mock_client.collaboration.analytics_queries_document_id_runhistory_get.assert_called_once_with(
             "test-collab-123", "test-query-123")
 
     @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
-    def test_show_query_run_history(self, mock_get_client):
+    def test_show_query_run_result(self, mock_get_client):
         """Test showing specific query run details"""
         # Mock the client and its method chain
         mock_client = Mock()
-        mock_client.collaboration.analytics_queries_runid_get.return_value = {
-            "runId": "test-run-123",
+        mock_client.collaboration.analytics_queries_jobid_get.return_value = {
+            "runId": "test-job-123",
             "queryId": "test-query-123",
             "status": "completed",
             "startTime": "2024-01-01T00:00:00Z",
@@ -237,18 +243,18 @@ class TestFrontendQuery(unittest.TestCase):
         mock_get_client.return_value = mock_client
 
         # Execute
-        result = frontend_collaboration_query_runhistory_show(
+        result = frontend_collaboration_query_runresult_show(
             cmd=Mock(),
             collaboration_id="test-collab-123",
-            run_id="test-run-123"
+            job_id="test-job-123"
         )
 
         # Verify
-        self.assertEqual(result["runId"], "test-run-123")
+        self.assertEqual(result["runId"], "test-job-123")
         self.assertEqual(result["queryId"], "test-query-123")
         self.assertEqual(result["status"], "completed")
-        mock_client.collaboration.analytics_queries_runid_get.assert_called_once_with(
-            "test-collab-123", "test-run-123")
+        mock_client.collaboration.analytics_queries_jobid_get.assert_called_once_with(
+            "test-collab-123", "test-job-123")
 
 
 if __name__ == '__main__':

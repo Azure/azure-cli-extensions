@@ -254,7 +254,7 @@ helps['managedcleanroom frontend dataset show'] = """
     short-summary: Show dataset details
     examples:
         - name: Show dataset details
-          text: az managedcleanroom frontend dataset show -c <cid> -d <dataset-id>
+          text: az managedcleanroom frontend dataset show -c <cid> -d <document-id>
 """
 
 helps['managedcleanroom frontend dataset publish'] = """
@@ -274,13 +274,13 @@ helps['managedcleanroom frontend dataset publish'] = """
           text: |
             az managedcleanroom frontend dataset publish \\
               --collaboration-id <cid> \\
-              --dataset-id <dataset-id> \\
+              --document-id <document-id> \\
               --body @publish-config.json
         - name: Publish a dataset with inline JSON
           text: |
             az managedcleanroom frontend dataset publish \\
               --collaboration-id <cid> \\
-              --dataset-id <dataset-id> \\
+              --document-id <document-id> \\
               --body '{"data": {"datasetAccessPoint": {"name": "my-dataset", "path": "/data/path", "protection": {}}}}'
 """
 
@@ -306,8 +306,10 @@ helps['managedcleanroom frontend consent set'] = """
     type: command
     short-summary: Set consent document action
     examples:
-        - name: Approve consent
-          text: az managedcleanroom frontend consent set -c <cid> --document-id <doc-id> -a approve
+        - name: Enable consent
+          text: az managedcleanroom frontend consent set -c <cid> --document-id <doc-id> --consent-action enable
+        - name: Disable consent
+          text: az managedcleanroom frontend consent set -c <cid> --document-id <doc-id> --consent-action disable
 """
 
 
@@ -333,7 +335,7 @@ helps['managedcleanroom frontend query show'] = """
     short-summary: Show query details
     examples:
         - name: Show query details
-          text: az managedcleanroom frontend query show -c <cid> -q <query-id>
+          text: az managedcleanroom frontend query show -c <cid> -d <document-id>
 """
 
 helps['managedcleanroom frontend query publish'] = """
@@ -352,22 +354,55 @@ helps['managedcleanroom frontend query publish'] = """
           text: |
             az managedcleanroom frontend query publish \\
               --collaboration-id <cid> \\
-              --query-id <query-id> \\
+              --document-id <document-id> \\
               --body @query-publish-config.json
         - name: Publish a query with inline JSON
           text: |
             az managedcleanroom frontend query publish \\
               --collaboration-id <cid> \\
-              --query-id <query-id> \\
+              --document-id <document-id> \\
               --body '{"inputDatasets": [{"datasetDocumentId": "...", "view": "..."}], "outputDataset": {}, "queryData": {"segments": []}}'
 """
 
 helps['managedcleanroom frontend query run'] = """
     type: command
     short-summary: Run a query
+    long-summary: |
+        Executes a query against the collaboration's analytics workload.
+        The run configuration can be provided via --body parameter.
+        If runId is not specified in body, it will be auto-generated.
+    parameters:
+        - name: --document-id -d
+          type: string
+          short-summary: Query document identifier
+        - name: --body
+          type: string
+          short-summary: Run configuration (JSON string or @file path)
+          long-summary: |
+            Optional JSON configuration containing:
+            - runId: Unique run identifier (auto-generated if not provided)
+            - dryRun: Boolean flag for dry run mode
+            - startDate: ISO-8601 formatted start date
+            - endDate: ISO-8601 formatted end date
+            - useOptimizer: Boolean flag to enable query optimizer
     examples:
-        - name: Run a query
-          text: az managedcleanroom frontend query run -c <cid> -q <query-id>
+        - name: Run query with auto-generated run ID
+          text: |
+            az managedcleanroom frontend query run \\
+              --collaboration-id <cid> \\
+              --document-id <document-id>
+        - name: Run query with specific configuration
+          text: |
+            az managedcleanroom frontend query run \\
+              --collaboration-id <cid> \\
+              --document-id <document-id> \\
+              --body '{"runId": "my-run-001", "dryRun": false, "useOptimizer": true}'
+        - name: Run query with configuration from file
+          text: |
+            az managedcleanroom frontend query run \\
+              --collaboration-id <cid> \\
+              --document-id <document-id> \\
+              --body @run-config.json
 """
 
 
@@ -385,7 +420,7 @@ helps['managedcleanroom frontend query vote accept'] = """
     short-summary: Accept a query vote
     examples:
         - name: Accept query vote
-          text: az managedcleanroom frontend query vote accept -c <cid> -q <query-id>
+          text: az managedcleanroom frontend query vote accept -c <cid> --document-id <document-id>
 """
 
 helps['managedcleanroom frontend query vote reject'] = """
@@ -393,7 +428,7 @@ helps['managedcleanroom frontend query vote reject'] = """
     short-summary: Reject a query vote
     examples:
         - name: Reject query vote
-          text: az managedcleanroom frontend query vote reject -c <cid> -q <query-id>
+          text: az managedcleanroom frontend query vote reject -c <cid> --document-id <document-id>
 """
 
 
@@ -411,15 +446,23 @@ helps['managedcleanroom frontend query runhistory list'] = """
     short-summary: List query run history
     examples:
         - name: List query runs
-          text: az managedcleanroom frontend query runhistory list -c <cid> -q <query-id>
+          text: az managedcleanroom frontend query runhistory list -c <cid> --document-id <document-id>
 """
 
-helps['managedcleanroom frontend query runhistory show'] = """
+helps['managedcleanroom frontend query runresult'] = """
+    type: group
+    short-summary: View query run results
+"""
+
+helps['managedcleanroom frontend query runresult show'] = """
     type: command
-    short-summary: Show query run details
+    short-summary: Show details of a query run result
+    long-summary: |
+        Retrieves the status and results of a specific query execution job.
+        Note: This is different from runhistory list which shows all runs for a query.
     examples:
-        - name: Show query run details
-          text: az managedcleanroom frontend query runhistory show -c <cid> -r <run-id>
+        - name: Show run result
+          text: az managedcleanroom frontend query runresult show -c <cid> --job-id <job-id>
 """
 
 

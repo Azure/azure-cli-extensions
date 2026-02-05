@@ -54,21 +54,21 @@ class TestFrontendDataset(unittest.TestCase):
         """Test showing a specific dataset"""
         # Mock the client
         mock_client = Mock()
-        mock_client.collaboration.analytics_dataset_id_get.return_value = MOCK_DATASET
+        mock_client.collaboration.analytics_dataset_document_id_get.return_value = MOCK_DATASET
         mock_get_client.return_value = mock_client
 
         # Execute
         result = frontend_collaboration_dataset_show(
             cmd=Mock(),
             collaboration_id="test-collab-123",
-            dataset_id="test-dataset-123"
+            document_id="test-dataset-123"
         )
 
         # Verify
         self.assertEqual(result["datasetId"], "test-dataset-123")
         self.assertEqual(result["name"], "Customer Data")
         self.assertEqual(result["status"], "published")
-        mock_client.collaboration.analytics_dataset_id_get.assert_called_once_with(
+        mock_client.collaboration.analytics_dataset_document_id_get.assert_called_once_with(
             "test-collab-123", "test-dataset-123")
 
     # Publish Dataset Tests
@@ -83,7 +83,7 @@ class TestFrontendDataset(unittest.TestCase):
             "publishedAt": "2024-01-01T00:00:00Z"
         }
         mock_client = Mock()
-        mock_client.collaboration.analytics_dataset_id_publish_post.return_value = mock_publish_response
+        mock_client.collaboration.analytics_dataset_document_id_publish_post.return_value = mock_publish_response
         mock_get_client.return_value = mock_client
 
         # Test body
@@ -101,14 +101,14 @@ class TestFrontendDataset(unittest.TestCase):
         result = frontend_collaboration_dataset_publish(
             cmd=Mock(),
             collaboration_id="test-collab-123",
-            dataset_id="test-dataset-123",
+            document_id="test-dataset-123",
             body=test_body
         )
 
         # Verify
         self.assertEqual(result["datasetId"], "test-dataset-123")
         self.assertEqual(result["status"], "published")
-        mock_client.collaboration.analytics_dataset_id_publish_post.assert_called_once_with(
+        mock_client.collaboration.analytics_dataset_document_id_publish_post.assert_called_once_with(
             "test-collab-123", "test-dataset-123", test_body)
 
     @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
@@ -116,7 +116,7 @@ class TestFrontendDataset(unittest.TestCase):
         """Test handling publish failure (ERROR SCENARIO)"""
         # Mock error
         mock_client = Mock()
-        mock_client.collaboration.analytics_dataset_id_publish_post.side_effect = Exception(
+        mock_client.collaboration.analytics_dataset_document_id_publish_post.side_effect = Exception(
             "Dataset validation failed")
         mock_get_client.return_value = mock_client
 
@@ -128,7 +128,7 @@ class TestFrontendDataset(unittest.TestCase):
             frontend_collaboration_dataset_publish(
                 cmd=Mock(),
                 collaboration_id="test-collab-123",
-                dataset_id="invalid-dataset",
+                document_id="invalid-dataset",
                 body=test_body
             )
 

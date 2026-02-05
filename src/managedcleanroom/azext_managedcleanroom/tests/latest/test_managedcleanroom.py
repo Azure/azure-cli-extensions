@@ -10,7 +10,7 @@ import unittest
 
 class ManagedcleanroomScenario(unittest.TestCase):
     """Placeholder test class for scenario tests"""
-    
+
     def test_placeholder(self):
         """Placeholder test - scenario tests to be added later"""
         # TODO: add scenario tests here when azure.cli.testsdk is available

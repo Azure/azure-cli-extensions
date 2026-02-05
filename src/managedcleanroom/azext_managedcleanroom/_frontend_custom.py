@@ -64,7 +64,7 @@ def frontend_collaboration_analytics_show(cmd, collaboration_id):
     :return: Analytics information
     """
     client = get_frontend_client(cmd)
-    return client.collaboration.workloads_analytics_get(collaboration_id)
+    return client.collaboration.analytics_get(collaboration_id)
 
 
 def frontend_collaboration_analytics_deploymentinfo(cmd, collaboration_id):
@@ -75,7 +75,7 @@ def frontend_collaboration_analytics_deploymentinfo(cmd, collaboration_id):
     :return: Deployment information
     """
     client = get_frontend_client(cmd)
-    return client.collaboration.workloads_analytics_deployment_info_get(
+    return client.collaboration.analytics_deployment_info_get(
         collaboration_id)
 
 
@@ -87,7 +87,7 @@ def frontend_collaboration_analytics_cleanroompolicy(cmd, collaboration_id):
     :return: Cleanroom policy
     """
     client = get_frontend_client(cmd)
-    return client.collaboration.workloads_analytics_cleanroompolicy_get(
+    return client.collaboration.analytics_cleanroompolicy_get(
         collaboration_id)
 
 
@@ -164,26 +164,26 @@ def frontend_collaboration_dataset_list(cmd, collaboration_id):
     return client.collaboration.analytics_datasets_list_get(collaboration_id)
 
 
-def frontend_collaboration_dataset_show(cmd, collaboration_id, dataset_id):
+def frontend_collaboration_dataset_show(cmd, collaboration_id, document_id):
     """Show dataset details
 
     :param cmd: CLI command context
     :param collaboration_id: Collaboration identifier
-    :param dataset_id: Dataset identifier
+    :param document_id: Dataset document identifier
     :return: Dataset details
     """
     client = get_frontend_client(cmd)
-    return client.collaboration.analytics_dataset_id_get(
-        collaboration_id, dataset_id)
+    return client.collaboration.analytics_dataset_document_id_get(
+        collaboration_id, document_id)
 
 
 def frontend_collaboration_dataset_publish(
-        cmd, collaboration_id, dataset_id, body):
+        cmd, collaboration_id, document_id, body):
     """Publish a dataset
 
     :param cmd: CLI command context
     :param collaboration_id: Collaboration identifier
-    :param dataset_id: Dataset identifier
+    :param document_id: Dataset document identifier
     :param body: Publish configuration JSON (string, dict, or @file)
     :return: Publish result
     """
@@ -194,8 +194,8 @@ def frontend_collaboration_dataset_publish(
         body = json.loads(body)
 
     client = get_frontend_client(cmd)
-    return client.collaboration.analytics_dataset_id_publish_post(
-        collaboration_id, dataset_id, body)
+    return client.collaboration.analytics_dataset_document_id_publish_post(
+        collaboration_id, document_id, body)
 
 
 # ============================================================================
@@ -216,18 +216,18 @@ def frontend_collaboration_consent_check(cmd, collaboration_id, document_id):
 
 
 def frontend_collaboration_consent_set(
-        cmd, collaboration_id, document_id, action):
+        cmd, collaboration_id, document_id, consent_action):
     """Set consent document action
 
     :param cmd: CLI command context
     :param collaboration_id: Collaboration identifier
     :param document_id: Consent document identifier
-    :param action: Consent action (e.g., 'approve', 'reject')
+    :param consent_action: Consent action (e.g., 'enable', 'disable')
     :return: Action result
     """
     client = get_frontend_client(cmd)
-    return client.collaboration.set_consent_document_id_action_post(
-        collaboration_id, document_id, action
+    return client.collaboration.set_consent_document_id_consent_action_post(
+        collaboration_id, document_id, consent_action
     )
 
 
@@ -246,26 +246,26 @@ def frontend_collaboration_query_list(cmd, collaboration_id):
     return client.collaboration.analytics_queries_list_get(collaboration_id)
 
 
-def frontend_collaboration_query_show(cmd, collaboration_id, query_id):
+def frontend_collaboration_query_show(cmd, collaboration_id, document_id):
     """Show query details
 
     :param cmd: CLI command context
     :param collaboration_id: Collaboration identifier
-    :param query_id: Query identifier
+    :param document_id: Query document identifier
     :return: Query details
     """
     client = get_frontend_client(cmd)
-    return client.collaboration.analytics_queries_query_id_get(
-        collaboration_id, query_id)
+    return client.collaboration.analytics_queries_document_id_get(
+        collaboration_id, document_id)
 
 
 def frontend_collaboration_query_publish(
-        cmd, collaboration_id, query_id, body):
+        cmd, collaboration_id, document_id, body):
     """Publish a query
 
     :param cmd: CLI command context
     :param collaboration_id: Collaboration identifier
-    :param query_id: Query identifier
+    :param document_id: Query document identifier
     :param body: Publish configuration JSON (string, dict, or @file)
     :return: Publish result
     """
@@ -276,52 +276,75 @@ def frontend_collaboration_query_publish(
         body = json.loads(body)
 
     client = get_frontend_client(cmd)
-    return client.collaboration.analytics_queries_query_id_publish_post(
-        collaboration_id, query_id, body)
+    return client.collaboration.analytics_queries_document_id_publish_post(
+        collaboration_id, document_id, body)
 
 
-def frontend_collaboration_query_run(cmd, collaboration_id, query_id):
+def frontend_collaboration_query_run(
+        cmd,
+        collaboration_id,
+        document_id,
+        body=None):
     """Run a query
 
     :param cmd: CLI command context
     :param collaboration_id: Collaboration identifier
-    :param query_id: Query identifier
+    :param document_id: Query document identifier
+    :param body: Run configuration JSON (string, dict, or @file). Optional fields:
+                 runId (auto-generated if not provided), dryRun, startDate, endDate, useOptimizer
     :return: Run result
     """
+    import json
+    import uuid
+
+    # Handle body parameter - convert string to dict if needed
+    if body and isinstance(body, str):
+        body = json.loads(body)
+
+    # Initialize body if not provided
+    if not body:
+        body = {}
+
+    # Auto-generate runId if not provided
+    if 'runId' not in body:
+        body['runId'] = str(uuid.uuid4())
+
     client = get_frontend_client(cmd)
-    return client.collaboration.analytics_queries_query_id_run_post(
-        collaboration_id, query_id)
+    return client.collaboration.analytics_queries_document_id_run_post(
+        collaboration_id, document_id, body=body)
 
 
 # ============================================================================
 # Query Vote Commands
 # ============================================================================
 
-def frontend_collaboration_query_vote_accept(cmd, collaboration_id, query_id):
+def frontend_collaboration_query_vote_accept(
+        cmd, collaboration_id, document_id):
     """Accept query vote
 
     :param cmd: CLI command context
     :param collaboration_id: Collaboration identifier
-    :param query_id: Query identifier
+    :param document_id: Query document identifier
     :return: Vote result
     """
     client = get_frontend_client(cmd)
-    return client.collaboration.analytics_queries_query_id_vote_accept_post(
-        collaboration_id, query_id
+    return client.collaboration.analytics_queries_document_id_vote_accept_post(
+        collaboration_id, document_id
     )
 
 
-def frontend_collaboration_query_vote_reject(cmd, collaboration_id, query_id):
+def frontend_collaboration_query_vote_reject(
+        cmd, collaboration_id, document_id):
     """Reject query vote
 
     :param cmd: CLI command context
     :param collaboration_id: Collaboration identifier
-    :param query_id: Query identifier
+    :param document_id: Query document identifier
     :return: Vote result
     """
     client = get_frontend_client(cmd)
-    return client.collaboration.analytics_queries_query_id_vote_reject_post(
-        collaboration_id, query_id
+    return client.collaboration.analytics_queries_document_id_vote_reject_post(
+        collaboration_id, document_id
     )
 
 
@@ -330,32 +353,32 @@ def frontend_collaboration_query_vote_reject(cmd, collaboration_id, query_id):
 # ============================================================================
 
 def frontend_collaboration_query_runhistory_list(
-        cmd, collaboration_id, query_id):
+        cmd, collaboration_id, document_id):
     """List query run history
 
     :param cmd: CLI command context
     :param collaboration_id: Collaboration identifier
-    :param query_id: Query identifier
+    :param document_id: Query document identifier
     :return: List of query runs
     """
     client = get_frontend_client(cmd)
-    return client.collaboration.analytics_queries_query_id_runhistory_get(
-        collaboration_id, query_id
+    return client.collaboration.analytics_queries_document_id_runhistory_get(
+        collaboration_id, document_id
     )
 
 
-def frontend_collaboration_query_runhistory_show(
-        cmd, collaboration_id, run_id):
-    """Show query run details
+def frontend_collaboration_query_runresult_show(
+        cmd, collaboration_id, job_id):
+    """Show query job result details
 
     :param cmd: CLI command context
     :param collaboration_id: Collaboration identifier
-    :param run_id: Query run identifier
-    :return: Query run details
+    :param job_id: Query job identifier
+    :return: Query job result details
     """
     client = get_frontend_client(cmd)
-    return client.collaboration.analytics_queries_runid_get(
-        collaboration_id, run_id)
+    return client.collaboration.analytics_queries_jobid_get(
+        collaboration_id, job_id)
 
 
 # ============================================================================

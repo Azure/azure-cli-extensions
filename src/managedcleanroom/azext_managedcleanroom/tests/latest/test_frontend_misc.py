@@ -145,8 +145,8 @@ class TestFrontendMisc(unittest.TestCase):
         """Test setting consent action"""
         # Mock the client and its method chain
         mock_client = Mock()
-        mock_client.collaboration.set_consent_document_id_action_post.return_value = {
-            "documentId": "doc-123", "action": "grant", "updatedAt": "2024-01-01T00:00:00Z"}
+        mock_client.collaboration.set_consent_document_id_consent_action_post.return_value = {
+            "documentId": "doc-123", "action": "enable", "updatedAt": "2024-01-01T00:00:00Z"}
         mock_get_client.return_value = mock_client
 
         # Execute
@@ -154,13 +154,13 @@ class TestFrontendMisc(unittest.TestCase):
             cmd=Mock(),
             collaboration_id="test-collab-123",
             document_id="doc-123",
-            action="grant"
+            consent_action="enable"
         )
 
         # Verify
-        self.assertEqual(result["action"], "grant")
-        mock_client.collaboration.set_consent_document_id_action_post.assert_called_once_with(
-            "test-collab-123", "doc-123", "grant")
+        self.assertEqual(result["action"], "enable")
+        mock_client.collaboration.set_consent_document_id_consent_action_post.assert_called_once_with(
+            "test-collab-123", "doc-123", "enable")
 
     # Audit Test
 

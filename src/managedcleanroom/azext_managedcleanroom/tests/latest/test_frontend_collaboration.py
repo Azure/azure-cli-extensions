@@ -136,7 +136,7 @@ class TestFrontendCollaboration(unittest.TestCase):
         """Test showing analytics information"""
         # Mock analytics response
         mock_client = Mock()
-        mock_client.collaboration.workloads_analytics_get.return_value = MOCK_ANALYTICS
+        mock_client.collaboration.analytics_get.return_value = MOCK_ANALYTICS
         mock_get_client.return_value = mock_client
 
         # Execute
@@ -148,7 +148,7 @@ class TestFrontendCollaboration(unittest.TestCase):
         # Verify
         self.assertEqual(result["analyticsId"], "test-analytics-123")
         self.assertEqual(result["status"], "ready")
-        mock_client.collaboration.workloads_analytics_get.assert_called_once_with(
+        mock_client.collaboration.analytics_get.assert_called_once_with(
             "test-collab-123")
 
     @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
@@ -161,7 +161,7 @@ class TestFrontendCollaboration(unittest.TestCase):
             "status": "deployed"
         }
         mock_client = Mock()
-        mock_client.collaboration.workloads_analytics_deployment_info_get.return_value = mock_deployment_info
+        mock_client.collaboration.analytics_deployment_info_get.return_value = mock_deployment_info
         mock_get_client.return_value = mock_client
 
         # Execute
@@ -173,7 +173,7 @@ class TestFrontendCollaboration(unittest.TestCase):
         # Verify
         self.assertEqual(result["deploymentId"], "deploy-123")
         self.assertEqual(result["region"], "eastus")
-        mock_client.collaboration.workloads_analytics_deployment_info_get.assert_called_once_with(
+        mock_client.collaboration.analytics_deployment_info_get.assert_called_once_with(
             "test-collab-123")
 
     @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
@@ -185,7 +185,7 @@ class TestFrontendCollaboration(unittest.TestCase):
             "rules": ["rule1", "rule2"]
         }
         mock_client = Mock()
-        mock_client.collaboration.workloads_analytics_cleanroompolicy_get.return_value = mock_policy
+        mock_client.collaboration.analytics_cleanroompolicy_get.return_value = mock_policy
         mock_get_client.return_value = mock_client
 
         # Execute
@@ -197,7 +197,7 @@ class TestFrontendCollaboration(unittest.TestCase):
         # Verify
         self.assertEqual(result["policyId"], "policy-123")
         self.assertEqual(len(result["rules"]), 2)
-        mock_client.collaboration.workloads_analytics_cleanroompolicy_get.assert_called_once_with(
+        mock_client.collaboration.analytics_cleanroompolicy_get.assert_called_once_with(
             "test-collab-123")
 
     # OIDC Tests
