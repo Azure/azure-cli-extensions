@@ -492,6 +492,12 @@ def load_command_table(self, _):
         g.custom_command("update", "aks_approuting_zone_update")
         g.custom_command("list", "aks_approuting_zone_list")
 
+    # AKS approuting default-domain commands
+    with self.command_group(
+        "aks approuting defaultdomain", managed_clusters_sdk, client_factory=cf_managed_clusters
+    ) as g:
+        g.custom_show_command("show", "aks_approuting_default_domain_show")
+
     # AKS check-network command
     with self.command_group(
         "aks check-network", managed_clusters_sdk, client_factory=cf_managed_clusters
