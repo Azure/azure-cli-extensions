@@ -32,7 +32,6 @@ from azext_dataprotection.vendored_sdks.resourcegraph.models import \
     QueryRequest, QueryRequestOptions
 from azext_dataprotection.manual import backupcenter_helper, helpers as helper
 from azext_dataprotection.aaz.latest.dataprotection.backup_vault import Show as BackupVaultGet
-from src.dataprotection.azext_dataprotection.manual.enums import CONST_RECOMMENDED
 
 logger = get_logger(__name__)
 
@@ -1152,12 +1151,75 @@ def restore_initialize_for_item_recovery(cmd, datasource_type, source_datastore,
 
     return restore_request
 
-def dataprotection_enable_backup(cmd, datasource_uri: str, backup_strategy=CONST_RECOMMENDED, configuration_params=None):
-
-    # if uri contains case insensitive Microsoft.ContainerService/managedClusters contains and add if check
-    if "Microsoft.ContainerService/managedClusters".lower() in datasource_uri.lower():
+def dataprotection_enable_backup(cmd, datasource_type, datasource_id, backup_strategy=None, configuration_settings=None):
+    """Enable backup for a datasource using a single command.
+    
+    This command orchestrates all the steps required to enable backup:
+    - Creates backup infrastructure (resource group, storage account, vault)
+    - Installs required extensions
+    - Configures backup instance with specified strategy
+    """
+    from azext_dataprotection.manual.enums import get_backup_strategies_for_datasource
+    
+    # Supported datasource types
+    supported_datasource_types = ["AzureKubernetesService"]
+    
+    # Validate datasource type is supported
+    if datasource_type not in supported_datasource_types:
+        raise InvalidArgumentValueError(
+            f"Unsupported datasource type: {datasource_type}. "
+            f"Supported types: {', '.join(supported_datasource_types)}"
+        )
+    
+    # Get valid strategies for this datasource type
+    valid_strategies = get_backup_strategies_for_datasource(datasource_type)
+    
+    # Set default strategy based on datasource type
+    if backup_strategy is None:
+        if datasource_type == "AzureKubernetesService":
+            backup_strategy = 'Week'
+        # Add defaults for other datasource types here as they are supported
+    
+    # Validate strategy for datasource type
+    if backup_strategy not in valid_strategies:
+        raise InvalidArgumentValueError(
+            f"Invalid backup-strategy '{backup_strategy}' for {datasource_type}. "
+            f"Allowed values: {', '.join(valid_strategies)}"
+        )
+    
+    # Parse configuration settings if it's a string (from file)
+    config = _parse_configuration_settings(configuration_settings)
+    
+    # Route to datasource-specific handler
+    if datasource_type == "AzureKubernetesService":
+        if "Microsoft.ContainerService/managedClusters".lower() not in datasource_id.lower():
+            raise InvalidArgumentValueError(
+                "datasource-id must be an AKS cluster resource ID for AzureKubernetesService datasource type"
+            )
+        
         from azext_dataprotection.manual.aks.aks_helper import dataprotection_enable_backup_helper
-        dataprotection_enable_backup_helper(cmd, datasource_uri, backup_strategy, configuration_params)
+        dataprotection_enable_backup_helper(cmd, datasource_id, backup_strategy, config)
         return
-    else: 
-        raise InvalidArgumentValueError("Unsupported datasource type for command")
+
+
+def _parse_configuration_settings(configuration_settings):
+    """Parse configuration settings from file or dict into a dictionary."""
+    import json
+    
+    if configuration_settings is None:
+        return {}
+    
+    # If it's already a dict, return as-is
+    if isinstance(configuration_settings, dict):
+        return configuration_settings
+    
+    # If it's a string, try to parse as JSON
+    if isinstance(configuration_settings, str):
+        try:
+            return json.loads(configuration_settings)
+        except json.JSONDecodeError:
+            raise InvalidArgumentValueError(
+                f"Invalid JSON in configuration-settings: '{configuration_settings}'"
+            )
+    
+    return {}

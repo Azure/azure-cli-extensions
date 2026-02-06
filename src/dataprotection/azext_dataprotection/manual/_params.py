@@ -43,7 +43,7 @@ from azext_dataprotection.manual.enums import (
     get_resource_type_values,
     get_persistent_volume_restore_mode_values,
     get_conflict_policy_values,
-    backup_presets,
+    get_all_backup_strategies,
 )
 
 vault_name_type = CLIArgumentType(help='Name of the backup vault.', options_list=['--vault-name', '-v'], type=str)
@@ -183,11 +183,18 @@ def load_arguments(self, _):
         c.argument('restore_request_object', type=validate_file_or_dict, help='Request body for operation "Restore" Expected value: '
                    'json-string/@json-file. Required when --operation is Restore')
         
-    ## dataprotection enable-backup
-    with self.argument_context('dataprotection enable-backup') as c:
-        c.argument('datasource_uri', type=str, help="The URI of the datasource to be backed up.")
-        c.argument("backup_strategy", arg_type=get_enum_type(backup_presets), help="Backup strategy for the cluster. Defaults to Recommended.")
-        c.argument('configuration_parameters', type=validate_file_or_dict, help="Workload specific configuration overrides.")
+    ## Enable Backup command
+    with self.argument_context('dataprotection enable-backup trigger') as c:
+        c.argument('datasource_type', type=str, help="The type of datasource to be backed up. Supported values: AzureKubernetesService.")
+        c.argument('datasource_id', type=str, help="The full ARM resource ID of the datasource to be backed up.")
+        c.argument('backup_strategy', arg_type=get_enum_type(get_all_backup_strategies()), 
+                   help="Backup strategy preset. For AzureKubernetesService: Week (7-day retention), Month (30-day retention), "
+                        "Immutable (7-day Op + 90-day Vault Tier), DisasterRecovery (GRS+CRR), Custom (bring your own vault/policy). "
+                        "Default: Week.")
+        c.argument('configuration_settings', type=validate_file_or_dict, 
+                   help="Configuration settings file or JSON string. Expected value: json-string/@json-file. "
+                        "Available settings: storage-account-id, blob-container-name, backup-resource-group-id, "
+                        "backup-vault-id (required for Custom), backup-policy-id (required for Custom), tags.")
 
     with self.argument_context('dataprotection job show') as c:
         c.argument('resource_group_name', resource_group_name_type)

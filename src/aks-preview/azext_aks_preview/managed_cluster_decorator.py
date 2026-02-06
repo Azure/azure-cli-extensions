@@ -7383,22 +7383,28 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         enable_backup = self.context.raw_param.get("enable_backup")
         if enable_backup:
-            from azext_dataprotection.manual.enums import    backup_presets
+            # Validate that dataprotection extension is installed
+            try:
+                from azure.cli.core.extension.operations import add_extension_to_path
+                add_extension_to_path("dataprotection")
+                from azext_dataprotection.manual.aks.aks_helper import dataprotection_enable_backup_helper
+            except (ImportError, ModuleNotFoundError):
+                raise CLIError(
+                    "The 'dataprotection' extension is required for AKS backup functionality.\n"
+                    "Please install it using: az extension add --name dataprotection"
+                )
 
             backup_strategy = self.context.raw_param.get("backup_strategy")
             backup_configuration_parameters = self.context.raw_param.get("backup_configuration_parameters")
-            from msrestazure.tools import resource_id
 
-            cluster_resource_id = resource_id(
-                                    subscription=self.context.get_subscription_id(),
-                                    resource_group=self.context.get_resource_group_name(),
-                                    namespace="Microsoft.ContainerService",
-                                    type="managedClusters",
-                                    name=self.context.get_name(),
-                                )
-        
-            from azext_dataprotection.manual.aks.aks_helper import dataprotection_enable_backup_helper
-            dataprotection_enable_backup_helper(str(cluster_resource_id), json.dumps(backup_strategy),  json.dumps(backup_configuration_parameters))
+            # Build the cluster resource ID
+            cluster_resource_id = (
+                f"/subscriptions/{self.context.get_subscription_id()}"
+                f"/resourceGroups/{self.context.get_resource_group_name()}"
+                f"/providers/Microsoft.ContainerService/managedClusters/{self.context.get_name()}"
+            )
+
+            dataprotection_enable_backup_helper(self.cmd, str(cluster_resource_id), backup_strategy, backup_configuration_parameters)
         return mc
 
     def check_is_postprocessing_required(self, mc: ManagedCluster) -> bool:

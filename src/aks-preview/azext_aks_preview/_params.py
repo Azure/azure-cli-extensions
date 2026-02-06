@@ -24,9 +24,19 @@ from azure.cli.command_modules.acs._validators import (
     validate_nat_gateway_managed_outbound_ip_count,
 )
 
-from azext_dataprotection.manual.enums import (
-    backup_presets
+# Import backup strategy constants from dataprotection extension
+from azure.cli.core.extension.operations import add_extension_to_path
+add_extension_to_path("dataprotection")
+from azext_dataprotection.manual._consts import (
+    CONST_AKS_BACKUP_STRATEGIES,
+    CONST_BACKUP_STRATEGY_WEEK,
+    CONST_BACKUP_STRATEGY_MONTH,
+    CONST_BACKUP_STRATEGY_IMMUTABLE,
+    CONST_BACKUP_STRATEGY_DISASTER_RECOVERY,
+    CONST_BACKUP_STRATEGY_CUSTOM,
 )
+
+backup_presets = CONST_AKS_BACKUP_STRATEGIES
 
 from azure.cli.core.commands.parameters import (
     edge_zone_type,
