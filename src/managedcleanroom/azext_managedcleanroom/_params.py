@@ -142,7 +142,7 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
         c.argument('job_id', job_id_type)
 
     # Audit context
-    with self.argument_context('managedcleanroom frontend analytics audit') as c:
+    with self.argument_context('managedcleanroom frontend analytics auditevent') as c:
         c.argument('collaboration_id', collaboration_id_type)
 
     # Attestation context

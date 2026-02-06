@@ -89,8 +89,10 @@ def load_frontend_command_table(loader, _):
             custom_command_type=frontend_custom) as g:
         g.custom_show_command('show', 'frontend_collaboration_query_runresult_show')
 
-    # Audit commands (under analytics)
-    with loader.command_group('managedcleanroom frontend analytics audit', custom_command_type=frontend_custom) as g:
+    # Audit event commands
+    with loader.command_group(
+            'managedcleanroom frontend analytics auditevent',
+            custom_command_type=frontend_custom) as g:
         g.custom_command('list', 'frontend_collaboration_audit_list')
 
     # Attestation commands

@@ -516,17 +516,17 @@ helps['managedcleanroom frontend analytics query runresult show'] = """
 # Audit Help
 # ============================================================================
 
-helps['managedcleanroom frontend analytics audit'] = """
+helps['managedcleanroom frontend analytics auditevent'] = """
     type: group
     short-summary: View audit events
 """
 
-helps['managedcleanroom frontend analytics audit list'] = """
+helps['managedcleanroom frontend analytics auditevent list'] = """
     type: command
     short-summary: List audit events for a collaboration
     examples:
         - name: List audit events
-          text: az managedcleanroom frontend analytics audit list -c <collaboration-id>
+          text: az managedcleanroom frontend analytics auditevent list -c <collaboration-id>
 """
 
 
