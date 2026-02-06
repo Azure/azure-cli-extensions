@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* `az aks safeguards`: Update Deployment Safeguards commands to API version 2025-07-01 and add idempotency check for create operation.
 
 19.0.0b21
 +++++++

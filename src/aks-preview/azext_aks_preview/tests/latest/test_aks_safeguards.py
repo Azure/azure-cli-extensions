@@ -47,7 +47,7 @@ class AksSafeguardsScenario(ScenarioTest):
         self.kwargs.update({
             'aks_name': self.create_random_name(prefix='akssafeguards-', length=20),
             'ssh_key_value': self.generate_ssh_keys(),
-            'vm_size': 'standard_a8_v2'
+            'vm_size': 'Standard_DS2_v2'
         })
 
         # Create AKS cluster
@@ -101,7 +101,7 @@ class AksSafeguardsScenario(ScenarioTest):
         self.kwargs.update({
             'aks_name': self.create_random_name(prefix='akspss-', length=15),
             'ssh_key_value': self.generate_ssh_keys(),
-            'vm_size': 'standard_a8_v2'
+            'vm_size': 'Standard_DS2_v2'
         })
 
         # Create AKS cluster
@@ -155,7 +155,7 @@ class AksSafeguardsScenario(ScenarioTest):
         self.kwargs.update({
             'aks_name': self.create_random_name(prefix='aksval-', length=15),
             'ssh_key_value': self.generate_ssh_keys(),
-            'vm_size': 'standard_a8_v2'
+            'vm_size': 'Standard_DS2_v2'
         })
 
         # Create AKS cluster
