@@ -3,10 +3,6 @@
 Release History
 ===============
 
-1.2.1
-+++++
-*  Upgrade API version from 2025-10-01-preview to 2026-01-01
-
 1.2.0
 +++++
 * az databricks workspace create: Add --compute-mode to set the compute mode for the workspace. Allowed values: 'Hybrid', 'Serverless'
