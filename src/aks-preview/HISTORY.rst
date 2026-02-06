@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* `az aks create/update`: Add `--enable-azure-monitor-logs` support to container network logs validation.
 
 19.0.0b22
 +++++++
