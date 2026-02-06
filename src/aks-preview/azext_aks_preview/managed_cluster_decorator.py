@@ -941,17 +941,47 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 "Cannot specify --enable-container-network-logs and "
                 "--disable-container-network-logs at the same time."
             )
-        if (
-            enable_cnl and
-            (not self.raw_param.get("enable_acns", False) and
-                not (mc.network_profile and mc.network_profile.advanced_networking and
-                     mc.network_profile.advanced_networking.enabled)) or
-            not (mc.addon_profiles and mc.addon_profiles.get("omsagent") and mc.addon_profiles["omsagent"].enabled)
-        ):
-            raise InvalidArgumentValueError(
-                "Container network logs requires '--enable-acns', advanced networking "
-                "to be enabled, and the monitoring addon to be enabled."
+
+        if enable_cnl:
+            # Check if ACNS is enabled (either via param or already on the cluster)
+            acns_enabled = (
+                self.raw_param.get("enable_acns", False) or
+                (mc.network_profile and mc.network_profile.advanced_networking and
+                 mc.network_profile.advanced_networking.enabled)
             )
+
+            # Check if monitoring addon is enabled:
+            # - Already configured in mc.addon_profiles, OR
+            # - Being enabled via --enable-addons parameter (for cluster create scenario),
+            #   OR via the dedicated --enable-azure-monitor-logs flag.
+            monitoring_already_enabled = (
+                mc.addon_profiles and
+                mc.addon_profiles.get("omsagent") and
+                mc.addon_profiles["omsagent"].enabled
+            )
+            # Derive monitoring being enabled from normalized addon list and/or
+            # the explicit --enable-azure-monitor-logs flag.
+            enable_addons = None
+            try:
+                # Prefer normalized addons if helper is available.
+                enable_addons = self._get_enable_addons()
+            except AttributeError:
+                # Fallback to the raw parameter if helper is not present.
+                enable_addons = self.raw_param.get("enable_addons")
+            if isinstance(enable_addons, str):
+                enable_addons = [a.strip() for a in enable_addons.split(",") if a.strip()]
+            monitoring_being_enabled = (
+                (enable_addons and "monitoring" in enable_addons)
+                or bool(self.raw_param.get("enable_azure_monitor_logs"))
+            )
+            monitoring_enabled = monitoring_already_enabled or monitoring_being_enabled
+
+            if not acns_enabled or not monitoring_enabled:
+                raise InvalidArgumentValueError(
+                    "Container network logs requires '--enable-acns', advanced networking "
+                    "to be enabled, and the monitoring addon to be enabled."
+                )
+
         enable_cnl = bool(enable_cnl) if enable_cnl is not None else False
         disable_cnl = bool(disable_cnl) if disable_cnl is not None else False
         return enable_cnl or not disable_cnl

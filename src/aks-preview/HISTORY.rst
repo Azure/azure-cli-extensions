@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* `az aks create/update`: Fix operator precedence bug in `--enable-container-network-logs` validation that caused false errors during cluster create.
 
 19.0.0b21
 +++++++
