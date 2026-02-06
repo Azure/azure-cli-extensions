@@ -2,6 +2,9 @@
 
 Release History
 ===============
+1.3.0
++++++
+* Revert the change of upgrading to 2026-01-01 API version
 
 1.2.0
 +++++
