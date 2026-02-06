@@ -299,19 +299,6 @@ class StorageAccessMode(str, Enum, metaclass=CaseInsensitiveEnumMeta):
 
 
 class SyncState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """The status of the connected registry's most recent sync."""
-
-    SYNC_TOKEN_UPDATE = "SyncTokenUpdate"
-    """Connected Registry sync was triggered by a sync token update"""
-    INITIAL_SYNC = "InitialSync"
-    """Connected Registry sync was triggered by an initial sync during activation"""
-    MANUAL_RESYNC = "ManualResync"
-    """Connected Registry sync was triggered by a manual resync request"""
-    RECOVERY_SERVICE = "RecoveryService"
-    """Connected Registry sync was triggered by the Connected Registry's recovery service"""
-
-
-class SyncTrigger(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """The action that triggered the most recent registry sync."""
 
     NOT_ACTIVATED = "NotActivated"
@@ -326,6 +313,19 @@ class SyncTrigger(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Connected Registry sync timed out"""
     PENDING = "Pending"
     """Connected Registry sync is pending"""
+
+
+class SyncTrigger(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The status of the connected registry's most recent sync."""
+
+    SYNC_TOKEN_UPDATE = "SyncTokenUpdate"
+    """Connected Registry sync was triggered by a sync token update"""
+    INITIAL_SYNC = "InitialSync"
+    """Connected Registry sync was triggered by an initial sync during activation"""
+    MANUAL_RESYNC = "ManualResync"
+    """Connected Registry sync was triggered by a manual resync request"""
+    RECOVERY_SERVICE = "RecoveryService"
+    """Connected Registry sync was triggered by the Connected Registry's recovery service"""
 
 
 class TlsStatus(str, Enum, metaclass=CaseInsensitiveEnumMeta):

@@ -4062,10 +4062,10 @@ class RegistrySyncResult(_serialization.Model):
     All required parameters must be populated in order to send to server.
 
     :ivar sync_trigger: The action that triggered the most recent registry sync. Required. Known
-     values are: "NotActivated", "Syncing", "Failed", "Succeeded", "TimedOut", and "Pending".
+     values are: "SyncTokenUpdate", "InitialSync", "ManualResync", and "RecoveryService".
     :vartype sync_trigger: str or ~azure.mgmt.containerregistry.models.SyncTrigger
     :ivar sync_state: The status of the connected registry's most recent sync. Required. Known
-     values are: "SyncTokenUpdate", "InitialSync", "ManualResync", and "RecoveryService".
+     values are: "NotActivated", "Syncing", "Failed", "Succeeded", "TimedOut", and "Pending".
     :vartype sync_state: str or ~azure.mgmt.containerregistry.models.SyncState
     :ivar last_sync_start_time: The time that the connected registry's most recent sync started.
     :vartype last_sync_start_time: ~datetime.datetime
