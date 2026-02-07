@@ -315,13 +315,17 @@ def acr_login_preview(cmd,
             regional_endpoint_prefix = f"{registry_name}.{endpoint}.geo.".lower()
             matching_endpoint = next(
                 (url for url in registry.regional_endpoint_host_names
-                 if url.lower().startswith(regional_endpoint_prefix)), None)
+                 if url.lower().strip().startswith(regional_endpoint_prefix)), None)
 
         if matching_endpoint:
             logger.warning("Logging in to regional endpoint: %s", matching_endpoint)
             _perform_registry_login(matching_endpoint, docker_command, username, password)
         else:
-            logger.error("Regional endpoint for '%s' not found. Aborting login.", endpoint)
+            raise CLIError(
+                "Regional endpoint for '{}' not found. Aborting login. "
+                "Run 'az acr show-endpoints -n {}' to list available regional endpoints.".format(
+                    endpoint, registry_name)
+            )
     else:
         _perform_registry_login(login_server, docker_command, username, password)
 

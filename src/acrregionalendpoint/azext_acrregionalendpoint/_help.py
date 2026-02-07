@@ -16,7 +16,7 @@ examples:
   - name: Create a registry with ABAC-based Repository Permission enabled.
     text: >
         az acr create -n myregistry -g MyResourceGroup --sku Standard --role-assignment-mode rbac-abac
-  - name: Create a registry with regional endpoints enabled.
+  - name: Create a managed container registry with the Premium SKU and regional endpoints enabled.
     text: >
         az acr create -n myregistry -g MyResourceGroup --sku Premium --regional-endpoints enabled
 """
@@ -53,4 +53,13 @@ examples:
   - name: Log in to a specific regional endpoint of an Azure Container Registry
     text: >
         az acr login -n myregistry --endpoint eastus
+"""
+
+helps['acr show-endpoints'] = """
+type: command
+short-summary: Display registry endpoints including data endpoints and regional endpoints if configured.
+examples:
+  - name: Show the endpoints for a registry.
+    text: >
+        az acr show-endpoints -n myregistry
 """

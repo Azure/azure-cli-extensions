@@ -22,6 +22,8 @@ class AcrregionalendpointCommandsLoader(AzCommandsLoader):
         # Load extra commands for Regional Endpoint Feature
         from azext_acrregionalendpoint.commands import load_command_table_preview
         load_command_table_preview(self, args)
+        # Load help entries for Regional Endpoint Feature (must be after core module load to override)
+        import azext_acrregionalendpoint._help  # pylint: disable=unused-import
         return self.command_table
 
     def load_arguments(self, command):
