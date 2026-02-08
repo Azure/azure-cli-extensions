@@ -947,11 +947,15 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 (mc.network_profile and mc.network_profile.advanced_networking and
                  mc.network_profile.advanced_networking.enabled)
             )
-            monitoring_enabled = (
+            # Check for monitoring addon - either being enabled via raw params or already enabled on mc
+            enable_addons = self.raw_param.get("enable_addons") or ""
+            monitoring_being_enabled = "monitoring" in enable_addons
+            monitoring_already_enabled = (
                 mc.addon_profiles and
                 mc.addon_profiles.get("omsagent") and
                 mc.addon_profiles["omsagent"].enabled
             )
+            monitoring_enabled = monitoring_being_enabled or monitoring_already_enabled
             if not acns_enabled or not monitoring_enabled:
                 raise InvalidArgumentValueError(
                     "Container network logs requires '--enable-acns', advanced networking "

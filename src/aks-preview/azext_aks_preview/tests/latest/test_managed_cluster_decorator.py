@@ -4780,6 +4780,166 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         with self.assertRaises(RequiredArgumentMissingError):
             ctx.get_enable_high_log_scale_mode()
 
+    def test_get_container_network_logs_returns_none_when_not_specified(self):
+        """Test get_container_network_logs returns None when neither enable nor disable is specified."""
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        mc = self.models.ManagedCluster(location="test_location")
+        ctx.attach_mc(mc)
+        result = ctx.get_container_network_logs(mc)
+        self.assertIsNone(result)
+
+    def test_get_container_network_logs_error_when_both_enable_and_disable(self):
+        """Test get_container_network_logs raises error when both enable and disable are specified."""
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({
+                "enable_container_network_logs": True,
+                "disable_container_network_logs": True,
+            }),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        mc = self.models.ManagedCluster(location="test_location")
+        ctx.attach_mc(mc)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx.get_container_network_logs(mc)
+
+    def test_get_container_network_logs_with_monitoring_via_enable_addons(self):
+        """Test get_container_network_logs succeeds when monitoring is being enabled via enable_addons
+        but mc.addon_profiles is not yet populated (create scenario)."""
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({
+                "enable_container_network_logs": True,
+                "enable_acns": True,
+                "enable_addons": "monitoring",
+            }),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        # Create MC with ACNS but without addon_profiles set yet
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                advanced_networking=self.models.AdvancedNetworking(
+                    enabled=True,
+                ),
+            ),
+        )
+        ctx.attach_mc(mc)
+        result = ctx.get_container_network_logs(mc)
+        self.assertTrue(result)
+
+    def test_get_container_network_logs_with_monitoring_already_on_mc(self):
+        """Test get_container_network_logs succeeds when monitoring is already enabled on mc (update scenario)."""
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({
+                "enable_container_network_logs": True,
+            }),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                advanced_networking=self.models.AdvancedNetworking(
+                    enabled=True,
+                ),
+            ),
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                )
+            },
+        )
+        ctx.attach_mc(mc)
+        result = ctx.get_container_network_logs(mc)
+        self.assertTrue(result)
+
+    def test_get_container_network_logs_error_without_acns(self):
+        """Test get_container_network_logs raises error when ACNS is not enabled."""
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({
+                "enable_container_network_logs": True,
+                "enable_addons": "monitoring",
+            }),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        mc = self.models.ManagedCluster(location="test_location")
+        ctx.attach_mc(mc)
+        with self.assertRaises(InvalidArgumentValueError):
+            ctx.get_container_network_logs(mc)
+
+    def test_get_container_network_logs_error_without_monitoring(self):
+        """Test get_container_network_logs raises error when monitoring is not enabled."""
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({
+                "enable_container_network_logs": True,
+                "enable_acns": True,
+            }),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                advanced_networking=self.models.AdvancedNetworking(
+                    enabled=True,
+                ),
+            ),
+        )
+        ctx.attach_mc(mc)
+        with self.assertRaises(InvalidArgumentValueError):
+            ctx.get_container_network_logs(mc)
+
+    def test_get_container_network_logs_disable_returns_false(self):
+        """Test get_container_network_logs returns False when disable is specified."""
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({
+                "disable_container_network_logs": True,
+            }),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        mc = self.models.ManagedCluster(location="test_location")
+        ctx.attach_mc(mc)
+        result = ctx.get_container_network_logs(mc)
+        self.assertFalse(result)
+
+    def test_get_container_network_logs_legacy_retina_flow_logs_param(self):
+        """Test get_container_network_logs works with legacy enable_retina_flow_logs parameter."""
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({
+                "enable_retina_flow_logs": True,
+                "enable_acns": True,
+                "enable_addons": "monitoring",
+            }),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                advanced_networking=self.models.AdvancedNetworking(
+                    enabled=True,
+                ),
+            ),
+        )
+        ctx.attach_mc(mc)
+        result = ctx.get_container_network_logs(mc)
+        self.assertTrue(result)
+
 
 class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
     def setUp(self):
