@@ -114,6 +114,7 @@ class Create(AAZCommand):
         _args_schema.sku = AAZStrArg(
             options=["--sku"],
             help="The SKU tier name.  Allowed values: premium, standard, trial.",
+            default="premium",
         )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],

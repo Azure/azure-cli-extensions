@@ -18,7 +18,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_access_connector000001?api-version=2024-11-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_access_connector000001","name":"cli_test_access_connector000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","test":"test_access_connector_v2","date":"2026-01-28T23:44:53Z","module":"databricks"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_access_connector000001","name":"cli_test_access_connector000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","test":"test_access_connector_v2","date":"2026-02-07T00:12:37Z","module":"databricks"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -27,7 +27,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 28 Jan 2026 23:44:56 GMT
+      - Sat, 07 Feb 2026 00:12:39 GMT
       expires:
       - '-1'
       pragma:
@@ -41,7 +41,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '3749'
       x-msedge-ref:
-      - 'Ref A: 16364FB6F37643D187B56FDAA858707E Ref B: CO6AA3150217035 Ref C: 2026-01-28T23:44:56Z'
+      - 'Ref A: 12E689F2E6F640CC8FA26967E35842FF Ref B: MWH011020806062 Ref C: 2026-02-07T00:12:39Z'
     status:
       code: 200
       message: OK
@@ -68,7 +68,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_access_connector000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/my-test-identity?api-version=2024-11-30
   response:
     body:
-      string: '{"location":"westus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_access_connector000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/my-test-identity","name":"my-test-identity","type":"Microsoft.ManagedIdentity/userAssignedIdentities","properties":{"isolationScope":"None","tenantId":"b2ad95e6-8830-4405-a60e-12944d7ac939","principalId":"a82288ec-c5eb-4142-b4e7-95a4838fa8d5","clientId":"a16727ca-59f1-4cc4-b2b8-1e09f4456701"}}'
+      string: '{"location":"westus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_access_connector000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/my-test-identity","name":"my-test-identity","type":"Microsoft.ManagedIdentity/userAssignedIdentities","properties":{"isolationScope":"None","tenantId":"b2ad95e6-8830-4405-a60e-12944d7ac939","principalId":"8ee2ba28-ff45-4e58-8356-b4bf91a286f3","clientId":"9d54a061-cc93-45a3-aef8-dc32cf999133"}}'
     headers:
       cache-control:
       - no-cache
@@ -77,7 +77,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 28 Jan 2026 23:44:57 GMT
+      - Sat, 07 Feb 2026 00:12:40 GMT
       expires:
       - '-1'
       location:
@@ -91,13 +91,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=b2ad95e6-8830-4405-a60e-12944d7ac939,objectId=444fc911-d78c-459a-a60c-b91f4398edb8/westus/e884d911-d809-4e6f-98a1-ccdec7f4c8bb
+      - tenantId=b2ad95e6-8830-4405-a60e-12944d7ac939,objectId=444fc911-d78c-459a-a60c-b91f4398edb8/westus/af41da9a-6e56-4b84-854a-8e8131f146a8
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
       - '199'
       x-msedge-ref:
-      - 'Ref A: ADAF8092D4BC4106B530B03102606ABE Ref B: MWH011020807029 Ref C: 2026-01-28T23:44:56Z'
+      - 'Ref A: BA50C341E61040DABFCF4B1F02709A19 Ref B: CO6AA3150219009 Ref C: 2026-02-07T00:12:40Z'
     status:
       code: 201
       message: Created
@@ -129,23 +129,23 @@ interactions:
         \ \"name\": \"my-test-access-connector\",\r\n  \"type\": \"Microsoft.Databricks/accessConnectors\",\r\n
         \ \"location\": \"westus\",\r\n  \"identity\": {\r\n    \"userAssignedIdentities\":
         {\r\n      \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_access_connector000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/my-test-identity\":
-        {\r\n        \"principalId\": \"a82288ec-c5eb-4142-b4e7-95a4838fa8d5\",\r\n
-        \       \"clientId\": \"a16727ca-59f1-4cc4-b2b8-1e09f4456701\"\r\n      }\r\n
+        {\r\n        \"principalId\": \"8ee2ba28-ff45-4e58-8356-b4bf91a286f3\",\r\n
+        \       \"clientId\": \"9d54a061-cc93-45a3-aef8-dc32cf999133\"\r\n      }\r\n
         \   },\r\n    \"type\": \"UserAssigned\"\r\n  },\r\n  \"properties\": {\r\n
         \   \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"systemData\": {\r\n
         \   \"createdBy\": \"laurenyeeann@gmail.com\",\r\n    \"createdByType\": \"User\",\r\n
-        \   \"createdAt\": \"2026-01-28T23:44:59.228723+00:00\",\r\n    \"lastModifiedBy\":
+        \   \"createdAt\": \"2026-02-07T00:12:42.4308301+00:00\",\r\n    \"lastModifiedBy\":
         \"laurenyeeann@gmail.com\",\r\n    \"lastModifiedByType\": \"User\",\r\n    \"lastModifiedAt\":
-        \"2026-01-28T23:44:59.228723+00:00\"\r\n  }\r\n}"
+        \"2026-02-07T00:12:42.4308301+00:00\"\r\n  }\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1073'
+      - '1075'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 28 Jan 2026 23:45:00 GMT
+      - Sat, 07 Feb 2026 00:12:43 GMT
       expires:
       - '-1'
       pragma:
@@ -157,11 +157,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=b2ad95e6-8830-4405-a60e-12944d7ac939,objectId=444fc911-d78c-459a-a60c-b91f4398edb8/westus/4e3a32fe-13c6-4692-a44f-8ff542fd6675
+      - tenantId=b2ad95e6-8830-4405-a60e-12944d7ac939,objectId=444fc911-d78c-459a-a60c-b91f4398edb8/westus2/b2a84e63-e23a-45c1-be28-591eaba91a78
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '99'
       x-msedge-ref:
-      - 'Ref A: 70B319DAF48741E8B20B814ABE1B08E8 Ref B: CO6AA3150218009 Ref C: 2026-01-28T23:44:58Z'
+      - 'Ref A: 336C5B43959948CAB3BFFBC4CCCFF9F9 Ref B: MWH011020808034 Ref C: 2026-02-07T00:12:41Z'
     status:
       code: 201
       message: Created
@@ -193,7 +193,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 28 Jan 2026 23:45:02 GMT
+      - Sat, 07 Feb 2026 00:12:45 GMT
       expires:
       - '-1'
       pragma:
@@ -205,13 +205,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=b2ad95e6-8830-4405-a60e-12944d7ac939,objectId=444fc911-d78c-459a-a60c-b91f4398edb8/westus/49849ea1-cec8-4aeb-aa72-54cb94ff3ce8
+      - tenantId=b2ad95e6-8830-4405-a60e-12944d7ac939,objectId=444fc911-d78c-459a-a60c-b91f4398edb8/westus/c066523d-b8ba-44ea-bee0-ee60220ba1a9
       x-ms-ratelimit-remaining-subscription-deletes:
       - '199'
       x-ms-ratelimit-remaining-subscription-global-deletes:
       - '2999'
       x-msedge-ref:
-      - 'Ref A: 99323C7698F34A698FD84B5A4D394C79 Ref B: CO6AA3150218049 Ref C: 2026-01-28T23:45:01Z'
+      - 'Ref A: A191B5B4755740FF8DE6F28751EEF334 Ref B: CO6AA3150218019 Ref C: 2026-02-07T00:12:44Z'
     status:
       code: 200
       message: OK
@@ -243,9 +243,9 @@ interactions:
         \ \"location\": \"westus\",\r\n  \"identity\": {\r\n    \"type\": \"None\"\r\n
         \ },\r\n  \"properties\": {\r\n    \"provisioningState\": \"Succeeded\"\r\n
         \ },\r\n  \"systemData\": {\r\n    \"createdBy\": \"laurenyeeann@gmail.com\",\r\n
-        \   \"createdByType\": \"User\",\r\n    \"createdAt\": \"2026-01-28T23:45:04.6608576+00:00\",\r\n
+        \   \"createdByType\": \"User\",\r\n    \"createdAt\": \"2026-02-07T00:12:46.8536923+00:00\",\r\n
         \   \"lastModifiedBy\": \"laurenyeeann@gmail.com\",\r\n    \"lastModifiedByType\":
-        \"User\",\r\n    \"lastModifiedAt\": \"2026-01-28T23:45:04.6608576+00:00\"\r\n
+        \"User\",\r\n    \"lastModifiedAt\": \"2026-02-07T00:12:46.8536923+00:00\"\r\n
         \ }\r\n}"
     headers:
       cache-control:
@@ -255,7 +255,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 28 Jan 2026 23:45:05 GMT
+      - Sat, 07 Feb 2026 00:12:47 GMT
       expires:
       - '-1'
       pragma:
@@ -267,11 +267,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=b2ad95e6-8830-4405-a60e-12944d7ac939,objectId=444fc911-d78c-459a-a60c-b91f4398edb8/westus/294dde89-2552-46e7-a04f-45b111be37d1
+      - tenantId=b2ad95e6-8830-4405-a60e-12944d7ac939,objectId=444fc911-d78c-459a-a60c-b91f4398edb8/westus/b1d52ed6-3f50-415c-82dd-7f3462a92c30
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '99'
       x-msedge-ref:
-      - 'Ref A: D3E7AB3A865548D38BDECB86815D7912 Ref B: CO6AA3150220035 Ref C: 2026-01-28T23:45:04Z'
+      - 'Ref A: F359B76A3B5A4C5192CEF962566B0B1F Ref B: MWH011020807034 Ref C: 2026-02-07T00:12:46Z'
     status:
       code: 201
       message: Created
@@ -299,9 +299,9 @@ interactions:
         \ \"location\": \"westus\",\r\n  \"identity\": {\r\n    \"type\": \"None\"\r\n
         \ },\r\n  \"properties\": {\r\n    \"provisioningState\": \"Succeeded\"\r\n
         \ },\r\n  \"systemData\": {\r\n    \"createdBy\": \"laurenyeeann@gmail.com\",\r\n
-        \   \"createdByType\": \"User\",\r\n    \"createdAt\": \"2026-01-28T23:45:04.6608576+00:00\",\r\n
+        \   \"createdByType\": \"User\",\r\n    \"createdAt\": \"2026-02-07T00:12:46.8536923+00:00\",\r\n
         \   \"lastModifiedBy\": \"laurenyeeann@gmail.com\",\r\n    \"lastModifiedByType\":
-        \"User\",\r\n    \"lastModifiedAt\": \"2026-01-28T23:45:04.6608576+00:00\"\r\n
+        \"User\",\r\n    \"lastModifiedAt\": \"2026-02-07T00:12:46.8536923+00:00\"\r\n
         \ }\r\n}"
     headers:
       cache-control:
@@ -311,7 +311,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 28 Jan 2026 23:45:05 GMT
+      - Sat, 07 Feb 2026 00:12:47 GMT
       expires:
       - '-1'
       pragma:
@@ -325,7 +325,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '249'
       x-msedge-ref:
-      - 'Ref A: 0EDB9F47E64A4BF1B41ECE30778379DF Ref B: CO6AA3150217053 Ref C: 2026-01-28T23:45:06Z'
+      - 'Ref A: 2305240CFB49454FB6F686CF7ADD995D Ref B: CO6AA3150219045 Ref C: 2026-02-07T00:12:48Z'
     status:
       code: 200
       message: OK
@@ -357,14 +357,14 @@ interactions:
         \ \"name\": \"my-test-access-connector\",\r\n  \"type\": \"Microsoft.Databricks/accessConnectors\",\r\n
         \ \"location\": \"westus\",\r\n  \"identity\": {\r\n    \"userAssignedIdentities\":
         {\r\n      \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_access_connector000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/my-test-identity\":
-        {\r\n        \"principalId\": \"a82288ec-c5eb-4142-b4e7-95a4838fa8d5\",\r\n
-        \       \"clientId\": \"a16727ca-59f1-4cc4-b2b8-1e09f4456701\"\r\n      }\r\n
+        {\r\n        \"principalId\": \"8ee2ba28-ff45-4e58-8356-b4bf91a286f3\",\r\n
+        \       \"clientId\": \"9d54a061-cc93-45a3-aef8-dc32cf999133\"\r\n      }\r\n
         \   },\r\n    \"type\": \"UserAssigned\"\r\n  },\r\n  \"properties\": {\r\n
         \   \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"systemData\": {\r\n
         \   \"createdBy\": \"laurenyeeann@gmail.com\",\r\n    \"createdByType\": \"User\",\r\n
-        \   \"createdAt\": \"2026-01-28T23:45:04.6608576+00:00\",\r\n    \"lastModifiedBy\":
+        \   \"createdAt\": \"2026-02-07T00:12:46.8536923+00:00\",\r\n    \"lastModifiedBy\":
         \"laurenyeeann@gmail.com\",\r\n    \"lastModifiedByType\": \"User\",\r\n    \"lastModifiedAt\":
-        \"2026-01-28T23:45:07.3131004+00:00\"\r\n  }\r\n}"
+        \"2026-02-07T00:12:49.2544626+00:00\"\r\n  }\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -373,7 +373,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 28 Jan 2026 23:45:08 GMT
+      - Sat, 07 Feb 2026 00:12:49 GMT
       expires:
       - '-1'
       pragma:
@@ -385,11 +385,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=b2ad95e6-8830-4405-a60e-12944d7ac939,objectId=444fc911-d78c-459a-a60c-b91f4398edb8/westus/9d1fcbea-3495-4df1-b133-31dd1571cf14
+      - tenantId=b2ad95e6-8830-4405-a60e-12944d7ac939,objectId=444fc911-d78c-459a-a60c-b91f4398edb8/westus/fb384f02-d2e7-4111-b4c1-ee33fd2d4d7c
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '99'
       x-msedge-ref:
-      - 'Ref A: 478826433D664AA5BB753CAFA7E4A735 Ref B: MWH011020806054 Ref C: 2026-01-28T23:45:06Z'
+      - 'Ref A: 21FADB5AF1E84859954C3D8EAC1B3797 Ref B: MWH011020806023 Ref C: 2026-02-07T00:12:49Z'
     status:
       code: 200
       message: OK
@@ -421,7 +421,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 28 Jan 2026 23:45:10 GMT
+      - Sat, 07 Feb 2026 00:12:52 GMT
       expires:
       - '-1'
       pragma:
@@ -433,13 +433,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=b2ad95e6-8830-4405-a60e-12944d7ac939,objectId=444fc911-d78c-459a-a60c-b91f4398edb8/westus2/51500d8f-c3ad-4931-897e-799bda73674f
+      - tenantId=b2ad95e6-8830-4405-a60e-12944d7ac939,objectId=444fc911-d78c-459a-a60c-b91f4398edb8/westus/1f87008f-6416-4b9f-88f2-cb36520283ce
       x-ms-ratelimit-remaining-subscription-deletes:
       - '199'
       x-ms-ratelimit-remaining-subscription-global-deletes:
       - '2999'
       x-msedge-ref:
-      - 'Ref A: F37E05574BCE4F0188EC19D7719A5647 Ref B: CO1EDGE2005 Ref C: 2026-01-28T23:45:09Z'
+      - 'Ref A: CA6E4837420C4DB8A4D8BFA1FD481B9E Ref B: MWH011020809062 Ref C: 2026-02-07T00:12:50Z'
     status:
       code: 200
       message: OK
