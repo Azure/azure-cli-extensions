@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+19.0.0b22
++++++++
+* `az aks create/update`: Automatically enable `--enable-high-log-scale-mode` when `--enable-container-network-logs` is specified. Raises an error if user explicitly disables HLSM while enabling CNL.
+
 19.0.0b21
 +++++++
 * `az aks nodepool get-rollback-versions`: New command to get available rollback versions for an agent pool.
