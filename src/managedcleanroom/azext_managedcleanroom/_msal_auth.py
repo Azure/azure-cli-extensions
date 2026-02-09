@@ -87,6 +87,22 @@ def get_msal_config(cmd):
     }
 
 
+def get_auth_scope(cmd):
+    """Get OAuth2 scope/resource for token requests
+
+    Priority: env var → az config → default
+
+    :param cmd: CLI command context
+    :return: OAuth2 scope/resource URL
+    """
+    return get_config_value(
+        cmd,
+        'auth_scope',
+        'MANAGEDCLEANROOM_AUTH_SCOPE',
+        'https://management.azure.com/'
+    )
+
+
 def get_msal_cache_dir():
     """Get directory for MSAL token cache
 

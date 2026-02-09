@@ -24,25 +24,24 @@ def get_frontend_token(cmd):
     :return: Tuple of (access_token, subscription, tenant)
     :raises: CLIError if token cannot be obtained
     """
-    from ._msal_auth import get_msal_token
+    from ._msal_auth import get_msal_token, get_auth_scope
 
     profile = Profile(cli_ctx=cmd.cli_ctx)
     subscription = get_subscription_id(cmd.cli_ctx)
+    auth_scope = get_auth_scope(cmd)
+
+    logger.debug("Using auth scope: %s", auth_scope)
 
     try:
-        # Try MSAL token first (if user logged in with 'frontend login')
         msal_token = get_msal_token(cmd)
         if msal_token:
             logger.debug("Using MSAL device code flow token")
-            # msal_token is (access_token, None, tenant_id)
-            # Return format: (access_token, subscription, tenant_id)
             return (msal_token[0], subscription, msal_token[2])
 
-        # Fall back to Azure CLI authentication
         logger.debug("Using Azure CLI (az login) token")
         return profile.get_raw_token(
             subscription=subscription,
-            resource='https://management.azure.com/'
+            resource=auth_scope
         )
 
     except Exception as ex:
@@ -92,17 +91,14 @@ def get_frontend_client(cmd, endpoint=None):
     from .analytics_frontend_api import AnalyticsFrontendAPI
     from azure.core.pipeline.policies import BearerTokenCredentialPolicy, SansIOHTTPPolicy
 
-    # Get token from Azure context (standard pattern)
-    # Returns tuple: (AccessToken, subscription, tenant)
-    access_token_obj, _, _ = get_frontend_token(cmd)
-
-    # Determine endpoint (explicit parameter takes priority)
     api_endpoint = endpoint or get_frontend_config(cmd)
     if not api_endpoint:
         raise CLIError(
             'Analytics Frontend API endpoint not configured.\n'
             'Configure using: az config set managedcleanroom-frontend.endpoint=<url>\n'
             'Or use the --endpoint flag with your command.')
+
+    access_token_obj, _, _ = get_frontend_token(cmd)
 
     logger.debug(
         "Creating Analytics Frontend API client for endpoint: %s",
@@ -151,9 +147,15 @@ def get_frontend_client(cmd, endpoint=None):
     else:
         # For production, use standard bearer token policy with HTTPS
         # enforcement
+        # Use configured auth_scope with .default suffix for Azure SDK
+        from ._msal_auth import get_auth_scope
+        scope = get_auth_scope(cmd)
+        if not scope.endswith('/.default'):
+            scope = f'{scope}/.default'
+
         auth_policy = BearerTokenCredentialPolicy(
             credential,
-            'https://management.azure.com/.default'
+            scope
         )
 
     # Return configured client

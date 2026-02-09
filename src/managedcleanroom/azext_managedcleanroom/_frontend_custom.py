@@ -507,87 +507,91 @@ def frontend_logout(cmd):  # pylint: disable=unused-argument
 # Configuration Commands
 # ============================================================================
 
-def frontend_configure(cmd, endpoint=None):
+def frontend_configure(cmd, endpoint=None, auth_scope=None):
     """Configure Analytics Frontend API settings
 
     Shows current configuration including authentication method and MSAL config.
 
     :param cmd: CLI command context
     :param endpoint: API endpoint URL (optional)
-    :return: Configuration status
+    :param auth_scope: OAuth2 resource URL (optional)
     """
     from azure.cli.core._profile import Profile
     from ._msal_auth import get_msal_token, get_msal_config, get_msal_cache_file
 
-    if not endpoint:
-        # Show current configuration
-        config_endpoint = get_frontend_config(cmd)
+    if endpoint:
+        set_frontend_config(cmd, endpoint)
+        return {'status': 'success', 'endpoint': endpoint}
 
-        # Check authentication status
-        auth_method = None
-        logged_in = False
-        user_info = None
+    if auth_scope:
+        cmd.cli_ctx.config.set_value(
+            'managedcleanroom-frontend',
+            'auth_scope',
+            auth_scope
+        )
+        return {'status': 'success', 'auth_scope': auth_scope}
 
-        # Check MSAL token first
-        msal_token = get_msal_token(cmd)
-        if msal_token:
-            auth_method = 'MSAL device code flow'
-            logged_in = True
+    config_endpoint = get_frontend_config(cmd)
+    # Get effective auth_scope (env var takes priority over config)
+    from ._msal_auth import get_auth_scope
+    config_auth_scope = get_auth_scope(cmd)
 
-            # Extract user info by decoding token (basic JWT parsing)
-            try:
-                import base64
-                import json
-                # JWT format: header.payload.signature
-                token_parts = msal_token[0].split('.')
-                if len(token_parts) >= 2:
-                    # Decode payload (add padding if needed)
-                    payload = token_parts[1]
-                    payload += '=' * (4 - len(payload) % 4)  # Add padding
-                    decoded = base64.b64decode(payload)
-                    claims = json.loads(decoded)
-                    user_info = claims.get('preferred_username') or claims.get(
-                        'upn') or claims.get('email') or 'MSAL User'
-                else:
-                    user_info = 'MSAL User'
-            except Exception:
-                user_info = 'MSAL User'
+    auth_method = None
+    logged_in = False
+    user_info = None
 
-            # Get MSAL configuration
-            msal_config = get_msal_config(cmd)
+    msal_token = get_msal_token(cmd)
+    if msal_token:
+        auth_method = 'MSAL device code flow'
+        logged_in = True
 
-            return {
-                'endpoint': config_endpoint,
-                'authentication_method': auth_method,
-                'logged_in': logged_in,
-                'user': user_info,
-                'msal_config': {
-                    'client_id': msal_config['client_id'],
-                    'tenant_id': msal_config['tenant_id'],
-                    'scopes': msal_config['scopes'],
-                    'cache_dir': str(get_msal_cache_file().parent)
-                }
-            }
-
-        # Check Azure CLI
-        profile = Profile(cli_ctx=cmd.cli_ctx)
         try:
-            account = profile.get_subscription()
-            auth_method = 'Azure CLI (az login)'
-            logged_in = True
-            user_info = account['user']['name']
+            import base64
+            import json
+            token_parts = msal_token[0].split('.')
+            if len(token_parts) >= 2:
+                payload = token_parts[1]
+                payload += '=' * (4 - len(payload) % 4)
+                decoded = base64.b64decode(payload)
+                claims = json.loads(decoded)
+                user_info = claims.get('preferred_username') or claims.get(
+                    'upn') or claims.get('email') or 'MSAL User'
+            else:
+                user_info = 'MSAL User'
         except Exception:
-            auth_method = 'None'
-            logged_in = False
-            user_info = None
+            user_info = 'MSAL User'
+
+        msal_config = get_msal_config(cmd)
 
         return {
             'endpoint': config_endpoint,
+            'auth_scope': config_auth_scope,
             'authentication_method': auth_method,
             'logged_in': logged_in,
-            'user': user_info
+            'user': user_info,
+            'msal_config': {
+                'client_id': msal_config['client_id'],
+                'tenant_id': msal_config['tenant_id'],
+                'scopes': msal_config['scopes'],
+                'cache_dir': str(get_msal_cache_file().parent)
+            }
         }
 
-    # Update configuration
-    set_frontend_config(cmd, endpoint=endpoint)
-    return {'message': 'Endpoint configuration updated successfully'}
+    profile = Profile(cli_ctx=cmd.cli_ctx)
+    try:
+        account = profile.get_subscription()
+        auth_method = 'Azure CLI (az login)'
+        logged_in = True
+        user_info = account['user']['name']
+    except Exception:
+        auth_method = 'None'
+        logged_in = False
+        user_info = None
+
+    return {
+        'endpoint': config_endpoint,
+        'auth_scope': config_auth_scope,
+        'authentication_method': auth_method,
+        'logged_in': logged_in,
+        'user': user_info
+    }

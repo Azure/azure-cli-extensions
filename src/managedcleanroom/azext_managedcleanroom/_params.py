@@ -156,6 +156,8 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
     with self.argument_context('managedcleanroom frontend configure') as c:
         c.argument('endpoint', options_list=['--endpoint', '-e'],
                    help='Analytics Frontend API endpoint URL')
+        c.argument('auth_scope', options_list=['--auth-scope'],
+                   help='OAuth2 resource URL for Azure CLI token requests')
 
     with self.argument_context('managedcleanroom frontend login') as c:
         c.argument(

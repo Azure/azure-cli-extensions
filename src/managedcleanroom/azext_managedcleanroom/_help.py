@@ -80,18 +80,22 @@ helps['managedcleanroom frontend configure'] = """
           - MANAGEDCLEANROOM_CLIENT_ID
           - MANAGEDCLEANROOM_TENANT_ID
           - MANAGEDCLEANROOM_SCOPES
+          - MANAGEDCLEANROOM_AUTH_SCOPE
           - MANAGEDCLEANROOM_ENDPOINT
 
         - Azure CLI config (persistent):
           - managedcleanroom-frontend.client_id
           - managedcleanroom-frontend.tenant_id
           - managedcleanroom-frontend.scopes
+          - managedcleanroom-frontend.auth_scope
           - managedcleanroom-frontend.endpoint
     examples:
         - name: View current configuration and authentication status
           text: az managedcleanroom frontend configure
         - name: Set API endpoint URL
           text: az managedcleanroom frontend configure --endpoint https://api.example.com
+        - name: Set custom auth scope
+          text: az managedcleanroom frontend configure --auth-scope https://cleanroom.azure.net/
         - name: Set local development endpoint
           text: az managedcleanroom frontend configure --endpoint http://localhost:61001
 """
