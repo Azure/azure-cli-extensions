@@ -153,7 +153,11 @@ def acr_update_get_preview():
     return RegistryUpdateParameters()
 
 
-def acr_update_set_preview(cmd, client, registry_name, resource_group_name=None, parameters=None):
+def acr_update_set_preview(cmd,
+                           client,
+                           registry_name,
+                           resource_group_name=None,
+                           parameters=None):
     registry, resource_group_name = get_registry_by_name(cmd.cli_ctx, registry_name, resource_group_name)
 
     if parameters.network_rule_set and registry.sku.name not in get_premium_sku(cmd):
