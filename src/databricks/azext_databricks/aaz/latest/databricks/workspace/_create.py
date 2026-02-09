@@ -114,7 +114,6 @@ class Create(AAZCommand):
         _args_schema.sku = AAZStrArg(
             options=["--sku"],
             help="The SKU tier name.  Allowed values: premium, standard, trial.",
-            default="premium",
         )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
@@ -629,8 +628,14 @@ class Create(AAZCommand):
             if require_infrastructure_encryption is not None:
                 require_infrastructure_encryption.set_prop("value", AAZBoolType, ".require_infrastructure_encryption", typ_kwargs={"flags": {"required": True}})
 
+            # Set sku.name to 'premium' if sku is not set and compute_mode is 'Serverless'
             sku = _builder.get(".sku")
-            if sku is not None:
+            compute_mode = args.get("compute_mode", None)
+            sku_value = args.get("sku", None)
+            if (not sku_value or sku_value == "") and compute_mode and compute_mode.lower() == "serverless":
+                if sku is not None:
+                    sku.set_const("name", "premium", AAZStrType)
+            elif sku is not None:
                 sku.set_prop("name", AAZStrType, ".sku", typ_kwargs={"flags": {"required": True}})
 
             tags = _builder.get(".tags")
