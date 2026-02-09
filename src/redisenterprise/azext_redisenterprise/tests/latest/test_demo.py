@@ -20,6 +20,7 @@ from .example_steps import step_database_create
 from .example_steps import step_database_delete
 from .example_steps import step_database_force_unlink
 from .example_steps import step_database_update
+from .example_steps import step_update
 from .example_steps import step_database_access_policy_assignment_create
 from .example_steps import step_database_access_policy_assignment_list
 from .example_steps import step_database_access_policy_assignment_delete
@@ -586,5 +587,98 @@ class Redisenterprisescenario6Test(ScenarioTest):
                            location='centraluseuap', random_name_length=34)
     def test_redisenterprise_scenario6(self, rg):
         call_scenario6(self, rg)
+        calc_coverage(__file__)
+        raise_if()
+
+
+# Env setup_scenario7
+@try_manual
+def setup_scenario7(test):
+    pass
+
+
+# Env cleanup_scenario7
+@try_manual
+def cleanup_scenario7(test):
+    pass
+
+
+# Testcase: scenario7 - SKU Update Testing for RedisEnterpriseUpdate
+def call_scenario7(test, rg):
+    """Test scenario specifically for SKU update functionality with RedisEnterpriseUpdate class"""
+    setup_scenario7(test)
+    
+    # Create initial cluster
+    step_create(test, checks=[
+        test.check("name", "default"),
+        test.check("resourceGroup", "{rg}"),
+        test.check("clientProtocol", "Encrypted"),
+        test.check("clusteringPolicy", "EnterpriseCluster"),
+        test.check("evictionPolicy", "NoEviction"),
+        test.check("port", 10000),
+        test.check("provisioningState", "Succeeded"),
+        test.check("resourceState", "Running"),
+        test.check("type", "Microsoft.Cache/redisEnterprise/databases")
+    ])
+    
+    # Verify initial cluster with Enterprise SKU has capacity and zones
+    step_show(test, checks=[
+        test.check("name", "{cluster}"),
+        test.check("resourceGroup", "{rg}"),
+        test.check("location", "Central US EUAP"),
+        test.check("sku.name", "Balanced_B5"),
+        test.check("sku.capacity", None),
+        test.check("zones", None),
+        test.check("provisioningState", "Succeeded"),
+        test.check("resourceState", "Running"),
+        test.check("type", "Microsoft.Cache/redisEnterprise"),
+        test.check("databases[0].name", "default")
+    ])
+    
+    step_update(test, checks=[
+        test.check("name", "{cluster}"),
+        test.check("resourceGroup", "{rg}"),
+        test.check("sku.name", "ComputeOptimized_X5"),
+        test.check("sku.capacity", None),
+        test.check("zones", None),
+        test.check("provisioningState", "Succeeded"),
+        test.check("resourceState", "Running"),
+        test.check("type", "Microsoft.Cache/redisEnterprise")
+    ])
+    
+    # Verify the updated cluster state
+    step_show(test, checks=[
+        test.check("name", "{cluster}"),
+        test.check("resourceGroup", "{rg}"),
+        test.check("sku.name", "ComputeOptimized_X5"),
+        test.check("sku.capacity", None),
+        test.check("zones", None),
+        test.check("provisioningState", "Succeeded"),
+        test.check("resourceState", "Running"),
+        test.check("type", "Microsoft.Cache/redisEnterprise")
+    ])
+    
+    step_delete(test, checks=[])
+    cleanup_scenario7(test)
+
+
+# Test class for scenario7 - SKU Update Testing
+class Redisenterprisescenario7Test(ScenarioTest):
+    
+    def __init__(self, *args, **kwargs):
+        super(Redisenterprisescenario7Test, self).__init__(*args, **kwargs)
+
+        self.kwargs.update({
+            'cluster': self.create_random_name(prefix='clitest-cache7-', length=21),
+            'sku-update': True,
+            'initial_sku': 'Balanced_B5',
+            'new_sku': 'ComputeOptimized_X5'
+        })
+
+    @AllowLargeResponse(size_kb=9999)
+    @ResourceGroupPreparer(name_prefix='clitest-redisenterprise-rg7-', key='rg', parameter_name='rg',
+                           location='centraluseuap', random_name_length=34)
+    def test_redisenterprise_scenario7(self, rg):
+        call_scenario7(self, rg)
         calc_coverage(__file__)
         raise_if()

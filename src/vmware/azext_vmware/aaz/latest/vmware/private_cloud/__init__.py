@@ -11,6 +11,7 @@
 from .__cmd_group import *
 from ._create import *
 from ._delete import *
+from ._get_vcf_license import *
 from ._list import *
 from ._list_admin_credentials import *
 from ._rotate_nsxt_password import *
