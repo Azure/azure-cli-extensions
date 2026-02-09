@@ -211,10 +211,12 @@ def _format_protected_item(item):
     # Add custom properties if available
     if custom_properties:
         formatted_item['instanceType'] = custom_properties.get('instanceType', 'N/A')
-        formatted_item['sourceMachineName'] = custom_properties.get('sourceMachineName', 'N/A')
         formatted_item['targetVmName'] = custom_properties.get('targetVmName', 'N/A')
         formatted_item['targetResourceGroupId'] = custom_properties.get('targetResourceGroupId', 'N/A')
         formatted_item['customLocationRegion'] = custom_properties.get('customLocationRegion', 'N/A')
+
+        # Use sourceVmName from API response (the actual VM display name)
+        formatted_item['sourceMachineName'] = custom_properties.get('sourceVmName', 'N/A')
 
     return formatted_item
 

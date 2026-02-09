@@ -321,3 +321,46 @@ helps[
         - name: Attach the output of acifragmentgen to a registry
           text: az confcom acifragmentgen --chain my.cert.pem --key my_key.pem --svn "1" --namespace contoso --feed "test-feed" --input ./fragment_spec.json | az confcom fragment attach --manifest-tag myregistry.azurecr.io/image:latest
 """
+
+helps[
+    "confcom containers"
+] = """
+    type: group
+    short-summary: Commands which generate Security Policy Container Definitions.
+"""
+
+helps[
+    "confcom containers from_image"
+] = """
+    type: command
+    short-summary: Create a Security Policy Container Definition based on an image reference.
+
+    parameters:
+        - name: --platform
+          type: str
+          short-summary: 'The name of the platform the container definition will run on'
+
+
+    examples:
+        - name: Input an image reference and generate container definitions
+          text: az confcom containers from_image my.azurecr.io/myimage:tag
+"""
+
+helps[
+    "confcom containers from_vn2"
+] = """
+    type: command
+    short-summary: Create Security Policy Container Definitions based on a VN2 template.
+
+    parameters:
+        - name: --name -n
+          type: string
+          short-summary: 'The name of the container to generate the policy for. If omitted, all containers are returned.'
+
+
+    examples:
+        - name: Input a VN2 Template and generate container definitions
+          text: az confcom containers from_vn2 vn2.yaml --name mycontainer
+        - name: Input a VN2 Template and generate container definitions for all containers
+          text: az confcom containers from_vn2 vn2.yaml
+    """

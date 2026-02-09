@@ -193,7 +193,7 @@ def load_arguments(self, _):
             required=True)
         c.argument(
             'project_name',
-            project_name_type,
+            options_list=['--project-name'],
             help='The name of the migrate project.',
             required=True)
         c.argument('subscription_id', subscription_id_type)

@@ -169,3 +169,7 @@ Release History
 1.8.2
 ++++++
 * Fix fleet namespace get-credentials command with fleet member parameter.
+
+1.8.3
+++++++
+* Add automatic kubelogin conversion to Azure CLI authentication for fleet get-credentials command.

@@ -243,7 +243,7 @@ helps['aks create'] = f"""
           short-summary: Enable advanced network flow log collection functionalities on a cluster. This flag is deprecated in favor of --enable-container-network-logs.
         - name: --enable-container-network-logs
           type: bool
-          short-summary: Enable container network log collection functionalities on a cluster.
+          short-summary: Enable container network log collection functionalities on a cluster. Automatically enables --enable-high-log-scale-mode.
         - name: --no-ssh-key -x
           type: string
           short-summary: Do not use or create a local SSH key.
@@ -297,7 +297,7 @@ helps['aks create'] = f"""
           short-summary: Path to JSON file containing data collection settings for Monitoring addon.
         - name: --enable-high-log-scale-mode
           type: bool
-          short-summary: Enable High Log Scale Mode for Container Logs.
+          short-summary: Enable High Log Scale Mode for Container Logs. Auto-enabled when --enable-container-network-logs is specified.
         - name: --ampls-resource-id
           type: string
           short-summary: Resource ID of Azure Monitor Private Link scope for Monitoring Addon.
@@ -695,7 +695,7 @@ helps['aks create'] = f"""
           short-summary: Enable user-defined scheduler configuration for kube-scheduler upstream on the cluster
         - name: --enable-gateway-api
           type: bool
-          short-summary: Enable managed installation of Gateway API CRDs from the standard release channel. Requires at least one managed Gateway API ingress provider to be enabled.
+          short-summary: Enable managed installation of Gateway API CRDs from the standard release channel.
         - name: --enable-hosted-system
           type: bool
           short-summary: Create a cluster with fully hosted system components. This applies only when creating a new automatic cluster.
@@ -788,8 +788,8 @@ helps['aks create'] = f"""
           text: az aks create -g MyResourceGroup -n MyManagedCluster --vm-set-type VirtualMachines --vm-sizes "VMSize1,VMSize2" --node-count 3
         - name: Create a kubernetes cluster with a fully managed system node pool
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-managed-system-pool
-        - name: Create a kubernetes cluster with the Azure Service Mesh addon enabled with a managed installation of Gateway API CRDs from the standard release channel.
-          text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-azure-service-mesh --enable-gateway-api
+        - name: Create a kubernetes cluster with a managed installation of Gateway API CRDs from the standard release channel.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-gateway-api
         - name: Create an automatic cluster with hosted system components enabled.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --sku automatic --enable-hosted-system
 
@@ -1032,7 +1032,7 @@ helps['aks update'] = """
           short-summary: Path to JSON file containing data collection settings for Monitoring addon.
         - name: --enable-high-log-scale-mode
           type: bool
-          short-summary: Enable High Log Scale Mode for Container Logs.
+          short-summary: Enable High Log Scale Mode for Container Logs. Auto-enabled when --enable-container-network-logs is specified.
         - name: --ampls-resource-id
           type: string
           short-summary: Resource ID of Azure Monitor Private Link scope for Monitoring Addon.
@@ -1347,7 +1347,7 @@ helps['aks update'] = """
           short-summary: Enable advanced network flow log collection functionalities on a cluster. This flag is deprecated in favor of --enable-container-network-logs.
         - name: --enable-container-network-logs
           type: bool
-          short-summary: Enable container network log collection functionalities on a cluster.
+          short-summary: Enable container network log collection functionalities on a cluster. Automatically enables --enable-high-log-scale-mode.
         - name: --disable-retina-flow-logs
           type: bool
           short-summary: Disable advanced network flow log collection functionalities on a cluster. This flag is deprecated in favor of --disable-container-network-logs.
@@ -1417,7 +1417,7 @@ helps['aks update'] = """
           short-summary: Disable user-defined scheduler configuration for kube-scheduler upstream on the cluster
         - name: --enable-gateway-api
           type: bool
-          short-summary: Enable managed installation of Gateway API CRDs from the standard release channel. Requires at least one managed Gateway API ingress provider to be enabled.
+          short-summary: Enable managed installation of Gateway API CRDs from the standard release channel.
         - name: --disable-gateway-api
           type: bool
           short-summary: Disable managed installation of Gateway API CRDs.
@@ -2466,6 +2466,40 @@ examples:
     crafted: true
 """
 
+helps['aks nodepool get-rollback-versions'] = """
+type: command
+short-summary: Get the available rollback versions for an agent pool of the managed Kubernetes cluster.
+long-summary: |
+    Get the list of historically used Kubernetes and node image versions that can be used for rollback operations.
+examples:
+  - name: Get the available rollback versions for an agent pool.
+    text: az aks nodepool get-rollback-versions --resource-group MyResourceGroup --cluster-name MyManagedCluster --nodepool-name MyNodePool
+    crafted: true
+"""
+
+helps['aks nodepool rollback'] = """
+type: command
+short-summary: Rollback an agent pool to the most recently used configuration (N-1).
+long-summary: |
+    Rollback an agent pool to the most recently used version based on rollback history.
+    This will rollback both the Kubernetes version and node image version to their most recent previous state.
+    For downgrades to older versions (N-2 or earlier), use a separate downgrade operation.
+parameters:
+  - name: --aks-custom-headers
+    type: string
+    short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2.
+  - name: --if-match
+    type: string
+    short-summary: The revision of the resource being updated. This should match the current revision.
+  - name: --if-none-match
+    type: string
+    short-summary: Set to '*' to allow a new resource to be created, but to prevent updating an existing resource.
+examples:
+  - name: Rollback a nodepool to the most recently used version.
+    text: az aks nodepool rollback --resource-group MyResourceGroup --cluster-name MyManagedCluster --nodepool-name MyNodePool
+    crafted: true
+"""
+
 helps['aks nodepool stop'] = """
     type: command
     short-summary: Stop running agent pool in the managed Kubernetes cluster.
@@ -2816,7 +2850,7 @@ parameters:
     short-summary: Path to JSON file containing data collection settings for Monitoring addon.
   - name: --enable-high-log-scale-mode
     type: bool
-    short-summary: Enable High Log Scale Mode for Container Logs.
+    short-summary: Enable High Log Scale Mode for Container Logs. Auto-enabled when --enable-container-network-logs is specified.
   - name: --ampls-resource-id
     type: string
     short-summary: Resource ID of Azure Monitor Private Link scope for Monitoring Addon.
@@ -2889,7 +2923,7 @@ parameters:
     short-summary: Path to JSON file containing data collection settings for Monitoring addon.
   - name: --enable-high-log-scale-mode
     type: bool
-    short-summary: Enable High Log Scale Mode for Container Logs.
+    short-summary: Enable High Log Scale Mode for Container Logs. Auto-enabled when --enable-container-network-logs is specified.
   - name: --ampls-resource-id
     type: string
     short-summary: Resource ID of Azure Monitor Private Link scope for Monitoring Addon.
@@ -2977,7 +3011,7 @@ parameters:
     short-summary: Path to JSON file containing data collection settings for Monitoring addon.
   - name: --enable-high-log-scale-mode
     type: bool
-    short-summary: Enable High Log Scale Mode for Container Logs.
+    short-summary: Enable High Log Scale Mode for Container Logs. Auto-enabled when --enable-container-network-logs is specified.
   - name: --ampls-resource-id
     type: string
     short-summary: Resource ID of Azure Monitor Private Link scope for Monitoring Addon.
@@ -4227,9 +4261,15 @@ helps['aks bastion'] = """
         - name: --admin
           type: bool
           short-summary: Use the cluster admin credentials to connect to the bastion.
+        - name: --kubeconfig-path
+          type: string
+          short-summary: Path to an existing kubeconfig file to use.
+          long-summary: If specified, uses this kubeconfig file at its original location instead of fetching credentials from Azure.
     examples:
         - name: Connect to a managed Kubernetes cluster using Azure Bastion with custom port and admin credentials.
           text: az aks bastion -g MyResourceGroup --name MyManagedCluster --bastion MyBastionResource --port 50001 --admin
+        - name: Connect using an existing kubeconfig file.
+          text: az aks bastion -g MyResourceGroup --name MyManagedCluster --kubeconfig-path ~/.kube/config
 """
 
 helps['aks identity-binding'] = """
