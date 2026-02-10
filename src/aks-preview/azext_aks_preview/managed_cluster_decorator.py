@@ -941,12 +941,17 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 "Cannot specify --enable-container-network-logs and "
                 "--disable-container-network-logs at the same time."
             )
+        monitoring_enabled = (
+            (mc.addon_profiles and mc.addon_profiles.get("omsagent") and mc.addon_profiles["omsagent"].enabled) or
+            ("monitoring" in (self.raw_param.get("enable_addons") or ""))
+        )
         if (
-            enable_cnl and
-            (not self.raw_param.get("enable_acns", False) and
-                not (mc.network_profile and mc.network_profile.advanced_networking and
-                     mc.network_profile.advanced_networking.enabled)) or
-            not (mc.addon_profiles and mc.addon_profiles.get("omsagent") and mc.addon_profiles["omsagent"].enabled)
+            enable_cnl and (
+                (not self.raw_param.get("enable_acns", False) and
+                    not (mc.network_profile and mc.network_profile.advanced_networking and
+                         mc.network_profile.advanced_networking.enabled)) or
+                not monitoring_enabled
+            )
         ):
             raise InvalidArgumentValueError(
                 "Container network logs requires '--enable-acns', advanced networking "
