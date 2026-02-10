@@ -4,7 +4,7 @@ Release History
 ===============
 2.0.0b5
 ++++++++
-* Remove `__import__('pkg_resources').declare_namespace(__name__)` from `vendored_sdks/azure_storagev2/__init__.py`` to fix the namespace package issue.
+* Remove `__import__('pkg_resources').declare_namespace(__name__)` from `vendored_sdks/azure_storagev2/__init__.py` to fix the namespace package issue.
 
 2.0.0b4
 ++++++++
