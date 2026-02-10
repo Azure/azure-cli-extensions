@@ -4,13 +4,9 @@
 # --------------------------------------------------------------------------------------------
 
 from knack.util import CLIError
-from kubernetes import client as kube_client
-from kubernetes import config
-from kubernetes.config.kube_config import KubeConfigMerger
-from kubernetes.client.rest import ApiException
-from kubernetes.client import CoreV1Api, V1NodeList
-# from rich.console import Console
-# from rich.table import Table
+from .k8s_utils import troubleshoot_k8s_extension
+from rich.console import Console
+from rich.table import Table
 
 def my_vi_command(client):
     return {"message": "This is my custom VI command!"}
@@ -22,17 +18,24 @@ def show_vi_extension(client, resource_group_name, connected_cluster):
         raise CLIError(f'VI Extension not found in connected cluster "{connected_cluster}" under resource group "{resource_group_name}".')
     return extension
 
+
 def update_vi_extension(client, resource_group_name, connected_cluster):
     extension = client.extensions.get_vi_extension(resource_group=resource_group_name, connected_cluster=connected_cluster)
     if not extension:
         raise CLIError(f'VI Extension not found in connected cluster "{connected_cluster}" under resource group "{resource_group_name}".')
     return extension
 
-def troubleshoot_vi_extension(client, resource_group_name, connected_cluster):
+
+def troubleshoot_vi_extension(cmd, client, resource_group_name, connected_cluster):
     extension = client.extensions.get_vi_extension(resource_group=resource_group_name, connected_cluster=connected_cluster)
     if not extension:
         raise CLIError(f'VI Extension not found in connected cluster "{connected_cluster}" under resource group "{resource_group_name}".')
-    client.extensions.troubleshoot_vi_extension()
+    
+    namespace = extension.get("properties", {}).get("scope", {}).get("cluster", {}).get("releaseNamespace")
+    if not namespace:
+        raise CLIError(f'Unable to determine namespace for VI Extension in connected cluster "{connected_cluster}".')
+    
+    troubleshoot_k8s_extension(cmd=cmd, name=extension.get("name"), namespace_list=namespace)
 
 
 def list_cameras(client, resource_group_name, connected_cluster):
