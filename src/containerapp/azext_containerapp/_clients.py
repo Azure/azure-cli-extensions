@@ -9,7 +9,7 @@ import time
 import os
 import requests
 
-from azure.cli.core.azclierror import ResourceNotFoundError, CLIError, AzureResponseError
+from azure.cli.core.azclierror import CLIError, AzureResponseError
 from azure.cli.core.util import send_raw_request
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.command_modules.containerapp._clients import (
