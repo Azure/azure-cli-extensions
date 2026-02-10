@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 
 
 class VIManagementClientConfiguration:  # pylint: disable=too-many-instance-attributes,name-too-long
-    """Configuration for FrontDoorManagementClient.
+    """Configuration for VIManagementClient.
 
     Note that all parameters used to create this instance are saved as instance
     attributes.
@@ -40,7 +40,7 @@ class VIManagementClientConfiguration:  # pylint: disable=too-many-instance-attr
         self.credential = credential
         self.subscription_id = subscription_id
         self.credential_scopes = kwargs.pop("credential_scopes", ["https://management.azure.com/.default"])
-        kwargs.setdefault("sdk_moniker", "mgmt-frontdoor/{}".format(VERSION))
+        kwargs.setdefault("sdk_moniker", "mgmt-vi/{}".format(VERSION))
         self.polling_interval = kwargs.get("polling_interval", 30)
         self._configure(**kwargs)
 

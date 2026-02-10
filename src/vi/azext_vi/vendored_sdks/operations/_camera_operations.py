@@ -25,7 +25,7 @@ from azure.core.utils import case_insensitive_dict
 from azure.mgmt.core.exceptions import ARMErrorFormat
 from .. import models as _models
 from ._utils import do_request
-from ._extension_operations import get_extension_access_token_async, build_get_extension_request
+from ._extension_operations import get_extension_access_token_async
 
 T = TypeVar("T")
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
@@ -44,7 +44,7 @@ class CameraOperations:
         self._serialize = input_args.pop(0) if input_args else kwargs.pop("serializer")
         self._deserialize = input_args.pop(0) if input_args else kwargs.pop("deserializer")
 
-    def list_cameras(self, resource_group_name: str, **kwargs: Any):
+    def list_cameras(self, extension: Any, **kwargs: Any):
         """
         """
         error_map = {
@@ -61,53 +61,27 @@ class CameraOperations:
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2021-05-01-preview"))
         cls = kwargs.pop("cls", None)
 
-        _request = build_get_extension_request(
-            subscription_id=self._config.subscription_id,
-            resource_group_name=resource_group_name,
-            connectedCluster="vi-arc-6-wus2-connected-aks",
-            clusterName="vi-arc-6-wus2",
-            api_version=api_version,
-            headers=_headers,
-            params=_params,
-        )
-        _request.url = self._client.format_url(_request.url)
-
-        _stream = False
-        pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
-        )
-
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
-
-        extension = self._deserialize("Extension", pipeline_response)
-
         if cls:
             return cls(pipeline_response, deserialized, {})  # type: ignore
 
-        configuration = extension.configuration_settings
-
-        extension_account_id = configuration['videoIndexer.accountId']
-        # arc_account = get_account_by_id(extension_account_id)
-        # if not arc_account:
-        #     logger.error(f"No Arc account found for account ID: {extension_account_id}")
-        #     return {"error": f"No Arc account found for account ID: {extension_account_id}"}
-        
-        base_extension_url = configuration['videoIndexer.endpointUri']
-        extension_url = f"{base_extension_url}/Accounts/{extension_account_id}"
-        extension_id = extension.id
+        extension_id = extension.get('id')
+        configuration = extension.get('properties').get('configurationSettings')
+        account_id = configuration.get('videoIndexer.accountId')
+        account_resource_id = configuration.get('videoIndexer.accountResourceId')
+        base_extension_url = configuration.get('videoIndexer.endpointUri')
+        extension_url = f"{base_extension_url}/Accounts/{account_id}"
+        parts = account_resource_id.strip("/").split("/")
+        account_rg = parts[3]
+        account_name = parts[-1]
         
         token = get_extension_access_token_async(
             client=self._client,
             serializer=self._serialize,
             subscription_id=self._config.subscription_id,
             extension_id=extension_id,
-            account_name="VI-FE-ARC-2",
-            account_rg="vi-fe-arc",
+            account_name=account_name,
+            account_rg=account_rg,
+            error_map=error_map,
             headers=_headers,
             params=_params)
 

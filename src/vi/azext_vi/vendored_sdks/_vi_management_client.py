@@ -11,7 +11,7 @@ from typing import Any, TYPE_CHECKING
 
 from azure.core.pipeline import policies
 from azure.core.rest import HttpRequest, HttpResponse
-from azure.mgmt.core import ARMPipelineClient
+from azure.mgmt.core import ARMPipelineClient, AsyncARMPipelineClient
 from msrest import Deserializer, Serializer
 from azure.mgmt.core.policies import ARMAutoResourceProviderRegistrationPolicy
 from ._configuration import VIManagementClientConfiguration
@@ -27,34 +27,6 @@ class VIManagementClient:  # pylint: disable=client-accepts-api-version-keyword,
     """VI Management Client.
 
     :ivar policies: PoliciesOperations operations
-    :vartype policies: azure.mgmt.frontdoor.operations.PoliciesOperations
-    :ivar managed_rule_sets: ManagedRuleSetsOperations operations
-    :vartype managed_rule_sets: azure.mgmt.frontdoor.operations.ManagedRuleSetsOperations
-    :ivar front_door_name_availability: FrontDoorNameAvailabilityOperations operations
-    :vartype front_door_name_availability:
-     azure.mgmt.frontdoor.operations.FrontDoorNameAvailabilityOperations
-    :ivar front_door_name_availability_with_subscription:
-     FrontDoorNameAvailabilityWithSubscriptionOperations operations
-    :vartype front_door_name_availability_with_subscription:
-     azure.mgmt.frontdoor.operations.FrontDoorNameAvailabilityWithSubscriptionOperations
-    :ivar front_doors: FrontDoorsOperations operations
-    :vartype front_doors: azure.mgmt.frontdoor.operations.FrontDoorsOperations
-    :ivar frontend_endpoints: FrontendEndpointsOperations operations
-    :vartype frontend_endpoints: azure.mgmt.frontdoor.operations.FrontendEndpointsOperations
-    :ivar endpoints: EndpointsOperations operations
-    :vartype endpoints: azure.mgmt.frontdoor.operations.EndpointsOperations
-    :ivar rules_engines: RulesEnginesOperations operations
-    :vartype rules_engines: azure.mgmt.frontdoor.operations.RulesEnginesOperations
-    :ivar network_experiment_profiles: NetworkExperimentProfilesOperations operations
-    :vartype network_experiment_profiles:
-     azure.mgmt.frontdoor.operations.NetworkExperimentProfilesOperations
-    :ivar preconfigured_endpoints: PreconfiguredEndpointsOperations operations
-    :vartype preconfigured_endpoints:
-     azure.mgmt.frontdoor.operations.PreconfiguredEndpointsOperations
-    :ivar experiments: ExperimentsOperations operations
-    :vartype experiments: azure.mgmt.frontdoor.operations.ExperimentsOperations
-    :ivar reports: ReportsOperations operations
-    :vartype reports: azure.mgmt.frontdoor.operations.ReportsOperations
     :param credential: Credential needed for the client to connect to Azure. Required.
     :type credential: ~azure.core.credentials.TokenCredential
     :param subscription_id: The subscription credentials which uniquely identify the Microsoft

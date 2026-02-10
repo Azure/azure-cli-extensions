@@ -1,5 +1,5 @@
 Microsoft Azure CLI 'vi' Extension
 ==========================================
 
-This package is for the 'vi' extension.
+This package is for the Video Indexer.
 i.e. 'az vi'

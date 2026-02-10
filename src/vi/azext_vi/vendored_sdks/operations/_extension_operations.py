@@ -34,50 +34,10 @@ _SERIALIZER = Serializer()
 _SERIALIZER.client_side_validation = False
 
 
-def build_get_extension_request(
-    resource_group_name: str, 
-    subscription_id: str, 
-    connectedCluster: str,
-    clusterName: str,
-    **kwargs: Any
-) -> HttpRequest:
-    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
-    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2021-05-01-preview"))
-    accept = _headers.pop("Accept", "application/json")
-    content_type = _headers.pop("content_type", "application/json")
-
-    _url = kwargs.pop(
-        "template_url",
-        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Kubernetes/connectedClusters/{connectedCluster}/Providers/Microsoft.KubernetesConfiguration/extensions/{clusterName}",
-    )  # pylint: disable=line-too-long
-    path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str"),
-        "resourceGroupName": _SERIALIZER.url(
-            "resource_group_name",
-            resource_group_name,
-            "str",
-            max_length=80,
-            min_length=1,
-            pattern=r"^[a-zA-Z0-9_\-\(\)\.]*[^\.]$",
-        ),
-        "connectedCluster": _SERIALIZER.url("connected_cluster", connectedCluster, "str"),
-        "clusterName": _SERIALIZER.url("cluster_name", clusterName, "str"),
-    }
-
-    _url: str = _url.format(**path_format_arguments)  # type: ignore
-    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
-    _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
-    _headers["Content-Type"] = _SERIALIZER.header("content_type", content_type, "str")
-
-    return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
-
-
 def build_get_extensions_request(
-    resource_group_name: str, 
+    resource_group: str, 
     subscription_id: str, 
-    connectedCluster: str,
+    connected_cluster: str,
     **kwargs: Any
 ) -> HttpRequest:
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
@@ -93,15 +53,8 @@ def build_get_extensions_request(
     )  # pylint: disable=line-too-long
     path_format_arguments = {
         "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str"),
-        "resourceGroupName": _SERIALIZER.url(
-            "resource_group_name",
-            resource_group_name,
-            "str",
-            max_length=80,
-            min_length=1,
-            pattern=r"^[a-zA-Z0-9_\-\(\)\.]*[^\.]$",
-        ),
-        "connectedCluster": _SERIALIZER.url("connected_cluster", connectedCluster, "str")
+        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group, 'str'),
+        "connectedCluster": _SERIALIZER.url("connected_cluster", connected_cluster, "str")
     }
 
     _url: str = _url.format(**path_format_arguments)  # type: ignore
@@ -150,6 +103,7 @@ def get_extension_access_token_async(
         extension_id: str,
         account_rg: str,
         account_name: str,
+        error_map=None,
         headers=None,
         params=None,
         **kwargs: Any):
@@ -177,6 +131,11 @@ def get_extension_access_token_async(
         )
 
         response = pipeline_response.http_response
+        response = pipeline_response.http_response
+        if response.status_code not in [200]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+        
         return response.json().get("accessToken")
 
 class ExtensionOperations:
@@ -189,7 +148,7 @@ class ExtensionOperations:
         self._serialize = input_args.pop(0) if input_args else kwargs.pop("serializer")
         self._deserialize = input_args.pop(0) if input_args else kwargs.pop("deserializer")
 
-    def show_vi_extension(self, resource_group_name: str, **kwargs: Any):
+    def get_vi_extension(self, resource_group: str, connected_cluster: str, **kwargs: Any):
         """
         """
         error_map = {
@@ -208,8 +167,8 @@ class ExtensionOperations:
 
         _request = build_get_extensions_request(
             subscription_id=self._config.subscription_id,
-            resource_group_name=resource_group_name,
-            connectedCluster="vi-arc-6-wus2-connected-aks",
+            resource_group=resource_group,
+            connected_cluster=connected_cluster,
             api_version=api_version,
             headers=_headers,
             params=_params,
@@ -222,16 +181,21 @@ class ExtensionOperations:
         )
 
         response = pipeline_response.http_response
+        if response.status_code not in [200]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+    
         extensions =  response.json().get("value")
         extension = None
-        for ex in extensions:
-            if ex.get("properties", {}).get("extensionType") == "microsoft.videoindexer":
-                extension = ex
-                break
+        if extensions:
+            for ex in extensions:
+                if ex.get("properties", {}).get("extensionType") == "microsoft.videoindexer":
+                    extension = ex
+                    break
                 
         return extension
 
-    def troubleshoot_vi_extension(self, resource_group_name: str, **kwargs: Any):
+    def troubleshoot_vi_extension(self, resource_group: str, connected_cluster: str, **kwargs: Any):
         """
         """
         error_map = {
@@ -250,8 +214,8 @@ class ExtensionOperations:
 
         _request = build_get_extensions_request(
             subscription_id=self._config.subscription_id,
-            resource_group_name=resource_group_name,
-            connectedCluster="vi-arc-6-wus2-connected-aks",
+            resource_group=resource_group,
+            connected_cluster=connected_cluster,
             api_version=api_version,
             headers=_headers,
             params=_params,

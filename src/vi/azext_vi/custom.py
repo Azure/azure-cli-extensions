@@ -4,32 +4,50 @@
 # --------------------------------------------------------------------------------------------
 
 from knack.util import CLIError
-from rich.console import Console
-from rich.table import Table
+from kubernetes import client as kube_client
+from kubernetes import config
+from kubernetes.config.kube_config import KubeConfigMerger
+from kubernetes.client.rest import ApiException
+from kubernetes.client import CoreV1Api, V1NodeList
+# from rich.console import Console
+# from rich.table import Table
 
 def my_vi_command(client):
     return {"message": "This is my custom VI command!"}
 
 
-def show_vi_extension(client, resource_group_name):
-    extension = client.show_vi_extension(resource_group_name=resource_group_name)
+def show_vi_extension(client, resource_group_name, connected_cluster):
+    extension = client.extensions.get_vi_extension(resource_group=resource_group_name, connected_cluster=connected_cluster)
+    if not extension:
+        raise CLIError(f'VI Extension not found in connected cluster "{connected_cluster}" under resource group "{resource_group_name}".')
     return extension
 
-
-def troubleshoot_vi_extension(client, resource_group_name):
-    extension = client.troubleshoot_vi_extension(resource_group_name=resource_group_name)
+def update_vi_extension(client, resource_group_name, connected_cluster):
+    extension = client.extensions.get_vi_extension(resource_group=resource_group_name, connected_cluster=connected_cluster)
+    if not extension:
+        raise CLIError(f'VI Extension not found in connected cluster "{connected_cluster}" under resource group "{resource_group_name}".')
     return extension
 
+def troubleshoot_vi_extension(client, resource_group_name, connected_cluster):
+    extension = client.extensions.get_vi_extension(resource_group=resource_group_name, connected_cluster=connected_cluster)
+    if not extension:
+        raise CLIError(f'VI Extension not found in connected cluster "{connected_cluster}" under resource group "{resource_group_name}".')
+    client.extensions.troubleshoot_vi_extension()
 
-def list_cameras(client, resource_group_name):
-    response = client.list_cameras(resource_group_name=resource_group_name)
+
+def list_cameras(client, resource_group_name, connected_cluster):
+    extension = client.extensions.get_vi_extension(resource_group=resource_group_name, connected_cluster=connected_cluster)
+    if not extension:
+        raise CLIError(f'VI Extension not found in connected cluster "{connected_cluster}" under resource group "{resource_group_name}". Please ensure the VI Extension is installed before listing cameras.')
+    
+    response = client.cameras.list_cameras(extension=extension)
     cameras = response.get('results')
     console = Console()
     console.print(json_to_table(cameras))
     return cameras
 
 
-def json_to_table(data: list[dict], title: str = "Cameras") -> Table:
+def json_to_table(data: list[dict], title: str = "Cameras"):
     """Convert a list of dicts to a Rich table"""
     if not data:
         return Table(title="No Results")

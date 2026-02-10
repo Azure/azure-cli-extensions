@@ -12,17 +12,23 @@ helps[f'{consts.EXTENSION_NAME}'] = """
     short-summary: Commands to manage Video Indexer for Cloud and Edge.
 """
 
-helps[f'{consts.EXTENSION_NAME} extension'] = """
+helps[f'{consts.EXTENSION_NAME} extension'] = f"""
     type: group
     short-summary: Show Video Indexer Extension details.
 """
 
-helps[f'{consts.EXTENSION_NAME} extension show'] = """
+helps[f'{consts.EXTENSION_NAME} extension show'] = f"""
     type: command
     short-summary: Show Video Indexer Extension details.
+    long-summary: Show Video Indexer Extension details.
+    examples:
+      - name: Show Video Indexer Extension details
+        text: |-
+          az {consts.EXTENSION_NAME} extension show --resource-group my-resource-group \
+--connected-cluster mycluster
 """
 
-helps[f'{consts.EXTENSION_NAME} extension troubleshoot'] = """
+helps[f'{consts.EXTENSION_NAME} extension troubleshoot'] = f"""
     type: command
     short-summary: List Vis.
 """
@@ -35,4 +41,10 @@ helps[f'{consts.EXTENSION_NAME} camera'] = f"""
 helps[f'{consts.EXTENSION_NAME} camera list'] = f"""
     type: command
     short-summary: Create a Kubernetes Cluster
+    long-summary: Show Video Indexer Extension details.
+    examples:
+      - name: Show Video Indexer Extension details
+        text: |-
+          az {consts.EXTENSION_NAME} camera list --resource-group my-resource-group \
+--connected-cluster mycluster
 """

@@ -34,7 +34,8 @@ CLASSIFIERS = [
 
 # TODO: Add any additional SDK dependencies here
 DEPENDENCIES = [
-     "rich==13.9.4",
+    "kubernetes==24.2.0",
+    "rich==13.9.4",
 ]
 
 with open('README.rst', 'r', encoding='utf-8') as f:
@@ -45,7 +46,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
 setup(
     name='vi',
     version=VERSION,
-    description='Microsoft Azure Command-Line Tools Vi Extension',
+    description='Microsoft Azure Command-Line Tools for Video Indexer',
     # TODO: Update author and email, if applicable
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',

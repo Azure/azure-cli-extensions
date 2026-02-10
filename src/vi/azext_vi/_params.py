@@ -20,7 +20,16 @@ def load_arguments(self, _):
         c.argument('vi_name', vi_name_type, options_list=['--name', '-n'])
 
     with self.argument_context(f"{consts.EXTENSION_NAME} extension show") as c:
-        c.argument('type', vi_name_type, id_part=None)
+        c.argument('connected_cluster', 
+                   options_list=['--connected-cluster', '-c'],
+                   help='Name of the Kubernetes connected cluster')
+    
+    with self.argument_context(f"{consts.EXTENSION_NAME} extension troubleshoot") as c:
+        c.argument('connected_cluster', 
+                   options_list=['--connected-cluster', '-c'],
+                   help='Name of the Kubernetes connected cluster')
 
     with self.argument_context(f"{consts.EXTENSION_NAME} camera list") as c:
-        c.argument('type', vi_name_type, id_part=None)
+        c.argument('connected_cluster', 
+                   options_list=['--connected-cluster', '-c'],
+                   help='Name of the Kubernetes connected cluster')
