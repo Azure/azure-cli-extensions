@@ -56,7 +56,7 @@ class Quickstart(AAZCommand):
             options=["-g", "--resource-group"],
             help="Resource group for deployment.",
         )
-        
+
         _args_schema.location = AAZResourceLocationArg(
             options=["-l", "--location"],
             help="Location for the deployment. Default: resource group location.",
@@ -99,7 +99,7 @@ class Quickstart(AAZCommand):
         if has_value(self.ctx.args.location):
             loc = self.ctx.args.location.to_serialized_data()
             invoke_args.extend(["--parameters", f"location={loc}"])
-            
+
         if has_value(self.ctx.args.config_name):
             cfg = self.ctx.args.config_name.to_serialized_data()
             invoke_args.append(f"configName={cfg}")
