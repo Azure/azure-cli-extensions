@@ -11,6 +11,7 @@ from azure.cli.core.aaz import (  # type: ignore[import-unresolved]
     AAZResourceGroupNameArg,
     has_value,
     register_command,
+    AAZResourceLocationArg
 )
 from azure.cli.core.azclierror import (  # type: ignore[import-unresolved]
     InvalidArgumentValueError,
