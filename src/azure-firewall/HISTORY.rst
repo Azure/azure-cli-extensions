@@ -5,7 +5,7 @@ Release History
 
 2.0.1
 ++++++
-Remove `__import__('pkg_resources').declare_namespace(__name__)` to fix the namespace package issue.
+* Remove `__import__('pkg_resources').declare_namespace(__name__)` to fix the namespace package issue.
 
 2.0.0
 ++++++
