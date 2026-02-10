@@ -59,7 +59,7 @@ class Quickstart(AAZCommand):
 
         _args_schema.config_name = AAZStrArg(
             options=["--config-name"],
-            help="Optional configName override. Default in template: '<siteName>-configuration'.",
+            help="Optional configName override. Default in template: 'siteName-configuration'.",
         )
 
         return cls._args_schema
