@@ -55,19 +55,19 @@ class PreviewAction(AAZCommand):
         _args_schema.action = AAZObjectArg(
             options=["--action"],
             arg_group="Properties",
-            help="Preview action container properties to be tested for a match with the provided condition.",
+            help="Preview action to test",
             required=True,
         )
         _args_schema.blobs = AAZListArg(
             options=["--blobs"],
             arg_group="Properties",
-            help="Preview action container properties to be tested for a match with the provided condition.",
+            help="Properties of some sample blobs in the container to test for matches with the preview action.",
             required=True,
         )
         _args_schema.container = AAZObjectArg(
             options=["--container"],
             arg_group="Properties",
-            help="Preview action container properties to be tested for a match with the provided condition.",
+            help="Properties of a sample container to test for a match with the preview action.",
             required=True,
         )
 
@@ -99,7 +99,7 @@ class PreviewAction(AAZCommand):
         )
         _element.name = AAZStrArg(
             options=["name"],
-            help="property for the container name.",
+            help="Name of test blob",
         )
         _element.properties = AAZListArg(
             options=["properties"],
@@ -112,15 +112,15 @@ class PreviewAction(AAZCommand):
 
         metadata = cls._args_schema.blobs.Element.metadata
         metadata.Element = AAZObjectArg()
-        cls._build_args_storage_task_preview_key_value_properties_create(metadata.Element)
+        cls._build_args_storagetaskpreviewkeyvalueproperties_create_create(metadata.Element)
 
         properties = cls._args_schema.blobs.Element.properties
         properties.Element = AAZObjectArg()
-        cls._build_args_storage_task_preview_key_value_properties_create(properties.Element)
+        cls._build_args_storagetaskpreviewkeyvalueproperties_create_create(properties.Element)
 
         tags = cls._args_schema.blobs.Element.tags
         tags.Element = AAZObjectArg()
-        cls._build_args_storage_task_preview_key_value_properties_create(tags.Element)
+        cls._build_args_storagetaskpreviewkeyvalueproperties_create_create(tags.Element)
 
         container = cls._args_schema.container
         container.metadata = AAZListArg(
@@ -134,36 +134,36 @@ class PreviewAction(AAZCommand):
 
         metadata = cls._args_schema.container.metadata
         metadata.Element = AAZObjectArg()
-        cls._build_args_storage_task_preview_key_value_properties_create(metadata.Element)
+        cls._build_args_storagetaskpreviewkeyvalueproperties_create_create(metadata.Element)
         return cls._args_schema
 
-    _args_storage_task_preview_key_value_properties_create = None
+    _args_storagetaskpreviewkeyvalueproperties_create_create = None
 
     @classmethod
-    def _build_args_storage_task_preview_key_value_properties_create(cls, _schema):
-        if cls._args_storage_task_preview_key_value_properties_create is not None:
-            _schema.key = cls._args_storage_task_preview_key_value_properties_create.key
-            _schema.value = cls._args_storage_task_preview_key_value_properties_create.value
+    def _build_args_storagetaskpreviewkeyvalueproperties_create_create(cls, _schema):
+        if cls._args_storagetaskpreviewkeyvalueproperties_create_create is not None:
+            _schema.key = cls._args_storagetaskpreviewkeyvalueproperties_create_create.key
+            _schema.value = cls._args_storagetaskpreviewkeyvalueproperties_create_create.value
             return
 
-        cls._args_storage_task_preview_key_value_properties_create = AAZObjectArg()
+        cls._args_storagetaskpreviewkeyvalueproperties_create_create = AAZObjectArg()
 
-        storage_task_preview_key_value_properties_create = cls._args_storage_task_preview_key_value_properties_create
-        storage_task_preview_key_value_properties_create.key = AAZStrArg(
+        storagetaskpreviewkeyvalueproperties_create_create = cls._args_storagetaskpreviewkeyvalueproperties_create_create
+        storagetaskpreviewkeyvalueproperties_create_create.key = AAZStrArg(
             options=["key"],
             help="Represents the key property of the pair.",
         )
-        storage_task_preview_key_value_properties_create.value = AAZStrArg(
+        storagetaskpreviewkeyvalueproperties_create_create.value = AAZStrArg(
             options=["value"],
             help="Represents the value property of the pair.",
         )
 
-        _schema.key = cls._args_storage_task_preview_key_value_properties_create.key
-        _schema.value = cls._args_storage_task_preview_key_value_properties_create.value
+        _schema.key = cls._args_storagetaskpreviewkeyvalueproperties_create_create.key
+        _schema.value = cls._args_storagetaskpreviewkeyvalueproperties_create_create.value
 
     def _execute_operations(self):
         self.pre_operations()
-        self.StorageTasksPreviewActions(ctx=self.ctx)()
+        self.StorageTasksOperationGroupPreviewActions(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -178,7 +178,7 @@ class PreviewAction(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class StorageTasksPreviewActions(AAZHttpOperation):
+    class StorageTasksOperationGroupPreviewActions(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -277,15 +277,15 @@ class PreviewAction(AAZCommand):
 
             metadata = _builder.get(".properties.blobs[].metadata")
             if metadata is not None:
-                _PreviewActionHelper._build_schema_storage_task_preview_key_value_properties_create(metadata.set_elements(AAZObjectType, "."))
+                _PreviewActionHelper._build_schema_storagetaskpreviewkeyvalueproperties_create_create(metadata.set_elements(AAZObjectType, "."))
 
             properties = _builder.get(".properties.blobs[].properties")
             if properties is not None:
-                _PreviewActionHelper._build_schema_storage_task_preview_key_value_properties_create(properties.set_elements(AAZObjectType, "."))
+                _PreviewActionHelper._build_schema_storagetaskpreviewkeyvalueproperties_create_create(properties.set_elements(AAZObjectType, "."))
 
             tags = _builder.get(".properties.blobs[].tags")
             if tags is not None:
-                _PreviewActionHelper._build_schema_storage_task_preview_key_value_properties_create(tags.set_elements(AAZObjectType, "."))
+                _PreviewActionHelper._build_schema_storagetaskpreviewkeyvalueproperties_create_create(tags.set_elements(AAZObjectType, "."))
 
             container = _builder.get(".properties.container")
             if container is not None:
@@ -294,7 +294,7 @@ class PreviewAction(AAZCommand):
 
             metadata = _builder.get(".properties.container.metadata")
             if metadata is not None:
-                _PreviewActionHelper._build_schema_storage_task_preview_key_value_properties_create(metadata.set_elements(AAZObjectType, "."))
+                _PreviewActionHelper._build_schema_storagetaskpreviewkeyvalueproperties_create_create(metadata.set_elements(AAZObjectType, "."))
 
             return self.serialize_content(_content_value)
 
@@ -358,15 +358,15 @@ class PreviewAction(AAZCommand):
 
             metadata = cls._schema_on_200.properties.blobs.Element.metadata
             metadata.Element = AAZObjectType()
-            _PreviewActionHelper._build_schema_storage_task_preview_key_value_properties_read(metadata.Element)
+            _PreviewActionHelper._build_schema_storagetaskpreviewkeyvalueproperties_read(metadata.Element)
 
             properties = cls._schema_on_200.properties.blobs.Element.properties
             properties.Element = AAZObjectType()
-            _PreviewActionHelper._build_schema_storage_task_preview_key_value_properties_read(properties.Element)
+            _PreviewActionHelper._build_schema_storagetaskpreviewkeyvalueproperties_read(properties.Element)
 
             tags = cls._schema_on_200.properties.blobs.Element.tags
             tags.Element = AAZObjectType()
-            _PreviewActionHelper._build_schema_storage_task_preview_key_value_properties_read(tags.Element)
+            _PreviewActionHelper._build_schema_storagetaskpreviewkeyvalueproperties_read(tags.Element)
 
             container = cls._schema_on_200.properties.container
             container.metadata = AAZListType()
@@ -374,7 +374,7 @@ class PreviewAction(AAZCommand):
 
             metadata = cls._schema_on_200.properties.container.metadata
             metadata.Element = AAZObjectType()
-            _PreviewActionHelper._build_schema_storage_task_preview_key_value_properties_read(metadata.Element)
+            _PreviewActionHelper._build_schema_storagetaskpreviewkeyvalueproperties_read(metadata.Element)
 
             return cls._schema_on_200
 
@@ -383,29 +383,29 @@ class _PreviewActionHelper:
     """Helper class for PreviewAction"""
 
     @classmethod
-    def _build_schema_storage_task_preview_key_value_properties_create(cls, _builder):
+    def _build_schema_storagetaskpreviewkeyvalueproperties_create_create(cls, _builder):
         if _builder is None:
             return
         _builder.set_prop("key", AAZStrType, ".key")
         _builder.set_prop("value", AAZStrType, ".value")
 
-    _schema_storage_task_preview_key_value_properties_read = None
+    _schema_storagetaskpreviewkeyvalueproperties_read = None
 
     @classmethod
-    def _build_schema_storage_task_preview_key_value_properties_read(cls, _schema):
-        if cls._schema_storage_task_preview_key_value_properties_read is not None:
-            _schema.key = cls._schema_storage_task_preview_key_value_properties_read.key
-            _schema.value = cls._schema_storage_task_preview_key_value_properties_read.value
+    def _build_schema_storagetaskpreviewkeyvalueproperties_read(cls, _schema):
+        if cls._schema_storagetaskpreviewkeyvalueproperties_read is not None:
+            _schema.key = cls._schema_storagetaskpreviewkeyvalueproperties_read.key
+            _schema.value = cls._schema_storagetaskpreviewkeyvalueproperties_read.value
             return
 
-        cls._schema_storage_task_preview_key_value_properties_read = _schema_storage_task_preview_key_value_properties_read = AAZObjectType()
+        cls._schema_storagetaskpreviewkeyvalueproperties_read = _schema_storagetaskpreviewkeyvalueproperties_read = AAZObjectType()
 
-        storage_task_preview_key_value_properties_read = _schema_storage_task_preview_key_value_properties_read
-        storage_task_preview_key_value_properties_read.key = AAZStrType()
-        storage_task_preview_key_value_properties_read.value = AAZStrType()
+        storagetaskpreviewkeyvalueproperties_read = _schema_storagetaskpreviewkeyvalueproperties_read
+        storagetaskpreviewkeyvalueproperties_read.key = AAZStrType()
+        storagetaskpreviewkeyvalueproperties_read.value = AAZStrType()
 
-        _schema.key = cls._schema_storage_task_preview_key_value_properties_read.key
-        _schema.value = cls._schema_storage_task_preview_key_value_properties_read.value
+        _schema.key = cls._schema_storagetaskpreviewkeyvalueproperties_read.key
+        _schema.value = cls._schema_storagetaskpreviewkeyvalueproperties_read.value
 
 
 __all__ = ["PreviewAction"]

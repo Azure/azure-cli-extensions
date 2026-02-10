@@ -67,7 +67,7 @@ def test_acipolicygen(sample_directory, generated_policy_path):
     parameters_path = os.path.join(SAMPLES_ROOT, sample_directory, "parameters.json")
     if not os.path.isfile(parameters_path):
         parameters_path = None
-    flags = POLICYGEN_ARGS[generated_policy_path]
+    flags = POLICYGEN_ARGS[generated_policy_path].copy()
 
     with open(os.path.join(SAMPLES_ROOT, sample_directory, generated_policy_path), "r", encoding="utf-8") as f:
         expected_policy = f.read()

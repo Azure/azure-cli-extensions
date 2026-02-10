@@ -21589,5 +21589,8 @@ spec:
             ],
         )
 
+    # TODO (indusridhar): Add tests for `test_aks_nodepool_get_rollback_versions` and `test_aks_nodepool_rollback`
+    # after AKS RP Jan 2026 release is complete and recently_used_versions field is populated in upgrade profile API
+
     # TODO (zheweihu): add test `test_aks_create_and_update_with_gateway_api_without_azureservicemesh`
     # once https://msazure.visualstudio.com/CloudNativeCompute/_git/aks-rp/pullrequest/14404771 is rolled out
