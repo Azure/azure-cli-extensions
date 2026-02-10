@@ -2,6 +2,11 @@
 
 Release History
 ===============
+1.3.1
++++++
+* Upgrading to 2026-01-01 API version
+* Set default SKU to Premium for serverless workspaces
+
 1.3.0
 +++++
 * Revert the change of upgrading to 2026-01-01 API version
