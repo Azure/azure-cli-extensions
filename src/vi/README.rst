@@ -7,11 +7,6 @@ i.e. 'az vi'
 This package includes the 'extension' and 'camera' subgroups.
 i.e. 'az vi extension' and 'az vi camera'
 
-### How to use ###
-Install this extension using the below CLI command
-```
-az extension add --name vi
-```
 
 ### Included Features
 #### Video Indexer Extension:

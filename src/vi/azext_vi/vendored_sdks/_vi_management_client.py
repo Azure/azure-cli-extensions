@@ -11,7 +11,7 @@ from typing import Any, TYPE_CHECKING
 
 from azure.core.pipeline import policies
 from azure.core.rest import HttpRequest, HttpResponse
-from azure.mgmt.core import ARMPipelineClient, AsyncARMPipelineClient
+from azure.mgmt.core import ARMPipelineClient
 from msrest import Deserializer, Serializer
 from azure.mgmt.core.policies import ARMAutoResourceProviderRegistrationPolicy
 from ._configuration import VIManagementClientConfiguration
