@@ -43,6 +43,7 @@ DEPENDENCIES = [
     "deepdiff~=8.6.1",
     "PyYAML>=6.0.1",
     "pydantic>=2.12.4",
+    "packaging",
 ]
 
 SecurityPolicyProxy.download_binaries()
