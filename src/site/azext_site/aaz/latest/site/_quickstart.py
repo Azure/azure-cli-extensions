@@ -113,6 +113,16 @@ class Quickstart(AAZCommand):
         cli = get_default_cli()
         rc = cli.invoke(invoke_args)
         if rc != 0:
-            raise CLIInternalError("ARM deployment failed for site quickstart.")
+            # Include deployment context and underlying CLI error (if any) for easier troubleshooting.
+            underlying_error = None
+            if getattr(cli, "result", None) is not None:
+                underlying_error = getattr(cli.result, "error", None)
+            msg = (
+                "ARM deployment failed for site quickstart. "
+                f"Deployment name: {deployment_name}, resource group: {rg}."
+            )
+            if underlying_error:
+                msg = f"{msg} Underlying error: {underlying_error}"
+            raise CLIInternalError(msg)
 
         return cli.result.result
