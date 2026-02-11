@@ -219,6 +219,8 @@ class BackupInstanceRestoreScenarioTest(ScenarioTest):
         ])
 
     @AllowLargeResponse()
+    @unittest.skip('Skipping test until datasource is set back up')
+    # TODO ianna: Setup the ADLS datasource again to enable this test. Work Item: https://msazure.visualstudio.com/One/_workitems/edit/36406437
     def test_dataprotection_backup_instance_ilr_restore_adls_recovery_point(test):
         test.kwargs.update({
             'dataSourceType': 'AzureDataLakeStorage',

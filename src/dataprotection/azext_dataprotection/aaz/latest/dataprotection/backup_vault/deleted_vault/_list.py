@@ -12,22 +12,24 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dataprotection backup-vault wait",
+    "dataprotection backup-vault deleted-vault list",
 )
-class Wait(AAZWaitCommand):
-    """Place the CLI in a waiting state until a condition is met.
+class List(AAZCommand):
+    """List deleted backup vaults by location
     """
 
     _aaz_info = {
+        "version": "2025-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.dataprotection/locations/{}/deletedvaults", "2025-09-01"],
         ]
     }
 
+    AZ_SUPPORT_PAGINATION = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_paging(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -40,20 +42,14 @@ class Wait(AAZWaitCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.resource_group = AAZResourceGroupNameArg(
+        _args_schema.location = AAZResourceLocationArg(
             required=True,
-        )
-        _args_schema.vault_name = AAZStrArg(
-            options=["-v", "--vault-name"],
-            help="The name of the backup vault.",
-            required=True,
-            id_part="name",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.BackupVaultsGet(ctx=self.ctx)()
+        self.DeletedBackupVaultsListByLocation(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -65,10 +61,11 @@ class Wait(AAZWaitCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
-        return result
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
+        return result, next_link
 
-    class BackupVaultsGet(AAZHttpOperation):
+    class DeletedBackupVaultsListByLocation(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -82,7 +79,7 @@ class Wait(AAZWaitCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/backupVaults/{vaultName}",
+                "/subscriptions/{subscriptionId}/providers/Microsoft.DataProtection/locations/{location}/deletedVaults",
                 **self.url_parameters
             )
 
@@ -98,15 +95,11 @@ class Wait(AAZWaitCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
+                    "location", self.ctx.args.location,
                     required=True,
                 ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "vaultName", self.ctx.args.vault_name,
                     required=True,
                 ),
             }
@@ -149,59 +142,33 @@ class Wait(AAZWaitCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.e_tag = AAZStrType(
-                serialized_name="eTag",
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
             )
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.identity = AAZIdentityObjectType()
-            _schema_on_200.location = AAZStrType(
+            _schema_on_200.value = AAZListType(
                 flags={"required": True},
             )
-            _schema_on_200.name = AAZStrType(
+
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType(
-                flags={"required": True},
+            _element.name = AAZStrType(
+                flags={"read_only": True},
             )
-            _schema_on_200.system_data = AAZObjectType(
+            _element.properties = AAZObjectType()
+            _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200.tags = AAZDictType()
-            _schema_on_200.type = AAZStrType(
+            _element.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            identity = cls._schema_on_200.identity
-            identity.principal_id = AAZStrType(
-                serialized_name="principalId",
-                flags={"read_only": True},
-            )
-            identity.tenant_id = AAZStrType(
-                serialized_name="tenantId",
-                flags={"read_only": True},
-            )
-            identity.type = AAZStrType()
-            identity.user_assigned_identities = AAZDictType(
-                serialized_name="userAssignedIdentities",
-            )
-
-            user_assigned_identities = cls._schema_on_200.identity.user_assigned_identities
-            user_assigned_identities.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.identity.user_assigned_identities.Element
-            _element.client_id = AAZStrType(
-                serialized_name="clientId",
-                flags={"read_only": True},
-            )
-            _element.principal_id = AAZStrType(
-                serialized_name="principalId",
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.properties
+            properties = cls._schema_on_200.value.Element.properties
             properties.bcdr_security_level = AAZStrType(
                 serialized_name="bcdrSecurityLevel",
                 flags={"read_only": True},
@@ -216,12 +183,28 @@ class Wait(AAZWaitCommand):
             properties.monitoring_settings = AAZObjectType(
                 serialized_name="monitoringSettings",
             )
+            properties.original_backup_vault_id = AAZStrType(
+                serialized_name="originalBackupVaultId",
+                flags={"read_only": True},
+            )
+            properties.original_backup_vault_name = AAZStrType(
+                serialized_name="originalBackupVaultName",
+                flags={"read_only": True},
+            )
+            properties.original_backup_vault_resource_path = AAZStrType(
+                serialized_name="originalBackupVaultResourcePath",
+                flags={"read_only": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
             properties.replicated_regions = AAZListType(
                 serialized_name="replicatedRegions",
+            )
+            properties.resource_deletion_info = AAZObjectType(
+                serialized_name="resourceDeletionInfo",
+                flags={"read_only": True},
             )
             properties.resource_guard_operation_requests = AAZListType(
                 serialized_name="resourceGuardOperationRequests",
@@ -246,7 +229,7 @@ class Wait(AAZWaitCommand):
                 flags={"required": True},
             )
 
-            feature_settings = cls._schema_on_200.properties.feature_settings
+            feature_settings = cls._schema_on_200.value.Element.properties.feature_settings
             feature_settings.cross_region_restore_settings = AAZObjectType(
                 serialized_name="crossRegionRestoreSettings",
             )
@@ -254,29 +237,43 @@ class Wait(AAZWaitCommand):
                 serialized_name="crossSubscriptionRestoreSettings",
             )
 
-            cross_region_restore_settings = cls._schema_on_200.properties.feature_settings.cross_region_restore_settings
+            cross_region_restore_settings = cls._schema_on_200.value.Element.properties.feature_settings.cross_region_restore_settings
             cross_region_restore_settings.state = AAZStrType()
 
-            cross_subscription_restore_settings = cls._schema_on_200.properties.feature_settings.cross_subscription_restore_settings
+            cross_subscription_restore_settings = cls._schema_on_200.value.Element.properties.feature_settings.cross_subscription_restore_settings
             cross_subscription_restore_settings.state = AAZStrType()
 
-            monitoring_settings = cls._schema_on_200.properties.monitoring_settings
+            monitoring_settings = cls._schema_on_200.value.Element.properties.monitoring_settings
             monitoring_settings.azure_monitor_alert_settings = AAZObjectType(
                 serialized_name="azureMonitorAlertSettings",
             )
 
-            azure_monitor_alert_settings = cls._schema_on_200.properties.monitoring_settings.azure_monitor_alert_settings
+            azure_monitor_alert_settings = cls._schema_on_200.value.Element.properties.monitoring_settings.azure_monitor_alert_settings
             azure_monitor_alert_settings.alerts_for_all_job_failures = AAZStrType(
                 serialized_name="alertsForAllJobFailures",
             )
 
-            replicated_regions = cls._schema_on_200.properties.replicated_regions
+            replicated_regions = cls._schema_on_200.value.Element.properties.replicated_regions
             replicated_regions.Element = AAZStrType()
 
-            resource_guard_operation_requests = cls._schema_on_200.properties.resource_guard_operation_requests
+            resource_deletion_info = cls._schema_on_200.value.Element.properties.resource_deletion_info
+            resource_deletion_info.delete_activity_id = AAZStrType(
+                serialized_name="deleteActivityId",
+                flags={"read_only": True},
+            )
+            resource_deletion_info.deletion_time = AAZStrType(
+                serialized_name="deletionTime",
+                flags={"read_only": True},
+            )
+            resource_deletion_info.scheduled_purge_time = AAZStrType(
+                serialized_name="scheduledPurgeTime",
+                flags={"read_only": True},
+            )
+
+            resource_guard_operation_requests = cls._schema_on_200.value.Element.properties.resource_guard_operation_requests
             resource_guard_operation_requests.Element = AAZStrType()
 
-            resource_move_details = cls._schema_on_200.properties.resource_move_details
+            resource_move_details = cls._schema_on_200.value.Element.properties.resource_move_details
             resource_move_details.completion_time_utc = AAZStrType(
                 serialized_name="completionTimeUtc",
             )
@@ -293,7 +290,7 @@ class Wait(AAZWaitCommand):
                 serialized_name="targetResourcePath",
             )
 
-            security_settings = cls._schema_on_200.properties.security_settings
+            security_settings = cls._schema_on_200.value.Element.properties.security_settings
             security_settings.encryption_settings = AAZObjectType(
                 serialized_name="encryptionSettings",
             )
@@ -304,7 +301,7 @@ class Wait(AAZWaitCommand):
                 serialized_name="softDeleteSettings",
             )
 
-            encryption_settings = cls._schema_on_200.properties.security_settings.encryption_settings
+            encryption_settings = cls._schema_on_200.value.Element.properties.security_settings.encryption_settings
             encryption_settings.infrastructure_encryption = AAZStrType(
                 serialized_name="infrastructureEncryption",
             )
@@ -316,7 +313,7 @@ class Wait(AAZWaitCommand):
             )
             encryption_settings.state = AAZStrType()
 
-            kek_identity = cls._schema_on_200.properties.security_settings.encryption_settings.kek_identity
+            kek_identity = cls._schema_on_200.value.Element.properties.security_settings.encryption_settings.kek_identity
             kek_identity.identity_id = AAZStrType(
                 serialized_name="identityId",
             )
@@ -324,30 +321,30 @@ class Wait(AAZWaitCommand):
                 serialized_name="identityType",
             )
 
-            key_vault_properties = cls._schema_on_200.properties.security_settings.encryption_settings.key_vault_properties
+            key_vault_properties = cls._schema_on_200.value.Element.properties.security_settings.encryption_settings.key_vault_properties
             key_vault_properties.key_uri = AAZStrType(
                 serialized_name="keyUri",
             )
 
-            immutability_settings = cls._schema_on_200.properties.security_settings.immutability_settings
+            immutability_settings = cls._schema_on_200.value.Element.properties.security_settings.immutability_settings
             immutability_settings.state = AAZStrType()
 
-            soft_delete_settings = cls._schema_on_200.properties.security_settings.soft_delete_settings
+            soft_delete_settings = cls._schema_on_200.value.Element.properties.security_settings.soft_delete_settings
             soft_delete_settings.retention_duration_in_days = AAZFloatType(
                 serialized_name="retentionDurationInDays",
             )
             soft_delete_settings.state = AAZStrType()
 
-            storage_settings = cls._schema_on_200.properties.storage_settings
+            storage_settings = cls._schema_on_200.value.Element.properties.storage_settings
             storage_settings.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.properties.storage_settings.Element
+            _element = cls._schema_on_200.value.Element.properties.storage_settings.Element
             _element.datastore_type = AAZStrType(
                 serialized_name="datastoreType",
             )
             _element.type = AAZStrType()
 
-            system_data = cls._schema_on_200.system_data
+            system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -367,14 +364,11 @@ class Wait(AAZWaitCommand):
                 serialized_name="lastModifiedByType",
             )
 
-            tags = cls._schema_on_200.tags
-            tags.Element = AAZStrType()
-
             return cls._schema_on_200
 
 
-class _WaitHelper:
-    """Helper class for Wait"""
+class _ListHelper:
+    """Helper class for List"""
 
 
-__all__ = ["Wait"]
+__all__ = ["List"]
