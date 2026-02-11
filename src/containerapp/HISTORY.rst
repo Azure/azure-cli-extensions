@@ -8,6 +8,8 @@ upcoming
 * 'az containerapp function keys': Update minimum replica check 
 * 'az containerapp list': Add `--kind` parameter to filter container apps by kind 
 * 'az containerapp function invocations': Fix issue when cloud role name is set
+* 'az containerapp sessionpool update': Fix --no-wait issue and extend timeout to 7200s
+* 'az containerapp sessionpool update': Fix clean identity issue when not providing identity parameters
 
 1.3.0b1
 ++++++
