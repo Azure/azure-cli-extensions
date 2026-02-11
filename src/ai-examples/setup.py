@@ -42,7 +42,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='ai_examples',
+    name='ai-examples',
     version=VERSION,
     description='Add AI powered examples to help content.',
     author='Matthew Booe',
