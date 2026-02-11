@@ -4,6 +4,9 @@ Release History
 ===============
 upcoming
 ++++++
+
+1.3.0b2
+++++++
 * 'az containerapp function invocations': Update application insights query 
 * 'az containerapp function keys': Update minimum replica check 
 * 'az containerapp list': Add `--kind` parameter to filter container apps by kind 
