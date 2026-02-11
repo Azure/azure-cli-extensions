@@ -55,37 +55,26 @@ T = TypeVar("T")
 # Constants
 # =============================================================================
 
-class RetryConfig:
-    """Configuration constants for retry operations."""
+# Retry configuration constants
+RETRY_DEFAULT_MAX_RETRIES: int = 3
+RETRY_DEFAULT_DELAY: float = 5.0
+RETRY_DEFAULT_BACKOFF_MULTIPLIER: float = 2.0
+RETRY_MAX_DELAY: float = 60.0
 
-    DEFAULT_MAX_RETRIES: int = 3
-    DEFAULT_RETRY_DELAY: float = 5.0
-    DEFAULT_BACKOFF_MULTIPLIER: float = 2.0
-    MAX_RETRY_DELAY: float = 60.0
-
-
-class DiagnosticConfig:
-    """Configuration constants for diagnostic operations."""
-
-    # Containers to skip during log collection (telemetry/observability containers)
-    EXCLUDED_CONTAINERS: frozenset = frozenset({
-        "mdm", "mdsd", "msi-adapter", "otel-collector"
-    })
-
-    # File names for diagnostic outputs
-    METADATA_FILENAME: str = "metadata.json"
-    LOGS_SUFFIX: str = "_logs.txt"
-    CONFIGURATION_FOLDER: str = "configuration"
-    PODS_FOLDER: str = "pods"
-    CONTAINERS_FOLDER: str = "containers"
-
-    # Regex pattern for sanitizing folder names
-    FOLDER_NAME_PATTERN: re.Pattern = re.compile(r'[^a-zA-Z0-9_-]')
+# Diagnostic configuration constants
+DIAGNOSTIC_EXCLUDED_CONTAINERS: frozenset = frozenset({
+    "mdm", "mdsd", "msi-adapter", "otel-collector"
+})
+DIAGNOSTIC_METADATA_FILENAME: str = "metadata.json"
+DIAGNOSTIC_LOGS_SUFFIX: str = "_logs.txt"
+DIAGNOSTIC_CONFIGURATION_FOLDER: str = "configuration"
+DIAGNOSTIC_PODS_FOLDER: str = "pods"
+DIAGNOSTIC_CONTAINERS_FOLDER: str = "containers"
+DIAGNOSTIC_FOLDER_NAME_PATTERN: re.Pattern = re.compile(r'[^a-zA-Z0-9_-]')
 
 
 class OSType(Enum):
     """Supported operating system types."""
-
     WINDOWS = "windows"
     LINUX = "linux"
     DARWIN = "darwin"
@@ -104,7 +93,6 @@ class DiagnosticResult:
         path: The path where diagnostic data was saved, if applicable.
         message: Optional message providing additional context.
     """
-
     success: bool
     path: str = ""
     message: str = ""
@@ -121,7 +109,6 @@ class PodMetadata:
         annotations: Pod annotations as a dictionary.
         status: Current pod phase/status.
     """
-
     name: str
     namespace: str
     labels: Dict[str, str] = field(default_factory=dict)
@@ -148,7 +135,6 @@ class CollectionContext:
         base_path: Base directory for storing diagnostics.
         namespace: Target namespace for collection.
     """
-
     api_instance: CoreV1Api
     base_path: str
     namespace: str
@@ -169,22 +155,18 @@ class K8sUtilsError(Exception):
 
 class KubeConfigError(K8sUtilsError):
     """Exception raised for kubeconfig-related errors."""
-    pass
 
 
 class KubeConnectionError(K8sUtilsError):
     """Exception raised when unable to connect to Kubernetes cluster."""
-    pass
 
 
 class DiagnosticCollectionError(K8sUtilsError):
     """Exception raised during diagnostic collection operations."""
-    pass
 
 
 class ClientInstallationError(K8sUtilsError):
     """Exception raised when client installation fails."""
-    pass
 
 
 # =============================================================================
@@ -192,10 +174,10 @@ class ClientInstallationError(K8sUtilsError):
 # =============================================================================
 
 def retry_with_backoff(
-    max_retries: int = RetryConfig.DEFAULT_MAX_RETRIES,
-    initial_delay: float = RetryConfig.DEFAULT_RETRY_DELAY,
-    backoff_multiplier: float = RetryConfig.DEFAULT_BACKOFF_MULTIPLIER,
-    max_delay: float = RetryConfig.MAX_RETRY_DELAY,
+    max_retries: int = RETRY_DEFAULT_MAX_RETRIES,
+    initial_delay: float = RETRY_DEFAULT_DELAY,
+    backoff_multiplier: float = RETRY_DEFAULT_BACKOFF_MULTIPLIER,
+    max_delay: float = RETRY_MAX_DELAY,
     exceptions: Tuple[type, ...] = (Exception,),
     on_retry: Optional[Callable[[Exception, int], None]] = None,
 ) -> Callable[[Callable[..., T]], Callable[..., T]]:
@@ -346,7 +328,7 @@ def sanitize_folder_name(name: str) -> str:
         >>> sanitize_folder_name("my-pod@namespace#1")
         'my-podnamespace1'
     """
-    return DiagnosticConfig.FOLDER_NAME_PATTERN.sub('', name)
+    return DIAGNOSTIC_FOLDER_NAME_PATTERN.sub('', name)
 
 
 def create_unique_folder_name(base_name: str) -> str:
@@ -496,7 +478,7 @@ def load_kube_config(
         if skip_ssl_verification:
             _configure_ssl_verification(verify=False)
 
-    except Exception as e:
+    except config.config_exception.ConfigException as e:
         logger.warning(consts.KUBECONFIG_LOAD_FAILED_WARNING)
         raise FileOperationError(
             f"Problem loading the kubeconfig file: {e}"
@@ -531,12 +513,11 @@ def check_kube_connection() -> str:
     try:
         api_response = api_instance.get_code()
         return api_response.git_version
-    except Exception as e:
+    except ApiException as e:
         logger.warning(consts.KUBEAPI_CONNECTIVITY_FAILED_WARNING)
         kubernetes_exception_handler(
             e,
-            consts.KUBERNETES_CONNECTIVITY_FAULT_TYPE,
-            "Unable to verify connectivity to the Kubernetes cluster",
+            summary="Unable to verify connectivity to the Kubernetes cluster",
         )
 
     raise CLIInternalError(
@@ -573,7 +554,6 @@ def check_namespace_exists(api_instance: CoreV1Api, namespace: str) -> bool:
 
 def kubernetes_exception_handler(
     ex: Exception,
-    fault_type: str,
     summary: str,
     error_message: str = "Error occurred while connecting to the kubernetes cluster: ",
     message_for_unauthorized_request: str = (
@@ -588,7 +568,6 @@ def kubernetes_exception_handler(
 
     Args:
         ex: The exception that was raised.
-        fault_type: Type of fault for telemetry/logging.
         summary: Summary description of the error.
         error_message: Base error message prefix.
         message_for_unauthorized_request: Message for 403 errors.
@@ -598,6 +577,9 @@ def kubernetes_exception_handler(
     Raises:
         ValidationError: If raise_error is True.
     """
+    # Log summary at debug level for context
+    logger.debug("Kubernetes exception summary: %s", summary)
+
     if isinstance(ex, ApiException):
         status_code = ex.status
 
@@ -735,13 +717,13 @@ def _download_helm_retry_callback(exception: Exception, attempt: int) -> None:
             "This is likely a transient network issue. Retrying..."
         )
     else:
-        logger.warning(f"Download attempt {attempt} failed: {exception}. Retrying...")
+        logger.warning("Download attempt %d failed: %s. Retrying...", attempt, exception)
 
 
 @retry_with_backoff(
-    max_retries=RetryConfig.DEFAULT_MAX_RETRIES,
-    initial_delay=RetryConfig.DEFAULT_RETRY_DELAY,
-    exceptions=(Exception,),
+    max_retries=RETRY_DEFAULT_MAX_RETRIES,
+    initial_delay=RETRY_DEFAULT_DELAY,
+    exceptions=(OSError),
     on_retry=_download_helm_retry_callback,
 )
 def _download_helm_from_mcr(mcr_url: str, artifact_tag: str, download_location: Path) -> None:
@@ -761,7 +743,7 @@ def _download_helm_from_mcr(mcr_url: str, artifact_tag: str, download_location: 
             target=f"{mcr_url}/{consts.HELM_MCR_URL}:{artifact_tag}",
             outdir=str(download_location),
         )
-    except Exception as e:
+    except (OSError) as e:
         raise CLIInternalError(
             f"Failed to download helm client: {e}",
             recommendation="Please check your internet connection.",
@@ -788,7 +770,7 @@ def _extract_helm_archive(
     try:
         shutil.unpack_archive(str(archive_path), str(download_location))
         os.chmod(install_location, os.stat(install_location).st_mode | stat.S_IXUSR)
-    except Exception as e:
+    except (shutil.ReadError, OSError) as e:
         recommendation = (
             f"Please ensure that you delete the directory '{download_location}' "
             "before trying again."
@@ -840,7 +822,7 @@ def install_kubectl_client() -> str:
         logger.warning("")  # Add newline after download
         return str(kubectl_path)
 
-    except Exception as e:
+    except (OSError, FileNotFoundError) as e:
         raise CLIInternalError(f"Unable to install kubectl. Error: {e}")
 
 
@@ -880,6 +862,11 @@ def create_folder_diagnosticlogs(
 
         return DiagnosticResult(success=True, path=str(full_path))
 
+    except PermissionError as e:
+        logger.exception(
+            "An exception occurred while creating the diagnostic logs folder: %s", e
+        )
+        return DiagnosticResult(success=False, message=str(e))
     except OSError as e:
         if "[Errno 28]" in str(e):  # No space left on device
             return DiagnosticResult(
@@ -887,12 +874,7 @@ def create_folder_diagnosticlogs(
                 message="Insufficient storage space available."
             )
         logger.exception(
-            f"An exception occurred while creating the diagnostic logs folder: {e}"
-        )
-        return DiagnosticResult(success=False, message=str(e))
-    except Exception as e:
-        logger.exception(
-            f"An exception occurred while creating the diagnostic logs folder: {e}"
+            "An exception occurred while creating the diagnostic logs folder: %s", e
         )
         return DiagnosticResult(success=False, message=str(e))
 
@@ -917,7 +899,7 @@ def create_folder_diagnostics_namespace(
     try:
         namespace_folder.mkdir(parents=True, exist_ok=True)
         return DiagnosticResult(success=True, path=str(namespace_folder))
-    except Exception as e:
+    except OSError as e:
         error_msg = f"Failed to create diagnostics folder for namespace '{namespace}': {e}"
         logger.error(error_msg)
         return DiagnosticResult(success=False, message=error_msg)
@@ -958,7 +940,7 @@ def save_pod_metadata(pod_folder: Union[str, Path], pod_metadata: PodMetadata) -
     Returns:
         DiagnosticResult indicating success or failure.
     """
-    metadata_file = Path(pod_folder) / DiagnosticConfig.METADATA_FILENAME
+    metadata_file = Path(pod_folder) / DIAGNOSTIC_METADATA_FILENAME
     return save_as_json(metadata_file, pod_metadata.to_dict())
 
 
@@ -999,7 +981,7 @@ def collect_container_logs(
         logger.error(error_msg)
         return DiagnosticResult(success=False, message=error_msg)
 
-    log_file = Path(containers_folder) / f"{container_name}{DiagnosticConfig.LOGS_SUFFIX}"
+    log_file = Path(containers_folder) / f"{container_name}{DIAGNOSTIC_LOGS_SUFFIX}"
 
     try:
         with open(log_file, "w", encoding="utf-8") as f:
@@ -1012,7 +994,6 @@ def collect_container_logs(
 
 
 def collect_pod_information(
-    api_instance: CoreV1Api,
     pods_folder: Union[str, Path],
     namespace: str,
     pod: V1Pod
@@ -1020,7 +1001,6 @@ def collect_pod_information(
     """Collect information from a pod and save to disk.
 
     Args:
-        api_instance: Kubernetes CoreV1Api client.
         pods_folder: Base folder for pod diagnostics.
         namespace: Pod namespace.
         pod: The pod object.
@@ -1059,7 +1039,7 @@ def _should_skip_container(container: V1Container) -> bool:
     Returns:
         True if the container should be skipped.
     """
-    return container.name in DiagnosticConfig.EXCLUDED_CONTAINERS
+    return container.name in DIAGNOSTIC_EXCLUDED_CONTAINERS
 
 
 def _collect_containers_logs(
@@ -1096,8 +1076,8 @@ def _collect_containers_logs(
 
         if not result.success:
             logger.error(
-                f"Failed to collect logs from {container_type} '{container.name}' "
-                f"in pod '{pod_name}': {result.message}"
+                "Failed to collect logs from %s '%s' in pod '%s': %s",
+                container_type, container.name, pod_name, result.message
             )
             # Continue collecting other containers even if one fails
 
@@ -1128,7 +1108,7 @@ def walk_through_pods(
         logger.error(error_msg)
         return DiagnosticResult(success=False, message=error_msg)
 
-    pods_folder = Path(folder_namespace) / DiagnosticConfig.PODS_FOLDER
+    pods_folder = Path(folder_namespace) / DIAGNOSTIC_PODS_FOLDER
 
     try:
         pods_folder.mkdir(parents=True, exist_ok=True)
@@ -1143,18 +1123,18 @@ def walk_through_pods(
         pod_name = pod.metadata.name if pod.metadata else "unknown"
 
         # Collect pod information
-        pod_result = collect_pod_information(api_instance, pods_folder, namespace, pod)
+        pod_result = collect_pod_information(pods_folder, namespace, pod)
         if not pod_result.success:
-            logger.error(f"Failed to collect information for pod '{pod_name}'")
+            logger.error("Failed to collect information for pod '%s'", pod_name)
             all_success = False
             continue
 
         # Create containers folder
-        containers_folder = pods_folder / pod_name / DiagnosticConfig.CONTAINERS_FOLDER
+        containers_folder = pods_folder / pod_name / DIAGNOSTIC_CONTAINERS_FOLDER
         try:
             containers_folder.mkdir(parents=True, exist_ok=True)
         except OSError as e:
-            logger.error(f"Failed to create containers folder for pod '{pod_name}': {e}")
+            logger.error("Failed to create containers folder for pod '%s': %s", pod_name, e)
             all_success = False
             continue
 
@@ -1194,7 +1174,7 @@ def collect_namespace_configmaps(
     """
     print(f"Collecting configurations for namespace '{namespace}'")
 
-    config_folder = Path(namespace_folder) / DiagnosticConfig.CONFIGURATION_FOLDER
+    config_folder = Path(namespace_folder) / DIAGNOSTIC_CONFIGURATION_FOLDER
 
     try:
         config_folder.mkdir(parents=True, exist_ok=True)
@@ -1217,7 +1197,7 @@ def collect_namespace_configmaps(
 
         result = save_as_json(cm_file, cm_data)
         if not result.success:
-            logger.error(f"Failed to save ConfigMap '{cm_name}': {result.message}")
+            logger.error("Failed to save ConfigMap '%s': %s", cm_name, result.message)
             return DiagnosticResult(success=False, message=result.message)
 
     return DiagnosticResult(success=True, path=str(config_folder))
@@ -1242,13 +1222,13 @@ def collect_namespace(
 
     # Check if namespace exists
     if not check_namespace_exists(api_instance, namespace):
-        logger.warning(f"Namespace '{namespace}' does not exist. Skipping...")
+        logger.warning("Namespace '%s' does not exist. Skipping...", namespace)
         return DiagnosticResult(success=True, message=f"Namespace '{namespace}' does not exist")
 
     # Create namespace folder
     folder_result = create_folder_diagnostics_namespace(base_path, namespace)
     if not folder_result.success:
-        logger.error(f"Failed to create diagnostics folder for namespace '{namespace}'.")
+        logger.error("Failed to create diagnostics folder for namespace '%s'.", namespace)
         return folder_result
 
     namespace_folder = folder_result.path

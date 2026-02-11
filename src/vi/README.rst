@@ -1,18 +1,16 @@
 Microsoft Azure CLI 'vi' Extension
 =============================================
 
-This package is for the 'vi' (Video Indexer) extension.
-i.e. 'az vi'
+This package is for the Video Indexer ('vi') i.e. 'az vi'
+Azure AI Video Indexer is an AI-powered solution that helps you extract insights from video and audio content.
+It is available both as an Azure Arc extension for edge deployments and as a cloud-based application.
+Video Indexer: [more info](https://learn.microsoft.com/en-us/azure/azure-video-indexer/)\
 
+#### Video Indexer:
 This package includes the 'extension' and 'camera' subgroups.
 i.e. 'az vi extension' and 'az vi camera'
 
-
 ### Included Features
-#### Video Indexer Extension:
-Video Indexer Extension: [more info](https://learn.microsoft.com/en-us/azure/azure-video-indexer/)\
-*Examples:*
-
 ##### Show Video Indexer Extension details
 ```
 az vi extension show \
