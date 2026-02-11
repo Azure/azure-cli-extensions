@@ -7,6 +7,7 @@ from pathlib import Path
 from azure.cli.core.aaz import (  # type: ignore[import-unresolved]
     AAZCommand,
     AAZStrArg,
+    AAZStrArgFormat,
     AAZBoolArg,
     AAZResourceGroupNameArg,
     has_value,
@@ -45,6 +46,11 @@ class Quickstart(AAZCommand):
             options=["-n", "--name"],
             required=True,
             help="Site name (siteName).",
+            fmt=AAZStrArgFormat(
+                pattern=r"^[a-zA-Z0-9][a-zA-Z0-9-_.]{0,62}[a-zA-Z0-9]$",
+                min_length=2,
+                max_length=64,
+            ),
         )
 
         _args_schema.defaultconfiguration = AAZBoolArg(
