@@ -10,13 +10,7 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 
-from azure.cli.core.commands.parameters import (
-    tags_type,
-    get_enum_type,
-    resource_group_name_type,
-    get_location_type
-)
-from azure.cli.core.commands.validators import get_default_location_from_resource_group
+from azure.cli.core.commands.parameters import get_enum_type
 
 
 def load_arguments(self, _):
@@ -24,12 +18,12 @@ def load_arguments(self, _):
     # Only override the SKU argument where its behavior differs from the generated parameters.
     with self.argument_context('healthbot create') as c:
         c.argument('sku',
-                  arg_type=get_enum_type(['F0', 'C0', 'C1', 'PES']),
-                  help='The name of the HealthBot SKU',
-                  arg_group='Sku')
+                   arg_type=get_enum_type(['F0', 'C0', 'C1', 'PES']),
+                   help='The name of the HealthBot SKU',
+                   arg_group='Sku')
 
     with self.argument_context('healthbot update') as c:
         c.argument('sku',
-                  arg_type=get_enum_type(['F0', 'C0', 'C1', 'PES']),
-                  help='The name of the HealthBot SKU',
-                  arg_group='Sku')
+                   arg_type=get_enum_type(['F0', 'C0', 'C1', 'PES']),
+                   help='The name of the HealthBot SKU',
+                   arg_group='Sku')
