@@ -5,7 +5,7 @@
 
 # pylint: disable=line-too-long
 from azure.cli.core.commands import CliCommandType
-from ._client_factory import cf_vi, cf_vi_extensions, cf_vi_cameras
+from ._client_factory import cf_vi
 from ._format import vi_extension_show_table_format, vi_camera_list_table_format
 from . import consts
 
@@ -15,10 +15,6 @@ def load_command_table(self, _):
     vi_sdk = CliCommandType(
         operations_tmpl=consts.EXTENSION_PACKAGE_NAME + '.vendored_sdks.operations#ViOperations.{}',
         client_factory=cf_vi)
-
-    with self.command_group(consts.EXTENSION_NAME, vi_sdk, client_factory=cf_vi) \
-            as g:
-        g.custom_command('my', 'my_vi_command')
 
     with self.command_group(f"{consts.EXTENSION_NAME} extension", vi_sdk, client_factory=cf_vi, is_preview=True) \
             as g:

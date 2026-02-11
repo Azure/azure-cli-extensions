@@ -3,44 +3,37 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+# pylint: disable=unused-argument,too-many-locals
+
 import contextlib
+import json
 import logging
 import os
 import platform
+import re
 import shutil
 import stat
 import time
-import json
-import shutil
-import time
-import re
-import os
-import contextlib
+from typing import Optional, Tuple, Union
 
-from knack.log import get_logger
-
+import oras.client
 from azure.cli.core import get_default_cli
-
 from azure.cli.core.azclierror import (
     ClientRequestError,
     CLIInternalError,
     FileOperationError,
     ManualInterrupt,
     RequiredArgumentMissingError,
+    ValidationError,
 )
-
-from . import consts
-
+from knack.commands import CLICommand
+from knack.log import get_logger
 from kubernetes import client as kube_client
 from kubernetes import config
-from kubernetes.config.kube_config import KubeConfigMerger
-from kubernetes.client.rest import ApiException
 from kubernetes.client import CoreV1Api, V1NodeList
+from kubernetes.client.rest import ApiException
 
-from typing import Optional, Tuple, Union
-import oras.client
-
-from knack.commands import CLICommand
+from . import consts
 
 logger = get_logger(__name__)
 
@@ -53,11 +46,11 @@ def troubleshoot_k8s_extension(
     kube_context: Optional[str] = None,
     skip_ssl_verification: bool = False,
 ) -> None:
-
     """Troubleshoot an existing Kubernetes Extension."""
 
     try:
-        print("Collecting diagnostics information from the namespaces provided. This operation may take a while to complete ...\n")
+        print("Collecting diagnostics information from the namespaces provided. "
+              "This operation may take a while to complete ...\n")
 
         namespaces = [ns.strip() for ns in namespace_list.split(',') if ns.strip()]
 
@@ -67,7 +60,7 @@ def troubleshoot_k8s_extension(
                 "No valid namespaces provided. Please provide at least one namespace."
             )
 
-        # Setting the intial values as True
+        # Setting the initial values as True
         storage_space_available = True
 
         # Setting kube_config
@@ -78,10 +71,10 @@ def troubleshoot_k8s_extension(
         load_kube_config(kube_config, kube_context, skip_ssl_verification)
 
         # Install helm client
-        helm_client_location = install_helm_client(cmd)
+        install_helm_client(cmd)
 
         # Install kubectl client
-        kubectl_client_location = install_kubectl_client()
+        install_kubectl_client()
 
         # Checking the connection to kubernetes cluster.
         check_kube_connection()
@@ -102,7 +95,8 @@ def troubleshoot_k8s_extension(
         api_instance = kube_client.CoreV1Api()
 
         for namespace in namespaces:
-            collect_namespace_status = collect_namespace(api_instance, filepath_with_timestamp, namespace)
+            collect_namespace_status = collect_namespace(
+                api_instance, filepath_with_timestamp, namespace)
             if collect_namespace_status is not True:
                 storage_space_available = False
 
@@ -122,6 +116,7 @@ def troubleshoot_k8s_extension(
     except KeyboardInterrupt:
         raise ManualInterrupt("Process terminated externally.")
 
+
 def collect_namespace(api_instance: CoreV1Api, base_path: str, namespace: str) -> bool:
     print(f"Step: {get_utctimestring()}: Collecting diagnostics information for namespace '{namespace}'...")
 
@@ -139,21 +134,18 @@ def collect_namespace(api_instance: CoreV1Api, base_path: str, namespace: str) -
         logger.error(f"Failed to create diagnostics folder for namespace '{namespace}'.")
         collection_success = False
 
-    logs_status = (
-        collect_namespace_configmaps(api_instance, folder_namespace, namespace)
-    )
+    logs_status = collect_namespace_configmaps(api_instance, folder_namespace, namespace)
 
     if logs_status is not True:
         collection_success = False
 
-    pods_status = (
-        walk_through_pods(api_instance, folder_namespace, namespace)
-    )
+    pods_status = walk_through_pods(api_instance, folder_namespace, namespace)
 
     if pods_status is not True:
         collection_success = False
 
     return collection_success
+
 
 def set_kube_config(kube_config: Union[str, None]) -> Union[str, None]:
     print(f"Step: {get_utctimestring()}: Setting KubeConfig")
@@ -166,8 +158,11 @@ def set_kube_config(kube_config: Union[str, None]) -> Union[str, None]:
         return kube_config
     return None
 
+
 def load_kube_config(
-    kube_config: Union[str, None], kube_context: Union[str, None], skip_ssl_verification: bool
+    kube_config: Union[str, None],
+    kube_context: Union[str, None],
+    skip_ssl_verification: bool
 ) -> None:
     try:
         config.load_kube_config(config_file=kube_config, context=kube_context)
@@ -181,10 +176,9 @@ def load_kube_config(
         logger.warning(consts.KUBECONFIG_LOAD_FAILED_WARNING)
         raise FileOperationError("Problem loading the kubeconfig file. " + str(e))
 
+
 def install_helm_client(cmd: CLICommand) -> str:
-    print(
-        f"Step: {get_utctimestring()}: Install Helm client if it does not exist"
-    )
+    print(f"Step: {get_utctimestring()}: Install Helm client if it does not exist")
     # Return helm client path set by user
     helm_client_path = os.getenv("HELM_CLIENT_PATH")
     if helm_client_path:
@@ -193,6 +187,7 @@ def install_helm_client(cmd: CLICommand) -> str:
     # Fetch system related info
     operating_system = platform.system().lower()
     machine_type = platform.machine()
+    print(f"Detected system information: OS - {operating_system}, Architecture - {machine_type}")
 
     # Set helm binary download & install locations
     if operating_system == "windows":
@@ -201,8 +196,8 @@ def install_helm_client(cmd: CLICommand) -> str:
         install_location_string = (
             f".azure\\helm\\{consts.HELM_VERSION}\\{operating_system}-amd64\\helm.exe"
         )
-        artifactTag = f"helm-{consts.HELM_VERSION}-{operating_system}-amd64"
-    elif operating_system == "linux" or operating_system == "darwin":
+        artifact_tag = f"helm-{consts.HELM_VERSION}-{operating_system}-amd64"
+    elif operating_system in ("linux", "darwin"):
         download_location_string = f".azure/helm/{consts.HELM_VERSION}"
         download_file_name = (
             f"helm-{consts.HELM_VERSION}-{operating_system}-amd64.tar.gz"
@@ -210,7 +205,7 @@ def install_helm_client(cmd: CLICommand) -> str:
         install_location_string = (
             f".azure/helm/{consts.HELM_VERSION}/{operating_system}-amd64/helm"
         )
-        artifactTag = f"helm-{consts.HELM_VERSION}-{operating_system}-amd64"
+        artifact_tag = f"helm-{consts.HELM_VERSION}-{operating_system}-amd64"
     else:
         raise ClientRequestError(
             f"The {operating_system} platform is not currently supported for installing helm client."
@@ -242,15 +237,15 @@ def install_helm_client(cmd: CLICommand) -> str:
         for i in range(retry_count):
             try:
                 client.pull(
-                    target=f"{mcr_url}/{consts.HELM_MCR_URL}:{artifactTag}",
+                    target=f"{mcr_url}/{consts.HELM_MCR_URL}:{artifact_tag}",
                     outdir=download_location,
                 )
                 break
             except Exception as e:
                 if i == retry_count - 1:
                     if "Connection reset by peer" in str(e):
-                        print("Connection reset by peer error encountered while downloading helm client. This is likely a transient network issue.")
-           
+                        print("Connection reset by peer error encountered while downloading helm client. "
+                              "This is likely a transient network issue.")
                     raise CLIInternalError(
                         f"Failed to download helm client: {e}",
                         recommendation="Please check your internet connection.",
@@ -273,10 +268,9 @@ def install_helm_client(cmd: CLICommand) -> str:
 
     return install_location
 
+
 def install_kubectl_client() -> str:
-    print(
-        f"Step: {get_utctimestring()}: Install Kubectl client if it does not exist"
-    )
+    print(f"Step: {get_utctimestring()}: Install Kubectl client if it does not exist")
     # Return kubectl client path set by user
     kubectl_client_path = os.getenv("KUBECTL_CLIENT_PATH")
     if kubectl_client_path:
@@ -314,6 +308,7 @@ def install_kubectl_client() -> str:
     except Exception as e:
         raise CLIInternalError(f"Unable to install kubectl. Error: {e}")
 
+
 def check_kube_connection() -> str:
     print(f"Step: {get_utctimestring()}: Checking Connectivity to Cluster")
     api_instance = kube_client.VersionApi()
@@ -332,75 +327,10 @@ def check_kube_connection() -> str:
     raise CLIInternalError(
         "Unable to verify connectivity to the Kubernetes cluster. No version information could be retrieved.")
 
-def get_cluster_rp_api_version(cluster_type, cluster_rp=None) -> Tuple[str, str]:
-    if cluster_type.lower() == consts.PROVISIONED_CLUSTER_TYPE:
-        if cluster_rp is None or cluster_rp.strip() == "":
-            raise RequiredArgumentMissingError(
-                "Error! Cluster Resource Provider value is required for Cluster Type '{}'".format(cluster_type)
-            )
-        if cluster_rp.lower() == consts.HYBRIDCONTAINERSERVICE_RP:
-            return (
-                consts.HYBRIDCONTAINERSERVICE_RP,
-                consts.HYBRIDCONTAINERSERVICE_API_VERSION,
-            )
-        raise InvalidArgumentValueError(
-            "Error! Cluster type '{}' and Cluster Resource Provider '{}' combination is not supported".format(cluster_type, cluster_rp)
-        )
-    if cluster_type.lower() == consts.CONNECTED_CLUSTER_TYPE:
-        return consts.CONNECTED_CLUSTER_RP, consts.CONNECTED_CLUSTER_API_VERSION
-    if cluster_type.lower() == consts.APPLIANCE_TYPE:
-        return consts.APPLIANCE_RP, consts.APPLIANCE_API_VERSION
-    if (
-        cluster_type.lower() == ""
-        or cluster_type.lower() == consts.MANAGED_CLUSTER_TYPE
-    ):
-        return consts.MANAGED_CLUSTER_RP, consts.MANAGED_CLUSTER_API_VERSION
-    raise InvalidArgumentValueError(
-        "Error! Cluster type '{}' is not supported".format(cluster_type)
-    )
-
-def read_config_settings_file(file_path):
-    try:
-        with open(file_path, "r") as f:
-            settings = json.load(f)
-            if len(settings) == 0:
-                raise Exception("File {} is empty".format(file_path))
-            return settings
-    except ValueError as ex:
-        raise Exception("File {} is not a valid JSON file".format(file_path)) from ex
-
-def is_dogfood_cluster(cmd):
-    return (
-        urlparse(cmd.cli_ctx.cloud.endpoints.resource_manager).hostname
-        == consts.DF_RM_HOSTNAME
-    )
-
-def is_skip_prerequisites_specified(configuration_settings):
-    # Determine if provisioning to prerequisites should be skipped by a configuration setting named skipPrerequisites.
-    SKIP_PREQUISITES = 'skipPrerequisites'
-
-    has_skip_prerequisites_set = False
-
-    if SKIP_PREQUISITES in configuration_settings:
-        skip_prerequisites_configuration_setting = configuration_settings[SKIP_PREQUISITES]
-        if (isinstance(skip_prerequisites_configuration_setting, str) and str(skip_prerequisites_configuration_setting).lower() == "true") or (isinstance(skip_prerequisites_configuration_setting, bool) and skip_prerequisites_configuration_setting):
-            has_skip_prerequisites_set = True
-
-    return has_skip_prerequisites_set
 
 def get_utctimestring() -> str:
     return time.strftime("%Y-%m-%dT%H-%M-%SZ", time.gmtime())
 
-def validate_node_api_response(api_instance: CoreV1Api) -> Union[V1NodeList, None]:
-    try:
-        node_api_response = api_instance.list_node()
-        return node_api_response
-    except Exception:
-        logger.debug(
-            "Error occurred while listing nodes on this kubernetes cluster:",
-            exc_info=True,
-        )
-        return None
 
 def kubernetes_exception_handler(
     ex: Exception,
@@ -413,7 +343,6 @@ def kubernetes_exception_handler(
     message_for_not_found: str = "The requested kubernetes resource was not found.",
     raise_error: bool = True,
 ) -> None:
-    telemetry.set_user_fault()
     if isinstance(ex, ApiException):
         status_code = ex.status
         if status_code == 403:
@@ -423,18 +352,13 @@ def kubernetes_exception_handler(
         else:
             logger.debug("Kubernetes Exception: ", exc_info=True)
         if raise_error:
-            telemetry.set_exception(
-                exception=ex, fault_type=fault_type, summary=summary
-            )
             raise ValidationError(error_message + "\nError Response: " + str(ex.body))
     else:
         if raise_error:
-            telemetry.set_exception(
-                exception=ex, fault_type=fault_type, summary=summary
-            )
             raise ValidationError(error_message + "\nError: " + str(ex))
 
         logger.debug("Kubernetes Exception", exc_info=True)
+
 
 def create_unique_folder_name(base_name: str) -> str:
     """Create a unique folder name using the base name and current timestamp.
@@ -453,10 +377,9 @@ def create_unique_folder_name(base_name: str) -> str:
     timestamp = time.strftime("%Y-%m-%d-%H.%M.%S", time.localtime())
     return f"{sanitized_base_name}-{timestamp}"
 
-def create_folder_diagnostics_namespace(base_folder: str, namespace: str) -> tuple[str, bool]:
-    print(
-        f"Step: {get_utctimestring()}: Creating folder for namespace '{namespace}'"
-    )
+
+def create_folder_diagnostics_namespace(base_folder: str, namespace: str) -> Tuple[str, bool]:
+    print(f"Step: {get_utctimestring()}: Creating folder for namespace '{namespace}'")
     namespace_folder_name = os.path.join(base_folder, namespace)
     try:
         os.makedirs(namespace_folder_name, exist_ok=True)
@@ -466,10 +389,9 @@ def create_folder_diagnostics_namespace(base_folder: str, namespace: str) -> tup
 
     return namespace_folder_name, True
 
+
 def collect_namespace_configmaps(api_instance, namespace_folder_name: str, namespace: str) -> bool:
-    print(
-        f"Step: {get_utctimestring()}: Collecting configurations for namespace '{namespace}'"
-    )
+    print(f"Step: {get_utctimestring()}: Collecting configurations for namespace '{namespace}'")
 
     namespace_configuration_folder_name = os.path.join(namespace_folder_name, "configuration")
     try:
@@ -494,10 +416,9 @@ def collect_namespace_configmaps(api_instance, namespace_folder_name: str, names
 
     return True
 
+
 def walk_through_pods(api_instance: CoreV1Api, folder_namespace: str, namespace: str) -> bool:
-    print(
-        f"Step: {get_utctimestring()}: Collecting information from pods in namespace '{namespace}'"
-    )
+    print(f"Step: {get_utctimestring()}: Collecting information from pods in namespace '{namespace}'")
 
     try:
         pods = api_instance.list_namespaced_pod(namespace)
@@ -524,7 +445,7 @@ def walk_through_pods(api_instance: CoreV1Api, folder_namespace: str, namespace:
         except Exception as e:
             logger.error(f"Failed to create containers folder for pod '{pod_name}': {e}")
             return False
-        
+
         otel_containers = ["mdm", "mdsd", "msi-adapter", "otel-collector"]
 
         if pod.spec is not None:
@@ -532,31 +453,40 @@ def walk_through_pods(api_instance: CoreV1Api, folder_namespace: str, namespace:
                 for init_container in pod.spec.init_containers:
                     if init_container.name in otel_containers:
                         continue
-                    init_container_logs_status = collect_container_logs(api_instance, containers_folder_name, namespace, pod_name, init_container)
+                    init_container_logs_status = collect_container_logs(
+                        api_instance, containers_folder_name, namespace, pod_name, init_container)
                     if not init_container_logs_status:
-                        logger.error(f"Failed to collect logs from init container '{init_container.name}' in pod '{pod_name}'")
+                        logger.error(
+                            f"Failed to collect logs from init container '{init_container.name}' in pod '{pod_name}'")
             if pod.spec.containers is not None:
                 for container in pod.spec.containers:
                     if container.name in otel_containers:
                         continue
-                    container_logs_status = collect_container_logs(api_instance, containers_folder_name, namespace, pod_name, container)
+                    container_logs_status = collect_container_logs(
+                        api_instance, containers_folder_name, namespace, pod_name, container)
                     if not container_logs_status:
-                        logger.error(f"Failed to collect logs from container '{container.name}' in pod '{pod_name}'")
+                        logger.error(
+                            f"Failed to collect logs from container '{container.name}' in pod '{pod_name}'")
                         return False
 
     return True
 
-def collect_container_logs(api_instance: CoreV1Api, containers_folder_name: str, namespace: str, pod_name: str, container) -> bool:
-    print(
-        f"Step: {get_utctimestring()}: Collecting logs from container '{container.name}' in pod '{pod_name}'"
-    )
+
+def collect_container_logs(
+    api_instance: CoreV1Api,
+    containers_folder_name: str,
+    namespace: str,
+    pod_name: str,
+    container
+) -> bool:
+    print(f"Step: {get_utctimestring()}: Collecting logs from container '{container.name}' in pod '{pod_name}'")
 
     container_name = container.name
 
     container_log = api_instance.read_namespaced_pod_log(
-                        name=pod_name, 
-                        container=container_name, 
-                        namespace=namespace)
+        name=pod_name,
+        container=container_name,
+        namespace=namespace)
 
     container_logs_file_name = os.path.join(containers_folder_name, f"{container_name}_logs.txt")
 
@@ -568,6 +498,7 @@ def collect_container_logs(api_instance: CoreV1Api, containers_folder_name: str,
         return True
 
     return True
+
 
 def convert_to_pod_dict(pod) -> dict:
     if pod.metadata is None or pod.status is None:
@@ -582,16 +513,20 @@ def convert_to_pod_dict(pod) -> dict:
         "status": pod_status,
     }
 
-def collect_pod_information(api_instance: CoreV1Api, pods_folder_name: str, namespace: str, pod) -> bool:
+
+def collect_pod_information(
+    api_instance: CoreV1Api,
+    pods_folder_name: str,
+    namespace: str,
+    pod
+) -> bool:
     pod_metadata = convert_to_pod_dict(pod)
     if pod_metadata is None:
         logger.error(f"Failed to collect metadata for pod in namespace '{namespace}'")
         return False
 
     pod_name = pod_metadata["name"]
-    print(
-        f"Step: {get_utctimestring()}: Collecting information for pod '{pod_name}' in namespace '{namespace}'"
-    )
+    print(f"Step: {get_utctimestring()}: Collecting information for pod '{pod_name}' in namespace '{namespace}'")
 
     pod_folder_name = os.path.join(pods_folder_name, pod_name)
     try:
@@ -602,10 +537,12 @@ def collect_pod_information(api_instance: CoreV1Api, pods_folder_name: str, name
 
     return save_pod_metadata(pod_folder_name, pod_metadata)
 
+
 def save_pod_metadata(pod_folder_name: str, pod: dict) -> bool:
     metadata_file = os.path.join(pod_folder_name, "metadata.json")
 
     return save_as_json(metadata_file, pod)
+
 
 def save_as_json(destination: str, data) -> bool:
     try:
@@ -616,10 +553,10 @@ def save_as_json(destination: str, data) -> bool:
         logger.error(f"Failed to save data to {destination}: {e}")
         return False
 
-def create_folder_diagnosticlogs(folder_name: str, base_folder_name: str) -> tuple[str, bool]:
-    print(
-        f"Step: {get_utctimestring()}: Creating folder for extension Diagnostic Checks Logs"
-    )
+
+def create_folder_diagnosticlogs(folder_name: str, base_folder_name: str) -> Tuple[str, bool]:
+    print(f"Step: {get_utctimestring()}: Creating folder for extension Diagnostic Checks Logs")
+    filepath_with_timestamp = None
     try:
         # Fetching path to user directory to create the arc diagnostic folder
         home_dir = os.path.expanduser("~")
@@ -643,35 +580,19 @@ def create_folder_diagnosticlogs(folder_name: str, base_folder_name: str) -> tup
         if "[Errno 28]" in str(e):
             if filepath_with_timestamp:
                 shutil.rmtree(filepath_with_timestamp, ignore_errors=False)
-            telemetry.set_exception(
-                exception=e,
-                fault_type=consts.No_Storage_Space_Available_Fault_Type,
-                summary="No space left on device",
-            )
             return "", False
         logger.exception(
-            "An exception has occurred while creating the diagnostic logs folder in "
-            "your local machine."
-        )
-        telemetry.set_exception(
-            exception=e,
-            fault_type=consts.Diagnostics_Folder_Creation_Failed_Fault_Type,
-            summary="Error while trying to create diagnostic logs folder",
+            f"An exception has occurred while creating the diagnostic logs folder in your local machine: {e}"
         )
         return "", False
 
     # To handle any exception that may occur during the execution
     except Exception as e:
         logger.exception(
-            "An exception has occurred while creating the diagnostic logs folder in "
-            "your local machine."
-        )
-        telemetry.set_exception(
-            exception=e,
-            fault_type=consts.Diagnostics_Folder_Creation_Failed_Fault_Type,
-            summary="Error while trying to create diagnostic logs folder",
+            f"An exception has occurred while creating the diagnostic logs folder in your local machine: {e}"
         )
         return "", False
+
 
 def get_mcr_path(active_directory_endpoint: str) -> str:
     active_directory_array = active_directory_endpoint.split(".")
@@ -697,6 +618,7 @@ def get_mcr_path(active_directory_endpoint: str) -> str:
 
     mcr_url = f"mcr.microsoft.{mcr_postfix}"
     return mcr_url
+
 
 def check_namespace_exists(api_instance, namespace: str) -> bool:
     print(f"Step: {get_utctimestring()}: Checking if namespace '{namespace}' exists...")

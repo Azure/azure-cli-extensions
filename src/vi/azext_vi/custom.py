@@ -7,9 +7,6 @@ from knack.util import CLIError
 from .k8s_utils import troubleshoot_k8s_extension
 from .cameras_utils import format_cameras
 
-def my_vi_command(client):
-    return {"message": "This is my custom VI command!"}
-
 
 def show_vi_extension(client, resource_group_name, connected_cluster):
     extension = client.extensions.get_vi_extension(
