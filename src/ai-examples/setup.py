@@ -15,7 +15,7 @@ except ImportError:
     logger.warn("Wheel is not available, disabling bdist_wheel hook")
 
 # HISTORY.rst entry.
-VERSION = '0.2.5'
+VERSION = '0.2.6'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -34,7 +34,9 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = []
+DEPENDENCIES = [
+    'packaging',
+]
 
 with open('README.md', 'r', encoding='utf-8') as f:
     README = f.read()
