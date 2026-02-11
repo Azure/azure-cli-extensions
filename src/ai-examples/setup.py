@@ -34,9 +34,7 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = [
-    'packaging',
-]
+DEPENDENCIES = []
 
 with open('README.md', 'r', encoding='utf-8') as f:
     README = f.read()
