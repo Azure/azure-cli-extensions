@@ -7,13 +7,45 @@
 EXTENSION_NAME = "vi"
 EXTENSION_PACKAGE_NAME = "azext_vi"
 PROVIDER_NAMESPACE = "Microsoft.KubernetesConfiguration"
+REGISTERED = "Registered"
+
 CONNECTED_CLUSTER_RP = "Microsoft.Kubernetes"
 CONNECTED_CLUSTER_TYPE = "connectedclusters"
 CONNECTED_CLUSTER_API_VERSION = "2021-10-01"
+
+MANAGED_CLUSTER_RP = "Microsoft.ContainerService"
+MANAGED_CLUSTER_TYPE = "managedclusters"
 MANAGED_CLUSTER_API_VERSION = "2022-11-01"
+
+APPLIANCE_RP = "Microsoft.ResourceConnector"
+APPLIANCE_TYPE = "appliances"
 APPLIANCE_API_VERSION = "2021-10-31-preview"
+
+HYBRIDCONTAINERSERVICE_RP = "microsoft.hybridcontainerservice"
 HYBRIDCONTAINERSERVICE_API_VERSION = "2022-05-01-preview"
+
 EXTENSION_TYPE_API_VERSION = "2023-05-01-preview"
+
+# Fault type constants for error categorization.
+# Used to classify different types of faults encountered during diagnostics.
+LOAD_KUBECONFIG_FAULT_TYPE = "kubeconfig-load-error"    # Error loading kubeconfig file.
+
+# Warning messages for diagnostic failures.
+KUBECONFIG_LOAD_FAILED_WARNING = """Unable to load the kubeconfig file.
+Please check
+https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/diagnose-connection-issues#is-kubeconfig-pointing-to-the-right-cluster"""
+
+EXTRACT_HELMEXE_FAULT_TYPE = "helm-client-extract-error"    # Error extracting Helm client executable.
+
 HELM_VERSION = "v3.12.2"
+
+DOWNLOAD_AND_INSTALL_KUBECTL_FAULT_TYPE = "Failed to download and install kubectl"  # Error downloading/installing kubectl.
+
+KUBEAPI_CONNECTIVITY_FAILED_WARNING = """Unable to verify connectivity to the Kubernetes cluster.
+Please check https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/diagnose-connection-issues"""
+
+KUBERNETES_CONNECTIVITY_FAULT_TYPE = "kubernetes-cluster-connection-error"  # Error connecting to Kubernetes cluster.
+
+# Diagnostic log file path constant.
+# Used to specify the name of the file where extension diagnostic logs are stored.
 ARC_EXT_DIAGNOSTIC_LOGS = "arc_ext_diagnostic_logs"
-LOAD_KUBECONFIG_FAULT_TYPE = "kubeconfig-load-error" 

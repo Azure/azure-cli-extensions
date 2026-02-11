@@ -7,20 +7,21 @@
 from knack.help_files import helps  # pylint: disable=unused-import
 from . import consts
 
+
 helps[f'{consts.EXTENSION_NAME}'] = """
     type: group
     short-summary: Commands to manage Video Indexer for Cloud and Edge.
 """
 
-helps[f'{consts.EXTENSION_NAME} extension'] = f"""
+helps[f'{consts.EXTENSION_NAME} extension'] = """
     type: group
-    short-summary: Show Video Indexer Extension details.
+    short-summary: Commands to manage Video Indexer Extension.
 """
 
 helps[f'{consts.EXTENSION_NAME} extension show'] = f"""
     type: command
     short-summary: Show Video Indexer Extension details.
-    long-summary: Show Video Indexer Extension details.
+    long-summary: Show Video Indexer Extension details including its properties.
     examples:
       - name: Show Video Indexer Extension details
         text: |-
@@ -30,20 +31,27 @@ helps[f'{consts.EXTENSION_NAME} extension show'] = f"""
 
 helps[f'{consts.EXTENSION_NAME} extension troubleshoot'] = f"""
     type: command
-    short-summary: List Vis.
+    short-summary: Perform diagnostic checks on a Video Indexer Extension.
+    long-summary: This command is used to troubleshoot a Video Indexer Extension. It \
+collects logs and other information that can be used to diagnose issues with the extension.
+    examples:
+      - name: Troubleshoot a Video Indexer Extension
+        text: |-
+          az {consts.EXTENSION_NAME} extension troubleshoot --resource-group my-resource-group \
+--connected-cluster mycluster
 """
 
-helps[f'{consts.EXTENSION_NAME} camera'] = f"""
+helps[f'{consts.EXTENSION_NAME} camera'] = """
     type: group
-    short-summary: Create a Kubernetes
+    short-summary: Commands to manage Video Indexer cameras.
 """
 
 helps[f'{consts.EXTENSION_NAME} camera list'] = f"""
     type: command
-    short-summary: Create a Kubernetes Cluster
-    long-summary: Show Video Indexer Extension details.
+    short-summary: List all cameras associated with a Video Indexer Extension.
+    long-summary: List all cameras associated with a Video Indexer Extension on a connected cluster.
     examples:
-      - name: Show Video Indexer Extension details
+      - name: List all cameras for a Video Indexer Extension
         text: |-
           az {consts.EXTENSION_NAME} camera list --resource-group my-resource-group \
 --connected-cluster mycluster
