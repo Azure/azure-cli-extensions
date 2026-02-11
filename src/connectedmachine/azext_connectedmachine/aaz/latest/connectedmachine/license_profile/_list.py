@@ -22,9 +22,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-11-10-preview",
+        "version": "2025-02-19-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/licenseprofiles", "2024-11-10-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/licenseprofiles", "2025-02-19-preview"],
         ]
     }
 
@@ -50,7 +50,7 @@ class List(AAZCommand):
             help="The name of the machine.",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-_\.]{1,54}$",
+                pattern="^[a-zA-Z0-9-_\\.]{1,54}$",
                 max_length=54,
                 min_length=1,
             ),
@@ -126,7 +126,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-11-10-preview",
+                    "api-version", "2025-02-19-preview",
                     required=True,
                 ),
             }
@@ -375,17 +375,18 @@ class _ListHelper:
         additional_info.Element = AAZObjectType()
 
         _element = _schema_error_detail_read.additional_info.Element
-        _element.info = AAZObjectType(
+        _element.info = AAZDictType(
             flags={"read_only": True},
         )
         _element.type = AAZStrType(
             flags={"read_only": True},
         )
 
+        info = _schema_error_detail_read.additional_info.Element.info
+        info.Element = AAZAnyType()
+
         details = _schema_error_detail_read.details
-        details.Element = AAZObjectType(
-            flags={"read_only": True},
-        )
+        details.Element = AAZObjectType()
         cls._build_schema_error_detail_read(details.Element)
 
         _schema.additional_info = cls._schema_error_detail_read.additional_info

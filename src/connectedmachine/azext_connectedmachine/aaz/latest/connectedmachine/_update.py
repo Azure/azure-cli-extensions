@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-11-10-preview",
+        "version": "2025-02-19-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}", "2024-11-10-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}", "2025-02-19-preview"],
         ]
     }
 
@@ -50,7 +50,7 @@ class Update(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-_\.]{1,54}$",
+                pattern="^[a-zA-Z0-9-_\\.]{1,54}$",
                 max_length=54,
                 min_length=1,
             ),
@@ -97,6 +97,11 @@ class Update(AAZCommand):
             arg_group="Properties",
             help="The info of the machine w.r.t Agent Upgrade",
         )
+        _args_schema.identity_key_store = AAZStrArg(
+            options=["--identity-key-store"],
+            arg_group="Properties",
+            help="Identity key store type of the machine",
+        )
         _args_schema.location_data = AAZObjectArg(
             options=["--location-data"],
             arg_group="Properties",
@@ -116,6 +121,11 @@ class Update(AAZCommand):
             options=["--private-link-scope-id", "--private-link-scope-resource-id"],
             arg_group="Properties",
             help="The resource id of the private link scope this machine is assigned to, if any.",
+        )
+        _args_schema.tpm_ek_certificate = AAZStrArg(
+            options=["--tpm-ek-certificate"],
+            arg_group="Properties",
+            help="Endorsement Key Certificate of the Trusted Platform Module (TPM) that the client provides to be used during initial resource onboarding.",
         )
 
         agent_upgrade = cls._args_schema.agent_upgrade
@@ -275,7 +285,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-11-10-preview",
+                    "api-version", "2025-02-19-preview",
                     required=True,
                 ),
             }
@@ -312,10 +322,12 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("agentUpgrade", AAZObjectType, ".agent_upgrade")
+                properties.set_prop("identityKeyStore", AAZStrType, ".identity_key_store")
                 properties.set_prop("locationData", AAZObjectType, ".location_data")
                 properties.set_prop("osProfile", AAZObjectType, ".os_profile")
                 properties.set_prop("parentClusterResourceId", AAZStrType, ".parent_cluster_resource_id")
                 properties.set_prop("privateLinkScopeResourceId", AAZStrType, ".private_link_scope_resource_id")
+                properties.set_prop("tpmEkCertificate", AAZStrType, ".tpm_ek_certificate")
 
             agent_upgrade = _builder.get(".properties.agentUpgrade")
             if agent_upgrade is not None:
@@ -456,6 +468,12 @@ class Update(AAZCommand):
                 serialized_name="hardwareProfile",
                 flags={"read_only": True},
             )
+            properties.hardware_resource_id = AAZStrType(
+                serialized_name="hardwareResourceId",
+            )
+            properties.identity_key_store = AAZStrType(
+                serialized_name="identityKeyStore",
+            )
             properties.last_status_change = AAZStrType(
                 serialized_name="lastStatusChange",
                 flags={"read_only": True},
@@ -518,6 +536,9 @@ class Update(AAZCommand):
             properties.storage_profile = AAZObjectType(
                 serialized_name="storageProfile",
                 flags={"read_only": True},
+            )
+            properties.tpm_ek_certificate = AAZStrType(
+                serialized_name="tpmEkCertificate",
             )
             properties.vm_id = AAZStrType(
                 serialized_name="vmId",
@@ -611,9 +632,7 @@ class Update(AAZCommand):
             detected_properties.Element = AAZStrType()
 
             error_details = cls._schema_on_200.properties.error_details
-            error_details.Element = AAZObjectType(
-                flags={"read_only": True},
-            )
+            error_details.Element = AAZObjectType()
             _UpdateHelper._build_schema_error_detail_read(error_details.Element)
 
             extensions = cls._schema_on_200.properties.extensions
@@ -997,7 +1016,7 @@ class Update(AAZCommand):
                 serialized_name="instanceView",
             )
             _UpdateHelper._build_schema_machine_extension_instance_view_read(properties.instance_view)
-            properties.protected_settings = AAZFreeFormDictType(
+            properties.protected_settings = AAZDictType(
                 serialized_name="protectedSettings",
             )
             properties.provisioning_state = AAZStrType(
@@ -1005,11 +1024,17 @@ class Update(AAZCommand):
                 flags={"read_only": True},
             )
             properties.publisher = AAZStrType()
-            properties.settings = AAZFreeFormDictType()
+            properties.settings = AAZDictType()
             properties.type = AAZStrType()
             properties.type_handler_version = AAZStrType(
                 serialized_name="typeHandlerVersion",
             )
+
+            protected_settings = cls._schema_on_200.resources.Element.properties.protected_settings
+            protected_settings.Element = AAZAnyType()
+
+            settings = cls._schema_on_200.resources.Element.properties.settings
+            settings.Element = AAZAnyType()
 
             tags = cls._schema_on_200.resources.Element.tags
             tags.Element = AAZStrType()
@@ -1091,17 +1116,18 @@ class _UpdateHelper:
         additional_info.Element = AAZObjectType()
 
         _element = _schema_error_detail_read.additional_info.Element
-        _element.info = AAZObjectType(
+        _element.info = AAZDictType(
             flags={"read_only": True},
         )
         _element.type = AAZStrType(
             flags={"read_only": True},
         )
 
+        info = _schema_error_detail_read.additional_info.Element.info
+        info.Element = AAZAnyType()
+
         details = _schema_error_detail_read.details
-        details.Element = AAZObjectType(
-            flags={"read_only": True},
-        )
+        details.Element = AAZObjectType()
         cls._build_schema_error_detail_read(details.Element)
 
         _schema.additional_info = cls._schema_error_detail_read.additional_info

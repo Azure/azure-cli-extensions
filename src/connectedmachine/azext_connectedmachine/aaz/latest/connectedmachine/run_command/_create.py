@@ -24,9 +24,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-11-10-preview",
+        "version": "2025-02-19-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/runcommands/{}", "2024-11-10-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/runcommands/{}", "2025-02-19-preview"],
         ]
     }
 
@@ -52,7 +52,7 @@ class Create(AAZCommand):
             help="The name of the hybrid machine.",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="[a-zA-Z0-9-_\.]+",
+                pattern="[a-zA-Z0-9-_\\.]+",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -63,7 +63,7 @@ class Create(AAZCommand):
             help="The name of the run command.",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="[a-zA-Z0-9-_\.]+",
+                pattern="[a-zA-Z0-9-_\\.]+",
             ),
         )
 
@@ -313,7 +313,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-11-10-preview",
+                    "api-version", "2025-02-19-preview",
                     required=True,
                 ),
             }

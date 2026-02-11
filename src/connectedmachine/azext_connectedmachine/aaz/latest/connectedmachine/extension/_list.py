@@ -22,9 +22,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-11-10-preview",
+        "version": "2025-02-19-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/extensions", "2024-11-10-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/extensions", "2025-02-19-preview"],
         ]
     }
 
@@ -50,7 +50,7 @@ class List(AAZCommand):
             help="The name of the machine containing the extension.",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-_\.]{1,54}$",
+                pattern="^[a-zA-Z0-9-_\\.]{1,54}$",
                 max_length=54,
                 min_length=1,
             ),
@@ -133,7 +133,7 @@ class List(AAZCommand):
                     "$expand", self.ctx.args.expand,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2024-11-10-preview",
+                    "api-version", "2025-02-19-preview",
                     required=True,
                 ),
             }
@@ -207,7 +207,7 @@ class List(AAZCommand):
             properties.instance_view = AAZObjectType(
                 serialized_name="instanceView",
             )
-            properties.protected_settings = AAZFreeFormDictType(
+            properties.protected_settings = AAZDictType(
                 serialized_name="protectedSettings",
             )
             properties.provisioning_state = AAZStrType(
@@ -215,7 +215,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             properties.publisher = AAZStrType()
-            properties.settings = AAZFreeFormDictType()
+            properties.settings = AAZDictType()
             properties.type = AAZStrType()
             properties.type_handler_version = AAZStrType(
                 serialized_name="typeHandlerVersion",
@@ -237,6 +237,12 @@ class List(AAZCommand):
             status.level = AAZStrType()
             status.message = AAZStrType()
             status.time = AAZStrType()
+
+            protected_settings = cls._schema_on_200.value.Element.properties.protected_settings
+            protected_settings.Element = AAZAnyType()
+
+            settings = cls._schema_on_200.value.Element.properties.settings
+            settings.Element = AAZAnyType()
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
