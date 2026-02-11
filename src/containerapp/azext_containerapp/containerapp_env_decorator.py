@@ -139,8 +139,9 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
             # Check if existing environment is ConsumptionOnly (no workload profiles)
             if existing_environment:
                 if safe_get(existing_environment, "properties", "workloadProfiles") is None:
-                    # User is trying to enable workload profiles on a ConsumptionOnly environment
-                    raise ValidationError(f"Existing environment {self.get_argument_name()} cannot enable workload profiles. If you want to use Consumption and Dedicated environment, please create a new one.")
+                    if self.cmd.cli_ctx.data.get('safe_params') and ('-w' in self.cmd.cli_ctx.data.get('safe_params') or '--enable-workload-profiles' in self.cmd.cli_ctx.data.get('safe_params')):
+                        # User is trying to enable workload profiles on a ConsumptionOnly environment
+                        raise ValidationError(f"Existing environment {self.get_argument_name()} cannot enable workload profiles. If you want to use Consumption and Dedicated environment, please create a new one.")
                 return
 
             workload_profiles = get_default_workload_profiles(self.cmd, self.get_argument_location())
@@ -174,7 +175,6 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
                     # User is trying to enable workload profiles on a ConsumptionOnly environment
                     raise ValidationError(f"Existing environment {self.get_argument_name()} cannot be a Consumption only environment. If you want to use Consumption only environment, please create a new one.")
                 return
-            environment_mode = "ConsumptionOnly" if environment_mode is None else environment_mode
 
         if environment_mode:
             self.managed_env_def["properties"]["environmentMode"] = environment_mode
