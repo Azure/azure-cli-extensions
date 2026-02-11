@@ -7,7 +7,7 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from typing import Any, Callable, Dict, IO, Iterable, Optional, TypeVar, Union, cast, overload
+from typing import Any, Callable, Dict, Optional, TypeVar
 from msrest import Serializer
 from ..models import ExtensionAccessTokenRequest
 
@@ -25,7 +25,6 @@ from azure.core.pipeline.transport import HttpResponse
 from azure.core.rest import HttpRequest
 from azure.core.utils import case_insensitive_dict
 from azure.mgmt.core.exceptions import ARMErrorFormat
-from .. import models as _models
 
 T = TypeVar("T")
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
@@ -139,8 +138,6 @@ def get_extension_access_token_async(
         return response.json().get("accessToken")
 
 class ExtensionOperations:
-    """
-    """
     def __init__(self, *args, **kwargs):
         input_args = list(args)
         self._client = input_args.pop(0) if input_args else kwargs.pop("client")
@@ -149,8 +146,6 @@ class ExtensionOperations:
         self._deserialize = input_args.pop(0) if input_args else kwargs.pop("deserializer")
 
     def get_vi_extension(self, resource_group: str, connected_cluster: str, **kwargs: Any):
-        """
-        """
         error_map = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
@@ -196,8 +191,6 @@ class ExtensionOperations:
         return extension
 
     def troubleshoot_vi_extension(self, resource_group: str, connected_cluster: str, **kwargs: Any):
-        """
-        """
         error_map = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,

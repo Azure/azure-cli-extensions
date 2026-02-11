@@ -7,10 +7,8 @@
 # --------------------------------------------------------------------------
 
 
-from ._models_py3 import Extension
 from ._models_py3 import ExtensionAccessTokenRequest
 
 __all__ = [
-    'Extension',
     "ExtensionAccessTokenRequest"
 ]

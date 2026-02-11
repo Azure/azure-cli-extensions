@@ -19,17 +19,6 @@ def show_vi_extension(client, resource_group_name, connected_cluster):
     return extension
 
 
-def update_vi_extension(client, resource_group_name, connected_cluster):
-    extension = client.extensions.get_vi_extension(
-        resource_group=resource_group_name,
-        connected_cluster=connected_cluster)
-    if not extension:
-        raise CLIError(
-            f'VI Extension not found in connected cluster "{connected_cluster}" '
-            f'under resource group "{resource_group_name}".')
-    return extension
-
-
 def troubleshoot_vi_extension(cmd, client, resource_group_name, connected_cluster):
     extension = client.extensions.get_vi_extension(
         resource_group=resource_group_name,
@@ -61,13 +50,3 @@ def list_cameras(client, resource_group_name, connected_cluster):
     cameras = response.get('results')
     format_cameras(cameras)
     return cameras
-
-
-def list_vi(cmd, resource_group_name=None):
-    raise CLIError('TODO: Implement `vi list`')
-
-
-def update_vi(cmd, instance, tags=None):
-    with cmd.update_context(instance) as c:
-        c.set_param('tags', tags)
-    return instance
