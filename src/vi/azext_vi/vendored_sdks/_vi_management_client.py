@@ -73,12 +73,10 @@ class VIManagementClient:  # pylint: disable=client-accepts-api-version-keyword,
 
         self.cameras = CameraOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        
+
         self.extensions = ExtensionOperations(
             self._client, self._config, self._serialize, self._deserialize)
- 
-    def bla(self):
-        pass
+
 
     def _send_request(self, request: HttpRequest, *, stream: bool = False, **kwargs: Any) -> HttpResponse:
         """Runs the network request through the client's chained policies.

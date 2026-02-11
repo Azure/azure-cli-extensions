@@ -48,12 +48,7 @@ class CameraOperations:
 
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-        api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2021-05-01-preview"))
-        cls = kwargs.pop("cls", None)
-
-        if cls:
-            return cls(pipeline_response, deserialized, {})  # type: ignore
+        verify_ssl = kwargs.pop("verify_ssl", False)
 
         extension_id = extension.get('id')
         configuration = extension.get('properties').get('configurationSettings')
@@ -64,7 +59,7 @@ class CameraOperations:
         parts = account_resource_id.strip("/").split("/")
         account_rg = parts[3]
         account_name = parts[-1]
-        
+
         token = get_extension_access_token_async(
             client=self._client,
             serializer=self._serialize,
@@ -77,5 +72,5 @@ class CameraOperations:
             params=_params)
 
         url = f"{extension_url}/cameras"
-        response = do_request("GET", url=url, token=token)
+        response = do_request("GET", url=url, token=token, verify_ssl=verify_ssl)
         return response

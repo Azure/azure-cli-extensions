@@ -4,17 +4,18 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------
 import requests
-
+from typing import Dict, List
 
 def do_request(
     method: str,
     url: str,
     token: str,
-    json: dict | None = None,
+    verify_ssl: bool = False,
+    json: Dict | None = None,
     return_bytes: bool = False,
-) -> dict | list | str | bytes:
+) -> Dict | List | str | bytes:
     """Send an authorized HTTP request and return the response body."""
-    
+
     headers = {"Authorization": f"Bearer {token}"}
     request = requests.Request(method=method, url=url, headers=headers, json=json)
 
@@ -23,8 +24,7 @@ def do_request(
             response = session.send(
                 session.prepare_request(request),
                 timeout=120,
-                # add ignore SSL verification if needed
-                verify=False
+                verify=verify_ssl
             )
             response.raise_for_status()
 
@@ -34,7 +34,7 @@ def do_request(
             content_type = response.headers.get("Content-Type", "")
             if "application/json" in content_type:
                 return response.json()
-            
+
             return response.text
 
     except requests.RequestException:

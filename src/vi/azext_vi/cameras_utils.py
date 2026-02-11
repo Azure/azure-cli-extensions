@@ -9,7 +9,7 @@ def format_cameras(cameras):
     return cameras
 
 
-def json_to_table(data: list[dict], title: str = "Cameras"):
+def json_to_table(data, title = "Cameras"):
     """Convert a list of dicts to a Rich table"""
     if not data:
         return Table(title="No Results")

@@ -34,8 +34,8 @@ _SERIALIZER.client_side_validation = False
 
 
 def build_get_extensions_request(
-    resource_group: str, 
-    subscription_id: str, 
+    resource_group: str,
+    subscription_id: str,
     connected_cluster: str,
     **kwargs: Any
 ) -> HttpRequest:
@@ -65,7 +65,7 @@ def build_get_extensions_request(
 
 
 def build_get_extension_token_request(
-    subscription_id: str, 
+    subscription_id: str,
     accountRg: str,
     accountName: str,
     **kwargs: Any
@@ -76,7 +76,7 @@ def build_get_extension_token_request(
     api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-06-02-preview"))
     accept = _headers.pop("Accept", "application/json")
     content_type = _headers.pop("content_type", "application/json")
-    
+
     _url = kwargs.pop(
         "template_url",
         "/subscriptions/{subscriptionId}/resourceGroups/{accountRg}/providers/Microsoft.VideoIndexer/accounts/{accountName}/generateExtensionAccessToken",
@@ -98,7 +98,7 @@ def build_get_extension_token_request(
 def get_extension_access_token_async(
         client: Any,
         serializer: Serializer,
-        subscription_id: str,                 
+        subscription_id: str,
         extension_id: str,
         account_rg: str,
         account_name: str,
@@ -106,14 +106,14 @@ def get_extension_access_token_async(
         headers=None,
         params=None,
         **kwargs: Any):
-        
+
         tokenRequest = ExtensionAccessTokenRequest()
         tokenRequest.permissionType = "Contributor"
         tokenRequest.scope = "Account"
         tokenRequest.extensionId = extension_id
-        
+
         body_content = serializer.body(tokenRequest, "ExtensionAccessTokenRequest")
-        
+
         _request = build_get_extension_token_request(
             subscription_id=subscription_id,
             accountRg=account_rg,
@@ -130,11 +130,10 @@ def get_extension_access_token_async(
         )
 
         response = pipeline_response.http_response
-        response = pipeline_response.http_response
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
-        
+
         return response.json().get("accessToken")
 
 class ExtensionOperations:
@@ -156,9 +155,7 @@ class ExtensionOperations:
 
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2021-05-01-preview"))
-        cls = kwargs.pop("cls", None)
 
         _request = build_get_extensions_request(
             subscription_id=self._config.subscription_id,
@@ -179,7 +176,7 @@ class ExtensionOperations:
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
-    
+
         extensions =  response.json().get("value")
         extension = None
         if extensions:
@@ -187,45 +184,5 @@ class ExtensionOperations:
                 if ex.get("properties", {}).get("extensionType") == "microsoft.videoindexer":
                     extension = ex
                     break
-                
-        return extension
 
-    def troubleshoot_vi_extension(self, resource_group: str, connected_cluster: str, **kwargs: Any):
-        error_map = {
-            401: ClientAuthenticationError,
-            404: ResourceNotFoundError,
-            409: ResourceExistsError,
-            304: ResourceNotModifiedError,
-        }
-        error_map.update(kwargs.pop("error_map", {}) or {})
-
-        _headers = kwargs.pop("headers", {}) or {}
-        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-        api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2021-05-01-preview"))
-        cls = kwargs.pop("cls", None)
-
-        _request = build_get_extensions_request(
-            subscription_id=self._config.subscription_id,
-            resource_group=resource_group,
-            connected_cluster=connected_cluster,
-            api_version=api_version,
-            headers=_headers,
-            params=_params,
-        )
-        _request.url = self._client.format_url(_request.url)
-
-        _stream = False
-        pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
-        )
-
-        response = pipeline_response.http_response
-        extensions =  response.json().get("value")
-        extension = None
-        for ex in extensions:
-            if ex.get("properties", {}).get("extensionType") == "microsoft.videoindexer":
-                extension = ex
-                break
-                
         return extension

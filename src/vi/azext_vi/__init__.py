@@ -5,7 +5,6 @@
 
 from azure.cli.core import AzCommandsLoader
 from . import consts
-from typing import Union
 
 from ._help import helps  # pylint: disable=unused-import
 
@@ -23,10 +22,10 @@ class ViCommandsLoader(AzCommandsLoader):
         super().__init__(cli_ctx=cli_ctx,
                          custom_command_type=vi_custom)
 
-    def load_command_table(self, args: Union[list[str], None]) -> dict[str, CLICommand]:
+    def load_command_table(self, args):
         from .commands import load_command_table
         load_command_table(self, args)
-        command_table: dict[str, CLICommand] = self.command_table
+        command_table = self.command_table
         return command_table
 
     def load_arguments(self, command: CLICommand):
