@@ -11,6 +11,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* `az aks create/update`: Add `--enable-azure-monitor-logs` support to container network logs validation.
+
+19.0.0b22
++++++++
+* `az aks create/update`: Automatically enable `--enable-high-log-scale-mode` when `--enable-container-network-logs` is specified. Raises an error if user explicitly disables HLSM while enabling CNL.
 
 19.0.0b21
 +++++++
