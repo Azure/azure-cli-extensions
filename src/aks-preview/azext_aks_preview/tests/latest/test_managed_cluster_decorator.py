@@ -12390,6 +12390,51 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         with self.assertRaises(RequiredArgumentMissingError):
             dec_10.update_monitoring_profile_flow_logs(mc_10)
 
+        # Case 11: enable_acns, enable_azure_monitor_logs, enable container_network_logs for ClusterCreate context
+        # Tests that --enable-azure-monitor-logs is recognized as enabling monitoring addon
+        dec_11 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "name": "test_name",
+                "resource_group_name": "test_rg_name",
+                "location": "test_location",
+                "vnet_subnet_id": "test_vnet_subnet_id",
+                "enable_azure_monitor_logs": True,
+                "workspace_resource_id": "test_workspace_resource_id",
+                "enable_msi_auth_for_monitoring": True,
+                "enable_acns": True,
+                "enable_container_network_logs": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_11 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                network_plugin_mode="overlay",
+                network_dataplane="cilium",
+                pod_cidr="100.64.0.0/16",
+                service_cidr="192.168.0.0/16",
+            ),
+        )
+        dec_11.context.set_intermediate("subscription_id", "test_subscription_id")
+        dec_11.context.attach_mc(mc_11)
+        external_functions = dec_11.context.external_functions
+        with patch.object(external_functions, 'ensure_container_insights_for_monitoring', return_value=None):
+            dec_mc_11 = dec_11.set_up_addon_profiles(mc_11)
+        ground_truth_mc_11 = {
+            CONST_MONITORING_ADDON_NAME: self.models.ManagedClusterAddonProfile(
+                enabled=True,
+                config={
+                    CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: "/test_workspace_resource_id",
+                    CONST_MONITORING_USING_AAD_MSI_AUTH: "true",
+                    "enableRetinaNetworkFlags": "True",
+                },
+            ),
+        }
+        self.assertEqual(dec_mc_11.addon_profiles["omsagent"], ground_truth_mc_11["omsagent"])
+
     def test_update_node_provisioning_profile(self):
         dec_0 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,

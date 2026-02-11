@@ -949,7 +949,10 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             )
             # Check for monitoring addon - either being enabled via raw params or already enabled on mc
             enable_addons = self.raw_param.get("enable_addons") or ""
-            monitoring_being_enabled = "monitoring" in enable_addons
+            monitoring_being_enabled = (
+                "monitoring" in enable_addons or
+                bool(self.raw_param.get("enable_azure_monitor_logs"))
+            )
             monitoring_already_enabled = (
                 mc.addon_profiles and
                 mc.addon_profiles.get("omsagent") and
