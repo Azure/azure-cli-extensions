@@ -3,6 +3,11 @@
 Release History
 ===============
 
+2.0.2
+++++++
+* `az network firewall policy intrusion-detection add`: Update IDPS profile handling to use the latest supported profile values (`Off`, `Emerging`, `Core`, `Extended`).
+* `az network firewall policy draft intrusion-detection add`: Update IDPS profile handling to use the latest supported profile values (`Off`, `Emerging`, `Core`, `Extended`).
+
 2.0.1
 ++++++
 * Remove `__import__('pkg_resources').declare_namespace(__name__)` to fix the namespace package issue.
