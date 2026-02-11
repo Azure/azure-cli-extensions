@@ -72,8 +72,8 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
                 raise RequiredArgumentMissingError("Cannot use --infrastructure-resource-group/-i without "
                                                    "--infrastructure-subnet-resource-id/-s")
             if not self._get_effective_workload_profiles():
-                raise RequiredArgumentMissingError("Cannot use --infrastructure-resource-group/-i without "
-                                                   "--environment-mode WorkloadProfiles")
+                raise RequiredArgumentMissingError("Cannot use --infrastructure-resource-group/-i with "
+                                                   "--environment-mode ConsumptionOnly")
 
         # validate custom domain configuration
         if self.get_argument_hostname():
@@ -167,7 +167,6 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
                     }
                     workload_profiles.append(serverless_gpu_profile)
             self.managed_env_def["properties"]["workloadProfiles"] = workload_profiles
-            environment_mode = "WorkloadProfiles" if environment_mode is None else environment_mode
         else:
             # Check if existing environment is WorkloadProfiles
             if existing_environment:
