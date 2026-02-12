@@ -13,6 +13,11 @@ Pending
 +++++++
 * `az aks safeguards`: Update Deployment Safeguards commands to API version 2025-07-01 and add idempotency check for create operation.
 
+19.0.0b22
++++++++
+* `az aks create/update`: Add `--enable-azure-monitor-logs` support to container network logs validation.
+* `az aks create/update`: Automatically enable `--enable-high-log-scale-mode` when `--enable-container-network-logs` is specified. Raises an error if user explicitly disables HLSM while enabling CNL.
+
 19.0.0b21
 +++++++
 * `az aks nodepool get-rollback-versions`: New command to get available rollback versions for an agent pool.

@@ -28,7 +28,7 @@ from azext_confcom.command.fragment_push import fragment_push as _fragment_push
 from azext_confcom.command.containers_from_image import containers_from_image as _containers_from_image
 from azext_confcom.command.containers_from_vn2 import containers_from_vn2 as _containers_from_vn2
 from knack.log import get_logger
-from pkg_resources import parse_version
+from packaging.version import Version
 
 logger = get_logger(__name__)
 
@@ -439,7 +439,7 @@ def update_confcom(cmd, instance, tags=None):
 
 
 def check_infrastructure_svn(infrastructure_svn):
-    if infrastructure_svn and parse_version(infrastructure_svn) < parse_version(
+    if infrastructure_svn and Version(infrastructure_svn) < Version(
         DEFAULT_REGO_FRAGMENTS[0]["minimum_svn"]
     ):
         logger.warning(
