@@ -3,7 +3,7 @@
 Release History
 ===============
 
-2.0.2
+2.1.0
 ++++++
 * `az network firewall policy intrusion-detection add`: Update IDPS profile handling to use the latest supported profile values (`Off`, `Emerging`, `Core`, `Extended`).
 * `az network firewall policy draft intrusion-detection add`: Update IDPS profile handling to use the latest supported profile values (`Off`, `Emerging`, `Core`, `Extended`).
