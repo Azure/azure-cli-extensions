@@ -9,7 +9,7 @@ from knack.help_files import helps  # pylint: disable=unused-import
 
 helps['fleet'] = """
     type: group
-    short-summary: !!!Commands to manage fleet.
+    short-summary: Commands to manage fleet.
 """
 
 helps['fleet create'] = """
@@ -179,7 +179,7 @@ helps['fleet member wait'] = """
 
 helps['fleet updaterun'] = """
     type: group
-    short-summary: !!!Commands to manage update runs.
+    short-summary: Commands to manage update runs.
 """
 
 helps['fleet updaterun create'] = """
@@ -208,6 +208,13 @@ helps['fleet updaterun create'] = """
                 A stages array is composed of one or more stages, each containing one or more groups.
                 Each group contains the 'name' property, which represents the group to which a cluster belongs (see 'az fleet member create --help').
                 Stages have an optional 'afterStageWaitInSeconds' integer property, acting as a delay between stage execution.
+                Stages and groups have an optional 'maxConcurrency' string property that sets the maximum number of concurrent upgrades allowed. It acts as a ceiling (not a quota)—actual concurrency may be lower due to other limits or member conditions. Minimum is 1.
+                Stage maxConcurrency: applies across all groups in the stage (total concurrent upgrades for the whole stage).
+                Group maxConcurrency: applies within a single group, and is additionally constrained by the stage limit (effective max is min(group cluster count, stage maxConcurrency)). Minimum is 1.
+                Value formats:
+                  Fixed count (e.g., 3)
+                  Percentage (e.g., 25%, 1–100) of the relevant cluster total (stage total for stage, group total for group). Percentages are rounded down, with a minimum of 1 enforced.
+                  Examples: 3, 25%, 100%
                 {
                     "stages": [
                         {
