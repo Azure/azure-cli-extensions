@@ -10,7 +10,7 @@ def do_request(
     method: str,
     url: str,
     token: str,
-    verify_ssl: bool = False,
+    ignore_certificate: bool = False,
     json: Dict | None = None,
     return_bytes: bool = False,
 ) -> Dict | List | str | bytes:
@@ -24,7 +24,7 @@ def do_request(
             response = session.send(
                 session.prepare_request(request),
                 timeout=120,
-                verify=verify_ssl
+                verify=not ignore_certificate
             )
             response.raise_for_status()
 

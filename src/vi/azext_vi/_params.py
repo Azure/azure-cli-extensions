@@ -6,20 +6,28 @@
 from . import consts
 
 from knack.commands import CLICommand
+from knack.arguments import CLIArgumentType
+
+from azure.cli.core.commands.parameters import get_three_state_flag
 
 
-def load_arguments(self, _: CLICommand) -> None:
+def load_arguments(self, _: CLICommand):
+    connected_cluster = CLIArgumentType(
+        options_list=['--connected-cluster', '-c'],
+        help='Name of the Kubernetes connected cluster')
+    ignore_certificate = CLIArgumentType(
+        options_list=['--ignore-certificate', '-i'],
+        arg_type=get_three_state_flag(),
+        required=False,
+        help='Ignore the TLS certificate of the Video Indexer endpoint. '
+        'By default, certificate verification is enabled.')
+
     with self.argument_context(f"{consts.EXTENSION_NAME} extension show") as c:
-        c.argument('connected_cluster',
-                   options_list=['--connected-cluster', '-c'],
-                   help='Name of the Kubernetes connected cluster')
+        c.argument('connected_cluster', connected_cluster)
 
     with self.argument_context(f"{consts.EXTENSION_NAME} extension troubleshoot") as c:
-        c.argument('connected_cluster',
-                   options_list=['--connected-cluster', '-c'],
-                   help='Name of the Kubernetes connected cluster')
+        c.argument('connected_cluster', connected_cluster)
 
     with self.argument_context(f"{consts.EXTENSION_NAME} camera list") as c:
-        c.argument('connected_cluster',
-                   options_list=['--connected-cluster', '-c'],
-                   help='Name of the Kubernetes connected cluster')
+        c.argument('connected_cluster', connected_cluster)
+        c.argument('ignore_certificate', ignore_certificate)

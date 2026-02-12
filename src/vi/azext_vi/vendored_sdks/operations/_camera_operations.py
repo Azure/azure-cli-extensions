@@ -48,7 +48,7 @@ class CameraOperations:
 
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-        verify_ssl = kwargs.pop("verify_ssl", False)
+        ignore_certificate = kwargs.pop("ignore_certificate", False)
 
         extension_id = extension.get('id')
         configuration = extension.get('properties').get('configurationSettings')
@@ -72,5 +72,5 @@ class CameraOperations:
             params=_params)
 
         url = f"{extension_url}/cameras"
-        response = do_request("GET", url=url, token=token, verify_ssl=verify_ssl)
+        response = do_request("GET", url=url, token=token, ignore_certificate=ignore_certificate)
         return response
