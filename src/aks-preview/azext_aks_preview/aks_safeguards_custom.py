@@ -69,7 +69,6 @@ def _add_resource_group_cluster_name_args(_args_schema):
              "or both --resource-group and --name, but not both.",
         required=False,
     )
-    _args_schema.managed_cluster._required = False  # pylint: disable=protected-access
     return _args_schema
 
 
