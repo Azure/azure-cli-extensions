@@ -101,7 +101,8 @@ def _get_basic_quantum_workspace(location, info, storage_account):
     # Allow the system to assign the workspace identity
     qw.identity = QuantumWorkspaceIdentity()
     qw.identity.type = "SystemAssigned"
-    qw.storage_account = _get_storage_account_path(info, storage_account)
+    if storage_account:
+        qw.storage_account = _get_storage_account_path(info, storage_account)
     return qw
 
 
@@ -194,16 +195,14 @@ def _validate_storage_account(tier_or_kind_msg_text, tier_or_kind, supported_tie
                                         f"Storage account {tier_or_kind_msg_text}{plural} currently supported: {tier_or_kind_list}")
 
 
-def create(cmd, resource_group_name, workspace_name, location, storage_account, skip_role_assignment=False,
-           provider_sku_list=None, auto_accept=False, skip_autoadd=False):
+def create(cmd, resource_group_name, workspace_name, location, storage_account=None, skip_role_assignment=False,
+           provider_sku_list=None, auto_accept=False, skip_autoadd=False, byo_storage_account=False):
     """
     Create a new Azure Quantum workspace.
     """
     client = cf_workspaces(cmd.cli_ctx)
     if not workspace_name:
         raise RequiredArgumentMissingError("An explicit workspace name is required for this command.")
-    if not storage_account:
-        raise RequiredArgumentMissingError("A quantum workspace requires a valid storage account.")
     if not location:
         raise RequiredArgumentMissingError("A location for the new quantum workspace is required.")
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
@@ -224,7 +223,63 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account, 
         quantum_workspace = poller.result()
         return quantum_workspace
 
-    # ARM-template-based code to create an Azure Quantum workspace and make it a "Contributor" to the storage account
+    # New MOBO code...
+    #
+    if not storage_account and not byo_storage_account:
+        # Call the service to create a workspace and a MOBO SA
+
+        # TODO: Rework this "fake" code when the MOBO feature is live.
+        #       Response currently shows "storageAccount": null
+
+        # Next line is a temporary work-around - We won't do this in the live MOBO version:
+        storage_account = workspace_name.translate(str.maketrans('', '', '-_')).lower()
+
+        # Old pre-ARM-template code that was executed if the "--skip-role-assignment" flag was in the command line
+        _add_quantum_providers(cmd, quantum_workspace, provider_sku_list, auto_accept, skip_autoadd)
+        properties = WorkspaceResourceProperties()
+        properties.providers = quantum_workspace.providers
+        properties.api_key_enabled = True
+        quantum_workspace.properties = properties
+        # TODO: Make sure the following line calls the method that creates a MOBO storage account
+        poller = client.begin_create_or_update(info.resource_group, info.name, quantum_workspace, polling=False)
+        print()  # Get ready for progress dots
+        # Progress dots are not needed yet (it completes quickly) but might be needed if creating the MOBO SA and doing the role assignment slows it down
+        while not poller.done():
+            # TODO: Does this need a timeout?
+            print('.', end='', flush=True)
+            time.sleep(POLLING_TIME_DURATION)
+        quantum_workspace = poller.result()
+        return quantum_workspace
+
+    # BYO storage account code...
+    #
+    if not storage_account and byo_storage_account:
+        raise RequiredArgumentMissingError("Please specify a storage account name.")
+    # It doesn't make sense to add --byo-storage to the command and not name a storage account
+
+    if storage_account and not byo_storage_account:    # We won't require the --byo-storage command flag if the user names an existing storage account
+        # Validate a storage account that already exits
+        storage_account_sku = None
+        storage_account_sku_tier = None
+        storage_account_kind = None
+        storage_account_location = None
+        found_it = False
+        storage_account_list = list_storage_accounts(cmd, resource_group_name)
+        if storage_account_list:
+            for storage_account_info in storage_account_list:
+                if storage_account_info.name == storage_account:
+                    storage_account_sku = storage_account_info.sku.name
+                    storage_account_sku_tier = storage_account_info.sku.tier
+                    storage_account_kind = storage_account_info.kind
+                    storage_account_location = storage_account_info.location
+                    found_it = True
+                    break
+        if not found_it:
+            raise InvalidArgumentValueError(f"Storage account {storage_account} was not found.\n"
+                                            "If you omit the storage account name, the quantum service "
+                                            "will create and manage a storage account for you.")
+
+    # Use the pre-MOBO ARM-template-based code to create an Azure Quantum workspace and make it a "Contributor" to the existing storage account
     template_path = os.path.join(os.path.dirname(
         __file__), 'templates', 'create-workspace-and-assign-role.json')
     with open(template_path, 'r', encoding='utf8') as template_file_fd:
