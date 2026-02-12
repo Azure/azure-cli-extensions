@@ -20,5 +20,4 @@ class VICameraTests(ScenarioTest):
         self.assertTrue(len(camera['id']) > 0)
         self.assertTrue(len(camera['createTime']) > 0)
         self.assertTrue(len(camera['name']) > 0)
-        self.assertTrue(len(camera
-        ['rtspUrl']) > 0)
+        self.assertTrue(len(camera['rtspUrl']) > 0)
