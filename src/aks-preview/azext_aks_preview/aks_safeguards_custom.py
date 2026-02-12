@@ -10,7 +10,6 @@ Custom classes for AKS Safeguards commands to support -g/-n argument pattern
 from azure.cli.core.aaz import AAZResourceGroupNameArg, AAZStrArg, has_value
 from azure.cli.core.azclierror import ArgumentUsageError, CLIError, HTTPError
 from azure.cli.core.util import send_raw_request
-from azure.mgmt.core.tools import is_valid_resource_id
 
 from azext_aks_preview.aaz.latest.aks.safeguards._create import Create
 from azext_aks_preview.aaz.latest.aks.safeguards._delete import Delete
@@ -42,25 +41,12 @@ def _validate_and_set_managed_cluster_argument(ctx):
             f"providers/Microsoft.ContainerService/managedClusters/{args.cluster_name}"
         )
     else:
-        # If managed_cluster is provided but is not a full resource ID, treat it as a cluster name
-        # and require resource_group to be provided
+        # If managed_cluster is provided, normalize it (add leading slash if missing)
         managed_cluster_value = args.managed_cluster.to_serialized_data()
 
         # Normalize resource ID: add leading slash if missing for backward compatibility
         if managed_cluster_value and not managed_cluster_value.startswith('/'):
             managed_cluster_value = f"/{managed_cluster_value}"
-
-        if not is_valid_resource_id(managed_cluster_value):
-            # It's just a cluster name, need resource group
-            if not has_value(args.resource_group):
-                raise ArgumentUsageError(
-                    "When providing cluster name via -c/--cluster, you must also provide -g/--resource-group."
-                )
-            # Build the full resource ID
-            managed_cluster_value = (
-                f"/subscriptions/{ctx.subscription_id}/resourceGroups/{args.resource_group}/"
-                f"providers/Microsoft.ContainerService/managedClusters/{managed_cluster_value.lstrip('/')}"
-            )
 
         args.managed_cluster = managed_cluster_value
 

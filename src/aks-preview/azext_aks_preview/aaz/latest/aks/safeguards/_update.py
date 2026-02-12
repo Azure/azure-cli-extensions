@@ -56,7 +56,7 @@ class Update(AAZCommand):
         _args_schema.managed_cluster = AAZStrArg(
             options=["-c", "--cluster", "--managed-cluster"],
             help="The fully qualified Azure Resource manager identifier of the Managed Cluster.",
-            required=True,
+            required=False,  # Will be validated in custom class
         )
 
         # define Arg Group "Properties"
