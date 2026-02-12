@@ -566,6 +566,39 @@ def aks_agent(
                 error_msg += f"The AKS agent may not be deployed. Run 'az aks agent-init {cmd_flags}' to initialize the deployment."
                 raise CLIError(error_msg)
 
+            # Check if helm chart version needs upgrade and upgrade automatically if needed
+            console = get_console()
+            needs_upgrade, deployed_version, expected_version = agent_manager.check_upgrade_needed()
+            if needs_upgrade:
+                console.print(
+                    f"\n📦 Upgrading AKS agent from version {deployed_version} to {expected_version}...",
+                    style="bold cyan"
+                )
+                console.print(
+                    "This may take a minute or two. Please wait...",
+                    style="cyan"
+                )
+                try:
+                    success, error_msg = agent_manager.deploy_agent()
+                    if success:
+                        console.print(
+                            "✅ AKS agent has been automatically upgraded to the latest version.",
+                            style=SUCCESS_COLOR)
+                    else:
+                        console.print(
+                            f"⚠️  Warning: Failed to auto-upgrade agent: {error_msg}",
+                            style=WARNING_COLOR)
+                        console.print(
+                            "Continuing with the current version. Run 'az aks agent-upgrade' to manually upgrade.",
+                            style=INFO_COLOR)
+                except AzCLIError as e:
+                    console.print(
+                        f"⚠️  Warning: Failed to auto-upgrade agent: {e}",
+                        style=WARNING_COLOR)
+                    console.print(
+                        "Continuing with the current version. Run 'az aks agent-upgrade' to manually upgrade.",
+                        style=INFO_COLOR)
+
         # prepare CLI flags
 
         # user quoted prompt to not break the command line parsing
