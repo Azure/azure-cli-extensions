@@ -9,7 +9,7 @@ from azure.cli.testsdk import ScenarioTest
 class VICameraTests(ScenarioTest):
     def test_extension_show(self):
         extension_type = "microsoft.videoindexer"
-        name = "vi-arc-6-wus2"
+        name = "vi-arc-4-wus2"
         resource_group = f"{name}-rg"
         connected_cluster = f"{name}-connected-aks"
         command = f'az vi extension show -g "{resource_group}" -c "{connected_cluster}"'
