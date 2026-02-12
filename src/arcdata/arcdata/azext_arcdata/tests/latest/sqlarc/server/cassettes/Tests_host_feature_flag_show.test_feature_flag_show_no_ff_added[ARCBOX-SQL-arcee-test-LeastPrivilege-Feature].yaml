@@ -1,0 +1,73 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      User-Agent:
+      - python-requests/2.32.3
+    method: GET
+    uri: https://mock-host/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourceGroups/arcee-test/providers/Microsoft.HybridCompute/machines/ARCBOX-SQL/extensions/WindowsAgent.SqlServer?api-version=2023-03-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourceGroups/arcee-test/providers/Microsoft.HybridCompute/machines/ARCBOX-SQL/extensions/WindowsAgent.SqlServer","name":"WindowsAgent.SqlServer","type":"Microsoft.HybridCompute/machines/extensions","location":"eastus","properties":{"publisher":"Microsoft.AzureData","type":"WindowsAgent.SqlServer","typeHandlerVersion":"1.1.2735.199","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":true,"settings":{"SqlManagement":{"IsEnabled":"true"}},"provisioningState":"Succeeded","instanceView":{"name":"WindowsAgent.SqlServer","type":"WindowsAgent.SqlServer","typeHandlerVersion":"1.1.2735.199","status":{"code":"0","level":"Information","message":"Extension
+        Message: SQL Server Extension Agent: Healthy; timestampUTC : 2024/08/21, 09:44:51.446;
+        uploadStatus : OK; uploadMessage : \"Upload succeeded.\"; telemetryUploadStatus
+        : {\"logs\":{\"status\":\"OK\",\"message\":\"Upload succeeded.\"},\"dmv\":null,\"ma\":{\"status\":\"OK\",\"message\":\"Upload
+        succeeded.\"}};AutomaticBackups: Suspended;PurviewPlugin: {};AzureActiveDirectoryPlugin:
+        {};DatabaseMonitorArcPlugin: {\"State\":\"NotRunning\"}, AutomaticBackups:
+        {\"$type\":\"Microsoft.Azure.Hybrid.Sql.Models.AutomaticSqlBackupConfiguration,
+        SqlAgent\",\"retentionPeriodInDays\":7,\"profiles\":{\"$type\":\"System.Collections.Generic.List`1[[Microsoft.Azure.Hybrid.Sql.Models.ShortTermRetentionAutomaticSqlBackupProfile,
+        SqlAgent]], System.Private.CoreLib\",\"$values\":[]}}, Purview plugin: [],
+        Azure active directory configuration plugin: [], Assessment: [], Assessment
+        Status: {\"AssessmentHistory\":[],\"Enabled\":false,\"ErrorMessage\":\"\",\"NextScheduledTime\":null,\"RunStatus\":\"NotRunning\",\"StartTime\":null},
+        DatabaseMonitorArcPlugin: {\"$type\":\"Microsoft.SqlServer.Management.SqlServerHandlerData.DatabaseMonitorConfiguration,
+        Microsoft.SqlServer.Management.SqlServerHandlerData\",\"endpointUrl\":\"https://telemetry.{0}.arcdataservices.com/\",\"endpointAppId\":\"524058e3-2702-4b98-932b-b2d1de613fd2\"},
+        MigrationAssessmentPlugin: {\"$type\":\"Microsoft.SqlServer.Management.SqlServerHandlerData.PublicSettings,
+        Microsoft.SqlServer.Management.SqlServerHandlerData\",\"excludedSqlInstances\":{\"$type\":\"System.String[],
+        System.Private.CoreLib\",\"$values\":[]},\"azureAD\":{\"$type\":\"Microsoft.SqlServer.Management.SqlServerHandlerData.AADSettings[],
+        Microsoft.SqlServer.Management.SqlServerHandlerData\",\"$values\":[]},\"externalPolicyBasedAuthorization\":{\"$type\":\"Microsoft.SqlServer.Management.SqlServerHandlerData.PurviewSettings[],
+        Microsoft.SqlServer.Management.SqlServerHandlerData\",\"$values\":[]},\"licenseType\":\"Undefined\",\"enableExtendedSecurityUpdates\":false,\"esuLastUpdatedTimestamp\":\"0001-01-01T00:00:00\"},
+        SQL Server Extension Agent Deployer: {\"FailureCount\":0,\"LastUpdatedTimestamp\":\"2024\\/08\\/14,
+        19:35:15.583\",\"Message\":\"Completed asyncEnable\",\"SeqNum\":43}"}}}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Content-Length:
+      - '2943'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Thu, 31 Oct 2024 19:32:17 GMT
+      Expires:
+      - '-1'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Cache:
+      - CONFIG_NOCACHE
+      X-Content-Type-Options:
+      - nosniff
+      X-MSEdge-Ref:
+      - 'Ref A: C1299396D47A4B8BA424C1662AC2397E Ref B: SJC211051203035 Ref C: 2024-10-31T19:32:18Z'
+      x-ms-correlation-request-id:
+      - 75e9ce1b-15b8-4217-847c-82953eff4498
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-ms-ratelimit-remaining-subscription-reads:
+      - '1099'
+      x-ms-request-id:
+      - d567185a-f093-4572-8d3d-9a2b92a2c81b
+      x-ms-routing-request-id:
+      - WESTUS:20241031T193218Z:75e9ce1b-15b8-4217-847c-82953eff4498
+    status:
+      code: 200
+      message: OK
+version: 1

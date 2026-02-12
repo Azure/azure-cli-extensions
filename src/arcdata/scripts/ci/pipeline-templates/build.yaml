@@ -1,0 +1,105 @@
+# This Yaml Document has been converted by ESAI Yaml Pipeline Conversion Tool.
+# Please make sure to check all the converted content, it is your team's responsibility to make sure that the pipeline is still valid and functions as expected.
+# The SBOM tasks have been removed because they are not required for the unofficial template.
+# You can manually enable SBOM in the unofficial template if needed, othewise its automatically enabled when using official template. https://eng.ms/docs/cloud-ai-platform/devdiv/one-engineering-system-1es/1es-docs/1es-pipeline-templates/features/sbom
+stages:
+- stage: Build
+  jobs:
+  - job: BuildWheels
+    displayName: 'Build extension wheel'
+    pool:
+      type: linux
+    variables:
+    - name: ob_outputDirectory
+      value: '$(Build.ArtifactStagingDirectory)/ONEBRANCH_ARTIFACT'
+    - name: ob_sdl_codeql_compiled_enabled
+      value: false
+    steps:
+    - task: PipAuthenticate@1
+      displayName: Authenticate to Artifacts (pip)
+      inputs:
+        artifactFeeds: 'Tina/Tina_PublicPackages'    
+    - task: Bash@3
+      displayName: 'Build Python Wheel'
+      inputs:
+        targetType: 'inline'
+        script: scripts/package.sh
+        workingDirectory: $(Build.SourcesCliDirectory)
+        failOnStderr: false
+      env:
+        PAT_TOKEN: $(System.AccessToken)
+    - task: CopyFiles@2
+      displayName: 'Copy wheels to: $(Build.ArtifactStagingDirectory)/azure-cli-arcdata'
+      inputs:
+        sourceFolder: '$(Build.SourcesCliDirectory)/output/packages'
+        contents: '?(*.whl|*.txt)'
+        TargetFolder: '$(Build.ArtifactStagingDirectory)/azure-cli-arcdata'
+    - task: CopyFiles@2
+      displayName: "Copy Files for 'Publish Artifact: extension wheel' publish task"
+      inputs:
+        SourceFolder: $(Build.ArtifactStagingDirectory)/azure-cli-arcdata
+        Contents: '**'
+        TargetFolder: $(Build.ArtifactStagingDirectory)/ONEBRANCH_ARTIFACT/wheels
+    - task: CmdLine@2
+      displayName: 'Update extension index.json'
+      inputs:
+        script: scripts/ci/index-update/update.sh
+        workingDirectory: $(Build.SourcesCliDirectory)
+    - task: CmdLine@2
+      displayName: 'Generate azure-cli-extensions-pr.sh'
+      inputs:
+        script: scripts/ci/release/pipeline.sh
+        workingDirectory: $(Build.SourcesCliDirectory)
+    - task: CopyFiles@2
+      displayName: 'Copy index.json|azure-cli-extensions-pr.sh to: $(Build.ArtifactStagingDirectory)/azure/azure-cli-extensions/src'
+      inputs:
+        sourceFolder: '$(Build.SourcesCliDirectory)/output'
+        contents: '?(*.json|*.sh)'
+        TargetFolder: '$(Build.ArtifactStagingDirectory)/azure/azure-cli-extensions/src'
+    - task: CopyFiles@2
+      displayName: "Copy Files for 'Publish Artifact: index.json' publish task"
+      inputs:
+        SourceFolder: $(Build.ArtifactStagingDirectory)/azure/azure-cli-extensions/src
+        Contents: '**'
+        TargetFolder: $(Build.ArtifactStagingDirectory)/ONEBRANCH_ARTIFACT/extension-index
+    - script: |
+        export TARGET_DIRECTORY="${BUILD_SOURCESDIRECTORY}/release-ev2/ev2"
+        TAR_DIRECTORY=${TARGET_DIRECTORY}/scripts/azPush
+        SRC_DIRECTORY=./projects/azure-cli-extension/scripts
+        mkdir -p ${TAR_DIRECTORY}
+        # Manifest JSON files        
+        ${SRC_DIRECTORY}/ci/ev2/build-ev2.sh ${TARGET_DIRECTORY}
+        # For EV2 release pipeline, CLI_VERSION == version
+        CLI_VERSION=$(${SRC_DIRECTORY}/version.sh)
+        echo ${CLI_VERSION} > "${TARGET_DIRECTORY}/buildver.txt"
+        # EV2 Entrypoint scripts and tarball .whl
+        cp ${TARGET_DIRECTORY}/buildver.txt ${TAR_DIRECTORY}        
+        cp ${BUILD_ARTIFACTSTAGINGDIRECTORY}/ONEBRANCH_ARTIFACT/wheels/*.whl ${TAR_DIRECTORY}
+        cp "${SRC_DIRECTORY}/ci/ev2/push-to-blob.sh" "${TAR_DIRECTORY}"
+      condition: always()
+      displayName: "↪️ Generate 'release-ev2'"
+      env:
+        BUILD_SOURCESDIRECTORY: $(BUILD_SOURCESDIRECTORY)
+    - task: ArchiveFiles@2
+      displayName: "\U0001F4E6 'arcdata-cli.tar' EV2 Payload"
+      inputs:
+        rootFolderOrFile: "$(Build.SourcesDirectory)/release-ev2/ev2/scripts/azPush"
+        includeRootFolder: false
+        archiveType: "tar"
+        tarCompression: "none"
+        archiveFile: "$(Build.SourcesDirectory)/release-ev2/ev2/arcdata-cli.tar"
+    - script: |
+        echo "------------------- 📦 -----------------"
+        tree "${BUILD_SOURCESDIRECTORY}/release-ev2"
+        echo "-----------------------------------------"
+      condition: always()
+      displayName: "\U0001F453 View 'release-ev2'"
+      env:
+        BUILD_SOURCESDIRECTORY: $(BUILD_SOURCESDIRECTORY)
+    - task: CopyFiles@2
+      displayName: "Copy Files for '\U0001F4E6 Publish 'release-ev2'' publish task"
+      condition: always()
+      inputs:
+        SourceFolder: '$(System.DefaultWorkingDirectory)/release-ev2'
+        Contents: '**'
+        TargetFolder: $(Build.ArtifactStagingDirectory)/ONEBRANCH_ARTIFACT/release-ev2

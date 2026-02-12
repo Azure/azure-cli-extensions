@@ -1,0 +1,113 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azsdk-python-mgmt-azurearcdata/1.1.02586.818 Python/3.11.8 (Windows-10-10.0.22621-SP0)
+      x-ms-client-request-id:
+      - 0e8f7a80-cab2-11ee-a3e4-d8bbc1c51c4b
+    method: GET
+    uri: https://mock-host/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourceGroups/aagonzalez-CI-Test-mk6/providers/Microsoft.AzureArcData/sqlServerInstances/ArcBox-SQL?api-version=2024-03-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourceGroups/aagonzalez-CI-Test-mk6/providers/Microsoft.AzureArcData/sqlServerInstances/ArcBox-SQL","name":"ArcBox-SQL","type":"microsoft.azurearcdata/sqlserverinstances","location":"eastus","systemData":{"createdBy":"a12e8ccb-0fcd-46f8-b6a1-b9df7a9d7231","createdByType":"Application","createdAt":"2024-02-08T16:58:34.0669699Z","lastModifiedBy":"a12e8ccb-0fcd-46f8-b6a1-b9df7a9d7231","lastModifiedByType":"Application","lastModifiedAt":"2024-02-13T20:40:40.9606879Z"},"properties":{"version":"SQL
+        Server 2019","edition":"Developer","containerResourceId":"/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourcegroups/aagonzalez-CI-Test-mk6/providers/Microsoft.HybridCompute/machines/ArcBox-SQL","createTime":null,"vCore":"1","cores":null,"status":"Connected","patchLevel":"15.0.2104.1","collation":"SQL_Latin1_General_CP1_CI_AS","currentVersion":"15.0.2000.5","instanceName":"MSSQLSERVER","tcpDynamicPorts":"","tcpStaticPorts":"1433","productId":"Unknown","licenseType":"Free","azureDefenderStatusLastUpdated":null,"azureDefenderStatus":"Unknown","provisioningState":"Succeeded","lastInventoryUploadTime":"2024-02-13T20:40:38.9011995Z","lastUsageUploadTime":"2024-02-13T20:40:22.1770734Z","hostType":null,"alwaysOnRole":"None","failoverCluster":null,"backupPolicy":null,"upgradeLockedUntil":null,"monitoring":{"enabled":true},"migration":{"assessment":{"enabled":true}}}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Content-Length:
+      - '1438'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Tue, 13 Feb 2024 20:54:19 GMT
+      ETag:
+      - '"e0037271-0000-0100-0000-65cbd3c90000"'
+      Expires:
+      - '-1'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Cache:
+      - CONFIG_NOCACHE
+      X-Content-Type-Options:
+      - nosniff
+      X-MSEdge-Ref:
+      - 'Ref A: 97FACC336F804631B42B7BEAC7362EE4 Ref B: BN1AA2051012051 Ref C: 2024-02-13T20:54:19Z'
+      x-ms-correlation-request-id:
+      - 3324b0f1-ec3e-49e0-b34c-001db2552a42
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99998'
+      x-ms-request-id:
+      - 4e44800e-dd52-4bdb-b4bd-c5823fd71a50
+      x-ms-routing-request-id:
+      - EASTUS:20240213T205420Z:3324b0f1-ec3e-49e0-b34c-001db2552a42
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azsdk-python-mgmt-azurearcdata/1.1.02586.818 Python/3.11.8 (Windows-10-10.0.22621-SP0)
+      x-ms-client-request-id:
+      - 0f080915-cab2-11ee-8ebe-d8bbc1c51c4b
+    method: GET
+    uri: https://mock-host/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourceGroups/aagonzalez-CI-Test-mk6/providers/Microsoft.AzureArcData/sqlServerInstances/ArcBox-SQL/databases/test_backupsdf?api-version=2024-03-01-preview
+  response:
+    body:
+      string: '{"error": {"code": "ResourceNotFound", "message": "The Resource ''Microsoft.AzureArcData/SqlServerInstances/ArcBox-SQL/Databases/test_backupsdf''
+        under resource group ''aagonzalez-CI-Test-mk6'' was not found. For more details
+        please go to https://aka.ms/ARMResourceNotFoundFix"}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Content-Length:
+      - '271'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Tue, 13 Feb 2024 20:54:20 GMT
+      Expires:
+      - '-1'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Cache:
+      - CONFIG_NOCACHE
+      X-Content-Type-Options:
+      - nosniff
+      X-MSEdge-Ref:
+      - 'Ref A: 6B6F44D858D14640BDE07FBC32D47BDC Ref B: BN1AA2051012051 Ref C: 2024-02-13T20:54:20Z'
+      x-ms-correlation-request-id:
+      - c682a439-54b0-48cb-9084-49f9f692a1a2
+      x-ms-failure-cause:
+      - gateway
+      x-ms-request-id:
+      - c682a439-54b0-48cb-9084-49f9f692a1a2
+      x-ms-routing-request-id:
+      - EASTUS:20240213T205420Z:c682a439-54b0-48cb-9084-49f9f692a1a2
+    status:
+      code: 404
+      message: Not Found
+version: 1

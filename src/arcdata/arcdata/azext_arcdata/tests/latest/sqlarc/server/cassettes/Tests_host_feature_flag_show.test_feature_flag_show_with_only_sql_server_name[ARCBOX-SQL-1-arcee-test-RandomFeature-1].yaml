@@ -1,0 +1,50 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      User-Agent:
+      - python-requests/2.31.0
+    method: GET
+    uri: https://mock-host/subscriptions/a5082b19-8a6e-4bc5-8fdd-8ef39dfebc39/resourceGroups/arcee-test/providers/Microsoft.AzureArcData/sqlServerInstances/ARCBOX-SQL-1/?api-version=2023-12-01-preview
+  response:
+    body:
+      string: '{"error": {"code": "ResourceNotFound", "message": "The Resource ''Microsoft.AzureArcData/SqlServerInstances/ARCBOX-SQL-1''
+        under resource group ''arcee-test'' was not found. For more details please
+        go to https://aka.ms/ARMResourceNotFoundFix"}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Content-Length:
+      - '236'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Fri, 22 Dec 2023 12:25:35 GMT
+      Expires:
+      - '-1'
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      x-ms-correlation-request-id:
+      - 3654a447-0ffa-4248-bcf7-2d703febc359
+      x-ms-failure-cause:
+      - gateway
+      x-ms-request-id:
+      - 3654a447-0ffa-4248-bcf7-2d703febc359
+      x-ms-routing-request-id:
+      - CENTRALINDIA:20231222T122536Z:3654a447-0ffa-4248-bcf7-2d703febc359
+    status:
+      code: 404
+      message: Not Found
+version: 1

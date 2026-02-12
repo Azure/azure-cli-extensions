@@ -1,0 +1,15 @@
+include README.rst HISTORY.rst LICENSE
+
+global-include THIRDPARTYNOTICES.txt
+
+# -- include all the directive assets --
+graft azext_arcdata/sqlmi/templates
+graft azext_arcdata/kubernetes_sdk/templates
+graft azext_arcdata/kubernetes_sdk/dc/templates
+graft azext_arcdata/arm_sdk/templates
+graft azext_arcdata/kubernetes_sdk/dc/deployment-configs
+graft azext_arcdata/kubernetes_sdk/postgres/templates
+graft azext_arcdata/azext_metadata.json
+
+global-exclude __pycache__
+global-exclude *.py[co]

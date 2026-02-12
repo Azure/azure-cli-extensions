@@ -1,0 +1,73 @@
+{
+   "apiVersion": "arcdata.microsoft.com/v5",
+   "kind": "DataController",
+   "metadata": {
+      "name": "datacontroller"
+   },
+   "spec": {
+      "infrastructure": "onpremises",
+      "credentials": {
+         "serviceAccount": "sa-arc-controller",
+         "dockerRegistry": "arc-private-registry"
+      },
+      "resources": {
+         "controller": {
+            "requests": {
+               "cpu": "400m",
+               "memory": "2Gi"
+            },
+            "limits": {
+               "cpu": "1800m",
+               "memory": "2Gi"
+            }
+         },
+         "controllerDb": {
+            "requests": {
+               "cpu": "200m",
+               "memory": "4Gi"
+            },
+            "limits": {
+               "cpu": "800m",
+               "memory": "6Gi"
+            }
+         }
+      },
+      "storage": {
+         "data": {
+            "className": "local-storage",
+            "size": "15Gi",
+            "accessMode": "ReadWriteOnce"
+         },
+         "logs": {
+            "className": "local-storage",
+            "size": "10Gi",
+            "accessMode": "ReadWriteOnce"
+         }
+      },
+      "security": {
+         "allowDumps": true,
+         "allowNodeMetricsCollection": true,
+         "allowPodMetricsCollection": true
+      },
+      "services": [
+         {
+            "name": "controller",
+            "serviceType": "NodePort",
+            "port": 30080
+         }
+      ],
+      "settings": {
+         "azure": {
+            "autoUploadMetrics": "false",
+            "autoUploadLogs": "false"
+         },
+         "controller": {
+            "logs.rotation.size": "5000",
+            "logs.rotation.days": "7"
+         },
+         "ElasticSearch": {
+            "vm.max_map_count": "-1"
+         }
+      }
+   }
+}
