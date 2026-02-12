@@ -30,7 +30,7 @@ from azext_fleet.constants import UPGRADE_TYPE_ERROR_MESSAGES
 from azext_fleet.constants import SUPPORTED_GATE_STATES_FILTERS
 from azext_fleet.constants import SUPPORTED_GATE_STATES_PATCH
 from azext_fleet.constants import FLEET_1P_APP_ID
-from azext_fleet.vendored_sdks.v2025_08_01_preview.models import (
+from azext_fleet.vendored_sdks.v2026_02_01_preview.models import (
     PropagationPolicy,
     PlacementProfile,
     PlacementV1ClusterResourcePlacementSpec,
@@ -603,6 +603,7 @@ def get_update_run_strategy(cmd, operation_group, stages):
         for group in stage["groups"]:
             update_groups.append(update_group_model(
                 name=group["name"],
+                max_concurrency=group.get("maxConcurrency"),
                 before_gates=group.get("beforeGates", []),
                 after_gates=group.get("afterGates", []),
             ))
@@ -612,6 +613,7 @@ def get_update_run_strategy(cmd, operation_group, stages):
         update_stages.append(update_stage_model(
             name=stage["name"],
             groups=update_groups,
+            max_concurrency=stage.get("maxConcurrency"),
             before_gates=stage.get("beforeGates", []),
             after_gates=stage.get("afterGates", []),
             after_stage_wait_in_seconds=after_wait

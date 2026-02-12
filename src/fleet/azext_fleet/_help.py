@@ -9,7 +9,7 @@ from knack.help_files import helps  # pylint: disable=unused-import
 
 helps['fleet'] = """
     type: group
-    short-summary: Commands to manage fleet.
+    short-summary: !!!Commands to manage fleet.
 """
 
 helps['fleet create'] = """
@@ -179,7 +179,7 @@ helps['fleet member wait'] = """
 
 helps['fleet updaterun'] = """
     type: group
-    short-summary: Commands to manage update runs.
+    short-summary: !!!Commands to manage update runs.
 """
 
 helps['fleet updaterun create'] = """
