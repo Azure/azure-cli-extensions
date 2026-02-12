@@ -11,11 +11,11 @@
 import os
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
-from .example_steps import step_create
+from .example_steps import step_create_with_sku
 from .example_steps import step_list
 from .example_steps import step_list2
 from .example_steps import step_show
-from .example_steps import step_update
+from .example_steps import step_update_with_sku
 from .example_steps import step_delete
 from .. import (
     try_manual,
@@ -39,14 +39,14 @@ def cleanup_scenario(test, rg, rg_2):
     pass
 
 
-# Testcase: Scenario
+# Testcase: Scenario with SKU parameter
 @try_manual
-def call_scenario(test, rg, rg_2):
+def call_scenario_with_sku(test, rg, rg_2, sku):
     setup_scenario(test, rg, rg_2)
-    step_create(test, rg, rg_2, checks=[
+    step_create_with_sku(test, rg, rg_2, sku, checks=[
         test.check("name", "{myBot}", case_sensitive=False),
         test.check("location", "eastus", case_sensitive=False),
-        test.check("sku.name", "F0", case_sensitive=False),
+        test.check("sku.name", sku, case_sensitive=False),
     ])
     step_list(test, rg, rg_2, checks=[])
     step_list2(test, rg, rg_2, checks=[
@@ -55,12 +55,12 @@ def call_scenario(test, rg, rg_2):
     step_show(test, rg, rg_2, checks=[
         test.check("name", "{myBot}", case_sensitive=False),
         test.check("location", "eastus", case_sensitive=False),
-        test.check("sku.name", "F0", case_sensitive=False),
+        test.check("sku.name", sku, case_sensitive=False),
     ])
-    step_update(test, rg, rg_2, checks=[
+    step_update_with_sku(test, rg, rg_2, sku, checks=[
         test.check("name", "{myBot}", case_sensitive=False),
         test.check("location", "eastus", case_sensitive=False),
-        test.check("sku.name", "F0", case_sensitive=False),
+        test.check("sku.name", sku, case_sensitive=False),
     ])
     step_delete(test, rg, rg_2, checks=[])
     cleanup_scenario(test, rg, rg_2)
@@ -79,6 +79,27 @@ class HealthbotScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='clitest', random_name_length=20, key='rg', parameter_name='rg')
     @ResourceGroupPreparer(name_prefix='clitest', random_name_length=20, key='rg_2', parameter_name='rg_2')
     def test_healthbot_Scenario(self, rg, rg_2):
-        call_scenario(self, rg, rg_2)
+        call_scenario_with_sku(self, rg, rg_2, 'F0')
+        calc_coverage(__file__)
+        raise_if()
+
+    @ResourceGroupPreparer(name_prefix='clitest', random_name_length=20, key='rg', parameter_name='rg')
+    @ResourceGroupPreparer(name_prefix='clitest', random_name_length=20, key='rg_2', parameter_name='rg_2')
+    def test_healthbot_Scenario_C0_SKU(self, rg, rg_2):
+        call_scenario_with_sku(self, rg, rg_2, 'C0')
+        calc_coverage(__file__)
+        raise_if()
+
+    @ResourceGroupPreparer(name_prefix='clitest', random_name_length=20, key='rg', parameter_name='rg')
+    @ResourceGroupPreparer(name_prefix='clitest', random_name_length=20, key='rg_2', parameter_name='rg_2')
+    def test_healthbot_Scenario_C1_SKU(self, rg, rg_2):
+        call_scenario_with_sku(self, rg, rg_2, 'C1')
+        calc_coverage(__file__)
+        raise_if()
+
+    @ResourceGroupPreparer(name_prefix='clitest', random_name_length=20, key='rg', parameter_name='rg')
+    @ResourceGroupPreparer(name_prefix='clitest', random_name_length=20, key='rg_2', parameter_name='rg_2')
+    def test_healthbot_Scenario_PES_SKU(self, rg, rg_2):
+        call_scenario_with_sku(self, rg, rg_2, 'PES')
         calc_coverage(__file__)
         raise_if()

@@ -14,14 +14,14 @@ from .. import try_manual
 
 # EXAMPLE: /Bots/put/BotCreate
 @try_manual
-def step_create(test, rg, rg_2, checks=None):
+def step_create_with_sku(test, rg, rg_2, sku, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az healthbot create '
-             '--name "{myBot}" '
-             '--location "eastus" '
-             '--sku "F0" '
-             '--resource-group "{rg}"',
+    test.cmd(f'az healthbot create '
+             f'--name "{{myBot}}" '
+             f'--location "eastus" '
+             f'--sku "{sku}" '
+             f'--resource-group "{{rg}}"',
              checks=checks)
 
 
@@ -58,13 +58,13 @@ def step_show(test, rg, rg_2, checks=None):
 
 # EXAMPLE: /Bots/patch/BotUpdate
 @try_manual
-def step_update(test, rg, rg_2, checks=None):
+def step_update_with_sku(test, rg, rg_2, sku, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az healthbot update '
-             '--name "{myBot}" '
-             '--sku "F0" '
-             '--resource-group "{rg}"',
+    test.cmd(f'az healthbot update '
+             f'--name "{{myBot}}" '
+             f'--sku "{sku}" '
+             f'--resource-group "{{rg}}"',
              checks=checks)
 
 
