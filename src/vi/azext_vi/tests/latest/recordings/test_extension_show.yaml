@@ -1,79 +1,54 @@
 interactions:
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - vi extension show
-      Connection:
-      - keep-alive
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - -g -c
-      User-Agent:
-      - AZURECLI/2.83.0 azsdk-python-core/1.38.0 Python/3.13.12 (Windows-11-10.0.26200-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/vi-arc-6-wus2-rg/providers/Microsoft.Kubernetes/connectedClusters/vi-arc-6-wus2-connected-aks/Providers/Microsoft.KubernetesConfiguration/extensions?api-version=2021-05-01-preview
-  response:
-    body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/vi-arc-6-wus2-rg/providers/Microsoft.Kubernetes/connectedClusters/vi-arc-6-wus2-connected-aks/Providers/Microsoft.KubernetesConfiguration/extensions/vi-arc-6-wus2","name":"vi-arc-6-wus2","type":"Microsoft.KubernetesConfiguration/extensions","properties":{"extensionType":"microsoft.videoindexer","autoUpgradeMinorVersion":false,"releaseTrain":"dev","version":"1.4.55-ylivneh-main","scope":{"cluster":{"releaseNamespace":"video-indexer"}},"provisioningState":"Failed","installState":"Unknown","configurationSettings":{"videoIndexer.endpointUri":"https://vi-arc-6-wus2.vi.media.dev.azure-int.net","videoIndexer.accountId":"6df236fc-c73a-4b26-964a-588673335993","videoIndexer.accountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/vi-fe-arc/providers/Microsoft.VideoIndexer/accounts/VI-FE-ARC-2","videoIndexer.mediaUploadsEnabled":"True","videoIndexer.liveVideoStreamEnabled":"True","videoIndexer.rag.enabled":"False","videoIndexer.rag.endpoint":"vi-arc-6-wus2-rag.vi.media.dev.azure-int.net","videoIndexer.rag.applicationId":"","videoIndexer.rag.tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","videoIndexer.rag.managedIdentityClientId":"","videoIndexer.agents.enabled":"True","ViAi.mediaServerStreams.enabled":"True","storage.storageClass":"azurefile-csi-premium","storage.accessMode":"ReadWriteMany","ViAi.gpu.enabled":"False","ViAi.gpu.tolerations.key":"nvidia.com/gpu","ViAi.LiveSummarization.enabled":"True","alerts.enabled":"False","videoIndexer.webApi.config.apimInternalsBaseUrl":"https://vi-apim-dev.azure-api.net/vi-dev13-internals/","videoIndexer.webApi.config.apimOperationsBaseUrl":"https://vi-apim-dev.azure-api.net/vi-dev13-Operations/"},"configurationProtectedSettings":{},"statuses":[{"code":"InstallationFailed","displayStatus":null,"level":null,"message":"Dependent
-        extension: microsoft.extensionsusage installation failed, id: microsoft.extensionsusage-v1
-        with reason: {\"ErrorStatus\":{\"Code\":\"Failed to install the extension\",\"Message\":\"Error:
-        [ InnerError: [Helm installation failed : Resource already existing in your
-        cluster : Recommendation Manually delete the resource(s) that currently exist
-        in your cluster and try installation again. To delete these resources run
-        the following commands: kubectl delete <resource type> -n <resource namespace>
-        <resource name> : InnerError [Unable to continue with install: ServiceAccount
-        \\\"billing-operatorsa\\\" in namespace \\\"azure-extensions-usage-system\\\"
-        exists and cannot be imported into the current release: invalid ownership
-        metadata; annotation validation error: key \\\"meta.helm.sh/release-name\\\"
-        must equal \\\"microsoft.extensionsusage-v1\\\": current value is \\\"systemextension.microsoft.extensionsusage\\\"]]]
-        occurred while doing the operation : [Create] on the config . For general
-        troubleshooting visit: https://aka.ms/k8s-extensions-TSG \"}} . For general
-        troubleshooting visit: https://aka.ms/k8s-extensions-TSG ","time":null}]},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2026-01-28T16:02:35.890562+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2026-02-05T19:06:46.2746929+00:00"},"identity":{"type":"SystemAssigned","principalId":"22ffd585-9708-41bf-b620-23d839d20ecc"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/vi-arc-6-wus2-rg/providers/Microsoft.Kubernetes/connectedClusters/vi-arc-6-wus2-connected-aks/Providers/Microsoft.KubernetesConfiguration/extensions/microsoft.extensionsusage-v1","name":"microsoft.extensionsusage-v1","type":"Microsoft.KubernetesConfiguration/extensions","properties":{"extensionType":"microsoft.extensionsusage","autoUpgradeMinorVersion":true,"releaseTrain":"stable","version":"1.9.54","scope":{"cluster":{"releaseNamespace":"azure-extensions-usage-system"}},"provisioningState":"Failed","installState":"Failed","configurationSettings":{},"configurationProtectedSettings":{},"statuses":[{"code":"InstallationFailed","displayStatus":null,"level":null,"message":"Error:
-        [ InnerError: [Helm installation failed : Resource already existing in your
-        cluster : Recommendation Manually delete the resource(s) that currently exist
-        in your cluster and try installation again. To delete these resources run
-        the following commands: kubectl delete <resource type> -n <resource namespace>
-        <resource name> : InnerError [Unable to continue with install: ServiceAccount
-        \"billing-operatorsa\" in namespace \"azure-extensions-usage-system\" exists
-        and cannot be imported into the current release: invalid ownership metadata;
-        annotation validation error: key \"meta.helm.sh/release-name\" must equal
-        \"microsoft.extensionsusage-v1\": current value is \"systemextension.microsoft.extensionsusage\"]]]
-        occurred while doing the operation : [AutoUpdate] on the config . For general
-        troubleshooting visit: https://aka.ms/k8s-extensions-TSG ","time":null}]},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2026-02-05T19:04:28.6747126+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2026-02-05T19:04:28.6747126+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/vi-arc-6-wus2-rg/providers/Microsoft.Kubernetes/connectedClusters/vi-arc-6-wus2-connected-aks/Providers/Microsoft.KubernetesConfiguration/extensions/vi-arc-6-wus2-connected-aks-certmgr","name":"vi-arc-6-wus2-connected-aks-certmgr","type":"Microsoft.KubernetesConfiguration/extensions","properties":{"extensionType":"microsoft.iotoperations.platform","autoUpgradeMinorVersion":true,"releaseTrain":"Stable","version":"1.0.1","scope":{"cluster":{"releaseNamespace":"cert-manager"}},"provisioningState":"Succeeded","installState":"Installed","configurationSettings":{},"configurationProtectedSettings":{},"statuses":[]},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2025-12-15T14:13:59.8854941+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2025-12-15T14:32:34.8867444+00:00"},"identity":{"type":"SystemAssigned","principalId":"4665435d-da08-4aef-98a2-0fdb80f632ac"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/vi-arc-6-wus2-rg/providers/Microsoft.Kubernetes/connectedClusters/vi-arc-6-wus2-connected-aks/Providers/Microsoft.KubernetesConfiguration/extensions/systemextension.microsoft.extensionsusage","name":"systemextension.microsoft.extensionsusage","type":"Microsoft.KubernetesConfiguration/extensions","properties":{"extensionType":"microsoft.extensionsusage","autoUpgradeMinorVersion":true,"releaseTrain":"stable","version":"1.9.54","scope":{"cluster":{"releaseNamespace":"azure-extensions-usage-system"}},"provisioningState":"Succeeded","installState":"Installed","configurationSettings":{},"configurationProtectedSettings":{},"statuses":[]},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2025-12-14T10:48:59.5618459+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2025-12-14T10:48:59.5618459+00:00"}}],"nextLink":null}'
-    headers:
-      api-supported-versions:
-      - 2021-05-01-preview
-      cache-control:
-      - no-cache
-      content-length:
-      - '7080'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Thu, 12 Feb 2026 11:57:35 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f5ac4fd8-e281-40da-84e2-4240abed4843/westus2/1ed54030-c098-4bca-b7fe-a51eb8d83d9d
-      x-ms-ratelimit-remaining-subscription-global-reads:
-      - '16499'
-      x-msedge-ref:
-      - 'Ref A: B4CC38B53C3C496E8F2F666C5FF4B1C1 Ref B: TLV231050412052 Ref C: 2026-02-12T11:57:35Z'
-    status:
-      code: 200
-      message: OK
+  - request:
+      body: null
+      headers:
+        Accept:
+          - application/json
+        Accept-Encoding:
+          - gzip, deflate
+        CommandName:
+          - vi extension show
+        Connection:
+          - keep-alive
+        Content-Type:
+          - application/json
+        ParameterSetName:
+          - -g -c
+        User-Agent:
+          - AZURECLI/2.83.0 azsdk-python-core/1.38.0 Python/3.13.12 (Windows-11-10.0.26200-SP0)
+      method: GET
+      uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/vi-arc-6-wus2-rg/providers/Microsoft.Kubernetes/connectedClusters/vi-arc-6-wus2-connected-aks/Providers/Microsoft.KubernetesConfiguration/extensions?api-version=2021-05-01-preview
+    response:
+      body:
+        string: "***"
+      headers:
+        api-supported-versions:
+          - 2021-05-01-preview
+        cache-control:
+          - no-cache
+        content-length:
+          - "7080"
+        content-type:
+          - application/json; charset=utf-8
+        date:
+          - Thu, 12 Feb 2026 11:57:35 GMT
+        expires:
+          - "-1"
+        pragma:
+          - no-cache
+        strict-transport-security:
+          - max-age=31536000; includeSubDomains
+        x-cache:
+          - CONFIG_NOCACHE
+        x-content-type-options:
+          - nosniff
+        x-ms-operation-identifier:
+          - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f5ac4fd8-e281-40da-84e2-4240abed4843/westus2/1ed54030-c098-4bca-b7fe-a51eb8d83d9d
+        x-ms-ratelimit-remaining-subscription-global-reads:
+          - "16499"
+        x-msedge-ref:
+          - "Ref A: B4CC38B53C3C496E8F2F666C5FF4B1C1 Ref B: TLV231050412052 Ref C: 2026-02-12T11:57:35Z"
+      status:
+        code: 200
+        message: OK
 version: 1

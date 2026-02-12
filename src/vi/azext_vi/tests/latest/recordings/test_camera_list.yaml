@@ -1,173 +1,148 @@
 interactions:
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - vi camera list
-      Connection:
-      - keep-alive
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - -g -c
-      User-Agent:
-      - AZURECLI/2.83.0 azsdk-python-core/1.38.0 Python/3.13.12 (Windows-11-10.0.26200-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/vi-arc-6-wus2-rg/providers/Microsoft.Kubernetes/connectedClusters/vi-arc-6-wus2-connected-aks/Providers/Microsoft.KubernetesConfiguration/extensions?api-version=2021-05-01-preview
-  response:
-    body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/vi-arc-6-wus2-rg/providers/Microsoft.Kubernetes/connectedClusters/vi-arc-6-wus2-connected-aks/Providers/Microsoft.KubernetesConfiguration/extensions/vi-arc-6-wus2","name":"vi-arc-6-wus2","type":"Microsoft.KubernetesConfiguration/extensions","properties":{"extensionType":"microsoft.videoindexer","autoUpgradeMinorVersion":false,"releaseTrain":"dev","version":"1.4.55-ylivneh-main","scope":{"cluster":{"releaseNamespace":"video-indexer"}},"provisioningState":"Failed","installState":"Unknown","configurationSettings":{"videoIndexer.endpointUri":"https://vi-arc-6-wus2.vi.media.dev.azure-int.net","videoIndexer.accountId":"6df236fc-c73a-4b26-964a-588673335993","videoIndexer.accountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/vi-fe-arc/providers/Microsoft.VideoIndexer/accounts/VI-FE-ARC-2","videoIndexer.mediaUploadsEnabled":"True","videoIndexer.liveVideoStreamEnabled":"True","videoIndexer.rag.enabled":"False","videoIndexer.rag.endpoint":"vi-arc-6-wus2-rag.vi.media.dev.azure-int.net","videoIndexer.rag.applicationId":"","videoIndexer.rag.tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","videoIndexer.rag.managedIdentityClientId":"","videoIndexer.agents.enabled":"True","ViAi.mediaServerStreams.enabled":"True","storage.storageClass":"azurefile-csi-premium","storage.accessMode":"ReadWriteMany","ViAi.gpu.enabled":"False","ViAi.gpu.tolerations.key":"nvidia.com/gpu","ViAi.LiveSummarization.enabled":"True","alerts.enabled":"False","videoIndexer.webApi.config.apimInternalsBaseUrl":"https://vi-apim-dev.azure-api.net/vi-dev13-internals/","videoIndexer.webApi.config.apimOperationsBaseUrl":"https://vi-apim-dev.azure-api.net/vi-dev13-Operations/"},"configurationProtectedSettings":{},"statuses":[{"code":"InstallationFailed","displayStatus":null,"level":null,"message":"Dependent
-        extension: microsoft.extensionsusage installation failed, id: microsoft.extensionsusage-v1
-        with reason: {\"ErrorStatus\":{\"Code\":\"Failed to install the extension\",\"Message\":\"Error:
-        [ InnerError: [Helm installation failed : Resource already existing in your
-        cluster : Recommendation Manually delete the resource(s) that currently exist
-        in your cluster and try installation again. To delete these resources run
-        the following commands: kubectl delete <resource type> -n <resource namespace>
-        <resource name> : InnerError [Unable to continue with install: ServiceAccount
-        \\\"billing-operatorsa\\\" in namespace \\\"azure-extensions-usage-system\\\"
-        exists and cannot be imported into the current release: invalid ownership
-        metadata; annotation validation error: key \\\"meta.helm.sh/release-name\\\"
-        must equal \\\"microsoft.extensionsusage-v1\\\": current value is \\\"systemextension.microsoft.extensionsusage\\\"]]]
-        occurred while doing the operation : [Create] on the config . For general
-        troubleshooting visit: https://aka.ms/k8s-extensions-TSG \"}} . For general
-        troubleshooting visit: https://aka.ms/k8s-extensions-TSG ","time":null}]},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2026-01-28T16:02:35.890562+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2026-02-05T19:06:46.2746929+00:00"},"identity":{"type":"SystemAssigned","principalId":"22ffd585-9708-41bf-b620-23d839d20ecc"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/vi-arc-6-wus2-rg/providers/Microsoft.Kubernetes/connectedClusters/vi-arc-6-wus2-connected-aks/Providers/Microsoft.KubernetesConfiguration/extensions/microsoft.extensionsusage-v1","name":"microsoft.extensionsusage-v1","type":"Microsoft.KubernetesConfiguration/extensions","properties":{"extensionType":"microsoft.extensionsusage","autoUpgradeMinorVersion":true,"releaseTrain":"stable","version":"1.9.54","scope":{"cluster":{"releaseNamespace":"azure-extensions-usage-system"}},"provisioningState":"Failed","installState":"Failed","configurationSettings":{},"configurationProtectedSettings":{},"statuses":[{"code":"InstallationFailed","displayStatus":null,"level":null,"message":"Error:
-        [ InnerError: [Helm installation failed : Resource already existing in your
-        cluster : Recommendation Manually delete the resource(s) that currently exist
-        in your cluster and try installation again. To delete these resources run
-        the following commands: kubectl delete <resource type> -n <resource namespace>
-        <resource name> : InnerError [Unable to continue with install: ServiceAccount
-        \"billing-operatorsa\" in namespace \"azure-extensions-usage-system\" exists
-        and cannot be imported into the current release: invalid ownership metadata;
-        annotation validation error: key \"meta.helm.sh/release-name\" must equal
-        \"microsoft.extensionsusage-v1\": current value is \"systemextension.microsoft.extensionsusage\"]]]
-        occurred while doing the operation : [AutoUpdate] on the config . For general
-        troubleshooting visit: https://aka.ms/k8s-extensions-TSG ","time":null}]},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2026-02-05T19:04:28.6747126+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2026-02-05T19:04:28.6747126+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/vi-arc-6-wus2-rg/providers/Microsoft.Kubernetes/connectedClusters/vi-arc-6-wus2-connected-aks/Providers/Microsoft.KubernetesConfiguration/extensions/vi-arc-6-wus2-connected-aks-certmgr","name":"vi-arc-6-wus2-connected-aks-certmgr","type":"Microsoft.KubernetesConfiguration/extensions","properties":{"extensionType":"microsoft.iotoperations.platform","autoUpgradeMinorVersion":true,"releaseTrain":"Stable","version":"1.0.1","scope":{"cluster":{"releaseNamespace":"cert-manager"}},"provisioningState":"Succeeded","installState":"Installed","configurationSettings":{},"configurationProtectedSettings":{},"statuses":[]},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2025-12-15T14:13:59.8854941+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2025-12-15T14:32:34.8867444+00:00"},"identity":{"type":"SystemAssigned","principalId":"4665435d-da08-4aef-98a2-0fdb80f632ac"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/vi-arc-6-wus2-rg/providers/Microsoft.Kubernetes/connectedClusters/vi-arc-6-wus2-connected-aks/Providers/Microsoft.KubernetesConfiguration/extensions/systemextension.microsoft.extensionsusage","name":"systemextension.microsoft.extensionsusage","type":"Microsoft.KubernetesConfiguration/extensions","properties":{"extensionType":"microsoft.extensionsusage","autoUpgradeMinorVersion":true,"releaseTrain":"stable","version":"1.9.54","scope":{"cluster":{"releaseNamespace":"azure-extensions-usage-system"}},"provisioningState":"Succeeded","installState":"Installed","configurationSettings":{},"configurationProtectedSettings":{},"statuses":[]},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2025-12-14T10:48:59.5618459+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2025-12-14T10:48:59.5618459+00:00"}}],"nextLink":null}'
-    headers:
-      api-supported-versions:
-      - 2021-05-01-preview
-      cache-control:
-      - no-cache
-      content-length:
-      - '7080'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Thu, 12 Feb 2026 11:57:35 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f5ac4fd8-e281-40da-84e2-4240abed4843/westus2/55f68499-8acc-42ef-9db1-24a9b0a76a88
-      x-ms-ratelimit-remaining-subscription-global-reads:
-      - '16499'
-      x-msedge-ref:
-      - 'Ref A: 1641C294C80D4475949D8054B0B1D974 Ref B: TLV231050409034 Ref C: 2026-02-12T11:57:35Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"permissionType": "Contributor", "scope": "Account", "extensionId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/vi-arc-6-wus2-rg/providers/Microsoft.Kubernetes/connectedClusters/vi-arc-6-wus2-connected-aks/Providers/Microsoft.KubernetesConfiguration/extensions/vi-arc-6-wus2"}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - vi camera list
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '301'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - -g -c
-      User-Agent:
-      - AZURECLI/2.83.0 azsdk-python-core/1.38.0 Python/3.13.12 (Windows-11-10.0.26200-SP0)
-    method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/vi-fe-arc/providers/Microsoft.VideoIndexer/accounts/VI-FE-ARC-2/generateExtensionAccessToken?api-version=2023-06-02-preview
-  response:
-    body:
-      string: '{"accessToken":"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJWZXJzaW9uIjoiMi4wLjAuMCIsIktleVZlcnNpb24iOiIyZWIyOWJlMzBlMDI0YzcxOWNhZTYzNzUwOWRjYzVlMCIsIkFjY291bnRJZCI6IjZkZjIzNmZjLWM3M2EtNGIyNi05NjRhLTU4ODY3MzMzNTk5MyIsIkFjY291bnRUeXBlIjoiQXJtIiwiRXh0ZW5zaW9uSWQiOiIvc3Vic2NyaXB0aW9ucy8yNDIzN2I3Mi04NTQ2LTRkYTUtYjIwNC04YzNjYjc2ZGQ5MzAvcmVzb3VyY2VHcm91cHMvdmktYXJjLTYtd3VzMi1yZy9wcm92aWRlcnMvTWljcm9zb2Z0Lkt1YmVybmV0ZXMvY29ubmVjdGVkQ2x1c3RlcnMvdmktYXJjLTYtd3VzMi1jb25uZWN0ZWQtYWtzL1Byb3ZpZGVycy9NaWNyb3NvZnQuS3ViZXJuZXRlc0NvbmZpZ3VyYXRpb24vZXh0ZW5zaW9ucy92aS1hcmMtNi13dXMyIiwiTGl2ZUVuYWJsZWQiOiJUcnVlIiwiUGVybWlzc2lvbiI6IkNvbnRyaWJ1dG9yIiwiRXh0ZXJuYWxVc2VySWQiOiJGNUFDNEZEOEUyODE0MERBODRFMjQyNDBBQkVENDg0MyIsIlVzZXJUeXBlIjoiTWljcm9zb2Z0Q29ycEFhZCIsIklzc3VlckxvY2F0aW9uIjoid2VzdHVzMiIsIm5iZiI6MTc3MDg5NzE1NiwiZXhwIjoxNzcwOTAxMDU2LCJpc3MiOiJodHRwczovL3ZpLWFwaW0tZGV2LmF6dXJlLWFwaS5uZXQvdmktZGV2MTMtT3BlcmF0aW9ucy8iLCJhdWQiOiJodHRwczovL3ZpLWFwaW0tZGV2LmF6dXJlLWFwaS5uZXQvdmktZGV2MTMtT3BlcmF0aW9ucy8ifQ.cyH5iLu2SB1-tFBLyUEOBuBEDX7nbxmtXDgAk2RuMOfz-D0Wqy1OYkhm9t_kKaxKQkSTGWe_6Q1OABJNiQZFu_-C1CUOSpq_DnzoqYBdnBpOyUf_o1xBItfd9hou8sQ_ZhdtghXtBsGco1struBmfbkNIFpIJ9j8Jd8tIF_jkFyd2M61X0bcQ4xc-ltJCQB8itCwFrwCUbbM1-ithWiJNP14Q32juKx0FVaFGe57tBDfvnbErOwpO0s3cDdG7iiq-kNoylfgPXxuvdUzwSicDlkX-H4O9Lb3AiH__u4SYzIBAqzomI8FDBqPRxlWL0Qh5wmSDgVHGiY0YZi_QL0l7A"}'
-    headers:
-      access-control-allow-credentials:
-      - 'true'
-      cache-control:
-      - no-cache
-      content-length:
-      - '1336'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Thu, 12 Feb 2026 11:57:36 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
-      x-cache:
-      - CONFIG_NOCACHE
-      x-content-type-options:
-      - nosniff
-      x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f5ac4fd8-e281-40da-84e2-4240abed4843/westus2/6cd265fb-2c95-4743-9532-8118bae2db66
-      x-ms-providerhub-traffic:
-      - 'True'
-      x-ms-ratelimit-remaining-subscription-global-writes:
-      - '11999'
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '799'
-      x-msedge-ref:
-      - 'Ref A: 73C8307B1AA4449AB226B50A735979B9 Ref B: TLV231050409031 Ref C: 2026-02-12T11:57:36Z'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.32.4
-    method: GET
-    uri: https://vi-arc-6-wus2.vi.media.dev.azure-int.net/Accounts/6df236fc-c73a-4b26-964a-588673335993/cameras
-  response:
-    body:
-      string: '{"results":[{"id":"196d5043-4e10-4b60-a159-09c78ae75b06","name":"cars","description":"cars","status":"Online","rtspUrl":"rtsp://media-server.video-indexer:8554/cars","presetId":null,"isPinned":true,"liveStreamingEnabled":true,"recordingEnabled":true,"recordingsRetentionInHours":72,"insightsRetentionInHours":4320,"deletionTime":null,"createTime":"2026-02-08T14:22:36.3766667+00:00","lastUpdateTime":"2026-02-12T11:56:07.8+00:00"}],"nextPage":{"pageSize":25,"skip":0,"done":true,"totalCount":1}}'
-    headers:
-      connection:
-      - keep-alive
-      content-length:
-      - '495'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Thu, 12 Feb 2026 11:57:38 GMT
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-    status:
-      code: 200
-      message: OK
+  - request:
+      body: null
+      headers:
+        Accept:
+          - application/json
+        Accept-Encoding:
+          - gzip, deflate
+        CommandName:
+          - vi camera list
+        Connection:
+          - keep-alive
+        Content-Type:
+          - application/json
+        ParameterSetName:
+          - -g -c
+        User-Agent:
+          - AZURECLI/2.83.0 azsdk-python-core/1.38.0 Python/3.13.12 (Windows-11-10.0.26200-SP0)
+      method: GET
+      uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/vi-arc-6-wus2-rg/providers/Microsoft.Kubernetes/connectedClusters/vi-arc-6-wus2-connected-aks/Providers/Microsoft.KubernetesConfiguration/extensions?api-version=2021-05-01-preview
+    response:
+      body:
+        string: ""
+      headers:
+        api-supported-versions:
+          - 2021-05-01-preview
+        cache-control:
+          - no-cache
+        content-length:
+          - "7080"
+        content-type:
+          - application/json; charset=utf-8
+        date:
+          - Thu, 12 Feb 2026 11:57:35 GMT
+        expires:
+          - "-1"
+        pragma:
+          - no-cache
+        strict-transport-security:
+          - max-age=31536000; includeSubDomains
+        x-cache:
+          - CONFIG_NOCACHE
+        x-content-type-options:
+          - nosniff
+        x-ms-operation-identifier:
+          - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f5ac4fd8-e281-40da-84e2-4240abed4843/westus2/55f68499-8acc-42ef-9db1-24a9b0a76a88
+        x-ms-ratelimit-remaining-subscription-global-reads:
+          - "16499"
+        x-msedge-ref:
+          - "Ref A: 1641C294C80D4475949D8054B0B1D974 Ref B: TLV231050409034 Ref C: 2026-02-12T11:57:35Z"
+      status:
+        code: 200
+        message: OK
+  - request:
+      body: '{"permissionType": "Contributor", "scope": "Account", "extensionId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/vi-arc-6-wus2-rg/providers/Microsoft.Kubernetes/connectedClusters/vi-arc-6-wus2-connected-aks/Providers/Microsoft.KubernetesConfiguration/extensions/vi-arc-6-wus2"}'
+      headers:
+        Accept:
+          - application/json
+        Accept-Encoding:
+          - gzip, deflate
+        CommandName:
+          - vi camera list
+        Connection:
+          - keep-alive
+        Content-Length:
+          - "301"
+        Content-Type:
+          - application/json
+        ParameterSetName:
+          - -g -c
+        User-Agent:
+          - AZURECLI/2.83.0 azsdk-python-core/1.38.0 Python/3.13.12 (Windows-11-10.0.26200-SP0)
+      method: POST
+      uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/vi-fe-arc/providers/Microsoft.VideoIndexer/accounts/VI-FE-ARC-2/generateExtensionAccessToken?api-version=2023-06-02-preview
+    response:
+      body:
+        string: '"****'
+      headers:
+        access-control-allow-credentials:
+          - "true"
+        cache-control:
+          - no-cache
+        content-length:
+          - "1336"
+        content-type:
+          - application/json; charset=utf-8
+        date:
+          - Thu, 12 Feb 2026 11:57:36 GMT
+        expires:
+          - "-1"
+        pragma:
+          - no-cache
+        strict-transport-security:
+          - max-age=31536000; includeSubDomains
+        vary:
+          - Accept-Encoding
+        x-cache:
+          - CONFIG_NOCACHE
+        x-content-type-options:
+          - nosniff
+        x-ms-operation-identifier:
+          - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f5ac4fd8-e281-40da-84e2-4240abed4843/westus2/6cd265fb-2c95-4743-9532-8118bae2db66
+        x-ms-providerhub-traffic:
+          - "True"
+        x-ms-ratelimit-remaining-subscription-global-writes:
+          - "11999"
+        x-ms-ratelimit-remaining-subscription-writes:
+          - "799"
+        x-msedge-ref:
+          - "Ref A: 73C8307B1AA4449AB226B50A735979B9 Ref B: TLV231050409031 Ref C: 2026-02-12T11:57:36Z"
+      status:
+        code: 200
+        message: OK
+  - request:
+      body: null
+      headers:
+        Accept:
+          - "*/*"
+        Accept-Encoding:
+          - gzip, deflate
+        Connection:
+          - keep-alive
+        User-Agent:
+          - python-requests/2.32.4
+      method: GET
+      uri: https://dev.azure-int.net/cameras
+    response:
+      body:
+        string: "***"
+      headers:
+        connection:
+          - keep-alive
+        content-length:
+          - "495"
+        content-type:
+          - application/json; charset=utf-8
+        date:
+          - Thu, 12 Feb 2026 11:57:38 GMT
+        strict-transport-security:
+          - max-age=31536000; includeSubDomains
+        transfer-encoding:
+          - chunked
+        vary:
+          - Accept-Encoding
+      status:
+        code: 200
+        message: OK
 version: 1
