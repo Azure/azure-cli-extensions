@@ -96,45 +96,45 @@ def build_get_extension_token_request(
 
 
 def get_extension_access_token_async(
-        client: Any,
-        serializer: Serializer,
-        subscription_id: str,
-        extension_id: str,
-        account_rg: str,
-        account_name: str,
-        error_map=None,
-        headers=None,
-        params=None,
-        **kwargs: Any):
+    client: Any,
+    serializer: Serializer,
+    subscription_id: str,
+    extension_id: str,
+    account_rg: str,
+    account_name: str,
+    error_map=None,
+    headers=None,
+    params=None,
+    **kwargs: Any):
 
-        tokenRequest = ExtensionAccessTokenRequest()
-        tokenRequest.permissionType = "Contributor"
-        tokenRequest.scope = "Account"
-        tokenRequest.extensionId = extension_id
+    token_request = ExtensionAccessTokenRequest()
+    token_request.permissionType = "Contributor"
+    token_request.scope = "Account"
+    token_request.extensionId = extension_id
 
-        body_content = serializer.body(tokenRequest, "ExtensionAccessTokenRequest")
+    body_content = serializer.body(token_request, "ExtensionAccessTokenRequest")
 
-        _request = build_get_extension_token_request(
-            subscription_id=subscription_id,
-            account_rg=account_rg,
-            account_name=account_name,
-            json=body_content,
-            headers=headers,
-            params=params,
-        )
+    _request = build_get_extension_token_request(
+        subscription_id=subscription_id,
+        account_rg=account_rg,
+        account_name=account_name,
+        json=body_content,
+        headers=headers,
+        params=params,
+    )
 
-        _request.url = client.format_url(_request.url)
-        _stream = False
-        pipeline_response: PipelineResponse = client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
-        )
+    _request.url = client.format_url(_request.url)
+    _stream = False
+    pipeline_response: PipelineResponse = client._pipeline.run(  # pylint: disable=protected-access
+        _request, stream=_stream, **kwargs
+    )
 
-        response = pipeline_response.http_response
-        if response.status_code not in [200]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+    response = pipeline_response.http_response
+    if response.status_code not in [200]:
+        map_error(status_code=response.status_code, response=response, error_map=error_map)
+        raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        return response.json().get("accessToken")
+    return response.json().get("accessToken")
 
 class ExtensionOperations:
     def __init__(self, *args, **kwargs):

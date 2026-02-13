@@ -26,7 +26,7 @@ helps[f'{consts.EXTENSION_NAME} extension show'] = f"""
       - name: Show Video Indexer Extension details
         text: |-
           az {consts.EXTENSION_NAME} extension show --resource-group my-resource-group \
---connected-cluster mycluster
+          --connected-cluster mycluster
 """
 
 helps[f'{consts.EXTENSION_NAME} extension troubleshoot'] = f"""
@@ -38,7 +38,7 @@ collects logs and other information that can be used to diagnose issues with the
       - name: Troubleshoot a Video Indexer Extension
         text: |-
           az {consts.EXTENSION_NAME} extension troubleshoot --resource-group my-resource-group \
---connected-cluster mycluster
+          --connected-cluster mycluster
 """
 
 helps[f'{consts.EXTENSION_NAME} camera'] = """
@@ -54,5 +54,5 @@ helps[f'{consts.EXTENSION_NAME} camera list'] = f"""
       - name: List all cameras for a Video Indexer Extension
         text: |-
           az {consts.EXTENSION_NAME} camera list --resource-group my-resource-group \
---connected-cluster mycluster
+          --connected-cluster mycluster
 """
