@@ -5,7 +5,6 @@
 
 from knack.util import CLIError
 from .k8s_utils import troubleshoot_k8s_extension
-from .cameras_utils import format_cameras
 
 
 def show_vi_extension(client, resource_group_name, connected_cluster):
@@ -65,5 +64,4 @@ def list_cameras(client, resource_group_name, connected_cluster, ignore_certific
 
     response = client.cameras.list_cameras(extension=extension, ignore_certificate=ignore_certificate)
     cameras = response.get('results')
-    format_cameras(cameras)
     return cameras

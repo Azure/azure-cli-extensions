@@ -37,7 +37,6 @@ CLASSIFIERS = [
 
 DEPENDENCIES = [
     "kubernetes==24.2.0",
-    "rich==13.9.4",
     "oras==0.2.25",
 ]
 
