@@ -197,12 +197,12 @@ class FleetHublessScenarioTest(ScenarioTest):
             'gate_name': gate_name
         })
 
-        self.cmd('fleet gate approve -g {rg} -f {fleet_name} -n {gate_name}', checks=[
-            self.check('state', 'Completed')
+        self.cmd('fleet gate show -g {rg} -f {fleet_name} -n {gate_name}', checks=[
+            self.check('name', '{gate_name}')
         ])
 
-        self.cmd('fleet gate show -g {rg} -f {fleet_name} -n {updaterun}', checks=[
-            self.check('name', '{gate_name}')
+        self.cmd('fleet gate approve -g {rg} -f {fleet_name} -n {gate_name}', checks=[
+            self.check('state', 'Completed')
         ])
 
         self.cmd('fleet updaterun delete -g {rg} -n {updaterun} -f {fleet_name} --yes')
