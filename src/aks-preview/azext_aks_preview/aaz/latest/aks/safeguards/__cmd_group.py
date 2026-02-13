@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "aks safeguards",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Deployment Safeguards
+    """Manage Safeguards
     """
     pass
 
