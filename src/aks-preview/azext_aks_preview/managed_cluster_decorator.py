@@ -7380,6 +7380,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         """
         self._ensure_mc(mc)
 
+        # Call the parent class method to handle base addon profile updates
+        # (including Azure Keyvault Secrets Provider secret rotation settings)
+        mc = super().update_addon_profiles(mc)
+
         # Handle enable Azure Monitor logs
         if self.context.get_enable_azure_monitor_logs():
             self._setup_azure_monitor_logs(mc)
