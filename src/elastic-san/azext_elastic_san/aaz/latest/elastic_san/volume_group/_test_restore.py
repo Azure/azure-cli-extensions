@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "elastic-san volume-group test-restore",
-    is_preview=True,
 )
 class TestRestore(AAZCommand):
     """Validate whether a list of backed up disk snapshots can be restored into ElasticSan volumes.
@@ -23,9 +22,9 @@ class TestRestore(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-07-01-preview",
+        "version": "2025-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}/prerestore", "2024-07-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}/prerestore", "2025-09-01"],
         ]
     }
 
@@ -171,7 +170,7 @@ class TestRestore(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-07-01-preview",
+                    "api-version", "2025-09-01",
                     required=True,
                 ),
             }
