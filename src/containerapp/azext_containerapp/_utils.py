@@ -512,6 +512,19 @@ def get_cluster_extension(cmd, cluster_extension_id=None):
         extension_name=resource_name)
 
 
+def validate_environment_mode_and_workload_profiles_compatible(environment_mode, workload_profiles_enabled):
+    # If only environment_mode is specified, derive enable_workload_profiles from it
+    if environment_mode is not None:
+        is_environment_mode_workload_profiles_enabled = environment_mode.lower() != 'consumptiononly'
+
+        # Check for conflicts when both are specified
+        if workload_profiles_enabled is not None:
+            if not is_environment_mode_workload_profiles_enabled and workload_profiles_enabled:
+                raise ValidationError("Cannot use '--enable-workload-profiles' with '--environment-mode ConsumptionOnly'. Please use '--environment-mode' alone.")
+            if is_environment_mode_workload_profiles_enabled and not workload_profiles_enabled:
+                raise ValidationError("Cannot use '--enable-workload-profiles false' with '--environment-mode {}'. Please use '--environment-mode' alone.".format(environment_mode))
+
+
 def validate_custom_location(cmd, custom_location=None):
     if not is_valid_resource_id(custom_location):
         raise ValidationError('{} is not a valid Azure resource ID.'.format(custom_location))
