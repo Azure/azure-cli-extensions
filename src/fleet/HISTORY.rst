@@ -174,6 +174,6 @@ Release History
 ++++++
 * Add automatic kubelogin conversion to Azure CLI authentication for fleet get-credentials command.
 
-1.9
+1.9.0
 ++++++
 * Add 2026-02-01-preview API Version with UpdateRun MaxConcurrency support.
