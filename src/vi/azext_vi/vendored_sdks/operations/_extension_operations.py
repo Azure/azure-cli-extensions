@@ -177,7 +177,7 @@ class ExtensionOperations:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        extensions =  response.json().get("value")
+        extensions = response.json().get("value")
         extension = None
         if extensions:
             for ex in extensions:
