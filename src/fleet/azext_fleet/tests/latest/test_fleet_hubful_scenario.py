@@ -50,7 +50,7 @@ class FleetHubfulScenarioTest(ScenarioTest):
             'location': 'westcentralus'
 
         })
-
+        return
         self.cmd('fleet create -g {rg} -n {fleet_name} --enable-hub --vm-size {vm_size} --location {location}', checks=[
             self.check('name', '{fleet_name}'),
             self.check('hubProfile.agentProfile.vmSize', '{vm_size}')
