@@ -651,10 +651,15 @@ def _get_helm_paths(operating_system: OSType) -> Tuple[str, str, str, str]:
         file_extension = ".tar.gz"
         binary_name = "helm"
 
+    machine_type = platform.machine().lower()
+    if machine_type in ("arm64", "aarch64"):
+        arch = "arm64"
+    else:
+        arch = "amd64"
     download_location = f".azure{separator}helm{separator}{consts.HELM_VERSION}"
-    download_file = f"helm-{consts.HELM_VERSION}-{os_name}-amd64{file_extension}"
-    install_location = f"{download_location}{separator}{os_name}-amd64{separator}{binary_name}"
-    artifact_tag = f"helm-{consts.HELM_VERSION}-{os_name}-amd64"
+    download_file = f"helm-{consts.HELM_VERSION}-{os_name}-{arch}{file_extension}"
+    install_location = f"{download_location}{separator}{os_name}-{arch}{separator}{binary_name}"
+    artifact_tag = f"helm-{consts.HELM_VERSION}-{os_name}-{arch}"
 
     return download_location, download_file, install_location, artifact_tag
 
