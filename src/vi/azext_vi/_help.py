@@ -46,6 +46,17 @@ helps[f'{consts.EXTENSION_NAME} camera'] = """
     short-summary: Commands to manage Video Indexer cameras.
 """
 
+helps[f'{consts.EXTENSION_NAME} camera add'] = f"""
+    type: command
+    short-summary: Add a camera to a Video Indexer Extension.
+    long-summary: Add a camera to a Video Indexer Extension on a connected cluster. This command registers a camera with the extension, allowing it to be used for video indexing.
+    examples:
+      - name: Add a camera to a Video Indexer Extension
+        text: |-
+          az {consts.EXTENSION_NAME} camera add --resource-group my-resource-group \
+          --connected-cluster mycluster --camera-name mycamera --camera-url rtsp://my-url
+"""
+
 helps[f'{consts.EXTENSION_NAME} camera list'] = f"""
     type: command
     short-summary: List all cameras associated with a Video Indexer Extension.

@@ -15,4 +15,5 @@ def load_command_table(self, _):
 
     with self.command_group(f"{consts.EXTENSION_NAME} camera", client_factory=cf_vi, is_preview=True) \
             as g:
+        g.custom_command('add', 'add_camera')
         g.custom_command('list', 'list_cameras')

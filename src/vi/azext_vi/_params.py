@@ -14,7 +14,16 @@ from azure.cli.core.commands.parameters import get_three_state_flag
 def load_arguments(self, _: CLICommand):
     connected_cluster = CLIArgumentType(
         options_list=['--connected-cluster', '-c'],
+        required=False,
         help='Name of the Kubernetes connected cluster')
+    camera_name = CLIArgumentType(
+        options_list=['--camera-name'],
+        required=False,
+        help='Name of the camera to be added to Video Indexer')
+    camera_url = CLIArgumentType(
+        options_list=['--camera-url'],
+        required=False,
+        help='URL of the camera. Should be in RTSP format, e.g. rtsp://<camera-ip>/stream')
     ignore_certificate = CLIArgumentType(
         options_list=['--ignore-certificate', '-i'],
         arg_type=get_three_state_flag(),
@@ -27,6 +36,12 @@ def load_arguments(self, _: CLICommand):
 
     with self.argument_context(f"{consts.EXTENSION_NAME} extension troubleshoot") as c:
         c.argument('connected_cluster', connected_cluster)
+
+    with self.argument_context(f"{consts.EXTENSION_NAME} camera add") as c:
+        c.argument('connected_cluster', connected_cluster)
+        c.argument('ignore_certificate', ignore_certificate)
+        c.argument('camera_name', camera_name)
+        c.argument('camera_url', camera_url)
 
     with self.argument_context(f"{consts.EXTENSION_NAME} camera list") as c:
         c.argument('connected_cluster', connected_cluster)

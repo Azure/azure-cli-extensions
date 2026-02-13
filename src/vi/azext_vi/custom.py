@@ -36,6 +36,23 @@ def troubleshoot_vi_extension(cmd, client, resource_group_name, connected_cluste
     troubleshoot_k8s_extension(cmd=cmd, name=extension.get("name"), namespace_list=namespace)
 
 
+def add_camera(client, resource_group_name, connected_cluster, camera_name, camera_url, ignore_certificate=False):
+    extension = client.extensions.get_vi_extension(
+        resource_group=resource_group_name,
+        connected_cluster=connected_cluster)
+    if not extension:
+        raise CLIError(
+            f'VI Extension not found in connected cluster "{connected_cluster}" '
+            f'under resource group "{resource_group_name}". '
+            f'Please ensure the VI Extension is installed before listing cameras.')
+
+    response = client.cameras.add_camera(extension=extension,
+                                         camera_name=camera_name,
+                                         camera_url=camera_url,
+                                         ignore_certificate=ignore_certificate)
+    return response
+
+
 def list_cameras(client, resource_group_name, connected_cluster, ignore_certificate=False):
     extension = client.extensions.get_vi_extension(
         resource_group=resource_group_name,

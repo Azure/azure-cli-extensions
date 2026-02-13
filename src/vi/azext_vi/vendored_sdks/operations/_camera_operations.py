@@ -37,6 +37,45 @@ class CameraOperations:
         self._serialize = input_args.pop(0) if input_args else kwargs.pop("serializer")
         self._deserialize = input_args.pop(0) if input_args else kwargs.pop("deserializer")
 
+    def add_camera(self, extension: Any, camera_name: str, camera_url: str, **kwargs: Any):
+        error_map = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+        ignore_certificate = kwargs.pop("ignore_certificate", False)
+
+        extension_id, account_name, account_rg, extension_url = _extract_extension_info(extension)
+
+        token = get_extension_access_token_async(
+            client=self._client,
+            serializer=self._serialize,
+            subscription_id=self._config.subscription_id,
+            extension_id=extension_id,
+            account_name=account_name,
+            account_rg=account_rg,
+            error_map=error_map,
+            headers=_headers,
+            params=_params)
+
+        url = f"{extension_url}/cameras"
+        camera = {
+            "Name": camera_name,
+            "Description": camera_name,
+            "RtspUrl": camera_url,
+            "LiveStreamingEnabled": True,
+            "RecordingEnabled": True,
+            "IsPinned": True,
+            "RecordingsRetentionInHours": 72,
+        }
+        response = do_request("POST", url=url, json=camera, token=token, ignore_certificate=ignore_certificate)
+        return response
+
     def list_cameras(self, extension: Any, **kwargs: Any):
         error_map = {
             401: ClientAuthenticationError,
@@ -50,36 +89,7 @@ class CameraOperations:
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
         ignore_certificate = kwargs.pop("ignore_certificate", False)
 
-        extension_id = extension.get('id')
-
-        properties = extension.get('properties')
-        if properties is None:
-            raise ValueError("Extension is missing 'properties'.")
-
-        configuration = properties.get('configurationSettings')
-        if configuration is None:
-            raise ValueError("Extension properties are missing 'configurationSettings'.")
-
-        account_id = configuration.get('videoIndexer.accountId')
-        if account_id is None:
-            raise ValueError("Configuration is missing 'videoIndexer.accountId'.")
-
-        account_resource_id = configuration.get('videoIndexer.accountResourceId')
-        if account_resource_id is None:
-            raise ValueError("Configuration is missing 'videoIndexer.accountResourceId'.")
-
-        base_extension_url = configuration.get('videoIndexer.endpointUri')
-        if base_extension_url is None:
-            raise ValueError("Configuration is missing 'videoIndexer.endpointUri'.")
-
-        extension_url = f"{base_extension_url}/Accounts/{account_id}"
-        parts = account_resource_id.strip("/").split("/")
-
-        if len(parts) < 4:
-            raise ValueError(f"Invalid account_resource_id format: {account_resource_id!r}")
-
-        account_rg = parts[3]
-        account_name = parts[-1]
+        extension_id, account_name, account_rg, extension_url = _extract_extension_info(extension)
 
         token = get_extension_access_token_async(
             client=self._client,
@@ -95,3 +105,38 @@ class CameraOperations:
         url = f"{extension_url}/cameras"
         response = do_request("GET", url=url, token=token, ignore_certificate=ignore_certificate)
         return response
+
+
+def _extract_extension_info(extension):
+    extension_id = extension.get('id')
+
+    properties = extension.get('properties')
+    if properties is None:
+        raise ValueError("Extension is missing 'properties'.")
+
+    configuration = properties.get('configurationSettings')
+    if configuration is None:
+        raise ValueError("Extension properties are missing 'configurationSettings'.")
+
+    account_id = configuration.get('videoIndexer.accountId')
+    if account_id is None:
+        raise ValueError("Configuration is missing 'videoIndexer.accountId'.")
+
+    account_resource_id = configuration.get('videoIndexer.accountResourceId')
+    if account_resource_id is None:
+        raise ValueError("Configuration is missing 'videoIndexer.accountResourceId'.")
+
+    base_extension_url = configuration.get('videoIndexer.endpointUri')
+    if base_extension_url is None:
+        raise ValueError("Configuration is missing 'videoIndexer.endpointUri'.")
+
+    extension_url = f"{base_extension_url}/Accounts/{account_id}"
+    parts = account_resource_id.strip("/").split("/")
+
+    if len(parts) < 4:
+        raise ValueError(f"Invalid account_resource_id format: {account_resource_id!r}")
+
+    account_rg = parts[3]
+    account_name = parts[-1]
+
+    return extension_id, account_name, account_rg, extension_url
