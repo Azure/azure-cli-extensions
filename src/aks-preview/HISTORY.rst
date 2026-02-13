@@ -12,9 +12,6 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 * `az aks create/update`: Add `--enable-azure-monitor-logs` support to container network logs validation.
-
-19.0.0b23
-+++++++
 * `az aks create/update`: Add `--enable-default-domain` and `--disable-default-domain` parameters to manage the default domain feature for web app routing.
 
 19.0.0b22
