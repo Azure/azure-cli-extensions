@@ -76,14 +76,40 @@ class Unstage(AAZCommand):
         # Step 1: Trigger unstage LRO
         yield self.TargetsUnstageSolutionVersion(ctx=self.ctx)()
         # Step 2: Fetch the updated SolutionVersion after LRO completes
-        self.SolutionVersionsGet(ctx=self.ctx)()
+        if not getattr(self.ctx.args, "no_wait", False):
+            self.SolutionVersionsGet(ctx=self.ctx, command_instance=self)()
         self.post_operations()
 
     @register_callback
     def pre_operations(self):
+        from azure.cli.core.azclierror import ValidationError
         from knack.log import get_logger
+        
+        # Validate solution-version-id format before making any API calls
+        solution_version_id = self.ctx.args.solution_version_id.to_serialized_data()
+        parts = solution_version_id.split('/')
+        solution_name = None
+        solution_version_name = None
+        for i, part in enumerate(parts):
+            if part.lower() == 'solutions' and i + 1 < len(parts):
+                solution_name = parts[i + 1]
+            if part.lower() == 'versions' and i + 1 < len(parts):
+                solution_version_name = parts[i + 1]
+        
+        # Validate that required segments were found in the ARM ID
+        if solution_name is None or solution_version_name is None:
+            raise ValidationError(
+                f"Invalid solution-version-id format: '{solution_version_id}'. "
+                f"Expected format: '/subscriptions/{{subscriptionId}}/resourceGroups/{{resourceGroupName}}/"
+                f"providers/Microsoft.Edge/targets/{{targetName}}/solutions/{{solutionName}}/versions/{{versionName}}'"
+            )
+        
+        # Store parsed values as instance variables for reuse in SolutionVersionsGet
+        self._solution_name = solution_name
+        self._solution_version_name = solution_version_name
+        
         logger = get_logger(__name__)
-        logger.warning("WARNING: Unstaging this solution version will remove associated images from the connected registry within next 24-hour.")
+        logger.warning("WARNING: Unstaging this solution version will remove associated images from the connected registry within next 24 hours.")
 
     @register_callback
     def post_operations(self):
@@ -183,6 +209,10 @@ class Unstage(AAZCommand):
         """GET the SolutionVersion after LRO completes"""
         CLIENT_TYPE = "MgmtClient"
 
+        def __init__(self, ctx, command_instance):
+            super().__init__(ctx)
+            self.command_instance = command_instance
+
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
@@ -207,17 +237,6 @@ class Unstage(AAZCommand):
 
         @property
         def url_parameters(self):
-            # Parse solution-version-id directly to extract solution and version names
-            solution_version_id = self.ctx.args.solution_version_id.to_serialized_data()
-            parts = solution_version_id.split('/')
-            solution_name = None
-            solution_version_name = None
-            for i, part in enumerate(parts):
-                if part.lower() == 'solutions' and i + 1 < len(parts):
-                    solution_name = parts[i + 1]
-                if part.lower() == 'versions' and i + 1 < len(parts):
-                    solution_version_name = parts[i + 1]
-            
             parameters = {
                 **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
@@ -232,11 +251,11 @@ class Unstage(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "solutionName", solution_name,
+                    "solutionName", self.command_instance._solution_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "solutionVersionName", solution_version_name,
+                    "solutionVersionName", self.command_instance._solution_version_name,
                     required=True,
                 ),
             }
@@ -555,4 +574,4 @@ class _UnstageHelper:
         _schema.target_id = cls._schema_solution_dependency_read.target_id
 
 
-__all__ = ["Unstage"]   
+__all__ = ["Unstage"]
