@@ -865,6 +865,12 @@ def create_managed_namespace(cmd,
         operation_group="fleet_managed_namespaces"
     )
 
+    fleet_managed_namespace_properties_model = cmd.get_models(
+        "FleetManagedNamespaceProperties",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="fleet_managed_namespaces"
+    )
+
     resource_quota_model = cmd.get_models(
         "ResourceQuota",
         resource_type=CUSTOM_MGMT_FLEET,
@@ -928,13 +934,17 @@ def create_managed_namespace(cmd,
     else:
         logger.warning("--member-cluster-names was empty; namespace will not be placed on any member clusters")
 
-    managed_namespace = managed_namespace_model(
-        location=fleet.location,
-        tags=tags,
+    fleet_managed_namespace_props = fleet_managed_namespace_properties_model(
         managed_namespace_properties=managed_namespace_props,
         adoption_policy=adoption_policy,
         delete_policy=delete_policy,
         propagation_policy=propagation_policy
+    )
+
+    managed_namespace = managed_namespace_model(
+        location=fleet.location,
+        tags=tags,
+        properties=fleet_managed_namespace_props
     )
 
     return sdk_no_wait(

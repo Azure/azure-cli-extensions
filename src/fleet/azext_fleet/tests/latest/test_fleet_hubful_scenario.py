@@ -50,7 +50,6 @@ class FleetHubfulScenarioTest(ScenarioTest):
             'location': 'westcentralus'
 
         })
-        return
         self.cmd('fleet create -g {rg} -n {fleet_name} --enable-hub --vm-size {vm_size} --location {location}', checks=[
             self.check('name', '{fleet_name}'),
             self.check('hubProfile.agentProfile.vmSize', '{vm_size}')
@@ -89,9 +88,9 @@ class FleetHubfulScenarioTest(ScenarioTest):
                  '--member-cluster-names {member_name}',
                  checks=[
                      self.check('name', '{namespace_name}'),
-                     self.check('adoptionPolicy', 'Always'),
-                     self.check('deletePolicy', 'Delete'),
-                     self.check('propagationPolicy.placementProfile.defaultClusterResourcePlacement.policy.clusterNames[0]', '{member_name}')
+                     self.check('properties.adoptionPolicy', 'Always'),
+                     self.check('properties.deletePolicy', 'Delete'),
+                     self.check('properties.propagationPolicy.placementProfile.defaultClusterResourcePlacement.policy.clusterNames[0]', '{member_name}')
                  ])
         
         self.cmd('fleet namespace wait -g {rg} -f {fleet_name} -n {namespace_name} --created', checks=[self.is_empty()])
