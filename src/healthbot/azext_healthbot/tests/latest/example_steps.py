@@ -14,14 +14,14 @@ from .. import try_manual
 
 # EXAMPLE: /Bots/put/BotCreate
 @try_manual
-def step_create(test, rg, rg_2, checks=None):
+def step_create_with_sku(test, rg, rg_2, sku, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az healthbot create '
-             '--name "{myBot}" '
-             '--location "eastus" '
-             '--sku "F0" '
-             '--resource-group "{rg}"',
+    test.cmd(f'az healthbot create '
+             f'--name "{{myBot}}" '
+             f'--location "eastus" '
+             f'--sku "{sku}" '
+             f'--resource-group "{{rg}}"',
              checks=checks)
 
 
@@ -40,8 +40,7 @@ def step_list(test, rg, rg_2, checks=None):
 def step_list2(test, rg, rg_2, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az healthbot list '
-             '-g ""',
+    test.cmd('az healthbot list',
              checks=checks)
 
 
@@ -58,13 +57,13 @@ def step_show(test, rg, rg_2, checks=None):
 
 # EXAMPLE: /Bots/patch/BotUpdate
 @try_manual
-def step_update(test, rg, rg_2, checks=None):
+def step_update_with_sku(test, rg, rg_2, sku, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az healthbot update '
-             '--name "{myBot}" '
-             '--sku "F0" '
-             '--resource-group "{rg}"',
+    test.cmd(f'az healthbot update '
+             f'--name "{{myBot}}" '
+             f'--sku "{sku}" '
+             f'--resource-group "{{rg}}"',
              checks=checks)
 
 
@@ -76,4 +75,78 @@ def step_delete(test, rg, rg_2, checks=None):
     test.cmd('az healthbot delete -y '
              '--name "{myBot}" '
              '--resource-group "{rg}"',
+             checks=checks)
+
+
+# Boundary value: update with tags only, no --sku (sku=None)
+@try_manual
+def step_update_tags_only(test, rg, rg_2, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az healthbot update '
+             '--name "{myBot}" '
+             '--tags testkey=testvalue '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+# Boundary value: update with empty tags (tags='')
+@try_manual
+def step_update_empty_tags(test, rg, rg_2, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az healthbot update '
+             '--name "{myBot}" '
+             '--tags '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+# Boundary value: create with empty bot name (bot_name='')
+@try_manual
+def step_create_empty_name(test, rg, rg_2, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az healthbot create '
+             '--name "" '
+             '--location "eastus" '
+             '--sku "F0" '
+             '--resource-group "{rg}"',
+             checks=checks,
+             expect_failure=True)
+
+
+# Boundary value: create with tags
+@try_manual
+def step_create_with_tags(test, rg, rg_2, sku, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd(f'az healthbot create '
+             f'--name "{{myBot}}" '
+             f'--location "eastus" '
+             f'--sku "{sku}" '
+             f'--tags env=test '
+             f'--resource-group "{{rg}}"',
+             checks=checks)
+
+
+# Boundary value: list with empty resource group (boundary: empty string)
+@try_manual
+def step_list_empty_rg(test, rg, rg_2, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az healthbot list '
+             '-g ""',
+             checks=checks)
+
+
+# Boundary value: delete with --no-wait (no_wait=True)
+@try_manual
+def step_delete_no_wait(test, rg, rg_2, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az healthbot delete -y '
+             '--name "{myBot}" '
+             '--resource-group "{rg}" '
+             '--no-wait',
              checks=checks)
