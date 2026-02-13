@@ -95,8 +95,7 @@ class AgentPoolSSHAccess(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     LOCAL_USER = "LocalUser"
     """Can SSH onto the node as a local user using private key."""
     DISABLED = "Disabled"
-    """SSH service will be turned off on the node. More information can be found under
-    https://aka.ms/aks/ssh/disable"""
+    """SSH service will be turned off on the node."""
     ENTRA_ID = "EntraId"
     """SSH to node with EntraId integration. More information can be found under
     https://aka.ms/aks/ssh/aad"""
@@ -624,16 +623,17 @@ class NetworkPlugin(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     <https://docs.microsoft.com/azure/aks/concepts-network#kubenet-basic-networking>`_ for more
     information."""
     NONE = "none"
-    """Do not use a network plugin. A custom CNI will need to be installed after cluster creation for
-    networking functionality."""
+    """No CNI plugin is pre-installed. See `BYO CNI
+    <https://docs.microsoft.com/en-us/azure/aks/use-byo-cni>`_ for more information."""
 
 
 class NetworkPluginMode(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """The mode the network plugin should use."""
 
     OVERLAY = "overlay"
-    """Pods are given IPs from the PodCIDR address space but use Azure Routing Domains rather than
-    Kubenet reference plugins host-local and bridge."""
+    """Used with networkPlugin=azure, pods are given IPs from the PodCIDR address space but use Azure
+    Routing Domains rather than Kubenet's method of route tables. For more information visit
+    https://aka.ms/aks/azure-cni-overlay."""
 
 
 class NetworkPolicy(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -675,8 +675,8 @@ class NginxIngressControllerType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
 
 
 class NodeOSUpgradeChannel(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """Manner in which the OS on your nodes is updated. The default is Unmanaged, but may change to
-    either NodeImage or SecurityPatch at GA.
+    """Node OS Upgrade Channel. Manner in which the OS on your nodes is updated. The default is
+    NodeImage.
     """
 
     NONE = "None"
@@ -684,11 +684,16 @@ class NodeOSUpgradeChannel(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     you are responsible for your security updates"""
     UNMANAGED = "Unmanaged"
     """OS updates will be applied automatically through the OS built-in patching infrastructure. Newly
-    scaled in machines will be unpatched initially, and will be patched at some later time by the
-    OS's infrastructure. Behavior of this option depends on the OS in question. Ubuntu and Mariner
-    apply security patches through unattended upgrade roughly once a day around 06:00 UTC. Windows
-    does not apply security patches automatically and so for them this option is equivalent to None
-    till further notice"""
+    scaled in machines will be unpatched initially and will be patched at some point by the OS's
+    infrastructure. Behavior of this option depends on the OS in question. Ubuntu and Mariner apply
+    security patches through unattended upgrade roughly once a day around 06:00 UTC. Windows does
+    not apply security patches automatically and so for them this option is equivalent to None till
+    further notice"""
+    NODE_IMAGE = "NodeImage"
+    """AKS will update the nodes with a newly patched VHD containing security fixes and bugfixes on a
+    weekly cadence. With the VHD update machines will be rolling reimaged to that VHD following
+    maintenance windows and surge settings. No extra VHD cost is incurred when choosing this option
+    as AKS hosts the images."""
     SECURITY_PATCH = "SecurityPatch"
     """AKS downloads and updates the nodes with tested security updates. These updates honor the
     maintenance window settings and produce a new VHD that is used on new nodes. On some occasions
@@ -696,11 +701,6 @@ class NodeOSUpgradeChannel(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     re-imaged to the newly produced VHD in order to apply the changes. This option incurs an extra
     cost of hosting the new Security Patch VHDs in your resource group for just in time
     consumption."""
-    NODE_IMAGE = "NodeImage"
-    """AKS will update the nodes with a newly patched VHD containing security fixes and bugfixes on a
-    weekly cadence. With the VHD update machines will be rolling reimaged to that VHD following
-    maintenance windows and surge settings. No extra VHD cost is incurred when choosing this option
-    as AKS hosts the images."""
 
 
 class NodeProvisioningDefaultNodePools(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -763,15 +763,13 @@ class OSDiskType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
 
 
 class OSSKU(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """Specifies the OS SKU used by the agent pool. If not specified, the default is Ubuntu if
-    OSType=Linux or Windows2019 if OSType=Windows. And the default Windows OSSKU will be changed to
-    Windows2022 after Windows2019 is deprecated.
+    """Specifies the OS SKU used by the agent pool. The default is Ubuntu if OSType is Linux. The
+    default is Windows2019 when Kubernetes <= 1.24 or Windows2022 when Kubernetes >= 1.25 if OSType
+    is Windows.
     """
 
     UBUNTU = "Ubuntu"
     """Use Ubuntu as the OS for node images."""
-    MARINER = "Mariner"
-    """Deprecated OSSKU. Microsoft recommends that new deployments choose 'AzureLinux' instead."""
     AZURE_LINUX = "AzureLinux"
     """Use AzureLinux as the OS for node images. Azure Linux is a container-optimized Linux distro
     built by Microsoft, visit https://aka.ms/azurelinux for more information."""
@@ -780,6 +778,8 @@ class OSSKU(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     built by Microsoft, visit https://aka.ms/azurelinux for more information. For limitations,
     visit https://aka.ms/aks/node-images. For OS migration guidance, see
     https://aka.ms/aks/upgrade-os-version."""
+    MARINER = "Mariner"
+    """Deprecated OSSKU. Microsoft recommends that new deployments choose 'AzureLinux' instead."""
     FLATCAR = "Flatcar"
     """Use Flatcar Container Linux as the OS for node images. Flatcar is a container-optimized,
     security-focused Linux OS, with an immutable filesystem and part of the Cloud Native Computing
@@ -793,6 +793,10 @@ class OSSKU(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     WINDOWS2022 = "Windows2022"
     """Use Windows2022 as the OS for node images. Unsupported for system node pools. Windows2022 only
     supports Windows2022 containers; it cannot run Windows2019 containers and vice versa."""
+    UBUNTU2204 = "Ubuntu2204"
+    """Use Ubuntu2204 as the OS for node images, however, Ubuntu 22.04 may not be supported for all
+    nodepools. For limitations and supported kubernetes versions, see
+    https://aka.ms/aks/supported-ubuntu-versions"""
     WINDOWS2025 = "Windows2025"
     """Use Windows2025 as the OS for node images. Unsupported for system node pools. Windows2025
     supports Windows2022 and Windows 2025 containers; it cannot run Windows2019 containers and vice
@@ -801,10 +805,6 @@ class OSSKU(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Use Windows Annual Channel version as the OS for node images. Unsupported for system node
     pools. Details about supported container images and kubernetes versions under different AKS
     Annual Channel versions could be seen in https://aka.ms/aks/windows-annual-channel-details."""
-    UBUNTU2204 = "Ubuntu2204"
-    """Use Ubuntu2204 as the OS for node images, however, Ubuntu 22.04 may not be supported for all
-    nodepools. For limitations and supported kubernetes versions, see see
-    https://aka.ms/aks/supported-ubuntu-versions"""
     UBUNTU2404 = "Ubuntu2404"
     """Use Ubuntu2404 as the OS for node images, however, Ubuntu 24.04 may not be supported for all
     nodepools. For limitations and supported kubernetes versions, see see
@@ -945,7 +945,9 @@ class ResourceIdentityType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
 
 
 class RestrictionLevel(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """The restriction level applied to the cluster's node resource group."""
+    """The restriction level applied to the cluster's node resource group. If not specified, the
+    default is 'Unrestricted'.
+    """
 
     UNRESTRICTED = "Unrestricted"
     """All RBAC permissions are allowed on the managed node resource group"""
@@ -990,7 +992,7 @@ class ScaleSetEvictionPolicy(str, Enum, metaclass=CaseInsensitiveEnumMeta):
 
 
 class ScaleSetPriority(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """The Virtual Machine Scale Set priority."""
+    """The priority for the machine. If not specified, the default is 'Regular'."""
 
     SPOT = "Spot"
     """Spot priority VMs will be used. There is no SLA for spot nodes. See `spot on AKS
@@ -1063,20 +1065,18 @@ class TrustedAccessRoleBindingProvisioningState(str, Enum, metaclass=CaseInsensi
 
 
 class Type(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """The week index. Specifies on which instance of the allowed days specified in daysOfWeek the
-    maintenance occurs.
-    """
+    """The week index. Specifies on which week of the month the dayOfWeek applies."""
 
     FIRST = "First"
-    """First."""
+    """First week of the month."""
     SECOND = "Second"
-    """Second."""
+    """Second week of the month."""
     THIRD = "Third"
-    """Third."""
+    """Third week of the month."""
     FOURTH = "Fourth"
-    """Fourth."""
+    """Fourth week of the month."""
     LAST = "Last"
-    """Last."""
+    """Last week of the month."""
 
 
 class UndrainableNodeBehavior(str, Enum, metaclass=CaseInsensitiveEnumMeta):

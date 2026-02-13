@@ -254,8 +254,6 @@ class JWTAuthenticatorsOperations:
     ) -> Iterable["_models.JWTAuthenticator"]:
         """Gets a list of JWT authenticators in the specified managed cluster.
 
-        Gets a list of JWT authenticators in the specified managed cluster.
-
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
@@ -339,8 +337,6 @@ class JWTAuthenticatorsOperations:
         self, resource_group_name: str, resource_name: str, jwt_authenticator_name: str, **kwargs: Any
     ) -> _models.JWTAuthenticator:
         """Gets the specified JWT authenticator of a managed cluster.
-
-        Gets the specified JWT authenticator of a managed cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -460,9 +456,11 @@ class JWTAuthenticatorsOperations:
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         response_headers = {}
-        response_headers["Azure-AsyncOperation"] = self._deserialize(
-            "str", response.headers.get("Azure-AsyncOperation")
-        )
+        if response.status_code == 201:
+            response_headers["Azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("Azure-AsyncOperation")
+            )
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
 
@@ -483,9 +481,6 @@ class JWTAuthenticatorsOperations:
         **kwargs: Any
     ) -> LROPoller[_models.JWTAuthenticator]:
         """Creates or updates JWT authenticator in the managed cluster and updates the managed cluster to
-        apply the settings.
-
-        Creates or updates JWT authenticator in the managed cluster and updates the managed cluster to
         apply the settings.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
@@ -520,9 +515,6 @@ class JWTAuthenticatorsOperations:
         """Creates or updates JWT authenticator in the managed cluster and updates the managed cluster to
         apply the settings.
 
-        Creates or updates JWT authenticator in the managed cluster and updates the managed cluster to
-        apply the settings.
-
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
@@ -551,9 +543,6 @@ class JWTAuthenticatorsOperations:
         **kwargs: Any
     ) -> LROPoller[_models.JWTAuthenticator]:
         """Creates or updates JWT authenticator in the managed cluster and updates the managed cluster to
-        apply the settings.
-
-        Creates or updates JWT authenticator in the managed cluster and updates the managed cluster to
         apply the settings.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
@@ -597,20 +586,14 @@ class JWTAuthenticatorsOperations:
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):
-            response_headers = {}
-            response = pipeline_response.http_response
-            response_headers["Azure-AsyncOperation"] = self._deserialize(
-                "str", response.headers.get("Azure-AsyncOperation")
-            )
-
             deserialized = self._deserialize("JWTAuthenticator", pipeline_response.http_response)
             if cls:
-                return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+                return cls(pipeline_response, deserialized, {})  # type: ignore
             return deserialized
 
         if polling is True:
             polling_method: PollingMethod = cast(
-                PollingMethod, ARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+                PollingMethod, ARMPolling(lro_delay, lro_options={"final-state-via": "azure-async-operation"}, **kwargs)
             )
         elif polling is False:
             polling_method = cast(PollingMethod, NoPolling())
@@ -674,15 +657,11 @@ class JWTAuthenticatorsOperations:
 
         response_headers = {}
         if response.status_code == 202:
+            response_headers["Azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("Azure-AsyncOperation")
+            )
             response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
-            response_headers["Azure-AsyncOperation"] = self._deserialize(
-                "str", response.headers.get("Azure-AsyncOperation")
-            )
-
-        if response.status_code == 204:
-            response_headers["Azure-AsyncOperation"] = self._deserialize(
-                "str", response.headers.get("Azure-AsyncOperation")
-            )
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
 
@@ -696,8 +675,6 @@ class JWTAuthenticatorsOperations:
         self, resource_group_name: str, resource_name: str, jwt_authenticator_name: str, **kwargs: Any
     ) -> LROPoller[None]:
         """Deletes a JWT authenticator and updates the managed cluster to apply the settings.
-
-        Deletes a JWT authenticator and updates the managed cluster to apply the settings.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.

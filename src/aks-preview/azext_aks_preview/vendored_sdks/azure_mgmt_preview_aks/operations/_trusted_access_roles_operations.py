@@ -87,8 +87,6 @@ class TrustedAccessRolesOperations:
     def list(self, location: str, **kwargs: Any) -> Iterable["_models.TrustedAccessRole"]:
         """List supported trusted access roles.
 
-        List supported trusted access roles.
-
         :param location: The name of the Azure region. Required.
         :type location: str
         :return: An iterator like instance of either TrustedAccessRole or the result of cls(response)

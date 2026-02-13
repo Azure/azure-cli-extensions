@@ -281,8 +281,6 @@ class ManagedClusterSnapshotsOperations:
     def list(self, **kwargs: Any) -> Iterable["_models.ManagedClusterSnapshot"]:
         """Gets a list of managed cluster snapshots in the specified subscription.
 
-        Gets a list of managed cluster snapshots in the specified subscription.
-
         :return: An iterator like instance of either ManagedClusterSnapshot or the result of
          cls(response)
         :rtype:
@@ -361,8 +359,6 @@ class ManagedClusterSnapshotsOperations:
         self, resource_group_name: str, **kwargs: Any
     ) -> Iterable["_models.ManagedClusterSnapshot"]:
         """Lists managed cluster snapshots in the specified subscription and resource group.
-
-        Lists managed cluster snapshots in the specified subscription and resource group.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -445,8 +441,6 @@ class ManagedClusterSnapshotsOperations:
     def get(self, resource_group_name: str, resource_name: str, **kwargs: Any) -> _models.ManagedClusterSnapshot:
         """Gets a managed cluster snapshot.
 
-        Gets a managed cluster snapshot.
-
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
@@ -511,8 +505,6 @@ class ManagedClusterSnapshotsOperations:
     ) -> _models.ManagedClusterSnapshot:
         """Creates or updates a managed cluster snapshot.
 
-        Creates or updates a managed cluster snapshot.
-
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
@@ -540,8 +532,6 @@ class ManagedClusterSnapshotsOperations:
     ) -> _models.ManagedClusterSnapshot:
         """Creates or updates a managed cluster snapshot.
 
-        Creates or updates a managed cluster snapshot.
-
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
@@ -566,8 +556,6 @@ class ManagedClusterSnapshotsOperations:
         **kwargs: Any
     ) -> _models.ManagedClusterSnapshot:
         """Creates or updates a managed cluster snapshot.
-
-        Creates or updates a managed cluster snapshot.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -648,8 +636,6 @@ class ManagedClusterSnapshotsOperations:
     ) -> _models.ManagedClusterSnapshot:
         """Updates tags on a managed cluster snapshot.
 
-        Updates tags on a managed cluster snapshot.
-
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
@@ -678,8 +664,6 @@ class ManagedClusterSnapshotsOperations:
     ) -> _models.ManagedClusterSnapshot:
         """Updates tags on a managed cluster snapshot.
 
-        Updates tags on a managed cluster snapshot.
-
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
@@ -705,8 +689,6 @@ class ManagedClusterSnapshotsOperations:
         **kwargs: Any
     ) -> _models.ManagedClusterSnapshot:
         """Updates tags on a managed cluster snapshot.
-
-        Updates tags on a managed cluster snapshot.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -780,8 +762,6 @@ class ManagedClusterSnapshotsOperations:
         self, resource_group_name: str, resource_name: str, **kwargs: Any
     ) -> None:
         """Deletes a managed cluster snapshot.
-
-        Deletes a managed cluster snapshot.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
