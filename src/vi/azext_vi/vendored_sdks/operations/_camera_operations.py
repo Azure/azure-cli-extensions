@@ -51,12 +51,33 @@ class CameraOperations:
         ignore_certificate = kwargs.pop("ignore_certificate", False)
 
         extension_id = extension.get('id')
-        configuration = extension.get('properties').get('configurationSettings')
+
+        properties = extension.get('properties')
+        if properties is None:
+            raise ValueError("Extension is missing 'properties'.")
+
+        configuration = properties.get('configurationSettings')
+        if configuration is None:
+            raise ValueError("Extension properties are missing 'configurationSettings'.")
+
         account_id = configuration.get('videoIndexer.accountId')
+        if account_id is None:
+            raise ValueError("Configuration is missing 'videoIndexer.accountId'.")
+
         account_resource_id = configuration.get('videoIndexer.accountResourceId')
+        if account_resource_id is None:
+            raise ValueError("Configuration is missing 'videoIndexer.accountResourceId'.")
+
         base_extension_url = configuration.get('videoIndexer.endpointUri')
+        if base_extension_url is None:
+            raise ValueError("Configuration is missing 'videoIndexer.endpointUri'.")
+
         extension_url = f"{base_extension_url}/Accounts/{account_id}"
         parts = account_resource_id.strip("/").split("/")
+
+        if len(parts) < 4:
+            raise ValueError(f"Invalid account_resource_id format: {account_resource_id!r}")
+
         account_rg = parts[3]
         account_name = parts[-1]
 

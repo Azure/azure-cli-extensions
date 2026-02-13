@@ -6,7 +6,7 @@
 from azure.cli.testsdk import ScenarioTest
 
 
-class VICameraTests(ScenarioTest):
+class VIExtensionTests(ScenarioTest):
     def test_extension_show(self):
         extension_type = "microsoft.videoindexer"
         name = "vi-arc-4-wus2"

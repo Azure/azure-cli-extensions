@@ -3,7 +3,6 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=line-too-long
 from azure.cli.core.commands import CliCommandType
 from ._client_factory import cf_vi
 from . import consts

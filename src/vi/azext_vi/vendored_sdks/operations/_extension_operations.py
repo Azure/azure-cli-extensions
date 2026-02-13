@@ -66,8 +66,8 @@ def build_get_extensions_request(
 
 def build_get_extension_token_request(
     subscription_id: str,
-    accountRg: str,
-    accountName: str,
+    account_rg: str,
+    account_name: str,
     **kwargs: Any
 ) -> HttpRequest:
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
@@ -79,12 +79,12 @@ def build_get_extension_token_request(
 
     _url = kwargs.pop(
         "template_url",
-        "/subscriptions/{subscriptionId}/resourceGroups/{accountRg}/providers/Microsoft.VideoIndexer/accounts/{accountName}/generateExtensionAccessToken",
+        "/subscriptions/{subscriptionId}/resourceGroups/{account_rg}/providers/Microsoft.VideoIndexer/accounts/{account_name}/generateExtensionAccessToken",
     )  # pylint: disable=line-too-long
     path_format_arguments = {
         "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str"),
-        "accountRg": _SERIALIZER.url("account_rg", accountRg, "str"),
-        "accountName": _SERIALIZER.url("account_name", accountName, "str"),
+        "account_rg": _SERIALIZER.url("account_rg", account_rg, "str"),
+        "account_name": _SERIALIZER.url("account_name", account_name, "str"),
     }
 
     _url: str = _url.format(**path_format_arguments)  # type: ignore
@@ -116,8 +116,8 @@ def get_extension_access_token_async(
 
         _request = build_get_extension_token_request(
             subscription_id=subscription_id,
-            accountRg=account_rg,
-            accountName=account_name,
+            account_rg=account_rg,
+            account_name=account_name,
             json=body_content,
             headers=headers,
             params=params,

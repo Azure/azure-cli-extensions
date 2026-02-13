@@ -10,9 +10,6 @@
 import msrest.serialization
 
 class ExtensionAccessTokenRequest(msrest.serialization.Model):
-    """
-    """
-
     _attribute_map = {
         'permissionType': {'key': 'permissionType', 'type': 'str'},
         'scope': {'key': 'scope', 'type': 'str'},
@@ -23,8 +20,6 @@ class ExtensionAccessTokenRequest(msrest.serialization.Model):
         self,
         **kwargs
     ):
-        """
-        """
         super(ExtensionAccessTokenRequest, self).__init__(**kwargs)
         self.permissionType = None
         self.scope = None
