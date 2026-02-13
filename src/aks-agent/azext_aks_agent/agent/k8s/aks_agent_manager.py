@@ -128,7 +128,7 @@ class AKSAgentManager(AKSAgentManagerLLMConfigBase):  # pylint: disable=too-many
         self.subscription_id: str = subscription_id
 
         self.chart_repo = "oci://mcr.microsoft.com/aks/aks-agent-chart/aks-agent"
-        self.chart_version = "0.2.0"
+        self.chart_version = "0.3.0"
 
         # credentials for aks-mcp
         # Default empty customized cluster role name means using default cluster role
@@ -584,10 +584,14 @@ class AKSAgentManager(AKSAgentManagerLLMConfigBase):  # pylint: disable=too-many
             if list_success:
                 try:
                     releases = json.loads(list_output)
-                    release_exists = any(
-                        release.get("name") == self.helm_release_name
-                        for release in releases
-                    )
+                    for release in releases:
+                        if release.get("name") == self.helm_release_name:
+                            release_exists = True
+                            # Extract chart version from chart field (e.g., "aks-agent-0.2.0")
+                            chart_field = release.get("chart", "")
+                            if "-" in chart_field:
+                                status["chart_version"] = chart_field.rsplit("-", 1)[-1]
+                            break
                 except json.JSONDecodeError:
                     logger.warning("Failed to parse helm list output")
 
@@ -763,6 +767,41 @@ class AKSAgentManager(AKSAgentManagerLLMConfigBase):  # pylint: disable=too-many
 
             return True
         raise AzCLIError(f"Failed to uninstall AKS agent: {output}")
+
+    def check_upgrade_needed(self) -> Tuple[bool, Optional[str], Optional[str]]:
+        """
+        Check if the deployed helm chart version differs from the expected version.
+
+        Returns:
+            Tuple[bool, Optional[str], Optional[str]]:
+                - needs_upgrade: True if upgrade is needed, False otherwise
+                - deployed_version: The currently deployed version (or None if unknown)
+                - expected_version: The expected version to upgrade to (or None if no upgrade needed)
+        """
+        agent_status = self.get_agent_status()
+        helm_status = agent_status.get("helm_status", "not_found")
+
+        if helm_status not in ["deployed", "superseded"]:
+            logger.debug("Agent not deployed or in unexpected state: %s", helm_status)
+            return False, None, None
+
+        deployed_version = agent_status.get("chart_version")
+        expected_version = self.chart_version
+
+        if not deployed_version:
+            logger.warning("Could not determine deployed chart version")
+            return False, None, None
+
+        if deployed_version == expected_version:
+            logger.debug("Chart version is up to date: %s", deployed_version)
+            return False, deployed_version, None
+
+        logger.info(
+            "Chart version mismatch detected. Deployed: %s, Expected: %s",
+            deployed_version, expected_version
+        )
+
+        return True, deployed_version, expected_version
 
     def exec_aks_agent(self, command_flags: str = "") -> bool:
         """
@@ -973,7 +1012,7 @@ class AKSAgentManagerClient(AKSAgentManagerLLMConfigBase):  # pylint: disable=to
         self.config_dir = self.base_config_dir / subscription_id / resource_group_name / cluster_name
 
         # Docker image for client mode execution
-        self.docker_image = "mcr.microsoft.com/aks/aks-agent:v0.2.0-client"
+        self.docker_image = "mcr.microsoft.com/aks/aks-agent:v0.3.0-client"
 
         self.llm_config_manager = LLMConfigManagerLocal(
             subscription_id=subscription_id,
