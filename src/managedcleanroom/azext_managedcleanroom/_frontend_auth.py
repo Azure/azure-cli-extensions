@@ -24,10 +24,21 @@ def get_frontend_token(cmd):
     :return: Tuple of (access_token, subscription, tenant)
     :raises: CLIError if token cannot be obtained
     """
+    import os
     from ._msal_auth import get_msal_token, get_auth_scope
 
     profile = Profile(cli_ctx=cmd.cli_ctx)
     subscription = get_subscription_id(cmd.cli_ctx)
+
+    # Priority 0: explicit token via environment variable (for local/test envs only)
+    env_token = os.environ.get('MANAGEDCLEANROOM_ACCESS_TOKEN')
+    if env_token:
+        logger.warning("Using token from MANAGEDCLEANROOM_ACCESS_TOKEN env var FOR TESTING PURPOSES ONLY")
+        from collections import namedtuple
+        AccessToken = namedtuple('AccessToken', ['token', 'expires_on'])
+        token_obj = AccessToken(token=env_token, expires_on=0)
+        return (token_obj, subscription, None)
+
     auth_scope = get_auth_scope(cmd)
 
     logger.debug("Using auth scope: %s", auth_scope)
