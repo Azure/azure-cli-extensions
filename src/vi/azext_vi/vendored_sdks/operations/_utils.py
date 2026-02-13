@@ -3,12 +3,12 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------
-import logging
+from knack.log import get_logger
 import requests
 from requests.adapters import HTTPAdapter, Retry
 from typing import Union, Dict, List, Optional
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 _DEFAULT_TIMEOUT = 120  # seconds
 _RETRYABLE_STATUS_CODES = frozenset({429, 500, 502, 503, 504})
