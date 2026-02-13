@@ -3032,7 +3032,10 @@ def aks_disable_addons(cmd, client, resource_group_name, name, addons, no_wait=F
     )
 
     # send the managed cluster representation to update the addon profiles
-    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, name, instance)
+    if no_wait:
+        return sdk_no_wait(True, client.begin_create_or_update, resource_group_name, name, instance)
+    return LongRunningOperation(cmd.cli_ctx)(
+        client.begin_create_or_update(resource_group_name, name, instance))
 
 
 def aks_enable_addons(
@@ -3189,8 +3192,12 @@ def aks_enable_addons(
                 # we don't need to handle it in client side in this case.
 
     else:
-        result = sdk_no_wait(no_wait, client.begin_create_or_update,
-                             resource_group_name, name, instance, headers=headers)
+        if no_wait:
+            result = sdk_no_wait(True, client.begin_create_or_update,
+                                 resource_group_name, name, instance, headers=headers)
+        else:
+            result = LongRunningOperation(cmd.cli_ctx)(
+                client.begin_create_or_update(resource_group_name, name, instance, headers=headers))
     return result
 
 
