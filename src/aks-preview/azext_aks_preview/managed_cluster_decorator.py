@@ -7791,9 +7791,9 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             # poll until the result is returned
             cluster = LongRunningOperation(self.cmd.cli_ctx)(poller)
             self.postprocessing_after_mc_created(cluster)
-        elif self.context.get_no_wait():
+        else:
             cluster = sdk_no_wait(
-                True,
+                self.context.get_no_wait(),
                 self.client.begin_create_or_update,
                 resource_group_name=self.context.get_resource_group_name(),
                 resource_name=self.context.get_name(),
@@ -7802,15 +7802,5 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 if_none_match=self.context.get_if_none_match(),
                 headers=self.context.get_aks_custom_headers(),
             )
-        else:
-            poller = self.client.begin_create_or_update(
-                resource_group_name=self.context.get_resource_group_name(),
-                resource_name=self.context.get_name(),
-                parameters=mc,
-                if_match=self.context.get_if_match(),
-                if_none_match=self.context.get_if_none_match(),
-                headers=self.context.get_aks_custom_headers(),
-            )
-            cluster = LongRunningOperation(self.cmd.cli_ctx)(poller)
 
         return cluster
