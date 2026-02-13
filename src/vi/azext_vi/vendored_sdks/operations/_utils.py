@@ -89,6 +89,11 @@ def do_request(
     if not token or not isinstance(token, str):
         raise ValueError("Token must be a non-empty string.")
 
+    if ignore_certificate:
+        logger.warning(
+            "Disabling certificate verification reduces security and may expose the connection "
+            "to man-in-the-middle attacks. Use only in trusted or development environments")
+
     method = method.upper()
     headers = {"Authorization": f"Bearer {token}"}
     request = requests.Request(method=method, url=url, headers=headers, json=json)

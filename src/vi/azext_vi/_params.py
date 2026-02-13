@@ -29,7 +29,9 @@ def load_arguments(self, _: CLICommand):
         arg_type=get_three_state_flag(),
         required=False,
         help='Ignore the TLS certificate of the Video Indexer endpoint. '
-        'By default, certificate verification is enabled.')
+        'By default, certificate verification is enabled. WARNING: Disabling '
+        'certificate verification reduces security and may expose the connection '
+        'to man-in-the-middle attacks. Use only in trusted or development environments.')
 
     with self.argument_context(f"{consts.EXTENSION_NAME} extension show") as c:
         c.argument('connected_cluster', connected_cluster)
