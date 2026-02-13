@@ -23,7 +23,7 @@ def load_arguments(self, _: CLICommand):
     camera_url = CLIArgumentType(
         options_list=['--camera-url'],
         required=False,
-        help='URL of the camera. Should be in RTSP format, e.g. rtsp://<camera-ip>/stream')
+        help='URL of the camera. Should be in RTSP format, e.g. rtsp://my-url')
     ignore_certificate = CLIArgumentType(
         options_list=['--ignore-certificate', '-i'],
         arg_type=get_three_state_flag(),
