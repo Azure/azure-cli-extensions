@@ -17,10 +17,10 @@ interactions:
         User-Agent:
           - AZURECLI/2.83.0 azsdk-python-core/1.38.0 Python/3.13.12 (Windows-11-10.0.26200-SP0)
       method: GET
-      uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/vi-arc-4-wus2-rg/providers/Microsoft.Kubernetes/connectedClusters/vi-arc-4-wus2-connected-aks/Providers/Microsoft.KubernetesConfiguration/extensions?api-version=2021-05-01-preview
+      uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-vi-rg/providers/Microsoft.Kubernetes/connectedClusters/test-vi-connected-aks/Providers/Microsoft.KubernetesConfiguration/extensions?api-version=2021-05-01-preview
     response:
       body:
-        string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/vi-arc-4-wus2-rg/providers/Microsoft.Kubernetes/connectedClusters/vi-arc-4-wus2-connected-aks/Providers/Microsoft.KubernetesConfiguration/extensions/vi-arc-4-wus2","name":"vi-arc-4-wus2","type":"Microsoft.KubernetesConfiguration/extensions","properties":{"extensionType":"microsoft.videoindexer","autoUpgradeMinorVersion":false,"releaseTrain":"dev","version":"1.3.281","scope":{"cluster":{"releaseNamespace":"video-indexer"}},"provisioningState":"Succeeded","installState":"Installed","configurationSettings":{"videoIndexer.endpointUri":"https://vi.media.dev.azure-int.net","videoIndexer.accountId":"*****","videoIndexer.accountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/vi-fe-arc/providers/Microsoft.VideoIndexer/accounts/VI-FE-ARC-2","videoIndexer.mediaUploadsEnabled":"True","videoIndexer.liveVideoStreamEnabled":"True","videoIndexer.agents.enabled":"false","ViAi.mediaServerStreams.enabled":"True","storage.storageClass":"azurefile-csi-premium","storage.accessMode":"ReadWriteMany","ViAi.gpu.enabled":"False","ViAi.LiveSummarization.enabled":"True"}}}]}'
+        string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-vi-rg/providers/Microsoft.Kubernetes/connectedClusters/test-vi-connected-aks/Providers/Microsoft.KubernetesConfiguration/extensions/test-vi","name":"test-vi","type":"Microsoft.KubernetesConfiguration/extensions","properties":{"extensionType":"microsoft.videoindexer","autoUpgradeMinorVersion":false,"releaseTrain":"dev","version":"1.3.281","scope":{"cluster":{"releaseNamespace":"video-indexer"}},"provisioningState":"Succeeded","installState":"Installed","configurationSettings":{"videoIndexer.endpointUri":"https://vi.media.dev.azure-int.net","videoIndexer.accountId":"*****","videoIndexer.accountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/vi-fe-arc/providers/Microsoft.VideoIndexer/accounts/VI-FE-ARC-2","videoIndexer.mediaUploadsEnabled":"True","videoIndexer.liveVideoStreamEnabled":"True","videoIndexer.agents.enabled":"false","ViAi.mediaServerStreams.enabled":"True","storage.storageClass":"azurefile-csi-premium","storage.accessMode":"ReadWriteMany","ViAi.gpu.enabled":"False","ViAi.LiveSummarization.enabled":"True"}}}]}'
       headers:
         api-supported-versions:
           - 2021-05-01-preview
@@ -52,7 +52,7 @@ interactions:
         code: 200
         message: OK
   - request:
-      body: '{"permissionType": "Contributor", "scope": "Account", "extensionId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/vi-arc-4-wus2-rg/providers/Microsoft.Kubernetes/connectedClusters/vi-arc-4-wus2-connected-aks/Providers/Microsoft.KubernetesConfiguration/extensions/vi-arc-4-wus2"}'
+      body: '{"permissionType": "Contributor", "scope": "Account", "extensionId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-vi-rg/providers/Microsoft.Kubernetes/connectedClusters/test-vi-connected-aks/Providers/Microsoft.KubernetesConfiguration/extensions/test-vi"}'
       headers:
         Accept:
           - application/json

@@ -37,7 +37,7 @@ class CameraOperations:
         self._serialize = input_args.pop(0) if input_args else kwargs.pop("serializer")
         self._deserialize = input_args.pop(0) if input_args else kwargs.pop("deserializer")
 
-    def add_camera(self, extension: Any, camera_name: str, camera_url: str, **kwargs: Any):
+    def add_camera(self, extension: Any, camera_name: str, rtsp_url: str, **kwargs: Any):
         error_map = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
@@ -67,7 +67,7 @@ class CameraOperations:
         camera = {
             "Name": camera_name,
             "Description": camera_name,
-            "RtspUrl": camera_url,
+            "RtspUrl": rtsp_url,
             "LiveStreamingEnabled": True,
             "RecordingEnabled": True,
             "IsPinned": True,

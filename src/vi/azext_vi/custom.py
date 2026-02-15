@@ -35,7 +35,7 @@ def troubleshoot_vi_extension(cmd, client, resource_group_name, connected_cluste
     troubleshoot_k8s_extension(cmd=cmd, name=extension.get("name"), namespace_list=namespace)
 
 
-def add_camera(client, resource_group_name, connected_cluster, camera_name, camera_url, ignore_certificate=False):
+def add_camera(client, resource_group_name, connected_cluster, camera_name, rtsp_url, ignore_certificate=False):
     extension = client.extensions.get_vi_extension(
         resource_group=resource_group_name,
         connected_cluster=connected_cluster)
@@ -47,7 +47,7 @@ def add_camera(client, resource_group_name, connected_cluster, camera_name, came
 
     response = client.cameras.add_camera(extension=extension,
                                          camera_name=camera_name,
-                                         camera_url=camera_url,
+                                         rtsp_url=rtsp_url,
                                          ignore_certificate=ignore_certificate)
     return response
 

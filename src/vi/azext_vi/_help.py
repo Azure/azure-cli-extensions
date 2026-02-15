@@ -54,7 +54,7 @@ helps[f'{consts.EXTENSION_NAME} camera add'] = f"""
       - name: Add a camera to a Video Indexer Extension
         text: |-
           az {consts.EXTENSION_NAME} camera add --resource-group my-resource-group \
-          --connected-cluster mycluster --camera-name mycamera --camera-url rtsp://my-url
+          --connected-cluster mycluster --camera-name mycamera --rtsp-url rtsp://my-url
 """
 
 helps[f'{consts.EXTENSION_NAME} camera list'] = f"""

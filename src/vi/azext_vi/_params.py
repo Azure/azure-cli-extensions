@@ -20,8 +20,8 @@ def load_arguments(self, _: CLICommand):
         options_list=['--camera-name'],
         required=False,
         help='Name of the camera to be added to Video Indexer')
-    camera_url = CLIArgumentType(
-        options_list=['--camera-url'],
+    rtsp_url = CLIArgumentType(
+        options_list=['--rtsp-url'],
         required=False,
         help='URL of the camera. Should be in RTSP format, e.g. rtsp://my-url')
     ignore_certificate = CLIArgumentType(
@@ -43,7 +43,7 @@ def load_arguments(self, _: CLICommand):
         c.argument('connected_cluster', connected_cluster)
         c.argument('ignore_certificate', ignore_certificate)
         c.argument('camera_name', camera_name)
-        c.argument('camera_url', camera_url)
+        c.argument('rtsp_url', rtsp_url)
 
     with self.argument_context(f"{consts.EXTENSION_NAME} camera list") as c:
         c.argument('connected_cluster', connected_cluster)

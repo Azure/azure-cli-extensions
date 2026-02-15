@@ -31,7 +31,7 @@ az vi camera add \
     --resource-group groupName \
     --connected-cluster clusterName \
     --camera-name mycamera \
-    --camera-url rtsp://mycamera
+    --rtsp-url rtsp://mycamera
 ```
 
 ##### List all cameras for a Video Indexer Extension
