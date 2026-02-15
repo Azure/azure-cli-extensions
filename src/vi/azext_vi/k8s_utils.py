@@ -9,8 +9,6 @@ This module provides utilities for troubleshooting Kubernetes extensions,
 collecting diagnostic information, and managing Kubernetes client configurations.
 """
 
-from __future__ import annotations
-
 import contextlib
 import functools
 import json
