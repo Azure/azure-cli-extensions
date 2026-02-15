@@ -60,7 +60,7 @@ def list_cameras(client, resource_group_name, connected_cluster, ignore_certific
         raise CLIError(
             f'VI Extension not found in connected cluster "{connected_cluster}" '
             f'under resource group "{resource_group_name}". '
-            f'Please ensure the VI Extension is installed before listing cameras.')
+            f'Please ensure the VI Extension is installed before adding cameras.')
 
     response = client.cameras.list_cameras(extension=extension, ignore_certificate=ignore_certificate)
     cameras = response.get('results')

@@ -14,15 +14,15 @@ from azure.cli.core.commands.parameters import get_three_state_flag
 def load_arguments(self, _: CLICommand):
     connected_cluster = CLIArgumentType(
         options_list=['--connected-cluster', '-c'],
-        required=False,
+        required=True,
         help='Name of the Kubernetes connected cluster')
     camera_name = CLIArgumentType(
         options_list=['--camera-name'],
-        required=False,
+        required=True,
         help='Name of the camera to be added to Video Indexer')
     rtsp_url = CLIArgumentType(
         options_list=['--rtsp-url'],
-        required=False,
+        required=True,
         help='URL of the camera. Should be in RTSP format, e.g. rtsp://my-url')
     ignore_certificate = CLIArgumentType(
         options_list=['--ignore-certificate', '-i'],

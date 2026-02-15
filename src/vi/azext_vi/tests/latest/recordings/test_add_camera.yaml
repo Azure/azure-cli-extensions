@@ -1,0 +1,155 @@
+interactions:
+  - request:
+      body: null
+      headers:
+        Accept:
+          - application/json
+        Accept-Encoding:
+          - gzip, deflate
+        CommandName:
+          - vi camera add
+        Connection:
+          - keep-alive
+        Content-Type:
+          - application/json
+        ParameterSetName:
+          - -g -c --camera-name --rtsp-url
+        User-Agent:
+          - AZURECLI/2.83.0 azsdk-python-core/1.38.0 Python/3.13.12 (Windows-11-10.0.26200-SP0)
+      method: GET
+      uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-vi-rg/providers/Microsoft.Kubernetes/connectedClusters/test-vi-connected-aks/Providers/Microsoft.KubernetesConfiguration/extensions?api-version=2021-05-01-preview
+    response:
+      body:
+        string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-vi-rg/providers/Microsoft.Kubernetes/connectedClusters/test-vi-connected-aks/Providers/Microsoft.KubernetesConfiguration/extensions/test-vi","name":"test-vi","type":"Microsoft.KubernetesConfiguration/extensions","properties":{"extensionType":"microsoft.videoindexer","autoUpgradeMinorVersion":false,"releaseTrain":"dev","version":"1.4.111-ylivneh-main","scope":{"cluster":{"releaseNamespace":"video-indexer"}},"provisioningState":"Succeeded","installState":"Installed","configurationSettings":{"videoIndexer.endpointUri":"https://test-vi.vi.media.dev.azure-int.net","videoIndexer.accountId":"6df236fc-c73a-4b26-964a-588673335993","videoIndexer.accountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/vi-fe-arc/providers/Microsoft.VideoIndexer/accounts/VI-FE-ARC-2","videoIndexer.mediaUploadsEnabled":"True","videoIndexer.liveVideoStreamEnabled":"True","videoIndexer.rag.enabled":"False","videoIndexer.rag.endpoint":"test-vi-rag.vi.media.dev.azure-int.net","videoIndexer.rag.applicationId":"","videoIndexer.rag.tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","videoIndexer.rag.managedIdentityClientId":"","videoIndexer.agents.enabled":"false","ViAi.mediaServerStreams.enabled":"True","storage.storageClass":"azurefile-csi-premium","storage.accessMode":"ReadWriteMany","ViAi.gpu.enabled":"False","ViAi.gpu.tolerations.key":"nvidia.com/gpu","ViAi.LiveSummarization.enabled":"True","alerts.enabled":"False","videoIndexer.webApi.config.apimInternalsBaseUrl":"https://vi-apim-dev.azure-api.net/vi-dev13-internals/","videoIndexer.webApi.config.apimOperationsBaseUrl":"https://vi-apim-dev.azure-api.net/vi-dev13-Operations/"},"configurationProtectedSettings":{},"statuses":[]},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2026-02-09T10:52:15.8972496+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2026-02-12T19:09:36.4503892+00:00"},"identity":{"type":"SystemAssigned","principalId":"3c71d3a5-9c88-4bd1-b8a5-5ba423167b48"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-vi-rg/providers/Microsoft.Kubernetes/connectedClusters/test-vi-connected-aks/Providers/Microsoft.KubernetesConfiguration/extensions/microsoft.extensionsusage-v1","name":"microsoft.extensionsusage-v1","type":"Microsoft.KubernetesConfiguration/extensions","properties":{"extensionType":"microsoft.extensionsusage","autoUpgradeMinorVersion":true,"releaseTrain":"stable","version":"1.9.54","scope":{"cluster":{"releaseNamespace":"azure-extensions-usage-system"}},"provisioningState":"Succeeded","installState":"Installed","configurationSettings":{},"configurationProtectedSettings":{},"statuses":[]},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2026-02-09T10:52:19.1958597+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2026-02-09T10:52:19.1958597+00:00"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-vi-rg/providers/Microsoft.Kubernetes/connectedClusters/test-vi-connected-aks/Providers/Microsoft.KubernetesConfiguration/extensions/test-vi-connected-aks-certmgr","name":"test-vi-connected-aks-certmgr","type":"Microsoft.KubernetesConfiguration/extensions","properties":{"extensionType":"microsoft.iotoperations.platform","autoUpgradeMinorVersion":true,"releaseTrain":"Stable","version":"1.0.1","scope":{"cluster":{"releaseNamespace":"cert-manager"}},"provisioningState":"Succeeded","installState":"Installed","configurationSettings":{},"configurationProtectedSettings":{},"statuses":[]},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2025-08-18T12:16:20.1388865+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2025-08-18T12:16:20.1388865+00:00"},"identity":{"type":"SystemAssigned","principalId":"9b1786a4-4454-417d-84be-d50ae6bfb4c7"}}],"nextLink":null}'
+      headers:
+        api-supported-versions:
+          - 2021-05-01-preview
+        cache-control:
+          - no-cache
+        content-length:
+          - "4009"
+        content-type:
+          - application/json; charset=utf-8
+        date:
+          - Sun, 15 Feb 2026 08:14:11 GMT
+        expires:
+          - "-1"
+        pragma:
+          - no-cache
+        strict-transport-security:
+          - max-age=31536000; includeSubDomains
+        x-cache:
+          - CONFIG_NOCACHE
+        x-content-type-options:
+          - nosniff
+        x-ms-operation-identifier:
+          - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f5ac4fd8-e281-40da-84e2-4240abed4843/israelcentral/9750f9c5-fb97-4837-b2fb-fd7fa2953bab
+        x-ms-ratelimit-remaining-subscription-global-reads:
+          - "16499"
+        x-msedge-ref:
+          - "Ref A: A508F09FAF4F48D89F6F7E3251F1DE06 Ref B: TLV231050410042 Ref C: 2026-02-15T08:14:10Z"
+      status:
+        code: 200
+        message: OK
+  - request:
+      body: '{"permissionType": "Contributor", "scope": "Account", "extensionId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-vi-rg/providers/Microsoft.Kubernetes/connectedClusters/test-vi-connected-aks/Providers/Microsoft.KubernetesConfiguration/extensions/test-vi"}'
+      headers:
+        Accept:
+          - application/json
+        Accept-Encoding:
+          - gzip, deflate
+        CommandName:
+          - vi camera add
+        Connection:
+          - keep-alive
+        Content-Length:
+          - "301"
+        Content-Type:
+          - application/json
+        ParameterSetName:
+          - -g -c --camera-name --rtsp-url
+        User-Agent:
+          - AZURECLI/2.83.0 azsdk-python-core/1.38.0 Python/3.13.12 (Windows-11-10.0.26200-SP0)
+      method: POST
+      uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/vi-fe-arc/providers/Microsoft.VideoIndexer/accounts/VI-FE-ARC-2/generateExtensionAccessToken?api-version=2023-06-02-preview
+    response:
+      body:
+        string: '{"accessToken":"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJWZXJzaW9uIjoiMi4wLjAuMCIsIktleVZlcnNpb24iOiIyZWIyOWJlMzBlMDI0YzcxOWNhZTYzNzUwOWRjYzVlMCIsIkFjY291bnRJZCI6IjZkZjIzNmZjLWM3M2EtNGIyNi05NjRhLTU4ODY3MzMzNTk5MyIsIkFjY291bnRUeXBlIjoiQXJtIiwiRXh0ZW5zaW9uSWQiOiIvc3Vic2NyaXB0aW9ucy8yNDIzN2I3Mi04NTQ2LTRkYTUtYjIwNC04YzNjYjc2ZGQ5MzAvcmVzb3VyY2VHcm91cHMvdmktYXJjLTQtd3VzMi1yZy9wcm92aWRlcnMvTWljcm9zb2Z0Lkt1YmVybmV0ZXMvY29ubmVjdGVkQ2x1c3RlcnMvdmktYXJjLTQtd3VzMi1jb25uZWN0ZWQtYWtzL1Byb3ZpZGVycy9NaWNyb3NvZnQuS3ViZXJuZXRlc0NvbmZpZ3VyYXRpb24vZXh0ZW5zaW9ucy92aS1hcmMtNC13dXMyIiwiTGl2ZUVuYWJsZWQiOiJUcnVlIiwiUGVybWlzc2lvbiI6IkNvbnRyaWJ1dG9yIiwiRXh0ZXJuYWxVc2VySWQiOiJGNUFDNEZEOEUyODE0MERBODRFMjQyNDBBQkVENDg0MyIsIlVzZXJUeXBlIjoiTWljcm9zb2Z0Q29ycEFhZCIsIklzc3VlckxvY2F0aW9uIjoid2VzdHVzMiIsIm5iZiI6MTc3MTE0Mjk1NSwiZXhwIjoxNzcxMTQ2ODU1LCJpc3MiOiJodHRwczovL3ZpLWFwaW0tZGV2LmF6dXJlLWFwaS5uZXQvdmktZGV2MTMtT3BlcmF0aW9ucy8iLCJhdWQiOiJodHRwczovL3ZpLWFwaW0tZGV2LmF6dXJlLWFwaS5uZXQvdmktZGV2MTMtT3BlcmF0aW9ucy8ifQ.Gv06olOv1eJOBRLBB4HqO6RI1lBJuvIUey0Ym7M9THKQrWv0fZVDIaWZE_vBTAFT__I2TLAc8a37v_kGVXeVvdFWbo2MVi3LPTNuJ3CHyfHGMdYQNPnhpg3qgovPxKnXoSxsKbTe69Xisq9PSQRL53BwqdnpxqyRsoxjSTXYoyFc9doxcKfLRPcom5seLvRWGm1gMocAAMO0cLeZjuQY2WsfsVk3rMiT0Nq8LbGA4hZoGwj0xt_7Q67J6YdmBJ61Z4vhEo1tXCQeSdfxJ3wldoVdhC8rdVGS0xeRpmtmDVna_1lY9PJBziwD2-lb0ExNbtXOYLz810FZUKY9fIcpVA"}'
+      headers:
+        access-control-allow-credentials:
+          - "true"
+        cache-control:
+          - no-cache
+        content-length:
+          - "1336"
+        content-type:
+          - application/json; charset=utf-8
+        date:
+          - Sun, 15 Feb 2026 08:14:15 GMT
+        expires:
+          - "-1"
+        pragma:
+          - no-cache
+        strict-transport-security:
+          - max-age=31536000; includeSubDomains
+        vary:
+          - Accept-Encoding
+        x-cache:
+          - CONFIG_NOCACHE
+        x-content-type-options:
+          - nosniff
+        x-ms-operation-identifier:
+          - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=f5ac4fd8-e281-40da-84e2-4240abed4843/israelcentral/e316c3eb-c84f-49d1-99ae-099a7e084b98
+        x-ms-providerhub-traffic:
+          - "True"
+        x-ms-ratelimit-remaining-subscription-global-writes:
+          - "11999"
+        x-ms-ratelimit-remaining-subscription-writes:
+          - "799"
+        x-msedge-ref:
+          - "Ref A: 78FCCAD07E3342F29A92465B0D1A8EB8 Ref B: TLV231050411031 Ref C: 2026-02-15T08:14:12Z"
+      status:
+        code: 200
+        message: OK
+  - request:
+      body:
+        '{"Name": "test", "Description": "test", "RtspUrl": "rtsp://test", "LiveStreamingEnabled":
+        true, "RecordingEnabled": true, "IsPinned": true, "RecordingsRetentionInHours":
+        72}'
+      headers:
+        Accept:
+          - "*/*"
+        Accept-Encoding:
+          - gzip, deflate
+        Connection:
+          - keep-alive
+        Content-Length:
+          - "173"
+        Content-Type:
+          - application/json
+        User-Agent:
+          - python-requests/2.32.4
+      method: POST
+      uri: https://test-vi.vi.media.dev.azure-int.net/Accounts/6df236fc-c73a-4b26-964a-588673335993/cameras
+    response:
+      body:
+        string: '{"id":"a18f68a0-2f58-48ce-a297-5ce4f3e13fe2","name":"test","description":"test","status":"Pending","rtspUrl":"rtsp://test/","presetId":null,"isPinned":true,"liveStreamingEnabled":true,"recordingEnabled":true,"recordingsRetentionInHours":72,"insightsRetentionInHours":4320,"deletionTime":null,"createTime":"2026-02-15T08:14:16.7733333+00:00","lastUpdateTime":"2026-02-15T08:14:16.7733333+00:00"}'
+      headers:
+        connection:
+          - keep-alive
+        content-length:
+          - "394"
+        content-type:
+          - application/json; charset=utf-8
+        date:
+          - Sun, 15 Feb 2026 08:14:16 GMT
+        strict-transport-security:
+          - max-age=31536000; includeSubDomains
+        transfer-encoding:
+          - chunked
+        vary:
+          - Accept-Encoding
+      status:
+        code: 200
+        message: OK
+version: 1

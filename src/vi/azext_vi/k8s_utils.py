@@ -728,7 +728,7 @@ def _download_helm_retry_callback(exception: Exception, attempt: int) -> None:
 @retry_with_backoff(
     max_retries=RETRY_DEFAULT_MAX_RETRIES,
     initial_delay=RETRY_DEFAULT_DELAY,
-    exceptions=(OSError),
+    exceptions=(OSError,),
     on_retry=_download_helm_retry_callback,
 )
 def _download_helm_from_mcr(mcr_url: str, artifact_tag: str, download_location: Path) -> None:
