@@ -7395,7 +7395,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 )
 
             backup_strategy = self.context.raw_param.get("backup_strategy")
-            backup_configuration_parameters = self.context.raw_param.get("backup_configuration_parameters")
+            backup_configuration_file = self.context.raw_param.get("backup_configuration_file")
 
             # Build the cluster resource ID
             cluster_resource_id = (
@@ -7404,7 +7404,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 f"/providers/Microsoft.ContainerService/managedClusters/{self.context.get_name()}"
             )
 
-            dataprotection_enable_backup_helper(self.cmd, str(cluster_resource_id), backup_strategy, backup_configuration_parameters)
+            dataprotection_enable_backup_helper(self.cmd, str(cluster_resource_id), backup_strategy, backup_configuration_file)
         return mc
 
     def check_is_postprocessing_required(self, mc: ManagedCluster) -> bool:

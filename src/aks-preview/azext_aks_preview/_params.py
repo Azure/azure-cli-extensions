@@ -1757,8 +1757,10 @@ def load_arguments(self, _):
             )
         )
         c.argument("enable_backup", help="Enable backup for the cluster", is_preview=True, action="store_true")
-        c.argument("backup_strategy", arg_type=get_enum_type(backup_presets), help="Backup strategy for the cluster. Defaults to Recommended.", is_preview=True)
-        c.argument("backup_configuration_parameters", type=validate_file_or_dict, help="Backup configuration overrides.", is_preview=True)
+        c.argument("backup_strategy", arg_type=get_enum_type(backup_presets), help="Backup strategy for the cluster. Defaults to Week.", is_preview=True)
+        c.argument("backup_configuration_file", type=validate_file_or_dict, 
+                   options_list=['--backup-configuration-file', '-f'],
+                   help="Path to backup configuration file (JSON) or inline JSON string.", is_preview=True)
         # In update scenario, use emtpy str as default.
         c.argument('ssh_access', arg_type=get_enum_type(ssh_accesses), is_preview=True)
         c.argument('enable_static_egress_gateway', is_preview=True, action='store_true')

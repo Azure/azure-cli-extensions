@@ -191,10 +191,11 @@ def load_arguments(self, _):
                    help="Backup strategy preset. For AzureKubernetesService: Week (7-day retention), Month (30-day retention), "
                         "Immutable (7-day Op + 90-day Vault Tier), DisasterRecovery (GRS+CRR), Custom (bring your own vault/policy). "
                         "Default: Week.")
-        c.argument('configuration_settings', type=validate_file_or_dict, 
-                   help="Configuration settings file or JSON string. Expected value: json-string/@json-file. "
-                        "Available settings: storage-account-id, blob-container-name, backup-resource-group-id, "
-                        "backup-vault-id (required for Custom), backup-policy-id (required for Custom), tags.")
+        c.argument('backup_configuration_file', type=validate_file_or_dict, 
+                   options_list=['--backup-configuration-file', '-f'],
+                   help="Path to backup configuration file (JSON) or inline JSON string. "
+                        "Available settings: storageAccountResourceId, blobContainerName, backupResourceGroupId, "
+                        "backupVaultId (required for Custom), backupPolicyId (required for Custom), tags.")
 
     with self.argument_context('dataprotection job show') as c:
         c.argument('resource_group_name', resource_group_name_type)

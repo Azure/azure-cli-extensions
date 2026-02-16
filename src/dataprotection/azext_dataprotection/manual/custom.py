@@ -1151,7 +1151,7 @@ def restore_initialize_for_item_recovery(cmd, datasource_type, source_datastore,
 
     return restore_request
 
-def dataprotection_enable_backup(cmd, datasource_type, datasource_id, backup_strategy=None, configuration_settings=None):
+def dataprotection_enable_backup(cmd, datasource_type, datasource_id, backup_strategy=None, backup_configuration_file=None):
     """Enable backup for a datasource using a single command.
     
     This command orchestrates all the steps required to enable backup:
@@ -1187,8 +1187,8 @@ def dataprotection_enable_backup(cmd, datasource_type, datasource_id, backup_str
             f"Allowed values: {', '.join(valid_strategies)}"
         )
     
-    # Parse configuration settings if it's a string (from file)
-    config = _parse_configuration_settings(configuration_settings)
+    # Parse configuration from file or dict
+    config = _parse_backup_configuration(backup_configuration_file)
     
     # Route to datasource-specific handler
     if datasource_type == "AzureKubernetesService":
@@ -1202,24 +1202,34 @@ def dataprotection_enable_backup(cmd, datasource_type, datasource_id, backup_str
         return
 
 
-def _parse_configuration_settings(configuration_settings):
-    """Parse configuration settings from file or dict into a dictionary."""
+def _parse_backup_configuration(backup_configuration_file):
+    """Parse backup configuration from file or dict into a dictionary.
+    
+    Args:
+        backup_configuration_file: Can be:
+            - None: Returns empty dict
+            - dict: Returns as-is (already parsed by validate_file_or_dict)
+            - str: JSON string to parse
+    
+    Returns:
+        dict: Parsed configuration
+    """
     import json
     
-    if configuration_settings is None:
+    if backup_configuration_file is None:
         return {}
     
-    # If it's already a dict, return as-is
-    if isinstance(configuration_settings, dict):
-        return configuration_settings
+    # If it's already a dict, return as-is (validate_file_or_dict already parsed the file)
+    if isinstance(backup_configuration_file, dict):
+        return backup_configuration_file
     
     # If it's a string, try to parse as JSON
-    if isinstance(configuration_settings, str):
+    if isinstance(backup_configuration_file, str):
         try:
-            return json.loads(configuration_settings)
+            return json.loads(backup_configuration_file)
         except json.JSONDecodeError:
             raise InvalidArgumentValueError(
-                f"Invalid JSON in configuration-settings: '{configuration_settings}'"
+                f"Invalid JSON in backup-configuration-file: '{backup_configuration_file}'"
             )
     
     return {}
