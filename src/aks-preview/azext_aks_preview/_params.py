@@ -23,6 +23,21 @@ from azure.cli.command_modules.acs._validators import (
     validate_nat_gateway_idle_timeout,
     validate_nat_gateway_managed_outbound_ip_count,
 )
+
+# Import backup strategy constants from dataprotection extension
+from azure.cli.core.extension.operations import add_extension_to_path
+add_extension_to_path("dataprotection")
+from azext_dataprotection.manual._consts import (
+    CONST_AKS_BACKUP_STRATEGIES,
+    CONST_BACKUP_STRATEGY_WEEK,
+    CONST_BACKUP_STRATEGY_MONTH,
+    CONST_BACKUP_STRATEGY_IMMUTABLE,
+    CONST_BACKUP_STRATEGY_DISASTER_RECOVERY,
+    CONST_BACKUP_STRATEGY_CUSTOM,
+)
+
+backup_presets = CONST_AKS_BACKUP_STRATEGIES
+
 from azure.cli.core.commands.parameters import (
     edge_zone_type,
     file_type,
@@ -163,6 +178,7 @@ from azext_aks_preview._consts import (
     CONST_UPGRADE_STRATEGY_ROLLING,
     CONST_UPGRADE_STRATEGY_BLUE_GREEN
 )
+from azure.cli.core.commands.validators import validate_file_or_dict
 
 from azext_aks_preview._validators import (
     validate_acr,
@@ -1740,6 +1756,13 @@ def load_arguments(self, _):
                 'by that action.'
             )
         )
+        c.argument("enable_backup", help="Enable backup for the cluster", is_preview=True, action="store_true")
+        c.argument("backup_strategy", arg_type=get_enum_type(backup_presets), help="Backup strategy for the cluster. Defaults to Week.", is_preview=True)
+        c.argument("backup_configuration_file", type=validate_file_or_dict, 
+                   options_list=['--backup-configuration-file', '-f'],
+                   help="Path to backup configuration file (JSON) or inline JSON string.", is_preview=True)
+        # In update scenario, use emtpy str as default.
+        c.argument('ssh_access', arg_type=get_enum_type(ssh_accesses), is_preview=True)
         c.argument('enable_static_egress_gateway', is_preview=True, action='store_true')
         c.argument('disable_static_egress_gateway', is_preview=True, action='store_true')
         c.argument("enable_imds_restriction", action="store_true", is_preview=True)

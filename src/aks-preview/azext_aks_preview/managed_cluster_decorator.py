@@ -6,6 +6,7 @@
 # pylint: disable=too-many-lines
 import copy
 import datetime
+import json
 import os
 from types import SimpleNamespace
 from typing import Any, Dict, List, Optional, Tuple, TypeVar, Union
@@ -7373,7 +7374,37 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_upstream_kubescheduler_user_configuration(mc)
         # update ManagedSystem pools, must at end
         mc = self.update_managed_system_pools(mc)
+        # set up backup
+        mc = self.set_up_backup(mc)
 
+        return mc
+
+    def set_up_backup(self, mc: ManagedCluster) -> ManagedCluster:
+
+        enable_backup = self.context.raw_param.get("enable_backup")
+        if enable_backup:
+            # Validate that dataprotection extension is installed
+            try:
+                from azure.cli.core.extension.operations import add_extension_to_path
+                add_extension_to_path("dataprotection")
+                from azext_dataprotection.manual.aks.aks_helper import dataprotection_enable_backup_helper
+            except (ImportError, ModuleNotFoundError):
+                raise CLIError(
+                    "The 'dataprotection' extension is required for AKS backup functionality.\n"
+                    "Please install it using: az extension add --name dataprotection"
+                )
+
+            backup_strategy = self.context.raw_param.get("backup_strategy")
+            backup_configuration_file = self.context.raw_param.get("backup_configuration_file")
+
+            # Build the cluster resource ID
+            cluster_resource_id = (
+                f"/subscriptions/{self.context.get_subscription_id()}"
+                f"/resourceGroups/{self.context.get_resource_group_name()}"
+                f"/providers/Microsoft.ContainerService/managedClusters/{self.context.get_name()}"
+            )
+
+            dataprotection_enable_backup_helper(self.cmd, str(cluster_resource_id), backup_strategy, backup_configuration_file)
         return mc
 
     def check_is_postprocessing_required(self, mc: ManagedCluster) -> bool:

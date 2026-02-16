@@ -1394,6 +1394,10 @@ def aks_update(
     # IMDS restriction
     enable_imds_restriction=False,
     disable_imds_restriction=False,
+    # Backup
+    enable_backup=False,
+    backup_strategy=None,
+    backup_configuration_parameters=None,
     migrate_vmas_to_vms=False,
     enable_upstream_kubescheduler_user_configuration=False,
     disable_upstream_kubescheduler_user_configuration=False,
