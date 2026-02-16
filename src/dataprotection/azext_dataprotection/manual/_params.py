@@ -182,16 +182,16 @@ def load_arguments(self, _):
                    'json-string/@json-file. Required when --operation is Backup')
         c.argument('restore_request_object', type=validate_file_or_dict, help='Request body for operation "Restore" Expected value: '
                    'json-string/@json-file. Required when --operation is Restore')
-        
-    ## Enable Backup command
+
+    # Enable Backup command
     with self.argument_context('dataprotection enable-backup trigger') as c:
         c.argument('datasource_type', type=str, help="The type of datasource to be backed up. Supported values: AzureKubernetesService.")
         c.argument('datasource_id', type=str, help="The full ARM resource ID of the datasource to be backed up.")
-        c.argument('backup_strategy', arg_type=get_enum_type(get_all_backup_strategies()), 
+        c.argument('backup_strategy', arg_type=get_enum_type(get_all_backup_strategies()),
                    help="Backup strategy preset. For AzureKubernetesService: Week (7-day retention), Month (30-day retention), "
                         "Immutable (7-day Op + 90-day Vault Tier), DisasterRecovery (GRS+CRR), Custom (bring your own vault/policy). "
                         "Default: Week.")
-        c.argument('backup_configuration_file', type=validate_file_or_dict, 
+        c.argument('backup_configuration_file', type=validate_file_or_dict,
                    options_list=['--backup-configuration-file', '-f'],
                    help="Path to backup configuration file (JSON) or inline JSON string. "
                         "Available settings: storageAccountResourceId, blobContainerName, backupResourceGroupId, "

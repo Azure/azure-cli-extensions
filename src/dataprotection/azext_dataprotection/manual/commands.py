@@ -131,5 +131,4 @@ def load_command_table(self, _):
         g.custom_command('list', 'dataprotection_recovery_point_list')
 
     with self.command_group('dataprotection enable-backup', exception_handler=exception_handler) as g:
-        g.custom_command('trigger', 'dataprotection_enable_backup', supports_no_wait=True)
-    
+        g.custom_command('trigger', 'dataprotection_enable_backup')

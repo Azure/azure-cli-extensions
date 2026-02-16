@@ -291,3 +291,18 @@ helps['dataprotection recovery-point list'] = """
       - name: List of Recovery Points in a Vault
         text: az dataprotection recovery-point list --backup-instance-name "sample_biname-00000000-0000-0000-0000-000000000000" --resource-group "sample_rg" --vault-name "sample_vault"
 """
+
+helps['dataprotection enable-backup'] = """
+    type: group
+    short-summary: Enable backup for Azure resources.
+"""
+
+helps['dataprotection enable-backup trigger'] = """
+    type: command
+    short-summary: Enable backup for an AKS cluster by setting up all required resources including backup vault, policy, storage account, extension, and trusted access.
+    examples:
+      - name: Enable backup for an AKS cluster with default Week strategy
+        text: az dataprotection enable-backup trigger --datasource-type AzureKubernetesService --datasource-id /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.ContainerService/managedClusters/{cluster}
+      - name: Enable backup with Month strategy
+        text: az dataprotection enable-backup trigger --datasource-type AzureKubernetesService --datasource-id /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.ContainerService/managedClusters/{cluster} --backup-strategy Month
+"""

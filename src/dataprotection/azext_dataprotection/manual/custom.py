@@ -1151,52 +1151,53 @@ def restore_initialize_for_item_recovery(cmd, datasource_type, source_datastore,
 
     return restore_request
 
+
 def dataprotection_enable_backup(cmd, datasource_type, datasource_id, backup_strategy=None, backup_configuration_file=None):
     """Enable backup for a datasource using a single command.
-    
+
     This command orchestrates all the steps required to enable backup:
     - Creates backup infrastructure (resource group, storage account, vault)
     - Installs required extensions
     - Configures backup instance with specified strategy
     """
     from azext_dataprotection.manual.enums import get_backup_strategies_for_datasource
-    
+
     # Supported datasource types
     supported_datasource_types = ["AzureKubernetesService"]
-    
+
     # Validate datasource type is supported
     if datasource_type not in supported_datasource_types:
         raise InvalidArgumentValueError(
             f"Unsupported datasource type: {datasource_type}. "
             f"Supported types: {', '.join(supported_datasource_types)}"
         )
-    
+
     # Get valid strategies for this datasource type
     valid_strategies = get_backup_strategies_for_datasource(datasource_type)
-    
+
     # Set default strategy based on datasource type
     if backup_strategy is None:
         if datasource_type == "AzureKubernetesService":
             backup_strategy = 'Week'
         # Add defaults for other datasource types here as they are supported
-    
+
     # Validate strategy for datasource type
     if backup_strategy not in valid_strategies:
         raise InvalidArgumentValueError(
             f"Invalid backup-strategy '{backup_strategy}' for {datasource_type}. "
             f"Allowed values: {', '.join(valid_strategies)}"
         )
-    
+
     # Parse configuration from file or dict
     config = _parse_backup_configuration(backup_configuration_file)
-    
+
     # Route to datasource-specific handler
     if datasource_type == "AzureKubernetesService":
         if "Microsoft.ContainerService/managedClusters".lower() not in datasource_id.lower():
             raise InvalidArgumentValueError(
                 "datasource-id must be an AKS cluster resource ID for AzureKubernetesService datasource type"
             )
-        
+
         from azext_dataprotection.manual.aks.aks_helper import dataprotection_enable_backup_helper
         dataprotection_enable_backup_helper(cmd, datasource_id, backup_strategy, config)
         return
@@ -1204,25 +1205,25 @@ def dataprotection_enable_backup(cmd, datasource_type, datasource_id, backup_str
 
 def _parse_backup_configuration(backup_configuration_file):
     """Parse backup configuration from file or dict into a dictionary.
-    
+
     Args:
         backup_configuration_file: Can be:
             - None: Returns empty dict
             - dict: Returns as-is (already parsed by validate_file_or_dict)
             - str: JSON string to parse
-    
+
     Returns:
         dict: Parsed configuration
     """
     import json
-    
+
     if backup_configuration_file is None:
         return {}
-    
+
     # If it's already a dict, return as-is (validate_file_or_dict already parsed the file)
     if isinstance(backup_configuration_file, dict):
         return backup_configuration_file
-    
+
     # If it's a string, try to parse as JSON
     if isinstance(backup_configuration_file, str):
         try:
@@ -1231,5 +1232,5 @@ def _parse_backup_configuration(backup_configuration_file):
             raise InvalidArgumentValueError(
                 f"Invalid JSON in backup-configuration-file: '{backup_configuration_file}'"
             )
-    
+
     return {}
