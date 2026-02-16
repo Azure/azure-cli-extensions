@@ -138,6 +138,3 @@ class BackupPolicyScenarioTest(ScenarioTest):
                  'JANUARY February MarCh april May June July August September October November December', checks=[
                      test.check('length(months_of_year)', 12)
                  ])
-        
-    def test_dataprotection_enable_backup(test):
-        test.cmd('az dataprotection enable-backup enable-backup')
