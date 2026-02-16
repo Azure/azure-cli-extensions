@@ -3565,6 +3565,20 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self.raw_param.get("app_routing_default_nginx_controller")
 
+    def get_enable_default_domain(self) -> bool:
+        """Obtain the value of enable_default_domain.
+
+        :return: bool
+        """
+        return self.raw_param.get("enable_default_domain")
+
+    def get_disable_default_domain(self) -> bool:
+        """Obtain the value of disable_default_domain.
+
+        :return: bool
+        """
+        return self.raw_param.get("disable_default_domain")
+
     def get_nginx(self):
         """Obtain the value of nginx, written to the update decorator context by _aks_approuting_update
 
@@ -4163,6 +4177,23 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             if "web_application_routing" in addons:
                 dns_zone_resource_ids = self.context.get_dns_zone_resource_ids()
                 mc.ingress_profile.web_app_routing.dns_zone_resource_ids = dns_zone_resource_ids
+
+        if self.context.get_enable_default_domain() or self.context.get_disable_default_domain():
+            if mc.ingress_profile is None:
+                mc.ingress_profile = self.models.ManagedClusterIngressProfile()  # pylint: disable=no-member
+            if mc.ingress_profile.web_app_routing is None:
+                mc.ingress_profile.web_app_routing = (
+                    self.models.ManagedClusterIngressProfileWebAppRouting(enabled=True)  # pylint: disable=no-member
+                )
+
+            enable = True
+            if self.context.get_disable_default_domain():
+                enable = False
+            mc.ingress_profile.web_app_routing.default_domain = (
+                self.models.ManagedClusterIngressDefaultDomainProfile(
+                    enabled=enable
+                )
+            )
 
         return mc
 
@@ -6834,6 +6865,20 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         # modify default nic config
         if nginx:
             self._update_app_routing_nginx(mc, nginx)
+
+        # modify default domain
+        enable_default_domain = self.context.get_enable_default_domain()
+        disable_default_domain = self.context.get_disable_default_domain()
+        if enable_default_domain or disable_default_domain:
+            if mc.ingress_profile.web_app_routing.enabled:
+                enable = not disable_default_domain
+                mc.ingress_profile.web_app_routing.default_domain = (
+                    self.models.ManagedClusterIngressDefaultDomainProfile(
+                        enabled=enable
+                    )
+                )
+            else:
+                raise CLIError('App Routing must be enabled to modify the default domain.\n')
 
         return mc
 
