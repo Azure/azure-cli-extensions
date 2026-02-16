@@ -60,6 +60,7 @@ class Quickstart(AAZCommand):
 
         _args_schema.resource_group = AAZResourceGroupNameArg(
             options=["-g", "--resource-group"],
+            required=True,
             help="Resource group for deployment.",
         )
 
