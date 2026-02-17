@@ -83,6 +83,7 @@ class WorkspaceInfo:
             cmd.cli_ctx.config.set_value(cmd.cli_ctx.config.defaults_section_name, 'location', self.location)
             cmd.cli_ctx.config.set_value(cmd.cli_ctx.config.defaults_section_name, 'endpoint', endpoint)
 
+
 def _show_tip(msg):
     import colorama
     colorama.init()

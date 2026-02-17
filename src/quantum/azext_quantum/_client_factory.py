@@ -71,11 +71,14 @@ def cf_quantum(cli_ctx, subscription: str, resource_group: str, ws_name: str, en
     ws_cl = WorkspaceClient(endpoint, creds)
     return ws_cl
 
+
 def cf_providers(cli_ctx, subscription: str, resource_group: str, ws_name: str, endpoint: str | None):
     return cf_quantum(cli_ctx, subscription, resource_group, ws_name, endpoint).services.providers
 
+
 def cf_jobs(cli_ctx, subscription: str, resource_group: str, ws_name: str, endpoint: str | None):
     return cf_quantum(cli_ctx, subscription, resource_group, ws_name, endpoint).services.jobs
+
 
 def cf_quotas(cli_ctx, subscription: str, resource_group: str, ws_name: str, endpoint: str | None):
     return cf_quantum(cli_ctx, subscription, resource_group, ws_name, endpoint).services.quotas
