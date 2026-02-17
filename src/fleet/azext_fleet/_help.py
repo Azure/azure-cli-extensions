@@ -215,38 +215,92 @@ helps['fleet updaterun create'] = """
                   Fixed count (e.g., 3)
                   Percentage (e.g., 25%, 1–100) of the relevant cluster total (stage total for stage, group total for group). Percentages are rounded down, with a minimum of 1 enforced.
                   Examples: 3, 25%, 100%
-                {
-                    "stages": [
+
+                Example stages JSON, with optional properties maxConcurrency and before/after gates:
+               {
+                  "stages": [
+                    {
+                      "name": "stage1",
+                      "maxConcurrency": "7%",
+                      "beforeGates": [
                         {
-                            "name": "stage1",
-                            "groups": [
-                                {
-                                    "name": "group-a1"
-                                },
-                                {
-                                    "name": "group-a2"
-                                },
-                                {
-                                    "name": "group-a3"
-                                }
-                            ],
-                            "afterStageWaitInSeconds": 3600
+                          "displayName": "stage before gate",
+                          "type": "Approval"
+                        }
+                      ],
+                      "afterGates": [
+                        {
+                          "displayName": "stage after gate",
+                          "type": "Approval"
+                        }
+                      ],
+                      "groups": [
+                        {
+                          "name": "group-a1",
+                          "maxConcurrency": "100%",
+                          "beforeGates": [
+                            {
+                              "displayName": "group before gate",
+                              "type": "Approval"
+                            }
+                          ],
+                          "afterGates": [
+                            {
+                              "displayName": "group after gate",
+                              "type": "Approval"
+                            }
+                          ]
                         },
                         {
-                            "name": "stage2",
-                            "groups": [
-                                {
-                                    "name": "group-b1"
-                                },
-                                {
-                                    "name": "group-b2"
-                                },
-                                {
-                                    "name": "group-b3"
-                                }
-                            ]
+                          "name": "group-a2",
+                          "maxConcurrency": "1",
+                          "beforeGates": [
+                            {
+                              "displayName": "group before gate",
+                              "type": "Approval"
+                            }
+                          ],
+                          "afterGates": [
+                            {
+                              "displayName": "group after gate",
+                              "type": "Approval"
+                            }
+                          ]
                         },
-                    ]
+                        {
+                          "name": "group-a3",
+                          "maxConcurrency": "1",
+                          "beforeGates": [
+                            {
+                              "displayName": "group before gate",
+                              "type": "Approval"
+                            }
+                          ],
+                          "afterGates": [
+                            {
+                              "displayName": "group after gate",
+                              "type": "Approval"
+                            }
+                          ]
+                        }
+                      ],
+                      "afterStageWaitInSeconds": 3600
+                    },
+                    {
+                      "name": "stage2",
+                      "groups": [
+                        {
+                          "name": "group-b1"
+                        },
+                        {
+                          "name": "group-b2"
+                        },
+                        {
+                          "name": "group-b3"
+                        }
+                      ]
+                    }
+                  ]
                 }
 """
 

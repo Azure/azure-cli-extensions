@@ -136,16 +136,27 @@ class TestStagesJsonHandling(unittest.TestCase):
             "stages": [
                 {
                     "name": "stage1",
+                    "maxConcurrency": "7",
                     "groups": [
-                        {"name": "group1"},
-                        {"name": "group2"}
+                        {
+                            "name": "group1",
+                            "maxConcurrency": "100%"
+                        },
+                        {
+                            "name": "group2",
+                            "maxConcurrency": "70%"
+                        }
                     ],
                     "afterStageWaitInSeconds": 1800
                 },
                 {
                     "name": "stage2", 
+                    "maxConcurrency": "100%",
                     "groups": [
-                        {"name": "group3"}
+                        {
+                            "name": "group3",
+                            "maxConcurrency": "1"
+                        }
                     ],
                     "afterStageWaitInSeconds": 3600
                 }
@@ -163,16 +174,21 @@ class TestStagesJsonHandling(unittest.TestCase):
         stage1 = result.stages[0]
         self.assertEqual(stage1.name, "stage1")
         self.assertEqual(stage1.after_stage_wait_in_seconds, 1800)
+        self.assertEqual(stage1.max_concurrency, "7")
         self.assertEqual(len(stage1.groups), 2)
         self.assertEqual(stage1.groups[0].name, "group1")
+        self.assertEqual(stage1.groups[0].max_concurrency, "100%")
         self.assertEqual(stage1.groups[1].name, "group2")
+        self.assertEqual(stage1.groups[1].max_concurrency, "70%")  
         
         # Verify second stage  
         stage2 = result.stages[1]
         self.assertEqual(stage2.name, "stage2")
         self.assertEqual(stage2.after_stage_wait_in_seconds, 3600)
+        self.assertEqual(stage2.max_concurrency, "100%")
         self.assertEqual(len(stage2.groups), 1)
         self.assertEqual(stage2.groups[0].name, "group3")
+        self.assertEqual(stage2.groups[0].max_concurrency, "1")
 
     def test_none_stages_returns_none(self):
         """Test that None stages input returns None."""
