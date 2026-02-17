@@ -282,6 +282,55 @@ az network front-door waf-policy managed-rule-definition list
         self.assertEqual(result['managedRules']['managedRuleSets'][0]['ruleSetVersion'], version)
         self.assertEqual(result['managedRules']['managedRuleSets'][0]['ruleSetAction'], action)
 
+    @ResourceGroupPreparer(location='westus', additional_tags={'owner': 'jingnanxu'})
+    def test_waf_policy_managed_rules_sensitivity(self, resource_group):
+        """Test adding a managed rule override with --sensitivity for DDoS rule sets."""
+        policyName = self.create_random_name(prefix='cli', length=24)
+
+        # Create a WAF policy with Premium SKU
+        cmd = 'az network front-door waf-policy create -g {resource_group} -n {policyName} --sku Premium_AzureFrontDoor'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        self.assertEqual(result['sku']['name'], "Premium_AzureFrontDoor")
+
+        # Add DDoS managed rule set
+        type = "Microsoft_HTTPDDoSRuleSet"
+        version = "1.0"
+        cmd = 'az network front-door waf-policy managed-rules add -g {resource_group} --policy-name {policyName} --type {type} --version {version}'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        self.assertIn('managedRules', result)
+        self.assertEqual(result['managedRules']['managedRuleSets'][0]['ruleSetType'], type)
+
+        # Add override with sensitivity
+        rulegroupid = "ExcessiveRequests"
+        ruleid = "500100"
+        action = "Log"
+        sensitivity = "Low"
+        cmd = 'az network front-door waf-policy managed-rules override add -g {resource_group} --policy-name {policyName} --type {type} --rule-group-id {rulegroupid} --rule-id {ruleid} --action {action} --sensitivity {sensitivity}'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        ruleGroupOverride = result['managedRules']['managedRuleSets'][0]['ruleGroupOverrides'][0]
+        self.assertEqual(ruleGroupOverride['ruleGroupName'], rulegroupid)
+        self.assertEqual(ruleGroupOverride['rules'][0]['ruleId'], ruleid)
+        self.assertEqual(ruleGroupOverride['rules'][0]['action'], action)
+        self.assertEqual(ruleGroupOverride['rules'][0]['sensitivity'], sensitivity)
+        self.assertEqual(ruleGroupOverride['rules'][0]['enabledState'], 'Enabled')
+
+        # Update override with different sensitivity
+        sensitivity = "High"
+        cmd = 'az network front-door waf-policy managed-rules override add -g {resource_group} --policy-name {policyName} --type {type} --rule-group-id {rulegroupid} --rule-id {ruleid} --action {action} --sensitivity {sensitivity}'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        ruleGroupOverride = result['managedRules']['managedRuleSets'][0]['ruleGroupOverrides'][0]
+        self.assertEqual(ruleGroupOverride['rules'][0]['sensitivity'], sensitivity)
+
+        # List overrides
+        cmd = 'az network front-door waf-policy managed-rules override list -g {resource_group} --policy-name {policyName} --type {type}'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]['rules'][0]['sensitivity'], sensitivity)
+
+        # Remove override
+        cmd = 'az network front-door waf-policy managed-rules override remove -g {resource_group} --policy-name {policyName} --type {type} --rule-group-id {rulegroupid} --rule-id {ruleid}'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        self.assertEqual(len(result['managedRules']['managedRuleSets'][0]['ruleGroupOverrides']), 0)
 
     @ResourceGroupPreparer(location='westus', additional_tags={'owner': 'jingnanxu'})
     def test_waf_policy_custom_rules(self, resource_group):
