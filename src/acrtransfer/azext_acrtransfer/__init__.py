@@ -5,7 +5,7 @@
 
 from azure.cli.core import AzCommandsLoader
 from azext_acrtransfer._help import helps  # pylint: disable=unused-import
-from azext_acrtransfer._breaking_change import *
+import azext_acrtransfer._breaking_change  # noqa: F401
 
 
 class AcrtransferCommandsLoader(AzCommandsLoader):
