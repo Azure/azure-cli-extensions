@@ -20,6 +20,9 @@ from azure.cli.core.azclierror import (  # type: ignore[import-unresolved]
     CLIInternalError,
 )
 from azure.cli.core import get_default_cli  # type: ignore[import-unresolved]
+from knack.log import get_logger
+
+logger = get_logger(__name__)
 
 
 def _resolve_template_path() -> Path:
@@ -91,16 +94,17 @@ class Quickstart(AAZCommand):
 
         site_name = self.ctx.args.name.to_serialized_data()
         rg = self.ctx.args.resource_group.to_serialized_data()
-
         deployment_name = f"site-quickstart-{site_name}"
 
+        # 1) Create deployment with fully suppressed output (prevents template/deployment payload from printing)
         invoke_args = [
             "deployment", "group", "create",
             "--name", deployment_name,
             "--resource-group", rg,
             "--template-file", str(template),
-            "--parameters",
-            f"siteName={site_name}",
+            "--parameters", f"siteName={site_name}",
+            "--only-show-errors",
+            "--output", "none",
         ]
 
         if has_value(self.ctx.args.location):
@@ -109,12 +113,11 @@ class Quickstart(AAZCommand):
 
         if has_value(self.ctx.args.config_name):
             cfg = self.ctx.args.config_name.to_serialized_data()
-            invoke_args.append(f"configName={cfg}")
+            invoke_args.extend(["--parameters", f"configName={cfg}"])
 
         cli = get_default_cli()
         rc = cli.invoke(invoke_args)
         if rc != 0:
-            # Include deployment context and underlying CLI error (if any) for easier troubleshooting.
             underlying_error = None
             if getattr(cli, "result", None) is not None:
                 underlying_error = getattr(cli.result, "error", None)
@@ -126,4 +129,43 @@ class Quickstart(AAZCommand):
                 msg = f"{msg} Underlying error: {underlying_error}"
             raise CLIInternalError(msg)
 
-        return cli.result.result
+        # 2) Query deployment operations and print friendly success messages
+        ops_args = [
+            "deployment", "operation", "group", "list",
+            "--name", deployment_name,
+            "--resource-group", rg,
+            "--only-show-errors",
+            "--output", "none",
+        ]
+        cli.invoke(ops_args)
+        ops = []
+        if getattr(cli, "result", None) is not None:
+            ops = cli.result.result or []
+
+        succeeded_types = set()
+        if isinstance(ops, list):
+            for op in ops:
+                if not isinstance(op, dict):
+                    continue
+                props = op.get("properties") or {}
+                if not isinstance(props, dict):
+                    continue
+                if props.get("provisioningState") != "Succeeded":
+                    continue
+                tr = props.get("targetResource") or {}
+                if isinstance(tr, dict):
+                    rtype = tr.get("resourceType")
+                    if rtype:
+                        succeeded_types.add(rtype)
+                        
+        if "Microsoft.Edge/sites" in succeeded_types:
+            print("Site created successfully.")
+        if "Microsoft.Edge/Configurations" in succeeded_types:
+            print("Config created successfully.")
+        if "Microsoft.Edge/configurationReferences" in succeeded_types:
+            print("Config reference created successfully.")
+
+        if not ({"Microsoft.Edge/sites", "Microsoft.Edge/Configurations", "Microsoft.Edge/configurationReferences"} & succeeded_types):
+            print("Deployment completed successfully.")
+
+        return None
