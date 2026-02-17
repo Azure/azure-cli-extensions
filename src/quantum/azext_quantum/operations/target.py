@@ -54,7 +54,7 @@ def list(cmd, resource_group_name, workspace_name, location):
     Get the list of providers and their targets in an Azure Quantum workspace.
     """
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
-    client = cf_providers(cmd.cli_ctx, info.subscription, info.location)
+    client = cf_providers(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.endpoint)
     response = client.list(info.subscription, info.resource_group, info.name)
     return repack_response_json(response)
 

@@ -219,35 +219,35 @@ class Workspace:
     #     """
     #     return self._connection_params.location
 
-    # @property
-    # def subscription_id(self) -> str:
-    #     """
-    #     Returns the Azure Subscription ID of the Quantum Workspace.
+    @property
+    def subscription_id(self) -> str:
+        """
+        Returns the Azure Subscription ID of the Quantum Workspace.
 
-    #     :return: Azure Subscription ID.
-    #     :rtype: str
-    #     """
-    #     return self._connection_params.subscription_id
+        :return: Azure Subscription ID.
+        :rtype: str
+        """
+        return self._connection_params.subscription_id
 
-    # @property
-    # def resource_group(self) -> str:
-    #     """
-    #     Returns the Azure Resource Group of the Quantum Workspace.
+    @property
+    def resource_group(self) -> str:
+        """
+        Returns the Azure Resource Group of the Quantum Workspace.
 
-    #     :return: Azure Resource Group name.
-    #     :rtype: str
-    #     """
-    #     return self._connection_params.resource_group
+        :return: Azure Resource Group name.
+        :rtype: str
+        """
+        return self._connection_params.resource_group
 
-    # @property
-    # def name(self) -> str:
-    #     """
-    #     Returns the Name of the Quantum Workspace.
+    @property
+    def name(self) -> str:
+        """
+        Returns the Name of the Quantum Workspace.
 
-    #     :return: Azure Quantum Workspace name.
-    #     :rtype: str
-    #     """
-    #     return self._connection_params.workspace_name
+        :return: Azure Quantum Workspace name.
+        :rtype: str
+        """
+        return self._connection_params.workspace_name
 
     # @property
     # def credential(self) -> Any:
@@ -259,15 +259,15 @@ class Workspace:
     #     """
     #     return self._connection_params.credential
 
-    # @property
-    # def storage(self) -> str:
-    #     """
-    #     Returns the Azure Storage account name associated with the Quantum Workspace.
+    @property
+    def storage(self) -> str:
+        """
+        Returns the Azure Storage account name associated with the Quantum Workspace.
 
-    #     :return: Azure Storage account name.
-    #     :rtype: str
-    #     """
-    #     return self._storage
+        :return: Azure Storage account name.
+        :rtype: str
+        """
+        return self._storage
 
     def _create_client(self) -> WorkspaceClient:
         """"

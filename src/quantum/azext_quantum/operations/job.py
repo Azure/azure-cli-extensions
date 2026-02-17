@@ -11,6 +11,7 @@ import os
 import uuid
 import knack.log
 
+from azure.core.exceptions import HttpResponseError
 from azure.cli.core.azclierror import (FileOperationError, AzureInternalError,
                                        InvalidArgumentValueError, AzureResponseError,
                                        RequiredArgumentMissingError)
@@ -50,7 +51,7 @@ def list(cmd, resource_group_name, workspace_name, location, job_type=None, item
     Get the list of jobs in a Quantum Workspace.
     """
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
-    client = cf_jobs(cmd.cli_ctx, info.subscription, info.location)
+    client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.endpoint)
 
     query = _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name)
     orderby_expression = _construct_orderby_expression(orderby, order)
@@ -143,12 +144,16 @@ def get(cmd, job_id, resource_group_name=None, workspace_name=None, location=Non
     Get the job's status and details.
     """
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
-    client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
+    client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.endpoint)
     return client.get(job_id)
 
 
 def _has_completed(job):
-    return job.status in ("Succeeded", "Failed", "Cancelled")
+    return job.status in ("Succeeded", "Failed", "Cancelled", "Completed")
+
+
+def _has_succeeded(job):
+    return job.status == "Succeeded" or job.status == "Completed"
 
 
 def _convert_numeric_params(job_params):
@@ -275,7 +280,7 @@ def submit(cmd, resource_group_name, workspace_name, location, target_id, job_in
 
     resource_id = "/subscriptions/" + ws_info.subscription + "/resourceGroups/" + ws_info.resource_group + "/providers/Microsoft.Quantum/Workspaces/" + ws_info.name
     credential = _get_data_credentials(cmd.cli_ctx, ws_info.subscription)
-    workspace = Workspace(resource_id=resource_id, location=location, credential=credential)
+    workspace = Workspace(resource_id=resource_id, credential=credential)
 
     container_uri = workspace.get_container_uri(job_id=job_id)
     container_client = ContainerClient.from_container_url(container_uri)
@@ -327,7 +332,7 @@ def submit(cmd, resource_group_name, workspace_name, location, target_id, job_in
             job_params["shots"] = DEFAULT_SHOTS
 
     # Submit the job
-    client = cf_jobs(cmd.cli_ctx, ws_info.subscription, ws_info.location)
+    client = cf_jobs(cmd.cli_ctx, ws_info.subscription, ws_info.resource_group, ws_info.name, ws_info.endpoint)
     job_details = {'name': job_name,
                    'containerUri': container_uri,
                    'inputDataFormat': job_input_format,
@@ -339,7 +344,7 @@ def submit(cmd, resource_group_name, workspace_name, location, target_id, job_in
                    'tags': tags}
 
     knack_logger.warning("Submitting job...")
-    return client.create_or_replace(ws_info.subscription, ws_info.resource_group, ws_info.name, job_id, job_details).as_dict()
+    return client.create(ws_info.subscription, ws_info.resource_group, ws_info.name, job_id, job_details).as_dict()
 
 
 def output(cmd, job_id, resource_group_name, workspace_name, location):
@@ -347,10 +352,10 @@ def output(cmd, job_id, resource_group_name, workspace_name, location):
     Get the results of running a job.
     """
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
-    client = cf_jobs(cmd.cli_ctx, info.subscription, info.location)
+    client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.endpoint)
     job = client.get(info.subscription, info.resource_group, info.name, job_id)
 
-    if job.status != "Succeeded":
+    if not _has_succeeded(job):
         return job  # If "-o table" is specified, this allows transform_output() in commands.py
         #             to format the output, so the error info is shown. If "-o json" or no "-o"
         #             parameter is specified, then the full JSON job output is displayed, being
@@ -366,7 +371,7 @@ def wait(cmd, job_id, resource_group_name, workspace_name, location, max_poll_wa
     import time
 
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
-    client = cf_jobs(cmd.cli_ctx, info.subscription, info.location)
+    client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.endpoint)
 
     # TODO: LROPoller...
     wait_indicators_used = False
@@ -393,7 +398,7 @@ def job_show(cmd, job_id, resource_group_name, workspace_name, location):
     Get the job's status and details.
     """
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
-    client = cf_jobs(cmd.cli_ctx, info.subscription, info.location)
+    client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.endpoint)
     job = client.get(info.subscription, info.resource_group, info.name, job_id)
     return job.as_dict()
 
@@ -421,15 +426,20 @@ def cancel(cmd, job_id, resource_group_name, workspace_name, location):
     Request to cancel a job on Azure Quantum if it hasn't completed.
     """
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
-    client = cf_jobs(cmd.cli_ctx, info.subscription, info.location)
+    client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.endpoint)
     job = client.get(info.subscription, info.resource_group, info.name, job_id)
 
     if _has_completed(job):
         print(f"Job {job_id} has already completed with status: {job.status}.")
         return
 
-    # If the job hasn't succeeded or failed, attempt to cancel.
-    client.delete(info.subscription, info.resource_group, info.name, job_id)  # JobOperations.cancel has been replaced with .delete in the updated DP client
+    try:
+        client.cancel(info.subscription, info.resource_group, info.name, job_id)
+    except HttpResponseError as e:
+        # because of historical behavior of the service, the 204 No Content response is returned when cancellation request is succeeded.
+        # while backend is not updated to return 200 according to a guideline, let's handle that here to align with typespecs
+        if e.status_code != 204:
+            raise
 
     # Wait for the job status to complete or be reported as cancelled
     return wait(cmd, job_id, info.resource_group, info.name, info.location)
