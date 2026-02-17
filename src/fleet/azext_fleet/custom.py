@@ -441,6 +441,9 @@ def create_update_run(cmd,
         raise CLIError((f"The upgrade type parameter '{upgrade_type}' is not valid."
                         f"Valid options are: '{UPGRADE_TYPE_FULL}', '{UPGRADE_TYPE_CONTROLPLANEONLY}', or '{UPGRADE_TYPE_NODEIMAGEONLY}'"))  # pylint: disable=line-too-long
 
+    if upgrade_type == UPGRADE_TYPE_CONTROLPLANEONLY and node_image_selection is not None:
+        raise CLIError("Node image selection must not be set when upgrade type is 'ControlPlaneOnly'.")
+
     if stages is not None and update_strategy_name is not None:
         raise CLIError("Cannot set stages when update strategy name is set.")
 
@@ -469,9 +472,12 @@ def create_update_run(cmd,
 
     managed_cluster_upgrade_spec = managed_cluster_upgrade_spec_model(
         type=upgrade_type, kubernetes_version=kubernetes_version)
-    if node_image_selection is None:
-        node_image_selection = "Latest"
-    node_image_selection_type = node_image_selection_model(type=node_image_selection)
+
+    node_image_selection_type = None
+    if upgrade_type != UPGRADE_TYPE_CONTROLPLANEONLY:
+        if node_image_selection is None:
+            node_image_selection = "Latest"
+        node_image_selection_type = node_image_selection_model(type=node_image_selection)
 
     managed_cluster_update = managed_cluster_update_model(
         upgrade=managed_cluster_upgrade_spec,

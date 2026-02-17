@@ -176,4 +176,4 @@ Release History
 
 1.9.0
 ++++++
-* Add 2026-02-01-preview API Version with UpdateRun MaxConcurrency support.
+* Add 2026-02-01-preview API Version with UpdateRun MaxConcurrency support. Add fix for ControlPlaneOnly upgrade type requiring no node image selection. 
