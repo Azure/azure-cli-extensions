@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import json
 from pathlib import Path
 from azure.cli.core.aaz import (  # type: ignore[import-unresolved]
     AAZCommand,
@@ -96,7 +97,6 @@ class Quickstart(AAZCommand):
         rg = self.ctx.args.resource_group.to_serialized_data()
         deployment_name = f"site-quickstart-{site_name}"
 
-        # 1) Create deployment with fully suppressed output (prevents template/deployment payload from printing)
         invoke_args = [
             "deployment", "group", "create",
             "--name", deployment_name,
@@ -118,15 +118,63 @@ class Quickstart(AAZCommand):
         cli = get_default_cli()
         rc = cli.invoke(invoke_args)
         if rc != 0:
+            # Capture the original error first (before more invokes overwrite cli.result)
             underlying_error = None
             if getattr(cli, "result", None) is not None:
                 underlying_error = getattr(cli.result, "error", None)
+
+            deployment_error = None
+            failed_ops = None
+
+            # Try to fetch ARM deployment error object (code/message/details)
+            try:
+                show_args = [
+                    "deployment", "group", "show",
+                    "--name", deployment_name,
+                    "--resource-group", rg,
+                    "--only-show-errors",
+                    "--query", "properties.error",
+                    "--output", "json",
+                ]
+                cli.invoke(show_args)
+                if getattr(cli, "result", None) is not None:
+                    deployment_error = cli.result.result
+            except Exception:
+                deployment_error = None
+
+            # Try to fetch failed operations (often contains the most actionable message)
+            try:
+                ops_args = [
+                    "deployment", "operation", "group", "list",
+                    "--name", deployment_name,
+                    "--resource-group", rg,
+                    "--only-show-errors",
+                    "--query",
+                    "[?properties.provisioningState=='Failed']."
+                    "{type:properties.targetResource.resourceType,"
+                    " name:properties.targetResource.resourceName,"
+                    " statusMessage:properties.statusMessage}",
+                    "--output", "json",
+                ]
+                cli.invoke(ops_args)
+                if getattr(cli, "result", None) is not None:
+                    failed_ops = cli.result.result
+            except Exception:
+                failed_ops = None
+
             msg = (
                 "ARM deployment failed for site quickstart. "
                 f"Deployment name: {deployment_name}, resource group: {rg}."
             )
             if underlying_error:
-                msg = f"{msg} Underlying error: {underlying_error}"
+                msg = f"{msg}\nUnderlying error: {underlying_error}"
+
+            if deployment_error:
+                msg = f"{msg}\nDeployment error:\n{json.dumps(deployment_error, indent=2)}"
+
+            if failed_ops:
+                msg = f"{msg}\nFailed operations:\n{json.dumps(failed_ops, indent=2)}"
+
             raise CLIInternalError(msg)
 
         # 2) Query deployment operations and print friendly success messages
@@ -157,7 +205,7 @@ class Quickstart(AAZCommand):
                     rtype = tr.get("resourceType")
                     if rtype:
                         succeeded_types.add(rtype)
-                        
+
         if "Microsoft.Edge/sites" in succeeded_types:
             print("Site created successfully.")
         if "Microsoft.Edge/Configurations" in succeeded_types:
