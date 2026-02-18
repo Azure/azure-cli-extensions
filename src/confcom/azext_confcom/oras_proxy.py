@@ -9,7 +9,7 @@ import platform
 import re
 import subprocess
 from tempfile import mkdtemp
-from typing import List
+from typing import List, Optional
 
 from azext_confcom.config import ARTIFACT_TYPE, DEFAULT_REGO_FRAGMENTS
 from azext_confcom.cose_proxy import CoseSignToolProxy
@@ -22,6 +22,7 @@ from knack.log import get_logger
 host_os = platform.system()
 machine = platform.machine()
 SHA256_PREFIX = "@sha256:"
+FRAGMENT_DISCOVERY_PLATFORM = "linux/amd64"
 
 logger = get_logger(__name__)
 
@@ -175,12 +176,16 @@ def get_image_platforms(manifest_tag: str) -> List[str]:
 # return their digests in a list if there are some
 def discover(
     image: str,
+    platform: Optional[str] = None,
 ) -> tuple[bool, List[str]]:
     image_exists = True
     # normalize the name in case the docker registry is implied
     image = prepend_docker_registry(image)
 
     arg_list = ["oras", "discover", image, "-o", "json", "--artifact-type", ARTIFACT_TYPE]
+    if platform:
+        arg_list.extend(["--platform", platform])
+
     item = call_oras_cli(arg_list, check=False)
     hashes = []
 
@@ -270,7 +275,7 @@ def pull(
 def pull_all_image_attached_fragments(image):
     # TODO: be smart about if we're pulling a fragment directly or trying to discover them from an image tag
     # TODO: this will be for standalone fragments
-    image_exists, fragments = discover(image)
+    image_exists, fragments = discover(image, platform=FRAGMENT_DISCOVERY_PLATFORM)
     fragment_contents = []
     feeds = []
     if image_exists:
@@ -348,7 +353,7 @@ def check_oras_cli():
 
 
 # used for image-attached fragments
-def attach_fragment_to_image(image_name: str, filename: str):
+def attach_fragment_to_image(image_name: str, filename: str, platform: Optional[str] = None):
     if ":" not in image_name:
         image_name += ":latest"
     # attach the fragment to the image
@@ -357,9 +362,17 @@ def attach_fragment_to_image(image_name: str, filename: str):
         "attach",
         "--artifact-type",
         ARTIFACT_TYPE,
+    ]
+
+    # Add platform parameter if provided
+    if platform:
+        arg_list.extend(["--platform", platform])
+
+    arg_list.extend([
         image_name,
         filename + ":application/cose-x509+rego"
-    ]
+    ])
+
     item = call_oras_cli(arg_list, check=False)
     if item.returncode != 0:
         eprint(f"Could not attach fragment to image: {image_name}. Failed with {item.stderr}")
@@ -374,7 +387,7 @@ def attach_fragment_to_image(image_name: str, filename: str):
 
 def generate_imports_from_image_name(image_name: str, minimum_svn: str) -> List[dict]:
     cose_proxy = CoseSignToolProxy()
-    image_exists, fragment_hashes = discover(image_name)
+    image_exists, fragment_hashes = discover(image_name, platform=FRAGMENT_DISCOVERY_PLATFORM)
     import_list = []
 
     if image_exists:
