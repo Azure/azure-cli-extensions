@@ -75,6 +75,11 @@ helps['sftp connect'] = """
           * Azure Public: {storage-account}.blob.core.windows.net
           * Azure China: {storage-account}.blob.core.chinacloudapi.cn
           * Azure Government: {storage-account}.blob.core.usgovcloudapi.net
+        - Use --endpoint-suffix to override the endpoint suffix for custom environments.
+
+        TRANSFER OPTIONS:
+        - Buffer size: Controls the SFTP transfer buffer size via -B flag (default: 256 KB).
+          Use --buffer-size to tune transfer performance.
 
         SECURITY:
         - Generated credentials are automatically cleaned up after connection
@@ -89,6 +94,10 @@ helps['sftp connect'] = """
           text: az sftp connect --storage-account mystorageaccount --public-key-file ~/.ssh/id_rsa.pub --private-key-file ~/.ssh/id_rsa
         - name: Connect with custom port
           text: az sftp connect --storage-account mystorageaccount --port 2222
+        - name: Connect with custom buffer size for large file transfers
+          text: az sftp connect --storage-account mystorageaccount --buffer-size 1048576
+        - name: Connect with a custom endpoint suffix
+          text: az sftp connect --storage-account mystorageaccount --endpoint-suffix blob.core.usgovcloudapi.net
         - name: Connect with additional SFTP arguments for debugging
           text: az sftp connect --storage-account mystorageaccount --sftp-args="-v"
         - name: Connect with custom SSH client folder (Windows)

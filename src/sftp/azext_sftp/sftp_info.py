@@ -7,6 +7,8 @@ import os
 from azure.cli.core import azclierror
 from knack import log
 
+from . import constants as const
+
 logger = log.get_logger(__name__)
 
 
@@ -59,12 +61,13 @@ class SFTPSession:
     def __init__(self, storage_account, username=None, host=None, port=None,
                  public_key_file=None, private_key_file=None, cert_file=None,
                  sftp_args=None, ssh_client_folder=None, ssh_proxy_folder=None,
-                 credentials_folder=None, yes_without_prompt=False):
+                 credentials_folder=None, yes_without_prompt=False, buffer_size=None):
         self.connection = ConnectionInfo(storage_account, username, host, port)
         self.auth_files = AuthenticationFiles(public_key_file, private_key_file, cert_file)
         self.config = SessionConfiguration(sftp_args, ssh_client_folder, ssh_proxy_folder,
                                            credentials_folder, yes_without_prompt)
         self.runtime = RuntimeState()
+        self.buffer_size = buffer_size if buffer_size is not None else const.DEFAULT_BUFFER_SIZE_BYTES
 
     # Connection properties
     @property
@@ -202,6 +205,8 @@ class SFTPSession:
             args.extend(["-o", f"CertificateFile=\"{self.cert_file}\""])
         if self.port is not None:
             args.extend(["-P", str(self.port)])
+        if self.buffer_size != const.DEFAULT_BUFFER_SIZE_BYTES:
+            args.extend(["-B", str(self.buffer_size)])
         return args
 
     def get_host(self):
