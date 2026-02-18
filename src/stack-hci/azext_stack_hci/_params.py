@@ -10,4 +10,12 @@
 
 
 def load_arguments(self, _):  # pylint: disable=unused-argument
-    pass
+    with self.argument_context('stack-hci vmconnect enable') as c:
+        c.argument('cluster_name', options_list=['--cluster-name', '-n'], help='The name of the cluster.')
+        c.argument('resource_group', options_list=['--resource-group', '-g'], help='Name of resource group.')
+        c.argument('vm_name', options_list=['--vm-name'], help='The name of the virtual machine.')
+
+    with self.argument_context('stack-hci vmconnect disable') as c:
+        c.argument('cluster_name', options_list=['--cluster-name', '-n'], help='The name of the cluster.')
+        c.argument('resource_group', options_list=['--resource-group', '-g'], help='Name of resource group.')
+        c.argument('vm_name', options_list=['--vm-name'], help='The name of the virtual machine.')

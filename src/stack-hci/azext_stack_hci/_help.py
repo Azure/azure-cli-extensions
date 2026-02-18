@@ -9,3 +9,24 @@
 # pylint: disable=too-many-lines
 
 from knack.help_files import helps  # pylint: disable=unused-import
+
+helps['stack-hci vmconnect'] = """
+type: group
+short-summary: Manage VM Connect for Azure Stack HCI virtual machines.
+"""
+
+helps['stack-hci vmconnect enable'] = """
+type: command
+short-summary: Enable VM Connect for a virtual machine in an Azure Stack HCI cluster.
+examples:
+  - name: Enable VM Connect
+    text: az stack-hci vmconnect enable --cluster-name MyCluster --resource-group MyResourceGroup --vm-name MyVM
+"""
+
+helps['stack-hci vmconnect disable'] = """
+type: command
+short-summary: Disable VM Connect for a virtual machine in an Azure Stack HCI cluster.
+examples:
+  - name: Disable VM Connect
+    text: az stack-hci vmconnect disable --cluster-name MyCluster --resource-group MyResourceGroup --vm-name MyVM
+"""
