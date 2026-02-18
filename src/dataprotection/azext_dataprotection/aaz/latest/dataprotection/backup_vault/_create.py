@@ -28,9 +28,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-07-01",
+        "version": "2025-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}", "2025-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}", "2025-09-01"],
         ]
     }
 
@@ -51,6 +51,10 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.x_ms_deleted_vault_id = AAZStrArg(
+            options=["--x-ms-deleted-vault-id"],
+            help="The ID of the deleted backup vault to restore from during undelete flow.",
+        )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
@@ -301,7 +305,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-01",
+                    "api-version", "2025-09-01",
                     required=True,
                 ),
             }
@@ -310,6 +314,9 @@ class Create(AAZCommand):
         @property
         def header_parameters(self):
             parameters = {
+                **self.serialize_header_param(
+                    "x-ms-deleted-vault-id", self.ctx.args.x_ms_deleted_vault_id,
+                ),
                 **self.serialize_header_param(
                     "Content-Type", "application/json",
                 ),

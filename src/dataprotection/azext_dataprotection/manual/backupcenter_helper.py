@@ -12,6 +12,15 @@ def get_selected_subscription():
     return Profile().get_subscription_id()
 
 
+def get_deleted_backup_instance_query(deleted_vault_name):
+    query = "recoveryservicesresources | where type =~ 'microsoft.dataprotection/locations/deletedvaults/deletedbackupinstances'"
+    query += "| extend deletedVaultName = split(properties['backupInstanceExtendedProperties']['vaultId'], '/Microsoft.DataProtection/backupVaults/')[1]"
+
+    query = add_filter_to_query(query, "deletedVaultName", deleted_vault_name)
+
+    return query
+
+
 def get_backup_instance_query(datasource_type, resource_groups, vaults, protection_status, datasource_id,
                               backup_instance_id, backup_instance_name):
     query = "RecoveryServicesResources | where type =~ 'microsoft.dataprotection/backupvaults/backupinstances'"
