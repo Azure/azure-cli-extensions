@@ -128,7 +128,7 @@ class AKSAgentManager(AKSAgentManagerLLMConfigBase):  # pylint: disable=too-many
         self.subscription_id: str = subscription_id
 
         self.chart_repo = "oci://mcr.microsoft.com/aks/aks-agent-chart/aks-agent"
-        self.chart_version = "0.2.0"
+        self.chart_version = "0.3.0"
 
         # credentials for aks-mcp
         # Default empty customized cluster role name means using default cluster role
@@ -973,7 +973,7 @@ class AKSAgentManagerClient(AKSAgentManagerLLMConfigBase):  # pylint: disable=to
         self.config_dir = self.base_config_dir / subscription_id / resource_group_name / cluster_name
 
         # Docker image for client mode execution
-        self.docker_image = "mcr.microsoft.com/aks/aks-agent:v0.2.0-client"
+        self.docker_image = "mcr.microsoft.com/aks/aks-agent:v0.3.0-client"
 
         self.llm_config_manager = LLMConfigManagerLocal(
             subscription_id=subscription_id,
