@@ -49,11 +49,11 @@ def set(cmd, target_id):
     return info
 
 
-def list(cmd, resource_group_name, workspace_name, location):
+def list(cmd, resource_group_name, workspace_name, location=None):
     """
     Get the list of providers and their targets in an Azure Quantum workspace.
     """
-    info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     client = cf_providers(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.endpoint)
     response = client.list(info.subscription, info.resource_group, info.name)
     return repack_response_json(response)
@@ -79,12 +79,12 @@ def target_show(cmd, target_id):
     return info
 
 
-def get_provider(cmd, target_id, resource_group_name, workspace_name, location):
+def get_provider(cmd, target_id, resource_group_name, workspace_name):
     """
     Get the the Provider ID for a specific target
     """
     provider_id = None
-    provider_list = list(cmd, resource_group_name, workspace_name, location)
+    provider_list = list(cmd, resource_group_name, workspace_name)
     if provider_list is not None:
         for item in provider_list:
             for target_item in item["targets"]:

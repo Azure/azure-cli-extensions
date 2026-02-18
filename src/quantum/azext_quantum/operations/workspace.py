@@ -48,7 +48,7 @@ C4A_TERMS_ACCEPTANCE_MESSAGE = "\nBy continuing you accept the Azure Quantum ter
 
 
 class WorkspaceInfo:
-    def __init__(self, cmd, resource_group_name=None, workspace_name=None, location=None, endpoint=None):
+    def __init__(self, cmd, resource_group_name=None, workspace_name=None, endpoint=None):
         from azure.cli.core.commands.client_factory import get_subscription_id
 
         # Hierarchically selects the value for the given key.
@@ -63,14 +63,12 @@ class WorkspaceInfo:
         self.subscription = get_subscription_id(cmd.cli_ctx)
         self.resource_group = select_value('group', resource_group_name)
         self.name = select_value('workspace', workspace_name)
-        self.location = select_value('location', location)
         self.endpoint = select_value('endpoint', endpoint)
 
     def clear(self):
         self.subscription = ''
         self.resource_group = ''
         self.name = ''
-        self.location = ''
         self.endpoint = ''
 
     def save(self, cmd, endpoint=''):
@@ -80,7 +78,6 @@ class WorkspaceInfo:
         with ConfiguredDefaultSetter(cmd.cli_ctx.config, False):
             cmd.cli_ctx.config.set_value(cmd.cli_ctx.config.defaults_section_name, 'group', self.resource_group)
             cmd.cli_ctx.config.set_value(cmd.cli_ctx.config.defaults_section_name, 'workspace', self.name)
-            cmd.cli_ctx.config.set_value(cmd.cli_ctx.config.defaults_section_name, 'location', self.location)
             cmd.cli_ctx.config.set_value(cmd.cli_ctx.config.defaults_section_name, 'endpoint', endpoint)
 
 
@@ -209,7 +206,7 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account, 
         raise RequiredArgumentMissingError("A quantum workspace requires a valid storage account.")
     if not location:
         raise RequiredArgumentMissingError("A location for the new quantum workspace is required.")
-    info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     if not info.resource_group:
         raise ResourceNotFoundError("Please run 'az quantum workspace set' first to select a default resource group.")
     quantum_workspace = _get_basic_quantum_workspace(location, info, storage_account)
@@ -338,29 +335,29 @@ def get(cmd, resource_group_name=None, workspace_name=None):
     Get the details of the given (or current) Azure Quantum workspace.
     """
     client = cf_workspaces(cmd.cli_ctx)
-    info = WorkspaceInfo(cmd, resource_group_name, workspace_name, None)
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     if (not info.resource_group) or (not info.name):
         raise ResourceNotFoundError("Please run 'az quantum workspace set' first to select a default Quantum Workspace.")
     ws = client.get(info.resource_group, info.name)
     return ws
 
 
-def quotas(cmd, resource_group_name, workspace_name, location):
+def quotas(cmd, resource_group_name, workspace_name, location=None):
     """
     List the quotas for the given (or current) Azure Quantum workspace.
     """
-    info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     client = cf_quotas(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.endpoint)
     response = client.list(info.subscription, info.resource_group, info.name)
     return repack_response_json(response)
 
 
-def set(cmd, workspace_name, resource_group_name, location):
+def set(cmd, workspace_name, resource_group_name, location=None):
     """
     Set the default Azure Quantum workspace.
     """
     client = cf_workspaces(cmd.cli_ctx)
-    info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     ws = client.get(info.resource_group, info.name)
     if ws:
         info.save(cmd, ws.properties.endpoint_uri)
@@ -381,7 +378,7 @@ def list_keys(cmd, resource_group_name=None, workspace_name=None):
     List Azure Quantum workspace api keys.
     """
     client = cf_workspace(cmd.cli_ctx)
-    info = WorkspaceInfo(cmd, resource_group_name, workspace_name, None)
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     if (not info.resource_group) or (not info.name):
         raise ResourceNotFoundError("Please run 'az quantum workspace set' first to select a default Quantum Workspace.")
 
@@ -394,7 +391,7 @@ def regenerate_keys(cmd, resource_group_name=None, workspace_name=None, key_type
     Regenerate Azure Quantum workspace api keys.
     """
     client = cf_workspace(cmd.cli_ctx)
-    info = WorkspaceInfo(cmd, resource_group_name, workspace_name, None)
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     if (not info.resource_group) or (not info.name):
         raise ResourceNotFoundError("Please run 'az quantum workspace set' first to select a default Quantum Workspace.")
 
@@ -416,7 +413,7 @@ def enable_keys(cmd, resource_group_name=None, workspace_name=None, enable_key=N
     Update the default Azure Quantum workspace.
     """
     client = cf_workspaces(cmd.cli_ctx)
-    info = WorkspaceInfo(cmd, resource_group_name, workspace_name, None)
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     if (not info.resource_group) or (not info.name):
         raise ResourceNotFoundError("Please run 'az quantum workspace set' first to select a default Quantum Workspace.")
 

@@ -44,13 +44,13 @@ logger = logging.getLogger(__name__)
 knack_logger = knack.log.get_logger(__name__)
 
 
-def list(cmd, resource_group_name, workspace_name, location, job_type=None, item_type=None, provider_id=None,
+def list(cmd, resource_group_name, workspace_name, location=None, job_type=None, item_type=None, provider_id=None,
          target_id=None, job_status=None, created_after=None, created_before=None, job_name=None,
          skip=None, top=None, orderby=None, order=None):
     """
     Get the list of jobs in a Quantum Workspace.
     """
-    info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.endpoint)
 
     query = _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name)
@@ -143,7 +143,7 @@ def get(cmd, job_id, resource_group_name=None, workspace_name=None, location=Non
     """
     Get the job's status and details.
     """
-    info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.endpoint)
     return client.get(job_id)
 
@@ -171,20 +171,20 @@ def _convert_numeric_params(job_params):
                     pass
 
 
-def submit(cmd, resource_group_name, workspace_name, location, target_id, job_input_file, job_input_format,
+def submit(cmd, resource_group_name, workspace_name, target_id, job_input_file, job_input_format, location=None,
            job_name=None, shots=None, storage=None, job_params=None, target_capability=None,
            job_output_format=None, entry_point=None):
     """
     Submit QIR or a pass-through job to run on Azure Quantum.
     """
     # Get workspace, target, and provider information
-    ws_info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
+    ws_info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     if ws_info is None:
         raise AzureInternalError("Failed to get workspace information.")
     target_info = TargetInfo(cmd, target_id)
     if target_info is None:
         raise AzureInternalError("Failed to get target information.")
-    provider_id = get_provider(cmd, target_info.target_id, resource_group_name, workspace_name, location)
+    provider_id = get_provider(cmd, target_info.target_id, resource_group_name, workspace_name)
     if provider_id is None:
         raise AzureInternalError(f"Failed to find a Provider ID for the specified Target ID, {target_info.target_id}")
 
@@ -347,11 +347,11 @@ def submit(cmd, resource_group_name, workspace_name, location, target_id, job_in
     return client.create(ws_info.subscription, ws_info.resource_group, ws_info.name, job_id, job_details).as_dict()
 
 
-def output(cmd, job_id, resource_group_name, workspace_name, location):
+def output(cmd, job_id, resource_group_name, workspace_name, location=None):
     """
     Get the results of running a job.
     """
-    info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.endpoint)
     job = client.get(info.subscription, info.resource_group, info.name, job_id)
 
@@ -364,13 +364,13 @@ def output(cmd, job_id, resource_group_name, workspace_name, location):
     return _get_job_output(job)
 
 
-def wait(cmd, job_id, resource_group_name, workspace_name, location, max_poll_wait_secs=5):
+def wait(cmd, job_id, resource_group_name, workspace_name, location=None, max_poll_wait_secs=5):
     """
     Place the CLI in a waiting state until the job finishes running.
     """
     import time
 
-    info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.endpoint)
 
     # TODO: LROPoller...
@@ -393,39 +393,39 @@ def wait(cmd, job_id, resource_group_name, workspace_name, location, max_poll_wa
     return job.as_dict()
 
 
-def job_show(cmd, job_id, resource_group_name, workspace_name, location):
+def job_show(cmd, job_id, resource_group_name, workspace_name, location=None):
     """
     Get the job's status and details.
     """
-    info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.endpoint)
     job = client.get(info.subscription, info.resource_group, info.name, job_id)
     return job.as_dict()
 
 
-def run(cmd, resource_group_name, workspace_name, location, target_id, job_input_file, job_input_format,
+def run(cmd, resource_group_name, workspace_name, target_id, job_input_file, job_input_format, location=None,
         job_name=None, shots=None, storage=None, job_params=None, target_capability=None,
         job_output_format=None, entry_point=None):
     """
     Submit a job to run on Azure Quantum, and wait for the result.
     """
-    job = submit(cmd, resource_group_name, workspace_name, location, target_id, job_input_file, job_input_format,
+    job = submit(cmd, resource_group_name, workspace_name, target_id, job_input_file, job_input_format, location,
                  job_name, shots, storage, job_params, target_capability,
                  job_output_format, entry_point)
     logger.warning("Job id: %s", job["id"])
     logger.debug(job)
 
-    job = wait(cmd, job["id"], resource_group_name, workspace_name, location)
+    job = wait(cmd, job["id"], resource_group_name, workspace_name)
     logger.debug(job)
 
-    return output(cmd, job["id"], resource_group_name, workspace_name, location)
+    return output(cmd, job["id"], resource_group_name, workspace_name)
 
 
-def cancel(cmd, job_id, resource_group_name, workspace_name, location):
+def cancel(cmd, job_id, resource_group_name, workspace_name, location=None):
     """
     Request to cancel a job on Azure Quantum if it hasn't completed.
     """
-    info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.endpoint)
     job = client.get(info.subscription, info.resource_group, info.name, job_id)
 
@@ -442,7 +442,7 @@ def cancel(cmd, job_id, resource_group_name, workspace_name, location):
             raise
 
     # Wait for the job status to complete or be reported as cancelled
-    return wait(cmd, job_id, info.resource_group, info.name, info.location)
+    return wait(cmd, job_id, info.resource_group, info.name)
 
 
 def _get_job_output(job):
