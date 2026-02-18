@@ -19,7 +19,7 @@ def oras_attach(
             "attach",
             "--artifact-type", "application/x-ms-ccepolicy-frag",
             manifest_tag,
-            os.path.relpath(signed_fragment.name, start=os.getcwd()),
+            os.path.relpath(signed_fragment.name, start=os.getcwd()) + ":application/cose-x509+rego",
         ],
         check=True,
         timeout=120,
