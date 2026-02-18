@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* `az aks update`: Fix `--enable-secret-rotation`, `--disable-secret-rotation`, and `--rotation-poll-interval` flags being silently ignored when updating Azure Key Vault Secrets Provider addon configuration.
 * `az aks create/update`: Add `--enable-azure-monitor-logs` support to container network logs validation.
 * `az aks create/update`: Add `--enable-default-domain` and `--disable-default-domain` parameters to manage the default domain feature for web app routing.
 
