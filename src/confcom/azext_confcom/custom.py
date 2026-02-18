@@ -539,10 +539,12 @@ def get_fragment_output_type(outraw):
 def fragment_attach(
     signed_fragment: BinaryIO,
     manifest_tag: str,
+    platform: Optional[str] = None,
 ) -> None:
     _fragment_attach(
         signed_fragment=signed_fragment,
-        manifest_tag=manifest_tag
+        manifest_tag=manifest_tag,
+        platform=platform,
     )
 
 
