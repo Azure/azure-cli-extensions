@@ -2,6 +2,10 @@
 
 Release History
 ===============
+5.1.0
+++++++
+* Added new target solution management command:
+  * ``az workload-orchestration target unstage`` - Unstage a solution version from a target
 
 5.0.0
 ++++++
