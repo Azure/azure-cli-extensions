@@ -31,7 +31,6 @@ def _resolve_template_path() -> Path:
     return azext_root / "templates" / "infra" / "main.json"
 
 
-
 def _get_deployment_outputs(cli, deployment_name: str, resource_group: str) -> tuple[str | None, str | None]:
     site_id = None
     config_id = None
@@ -84,6 +83,7 @@ def _create_resource_group(cli, rg_name: str, location_arg: str | None) -> str:
 
     return create_loc
 
+
 @register_command("site quickstart")
 class Quickstart(AAZCommand):
     """Quickstart: deploy internal ARM template to create Site + Config + ConfigRef."""
@@ -124,7 +124,7 @@ class Quickstart(AAZCommand):
 
         _args_schema.resource_group = AAZResourceGroupNameArg(
             options=["-g", "--resource-group"],
-            help="Resource group for deployment. If omitted, defaults to '<siteName>-rg' and will be created.",
+            help="Resource group for deployment. If omitted, defaults to 'siteName' and will be created.",
         )
 
         _args_schema.location = AAZResourceLocationArg(
@@ -156,7 +156,7 @@ class Quickstart(AAZCommand):
             raise InvalidArgumentValueError(
                 "Invalid --scope value. Currently supported: resource-group."
             )
-        
+
         cfg_raw = None
         if has_value(self.ctx.args.configuration):
             cfg_raw = (self.ctx.args.configuration.to_serialized_data() or "").strip()
@@ -180,7 +180,7 @@ class Quickstart(AAZCommand):
         else:
             rg = f"{site_name}"
             rg_location = _create_resource_group(cli, rg, location_arg)
-        
+
         deployment_name = f"site-quickstart-{site_name}"
 
         invoke_args = [
