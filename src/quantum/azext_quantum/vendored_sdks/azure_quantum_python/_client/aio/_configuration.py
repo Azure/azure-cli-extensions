@@ -11,50 +11,43 @@ from typing import Any, TYPE_CHECKING, Union
 from azure.core.credentials import AzureKeyCredential
 from azure.core.pipeline import policies
 
-from ._version import VERSION
+from .._version import VERSION
 
 if TYPE_CHECKING:
-    from azure.core.credentials import TokenCredential
+    from azure.core.credentials_async import AsyncTokenCredential
 
 
-class ServicesClientConfiguration:  # pylint: disable=too-many-instance-attributes
-    """Configuration for ServicesClient.
+class WorkspaceClientConfiguration:  # pylint: disable=too-many-instance-attributes
+    """Configuration for WorkspaceClient.
 
     Note that all parameters used to create this instance are saved as instance
     attributes.
 
-    :param region: The Azure region where the Azure Quantum Workspace is located. Required.
-    :type region: str
-    :param credential: Credential used to authenticate requests to the service. Is either a
-     TokenCredential type or a AzureKeyCredential type. Required.
-    :type credential: ~azure.core.credentials.TokenCredential or
+    :param endpoint: The endpoint of the Azure Quantum service. For example,
+     https://{region}.quantum.azure.com. Required.
+    :type endpoint: str
+    :param credential: Credential used to authenticate requests to the service. Is either a token
+     credential type or a key credential type. Required.
+    :type credential: ~azure.core.credentials_async.AsyncTokenCredential or
      ~azure.core.credentials.AzureKeyCredential
-    :param service_base_url: The Azure Quantum service base url. Default value is
-     "quantum.azure.com".
-    :type service_base_url: str
-    :keyword api_version: The API version to use for this operation. Default value is
-     "2024-10-01-preview". Note that overriding this default value may result in unsupported
-     behavior.
+    :keyword api_version: The API version to use for this operation. Known values are
+     "2026-01-15-preview" and None. Default value is "2026-01-15-preview". Note that overriding this
+     default value may result in unsupported behavior.
     :paramtype api_version: str
     """
 
     def __init__(
-        self,
-        region: str,
-        credential: Union["TokenCredential", AzureKeyCredential],
-        service_base_url: str = "quantum.azure.com",
-        **kwargs: Any,
+        self, endpoint: str, credential: Union["AsyncTokenCredential", AzureKeyCredential], **kwargs: Any
     ) -> None:
-        api_version: str = kwargs.pop("api_version", "2024-10-01-preview")
+        api_version: str = kwargs.pop("api_version", "2026-01-15-preview")
 
-        if region is None:
-            raise ValueError("Parameter 'region' must not be None.")
+        if endpoint is None:
+            raise ValueError("Parameter 'endpoint' must not be None.")
         if credential is None:
             raise ValueError("Parameter 'credential' must not be None.")
 
-        self.region = region
+        self.endpoint = endpoint
         self.credential = credential
-        self.service_base_url = service_base_url
         self.api_version = api_version
         self.credential_scopes = kwargs.pop("credential_scopes", ["https://quantum.microsoft.com/.default"])
         kwargs.setdefault("sdk_moniker", "quantum/{}".format(VERSION))
@@ -63,7 +56,7 @@ class ServicesClientConfiguration:  # pylint: disable=too-many-instance-attribut
 
     def _infer_policy(self, **kwargs):
         if hasattr(self.credential, "get_token"):
-            return policies.BearerTokenCredentialPolicy(self.credential, *self.credential_scopes, **kwargs)
+            return policies.AsyncBearerTokenCredentialPolicy(self.credential, *self.credential_scopes, **kwargs)
         if isinstance(self.credential, AzureKeyCredential):
             return policies.AzureKeyCredentialPolicy(self.credential, "x-ms-quantum-api-key", **kwargs)
         raise TypeError(f"Unsupported credential: {self.credential}")
@@ -75,8 +68,8 @@ class ServicesClientConfiguration:  # pylint: disable=too-many-instance-attribut
         self.logging_policy = kwargs.get("logging_policy") or policies.NetworkTraceLoggingPolicy(**kwargs)
         self.http_logging_policy = kwargs.get("http_logging_policy") or policies.HttpLoggingPolicy(**kwargs)
         self.custom_hook_policy = kwargs.get("custom_hook_policy") or policies.CustomHookPolicy(**kwargs)
-        self.redirect_policy = kwargs.get("redirect_policy") or policies.RedirectPolicy(**kwargs)
-        self.retry_policy = kwargs.get("retry_policy") or policies.RetryPolicy(**kwargs)
+        self.redirect_policy = kwargs.get("redirect_policy") or policies.AsyncRedirectPolicy(**kwargs)
+        self.retry_policy = kwargs.get("retry_policy") or policies.AsyncRetryPolicy(**kwargs)
         self.authentication_policy = kwargs.get("authentication_policy")
         if self.credential and not self.authentication_policy:
             self.authentication_policy = self._infer_policy(**kwargs)
