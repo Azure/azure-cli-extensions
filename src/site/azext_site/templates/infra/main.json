@@ -18,8 +18,22 @@
       "type": "string",
       "defaultValue": "2025-06-01"
     },
+    "scope": {
+      "type": "string",
+      "defaultValue": "resource-group",
+      "allowedValues": [
+        "resource-group"
+      ],
+      "metadata": {
+        "description": "Reserved. Deployment scope selector; currently only resource-group is supported."
+      }
+    },
     "siteName": {
       "type": "string"
+    },
+    "configuration": {
+      "type": "object",
+      "defaultValue": {}
     },
     "resourceGroupName": {
       "type": "string",
@@ -46,7 +60,7 @@
     },
     "location": {
       "type": "string",
-      "defaultValue": "eastus"
+      "defaultValue": "eastus2"
     },
     "configName": {
       "type": "string",

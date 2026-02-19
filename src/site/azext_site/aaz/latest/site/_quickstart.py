@@ -9,7 +9,6 @@ from azure.cli.core.aaz import (  # type: ignore[import-unresolved]
     AAZCommand,
     AAZStrArg,
     AAZStrArgFormat,
-    AAZBoolArg,
     AAZResourceGroupNameArg,
     has_value,
     register_command,
@@ -31,6 +30,59 @@ def _resolve_template_path() -> Path:
     azext_root = Path(__file__).resolve().parents[3]  # ...\azext_site
     return azext_root / "templates" / "infra" / "main.json"
 
+
+
+def _get_deployment_outputs(cli, deployment_name: str, resource_group: str) -> tuple[str | None, str | None]:
+    site_id = None
+    config_id = None
+    try:
+        outputs_args = [
+            "deployment", "group", "show",
+            "--name", deployment_name,
+            "--resource-group", resource_group,
+            "--only-show-errors",
+            "--query", "properties.outputs",
+            "--output", "none",
+        ]
+        cli.invoke(outputs_args)
+        if getattr(cli, "result", None) is not None and isinstance(cli.result.result, dict):
+            outputs = cli.result.result
+            if isinstance(outputs.get("siteId"), dict):
+                site_id = outputs.get("siteId", {}).get("value")
+            if isinstance(outputs.get("configId"), dict):
+                config_id = outputs.get("configId", {}).get("value")
+    except Exception:
+        return None, None
+    return site_id, config_id
+
+
+def _arm_id_suffix(arm_id: str | None) -> str:
+    return f" ARM ID - {arm_id}" if arm_id else ""
+
+
+def _create_resource_group(cli, rg_name: str, location_arg: str | None) -> str:
+    create_loc = (location_arg or "eastus2").strip()
+    if not create_loc:
+        create_loc = "eastus2"
+
+    create_args = [
+        "group", "create",
+        "--name", rg_name,
+        "--location", create_loc,
+        "--only-show-errors",
+        "--output", "none",
+    ]
+    rc = cli.invoke(create_args)
+    if rc != 0:
+        underlying_error = None
+        if getattr(cli, "result", None) is not None:
+            underlying_error = getattr(cli.result, "error", None)
+        msg = f"Failed to create resource group '{rg_name}' in location '{create_loc}'."
+        if underlying_error:
+            msg = f"{msg}\nUnderlying error: {underlying_error}"
+        raise CLIInternalError(msg)
+
+    return create_loc
 
 @register_command("site quickstart")
 class Quickstart(AAZCommand):
@@ -57,20 +109,27 @@ class Quickstart(AAZCommand):
             ),
         )
 
-        _args_schema.defaultconfiguration = AAZBoolArg(
-            options=["--defaultconfiguration", "--default-configuration"],
-            help="Trigger the internal ARM template flow (Site + Config + ConfigRef).",
+        _args_schema.scope = AAZStrArg(
+            options=["--scope"],
+            help="Scope for site creation. Currently supported: resource-group (default).",
+        )
+
+        _args_schema.configuration = AAZStrArg(
+            options=["--configuration"],
+            help=(
+                "Configuration source. Currently supported: defaults. "
+                "Use --configuration defaults."
+            ),
         )
 
         _args_schema.resource_group = AAZResourceGroupNameArg(
             options=["-g", "--resource-group"],
-            required=True,
-            help="Resource group for deployment.",
+            help="Resource group for deployment. If omitted, defaults to '<siteName>-rg' and will be created.",
         )
 
         _args_schema.location = AAZResourceLocationArg(
             options=["-l", "--location"],
-            help="Location for the deployment. Default: resource group location.",
+            help="Location. Used only when creating the default resource group (default: eastus2).",
         )
 
         _args_schema.config_name = AAZStrArg(
@@ -82,10 +141,6 @@ class Quickstart(AAZCommand):
 
     def _handler(self, command_args):
         super()._handler(command_args)
-
-        if not self.ctx.args.defaultconfiguration:
-            raise InvalidArgumentValueError("Specify --defaultconfiguration to run quickstart.")
-
         return self.handle()
 
     def handle(self):
@@ -93,8 +148,39 @@ class Quickstart(AAZCommand):
         if not template.exists():
             raise FileOperationError(f"Internal ARM template not found: {template}")
 
+        scope_raw = None
+        if has_value(self.ctx.args.scope):
+            scope_raw = (self.ctx.args.scope.to_serialized_data() or "").strip()
+        scope = (scope_raw or "resource-group").lower()
+        if scope != "resource-group":
+            raise InvalidArgumentValueError(
+                "Invalid --scope value. Currently supported: resource-group."
+            )
+        
+        cfg_raw = None
+        if has_value(self.ctx.args.configuration):
+            cfg_raw = (self.ctx.args.configuration.to_serialized_data() or "").strip()
+        if not cfg_raw:
+            cfg_raw = "defaults"
+        if cfg_raw.lower() != "defaults":
+            raise InvalidArgumentValueError(
+                "Invalid --configuration value. Currently supported: defaults."
+            )
+
         site_name = self.ctx.args.name.to_serialized_data()
-        rg = self.ctx.args.resource_group.to_serialized_data()
+        cli = get_default_cli()
+
+        location_arg = None
+        if has_value(self.ctx.args.location):
+            location_arg = self.ctx.args.location.to_serialized_data()
+
+        if has_value(self.ctx.args.resource_group):
+            rg = self.ctx.args.resource_group.to_serialized_data()
+            rg_location = _create_resource_group(cli, rg, location_arg)
+        else:
+            rg = f"{site_name}"
+            rg_location = _create_resource_group(cli, rg, location_arg)
+        
         deployment_name = f"site-quickstart-{site_name}"
 
         invoke_args = [
@@ -103,19 +189,15 @@ class Quickstart(AAZCommand):
             "--resource-group", rg,
             "--template-file", str(template),
             "--parameters", f"siteName={site_name}",
+            "--parameters", f"location={rg_location}",
             "--only-show-errors",
             "--output", "none",
         ]
-
-        if has_value(self.ctx.args.location):
-            loc = self.ctx.args.location.to_serialized_data()
-            invoke_args.extend(["--parameters", f"location={loc}"])
 
         if has_value(self.ctx.args.config_name):
             cfg = self.ctx.args.config_name.to_serialized_data()
             invoke_args.extend(["--parameters", f"configName={cfg}"])
 
-        cli = get_default_cli()
         rc = cli.invoke(invoke_args)
         if rc != 0:
             # Capture the original error first (before more invokes overwrite cli.result)
@@ -177,43 +259,16 @@ class Quickstart(AAZCommand):
 
             raise CLIInternalError(msg)
 
-        # 2) Query deployment operations and print friendly success messages
-        ops_args = [
-            "deployment", "operation", "group", "list",
-            "--name", deployment_name,
-            "--resource-group", rg,
-            "--only-show-errors",
-            "--output", "none",
-        ]
-        cli.invoke(ops_args)
-        ops = []
-        if getattr(cli, "result", None) is not None:
-            ops = cli.result.result or []
+        site_id, config_id = _get_deployment_outputs(cli, deployment_name, rg)
+        config_ref_id = (
+            f"{site_id}/providers/Microsoft.Edge/configurationReferences/default" if site_id else None
+        )
 
-        succeeded_types = set()
-        if isinstance(ops, list):
-            for op in ops:
-                if not isinstance(op, dict):
-                    continue
-                props = op.get("properties") or {}
-                if not isinstance(props, dict):
-                    continue
-                if props.get("provisioningState") != "Succeeded":
-                    continue
-                tr = props.get("targetResource") or {}
-                if isinstance(tr, dict):
-                    rtype = tr.get("resourceType")
-                    if rtype:
-                        succeeded_types.add(rtype)
-
-        if "Microsoft.Edge/sites" in succeeded_types:
-            print("Site created successfully.")
-        if "Microsoft.Edge/Configurations" in succeeded_types:
-            print("Config created successfully.")
-        if "Microsoft.Edge/configurationReferences" in succeeded_types:
-            print("Config reference created successfully.")
-
-        if not ({"Microsoft.Edge/sites", "Microsoft.Edge/Configurations", "Microsoft.Edge/configurationReferences"} & succeeded_types):
+        if site_id or config_id:
+            print("Site created successfully." + _arm_id_suffix(site_id))
+            print("Config created successfully." + _arm_id_suffix(config_id))
+            print("Config reference created successfully." + _arm_id_suffix(config_ref_id))
+        else:
             print("Deployment completed successfully.")
 
         return None
