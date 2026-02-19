@@ -1,0 +1,187 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "siteApiVersion": {
+      "type": "string",
+      "defaultValue": "2025-06-01"
+    },
+    "configApiVersion": {
+      "type": "string",
+      "defaultValue": "2025-06-01"
+    },
+    "configChildApiVersion": {
+      "type": "string",
+      "defaultValue": "2024-09-01-preview"
+    },
+    "configRefApiVersion": {
+      "type": "string",
+      "defaultValue": "2025-06-01"
+    },
+    "scope": {
+      "type": "string",
+      "defaultValue": "resource-group",
+      "allowedValues": [
+        "resource-group"
+      ],
+      "metadata": {
+        "description": "Reserved. Deployment scope selector; currently only resource-group is supported."
+      }
+    },
+    "siteName": {
+      "type": "string"
+    },
+    "configuration": {
+      "type": "object",
+      "defaultValue": {}
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().name]"
+    },
+    "description": {
+      "type": "string",
+      "defaultValue": ""
+    },
+    "labels": {
+      "type": "object",
+      "defaultValue": {}
+    },
+    "siteAddress": {
+      "type": "object",
+      "defaultValue": {
+        "streetAddress1": "",
+        "streetAddress2": "",
+        "city": "",
+        "stateOrProvince": "",
+        "country": "",
+        "postalCode": ""
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "eastus2"
+    },
+    "configName": {
+      "type": "string",
+      "defaultValue": "[concat(parameters('siteName'), '-configuration')]"
+    },
+    "connectivityConfigName": {
+      "type": "string",
+      "defaultValue": "connectivityConfig1"
+    },
+    "secretConfigName": {
+      "type": "string",
+      "defaultValue": "secretconfig1"
+    },
+    "networkConfigName": {
+      "type": "string",
+      "defaultValue": "networkConfig1"
+    },
+    "networkConfigurationKind": {
+      "type": "string",
+      "defaultValue": "LAN"
+    },
+    "tsConfigName": {
+      "type": "string",
+      "defaultValue": "tsconfig1"
+    },
+    "timeServerConfiguration": {
+      "type": "object",
+      "defaultValue": {}
+    },
+    "connectivityConfiguration": {
+      "type": "object",
+      "defaultValue": {}
+    },
+    "securityConfiguration": {
+      "type": "object",
+      "defaultValue": {}
+    },
+    "networkConfiguration": {
+      "type": "object",
+      "defaultValue": {
+        "scenario": "Provisioning",
+        "ipAssignments": {
+          "ipAssignmentType": "Manual",
+          "ipv4": {
+            "addressRange": {
+              "startIp": "192.168.100.10",
+              "endIp": "192.168.100.50"
+            },
+            "subnetMask": "255.255.255.0",
+            "defaultGateway": "192.168.100.1",
+            "dnsServers": [],
+            "vLanId": 0
+          }
+        }
+      }
+    }
+  },
+  "variables": {
+    "siteId": "[resourceId('Microsoft.Edge/sites', parameters('siteName'))]",
+    "configId": "[resourceId('Microsoft.Edge/Configurations', parameters('configName'))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Edge/sites",
+      "apiVersion": "[parameters('siteApiVersion')]",
+      "name": "[parameters('siteName')]",
+      "properties": {
+        "displayName": "[parameters('siteName')]",
+        "description": "[parameters('description')]",
+        "siteAddress": {
+          "streetAddress1": "[parameters('siteAddress').streetAddress1]",
+          "streetAddress2": "[parameters('siteAddress').streetAddress2]",
+          "city": "[parameters('siteAddress').city]",
+          "stateOrProvince": "[parameters('siteAddress').stateOrProvince]",
+          "country": "[parameters('siteAddress').country]",
+          "postalCode": "[parameters('siteAddress').postalCode]"
+        },
+        "labels": "[parameters('labels')]"
+      }
+    },
+    {
+      "type": "Microsoft.Edge/Configurations",
+      "apiVersion": "[parameters('configApiVersion')]",
+      "name": "[parameters('configName')]",
+      "location": "[parameters('location')]",
+      "properties": {},
+      "resources": [
+        {
+          "type": "NetworkConfigurations",
+          "apiVersion": "[parameters('configChildApiVersion')]",
+          "name": "[parameters('networkConfigName')]",
+          "dependsOn": [
+            "[resourceId('Microsoft.Edge/Configurations', parameters('configName'))]"
+          ],
+          "kind": "[parameters('networkConfigurationKind')]",
+          "properties": "[parameters('networkConfiguration')]"
+        }
+      ]
+    },
+    {
+      "type": "Microsoft.Edge/configurationReferences",
+      "apiVersion": "[parameters('configRefApiVersion')]",
+      "name": "default",
+      "scope": "[variables('siteId')]",
+      "dependsOn": [
+        "[variables('siteId')]",
+        "[variables('configId')]"
+      ],
+      "properties": {
+        "configurationResourceId": "[variables('configId')]"
+      }
+    }
+  ],
+  "outputs": {
+    "siteId": {
+      "type": "string",
+      "value": "[variables('siteId')]"
+    },
+    "configId": {
+      "type": "string",
+      "value": "[variables('configId')]"
+    }
+  }
+}
