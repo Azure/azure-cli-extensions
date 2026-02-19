@@ -57,7 +57,7 @@ def build_services_top_level_items_listv2_request(  # pylint: disable=name-too-l
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-12-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-01-15-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -94,7 +94,7 @@ def build_services_jobs_create_request(
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
     content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-12-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-01-15-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -126,7 +126,7 @@ def build_services_jobs_update_request(
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
     content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-12-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-01-15-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -156,7 +156,7 @@ def build_services_jobs_delete_request(
 ) -> HttpRequest:
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-12-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-01-15-preview"))
     # Construct URL
     _url = "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces/{workspaceName}/jobs/{jobId}"
     path_format_arguments = {
@@ -180,7 +180,7 @@ def build_services_jobs_cancel_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-12-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-01-15-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -209,7 +209,7 @@ def build_services_jobs_get_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-12-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-01-15-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -246,7 +246,7 @@ def build_services_jobs_list_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-12-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-01-15-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -282,7 +282,7 @@ def build_services_providers_list_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-12-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-01-15-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -310,7 +310,7 @@ def build_services_quotas_list_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-12-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-01-15-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -339,7 +339,7 @@ def build_services_sessions_open_request(
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
     content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-12-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-01-15-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -370,7 +370,7 @@ def build_services_sessions_close_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-12-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-01-15-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -399,7 +399,7 @@ def build_services_sessions_get_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-12-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-01-15-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -436,7 +436,7 @@ def build_services_sessions_listv2_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-12-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-01-15-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -481,7 +481,7 @@ def build_services_sessions_jobs_list_request(  # pylint: disable=name-too-long
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-12-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-01-15-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -519,7 +519,7 @@ def build_services_storage_get_sas_uri_request(  # pylint: disable=name-too-long
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
     content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-12-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-01-15-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -603,7 +603,7 @@ class ServicesTopLevelItemsOperations:
                 "accept",
             ]
         },
-        api_versions_list=["2024-10-01-preview", "2025-09-01-preview", "2025-12-01-preview"],
+        api_versions_list=["2024-10-01-preview", "2025-09-01-preview", "2025-12-01-preview", "2026-01-15-preview"],
     )
     def listv2(
         self,
@@ -1032,7 +1032,7 @@ class ServicesJobsOperations:
                 "accept",
             ]
         },
-        api_versions_list=["2025-09-01-preview", "2025-12-01-preview"],
+        api_versions_list=["2025-09-01-preview", "2025-12-01-preview", "2026-01-15-preview"],
     )
     def update(
         self,
@@ -1195,7 +1195,7 @@ class ServicesJobsOperations:
                 "accept",
             ]
         },
-        api_versions_list=["2025-12-01-preview"],
+        api_versions_list=["2025-12-01-preview", "2026-01-15-preview"],
     )
     def cancel(
         self, subscription_id: str, resource_group_name: str, workspace_name: str, job_id: str, **kwargs: Any
@@ -1341,7 +1341,13 @@ class ServicesJobsOperations:
     @distributed_trace
     @api_version_validation(
         params_added_on={"2024-10-01-preview": ["filter", "skip", "top", "orderby"]},
-        api_versions_list=["2024-03-01-preview", "2024-10-01-preview", "2025-09-01-preview", "2025-12-01-preview"],
+        api_versions_list=[
+            "2024-03-01-preview",
+            "2024-10-01-preview",
+            "2025-09-01-preview",
+            "2025-12-01-preview",
+            "2026-01-15-preview",
+        ],
     )
     def list(
         self,
@@ -2040,7 +2046,7 @@ class ServicesSessionsOperations:
                 "accept",
             ]
         },
-        api_versions_list=["2024-10-01-preview", "2025-09-01-preview", "2025-12-01-preview"],
+        api_versions_list=["2024-10-01-preview", "2025-09-01-preview", "2025-12-01-preview", "2026-01-15-preview"],
     )
     def listv2(
         self,
@@ -2158,7 +2164,13 @@ class ServicesSessionsOperations:
     @distributed_trace
     @api_version_validation(
         params_added_on={"2024-10-01-preview": ["filter", "skip", "top", "orderby"]},
-        api_versions_list=["2024-03-01-preview", "2024-10-01-preview", "2025-09-01-preview", "2025-12-01-preview"],
+        api_versions_list=[
+            "2024-03-01-preview",
+            "2024-10-01-preview",
+            "2025-09-01-preview",
+            "2025-12-01-preview",
+            "2026-01-15-preview",
+        ],
     )
     def jobs_list(
         self,
@@ -2307,7 +2319,9 @@ class ServicesStorageOperations:
         **kwargs: Any
     ) -> _models.SasUriResponse:
         """Gets a URL with SAS token for a container/blob in the storage account associated with the
-        workspace. The SAS URL can be used to upload job input and/or download job output.
+        workspace. Starting with version 2026-01-15-preview, when used for a container the container is
+        also created if it does not already exist. The SAS URL can be used to upload job input and/or
+        download job output.
 
         :param subscription_id: The Azure subscription ID. Required.
         :type subscription_id: str
@@ -2337,7 +2351,9 @@ class ServicesStorageOperations:
         **kwargs: Any
     ) -> _models.SasUriResponse:
         """Gets a URL with SAS token for a container/blob in the storage account associated with the
-        workspace. The SAS URL can be used to upload job input and/or download job output.
+        workspace. Starting with version 2026-01-15-preview, when used for a container the container is
+        also created if it does not already exist. The SAS URL can be used to upload job input and/or
+        download job output.
 
         :param subscription_id: The Azure subscription ID. Required.
         :type subscription_id: str
@@ -2367,7 +2383,9 @@ class ServicesStorageOperations:
         **kwargs: Any
     ) -> _models.SasUriResponse:
         """Gets a URL with SAS token for a container/blob in the storage account associated with the
-        workspace. The SAS URL can be used to upload job input and/or download job output.
+        workspace. Starting with version 2026-01-15-preview, when used for a container the container is
+        also created if it does not already exist. The SAS URL can be used to upload job input and/or
+        download job output.
 
         :param subscription_id: The Azure subscription ID. Required.
         :type subscription_id: str
@@ -2395,7 +2413,9 @@ class ServicesStorageOperations:
         **kwargs: Any
     ) -> _models.SasUriResponse:
         """Gets a URL with SAS token for a container/blob in the storage account associated with the
-        workspace. The SAS URL can be used to upload job input and/or download job output.
+        workspace. Starting with version 2026-01-15-preview, when used for a container the container is
+        also created if it does not already exist. The SAS URL can be used to upload job input and/or
+        download job output.
 
         :param subscription_id: The Azure subscription ID. Required.
         :type subscription_id: str

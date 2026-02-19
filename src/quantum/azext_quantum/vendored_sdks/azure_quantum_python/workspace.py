@@ -52,9 +52,7 @@ from ._constants import (
 )
 # from azure.quantum.storage import (
 from .storage import (
-    create_container_using_client,
     get_container_uri,
-    ContainerClient
 )
 # from azure.quantum._mgmt_client import WorkspaceMgmtClient
 from ._mgmt_client import WorkspaceMgmtClient
@@ -958,15 +956,11 @@ class Workspace:
                 container_name = f"{self.name}-data"
         # Create container URI and get container client
         if self.storage is None:
-            # Get linked storage account from the service, create
-            # a new container if it does not yet exist
+            # Get linked storage account from the service, a new container
+            # is created by the service if it does not yet exist
             container_uri = self._get_linked_storage_sas_uri(
                 container_name
             )
-            container_client = ContainerClient.from_container_url(
-                container_uri
-            )
-            create_container_using_client(container_client)
         else:
             # Use the storage acount specified to generate container URI,
             # create a new container if it does not yet exist

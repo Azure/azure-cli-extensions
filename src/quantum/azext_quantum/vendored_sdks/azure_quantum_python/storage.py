@@ -91,10 +91,10 @@ def upload_blob(
     """
     Uploads the given data to a blob record.
     If a blob with the given name already exist, it throws an error.
+    Container must already exist in a storage.
 
     Returns a uri with a SAS token to access the newly created blob.
     """
-    create_container_using_client(container)
     logger.info(
         f"Uploading blob '{blob_name}'"
         + f"to container '{container.container_name}'"
@@ -131,10 +131,10 @@ def append_blob(
     """
     Uploads the given data to a blob record.
     If a blob with the given name already exist, it throws an error.
+    Container must already exist in a storage.
 
     Returns a uri with a SAS token to access the newly created blob.
     """
-    create_container_using_client(container)
     logger.info(
         f"Appending data to blob '{blob_name}'"
         + f"in container '{container.container_name}'"
@@ -250,10 +250,10 @@ def init_blob_for_streaming_upload(
     """
     Uploads the given data to a blob record.
     If a blob with the given name already exist, it throws an error.
+    Container must already exist in a storage.
 
     Returns a uri with a SAS token to access the newly created blob.
     """
-    create_container_using_client(container)
     logger.info(
         f"Streaming blob '{blob_name}'"
         + f"to container '{container.container_name}' on account:"
@@ -305,7 +305,8 @@ class StreamedBlob:
     Once all blocks have been added, call `commit()`
     to commit the blocks and make the blob available/readable.
 
-    :param container: The container client that the blob will be uploaded to
+    :param container: The container client that the blob will be uploaded to.
+        Container must already exist in a storage.
     :param blob_name: The name of the blob
         (including optional path) within the blob container
     :param content_type: The HTTP content type to apply to the blob metadata
@@ -335,14 +336,11 @@ class StreamedBlob:
         :param data: The data to be uploaded as a block.
         :type data: Union[Iterable[AnyStr], IO[AnyStr]]
         """
-        if self.state == StreamedBlobState.not_initialized:
-            create_container_using_client(self.container)
-            logger.info(
-                f"Streaming blob '{self.blob_name}' to container"
-                + f"'{self.container.container_name}'"
-                + f"on account: '{self.container.account_name}'"
-            )
-            self.initialized = True
+        logger.info(
+            f"Streaming blob '{self.blob_name}' to container"
+            + f"'{self.container.container_name}'"
+            + f"on account: '{self.container.account_name}'"
+        )
 
         self.state = StreamedBlobState.uploading
         id = self._get_next_block_id()

@@ -118,7 +118,7 @@ class ServicesTopLevelItemsOperations:
                 "accept",
             ]
         },
-        api_versions_list=["2024-10-01-preview", "2025-09-01-preview", "2025-12-01-preview"],
+        api_versions_list=["2024-10-01-preview", "2025-09-01-preview", "2025-12-01-preview", "2026-01-15-preview"],
     )
     def listv2(
         self,
@@ -547,7 +547,7 @@ class ServicesJobsOperations:
                 "accept",
             ]
         },
-        api_versions_list=["2025-09-01-preview", "2025-12-01-preview"],
+        api_versions_list=["2025-09-01-preview", "2025-12-01-preview", "2026-01-15-preview"],
     )
     async def update(
         self,
@@ -710,7 +710,7 @@ class ServicesJobsOperations:
                 "accept",
             ]
         },
-        api_versions_list=["2025-12-01-preview"],
+        api_versions_list=["2025-12-01-preview", "2026-01-15-preview"],
     )
     async def cancel(
         self, subscription_id: str, resource_group_name: str, workspace_name: str, job_id: str, **kwargs: Any
@@ -856,7 +856,13 @@ class ServicesJobsOperations:
     @distributed_trace
     @api_version_validation(
         params_added_on={"2024-10-01-preview": ["filter", "skip", "top", "orderby"]},
-        api_versions_list=["2024-03-01-preview", "2024-10-01-preview", "2025-09-01-preview", "2025-12-01-preview"],
+        api_versions_list=[
+            "2024-03-01-preview",
+            "2024-10-01-preview",
+            "2025-09-01-preview",
+            "2025-12-01-preview",
+            "2026-01-15-preview",
+        ],
     )
     def list(
         self,
@@ -1555,7 +1561,7 @@ class ServicesSessionsOperations:
                 "accept",
             ]
         },
-        api_versions_list=["2024-10-01-preview", "2025-09-01-preview", "2025-12-01-preview"],
+        api_versions_list=["2024-10-01-preview", "2025-09-01-preview", "2025-12-01-preview", "2026-01-15-preview"],
     )
     def listv2(
         self,
@@ -1673,7 +1679,13 @@ class ServicesSessionsOperations:
     @distributed_trace
     @api_version_validation(
         params_added_on={"2024-10-01-preview": ["filter", "skip", "top", "orderby"]},
-        api_versions_list=["2024-03-01-preview", "2024-10-01-preview", "2025-09-01-preview", "2025-12-01-preview"],
+        api_versions_list=[
+            "2024-03-01-preview",
+            "2024-10-01-preview",
+            "2025-09-01-preview",
+            "2025-12-01-preview",
+            "2026-01-15-preview",
+        ],
     )
     def jobs_list(
         self,
@@ -1822,7 +1834,9 @@ class ServicesStorageOperations:
         **kwargs: Any
     ) -> _models.SasUriResponse:
         """Gets a URL with SAS token for a container/blob in the storage account associated with the
-        workspace. The SAS URL can be used to upload job input and/or download job output.
+        workspace. Starting with version 2026-01-15-preview, when used for a container the container is
+        also created if it does not already exist. The SAS URL can be used to upload job input and/or
+        download job output.
 
         :param subscription_id: The Azure subscription ID. Required.
         :type subscription_id: str
@@ -1852,7 +1866,9 @@ class ServicesStorageOperations:
         **kwargs: Any
     ) -> _models.SasUriResponse:
         """Gets a URL with SAS token for a container/blob in the storage account associated with the
-        workspace. The SAS URL can be used to upload job input and/or download job output.
+        workspace. Starting with version 2026-01-15-preview, when used for a container the container is
+        also created if it does not already exist. The SAS URL can be used to upload job input and/or
+        download job output.
 
         :param subscription_id: The Azure subscription ID. Required.
         :type subscription_id: str
@@ -1882,7 +1898,9 @@ class ServicesStorageOperations:
         **kwargs: Any
     ) -> _models.SasUriResponse:
         """Gets a URL with SAS token for a container/blob in the storage account associated with the
-        workspace. The SAS URL can be used to upload job input and/or download job output.
+        workspace. Starting with version 2026-01-15-preview, when used for a container the container is
+        also created if it does not already exist. The SAS URL can be used to upload job input and/or
+        download job output.
 
         :param subscription_id: The Azure subscription ID. Required.
         :type subscription_id: str
@@ -1910,7 +1928,9 @@ class ServicesStorageOperations:
         **kwargs: Any
     ) -> _models.SasUriResponse:
         """Gets a URL with SAS token for a container/blob in the storage account associated with the
-        workspace. The SAS URL can be used to upload job input and/or download job output.
+        workspace. Starting with version 2026-01-15-preview, when used for a container the container is
+        also created if it does not already exist. The SAS URL can be used to upload job input and/or
+        download job output.
 
         :param subscription_id: The Azure subscription ID. Required.
         :type subscription_id: str

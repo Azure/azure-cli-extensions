@@ -14,13 +14,13 @@ class CreatedByType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """The type of identity that created the item."""
 
     USER = "User"
-    """The item is created by user"""
+    """The item is created by user."""
     APPLICATION = "Application"
-    """The item is created by application"""
+    """The item is created by application."""
     MANAGED_IDENTITY = "ManagedIdentity"
-    """The item is created using managed identity"""
+    """The item is created using managed identity."""
     KEY = "Key"
-    """The item is created using key"""
+    """The item is created using key."""
 
 
 class DimensionScope(str, Enum, metaclass=CaseInsensitiveEnumMeta):

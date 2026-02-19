@@ -35,9 +35,9 @@ class WorkspaceClient:
      credential type or a key credential type. Required.
     :type credential: ~azure.core.credentials_async.AsyncTokenCredential or
      ~azure.core.credentials.AzureKeyCredential
-    :keyword api_version: The API version to use for this operation. Default value is
-     "2025-12-01-preview". Note that overriding this default value may result in unsupported
-     behavior.
+    :keyword api_version: The API version to use for this operation. Known values are
+     "2026-01-15-preview" and None. Default value is "2026-01-15-preview". Note that overriding this
+     default value may result in unsupported behavior.
     :paramtype api_version: str
     """
 
