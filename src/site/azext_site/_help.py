@@ -15,5 +15,5 @@ type: command
 short-summary: Quickstart deploy Site + Config + ConfigRef using an internal ARM template.
 examples:
   - name: Resource group scope
-    text: az site quickstart --name MySite01 --configuration defaults --g MyRG
+    text: az site quickstart --name MySite01 --configuration defaults -g MyRG
 """
