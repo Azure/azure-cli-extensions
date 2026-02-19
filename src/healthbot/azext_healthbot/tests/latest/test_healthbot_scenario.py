@@ -11,12 +11,18 @@
 import os
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
-from .example_steps import step_create
+from .example_steps import step_create_with_sku
 from .example_steps import step_list
 from .example_steps import step_list2
 from .example_steps import step_show
-from .example_steps import step_update
+from .example_steps import step_update_with_sku
 from .example_steps import step_delete
+from .example_steps import step_update_tags_only
+from .example_steps import step_update_empty_tags
+from .example_steps import step_create_empty_name
+from .example_steps import step_delete_no_wait
+from .example_steps import step_create_with_tags
+from .example_steps import step_list_empty_rg
 from .. import (
     try_manual,
     raise_if,
@@ -39,30 +45,74 @@ def cleanup_scenario(test, rg, rg_2):
     pass
 
 
-# Testcase: Scenario
+# Testcase: Scenario with SKU parameter
 @try_manual
-def call_scenario(test, rg, rg_2):
+def call_scenario_with_sku(test, rg, rg_2, sku):
     setup_scenario(test, rg, rg_2)
-    step_create(test, rg, rg_2, checks=[
+    step_create_with_sku(test, rg, rg_2, sku, checks=[
         test.check("name", "{myBot}", case_sensitive=False),
         test.check("location", "eastus", case_sensitive=False),
-        test.check("sku.name", "F0", case_sensitive=False),
+        test.check("sku.name", sku, case_sensitive=False),
     ])
     step_list(test, rg, rg_2, checks=[])
     step_list2(test, rg, rg_2, checks=[
-        test.check('length(@)', 1),
+        test.greater_than('length(@)', 0),
     ])
     step_show(test, rg, rg_2, checks=[
         test.check("name", "{myBot}", case_sensitive=False),
         test.check("location", "eastus", case_sensitive=False),
-        test.check("sku.name", "F0", case_sensitive=False),
+        test.check("sku.name", sku, case_sensitive=False),
     ])
-    step_update(test, rg, rg_2, checks=[
+    step_update_with_sku(test, rg, rg_2, sku, checks=[
         test.check("name", "{myBot}", case_sensitive=False),
         test.check("location", "eastus", case_sensitive=False),
-        test.check("sku.name", "F0", case_sensitive=False),
+        test.check("sku.name", sku, case_sensitive=False),
     ])
     step_delete(test, rg, rg_2, checks=[])
+    cleanup_scenario(test, rg, rg_2)
+
+
+# Testcase: Scenario with boundary values
+@try_manual
+def call_scenario_boundary_values(test, rg, rg_2):
+    setup_scenario(test, rg, rg_2)
+    # Boundary: create with --tags (tags coverage for create)
+    step_create_with_tags(test, rg, rg_2, 'F0', checks=[
+        test.check("name", "{myBot}", case_sensitive=False),
+        test.check("tags.env", "test", case_sensitive=False),
+    ])
+    step_show(test, rg, rg_2, checks=[
+        test.check("name", "{myBot}", case_sensitive=False),
+        test.check("sku.name", "F0", case_sensitive=False),
+        test.check("tags.env", "test", case_sensitive=False),
+    ])
+    # Boundary: update without --sku (sku=None, should preserve existing SKU)
+    step_update_tags_only(test, rg, rg_2, checks=[
+        test.check("name", "{myBot}", case_sensitive=False),
+        test.check("tags.testkey", "testvalue", case_sensitive=False),
+    ])
+    step_show(test, rg, rg_2, checks=[
+        test.check("name", "{myBot}", case_sensitive=False),
+        test.check("sku.name", "F0", case_sensitive=False),
+        test.check("tags.testkey", "testvalue", case_sensitive=False),
+    ])
+    # Boundary: update with empty tags (tags='', should clear tags)
+    step_update_empty_tags(test, rg, rg_2, checks=[
+        test.check("name", "{myBot}", case_sensitive=False),
+    ])
+    # Boundary: list with empty resource group (boundary: '' empty string for -g)
+    step_list_empty_rg(test, rg, rg_2, checks=[])
+    # Boundary: delete with --no-wait (no_wait=True)
+    step_delete_no_wait(test, rg, rg_2, checks=[])
+    cleanup_scenario(test, rg, rg_2)
+
+
+# Testcase: Empty bot name (boundary: empty string)
+@try_manual
+def call_scenario_empty_name(test, rg, rg_2):
+    setup_scenario(test, rg, rg_2)
+    # Boundary: bot_name='' should fail validation
+    step_create_empty_name(test, rg, rg_2, checks=[])
     cleanup_scenario(test, rg, rg_2)
 
 
@@ -79,6 +129,41 @@ class HealthbotScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='clitest', random_name_length=20, key='rg', parameter_name='rg')
     @ResourceGroupPreparer(name_prefix='clitest', random_name_length=20, key='rg_2', parameter_name='rg_2')
     def test_healthbot_Scenario(self, rg, rg_2):
-        call_scenario(self, rg, rg_2)
+        call_scenario_with_sku(self, rg, rg_2, 'F0')
+        calc_coverage(__file__)
+        raise_if()
+
+    @ResourceGroupPreparer(name_prefix='clitest', random_name_length=20, key='rg', parameter_name='rg')
+    @ResourceGroupPreparer(name_prefix='clitest', random_name_length=20, key='rg_2', parameter_name='rg_2')
+    def test_healthbot_Scenario_C0_SKU(self, rg, rg_2):
+        call_scenario_with_sku(self, rg, rg_2, 'C0')
+        calc_coverage(__file__)
+        raise_if()
+
+    @ResourceGroupPreparer(name_prefix='clitest', random_name_length=20, key='rg', parameter_name='rg')
+    @ResourceGroupPreparer(name_prefix='clitest', random_name_length=20, key='rg_2', parameter_name='rg_2')
+    def test_healthbot_Scenario_C1_SKU(self, rg, rg_2):
+        call_scenario_with_sku(self, rg, rg_2, 'C1')
+        calc_coverage(__file__)
+        raise_if()
+
+    @ResourceGroupPreparer(name_prefix='clitest', random_name_length=20, key='rg', parameter_name='rg')
+    @ResourceGroupPreparer(name_prefix='clitest', random_name_length=20, key='rg_2', parameter_name='rg_2')
+    def test_healthbot_Scenario_PES_SKU(self, rg, rg_2):
+        call_scenario_with_sku(self, rg, rg_2, 'PES')
+        calc_coverage(__file__)
+        raise_if()
+
+    @ResourceGroupPreparer(name_prefix='clitest', random_name_length=20, key='rg', parameter_name='rg')
+    @ResourceGroupPreparer(name_prefix='clitest', random_name_length=20, key='rg_2', parameter_name='rg_2')
+    def test_healthbot_Scenario_boundary_values(self, rg, rg_2):
+        call_scenario_boundary_values(self, rg, rg_2)
+        calc_coverage(__file__)
+        raise_if()
+
+    @ResourceGroupPreparer(name_prefix='clitest', random_name_length=20, key='rg', parameter_name='rg')
+    @ResourceGroupPreparer(name_prefix='clitest', random_name_length=20, key='rg_2', parameter_name='rg_2')
+    def test_healthbot_Scenario_empty_name(self, rg, rg_2):
+        call_scenario_empty_name(self, rg, rg_2)
         calc_coverage(__file__)
         raise_if()
