@@ -122,7 +122,7 @@ class SiteScenario(ScenarioTest):
             "qs_deployment": deployment_name,
         })
         self.cmd(
-            "az site quickstart -g {rg} -n {qs_site} --defaultconfiguration",
+            "az site quickstart -g {rg} -n {qs_site} --configuration defaults",
             checks=[
                 self.check("name", "{qs_deployment}"),
                 self.check("properties.provisioningState", "Succeeded"),
