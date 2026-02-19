@@ -18,6 +18,7 @@ from azure.cli.core.azclierror import (FileOperationError, AzureInternalError,
 
 from ..vendored_sdks.azure_quantum_python.workspace import Workspace
 from ..vendored_sdks.azure_quantum_python.storage import upload_blob
+from ..vendored_sdks.azure_quantum_python._client.models import Priority
 from ..vendored_sdks.azure_storage_blob import BlobClient, ContainerClient
 from .._client_factory import cf_jobs, _get_data_credentials
 from .._list_helper import repack_response_json
@@ -34,6 +35,7 @@ ERROR_MSG_MISSING_ENTRY_POINT = "The following argument is required on QIR jobs:
 JOB_SUBMIT_DOC_LINK_MSG = "See https://learn.microsoft.com/cli/azure/quantum/job?view=azure-cli-latest#az-quantum-job-submit"
 ERROR_MSG_INVALID_ORDER_ARGUMENT = "The --order argument is not valid: Specify either asc or desc"
 ERROR_MSG_MISSING_ORDERBY_ARGUMENT = "The --order argument is not valid without an --orderby argument"
+ERROR_MSG_INVALID_PRIORITY_ARGUMENT = f'The "priority" parameter is not valid. Known values are: {", ".join(p.value for p in Priority)}.'
 JOB_LIST_DOC_LINK_MSG = "See https://learn.microsoft.com/cli/azure/quantum/job?view=azure-cli-latest#az-quantum-job-list"
 
 # Job types
@@ -210,6 +212,7 @@ def submit(cmd, resource_group_name, workspace_name, target_id, job_input_file, 
     #
     metadata = None
     tags = []
+    priority = None
     if job_params is not None:
         if "metadata" in job_params.keys():
             metadata = job_params["metadata"]
@@ -225,6 +228,15 @@ def submit(cmd, resource_group_name, workspace_name, target_id, job_input_file, 
             list_type = type([])    # "list" has been redefined as a function name, so "isinstance(tags, list)" doesn't work here
             if not isinstance(tags, list_type):
                 raise InvalidArgumentValueError('The "tags" parameter is not valid.')
+
+        if "priority" in job_params.keys():
+            priority = job_params["priority"]
+            del job_params["priority"]
+            try:
+                if priority is not None:
+                    priority = Priority(priority).value
+            except ValueError:
+                raise InvalidArgumentValueError(ERROR_MSG_INVALID_PRIORITY_ARGUMENT)
 
     # Extract content type and content encoding from --job-parameters, then remove those parameters from job_params, since
     # they should not be included in the "inputParams" parameter of job_details. Content type and content encoding are
@@ -342,6 +354,8 @@ def submit(cmd, resource_group_name, workspace_name, target_id, job_input_file, 
                    'target': target_info.target_id,
                    'metadata': metadata,
                    'tags': tags}
+    if priority:
+        job_details['priority'] = priority
 
     knack_logger.warning("Submitting job...")
     return client.create(ws_info.subscription, ws_info.resource_group, ws_info.name, job_id, job_details).as_dict()
