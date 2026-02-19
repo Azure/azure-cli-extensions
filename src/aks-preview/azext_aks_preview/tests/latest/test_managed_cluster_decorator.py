@@ -4579,7 +4579,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
 
     def test_get_enable_high_log_scale_mode_default(self):
         """Test default behavior when no container network logs or high log scale mode is specified.
-        
+
         When enable_high_log_scale_mode is not explicitly set and container network logs are not enabled,
         the method should return False (not None) to maintain backward compatibility with the base class.
         """
@@ -4940,6 +4940,67 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         result = ctx.get_container_network_logs(mc)
         self.assertTrue(result)
 
+    def test_get_enable_default_domain(self):
+        # default value
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        enable_default_domain_1 = ctx_1.get_enable_default_domain()
+        self.assertEqual(enable_default_domain_1, None)
+
+        # custom value - True
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"enable_default_domain": True}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        enable_default_domain_2 = ctx_2.get_enable_default_domain()
+        self.assertEqual(enable_default_domain_2, True)
+
+        # custom value - False
+        ctx_3 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"enable_default_domain": False}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        enable_default_domain_3 = ctx_3.get_enable_default_domain()
+        self.assertEqual(enable_default_domain_3, False)
+
+    def test_get_disable_default_domain(self):
+        # default value
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        disable_default_domain_1 = ctx_1.get_disable_default_domain()
+        self.assertEqual(disable_default_domain_1, None)
+
+        # custom value - True
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"disable_default_domain": True}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        disable_default_domain_2 = ctx_2.get_disable_default_domain()
+        self.assertEqual(disable_default_domain_2, True)
+
+        # custom value - False
+        ctx_3 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"disable_default_domain": False}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        disable_default_domain_3 = ctx_3.get_disable_default_domain()
+        self.assertEqual(disable_default_domain_3, False)
 
 class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
     def setUp(self):
@@ -6051,6 +6112,56 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             location="test_location", ingress_profile=ground_truth_ingress_profile_1
         )
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        # enable_default_domain
+        dec_2 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_default_domain": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(location="test_location")
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.set_up_ingress_web_app_routing(mc_2)
+        ground_truth_ingress_profile_2 = self.models.ManagedClusterIngressProfile(
+            web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
+                enabled=True,
+                default_domain=self.models.ManagedClusterIngressDefaultDomainProfile(
+                    enabled=True
+                )
+            )
+        )
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location", ingress_profile=ground_truth_ingress_profile_2
+        )
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+        # disable_default_domain
+        dec_3 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_default_domain": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_3 = self.models.ManagedCluster(location="test_location")
+        dec_3.context.attach_mc(mc_3)
+        dec_mc_3 = dec_3.set_up_ingress_web_app_routing(mc_3)
+        ground_truth_ingress_profile_3 = self.models.ManagedClusterIngressProfile(
+            web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
+                enabled=True,
+                default_domain=self.models.ManagedClusterIngressDefaultDomainProfile(
+                    enabled=False
+                )
+            )
+        )
+        ground_truth_mc_3 = self.models.ManagedCluster(
+            location="test_location", ingress_profile=ground_truth_ingress_profile_3
+        )
+        self.assertEqual(dec_mc_3, ground_truth_mc_3)
 
     def test_set_up_ingress_profile_gateway_api(self):
         # Test with enable_gateway_api parameter
@@ -11317,6 +11428,88 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_mc_9, ground_truth_mc_9)
 
+        # enable default domain
+        dec_10 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_default_domain": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_10 = self.models.ManagedCluster(
+            location="test_location",
+            ingress_profile=self.models.ManagedClusterIngressProfile(
+                web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
+                    enabled=True,
+                )
+            ),
+        )
+        dec_10.context.attach_mc(mc_10)
+        dec_mc_10 = dec_10.update_app_routing_profile(mc_10)
+        ground_truth_mc_10 = self.models.ManagedCluster(
+            location="test_location",
+            ingress_profile=self.models.ManagedClusterIngressProfile(
+                web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
+                    enabled=True,
+                    default_domain=self.models.ManagedClusterIngressDefaultDomainProfile(
+                        enabled=True
+                    )
+                )
+            ),
+        )
+        self.assertEqual(dec_mc_10, ground_truth_mc_10)
+
+        # disable default domain
+        dec_11 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"disable_default_domain": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_11 = self.models.ManagedCluster(
+            location="test_location",
+            ingress_profile=self.models.ManagedClusterIngressProfile(
+                web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
+                    enabled=True,
+                    default_domain=self.models.ManagedClusterIngressDefaultDomainProfile(
+                        enabled=True
+                    )
+                )
+            ),
+        )
+        dec_11.context.attach_mc(mc_11)
+        dec_mc_11 = dec_11.update_app_routing_profile(mc_11)
+        ground_truth_mc_11 = self.models.ManagedCluster(
+            location="test_location",
+            ingress_profile=self.models.ManagedClusterIngressProfile(
+                web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
+                    enabled=True,
+                    default_domain=self.models.ManagedClusterIngressDefaultDomainProfile(
+                        enabled=False
+                    )
+                )
+            ),
+        )
+        self.assertEqual(dec_mc_11, ground_truth_mc_11)
+
+        # enable default domain should fail when app routing is not enabled
+        dec_12 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_default_domain": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_12 = self.models.ManagedCluster(
+            location="test_location",
+            ingress_profile=self.models.ManagedClusterIngressProfile(
+                web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
+                    enabled=False,
+                )
+            ),
+        )
+        dec_12.context.attach_mc(mc_12)
+        with self.assertRaises(CLIError):
+            dec_12.update_app_routing_profile(mc_12)
+
     def test_enable_disable_ai_toolchain_operator(self):
         # Should not update mc if unset
         dec_0 = AKSPreviewManagedClusterUpdateDecorator(
@@ -12389,6 +12582,51 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_10.context.attach_mc(mc_10)
         with self.assertRaises(RequiredArgumentMissingError):
             dec_10.update_monitoring_profile_flow_logs(mc_10)
+
+        # Case 11: enable_acns, enable_azure_monitor_logs, enable container_network_logs for ClusterCreate context
+        # Tests that --enable-azure-monitor-logs is recognized as enabling monitoring addon
+        dec_11 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "name": "test_name",
+                "resource_group_name": "test_rg_name",
+                "location": "test_location",
+                "vnet_subnet_id": "test_vnet_subnet_id",
+                "enable_azure_monitor_logs": True,
+                "workspace_resource_id": "test_workspace_resource_id",
+                "enable_msi_auth_for_monitoring": True,
+                "enable_acns": True,
+                "enable_container_network_logs": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_11 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                network_plugin_mode="overlay",
+                network_dataplane="cilium",
+                pod_cidr="100.64.0.0/16",
+                service_cidr="192.168.0.0/16",
+            ),
+        )
+        dec_11.context.set_intermediate("subscription_id", "test_subscription_id")
+        dec_11.context.attach_mc(mc_11)
+        external_functions = dec_11.context.external_functions
+        with patch.object(external_functions, 'ensure_container_insights_for_monitoring', return_value=None):
+            dec_mc_11 = dec_11.set_up_addon_profiles(mc_11)
+        ground_truth_mc_11 = {
+            CONST_MONITORING_ADDON_NAME: self.models.ManagedClusterAddonProfile(
+                enabled=True,
+                config={
+                    CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: "/test_workspace_resource_id",
+                    CONST_MONITORING_USING_AAD_MSI_AUTH: "true",
+                    "enableRetinaNetworkFlags": "True",
+                },
+            ),
+        }
+        self.assertEqual(dec_mc_11.addon_profiles["omsagent"], ground_truth_mc_11["omsagent"])
 
     def test_update_node_provisioning_profile(self):
         dec_0 = AKSPreviewManagedClusterUpdateDecorator(
