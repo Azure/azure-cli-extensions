@@ -238,6 +238,12 @@ helps[
 ] = """
     type: command
     short-summary: "Create an integration runtime."
+    examples:
+      - name: Create an Integration Runtime
+        text: |-
+          az datafactory integration-runtime managed create --factory-name "exampleFactory" --name "exampleInteg" \
+--resource-group myResourceGroup --description "Managed Integration Runtime" --compute-properties \
+"{\"location\":\"East US 2\",\"nodeSize\":\"Standard_D2_v3\",\"numberOfNodes\":1,\"maxParallelExecutionsPerNode\":2}" --ssis-properties "{\"edition\":\"Standard\",\"licenseType\":\"LicenseIncluded\"}"
 """
 
 helps[
