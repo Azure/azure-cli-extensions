@@ -949,9 +949,15 @@ class AzureFirewallPoliciesUpdate(_AzureFirewallPoliciesUpdate):
             args.user_assigned_identities = None
 
 
+@register_command(
+    "network firewall policy intrusion-detection add",
+)
 class AzureFirewallPolicyIntrusionDetectionAdd(_AzureFirewallPoliciesUpdate):
     """
     Add override for intrusion signature or a bypass rule or private ranges list for intrusion detection
+
+    :example: Add an override for private ranges
+        az network firewall policy intrusion-detection add -g MyResourceGroup --policy-name MyPolicy --mode Deny --signature-id id --private-ranges 167.220.204.0/24 167.221.205.101/32
     """
 
     @classmethod
@@ -1159,9 +1165,15 @@ class AzureFirewallPoliciesDeploy(_AzureFirewallPoliciesDeploy):
         return args_schema
 
 
+@register_command(
+    "network firewall policy draft intrusion-detection add",
+)
 class AzureFirewallPolicyDraftIntrusionDetectionAdd(_AzureFirewallPolicyDraftsUpdate):
     """
     Add overrided intrusion signature or a bypass rule or private ranges list for intrusion detection
+
+    :example: Add an overrided intrusion signature
+        az network firewall policy draft intrusion-detection add -g MyResourceGroup --policy-name MyPolicy --mode Deny --signature-id id --private-ranges 167.220.204.0/24 167.221.205.101/32
     """
 
     @classmethod
@@ -1844,6 +1856,11 @@ class RuleCollectionGroupCollectionRemove(_RuleCollectionGroupUpdate):
 class RuleCollectionGroupFilterRuleAdd(_RuleCollectionGroupUpdate):
     """
     Add a rule into an Azure firewall policy rule collection.
+
+    :example: Add a rule into the filter collection
+        az network firewall policy rule-collection-group collection rule add -g rg --policy-name policy --rule-collection-group-name mycg \
+--collection-name mycollection --name myrule --rule-type ApplicationRule --description "test" --source-addresses 202.120.36.13 202.120.36.14 \
+--destination-addresses 10.120.36.15 10.120.36.16 --target-urls microsoft.com
     """
 
     @classmethod
@@ -2807,6 +2824,11 @@ class RuleCollectionGroupDraftCollectionRemove(_RuleCollectionGroupDraftUpdate):
 class RuleCollectionGroupDraftFilterRuleAdd(_RuleCollectionGroupDraftUpdate):
     """
     Add a rule into an Azure firewall policy draft rule collection.
+
+    :example: Add a rule into the rule collection group draft        
+        az network firewall policy rule-collection-group draft collection rule add -g rg --policy-name mypolicy --rule-collection-group-name mycg \
+--collection-name mycollection --name myrule --rule-type ApplicationRule --description "test" --source-addresses 202.120.36.13 202.120.36.14 \
+--destination-addresses 202.120.36.15 202.120.36.16 --protocols Http= Https= --target-fqdns www.bing.com
     """
 
     @classmethod

@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create an Azure firewall policy rule collection group draft.
+
+    :example:   Create a firewall policy rule collection group draft.
+        az network firewall policy rule-collection-group draft create -g MyResourceGroup --rule-collection-group-name MyRuleCollectionGroup --priority 150 --policy-name MyFirewallPolicy
     """
 
     _aaz_info = {
