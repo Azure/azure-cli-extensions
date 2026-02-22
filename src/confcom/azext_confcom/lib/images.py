@@ -37,7 +37,7 @@ def get_image_layers(image: str) -> list[str]:
         text=True,
     )
 
-    return [line.split("hash: ")[-1] for line in result.stdout.splitlines()]
+    return [line.split("hash: ")[-1] for line in result.stdout.splitlines() if "hash: " in line]
 
 
 def get_image_config(image: str) -> dict:
