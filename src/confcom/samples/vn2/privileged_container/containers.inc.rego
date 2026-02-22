@@ -176,7 +176,6 @@
         "CAP_WAKE_ALARM"
       ]
     },
-    "command": [],
     "env_rules": [
       {
         "required": false,
