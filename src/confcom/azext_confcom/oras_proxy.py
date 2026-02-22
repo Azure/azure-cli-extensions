@@ -75,7 +75,8 @@ def discover(
     logger.info("Discovering fragments for %s: %s", image, item.stdout.decode('utf-8'))
     if item.returncode == 0:
         json_output = json.loads(item.stdout.decode("utf-8"))
-        manifests = json_output.get("manifests", [])
+        # ORAS >= 1.3.0 renamed "manifests" to "referrers"
+        manifests = json_output.get("referrers") or json_output.get("manifests", [])
         if manifests is not None:
             for manifest in manifests:
                 hashes.append(manifest["digest"])
