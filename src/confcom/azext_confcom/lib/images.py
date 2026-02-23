@@ -4,10 +4,13 @@
 # --------------------------------------------------------------------------------------------
 
 import functools
+import logging
 import subprocess
 import docker
 
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 
 @functools.lru_cache()
@@ -37,7 +40,17 @@ def get_image_layers(image: str) -> list[str]:
         text=True,
     )
 
-    return [line.split("hash: ")[-1] for line in result.stdout.splitlines() if "hash: " in line]
+    layers = []
+    for line in result.stdout.splitlines():
+        if "hash: " in line:
+            layers.append(line.split("hash: ")[-1])
+        else:
+            # dmverity-vhd may print warnings to stdout (e.g. OCI format
+            # parsing errors). Log them so they are visible but don't treat them
+            # as layer hashes.
+            logger.warning("Unexpected dmverity-vhd output: %s", line)
+
+    return layers
 
 
 def get_image_config(image: str) -> dict:

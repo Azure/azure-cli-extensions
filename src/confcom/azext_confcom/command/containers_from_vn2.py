@@ -194,12 +194,13 @@ def containers_from_vn2(
     for template_container, template_doc in template_containers:
         image_container_def = container_from_image(template_container.get("image"), platform="vn2")
 
-        cmd = template_container.get("command", []) + template_container.get("args", [])
+        has_command = "command" in template_container or "args" in template_container
         template_container_def = {
             "name": template_container.get("name"),
-            # Only include "command" when explicitly set in the K8s manifest;
-            # otherwise let the image's ENTRYPOINT/CMD be preserved.
-            **({"command": cmd} if cmd else {}),
+            "command": (
+                (template_container.get("command", []) + template_container.get("args", []))
+                if has_command else None
+            ),
             "env_rules": (
                 [
                     {
