@@ -30,6 +30,7 @@ from azure.cli.core.azclierror import (ValidationError, ResourceNotFoundError, C
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
 from azure.cli.command_modules.containerapp._utils import is_registry_msi_system
 from azure.mgmt.core.tools import parse_resource_id, is_valid_resource_id
+from ._utils_validation import validate_image_name  # noqa: F401
 
 from azure.mgmt.resource import ResourceManagementClient
 from azure.mgmt.servicelinker import ServiceLinkerManagementClient
