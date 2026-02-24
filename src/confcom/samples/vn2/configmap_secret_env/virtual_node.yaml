@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: env-deploy
+spec:
+  selector:
+    matchLabels:
+      app: env-test
+  template:
+    metadata:
+      labels:
+        app: env-test
+    spec:
+      containers:
+        - name: app
+          image: mcr.microsoft.com/azurelinux/distroless/base@sha256:1e77d97e1e39f22ed9c52f49b3508b4c1044cec23743df9098ac44e025f654f2
+          env:
+            - name: FROM_CONFIG
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: config1
+            - name: FROM_BINARY_CONFIG
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: config-binary
+            - name: FROM_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: secret1
+            - name: FROM_STRINGDATA
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: secret2
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  config1: value-one
+binaryData:
+  config-binary: dmFsdWUtYmluYXJ5
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: app-secret
+data:
+  secret1: dmFsdWUtc2VjcmV0
+stringData:
+  secret2: value-plain

@@ -13,13 +13,12 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "pscloud pool create",
-    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a storage pool
 
     :example: StoragePools_Create
-        az pscloud pool create --resource-group rgpurestorage --storage-pool-name storagePoolname --availability-zone vknyl --vnet-injection "{subnet-id:tnlctolrxdvnkjiphlrdxq,vnet-id:zbumtytyqwewjcyckwqchiypshv}" --provisioned-bandwidth 17 --reservation-id xiowoxnbtcotutcmmrofvgdi --type None --user-assigned-identities "{key4211:{}}" --tags "{key7593:vsyiygyurvwlfaezpuqu}" --location lonlc
+        az pscloud pool create --resource-group rgpurestorage --storage-pool-name storagePoolname --zone 1 --subnet-name /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{vnetName}/subnets/{subnetName} --vnet-name /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{vnetName} --provisioned-bandwidth 100 --reservation-id /subscriptions/{subscriptionId}/providers/PureStorage.Block/reservations/{reservationName} --location eastus
     """
 
     _aaz_info = {
@@ -60,58 +59,25 @@ class Create(AAZCommand):
             ),
         )
 
-        # define Arg Group "Identity"
-
-        _args_schema = cls._args_schema
-        _args_schema.mi_system_assigned = AAZStrArg(
-            options=["--system-assigned", "--mi-system-assigned"],
-            arg_group="Identity",
-            help="Set the system managed identity.",
-            blank="True",
-        )
-        _args_schema.mi_user_assigned = AAZListArg(
-            options=["--user-assigned", "--mi-user-assigned"],
-            arg_group="Identity",
-            help="Set the user managed identities.",
-            blank=[],
-        )
-
-        mi_user_assigned = cls._args_schema.mi_user_assigned
-        mi_user_assigned.Element = AAZStrArg()
-
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.availability_zone = AAZStrArg(
-            options=["--availability-zone"],
+        _args_schema.zone = AAZStrArg(
+            options=["-z", "--zone"],
             arg_group="Properties",
             help="Azure Availability Zone the Pool is located in",
+            required=True,
         )
         _args_schema.provisioned_bandwidth = AAZIntArg(
             options=["--provisioned-bandwidth"],
             arg_group="Properties",
             help="Total bandwidth provisioned for the pool, in MB/s",
+            required=True,
         )
         _args_schema.reservation_id = AAZStrArg(
             options=["--reservation-id"],
             arg_group="Properties",
             help="Azure resource ID of the Pure Storage Cloud service (reservation resource) this storage pool belongs to",
-        )
-        _args_schema.vnet_injection = AAZObjectArg(
-            options=["--vnet-injection"],
-            arg_group="Properties",
-            help="Network properties of the storage pool",
-        )
-
-        vnet_injection = cls._args_schema.vnet_injection
-        vnet_injection.subnet_id = AAZStrArg(
-            options=["subnet-id"],
-            help="Azure resource ID of the Virtual Network subnet where the storage pool will be connected",
-            required=True,
-        )
-        vnet_injection.vnet_id = AAZStrArg(
-            options=["vnet-id"],
-            help="Azure resource ID of the Virtual Network in which the subnet is located",
             required=True,
         )
 
@@ -134,6 +100,22 @@ class Create(AAZCommand):
 
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg()
+
+        # define Arg Group "VnetInjection"
+
+        _args_schema = cls._args_schema
+        _args_schema.subnet_id = AAZStrArg(
+            options=["--subnet-name"],
+            arg_group="VnetInjection",
+            help="Azure resource ID of the Virtual Network subnet where the storage pool will be connected",
+            required=True,
+        )
+        _args_schema.vnet_id = AAZStrArg(
+            options=["--vnet-name"],
+            arg_group="VnetInjection",
+            help="Azure resource ID of the Virtual Network in which the subnet is located",
+            required=True,
+        )
         return cls._args_schema
 
     def _execute_operations(self):
@@ -242,26 +224,16 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("identity", AAZIdentityObjectType)
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
-            identity = _builder.get(".identity")
-            if identity is not None:
-                identity.set_prop("userAssigned", AAZListType, ".mi_user_assigned", typ_kwargs={"flags": {"action": "create"}})
-                identity.set_prop("systemAssigned", AAZStrType, ".mi_system_assigned", typ_kwargs={"flags": {"action": "create"}})
-
-            user_assigned = _builder.get(".identity.userAssigned")
-            if user_assigned is not None:
-                user_assigned.set_elements(AAZStrType, ".")
-
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("availabilityZone", AAZStrType, ".availability_zone", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("availabilityZone", AAZStrType, ".zone", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("provisionedBandwidthMbPerSec", AAZIntType, ".provisioned_bandwidth", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("reservationResourceId", AAZStrType, ".reservation_id", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("vnetInjection", AAZObjectType, ".vnet_injection", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("vnetInjection", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
 
             vnet_injection = _builder.get(".properties.vnetInjection")
             if vnet_injection is not None:

@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: basic-command-args
+spec:
+  containers:
+    - name: app
+      image: mcr.microsoft.com/azurelinux/base/nginx:1@sha256:6b8ca92221f842cd3e1ea3f863a324221cc5cf9e54f47dc76092d9582e0a1807
+      command:
+        - /bin/sh
+      args:
+        - -c
+        - echo hello
+      env:
+        - name: APP_MODE
+          value: production

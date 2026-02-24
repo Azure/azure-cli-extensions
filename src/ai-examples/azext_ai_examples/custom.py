@@ -8,7 +8,7 @@ import hashlib
 import json
 import re
 import requests
-from pkg_resources import parse_version
+from packaging.version import Version
 
 from azure.cli.core import telemetry as telemetry_core
 from azure.cli.core import __version__ as core_version
@@ -85,7 +85,7 @@ def ping_aladdin_service():
 
 
 def call_aladdin_service(query):
-    version = str(parse_version(core_version))
+    version = str(Version(core_version))
     correlation_id = telemetry_core._session.correlation_id   # pylint: disable=protected-access
     subscription_id = telemetry_core._get_azure_subscription_id()  # pylint: disable=protected-access
 

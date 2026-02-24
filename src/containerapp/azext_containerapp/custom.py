@@ -705,7 +705,7 @@ def show_containerapp(cmd, name, resource_group_name, show_secrets=False):
     return containerapp_base_decorator.show()
 
 
-def list_containerapp(cmd, resource_group_name=None, managed_env=None, environment_type="all"):
+def list_containerapp(cmd, resource_group_name=None, managed_env=None, environment_type="all", kind=None):
     raw_parameters = locals()
     containerapp_list_decorator = ContainerAppPreviewListDecorator(
         cmd=cmd,
@@ -3173,8 +3173,9 @@ def update_session_pool(cmd,
                         registry_user=None,
                         mi_user_assigned=None,
                         registry_identity=None,
-                        mi_system_assigned=False,
-                        probe_yaml=None):
+                        mi_system_assigned=None,
+                        probe_yaml=None,
+                        no_wait=False):
     raw_parameters = locals()
     session_pool_decorator = SessionPoolUpdateDecorator(
         cmd=cmd,

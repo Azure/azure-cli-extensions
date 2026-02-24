@@ -1,2 +1,12 @@
+schema:
+  name: cliwdx6u-schema
+  version: 1.0.0
 configs:
   AppName: Hotmelt
+  TemperatureRangeMax: ${{$val(TemperatureRangeMax)}}
+  ErrorThreshold: ${{$val(ErrorThreshold)}}
+  HealthCheckEndpoint: ${{$val(HealthCheckEndpoint)}}
+  EnableLocalLog: ${{$val(EnableLocalLog)}}
+  AgentEndpoint: ${{$val(AgentEndpoint)}}
+  HealthCheckEnabled: ${{$val(HealthCheckEnabled)}}
+  ApplicationEndpoint: ${{$val(ApplicationEndpoint)}}

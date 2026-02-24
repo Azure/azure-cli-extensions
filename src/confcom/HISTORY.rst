@@ -3,6 +3,32 @@
 Release History
 ===============
 
+1.7.1
+++++++
+* Replace deprecated pkg_resources with packaging for Python 3.13 compatibility
+
+1.7.0
+++++++
+* Add containers from_vn2 command to generate container definitions from a VN2 template.
+
+1.6.0
+++++++
+* Added confcom containers from_image command to generate container definitions from an image reference
+
+1.5.1
+++++++
+* Bumped the Kata genpolicy version to gen4
+
+1.5.0
+++++++
+* restored the behaviour of --upload-fragment in acifragmentgen to attach to first image in input
+* added confcom fragment push command to allow explicit uploading of standalone fragments
+* added confcom fragment attach command to allow explicit uploading of image attached fragments
+
+1.4.5
+++++++
+* Drop the dependency on OPA
+
 1.4.4
 ++++++
 * Improve the package building process

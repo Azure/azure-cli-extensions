@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------------
 
 import datetime
-import json
 import logging
 import os
 import platform
@@ -21,20 +20,27 @@ APPLICATIONINSIGHTS_INSTRUMENTATION_KEY_ENV = "APPLICATIONINSIGHTS_INSTRUMENTATI
 
 
 class CLITelemetryClient:
-    def __init__(self):
+    def __init__(self, event_type="startup"):
         instrumentation_key = self._get_application_insights_instrumentation_key()
         self._telemetry_client = TelemetryClient(
             instrumentation_key=instrumentation_key
         )
         self.start_time = datetime.datetime.utcnow()
         self.end_time = ""
+        self.mode = None  # Track which mode is used: 'cluster' or 'local'
+        self.event_type = event_type  # Track event type: 'startup', 'init', 'cleanup'
 
     def __enter__(self):
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
         self.end_time = datetime.datetime.utcnow()
-        self.track_agent_started()
+        if self.event_type == "init":
+            self.track_agent_init()
+        elif self.event_type == "cleanup":
+            self.track_agent_cleanup()
+        else:  # default to startup
+            self.track_agent_started()
         self.flush()
 
     def track(self, event_name, properties=None):
@@ -48,7 +54,27 @@ class CLITelemetryClient:
             "time.start": str(self.start_time),
             "time.end": str(self.end_time),
         }
+        if self.mode:
+            timestamp_properties["mode"] = self.mode
         self.track("AgentCLIStartup", properties=timestamp_properties)
+
+    def track_agent_init(self):
+        timestamp_properties = {
+            "time.start": str(self.start_time),
+            "time.end": str(self.end_time),
+        }
+        if self.mode:
+            timestamp_properties["mode"] = self.mode
+        self.track("AgentCLIInit", properties=timestamp_properties)
+
+    def track_agent_cleanup(self):
+        timestamp_properties = {
+            "time.start": str(self.start_time),
+            "time.end": str(self.end_time),
+        }
+        if self.mode:
+            timestamp_properties["mode"] = self.mode
+        self.track("AgentCLICleanup", properties=timestamp_properties)
 
     def flush(self):
         self._telemetry_client.flush()
@@ -79,21 +105,3 @@ class CLITelemetryClient:
         return os.getenv(
             APPLICATIONINSIGHTS_INSTRUMENTATION_KEY_ENV, DEFAULT_INSTRUMENTATION_KEY
         )
-
-    def track_agent_feedback(self, feedback):
-        # NOTE: We should try to avoid importing holmesgpt at the top level to prevent dependency issues
-        from holmes.core.feedback import Feedback, FeedbackMetadata
-
-        # Type hint validation for development purposes
-        if not isinstance(feedback, Feedback):
-            raise TypeError(f"Expected Feedback object, got {type(feedback)}")
-
-        # Before privacy team's approval for other user data, we keep only direct user feedback, and model info.
-        feedback_filtered = Feedback()
-        feedback_filtered.user_feedback = feedback.user_feedback
-        feedback_metadata = FeedbackMetadata()
-        feedback_metadata.llm = feedback.metadata.llm
-        feedback_filtered.metadata = feedback_metadata
-        self.track("AgentCLIFeedback", properties={"feedback": json.dumps(feedback_filtered.to_dict())})
-        # Flush the telemetry data immediately to avoid too much data being sent at once
-        self.flush()

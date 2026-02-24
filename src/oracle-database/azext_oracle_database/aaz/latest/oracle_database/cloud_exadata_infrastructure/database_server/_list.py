@@ -22,9 +22,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-09-01",
+        "version": "2025-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/cloudexadatainfrastructures/{}/dbservers", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/cloudexadatainfrastructures/{}/dbservers", "2025-09-01"],
         ]
     }
 
@@ -60,7 +60,7 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.DbServersListByCloudExadataInfrastructure(ctx=self.ctx)()
+        self.DbServersListByParent(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -76,7 +76,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class DbServersListByCloudExadataInfrastructure(AAZHttpOperation):
+    class DbServersListByParent(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -124,7 +124,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2025-09-01",
                     required=True,
                 ),
             }
@@ -174,9 +174,7 @@ class List(AAZCommand):
             _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
+            _element.properties = AAZObjectType()
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -196,6 +194,11 @@ class List(AAZCommand):
             )
             properties.compartment_id = AAZStrType(
                 serialized_name="compartmentId",
+                flags={"read_only": True},
+            )
+            properties.compute_model = AAZStrType(
+                serialized_name="computeModel",
+                flags={"read_only": True},
             )
             properties.cpu_core_count = AAZIntType(
                 serialized_name="cpuCoreCount",
@@ -211,6 +214,7 @@ class List(AAZCommand):
             )
             properties.db_server_patching_details = AAZObjectType(
                 serialized_name="dbServerPatchingDetails",
+                flags={"read_only": True},
             )
             properties.display_name = AAZStrType(
                 serialized_name="displayName",
@@ -218,6 +222,7 @@ class List(AAZCommand):
             )
             properties.exadata_infrastructure_id = AAZStrType(
                 serialized_name="exadataInfrastructureId",
+                flags={"read_only": True},
             )
             properties.lifecycle_details = AAZStrType(
                 serialized_name="lifecycleDetails",
@@ -225,6 +230,7 @@ class List(AAZCommand):
             )
             properties.lifecycle_state = AAZStrType(
                 serialized_name="lifecycleState",
+                flags={"read_only": True},
             )
             properties.max_cpu_count = AAZIntType(
                 serialized_name="maxCpuCount",
@@ -242,7 +248,9 @@ class List(AAZCommand):
                 serialized_name="memorySizeInGbs",
                 flags={"read_only": True},
             )
-            properties.ocid = AAZStrType()
+            properties.ocid = AAZStrType(
+                flags={"read_only": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
@@ -275,6 +283,7 @@ class List(AAZCommand):
             )
             db_server_patching_details.patching_status = AAZStrType(
                 serialized_name="patchingStatus",
+                flags={"read_only": True},
             )
             db_server_patching_details.time_patching_ended = AAZStrType(
                 serialized_name="timePatchingEnded",

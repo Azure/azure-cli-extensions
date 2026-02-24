@@ -148,13 +148,13 @@ def list_all_jobs(cmd, subscription_id, resource_group_name,
         for job in jobs:
             try:
                 formatted_jobs.append(format_job_summary(job))
-            except Exception as format_error:
+            except Exception as format_error:  # pylint: disable=broad-exception-caught
                 logger.warning("Error formatting job: %s", str(format_error))
                 # Skip jobs that fail to format
                 continue
 
         return formatted_jobs
 
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught
         logger.error("Error listing jobs: %s", str(e))
         raise CLIError(f"Failed to list jobs: {str(e)}")

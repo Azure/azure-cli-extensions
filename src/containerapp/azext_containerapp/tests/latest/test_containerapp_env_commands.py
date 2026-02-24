@@ -179,6 +179,7 @@ class ContainerappEnvIdentityTests(ScenarioTest):
         ])
 
     @AllowLargeResponse(8192)
+    @live_only()
     @ResourceGroupPreparer(location="westeurope")
     def test_containerapp_env_msi_custom_domains(self, resource_group):
         location = TEST_LOCATION

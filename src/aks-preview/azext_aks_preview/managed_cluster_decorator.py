@@ -941,17 +941,29 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 "Cannot specify --enable-container-network-logs and "
                 "--disable-container-network-logs at the same time."
             )
-        if (
-            enable_cnl and
-            (not self.raw_param.get("enable_acns", False) and
-                not (mc.network_profile and mc.network_profile.advanced_networking and
-                     mc.network_profile.advanced_networking.enabled)) or
-            not (mc.addon_profiles and mc.addon_profiles.get("omsagent") and mc.addon_profiles["omsagent"].enabled)
-        ):
-            raise InvalidArgumentValueError(
-                "Container network logs requires '--enable-acns', advanced networking "
-                "to be enabled, and the monitoring addon to be enabled."
+        if enable_cnl:
+            acns_enabled = (
+                self.raw_param.get("enable_acns", False) or
+                (mc.network_profile and mc.network_profile.advanced_networking and
+                 mc.network_profile.advanced_networking.enabled)
             )
+            # Check for monitoring addon - either being enabled via raw params or already enabled on mc
+            enable_addons = self.raw_param.get("enable_addons") or ""
+            monitoring_being_enabled = (
+                "monitoring" in enable_addons or
+                bool(self.raw_param.get("enable_azure_monitor_logs"))
+            )
+            monitoring_already_enabled = (
+                mc.addon_profiles and
+                mc.addon_profiles.get("omsagent") and
+                mc.addon_profiles["omsagent"].enabled
+            )
+            monitoring_enabled = monitoring_being_enabled or monitoring_already_enabled
+            if not acns_enabled or not monitoring_enabled:
+                raise InvalidArgumentValueError(
+                    "Container network logs requires '--enable-acns', advanced networking "
+                    "to be enabled, and the monitoring addon to be enabled."
+                )
         enable_cnl = bool(enable_cnl) if enable_cnl is not None else False
         disable_cnl = bool(disable_cnl) if disable_cnl is not None else False
         return enable_cnl or not disable_cnl
@@ -2787,6 +2799,84 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         return opentelemetry_logs_port
 
+    def get_enable_high_log_scale_mode(self) -> Union[bool, None]:
+        """Obtain the value of enable_high_log_scale_mode.
+
+        This method overrides the base class implementation to automatically enable high log scale mode
+        when container network logs are enabled. It validates that:
+        1. ACNS (Advanced Container Networking Services) is enabled
+        2. Monitoring addon is enabled
+        3. User has not explicitly disabled high log scale mode
+
+        :return: bool or None
+        """
+        # Read the original value passed by the command
+        enable_high_log_scale_mode = self.raw_param.get("enable_high_log_scale_mode")
+
+        # Check if container network logs are being enabled
+        enable_container_network_logs = (
+            self.raw_param.get("enable_container_network_logs") or
+            self.raw_param.get("enable_retina_flow_logs")
+        )
+
+        # If container network logs are being enabled, auto-enable high log scale mode
+        if enable_container_network_logs:
+            # If user explicitly set enable_high_log_scale_mode to False, raise an error
+            if enable_high_log_scale_mode is False:
+                raise MutuallyExclusiveArgumentError(
+                    "Cannot explicitly disable --enable-high-log-scale-mode when "
+                    "--enable-container-network-logs is specified. Container network logs "
+                    "requires high log scale mode to be enabled."
+                )
+
+            # Validate that ACNS is enabled (either being enabled now or already enabled in cluster)
+            enable_acns = self.raw_param.get("enable_acns")
+            acns_already_enabled = (
+                self.mc and
+                self.mc.network_profile and
+                self.mc.network_profile.advanced_networking and
+                self.mc.network_profile.advanced_networking.enabled
+            )
+            if not enable_acns and not acns_already_enabled:
+                raise RequiredArgumentMissingError(
+                    "Container network logs with high log scale mode requires ACNS to be enabled. "
+                    "Please add --enable-acns to your command."
+                )
+
+            # Validate that monitoring addon is enabled (either being enabled now or already enabled in cluster)
+            addon_consts = self.get_addon_consts()
+            CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
+
+            # Check if monitoring is being enabled in the command
+            enable_addons = self.raw_param.get("enable_addons")
+            monitoring_being_enabled = enable_addons and "monitoring" in enable_addons
+
+            # Check if enabling Azure Monitor logs
+            enable_azure_monitor_logs = self.raw_param.get("enable_azure_monitor_logs")
+
+            # Check if monitoring addon is already enabled in the cluster
+            monitoring_addon_enabled = False
+            if self.mc and self.mc.addon_profiles:
+                if CONST_MONITORING_ADDON_NAME in self.mc.addon_profiles:
+                    monitoring_addon_enabled = self.mc.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled
+                elif CONST_MONITORING_ADDON_NAME_CAMELCASE in self.mc.addon_profiles:
+                    monitoring_addon_enabled = self.mc.addon_profiles[CONST_MONITORING_ADDON_NAME_CAMELCASE].enabled
+
+            if not monitoring_being_enabled and not enable_azure_monitor_logs and not monitoring_addon_enabled:
+                raise RequiredArgumentMissingError(
+                    "Container network logs with high log scale mode requires the monitoring addon to be enabled. "
+                    "Please add '--enable-addons monitoring' or '--enable-azure-monitor-logs' to your command."
+                )
+
+            # Auto-enable high log scale mode
+            return True
+
+        # If container network logs are not being enabled, return the original value
+        # Return False if not explicitly set to maintain backward compatibility with base class
+        if enable_high_log_scale_mode is None:
+            return False
+        return enable_high_log_scale_mode
+
     def _get_enable_vpa(self, enable_validation: bool = False) -> bool:
         """Internal function to obtain the value of enable_vpa.
         This function supports the option of enable_vpa. When enabled, if both enable_vpa and enable_vpa are
@@ -3408,6 +3498,20 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self.raw_param.get("attach_zones")
 
+    def get_enable_application_load_balancer(self) -> bool:
+        """Obtain the value of enable_application_load_balancer.
+
+        :return: bool
+        """
+        return self.raw_param.get("enable_application_load_balancer")
+
+    def get_disable_application_load_balancer(self) -> bool:
+        """Obtain the value of disable_application_load_balancer.
+
+        :return: bool
+        """
+        return self.raw_param.get("disable_application_load_balancer")
+
     def get_enable_app_routing(self) -> bool:
         """Obtain the value of enable_app_routing.
 
@@ -3460,6 +3564,20 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         :return: str
         """
         return self.raw_param.get("app_routing_default_nginx_controller")
+
+    def get_enable_default_domain(self) -> bool:
+        """Obtain the value of enable_default_domain.
+
+        :return: bool
+        """
+        return self.raw_param.get("enable_default_domain")
+
+    def get_disable_default_domain(self) -> bool:
+        """Obtain the value of disable_default_domain.
+
+        :return: bool
+        """
+        return self.raw_param.get("disable_default_domain")
 
     def get_nginx(self):
         """Obtain the value of nginx, written to the update decorator context by _aks_approuting_update
@@ -3901,6 +4019,13 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 config["enableRetinaNetworkFlags"] = str(container_network_logs_enabled)
                 monitoring_addon_profile.config = config
 
+        # Trigger validation for high log scale mode when container network logs are enabled.
+        # This ensures proper error messages are raised before cluster creation if the user
+        # explicitly disables high log scale mode while enabling container network logs.
+        if self.context.raw_param.get("enable_container_network_logs") or \
+           self.context.raw_param.get("enable_retina_flow_logs"):
+            self.context.get_enable_high_log_scale_mode()
+
         mc.addon_profiles = addon_profiles
         return mc
 
@@ -4008,6 +4133,23 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         return mc
 
+    def set_up_ingress_application_load_balancer(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up application load balancer profile in ingress profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        addons = self.context.get_enable_addons()
+        if "application-load-balancer" in addons or self.context.get_enable_application_load_balancer():
+            if mc.ingress_profile is None:
+                mc.ingress_profile = self.models.ManagedClusterIngressProfile()  # pylint: disable=no-member
+            mc.ingress_profile.application_load_balancer = (
+                self.models.ManagedClusterIngressProfileApplicationLoadBalancer(enabled=True)  # pylint: disable=no-member
+            )
+
+        return mc
+
     def set_up_ingress_web_app_routing(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up web app routing profile in ingress profile for the ManagedCluster object.
 
@@ -4035,6 +4177,23 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             if "web_application_routing" in addons:
                 dns_zone_resource_ids = self.context.get_dns_zone_resource_ids()
                 mc.ingress_profile.web_app_routing.dns_zone_resource_ids = dns_zone_resource_ids
+
+        if self.context.get_enable_default_domain() or self.context.get_disable_default_domain():
+            if mc.ingress_profile is None:
+                mc.ingress_profile = self.models.ManagedClusterIngressProfile()  # pylint: disable=no-member
+            if mc.ingress_profile.web_app_routing is None:
+                mc.ingress_profile.web_app_routing = (
+                    self.models.ManagedClusterIngressProfileWebAppRouting(enabled=True)  # pylint: disable=no-member
+                )
+
+            enable = True
+            if self.context.get_disable_default_domain():
+                enable = False
+            mc.ingress_profile.web_app_routing.default_domain = (
+                self.models.ManagedClusterIngressDefaultDomainProfile(
+                    enabled=enable
+                )
+            )
 
         return mc
 
@@ -4717,6 +4876,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_kms_pmk_and_cmk(mc)
         # set up cluster snapshot
         mc = self.set_up_creationdata_of_cluster_snapshot(mc)
+        # set up application load balancer profile
+        mc = self.set_up_ingress_application_load_balancer(mc)
         # set up app routing profile
         mc = self.set_up_ingress_web_app_routing(mc)
         # set up gateway api profile
@@ -5340,6 +5501,13 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         :return: the ManagedCluster object
         """
         self._ensure_mc(mc)
+
+        # Trigger validation for high log scale mode when container network logs are enabled.
+        # This ensures proper error messages are raised before cluster update if the user
+        # explicitly disables high log scale mode while enabling container network logs.
+        if self.context.raw_param.get("enable_container_network_logs") or \
+           self.context.raw_param.get("enable_retina_flow_logs"):
+            self.context.get_enable_high_log_scale_mode()
 
         container_network_logs_enabled = self.context.get_container_network_logs(mc)
         if container_network_logs_enabled is not None:
@@ -6610,6 +6778,49 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
+    def update_application_load_balancer_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update application load balancer (Application Gateway for Containers) profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        # get parameters from context
+        enable_application_load_balancer = self.context.get_enable_application_load_balancer()
+        disable_application_load_balancer = self.context.get_disable_application_load_balancer()
+
+        # Check for mutually exclusive arguments
+        if enable_application_load_balancer and disable_application_load_balancer:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-application-load-balancer and "
+                "--disable-application-load-balancer at the same time."
+            )
+
+        # update ManagedCluster object with application load balancer settings
+        if enable_application_load_balancer or disable_application_load_balancer:
+            mc.ingress_profile = (
+                mc.ingress_profile or
+                self.models.ManagedClusterIngressProfile()  # pylint: disable=no-member
+            )
+            mc.ingress_profile.application_load_balancer = (
+                mc.ingress_profile.application_load_balancer or
+                self.models.ManagedClusterIngressProfileApplicationLoadBalancer()  # pylint: disable=no-member
+            )
+            if enable_application_load_balancer:
+                if mc.ingress_profile.application_load_balancer.enabled:
+                    raise CLIError(
+                        "Application Load Balancer (Application Gateway for Containers) is already enabled.\n"
+                    )
+                mc.ingress_profile.application_load_balancer.enabled = True
+            elif disable_application_load_balancer:
+                if mc.ingress_profile.application_load_balancer.enabled is False:
+                    raise CLIError(
+                        "Application Load Balancer (Application Gateway for Containers) is already disabled.\n"
+                    )
+                mc.ingress_profile.application_load_balancer.enabled = False
+
+        return mc
+
     # pylint: disable=too-many-branches
     def update_app_routing_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Update app routing profile for the ManagedCluster object.
@@ -6654,6 +6865,20 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         # modify default nic config
         if nginx:
             self._update_app_routing_nginx(mc, nginx)
+
+        # modify default domain
+        enable_default_domain = self.context.get_enable_default_domain()
+        disable_default_domain = self.context.get_disable_default_domain()
+        if enable_default_domain or disable_default_domain:
+            if mc.ingress_profile.web_app_routing.enabled:
+                enable = not disable_default_domain
+                mc.ingress_profile.web_app_routing.default_domain = (
+                    self.models.ManagedClusterIngressDefaultDomainProfile(
+                        enabled=enable
+                    )
+                )
+            else:
+                raise CLIError('App Routing must be enabled to modify the default domain.\n')
 
         return mc
 
@@ -7200,6 +7425,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         """
         self._ensure_mc(mc)
 
+        # Call the parent class method to handle base addon profile updates
+        # (including Azure Keyvault Secrets Provider secret rotation settings)
+        mc = super().update_addon_profiles(mc)
+
         # Handle enable Azure Monitor logs
         if self.context.get_enable_azure_monitor_logs():
             self._setup_azure_monitor_logs(mc)
@@ -7255,6 +7484,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_nat_gateway_profile(mc)
         # update kube proxy config
         mc = self.update_kube_proxy_config(mc)
+        # update application load balancer profile
+        mc = self.update_application_load_balancer_profile(mc)
         # update ingress profile gateway api
         mc = self.update_ingress_profile_gateway_api(mc)
         # update custom ca trust certificates

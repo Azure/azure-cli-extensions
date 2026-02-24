@@ -247,6 +247,17 @@ def load_arguments(self, _):
         c.argument('cluster_name', options_list=['--cluster-name', '--name', '-n'], type=str, help='The name of the '
                    'RedisEnterprise cluster.', id_part='name')
 
+    with self.argument_context('redisenterprise test-connection') as c:
+        c.argument('resource_group_name', resource_group_name_type, required=False)
+        c.argument('cluster_name', options_list=['--cluster-name', '--name', '-n'], type=str, help='The name of the '
+                   'RedisEnterprise cluster.', id_part='name', required=False)
+        c.argument('auth', arg_type=get_enum_type(['entra', 'access-key']), help='The authentication method to use '
+                   'for the connection test.')
+        c.argument('host_name', options_list=['--host', '--host-name'], type=str, help='The Redis host name (FQDN) to connect to. '
+                   'If provided, --resource-group and --cluster-name are optional.')
+        c.argument('access_key', options_list=['--access-key'], type=str, help='The access key for authentication. '
+                   'Required when using --host with access-key auth.')
+
 
 class AddPersistence(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):

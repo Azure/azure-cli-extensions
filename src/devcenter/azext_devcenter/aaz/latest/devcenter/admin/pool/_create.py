@@ -34,9 +34,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-04-01-preview",
+        "version": "2025-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools/{}", "2025-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools/{}", "2025-10-01-preview"],
         ]
     }
 
@@ -227,6 +227,14 @@ class Create(AAZCommand):
             help="Enables or disables whether the Dev Box should be automatically started at commencement of active hours.",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
+        active_hours_configuration.days_of_week_limit = AAZIntArg(
+            options=["days-of-week-limit"],
+            help="The maximum amount of days per week that a user can enable active hours related features.",
+        )
+        active_hours_configuration.default_days_of_week = AAZListArg(
+            options=["default-days-of-week"],
+            help="The days of the week that active hours features will be enabled. This serves as a default that can be updated by each individual user.",
+        )
         active_hours_configuration.default_end_time_hour = AAZIntArg(
             options=["default-end-time-hour"],
             help="The default end time of the active hours",
@@ -243,6 +251,11 @@ class Create(AAZCommand):
             options=["keep-awake-enable-status"],
             help="Enables or disables whether the Dev Box should be kept awake during active hours.",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
+
+        default_days_of_week = cls._args_schema.active_hours_configuration.default_days_of_week
+        default_days_of_week.Element = AAZStrArg(
+            enum={"Friday": "Friday", "Monday": "Monday", "Saturday": "Saturday", "Sunday": "Sunday", "Thursday": "Thursday", "Tuesday": "Tuesday", "Wednesday": "Wednesday"},
         )
 
         managed_virtual_network_regions = cls._args_schema.managed_virtual_network_regions
@@ -356,7 +369,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-04-01-preview",
+                    "api-version", "2025-10-01-preview",
                     required=True,
                 ),
             }
@@ -405,10 +418,16 @@ class Create(AAZCommand):
             active_hours_configuration = _builder.get(".properties.activeHoursConfiguration")
             if active_hours_configuration is not None:
                 active_hours_configuration.set_prop("autoStartEnableStatus", AAZStrType, ".auto_start_enable_status")
+                active_hours_configuration.set_prop("daysOfWeekLimit", AAZIntType, ".days_of_week_limit")
+                active_hours_configuration.set_prop("defaultDaysOfWeek", AAZListType, ".default_days_of_week")
                 active_hours_configuration.set_prop("defaultEndTimeHour", AAZIntType, ".default_end_time_hour")
                 active_hours_configuration.set_prop("defaultStartTimeHour", AAZIntType, ".default_start_time_hour")
                 active_hours_configuration.set_prop("defaultTimeZone", AAZStrType, ".default_time_zone")
                 active_hours_configuration.set_prop("keepAwakeEnableStatus", AAZStrType, ".keep_awake_enable_status")
+
+            default_days_of_week = _builder.get(".properties.activeHoursConfiguration.defaultDaysOfWeek")
+            if default_days_of_week is not None:
+                default_days_of_week.set_elements(AAZStrType, ".")
 
             dev_box_definition = _builder.get(".properties.devBoxDefinition")
             if dev_box_definition is not None:
@@ -554,6 +573,12 @@ class Create(AAZCommand):
             active_hours_configuration.auto_start_enable_status = AAZStrType(
                 serialized_name="autoStartEnableStatus",
             )
+            active_hours_configuration.days_of_week_limit = AAZIntType(
+                serialized_name="daysOfWeekLimit",
+            )
+            active_hours_configuration.default_days_of_week = AAZListType(
+                serialized_name="defaultDaysOfWeek",
+            )
             active_hours_configuration.default_end_time_hour = AAZIntType(
                 serialized_name="defaultEndTimeHour",
             )
@@ -566,6 +591,9 @@ class Create(AAZCommand):
             active_hours_configuration.keep_awake_enable_status = AAZStrType(
                 serialized_name="keepAwakeEnableStatus",
             )
+
+            default_days_of_week = cls._schema_on_200_201.properties.active_hours_configuration.default_days_of_week
+            default_days_of_week.Element = AAZStrType()
 
             dev_box_definition = cls._schema_on_200_201.properties.dev_box_definition
             dev_box_definition.active_image_reference = AAZObjectType(

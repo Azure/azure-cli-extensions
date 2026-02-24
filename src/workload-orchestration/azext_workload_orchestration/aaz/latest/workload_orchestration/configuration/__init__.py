@@ -12,3 +12,4 @@ from .__cmd_group import *
 from ._config_set import *
 from ._config_show import *
 from ._config_download import *
+from .schema import *
