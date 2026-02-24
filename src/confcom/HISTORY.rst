@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.7.1
+++++++
+* Replace deprecated pkg_resources with packaging for Python 3.13 compatibility
+
 1.7.0
 ++++++
 * Add containers from_vn2 command to generate container definitions from a VN2 template.

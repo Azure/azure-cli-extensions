@@ -6,7 +6,7 @@
 import os
 import unittest
 
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only)
 
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
@@ -112,6 +112,7 @@ class Scheduled_queryScenarioTest(ScenarioTest):
             self.cmd('monitor scheduled-query show -g {rg} -n {name1}')
 
 
+    @live_only()
     @ResourceGroupPreparer(name_prefix='cli_test_scheduled_query_update', location='eastus')
     def test_scheduled_query_update_action_group(self, resource_group):
         from azure.mgmt.core.tools import resource_id
@@ -196,6 +197,7 @@ class Scheduled_queryScenarioTest(ScenarioTest):
         self.cmd('monitor scheduled-query delete -g {rg} -n {name2} -y')
 
 
+    @live_only()
     @ResourceGroupPreparer(name_prefix='cli_test_scheduled_query_operator', location='eastus')
     def test_scheduled_query_condition_operator(self, resource_group):
         from azure.mgmt.core.tools import resource_id

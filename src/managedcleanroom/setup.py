@@ -10,7 +10,7 @@ from setuptools import setup, find_packages
 
 
 # HISTORY.rst entry.
-VERSION = '1.0.0b1'
+VERSION = '1.0.0b2'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -28,7 +28,11 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = []
+DEPENDENCIES = [
+    'azure-core>=1.24.0',
+    'typing-extensions>=4.0.0',
+    'msal>=1.20.0',
+]
 
 with open('README.md', 'r', encoding='utf-8') as f:
     README = f.read()
@@ -45,7 +49,8 @@ setup(
     author_email='azpycli@microsoft.com',
     url='https://github.com/Azure/azure-cli-extensions/tree/main/src/managedcleanroom',
     classifiers=CLASSIFIERS,
-    packages=find_packages(exclude=["tests"]),
-    package_data={'azext_managedcleanroom': ['azext_metadata.json']},
-    install_requires=DEPENDENCIES
-)
+    packages=find_packages(
+        exclude=["tests"]),
+    package_data={
+        'azext_managedcleanroom': ['azext_metadata.json']},
+    install_requires=DEPENDENCIES)

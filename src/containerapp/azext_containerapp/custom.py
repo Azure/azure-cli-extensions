@@ -3173,8 +3173,9 @@ def update_session_pool(cmd,
                         registry_user=None,
                         mi_user_assigned=None,
                         registry_identity=None,
-                        mi_system_assigned=False,
-                        probe_yaml=None):
+                        mi_system_assigned=None,
+                        probe_yaml=None,
+                        no_wait=False):
     raw_parameters = locals()
     session_pool_decorator = SessionPoolUpdateDecorator(
         cmd=cmd,

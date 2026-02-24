@@ -70,7 +70,7 @@ class ListReport(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.StorageTasksReportList(ctx=self.ctx)()
+        self.StorageTasksList(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -86,7 +86,7 @@ class ListReport(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class StorageTasksReportList(AAZHttpOperation):
+    class StorageTasksList(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):

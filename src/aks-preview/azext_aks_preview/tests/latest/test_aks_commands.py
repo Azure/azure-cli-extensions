@@ -19398,6 +19398,148 @@ spec:
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
+        random_name_length=17,
+        name_prefix="clitest",
+        location="uksouth",
+    )
+    def test_aks_approuting_defaultdomain(self, resource_group, resource_group_location):
+        """This test case exercises the full lifecycle of default domain commands:
+        - Enable default domain via approuting update
+        - Show the default domain
+        - Disable default domain via approuting update
+        - Verify default domain is disabled
+        """
+
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+
+        aks_name = self.create_random_name("cliakstest", 16)
+
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "aks_name": aks_name,
+                "location": resource_group_location,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        # create cluster with app routing, oidc issuer and workload identity enabled
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={aks_name} --location={location} "
+            "--ssh-key-value={ssh_key_value} --enable-app-routing "
+            "--enable-oidc-issuer --enable-workload-identity"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("ingressProfile.webAppRouting.enabled", True),
+            ],
+        )
+
+        # enable default domain via approuting update
+        enable_default_domain_cmd = (
+            "aks approuting update --resource-group={resource_group} --name={aks_name} "
+            "--enable-default-domain"
+        )
+        self.cmd(
+            enable_default_domain_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("ingressProfile.webAppRouting.defaultDomain.enabled", True),
+            ],
+        )
+
+        # show default domain - verify it's enabled and has a domain name
+        show_default_domain_cmd = "aks approuting defaultdomain show --resource-group={resource_group} --name={aks_name}"
+        self.cmd(
+            show_default_domain_cmd,
+            checks=[
+                self.check("enabled", True),
+                self.exists("domainName"),
+            ],
+        )
+
+        # disable default domain via approuting update
+        disable_default_domain_cmd = (
+            "aks approuting update --resource-group={resource_group} --name={aks_name} "
+            "--disable-default-domain"
+        )
+        self.cmd(
+            disable_default_domain_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("ingressProfile.webAppRouting.defaultDomain.enabled", False),
+            ],
+        )
+
+        # show default domain - verify it's disabled
+        self.cmd(
+            show_default_domain_cmd,
+            checks=[
+                self.check("enabled", False),
+            ],
+        )
+
+        # delete cluster
+        delete_cmd = "aks delete --resource-group={resource_group} --name={aks_name} --yes --no-wait"
+        self.cmd(delete_cmd, checks=[self.is_empty()])
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17,
+        name_prefix="clitest",
+        location="uksouth",
+    )
+    def test_aks_create_with_defaultdomain(self, resource_group, resource_group_location):
+        """This test case exercises enabling default domain at cluster creation time."""
+
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+
+        aks_name = self.create_random_name("cliakstest", 16)
+
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "aks_name": aks_name,
+                "location": resource_group_location,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        # create cluster with app routing and default domain enabled at creation time
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={aks_name} --location={location} "
+            "--ssh-key-value={ssh_key_value} --enable-app-routing --enable-default-domain "
+            "--enable-oidc-issuer --enable-workload-identity"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("ingressProfile.webAppRouting.enabled", True),
+                self.check("ingressProfile.webAppRouting.defaultDomain.enabled", True),
+            ],
+        )
+
+        # show default domain - verify it's enabled and has a domain name
+        show_default_domain_cmd = "aks approuting defaultdomain show --resource-group={resource_group} --name={aks_name}"
+        self.cmd(
+            show_default_domain_cmd,
+            checks=[
+                self.check("enabled", True),
+                self.exists("domainName"),
+            ],
+        )
+
+        # delete cluster
+        delete_cmd = "aks delete --resource-group={resource_group} --name={aks_name} --yes --no-wait"
+        self.cmd(delete_cmd, checks=[self.is_empty()])
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="westus2"
     )
     def test_aks_update_agentpool_os_sku(self, resource_group, resource_group_location):

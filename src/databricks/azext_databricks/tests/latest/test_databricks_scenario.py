@@ -666,6 +666,22 @@ class DatabricksClientScenarioTest(ScenarioTest):
                  '-y',
                  checks=[])
         
+        self.cmd('az databricks workspace create '
+                 '--resource-group {rg} '
+                 '--name {workspace_name} '
+                 '--location eastus '
+                 '--compute-mode Serverless '
+                 '--public-network-access Disabled ',
+                 checks=[self.check('name', '{workspace_name}'),
+                         self.check('computeMode', 'Serverless'),
+                         self.check('sku.name', 'premium')])
+        
+        self.cmd('az databricks workspace delete '
+                 '--resource-group {rg} '
+                 '--name {workspace_name} '
+                 '-y',
+                 checks=[])
+        
     @AllowLargeResponse(size_kb=10240)
     @ResourceGroupPreparer(name_prefix='cli_test_databricks_expected_failures', location="eastus")
     def test_databricks_serverless_failures(self, resource_group):

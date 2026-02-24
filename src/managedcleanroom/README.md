@@ -21,4 +21,47 @@ az managedcleanroom consortium create \
     --location westus
 ```
 
-If you have issues, please give feedback by opening an issue at https://github.com/Azure/azure-cli-extensions/issues.
+## SDK Regeneration Guide ##
+
+When regenerating `analytics_frontend_api/` SDK using autorest:
+
+```bash
+autorest --input-file=../frontend.yaml --python --output-folder=./generated-cmdlets-frontend
+```
+
+Update the following files to match SDK changes:
+
+### 1. Map SDK Method Names
+**File:** `_frontend_custom.py`
+- Update `client.collaboration.<old_method>()` → `client.collaboration.<new_method>()`
+- Update function parameter names to match SDK
+
+### 2. Update Parameter Definitions
+**File:** `_params.py`
+- Rename argument types (e.g., `query_id_type` → `document_id_type`)
+- Update `options_list` and `help` text
+- Add/remove parameter contexts in `with self.argument_context()` blocks
+
+### 3. Update Command Registration
+**File:** `_frontend_commands.py`
+- Update command group paths if SDK URLs changed
+- Update function names in `g.custom_command()` calls
+
+### 4. Update Help Documentation
+**File:** `_help.py`
+- Update parameter names in examples
+- Update command paths for new/renamed commands
+- Add help entries for new commands
+
+### 5. Update Unit Tests
+**Files:** `tests/latest/test_frontend_*.py`
+- Update mock paths: `mock_client.collaboration.<old_method>` → `<new_method>`
+- Update function parameter names in test calls
+- Update function imports if renamed
+
+### 6. Validate Changes
+```bash
+# Run tests
+cd src/managedcleanroom
+python -m pytest azext_managedcleanroom/tests/latest/ -v
+```
