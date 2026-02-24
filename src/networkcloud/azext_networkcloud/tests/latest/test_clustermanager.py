@@ -49,7 +49,6 @@ def call_scenario1a(test):
     step_list_subscription(test)
     step_list_resource_group(test, checks=[])
     step_delete(test, checks=[])
-    step_update_relay_scenario1(test, checks=[])
     cleanup_scenario1(test)
 
 
@@ -150,6 +149,13 @@ def call_scenario5(test):
     """# Testcase: scenario5"""
     setup_scenario1(test)
     step_create_UA_SA_managedidentity(test)
+    cleanup_scenario1(test)
+
+
+def call_scenario6(test):
+    """# Testcase: scenario5"""
+    setup_scenario1(test)
+    step_update_relay_scenario1(test, checks=[])
     cleanup_scenario1(test)
 
 
@@ -390,3 +396,8 @@ class ClusterManagerScenarioTest(ScenarioTest):
     def test_clustermanager_scenario5(self):
         """test scenario for ClusterManager CRUD operations using systemAssigned and user assigned managed identity. Checking for expected 400 bad request"""
         call_scenario5(self)
+
+    @ResourceGroupPreparer(name_prefix="clitest_rg"[:7], key="rg", parameter_name="rg")
+    def test_clustermanager_scenario6(self):
+        """test scenario for ClusterManager UpdateRelayPEC"""
+        call_scenario6(self)
