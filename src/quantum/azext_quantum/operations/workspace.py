@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=line-too-long,redefined-builtin,unnecessary-comprehension, too-many-locals, too-many-statements, too-many-nested-blocks
+# pylint: disable=line-too-long,redefined-builtin,unnecessary-comprehension, too-many-locals, too-many-statements, too-many-nested-blocks, unused-argument
 
 import os.path
 import json

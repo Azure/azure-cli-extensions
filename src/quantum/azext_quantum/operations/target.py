@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=line-too-long,redefined-builtin
+# pylint: disable=line-too-long,redefined-builtin,unused-argument
 
 from .._client_factory import cf_providers
 from .._list_helper import repack_response_json
