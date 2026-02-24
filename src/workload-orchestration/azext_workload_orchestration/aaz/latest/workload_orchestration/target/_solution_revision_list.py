@@ -49,7 +49,7 @@ class ListRevisions(AAZCommand):
             required=True,
         )
         _args_schema.solution_name = AAZStrArg(
-            options=["--solution-template-name", "--solution"],
+            options=["--solution-version-id", "--solution"],
             help="Name of the solution",
             required=True,
             fmt=AAZStrArgFormat(
