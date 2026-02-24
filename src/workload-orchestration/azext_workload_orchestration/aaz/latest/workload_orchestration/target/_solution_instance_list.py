@@ -17,7 +17,7 @@ from azure.cli.core.aaz import *
 class ListSolutionInstances(AAZCommand):
     """List all solution instances of a solution deployed on a target
     :example:
-        az workload-orchestration solution-instance list -g MyResourceGroup --solution-name MySolution
+        az workload-orchestration solution-instance list -g MyResourceGroup --solution-version-name MySolution
     """
 
     _aaz_info = {
@@ -56,7 +56,7 @@ class ListSolutionInstances(AAZCommand):
             ),
         )
         _args_schema.solution_name = AAZStrArg(
-            options=["--solution-template-name", "--solution"],
+            options=["--solution-version-name", "--solution"],
             help="Name of the solution",
             required=True,
             fmt=AAZStrArgFormat(

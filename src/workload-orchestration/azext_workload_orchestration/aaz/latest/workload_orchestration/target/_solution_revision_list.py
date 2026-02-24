@@ -18,7 +18,7 @@ class ListRevisions(AAZCommand):
     """List all revisions of a solution deployed on a target    
     :example:
         List all revisions of a solution on a target
-        az workload-orchestration target solution-revision-list -g MyResourceGroup --target-name MyTarget --solution-name MySolution
+        az workload-orchestration target solution-revision-list -g MyResourceGroup --target-name MyTarget --solution-version-name MySolution
     """
 
     _aaz_info = {
@@ -49,7 +49,7 @@ class ListRevisions(AAZCommand):
             required=True,
         )
         _args_schema.solution_name = AAZStrArg(
-            options=["--solution-version-id", "--solution"],
+            options=["--solution-version-name", "--solution"],
             help="Name of the solution",
             required=True,
             fmt=AAZStrArgFormat(
