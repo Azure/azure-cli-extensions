@@ -94,12 +94,13 @@ def _extract_function(func_name):
 
     src_path = os.path.join(os.path.dirname(__file__), "..", "..", "custom.py")
     src_path = os.path.normpath(src_path)
-    with open(src_path, "r") as f:
-        tree = ast.parse(f.read(), filename=src_path)
+    with open(src_path, "r", encoding="utf-8") as f:
+        source = f.read()
+    tree = ast.parse(source, filename=src_path)
 
     for node in ast.walk(tree):
         if isinstance(node, ast.FunctionDef) and node.name == func_name:
-            func_source = ast.get_source_segment(open(src_path).read(), node)
+            func_source = ast.get_source_segment(source, node)
             ns = dict(_FUNC_GLOBALS)
             exec(compile(textwrap.dedent(func_source), src_path, "exec"), ns)  # pylint: disable=exec-used
             return ns[func_name]
