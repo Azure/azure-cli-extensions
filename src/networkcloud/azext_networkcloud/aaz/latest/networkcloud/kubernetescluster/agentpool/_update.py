@@ -26,9 +26,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/kubernetesclusters/{}/agentpools/{}", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/kubernetesclusters/{}/agentpools/{}", "2026-01-01-preview"],
         ]
     }
 
@@ -232,7 +232,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-01-01-preview",
                     required=True,
                 ),
             }
@@ -312,243 +312,214 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_agent_pool_read(cls._schema_on_200)
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.etag = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.extended_location = AAZObjectType(
+                serialized_name="extendedLocation",
+            )
+            _schema_on_200.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.location = AAZStrType(
+                flags={"required": True},
+            )
+            _schema_on_200.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.properties = AAZObjectType(
+                flags={"required": True, "client_flatten": True},
+            )
+            _schema_on_200.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _schema_on_200.tags = AAZDictType()
+            _schema_on_200.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            extended_location = cls._schema_on_200.extended_location
+            extended_location.name = AAZStrType(
+                flags={"required": True},
+            )
+            extended_location.type = AAZStrType(
+                flags={"required": True},
+            )
+
+            properties = cls._schema_on_200.properties
+            properties.administrator_configuration = AAZObjectType(
+                serialized_name="administratorConfiguration",
+            )
+            properties.agent_options = AAZObjectType(
+                serialized_name="agentOptions",
+            )
+            properties.attached_network_configuration = AAZObjectType(
+                serialized_name="attachedNetworkConfiguration",
+            )
+            properties.availability_zones = AAZListType(
+                serialized_name="availabilityZones",
+            )
+            properties.count = AAZIntType(
+                flags={"required": True},
+            )
+            properties.detailed_status = AAZStrType(
+                serialized_name="detailedStatus",
+                flags={"read_only": True},
+            )
+            properties.detailed_status_message = AAZStrType(
+                serialized_name="detailedStatusMessage",
+                flags={"read_only": True},
+            )
+            properties.kubernetes_version = AAZStrType(
+                serialized_name="kubernetesVersion",
+                flags={"read_only": True},
+            )
+            properties.labels = AAZListType()
+            properties.mode = AAZStrType(
+                flags={"required": True},
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.taints = AAZListType()
+            properties.upgrade_settings = AAZObjectType(
+                serialized_name="upgradeSettings",
+            )
+            properties.vm_sku_name = AAZStrType(
+                serialized_name="vmSkuName",
+                flags={"required": True},
+            )
+
+            administrator_configuration = cls._schema_on_200.properties.administrator_configuration
+            administrator_configuration.admin_username = AAZStrType(
+                serialized_name="adminUsername",
+            )
+            administrator_configuration.ssh_public_keys = AAZListType(
+                serialized_name="sshPublicKeys",
+            )
+
+            ssh_public_keys = cls._schema_on_200.properties.administrator_configuration.ssh_public_keys
+            ssh_public_keys.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.administrator_configuration.ssh_public_keys.Element
+            _element.key_data = AAZStrType(
+                serialized_name="keyData",
+                flags={"required": True},
+            )
+
+            agent_options = cls._schema_on_200.properties.agent_options
+            agent_options.hugepages_count = AAZIntType(
+                serialized_name="hugepagesCount",
+                flags={"required": True},
+            )
+            agent_options.hugepages_size = AAZStrType(
+                serialized_name="hugepagesSize",
+            )
+
+            attached_network_configuration = cls._schema_on_200.properties.attached_network_configuration
+            attached_network_configuration.l2_networks = AAZListType(
+                serialized_name="l2Networks",
+            )
+            attached_network_configuration.l3_networks = AAZListType(
+                serialized_name="l3Networks",
+            )
+            attached_network_configuration.trunked_networks = AAZListType(
+                serialized_name="trunkedNetworks",
+            )
+
+            l2_networks = cls._schema_on_200.properties.attached_network_configuration.l2_networks
+            l2_networks.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.attached_network_configuration.l2_networks.Element
+            _element.network_id = AAZStrType(
+                serialized_name="networkId",
+                flags={"required": True},
+            )
+            _element.plugin_type = AAZStrType(
+                serialized_name="pluginType",
+            )
+
+            l3_networks = cls._schema_on_200.properties.attached_network_configuration.l3_networks
+            l3_networks.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.attached_network_configuration.l3_networks.Element
+            _element.ipam_enabled = AAZStrType(
+                serialized_name="ipamEnabled",
+            )
+            _element.network_id = AAZStrType(
+                serialized_name="networkId",
+                flags={"required": True},
+            )
+            _element.plugin_type = AAZStrType(
+                serialized_name="pluginType",
+            )
+
+            trunked_networks = cls._schema_on_200.properties.attached_network_configuration.trunked_networks
+            trunked_networks.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.attached_network_configuration.trunked_networks.Element
+            _element.network_id = AAZStrType(
+                serialized_name="networkId",
+                flags={"required": True},
+            )
+            _element.plugin_type = AAZStrType(
+                serialized_name="pluginType",
+            )
+
+            availability_zones = cls._schema_on_200.properties.availability_zones
+            availability_zones.Element = AAZStrType()
+
+            labels = cls._schema_on_200.properties.labels
+            labels.Element = AAZObjectType()
+            _UpdateHelper._build_schema_kubernetes_label_read(labels.Element)
+
+            taints = cls._schema_on_200.properties.taints
+            taints.Element = AAZObjectType()
+            _UpdateHelper._build_schema_kubernetes_label_read(taints.Element)
+
+            upgrade_settings = cls._schema_on_200.properties.upgrade_settings
+            upgrade_settings.drain_timeout = AAZIntType(
+                serialized_name="drainTimeout",
+            )
+            upgrade_settings.max_surge = AAZStrType(
+                serialized_name="maxSurge",
+            )
+            upgrade_settings.max_unavailable = AAZStrType(
+                serialized_name="maxUnavailable",
+            )
+
+            system_data = cls._schema_on_200.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
+
+            tags = cls._schema_on_200.tags
+            tags.Element = AAZStrType()
 
             return cls._schema_on_200
 
 
 class _UpdateHelper:
     """Helper class for Update"""
-
-    _schema_agent_pool_read = None
-
-    @classmethod
-    def _build_schema_agent_pool_read(cls, _schema):
-        if cls._schema_agent_pool_read is not None:
-            _schema.etag = cls._schema_agent_pool_read.etag
-            _schema.extended_location = cls._schema_agent_pool_read.extended_location
-            _schema.id = cls._schema_agent_pool_read.id
-            _schema.location = cls._schema_agent_pool_read.location
-            _schema.name = cls._schema_agent_pool_read.name
-            _schema.properties = cls._schema_agent_pool_read.properties
-            _schema.system_data = cls._schema_agent_pool_read.system_data
-            _schema.tags = cls._schema_agent_pool_read.tags
-            _schema.type = cls._schema_agent_pool_read.type
-            return
-
-        cls._schema_agent_pool_read = _schema_agent_pool_read = AAZObjectType()
-
-        agent_pool_read = _schema_agent_pool_read
-        agent_pool_read.etag = AAZStrType(
-            flags={"read_only": True},
-        )
-        agent_pool_read.extended_location = AAZObjectType(
-            serialized_name="extendedLocation",
-        )
-        agent_pool_read.id = AAZStrType(
-            flags={"read_only": True},
-        )
-        agent_pool_read.location = AAZStrType(
-            flags={"required": True},
-        )
-        agent_pool_read.name = AAZStrType(
-            flags={"read_only": True},
-        )
-        agent_pool_read.properties = AAZObjectType(
-            flags={"required": True, "client_flatten": True},
-        )
-        agent_pool_read.system_data = AAZObjectType(
-            serialized_name="systemData",
-            flags={"read_only": True},
-        )
-        agent_pool_read.tags = AAZDictType()
-        agent_pool_read.type = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        extended_location = _schema_agent_pool_read.extended_location
-        extended_location.name = AAZStrType(
-            flags={"required": True},
-        )
-        extended_location.type = AAZStrType(
-            flags={"required": True},
-        )
-
-        properties = _schema_agent_pool_read.properties
-        properties.administrator_configuration = AAZObjectType(
-            serialized_name="administratorConfiguration",
-        )
-        properties.agent_options = AAZObjectType(
-            serialized_name="agentOptions",
-        )
-        properties.attached_network_configuration = AAZObjectType(
-            serialized_name="attachedNetworkConfiguration",
-        )
-        properties.availability_zones = AAZListType(
-            serialized_name="availabilityZones",
-        )
-        properties.count = AAZIntType(
-            flags={"required": True},
-        )
-        properties.detailed_status = AAZStrType(
-            serialized_name="detailedStatus",
-            flags={"read_only": True},
-        )
-        properties.detailed_status_message = AAZStrType(
-            serialized_name="detailedStatusMessage",
-            flags={"read_only": True},
-        )
-        properties.kubernetes_version = AAZStrType(
-            serialized_name="kubernetesVersion",
-            flags={"read_only": True},
-        )
-        properties.labels = AAZListType()
-        properties.mode = AAZStrType(
-            flags={"required": True},
-        )
-        properties.provisioning_state = AAZStrType(
-            serialized_name="provisioningState",
-            flags={"read_only": True},
-        )
-        properties.taints = AAZListType()
-        properties.upgrade_settings = AAZObjectType(
-            serialized_name="upgradeSettings",
-        )
-        properties.vm_sku_name = AAZStrType(
-            serialized_name="vmSkuName",
-            flags={"required": True},
-        )
-
-        administrator_configuration = _schema_agent_pool_read.properties.administrator_configuration
-        administrator_configuration.admin_username = AAZStrType(
-            serialized_name="adminUsername",
-        )
-        administrator_configuration.ssh_public_keys = AAZListType(
-            serialized_name="sshPublicKeys",
-        )
-
-        ssh_public_keys = _schema_agent_pool_read.properties.administrator_configuration.ssh_public_keys
-        ssh_public_keys.Element = AAZObjectType()
-
-        _element = _schema_agent_pool_read.properties.administrator_configuration.ssh_public_keys.Element
-        _element.key_data = AAZStrType(
-            serialized_name="keyData",
-            flags={"required": True},
-        )
-
-        agent_options = _schema_agent_pool_read.properties.agent_options
-        agent_options.hugepages_count = AAZIntType(
-            serialized_name="hugepagesCount",
-            flags={"required": True},
-        )
-        agent_options.hugepages_size = AAZStrType(
-            serialized_name="hugepagesSize",
-        )
-
-        attached_network_configuration = _schema_agent_pool_read.properties.attached_network_configuration
-        attached_network_configuration.l2_networks = AAZListType(
-            serialized_name="l2Networks",
-        )
-        attached_network_configuration.l3_networks = AAZListType(
-            serialized_name="l3Networks",
-        )
-        attached_network_configuration.trunked_networks = AAZListType(
-            serialized_name="trunkedNetworks",
-        )
-
-        l2_networks = _schema_agent_pool_read.properties.attached_network_configuration.l2_networks
-        l2_networks.Element = AAZObjectType()
-
-        _element = _schema_agent_pool_read.properties.attached_network_configuration.l2_networks.Element
-        _element.network_id = AAZStrType(
-            serialized_name="networkId",
-            flags={"required": True},
-        )
-        _element.plugin_type = AAZStrType(
-            serialized_name="pluginType",
-        )
-
-        l3_networks = _schema_agent_pool_read.properties.attached_network_configuration.l3_networks
-        l3_networks.Element = AAZObjectType()
-
-        _element = _schema_agent_pool_read.properties.attached_network_configuration.l3_networks.Element
-        _element.ipam_enabled = AAZStrType(
-            serialized_name="ipamEnabled",
-        )
-        _element.network_id = AAZStrType(
-            serialized_name="networkId",
-            flags={"required": True},
-        )
-        _element.plugin_type = AAZStrType(
-            serialized_name="pluginType",
-        )
-
-        trunked_networks = _schema_agent_pool_read.properties.attached_network_configuration.trunked_networks
-        trunked_networks.Element = AAZObjectType()
-
-        _element = _schema_agent_pool_read.properties.attached_network_configuration.trunked_networks.Element
-        _element.network_id = AAZStrType(
-            serialized_name="networkId",
-            flags={"required": True},
-        )
-        _element.plugin_type = AAZStrType(
-            serialized_name="pluginType",
-        )
-
-        availability_zones = _schema_agent_pool_read.properties.availability_zones
-        availability_zones.Element = AAZStrType()
-
-        labels = _schema_agent_pool_read.properties.labels
-        labels.Element = AAZObjectType()
-        cls._build_schema_kubernetes_label_read(labels.Element)
-
-        taints = _schema_agent_pool_read.properties.taints
-        taints.Element = AAZObjectType()
-        cls._build_schema_kubernetes_label_read(taints.Element)
-
-        upgrade_settings = _schema_agent_pool_read.properties.upgrade_settings
-        upgrade_settings.drain_timeout = AAZIntType(
-            serialized_name="drainTimeout",
-        )
-        upgrade_settings.max_surge = AAZStrType(
-            serialized_name="maxSurge",
-        )
-        upgrade_settings.max_unavailable = AAZStrType(
-            serialized_name="maxUnavailable",
-        )
-
-        system_data = _schema_agent_pool_read.system_data
-        system_data.created_at = AAZStrType(
-            serialized_name="createdAt",
-        )
-        system_data.created_by = AAZStrType(
-            serialized_name="createdBy",
-        )
-        system_data.created_by_type = AAZStrType(
-            serialized_name="createdByType",
-        )
-        system_data.last_modified_at = AAZStrType(
-            serialized_name="lastModifiedAt",
-        )
-        system_data.last_modified_by = AAZStrType(
-            serialized_name="lastModifiedBy",
-        )
-        system_data.last_modified_by_type = AAZStrType(
-            serialized_name="lastModifiedByType",
-        )
-
-        tags = _schema_agent_pool_read.tags
-        tags.Element = AAZStrType()
-
-        _schema.etag = cls._schema_agent_pool_read.etag
-        _schema.extended_location = cls._schema_agent_pool_read.extended_location
-        _schema.id = cls._schema_agent_pool_read.id
-        _schema.location = cls._schema_agent_pool_read.location
-        _schema.name = cls._schema_agent_pool_read.name
-        _schema.properties = cls._schema_agent_pool_read.properties
-        _schema.system_data = cls._schema_agent_pool_read.system_data
-        _schema.tags = cls._schema_agent_pool_read.tags
-        _schema.type = cls._schema_agent_pool_read.type
 
     _schema_kubernetes_label_read = None
 

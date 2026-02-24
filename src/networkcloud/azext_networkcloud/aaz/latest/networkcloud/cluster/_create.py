@@ -29,9 +29,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}", "2026-01-01-preview"],
         ]
     }
 
@@ -85,6 +85,12 @@ class Create(AAZCommand):
             options=["--identity"],
             arg_group="ClusterParameters",
             help="The identity for the resource.",
+        )
+        _args_schema.kind = AAZStrArg(
+            options=["--kind"],
+            arg_group="ClusterParameters",
+            help="The type (kind) of the cluster. When specified, the value must exactly match the kind configured on the cluster manager that manages the cluster. If omitted, the service will default the value to the kind value of the cluster manager.",
+            enum={"AzureLocal": "AzureLocal", "Nexus": "Nexus"},
         )
         _args_schema.location = AAZResourceLocationArg(
             arg_group="ClusterParameters",
@@ -356,6 +362,12 @@ class Create(AAZCommand):
         )
 
         runtime_protection = cls._args_schema.runtime_protection
+        runtime_protection.definition_update_mode = AAZStrArg(
+            options=["definition-update-mode"],
+            help="The definition update mode for runtime protection.",
+            default="None",
+            enum={"Automatic": "Automatic", "None": "None"},
+        )
         runtime_protection.enforcement_level = AAZStrArg(
             options=["enforcement-level"],
             help="The mode of operation for runtime protection.",
@@ -696,7 +708,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-01-01-preview",
                     required=True,
                 ),
             }
@@ -729,6 +741,7 @@ class Create(AAZCommand):
             )
             _builder.set_prop("extendedLocation", AAZObjectType, ".extended_location", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("identity", AAZIdentityObjectType, ".identity")
+            _builder.set_prop("kind", AAZStrType, ".kind")
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
@@ -831,6 +844,7 @@ class Create(AAZCommand):
 
             runtime_protection_configuration = _builder.get(".properties.runtimeProtectionConfiguration")
             if runtime_protection_configuration is not None:
+                runtime_protection_configuration.set_prop("definitionUpdateMode", AAZStrType, ".definition_update_mode")
                 runtime_protection_configuration.set_prop("enforcementLevel", AAZStrType, ".enforcement_level")
 
             secret_archive_settings = _builder.get(".properties.secretArchiveSettings")
@@ -891,6 +905,7 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200_201.identity = AAZIdentityObjectType()
+            _schema_on_200_201.kind = AAZStrType()
             _schema_on_200_201.location = AAZStrType(
                 flags={"required": True},
             )
@@ -1236,6 +1251,9 @@ class Create(AAZCommand):
             managed_resource_group_configuration.name = AAZStrType()
 
             runtime_protection_configuration = cls._schema_on_200_201.properties.runtime_protection_configuration
+            runtime_protection_configuration.definition_update_mode = AAZStrType(
+                serialized_name="definitionUpdateMode",
+            )
             runtime_protection_configuration.enforcement_level = AAZStrType(
                 serialized_name="enforcementLevel",
             )

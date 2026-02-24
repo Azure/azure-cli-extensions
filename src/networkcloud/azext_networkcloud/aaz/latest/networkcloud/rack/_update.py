@@ -23,9 +23,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/racks/{}", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/racks/{}", "2026-01-01-preview"],
         ]
     }
 
@@ -182,7 +182,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-01-01-preview",
                     required=True,
                 ),
             }
@@ -243,135 +243,106 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_rack_read(cls._schema_on_200)
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.etag = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.extended_location = AAZObjectType(
+                serialized_name="extendedLocation",
+                flags={"required": True},
+            )
+            _schema_on_200.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.location = AAZStrType(
+                flags={"required": True},
+            )
+            _schema_on_200.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.properties = AAZObjectType(
+                flags={"required": True, "client_flatten": True},
+            )
+            _schema_on_200.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _schema_on_200.tags = AAZDictType()
+            _schema_on_200.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            extended_location = cls._schema_on_200.extended_location
+            extended_location.name = AAZStrType(
+                flags={"required": True},
+            )
+            extended_location.type = AAZStrType(
+                flags={"required": True},
+            )
+
+            properties = cls._schema_on_200.properties
+            properties.availability_zone = AAZStrType(
+                serialized_name="availabilityZone",
+                flags={"required": True},
+            )
+            properties.cluster_id = AAZStrType(
+                serialized_name="clusterId",
+                flags={"read_only": True},
+            )
+            properties.detailed_status = AAZStrType(
+                serialized_name="detailedStatus",
+                flags={"read_only": True},
+            )
+            properties.detailed_status_message = AAZStrType(
+                serialized_name="detailedStatusMessage",
+                flags={"read_only": True},
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.rack_location = AAZStrType(
+                serialized_name="rackLocation",
+                flags={"required": True},
+            )
+            properties.rack_serial_number = AAZStrType(
+                serialized_name="rackSerialNumber",
+                flags={"required": True},
+            )
+            properties.rack_sku_id = AAZStrType(
+                serialized_name="rackSkuId",
+                flags={"required": True},
+            )
+
+            system_data = cls._schema_on_200.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
+
+            tags = cls._schema_on_200.tags
+            tags.Element = AAZStrType()
 
             return cls._schema_on_200
 
 
 class _UpdateHelper:
     """Helper class for Update"""
-
-    _schema_rack_read = None
-
-    @classmethod
-    def _build_schema_rack_read(cls, _schema):
-        if cls._schema_rack_read is not None:
-            _schema.etag = cls._schema_rack_read.etag
-            _schema.extended_location = cls._schema_rack_read.extended_location
-            _schema.id = cls._schema_rack_read.id
-            _schema.location = cls._schema_rack_read.location
-            _schema.name = cls._schema_rack_read.name
-            _schema.properties = cls._schema_rack_read.properties
-            _schema.system_data = cls._schema_rack_read.system_data
-            _schema.tags = cls._schema_rack_read.tags
-            _schema.type = cls._schema_rack_read.type
-            return
-
-        cls._schema_rack_read = _schema_rack_read = AAZObjectType()
-
-        rack_read = _schema_rack_read
-        rack_read.etag = AAZStrType(
-            flags={"read_only": True},
-        )
-        rack_read.extended_location = AAZObjectType(
-            serialized_name="extendedLocation",
-            flags={"required": True},
-        )
-        rack_read.id = AAZStrType(
-            flags={"read_only": True},
-        )
-        rack_read.location = AAZStrType(
-            flags={"required": True},
-        )
-        rack_read.name = AAZStrType(
-            flags={"read_only": True},
-        )
-        rack_read.properties = AAZObjectType(
-            flags={"required": True, "client_flatten": True},
-        )
-        rack_read.system_data = AAZObjectType(
-            serialized_name="systemData",
-            flags={"read_only": True},
-        )
-        rack_read.tags = AAZDictType()
-        rack_read.type = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        extended_location = _schema_rack_read.extended_location
-        extended_location.name = AAZStrType(
-            flags={"required": True},
-        )
-        extended_location.type = AAZStrType(
-            flags={"required": True},
-        )
-
-        properties = _schema_rack_read.properties
-        properties.availability_zone = AAZStrType(
-            serialized_name="availabilityZone",
-            flags={"required": True},
-        )
-        properties.cluster_id = AAZStrType(
-            serialized_name="clusterId",
-            flags={"read_only": True},
-        )
-        properties.detailed_status = AAZStrType(
-            serialized_name="detailedStatus",
-            flags={"read_only": True},
-        )
-        properties.detailed_status_message = AAZStrType(
-            serialized_name="detailedStatusMessage",
-            flags={"read_only": True},
-        )
-        properties.provisioning_state = AAZStrType(
-            serialized_name="provisioningState",
-            flags={"read_only": True},
-        )
-        properties.rack_location = AAZStrType(
-            serialized_name="rackLocation",
-            flags={"required": True},
-        )
-        properties.rack_serial_number = AAZStrType(
-            serialized_name="rackSerialNumber",
-            flags={"required": True},
-        )
-        properties.rack_sku_id = AAZStrType(
-            serialized_name="rackSkuId",
-            flags={"required": True},
-        )
-
-        system_data = _schema_rack_read.system_data
-        system_data.created_at = AAZStrType(
-            serialized_name="createdAt",
-        )
-        system_data.created_by = AAZStrType(
-            serialized_name="createdBy",
-        )
-        system_data.created_by_type = AAZStrType(
-            serialized_name="createdByType",
-        )
-        system_data.last_modified_at = AAZStrType(
-            serialized_name="lastModifiedAt",
-        )
-        system_data.last_modified_by = AAZStrType(
-            serialized_name="lastModifiedBy",
-        )
-        system_data.last_modified_by_type = AAZStrType(
-            serialized_name="lastModifiedByType",
-        )
-
-        tags = _schema_rack_read.tags
-        tags.Element = AAZStrType()
-
-        _schema.etag = cls._schema_rack_read.etag
-        _schema.extended_location = cls._schema_rack_read.extended_location
-        _schema.id = cls._schema_rack_read.id
-        _schema.location = cls._schema_rack_read.location
-        _schema.name = cls._schema_rack_read.name
-        _schema.properties = cls._schema_rack_read.properties
-        _schema.system_data = cls._schema_rack_read.system_data
-        _schema.tags = cls._schema_rack_read.tags
-        _schema.type = cls._schema_rack_read.type
 
 
 __all__ = ["Update"]

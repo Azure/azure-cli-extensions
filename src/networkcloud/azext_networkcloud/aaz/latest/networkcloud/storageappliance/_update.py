@@ -23,9 +23,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/storageappliances/{}", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/storageappliances/{}", "2026-01-01-preview"],
         ]
     }
 
@@ -170,7 +170,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-01-01-preview",
                     required=True,
                 ),
             }
@@ -230,234 +230,216 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_storage_appliance_read(cls._schema_on_200)
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.etag = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.extended_location = AAZObjectType(
+                serialized_name="extendedLocation",
+                flags={"required": True},
+            )
+            _schema_on_200.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.location = AAZStrType(
+                flags={"required": True},
+            )
+            _schema_on_200.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.properties = AAZObjectType(
+                flags={"required": True, "client_flatten": True},
+            )
+            _schema_on_200.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _schema_on_200.tags = AAZDictType()
+            _schema_on_200.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            extended_location = cls._schema_on_200.extended_location
+            extended_location.name = AAZStrType(
+                flags={"required": True},
+            )
+            extended_location.type = AAZStrType(
+                flags={"required": True},
+            )
+
+            properties = cls._schema_on_200.properties
+            properties.administrator_credentials = AAZObjectType(
+                serialized_name="administratorCredentials",
+                flags={"required": True},
+            )
+            properties.ca_certificate = AAZObjectType(
+                serialized_name="caCertificate",
+                flags={"read_only": True},
+            )
+            properties.capacity = AAZIntType(
+                flags={"read_only": True},
+            )
+            properties.capacity_used = AAZIntType(
+                serialized_name="capacityUsed",
+                flags={"read_only": True},
+            )
+            properties.cluster_id = AAZStrType(
+                serialized_name="clusterId",
+                flags={"read_only": True},
+            )
+            properties.detailed_status = AAZStrType(
+                serialized_name="detailedStatus",
+                flags={"read_only": True},
+            )
+            properties.detailed_status_message = AAZStrType(
+                serialized_name="detailedStatusMessage",
+                flags={"read_only": True},
+            )
+            properties.expansion_shelves = AAZListType(
+                serialized_name="expansionShelves",
+                flags={"read_only": True},
+            )
+            properties.management_ipv4_address = AAZStrType(
+                serialized_name="managementIpv4Address",
+                flags={"read_only": True},
+            )
+            properties.manufacturer = AAZStrType(
+                flags={"read_only": True},
+            )
+            properties.model = AAZStrType(
+                flags={"read_only": True},
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.rack_id = AAZStrType(
+                serialized_name="rackId",
+                flags={"required": True},
+            )
+            properties.rack_slot = AAZIntType(
+                serialized_name="rackSlot",
+                flags={"required": True},
+            )
+            properties.remote_vendor_management_feature = AAZStrType(
+                serialized_name="remoteVendorManagementFeature",
+                flags={"read_only": True},
+            )
+            properties.remote_vendor_management_status = AAZStrType(
+                serialized_name="remoteVendorManagementStatus",
+                flags={"read_only": True},
+            )
+            properties.secret_rotation_status = AAZListType(
+                serialized_name="secretRotationStatus",
+                flags={"read_only": True},
+            )
+            properties.serial_number = AAZStrType(
+                serialized_name="serialNumber",
+                flags={"required": True},
+            )
+            properties.storage_appliance_sku_id = AAZStrType(
+                serialized_name="storageApplianceSkuId",
+                flags={"required": True},
+            )
+            properties.version = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            administrator_credentials = cls._schema_on_200.properties.administrator_credentials
+            administrator_credentials.password = AAZStrType(
+                flags={"secret": True},
+            )
+            administrator_credentials.username = AAZStrType(
+                flags={"required": True},
+            )
+
+            ca_certificate = cls._schema_on_200.properties.ca_certificate
+            ca_certificate.hash = AAZStrType(
+                flags={"read_only": True},
+            )
+            ca_certificate.value = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            expansion_shelves = cls._schema_on_200.properties.expansion_shelves
+            expansion_shelves.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.expansion_shelves.Element
+            _element.model = AAZStrType()
+            _element.version = AAZStrType()
+
+            secret_rotation_status = cls._schema_on_200.properties.secret_rotation_status
+            secret_rotation_status.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.secret_rotation_status.Element
+            _element.expire_period_days = AAZIntType(
+                serialized_name="expirePeriodDays",
+                flags={"read_only": True},
+            )
+            _element.last_rotation_time = AAZStrType(
+                serialized_name="lastRotationTime",
+                flags={"read_only": True},
+            )
+            _element.rotation_period_days = AAZIntType(
+                serialized_name="rotationPeriodDays",
+                flags={"read_only": True},
+            )
+            _element.secret_archive_reference = AAZObjectType(
+                serialized_name="secretArchiveReference",
+                flags={"read_only": True},
+            )
+            _element.secret_type = AAZStrType(
+                serialized_name="secretType",
+                flags={"read_only": True},
+            )
+
+            secret_archive_reference = cls._schema_on_200.properties.secret_rotation_status.Element.secret_archive_reference
+            secret_archive_reference.key_vault_id = AAZStrType(
+                serialized_name="keyVaultId",
+                flags={"read_only": True},
+            )
+            secret_archive_reference.key_vault_uri = AAZStrType(
+                serialized_name="keyVaultUri",
+                flags={"read_only": True},
+            )
+            secret_archive_reference.secret_name = AAZStrType(
+                serialized_name="secretName",
+                flags={"read_only": True},
+            )
+            secret_archive_reference.secret_version = AAZStrType(
+                serialized_name="secretVersion",
+                flags={"read_only": True},
+            )
+
+            system_data = cls._schema_on_200.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
+
+            tags = cls._schema_on_200.tags
+            tags.Element = AAZStrType()
 
             return cls._schema_on_200
 
 
 class _UpdateHelper:
     """Helper class for Update"""
-
-    _schema_storage_appliance_read = None
-
-    @classmethod
-    def _build_schema_storage_appliance_read(cls, _schema):
-        if cls._schema_storage_appliance_read is not None:
-            _schema.etag = cls._schema_storage_appliance_read.etag
-            _schema.extended_location = cls._schema_storage_appliance_read.extended_location
-            _schema.id = cls._schema_storage_appliance_read.id
-            _schema.location = cls._schema_storage_appliance_read.location
-            _schema.name = cls._schema_storage_appliance_read.name
-            _schema.properties = cls._schema_storage_appliance_read.properties
-            _schema.system_data = cls._schema_storage_appliance_read.system_data
-            _schema.tags = cls._schema_storage_appliance_read.tags
-            _schema.type = cls._schema_storage_appliance_read.type
-            return
-
-        cls._schema_storage_appliance_read = _schema_storage_appliance_read = AAZObjectType()
-
-        storage_appliance_read = _schema_storage_appliance_read
-        storage_appliance_read.etag = AAZStrType(
-            flags={"read_only": True},
-        )
-        storage_appliance_read.extended_location = AAZObjectType(
-            serialized_name="extendedLocation",
-            flags={"required": True},
-        )
-        storage_appliance_read.id = AAZStrType(
-            flags={"read_only": True},
-        )
-        storage_appliance_read.location = AAZStrType(
-            flags={"required": True},
-        )
-        storage_appliance_read.name = AAZStrType(
-            flags={"read_only": True},
-        )
-        storage_appliance_read.properties = AAZObjectType(
-            flags={"required": True, "client_flatten": True},
-        )
-        storage_appliance_read.system_data = AAZObjectType(
-            serialized_name="systemData",
-            flags={"read_only": True},
-        )
-        storage_appliance_read.tags = AAZDictType()
-        storage_appliance_read.type = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        extended_location = _schema_storage_appliance_read.extended_location
-        extended_location.name = AAZStrType(
-            flags={"required": True},
-        )
-        extended_location.type = AAZStrType(
-            flags={"required": True},
-        )
-
-        properties = _schema_storage_appliance_read.properties
-        properties.administrator_credentials = AAZObjectType(
-            serialized_name="administratorCredentials",
-            flags={"required": True},
-        )
-        properties.ca_certificate = AAZObjectType(
-            serialized_name="caCertificate",
-            flags={"read_only": True},
-        )
-        properties.capacity = AAZIntType(
-            flags={"read_only": True},
-        )
-        properties.capacity_used = AAZIntType(
-            serialized_name="capacityUsed",
-            flags={"read_only": True},
-        )
-        properties.cluster_id = AAZStrType(
-            serialized_name="clusterId",
-            flags={"read_only": True},
-        )
-        properties.detailed_status = AAZStrType(
-            serialized_name="detailedStatus",
-            flags={"read_only": True},
-        )
-        properties.detailed_status_message = AAZStrType(
-            serialized_name="detailedStatusMessage",
-            flags={"read_only": True},
-        )
-        properties.management_ipv4_address = AAZStrType(
-            serialized_name="managementIpv4Address",
-            flags={"read_only": True},
-        )
-        properties.manufacturer = AAZStrType(
-            flags={"read_only": True},
-        )
-        properties.model = AAZStrType(
-            flags={"read_only": True},
-        )
-        properties.provisioning_state = AAZStrType(
-            serialized_name="provisioningState",
-            flags={"read_only": True},
-        )
-        properties.rack_id = AAZStrType(
-            serialized_name="rackId",
-            flags={"required": True},
-        )
-        properties.rack_slot = AAZIntType(
-            serialized_name="rackSlot",
-            flags={"required": True},
-        )
-        properties.remote_vendor_management_feature = AAZStrType(
-            serialized_name="remoteVendorManagementFeature",
-            flags={"read_only": True},
-        )
-        properties.remote_vendor_management_status = AAZStrType(
-            serialized_name="remoteVendorManagementStatus",
-            flags={"read_only": True},
-        )
-        properties.secret_rotation_status = AAZListType(
-            serialized_name="secretRotationStatus",
-            flags={"read_only": True},
-        )
-        properties.serial_number = AAZStrType(
-            serialized_name="serialNumber",
-            flags={"required": True},
-        )
-        properties.storage_appliance_sku_id = AAZStrType(
-            serialized_name="storageApplianceSkuId",
-            flags={"required": True},
-        )
-        properties.version = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        administrator_credentials = _schema_storage_appliance_read.properties.administrator_credentials
-        administrator_credentials.password = AAZStrType(
-            flags={"secret": True},
-        )
-        administrator_credentials.username = AAZStrType(
-            flags={"required": True},
-        )
-
-        ca_certificate = _schema_storage_appliance_read.properties.ca_certificate
-        ca_certificate.hash = AAZStrType(
-            flags={"read_only": True},
-        )
-        ca_certificate.value = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        secret_rotation_status = _schema_storage_appliance_read.properties.secret_rotation_status
-        secret_rotation_status.Element = AAZObjectType()
-
-        _element = _schema_storage_appliance_read.properties.secret_rotation_status.Element
-        _element.expire_period_days = AAZIntType(
-            serialized_name="expirePeriodDays",
-            flags={"read_only": True},
-        )
-        _element.last_rotation_time = AAZStrType(
-            serialized_name="lastRotationTime",
-            flags={"read_only": True},
-        )
-        _element.rotation_period_days = AAZIntType(
-            serialized_name="rotationPeriodDays",
-            flags={"read_only": True},
-        )
-        _element.secret_archive_reference = AAZObjectType(
-            serialized_name="secretArchiveReference",
-            flags={"read_only": True},
-        )
-        _element.secret_type = AAZStrType(
-            serialized_name="secretType",
-            flags={"read_only": True},
-        )
-
-        secret_archive_reference = _schema_storage_appliance_read.properties.secret_rotation_status.Element.secret_archive_reference
-        secret_archive_reference.key_vault_id = AAZStrType(
-            serialized_name="keyVaultId",
-            flags={"read_only": True},
-        )
-        secret_archive_reference.key_vault_uri = AAZStrType(
-            serialized_name="keyVaultUri",
-            flags={"read_only": True},
-        )
-        secret_archive_reference.secret_name = AAZStrType(
-            serialized_name="secretName",
-            flags={"read_only": True},
-        )
-        secret_archive_reference.secret_version = AAZStrType(
-            serialized_name="secretVersion",
-            flags={"read_only": True},
-        )
-
-        system_data = _schema_storage_appliance_read.system_data
-        system_data.created_at = AAZStrType(
-            serialized_name="createdAt",
-        )
-        system_data.created_by = AAZStrType(
-            serialized_name="createdBy",
-        )
-        system_data.created_by_type = AAZStrType(
-            serialized_name="createdByType",
-        )
-        system_data.last_modified_at = AAZStrType(
-            serialized_name="lastModifiedAt",
-        )
-        system_data.last_modified_by = AAZStrType(
-            serialized_name="lastModifiedBy",
-        )
-        system_data.last_modified_by_type = AAZStrType(
-            serialized_name="lastModifiedByType",
-        )
-
-        tags = _schema_storage_appliance_read.tags
-        tags.Element = AAZStrType()
-
-        _schema.etag = cls._schema_storage_appliance_read.etag
-        _schema.extended_location = cls._schema_storage_appliance_read.extended_location
-        _schema.id = cls._schema_storage_appliance_read.id
-        _schema.location = cls._schema_storage_appliance_read.location
-        _schema.name = cls._schema_storage_appliance_read.name
-        _schema.properties = cls._schema_storage_appliance_read.properties
-        _schema.system_data = cls._schema_storage_appliance_read.system_data
-        _schema.tags = cls._schema_storage_appliance_read.tags
-        _schema.type = cls._schema_storage_appliance_read.type
 
 
 __all__ = ["Update"]

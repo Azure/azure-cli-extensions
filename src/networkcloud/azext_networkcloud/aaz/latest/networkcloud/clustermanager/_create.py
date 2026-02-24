@@ -32,9 +32,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clustermanagers/{}", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clustermanagers/{}", "2026-01-01-preview"],
         ]
     }
 
@@ -82,6 +82,12 @@ class Create(AAZCommand):
             options=["--identity"],
             arg_group="ClusterManagerParameters",
             help="The identity of the cluster manager.",
+        )
+        _args_schema.kind = AAZStrArg(
+            options=["--kind"],
+            arg_group="ClusterManagerParameters",
+            help="The kind of the cluster manager.",
+            enum={"AzureLocal": "AzureLocal", "Nexus": "Nexus"},
         )
         _args_schema.location = AAZResourceLocationArg(
             arg_group="ClusterManagerParameters",
@@ -259,7 +265,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-01-01-preview",
                     required=True,
                 ),
             }
@@ -291,6 +297,7 @@ class Create(AAZCommand):
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("identity", AAZIdentityObjectType, ".identity")
+            _builder.set_prop("kind", AAZStrType, ".kind")
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
@@ -358,6 +365,7 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200_201.identity = AAZIdentityObjectType()
+            _schema_on_200_201.kind = AAZStrType()
             _schema_on_200_201.location = AAZStrType(
                 flags={"required": True},
             )
@@ -441,6 +449,10 @@ class Create(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.relay_configuration = AAZObjectType(
+                serialized_name="relayConfiguration",
+                flags={"read_only": True},
+            )
             properties.vm_size = AAZStrType(
                 serialized_name="vmSize",
             )
@@ -471,6 +483,11 @@ class Create(AAZCommand):
             )
             manager_extended_location.type = AAZStrType(
                 flags={"required": True},
+            )
+
+            relay_configuration = cls._schema_on_200_201.properties.relay_configuration
+            relay_configuration.relay_namespace_id = AAZStrType(
+                serialized_name="relayNamespaceId",
             )
 
             system_data = cls._schema_on_200_201.system_data
