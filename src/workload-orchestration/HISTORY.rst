@@ -6,6 +6,8 @@ Release History
 ++++++
 * Added new target solution management command:
   * ``az workload-orchestration target unstage`` - Unstage a solution version from a target
+* Renamed ``--solution-template-name`` to ``--solution-version-id`` in ``az workload-orchestration target solution-revision-list`` for clarity
+* Added double confirmation before ``az workload-orchestration target remove-revision`` to prevent accidental deletions
 
 5.0.0
 ++++++
