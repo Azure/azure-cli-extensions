@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.8.0
++++++
+* Ensure that fragments are attached to the correct manifest for a multiarch image.
+* Fixed a bug in `fragment attach`.
+
 1.7.2
 ++++++
 * Fix ORAS fragment discovery for ORAS CLI >= 1.3.0
