@@ -286,6 +286,23 @@ def call_scenario10(test):
     cleanup_scenario10(test)
 
 
+def setup_scenario11(test):
+    """Env setup_scenario11"""
+    pass
+
+
+def cleanup_scenario11(test):
+    """Env cleanup_scenario11"""
+    pass
+
+
+def call_scenario11(test):
+    """# Testcase: scenario11 inspect action"""
+    setup_scenario11(test)
+    step_update_inspect_secnario1(test, checks=[])
+    cleanup_scenario10(test)
+
+
 def step_create_scenario1(test, checks=None):
     """cluster create operation"""
     if checks is None:
@@ -620,6 +637,18 @@ def step_update_vulnerability_scanning_settings_scenario2(test, checks=None):
     )
 
 
+def step_update_inspect_secnario1(test, checks=None):
+    """ClusterManager inspect operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud cluster inspect --name {nameClusterUpdate} "
+        "--resource-group {rg} "
+        "--additional-actions {additionalActions} "
+        "--filter-devices {filterDevices}"
+    )
+
+
 class ClusterScenarioTest(ScenarioTest):
     """Cluster scenario test"""
 
@@ -716,6 +745,8 @@ class ClusterScenarioTest(ScenarioTest):
                 "computeRackDefinitions": os.environ.get("AAZ_EXT_DIR", ".")
                 + CONFIG.get("CLUSTER", "compute_rack_definitions_directory"),
                 "clusterTypeMultiRack": CONFIG.get("CLUSTER", "cluster_type_multirack"),
+                "additionalActions": CONFIG.get("CLUSTER", "inspect_actions"),
+                "filterDevices": CONFIG.get("CLUSTER", "filter_devices"),
             }
         )
 
@@ -821,3 +852,7 @@ class ClusterScenarioTest(ScenarioTest):
     def test_cluster_scenario10(self):
         """test scenario for Cluster create and update operations with storage overrides"""
         call_scenario10(self)
+
+    def test_cluster_scenario11(self):
+        """test scenario for Cluster Inspect"""
+        call_scenario11(self)
