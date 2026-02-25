@@ -5,7 +5,6 @@
 
 import json
 import os
-import platform
 import re
 import subprocess
 from tempfile import mkdtemp
@@ -19,8 +18,6 @@ from azext_confcom.template_util import (
     extract_containers_and_fragments_from_text, extract_svn_from_text)
 from knack.log import get_logger
 
-host_os = platform.system()
-machine = platform.machine()
 SHA256_PREFIX = "@sha256:"
 FRAGMENT_DISCOVERY_PLATFORM = "linux/amd64"
 
