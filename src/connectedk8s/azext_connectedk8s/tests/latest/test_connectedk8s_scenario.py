@@ -68,24 +68,29 @@ def _get_test_data_file(filename):
 def install_helm_client():
     # Fetch system related info
     operating_system = platform.system().lower()
+    machine_type = platform.machine()
+    if machine_type.lower() in ("aarch64", "arm64"):
+        arch = "arm64"
+    else:
+        arch = "amd64"
 
     # Set helm binary download & install locations
     if operating_system == "windows":
         download_location_string = f".azure\\helm\\{consts.HELM_VERSION}"
-        download_file_name = f"helm-{consts.HELM_VERSION}-{operating_system}-amd64.zip"
+        download_file_name = f"helm-{consts.HELM_VERSION}-{operating_system}-{arch}.zip"
         install_location_string = (
-            f".azure\\helm\\{consts.HELM_VERSION}\\{operating_system}-amd64\\helm.exe"
+            f".azure\\helm\\{consts.HELM_VERSION}\\{operating_system}-{arch}\\helm.exe"
         )
-        artifactTag = f"helm-{consts.HELM_VERSION}-{operating_system}-amd64"
+        artifactTag = f"helm-{consts.HELM_VERSION}-{operating_system}-{arch}"
     elif operating_system == "linux" or operating_system == "darwin":
         download_location_string = f".azure/helm/{consts.HELM_VERSION}"
         download_file_name = (
-            f"helm-{consts.HELM_VERSION}-{operating_system}-amd64.tar.gz"
+            f"helm-{consts.HELM_VERSION}-{operating_system}-{arch}.tar.gz"
         )
         install_location_string = (
-            f".azure/helm/{consts.HELM_VERSION}/{operating_system}-amd64/helm"
+            f".azure/helm/{consts.HELM_VERSION}/{operating_system}-{arch}/helm"
         )
-        artifactTag = f"helm-{consts.HELM_VERSION}-{operating_system}-amd64"
+        artifactTag = f"helm-{consts.HELM_VERSION}-{operating_system}-{arch}"
     else:
         logger.warning(
             f"The {operating_system} platform is not currently supported for installing helm client."

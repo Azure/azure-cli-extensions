@@ -6,6 +6,7 @@
 import os
 from typing import no_type_check
 import unittest
+from unittest.mock import patch
 
 from .MockClasses import MockCLIContext, MockCommand
 from azext_k8s_extension.custom import is_dogfood_cluster
