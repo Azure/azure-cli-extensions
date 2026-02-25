@@ -5,6 +5,12 @@ Release History
 upcoming
 ++++++
 
+1.3.0b3
+++++++
+* `az containerapp patch list`: Add input validation for container image names
+* `az containerapp patch apply`: Add input validation for container image names
+* `az containerapp patch interactive`: Add input validation for container image names
+
 1.3.0b2
 ++++++
 * 'az containerapp function invocations': Update application insights query 
