@@ -194,13 +194,12 @@ def containers_from_vn2(
     for template_container, template_doc in template_containers:
         image_container_def = container_from_image(template_container.get("image"), platform="vn2")
 
-        has_command = "command" in template_container or "args" in template_container
+        cmd = template_container.get("command", []) + template_container.get("args", [])
         template_container_def = {
             "name": template_container.get("name"),
-            "command": (
-                (template_container.get("command", []) + template_container.get("args", []))
-                if has_command else None
-            ),
+            **({
+                "command": cmd,
+            } if cmd else {}),
             "env_rules": (
                 [
                     {

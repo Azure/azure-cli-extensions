@@ -25,10 +25,7 @@ def merge_containers(*args) -> dict:
                 existing = merged_container.get(key) or []
                 merged_container[key] = list(existing) + list(value or [])
             else:
-                # Don't let undefined template values overwrite
-                # existing image defaults
-                if value is not None:
-                    merged_container[key] = value
+                merged_container[key] = value
 
     return merged_container
 
