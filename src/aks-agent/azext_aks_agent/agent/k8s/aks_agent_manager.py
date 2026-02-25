@@ -14,6 +14,7 @@ from typing import Dict, List, Optional, Tuple, Union
 from azext_aks_agent._consts import (
     AGENT_LABEL_SELECTOR,
     AGENT_NAMESPACE,
+    AKS_AGENT_VERSION,
     AKS_MCP_LABEL_SELECTOR,
     CONFIG_DIR,
 )
@@ -128,7 +129,7 @@ class AKSAgentManager(AKSAgentManagerLLMConfigBase):  # pylint: disable=too-many
         self.subscription_id: str = subscription_id
 
         self.chart_repo = "oci://mcr.microsoft.com/aks/aks-agent-chart/aks-agent"
-        self.chart_version = "0.3.0"
+        self.chart_version = AKS_AGENT_VERSION
 
         # credentials for aks-mcp
         # Default empty customized cluster role name means using default cluster role
@@ -973,7 +974,7 @@ class AKSAgentManagerClient(AKSAgentManagerLLMConfigBase):  # pylint: disable=to
         self.config_dir = self.base_config_dir / subscription_id / resource_group_name / cluster_name
 
         # Docker image for client mode execution
-        self.docker_image = "mcr.microsoft.com/aks/aks-agent:v0.3.0-client"
+        self.docker_image = f"mcr.microsoft.com/aks/aks-agent:v{AKS_AGENT_VERSION}-client"
 
         self.llm_config_manager = LLMConfigManagerLocal(
             subscription_id=subscription_id,
