@@ -56,7 +56,8 @@ datasource_map = {
     "AzureDatabaseForPostgreSQL": "Microsoft.DBforPostgreSQL/servers/databases",
     "AzureKubernetesService": "Microsoft.ContainerService/managedClusters",
     "AzureDatabaseForPostgreSQLFlexibleServer": "Microsoft.DBforPostgreSQL/flexibleServers",
-    "AzureDatabaseForMySQL": "Microsoft.DBforMySQL/flexibleServers"
+    "AzureDatabaseForMySQL": "Microsoft.DBforMySQL/flexibleServers",
+    "AzureCosmosDB": "Microsoft.DocumentDB/databaseAccounts"
 }
 
 # This is ideally temporary, as Backup Vault contains secondary region information. But in some cases

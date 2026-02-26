@@ -1,0 +1,464 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection recovery-point list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --backup-instance-name -g --vault-name
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmos-bugbash-rg13/providers/Microsoft.DataProtection/backupVaults/shasha-cosmosvault/backupInstances/cosmos-nosql-contin-04630249-cosmos-nosql-contin-04630249-faec6818-0720-11ec-bd1b-c8f750f92764/recoveryPoints?$filter=&api-version=2025-07-01
+  response:
+    body:
+      string: '{"value":[{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"4c5b2bdf58a54ece9cc20117888521f1","recoveryPointTime":"2026-02-10T10:26:20.0000000Z","recoveryPointType":"Full","friendlyName":"4c5b2bdf58a54ece9cc20117888521f1","recoveryPointDataStoresDetails":[{"id":"e78ef23b-5b7e-4675-b681-df1bc485dbfe","type":"VaultStore","creationTime":"2026-02-10T10:31:26.6915225Z","expiryTime":null,"metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"default","retentionTagVersion":"639063143530565243","policyName":"cosmosdbpolicy","policyVersion":null,"expiryTime":null,"recoveryPointState":"Completed"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmos-bugbash-rg13/providers/Microsoft.DataProtection/backupVaults/shasha-cosmosvault/backupInstances/cosmos-nosql-contin-04630249-cosmos-nosql-contin-04630249-faec6818-0720-11ec-bd1b-c8f750f92764/recoveryPoints/4c5b2bdf58a54ece9cc20117888521f1","name":"4c5b2bdf58a54ece9cc20117888521f1","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"},{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"5e6a0eac5e3a46d18db80d4bcb7e52b2","recoveryPointTime":"2026-02-10T10:16:32.0000000Z","recoveryPointType":"Full","friendlyName":"5e6a0eac5e3a46d18db80d4bcb7e52b2","recoveryPointDataStoresDetails":[{"id":"e78ef23b-5b7e-4675-b681-df1bc485dbfe","type":"VaultStore","creationTime":"2026-02-10T10:21:35.9376063Z","expiryTime":null,"metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"default","retentionTagVersion":"639063143530565243","policyName":"cosmosdbpolicy","policyVersion":null,"expiryTime":null,"recoveryPointState":"Completed"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmos-bugbash-rg13/providers/Microsoft.DataProtection/backupVaults/shasha-cosmosvault/backupInstances/cosmos-nosql-contin-04630249-cosmos-nosql-contin-04630249-faec6818-0720-11ec-bd1b-c8f750f92764/recoveryPoints/5e6a0eac5e3a46d18db80d4bcb7e52b2","name":"5e6a0eac5e3a46d18db80d4bcb7e52b2","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"},{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"7ba2b3b58edf4718b2beddd45f24ed9d","recoveryPointTime":"2026-02-10T10:08:00.0000000Z","recoveryPointType":"Full","friendlyName":"7ba2b3b58edf4718b2beddd45f24ed9d","recoveryPointDataStoresDetails":[{"id":"e78ef23b-5b7e-4675-b681-df1bc485dbfe","type":"VaultStore","creationTime":"2026-02-10T10:12:03.7723410Z","expiryTime":null,"metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"default","retentionTagVersion":"639063143530565243","policyName":"cosmosdbpolicy","policyVersion":null,"expiryTime":null,"recoveryPointState":"Completed"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmos-bugbash-rg13/providers/Microsoft.DataProtection/backupVaults/shasha-cosmosvault/backupInstances/cosmos-nosql-contin-04630249-cosmos-nosql-contin-04630249-faec6818-0720-11ec-bd1b-c8f750f92764/recoveryPoints/7ba2b3b58edf4718b2beddd45f24ed9d","name":"7ba2b3b58edf4718b2beddd45f24ed9d","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3401'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 Feb 2026 12:09:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=75b729c9-9524-4e9a-b07b-b06d9539b581/northcentralus/d03e4cf6-2f56-4522-a924-dcc104ca2eda
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '1099'
+      x-msedge-ref:
+      - 'Ref A: E125736962A34D3997D98FB7C31D6828 Ref B: PNQ231110906054 Ref C: 2026-02-10T12:09:14Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"objectType": "AzureBackupRecoveryPointBasedRestoreRequest", "recoveryPointId":
+      "4c5b2bdf58a54ece9cc20117888521f1", "restoreTargetInfo": {"datasourceInfo":
+      {"datasourceType": "Microsoft.DocumentDB/databaseAccounts", "objectType": "Datasource",
+      "resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmos-bugbash-rg13/providers/Microsoft.DocumentDB/databaseAccounts/cosmos-nosql-contin-04630249",
+      "resourceLocation": "northcentralus", "resourceName": "cosmos-nosql-contin-04630249",
+      "resourceType": "Microsoft.DocumentDB/databaseAccounts", "resourceUri": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmos-bugbash-rg13/providers/Microsoft.DocumentDB/databaseAccounts/cosmos-nosql-contin-04630249"},
+      "objectType": "RestoreTargetInfo", "recoveryOption": "FailIfExists", "restoreLocation":
+      "northcentralus"}, "sourceDataStoreType": "VaultStore", "sourceResourceId":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmos-bugbash-rg13/providers/Microsoft.DocumentDB/databaseAccounts/cosmos-nosql-contin-04630249"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection backup-instance restore trigger
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1082'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --vault-name -n --restore-request-object
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmos-bugbash-rg13/providers/Microsoft.DataProtection/backupVaults/shasha-cosmosvault/backupInstances/cosmos-nosql-contin-04630249-cosmos-nosql-contin-04630249-faec6818-0720-11ec-bd1b-c8f750f92764/restore?api-version=2025-07-01
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmos-bugbash-rg13/providers/Microsoft.DataProtection/backupVaults/shasha-cosmosvault/operationStatus/MTZhMGY1MGYtY2EwMi00ZjMzLWI5ZmMtODA0M2I3ZTJjMzBjOzZmZmZkOGMxLWM3ZGQtNGI2Zi04OGIyLTMxZDNhNWE3NGYyOQ==?api-version=2025-07-01&t=639063221559562118&c=MIIHhzCCBm-gAwIBAgITfAolVBK_oQJzfmOSuwAACiVUEjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjYwMTMxMTA1ODQ0WhcNMjYwNTI0MjI1NzAzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANYxChRPE2mtS-5tsyR7nasErdEHsI0sPYwixYJ5xNB6LM42mRXjBvk8J6GkHLctQ4NGCt7Ab7YGpdafCqt78tYjdF_XMw1qJgXDvRJXP_c9mWStQ6_zKw51GNXpt1hEWCWoMalb63ggDq75nqKQgtWBDSPYrTqYis1cPzqNfW5DQUg8qwPMSGSId2w6tbc2-mDVwp_VR86TDmWogU7zePES3LDOKlpiaUaoLGHxNwpDgTnkm_bBTnLudYw68ekrt3eOIfLxQ2cc76f90sWoAJ65EHNFnAZlu1jE8p_vXCgQMDVXF3a8GL2mDjNhWdL2jKhvr9mqOUqg-nOeo4HwRE0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBQo0dN61VcuEFS7fxPnIud_RfHXRDAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAHbOg-4ArRDv3PhzgmQOxdCIQZ8ypujA1WLnaKKLWFSWgzwnN8_nJeXxWnL3cPjArrkrpCIBDaUWtdXtXbt7r1Ad_5jDu26AlUzNObW_F4GHFRt4pMjJCbfmxVRAQr6SYOiPZFoA60-cD2magjeKNYarDgryM8Nzy_hCg-WvDc9tRP0YyPipQHmlKU8CdE9HJ0RGA-zcNMOH1864Q6xhms8m076k19MHaPRvAuaLlakj2FBCbjycQIn-uOKL9iysxQdeGVdpGCjJog8nwdVxwVuPzbcIX0_PPbSKxFqWrKbNcFO2kZGVkafRnzGKlGtRl_s0A9iMrGTGegrDJaDPt34&s=fB5SI4pAM_0DRKRE3saYSgmEJtMWXmt_OLhVP_Z57kawYmwHJOaXEkiijQN7OuTEn0Dfrc6Td_cwc_2BXv73TpviQAOY7Oou2klJYYgNA0RJ1oC7lzUbQb5A9jYivbdqO5aDiZFTir8kVWV6HL3LW5v66qD-tm0GKPJ6WUpTTRuwr_306sshdfKQqIkCgq85v3Hy68wxD-IJdzpiNkB6a6KPUANqN42iEika4JGBXzbv9AXW-jRm5QY4OzckfruswW2XUQUIe6QopikYRzoO78BirZxXl00FnTftwd733MK-QPdh8XDTC4IOIa382i1G35rOpM90J0yGZCQXW5aUkA&h=s7h5QGcta2z9scBd4q0ErmBNjfXiwvXy8cu2R2gfyfc
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 10 Feb 2026 12:09:15 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataProtection/locations/northcentralus/operationResults/MTZhMGY1MGYtY2EwMi00ZjMzLWI5ZmMtODA0M2I3ZTJjMzBjOzZmZmZkOGMxLWM3ZGQtNGI2Zi04OGIyLTMxZDNhNWE3NGYyOQ==?api-version=2025-07-01&t=639063221559718365&c=MIIHhzCCBm-gAwIBAgITfAolVBK_oQJzfmOSuwAACiVUEjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjYwMTMxMTA1ODQ0WhcNMjYwNTI0MjI1NzAzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANYxChRPE2mtS-5tsyR7nasErdEHsI0sPYwixYJ5xNB6LM42mRXjBvk8J6GkHLctQ4NGCt7Ab7YGpdafCqt78tYjdF_XMw1qJgXDvRJXP_c9mWStQ6_zKw51GNXpt1hEWCWoMalb63ggDq75nqKQgtWBDSPYrTqYis1cPzqNfW5DQUg8qwPMSGSId2w6tbc2-mDVwp_VR86TDmWogU7zePES3LDOKlpiaUaoLGHxNwpDgTnkm_bBTnLudYw68ekrt3eOIfLxQ2cc76f90sWoAJ65EHNFnAZlu1jE8p_vXCgQMDVXF3a8GL2mDjNhWdL2jKhvr9mqOUqg-nOeo4HwRE0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBQo0dN61VcuEFS7fxPnIud_RfHXRDAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAHbOg-4ArRDv3PhzgmQOxdCIQZ8ypujA1WLnaKKLWFSWgzwnN8_nJeXxWnL3cPjArrkrpCIBDaUWtdXtXbt7r1Ad_5jDu26AlUzNObW_F4GHFRt4pMjJCbfmxVRAQr6SYOiPZFoA60-cD2magjeKNYarDgryM8Nzy_hCg-WvDc9tRP0YyPipQHmlKU8CdE9HJ0RGA-zcNMOH1864Q6xhms8m076k19MHaPRvAuaLlakj2FBCbjycQIn-uOKL9iysxQdeGVdpGCjJog8nwdVxwVuPzbcIX0_PPbSKxFqWrKbNcFO2kZGVkafRnzGKlGtRl_s0A9iMrGTGegrDJaDPt34&s=T-sUMN8GORuCaMNF6KePS5pnkqdz0zcZsqeuAcCbXzvauYTrzj8vzQ8gjPvdc_-S5sXAxhw-8kZrFOoaZ8-_PaX-nh6ah24Sli9zgdzRRVlTZXbOpP_zCuRucA86duomlVpzETWfKzntrw2kR08D16oyquT8hA3ibTzOB8kAssNE8nsdzB0C_D6Hj64X_6qiWIs3VSebhRXEFyw3tEZcvOAhQf_YvGpZYSlSvYKv6FAcfvJ9BLs5FQ0-SaehIUpYb7MAXkYhVd34nc8K9H5zMBmoPRiN9x78839YWTEqQ2SavmL9KTZ3jXP8XiKDbr8E9-jrFtRfaCpUJgngbba5wA&h=NPAZ-yAbXX6mmQuG9Fmjg-ToMuHXkJAZtkxrQevHfVs
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=75b729c9-9524-4e9a-b07b-b06d9539b581/northcentralus/ea6da270-7f7b-4eed-beef-1771cac34866
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: C05A553B084547DF878533B7632D2F98 Ref B: PNQ231110906052 Ref C: 2026-02-10T12:09:15Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection backup-instance restore trigger
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name -n --restore-request-object
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmos-bugbash-rg13/providers/Microsoft.DataProtection/backupVaults/shasha-cosmosvault/operationStatus/MTZhMGY1MGYtY2EwMi00ZjMzLWI5ZmMtODA0M2I3ZTJjMzBjOzZmZmZkOGMxLWM3ZGQtNGI2Zi04OGIyLTMxZDNhNWE3NGYyOQ==?api-version=2025-07-01&t=639063221559562118&c=MIIHhzCCBm-gAwIBAgITfAolVBK_oQJzfmOSuwAACiVUEjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjYwMTMxMTA1ODQ0WhcNMjYwNTI0MjI1NzAzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANYxChRPE2mtS-5tsyR7nasErdEHsI0sPYwixYJ5xNB6LM42mRXjBvk8J6GkHLctQ4NGCt7Ab7YGpdafCqt78tYjdF_XMw1qJgXDvRJXP_c9mWStQ6_zKw51GNXpt1hEWCWoMalb63ggDq75nqKQgtWBDSPYrTqYis1cPzqNfW5DQUg8qwPMSGSId2w6tbc2-mDVwp_VR86TDmWogU7zePES3LDOKlpiaUaoLGHxNwpDgTnkm_bBTnLudYw68ekrt3eOIfLxQ2cc76f90sWoAJ65EHNFnAZlu1jE8p_vXCgQMDVXF3a8GL2mDjNhWdL2jKhvr9mqOUqg-nOeo4HwRE0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBQo0dN61VcuEFS7fxPnIud_RfHXRDAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAHbOg-4ArRDv3PhzgmQOxdCIQZ8ypujA1WLnaKKLWFSWgzwnN8_nJeXxWnL3cPjArrkrpCIBDaUWtdXtXbt7r1Ad_5jDu26AlUzNObW_F4GHFRt4pMjJCbfmxVRAQr6SYOiPZFoA60-cD2magjeKNYarDgryM8Nzy_hCg-WvDc9tRP0YyPipQHmlKU8CdE9HJ0RGA-zcNMOH1864Q6xhms8m076k19MHaPRvAuaLlakj2FBCbjycQIn-uOKL9iysxQdeGVdpGCjJog8nwdVxwVuPzbcIX0_PPbSKxFqWrKbNcFO2kZGVkafRnzGKlGtRl_s0A9iMrGTGegrDJaDPt34&s=fB5SI4pAM_0DRKRE3saYSgmEJtMWXmt_OLhVP_Z57kawYmwHJOaXEkiijQN7OuTEn0Dfrc6Td_cwc_2BXv73TpviQAOY7Oou2klJYYgNA0RJ1oC7lzUbQb5A9jYivbdqO5aDiZFTir8kVWV6HL3LW5v66qD-tm0GKPJ6WUpTTRuwr_306sshdfKQqIkCgq85v3Hy68wxD-IJdzpiNkB6a6KPUANqN42iEika4JGBXzbv9AXW-jRm5QY4OzckfruswW2XUQUIe6QopikYRzoO78BirZxXl00FnTftwd733MK-QPdh8XDTC4IOIa382i1G35rOpM90J0yGZCQXW5aUkA&h=s7h5QGcta2z9scBd4q0ErmBNjfXiwvXy8cu2R2gfyfc
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmos-bugbash-rg13/providers/Microsoft.DataProtection/backupVaults/shasha-cosmosvault/operationStatus/MTZhMGY1MGYtY2EwMi00ZjMzLWI5ZmMtODA0M2I3ZTJjMzBjOzZmZmZkOGMxLWM3ZGQtNGI2Zi04OGIyLTMxZDNhNWE3NGYyOQ==","name":"MTZhMGY1MGYtY2EwMi00ZjMzLWI5ZmMtODA0M2I3ZTJjMzBjOzZmZmZkOGMxLWM3ZGQtNGI2Zi04OGIyLTMxZDNhNWE3NGYyOQ==","status":"Inprogress","startTime":"2026-02-10T12:09:15.8745127Z","endTime":"0001-01-01T00:00:00Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '487'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 Feb 2026 12:09:16 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=75b729c9-9524-4e9a-b07b-b06d9539b581/northcentralus/74320d13-d0f0-4cb8-868f-d86d1bf48fbf
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '1099'
+      x-msedge-ref:
+      - 'Ref A: E0EA029075144F23A8488CF2099E7ED9 Ref B: PNQ231110907025 Ref C: 2026-02-10T12:09:16Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection backup-instance restore trigger
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name -n --restore-request-object
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmos-bugbash-rg13/providers/Microsoft.DataProtection/backupVaults/shasha-cosmosvault/operationStatus/MTZhMGY1MGYtY2EwMi00ZjMzLWI5ZmMtODA0M2I3ZTJjMzBjOzZmZmZkOGMxLWM3ZGQtNGI2Zi04OGIyLTMxZDNhNWE3NGYyOQ==?api-version=2025-07-01&t=639063221559562118&c=MIIHhzCCBm-gAwIBAgITfAolVBK_oQJzfmOSuwAACiVUEjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjYwMTMxMTA1ODQ0WhcNMjYwNTI0MjI1NzAzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANYxChRPE2mtS-5tsyR7nasErdEHsI0sPYwixYJ5xNB6LM42mRXjBvk8J6GkHLctQ4NGCt7Ab7YGpdafCqt78tYjdF_XMw1qJgXDvRJXP_c9mWStQ6_zKw51GNXpt1hEWCWoMalb63ggDq75nqKQgtWBDSPYrTqYis1cPzqNfW5DQUg8qwPMSGSId2w6tbc2-mDVwp_VR86TDmWogU7zePES3LDOKlpiaUaoLGHxNwpDgTnkm_bBTnLudYw68ekrt3eOIfLxQ2cc76f90sWoAJ65EHNFnAZlu1jE8p_vXCgQMDVXF3a8GL2mDjNhWdL2jKhvr9mqOUqg-nOeo4HwRE0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBQo0dN61VcuEFS7fxPnIud_RfHXRDAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAHbOg-4ArRDv3PhzgmQOxdCIQZ8ypujA1WLnaKKLWFSWgzwnN8_nJeXxWnL3cPjArrkrpCIBDaUWtdXtXbt7r1Ad_5jDu26AlUzNObW_F4GHFRt4pMjJCbfmxVRAQr6SYOiPZFoA60-cD2magjeKNYarDgryM8Nzy_hCg-WvDc9tRP0YyPipQHmlKU8CdE9HJ0RGA-zcNMOH1864Q6xhms8m076k19MHaPRvAuaLlakj2FBCbjycQIn-uOKL9iysxQdeGVdpGCjJog8nwdVxwVuPzbcIX0_PPbSKxFqWrKbNcFO2kZGVkafRnzGKlGtRl_s0A9iMrGTGegrDJaDPt34&s=fB5SI4pAM_0DRKRE3saYSgmEJtMWXmt_OLhVP_Z57kawYmwHJOaXEkiijQN7OuTEn0Dfrc6Td_cwc_2BXv73TpviQAOY7Oou2klJYYgNA0RJ1oC7lzUbQb5A9jYivbdqO5aDiZFTir8kVWV6HL3LW5v66qD-tm0GKPJ6WUpTTRuwr_306sshdfKQqIkCgq85v3Hy68wxD-IJdzpiNkB6a6KPUANqN42iEika4JGBXzbv9AXW-jRm5QY4OzckfruswW2XUQUIe6QopikYRzoO78BirZxXl00FnTftwd733MK-QPdh8XDTC4IOIa382i1G35rOpM90J0yGZCQXW5aUkA&h=s7h5QGcta2z9scBd4q0ErmBNjfXiwvXy8cu2R2gfyfc
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmos-bugbash-rg13/providers/Microsoft.DataProtection/backupVaults/shasha-cosmosvault/operationStatus/MTZhMGY1MGYtY2EwMi00ZjMzLWI5ZmMtODA0M2I3ZTJjMzBjOzZmZmZkOGMxLWM3ZGQtNGI2Zi04OGIyLTMxZDNhNWE3NGYyOQ==","name":"MTZhMGY1MGYtY2EwMi00ZjMzLWI5ZmMtODA0M2I3ZTJjMzBjOzZmZmZkOGMxLWM3ZGQtNGI2Zi04OGIyLTMxZDNhNWE3NGYyOQ==","status":"Succeeded","startTime":"2026-02-10T12:09:15.8745127Z","endTime":"2026-02-10T12:09:18Z","properties":{"jobId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cosmos-bugbash-rg13/providers/Microsoft.DataProtection/BackupVaults/shasha-cosmosvault/backupJobs/daffb96a-ed1f-4718-b8b4-4eb462b12913","objectType":"OperationJobExtendedInfo"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '753'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 Feb 2026 12:09:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=75b729c9-9524-4e9a-b07b-b06d9539b581/northcentralus/0d6c1c5f-2b1d-4095-b3af-3122ca7d6d06
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '1099'
+      x-msedge-ref:
+      - 'Ref A: AAB9EE36DD4B4EE0B4583C2512220A3A Ref B: PNQ231110906040 Ref C: 2026-02-10T12:09:47Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection backup-instance restore trigger
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name -n --restore-request-object
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataProtection/locations/northcentralus/operationResults/MTZhMGY1MGYtY2EwMi00ZjMzLWI5ZmMtODA0M2I3ZTJjMzBjOzZmZmZkOGMxLWM3ZGQtNGI2Zi04OGIyLTMxZDNhNWE3NGYyOQ==?api-version=2025-07-01&t=639063221559718365&c=MIIHhzCCBm-gAwIBAgITfAolVBK_oQJzfmOSuwAACiVUEjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjYwMTMxMTA1ODQ0WhcNMjYwNTI0MjI1NzAzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANYxChRPE2mtS-5tsyR7nasErdEHsI0sPYwixYJ5xNB6LM42mRXjBvk8J6GkHLctQ4NGCt7Ab7YGpdafCqt78tYjdF_XMw1qJgXDvRJXP_c9mWStQ6_zKw51GNXpt1hEWCWoMalb63ggDq75nqKQgtWBDSPYrTqYis1cPzqNfW5DQUg8qwPMSGSId2w6tbc2-mDVwp_VR86TDmWogU7zePES3LDOKlpiaUaoLGHxNwpDgTnkm_bBTnLudYw68ekrt3eOIfLxQ2cc76f90sWoAJ65EHNFnAZlu1jE8p_vXCgQMDVXF3a8GL2mDjNhWdL2jKhvr9mqOUqg-nOeo4HwRE0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBQo0dN61VcuEFS7fxPnIud_RfHXRDAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAHbOg-4ArRDv3PhzgmQOxdCIQZ8ypujA1WLnaKKLWFSWgzwnN8_nJeXxWnL3cPjArrkrpCIBDaUWtdXtXbt7r1Ad_5jDu26AlUzNObW_F4GHFRt4pMjJCbfmxVRAQr6SYOiPZFoA60-cD2magjeKNYarDgryM8Nzy_hCg-WvDc9tRP0YyPipQHmlKU8CdE9HJ0RGA-zcNMOH1864Q6xhms8m076k19MHaPRvAuaLlakj2FBCbjycQIn-uOKL9iysxQdeGVdpGCjJog8nwdVxwVuPzbcIX0_PPbSKxFqWrKbNcFO2kZGVkafRnzGKlGtRl_s0A9iMrGTGegrDJaDPt34&s=T-sUMN8GORuCaMNF6KePS5pnkqdz0zcZsqeuAcCbXzvauYTrzj8vzQ8gjPvdc_-S5sXAxhw-8kZrFOoaZ8-_PaX-nh6ah24Sli9zgdzRRVlTZXbOpP_zCuRucA86duomlVpzETWfKzntrw2kR08D16oyquT8hA3ibTzOB8kAssNE8nsdzB0C_D6Hj64X_6qiWIs3VSebhRXEFyw3tEZcvOAhQf_YvGpZYSlSvYKv6FAcfvJ9BLs5FQ0-SaehIUpYb7MAXkYhVd34nc8K9H5zMBmoPRiN9x78839YWTEqQ2SavmL9KTZ3jXP8XiKDbr8E9-jrFtRfaCpUJgngbba5wA&h=NPAZ-yAbXX6mmQuG9Fmjg-ToMuHXkJAZtkxrQevHfVs
+  response:
+    body:
+      string: '{"jobId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cosmos-bugbash-rg13/providers/Microsoft.DataProtection/BackupVaults/shasha-cosmosvault/backupJobs/daffb96a-ed1f-4718-b8b4-4eb462b12913","objectType":"OperationJobExtendedInfo"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataProtection/locations/northcentralus/operationStatus/MTZhMGY1MGYtY2EwMi00ZjMzLWI5ZmMtODA0M2I3ZTJjMzBjOzZmZmZkOGMxLWM3ZGQtNGI2Zi04OGIyLTMxZDNhNWE3NGYyOQ==?api-version=2025-07-01&t=639063221887039793&c=MIIHpTCCBo2gAwIBAgITfwaXhEWptFOamPAP_gAEBpeERTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDIwHhcNMjYwMTMwMjIyMjQzWhcNMjYwNTI0MjI1NzAzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPYTQ-7eDfolQAZcmqhwi4mUOihyAAc1zzvoa_nO6AbvqgZOzRUe6g21LSzDmwrjenRrksOVGBPnUoHtbFOyhfu9KlVeuBgyGAMNa4WKx61A2YmIOQiOH7a27dtumx35ILQXGXnDLMEc8ckdnNTl1BDU8pbTAc_y2QwOT20hwOt4DvcOXjXQ6OcRvUn6MoRjWQtm_sQFU3zvjGlYUJRQ1_v3gcfmHqHIfOixwvRy00nrT_iHC5FncvDNmkNyGvwhRKxj2b_18XigD0ment7rqWuy_rjEiyaWfDY38mam14J_pz6MNr0LwvGrivxhBsriVinXOAg7PMO8WDsHH7Xa830CAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MB0GA1UdDgQWBBSj5mHnAzvMz7WbHLmKLe2M9KnVZDAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBSuecJrXSWIEwb2BwnDl3x7l48dVTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAGfoLB_d9Qss4t0jU3x3nvQwypQUjqFHp6o4bLjUmlZRfi4Jy-Wxjoe0RQ6eEfN3g-Mt9zY0TeVixyu3SE2rcp9fRemKwuaI8-VLFRnXh7UYCQI-vmBkxk_K-hyF3y7aXAW8SS1m9t_n-uG8BWbL8Tc4Kx7ywg5D5kJLpxzpL46FIIrimV2yVwYP1dWO05e3SCGMrNpqzyycz1J_1LOQMGRbjnFJX_a7TvlOVnoeLo48hcxcW5PoadXXbiIQCM8L0Ph40gaMiBIk56W5jpKPHIY0fGsH4SQi-DlYXdp7d4XhNBN2mRVj92RWsBhBa2FNe89ZNJvCWrGbDmXQPtZB0wU&s=VaxAg05RNyxiRcRoeC04NTaok9t4SAAIA2XTM9FxdCbUFjwsrk5_j8gXKy0HMUA4XuKpvpJfROxyNXOvWreoaJK-RqQV2H_WMShKvrCMS-5GTSQ6NQsRttppJdJFWZ6H_8YTE5z46lUNaFmwLf4sYhUxUavNhpZusyiEIhTQI9vHhg_NNaadzaEeNzPpDL881V4TisFTrur8YXcGoTZ1NqYIRHhz5fAVpIk4M_YrwbTyDmn-r4EEWDCpRdh3IwBVttsLjjv-0RElxFPw-MqL_YSMGiGF5nGjaiJVJiXdR_mn2KEgDQocc8n7csFxUhVEYDwQGypIFOi-u233rBtZ2w&h=HslDXHi67z2tTpzMXav8lkfgWXHRp54W2ewxhAyXKic
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 Feb 2026 12:09:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=75b729c9-9524-4e9a-b07b-b06d9539b581/southindia/2ae0040e-7881-40be-8ad8-69aba1259429
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '1099'
+      x-msedge-ref:
+      - 'Ref A: 130E30492E064DAEB9504F97BF349EB3 Ref B: PNQ231110909023 Ref C: 2026-02-10T12:09:47Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection job show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --ids
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmos-bugbash-rg13/providers/Microsoft.DataProtection/backupVaults/shasha-cosmosvault/backupJobs/daffb96a-ed1f-4718-b8b4-4eb462b12913?api-version=2025-07-01
+  response:
+    body:
+      string: '{"properties":{"activityID":"51594175-0679-11f1-b18c-7ced8d285cbf","subscriptionId":"80be3961-0521-4a0a-8570-5cd5a4e2f98c","backupInstanceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmos-bugbash-rg13/providers/Microsoft.DataProtection/backupVaults/shasha-cosmosvault/backupInstances/cosmos-nosql-contin-04630249-cosmos-nosql-contin-04630249-faec6818-0720-11ec-bd1b-c8f750f92764","policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmos-bugbash-rg13/providers/Microsoft.DataProtection/backupVaults/shasha-cosmosvault/backupPolicies/cosmosdbpolicy","dataSourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmos-bugbash-rg13/providers/Microsoft.DocumentDB/databaseAccounts/cosmos-nosql-contin-04630249","vaultName":"shasha-cosmosvault","backupInstanceFriendlyName":"cosmos-nosql-contin-04630249","policyName":"cosmosdbpolicy","sourceResourceGroup":"cosmos-bugbash-rg13","dataSourceSetName":"cosmos-nosql-contin-04630249","dataSourceName":"cosmos-nosql-contin-04630249","sourceDataStoreName":null,"sourceDataStoreType":"VaultStore","destinationDataStoreName":null,"progressEnabled":false,"etag":"W/\"datetime''2026-02-10T12%3A09%3A16.7292325Z''\"","sourceSubscriptionID":"80be3961-0521-4a0a-8570-5cd5a4e2f98c","dataSourceLocation":"northcentralus","startTime":"2026-02-10T12:09:16.3427359Z","endTime":null,"dataSourceType":"Microsoft.DocumentDB/databaseAccounts","operationCategory":"Restore","operation":"Restore","status":"InProgress","restoreType":null,"isUserTriggered":true,"rehydrationPriority":null,"supportedActions":[""],"duration":"PT0S","progressUrl":null,"isCrossRegionRestore":null,"errorDetails":null,"extendedInfo":{"backupInstanceState":null,"dataTransferredInBytes":null,"targetRecoverPoint":null,"sourceRecoverPoint":{"recoveryPointID":"4c5b2bdf58a54ece9cc20117888521f1","recoveryPointTime":"2026-02-10T10:26:20Z"},"recoveryDestination":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmos-bugbash-rg13/providers/Microsoft.DocumentDB/databaseAccounts/cosmos-nosql-contin-04630249","subTasks":[{"taskId":1,"taskName":"Trigger
+        Restore","taskStatus":"InProgress","taskProgress":null,"additionalDetails":null}],"additionalDetails":null,"warningDetails":null}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmos-bugbash-rg13/providers/Microsoft.DataProtection/backupVaults/shasha-cosmosvault/backupJobs/daffb96a-ed1f-4718-b8b4-4eb462b12913","name":"daffb96a-ed1f-4718-b8b4-4eb462b12913","type":"Microsoft.DataProtection/backupVaults/backupJobs"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2590'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 Feb 2026 12:09:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=75b729c9-9524-4e9a-b07b-b06d9539b581/northcentralus/ac480b7a-16bd-428a-a9b6-c640730a3e3a
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '1099'
+      x-msedge-ref:
+      - 'Ref A: F8917AE910D34B6481C4C54496D7B2BC Ref B: PNQ231110908023 Ref C: 2026-02-10T12:09:49Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection job show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --ids
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmos-bugbash-rg13/providers/Microsoft.DataProtection/backupVaults/shasha-cosmosvault/backupJobs/daffb96a-ed1f-4718-b8b4-4eb462b12913?api-version=2025-07-01
+  response:
+    body:
+      string: '{"properties":{"activityID":"51594175-0679-11f1-b18c-7ced8d285cbf","subscriptionId":"80be3961-0521-4a0a-8570-5cd5a4e2f98c","backupInstanceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmos-bugbash-rg13/providers/Microsoft.DataProtection/backupVaults/shasha-cosmosvault/backupInstances/cosmos-nosql-contin-04630249-cosmos-nosql-contin-04630249-faec6818-0720-11ec-bd1b-c8f750f92764","policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmos-bugbash-rg13/providers/Microsoft.DataProtection/backupVaults/shasha-cosmosvault/backupPolicies/cosmosdbpolicy","dataSourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmos-bugbash-rg13/providers/Microsoft.DocumentDB/databaseAccounts/cosmos-nosql-contin-04630249","vaultName":"shasha-cosmosvault","backupInstanceFriendlyName":"cosmos-nosql-contin-04630249","policyName":"cosmosdbpolicy","sourceResourceGroup":"cosmos-bugbash-rg13","dataSourceSetName":"cosmos-nosql-contin-04630249","dataSourceName":"cosmos-nosql-contin-04630249","sourceDataStoreName":null,"sourceDataStoreType":"VaultStore","destinationDataStoreName":null,"progressEnabled":false,"etag":"W/\"datetime''2026-02-10T12%3A09%3A16.7292325Z''\"","sourceSubscriptionID":"80be3961-0521-4a0a-8570-5cd5a4e2f98c","dataSourceLocation":"northcentralus","startTime":"2026-02-10T12:09:16.3427359Z","endTime":null,"dataSourceType":"Microsoft.DocumentDB/databaseAccounts","operationCategory":"Restore","operation":"Restore","status":"InProgress","restoreType":null,"isUserTriggered":true,"rehydrationPriority":null,"supportedActions":[""],"duration":"PT0S","progressUrl":null,"isCrossRegionRestore":null,"errorDetails":null,"extendedInfo":{"backupInstanceState":null,"dataTransferredInBytes":null,"targetRecoverPoint":null,"sourceRecoverPoint":{"recoveryPointID":"4c5b2bdf58a54ece9cc20117888521f1","recoveryPointTime":"2026-02-10T10:26:20Z"},"recoveryDestination":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmos-bugbash-rg13/providers/Microsoft.DocumentDB/databaseAccounts/cosmos-nosql-contin-04630249","subTasks":[{"taskId":1,"taskName":"Trigger
+        Restore","taskStatus":"InProgress","taskProgress":null,"additionalDetails":null}],"additionalDetails":null,"warningDetails":null}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmos-bugbash-rg13/providers/Microsoft.DataProtection/backupVaults/shasha-cosmosvault/backupJobs/daffb96a-ed1f-4718-b8b4-4eb462b12913","name":"daffb96a-ed1f-4718-b8b4-4eb462b12913","type":"Microsoft.DataProtection/backupVaults/backupJobs"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2590'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 Feb 2026 12:09:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=75b729c9-9524-4e9a-b07b-b06d9539b581/northcentralus/76d9ce36-d352-41d6-af73-f1eebed6a35a
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '1099'
+      x-msedge-ref:
+      - 'Ref A: 6B8B50554D8E4BEB9CAD0D9626AD71E4 Ref B: PNQ231110908025 Ref C: 2026-02-10T12:10:00Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection job show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --ids
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmos-bugbash-rg13/providers/Microsoft.DataProtection/backupVaults/shasha-cosmosvault/backupJobs/daffb96a-ed1f-4718-b8b4-4eb462b12913?api-version=2025-07-01
+  response:
+    body:
+      string: '{"properties":{"activityID":"51594175-0679-11f1-b18c-7ced8d285cbf","subscriptionId":"80be3961-0521-4a0a-8570-5cd5a4e2f98c","backupInstanceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmos-bugbash-rg13/providers/Microsoft.DataProtection/backupVaults/shasha-cosmosvault/backupInstances/cosmos-nosql-contin-04630249-cosmos-nosql-contin-04630249-faec6818-0720-11ec-bd1b-c8f750f92764","policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmos-bugbash-rg13/providers/Microsoft.DataProtection/backupVaults/shasha-cosmosvault/backupPolicies/cosmosdbpolicy","dataSourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmos-bugbash-rg13/providers/Microsoft.DocumentDB/databaseAccounts/cosmos-nosql-contin-04630249","vaultName":"shasha-cosmosvault","backupInstanceFriendlyName":"cosmos-nosql-contin-04630249","policyName":"cosmosdbpolicy","sourceResourceGroup":"cosmos-bugbash-rg13","dataSourceSetName":"cosmos-nosql-contin-04630249","dataSourceName":"cosmos-nosql-contin-04630249","sourceDataStoreName":null,"sourceDataStoreType":"VaultStore","destinationDataStoreName":null,"progressEnabled":false,"etag":"W/\"datetime''2026-02-10T12%3A09%3A16.7292325Z''\"","sourceSubscriptionID":"80be3961-0521-4a0a-8570-5cd5a4e2f98c","dataSourceLocation":"northcentralus","startTime":"2026-02-10T12:09:16.3427359Z","endTime":null,"dataSourceType":"Microsoft.DocumentDB/databaseAccounts","operationCategory":"Restore","operation":"Restore","status":"InProgress","restoreType":null,"isUserTriggered":true,"rehydrationPriority":null,"supportedActions":[""],"duration":"PT0S","progressUrl":null,"isCrossRegionRestore":null,"errorDetails":null,"extendedInfo":{"backupInstanceState":null,"dataTransferredInBytes":null,"targetRecoverPoint":null,"sourceRecoverPoint":{"recoveryPointID":"4c5b2bdf58a54ece9cc20117888521f1","recoveryPointTime":"2026-02-10T10:26:20Z"},"recoveryDestination":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmos-bugbash-rg13/providers/Microsoft.DocumentDB/databaseAccounts/cosmos-nosql-contin-04630249","subTasks":[{"taskId":1,"taskName":"Trigger
+        Restore","taskStatus":"InProgress","taskProgress":null,"additionalDetails":null}],"additionalDetails":null,"warningDetails":null}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmos-bugbash-rg13/providers/Microsoft.DataProtection/backupVaults/shasha-cosmosvault/backupJobs/daffb96a-ed1f-4718-b8b4-4eb462b12913","name":"daffb96a-ed1f-4718-b8b4-4eb462b12913","type":"Microsoft.DataProtection/backupVaults/backupJobs"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2590'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 Feb 2026 12:10:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=75b729c9-9524-4e9a-b07b-b06d9539b581/northcentralus/e3aee2f7-1f37-41b5-9b96-b1260075e753
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '1099'
+      x-msedge-ref:
+      - 'Ref A: 85C5EFE6114F40618C93296BE5AF30E4 Ref B: PNQ231110909040 Ref C: 2026-02-10T12:10:11Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection job show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --ids
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmos-bugbash-rg13/providers/Microsoft.DataProtection/backupVaults/shasha-cosmosvault/backupJobs/daffb96a-ed1f-4718-b8b4-4eb462b12913?api-version=2025-07-01
+  response:
+    body:
+      string: '{"properties":{"activityID":"51594175-0679-11f1-b18c-7ced8d285cbf","subscriptionId":"80be3961-0521-4a0a-8570-5cd5a4e2f98c","backupInstanceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmos-bugbash-rg13/providers/Microsoft.DataProtection/backupVaults/shasha-cosmosvault/backupInstances/cosmos-nosql-contin-04630249-cosmos-nosql-contin-04630249-faec6818-0720-11ec-bd1b-c8f750f92764","policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmos-bugbash-rg13/providers/Microsoft.DataProtection/backupVaults/shasha-cosmosvault/backupPolicies/cosmosdbpolicy","dataSourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmos-bugbash-rg13/providers/Microsoft.DocumentDB/databaseAccounts/cosmos-nosql-contin-04630249","vaultName":"shasha-cosmosvault","backupInstanceFriendlyName":"cosmos-nosql-contin-04630249","policyName":"cosmosdbpolicy","sourceResourceGroup":"cosmos-bugbash-rg13","dataSourceSetName":"cosmos-nosql-contin-04630249","dataSourceName":"cosmos-nosql-contin-04630249","sourceDataStoreName":null,"sourceDataStoreType":"VaultStore","destinationDataStoreName":null,"progressEnabled":false,"etag":"W/\"datetime''2026-02-10T12%3A10%3A20.0539271Z''\"","sourceSubscriptionID":"80be3961-0521-4a0a-8570-5cd5a4e2f98c","dataSourceLocation":"northcentralus","startTime":"2026-02-10T12:09:16.3427359Z","endTime":"2026-02-10T12:10:19.7277784Z","dataSourceType":"Microsoft.DocumentDB/databaseAccounts","operationCategory":"Restore","operation":"Restore","status":"Failed","restoreType":null,"isUserTriggered":true,"rehydrationPriority":null,"supportedActions":[""],"duration":"PT1M3.3850425S","progressUrl":null,"isCrossRegionRestore":null,"errorDetails":[{"message":"Restore
+        operation failed due to invalid parameters or format of the parameters is
+        not correct.","recommendedAction":["Please ensure parameters provided to restore
+        operation are valid. If the issue persists, please contact Microsoft support."],"details":[{"message":"Restore
+        operation failed due to invalid parameters or format of the parameters is
+        not correct.","recommendedAction":["Please ensure parameters provided to restore
+        operation are valid. If the issue persists, please contact Microsoft support."],"details":[{"message":"Internal
+        Server Error","recommendedAction":["Refer https://aka.ms/AzureBackupTroubleshootFailures
+        for more details."],"details":null,"code":"InternalServerError","target":"","innerError":null,"isRetryable":false,"isUserError":false,"properties":null}],"code":"UserErrorInvalidRestoreRequest","target":"","innerError":null,"isRetryable":false,"isUserError":false,"properties":null}],"code":"UserErrorInvalidRestoreRequest","target":"","innerError":null,"isRetryable":false,"isUserError":false,"properties":null}],"extendedInfo":{"backupInstanceState":null,"dataTransferredInBytes":null,"targetRecoverPoint":null,"sourceRecoverPoint":{"recoveryPointID":"4c5b2bdf58a54ece9cc20117888521f1","recoveryPointTime":"2026-02-10T10:26:20Z"},"recoveryDestination":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmos-bugbash-rg13/providers/Microsoft.DocumentDB/databaseAccounts/cosmos-nosql-contin-04630249","subTasks":[{"taskId":1,"taskName":"Trigger
+        Restore","taskStatus":"Failed","taskProgress":null,"additionalDetails":{"DataTransferredInBytes":"0","TaskId":"51594175-0679-11f1-b18c-7ced8d285cbf","DatasourceType":"Microsoft.DocumentDB/databaseAccounts"}}],"additionalDetails":null,"warningDetails":null}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmos-bugbash-rg13/providers/Microsoft.DataProtection/backupVaults/shasha-cosmosvault/backupJobs/daffb96a-ed1f-4718-b8b4-4eb462b12913","name":"daffb96a-ed1f-4718-b8b4-4eb462b12913","type":"Microsoft.DataProtection/backupVaults/backupJobs"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3801'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 10 Feb 2026 12:10:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=75b729c9-9524-4e9a-b07b-b06d9539b581/northcentralus/5941ce82-ded4-4f67-aa54-7a2aad189827
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '1099'
+      x-msedge-ref:
+      - 'Ref A: 2CB93BE2C6834006ACCD2118129F1BB5 Ref B: PNQ231110907036 Ref C: 2026-02-10T12:10:21Z'
+    status:
+      code: 200
+      message: OK
+version: 1
