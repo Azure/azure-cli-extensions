@@ -239,6 +239,7 @@ def install_helm_chart(kubeconfig_path, values, namespace=CONST_OPENCLAW_DEFAULT
                 "--timeout", "10m",
             ],
             kubeconfig_path=kubeconfig_path,
+            timeout=660,  # must exceed Helm's --timeout (10m = 600s)
         )
         if not success:
             raise CLIError(f"Helm install failed: {output}")

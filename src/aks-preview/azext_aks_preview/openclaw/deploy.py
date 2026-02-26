@@ -292,12 +292,27 @@ def deploy_openclaw(cmd, resource_group_name, cluster_name,
         model_name = model or CONST_OPENCLAW_DEFAULT_MODEL
         values, litellm_master_key = generate_helm_values(endpoint, api_key, resolved_deployment, model_name)
         logger.warning("Installing openclaw Helm chart in namespace '%s'...", namespace)
-        install_helm_chart(kubeconfig_path, values, namespace=namespace)
+        helm_failed = False
+        try:
+            install_helm_chart(kubeconfig_path, values, namespace=namespace)
+        except CLIError as e:
+            # Helm --wait may time out (e.g. slow image pull) even though the
+            # release was actually installed.  Continue to the patching step so
+            # the deployment is not left in a half-configured state.
+            logger.warning("Helm install reported an error (will still attempt patching): %s", e)
+            helm_failed = True
 
         # Step 5: Patch API format and auth
         logger.warning("Patching API format and LiteLLM auth...")
         patch_openclaw_api_format(kubeconfig_path, namespace=namespace,
                                   litellm_master_key=litellm_master_key)
+
+        if helm_failed:
+            logger.warning(
+                "\n⚠️  Helm --wait timed out but the chart was installed. "
+                "Patching was applied. Check pod status with:\n"
+                "  kubectl get pods -n %s", namespace,
+            )
 
         # Step 6: Show status
         logger.warning("\nOpenClaw deployed successfully!")
