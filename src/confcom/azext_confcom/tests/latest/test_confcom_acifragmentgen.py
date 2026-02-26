@@ -25,18 +25,20 @@ def docker_image():
         ["docker", "run", "-d", "-p", "0:5000", "registry:2"],
         stdout=subprocess.PIPE,
         text=True,
-    ).stdout
+        check=True,
+    ).stdout.strip()
 
     registry_port = subprocess.run(
         ["docker", "port", registry_id],
         stdout=subprocess.PIPE,
         text=True,
+        check=True,
     ).stdout.split(":")[-1].strip()
 
     test_container_ref = f"localhost:{registry_port}/hello-world:latest"
-    subprocess.run(["docker", "pull", "hello-world"])
-    subprocess.run(["docker", "tag", "hello-world", test_container_ref])
-    subprocess.run(["docker", "push", test_container_ref])
+    subprocess.run(["docker", "pull", "hello-world"], check=True)
+    subprocess.run(["docker", "tag", "hello-world", test_container_ref], check=True)
+    subprocess.run(["docker", "push", test_container_ref], check=True)
 
     with tempfile.NamedTemporaryFile(mode="w+", encoding="utf-8", delete=True) as temp_file:
         json.dump({
