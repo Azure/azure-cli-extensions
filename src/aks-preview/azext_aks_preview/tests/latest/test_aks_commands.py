@@ -14743,7 +14743,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         })
 
         # add k8s-extension extension for azurecontainerstorage operations.
-        # self.cmd('extension add --name k8s-extension')
+        self.cmd('extension add --name k8s-extension')
 
         # create: without enable-azure-container-storage
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} --node-count 3 --enable-managed-identity --output=json'
@@ -14822,7 +14822,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         })
 
         # add k8s-extension extension for azurecontainerstorage operations.
-        # self.cmd('extension add --name k8s-extension')
+        self.cmd('extension add --name k8s-extension')
 
         # create: without enable-azure-container-storage
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} --node-count 3 --enable-managed-identity --output=json'
@@ -14901,7 +14901,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         })
 
         # add k8s-extension extension for azurecontainerstorage operations.
-        # self.cmd('extension add --name k8s-extension')
+        self.cmd('extension add --name k8s-extension')
 
         # create: without enable-azure-container-storage
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} --node-count 3 --enable-managed-identity --output=json'
@@ -14981,7 +14981,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         })
 
         # add k8s-extension extension for azurecontainerstorage operations.
-        # self.cmd('extension add --name k8s-extension')
+        self.cmd('extension add --name k8s-extension')
 
         # create: without enable-azure-container-storage
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} --node-count 3 --enable-managed-identity --output=json'
