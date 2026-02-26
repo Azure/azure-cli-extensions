@@ -205,11 +205,8 @@ def _do_ssh_op(cmd, op_info, op_call):
 
 
 def _get_and_write_certificate(cmd, public_key_file, cert_file, ssh_client_folder):
-    scope = 'ce6ff14a-7fdc-4685-bbe0-f6afdfcfa8e0'
-
+    scope = f'{const.AADSSHLOGINFORLINUX_SERVER_APP_ID}/.default'
     scopes = [scope]
-
-    logger.debug(scopes) 
 
     data = _prepare_jwk_data(public_key_file)
     from azure.cli.core._profile import Profile
