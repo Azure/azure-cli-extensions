@@ -57,7 +57,7 @@ class TestGenerateDeploymentName(unittest.TestCase):
 
 class TestGenerateHelmValues(unittest.TestCase):
     def test_basic_values(self):
-        values = generate_helm_values(
+        values, master_key = generate_helm_values(
             endpoint="https://eastus.api.cognitive.microsoft.com/openai/deployments/gpt51chat",
             api_key="test-key",
             deployment_name="gpt51chat",
@@ -65,30 +65,32 @@ class TestGenerateHelmValues(unittest.TestCase):
             gateway_token="fixed-token",
         )
 
-        self.assertEqual(values["gateway"]["token"], "fixed-token")
+        self.assertTrue(len(master_key) > 0)
+        self.assertEqual(values["secrets"]["openclawGatewayToken"], "fixed-token")
         self.assertEqual(values["litellm"]["model"], "gpt-5.1-chat")
         self.assertEqual(
             values["persistence"]["storageClass"],
             CONST_OPENCLAW_STORAGE_CLASS_NAME,
         )
 
-        model_list = values["litellm"]["configOverride"]["model_list"]
-        self.assertEqual(len(model_list), 1)
-        self.assertEqual(model_list[0]["model_name"], "gpt-5.1-chat")
-        self.assertEqual(model_list[0]["litellm_params"]["model"], "azure/gpt51chat")
+        # configOverride is a YAML string
+        config_override = values["litellm"]["configOverride"]
+        self.assertIsInstance(config_override, str)
+        self.assertIn("azure/gpt51chat", config_override)
+        self.assertIn("gpt-5.1-chat", config_override)
 
         env_vars = values["litellm"]["extraEnv"]
         api_key_env = next(e for e in env_vars if e["name"] == "AZURE_API_KEY")
         self.assertEqual(api_key_env["value"], "test-key")
 
     def test_generates_token_if_not_provided(self):
-        values = generate_helm_values(
+        values, _ = generate_helm_values(
             endpoint="https://test.com",
             api_key="key",
             deployment_name="dep",
             model_name="model",
         )
-        self.assertTrue(len(values["gateway"]["token"]) > 0)
+        self.assertTrue(len(values["secrets"]["openclawGatewayToken"]) > 0)
 
 
 class TestResolveBYOEndpoint(unittest.TestCase):

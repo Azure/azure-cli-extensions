@@ -105,10 +105,13 @@ def get_kubeconfig(cmd, resource_group_name, cluster_name):
     temp_dir = tempfile.mkdtemp()
     kubeconfig_path = os.path.join(temp_dir, "kubeconfig")
 
-    from azure.cli.command_modules.acs.custom import aks_get_credentials
+    from azext_aks_preview._client_factory import cf_managed_clusters
+    from azext_aks_preview.custom import aks_get_credentials
 
+    client = cf_managed_clusters(cmd.cli_ctx)
     aks_get_credentials(
         cmd,
+        client,
         resource_group_name=resource_group_name,
         name=cluster_name,
         path=kubeconfig_path,
@@ -160,34 +163,40 @@ def apply_storage_class(kubeconfig_path):
 
 
 def generate_helm_values(endpoint, api_key, deployment_name, model_name, gateway_token=None):
-    """Generate the openclaw Helm values dict for webui mode with LiteLLM → AI Foundry."""
+    """Generate the openclaw Helm values dict for webui mode with LiteLLM → AI Foundry.
+
+    Returns (values_dict, litellm_master_key).
+    """
     if gateway_token is None:
         gateway_token = secrets.token_hex(32)
 
     litellm_master_key = secrets.token_hex(16)
 
+    # configOverride must be a YAML string (the Helm template pipes it through nindent)
+    config_override = {
+        "model_list": [
+            {
+                "model_name": model_name,
+                "litellm_params": {
+                    "model": f"azure/{deployment_name}",
+                    "api_base": endpoint,
+                    "api_key": "os.environ/AZURE_API_KEY",
+                    "api_version": CONST_OPENCLAW_LITELLM_API_VERSION,
+                },
+            }
+        ],
+        "general_settings": {
+            "master_key": "os.environ/LITELLM_MASTER_KEY",
+        },
+    }
+
     values = {
-        "gateway": {
-            "token": gateway_token,
+        "secrets": {
+            "openclawGatewayToken": gateway_token,
         },
         "litellm": {
             "model": model_name,
-            "configOverride": {
-                "model_list": [
-                    {
-                        "model_name": model_name,
-                        "litellm_params": {
-                            "model": f"azure/{deployment_name}",
-                            "api_base": endpoint,
-                            "api_key": "os.environ/AZURE_API_KEY",
-                            "api_version": CONST_OPENCLAW_LITELLM_API_VERSION,
-                        },
-                    }
-                ],
-                "general_settings": {
-                    "master_key": "os.environ/LITELLM_MASTER_KEY",
-                },
-            },
+            "configOverride": yaml.dump(config_override, default_flow_style=False),
             "extraEnv": [
                 {"name": "AZURE_API_KEY", "value": api_key},
                 {"name": "LITELLM_MASTER_KEY", "value": litellm_master_key},
@@ -201,7 +210,7 @@ def generate_helm_values(endpoint, api_key, deployment_name, model_name, gateway
         },
     }
 
-    return values
+    return values, litellm_master_key
 
 
 def install_helm_chart(kubeconfig_path, values, namespace=CONST_OPENCLAW_DEFAULT_NAMESPACE):
@@ -230,8 +239,10 @@ def install_helm_chart(kubeconfig_path, values, namespace=CONST_OPENCLAW_DEFAULT
         os.remove(values_path)
 
 
-def patch_openclaw_api_format(kubeconfig_path, namespace=CONST_OPENCLAW_DEFAULT_NAMESPACE):
-    """Patch the openclaw configmap to use openai-completions instead of openai-responses."""
+def patch_openclaw_api_format(kubeconfig_path, namespace=CONST_OPENCLAW_DEFAULT_NAMESPACE,
+                              litellm_master_key=None):
+    """Patch openclaw to use openai-completions API, fix LiteLLM auth, and set required gateway config."""
+    # --- Step 1: Patch the configmap ---
     try:
         cm_json = run_kubectl(
             ["get", "configmap", "openclaw-config", "-n", namespace, "-o", "json"],
@@ -242,22 +253,24 @@ def patch_openclaw_api_format(kubeconfig_path, namespace=CONST_OPENCLAW_DEFAULT_
         logger.warning("Could not read openclaw-config configmap, skipping patch: %s", e)
         return
 
-    patched = False
+    cm_patched = False
     if "openclaw.json" in cm.get("data", {}):
         original = cm["data"]["openclaw.json"]
         updated = original.replace('"api": "openai-responses"', '"api": "openai-completions"')
+        if litellm_master_key:
+            updated = updated.replace('"apiKey": "not-needed"', f'"apiKey": "{litellm_master_key}"')
         if original != updated:
             cm["data"]["openclaw.json"] = updated
-            patched = True
+            cm_patched = True
 
     if "codex-config.toml" in cm.get("data", {}):
         original = cm["data"]["codex-config.toml"]
         updated = original.replace('wire_api = "responses"', 'wire_api = "chat"')
         if original != updated:
             cm["data"]["codex-config.toml"] = updated
-            patched = True
+            cm_patched = True
 
-    if patched:
+    if cm_patched:
         with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
             json.dump(cm, f)
             cm_path = f.name
@@ -268,15 +281,66 @@ def patch_openclaw_api_format(kubeconfig_path, namespace=CONST_OPENCLAW_DEFAULT_
         finally:
             os.remove(cm_path)
 
-        # Restart to pick up the config change
+    # --- Step 2: Patch runtime config files inside the pod ---
+    pod_name = f"openclaw-0"
+    _wait_for_pod_ready(kubeconfig_path, namespace, pod_name)
+
+    # Patch API format and apiKey in persistent config files
+    for cfg_file in [
+        "/home/vibe/.openclaw/openclaw.json",
+        "/home/vibe/.openclaw/agents/main/agent/models.json",
+    ]:
         run_kubectl(
-            ["rollout", "restart", "statefulset", "openclaw", "-n", namespace],
+            ["exec", pod_name, "-n", namespace, "-c", "openclaw", "--",
+             "sed", "-i", 's/"openai-responses"/"openai-completions"/g', cfg_file],
             kubeconfig_path=kubeconfig_path,
             check=False,
         )
-        logger.info("Restarted openclaw statefulset.")
-    else:
-        logger.info("No API format patch needed.")
+        if litellm_master_key:
+            run_kubectl(
+                ["exec", pod_name, "-n", namespace, "-c", "openclaw", "--",
+                 "sed", "-i", f's/"apiKey": "not-needed"/"apiKey": "{litellm_master_key}"/g', cfg_file],
+                kubeconfig_path=kubeconfig_path,
+                check=False,
+            )
+
+    # Set gateway.mode=local and disable memory search
+    for config_cmd in [
+        ["openclaw", "config", "set", "gateway.mode", "local"],
+        ["openclaw", "config", "set", "agents.defaults.memorySearch.enabled", "false"],
+    ]:
+        run_kubectl(
+            ["exec", pod_name, "-n", namespace, "-c", "openclaw", "--"] + config_cmd,
+            kubeconfig_path=kubeconfig_path,
+            check=False,
+        )
+
+    logger.info("Patched runtime config inside pod.")
+
+    # --- Step 3: Restart to apply all changes ---
+    run_kubectl(
+        ["rollout", "restart", "statefulset", "openclaw", "-n", namespace],
+        kubeconfig_path=kubeconfig_path,
+        check=False,
+    )
+    logger.info("Restarted openclaw statefulset.")
+
+
+def _wait_for_pod_ready(kubeconfig_path, namespace, pod_name, timeout_seconds=120):
+    """Wait for a specific pod to be ready."""
+    import time
+    deadline = time.time() + timeout_seconds
+    while time.time() < deadline:
+        output = run_kubectl(
+            ["get", "pod", pod_name, "-n", namespace,
+             "-o", "jsonpath={.status.conditions[?(@.type=='Ready')].status}"],
+            kubeconfig_path=kubeconfig_path,
+            check=False,
+        )
+        if output.strip() == "True":
+            return
+        time.sleep(5)
+    logger.warning("Pod %s did not become ready within %ds, proceeding anyway.", pod_name, timeout_seconds)
 
 
 def uninstall_helm_chart(kubeconfig_path, namespace=CONST_OPENCLAW_DEFAULT_NAMESPACE):

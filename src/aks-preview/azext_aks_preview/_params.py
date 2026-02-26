@@ -3186,7 +3186,7 @@ def load_arguments(self, _):
             help="Model version to deploy. Default is 2025-11-13. Only used when provisioning new resources.",
         )
         c.argument(
-            "deployment_name",
+            "model_deployment_name",
             options_list=["--deployment-name"],
             help="Azure model deployment name. Auto-generated from model name if not specified.",
         )

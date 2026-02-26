@@ -4544,3 +4544,24 @@ helps['aks openclaw show'] = """
         - name: Show OpenClaw status
           text: az aks openclaw show -g MyResourceGroup --cluster-name MyCluster
 """
+
+helps['aks openclaw connect'] = """
+    type: command
+    short-summary: Get OpenClaw gateway token and help with web UI connection.
+    long-summary: |
+        Retrieves the OpenClaw gateway authentication token from the K8s secret
+        and displays instructions for connecting to the web UI via port-forward.
+        Provides a direct link with the token embedded as a query parameter.
+    parameters:
+        - name: --cluster-name
+          type: string
+          short-summary: Name of the AKS cluster.
+        - name: --namespace
+          type: string
+          short-summary: Kubernetes namespace where OpenClaw is deployed. Default is openclaw.
+    examples:
+        - name: Get connection info and token
+          text: az aks openclaw connect -g MyResourceGroup --cluster-name MyCluster
+        - name: Get connection info for custom namespace
+          text: az aks openclaw connect -g MyResourceGroup --cluster-name MyCluster --namespace custom-ns
+"""

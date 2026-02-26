@@ -4,6 +4,11 @@
 # --------------------------------------------------------------------------------------------
 
 import json
+import base64
+import subprocess
+import os
+import shutil
+import time
 
 from knack.log import get_logger
 from knack.util import CLIError
@@ -47,8 +52,9 @@ def _provision_ai_foundry(cmd, resource_group_name, location, foundry_name,
                           model_name, model_version, deployment_name, capacity):
     """Create a new AIServices account and deploy a model. Returns (endpoint, api_key, deployment_name)."""
     from azure.cli.core.util import send_raw_request
+    from azure.cli.core.commands.client_factory import get_subscription_id
 
-    subscription_id = cmd.cli_ctx.data["subscription_id"]
+    subscription_id = get_subscription_id(cmd.cli_ctx)
 
     # Create AIServices account
     logger.warning("Creating AIServices account '%s' in '%s'...", foundry_name, location)
@@ -62,9 +68,23 @@ def _provision_ai_foundry(cmd, resource_group_name, location, foundry_name,
         "kind": CONST_OPENCLAW_AI_SERVICES_KIND,
         "sku": {"name": CONST_OPENCLAW_AI_SERVICES_SKU},
         "location": location,
-        "properties": {},
+        "properties": {
+            "publicNetworkAccess": "Enabled",
+        },
     }
     send_raw_request(cmd.cli_ctx, "PUT", account_url, body=json.dumps(account_body))
+
+    # Poll until the account is fully provisioned
+    for _ in range(60):
+        resp = send_raw_request(cmd.cli_ctx, "GET", account_url)
+        state = resp.json().get("properties", {}).get("provisioningState", "")
+        if state == "Succeeded":
+            break
+        if state in ("Failed", "Canceled"):
+            raise CLIError(f"AIServices account provisioning {state}.")
+        time.sleep(5)
+    else:
+        raise CLIError("Timed out waiting for AIServices account to be provisioned.")
     logger.warning("AIServices account '%s' created.", foundry_name)
 
     # Deploy model
@@ -253,18 +273,20 @@ def deploy_openclaw(cmd, resource_group_name, cluster_name,
 
     try:
         # Step 3: Create StorageClass
-        logger.warning("Ensuring StorageClass '%s'...", CONST_OPENCLAW_DEFAULT_NAMESPACE)
+        from azext_aks_preview.openclaw._consts import CONST_OPENCLAW_STORAGE_CLASS_NAME
+        logger.warning("Ensuring StorageClass '%s'...", CONST_OPENCLAW_STORAGE_CLASS_NAME)
         apply_storage_class(kubeconfig_path)
 
         # Step 4: Generate values and install chart
         model_name = model or CONST_OPENCLAW_DEFAULT_MODEL
-        values = generate_helm_values(endpoint, api_key, resolved_deployment, model_name)
+        values, litellm_master_key = generate_helm_values(endpoint, api_key, resolved_deployment, model_name)
         logger.warning("Installing openclaw Helm chart in namespace '%s'...", namespace)
         install_helm_chart(kubeconfig_path, values, namespace=namespace)
 
-        # Step 5: Patch API format
-        logger.warning("Patching API format (openai-responses → openai-completions)...")
-        patch_openclaw_api_format(kubeconfig_path, namespace=namespace)
+        # Step 5: Patch API format and auth
+        logger.warning("Patching API format and LiteLLM auth...")
+        patch_openclaw_api_format(kubeconfig_path, namespace=namespace,
+                                  litellm_master_key=litellm_master_key)
 
         # Step 6: Show status
         logger.warning("\nOpenClaw deployed successfully!")
@@ -277,9 +299,15 @@ def deploy_openclaw(cmd, resource_group_name, cluster_name,
             "  Then open http://localhost:18789",
             namespace,
         )
+        
+        logger.warning("\n💡 Startup Tips:")
+        logger.warning("   • You're running inside a pod with a service account")
+        logger.warning("   • Try 'kubectl get pods' inside the pod to verify access")
+        logger.warning("   • Run 'openclaw configure' to set up integrations (Telegram, Discord, etc.)")
+        logger.warning("   • Use 'openclaw --help' to explore available commands")
+        logger.warning("   • Run 'az aks openclaw connect' to get the gateway token and web UI link")
     finally:
         # Clean up temp kubeconfig
-        import shutil
         kubeconfig_dir = os.path.dirname(kubeconfig_path)
         shutil.rmtree(kubeconfig_dir, ignore_errors=True)
 
@@ -291,87 +319,79 @@ def deploy_openclaw(cmd, resource_group_name, cluster_name,
     }
 
 
-def delete_openclaw(cmd, resource_group_name, cluster_name,
-                    namespace=None,
-                    delete_ai_resources=False):
-    """Delete openclaw deployment and optionally AI Foundry resources."""
+def connect_openclaw(cmd, resource_group_name, cluster_name=None, namespace=None):
+    """Show OpenClaw gateway token and help user connect to the web UI."""
     namespace = namespace or CONST_OPENCLAW_DEFAULT_NAMESPACE
-    ensure_prerequisites()
-
-    kubeconfig_path = get_kubeconfig(cmd, resource_group_name, cluster_name)
-
+    
+    # If cluster_name is provided, get kubeconfig
+    if cluster_name:
+        ensure_prerequisites()
+        logger.warning("Getting AKS credentials for cluster '%s'...", cluster_name)
+        kubeconfig_path = get_kubeconfig(cmd, resource_group_name, cluster_name)
+    else:
+        # Use current kubectl context if no cluster specified
+        kubeconfig_path = None
+    
     try:
-        logger.warning("Uninstalling openclaw from namespace '%s'...", namespace)
-        uninstall_helm_chart(kubeconfig_path, namespace=namespace)
-        logger.warning("OpenClaw uninstalled successfully.")
-
-        if delete_ai_resources:
-            foundry_name = generate_foundry_name(resource_group_name)
-            _delete_ai_foundry(cmd, resource_group_name, foundry_name)
-    finally:
-        import shutil
-        kubeconfig_dir = os.path.dirname(kubeconfig_path)
-        shutil.rmtree(kubeconfig_dir, ignore_errors=True)
-
-
-def _delete_ai_foundry(cmd, resource_group_name, foundry_name):
-    """Delete the AIServices account."""
-    from azure.cli.core.util import send_raw_request
-
-    subscription_id = cmd.cli_ctx.data["subscription_id"]
-    url = (
-        f"https://management.azure.com/subscriptions/{subscription_id}"
-        f"/resourceGroups/{resource_group_name}"
-        f"/providers/Microsoft.CognitiveServices/accounts/{foundry_name}"
-        f"?api-version={CONST_OPENCLAW_COGNITIVE_API_VERSION}"
-    )
-    try:
-        send_raw_request(cmd.cli_ctx, "DELETE", url)
-        logger.warning("AIServices account '%s' deleted.", foundry_name)
-    except Exception as e:  # pylint: disable=broad-except
-        logger.warning("Could not delete AIServices account '%s': %s", foundry_name, e)
-
-
-def show_openclaw(cmd, resource_group_name, cluster_name, namespace=None):
-    """Show openclaw deployment status."""
-    namespace = namespace or CONST_OPENCLAW_DEFAULT_NAMESPACE
-    ensure_prerequisites()
-
-    kubeconfig_path = get_kubeconfig(cmd, resource_group_name, cluster_name)
-
-    try:
-        pods = get_deployment_status(kubeconfig_path, namespace=namespace)
-
-        # Try to get the LiteLLM config to show model info
-        model_info = None
-        try:
-            from azext_aks_preview.openclaw._helpers import run_kubectl
-            cm_json = run_kubectl(
-                ["get", "configmap", "openclaw-litellm-config", "-n", namespace, "-o", "json"],
-                kubeconfig_path=kubeconfig_path,
-                check=False,
+        # Retrieve the gateway token from the openclaw secret
+        token_cmd = [
+            "kubectl", "get", "secret", "openclaw", "-n", namespace,
+            "-o", "jsonpath={.data.OPENCLAW_GATEWAY_TOKEN}", "--ignore-not-found"
+        ]
+        if kubeconfig_path:
+            token_cmd.extend(["--kubeconfig", kubeconfig_path])
+        
+        result = subprocess.run(token_cmd, capture_output=True, text=True, check=False)
+        token_b64 = result.stdout.strip()
+        
+        if not token_b64:
+            raise CLIError(
+                f"Could not find openclaw secret 'openclaw' in namespace '{namespace}'. "
+                "Has OpenClaw been deployed? Run 'az aks openclaw deploy' first."
             )
-            import json as json_mod
-            cm = json_mod.loads(cm_json)
-            config_yaml = cm.get("data", {}).get("config.yaml", "")
-            if config_yaml:
-                import yaml
-                config = yaml.safe_load(config_yaml)
-                model_list = config.get("model_list", [])
-                if model_list:
-                    model_info = {
-                        "model_name": model_list[0].get("model_name", ""),
-                        "api_base": model_list[0].get("litellm_params", {}).get("api_base", ""),
-                    }
-        except Exception:  # pylint: disable=broad-except
-            pass
-
+        
+        # Decode the base64 token
+        try:
+            token = base64.b64decode(token_b64).decode('utf-8')
+        except Exception as e:
+            raise CLIError(f"Failed to decode gateway token: {e}")
+        
+        # Display connection info
+        logger.warning("\n" + "="*70)
+        logger.warning("🦞 OpenClaw Gateway Token")
+        logger.warning("="*70)
+        logger.warning("\nGateway Token (use for web UI authentication):")
+        logger.warning("  %s", token)
+        
+        logger.warning("\n🌐 Web UI Access:")
+        dashboard_url = f"http://localhost:18789?token={token}"
+        logger.warning("  " + dashboard_url)
+        
+        logger.warning("\n🔧 Port Forwarding Setup:")
+        logger.warning("  If you haven't set up port-forwarding yet, run:")
+        if cluster_name:
+            logger.warning("    kubectl port-forward -n %s svc/openclaw 18789:18789", namespace)
+        else:
+            logger.warning("    kubectl port-forward -n %s statefulset/openclaw 18789:18789", namespace)
+        
+        logger.warning("\n📝 Quick Start:")
+        logger.warning("  1. Set up port-forwarding (see 🔧 section above)")
+        logger.warning("  2. Click the Web UI link above - token is already included")
+        logger.warning("  3. If you see a token mismatch error, manually paste the token above")
+        logger.warning("  4. (Optional) Run 'openclaw configure' inside the pod to set up integrations")
+        logger.warning("\n💡 Note: You're running inside a pod with service account. You should already")
+        logger.warning("         have kubectl access. Try 'kubectl get pods' to verify.")
+        
+        logger.warning("\n" + "="*70 + "\n")
+        
         return {
+            "token": token,
+            "dashboard_url": dashboard_url,
             "namespace": namespace,
-            "pods": pods,
-            "model_info": model_info,
         }
+        
     finally:
-        import shutil
-        kubeconfig_dir = os.path.dirname(kubeconfig_path)
-        shutil.rmtree(kubeconfig_dir, ignore_errors=True)
+        # Clean up temp kubeconfig
+        if cluster_name and kubeconfig_path:
+            kubeconfig_dir = os.path.dirname(kubeconfig_path)
+            shutil.rmtree(kubeconfig_dir, ignore_errors=True)

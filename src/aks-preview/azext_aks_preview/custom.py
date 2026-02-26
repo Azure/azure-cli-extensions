@@ -5385,7 +5385,7 @@ def aks_openclaw_deploy(cmd, client, resource_group_name, cluster_name,
                        ai_foundry_location=None,
                        model=None,
                        model_version=None,
-                       deployment_name=None,
+                       model_deployment_name=None,
                        capacity=None,
                        namespace=None):
     from azext_aks_preview.openclaw.deploy import deploy_openclaw
@@ -5397,7 +5397,7 @@ def aks_openclaw_deploy(cmd, client, resource_group_name, cluster_name,
         ai_foundry_location=ai_foundry_location,
         model=model,
         model_version=model_version,
-        deployment_name=deployment_name,
+        deployment_name=model_deployment_name,
         capacity=capacity,
         namespace=namespace,
     )
@@ -5419,5 +5419,13 @@ def aks_openclaw_show(cmd, client, resource_group_name, cluster_name,
     from azext_aks_preview.openclaw.deploy import show_openclaw
     return show_openclaw(
         cmd, resource_group_name, cluster_name,
+        namespace=namespace,
+    )
+
+
+def aks_openclaw_connect(cmd, client, resource_group_name, cluster_name=None, namespace=None):
+    from azext_aks_preview.openclaw.deploy import connect_openclaw
+    return connect_openclaw(
+        cmd, resource_group_name, cluster_name=cluster_name,
         namespace=namespace,
     )

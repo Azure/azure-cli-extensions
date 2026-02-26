@@ -613,3 +613,4 @@ def load_command_table(self, _):
         g.custom_command("deploy", "aks_openclaw_deploy")
         g.custom_command("delete", "aks_openclaw_delete", confirmation=True)
         g.custom_show_command("show", "aks_openclaw_show")
+        g.custom_command("connect", "aks_openclaw_connect")
