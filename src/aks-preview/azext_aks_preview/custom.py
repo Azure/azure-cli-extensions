@@ -5375,3 +5375,49 @@ def aks_jwtauthenticator_list(cmd, client, resource_group_name, cluster_name, ak
 def aks_jwtauthenticator_show(cmd, client, resource_group_name, cluster_name, name, aks_custom_headers=None):
     headers = get_aks_custom_headers(aks_custom_headers)
     return client.get(resource_group_name, cluster_name, name, headers=headers)
+
+
+# openclaw commands
+def aks_openclaw_deploy(cmd, client, resource_group_name, cluster_name,
+                       ai_foundry_resource_id=None,
+                       ai_foundry_endpoint=None,
+                       ai_foundry_api_key=None,
+                       ai_foundry_location=None,
+                       model=None,
+                       model_version=None,
+                       deployment_name=None,
+                       capacity=None,
+                       namespace=None):
+    from azext_aks_preview.openclaw.deploy import deploy_openclaw
+    return deploy_openclaw(
+        cmd, resource_group_name, cluster_name,
+        ai_foundry_resource_id=ai_foundry_resource_id,
+        ai_foundry_endpoint=ai_foundry_endpoint,
+        ai_foundry_api_key=ai_foundry_api_key,
+        ai_foundry_location=ai_foundry_location,
+        model=model,
+        model_version=model_version,
+        deployment_name=deployment_name,
+        capacity=capacity,
+        namespace=namespace,
+    )
+
+
+def aks_openclaw_delete(cmd, client, resource_group_name, cluster_name,
+                        namespace=None,
+                        delete_ai_resources=False):
+    from azext_aks_preview.openclaw.deploy import delete_openclaw
+    return delete_openclaw(
+        cmd, resource_group_name, cluster_name,
+        namespace=namespace,
+        delete_ai_resources=delete_ai_resources,
+    )
+
+
+def aks_openclaw_show(cmd, client, resource_group_name, cluster_name,
+                      namespace=None):
+    from azext_aks_preview.openclaw.deploy import show_openclaw
+    return show_openclaw(
+        cmd, resource_group_name, cluster_name,
+        namespace=namespace,
+    )

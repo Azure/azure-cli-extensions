@@ -603,3 +603,13 @@ def load_command_table(self, _):
         self.command_table["aks safeguards delete"] = Delete(loader=self)
         self.command_table["aks safeguards list"] = List(loader=self)
         self.command_table["aks safeguards wait"] = Wait(loader=self)
+
+    # AKS openclaw commands
+    with self.command_group(
+        "aks openclaw",
+        managed_clusters_sdk,
+        client_factory=cf_managed_clusters,
+    ) as g:
+        g.custom_command("deploy", "aks_openclaw_deploy")
+        g.custom_command("delete", "aks_openclaw_delete", confirmation=True)
+        g.custom_show_command("show", "aks_openclaw_show")
