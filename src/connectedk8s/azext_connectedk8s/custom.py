@@ -1306,7 +1306,8 @@ def install_helm_client(cmd: CLICommand) -> str:
 
     # Download compressed Helm binary if not already present
     if not os.path.isfile(install_location):
-        # Creating the helm folder if it doesnt exist
+        # The archive is downloaded to ~/.azure/helm/<version>/<archive-file>.
+        # Ensure the <version> directory exists first to avoid file-not-found errors.
         if not os.path.exists(download_location):
             try:
                 os.makedirs(download_location)
@@ -1326,6 +1327,7 @@ def install_helm_client(cmd: CLICommand) -> str:
         retry_count = 3
         retry_delay = 5
         if arch == "arm64":
+            # ARM64 Helm binaries are downloaded from the official Helm distribution.
             official_helm_url = f"https://get.helm.sh/{download_file_name}"
             download_location_file = os.path.expanduser(
                 os.path.join(download_location, download_file_name)
@@ -1349,6 +1351,7 @@ def install_helm_client(cmd: CLICommand) -> str:
                         )
                     time.sleep(retry_delay)
         else:
+            # Non-ARM64 binaries continue to use MCR artifacts for existing behavior.
             mcr_url = utils.get_mcr_path(cmd.cli_ctx.cloud.endpoints.active_directory)
 
             client = oras.client.OrasClient(hostname=mcr_url)
