@@ -4,4 +4,14 @@
 # license information.
 # --------------------------------------------------------------------------
 
-__path__ = __import__('pkgutil').extend_path(__path__, __name__)
+from knack.help_files import helps
+
+
+helps['healthbot update'] = """
+    type: command
+    short-summary: "Patch a HealthBot."
+    examples:
+      - name: BotUpdate
+        text: |-
+               az healthbot update --name "samplebotname" --sku "F0" --resource-group "healthbotClient"
+"""
