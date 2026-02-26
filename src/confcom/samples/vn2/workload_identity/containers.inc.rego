@@ -1,5 +1,6 @@
 [
   {
+    "command": [],
     "env_rules": [
       {
         "required": false,
