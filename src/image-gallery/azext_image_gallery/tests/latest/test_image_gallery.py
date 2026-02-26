@@ -6,7 +6,7 @@
 import os
 import unittest
 
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only)
 
 
 class CommunityGalleryScenarioTest(ScenarioTest):
@@ -141,6 +141,7 @@ class CommunityGalleryScenarioTest(ScenarioTest):
             self.check('sharingProfile.permissions', 'Private')
         ])
 
+    @live_only()
     @ResourceGroupPreparer(location='eastus')
     def test_shared_gallery_community(self, resource_group):
         self.kwargs.update({

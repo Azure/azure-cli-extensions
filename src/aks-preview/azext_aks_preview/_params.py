@@ -789,6 +789,7 @@ def load_arguments(self, _):
             arg_type=get_enum_type(app_routing_nginx_configs),
             options_list=["--app-routing-default-nginx-controller", "--ardnc"]
         )
+        c.argument("enable_default_domain", action="store_true", is_preview=True)
         # nodepool paramerters
         c.argument(
             "nodepool_name",
@@ -2199,6 +2200,14 @@ def load_arguments(self, _):
     with self.argument_context("aks nodepool manual-scale delete") as c:
         c.argument("current_vm_sizes", is_preview=True)
 
+    with self.argument_context("aks nodepool get-rollback-versions") as c:
+        pass  # Uses common nodepool parameters
+
+    with self.argument_context("aks nodepool rollback") as c:
+        c.argument("aks_custom_headers", nargs="*")
+        c.argument("if_match")
+        c.argument("if_none_match")
+
     with self.argument_context("aks machine") as c:
         c.argument("cluster_name", help="The cluster name.")
         c.argument(
@@ -2828,11 +2837,14 @@ def load_arguments(self, _):
         c.argument("enable_kv", action="store_true")
         c.argument("keyvault_id", options_list=["--attach-kv"])
         c.argument("nginx", arg_type=get_enum_type(app_routing_nginx_configs))
+        c.argument("enable_default_domain", action="store_true", is_preview=True)
 
     with self.argument_context("aks approuting update") as c:
         c.argument("keyvault_id", options_list=["--attach-kv"])
         c.argument("enable_kv", action="store_true")
         c.argument("nginx", arg_type=get_enum_type(app_routing_nginx_configs))
+        c.argument("enable_default_domain", action="store_true", is_preview=True)
+        c.argument("disable_default_domain", action="store_true", is_preview=True)
 
     with self.argument_context("aks approuting zone add") as c:
         c.argument("dns_zone_resource_ids", options_list=["--ids"], required=True)

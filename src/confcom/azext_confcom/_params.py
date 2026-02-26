@@ -484,3 +484,17 @@ def load_arguments(self, _):
             type=str,
             help="Platform to create container definition for",
         )
+
+    with self.argument_context("confcom containers from_vn2") as c:
+        c.positional(
+            "template",
+            type=str,
+            help="Template to create container definitions from",
+        )
+        c.argument(
+            "container_name",
+            options_list=['--name', "-n"],
+            required=False,
+            type=str,
+            help='The name of the container in the template to use. If omitted, all containers are returned.'
+        )

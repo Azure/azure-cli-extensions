@@ -10,7 +10,10 @@ Unit tests for AKSAgentManager.
 import unittest
 from unittest.mock import MagicMock, Mock, PropertyMock, patch
 
-from azext_aks_agent.agent.k8s.aks_agent_manager import AKSAgentManager
+from azext_aks_agent.agent.k8s.aks_agent_manager import (
+    AKSAgentManager,
+    AKSAgentManagerClient,
+)
 from kubernetes.client.rest import ApiException
 
 
@@ -190,14 +193,16 @@ class TestAKSAgentManager(unittest.TestCase):
         self.assertFalse(success)
         self.assertIn("deployment failed", error_msg)
 
+    @patch('azext_aks_agent.agent.k8s.aks_agent_manager.AKSAgentManager._wait_for_pods_removed')
     @patch('azext_aks_agent.agent.k8s.aks_agent_manager.AKSAgentManager._run_helm_command')
     @patch('azext_aks_agent.agent.k8s.aks_agent_manager.AKSAgentManager._init_k8s_client')
     @patch('azext_aks_agent.agent.k8s.aks_agent_manager.AKSAgentManager._load_existing_helm_release_config')
     @patch('azext_aks_agent.agent.k8s.aks_agent_manager.HelmManager')
     def test_uninstall_agent_success(self, mock_helm_manager, mock_load_config,
-                                     mock_init_client, mock_helm_cmd):
+                                     mock_init_client, mock_helm_cmd, mock_wait_pods):
         """Test successful agent uninstallation."""
         mock_helm_cmd.return_value = (True, "uninstalled successfully")
+        mock_wait_pods.return_value = True
 
         manager = AKSAgentManager(
             resource_group_name=self.resource_group,
@@ -208,6 +213,7 @@ class TestAKSAgentManager(unittest.TestCase):
         result = manager.uninstall_agent()
 
         self.assertTrue(result)
+        mock_wait_pods.assert_called_once_with(timeout=60)
 
     @patch('azext_aks_agent.agent.k8s.aks_agent_manager.AKSAgentManager._init_k8s_client')
     @patch('azext_aks_agent.agent.k8s.aks_agent_manager.AKSAgentManager._load_existing_helm_release_config')
@@ -289,6 +295,79 @@ class TestAKSAgentManager(unittest.TestCase):
         self.assertIn("helm_status", status)
         self.assertEqual(len(status["deployments"]), 2)
         self.assertEqual(len(status["pods"]), 2)
+
+    @patch('azext_aks_agent.agent.k8s.aks_agent_manager.AKSAgentManager._init_k8s_client')
+    @patch('azext_aks_agent.agent.k8s.aks_agent_manager.AKSAgentManager._load_existing_helm_release_config')
+    @patch('azext_aks_agent.agent.k8s.aks_agent_manager.HelmManager')
+    def test_command_flags(self, mock_helm_manager, mock_load_config, mock_init_client):
+        """Test command_flags returns correct format with namespace."""
+        manager = AKSAgentManager(
+            resource_group_name=self.resource_group,
+            cluster_name=self.cluster_name,
+            subscription_id=self.subscription_id,
+            namespace=self.namespace
+        )
+
+        result = manager.command_flags()
+
+        expected = f"-n {self.cluster_name} -g {self.resource_group} --namespace {self.namespace}"
+        self.assertEqual(result, expected)
+
+    @patch('azext_aks_agent.agent.k8s.aks_agent_manager.AKSAgentManager._init_k8s_client')
+    @patch('azext_aks_agent.agent.k8s.aks_agent_manager.AKSAgentManager._load_existing_helm_release_config')
+    @patch('azext_aks_agent.agent.k8s.aks_agent_manager.HelmManager')
+    def test_init_command_flags(self, mock_helm_manager, mock_load_config, mock_init_client):
+        """Test init_command_flags returns correct format without namespace."""
+        manager = AKSAgentManager(
+            resource_group_name=self.resource_group,
+            cluster_name=self.cluster_name,
+            subscription_id=self.subscription_id,
+            namespace=self.namespace
+        )
+
+        result = manager.init_command_flags()
+
+        expected = f"-n {self.cluster_name} -g {self.resource_group}"
+        self.assertEqual(result, expected)
+
+
+class TestAKSAgentManagerClient(unittest.TestCase):
+    """Test cases for AKSAgentManagerClient."""
+
+    def setUp(self):
+        """Set up test fixtures."""
+        self.resource_group = "test-rg"
+        self.cluster_name = "test-cluster"
+        self.subscription_id = "test-sub-id"
+        self.kubeconfig_path = "/mock/kubeconfig"
+
+    def test_command_flags(self):
+        """Test command_flags returns correct format."""
+        manager = AKSAgentManagerClient(
+            resource_group_name=self.resource_group,
+            cluster_name=self.cluster_name,
+            subscription_id=self.subscription_id,
+            kubeconfig_path=self.kubeconfig_path
+        )
+
+        result = manager.command_flags()
+
+        expected = f"-n {self.cluster_name} -g {self.resource_group}"
+        self.assertEqual(result, expected)
+
+    def test_init_command_flags(self):
+        """Test init_command_flags returns correct format."""
+        manager = AKSAgentManagerClient(
+            resource_group_name=self.resource_group,
+            cluster_name=self.cluster_name,
+            subscription_id=self.subscription_id,
+            kubeconfig_path=self.kubeconfig_path
+        )
+
+        result = manager.init_command_flags()
+
+        expected = f"-n {self.cluster_name} -g {self.resource_group}"
+        self.assertEqual(result, expected)
 
 
 if __name__ == '__main__':

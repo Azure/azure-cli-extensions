@@ -4,8 +4,22 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp env --environment-mode': Add environment mode to create and update commands
+
+1.3.0b3
+++++++
+* `az containerapp patch list`: Add input validation for container image names
+* `az containerapp patch apply`: Add input validation for container image names
+* `az containerapp patch interactive`: Add input validation for container image names
+
+1.3.0b2
+++++++
 * 'az containerapp function invocations': Update application insights query 
 * 'az containerapp function keys': Update minimum replica check 
+* 'az containerapp list': Add `--kind` parameter to filter container apps by kind 
+* 'az containerapp function invocations': Fix issue when cloud role name is set
+* 'az containerapp sessionpool update': Fix --no-wait issue and extend timeout to 7200s
+* 'az containerapp sessionpool update': Fix clean identity issue when not providing identity parameters
 
 1.3.0b1
 ++++++

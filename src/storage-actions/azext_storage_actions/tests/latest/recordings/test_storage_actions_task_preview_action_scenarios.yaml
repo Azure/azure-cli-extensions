@@ -36,42 +36,47 @@ interactions:
       ParameterSetName:
       - -l --action --blobs --container
       User-Agent:
-      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.83.0 azsdk-python-core/1.38.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageActions/locations/eastus2/previewActions?api-version=2023-01-01
   response:
     body:
-      string: '{"properties":{"container":{"name":"firstContainer","metadata":[{"key":"mContainerKey1","value":"mContainerValue1"}]},"blobs":[{"matchedBlock":"If","properties":[{"key":"Creation-Time","value":"Wed,
+      string: '{"properties":{"container":{"name":"firstContainer","metadata":[{"key":"mContainerKey1","value":"mContainerValue1"}]},"action":{"if":{"condition":"[[equals(AccessTier,''Hot'')]]"},"elseBlockExists":true},"blobs":[{"name":"folder1/file1.txt","metadata":[{"key":"mKey1","value":"mValue1"}],"properties":[{"key":"Creation-Time","value":"Wed,
         07 Jun 2023 05:23:29 GMT"},{"key":"Last-Modified","value":"Wed, 07 Jun 2023
-        05:23:29 GMT"},{"key":"Etag","value":"0x8DB67175454D36D"},{"key":"Content-Length","value":"38619"},{"key":"Content-Type","value":"text/xml"},{"key":"Content-Encoding","value":""},{"key":"Content-Language","value":""},{"key":"Content-CRC64","value":""},{"key":"Content-MD5","value":"njr6iDrmU9+FC89WMK22EA=="},{"key":"Cache-Control","value":""},{"key":"Content-Disposition","value":""},{"key":"BlobType","value":"BlockBlob"},{"key":"AccessTier","value":"Hot"},{"key":"AccessTierInferred","value":"true"},{"key":"LeaseStatus","value":"unlocked"},{"key":"LeaseState","value":"available"},{"key":"ServerEncrypted","value":"true"},{"key":"TagCount","value":"1"}],"tags":[{"key":"tKey1","value":"tValue1"}],"name":"folder1/file1.txt","metadata":[{"key":"mKey1","value":"mValue1"}]},{"matchedBlock":"Else","properties":[{"key":"Creation-Time","value":"Wed,
+        05:23:29 GMT"},{"key":"Etag","value":"0x8DB67175454D36D"},{"key":"Content-Length","value":"38619"},{"key":"Content-Type","value":"text/xml"},{"key":"Content-Encoding","value":""},{"key":"Content-Language","value":""},{"key":"Content-CRC64","value":""},{"key":"Content-MD5","value":"njr6iDrmU9+FC89WMK22EA=="},{"key":"Cache-Control","value":""},{"key":"Content-Disposition","value":""},{"key":"BlobType","value":"BlockBlob"},{"key":"AccessTier","value":"Hot"},{"key":"AccessTierInferred","value":"true"},{"key":"LeaseStatus","value":"unlocked"},{"key":"LeaseState","value":"available"},{"key":"ServerEncrypted","value":"true"},{"key":"TagCount","value":"1"}],"tags":[{"key":"tKey1","value":"tValue1"}],"matchedBlock":"If"},{"name":"folder2/file1.txt","metadata":[{"key":"mKey2","value":"mValue2"}],"properties":[{"key":"Creation-Time","value":"Wed,
         06 Jun 2023 05:23:29 GMT"},{"key":"Last-Modified","value":"Wed, 06 Jun 2023
-        05:23:29 GMT"},{"key":"Etag","value":"0x6FB67175454D36D"}],"tags":[{"key":"tKey2","value":"tValue2"}],"name":"folder2/file1.txt","metadata":[{"key":"mKey2","value":"mValue2"}]}],"action":{"if":{"condition":"[[equals(AccessTier,''Hot'')]]"},"elseBlockExists":true}},"isValid":true,"errors":[]}'
+        05:23:29 GMT"},{"key":"Etag","value":"0x6FB67175454D36D"}],"tags":[{"key":"tKey2","value":"tValue2"}],"matchedBlock":"Else"}]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1491'
+      - '1464'
       content-type:
-      - application/json
+      - application/json; charset=utf-8
       date:
-      - Mon, 23 Jun 2025 09:44:02 GMT
+      - Thu, 05 Feb 2026 05:27:08 GMT
       expires:
       - '-1'
+      mise-correlation-id:
+      - e7041e97-32de-4cbd-a2d7-6e2269de55ec
       pragma:
       - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/ac24a137-8129-4ecd-b9f7-4d566f6762eb
+      - tenantId=4b71fe15-44c6-47b7-94ac-5a6b2cc290e9,objectId=066398bd-615c-4c97-9a77-141630f57e19/australiaeast/609e89fc-ae25-4bb2-af48-304500fb3905
+      x-ms-providerhub-traffic:
+      - 'True'
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
       - '199'
+      x-msedge-ref:
+      - 'Ref A: 2D786623DB144B4AA4D6B4CE3C366254 Ref B: SYD03EDGE1422 Ref C: 2026-02-05T05:27:08Z'
     status:
       code: 200
       message: OK

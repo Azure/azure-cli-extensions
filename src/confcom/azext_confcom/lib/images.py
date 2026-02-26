@@ -62,4 +62,7 @@ def get_image_config(image: str) -> dict:
     if image_config.get("WorkingDir"):
         config["working_dir"] = image_config.get("WorkingDir")
 
+    if image_config.get("StopSignal"):
+        config["signals"] = [3]
+
     return config

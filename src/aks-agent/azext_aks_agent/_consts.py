@@ -51,5 +51,8 @@ AGENT_NAMESPACE = "kube-system"
 AGENT_LABEL_SELECTOR = "app.kubernetes.io/name=aks-agent"
 AKS_MCP_LABEL_SELECTOR = "app.kubernetes.io/name=aks-mcp"
 
+# AKS Agent Version (shared by helm chart and docker image)
+AKS_AGENT_VERSION = "0.4.0"
+
 # Helm Configuration
 HELM_VERSION = "3.16.0"
