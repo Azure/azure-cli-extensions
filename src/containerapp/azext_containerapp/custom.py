@@ -764,8 +764,7 @@ def create_managed_environment(cmd,
                                logs_dynamic_json_columns=False,
                                system_assigned=False,
                                user_assigned=None,
-                               public_network_access=None,
-                               environment_mode=None):
+                               public_network_access=None):
     return create_managed_environment_logic(
         cmd=cmd,
         name=name,
@@ -799,8 +798,7 @@ def create_managed_environment(cmd,
         logs_dynamic_json_columns=logs_dynamic_json_columns,
         system_assigned=system_assigned,
         user_assigned=user_assigned,
-        public_network_access=public_network_access,
-        environment_mode=environment_mode
+        public_network_access=public_network_access
     )
 
 
@@ -839,8 +837,7 @@ def create_managed_environment_logic(cmd,
                                      public_network_access=None,
                                      workload_profile_type=None,
                                      workload_profile_name=None,
-                                     is_env_for_azml_app=False,
-                                     environment_mode=None):
+                                     is_env_for_azml_app=False):
     raw_parameters = locals()
     containerapp_env_create_decorator = ContainerappEnvPreviewCreateDecorator(
         cmd=cmd,
@@ -879,8 +876,7 @@ def update_managed_environment(cmd,
                                p2p_encryption_enabled=None,
                                no_wait=False,
                                logs_dynamic_json_columns=None,
-                               public_network_access=None,
-                               environment_mode=None):
+                               public_network_access=None):
     raw_parameters = locals()
     containerapp_env_update_decorator = ContainerappEnvPreviewUpdateDecorator(
         cmd=cmd,

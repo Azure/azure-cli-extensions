@@ -6,7 +6,6 @@
 import os
 import time
 
-from azure.cli.core.azclierror import ValidationError
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only)
 
@@ -412,8 +411,8 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
             JMESPathCheck("properties.workloadProfiles", None),
         ])
 
-        with self.assertRaisesRegex(ValidationError, "Existing environment {} cannot enable workload profiles. If you want to use Consumption and Dedicated environment, please create a new one.".format(env)):
-            self.cmd('containerapp env create -g {} -n {} -w --logs-destination none -s {}'.format(resource_group, env, subnet_id))
+        self.cmd('containerapp env create -g {} -n {} --enable-workload-profiles --logs-destination none -s {}'.format(resource_group, env, subnet_id), expect_failure=True)
+        self.cmd('containerapp env create -g {} -n {} -w --logs-destination none -s {}'.format(resource_group, env, subnet_id), expect_failure=True)
 
         self.cmd('containerapp env create -g {} -n {} -w false --logs-destination none'.format(resource_group, env), expect_failure=False, checks=[
             JMESPathCheck("name", env),
