@@ -5404,13 +5404,11 @@ def aks_openclaw_deploy(cmd, client, resource_group_name, cluster_name,
 
 
 def aks_openclaw_delete(cmd, client, resource_group_name, cluster_name,
-                        namespace=None,
-                        delete_ai_resources=False):
+                        namespace=None):
     from azext_aks_preview.openclaw.deploy import delete_openclaw
     return delete_openclaw(
         cmd, resource_group_name, cluster_name,
         namespace=namespace,
-        delete_ai_resources=delete_ai_resources,
     )
 
 

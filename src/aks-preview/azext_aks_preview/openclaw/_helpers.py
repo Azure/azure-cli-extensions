@@ -100,6 +100,14 @@ def generate_deployment_name(model_name):
     return model_name.replace(".", "").replace("-", "")
 
 
+def get_aks_cluster(cmd, resource_group_name, cluster_name):
+    """Get AKS cluster object."""
+    from azext_aks_preview._client_factory import cf_managed_clusters
+
+    client = cf_managed_clusters(cmd.cli_ctx)
+    return client.get(resource_group_name, cluster_name)
+
+
 def get_kubeconfig(cmd, resource_group_name, cluster_name):
     """Get AKS credentials into a temp kubeconfig file, return path."""
     temp_dir = tempfile.mkdtemp()

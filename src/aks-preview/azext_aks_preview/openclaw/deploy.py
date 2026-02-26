@@ -48,7 +48,7 @@ def _get_resource_group_location(cmd, resource_group_name):
     return rg.location
 
 
-def _provision_ai_foundry(cmd, resource_group_name, location, foundry_name,
+def _provision_ai_foundry(cmd, node_resource_group, location, foundry_name,
                           model_name, model_version, deployment_name, capacity):
     """Create a new AIServices account and deploy a model. Returns (endpoint, api_key, deployment_name)."""
     from azure.cli.core.util import send_raw_request
@@ -56,11 +56,11 @@ def _provision_ai_foundry(cmd, resource_group_name, location, foundry_name,
 
     subscription_id = get_subscription_id(cmd.cli_ctx)
 
-    # Create AIServices account
-    logger.warning("Creating AIServices account '%s' in '%s'...", foundry_name, location)
+    # Create AIServices account in nodeResourceGroup
+    logger.warning("Creating AIServices account '%s' in node resource group '%s'...", foundry_name, node_resource_group)
     account_url = (
         f"https://management.azure.com/subscriptions/{subscription_id}"
-        f"/resourceGroups/{resource_group_name}"
+        f"/resourceGroups/{node_resource_group}"
         f"/providers/Microsoft.CognitiveServices/accounts/{foundry_name}"
         f"?api-version={CONST_OPENCLAW_COGNITIVE_API_VERSION}"
     )
@@ -94,7 +94,7 @@ def _provision_ai_foundry(cmd, resource_group_name, location, foundry_name,
     logger.warning("Deploying model '%s' as '%s'...", model_name, deployment_name)
     deploy_url = (
         f"https://management.azure.com/subscriptions/{subscription_id}"
-        f"/resourceGroups/{resource_group_name}"
+        f"/resourceGroups/{node_resource_group}"
         f"/providers/Microsoft.CognitiveServices/accounts/{foundry_name}"
         f"/deployments/{deployment_name}"
         f"?api-version={CONST_OPENCLAW_COGNITIVE_API_VERSION}"
@@ -118,7 +118,7 @@ def _provision_ai_foundry(cmd, resource_group_name, location, foundry_name,
     # Get API key
     keys_url = (
         f"https://management.azure.com/subscriptions/{subscription_id}"
-        f"/resourceGroups/{resource_group_name}"
+        f"/resourceGroups/{node_resource_group}"
         f"/providers/Microsoft.CognitiveServices/accounts/{foundry_name}"
         f"/listKeys?api-version={CONST_OPENCLAW_COGNITIVE_API_VERSION}"
     )
@@ -194,7 +194,7 @@ def _resolve_byo_endpoint(ai_foundry_endpoint, ai_foundry_api_key, deployment_na
     return endpoint, ai_foundry_api_key, deployment_name
 
 
-def resolve_or_provision_ai_foundry(cmd, resource_group_name,
+def resolve_or_provision_ai_foundry(cmd, resource_group_name, cluster_name=None,
                                     ai_foundry_resource_id=None,
                                     ai_foundry_endpoint=None,
                                     ai_foundry_api_key=None,
@@ -204,6 +204,8 @@ def resolve_or_provision_ai_foundry(cmd, resource_group_name,
                                     deployment_name=None,
                                     capacity=None):
     """Dispatch to the right AI Foundry path. Returns (endpoint, api_key, deployment_name)."""
+    from azext_aks_preview.openclaw._helpers import get_aks_cluster
+
     model_name = model_name or CONST_OPENCLAW_DEFAULT_MODEL
     model_version = model_version or CONST_OPENCLAW_DEFAULT_MODEL_VERSION
     capacity = capacity or CONST_OPENCLAW_DEFAULT_CAPACITY
@@ -230,11 +232,19 @@ def resolve_or_provision_ai_foundry(cmd, resource_group_name,
         logger.warning("Using provided AI Foundry endpoint: %s", ai_foundry_endpoint)
         return _resolve_byo_endpoint(ai_foundry_endpoint, ai_foundry_api_key, deployment_name)
 
-    # Default: provision new
+    # Default: provision new in the AKS cluster's nodeResourceGroup
     location = ai_foundry_location or _get_resource_group_location(cmd, resource_group_name)
     foundry_name = generate_foundry_name(resource_group_name)
+    
+    # Get the cluster's nodeResourceGroup
+    if cluster_name:
+        cluster = get_aks_cluster(cmd, resource_group_name, cluster_name)
+        node_resource_group = cluster.node_resource_group
+    else:
+        raise CLIError("cluster_name is required for provisioning AI Foundry")
+    
     return _provision_ai_foundry(
-        cmd, resource_group_name, location, foundry_name,
+        cmd, node_resource_group, location, foundry_name,
         model_name, model_version, deployment_name, capacity,
     )
 
@@ -256,6 +266,7 @@ def deploy_openclaw(cmd, resource_group_name, cluster_name,
     # Step 1: Resolve or provision AI Foundry
     endpoint, api_key, resolved_deployment = resolve_or_provision_ai_foundry(
         cmd, resource_group_name,
+        cluster_name=cluster_name,
         ai_foundry_resource_id=ai_foundry_resource_id,
         ai_foundry_endpoint=ai_foundry_endpoint,
         ai_foundry_api_key=ai_foundry_api_key,
@@ -430,9 +441,10 @@ def connect_openclaw(cmd, resource_group_name, cluster_name=None, namespace=None
 
 
 def delete_openclaw(cmd, resource_group_name, cluster_name,
-                    namespace=None,
-                    delete_ai_resources=False):
-    """Delete openclaw deployment and optionally AI Foundry resources."""
+                    namespace=None):
+    """Delete openclaw deployment and AI Foundry resources."""
+    from azext_aks_preview.openclaw._helpers import get_aks_cluster
+
     namespace = namespace or CONST_OPENCLAW_DEFAULT_NAMESPACE
     ensure_prerequisites()
 
@@ -443,29 +455,31 @@ def delete_openclaw(cmd, resource_group_name, cluster_name,
         uninstall_helm_chart(kubeconfig_path, namespace=namespace)
         logger.warning("OpenClaw uninstalled successfully.")
 
-        if delete_ai_resources:
-            foundry_name = generate_foundry_name(resource_group_name)
-            _delete_ai_foundry(cmd, resource_group_name, foundry_name)
+        # Always delete AI Foundry resources from nodeResourceGroup
+        cluster = get_aks_cluster(cmd, resource_group_name, cluster_name)
+        node_resource_group = cluster.node_resource_group
+        foundry_name = generate_foundry_name(resource_group_name)
+        _delete_ai_foundry(cmd, node_resource_group, foundry_name)
     finally:
         kubeconfig_dir = os.path.dirname(kubeconfig_path)
         shutil.rmtree(kubeconfig_dir, ignore_errors=True)
 
 
-def _delete_ai_foundry(cmd, resource_group_name, foundry_name):
-    """Delete the AIServices account."""
+def _delete_ai_foundry(cmd, node_resource_group, foundry_name):
+    """Delete the AIServices account from the node resource group."""
     from azure.cli.core.util import send_raw_request
     from azure.cli.core.commands.client_factory import get_subscription_id
 
     subscription_id = get_subscription_id(cmd.cli_ctx)
     url = (
         f"https://management.azure.com/subscriptions/{subscription_id}"
-        f"/resourceGroups/{resource_group_name}"
+        f"/resourceGroups/{node_resource_group}"
         f"/providers/Microsoft.CognitiveServices/accounts/{foundry_name}"
         f"?api-version={CONST_OPENCLAW_COGNITIVE_API_VERSION}"
     )
     try:
         send_raw_request(cmd.cli_ctx, "DELETE", url)
-        logger.warning("AIServices account '%s' deleted.", foundry_name)
+        logger.warning("AIServices account '%s' deleted from '%s'.", foundry_name, node_resource_group)
     except Exception as e:  # pylint: disable=broad-except
         logger.warning("Could not delete AIServices account '%s': %s", foundry_name, e)
 
