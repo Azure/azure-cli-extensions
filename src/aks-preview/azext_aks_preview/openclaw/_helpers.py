@@ -305,9 +305,19 @@ def patch_openclaw_api_format(kubeconfig_path, namespace=CONST_OPENCLAW_DEFAULT_
             )
 
     # Set gateway.mode=local and disable memory search
+    # Add system instructions to inform the agent about its Kubernetes context
+    k8s_context_instructions = (
+        "You are running inside a Kubernetes pod on an Azure Kubernetes Service (AKS) cluster. "
+        "You have access to a service account with 'view' role permissions. "
+        "When you run kubectl commands locally, you are directly accessing the cluster resources. "
+        "You can list pods, services, deployments, and other resources in your namespace and cluster-wide (for allowed resources). "
+        "Do not assume you need to configure external cluster access - kubectl commands work directly within the cluster."
+    )
+    
     for config_cmd in [
         ["openclaw", "config", "set", "gateway.mode", "local"],
         ["openclaw", "config", "set", "agents.defaults.memorySearch.enabled", "false"],
+        ["openclaw", "config", "set", "agents.defaults.systemInstructions", k8s_context_instructions],
     ]:
         run_kubectl(
             ["exec", pod_name, "-n", namespace, "-c", "openclaw", "--"] + config_cmd,

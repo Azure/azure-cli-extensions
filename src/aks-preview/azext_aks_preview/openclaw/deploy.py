@@ -301,8 +301,10 @@ def deploy_openclaw(cmd, resource_group_name, cluster_name,
         )
         
         logger.warning("\n💡 Startup Tips:")
-        logger.warning("   • You're running inside a pod with a service account")
-        logger.warning("   • Try 'kubectl get pods' inside the pod to verify access")
+        logger.warning("   • The agent is running INSIDE this AKS cluster as a pod")
+        logger.warning("   • It has a service account with 'view' role for kubectl access")
+        logger.warning("   • kubectl commands executed by the agent work directly within the cluster")
+        logger.warning("   • Try asking: 'list all pods in the cluster' or 'show me the deployments'")
         logger.warning("   • Run 'openclaw configure' to set up integrations (Telegram, Discord, etc.)")
         logger.warning("   • Use 'openclaw --help' to explore available commands")
         logger.warning("   • Run 'az aks openclaw connect' to get the gateway token and web UI link")
@@ -320,7 +322,7 @@ def deploy_openclaw(cmd, resource_group_name, cluster_name,
 
 
 def connect_openclaw(cmd, resource_group_name, cluster_name=None, namespace=None):
-    """Show OpenClaw gateway token and help user connect to the web UI."""
+    """Show OpenClaw gateway token and set up port-forward to the pod."""
     namespace = namespace or CONST_OPENCLAW_DEFAULT_NAMESPACE
     
     # If cluster_name is provided, get kubeconfig
@@ -356,38 +358,68 @@ def connect_openclaw(cmd, resource_group_name, cluster_name=None, namespace=None
         except Exception as e:
             raise CLIError(f"Failed to decode gateway token: {e}")
         
-        # Display connection info
-        logger.warning("\n" + "="*70)
-        logger.warning("🦞 OpenClaw Gateway Token")
-        logger.warning("="*70)
-        logger.warning("\nGateway Token (use for web UI authentication):")
-        logger.warning("  %s", token)
+        # Start kubectl port-forward to the pod in the background
+        logger.warning("Setting up port-forward to openclaw pod...")
+        forward_port = 18789
+        forward_cmd = ["kubectl", "port-forward", "-n", namespace, "pod/openclaw-0", f"{forward_port}:{forward_port}"]
+        if kubeconfig_path:
+            forward_cmd.extend(["--kubeconfig", kubeconfig_path])
         
-        logger.warning("\n🌐 Web UI Access:")
-        dashboard_url = f"http://localhost:18789?token={token}"
-        logger.warning("  " + dashboard_url)
+        # Check if port-forward is already running
+        import socket
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        port_in_use = sock.connect_ex(('localhost', forward_port)) == 0
+        sock.close()
         
-        logger.warning("\n🔧 Port Forwarding Setup:")
-        logger.warning("  If you haven't set up port-forwarding yet, run:")
-        if cluster_name:
-            logger.warning("    kubectl port-forward -n %s svc/openclaw 18789:18789", namespace)
+        if not port_in_use:
+            # Start port-forward in background (detached)
+            try:
+                subprocess.Popen(
+                    forward_cmd,
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                    start_new_session=True
+                )
+                logger.warning("✓ Port-forward started on port %d", forward_port)
+                time.sleep(2)  # Give port-forward time to establish
+            except Exception as e:
+                logger.warning("Failed to start port-forward: %s", e)
+                logger.warning("You may need to run manually: %s", " ".join(forward_cmd))
         else:
-            logger.warning("    kubectl port-forward -n %s statefulset/openclaw 18789:18789", namespace)
+            logger.warning("✓ Port already in use (port-forward may already be running)")
         
-        logger.warning("\n📝 Quick Start:")
-        logger.warning("  1. Set up port-forwarding (see 🔧 section above)")
-        logger.warning("  2. Click the Web UI link above - token is already included")
-        logger.warning("  3. If you see a token mismatch error, manually paste the token above")
-        logger.warning("  4. (Optional) Run 'openclaw configure' inside the pod to set up integrations")
-        logger.warning("\n💡 Note: You're running inside a pod with service account. You should already")
-        logger.warning("         have kubectl access. Try 'kubectl get pods' to verify.")
+        # Build the dashboard URL with token
+        dashboard_url = f"http://localhost:{forward_port}?token={token}"
         
-        logger.warning("\n" + "="*70 + "\n")
+        # Display connection info
+        logger.warning("")
+        logger.warning("="*70)
+        logger.warning("🦞 OpenClaw Web UI Access")
+        logger.warning("="*70)
+        logger.warning("")
+        logger.warning("🌐 Access URL (token included):")
+        logger.warning("  " + dashboard_url)
+        logger.warning("")
+        logger.warning("📋 Gateway Token:")
+        logger.warning("  %s", token)
+        logger.warning("")
+        logger.warning("📝 Instructions:")
+        logger.warning("  1. Click the URL above to open OpenClaw web UI")
+        logger.warning("  2. Token is already included in the URL")
+        logger.warning("  3. If connection fails, the token is shown above for manual entry")
+        logger.warning("  4. To stop port-forward: pkill -f 'kubectl port-forward'")
+        logger.warning("")
+        logger.warning("💡 Note: Port-forward connects directly to the openclaw-0 pod")
+        logger.warning("         This avoids CNI service routing issues.")
+        logger.warning("")
+        logger.warning("="*70)
+        logger.warning("")
         
         return {
             "token": token,
             "dashboard_url": dashboard_url,
             "namespace": namespace,
+            "forward_port": forward_port,
         }
         
     finally:
@@ -395,3 +427,87 @@ def connect_openclaw(cmd, resource_group_name, cluster_name=None, namespace=None
         if cluster_name and kubeconfig_path:
             kubeconfig_dir = os.path.dirname(kubeconfig_path)
             shutil.rmtree(kubeconfig_dir, ignore_errors=True)
+
+
+def delete_openclaw(cmd, resource_group_name, cluster_name,
+                    namespace=None,
+                    delete_ai_resources=False):
+    """Delete openclaw deployment and optionally AI Foundry resources."""
+    namespace = namespace or CONST_OPENCLAW_DEFAULT_NAMESPACE
+    ensure_prerequisites()
+
+    kubeconfig_path = get_kubeconfig(cmd, resource_group_name, cluster_name)
+
+    try:
+        logger.warning("Uninstalling openclaw from namespace '%s'...", namespace)
+        uninstall_helm_chart(kubeconfig_path, namespace=namespace)
+        logger.warning("OpenClaw uninstalled successfully.")
+
+        if delete_ai_resources:
+            foundry_name = generate_foundry_name(resource_group_name)
+            _delete_ai_foundry(cmd, resource_group_name, foundry_name)
+    finally:
+        kubeconfig_dir = os.path.dirname(kubeconfig_path)
+        shutil.rmtree(kubeconfig_dir, ignore_errors=True)
+
+
+def _delete_ai_foundry(cmd, resource_group_name, foundry_name):
+    """Delete the AIServices account."""
+    from azure.cli.core.util import send_raw_request
+    from azure.cli.core.commands.client_factory import get_subscription_id
+
+    subscription_id = get_subscription_id(cmd.cli_ctx)
+    url = (
+        f"https://management.azure.com/subscriptions/{subscription_id}"
+        f"/resourceGroups/{resource_group_name}"
+        f"/providers/Microsoft.CognitiveServices/accounts/{foundry_name}"
+        f"?api-version={CONST_OPENCLAW_COGNITIVE_API_VERSION}"
+    )
+    try:
+        send_raw_request(cmd.cli_ctx, "DELETE", url)
+        logger.warning("AIServices account '%s' deleted.", foundry_name)
+    except Exception as e:  # pylint: disable=broad-except
+        logger.warning("Could not delete AIServices account '%s': %s", foundry_name, e)
+
+
+def show_openclaw(cmd, resource_group_name, cluster_name, namespace=None):
+    """Show openclaw deployment status."""
+    namespace = namespace or CONST_OPENCLAW_DEFAULT_NAMESPACE
+    ensure_prerequisites()
+
+    kubeconfig_path = get_kubeconfig(cmd, resource_group_name, cluster_name)
+
+    try:
+        pods = get_deployment_status(kubeconfig_path, namespace=namespace)
+
+        # Try to get the LiteLLM config to show model info
+        model_info = None
+        try:
+            from azext_aks_preview.openclaw._helpers import run_kubectl
+            cm_json = run_kubectl(
+                ["get", "configmap", "openclaw-litellm-config", "-n", namespace, "-o", "json"],
+                kubeconfig_path=kubeconfig_path,
+                check=False,
+            )
+            cm = json.loads(cm_json)
+            config_yaml = cm.get("data", {}).get("config.yaml", "")
+            if config_yaml:
+                import yaml
+                config = yaml.safe_load(config_yaml)
+                model_list = config.get("model_list", [])
+                if model_list:
+                    model_info = {
+                        "model_name": model_list[0].get("model_name", ""),
+                        "api_base": model_list[0].get("litellm_params", {}).get("api_base", ""),
+                    }
+        except Exception:  # pylint: disable=broad-except
+            pass
+
+        return {
+            "namespace": namespace,
+            "pods": pods,
+            "model_info": model_info,
+        }
+    finally:
+        kubeconfig_dir = os.path.dirname(kubeconfig_path)
+        shutil.rmtree(kubeconfig_dir, ignore_errors=True)
