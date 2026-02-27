@@ -9,14 +9,11 @@ If there is no rush to release a new version, please just add a description of t
 
 To release a new version, please select a new version number (usually plus 1 to last patch version, X.Y.Z -> Major.Minor.Patch, more details in `\doc <https://semver.org/>`_), and then add a new section named as the new version number in this file, the content should include the new modifications and everything from the *Pending* section. Finally, update the `VERSION` variable in `setup.py` with this new version number.
 
-Pending
+19.0.0b23
 +++++++
 * `az aks update`: Fix `--enable-secret-rotation`, `--disable-secret-rotation`, and `--rotation-poll-interval` flags being silently ignored when updating Azure Key Vault Secrets Provider addon configuration.
 * `az aks create/update`: Add `--enable-azure-monitor-logs` support to container network logs validation.
 * `az aks create/update`: Add `--enable-default-domain` and `--disable-default-domain` parameters to manage the default domain feature for web app routing.
-
-19.0.0b23
-+++++++
 * `az aks create`: Add ephemeralDisk and elasticSan storage options to `--enable-azure-container-storage` for the latest version of Azure Container Storage.
 * `az aks update`: Add ephemeralDisk and elasticSan storage options to `--enable-azure-container-storage` and `--disable-azure-container-storage` for the latest version of Azure Container Storage.
 
