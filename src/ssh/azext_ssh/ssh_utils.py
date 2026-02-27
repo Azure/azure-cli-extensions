@@ -150,7 +150,7 @@ def _read_ssh_log_lines(ssh_sub):
         try:
             return ssh_sub.stderr.readline()
         except Exception:  # pylint: disable=broad-except
-                pass
+            pass
 
 
 def _wait_to_delete_credentials(ssh_sub, op_info, delete_cert, delete_keys):
