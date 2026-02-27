@@ -5,7 +5,10 @@ Release History
 
 5.0.0b1
 ++++++++
-* This previwe version supports NetworkCloud 2026-01-01 APIs.
+* This preview version supports NetworkCloud 2026-01-01-preview APIs.
+* Adds `kubernetesversion` resource to support `create`, `update`, `show`, `list`, and `delete` commands.
+* Adds `clustermanager update-relay-private-endpoint-connection` command.
+* Adds `cluster inspect` command.
 
 4.0.0
 ++++++++
