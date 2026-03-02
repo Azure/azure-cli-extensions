@@ -42,20 +42,30 @@ class TargetHelper:
             "Accept": "application/json"
         }, None, {}, None)
 
-        response = client.send_request(request=request, stream=False)
+        try:
+            response = client.send_request(request=request, stream=False)
 
-        if response.http_response.status_code == 404:
+            if response.http_response.status_code == 404:
+                raise CLIInternalError(
+                    f"Solution template '{template_name}' not found in resource group '{resource_group_name}'."
+                )
+            if response.http_response.status_code != 200:
+                raise CLIInternalError(
+                    f"Failed to get solution template '{template_name}': HTTP {response.http_response.status_code}"
+                )
+
+            data = json.loads(response.http_response.text())
+            unique_identifier = data.get("properties", {}).get("uniqueIdentifier")
+
+            if unique_identifier and unique_identifier.strip():
+                return unique_identifier
+            return template_name
+        except CLIInternalError:
+            # Propagate explicitly raised CLIInternalError instances unchanged.
+            raise
+        except Exception as exc:
+            # Wrap unexpected errors (e.g., network issues, JSON parsing failures)
+            # in CLIInternalError to match the documented behavior.
             raise CLIInternalError(
-                f"Solution template '{template_name}' not found in resource group '{resource_group_name}'."
-            )
-        if response.http_response.status_code != 200:
-            raise CLIInternalError(
-                f"Failed to get solution template '{template_name}': HTTP {response.http_response.status_code}"
-            )
-
-        data = json.loads(response.http_response.text())
-        unique_identifier = data.get("properties", {}).get("uniqueIdentifier")
-
-        if unique_identifier and unique_identifier.strip():
-            return unique_identifier
-        return template_name
+                f"Failed to get solution template '{template_name}': {exc}"
+            ) from exc
