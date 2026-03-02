@@ -9,6 +9,7 @@
 # flake8: noqa
 
 from azure.cli.core.aaz import *
+from ._target_helper import TargetHelper
 
 
 @register_command(
@@ -89,6 +90,14 @@ class ListSolutionInstances(AAZCommand):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
+            # Resolve solution template name to its uniqueIdentifier
+            self.unique_identifier = TargetHelper.get_solution_template_unique_identifier(
+                self.ctx.subscription_id,
+                self.ctx.args.resource_group,
+                self.ctx.args.solution_name,
+                self.client
+            )
+
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
             if session.http_response.status_code in [200]:
@@ -127,7 +136,7 @@ class ListSolutionInstances(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "solutionName", self.ctx.args.solution_name,
+                    "solutionName", self.unique_identifier,
                     required=True,
                 ),
             }
