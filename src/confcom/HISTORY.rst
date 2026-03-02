@@ -3,6 +3,13 @@
 Release History
 ===============
 
+1.7.2
+++++++
+* Fix ORAS fragment discovery for ORAS CLI >= 1.3.0
+* Fix StatefulSet/Deployment volume mount and securityContext resolution in `containers from_vn2` command to use pod template spec
+* Fix empty command array in `containers from_vn2` command overwriting image entrypoint when no command/args specified in YAML
+* Fix phantom exec_processes entries generated for non-exec probes (httpGet/tcpSocket) in `containers from_vn2` command
+
 1.7.1
 ++++++
 * Replace deprecated pkg_resources with packaging for Python 3.13 compatibility
