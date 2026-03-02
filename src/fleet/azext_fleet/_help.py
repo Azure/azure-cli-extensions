@@ -208,38 +208,99 @@ helps['fleet updaterun create'] = """
                 A stages array is composed of one or more stages, each containing one or more groups.
                 Each group contains the 'name' property, which represents the group to which a cluster belongs (see 'az fleet member create --help').
                 Stages have an optional 'afterStageWaitInSeconds' integer property, acting as a delay between stage execution.
-                {
-                    "stages": [
+                Stages and groups have an optional 'maxConcurrency' string property that sets the maximum number of concurrent upgrades allowed. It acts as a ceiling (not a quota)—actual concurrency may be lower due to other limits or member conditions. Minimum is 1.
+                Stage maxConcurrency: applies across all groups in the stage (total concurrent upgrades for the whole stage).
+                Group maxConcurrency: applies within a single group, and is additionally constrained by the stage limit (effective max is min(group cluster count, stage maxConcurrency)). Minimum is 1.
+                Value formats:
+                  Fixed count (e.g., 3)
+                  Percentage (e.g., 25%, 1–100) of the relevant cluster total (stage total for stage, group total for group). Percentages are rounded down, with a minimum of 1 enforced.
+                  Examples: 3, 25%, 100%
+
+                Example stages JSON, with optional properties maxConcurrency and before/after gates:
+               {
+                  "stages": [
+                    {
+                      "name": "stage1",
+                      "maxConcurrency": "7%",
+                      "beforeGates": [
                         {
-                            "name": "stage1",
-                            "groups": [
-                                {
-                                    "name": "group-a1"
-                                },
-                                {
-                                    "name": "group-a2"
-                                },
-                                {
-                                    "name": "group-a3"
-                                }
-                            ],
-                            "afterStageWaitInSeconds": 3600
+                          "displayName": "stage before gate",
+                          "type": "Approval"
+                        }
+                      ],
+                      "afterGates": [
+                        {
+                          "displayName": "stage after gate",
+                          "type": "Approval"
+                        }
+                      ],
+                      "groups": [
+                        {
+                          "name": "group-a1",
+                          "maxConcurrency": "100%",
+                          "beforeGates": [
+                            {
+                              "displayName": "group before gate",
+                              "type": "Approval"
+                            }
+                          ],
+                          "afterGates": [
+                            {
+                              "displayName": "group after gate",
+                              "type": "Approval"
+                            }
+                          ]
                         },
                         {
-                            "name": "stage2",
-                            "groups": [
-                                {
-                                    "name": "group-b1"
-                                },
-                                {
-                                    "name": "group-b2"
-                                },
-                                {
-                                    "name": "group-b3"
-                                }
-                            ]
+                          "name": "group-a2",
+                          "maxConcurrency": "1",
+                          "beforeGates": [
+                            {
+                              "displayName": "group before gate",
+                              "type": "Approval"
+                            }
+                          ],
+                          "afterGates": [
+                            {
+                              "displayName": "group after gate",
+                              "type": "Approval"
+                            }
+                          ]
                         },
-                    ]
+                        {
+                          "name": "group-a3",
+                          "maxConcurrency": "1",
+                          "beforeGates": [
+                            {
+                              "displayName": "group before gate",
+                              "type": "Approval"
+                            }
+                          ],
+                          "afterGates": [
+                            {
+                              "displayName": "group after gate",
+                              "type": "Approval"
+                            }
+                          ]
+                        }
+                      ],
+                      "afterStageWaitInSeconds": 3600
+                    },
+                    {
+                      "name": "stage2",
+                      "groups": [
+                        {
+                          "name": "group-b1"
+                        },
+                        {
+                          "name": "group-b2"
+                        },
+                        {
+                          "name": "group-b3"
+                        }
+                      ]
+                    }
+                  ]
                 }
 """
 
