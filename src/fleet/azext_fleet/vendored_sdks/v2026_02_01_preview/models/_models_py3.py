@@ -7,15 +7,13 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from collections.abc import MutableMapping
 import datetime
-from typing import Any, Optional, TYPE_CHECKING, Union
+from typing import Any, Dict, List, Optional, TYPE_CHECKING, Union
 
-from .._utils import serialization as _serialization
+from .. import _serialization
 
 if TYPE_CHECKING:
     from .. import models as _models
-JSON = MutableMapping[str, Any]
 
 
 class AgentProfile(_serialization.Model):
@@ -355,7 +353,7 @@ class AutoUpgradeProfileListResult(_serialization.Model):
     }
 
     def __init__(
-        self, *, value: list["_models.AutoUpgradeProfile"], next_link: Optional[str] = None, **kwargs: Any
+        self, *, value: List["_models.AutoUpgradeProfile"], next_link: Optional[str] = None, **kwargs: Any
     ) -> None:
         """
         :keyword value: The AutoUpgradeProfile items on this page. Required.
@@ -407,7 +405,212 @@ class AutoUpgradeProfileStatus(_serialization.Model):
         self.last_triggered_at: Optional[datetime.datetime] = None
         self.last_trigger_status: Optional[Union[str, "_models.AutoUpgradeLastTriggerStatus"]] = None
         self.last_trigger_error: Optional["_models.ErrorDetail"] = None
-        self.last_trigger_upgrade_versions: Optional[list[str]] = None
+        self.last_trigger_upgrade_versions: Optional[List[str]] = None
+
+
+class CiliumProperties(_serialization.Model):
+    """The Cilium specific properties of the member cluster.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar id: Cilium requires each cluster to be assigned a unique numeric cluster id from 1 - 255.
+     The id is managed by Fleet and cannot be set by the user. Required.
+    :vartype id: int
+    :ivar name: Cilium requires each cluster to be assigned a unique human-readable name. The name
+     is managed by Fleet, based on the Fleet Member name, and cannot be set by the user. Required.
+    :vartype name: str
+    """
+
+    _validation = {
+        "id": {"required": True, "readonly": True},
+        "name": {"required": True, "readonly": True},
+    }
+
+    _attribute_map = {
+        "id": {"key": "id", "type": "int"},
+        "name": {"key": "name", "type": "str"},
+    }
+
+    def __init__(self, **kwargs: Any) -> None:
+        """ """
+        super().__init__(**kwargs)
+        self.id: Optional[int] = None
+        self.name: Optional[str] = None
+
+
+class ClusterMeshProfile(ProxyResource):
+    """A cluster mesh profile stores the general information about the mesh.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
+    :vartype type: str
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
+    :vartype system_data: ~azure.mgmt.containerservicefleet.models.SystemData
+    :ivar properties: The resource-specific properties for this resource.
+    :vartype properties: ~azure.mgmt.containerservicefleet.models.ClusterMeshProfileProperties
+    :ivar e_tag: If eTag is provided in the response body, it may also be provided as a header per
+     the normal etag convention.  Entity tags are used for comparing two or more entities from the
+     same requested resource. HTTP/1.1 uses entity tags in the etag (section 14.19), If-Match
+     (section 14.24), If-None-Match (section 14.26), and If-Range (section 14.27) header fields.
+    :vartype e_tag: str
+    """
+
+    _validation = {
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
+        "e_tag": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "properties": {"key": "properties", "type": "ClusterMeshProfileProperties"},
+        "e_tag": {"key": "eTag", "type": "str"},
+    }
+
+    def __init__(self, *, properties: Optional["_models.ClusterMeshProfileProperties"] = None, **kwargs: Any) -> None:
+        """
+        :keyword properties: The resource-specific properties for this resource.
+        :paramtype properties: ~azure.mgmt.containerservicefleet.models.ClusterMeshProfileProperties
+        """
+        super().__init__(**kwargs)
+        self.properties = properties
+        self.e_tag: Optional[str] = None
+
+
+class ClusterMeshProfileListResult(_serialization.Model):
+    """The response of a ClusterMeshProfile list operation.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar value: The ClusterMeshProfile items on this page. Required.
+    :vartype value: list[~azure.mgmt.containerservicefleet.models.ClusterMeshProfile]
+    :ivar next_link: The link to the next page of items.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        "value": {"required": True},
+    }
+
+    _attribute_map = {
+        "value": {"key": "value", "type": "[ClusterMeshProfile]"},
+        "next_link": {"key": "nextLink", "type": "str"},
+    }
+
+    def __init__(
+        self, *, value: List["_models.ClusterMeshProfile"], next_link: Optional[str] = None, **kwargs: Any
+    ) -> None:
+        """
+        :keyword value: The ClusterMeshProfile items on this page. Required.
+        :paramtype value: list[~azure.mgmt.containerservicefleet.models.ClusterMeshProfile]
+        :keyword next_link: The link to the next page of items.
+        :paramtype next_link: str
+        """
+        super().__init__(**kwargs)
+        self.value = value
+        self.next_link = next_link
+
+
+class ClusterMeshProfileProperties(_serialization.Model):
+    """A cluster mesh profile stores the general information about the mesh.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar provisioning_state: The provisioning state of the cluster mesh profile. Known values are:
+     "Succeeded", "Failed", and "Canceled".
+    :vartype provisioning_state: str or
+     ~azure.mgmt.containerservicefleet.models.ClusterMeshProfileProvisioningState
+    :ivar member_selector: Select the members of the mesh.
+
+
+     * Only key/value pairs with the ``=`` operator are accepted in the label selector.
+     * If empty or not specified, no Fleet members will be selected to join the mesh.
+    :vartype member_selector: ~azure.mgmt.containerservicefleet.models.MemberSelector
+    :ivar status: The cluster mesh profile status.
+    :vartype status: ~azure.mgmt.containerservicefleet.models.ClusterMeshProfileStatus
+    """
+
+    _validation = {
+        "provisioning_state": {"readonly": True},
+        "status": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "provisioning_state": {"key": "provisioningState", "type": "str"},
+        "member_selector": {"key": "memberSelector", "type": "MemberSelector"},
+        "status": {"key": "status", "type": "ClusterMeshProfileStatus"},
+    }
+
+    def __init__(self, *, member_selector: Optional["_models.MemberSelector"] = None, **kwargs: Any) -> None:
+        """
+        :keyword member_selector: Select the members of the mesh.
+
+
+         * Only key/value pairs with the ``=`` operator are accepted in the label selector.
+         * If empty or not specified, no Fleet members will be selected to join the mesh.
+        :paramtype member_selector: ~azure.mgmt.containerservicefleet.models.MemberSelector
+        """
+        super().__init__(**kwargs)
+        self.provisioning_state: Optional[Union[str, "_models.ClusterMeshProfileProvisioningState"]] = None
+        self.member_selector = member_selector
+        self.status: Optional["_models.ClusterMeshProfileStatus"] = None
+
+
+class ClusterMeshProfileStatus(_serialization.Model):
+    """Status of the cluster mesh.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar state: The state of the cluster mesh. Required. Known values are: "NotConnected",
+     "Connecting", "Connected", and "Failed".
+    :vartype state: str or ~azure.mgmt.containerservicefleet.models.ClusterMeshState
+    :ivar last_applied_member_label_selector: The last applied Kubernetes-style label selector
+     defining which Fleet members are in the mesh, e.g. ``env=production``.
+    :vartype last_applied_member_label_selector: str
+    :ivar last_operation_id: The last operation ID for the cluster mesh profile.
+    :vartype last_operation_id: str
+    :ivar last_operation_error: The last operation error of the cluster mesh profile.
+    :vartype last_operation_error: ~azure.mgmt.containerservicefleet.models.ErrorDetail
+    """
+
+    _validation = {
+        "state": {"required": True, "readonly": True},
+        "last_applied_member_label_selector": {"readonly": True, "max_length": 512},
+        "last_operation_id": {"readonly": True},
+        "last_operation_error": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "state": {"key": "state", "type": "str"},
+        "last_applied_member_label_selector": {"key": "lastAppliedMemberLabelSelector", "type": "str"},
+        "last_operation_id": {"key": "lastOperationId", "type": "str"},
+        "last_operation_error": {"key": "lastOperationError", "type": "ErrorDetail"},
+    }
+
+    def __init__(self, **kwargs: Any) -> None:
+        """ """
+        super().__init__(**kwargs)
+        self.state: Optional[Union[str, "_models.ClusterMeshState"]] = None
+        self.last_applied_member_label_selector: Optional[str] = None
+        self.last_operation_id: Optional[str] = None
+        self.last_operation_error: Optional["_models.ErrorDetail"] = None
 
 
 class ErrorAdditionalInfo(_serialization.Model):
@@ -477,8 +680,8 @@ class ErrorDetail(_serialization.Model):
         self.code: Optional[str] = None
         self.message: Optional[str] = None
         self.target: Optional[str] = None
-        self.details: Optional[list["_models.ErrorDetail"]] = None
-        self.additional_info: Optional[list["_models.ErrorAdditionalInfo"]] = None
+        self.details: Optional[List["_models.ErrorDetail"]] = None
+        self.additional_info: Optional[List["_models.ErrorAdditionalInfo"]] = None
 
 
 class ErrorResponse(_serialization.Model):
@@ -544,7 +747,7 @@ class TrackedResource(Resource):
         "location": {"key": "location", "type": "str"},
     }
 
-    def __init__(self, *, location: str, tags: Optional[dict[str, str]] = None, **kwargs: Any) -> None:
+    def __init__(self, *, location: str, tags: Optional[Dict[str, str]] = None, **kwargs: Any) -> None:
         """
         :keyword tags: Resource tags.
         :paramtype tags: dict[str, str]
@@ -624,7 +827,7 @@ class Fleet(TrackedResource):
         self,
         *,
         location: str,
-        tags: Optional[dict[str, str]] = None,
+        tags: Optional[Dict[str, str]] = None,
         identity: Optional["_models.ManagedServiceIdentity"] = None,
         hub_profile: Optional["_models.FleetHubProfile"] = None,
         **kwargs: Any
@@ -695,7 +898,7 @@ class FleetCredentialResults(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.kubeconfigs: Optional[list["_models.FleetCredentialResult"]] = None
+        self.kubeconfigs: Optional[List["_models.FleetCredentialResult"]] = None
 
 
 class FleetHubProfile(_serialization.Model):
@@ -784,7 +987,7 @@ class FleetListResult(_serialization.Model):
         "next_link": {"key": "nextLink", "type": "str"},
     }
 
-    def __init__(self, *, value: list["_models.Fleet"], next_link: Optional[str] = None, **kwargs: Any) -> None:
+    def __init__(self, *, value: List["_models.Fleet"], next_link: Optional[str] = None, **kwargs: Any) -> None:
         """
         :keyword value: The Fleet items on this page. Required.
         :paramtype value: list[~azure.mgmt.containerservicefleet.models.Fleet]
@@ -851,7 +1054,7 @@ class FleetManagedNamespace(TrackedResource):
         self,
         *,
         location: str,
-        tags: Optional[dict[str, str]] = None,
+        tags: Optional[Dict[str, str]] = None,
         properties: Optional["_models.FleetManagedNamespaceProperties"] = None,
         **kwargs: Any
     ) -> None:
@@ -889,7 +1092,7 @@ class FleetManagedNamespaceListResult(_serialization.Model):
     }
 
     def __init__(
-        self, *, value: list["_models.FleetManagedNamespace"], next_link: Optional[str] = None, **kwargs: Any
+        self, *, value: List["_models.FleetManagedNamespace"], next_link: Optional[str] = None, **kwargs: Any
     ) -> None:
         """
         :keyword value: The FleetManagedNamespace items on this page. Required.
@@ -913,7 +1116,7 @@ class FleetManagedNamespacePatch(_serialization.Model):
         "tags": {"key": "tags", "type": "{str}"},
     }
 
-    def __init__(self, *, tags: Optional[dict[str, str]] = None, **kwargs: Any) -> None:
+    def __init__(self, *, tags: Optional[Dict[str, str]] = None, **kwargs: Any) -> None:
         """
         :keyword tags: Resource tags.
         :paramtype tags: dict[str, str]
@@ -1064,6 +1267,8 @@ class FleetMember(ProxyResource):
     :vartype labels: dict[str, str]
     :ivar status: Status information of the last operation for fleet member.
     :vartype status: ~azure.mgmt.containerservicefleet.models.FleetMemberStatus
+    :ivar mesh_properties: The Mesh Member Properties associated with this Fleet Member.
+    :vartype mesh_properties: ~azure.mgmt.containerservicefleet.models.MeshProperties
     """
 
     _validation = {
@@ -1075,6 +1280,7 @@ class FleetMember(ProxyResource):
         "group": {"max_length": 50, "min_length": 1, "pattern": r"^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"},
         "provisioning_state": {"readonly": True},
         "status": {"readonly": True},
+        "mesh_properties": {"readonly": True},
     }
 
     _attribute_map = {
@@ -1088,6 +1294,7 @@ class FleetMember(ProxyResource):
         "provisioning_state": {"key": "properties.provisioningState", "type": "str"},
         "labels": {"key": "properties.labels", "type": "{str}"},
         "status": {"key": "properties.status", "type": "FleetMemberStatus"},
+        "mesh_properties": {"key": "properties.meshProperties", "type": "MeshProperties"},
     }
 
     def __init__(
@@ -1095,7 +1302,7 @@ class FleetMember(ProxyResource):
         *,
         cluster_resource_id: Optional[str] = None,
         group: Optional[str] = None,
-        labels: Optional[dict[str, str]] = None,
+        labels: Optional[Dict[str, str]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -1115,6 +1322,7 @@ class FleetMember(ProxyResource):
         self.provisioning_state: Optional[Union[str, "_models.FleetMemberProvisioningState"]] = None
         self.labels = labels
         self.status: Optional["_models.FleetMemberStatus"] = None
+        self.mesh_properties: Optional["_models.MeshProperties"] = None
 
 
 class FleetMemberListResult(_serialization.Model):
@@ -1137,7 +1345,7 @@ class FleetMemberListResult(_serialization.Model):
         "next_link": {"key": "nextLink", "type": "str"},
     }
 
-    def __init__(self, *, value: list["_models.FleetMember"], next_link: Optional[str] = None, **kwargs: Any) -> None:
+    def __init__(self, *, value: List["_models.FleetMember"], next_link: Optional[str] = None, **kwargs: Any) -> None:
         """
         :keyword value: The FleetMember items on this page. Required.
         :paramtype value: list[~azure.mgmt.containerservicefleet.models.FleetMember]
@@ -1195,7 +1403,7 @@ class FleetMemberUpdate(_serialization.Model):
         "labels": {"key": "properties.labels", "type": "{str}"},
     }
 
-    def __init__(self, *, group: Optional[str] = None, labels: Optional[dict[str, str]] = None, **kwargs: Any) -> None:
+    def __init__(self, *, group: Optional[str] = None, labels: Optional[Dict[str, str]] = None, **kwargs: Any) -> None:
         """
         :keyword group: The group this member belongs to for multi-cluster update management.
         :paramtype group: str
@@ -1224,7 +1432,7 @@ class FleetPatch(_serialization.Model):
     def __init__(
         self,
         *,
-        tags: Optional[dict[str, str]] = None,
+        tags: Optional[Dict[str, str]] = None,
         identity: Optional["_models.ManagedServiceIdentity"] = None,
         **kwargs: Any
     ) -> None:
@@ -1347,7 +1555,7 @@ class FleetUpdateStrategyListResult(_serialization.Model):
     }
 
     def __init__(
-        self, *, value: list["_models.FleetUpdateStrategy"], next_link: Optional[str] = None, **kwargs: Any
+        self, *, value: List["_models.FleetUpdateStrategy"], next_link: Optional[str] = None, **kwargs: Any
     ) -> None:
         """
         :keyword value: The FleetUpdateStrategy items on this page. Required.
@@ -1501,7 +1709,7 @@ class GateListResult(_serialization.Model):
         "next_link": {"key": "nextLink", "type": "str"},
     }
 
-    def __init__(self, *, value: list["_models.Gate"], next_link: Optional[str] = None, **kwargs: Any) -> None:
+    def __init__(self, *, value: List["_models.Gate"], next_link: Optional[str] = None, **kwargs: Any) -> None:
         """
         :keyword value: The Gate items on this page. Required.
         :paramtype value: list[~azure.mgmt.containerservicefleet.models.Gate]
@@ -1724,8 +1932,8 @@ class ManagedNamespaceProperties(_serialization.Model):
     def __init__(
         self,
         *,
-        labels: Optional[dict[str, str]] = None,
-        annotations: Optional[dict[str, str]] = None,
+        labels: Optional[Dict[str, str]] = None,
+        annotations: Optional[Dict[str, str]] = None,
         default_resource_quota: Optional["_models.ResourceQuota"] = None,
         default_network_policy: Optional["_models.NetworkPolicy"] = None,
         **kwargs: Any
@@ -1789,7 +1997,7 @@ class ManagedServiceIdentity(_serialization.Model):
         self,
         *,
         type: Union[str, "_models.ManagedServiceIdentityType"],
-        user_assigned_identities: Optional[dict[str, "_models.UserAssignedIdentity"]] = None,
+        user_assigned_identities: Optional[Dict[str, "_models.UserAssignedIdentity"]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -1809,6 +2017,34 @@ class ManagedServiceIdentity(_serialization.Model):
         self.tenant_id: Optional[str] = None
         self.type = type
         self.user_assigned_identities = user_assigned_identities
+
+
+class MemberSelector(_serialization.Model):
+    """Select members of a fleet.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar by_label: Kubernetes-style label selector for selecting Fleet members, e.g.
+     ``env=production``. Required.
+    :vartype by_label: str
+    """
+
+    _validation = {
+        "by_label": {"required": True, "max_length": 512},
+    }
+
+    _attribute_map = {
+        "by_label": {"key": "byLabel", "type": "str"},
+    }
+
+    def __init__(self, *, by_label: str, **kwargs: Any) -> None:
+        """
+        :keyword by_label: Kubernetes-style label selector for selecting Fleet members, e.g.
+         ``env=production``. Required.
+        :paramtype by_label: str
+        """
+        super().__init__(**kwargs)
+        self.by_label = by_label
 
 
 class MemberUpdateStatus(_serialization.Model):
@@ -1854,6 +2090,84 @@ class MemberUpdateStatus(_serialization.Model):
         self.message: Optional[str] = None
 
 
+class MeshMemberStatus(_serialization.Model):
+    """Status of the mesh member.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar state: The mesh member state. Required. Known values are: "NotConnected", "Connecting",
+     "Connected", "Disconnecting", and "Failed".
+    :vartype state: str or ~azure.mgmt.containerservicefleet.models.MeshMemberState
+    :ivar last_updated_at: When the status was last updated.
+    :vartype last_updated_at: ~datetime.datetime
+    :ivar last_operation_id: The last operation ID that affected the mesh properties of the fleet
+     member.
+    :vartype last_operation_id: str
+    :ivar error: The error affecting this member.
+    :vartype error: ~azure.mgmt.containerservicefleet.models.ErrorDetail
+    """
+
+    _validation = {
+        "state": {"required": True, "readonly": True},
+        "last_updated_at": {"readonly": True},
+        "last_operation_id": {"readonly": True},
+        "error": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "state": {"key": "state", "type": "str"},
+        "last_updated_at": {"key": "lastUpdatedAt", "type": "iso-8601"},
+        "last_operation_id": {"key": "lastOperationId", "type": "str"},
+        "error": {"key": "error", "type": "ErrorDetail"},
+    }
+
+    def __init__(self, **kwargs: Any) -> None:
+        """ """
+        super().__init__(**kwargs)
+        self.state: Optional[Union[str, "_models.MeshMemberState"]] = None
+        self.last_updated_at: Optional[datetime.datetime] = None
+        self.last_operation_id: Optional[str] = None
+        self.error: Optional["_models.ErrorDetail"] = None
+
+
+class MeshProperties(_serialization.Model):
+    """The Mesh Member data for a Fleet Member resource.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar cilium_properties: The Cilium cluster properties. Required.
+    :vartype cilium_properties: ~azure.mgmt.containerservicefleet.models.CiliumProperties
+    :ivar status: The status of the mesh member. Required.
+    :vartype status: ~azure.mgmt.containerservicefleet.models.MeshMemberStatus
+    :ivar cluster_mesh_profile_resource_id: Resource id of the cluster mesh profile associated with
+     this mesh member. Required.
+    :vartype cluster_mesh_profile_resource_id: str
+    """
+
+    _validation = {
+        "cilium_properties": {"required": True, "readonly": True},
+        "status": {"required": True, "readonly": True},
+        "cluster_mesh_profile_resource_id": {"required": True, "readonly": True},
+    }
+
+    _attribute_map = {
+        "cilium_properties": {"key": "ciliumProperties", "type": "CiliumProperties"},
+        "status": {"key": "status", "type": "MeshMemberStatus"},
+        "cluster_mesh_profile_resource_id": {"key": "clusterMeshProfileResourceId", "type": "str"},
+    }
+
+    def __init__(self, **kwargs: Any) -> None:
+        """ """
+        super().__init__(**kwargs)
+        self.cilium_properties: Optional["_models.CiliumProperties"] = None
+        self.status: Optional["_models.MeshMemberStatus"] = None
+        self.cluster_mesh_profile_resource_id: Optional[str] = None
+
+
 class MetaV1LabelSelector(_serialization.Model):
     """A label selector is a label query over a set of resources. The result of matchLabels and
     matchExpressions are ANDed. An empty label selector matches all objects. A null label selector
@@ -1877,8 +2191,8 @@ class MetaV1LabelSelector(_serialization.Model):
     def __init__(
         self,
         *,
-        match_labels: Optional[dict[str, str]] = None,
-        match_expressions: Optional[list["_models.MetaV1LabelSelectorRequirement"]] = None,
+        match_labels: Optional[Dict[str, str]] = None,
+        match_expressions: Optional[List["_models.MetaV1LabelSelectorRequirement"]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -1930,7 +2244,7 @@ class MetaV1LabelSelectorRequirement(_serialization.Model):
         *,
         key: str,
         operator: Union[str, "_models.LabelSelectorOperator"],
-        values: Optional[list[str]] = None,
+        values: Optional[List[str]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -2018,7 +2332,7 @@ class NodeImageSelection(_serialization.Model):
         self,
         *,
         type: Union[str, "_models.NodeImageSelectionType"],
-        custom_node_image_versions: Optional[list["_models.NodeImageVersion"]] = None,
+        custom_node_image_versions: Optional[List["_models.NodeImageVersion"]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -2060,7 +2374,7 @@ class NodeImageSelectionStatus(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.selected_node_image_versions: Optional[list["_models.NodeImageVersion"]] = None
+        self.selected_node_image_versions: Optional[List["_models.NodeImageVersion"]] = None
 
 
 class NodeImageVersion(_serialization.Model):
@@ -2204,7 +2518,7 @@ class OperationListResult(_serialization.Model):
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.value: Optional[list["_models.Operation"]] = None
+        self.value: Optional[List["_models.Operation"]] = None
         self.next_link: Optional[str] = None
 
 
@@ -2345,7 +2659,7 @@ class PlacementV1ClusterSelector(_serialization.Model):
     }
 
     def __init__(
-        self, *, cluster_selector_terms: list["_models.PlacementV1ClusterSelectorTerm"], **kwargs: Any
+        self, *, cluster_selector_terms: List["_models.PlacementV1ClusterSelectorTerm"], **kwargs: Any
     ) -> None:
         """
         :keyword cluster_selector_terms: ClusterSelectorTerms is a list of cluster selector terms. The
@@ -2437,9 +2751,9 @@ class PlacementV1PlacementPolicy(_serialization.Model):
         self,
         *,
         placement_type: Optional[Union[str, "_models.PlacementType"]] = None,
-        cluster_names: Optional[list[str]] = None,
+        cluster_names: Optional[List[str]] = None,
         affinity: Optional["_models.PlacementV1Affinity"] = None,
-        tolerations: Optional[list["_models.PlacementV1Toleration"]] = None,
+        tolerations: Optional[List["_models.PlacementV1Toleration"]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -2486,7 +2800,7 @@ class PlacementV1PropertySelector(_serialization.Model):
     }
 
     def __init__(
-        self, *, match_expressions: list["_models.PlacementV1PropertySelectorRequirement"], **kwargs: Any
+        self, *, match_expressions: List["_models.PlacementV1PropertySelectorRequirement"], **kwargs: Any
     ) -> None:
         """
         :keyword match_expressions: MatchExpressions is an array of PropertySelectorRequirements. The
@@ -2532,7 +2846,7 @@ class PlacementV1PropertySelectorRequirement(_serialization.Model):
     }
 
     def __init__(
-        self, *, name: str, operator: Union[str, "_models.PropertySelectorOperator"], values: list[str], **kwargs: Any
+        self, *, name: str, operator: Union[str, "_models.PropertySelectorOperator"], values: List[str], **kwargs: Any
     ) -> None:
         """
         :keyword name: Name is the name of the property; it should be a Kubernetes label name.
@@ -2726,7 +3040,7 @@ class SkipProperties(_serialization.Model):
         "targets": {"key": "targets", "type": "[SkipTarget]"},
     }
 
-    def __init__(self, *, targets: list["_models.SkipTarget"], **kwargs: Any) -> None:
+    def __init__(self, *, targets: List["_models.SkipTarget"], **kwargs: Any) -> None:
         """
         :keyword targets: The targets to skip. Required.
         :paramtype targets: list[~azure.mgmt.containerservicefleet.models.SkipTarget]
@@ -2888,8 +3202,8 @@ class UpdateGroup(_serialization.Model):
         *,
         name: str,
         max_concurrency: Optional[str] = None,
-        before_gates: Optional[list["_models.GateConfiguration"]] = None,
-        after_gates: Optional[list["_models.GateConfiguration"]] = None,
+        before_gates: Optional[List["_models.GateConfiguration"]] = None,
+        after_gates: Optional[List["_models.GateConfiguration"]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -2972,9 +3286,9 @@ class UpdateGroupStatus(_serialization.Model):
         self.status: Optional["_models.UpdateStatus"] = None
         self.name: Optional[str] = None
         self.max_concurrency: Optional[int] = None
-        self.members: Optional[list["_models.MemberUpdateStatus"]] = None
-        self.before_gates: Optional[list["_models.UpdateRunGateStatus"]] = None
-        self.after_gates: Optional[list["_models.UpdateRunGateStatus"]] = None
+        self.members: Optional[List["_models.MemberUpdateStatus"]] = None
+        self.before_gates: Optional[List["_models.UpdateRunGateStatus"]] = None
+        self.after_gates: Optional[List["_models.UpdateRunGateStatus"]] = None
 
 
 class UpdateRun(ProxyResource):
@@ -3211,7 +3525,7 @@ class UpdateRunListResult(_serialization.Model):
         "next_link": {"key": "nextLink", "type": "str"},
     }
 
-    def __init__(self, *, value: list["_models.UpdateRun"], next_link: Optional[str] = None, **kwargs: Any) -> None:
+    def __init__(self, *, value: List["_models.UpdateRun"], next_link: Optional[str] = None, **kwargs: Any) -> None:
         """
         :keyword value: The UpdateRun items on this page. Required.
         :paramtype value: list[~azure.mgmt.containerservicefleet.models.UpdateRun]
@@ -3255,7 +3569,7 @@ class UpdateRunStatus(_serialization.Model):
         """ """
         super().__init__(**kwargs)
         self.status: Optional["_models.UpdateStatus"] = None
-        self.stages: Optional[list["_models.UpdateStageStatus"]] = None
+        self.stages: Optional[List["_models.UpdateStageStatus"]] = None
         self.node_image_selection: Optional["_models.NodeImageSelectionStatus"] = None
 
 
@@ -3282,7 +3596,7 @@ class UpdateRunStrategy(_serialization.Model):
         "stages": {"key": "stages", "type": "[UpdateStage]"},
     }
 
-    def __init__(self, *, stages: list["_models.UpdateStage"], **kwargs: Any) -> None:
+    def __init__(self, *, stages: List["_models.UpdateStage"], **kwargs: Any) -> None:
         """
         :keyword stages: The list of stages that compose this update run. Min size: 1. Required.
         :paramtype stages: list[~azure.mgmt.containerservicefleet.models.UpdateStage]
@@ -3346,11 +3660,11 @@ class UpdateStage(_serialization.Model):
         self,
         *,
         name: str,
-        groups: Optional[list["_models.UpdateGroup"]] = None,
+        groups: Optional[List["_models.UpdateGroup"]] = None,
         after_stage_wait_in_seconds: Optional[int] = None,
         max_concurrency: Optional[str] = None,
-        before_gates: Optional[list["_models.GateConfiguration"]] = None,
-        after_gates: Optional[list["_models.GateConfiguration"]] = None,
+        before_gates: Optional[List["_models.GateConfiguration"]] = None,
+        after_gates: Optional[List["_models.GateConfiguration"]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -3441,9 +3755,9 @@ class UpdateStageStatus(_serialization.Model):
         self.status: Optional["_models.UpdateStatus"] = None
         self.name: Optional[str] = None
         self.max_concurrency: Optional[int] = None
-        self.groups: Optional[list["_models.UpdateGroupStatus"]] = None
-        self.before_gates: Optional[list["_models.UpdateRunGateStatus"]] = None
-        self.after_gates: Optional[list["_models.UpdateRunGateStatus"]] = None
+        self.groups: Optional[List["_models.UpdateGroupStatus"]] = None
+        self.before_gates: Optional[List["_models.UpdateRunGateStatus"]] = None
+        self.after_gates: Optional[List["_models.UpdateRunGateStatus"]] = None
         self.after_stage_wait_status: Optional["_models.WaitStatus"] = None
 
 

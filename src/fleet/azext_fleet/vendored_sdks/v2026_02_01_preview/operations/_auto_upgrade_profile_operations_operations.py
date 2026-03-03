@@ -7,7 +7,7 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 from collections.abc import MutableMapping
-from typing import Any, Callable, Iterator, Optional, TypeVar, Union, cast
+from typing import Any, Callable, Dict, Iterator, Optional, TypeVar, Union, cast
 
 from azure.core import PipelineClient
 from azure.core.exceptions import (
@@ -30,11 +30,10 @@ from azure.mgmt.core.polling.arm_polling import ARMPolling
 
 from .. import models as _models
 from .._configuration import ContainerServiceFleetMgmtClientConfiguration
-from .._utils.serialization import Deserializer, Serializer
+from .._serialization import Deserializer, Serializer
 
 T = TypeVar("T")
-ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, dict[str, Any]], Any]]
-List = list
+ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
 
 _SERIALIZER = Serializer()
 _SERIALIZER.client_side_validation = False
@@ -46,7 +45,7 @@ def build_generate_update_run_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-02-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-03-02-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -95,7 +94,7 @@ class AutoUpgradeProfileOperationsOperations:
 
     models = _models
 
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, *args, **kwargs):
         input_args = list(args)
         self._client: PipelineClient = input_args.pop(0) if input_args else kwargs.pop("client")
         self._config: ContainerServiceFleetMgmtClientConfiguration = (
@@ -146,10 +145,7 @@ class AutoUpgradeProfileOperationsOperations:
             except (StreamConsumedError, StreamClosedError):
                 pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(
-                _models.ErrorResponse,
-                pipeline_response,
-            )
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         response_headers = {}

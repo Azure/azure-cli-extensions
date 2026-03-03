@@ -6,7 +6,7 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 from collections.abc import MutableMapping
-from typing import Any, AsyncIterator, Callable, Optional, TypeVar, Union, cast
+from typing import Any, AsyncIterator, Callable, Dict, Optional, TypeVar, Union, cast
 
 from azure.core import AsyncPipelineClient
 from azure.core.exceptions import (
@@ -28,13 +28,12 @@ from azure.mgmt.core.exceptions import ARMErrorFormat
 from azure.mgmt.core.polling.async_arm_polling import AsyncARMPolling
 
 from ... import models as _models
-from ..._utils.serialization import Deserializer, Serializer
+from ..._serialization import Deserializer, Serializer
 from ...operations._auto_upgrade_profile_operations_operations import build_generate_update_run_request
 from .._configuration import ContainerServiceFleetMgmtClientConfiguration
 
 T = TypeVar("T")
-ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, dict[str, Any]], Any]]
-List = list
+ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
 
 class AutoUpgradeProfileOperationsOperations:
@@ -100,10 +99,7 @@ class AutoUpgradeProfileOperationsOperations:
             except (StreamConsumedError, StreamClosedError):
                 pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(
-                _models.ErrorResponse,
-                pipeline_response,
-            )
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         response_headers = {}

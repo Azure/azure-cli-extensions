@@ -7,7 +7,7 @@
 # --------------------------------------------------------------------------
 from collections.abc import MutableMapping
 from io import IOBase
-from typing import Any, AsyncIterator, Callable, IO, Optional, TypeVar, Union, cast, overload
+from typing import Any, AsyncIterable, AsyncIterator, Callable, Dict, IO, Optional, TypeVar, Union, cast, overload
 import urllib.parse
 
 from azure.core import AsyncPipelineClient
@@ -32,7 +32,7 @@ from azure.mgmt.core.exceptions import ARMErrorFormat
 from azure.mgmt.core.polling.async_arm_polling import AsyncARMPolling
 
 from ... import models as _models
-from ..._utils.serialization import Deserializer, Serializer
+from ..._serialization import Deserializer, Serializer
 from ...operations._fleets_operations import (
     build_create_or_update_request,
     build_delete_request,
@@ -45,8 +45,7 @@ from ...operations._fleets_operations import (
 from .._configuration import ContainerServiceFleetMgmtClientConfiguration
 
 T = TypeVar("T")
-ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, dict[str, Any]], Any]]
-List = list
+ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
 
 class FleetsOperations:
@@ -73,7 +72,7 @@ class FleetsOperations:
     @distributed_trace
     def list_by_subscription(
         self, top: Optional[int] = None, skip_token: Optional[str] = None, **kwargs: Any
-    ) -> AsyncItemPaged["_models.Fleet"]:
+    ) -> AsyncIterable["_models.Fleet"]:
         """Lists fleets in the specified subscription.
 
         :param top: The number of result items to return. Default value is None.
@@ -147,10 +146,7 @@ class FleetsOperations:
 
             if response.status_code not in [200]:
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                error = self._deserialize.failsafe_deserialize(
-                    _models.ErrorResponse,
-                    pipeline_response,
-                )
+                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
                 raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
@@ -158,7 +154,7 @@ class FleetsOperations:
         return AsyncItemPaged(get_next, extract_data)
 
     @distributed_trace
-    def list_by_resource_group(self, resource_group_name: str, **kwargs: Any) -> AsyncItemPaged["_models.Fleet"]:
+    def list_by_resource_group(self, resource_group_name: str, **kwargs: Any) -> AsyncIterable["_models.Fleet"]:
         """Lists fleets in the specified subscription and resource group.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
@@ -229,10 +225,7 @@ class FleetsOperations:
 
             if response.status_code not in [200]:
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                error = self._deserialize.failsafe_deserialize(
-                    _models.ErrorResponse,
-                    pipeline_response,
-                )
+                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
                 raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
@@ -285,10 +278,7 @@ class FleetsOperations:
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(
-                _models.ErrorResponse,
-                pipeline_response,
-            )
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize("Fleet", pipeline_response.http_response)
@@ -359,10 +349,7 @@ class FleetsOperations:
             except (StreamConsumedError, StreamClosedError):
                 pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(
-                _models.ErrorResponse,
-                pipeline_response,
-            )
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         response_headers = {}
@@ -587,10 +574,7 @@ class FleetsOperations:
             except (StreamConsumedError, StreamClosedError):
                 pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(
-                _models.ErrorResponse,
-                pipeline_response,
-            )
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         response_headers = {}
@@ -786,10 +770,7 @@ class FleetsOperations:
             except (StreamConsumedError, StreamClosedError):
                 pass
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(
-                _models.ErrorResponse,
-                pipeline_response,
-            )
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         response_headers = {}
@@ -913,10 +894,7 @@ class FleetsOperations:
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(
-                _models.ErrorResponse,
-                pipeline_response,
-            )
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize("FleetCredentialResults", pipeline_response.http_response)
