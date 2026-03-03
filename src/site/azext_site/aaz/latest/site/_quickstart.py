@@ -31,32 +31,89 @@ def _resolve_template_path() -> Path:
     return azext_root / "templates" / "infra" / "main.json"
 
 
-def _get_deployment_outputs(cli, deployment_name: str, resource_group: str) -> tuple[str | None, str | None]:
-    site_id = None
-    config_id = None
+def _get_deployment_ops(cli, deployment_name: str, resource_group: str) -> list[dict] | None:
+    """Return ARM deployment operations for a group deployment.
+
+    Single call used for both:
+    - printing any succeeded resources (site/config/configRef)
+    - surfacing failed/canceled operations for error details
+    """
     try:
-        outputs_args = [
-            "deployment", "group", "show",
+        ops_args = [
+            "deployment", "operation", "group", "list",
             "--name", deployment_name,
             "--resource-group", resource_group,
             "--only-show-errors",
-            "--query", "properties.outputs",
+            "--query",
+            "[].{"
+            " state:properties.provisioningState,"
+            " type:properties.targetResource.resourceType,"
+            " name:properties.targetResource.resourceName,"
+            " id:properties.targetResource.id,"
+            " statusMessage:properties.statusMessage"
+            "}",
             "--output", "none",
         ]
-        cli.invoke(outputs_args)
-        if getattr(cli, "result", None) is not None and isinstance(cli.result.result, dict):
-            outputs = cli.result.result
-            if isinstance(outputs.get("siteId"), dict):
-                site_id = outputs.get("siteId", {}).get("value")
-            if isinstance(outputs.get("configId"), dict):
-                config_id = outputs.get("configId", {}).get("value")
+        cli.invoke(ops_args)
+        if getattr(cli, "result", None) is not None and isinstance(cli.result.result, list):
+            return cli.result.result
     except Exception:
-        return None, None
-    return site_id, config_id
+        return None
+    return None
+
+
+def _pick_failed_ops(ops: list[dict] | None) -> list[dict] | None:
+    if not isinstance(ops, list):
+        return None
+
+    failed = []
+    for op in ops:
+        if not isinstance(op, dict):
+            continue
+        state = (op.get("state") or "").lower()
+        if state in ("failed", "canceled"):
+            failed.append({
+                "type": op.get("type"),
+                "name": op.get("name"),
+                "state": op.get("state"),
+                "statusMessage": op.get("statusMessage"),
+            })
+
+    return failed or None
+
+def _pick_succeeded_ids(ops: list[dict] | None) -> tuple[str | None, str | None, str | None]:
+    """Return (site_id, config_id, config_ref_id) for succeeded operations (best-effort)."""
+    if not isinstance(ops, list):
+        return None, None, None
+
+    site_id = None
+    config_id = None
+    config_ref_id = None
+
+    for op in ops:
+        if not isinstance(op, dict):
+            continue
+        if (op.get("state") or "").lower() != "succeeded":
+            continue
+
+        r_type = op.get("type")
+        r_id = op.get("id")
+
+        # resourceType casing can vary; normalize comparisons
+        r_type_norm = (r_type or "").lower()
+        if r_type_norm == "microsoft.edge/sites" and not site_id:
+            site_id = r_id
+        elif r_type_norm == "microsoft.edge/configurations" and not config_id:
+            config_id = r_id
+        elif r_type_norm == "microsoft.edge/configurationreferences" and not config_ref_id:
+            config_ref_id = r_id
+
+    return site_id, config_id, config_ref_id
+
 
 
 def _arm_id_suffix(arm_id: str | None) -> str:
-    return f" ARM ID - {arm_id}" if arm_id else ""
+    return f" Azure Resource ID - {arm_id}" if arm_id else ""
 
 
 def _create_resource_group(cli, rg_name: str, location_arg: str | None) -> str:
@@ -205,44 +262,37 @@ class Quickstart(AAZCommand):
             if getattr(cli, "result", None) is not None:
                 underlying_error = getattr(cli.result, "error", None)
 
+            # Single call: list all operations and reuse for both succeeded + failed reporting
+            all_ops = _get_deployment_ops(cli, deployment_name, rg)
+            succeeded_site_id, succeeded_config_id, succeeded_config_ref_id = _pick_succeeded_ids(all_ops)
+
+            # Print succeeded resources even if the overall deployment failed
+            if succeeded_site_id:
+                print("Site created successfully." + _arm_id_suffix(succeeded_site_id))
+            if succeeded_config_id:
+                print("Config created successfully." + _arm_id_suffix(succeeded_config_id))
+            if succeeded_config_ref_id:
+                print("Config reference created successfully." + _arm_id_suffix(succeeded_config_ref_id))
+
+            failed_ops = _pick_failed_ops(all_ops)
+
+            # Optional enrichment: fetch the top-level deployment error only when ops aren't available
             deployment_error = None
-            failed_ops = None
-
-            # Try to fetch ARM deployment error object (code/message/details)
-            try:
-                show_args = [
-                    "deployment", "group", "show",
-                    "--name", deployment_name,
-                    "--resource-group", rg,
-                    "--only-show-errors",
-                    "--query", "properties.error",
-                    "--output", "json",
-                ]
-                cli.invoke(show_args)
-                if getattr(cli, "result", None) is not None:
-                    deployment_error = cli.result.result
-            except Exception:
-                deployment_error = None
-
-            # Try to fetch failed operations (often contains the most actionable message)
-            try:
-                ops_args = [
-                    "deployment", "operation", "group", "list",
-                    "--name", deployment_name,
-                    "--resource-group", rg,
-                    "--only-show-errors",
-                    "--query",
-                    "[?properties.provisioningState=='Failed']."
-                    "{type:properties.targetResource.resourceType,"
-                    " name:properties.targetResource.resourceName,"
-                    " statusMessage:properties.statusMessage}",
-                    "--output", "json",
-                ]
-                cli.invoke(ops_args)
-                if getattr(cli, "result", None) is not None:
-                    failed_ops = cli.result.result
-            except Exception:
-                failed_ops = None
+            if not failed_ops:
+                try:
+                    show_args = [
+                        "deployment", "group", "show",
+                        "--name", deployment_name,
+                        "--resource-group", rg,
+                        "--only-show-errors",
+                        "--query", "properties.error",
+                        "--output", "json",
+                    ]
+                    cli.invoke(show_args)
+                    if getattr(cli, "result", None) is not None:
+                        deployment_error = cli.result.result
+                except Exception:
+                    deployment_error = None
 
             msg = (
                 "ARM deployment failed for site quickstart. "
@@ -258,17 +308,5 @@ class Quickstart(AAZCommand):
                 msg = f"{msg}\nFailed operations:\n{json.dumps(failed_ops, indent=2)}"
 
             raise CLIInternalError(msg)
-
-        site_id, config_id = _get_deployment_outputs(cli, deployment_name, rg)
-        config_ref_id = (
-            f"{site_id}/providers/Microsoft.Edge/configurationReferences/default" if site_id else None
-        )
-
-        if site_id or config_id:
-            print("Site created successfully." + _arm_id_suffix(site_id))
-            print("Config created successfully." + _arm_id_suffix(config_id))
-            print("Config reference created successfully." + _arm_id_suffix(config_ref_id))
-        else:
-            print("Deployment completed successfully.")
 
         return None
