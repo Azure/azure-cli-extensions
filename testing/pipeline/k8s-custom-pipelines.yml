@@ -137,13 +137,13 @@ stages:
       vmImage: 'ubuntu-latest'
     steps:
     - task: UsePythonVersion@0
-      displayName: 'Use Python 3.10'
+      displayName: 'Use Python 3.13'
       inputs:
-        versionSpec: 3.10
+        versionSpec: 3.13
     - bash: |
         #!/usr/bin/env bash
         set -ev
-        pip install wheel==0.30.0 requests packaging
+        pip install wheel==0.30.0 requests packaging setuptools
         export CI="ADO"
         python ./scripts/ci/test_index.py -v
       displayName: "Verify Extensions Index"
@@ -193,14 +193,14 @@ stages:
       vmImage: 'ubuntu-latest'
     strategy:
       matrix:
-        Python39:
-          python.version: '3.9'
         Python310:
           python.version: '3.10'
         Python311:
           python.version: '3.11'
         Python312:
           python.version: '3.12'
+        Python313:
+          python.version: '3.13'
     steps:
       - task: UsePythonVersion@0
         displayName: 'Use Python $(python.version)'
