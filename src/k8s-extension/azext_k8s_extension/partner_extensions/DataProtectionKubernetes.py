@@ -22,6 +22,10 @@ class DataProtectionKubernetes(DefaultExtension):
            - Backup storage location (required)
            - Resource Requests (optional)
            - Resource Limits (optional)
+           - Controller Resource Requests (optional)
+           - Controller Resource Limits (optional)
+           - Init Container (veleroPluginForMicrosoftAzure) Resource Requests (optional)
+           - Init Container (veleroPluginForMicrosoftAzure) Resource Limits (optional)
            - Disable Informer Cache (optional)
         """
         self.TENANT_ID = "credentials.tenantId"
@@ -33,6 +37,14 @@ class DataProtectionKubernetes(DefaultExtension):
         self.RESOURCE_REQUEST_MEMORY = "resources.requests.memory"
         self.RESOURCE_LIMIT_CPU = "resources.limits.cpu"
         self.RESOURCE_LIMIT_MEMORY = "resources.limits.memory"
+        self.CONTROLLER_RESOURCE_REQUEST_CPU = "controller.resources.requests.cpu"
+        self.CONTROLLER_RESOURCE_REQUEST_MEMORY = "controller.resources.requests.memory"
+        self.CONTROLLER_RESOURCE_LIMIT_CPU = "controller.resources.limits.cpu"
+        self.CONTROLLER_RESOURCE_LIMIT_MEMORY = "controller.resources.limits.memory"
+        self.PLUGIN_RESOURCE_REQUEST_CPU = "initContainers.veleroPluginForMicrosoftAzure.resources.requests.cpu"
+        self.PLUGIN_RESOURCE_REQUEST_MEMORY = "initContainers.veleroPluginForMicrosoftAzure.resources.requests.memory"
+        self.PLUGIN_RESOURCE_LIMIT_CPU = "initContainers.veleroPluginForMicrosoftAzure.resources.limits.cpu"
+        self.PLUGIN_RESOURCE_LIMIT_MEMORY = "initContainers.veleroPluginForMicrosoftAzure.resources.limits.memory"
         self.BACKUP_STORAGE_ACCOUNT_USE_AAD = "configuration.backupStorageLocation.config.useAAD"
         self.BACKUP_STORAGE_ACCOUNT_STORAGE_ACCOUNT_URI = "configuration.backupStorageLocation.config.storageAccountURI"
         self.DISABLE_INFORMER_CACHE = "configuration.disableInformerCache"
@@ -45,6 +57,14 @@ class DataProtectionKubernetes(DefaultExtension):
         self.memory_request = "memoryRequest"
         self.cpu_limit = "cpuLimit"
         self.memory_limit = "memoryLimit"
+        self.controller_cpu_request = "controllerCpuRequest"
+        self.controller_memory_request = "controllerMemoryRequest"
+        self.controller_cpu_limit = "controllerCpuLimit"
+        self.controller_memory_limit = "controllerMemoryLimit"
+        self.plugin_cpu_request = "pluginCpuRequest"
+        self.plugin_memory_request = "pluginMemoryRequest"
+        self.plugin_cpu_limit = "pluginCpuLimit"
+        self.plugin_memory_limit = "pluginMemoryLimit"
         self.use_aad = "useAAD"
         self.storage_account_uri = "storageAccountURI"
         self.disable_informer_cache = "disableInformerCache"
@@ -58,6 +78,14 @@ class DataProtectionKubernetes(DefaultExtension):
             self.memory_request.lower(): self.RESOURCE_REQUEST_MEMORY,
             self.cpu_limit.lower(): self.RESOURCE_LIMIT_CPU,
             self.memory_limit.lower(): self.RESOURCE_LIMIT_MEMORY,
+            self.controller_cpu_request.lower(): self.CONTROLLER_RESOURCE_REQUEST_CPU,
+            self.controller_memory_request.lower(): self.CONTROLLER_RESOURCE_REQUEST_MEMORY,
+            self.controller_cpu_limit.lower(): self.CONTROLLER_RESOURCE_LIMIT_CPU,
+            self.controller_memory_limit.lower(): self.CONTROLLER_RESOURCE_LIMIT_MEMORY,
+            self.plugin_cpu_request.lower(): self.PLUGIN_RESOURCE_REQUEST_CPU,
+            self.plugin_memory_request.lower(): self.PLUGIN_RESOURCE_REQUEST_MEMORY,
+            self.plugin_cpu_limit.lower(): self.PLUGIN_RESOURCE_LIMIT_CPU,
+            self.plugin_memory_limit.lower(): self.PLUGIN_RESOURCE_LIMIT_MEMORY,
             self.use_aad.lower(): self.BACKUP_STORAGE_ACCOUNT_USE_AAD,
             self.storage_account_uri.lower(): self.BACKUP_STORAGE_ACCOUNT_STORAGE_ACCOUNT_URI,
             self.disable_informer_cache.lower(): self.DISABLE_INFORMER_CACHE
@@ -199,10 +227,17 @@ class DataProtectionKubernetes(DefaultExtension):
                 if key.lower() not in input_configuration_keys:
                     raise RequiredArgumentMissingError(f"Missing required configuration setting: {key}")
 
+        recognized_full_paths = set(self.configuration_mapping.values())
+        recognized_full_paths_lower = {p.lower(): p for p in recognized_full_paths}
+
         for key in input_configuration_settings:
             _key = key.lower()
             if _key in self.configuration_mapping:
                 configuration_settings[self.configuration_mapping[_key]] = configuration_settings.pop(key).strip()
+            elif _key in recognized_full_paths_lower:
+                # User provided the full configuration path directly - normalize to canonical form
+                canonical = recognized_full_paths_lower[_key]
+                configuration_settings[canonical] = configuration_settings.pop(key).strip()
             else:
                 configuration_settings.pop(key)
                 logger.warning(f"Ignoring unrecognized configuration setting: {key}")
