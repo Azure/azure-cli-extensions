@@ -186,55 +186,112 @@ class EdgeActionScenarioTest(ScenarioTest):
             resource_group, edge_action_name, version_name))
         self.cmd('edge-action delete -g {} -n {} -y'.format(resource_group, edge_action_name))
 
-    # NOTE: Execution filter CRUD test is temporarily disabled.
-    # The EdgeAction service returns HTTP URLs (instead of HTTPS) in the Location header
-    # for execution-filter operations, which causes the Azure SDK to fail with:
-    # "Bearer token authentication is not permitted for non-TLS protected (non-https) URLs."
-    # This is a service-side issue that needs to be fixed. Once the service returns HTTPS
-    # URLs in the LRO headers, uncomment this test.
-    #
-    # @ResourceGroupPreparer(additional_tags={'owner': 'edgeaction'})
-    # def test_edge_action_execution_filter_crud(self, resource_group):
-    #     """Test Edge Action Execution Filter CRUD operations"""
-    #     edge_action_name = self.create_random_name(prefix='edgeaction', length=20)
-    #     version_name = 'v1'
-    #     filter_name = self.create_random_name(prefix='filter', length=15)
-    #
-    #     # Create edge action and version first
-    #     self.cmd('edge-action create -g {} -n {} --sku name=Standard tier=Standard --location global'.format(
-    #         resource_group, edge_action_name))
-    #     self.cmd('edge-action version create -g {} --edge-action-name {} -n {} --deployment-type file --location global --is-default-version False'.format(
-    #         resource_group, edge_action_name, version_name))
-    #
-    #     # Test list execution filters (should be empty initially)
-    #     list_checks = [JMESPathCheck('length(@)', 0)]
-    #     self.cmd('edge-action execution-filter list -g {} --edge-action-name {}'.format(
-    #         resource_group, edge_action_name), checks=list_checks)
-    #
-    #     # Test create execution filter with all required parameters
-    #     create_checks = [
-    #         JMESPathCheck('name', filter_name)
-    #     ]
-    #     self.cmd('edge-action execution-filter create -g {} --edge-action-name {} -n {} --location global --version-id {} --execution-filter-identifier-header-name "X-Filter-ID" --execution-filter-identifier-header-value "test-value"'.format(
-    #         resource_group, edge_action_name, filter_name, version_name), checks=create_checks)
-    #
-    #     # Test show execution filter
-    #     show_checks = [
-    #         JMESPathCheck('name', filter_name)
-    #     ]
-    #     self.cmd('edge-action execution-filter show -g {} --edge-action-name {} -n {}'.format(
-    #         resource_group, edge_action_name, filter_name), checks=show_checks)
-    #
-    #     # Test update execution filter
-    #     self.cmd('edge-action execution-filter update -g {} --edge-action-name {} -n {} --tags test=value'.format(
-    #         resource_group, edge_action_name, filter_name))
-    #
-    #     # Test delete execution filter
-    #     self.cmd('edge-action execution-filter delete -g {} --edge-action-name {} -n {} -y'.format(
-    #         resource_group, edge_action_name, filter_name))
-    #
-    #     # Clean up
-    #     self.cmd('edge-action version delete -g {} --edge-action-name {} -n {} -y'.format(
-    #         resource_group, edge_action_name, version_name))
-    #     self.cmd('edge-action delete -g {} -n {} -y'.format(resource_group, edge_action_name))
+    @ResourceGroupPreparer(additional_tags={'owner': 'edgeaction'})
+    def test_edge_action_version_swap_default(self, resource_group):
+        """Test Edge Action Version swap-default command.
+
+        Creates two versions (v1 as default, v2 as non-default), deploys code to both,
+        then swaps default to v2 and verifies the IsDefaultVersion property changed.
+        This also tests the fix for the LRO poller NoneType error on swap-default.
+        """
+        edge_action_name = self.create_random_name(prefix='edgeaction', length=20)
+
+        # Create edge action
+        self.cmd('edge-action create -g {} -n {} --sku name=Standard tier=Standard --location global'.format(
+            resource_group, edge_action_name))
+
+        # Create v1 as default
+        self.cmd('edge-action version create -g {} --edge-action-name {} -n v1 --deployment-type file --location global --is-default-version True'.format(
+            resource_group, edge_action_name))
+
+        # Deploy code to v1
+        test_content = base64.b64encode(b'function handler(event) { return event; }').decode('utf-8')
+        self.cmd('edge-action version deploy-version-code -g {} --edge-action-name {} --version v1 --name testcode --content "{}"'.format(
+            resource_group, edge_action_name, test_content))
+
+        # Create v2 as non-default
+        self.cmd('edge-action version create -g {} --edge-action-name {} -n v2 --deployment-type file --location global --is-default-version False'.format(
+            resource_group, edge_action_name))
+
+        # Deploy code to v2
+        self.cmd('edge-action version deploy-version-code -g {} --edge-action-name {} --version v2 --name testcode --content "{}"'.format(
+            resource_group, edge_action_name, test_content))
+
+        # Verify v1 is default before swap
+        self.cmd('edge-action version show -g {} --edge-action-name {} -n v1'.format(
+            resource_group, edge_action_name),
+            checks=[JMESPathCheck('isDefaultVersion', 'True')])
+        self.cmd('edge-action version show -g {} --edge-action-name {} -n v2'.format(
+            resource_group, edge_action_name),
+            checks=[JMESPathCheck('isDefaultVersion', 'False')])
+
+        # Swap default to v2
+        self.cmd('edge-action version swap-default -g {} --edge-action-name {} --version v2'.format(
+            resource_group, edge_action_name))
+
+        # Verify v2 is now default after swap
+        self.cmd('edge-action version show -g {} --edge-action-name {} -n v1'.format(
+            resource_group, edge_action_name),
+            checks=[JMESPathCheck('isDefaultVersion', 'False')])
+        self.cmd('edge-action version show -g {} --edge-action-name {} -n v2'.format(
+            resource_group, edge_action_name),
+            checks=[JMESPathCheck('isDefaultVersion', 'True')])
+
+        # Clean up
+        self.cmd('edge-action version delete -g {} --edge-action-name {} -n v1 -y'.format(
+            resource_group, edge_action_name))
+        self.cmd('edge-action version delete -g {} --edge-action-name {} -n v2 -y'.format(
+            resource_group, edge_action_name))
+        self.cmd('edge-action delete -g {} -n {} -y'.format(resource_group, edge_action_name))
+
+    @ResourceGroupPreparer(additional_tags={'owner': 'edgeaction'})
+    def test_edge_action_execution_filter_crud(self, resource_group):
+        """Test Edge Action Execution Filter CRUD operations"""
+        edge_action_name = self.create_random_name(prefix='edgeaction', length=20)
+        version_name = 'v1'
+        filter_name = self.create_random_name(prefix='filter', length=15)
+
+        # Create edge action and version first
+        self.cmd('edge-action create -g {} -n {} --sku name=Standard tier=Standard --location global'.format(
+            resource_group, edge_action_name))
+        self.cmd('edge-action version create -g {} --edge-action-name {} -n {} --deployment-type file --location global --is-default-version True'.format(
+            resource_group, edge_action_name, version_name))
+
+        # Deploy code to version (required for execution filter creation)
+        test_content = base64.b64encode(b'function handler(event) { return event; }').decode('utf-8')
+        self.cmd('edge-action version deploy-version-code -g {} --edge-action-name {} --version {} --name testcode --content "{}"'.format(
+            resource_group, edge_action_name, version_name, test_content))
+
+        # Test list execution filters (should be empty initially)
+        list_checks = [JMESPathCheck('length(@)', 0)]
+        self.cmd('edge-action execution-filter list -g {} --edge-action-name {}'.format(
+            resource_group, edge_action_name), checks=list_checks)
+
+        # Test create execution filter with all required parameters
+        create_checks = [
+            JMESPathCheck('name', filter_name)
+        ]
+        self.cmd('edge-action execution-filter create -g {} --edge-action-name {} -n {} --location global --version-id {} --execution-filter-identifier-header-name "x-test-header" --execution-filter-identifier-header-value "test-value"'.format(
+            resource_group, edge_action_name, filter_name, version_name), checks=create_checks)
+
+        # Test show execution filter
+        show_checks = [
+            JMESPathCheck('name', filter_name)
+        ]
+        self.cmd('edge-action execution-filter show -g {} --edge-action-name {} -n {}'.format(
+            resource_group, edge_action_name, filter_name), checks=show_checks)
+
+        # Test list execution filters (should contain 1 item now)
+        list_checks = [JMESPathCheck('length(@)', 1)]
+        self.cmd('edge-action execution-filter list -g {} --edge-action-name {}'.format(
+            resource_group, edge_action_name), checks=list_checks)
+
+        # Test delete execution filter
+        self.cmd('edge-action execution-filter delete -g {} --edge-action-name {} -n {} -y'.format(
+            resource_group, edge_action_name, filter_name))
+
+        # Clean up
+        self.cmd('edge-action version delete -g {} --edge-action-name {} -n {} -y'.format(
+            resource_group, edge_action_name, version_name))
+        self.cmd('edge-action delete -g {} -n {} -y'.format(resource_group, edge_action_name))
 

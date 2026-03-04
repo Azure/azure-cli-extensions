@@ -93,7 +93,7 @@ class SwapDefault(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    None,
+                    self.on_200,
                     self.on_error,
                     lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
@@ -173,6 +173,9 @@ class SwapDefault(AAZCommand):
         def content(self):
             # Return empty JSON object as bytes (required by the API)
             return b'{}'
+
+        def on_200(self, session):
+            pass
 
         def on_204(self, session):
             pass
