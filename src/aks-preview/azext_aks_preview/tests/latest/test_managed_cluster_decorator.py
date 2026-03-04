@@ -49,6 +49,7 @@ from azext_aks_preview._consts import (
     CONST_PRIVATE_DNS_ZONE_NONE,
     CONST_PRIVATE_DNS_ZONE_SYSTEM,
     CONST_ROTATION_POLL_INTERVAL,
+    CONST_SCALE_SET_PRIORITY_REGULAR,
     CONST_SECRET_ROTATION_ENABLED,
     CONST_VIRTUAL_MACHINE_SCALE_SETS,
     CONST_AVAILABILITY_SET,
@@ -507,7 +508,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         load_balancer_profile_2 = self.models.load_balancer_models.ManagedClusterLoadBalancerProfile(
             managed_outbound_i_ps=self.models.load_balancer_models.ManagedClusterLoadBalancerProfileManagedOutboundIPs(
-                count=10, count_ipv6=20
+                count=10, count_i_pv6=20
             ),
             outbound_i_ps=self.models.load_balancer_models.ManagedClusterLoadBalancerProfileOutboundIPs(
                 public_i_ps=[
@@ -548,7 +549,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         self.assertEqual(ctx_1.get_load_balancer_managed_outbound_ipv6_count(), None)
         load_balancer_profile = self.models.load_balancer_models.ManagedClusterLoadBalancerProfile(
             managed_outbound_i_ps=self.models.load_balancer_models.ManagedClusterLoadBalancerProfileManagedOutboundIPs(
-                count_ipv6=10
+                count_i_pv6=10
             )
         )
         network_profile = self.models.ContainerServiceNetworkProfile(
@@ -586,7 +587,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         load_balancer_profile_3 = self.models.load_balancer_models.ManagedClusterLoadBalancerProfile(
             managed_outbound_i_ps=self.models.load_balancer_models.ManagedClusterLoadBalancerProfileManagedOutboundIPs(
-                count=10, count_ipv6=20
+                count=10, count_i_pv6=20
             ),
             outbound_i_ps=self.models.load_balancer_models.ManagedClusterLoadBalancerProfileOutboundIPs(
                 public_i_ps=[
@@ -5103,6 +5104,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             gpu_instance_profile="test_gpu_instance_profile",
             workload_runtime=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
             network_profile=self.models.AgentPoolNetworkProfile(),
+            scale_set_priority=CONST_SCALE_SET_PRIORITY_REGULAR,
         )
         ground_truth_mc_1 = self.models.ManagedCluster(location="test_location")
         ground_truth_mc_1.agent_pool_profiles = [ground_truth_agentpool_profile_1]
@@ -5158,7 +5160,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
 
         load_balancer_profile_1 = self.models.load_balancer_models.ManagedClusterLoadBalancerProfile(
             managed_outbound_i_ps=self.models.load_balancer_models.ManagedClusterLoadBalancerProfileManagedOutboundIPs(
-                count_ipv6=3,
+                count_i_pv6=3,
             ),
             backend_pool_type=CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP,
         )
@@ -6709,6 +6711,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             workload_runtime=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
             network_profile=self.models.AgentPoolNetworkProfile(),
             security_profile=ground_truth_security_profile,
+            scale_set_priority=CONST_SCALE_SET_PRIORITY_REGULAR,
         )
         ssh_config_1 = self.models.ContainerServiceSshConfiguration(
             public_keys=[self.models.ContainerServiceSshPublicKey(key_data=public_key)]
@@ -7665,7 +7668,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             network_profile=self.models.ContainerServiceNetworkProfile(
                 load_balancer_profile=self.models.load_balancer_models.ManagedClusterLoadBalancerProfile(
                     managed_outbound_i_ps=self.models.load_balancer_models.ManagedClusterLoadBalancerProfileManagedOutboundIPs(
-                        count=10, count_ipv6=20
+                        count=10, count_i_pv6=20
                     ),
                 )
             ),
@@ -7679,7 +7682,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 self.models.ContainerServiceNetworkProfile(
                     load_balancer_profile=self.models.load_balancer_models.ManagedClusterLoadBalancerProfile(
                         managed_outbound_i_ps=self.models.load_balancer_models.ManagedClusterLoadBalancerProfileManagedOutboundIPs(
-                            count=5, count_ipv6=20
+                            count=5, count_i_pv6=20
                         ),
                     )
                 )
@@ -7687,7 +7690,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_mc_4, ground_truth_mc_4)
 
-        # custom value - managed outbound ip, count_ipv6 only
+        # custom value - managed outbound ip, count_i_pv6 only
         dec_5 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
@@ -7705,7 +7708,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             network_profile=self.models.ContainerServiceNetworkProfile(
                 load_balancer_profile=self.models.load_balancer_models.ManagedClusterLoadBalancerProfile(
                     managed_outbound_i_ps=self.models.load_balancer_models.ManagedClusterLoadBalancerProfileManagedOutboundIPs(
-                        count=10, count_ipv6=20
+                        count=10, count_i_pv6=20
                     ),
                 )
             ),
@@ -7719,7 +7722,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 self.models.ContainerServiceNetworkProfile(
                     load_balancer_profile=self.models.load_balancer_models.ManagedClusterLoadBalancerProfile(
                         managed_outbound_i_ps=self.models.load_balancer_models.ManagedClusterLoadBalancerProfileManagedOutboundIPs(
-                            count=10, count_ipv6=5
+                            count=10, count_i_pv6=5
                         ),
                     )
                 )
@@ -7745,7 +7748,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             network_profile=self.models.ContainerServiceNetworkProfile(
                 load_balancer_profile=self.models.load_balancer_models.ManagedClusterLoadBalancerProfile(
                     managed_outbound_i_ps=self.models.load_balancer_models.ManagedClusterLoadBalancerProfileManagedOutboundIPs(
-                        count=10, count_ipv6=20
+                        count=10, count_i_pv6=20
                     ),
                 )
             ),
@@ -7759,7 +7762,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 self.models.ContainerServiceNetworkProfile(
                     load_balancer_profile=self.models.load_balancer_models.ManagedClusterLoadBalancerProfile(
                         managed_outbound_i_ps=self.models.load_balancer_models.ManagedClusterLoadBalancerProfileManagedOutboundIPs(
-                            count=25, count_ipv6=5
+                            count=25, count_i_pv6=5
                         ),
                     )
                 )
@@ -7784,7 +7787,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             network_profile=self.models.ContainerServiceNetworkProfile(
                 load_balancer_profile=self.models.load_balancer_models.ManagedClusterLoadBalancerProfile(
                     managed_outbound_i_ps=self.models.load_balancer_models.ManagedClusterLoadBalancerProfileManagedOutboundIPs(
-                        count=3, count_ipv6=2
+                        count=3, count_i_pv6=2
                     )
                 )
             ),
@@ -7846,7 +7849,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
 
         ground_truth_load_balancer_profile_8 = self.models.load_balancer_models.ManagedClusterLoadBalancerProfile(
             managed_outbound_i_ps=self.models.load_balancer_models.ManagedClusterLoadBalancerProfileManagedOutboundIPs(
-                count=10, count_ipv6=5
+                count=10, count_i_pv6=5
             ),
         )
         ground_truth_network_profile_8 = self.models.ContainerServiceNetworkProfile(
