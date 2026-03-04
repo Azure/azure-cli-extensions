@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a private cloud
+
+    :example: Create a private cloud
+        az vmware private-cloud create -g rg -n mycloud1 --sku av20 --cluster-size 4 --network-block 192.168.48.0/22 --accept-eula
     """
 
     _aaz_info = {
