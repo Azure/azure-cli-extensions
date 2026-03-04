@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "monitor app-insights workbook identity",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage workbook idneity
+    """Manage workbook identity
     """
     pass
 
