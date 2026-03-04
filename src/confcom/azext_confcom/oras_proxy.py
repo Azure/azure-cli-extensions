@@ -5,11 +5,10 @@
 
 import json
 import os
-import platform
 import re
 import subprocess
 from tempfile import mkdtemp
-from typing import List
+from typing import List, Optional
 
 from azext_confcom.config import ARTIFACT_TYPE, DEFAULT_REGO_FRAGMENTS
 from azext_confcom.cose_proxy import CoseSignToolProxy
@@ -19,9 +18,8 @@ from azext_confcom.template_util import (
     extract_containers_and_fragments_from_text, extract_svn_from_text)
 from knack.log import get_logger
 
-host_os = platform.system()
-machine = platform.machine()
 SHA256_PREFIX = "@sha256:"
+FRAGMENT_DISCOVERY_PLATFORM = "linux/amd64"
 
 logger = get_logger(__name__)
 
@@ -59,16 +57,132 @@ def call_oras_cli(args, check=False):
     return subprocess.run(args, check=check, capture_output=True, timeout=120)
 
 
+def manifest_fetch(image_tag: str) -> Optional[dict]:
+    """Fetch manifest from registry using ORAS.
+
+    Returns the parsed JSON manifest or None if operation fails.
+    """
+    try:
+        result = subprocess.run(
+            ["oras", "manifest", "fetch", "--format", "json", image_tag],
+            capture_output=True,
+            text=True,
+            timeout=30,
+            check=True,
+        )
+        return json.loads(result.stdout)
+    except subprocess.CalledProcessError as e:
+        logger.warning("Failed to oras manifest fetch %s: %s", image_tag, e.stderr)
+        return None
+    except (subprocess.TimeoutExpired, json.JSONDecodeError) as e:
+        logger.warning("Failed to oras manifest fetch %s: %s", image_tag, e)
+        return None
+
+
+def manifest_fetch_config(image_tag: str) -> Optional[dict]:
+    """Fetch manifest config from registry using ORAS.
+
+    Returns the parsed JSON config or None if operation fails.
+    """
+    try:
+        result = subprocess.run(
+            ["oras", "manifest", "fetch-config", image_tag],
+            capture_output=True,
+            text=True,
+            timeout=30,
+            check=True,
+        )
+        return json.loads(result.stdout)
+    except subprocess.CalledProcessError as e:
+        logger.warning(
+            "Failed to oras manifest fetch-config %s: %s", image_tag, e.stderr
+        )
+        return None
+    except (subprocess.TimeoutExpired, json.JSONDecodeError) as e:
+        logger.warning("Failed to oras manifest fetch-config %s: %s", image_tag, e)
+        return None
+
+
+def get_image_platforms(manifest_tag: str) -> List[str]:
+    """Get the platform(s) of an image in a registry.
+
+    Returns list of platforms in the format ["os/architecture"] or [] if detection fails.
+    "unknown/unknown" is automatically excluded.
+    """
+    manifest_tag = prepend_docker_registry(manifest_tag)
+    fetch_res = manifest_fetch(manifest_tag)
+
+    if not fetch_res:
+        return []
+
+    manifest_data = fetch_res.get("content")
+    if not manifest_data:
+        logger.warning("Fetched manifest for %s has no content", manifest_tag)
+        return []
+
+    # Check if this is an index manifest with multiple platforms
+    media_type = fetch_res.get("mediaType")
+    if not media_type:
+        media_type = manifest_data.get("mediaType")
+    if not media_type:
+        logger.warning(
+            "Could not determine media type for manifest of %s", manifest_tag
+        )
+
+    is_manifest_list = False
+    if (
+        media_type == "application/vnd.oci.image.index.v1+json"
+        or media_type == "application/vnd.docker.distribution.manifest.list.v2+json"
+    ):
+        is_manifest_list = True
+        if not manifest_data.get("manifests", []):
+            eprint(
+                "Manifest data for %s of type %s is expected to have manifest list, "
+                + "but .manifests is empty or not present",
+                manifest_tag,
+                media_type,
+                exit_code=1,
+            )
+    elif manifest_data.get("manifests", []):
+        # Unknown media type but has manifest list, treat it as an index
+        is_manifest_list = True
+
+    found_platforms = []
+    if is_manifest_list:
+        for manifest in manifest_data["manifests"]:
+            if "platform" in manifest:
+                platform_info = manifest["platform"]
+                # Handle both unknown/unknown and missing arch/os fields
+                arch = platform_info.get("architecture", "unknown")
+                os_name = platform_info.get("os", "unknown")
+                # Skip manifests with unknown platform (e.g. attestation)
+                if arch != "unknown" and os_name != "unknown":
+                    found_platforms.append(f"{os_name}/{arch}")
+        return found_platforms
+
+    # For single manifests, oras manifest fetch does not return the necessary information, so we need fetch-config
+    config_data = manifest_fetch_config(manifest_tag)
+    if config_data and "architecture" in config_data and "os" in config_data:
+        return [f"{config_data['os']}/{config_data['architecture']}"]
+
+    # If all detection methods fail, return empty list
+    return []
+
+
 # discover if there are policy artifacts associated with the image
 # return their digests in a list if there are some
 def discover(
     image: str,
+    platform: Optional[str] = None,
 ) -> tuple[bool, List[str]]:
     image_exists = True
     # normalize the name in case the docker registry is implied
     image = prepend_docker_registry(image)
 
     arg_list = ["oras", "discover", image, "-o", "json", "--artifact-type", ARTIFACT_TYPE]
+    if platform:
+        arg_list.extend(["--platform", platform])
+
     item = call_oras_cli(arg_list, check=False)
     hashes = []
 
@@ -158,7 +272,7 @@ def pull(
 def pull_all_image_attached_fragments(image):
     # TODO: be smart about if we're pulling a fragment directly or trying to discover them from an image tag
     # TODO: this will be for standalone fragments
-    image_exists, fragments = discover(image)
+    image_exists, fragments = discover(image, platform=FRAGMENT_DISCOVERY_PLATFORM)
     fragment_contents = []
     feeds = []
     if image_exists:
@@ -236,7 +350,7 @@ def check_oras_cli():
 
 
 # used for image-attached fragments
-def attach_fragment_to_image(image_name: str, filename: str):
+def attach_fragment_to_image(image_name: str, filename: str, platform: Optional[str] = None):
     if ":" not in image_name:
         image_name += ":latest"
     # attach the fragment to the image
@@ -245,9 +359,17 @@ def attach_fragment_to_image(image_name: str, filename: str):
         "attach",
         "--artifact-type",
         ARTIFACT_TYPE,
+    ]
+
+    # Add platform parameter if provided
+    if platform:
+        arg_list.extend(["--platform", platform])
+
+    arg_list.extend([
         image_name,
         filename + ":application/cose-x509+rego"
-    ]
+    ])
+
     item = call_oras_cli(arg_list, check=False)
     if item.returncode != 0:
         eprint(f"Could not attach fragment to image: {image_name}. Failed with {item.stderr}")
@@ -262,7 +384,7 @@ def attach_fragment_to_image(image_name: str, filename: str):
 
 def generate_imports_from_image_name(image_name: str, minimum_svn: str) -> List[dict]:
     cose_proxy = CoseSignToolProxy()
-    image_exists, fragment_hashes = discover(image_name)
+    image_exists, fragment_hashes = discover(image_name, platform=FRAGMENT_DISCOVERY_PLATFORM)
     import_list = []
 
     if image_exists:
