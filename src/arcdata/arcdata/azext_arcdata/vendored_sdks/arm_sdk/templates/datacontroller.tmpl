@@ -1,0 +1,117 @@
+{
+  "extendedLocation": {
+    "name": "[parameters('customLocationId_4')]",
+    "type": "CustomLocation"
+  },
+  "location": "[parameters('location_4')]",
+  "tags": "[parameters('resourceTags_4')]",
+  "properties": {
+    {%- if credentials.metrics_username and credentials.metrics_password %}
+    "metricsDashboardCredential": {
+      "username": "[parameters('metricsAndLogsDashboardUsername_4')]",
+      "password": "[parameters('metricsAndLogsDashboardPassword_4')]"
+    },
+    {% else %}
+    "metricsDashboardCredential": {},
+    {% endif %}
+    {%- if credentials.metrics_username and credentials.metrics_password %}
+    "logsDashboardCredential": {
+      "username": "[parameters('metricsAndLogsDashboardUsername_4')]",
+      "password": "[parameters('metricsAndLogsDashboardPassword_4')]"
+    },
+    {% else %}
+    "logsDashboardCredential": {},
+    {% endif %}
+    {%- if log_analytics.primary_key and log_analytics.workspace_id %}
+    "logAnalyticsWorkspaceConfig": {
+       "workspaceId": "[parameters('logAnalyticsWorkspaceId_4')]",
+       "primaryKey": "[parameters('logAnalyticsPrimaryKey_4')]"
+    },
+    {% else %}
+    "logAnalyticsWorkspaceConfig": {},
+    {% endif %}
+    "infrastructure": "[parameters('infrastructure_4')]",
+    "k8sRaw": {
+      "kind": "DataController",
+      "spec": {
+        "credentials": {
+          "dockerRegistry": "[parameters('dockerRegistryCredential_4')]",
+          "serviceAccount": "sa-arc-controller"
+        },
+        "security": {
+          "allowDumps": {{control.spec.security.allowDumps|jsonify}},
+          "allowNodeMetricsCollection": {{control.spec.security.allowNodeMetricsCollection|jsonify}},
+          "allowPodMetricsCollection": {{control.spec.security.allowPodMetricsCollection|jsonify}}
+        },
+        "services": [
+          {
+            "name": "controller",
+            "port": "[parameters('controllerPort_4')]",
+            "serviceType": "[parameters('serviceType_4')]"
+          }
+        ],
+        "settings": {
+          "ElasticSearch": {
+            "vm.max_map_count": "-1"
+          },
+          "azure": {
+            "autoUploadMetrics": "[parameters('metricsAutoUploadSelected_4')]",
+            "autoUploadLogs": "[parameters('logsAutoUploadSelected_4')]",
+            "subscription": "[parameters('subscription_4')]",
+            "resourceGroup": "[parameters('resourceGroup_4')]",
+            "location": "[parameters('location_4')]",
+            "connectionMode": "[parameters('connectionMode_4')]"
+          },
+          "controller": {
+            "logs.rotation.days": "7",
+            "logs.rotation.size": "5000",
+            "displayName": "[parameters('controllerName_4')]"
+          }
+        },
+        "storage": {
+          {%- if control.spec.storage.backups %}
+          "backups": {
+            "accessMode": "[parameters('backupsAccessMode_4')]",
+            "className": "[parameters('backupsStorageClass_4')]",
+            "size": "[parameters('backupsStorageSize_4')]"
+          },
+          {% endif %}
+          "data": {
+            "accessMode": "ReadWriteOnce",
+            "className": "[parameters('dataStorageClass_4')]",
+            "size": "[parameters('dataStorageSize_4')]"
+          },
+          "logs": {
+            "accessMode": "ReadWriteOnce",
+            "className": "[parameters('logsStorageClass_4')]",
+            "size": "[parameters('logsStorageSize_4')]"
+          }
+        },
+        "infrastructure": "[parameters('infrastructure_4')]",
+        {%- if control.spec.resources %}
+        "resources": {{control.spec.resources|jsonify}},
+        {% endif %}
+        "docker": {
+          "registry": "[parameters('dockerRegistry_4')]",
+          "repository": "[parameters('dockerRepository_4')]",
+          "imageTag": "[parameters('dockerImageTag_4')]",
+          "imagePullPolicy": "[parameters('dockerImagePullPolicy_4')]"
+        }
+      },
+      "metadata": {
+        "namespace": "[parameters('namespace_4')]",
+        "name": "datacontroller"
+      },
+      "apiVersion": "{{control.apiVersion}}"
+    }
+  },
+  "apiVersion": "[parameters('apiVersion_4')]",
+  "type": "Microsoft.AzureArcData/dataControllers",
+  "name": "[parameters('resourceName_4')]"
+  {%- if resource.dependsOn %}
+  ,
+  "dependsOn": [
+    "[parameters('{{resource.dependsOn}}')]"
+  ]
+  {% endif %}
+}

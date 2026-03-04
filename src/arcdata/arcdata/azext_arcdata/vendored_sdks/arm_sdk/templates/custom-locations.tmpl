@@ -1,0 +1,20 @@
+{
+  "name": "[parameters('resourceName_3')]",
+  "location": "[parameters('location_3')]",
+  "type": "Microsoft.ExtendedLocation/customLocations",
+  "properties": {
+    "hostType": "Kubernetes",
+    "hostResourceId": "[parameters('hostResourceId_3')]",
+    "namespace": "[parameters('namespace_3')]",
+    "displayName": "",
+    "clusterExtensionIds": "[parameters('clusterExtensionIds_3')]",
+    "authentication": {}
+  },
+  "apiVersion": "[parameters('apiVersion_3')]"
+  {%- if resource.dependsOn %}
+  ,
+  "dependsOn": [
+    "[parameters('{{resource.dependsOn}}')]"
+  ]
+  {% endif %}
+}
