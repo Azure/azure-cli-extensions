@@ -49,6 +49,17 @@ def dataprotection_resource_guard_list_protected_operations(cmd, resource_group_
     return resource_type_protected_operation
 
 
+def dataprotection_deleted_vault_undelete(cmd, resource_group_name, vault_name, deleted_vault_name):
+    from azext_dataprotection.manual.aaz_operations.backup_vault import Create as BackupVaultCreate
+
+    return BackupVaultCreate(cli_ctx=cmd.cli_ctx)(command_args={
+        "resource_group": resource_group_name,
+        "vault_name": vault_name,
+        "storage_setting": [],
+        "x_ms_deleted_vault_id": deleted_vault_name
+    })
+
+
 def dataprotection_backup_instance_validate_for_backup(cmd, vault_name, resource_group_name, backup_instance,
                                                        no_wait=False):
 
@@ -338,6 +349,18 @@ def dataprotection_backup_instance_update_policy(cmd, resource_group_name, vault
         "resource_guard_operation_requests": resource_guard_operation_requests,
         "tenant_id": tenant_id,
     })
+
+
+def dataprotection_deleted_vault_list_deleted_backup_instances(client, deleted_vault_name):
+    query = backupcenter_helper.get_deleted_backup_instance_query(deleted_vault_name)
+
+    request_options = QueryRequestOptions(
+        top=1000,
+        skip=0
+    )
+    request = QueryRequest(query=query, subscriptions=[backupcenter_helper.get_selected_subscription()], options=request_options)
+    response = client.resources(request)
+    return response.data
 
 
 def dataprotection_backup_instance_list_from_resourcegraph(client, datasource_type=None, resource_groups=None, vaults=None,
