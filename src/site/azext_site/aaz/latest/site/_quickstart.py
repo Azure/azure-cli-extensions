@@ -81,6 +81,7 @@ def _pick_failed_ops(ops: list[dict] | None) -> list[dict] | None:
 
     return failed or None
 
+
 def _pick_succeeded_ids(ops: list[dict] | None) -> tuple[str | None, str | None, str | None]:
     """Return (site_id, config_id, config_ref_id) for succeeded operations (best-effort)."""
     if not isinstance(ops, list):
@@ -109,7 +110,6 @@ def _pick_succeeded_ids(ops: list[dict] | None) -> tuple[str | None, str | None,
             config_ref_id = r_id
 
     return site_id, config_id, config_ref_id
-
 
 
 def _arm_id_suffix(arm_id: str | None) -> str:
