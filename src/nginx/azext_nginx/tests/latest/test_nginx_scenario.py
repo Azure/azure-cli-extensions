@@ -58,7 +58,7 @@ class NginxScenarioTest(ScenarioTest):
             'identity_object_id': identity_object_id,
         })
         self.kwargs['identities'] = "{\"type\":\"UserAssigned\",\"userAssignedIdentities\":{\"" + managed_identity['id'] + "\":{}}}"
-        self.cmd('nginx deployment create --name {deployment_name} --resource-group {rg} --location {location} --sku name={sku} --enable-diagnostics true --network-profile front-end-ip-configuration="{public_ip_addresses}" network-interface-configuration="{subnet_id}" --identity {identities} --scaling-properties capacity=10 --auto-upgrade-profile upgrade-channel=preview', checks=[
+        self.cmd('nginx deployment create --name {deployment_name} --resource-group {rg} --location {location} --sku name={sku} --network-profile front-end-ip-configuration="{public_ip_addresses}" network-interface-configuration="{subnet_id}" --identity {identities} --scaling-properties capacity=10 --auto-upgrade-profile upgrade-channel=preview', checks=[
             self.check('properties.provisioningState', 'Succeeded'),
             self.check('name', self.kwargs['deployment_name'])
         ])
@@ -84,7 +84,7 @@ class NginxScenarioTest(ScenarioTest):
         assert updated_deployment['properties']['networkProfile']['networkInterfaceConfiguration']['subnetId'] == subnet2['id']
 
         # Nginx for Azure API key
-        create_api_key = 'nginx deployment api-key create -n "test-key" --deployment-name {deployment_name} --resource-group {rg} --end-date-time "2025-11-20T17:59:39.123Z" --secret-text "s5V/9~o^4TYCVwmNc2Y>Y1^64&T`0sXg-j9!Xy|8"'
+        create_api_key = 'nginx deployment api-key create -n "test-key" --deployment-name {deployment_name} --resource-group {rg} --end-date-time "2026-02-20T17:59:39.123Z" --secret-text "s5V/9~o^4TYCVwmNc2Y>Y1^64&T`0sXg-j9!Xy|8"'
         self.cmd(create_api_key)
         # Nginx for Azure certificates
         create_keyvault = 'keyvault create --name {kv_name} --resource-group {rg}'

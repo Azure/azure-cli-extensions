@@ -3,6 +3,12 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import os
+
+# Configuration paths
+home_dir = os.path.expanduser("~")
+CONFIG_DIR = os.path.join(home_dir, ".aks-agent")
+
 # Constants to customized holmesgpt
 CONST_AGENT_CONFIG_PATH_DIR_ENV_KEY = "HOLMES_CONFIGPATH_DIR"
 CONST_AGENT_NAME = "AKS AGENT"
@@ -44,6 +50,9 @@ HEARTBEAT_TIMEOUT = (HEARTBEAT_INTERVAL * 12) + 1    # pingReadDeadline: 61 seco
 AGENT_NAMESPACE = "kube-system"
 AGENT_LABEL_SELECTOR = "app.kubernetes.io/name=aks-agent"
 AKS_MCP_LABEL_SELECTOR = "app.kubernetes.io/name=aks-mcp"
+
+# AKS Agent Version (shared by helm chart and docker image)
+AKS_AGENT_VERSION = "0.4.0"
 
 # Helm Configuration
 HELM_VERSION = "3.16.0"

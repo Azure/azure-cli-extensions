@@ -42,11 +42,17 @@ class ContainerRule:
     required: Optional[bool] = False
 
 
+# TODO: Deprecate
+@dataclass
+class ContainerRuleLegacy:
+    pattern: str
+    strategy: str
+
+
 @dataclass
 class ContainerExecProcesses:
     command: List[str]
-    signals: Optional[List[str]] = OrderlessField(default=None)
-    allow_stdio_access: bool = True
+    signals: Optional[List[int]] = OrderlessField(default=None)
 
 
 @dataclass()
@@ -59,11 +65,11 @@ class ContainerMount:
 
 @dataclass
 class ContainerUser:
-    group_idnames: List[ContainerRule] = \
-        OrderlessField(default_factory=lambda: [ContainerRule(pattern="", strategy="any")])
+    group_idnames: List[ContainerRuleLegacy] = \
+        OrderlessField(default_factory=lambda: [ContainerRuleLegacy(pattern="", strategy="any")])
     umask: str = "0022"
-    user_idname: ContainerRule = \
-        Field(default_factory=lambda: ContainerRule(pattern="", strategy="any"))
+    user_idname: ContainerRuleLegacy = \
+        Field(default_factory=lambda: ContainerRuleLegacy(pattern="", strategy="any"))
 
 
 @dataclass
@@ -91,7 +97,7 @@ class Container:
     name: Optional[str] = None
     no_new_privileges: bool = False
     seccomp_profile_sha256: str = ""
-    signals: List[str] = OrderlessField(default_factory=list)
+    signals: List[int] = OrderlessField(default_factory=list)
     user: ContainerUser = Field(default_factory=ContainerUser)
     working_dir: str = "/"
 

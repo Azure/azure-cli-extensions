@@ -97,6 +97,21 @@ def step_create(test, checks=None, cache_num=1):
                  '--port 10000 '
                  '--resource-group "{rg}"',
                  checks=checks)
+    elif test.kwargs.get('sku-update'):
+        test.cmd('az redisenterprise create '
+                 '--cluster-name "{cluster}" '
+                 '--sku "{initial_sku}" '
+                 '--location "centraluseuap" '
+                 '--tags tag1="value1" '
+                 '--minimum-tls-version "1.2" '
+                 '--client-protocol "Encrypted" '
+                 '--clustering-policy "EnterpriseCluster" '
+                 '--public-network-access "Enabled" '
+                 '--access-keys-auth Enabled '
+                 '--eviction-policy "NoEviction" '
+                 '--port 10000 '
+                 '--resource-group "{rg}"',
+                 checks=checks)
     else:
         test.cmd('az redisenterprise create '
                  '--cluster-name "{cluster}" '
@@ -162,6 +177,16 @@ def step_delete(test, checks=None):
     else:
         test.cmd('az redisenterprise delete -y '
                  '--cluster-name "{cluster}" '
+                 '--resource-group "{rg}"',
+                 checks=checks)
+
+def step_update(test, checks=None):
+    if checks is None:
+        checks = []
+    if test.kwargs.get('sku-update'):
+        test.cmd('az redisenterprise update '
+                 '--cluster-name "{cluster}" '
+                 '--sku "{new_sku}" '
                  '--resource-group "{rg}"',
                  checks=checks)
 

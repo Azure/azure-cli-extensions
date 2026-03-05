@@ -17,7 +17,7 @@ import shutil
 from subprocess import CalledProcessError, check_call, check_output
 
 import service_name
-from pkg_resources import parse_version
+from packaging.version import Version
 from util import get_ext_metadata
 
 logger = logging.getLogger(__name__)
@@ -210,7 +210,7 @@ def azdev_on_external_extension(index_json, azdev_type):
 
         separator_line()
 
-        latest_entry = max(modified_entries, key=lambda c: parse_version(c['metadata']['version']))
+        latest_entry = max(modified_entries, key=lambda c: Version(c['metadata']['version']))
 
         az_extension = AzExtensionHelper(name)
         az_extension.add_from_url(latest_entry['downloadUrl'])
