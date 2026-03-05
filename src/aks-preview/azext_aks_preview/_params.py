@@ -3149,6 +3149,62 @@ def load_arguments(self, _):
             c.argument('config_file', options_list=['--config-file'], type=file_type, completer=FilesCompleter(),
                        help='Path to the JSON configuration file containing JWT authenticator properties.')
 
+    # OpenClaw commands
+    with self.argument_context("aks openclaw") as c:
+        c.argument("cluster_name", options_list=["--cluster-name"], help="The AKS cluster name.")
+        c.argument("namespace", help="Kubernetes namespace for OpenClaw. Default is openclaw.")
+
+    with self.argument_context("aks openclaw deploy") as c:
+        c.argument(
+            "ai_foundry_resource_id",
+            options_list=["--ai-foundry-resource-id"],
+            help="Full ARM resource ID of an existing AIServices account (BYO mode).",
+        )
+        c.argument(
+            "ai_foundry_endpoint",
+            options_list=["--ai-foundry-endpoint"],
+            help="Endpoint URL of an existing AI Foundry resource (BYO mode). Requires --ai-foundry-api-key.",
+        )
+        c.argument(
+            "ai_foundry_api_key",
+            options_list=["--ai-foundry-api-key"],
+            help="API key for the AI Foundry endpoint. Required with --ai-foundry-endpoint.",
+        )
+        c.argument(
+            "ai_foundry_location",
+            options_list=["--ai-foundry-location"],
+            help="Azure region for provisioning a new AIServices account. Defaults to the resource group's location.",
+        )
+        c.argument(
+            "model",
+            options_list=["--model"],
+            help="Model name to deploy. Default is gpt-5.1-chat.",
+        )
+        c.argument(
+            "model_version",
+            options_list=["--model-version"],
+            help="Model version to deploy. Default is 2025-11-13. Only used when provisioning new resources.",
+        )
+        c.argument(
+            "model_deployment_name",
+            options_list=["--deployment-name"],
+            help="Azure model deployment name. Auto-generated from model name if not specified.",
+        )
+        c.argument(
+            "capacity",
+            options_list=["--capacity"],
+            type=int,
+            help="Tokens-per-minute capacity for the model deployment. Default is 50.",
+        )
+
+    with self.argument_context("aks openclaw delete") as c:
+        c.argument(
+            "delete_ai_resources",
+            options_list=["--delete-ai-resources"],
+            action="store_true",
+            help="Also delete the auto-provisioned AIServices account.",
+        )
+
 
 def _get_default_install_location(exe_name):
     system = platform.system()
