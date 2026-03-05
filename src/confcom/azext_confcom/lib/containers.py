@@ -24,6 +24,11 @@ def merge_containers(*args) -> dict:
             }:
                 existing = merged_container.get(key) or []
                 merged_container[key] = list(existing) + list(value or [])
+            elif key in {
+                "command",
+            }:
+                if value or key not in merged_container:
+                    merged_container[key] = value
             else:
                 merged_container[key] = value
 

@@ -30,6 +30,7 @@ from azure.cli.core.azclierror import (ValidationError, ResourceNotFoundError, C
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
 from azure.cli.command_modules.containerapp._utils import is_registry_msi_system
 from azure.mgmt.core.tools import parse_resource_id, is_valid_resource_id
+from ._utils_validation import validate_image_name  # noqa: F401
 
 from azure.mgmt.resource import ResourceManagementClient
 from azure.mgmt.servicelinker import ServiceLinkerManagementClient
@@ -510,6 +511,19 @@ def get_cluster_extension(cmd, cluster_extension_id=None):
         cluster_resource_name=cluster_type,
         cluster_name=cluster_name,
         extension_name=resource_name)
+
+
+def validate_environment_mode_and_workload_profiles_compatible(environment_mode, workload_profiles_enabled):
+    # If only environment_mode is specified, derive enable_workload_profiles from it
+    if environment_mode is not None:
+        is_environment_mode_workload_profiles_enabled = environment_mode.lower() != 'consumptiononly'
+
+        # Check for conflicts when both are specified
+        if workload_profiles_enabled is not None:
+            if not is_environment_mode_workload_profiles_enabled and workload_profiles_enabled:
+                raise ValidationError("Cannot use '--enable-workload-profiles' with '--environment-mode ConsumptionOnly'. Please use '--environment-mode' alone.")
+            if is_environment_mode_workload_profiles_enabled and not workload_profiles_enabled:
+                raise ValidationError("Cannot use '--enable-workload-profiles false' with '--environment-mode {}'. Please use '--environment-mode' alone.".format(environment_mode))
 
 
 def validate_custom_location(cmd, custom_location=None):

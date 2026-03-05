@@ -12,10 +12,16 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+1.0.0b19
+++++++++
+* Bump aks-agent to v0.4.0
+  * Chore: Remove aks mcp tool description to reduce system prompt length
+  * Fix: Delete runbook from prompts after runbook toolset is removed
+
 1.0.0b18
 ++++++++
 * Bump aks-agent to v0.3.0
-  * chore: use aks mcp streamable-http mode
+  * Chore: use aks mcp streamable-http mode
   * Remove runbook toolset until it's stabilized
   * Several CEV fixes
 * Fix: accept endpoints ending with cognitiveservices.azure.com/ for Azure OpenAI service

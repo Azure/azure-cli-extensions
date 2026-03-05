@@ -393,9 +393,26 @@ def acifragmentgen_confcom(
         # the fragment to the first image specified in input
         # (or --image-target if specified)
         if upload_fragment:
+            target_image = image_target or policy_images[0].containerImage
+            # Try to detect platform from the image itself
+            image_platforms = oras_proxy.get_image_platforms(target_image)
+            if len(image_platforms) > 1:
+                eprint(
+                    "Multiarch image detected. Please use `az confcom fragment attach` "
+                    + "explicitly with the --platform parameter to specify the target "
+                    + "platform to attach the fragment to.",
+                    exit_code=1,
+                )
+            elif len(image_platforms) == 0:
+                logger.warning(
+                    "Platform detection failed for image %s. Fragment will be attached to linux/amd64.",
+                    target_image
+                )
+            image_platform = image_platforms[0] if image_platforms else "linux/amd64"
             oras_proxy.attach_fragment_to_image(
-                image_name=image_target or policy_images[0].containerImage,
+                image_name=target_image,
                 filename=out_path,
+                platform=image_platform,
             )
 
         if out_signed_fragment:
@@ -539,10 +556,12 @@ def get_fragment_output_type(outraw):
 def fragment_attach(
     signed_fragment: BinaryIO,
     manifest_tag: str,
+    platform: Optional[str] = None,
 ) -> None:
     _fragment_attach(
         signed_fragment=signed_fragment,
-        manifest_tag=manifest_tag
+        manifest_tag=manifest_tag,
+        platform=platform,
     )
 
 

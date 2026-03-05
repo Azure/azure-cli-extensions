@@ -26,6 +26,18 @@ from azext_confcom.lib.containers import (
 )
 
 
+def _get_pod_spec(template: dict) -> dict:
+    """Return the pod spec from a Kubernetes resource.
+
+    For templated resources (Deployment, StatefulSet, DaemonSet, Job, etc.)
+    the pod spec lives at spec.template.spec. For bare Pods it is at spec.
+    """
+    return (
+        template.get("spec", {}).get("template", {}).get("spec", {})
+        or template.get("spec", {})
+    )
+
+
 def find_vn2_containers(vn2_template):
     for key, value in vn2_template.items():
         if key in ("containers", "initContainers"):
@@ -111,9 +123,11 @@ def vn2_container_mounts(template: dict, container: dict) -> list[dict]:
         v["metadata"]["name"]: v.get("spec", {}).get("accessModes", [])
         for v in template.get("spec", {}).get("volumeClaimTemplates", [])
     }
+    # For Deployment/StatefulSet/etc., volumes are at spec.template.spec.volumes
+    pod_spec = _get_pod_spec(template)
     volume_defs = {
         v["name"]: [k for k in v.keys() if k != "name"][0]
-        for v in template.get("spec", {}).get("volumes", [])
+        for v in pod_spec.get("volumes", [])
     }
 
     return [
@@ -204,8 +218,11 @@ def containers_from_vn2(
         }
 
         # Parse security context
+        # For Deployment/StatefulSet/etc., pod-level securityContext is at
+        # spec.template.spec.securityContext, not spec.securityContext.
+        pod_spec = _get_pod_spec(template_doc)
         security_context = (
-            template_doc.get("spec", {}).get("securityContext", {})
+            pod_spec.get("securityContext", {})
             | template_container.get("securityContext", {})
         )
         if security_context.get("privileged", False):
@@ -252,7 +269,7 @@ def containers_from_vn2(
                 template_container.get("lifecycle", {}).get("postStart"),
                 template_container.get("lifecycle", {}).get("preStop"),
             ]
-            if process is not None
+            if process is not None and process.get("exec") is not None
         ]
         if exec_processes:
             template_container_def["exec_processes"] = exec_processes

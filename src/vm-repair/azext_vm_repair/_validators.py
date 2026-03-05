@@ -52,7 +52,7 @@ def validate_create(cmd, namespace):
     else:
         namespace.copy_disk_name = namespace.vm_name + '-DiskCopy-' + timestamp
 
-    # Check copy resouce group name
+    # Check copy resource group name
     if namespace.repair_group_name:
         if namespace.repair_group_name == namespace.resource_group_name:
             raise CLIError('The repair resource group name cannot be the same as the source VM resource group.')
@@ -91,9 +91,6 @@ def validate_create(cmd, namespace):
         _prompt_repair_password(namespace)
     # Validate vm password
     validate_vm_password(namespace.repair_password, is_linux)
-    # Prompt input for public ip usage
-    if (not namespace.associate_public_ip) and (not namespace.yes):
-        _prompt_public_ip(namespace)
 
 
 def validate_restore(cmd, namespace):
@@ -190,7 +187,7 @@ def validate_reset_nic(cmd, namespace):
             _call_az_command(set_sub_command)
         except AzCommandError as azCommandError:
             logger.error(azCommandError)
-            raise CLIError('Unexpected error occured while setting the subscription..')
+            raise CLIError('Unexpected error occurred while setting the subscription..')
     _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
 
 

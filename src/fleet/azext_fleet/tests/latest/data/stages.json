@@ -2,6 +2,7 @@
   "stages": [
     {
       "name": "stage1",
+      "maxConcurrency": "7",
       "beforeGates": [
         {
           "displayName": "stage before gate",
@@ -17,6 +18,7 @@
       "groups": [
         {
           "name": "group1",
+          "maxConcurrency": "100%",
           "beforeGates": [
             {
               "displayName": "group before gate",
@@ -32,6 +34,7 @@
         },
         {
           "name": "group2",
+          "maxConcurrency": "50%",
           "beforeGates": [
             {
               "displayName": "group before gate",
