@@ -265,27 +265,21 @@ helps['managedcleanroom frontend analytics dataset publish'] = """
     type: command
     short-summary: Publish a dataset
     long-summary: |
-        Publishes a dataset with configuration including dataset access point,
-        protection settings, encryption secrets, and identity configuration.
-
-        The body parameter must contain a JSON object with:
-        - data.datasetAccessPoint: Dataset access configuration
-          - name: Access point name
-          - path: Dataset path
-          - protection: Protection configuration with proxyMode, proxyType, etc.
+        Publishes a dataset with access point, encryption, identity, and policy configuration.
+        Body must contain JSON with datasetAccessPoint, protection, identity, and policy.
     examples:
-        - name: Publish a dataset with configuration from file
+        - name: Publish dataset from file
           text: |
             az managedcleanroom frontend analytics dataset publish \
-              --collaboration-id <cid> \
-              --document-id <document-id> \
-              --body @publish-config.json
-        - name: Publish a dataset with inline JSON
+              --collaboration-id consumer-collab \
+              --document-id publisher-input-csv-abc123 \
+              --body @dataset-config.json
+        - name: Publish dataset with CPK encryption and field-level access
           text: |
             az managedcleanroom frontend analytics dataset publish \
-              --collaboration-id <cid> \
-              --document-id <document-id> \
-              --body '{"data": {"datasetAccessPoint": {"name": "my-dataset", "path": "/data/path", "protection": {}}}}'
+              --collaboration-id consumer-collab \
+              --document-id publisher-input-csv-abc123 \
+              --body '{"data":{"datasetAccessPoint":{"name":"publisher-input-csv","path":"/datasets/publisher/input","protection":{"encryptionMode":"CPK","dekSecretStore":"publisher-dek-store","kekSecretStore":"publisher-kek-store"}},"identity":"publisher-identity","policy":{"accessMode":"read","allowedFields":["date","author","mentions"]}}}'
 """
 
 
@@ -346,26 +340,21 @@ helps['managedcleanroom frontend analytics query publish'] = """
     type: command
     short-summary: Publish a query
     long-summary: |
-        Publishes a query with configuration including input datasets, output dataset,
-        and query execution segments.
-
-        The body parameter must contain a JSON object with:
-        - inputDatasets: Array of input dataset configurations
-        - outputDataset: Output dataset configuration
-        - queryData: Query execution data with segments
+        Publishes a query with input/output dataset mappings and SQL execution segments.
+        Body must contain inputDatasets, outputDataset, and queryData with segments.
     examples:
-        - name: Publish a query with configuration from file
+        - name: Publish query from file
           text: |
             az managedcleanroom frontend analytics query publish \
-              --collaboration-id <cid> \
-              --document-id <document-id> \
-              --body @query-publish-config.json
-        - name: Publish a query with inline JSON
+              --collaboration-id consumer-collab \
+              --document-id consumer-query-csv-xyz789 \
+              --body @query-config.json
+        - name: Publish multi-dataset query with SQL segments
           text: |
             az managedcleanroom frontend analytics query publish \
-              --collaboration-id <cid> \
-              --document-id <document-id> \
-              --body '{"inputDatasets": [{"datasetDocumentId": "...", "view": "..."}], "outputDataset": {}, "queryData": {"segments": []}}'
+              --collaboration-id consumer-collab \
+              --document-id consumer-query-csv-xyz789 \
+              --body '{"inputDatasets":[{"datasetDocumentId":"publisher-input-csv-abc123","view":"publisher_data"},{"datasetDocumentId":"consumer-input-csv-def456","view":"consumer_data"}],"outputDataset":{"datasetDocumentId":"consumer-output-csv-ghi789","view":"output"},"queryData":{"segments":[{"content":"CREATE OR REPLACE TEMP VIEW publisher_view AS SELECT * FROM publisher_data","executionSequence":1},{"content":"SELECT author, COUNT(*) AS mentions FROM publisher_view GROUP BY author","executionSequence":2}]}}'
 """
 
 helps['managedcleanroom frontend analytics query run'] = """
