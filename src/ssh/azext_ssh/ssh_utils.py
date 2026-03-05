@@ -145,12 +145,17 @@ def _check_ssh_logs_for_common_errors(ssh_sub, op_info, delete_cert, delete_keys
     return service_config_delay_error
 
 
-def _read_ssh_log_lines(ssh_sub):
-    while True:
+def _read_ssh_log_lines(ssh_sub, op_info, delete_cert, delete_keys):
+    retries = 0
+    max_retries = 5
+
+    while retries < max_retries:
         try:
             return ssh_sub.stderr.readline()
-        except Exception:  # pylint: disable=broad-except
-            pass
+        except UnicodeDecodeError:
+            retries += 1
+
+    return None
 
 
 def _wait_to_delete_credentials(ssh_sub, op_info, delete_cert, delete_keys):

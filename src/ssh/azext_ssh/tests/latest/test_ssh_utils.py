@@ -381,5 +381,19 @@ class SSHUtilsTests(unittest.TestCase):
         ssh_sub.stderr.readline.return_value = None
         result = ssh_utils._read_ssh_log_lines(ssh_sub)
         self.assertIsNone(result)
+
+    def test_readline_ssh_logs_skips_errors_and_returns_next_line(self):
+        ssh_sub = mock.Mock()
+        ssh_sub.stderr.readline.side_effect = [
+            UnicodeDecodeError('utf-8', b'\x80invalid', 0, 1, 'invalid start byte'),
+            UnicodeDecodeError('utf-8', b'\x81invalid', 0, 1, 'invalid start byte'),
+            UnicodeDecodeError('utf-8', b'\x81invalid', 0, 1, 'invalid start byte'),
+            UnicodeDecodeError('utf-8', b'\x81invalid', 0, 1, 'invalid start byte'),
+            UnicodeDecodeError('utf-8', b'\x81invalid', 0, 1, 'invalid start byte'),
+            "valid line\n",
+        ]
+        result = ssh_utils._read_ssh_log_lines(ssh_sub)
+        self.assertIsNone(result)
+        self.assertEqual(ssh_sub.stderr.readline.call_count, 5)
     
 
