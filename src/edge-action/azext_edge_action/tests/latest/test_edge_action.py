@@ -246,7 +246,7 @@ class EdgeActionScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(additional_tags={'owner': 'edgeaction'})
     def test_edge_action_execution_filter_crud(self, resource_group):
-        """Test Edge Action Execution Filter CRUD operations"""
+        """Test Edge Action Execution Filter create, show, list, and delete operations"""
         edge_action_name = self.create_random_name(prefix='edgeaction', length=20)
         version_name = 'v1'
         filter_name = self.create_random_name(prefix='filter', length=15)
