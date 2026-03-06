@@ -13,7 +13,7 @@ interactions:
       ParameterSetName:
       - -g -n --mode
       User-Agent:
-      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.13.11 (Windows-11-10.0.26200-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2024-11-01
   response:
@@ -27,7 +27,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Nov 2025 09:03:01 GMT
+      - Mon, 19 Jan 2026 04:12:00 GMT
       expires:
       - '-1'
       pragma:
@@ -41,7 +41,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: CB1D2C21500243BF98E39E5C70A14836 Ref B: SYD03EDGE0706 Ref C: 2025-11-04T09:03:01Z'
+      - 'Ref A: DB2B1027F2D24409A975D1E199E8D5F3 Ref B: SYD03EDGE0910 Ref C: 2026-01-19T04:12:00Z'
     status:
       code: 200
       message: OK
@@ -64,7 +64,7 @@ interactions:
       ParameterSetName:
       - -g -n --mode
       User-Agent:
-      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.13.11 (Windows-11-10.0.26200-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2025-10-01
   response:
@@ -78,7 +78,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Nov 2025 09:03:02 GMT
+      - Mon, 19 Jan 2026 04:12:03 GMT
       expires:
       - '-1'
       pragma:
@@ -90,13 +90,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/3cdd22c3-deab-4634-99d8-8c8cc042b0e3
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/7ced017a-f2ea-4154-895a-ea39fc5e605b
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
       x-msedge-ref:
-      - 'Ref A: CE5790BB642D444DA1872ECA99CB5DBB Ref B: SYD03EDGE1911 Ref C: 2025-11-04T09:03:01Z'
+      - 'Ref A: 4A2700B00F274BF9BA4EB461602E6E4F Ref B: SYD03EDGE1316 Ref C: 2026-01-19T04:12:00Z'
     status:
       code: 201
       message: Created
@@ -113,23 +113,23 @@ interactions:
       - keep-alive
       ParameterSetName:
       - -g --policy-name -n --priority --action --rule-type --rate-limit-duration
-        --rate-limit-threshold --defer
+        --rate-limit-threshold --match-variable --operator --values
       User-Agent:
-      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.13.11 (Windows-11-10.0.26200-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2025-10-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":30,"logScrubbing":null},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":30,"captchaExpirationInMinutes":30,"logScrubbing":null},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '760'
+      - '792'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Nov 2025 09:03:03 GMT
+      - Mon, 19 Jan 2026 04:12:05 GMT
       expires:
       - '-1'
       pragma:
@@ -141,29 +141,369 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-global-reads:
-      - '16498'
+      - '16499'
       x-msedge-ref:
-      - 'Ref A: A8ECB9F4718048F4B56E0A3BD44F2444 Ref B: SYD03EDGE0719 Ref C: 2025-11-04T09:03:03Z'
+      - 'Ref A: 514D1F171DC14D5B92B31A76633CFC63 Ref B: SYD03EDGE1714 Ref C: 2026-01-19T04:12:05Z'
     status:
       code: 200
       message: OK
 - request:
-    body: '{"location": "Global", "tags": {}, "sku": {"name": "Premium_AzureFrontDoor"},
-      "properties": {"policySettings": {"enabledState": "Enabled", "mode": "Prevention",
-      "requestBodyCheck": "Enabled", "javascriptChallengeExpirationInMinutes": 30},
-      "customRules": {"rules": [{"name": "cli000003", "priority": 45, "enabledState":
-      "Enabled", "ruleType": "RateLimitRule", "rateLimitDurationInMinutes": 5, "rateLimitThreshold":
-      10000, "matchConditions": [{"matchVariable": "RequestHeader", "selector": "value",
-      "operator": "Contains", "matchValue": ["foo", "boo"]}, {"matchVariable": "RequestHeader",
-      "operator": "Contains", "matchValue": ["foo", "boo"]}], "action": "Block"},
-      {"name": "cli000005", "priority": 75, "enabledState": "Enabled", "ruleType":
-      "RateLimitRule", "rateLimitDurationInMinutes": 1, "rateLimitThreshold": 10000,
-      "matchConditions": [{"matchVariable": "RequestUri", "operator": "Contains",
-      "negateCondition": true, "matchValue": ["foo", "boo"]}], "action": "Log"}, {"name":
-      "cli000006", "priority": 40, "enabledState": "Enabled", "ruleType": "MatchRule",
-      "matchConditions": [{"matchVariable": "RequestUri", "operator": "Contains",
-      "matchValue": ["foo", "boo"]}], "action": "Log"}]}, "managedRules": {"managedRuleSets":
-      []}}}'
+    body: '{"location": "Global", "properties": {"customRules": {"rules": [{"action":
+      "Log", "enabledState": "Enabled", "matchConditions": [{"matchValue": ["192.168.1.0/24"],
+      "matchVariable": "RemoteAddr", "operator": "IPMatch"}], "name": "cli000003",
+      "priority": 10, "rateLimitDurationInMinutes": 5, "rateLimitThreshold": 10000,
+      "ruleType": "RateLimitRule"}]}, "managedRules": {"managedRuleSets": []}, "policySettings":
+      {"captchaExpirationInMinutes": 30, "enabledState": "Enabled", "javascriptChallengeExpirationInMinutes":
+      30, "mode": "Prevention", "requestBodyCheck": "Enabled"}}, "sku": {"name": "Premium_AzureFrontDoor"},
+      "tags": {}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door waf-policy rule create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '627'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --policy-name -n --priority --action --rule-type --rate-limit-duration
+        --rate-limit-threshold --match-variable --operator --values
+      User-Agent:
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.13.11 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2025-10-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":30,"captchaExpirationInMinutes":30,"logScrubbing":null},"customRules":{"rules":[{"name":"cli000003","enabledState":"Enabled","priority":10,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":5,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RemoteAddr","selector":null,"operator":"IPMatch","negateCondition":false,"matchValue":["192.168.1.0/24"],"transforms":[]}],"action":"Log","groupBy":[{"variableName":"SocketAddr"}]}]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1153'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 19 Jan 2026 04:12:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/1cee5338-6581-4b79-b7dd-365c758d0b0c
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: B493328CA28C49AC8AAD38A192D3E3C0 Ref B: SYD03EDGE1913 Ref C: 2026-01-19T04:12:06Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door waf-policy rule create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --policy-name -n --priority --action --rule-type --disabled --rate-limit-duration
+        --rate-limit-threshold --match-variable --operator --values
+      User-Agent:
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.13.11 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2025-10-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":30,"captchaExpirationInMinutes":30,"logScrubbing":null},"customRules":{"rules":[{"name":"cli000003","enabledState":"Enabled","priority":10,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":5,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RemoteAddr","selector":null,"operator":"IPMatch","negateCondition":false,"matchValue":["192.168.1.0/24"],"transforms":[]}],"action":"Log","groupBy":[{"variableName":"SocketAddr"}]}]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1153'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 19 Jan 2026 04:12:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 5B428943519147C9B5BAE14075032430 Ref B: SYD03EDGE1321 Ref C: 2026-01-19T04:12:08Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "Global", "properties": {"customRules": {"rules": [{"action":
+      "Log", "enabledState": "Enabled", "groupBy": [{"variableName": "SocketAddr"}],
+      "matchConditions": [{"matchValue": ["192.168.1.0/24"], "matchVariable": "RemoteAddr",
+      "negateCondition": false, "operator": "IPMatch", "transforms": []}], "name":
+      "cli000003", "priority": 10, "rateLimitDurationInMinutes": 5, "rateLimitThreshold":
+      10000, "ruleType": "RateLimitRule"}, {"action": "Log", "enabledState": "Disabled",
+      "matchConditions": [{"matchValue": ["foo"], "matchVariable": "RequestUri", "operator":
+      "Contains"}], "name": "cli000005", "priority": 30, "rateLimitDurationInMinutes":
+      1, "rateLimitThreshold": 10000, "ruleType": "RateLimitRule"}]}, "managedRules":
+      {"managedRuleSets": []}, "policySettings": {"captchaExpirationInMinutes": 30,
+      "enabledState": "Enabled", "javascriptChallengeExpirationInMinutes": 30, "mode":
+      "Prevention", "requestBodyCheck": "Enabled"}}, "sku": {"name": "Premium_AzureFrontDoor"},
+      "tags": {}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door waf-policy rule create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '992'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --policy-name -n --priority --action --rule-type --disabled --rate-limit-duration
+        --rate-limit-threshold --match-variable --operator --values
+      User-Agent:
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.13.11 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2025-10-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":30,"captchaExpirationInMinutes":30,"logScrubbing":null},"customRules":{"rules":[{"name":"cli000003","enabledState":"Enabled","priority":10,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":5,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RemoteAddr","selector":null,"operator":"IPMatch","negateCondition":false,"matchValue":["192.168.1.0/24"],"transforms":[]}],"action":"Log","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000005","enabledState":"Disabled","priority":30,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":1,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["foo"],"transforms":[]}],"action":"Log","groupBy":[{"variableName":"SocketAddr"}]}]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1506'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 19 Jan 2026 04:12:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/7bf63cfe-5eaa-479f-b909-ab0dee622790
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 9DDBD31F2E864CCA92F62BA86AEDF8E3 Ref B: SYD03EDGE1322 Ref C: 2026-01-19T04:12:09Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door waf-policy rule create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --policy-name -n --priority --action --rule-type --match-variable --operator
+        --values
+      User-Agent:
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.13.11 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2025-10-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":30,"captchaExpirationInMinutes":30,"logScrubbing":null},"customRules":{"rules":[{"name":"cli000003","enabledState":"Enabled","priority":10,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":5,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RemoteAddr","selector":null,"operator":"IPMatch","negateCondition":false,"matchValue":["192.168.1.0/24"],"transforms":[]}],"action":"Log","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000005","enabledState":"Disabled","priority":30,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":1,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["foo"],"transforms":[]}],"action":"Log","groupBy":[{"variableName":"SocketAddr"}]}]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1506'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 19 Jan 2026 04:12:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 4DFD6406A3F0436DA4C374D016AC15D7 Ref B: SYD03EDGE1410 Ref C: 2026-01-19T04:12:11Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "Global", "properties": {"customRules": {"rules": [{"action":
+      "Log", "enabledState": "Enabled", "groupBy": [{"variableName": "SocketAddr"}],
+      "matchConditions": [{"matchValue": ["192.168.1.0/24"], "matchVariable": "RemoteAddr",
+      "negateCondition": false, "operator": "IPMatch", "transforms": []}], "name":
+      "cli000003", "priority": 10, "rateLimitDurationInMinutes": 5, "rateLimitThreshold":
+      10000, "ruleType": "RateLimitRule"}, {"action": "Log", "enabledState": "Disabled",
+      "groupBy": [{"variableName": "SocketAddr"}], "matchConditions": [{"matchValue":
+      ["foo"], "matchVariable": "RequestUri", "negateCondition": false, "operator":
+      "Contains", "transforms": []}], "name": "cli000005", "priority": 30, "rateLimitDurationInMinutes":
+      1, "rateLimitThreshold": 10000, "ruleType": "RateLimitRule"}, {"action": "Log",
+      "enabledState": "Enabled", "matchConditions": [{"matchValue": ["test"], "matchVariable":
+      "RequestUri", "operator": "Contains"}], "name": "cli000006", "priority": 40,
+      "ruleType": "MatchRule"}]}, "managedRules": {"managedRuleSets": []}, "policySettings":
+      {"captchaExpirationInMinutes": 30, "enabledState": "Enabled", "javascriptChallengeExpirationInMinutes":
+      30, "mode": "Prevention", "requestBodyCheck": "Enabled"}}, "sku": {"name": "Premium_AzureFrontDoor"},
+      "tags": {}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door waf-policy rule create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1291'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --policy-name -n --priority --action --rule-type --match-variable --operator
+        --values
+      User-Agent:
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.13.11 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2025-10-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":30,"captchaExpirationInMinutes":30,"logScrubbing":null},"customRules":{"rules":[{"name":"cli000003","enabledState":"Enabled","priority":10,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":5,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RemoteAddr","selector":null,"operator":"IPMatch","negateCondition":false,"matchValue":["192.168.1.0/24"],"transforms":[]}],"action":"Log","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000005","enabledState":"Disabled","priority":30,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":1,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["foo"],"transforms":[]}],"action":"Log","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000006","enabledState":"Enabled","priority":40,"ruleType":"MatchRule","rateLimitDurationInMinutes":null,"rateLimitThreshold":null,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["test"],"transforms":[]}],"action":"Log","groupBy":[]}]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1828'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 19 Jan 2026 04:12:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/f4360e5e-bff7-4d5a-a291-dfdd9e2dd863
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: F7537C69FC704E3492D9CD3EA2DE225E Ref B: SYD03EDGE0714 Ref C: 2026-01-19T04:12:12Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door waf-policy rule update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --policy-name -n --priority --action --rate-limit-duration --rate-limit-threshold
+      User-Agent:
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.13.11 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2025-10-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":30,"captchaExpirationInMinutes":30,"logScrubbing":null},"customRules":{"rules":[{"name":"cli000003","enabledState":"Enabled","priority":10,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":5,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RemoteAddr","selector":null,"operator":"IPMatch","negateCondition":false,"matchValue":["192.168.1.0/24"],"transforms":[]}],"action":"Log","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000005","enabledState":"Disabled","priority":30,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":1,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["foo"],"transforms":[]}],"action":"Log","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000006","enabledState":"Enabled","priority":40,"ruleType":"MatchRule","rateLimitDurationInMinutes":null,"rateLimitThreshold":null,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["test"],"transforms":[]}],"action":"Log","groupBy":[]}]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1828'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 19 Jan 2026 04:12:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 8596DB2EF2C7416DBA19CF81BCCB7080 Ref B: SYD03EDGE1110 Ref C: 2026-01-19T04:12:14Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "Global", "properties": {"customRules": {"rules": [{"action":
+      "Block", "enabledState": "Enabled", "groupBy": [{"variableName": "SocketAddr"}],
+      "matchConditions": [{"matchValue": ["192.168.1.0/24"], "matchVariable": "RemoteAddr",
+      "negateCondition": false, "operator": "IPMatch", "transforms": []}], "name":
+      "cli000003", "priority": 45, "rateLimitDurationInMinutes": 5, "rateLimitThreshold":
+      10000, "ruleType": "RateLimitRule"}, {"action": "Log", "enabledState": "Disabled",
+      "groupBy": [{"variableName": "SocketAddr"}], "matchConditions": [{"matchValue":
+      ["foo"], "matchVariable": "RequestUri", "negateCondition": false, "operator":
+      "Contains", "transforms": []}], "name": "cli000005", "priority": 30, "rateLimitDurationInMinutes":
+      1, "rateLimitThreshold": 10000, "ruleType": "RateLimitRule"}, {"action": "Log",
+      "enabledState": "Enabled", "groupBy": [], "matchConditions": [{"matchValue":
+      ["test"], "matchVariable": "RequestUri", "negateCondition": false, "operator":
+      "Contains", "transforms": []}], "name": "cli000006", "priority": 40, "ruleType":
+      "MatchRule"}]}, "managedRules": {"managedRuleSets": []}, "policySettings": {"captchaExpirationInMinutes":
+      30, "enabledState": "Enabled", "javascriptChallengeExpirationInMinutes": 30,
+      "mode": "Prevention", "requestBodyCheck": "Enabled"}}, "sku": {"name": "Premium_AzureFrontDoor"},
+      "tags": {}}'
     headers:
       Accept:
       - application/json
@@ -174,15 +514,367 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '1229'
+      - '1352'
       Content-Type:
       - application/json
       ParameterSetName:
-      - -g --policy-name -n --priority
+      - -g --policy-name -n --priority --action --rate-limit-duration --rate-limit-threshold
       User-Agent:
-      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.13.11 (Windows-11-10.0.26200-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2025-10-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":30,"captchaExpirationInMinutes":30,"logScrubbing":null},"customRules":{"rules":[{"name":"cli000003","enabledState":"Enabled","priority":45,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":5,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RemoteAddr","selector":null,"operator":"IPMatch","negateCondition":false,"matchValue":["192.168.1.0/24"],"transforms":[]}],"action":"Block","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000005","enabledState":"Disabled","priority":30,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":1,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["foo"],"transforms":[]}],"action":"Log","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000006","enabledState":"Enabled","priority":40,"ruleType":"MatchRule","rateLimitDurationInMinutes":null,"rateLimitThreshold":null,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["test"],"transforms":[]}],"action":"Log","groupBy":[]}]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1830'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 19 Jan 2026 04:12:16 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/ca44752e-4232-4ed0-a7f3-574a97b58985
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 6AB7E5F5145749DABA31D29DB8A5FACD Ref B: SYD03EDGE0818 Ref C: 2026-01-19T04:12:15Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door waf-policy rule update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --policy-name -n --priority --disabled --rate-limit-duration
+      User-Agent:
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.13.11 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2025-10-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":30,"captchaExpirationInMinutes":30,"logScrubbing":null},"customRules":{"rules":[{"name":"cli000003","enabledState":"Enabled","priority":45,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":5,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RemoteAddr","selector":null,"operator":"IPMatch","negateCondition":false,"matchValue":["192.168.1.0/24"],"transforms":[]}],"action":"Block","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000005","enabledState":"Disabled","priority":30,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":1,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["foo"],"transforms":[]}],"action":"Log","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000006","enabledState":"Enabled","priority":40,"ruleType":"MatchRule","rateLimitDurationInMinutes":null,"rateLimitThreshold":null,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["test"],"transforms":[]}],"action":"Log","groupBy":[]}]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1830'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 19 Jan 2026 04:12:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: A054098596AF456FA4FCCDF784F5A5A1 Ref B: SYD03EDGE0912 Ref C: 2026-01-19T04:12:17Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "Global", "properties": {"customRules": {"rules": [{"action":
+      "Block", "enabledState": "Enabled", "groupBy": [{"variableName": "SocketAddr"}],
+      "matchConditions": [{"matchValue": ["192.168.1.0/24"], "matchVariable": "RemoteAddr",
+      "negateCondition": false, "operator": "IPMatch", "transforms": []}], "name":
+      "cli000003", "priority": 45, "rateLimitDurationInMinutes": 5, "rateLimitThreshold":
+      10000, "ruleType": "RateLimitRule"}, {"action": "Log", "enabledState": "Disabled",
+      "groupBy": [{"variableName": "SocketAddr"}], "matchConditions": [{"matchValue":
+      ["foo"], "matchVariable": "RequestUri", "negateCondition": false, "operator":
+      "Contains", "transforms": []}], "name": "cli000005", "priority": 75, "rateLimitDurationInMinutes":
+      1, "rateLimitThreshold": 10000, "ruleType": "RateLimitRule"}, {"action": "Log",
+      "enabledState": "Enabled", "groupBy": [], "matchConditions": [{"matchValue":
+      ["test"], "matchVariable": "RequestUri", "negateCondition": false, "operator":
+      "Contains", "transforms": []}], "name": "cli000006", "priority": 40, "ruleType":
+      "MatchRule"}]}, "managedRules": {"managedRuleSets": []}, "policySettings": {"captchaExpirationInMinutes":
+      30, "enabledState": "Enabled", "javascriptChallengeExpirationInMinutes": 30,
+      "mode": "Prevention", "requestBodyCheck": "Enabled"}}, "sku": {"name": "Premium_AzureFrontDoor"},
+      "tags": {}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door waf-policy rule update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1352'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --policy-name -n --priority --disabled --rate-limit-duration
+      User-Agent:
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.13.11 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2025-10-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":30,"captchaExpirationInMinutes":30,"logScrubbing":null},"customRules":{"rules":[{"name":"cli000003","enabledState":"Enabled","priority":45,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":5,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RemoteAddr","selector":null,"operator":"IPMatch","negateCondition":false,"matchValue":["192.168.1.0/24"],"transforms":[]}],"action":"Block","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000005","enabledState":"Disabled","priority":75,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":1,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["foo"],"transforms":[]}],"action":"Log","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000006","enabledState":"Enabled","priority":40,"ruleType":"MatchRule","rateLimitDurationInMinutes":null,"rateLimitThreshold":null,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["test"],"transforms":[]}],"action":"Log","groupBy":[]}]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1830'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 19 Jan 2026 04:12:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/855e7cef-7ae0-4968-8920-407eb64be50e
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 0D4CFD394A594F65ABBA81638067D994 Ref B: SYD03EDGE1112 Ref C: 2026-01-19T04:12:18Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door waf-policy rule match-condition add
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --policy-name -n --match-variable --operator --values
+      User-Agent:
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.13.11 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2025-10-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":30,"captchaExpirationInMinutes":30,"logScrubbing":null},"customRules":{"rules":[{"name":"cli000003","enabledState":"Enabled","priority":45,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":5,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RemoteAddr","selector":null,"operator":"IPMatch","negateCondition":false,"matchValue":["192.168.1.0/24"],"transforms":[]}],"action":"Block","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000005","enabledState":"Disabled","priority":75,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":1,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["foo"],"transforms":[]}],"action":"Log","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000006","enabledState":"Enabled","priority":40,"ruleType":"MatchRule","rateLimitDurationInMinutes":null,"rateLimitThreshold":null,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["test"],"transforms":[]}],"action":"Log","groupBy":[]}]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1830'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 19 Jan 2026 04:12:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 9A9BC6937EE14EAE96B38A6F02DCB5B5 Ref B: SYD03EDGE0919 Ref C: 2026-01-19T04:12:20Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "Global", "properties": {"customRules": {"rules": [{"action":
+      "Block", "enabledState": "Enabled", "groupBy": [{"variableName": "SocketAddr"}],
+      "matchConditions": [{"matchValue": ["192.168.1.0/24"], "matchVariable": "RemoteAddr",
+      "negateCondition": false, "operator": "IPMatch", "transforms": []}, {"matchValue":
+      ["foo", "boo"], "matchVariable": "RequestHeader", "operator": "Contains", "selector":
+      "value"}], "name": "cli000003", "priority": 45, "rateLimitDurationInMinutes":
+      5, "rateLimitThreshold": 10000, "ruleType": "RateLimitRule"}, {"action": "Log",
+      "enabledState": "Disabled", "groupBy": [{"variableName": "SocketAddr"}], "matchConditions":
+      [{"matchValue": ["foo"], "matchVariable": "RequestUri", "negateCondition": false,
+      "operator": "Contains", "transforms": []}], "name": "cli000005", "priority":
+      75, "rateLimitDurationInMinutes": 1, "rateLimitThreshold": 10000, "ruleType":
+      "RateLimitRule"}, {"action": "Log", "enabledState": "Enabled", "groupBy": [],
+      "matchConditions": [{"matchValue": ["test"], "matchVariable": "RequestUri",
+      "negateCondition": false, "operator": "Contains", "transforms": []}], "name":
+      "cli000006", "priority": 40, "ruleType": "MatchRule"}]}, "managedRules": {"managedRuleSets":
+      []}, "policySettings": {"captchaExpirationInMinutes": 30, "enabledState": "Enabled",
+      "javascriptChallengeExpirationInMinutes": 30, "mode": "Prevention", "requestBodyCheck":
+      "Enabled"}}, "sku": {"name": "Premium_AzureFrontDoor"}, "tags": {}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door waf-policy rule match-condition add
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1463'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --policy-name -n --match-variable --operator --values
+      User-Agent:
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.13.11 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2025-10-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":30,"captchaExpirationInMinutes":30,"logScrubbing":null},"customRules":{"rules":[{"name":"cli000003","enabledState":"Enabled","priority":45,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":5,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RemoteAddr","selector":null,"operator":"IPMatch","negateCondition":false,"matchValue":["192.168.1.0/24"],"transforms":[]},{"matchVariable":"RequestHeader","selector":"value","operator":"Contains","negateCondition":false,"matchValue":["foo","boo"],"transforms":[]}],"action":"Block","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000005","enabledState":"Disabled","priority":75,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":1,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["foo"],"transforms":[]}],"action":"Log","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000006","enabledState":"Enabled","priority":40,"ruleType":"MatchRule","rateLimitDurationInMinutes":null,"rateLimitThreshold":null,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["test"],"transforms":[]}],"action":"Log","groupBy":[]}]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1972'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 19 Jan 2026 04:12:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/21ef36f5-5f9c-4d8b-a9d1-34b0b650bb7a
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: F651E6EB3A6247329BB3D3A40F4BC6AF Ref B: SYD03EDGE1321 Ref C: 2026-01-19T04:12:21Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door waf-policy rule match-condition add
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --policy-name -n --match-variable --operator --values
+      User-Agent:
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.13.11 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2025-10-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":30,"captchaExpirationInMinutes":30,"logScrubbing":null},"customRules":{"rules":[{"name":"cli000003","enabledState":"Enabled","priority":45,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":5,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RemoteAddr","selector":null,"operator":"IPMatch","negateCondition":false,"matchValue":["192.168.1.0/24"],"transforms":[]},{"matchVariable":"RequestHeader","selector":"value","operator":"Contains","negateCondition":false,"matchValue":["foo","boo"],"transforms":[]}],"action":"Block","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000005","enabledState":"Disabled","priority":75,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":1,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["foo"],"transforms":[]}],"action":"Log","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000006","enabledState":"Enabled","priority":40,"ruleType":"MatchRule","rateLimitDurationInMinutes":null,"rateLimitThreshold":null,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["test"],"transforms":[]}],"action":"Log","groupBy":[]}]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1972'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 19 Jan 2026 04:12:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 189F2383B21E4622BE9FC1CAAF949336 Ref B: SYD03EDGE2022 Ref C: 2026-01-19T04:12:22Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "Global", "properties": {"customRules": {"rules": [{"action":
+      "Block", "enabledState": "Enabled", "groupBy": [{"variableName": "SocketAddr"}],
+      "matchConditions": [{"matchValue": ["192.168.1.0/24"], "matchVariable": "RemoteAddr",
+      "negateCondition": false, "operator": "IPMatch", "transforms": []}, {"matchValue":
+      ["foo", "boo"], "matchVariable": "RequestHeader", "negateCondition": false,
+      "operator": "Contains", "selector": "value", "transforms": []}, {"matchValue":
+      ["foo", "boo"], "matchVariable": "RequestHeader", "operator": "Contains"}],
+      "name": "cli000003", "priority": 45, "rateLimitDurationInMinutes": 5, "rateLimitThreshold":
+      10000, "ruleType": "RateLimitRule"}, {"action": "Log", "enabledState": "Disabled",
+      "groupBy": [{"variableName": "SocketAddr"}], "matchConditions": [{"matchValue":
+      ["foo"], "matchVariable": "RequestUri", "negateCondition": false, "operator":
+      "Contains", "transforms": []}], "name": "cli000005", "priority": 75, "rateLimitDurationInMinutes":
+      1, "rateLimitThreshold": 10000, "ruleType": "RateLimitRule"}, {"action": "Log",
+      "enabledState": "Enabled", "groupBy": [], "matchConditions": [{"matchValue":
+      ["test"], "matchVariable": "RequestUri", "negateCondition": false, "operator":
+      "Contains", "transforms": []}], "name": "cli000006", "priority": 40, "ruleType":
+      "MatchRule"}]}, "managedRules": {"managedRuleSets": []}, "policySettings": {"captchaExpirationInMinutes":
+      30, "enabledState": "Enabled", "javascriptChallengeExpirationInMinutes": 30,
+      "mode": "Prevention", "requestBodyCheck": "Enabled"}}, "sku": {"name": "Premium_AzureFrontDoor"},
+      "tags": {}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door waf-policy rule match-condition add
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1597'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --policy-name -n --match-variable --operator --values
+      User-Agent:
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.13.11 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2025-10-01
   response:
     body:
       string: "{\n  \"error\": {\n    \"code\": \"BadRequest\",\n    \"message\":
@@ -196,7 +888,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 04 Nov 2025 09:03:09 GMT
+      - Mon, 19 Jan 2026 04:12:23 GMT
       expires:
       - '-1'
       pragma:
@@ -208,63 +900,114 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/8bf21579-1206-4acc-8334-d3f2fe81f700
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/483db94b-b0c8-4ad0-916c-547bedd5a916
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
       x-msedge-ref:
-      - 'Ref A: 236D2AEE7AA0480384BC2BEF8A2338DE Ref B: SYD03EDGE1105 Ref C: 2025-11-04T09:03:08Z'
+      - 'Ref A: BE8A155373AD4F80A8A224B955BB7A89 Ref B: SYD03EDGE1120 Ref C: 2026-01-19T04:12:23Z'
     status:
       code: 400
       message: Bad Request
 - request:
-    body: '{"location": "Global", "tags": {}, "sku": {"name": "Premium_AzureFrontDoor"},
-      "properties": {"policySettings": {"enabledState": "Enabled", "mode": "Prevention",
-      "requestBodyCheck": "Enabled", "javascriptChallengeExpirationInMinutes": 30},
-      "customRules": {"rules": [{"name": "cli000003", "priority": 45, "enabledState":
-      "Enabled", "ruleType": "RateLimitRule", "rateLimitDurationInMinutes": 5, "rateLimitThreshold":
-      10000, "matchConditions": [{"matchVariable": "RequestHeader", "selector": "value",
-      "operator": "Contains", "matchValue": ["foo", "boo"]}], "action": "Block"},
-      {"name": "cli000005", "priority": 75, "enabledState": "Enabled", "ruleType":
-      "RateLimitRule", "rateLimitDurationInMinutes": 1, "rateLimitThreshold": 10000,
-      "matchConditions": [{"matchVariable": "RequestUri", "operator": "Contains",
-      "negateCondition": true, "matchValue": ["foo", "boo"]}], "action": "Log"}, {"name":
-      "cli000006", "priority": 40, "enabledState": "Enabled", "ruleType": "MatchRule",
-      "matchConditions": [{"matchVariable": "RequestUri", "operator": "Contains",
-      "matchValue": ["foo", "boo"]}], "action": "Log"}]}, "managedRules": {"managedRuleSets":
-      []}}}'
+    body: null
     headers:
       Accept:
       - application/json
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - network front-door waf-policy rule update
+      - network front-door waf-policy rule match-condition add
       Connection:
       - keep-alive
-      Content-Length:
-      - '1139'
-      Content-Type:
-      - application/json
       ParameterSetName:
-      - -g --policy-name -n --priority
+      - -g --policy-name -n --match-variable --operator --values --negate
       User-Agent:
-      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.13.11 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2025-10-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":30,"logScrubbing":null},"customRules":{"rules":[{"name":"cli000003","enabledState":"Enabled","priority":45,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":5,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RequestHeader","selector":"value","operator":"Contains","negateCondition":false,"matchValue":["foo","boo"],"transforms":[]}],"action":"Block","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000005","enabledState":"Enabled","priority":75,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":1,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":true,"matchValue":["foo","boo"],"transforms":[]}],"action":"Log","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000006","enabledState":"Enabled","priority":40,"ruleType":"MatchRule","rateLimitDurationInMinutes":null,"rateLimitThreshold":null,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["foo","boo"],"transforms":[]}],"action":"Log","groupBy":[]}]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":30,"captchaExpirationInMinutes":30,"logScrubbing":null},"customRules":{"rules":[{"name":"cli000003","enabledState":"Enabled","priority":45,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":5,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RemoteAddr","selector":null,"operator":"IPMatch","negateCondition":false,"matchValue":["192.168.1.0/24"],"transforms":[]},{"matchVariable":"RequestHeader","selector":"value","operator":"Contains","negateCondition":false,"matchValue":["foo","boo"],"transforms":[]}],"action":"Block","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000005","enabledState":"Disabled","priority":75,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":1,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["foo"],"transforms":[]}],"action":"Log","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000006","enabledState":"Enabled","priority":40,"ruleType":"MatchRule","rateLimitDurationInMinutes":null,"rateLimitThreshold":null,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["test"],"transforms":[]}],"action":"Log","groupBy":[]}]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1809'
+      - '1972'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Nov 2025 09:03:11 GMT
+      - Mon, 19 Jan 2026 04:12:24 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 410D9E7631284DDFB86A9C59FCB8BD2D Ref B: SYD03EDGE0722 Ref C: 2026-01-19T04:12:24Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "Global", "properties": {"customRules": {"rules": [{"action":
+      "Block", "enabledState": "Enabled", "groupBy": [{"variableName": "SocketAddr"}],
+      "matchConditions": [{"matchValue": ["192.168.1.0/24"], "matchVariable": "RemoteAddr",
+      "negateCondition": false, "operator": "IPMatch", "transforms": []}, {"matchValue":
+      ["foo", "boo"], "matchVariable": "RequestHeader", "negateCondition": false,
+      "operator": "Contains", "selector": "value", "transforms": []}], "name": "cli000003",
+      "priority": 45, "rateLimitDurationInMinutes": 5, "rateLimitThreshold": 10000,
+      "ruleType": "RateLimitRule"}, {"action": "Log", "enabledState": "Disabled",
+      "groupBy": [{"variableName": "SocketAddr"}], "matchConditions": [{"matchValue":
+      ["foo"], "matchVariable": "RequestUri", "negateCondition": false, "operator":
+      "Contains", "transforms": []}, {"matchValue": ["foo", "boo"], "matchVariable":
+      "RequestUri", "negateCondition": true, "operator": "Contains"}], "name": "cli000005",
+      "priority": 75, "rateLimitDurationInMinutes": 1, "rateLimitThreshold": 10000,
+      "ruleType": "RateLimitRule"}, {"action": "Log", "enabledState": "Enabled", "groupBy":
+      [], "matchConditions": [{"matchValue": ["test"], "matchVariable": "RequestUri",
+      "negateCondition": false, "operator": "Contains", "transforms": []}], "name":
+      "cli000006", "priority": 40, "ruleType": "MatchRule"}]}, "managedRules": {"managedRuleSets":
+      []}, "policySettings": {"captchaExpirationInMinutes": 30, "enabledState": "Enabled",
+      "javascriptChallengeExpirationInMinutes": 30, "mode": "Prevention", "requestBodyCheck":
+      "Enabled"}}, "sku": {"name": "Premium_AzureFrontDoor"}, "tags": {}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door waf-policy rule match-condition add
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1619'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --policy-name -n --match-variable --operator --values --negate
+      User-Agent:
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.13.11 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2025-10-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":30,"captchaExpirationInMinutes":30,"logScrubbing":null},"customRules":{"rules":[{"name":"cli000003","enabledState":"Enabled","priority":45,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":5,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RemoteAddr","selector":null,"operator":"IPMatch","negateCondition":false,"matchValue":["192.168.1.0/24"],"transforms":[]},{"matchVariable":"RequestHeader","selector":"value","operator":"Contains","negateCondition":false,"matchValue":["foo","boo"],"transforms":[]}],"action":"Block","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000005","enabledState":"Disabled","priority":75,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":1,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["foo"],"transforms":[]},{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":true,"matchValue":["foo","boo"],"transforms":[]}],"action":"Log","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000006","enabledState":"Enabled","priority":40,"ruleType":"MatchRule","rateLimitDurationInMinutes":null,"rateLimitThreshold":null,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["test"],"transforms":[]}],"action":"Log","groupBy":[]}]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2107'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 19 Jan 2026 04:12:26 GMT
       expires:
       - '-1'
       pragma:
@@ -276,13 +1019,426 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/329f981d-b876-4187-8d62-a2c254368693
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/3d704e46-48d1-43e3-8d23-4814a3497bf9
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
       x-msedge-ref:
-      - 'Ref A: CDC847F19C9F4FA3832386883564CB44 Ref B: SYD03EDGE1009 Ref C: 2025-11-04T09:03:11Z'
+      - 'Ref A: F61EFFCD0B4B448CB46D1CEFF59817B8 Ref B: SYD03EDGE1906 Ref C: 2026-01-19T04:12:25Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door waf-policy rule match-condition add
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --policy-name -n --match-variable --operator --values
+      User-Agent:
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.13.11 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2025-10-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":30,"captchaExpirationInMinutes":30,"logScrubbing":null},"customRules":{"rules":[{"name":"cli000003","enabledState":"Enabled","priority":45,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":5,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RemoteAddr","selector":null,"operator":"IPMatch","negateCondition":false,"matchValue":["192.168.1.0/24"],"transforms":[]},{"matchVariable":"RequestHeader","selector":"value","operator":"Contains","negateCondition":false,"matchValue":["foo","boo"],"transforms":[]}],"action":"Block","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000005","enabledState":"Disabled","priority":75,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":1,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["foo"],"transforms":[]},{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":true,"matchValue":["foo","boo"],"transforms":[]}],"action":"Log","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000006","enabledState":"Enabled","priority":40,"ruleType":"MatchRule","rateLimitDurationInMinutes":null,"rateLimitThreshold":null,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["test"],"transforms":[]}],"action":"Log","groupBy":[]}]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2107'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 19 Jan 2026 04:12:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 0722A792E3B14E78A82C444729FAD2EF Ref B: SYD03EDGE0813 Ref C: 2026-01-19T04:12:27Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "Global", "properties": {"customRules": {"rules": [{"action":
+      "Block", "enabledState": "Enabled", "groupBy": [{"variableName": "SocketAddr"}],
+      "matchConditions": [{"matchValue": ["192.168.1.0/24"], "matchVariable": "RemoteAddr",
+      "negateCondition": false, "operator": "IPMatch", "transforms": []}, {"matchValue":
+      ["foo", "boo"], "matchVariable": "RequestHeader", "negateCondition": false,
+      "operator": "Contains", "selector": "value", "transforms": []}], "name": "cli000003",
+      "priority": 45, "rateLimitDurationInMinutes": 5, "rateLimitThreshold": 10000,
+      "ruleType": "RateLimitRule"}, {"action": "Log", "enabledState": "Disabled",
+      "groupBy": [{"variableName": "SocketAddr"}], "matchConditions": [{"matchValue":
+      ["foo"], "matchVariable": "RequestUri", "negateCondition": false, "operator":
+      "Contains", "transforms": []}, {"matchValue": ["foo", "boo"], "matchVariable":
+      "RequestUri", "negateCondition": true, "operator": "Contains", "transforms":
+      []}], "name": "cli000005", "priority": 75, "rateLimitDurationInMinutes": 1,
+      "rateLimitThreshold": 10000, "ruleType": "RateLimitRule"}, {"action": "Log",
+      "enabledState": "Enabled", "groupBy": [], "matchConditions": [{"matchValue":
+      ["test"], "matchVariable": "RequestUri", "negateCondition": false, "operator":
+      "Contains", "transforms": []}, {"matchValue": ["foo", "boo"], "matchVariable":
+      "RequestUri", "operator": "Contains"}], "name": "cli000006", "priority": 40,
+      "ruleType": "MatchRule"}]}, "managedRules": {"managedRuleSets": []}, "policySettings":
+      {"captchaExpirationInMinutes": 30, "enabledState": "Enabled", "javascriptChallengeExpirationInMinutes":
+      30, "mode": "Prevention", "requestBodyCheck": "Enabled"}}, "sku": {"name": "Premium_AzureFrontDoor"},
+      "tags": {}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door waf-policy rule match-condition add
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1724'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --policy-name -n --match-variable --operator --values
+      User-Agent:
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.13.11 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2025-10-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":30,"captchaExpirationInMinutes":30,"logScrubbing":null},"customRules":{"rules":[{"name":"cli000003","enabledState":"Enabled","priority":45,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":5,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RemoteAddr","selector":null,"operator":"IPMatch","negateCondition":false,"matchValue":["192.168.1.0/24"],"transforms":[]},{"matchVariable":"RequestHeader","selector":"value","operator":"Contains","negateCondition":false,"matchValue":["foo","boo"],"transforms":[]}],"action":"Block","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000005","enabledState":"Disabled","priority":75,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":1,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["foo"],"transforms":[]},{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":true,"matchValue":["foo","boo"],"transforms":[]}],"action":"Log","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000006","enabledState":"Enabled","priority":40,"ruleType":"MatchRule","rateLimitDurationInMinutes":null,"rateLimitThreshold":null,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["test"],"transforms":[]},{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["foo","boo"],"transforms":[]}],"action":"Log","groupBy":[]}]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2243'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 19 Jan 2026 04:12:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/51c3038b-f3b8-4d03-8608-db0fdefed65e
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 1AB1B6FA733346B19EC199536BEAA0EF Ref B: SYD03EDGE1320 Ref C: 2026-01-19T04:12:28Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door waf-policy rule match-condition add
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --policy-name -n --match-variable --operator --values --transforms
+      User-Agent:
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.13.11 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2025-10-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":30,"captchaExpirationInMinutes":30,"logScrubbing":null},"customRules":{"rules":[{"name":"cli000003","enabledState":"Enabled","priority":45,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":5,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RemoteAddr","selector":null,"operator":"IPMatch","negateCondition":false,"matchValue":["192.168.1.0/24"],"transforms":[]},{"matchVariable":"RequestHeader","selector":"value","operator":"Contains","negateCondition":false,"matchValue":["foo","boo"],"transforms":[]}],"action":"Block","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000005","enabledState":"Disabled","priority":75,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":1,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["foo"],"transforms":[]},{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":true,"matchValue":["foo","boo"],"transforms":[]}],"action":"Log","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000006","enabledState":"Enabled","priority":40,"ruleType":"MatchRule","rateLimitDurationInMinutes":null,"rateLimitThreshold":null,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["test"],"transforms":[]},{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["foo","boo"],"transforms":[]}],"action":"Log","groupBy":[]}]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2243'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 19 Jan 2026 04:12:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 1CB3BBAB7CF645FB90A68A7B360B371D Ref B: SYD03EDGE1921 Ref C: 2026-01-19T04:12:30Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "Global", "properties": {"customRules": {"rules": [{"action":
+      "Block", "enabledState": "Enabled", "groupBy": [{"variableName": "SocketAddr"}],
+      "matchConditions": [{"matchValue": ["192.168.1.0/24"], "matchVariable": "RemoteAddr",
+      "negateCondition": false, "operator": "IPMatch", "transforms": []}, {"matchValue":
+      ["foo", "boo"], "matchVariable": "RequestHeader", "negateCondition": false,
+      "operator": "Contains", "selector": "value", "transforms": []}], "name": "cli000003",
+      "priority": 45, "rateLimitDurationInMinutes": 5, "rateLimitThreshold": 10000,
+      "ruleType": "RateLimitRule"}, {"action": "Log", "enabledState": "Disabled",
+      "groupBy": [{"variableName": "SocketAddr"}], "matchConditions": [{"matchValue":
+      ["foo"], "matchVariable": "RequestUri", "negateCondition": false, "operator":
+      "Contains", "transforms": []}, {"matchValue": ["foo", "boo"], "matchVariable":
+      "RequestUri", "negateCondition": true, "operator": "Contains", "transforms":
+      []}], "name": "cli000005", "priority": 75, "rateLimitDurationInMinutes": 1,
+      "rateLimitThreshold": 10000, "ruleType": "RateLimitRule"}, {"action": "Log",
+      "enabledState": "Enabled", "groupBy": [], "matchConditions": [{"matchValue":
+      ["test"], "matchVariable": "RequestUri", "negateCondition": false, "operator":
+      "Contains", "transforms": []}, {"matchValue": ["foo", "boo"], "matchVariable":
+      "RequestUri", "negateCondition": false, "operator": "Contains", "transforms":
+      []}, {"matchValue": ["foo", "boo"], "matchVariable": "RequestHeader", "operator":
+      "Contains", "selector": "value", "transforms": ["Lowercase", "UrlDecode"]}],
+      "name": "cli000006", "priority": 40, "ruleType": "MatchRule"}]}, "managedRules":
+      {"managedRuleSets": []}, "policySettings": {"captchaExpirationInMinutes": 30,
+      "enabledState": "Enabled", "javascriptChallengeExpirationInMinutes": 30, "mode":
+      "Prevention", "requestBodyCheck": "Enabled"}}, "sku": {"name": "Premium_AzureFrontDoor"},
+      "tags": {}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door waf-policy rule match-condition add
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1921'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --policy-name -n --match-variable --operator --values --transforms
+      User-Agent:
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.13.11 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2025-10-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":30,"captchaExpirationInMinutes":30,"logScrubbing":null},"customRules":{"rules":[{"name":"cli000003","enabledState":"Enabled","priority":45,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":5,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RemoteAddr","selector":null,"operator":"IPMatch","negateCondition":false,"matchValue":["192.168.1.0/24"],"transforms":[]},{"matchVariable":"RequestHeader","selector":"value","operator":"Contains","negateCondition":false,"matchValue":["foo","boo"],"transforms":[]}],"action":"Block","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000005","enabledState":"Disabled","priority":75,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":1,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["foo"],"transforms":[]},{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":true,"matchValue":["foo","boo"],"transforms":[]}],"action":"Log","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000006","enabledState":"Enabled","priority":40,"ruleType":"MatchRule","rateLimitDurationInMinutes":null,"rateLimitThreshold":null,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["test"],"transforms":[]},{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["foo","boo"],"transforms":[]},{"matchVariable":"RequestHeader","selector":"value","operator":"Contains","negateCondition":false,"matchValue":["foo","boo"],"transforms":["Lowercase","UrlDecode"]}],"action":"Log","groupBy":[]}]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2408'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 19 Jan 2026 04:12:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/be72bb8c-0fdb-43e9-b9ee-38e37c294ab5
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: EC4D76759E5441B085EAD0604777F6E5 Ref B: SYD03EDGE2112 Ref C: 2026-01-19T04:12:30Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door waf-policy rule match-condition remove
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --policy-name -n --index
+      User-Agent:
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.13.11 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2025-10-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":30,"captchaExpirationInMinutes":30,"logScrubbing":null},"customRules":{"rules":[{"name":"cli000003","enabledState":"Enabled","priority":45,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":5,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RemoteAddr","selector":null,"operator":"IPMatch","negateCondition":false,"matchValue":["192.168.1.0/24"],"transforms":[]},{"matchVariable":"RequestHeader","selector":"value","operator":"Contains","negateCondition":false,"matchValue":["foo","boo"],"transforms":[]}],"action":"Block","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000005","enabledState":"Disabled","priority":75,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":1,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["foo"],"transforms":[]},{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":true,"matchValue":["foo","boo"],"transforms":[]}],"action":"Log","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000006","enabledState":"Enabled","priority":40,"ruleType":"MatchRule","rateLimitDurationInMinutes":null,"rateLimitThreshold":null,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["test"],"transforms":[]},{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["foo","boo"],"transforms":[]},{"matchVariable":"RequestHeader","selector":"value","operator":"Contains","negateCondition":false,"matchValue":["foo","boo"],"transforms":["Lowercase","UrlDecode"]}],"action":"Log","groupBy":[]}]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2408'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 19 Jan 2026 04:12:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 8B2FFA4BBD9B47FC9E4F472294423489 Ref B: SYD03EDGE1415 Ref C: 2026-01-19T04:12:32Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "Global", "properties": {"customRules": {"rules": [{"action":
+      "Block", "enabledState": "Enabled", "groupBy": [{"variableName": "SocketAddr"}],
+      "matchConditions": [{"matchValue": ["192.168.1.0/24"], "matchVariable": "RemoteAddr",
+      "negateCondition": false, "operator": "IPMatch", "transforms": []}, {"matchValue":
+      ["foo", "boo"], "matchVariable": "RequestHeader", "negateCondition": false,
+      "operator": "Contains", "selector": "value", "transforms": []}], "name": "cli000003",
+      "priority": 45, "rateLimitDurationInMinutes": 5, "rateLimitThreshold": 10000,
+      "ruleType": "RateLimitRule"}, {"action": "Log", "enabledState": "Disabled",
+      "groupBy": [{"variableName": "SocketAddr"}], "matchConditions": [{"matchValue":
+      ["foo"], "matchVariable": "RequestUri", "negateCondition": false, "operator":
+      "Contains", "transforms": []}, {"matchValue": ["foo", "boo"], "matchVariable":
+      "RequestUri", "negateCondition": true, "operator": "Contains", "transforms":
+      []}], "name": "cli000005", "priority": 75, "rateLimitDurationInMinutes": 1,
+      "rateLimitThreshold": 10000, "ruleType": "RateLimitRule"}, {"action": "Log",
+      "enabledState": "Enabled", "groupBy": [], "matchConditions": [{"matchValue":
+      ["test"], "matchVariable": "RequestUri", "negateCondition": false, "operator":
+      "Contains", "transforms": []}, {"matchValue": ["foo", "boo"], "matchVariable":
+      "RequestHeader", "negateCondition": false, "operator": "Contains", "selector":
+      "value", "transforms": ["Lowercase", "UrlDecode"]}], "name": "cli000006", "priority":
+      40, "ruleType": "MatchRule"}]}, "managedRules": {"managedRuleSets": []}, "policySettings":
+      {"captchaExpirationInMinutes": 30, "enabledState": "Enabled", "javascriptChallengeExpirationInMinutes":
+      30, "mode": "Prevention", "requestBodyCheck": "Enabled"}}, "sku": {"name": "Premium_AzureFrontDoor"},
+      "tags": {}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door waf-policy rule match-condition remove
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1816'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --policy-name -n --index
+      User-Agent:
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.13.11 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2025-10-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":30,"captchaExpirationInMinutes":30,"logScrubbing":null},"customRules":{"rules":[{"name":"cli000003","enabledState":"Enabled","priority":45,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":5,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RemoteAddr","selector":null,"operator":"IPMatch","negateCondition":false,"matchValue":["192.168.1.0/24"],"transforms":[]},{"matchVariable":"RequestHeader","selector":"value","operator":"Contains","negateCondition":false,"matchValue":["foo","boo"],"transforms":[]}],"action":"Block","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000005","enabledState":"Disabled","priority":75,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":1,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["foo"],"transforms":[]},{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":true,"matchValue":["foo","boo"],"transforms":[]}],"action":"Log","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000006","enabledState":"Enabled","priority":40,"ruleType":"MatchRule","rateLimitDurationInMinutes":null,"rateLimitThreshold":null,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["test"],"transforms":[]},{"matchVariable":"RequestHeader","selector":"value","operator":"Contains","negateCondition":false,"matchValue":["foo","boo"],"transforms":["Lowercase","UrlDecode"]}],"action":"Log","groupBy":[]}]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2272'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 19 Jan 2026 04:12:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/eb0df9cd-0d2f-40d5-b60f-16d29f9608ea
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 548017DFE677498FAF54ECD72AAE7B7D Ref B: SYD03EDGE0909 Ref C: 2026-01-19T04:12:33Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door waf-policy rule match-condition list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --policy-name -n
+      User-Agent:
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.13.11 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2025-10-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":30,"captchaExpirationInMinutes":30,"logScrubbing":null},"customRules":{"rules":[{"name":"cli000003","enabledState":"Enabled","priority":45,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":5,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RemoteAddr","selector":null,"operator":"IPMatch","negateCondition":false,"matchValue":["192.168.1.0/24"],"transforms":[]},{"matchVariable":"RequestHeader","selector":"value","operator":"Contains","negateCondition":false,"matchValue":["foo","boo"],"transforms":[]}],"action":"Block","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000005","enabledState":"Disabled","priority":75,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":1,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["foo"],"transforms":[]},{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":true,"matchValue":["foo","boo"],"transforms":[]}],"action":"Log","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000006","enabledState":"Enabled","priority":40,"ruleType":"MatchRule","rateLimitDurationInMinutes":null,"rateLimitThreshold":null,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["test"],"transforms":[]},{"matchVariable":"RequestHeader","selector":"value","operator":"Contains","negateCondition":false,"matchValue":["foo","boo"],"transforms":["Lowercase","UrlDecode"]}],"action":"Log","groupBy":[]}]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2272'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 19 Jan 2026 04:12:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: CA52EFF8981C42B28E4CDCCBE452DCC3 Ref B: SYD03EDGE1310 Ref C: 2026-01-19T04:12:36Z'
     status:
       code: 200
       message: OK
@@ -300,21 +1456,21 @@ interactions:
       ParameterSetName:
       - -g --policy-name
       User-Agent:
-      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.13.11 (Windows-11-10.0.26200-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2025-10-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":30,"logScrubbing":null},"customRules":{"rules":[{"name":"cli000003","enabledState":"Enabled","priority":45,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":5,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RequestHeader","selector":"value","operator":"Contains","negateCondition":false,"matchValue":["foo","boo"],"transforms":[]}],"action":"Block","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000005","enabledState":"Enabled","priority":75,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":1,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":true,"matchValue":["foo","boo"],"transforms":[]}],"action":"Log","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000006","enabledState":"Enabled","priority":40,"ruleType":"MatchRule","rateLimitDurationInMinutes":null,"rateLimitThreshold":null,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["foo","boo"],"transforms":[]}],"action":"Log","groupBy":[]}]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":30,"captchaExpirationInMinutes":30,"logScrubbing":null},"customRules":{"rules":[{"name":"cli000003","enabledState":"Enabled","priority":45,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":5,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RemoteAddr","selector":null,"operator":"IPMatch","negateCondition":false,"matchValue":["192.168.1.0/24"],"transforms":[]},{"matchVariable":"RequestHeader","selector":"value","operator":"Contains","negateCondition":false,"matchValue":["foo","boo"],"transforms":[]}],"action":"Block","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000005","enabledState":"Disabled","priority":75,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":1,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["foo"],"transforms":[]},{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":true,"matchValue":["foo","boo"],"transforms":[]}],"action":"Log","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000006","enabledState":"Enabled","priority":40,"ruleType":"MatchRule","rateLimitDurationInMinutes":null,"rateLimitThreshold":null,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["test"],"transforms":[]},{"matchVariable":"RequestHeader","selector":"value","operator":"Contains","negateCondition":false,"matchValue":["foo","boo"],"transforms":["Lowercase","UrlDecode"]}],"action":"Log","groupBy":[]}]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1809'
+      - '2272'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Nov 2025 09:03:13 GMT
+      - Mon, 19 Jan 2026 04:12:37 GMT
       expires:
       - '-1'
       pragma:
@@ -328,7 +1484,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 42D444562B774579991EDF4E994459E2 Ref B: SYD03EDGE1311 Ref C: 2025-11-04T09:03:12Z'
+      - 'Ref A: C52DAB320CB24499A7850EDEC5FA6640 Ref B: SYD03EDGE2113 Ref C: 2026-01-19T04:12:37Z'
     status:
       code: 200
       message: OK
@@ -346,21 +1502,21 @@ interactions:
       ParameterSetName:
       - -g --policy-name -n
       User-Agent:
-      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.13.11 (Windows-11-10.0.26200-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2025-10-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":30,"logScrubbing":null},"customRules":{"rules":[{"name":"cli000003","enabledState":"Enabled","priority":45,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":5,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RequestHeader","selector":"value","operator":"Contains","negateCondition":false,"matchValue":["foo","boo"],"transforms":[]}],"action":"Block","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000005","enabledState":"Enabled","priority":75,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":1,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":true,"matchValue":["foo","boo"],"transforms":[]}],"action":"Log","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000006","enabledState":"Enabled","priority":40,"ruleType":"MatchRule","rateLimitDurationInMinutes":null,"rateLimitThreshold":null,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["foo","boo"],"transforms":[]}],"action":"Log","groupBy":[]}]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":30,"captchaExpirationInMinutes":30,"logScrubbing":null},"customRules":{"rules":[{"name":"cli000003","enabledState":"Enabled","priority":45,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":5,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RemoteAddr","selector":null,"operator":"IPMatch","negateCondition":false,"matchValue":["192.168.1.0/24"],"transforms":[]},{"matchVariable":"RequestHeader","selector":"value","operator":"Contains","negateCondition":false,"matchValue":["foo","boo"],"transforms":[]}],"action":"Block","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000005","enabledState":"Disabled","priority":75,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":1,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["foo"],"transforms":[]},{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":true,"matchValue":["foo","boo"],"transforms":[]}],"action":"Log","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000006","enabledState":"Enabled","priority":40,"ruleType":"MatchRule","rateLimitDurationInMinutes":null,"rateLimitThreshold":null,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["test"],"transforms":[]},{"matchVariable":"RequestHeader","selector":"value","operator":"Contains","negateCondition":false,"matchValue":["foo","boo"],"transforms":["Lowercase","UrlDecode"]}],"action":"Log","groupBy":[]}]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1809'
+      - '2272'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Nov 2025 09:03:15 GMT
+      - Mon, 19 Jan 2026 04:12:38 GMT
       expires:
       - '-1'
       pragma:
@@ -374,24 +1530,28 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 48864F3398F84AA593059EB367FCD050 Ref B: SYD03EDGE2109 Ref C: 2025-11-04T09:03:14Z'
+      - 'Ref A: 28C3E0D5664445F79BE74D3796D8CFC0 Ref B: SYD03EDGE1410 Ref C: 2026-01-19T04:12:38Z'
     status:
       code: 200
       message: OK
 - request:
-    body: '{"location": "Global", "tags": {}, "sku": {"name": "Premium_AzureFrontDoor"},
-      "properties": {"policySettings": {"enabledState": "Enabled", "mode": "Prevention",
-      "requestBodyCheck": "Enabled", "javascriptChallengeExpirationInMinutes": 30},
-      "customRules": {"rules": [{"name": "cli000003", "priority": 45, "enabledState":
-      "Enabled", "ruleType": "RateLimitRule", "rateLimitDurationInMinutes": 5, "rateLimitThreshold":
-      10000, "groupBy": [{"variableName": "SocketAddr"}], "matchConditions": [{"matchVariable":
-      "RequestHeader", "selector": "value", "operator": "Contains", "negateCondition":
-      false, "matchValue": ["foo", "boo"], "transforms": []}], "action": "Block"},
-      {"name": "cli000006", "priority": 40, "enabledState": "Enabled", "ruleType":
-      "MatchRule", "groupBy": [], "matchConditions": [{"matchVariable": "RequestUri",
-      "operator": "Contains", "negateCondition": false, "matchValue": ["foo", "boo"],
-      "transforms": []}], "action": "Log"}]}, "managedRules": {"managedRuleSets":
-      []}}}'
+    body: '{"location": "Global", "properties": {"customRules": {"rules": [{"action":
+      "Block", "enabledState": "Enabled", "groupBy": [{"variableName": "SocketAddr"}],
+      "matchConditions": [{"matchValue": ["192.168.1.0/24"], "matchVariable": "RemoteAddr",
+      "negateCondition": false, "operator": "IPMatch", "transforms": []}, {"matchValue":
+      ["foo", "boo"], "matchVariable": "RequestHeader", "negateCondition": false,
+      "operator": "Contains", "selector": "value", "transforms": []}], "name": "cli000003",
+      "priority": 45, "rateLimitDurationInMinutes": 5, "rateLimitThreshold": 10000,
+      "ruleType": "RateLimitRule"}, {"action": "Log", "enabledState": "Enabled", "groupBy":
+      [], "matchConditions": [{"matchValue": ["test"], "matchVariable": "RequestUri",
+      "negateCondition": false, "operator": "Contains", "transforms": []}, {"matchValue":
+      ["foo", "boo"], "matchVariable": "RequestHeader", "negateCondition": false,
+      "operator": "Contains", "selector": "value", "transforms": ["Lowercase", "UrlDecode"]}],
+      "name": "cli000006", "priority": 40, "ruleType": "MatchRule"}]}, "managedRules":
+      {"managedRuleSets": []}, "policySettings": {"captchaExpirationInMinutes": 30,
+      "enabledState": "Enabled", "javascriptChallengeExpirationInMinutes": 30, "mode":
+      "Prevention", "requestBodyCheck": "Enabled"}}, "sku": {"name": "Premium_AzureFrontDoor"},
+      "tags": {}}'
     headers:
       Accept:
       - application/json
@@ -402,27 +1562,27 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '980'
+      - '1321'
       Content-Type:
       - application/json
       ParameterSetName:
       - -g --policy-name -n
       User-Agent:
-      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.13.11 (Windows-11-10.0.26200-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2025-10-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":30,"logScrubbing":null},"customRules":{"rules":[{"name":"cli000003","enabledState":"Enabled","priority":45,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":5,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RequestHeader","selector":"value","operator":"Contains","negateCondition":false,"matchValue":["foo","boo"],"transforms":[]}],"action":"Block","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000006","enabledState":"Enabled","priority":40,"ruleType":"MatchRule","rateLimitDurationInMinutes":null,"rateLimitThreshold":null,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["foo","boo"],"transforms":[]}],"action":"Log","groupBy":[]}]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":30,"captchaExpirationInMinutes":30,"logScrubbing":null},"customRules":{"rules":[{"name":"cli000003","enabledState":"Enabled","priority":45,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":5,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RemoteAddr","selector":null,"operator":"IPMatch","negateCondition":false,"matchValue":["192.168.1.0/24"],"transforms":[]},{"matchVariable":"RequestHeader","selector":"value","operator":"Contains","negateCondition":false,"matchValue":["foo","boo"],"transforms":[]}],"action":"Block","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000006","enabledState":"Enabled","priority":40,"ruleType":"MatchRule","rateLimitDurationInMinutes":null,"rateLimitThreshold":null,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["test"],"transforms":[]},{"matchVariable":"RequestHeader","selector":"value","operator":"Contains","negateCondition":false,"matchValue":["foo","boo"],"transforms":["Lowercase","UrlDecode"]}],"action":"Log","groupBy":[]}]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1452'
+      - '1784'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Nov 2025 09:03:17 GMT
+      - Mon, 19 Jan 2026 04:12:39 GMT
       expires:
       - '-1'
       pragma:
@@ -434,13 +1594,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/47533aa0-df81-4acd-a9ba-f821fe17c5cc
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/4ee81592-d279-44fc-9380-f7651e0de020
       x-ms-ratelimit-remaining-subscription-global-writes:
       - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
       x-msedge-ref:
-      - 'Ref A: 76C9C104A0D7486AA74002134F80F381 Ref B: SYD03EDGE1917 Ref C: 2025-11-04T09:03:16Z'
+      - 'Ref A: A981F9F525554F5DB0C710E0308B07CB Ref B: SYD03EDGE1016 Ref C: 2026-01-19T04:12:38Z'
     status:
       code: 200
       message: OK
@@ -458,21 +1618,21 @@ interactions:
       ParameterSetName:
       - -g --policy-name -n
       User-Agent:
-      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.13.11 (Windows-11-10.0.26200-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2025-10-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":30,"logScrubbing":null},"customRules":{"rules":[{"name":"cli000003","enabledState":"Enabled","priority":45,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":5,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RequestHeader","selector":"value","operator":"Contains","negateCondition":false,"matchValue":["foo","boo"],"transforms":[]}],"action":"Block","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000006","enabledState":"Enabled","priority":40,"ruleType":"MatchRule","rateLimitDurationInMinutes":null,"rateLimitThreshold":null,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["foo","boo"],"transforms":[]}],"action":"Log","groupBy":[]}]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":30,"captchaExpirationInMinutes":30,"logScrubbing":null},"customRules":{"rules":[{"name":"cli000003","enabledState":"Enabled","priority":45,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":5,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RemoteAddr","selector":null,"operator":"IPMatch","negateCondition":false,"matchValue":["192.168.1.0/24"],"transforms":[]},{"matchVariable":"RequestHeader","selector":"value","operator":"Contains","negateCondition":false,"matchValue":["foo","boo"],"transforms":[]}],"action":"Block","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000006","enabledState":"Enabled","priority":40,"ruleType":"MatchRule","rateLimitDurationInMinutes":null,"rateLimitThreshold":null,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["test"],"transforms":[]},{"matchVariable":"RequestHeader","selector":"value","operator":"Contains","negateCondition":false,"matchValue":["foo","boo"],"transforms":["Lowercase","UrlDecode"]}],"action":"Log","groupBy":[]}]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1452'
+      - '1784'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Nov 2025 09:03:18 GMT
+      - Mon, 19 Jan 2026 04:12:40 GMT
       expires:
       - '-1'
       pragma:
@@ -486,7 +1646,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: CAB6FF06AE85440B9A4F59E37B2614D0 Ref B: SYD03EDGE1418 Ref C: 2025-11-04T09:03:18Z'
+      - 'Ref A: 77C7605C8B46487FAB4B7A8EAF156C51 Ref B: SYD03EDGE1117 Ref C: 2026-01-19T04:12:40Z'
     status:
       code: 200
       message: OK
@@ -504,21 +1664,21 @@ interactions:
       ParameterSetName:
       - -g --policy-name
       User-Agent:
-      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.13.11 (Windows-11-10.0.26200-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2024-02-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2025-10-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":30,"logScrubbing":null},"customRules":{"rules":[{"name":"cli000003","enabledState":"Enabled","priority":45,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":5,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RequestHeader","selector":"value","operator":"Contains","negateCondition":false,"matchValue":["foo","boo"],"transforms":[]}],"action":"Block","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000006","enabledState":"Enabled","priority":40,"ruleType":"MatchRule","rateLimitDurationInMinutes":null,"rateLimitThreshold":null,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["foo","boo"],"transforms":[]}],"action":"Log","groupBy":[]}]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","name":"cli000002","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled","javascriptChallengeExpirationInMinutes":30,"captchaExpirationInMinutes":30,"logScrubbing":null},"customRules":{"rules":[{"name":"cli000003","enabledState":"Enabled","priority":45,"ruleType":"RateLimitRule","rateLimitDurationInMinutes":5,"rateLimitThreshold":10000,"matchConditions":[{"matchVariable":"RemoteAddr","selector":null,"operator":"IPMatch","negateCondition":false,"matchValue":["192.168.1.0/24"],"transforms":[]},{"matchVariable":"RequestHeader","selector":"value","operator":"Contains","negateCondition":false,"matchValue":["foo","boo"],"transforms":[]}],"action":"Block","groupBy":[{"variableName":"SocketAddr"}]},{"name":"cli000006","enabledState":"Enabled","priority":40,"ruleType":"MatchRule","rateLimitDurationInMinutes":null,"rateLimitThreshold":null,"matchConditions":[{"matchVariable":"RequestUri","selector":null,"operator":"Contains","negateCondition":false,"matchValue":["test"],"transforms":[]},{"matchVariable":"RequestHeader","selector":"value","operator":"Contains","negateCondition":false,"matchValue":["foo","boo"],"transforms":["Lowercase","UrlDecode"]}],"action":"Log","groupBy":[]}]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"securityPolicyLinks":[],"resourceState":"Enabled","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1452'
+      - '1784'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Nov 2025 09:03:19 GMT
+      - Mon, 19 Jan 2026 04:12:42 GMT
       expires:
       - '-1'
       pragma:
@@ -532,7 +1692,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 41B34961D5D54416B1EF0C32E447D11D Ref B: SYD03EDGE0918 Ref C: 2025-11-04T09:03:19Z'
+      - 'Ref A: 10CF61EB7DDA4698B41C8EE293E56F3E Ref B: SYD03EDGE1716 Ref C: 2026-01-19T04:12:41Z'
     status:
       code: 200
       message: OK

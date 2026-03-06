@@ -16,7 +16,7 @@ helps[
       This command allows you to ask questions about your Azure Kubernetes cluster and get answers using AI models.
 
       Prerequisites:
-      - Run 'az aks agent-init' first to configure the LLM provider and deployment mode
+      - Run 'az aks agent-init -n {name} -g {resource_group_name}' first to configure the LLM provider and deployment mode
       - For client mode: Docker must be installed and running
     parameters:
         - name: --name -n

@@ -8,6 +8,8 @@
 import os
 from ._location_helper import normalize_location
 from .__init__ import CLI_REPORTED_VERSION
+from .vendored_sdks.azure_quantum_python._client import WorkspaceClient
+from .vendored_sdks.azure_mgmt_quantum import AzureQuantumManagementClient
 
 
 def is_env(name):
@@ -38,9 +40,8 @@ def get_appid():
 
 # Control Plane clients
 
-def cf_quantum_mgmt(cli_ctx, *_):
+def cf_quantum_mgmt(cli_ctx, *_) -> AzureQuantumManagementClient:
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    from .vendored_sdks.azure_mgmt_quantum import AzureQuantumManagementClient
     client = get_mgmt_service_client(cli_ctx, AzureQuantumManagementClient, base_url_bound=False)
     # Add user agent on the management client to include extension information
     client._config.user_agent_policy.add_user_agent(get_appid())
@@ -61,22 +62,26 @@ def cf_offerings(cli_ctx, *_):
 
 # Data Plane clients
 
-def cf_quantum(cli_ctx, subscription_id=None, location=None):
-    from .vendored_sdks.azure_quantum import ServicesClient
-    creds = _get_data_credentials(cli_ctx, subscription_id)
-    return ServicesClient(location, creds)
+def cf_quantum(cli_ctx, subscription: str, resource_group: str, ws_name: str, endpoint: str | None) -> WorkspaceClient:
+    creds = _get_data_credentials(cli_ctx, subscription)
+    if not endpoint:
+        client = cf_workspaces(cli_ctx)
+        ws = client.get(resource_group, ws_name)
+        endpoint = ws.properties.endpoint_uri
+    ws_cl = WorkspaceClient(endpoint, creds)
+    return ws_cl
 
 
-def cf_providers(cli_ctx, subscription_id=None, location=None):
-    return cf_quantum(cli_ctx, subscription_id, location).providers
+def cf_providers(cli_ctx, subscription: str, resource_group: str, ws_name: str, endpoint: str | None):
+    return cf_quantum(cli_ctx, subscription, resource_group, ws_name, endpoint).services.providers
 
 
-def cf_jobs(cli_ctx, subscription_id=None, location=None):
-    return cf_quantum(cli_ctx, subscription_id, location).jobs
+def cf_jobs(cli_ctx, subscription: str, resource_group: str, ws_name: str, endpoint: str | None):
+    return cf_quantum(cli_ctx, subscription, resource_group, ws_name, endpoint).services.jobs
 
 
-def cf_quotas(cli_ctx, subscription_id=None, location=None):
-    return cf_quantum(cli_ctx, subscription_id, location).quotas
+def cf_quotas(cli_ctx, subscription: str, resource_group: str, ws_name: str, endpoint: str | None):
+    return cf_quantum(cli_ctx, subscription, resource_group, ws_name, endpoint).services.quotas
 
 
 # Helper clients

@@ -144,3 +144,44 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
         self.cmd('containerapp list -g {}'.format(resource_group), checks=[
             JMESPathCheck('length(@)', 0)
         ])
+
+    @ResourceGroupPreparer(location="eastus")
+    def test_containerapp_list_by_kind(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        env_id = prepare_containerapp_env_for_app_e2e_tests(self)
+        env_rg = parse_resource_id(env_id).get('resource_group')
+        env_name = parse_resource_id(env_id).get('name')
+
+        regular_app_name = self.create_random_name(prefix='regularapp', length=24)
+        self.cmd(
+            f'az containerapp create --name {regular_app_name} --resource-group {resource_group} --environment {env_id} --image "mcr.microsoft.com/k8se/quickstart:latest"',
+            checks=[
+                JMESPathCheck('name', regular_app_name),
+                JMESPathCheck('properties.provisioningState', "Succeeded")
+            ])
+
+        func_app_name = self.create_random_name(prefix='funcapp', length=24)
+        self.cmd(
+            f'az containerapp create --name {func_app_name} --resource-group {resource_group} --environment {env_id} --image "mcr.microsoft.com/k8se/quickstart:latest" --kind functionapp',
+            checks=[
+                JMESPathCheck('name', func_app_name),
+                JMESPathCheck('kind', 'functionapp'),
+                JMESPathCheck('properties.provisioningState', "Succeeded")
+            ])
+
+        self.cmd('containerapp list -g {}'.format(resource_group), checks=[
+            JMESPathCheck('length(@)', 2)
+        ])
+
+        self.cmd('containerapp list -g {} --kind functionapp'.format(resource_group), checks=[
+            JMESPathCheck('length(@)', 1),
+            JMESPathCheck('[0].kind', 'functionapp')
+        ])
+
+        self.cmd('containerapp delete -n {} -g {} --yes'.format(regular_app_name, resource_group))
+        self.cmd('containerapp delete -n {} -g {} --yes'.format(func_app_name, resource_group))
+
+        self.cmd('containerapp list -g {}'.format(resource_group), checks=[
+            JMESPathCheck('length(@)', 0)
+        ])

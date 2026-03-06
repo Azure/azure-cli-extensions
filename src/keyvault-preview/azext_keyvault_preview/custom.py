@@ -55,7 +55,7 @@ def add_hsm_region(cmd, client, resource_group_name, name, region_name, no_wait=
     existing_regions = hsm.properties.regions or []
     for existing_region in existing_regions:
         if region_name == existing_region.name:
-            logger.warning("{} has already existed".format(region_name))
+            logger.warning("%s has already existed", region_name)
             return hsm
     existing_regions.append(MHSMGeoReplicatedRegion(name=region_name))
     hsm.properties.regions = existing_regions
@@ -75,5 +75,5 @@ def remove_hsm_region(client, resource_group_name, name, region_name, no_wait=Fa
             return sdk_no_wait(no_wait, client.begin_update,
                                resource_group_name=resource_group_name,
                                name=name, parameters=hsm)
-    logger.warning("{} doesn't exist".format(region_name))
+    logger.warning("%s doesn't exist", region_name)
     return hsm
