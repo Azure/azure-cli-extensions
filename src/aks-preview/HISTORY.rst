@@ -11,9 +11,14 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+
+19.0.0b23
++++++++
 * `az aks update`: Fix `--enable-secret-rotation`, `--disable-secret-rotation`, and `--rotation-poll-interval` flags being silently ignored when updating Azure Key Vault Secrets Provider addon configuration.
 * `az aks create/update`: Add `--enable-azure-monitor-logs` support to container network logs validation.
 * `az aks create/update`: Add `--enable-default-domain` and `--disable-default-domain` parameters to manage the default domain feature for web app routing.
+* `az aks create`: Add ephemeralDisk and elasticSan storage options to `--enable-azure-container-storage` for the latest version of Azure Container Storage.
+* `az aks update`: Add ephemeralDisk and elasticSan storage options to `--enable-azure-container-storage` and `--disable-azure-container-storage` for the latest version of Azure Container Storage.
 
 19.0.0b22
 +++++++
