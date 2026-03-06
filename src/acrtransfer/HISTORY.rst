@@ -3,7 +3,7 @@
 Release History
 ===============
 1.1.1b1
-++++++
++++++++
 * Add: Breaking change announcement for new required parameter --storage-access-mode for acr export-pipeline create and acr import-pipeline create commands.
 
 1.1.0
