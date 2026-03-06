@@ -305,3 +305,95 @@ class SSHUtilsTests(unittest.TestCase):
         mock_isfile.return_value = False
 
         self.assertRaises(azclierror.UnclassifiedUserFault, ssh_utils.get_ssh_client_path)
+
+    @mock.patch.object(ssh_utils, 'do_cleanup')
+    def test_check_ssh_logs_no_errors(self, mock_cleanup):
+        lines = [
+            "debug1: OpenSSH_8.9, OpenSSL 1.1.1 11 Sep 2018\n",
+            "debug1: some debug info\n",
+            "debug2: more debug info\n",
+            "Authenticated to host\n",
+            "debug1: Entering interactive session.\n",
+        ]
+        ssh_sub = mock.Mock()
+        ssh_sub.stderr.readline.side_effect = lines + ['']
+
+        op_info = mock.Mock()
+        op_info.delete_credentials = False
+        op_info.cert_file = "cert"
+        op_info.private_key_file = "priv"
+        op_info.public_key_file = "pub"
+
+        result = ssh_utils._check_ssh_logs_for_common_errors(ssh_sub, op_info, delete_cert=False, delete_keys=False)
+
+        self.assertFalse(result)
+        # Cleanup should be called once when "Entering interactive session." is found
+        mock_cleanup.assert_called_once_with(False, False, False, "cert", "priv", "pub")
+        ssh_sub.wait.assert_called_once()
+
+    @mock.patch.object(ssh_utils, 'do_cleanup')
+    def test_check_ssh_logs_service_config_delay_error(self, mock_cleanup):
+        error_line = ('{"level":"fatal","msg":"sshproxy: error connecting to the address: '
+                      '404 Endpoint does not exist","time":"2024-01-01T00:00:00Z"}\n')
+        lines = [
+            "debug1: OpenSSH_8.9, OpenSSL 1.1.1 11 Sep 2018\n",
+            error_line,
+        ]
+        ssh_sub = mock.Mock()
+        ssh_sub.stderr.readline.side_effect = lines + ['']
+
+        op_info = mock.Mock()
+        op_info.delete_credentials = False
+        op_info.cert_file = "cert"
+        op_info.private_key_file = "priv"
+        op_info.public_key_file = "pub"
+
+        result = ssh_utils._check_ssh_logs_for_common_errors(ssh_sub, op_info, delete_cert=False, delete_keys=False)
+
+        self.assertTrue(result)
+        ssh_sub.wait.assert_called_once()
+
+    def test_readline_ssh_logs_returns_line(self):
+        ssh_sub = mock.Mock()
+        ssh_sub.stderr.readline.return_value = "some log line\n"
+        result = ssh_utils._read_ssh_log_lines(ssh_sub)
+        self.assertEqual(result, "some log line\n")
+
+    def test_readline_ssh_logs_skips_errors_and_returns_next_line(self):
+        ssh_sub = mock.Mock()
+        ssh_sub.stderr.readline.side_effect = [
+            UnicodeDecodeError('utf-8', b'\x80invalid', 0, 1, 'invalid start byte'),
+            UnicodeDecodeError('utf-8', b'\x81invalid', 0, 1, 'invalid start byte'),
+            "valid line\n",
+        ]
+        result = ssh_utils._read_ssh_log_lines(ssh_sub)
+        self.assertEqual(result, "valid line\n")
+        self.assertEqual(ssh_sub.stderr.readline.call_count, 3)
+
+    def test_readline_ssh_logs_returns_empty_string_when_stream_ends(self):
+        ssh_sub = mock.Mock()
+        ssh_sub.stderr.readline.return_value = ''
+        result = ssh_utils._read_ssh_log_lines(ssh_sub)
+        self.assertEqual(result, '')
+
+    def test_readline_ssh_logs_returns_none(self):
+        ssh_sub = mock.Mock()
+        ssh_sub.stderr.readline.return_value = None
+        result = ssh_utils._read_ssh_log_lines(ssh_sub)
+        self.assertIsNone(result)
+
+    def test_readline_ssh_logs_skips_errors_and_returns_next_line(self):
+        ssh_sub = mock.Mock()
+        ssh_sub.stderr.readline.side_effect = [
+            UnicodeDecodeError('utf-8', b'\x80invalid', 0, 1, 'invalid start byte'),
+            UnicodeDecodeError('utf-8', b'\x81invalid', 0, 1, 'invalid start byte'),
+            UnicodeDecodeError('utf-8', b'\x81invalid', 0, 1, 'invalid start byte'),
+            UnicodeDecodeError('utf-8', b'\x81invalid', 0, 1, 'invalid start byte'),
+            UnicodeDecodeError('utf-8', b'\x81invalid', 0, 1, 'invalid start byte'),
+            "valid line\n",
+        ]
+        result = ssh_utils._read_ssh_log_lines(ssh_sub)
+        self.assertIsNone(result)
+        self.assertEqual(ssh_sub.stderr.readline.call_count, 5)
+    
+

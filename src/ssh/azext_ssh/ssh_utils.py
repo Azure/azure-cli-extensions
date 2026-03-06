@@ -117,7 +117,7 @@ def _check_ssh_logs_for_common_errors(ssh_sub, op_info, delete_cert, delete_keys
     connection_established = False
     t0 = time.time()
     service_config_delay_error = False
-    next_line = ssh_sub.stderr.readline()
+    next_line = _read_ssh_log_lines(ssh_sub)
     while next_line:
         log_list.append(next_line)
         if not next_line.startswith("debug1:") and \
@@ -139,10 +139,23 @@ def _check_ssh_logs_for_common_errors(ssh_sub, op_info, delete_cert, delete_keys
             do_cleanup(delete_keys, delete_cert, op_info.delete_credentials,
                        op_info.cert_file, op_info.private_key_file, op_info.public_key_file)
 
-        next_line = ssh_sub.stderr.readline()
+        next_line = _read_ssh_log_lines(ssh_sub)
 
     ssh_sub.wait()
     return service_config_delay_error
+
+
+def _read_ssh_log_lines(ssh_sub):
+    retries = 0
+    max_retries = 5
+
+    while retries < max_retries:
+        try:
+            return ssh_sub.stderr.readline()
+        except UnicodeDecodeError:
+            retries += 1
+
+    return None
 
 
 def _wait_to_delete_credentials(ssh_sub, op_info, delete_cert, delete_keys):
