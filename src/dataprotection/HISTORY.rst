@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.8.1
++++++
+* Documentation update for `initialize-backupconfig` and `initialize-restoreconfig` commands to clarify that the generated JSON is meant for use with other CLI commands, and may not work as an input for non-CLI scenarios without modification.
+
 1.8.0
 +++++
 * `az dataprotection backup-instance update`: New parameter: `--backup-configuration` to update AKS datasource parameters.
