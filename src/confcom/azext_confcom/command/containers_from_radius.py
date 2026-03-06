@@ -9,156 +9,214 @@ Extract container definitions from Radius templates for policy generation.
 Supports the Applications.Core/containers resource type as defined in:
 https://docs.radapp.io/reference/resource-schema/core-schema/container-schema/
 
-Coverage:
-- properties.container.image (required)
-- properties.container.env (environment variables)
-- properties.container.command (entrypoint override)
-- properties.container.args (arguments override)
-- properties.container.workingDir (working directory override)
-- properties.container.volumes (volume mounts)
-- properties.container.livenessProbe (exec probes become exec_processes)
-- properties.container.readinessProbe (exec probes become exec_processes)
-- properties.connections (generates CONNECTIONS_* env rules)
-- properties.runtimes.kubernetes.pod.containers (sidecar containers)
+Each Radius template field is mapped to its corresponding policy container
+field by a dedicated ``_map_*`` function.  The overall flow is:
+
+  1. ``from_image`` produces the **image-base** container definition
+     (id, name, layers, platform mounts, command, env_rules, working_dir,
+     signals).
+  2. The ``_map_*`` helpers read Radius template fields and return the
+     **template overrides** expressed as policy fields.
+  3. ``merge_containers`` combines the two: list fields (env_rules, mounts,
+     exec_processes, signals) are concatenated; scalar fields are replaced
+     by the template value when present.
+
+Template field                          Policy field      Mapper
+--------------------------------------  ----------------  --------------------------
+container.image                         id, name, layers  from_image
+container.command / container.args      command           _map_command
+container.workingDir                    working_dir       _map_working_dir
+container.env                           env_rules         _map_env_rules
+resource.connections                    env_rules         _map_connection_env_rules
+container.volumes                       mounts            _map_volume_mounts
+container.livenessProbe                 exec_processes    _map_exec_processes
+container.readinessProbe                exec_processes    _map_exec_processes
+runtimes.kubernetes.pod.containers      (sidecars — processed like main containers)
 """
 
 import json
 import os
 import tempfile
 import re
-from dataclasses import asdict
 
-from azext_confcom.lib.images import get_image_config, get_image_layers
+from azext_confcom.lib.containers import from_image, merge_containers
 from azext_confcom.lib.deployments import parse_deployment_template
-from azext_confcom.lib.platform import ACI_MOUNTS
 
 
-def _extract_container_def(container: dict, resource: dict, platform: str) -> dict:
+# ---------------------------------------------------------------------------
+# Template field → Policy field mappers
+# ---------------------------------------------------------------------------
+
+def _map_command(container: dict, image_command: list) -> list | None:
+    """Template: container.command, container.args  →  Policy: command
+
+    Radius uses 'command' for the entrypoint and 'args' for arguments.
+    - If command is specified, it replaces the image entrypoint entirely,
+      with args appended.
+    - If only args is specified, they are appended to the image entrypoint.
+    - If neither is specified, returns None (image default is kept).
     """
-    Extract a single container definition from Radius container properties.
-
-    Args:
-        container: The container spec (properties.container or sidecar)
-        resource: The full resource properties (for connections)
-        platform: Target platform (aci, vn2, etc.)
-
-    Returns:
-        Container definition dict suitable for policy generation.
-    """
-    image = container.get("image")
-    if not image:
-        raise ValueError("Container must have an image")
-
-    # Get base config from image
-    image_config = get_image_config(image)
-
-    # Template overrides for command/args/workingDir
-    # Radius uses 'command' for entrypoint and 'args' for arguments
     template_command = container.get("command")
     template_args = container.get("args")
-    template_working_dir = container.get("workingDir")
 
-    # Build the final command: template overrides image defaults
     if template_command is not None:
-        # If template specifies command, use it (with args if provided)
-        final_command = list(template_command)
-        if template_args:
-            final_command.extend(template_args)
-        image_config["command"] = final_command
-    elif template_args is not None:
-        # If only args specified, append to image entrypoint
-        existing_command = image_config.get("command", [])
-        image_config["command"] = list(existing_command) + list(template_args)
+        return list(template_command) + list(template_args or [])
+    if template_args is not None:
+        return list(image_command) + list(template_args)
+    return None
 
-    # Working directory override
-    if template_working_dir:
-        image_config["working_dir"] = template_working_dir
 
-    # Platform mounts + volume mounts
-    # Convert ContainerMount dataclass objects to dicts for JSON serialization
-    platform_mounts = {
-        "aci": ACI_MOUNTS,
-    }.get(platform, []) or []
-    mounts = [asdict(m) if hasattr(m, '__dataclass_fields__') else m for m in platform_mounts]
+def _map_working_dir(container: dict) -> str | None:
+    """Template: container.workingDir  →  Policy: working_dir"""
+    return container.get("workingDir") or None
 
-    for volume_name, mount_info in container.get("volumes", {}).items():
-        mount_def = {
-            "destination": mount_info.get("mountPath"),
-            "options": ["rbind", "rshared"],
-            "type": "bind",
-        }
-        # Persistent volumes may have a source; ephemeral ones use managedStore
-        if mount_info.get("source"):
-            mount_def["source"] = mount_info.get("source")
-        else:
-            # Ephemeral volume - use a synthetic source based on name
-            mount_def["source"] = f"ephemeral://{volume_name}"
 
-        # rbac: 'read' or 'write' affects mount options
-        if mount_info.get("rbac") != "write":
-            mount_def["options"].append("ro")
+def _map_env_rules(container: dict) -> list[dict]:
+    """Template: container.env  →  Policy: env_rules[]
 
-        mounts.append(mount_def)
+    - Plain values produce a string-match rule: NAME=value
+    - Secret references (valueFrom) produce a regex rule: NAME=.+
 
-    # Environment rules: image defaults + template env + connections
-    env_rules = image_config.pop("env_rules", [])
+    Handles both Radius dict format (main containers) and Kubernetes list
+    format (sidecar containers from runtimes.kubernetes.pod.containers).
+    """
+    env = container.get("env")
+    if not env:
+        return []
 
-    # Add template-defined environment variables
-    for env_name, env_spec in container.get("env", {}).items():
+    # Kubernetes list format: [{name: "X", value: "Y"}, ...]
+    if isinstance(env, list):
+        env = {item["name"]: {k: v for k, v in item.items() if k != "name"} for item in env}
+
+    rules = []
+    for env_name, env_spec in env.items():
         if "value" in env_spec:
-            env_rules.append({
+            rules.append({
                 "pattern": f'{env_name}={env_spec["value"]}',
                 "strategy": "string",
                 "required": False,
             })
         elif "valueFrom" in env_spec:
-            # Secret references - use regex pattern since value is dynamic
-            env_rules.append({
-                "pattern": f'{env_name}=.+',
+            rules.append({
+                "pattern": f"{env_name}=.+",
                 "strategy": "re2",
                 "required": False,
             })
+    return rules
 
-    # Connection-injected environment variables
-    # Radius injects CONNECTIONS_<NAME>_* variables for each connection
-    for conn_name in resource.get("connections", {}).keys():
-        env_rules.append({
-            "pattern": f"CONNECTIONS_{conn_name.upper()}_.+=.+",
+
+def _map_connection_env_rules(resource: dict) -> list[dict]:
+    """Template: resource.connections  →  Policy: env_rules[]
+
+    Radius injects CONNECTIONS_<NAME>_* environment variables for each
+    connection defined on the resource, unless the connection sets
+    disableDefaultEnvVars to true.
+    """
+    return [
+        {
+            "pattern": f"CONNECTIONS_{name.upper()}_.+=.+",
             "strategy": "re2",
             "required": True,
+        }
+        for name, conn in resource.get("connections", {}).items()
+        if not conn.get("disableDefaultEnvVars")
+    ]
+
+
+def _map_volume_mounts(container: dict) -> list[dict]:
+    """Template: container.volumes  →  Policy: mounts[]
+
+    Each Radius volume maps to a bind mount:
+      volumes[name].mountPath   → mount.destination
+      volumes[name].source      → mount.source  (persistent) or ephemeral://<name>
+      volumes[name].permission  → mount.options  (read-only for persistent unless 'write')
+      volumes[name].rbac        → (legacy alias for permission)
+
+    Ephemeral volumes (kind=='ephemeral') are writable by default.
+    Persistent volumes default to read-only per the Radius spec.
+    """
+    mounts = []
+    for volume_name, mount_info in container.get("volumes", {}).items():
+        options = ["rbind", "rshared"]
+
+        is_ephemeral = mount_info.get("kind") == "ephemeral"
+        # The API reference uses "permission"; the human-readable docs use "rbac".
+        access = mount_info.get("permission") or mount_info.get("rbac")
+
+        if is_ephemeral:
+            read_only = access == "read"
+        else:
+            read_only = access != "write"
+
+        if read_only:
+            options.append("ro")
+
+        mounts.append({
+            "destination": mount_info.get("mountPath"),
+            "options": options,
+            "source": mount_info.get("source") or f"ephemeral://{volume_name}",
+            "type": "bind",
         })
+    return mounts
 
-    # Exec processes from probes
-    exec_processes = []
 
-    for probe_type in ["livenessProbe", "readinessProbe"]:
-        probe = container.get(probe_type, {})
+def _map_exec_processes(container: dict) -> list[dict]:
+    """Template: container.livenessProbe, container.readinessProbe  →  Policy: exec_processes[]
+
+    Only exec-kind probes are mapped; HTTP/TCP probes are ignored.
+    """
+    processes = []
+    for probe_key in ("livenessProbe", "readinessProbe"):
+        probe = container.get(probe_key, {})
         if probe.get("kind") == "exec" and probe.get("command"):
-            # exec probes run a command inside the container
-            command = probe.get("command")
+            command = probe["command"]
             if isinstance(command, str):
                 command = [command]
-            exec_processes.append({
-                "command": command,
-                "signals": [],
-            })
+            processes.append({"command": command, "signals": []})
+    return processes
 
-    # Build the container definition
-    container_def = {
-        "id": image,
-        "name": image,
-        "layers": get_image_layers(image),
-        "env_rules": env_rules,
-        **image_config,
-    }
 
+# ---------------------------------------------------------------------------
+# Container extraction
+# ---------------------------------------------------------------------------
+
+def _extract_container_def(container: dict, resource: dict, platform: str) -> dict:
+    """
+    Build a policy container definition from a Radius container spec.
+
+    The base definition comes from the Docker image (via ``from_image``).
+    Template-level overrides are computed by the ``_map_*`` helpers above,
+    then merged on top of the image defaults via ``merge_containers``.
+    """
+    image = container.get("image")
+    if not image:
+        raise ValueError("Container must have an image")
+
+    image_def = from_image(image, platform)
+
+    template_def = {}
+
+    command = _map_command(container, image_def.get("command", []))
+    if command is not None:
+        template_def["command"] = command
+
+    working_dir = _map_working_dir(container)
+    if working_dir is not None:
+        template_def["working_dir"] = working_dir
+
+    env_rules = _map_env_rules(container) + _map_connection_env_rules(resource)
+    if env_rules:
+        template_def["env_rules"] = env_rules
+
+    mounts = _map_volume_mounts(container)
     if mounts:
-        container_def["mounts"] = mounts
+        template_def["mounts"] = mounts
 
+    exec_processes = _map_exec_processes(container)
     if exec_processes:
-        container_def["exec_processes"] = exec_processes
+        template_def["exec_processes"] = exec_processes
 
-    return container_def
+    return merge_containers(image_def, template_def)
 
 
 def containers_from_radius(
