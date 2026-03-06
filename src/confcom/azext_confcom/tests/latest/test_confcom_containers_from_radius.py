@@ -18,6 +18,7 @@ Test structure follows test_confcom_containers_from_image.py pattern:
 import json
 import re
 import pytest
+import subprocess
 import tempfile
 
 from contextlib import redirect_stdout
@@ -28,11 +29,42 @@ from deepdiff import DeepDiff
 
 from azext_confcom.command.containers_from_radius import containers_from_radius
 from azext_confcom.command.radius_policy_insert import radius_policy_insert
+from azext_confcom.lib.deployments import EVAL_FUNCS
 
 
 TEST_DIR = Path(__file__).parent
 CONFCOM_DIR = TEST_DIR.parent.parent.parent
 SAMPLES_ROOT = CONFCOM_DIR / "samples" / "radius"
+
+
+def _parse_deployment_template_via_bicep(_az_cli_command, template, parameters):
+    """Compile a bicep file to ARM JSON using the bicep CLI.
+
+    This avoids the need for a live Azure CLI context in tests.
+    """
+    result = subprocess.run(
+        ["bicep", "build", template, "--stdout"],
+        capture_output=True, text=True, check=True,
+    )
+    arm = json.loads(result.stdout)
+    for eval_func in EVAL_FUNCS:
+        arm = eval_func(arm, {})
+    return arm
+
+
+@pytest.fixture(autouse=True)
+def _patch_parse_deployment_template():
+    """Use bicep CLI instead of Azure CLI for template parsing in tests.
+
+    Patches through __globals__ to handle module reloads performed by the
+    session-scoped wheel-building conftest.
+    """
+    fn = containers_from_radius
+    original = fn.__globals__.get("parse_deployment_template")
+    fn.__globals__["parse_deployment_template"] = _parse_deployment_template_via_bicep
+    yield
+    if original is not None:
+        fn.__globals__["parse_deployment_template"] = original
 
 
 # =============================================================================
@@ -48,7 +80,8 @@ def _get_sample_containers(sample_dir: Path) -> list:
     """
     indices = []
     for f in sample_dir.glob("aci_container*.inc.rego"):
-        name = f.stem  # e.g., "aci_container" or "aci_container_1"
+        # Strip both .inc.rego suffixes to get the base name
+        name = f.name.split(".")[0]  # e.g., "aci_container" or "aci_container_1"
         if name == "aci_container":
             indices.append(0)
         elif name.startswith("aci_container_"):
@@ -305,3 +338,234 @@ resource container 'Applications.Core/containers@2023-10-01-preview' = {
                     container_index=1,
                     platform="aci",
                 )
+
+
+# =============================================================================
+# _map_* function unit tests
+# =============================================================================
+
+from azext_confcom.command.containers_from_radius import (
+    _map_command,
+    _map_working_dir,
+    _map_env_rules,
+    _map_connection_env_rules,
+    _map_volume_mounts,
+    _map_exec_processes,
+)
+
+
+class TestMapCommand:
+    """Unit tests for _map_command."""
+
+    def test_no_overrides_returns_none(self):
+        assert _map_command({}, ["/bin/sh"]) is None
+
+    def test_command_replaces_image_entrypoint(self):
+        result = _map_command({"command": ["/app/run"]}, ["/bin/sh"])
+        assert result == ["/app/run"]
+
+    def test_command_with_args(self):
+        result = _map_command({"command": ["/app/run"], "args": ["--verbose"]}, ["/bin/sh"])
+        assert result == ["/app/run", "--verbose"]
+
+    def test_args_only_appends_to_image(self):
+        result = _map_command({"args": ["--debug"]}, ["/bin/sh", "-c"])
+        assert result == ["/bin/sh", "-c", "--debug"]
+
+    def test_args_only_with_empty_image_command(self):
+        result = _map_command({"args": ["start"]}, [])
+        assert result == ["start"]
+
+    def test_empty_command_is_not_none(self):
+        """An explicit empty command list is a valid override."""
+        result = _map_command({"command": []}, ["/bin/sh"])
+        assert result == []
+
+
+class TestMapWorkingDir:
+    """Unit tests for _map_working_dir."""
+
+    def test_returns_none_when_absent(self):
+        assert _map_working_dir({}) is None
+
+    def test_returns_value(self):
+        assert _map_working_dir({"workingDir": "/app"}) == "/app"
+
+    def test_empty_string_returns_none(self):
+        assert _map_working_dir({"workingDir": ""}) is None
+
+
+class TestMapEnvRules:
+    """Unit tests for _map_env_rules."""
+
+    def test_empty_env(self):
+        assert _map_env_rules({}) == []
+
+    def test_plain_value(self):
+        result = _map_env_rules({"env": {"MY_VAR": {"value": "hello"}}})
+        assert result == [{"pattern": "MY_VAR=hello", "strategy": "string", "required": False}]
+
+    def test_value_from_secret(self):
+        result = _map_env_rules({"env": {"SECRET": {"valueFrom": {"secretRef": {}}}}})
+        assert result == [{"pattern": "SECRET=.+", "strategy": "re2", "required": False}]
+
+    def test_mixed_values(self):
+        result = _map_env_rules({"env": {
+            "A": {"value": "1"},
+            "B": {"valueFrom": {"secretRef": {}}},
+        }})
+        assert len(result) == 2
+        patterns = {r["pattern"] for r in result}
+        assert "A=1" in patterns
+        assert "B=.+" in patterns
+
+    def test_kubernetes_list_format(self):
+        """Sidecar containers use Kubernetes [{name, value}] format."""
+        result = _map_env_rules({"env": [
+            {"name": "FOO", "value": "bar"},
+            {"name": "BAZ", "value": "qux"},
+        ]})
+        assert len(result) == 2
+        patterns = {r["pattern"] for r in result}
+        assert "FOO=bar" in patterns
+        assert "BAZ=qux" in patterns
+
+    def test_kubernetes_list_with_value_from(self):
+        result = _map_env_rules({"env": [
+            {"name": "SECRET", "valueFrom": {"secretKeyRef": {"name": "s", "key": "k"}}},
+        ]})
+        assert result == [{"pattern": "SECRET=.+", "strategy": "re2", "required": False}]
+
+
+class TestMapConnectionEnvRules:
+    """Unit tests for _map_connection_env_rules."""
+
+    def test_no_connections(self):
+        assert _map_connection_env_rules({}) == []
+
+    def test_single_connection(self):
+        result = _map_connection_env_rules({"connections": {"db": {"source": "x"}}})
+        assert result == [{
+            "pattern": "CONNECTIONS_DB_.+=.+", "strategy": "re2", "required": True,
+        }]
+
+    def test_multiple_connections(self):
+        result = _map_connection_env_rules({"connections": {
+            "redis": {"source": "a"},
+            "sql": {"source": "b"},
+        }})
+        names = {r["pattern"].split("_")[1] for r in result}
+        assert names == {"REDIS", "SQL"}
+
+    def test_disable_default_env_vars(self):
+        """Connections with disableDefaultEnvVars should be skipped."""
+        result = _map_connection_env_rules({"connections": {
+            "db": {"source": "a"},
+            "metrics": {"source": "b", "disableDefaultEnvVars": True},
+        }})
+        assert len(result) == 1
+        assert "DB" in result[0]["pattern"]
+
+    def test_all_disabled(self):
+        result = _map_connection_env_rules({"connections": {
+            "a": {"source": "x", "disableDefaultEnvVars": True},
+        }})
+        assert result == []
+
+
+class TestMapVolumeMounts:
+    """Unit tests for _map_volume_mounts."""
+
+    def test_no_volumes(self):
+        assert _map_volume_mounts({}) == []
+
+    def test_ephemeral_volume_is_writable(self):
+        """Ephemeral volumes should be writable by default."""
+        result = _map_volume_mounts({"volumes": {
+            "tmp": {"kind": "ephemeral", "mountPath": "/tmp", "managedStore": "memory"},
+        }})
+        assert len(result) == 1
+        assert "ro" not in result[0]["options"]
+        assert result[0]["destination"] == "/tmp"
+        assert result[0]["source"] == "ephemeral://tmp"
+
+    def test_persistent_volume_default_readonly(self):
+        """Persistent volumes default to read-only per the Radius spec."""
+        result = _map_volume_mounts({"volumes": {
+            "data": {"kind": "persistent", "mountPath": "/data", "source": "vol.id"},
+        }})
+        assert "ro" in result[0]["options"]
+        assert result[0]["source"] == "vol.id"
+
+    def test_persistent_volume_with_permission_write(self):
+        """API reference uses 'permission' field."""
+        result = _map_volume_mounts({"volumes": {
+            "data": {"kind": "persistent", "mountPath": "/data", "source": "v", "permission": "write"},
+        }})
+        assert "ro" not in result[0]["options"]
+
+    def test_persistent_volume_with_rbac_write(self):
+        """Human-readable docs use 'rbac' field."""
+        result = _map_volume_mounts({"volumes": {
+            "data": {"kind": "persistent", "mountPath": "/data", "source": "v", "rbac": "write"},
+        }})
+        assert "ro" not in result[0]["options"]
+
+    def test_persistent_volume_permission_read(self):
+        result = _map_volume_mounts({"volumes": {
+            "cfg": {"kind": "persistent", "mountPath": "/cfg", "source": "v", "permission": "read"},
+        }})
+        assert "ro" in result[0]["options"]
+
+    def test_ephemeral_explicit_read(self):
+        """Ephemeral volume can be explicitly set to read-only."""
+        result = _map_volume_mounts({"volumes": {
+            "ro_tmp": {"kind": "ephemeral", "mountPath": "/ro", "managedStore": "disk", "permission": "read"},
+        }})
+        assert "ro" in result[0]["options"]
+
+    def test_multiple_volumes(self):
+        result = _map_volume_mounts({"volumes": {
+            "a": {"kind": "ephemeral", "mountPath": "/a", "managedStore": "memory"},
+            "b": {"kind": "persistent", "mountPath": "/b", "source": "vol"},
+        }})
+        assert len(result) == 2
+
+
+class TestMapExecProcesses:
+    """Unit tests for _map_exec_processes."""
+
+    def test_no_probes(self):
+        assert _map_exec_processes({}) == []
+
+    def test_exec_liveness_probe(self):
+        result = _map_exec_processes({"livenessProbe": {"kind": "exec", "command": "ls"}})
+        assert result == [{"command": ["ls"], "signals": []}]
+
+    def test_exec_readiness_probe(self):
+        result = _map_exec_processes({"readinessProbe": {"kind": "exec", "command": ["cat", "/tmp/ready"]}})
+        assert result == [{"command": ["cat", "/tmp/ready"], "signals": []}]
+
+    def test_both_probes(self):
+        result = _map_exec_processes({
+            "livenessProbe": {"kind": "exec", "command": "live"},
+            "readinessProbe": {"kind": "exec", "command": "ready"},
+        })
+        assert len(result) == 2
+
+    def test_httpget_probe_ignored(self):
+        """Only exec probes generate exec_processes."""
+        result = _map_exec_processes({
+            "livenessProbe": {"kind": "httpGet", "containerPort": 8080, "path": "/health"},
+        })
+        assert result == []
+
+    def test_tcp_probe_ignored(self):
+        result = _map_exec_processes({
+            "readinessProbe": {"kind": "tcp", "containerPort": 3000},
+        })
+        assert result == []
+
+    def test_exec_probe_without_command_ignored(self):
+        result = _map_exec_processes({"livenessProbe": {"kind": "exec"}})
+        assert result == []

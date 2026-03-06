@@ -1,10 +1,8 @@
 {
-  "id": "prom/node-exporter:v1.6.0",
-  "name": "prom/node-exporter:v1.6.0",
+  "id": "alpine:3.19",
+  "name": "alpine:3.19",
   "layers": [
-    "7a580d3787151687569bf746ee21f3efff8a44c25a05516422f081b0b37ede8a",
-    "99078a17fc9f1f4e964f4f07056b14ace4f15cf6cce47534f94ce79b90190d5f",
-    "2d01b6595212164df2bb77813c093e4a5b7541ec7eb78bdd01c6a88d79a1bfc2"
+    "6f937bc4d3707c87d1207acd64290d97ec90c8b87a7785cb307808afa49ff892"
   ],
   "mounts": [
     {
@@ -19,7 +17,7 @@
     }
   ],
   "command": [
-    "/bin/node_exporter"
+    "/bin/sh"
   ],
   "env_rules": [
     {
@@ -27,5 +25,6 @@
       "strategy": "string",
       "required": false
     }
-  ]
+  ],
+  "working_dir": "/app/src"
 }
