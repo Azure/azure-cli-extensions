@@ -40,7 +40,7 @@ import tempfile
 import re
 
 from azext_confcom.lib.containers import from_image, merge_containers
-from azext_confcom.lib.deployments import parse_deployment_template
+from azext_confcom.lib.templates import parse_deployment_template
 
 
 # ---------------------------------------------------------------------------
