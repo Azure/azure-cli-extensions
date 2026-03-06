@@ -42,7 +42,7 @@ def build_post_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-10-02-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-01-02-preview"))
     content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
     accept = _headers.pop("Accept", "application/json")
 
@@ -110,8 +110,6 @@ class ResolvePrivateLinkServiceIdOperations:
     ) -> _models.PrivateLinkResource:
         """Gets the private link service ID for the specified managed cluster.
 
-        Gets the private link service ID for the specified managed cluster.
-
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
@@ -139,8 +137,6 @@ class ResolvePrivateLinkServiceIdOperations:
     ) -> _models.PrivateLinkResource:
         """Gets the private link service ID for the specified managed cluster.
 
-        Gets the private link service ID for the specified managed cluster.
-
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
@@ -165,8 +161,6 @@ class ResolvePrivateLinkServiceIdOperations:
         **kwargs: Any
     ) -> _models.PrivateLinkResource:
         """Gets the private link service ID for the specified managed cluster.
-
-        Gets the private link service ID for the specified managed cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
