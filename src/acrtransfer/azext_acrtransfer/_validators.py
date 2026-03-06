@@ -25,11 +25,36 @@ def validate_keyvault_secret_uri(namespace):
     uri = namespace.keyvault_secret_uri
     valid = True
 
+    if uri is None:
+        return
+
     if "https://" not in uri or "/secrets/" not in uri:
         valid = False
 
     if not valid:
         logger.warning("Invalid keyvault secret URI. Please provide a keyvault secret URI of the form https://$MyKeyvault.vault.azure.net/secrets/$MySecret. Note - The exact URI form may be different outside of AzureCloud.")
+
+
+def validate_storage_access_mode_and_secret_uri(namespace):
+    storage_access_mode = namespace.storage_access_mode
+    secret_uri = namespace.keyvault_secret_uri
+
+    allowed_modes = ["entra-mi-auth", "storage-sas-token"]
+
+    if storage_access_mode not in allowed_modes:
+        raise InvalidArgumentValueError(f"Invalid storage access mode '{storage_access_mode}'. Allowed values: {', '.join(allowed_modes)}")
+
+    # Convert CLI values to API values
+    if storage_access_mode == "entra-mi-auth":
+        namespace.storage_access_mode = "ManagedIdentity"
+        # Reject secret-uri when using Managed Identity mode
+        if secret_uri is not None:
+            raise InvalidArgumentValueError("The '--secret-uri' flag cannot be supplied when 'entra-mi-auth' is chosen for the flag '--storage-access-mode'.")
+    elif storage_access_mode == "storage-sas-token":
+        namespace.storage_access_mode = "SasToken"
+        # Require secret-uri when using SasToken mode
+        if secret_uri is None:
+            raise InvalidArgumentValueError("--secret-uri is required when --storage-access-mode is storage-sas-token")
 
 
 def validate_user_assigned_identity_resource_id(namespace):
@@ -39,11 +64,16 @@ def validate_user_assigned_identity_resource_id(namespace):
     if identity_id is None:
         return
 
+    # Handle [system] keyword for system-assigned identity
+    if identity_id.lower() == "[system]":
+        namespace.user_assigned_identity_resource_id = None
+        return
+
     if "/providers/Microsoft.ManagedIdentity/userAssignedIdentities/" not in identity_id:
         valid = False
 
     if not valid:
-        logger.warning("Invalid user assigned identity resource ID. Please provide a user assigned identity resource ID of the form /subscriptions/$MySubID/resourceGroups/$MyRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/$MyIdentity.")
+        logger.warning("Invalid user assigned identity resource ID. Please provide a user assigned identity resource ID of the form /subscriptions/$MySubID/resourceGroups/$MyRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/$MyIdentity or use [system] for system-assigned identity.")
 
 
 def validate_import_options(namespace):

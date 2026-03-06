@@ -53,9 +53,17 @@ class EnvironmentKind(Enum):
     DOGFOOD = 3
 
 
+class WorkspaceKind(Enum):
+    V1 = "V1"
+    V2 = "V2"
+
+
 class ConnectionConstants:
     DATA_PLANE_CREDENTIAL_SCOPE = "https://quantum.microsoft.com/.default"
     ARM_CREDENTIAL_SCOPE = "https://management.azure.com/.default"
+
+    DEFAULT_ARG_API_VERSION = "2021-03-01"
+    DEFAULT_WORKSPACE_API_VERSION = "2025-11-01-preview"
 
     MSA_TENANT_ID = "9188040d-6c67-4c5b-b112-36a304b66dad"
 
@@ -65,10 +73,14 @@ class ConnectionConstants:
     # pylint: disable=unnecessary-lambda-assignment
     GET_QUANTUM_PRODUCTION_ENDPOINT = \
         lambda location: f"https://{location}.quantum.azure.com/"
+    GET_QUANTUM_PRODUCTION_ENDPOINT_v2 = \
+        lambda location: f"https://{location}-v2.quantum.azure.com/"
     GET_QUANTUM_CANARY_ENDPOINT = \
         lambda location: f"https://{location or 'eastus2euap'}.quantum.azure.com/"
     GET_QUANTUM_DOGFOOD_ENDPOINT = \
         lambda location: f"https://{location}.quantum-test.azure.com/"
+    GET_QUANTUM_DOGFOOD_ENDPOINT_v2 = \
+        lambda location: f"https://{location}-v2.quantum-test.azure.com/"
 
     ARM_PRODUCTION_ENDPOINT = "https://management.azure.com/"
     ARM_DOGFOOD_ENDPOINT = "https://api-dogfood.resources.windows-int.net/"
@@ -95,3 +107,65 @@ class ConnectionConstants:
 GUID_REGEX_PATTERN = (
     r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
 )
+
+VALID_WORKSPACE_NAME_PATTERN = r"^[a-zA-Z0-9]+(-*[a-zA-Z0-9])*$"
+
+VALID_AZURE_REGIONS = {
+    "australiacentral",
+    "australiacentral2",
+    "australiaeast",
+    "australiasoutheast",
+    "austriaeast",
+    "belgiumcentral",
+    "brazilsouth",
+    "brazilsoutheast",
+    "canadacentral",
+    "canadaeast",
+    "centralindia",
+    "centralus",
+    "centraluseuap",
+    "chilecentral",
+    "eastasia",
+    "eastus",
+    "eastus2",
+    "eastus2euap",
+    "francecentral",
+    "francesouth",
+    "germanynorth",
+    "germanywestcentral",
+    "indonesiacentral",
+    "israelcentral",
+    "italynorth",
+    "japaneast",
+    "japanwest",
+    "koreacentral",
+    "koreasouth",
+    "malaysiawest",
+    "mexicocentral",
+    "newzealandnorth",
+    "northcentralus",
+    "northeurope",
+    "norwayeast",
+    "norwaywest",
+    "polandcentral",
+    "qatarcentral",
+    "southafricanorth",
+    "southafricawest",
+    "southcentralus",
+    "southindia",
+    "southeastasia",
+    "spaincentral",
+    "swedencentral",
+    "switzerlandnorth",
+    "switzerlandwest",
+    "uaecentral",
+    "uaenorth",
+    "uksouth",
+    "ukwest",
+    "westcentralus",
+    "westeurope",
+    "westindia",
+    "westus",
+    "westus2",
+    "westus3",
+}

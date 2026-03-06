@@ -15,7 +15,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_blueprint_assignment000001?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_blueprint_assignment000001?api-version=2024-11-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_blueprint_assignment000001","name":"cli_test_blueprint_assignment000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","test":"test_blueprint_assignment","date":"2023-08-10T03:18:22Z","module":"blueprint"},"properties":{"provisioningState":"Succeeded"}}'
@@ -61,7 +61,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 azsdk-python-azure-mgmt-msi/7.0.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_blueprint_assignment000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000004?api-version=2023-01-31
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_blueprint_assignment000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000004?api-version=2024-11-30
   response:
     body:
       string: '{"location":"westus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_blueprint_assignment000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000004","name":"testid_000004","type":"Microsoft.ManagedIdentity/userAssignedIdentities","properties":{"tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","principalId":"93d9ffd9-a7f1-48b0-bf4b-f9919f3b5411","clientId":"576229e8-c4da-49eb-a0da-16c5c7cfb23c"}}'
@@ -748,7 +748,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 azsdk-python-azure-mgmt-authorization/3.0.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions?$filter=roleName%20eq%20%27Owner%27&api-version=2022-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions?$filter=roleName%20eq%20%27Owner%27&api-version=2022-05-01-preview
   response:
     body:
       string: '{"value":[{"properties":{"roleName":"Owner","type":"BuiltInRole","description":"Grants
@@ -795,7 +795,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 azsdk-python-azure-mgmt-authorization/3.0.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions?$filter=roleName%20eq%20%27Owner%27&api-version=2022-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions?$filter=roleName%20eq%20%27Owner%27&api-version=2022-05-01-preview
   response:
     body:
       string: '{"value":[{"properties":{"roleName":"Owner","type":"BuiltInRole","description":"Grants
@@ -2100,7 +2100,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 azsdk-python-azure-mgmt-authorization/3.0.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/blueprint-rg-000005/providers/Microsoft.Authorization/roleDefinitions?$filter=roleName%20eq%20%27Owner%27&api-version=2022-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/blueprint-rg-000005/providers/Microsoft.Authorization/roleDefinitions?$filter=roleName%20eq%20%27Owner%27&api-version=2022-05-01-preview
   response:
     body:
       string: '{"value":[{"properties":{"roleName":"Owner","type":"BuiltInRole","description":"Grants
@@ -2858,7 +2858,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/blueprint-rg-000005?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/blueprint-rg-000005?api-version=2024-11-01
   response:
     body:
       string: ''

@@ -11,21 +11,21 @@ from ._format import import_pipeline_output_format, export_pipeline_output_forma
 
 def load_command_table(self, _):
     importpipeline_sdk = CliCommandType(
-        operations_tmpl='azext_acrtransfer.vendored_sdks.containerregistry.v2019_12_01_preview.operations#ImportPipelinesOperations.{}',
+        operations_tmpl='azext_acrtransfer.vendored_sdks.containerregistry.v2025_06_01_preview.operations#ImportPipelinesOperations.{}',
         client_factory=cf_acrtransfer,
-        min_api='2019-12-01-preview'
+        min_api='2025-06-01-preview'
     )
 
     exportpipeline_sdk = CliCommandType(
-        operations_tmpl='azext_acrtransfer.vendored_sdks.containerregistry.v2019_12_01_preview.operations#ExportPipelinesOperations.{}',
+        operations_tmpl='azext_acrtransfer.vendored_sdks.containerregistry.v2025_06_01_preview.operations#ExportPipelinesOperations.{}',
         client_factory=cf_acrtransfer,
-        min_api='2019-12-01-preview'
+        min_api='2025-06-01-preview'
     )
 
     pipelinerun_sdk = CliCommandType(
-        operations_tmpl='azext_acrtransfer.vendored_sdks.containerregistry.v2019_12_01_preview.operations#PipelineRunsOperations.{}',
+        operations_tmpl='azext_acrtransfer.vendored_sdks.containerregistry.v2025_06_01_preview.operations#PipelineRunsOperations.{}',
         client_factory=cf_acrtransfer,
-        min_api='2019-12-01-preview'
+        min_api='2025-06-01-preview'
     )
 
     with self.command_group('acr import-pipeline', importpipeline_sdk, table_transformer=import_pipeline_output_format, is_preview=True) as g:

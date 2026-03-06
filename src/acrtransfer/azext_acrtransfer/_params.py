@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 
-from ._validators import validate_export_options, validate_import_options, validate_keyvault_secret_uri, validate_pipeline_type, validate_storage_account_container_uri, validate_user_assigned_identity_resource_id, validate_top
+from ._validators import validate_export_options, validate_import_options, validate_keyvault_secret_uri, validate_pipeline_type, validate_storage_access_mode_and_secret_uri, validate_storage_account_container_uri, validate_user_assigned_identity_resource_id, validate_top
 
 
 def load_arguments(self, _):
@@ -16,8 +16,9 @@ def load_arguments(self, _):
         c.argument('location', validator=get_default_location_from_resource_group)
         c.argument('registry_name', options_list=['--registry', '-r'], help='Name of registry.')
         c.argument('storage_account_container_uri', options_list=['--storage-container-uri', '-c'], validator=validate_storage_account_container_uri, help='Storage account container URI of the source or target storage account container of the form https://$MyStorageAccount.blob.core.windows.net/$MyContainer. Note that the URI may be different outside of AzureCloud.')
-        c.argument('keyvault_secret_uri', options_list=['--secret-uri', '-s'], validator=validate_keyvault_secret_uri, help='Keyvault secret URI containing a valid SAS token to the associated storage account of the form https://$MyKeyvault.vault.azure.net/secrets/$MySecret. Note that the URI may be different outside of AzureCloud.')
-        c.argument('user_assigned_identity_resource_id', options_list=['--assign-identity', '-i'], validator=validate_user_assigned_identity_resource_id, help='User assigned identity resource ID of the form /subscriptions/$MySubID/resourceGroups/$MyRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/$MyIdentity.')
+        c.argument('storage_access_mode', options_list=['--storage-access-mode', '-m'], validator=validate_storage_access_mode_and_secret_uri, help='Storage account access mode. Allowed values: entra-mi-auth, storage-sas-token. When using entra-mi-auth, a managed identity is required (use --assign-identity).')
+        c.argument('keyvault_secret_uri', options_list=['--secret-uri', '-s'], validator=validate_keyvault_secret_uri, help='Keyvault secret URI containing a valid SAS token to the associated storage account of the form https://$MyKeyvault.vault.azure.net/secrets/$MySecret. Note that the URI may be different outside of AzureCloud. Required when --storage-access-mode is storage-sas-token.')
+        c.argument('user_assigned_identity_resource_id', options_list=['--assign-identity', '-i'], validator=validate_user_assigned_identity_resource_id, help='Managed identity for the pipeline. Provide a user-assigned identity resource ID of the form /subscriptions/$MySubID/resourceGroups/$MyRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/$MyIdentity, or use [system] to provision a system-assigned identity. When using --storage-access-mode entra-mi-auth, if not specified or if [system] is used, a system-assigned managed identity will be automatically provisioned.')
 
     with self.argument_context('acr import-pipeline') as c:
         c.argument('options', options_list=['--options', '-z'], nargs='+', validator=validate_import_options, help='Space-separated list of options. May only contain the following options: DeleteSourceBlobOnSuccess,OverwriteTags,ContinueOnErrors,DisableSourceTrigger.')

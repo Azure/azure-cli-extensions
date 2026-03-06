@@ -3,6 +3,12 @@
 Release History
 ===============
 
+1.0.0b4
+++++++
+* Fix `swap-default` command failing with `TypeError: 'NoneType' object is not callable` by providing a no-op deserialization callback for the 202 LRO response
+* Add test for `swap-default` command verifying default version changes correctly
+* Re-enable execution filter CRUD test with code deployment prerequisite
+
 1.0.0b3
 ++++++
 * Upgrade to API version 2025-12-01-preview

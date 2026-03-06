@@ -15,7 +15,7 @@ import sys
 
 import collections
 import datetime
-from pkg_resources import parse_version
+from packaging.version import Version
 
 from jinja2 import Template  # pylint: disable=import-error
 import requests
@@ -39,7 +39,7 @@ def get_extensions():
     index_extensions = collections.OrderedDict(sorted(get_index_data()['extensions'].items()))
     for _, exts in index_extensions.items():
         # Get latest version
-        exts = sorted(exts, key=lambda c: parse_version(c['metadata']['version']), reverse=True)
+        exts = sorted(exts, key=lambda c: Version(c['metadata']['version']), reverse=True)
 
         # some extension modules may not include 'HISTORY.rst'
         # setup.py

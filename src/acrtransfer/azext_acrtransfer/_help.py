@@ -26,10 +26,14 @@ helps['acr import-pipeline create'] = """
     type: command
     short-summary: Create an import pipeline.
     examples:
-        - name: Create an import pipeline.
-          text: az acr import-pipeline create --resource-group $MyRG --registry $MyReg --name $MyPipeline --secret-uri https://$MyKV.vault.azure.net/secrets/$MySecret --storage-container-uri https://$MyStorage.blob.core.windows.net/$MyContainer
-        - name: Create an import pipeline with a user-assigned identity, all available options, and source trigger disabled.
-          text: az acr import-pipeline create --resource-group $MyRG --registry $MyReg --name $MyPipeline --secret-uri https://$MyKV.vault.azure.net/secrets/$MySecret --storage-container-uri https://$MyStorage.blob.core.windows.net/$MyContainer --options DeleteSourceBlobOnSuccess OverwriteTags ContinueOnErrors --assign-identity /subscriptions/$MySubID/resourceGroups/$MyRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/$MyIdentity --source-trigger-enabled False
+        - name: Create an import pipeline with SAS token authentication.
+          text: az acr import-pipeline create --resource-group $MyRG --registry $MyReg --name $MyPipeline --storage-access-mode storage-sas-token --secret-uri https://$MyKV.vault.azure.net/secrets/$MySecret --storage-container-uri https://$MyStorage.blob.core.windows.net/$MyContainer
+        - name: Create an import pipeline with system-assigned managed identity (automatic provisioning).
+          text: az acr import-pipeline create --resource-group $MyRG --registry $MyReg --name $MyPipeline --storage-access-mode entra-mi-auth --storage-container-uri https://$MyStorage.blob.core.windows.net/$MyContainer
+        - name: Create an import pipeline with explicit system-assigned managed identity.
+          text: az acr import-pipeline create --resource-group $MyRG --registry $MyReg --name $MyPipeline --storage-access-mode entra-mi-auth --storage-container-uri https://$MyStorage.blob.core.windows.net/$MyContainer --assign-identity [system]
+        - name: Create an import pipeline with user-assigned managed identity and all available options.
+          text: az acr import-pipeline create --resource-group $MyRG --registry $MyReg --name $MyPipeline --storage-access-mode entra-mi-auth --storage-container-uri https://$MyStorage.blob.core.windows.net/$MyContainer --options DeleteSourceBlobOnSuccess OverwriteTags ContinueOnErrors --assign-identity /subscriptions/$MySubID/resourceGroups/$MyRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/$MyIdentity --source-trigger-enabled False
 """
 
 helps['acr import-pipeline list'] = """
@@ -60,10 +64,14 @@ helps['acr export-pipeline create'] = """
     type: command
     short-summary: Create an export pipeline.
     examples:
-        - name: Create an export pipeline.
-          text: az acr export-pipeline create --resource-group $MyRG --registry $MyReg --name $MyPipeline --secret-uri https://$MyKV.vault.azure.net/secrets/$MySecret --storage-container-uri https://$MyStorage.blob.core.windows.net/$MyContainer
-        - name: Create an export pipeline with a user-assigned identity and all available options.
-          text: az acr export-pipeline create --resource-group $MyRG --registry $MyReg --name $MyPipeline --secret-uri https://$MyKV.vault.azure.net/secrets/$MySecret --storage-container-uri https://$MyStorage.blob.core.windows.net/$MyContainer --options OverwriteBlobs ContinueOnErrors --assign-identity /subscriptions/$MySubID/resourceGroups/$MyRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/$MyIdentity
+        - name: Create an export pipeline with SAS token authentication.
+          text: az acr export-pipeline create --resource-group $MyRG --registry $MyReg --name $MyPipeline --storage-access-mode storage-sas-token --secret-uri https://$MyKV.vault.azure.net/secrets/$MySecret --storage-container-uri https://$MyStorage.blob.core.windows.net/$MyContainer
+        - name: Create an export pipeline with system-assigned managed identity (automatic provisioning).
+          text: az acr export-pipeline create --resource-group $MyRG --registry $MyReg --name $MyPipeline --storage-access-mode entra-mi-auth --storage-container-uri https://$MyStorage.blob.core.windows.net/$MyContainer
+        - name: Create an export pipeline with explicit system-assigned managed identity.
+          text: az acr export-pipeline create --resource-group $MyRG --registry $MyReg --name $MyPipeline --storage-access-mode entra-mi-auth --storage-container-uri https://$MyStorage.blob.core.windows.net/$MyContainer --assign-identity [system]
+        - name: Create an export pipeline with user-assigned managed identity and all available options.
+          text: az acr export-pipeline create --resource-group $MyRG --registry $MyReg --name $MyPipeline --storage-access-mode entra-mi-auth --storage-container-uri https://$MyStorage.blob.core.windows.net/$MyContainer --options OverwriteBlobs ContinueOnErrors --assign-identity /subscriptions/$MySubID/resourceGroups/$MyRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/$MyIdentity
 """
 
 helps['acr export-pipeline list'] = """

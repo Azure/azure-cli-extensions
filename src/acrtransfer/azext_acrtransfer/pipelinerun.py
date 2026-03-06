@@ -7,7 +7,7 @@
 import time
 from knack.log import get_logger
 from azure.cli.core.azclierror import ResourceNotFoundError, RequiredArgumentMissingError, ClientRequestError, AzureConnectionError, AzureResponseError, AzureInternalError
-from .vendored_sdks.containerregistry.v2019_12_01_preview.models._models_py3 import PipelineRun, PipelineRunRequest, PipelineRunSourceProperties, PipelineRunTargetProperties
+from .vendored_sdks.containerregistry.v2025_06_01_preview.models._models_py3 import PipelineRun, PipelineRunRequest, PipelineRunSourceProperties, PipelineRunTargetProperties
 
 logger = get_logger(__name__)
 
@@ -23,6 +23,13 @@ def create_pipelinerun(client, resource_group_name, registry_name, pipeline_name
         except Exception as e:
             raise ResourceNotFoundError(f'Import pipeline {pipeline_name} not found on registry {registry_name} in the {resource_group_name} resource group.') from e
 
+        # Display authentication method
+        storage_access_mode = raw_result.source.storage_access_mode if raw_result.source else None
+        if storage_access_mode == 'ManagedIdentity':
+            logger.warning("Authenticating to Storage Account using Entra Managed Identity.")
+        elif storage_access_mode == 'SasToken':
+            logger.warning("Authenticating to Storage Account using Storage SAS Token.")
+
         pipeline_resource_id = raw_result.id
         pipeline_run_source = PipelineRunSourceProperties(name=storage_blob_name)
         pipeline_run_request = PipelineRunRequest(pipeline_resource_id=pipeline_resource_id, source=pipeline_run_source)
@@ -34,6 +41,13 @@ def create_pipelinerun(client, resource_group_name, registry_name, pipeline_name
                                                      export_pipeline_name=pipeline_name)
         except Exception as e:
             raise ResourceNotFoundError(f'Export pipeline {pipeline_name} not found on registry {registry_name} in the {resource_group_name} resource group.') from e
+
+        # Display authentication method
+        storage_access_mode = raw_result.target.storage_access_mode if raw_result.target else None
+        if storage_access_mode == 'ManagedIdentity':
+            logger.warning("Authenticating to Storage Account using Entra Managed Identity.")
+        elif storage_access_mode == 'SasToken':
+            logger.warning("Authenticating to Storage Account using Storage SAS Token.")
 
         pipeline_resource_id = raw_result.id
         if artifacts is None:
@@ -59,9 +73,35 @@ def create_pipelinerun(client, resource_group_name, registry_name, pipeline_name
 def get_pipelinerun(client, resource_group_name, registry_name, pipeline_run_name):
     '''Get a pipeline run.'''
 
-    return client.pipeline_runs.get(resource_group_name=resource_group_name,
-                                    registry_name=registry_name,
-                                    pipeline_run_name=pipeline_run_name)
+    result = client.pipeline_runs.get(resource_group_name=resource_group_name,
+                                      registry_name=registry_name,
+                                      pipeline_run_name=pipeline_run_name)
+    
+    # Display authentication method used during pipeline run
+    if result.request and result.request.pipeline_resource_id:
+        try:
+            pipeline_resource_id = result.request.pipeline_resource_id
+            storage_access_mode = None
+            
+            # Parse resource ID and fetch pipeline based on type
+            if '/exportPipelines/' in pipeline_resource_id:
+                pipeline_name = pipeline_resource_id.split('/exportPipelines/')[-1]
+                pipeline = client.export_pipelines.get(resource_group_name, registry_name, pipeline_name)
+                storage_access_mode = pipeline.target.storage_access_mode if pipeline.target else None
+            elif '/importPipelines/' in pipeline_resource_id:
+                pipeline_name = pipeline_resource_id.split('/importPipelines/')[-1]
+                pipeline = client.import_pipelines.get(resource_group_name, registry_name, pipeline_name)
+                storage_access_mode = pipeline.source.storage_access_mode if pipeline.source else None
+            
+            # Display diagnostic messages
+            if storage_access_mode == 'ManagedIdentity':
+                logger.warning("Authenticating to Storage Account using Entra Managed Identity.")
+            elif storage_access_mode == 'SasToken':
+                logger.warning("Authenticating to Storage Account using Storage SAS Token.")
+        except Exception:
+            pass
+    
+    return result
 
 
 def delete_pipelinerun(client, resource_group_name, registry_name, pipeline_run_name):

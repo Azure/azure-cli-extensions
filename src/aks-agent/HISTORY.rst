@@ -12,6 +12,31 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+1.0.0b19
+++++++++
+* Bump aks-agent to v0.4.0
+  * Chore: Remove aks mcp tool description to reduce system prompt length
+  * Fix: Delete runbook from prompts after runbook toolset is removed
+
+1.0.0b18
+++++++++
+* Bump aks-agent to v0.3.0
+  * Chore: use aks mcp streamable-http mode
+  * Remove runbook toolset until it's stabilized
+  * Several CEV fixes
+* Fix: accept endpoints ending with cognitiveservices.azure.com/ for Azure OpenAI service
+
+1.0.0b17
+++++++++
+* Fix: remove the prompt to user about managed identity client id during `az aks agent-init`
+ 
+1.0.0b16
+++++++++
+* Fix: client mode use AzureCLICredential to authenticate with Azure
+* Fix: correct wrong prompt message for init and cleanup
+* Fix: prompt the whole flags including --resource-group, --name and optional --namespace for az aks agent command
+* Enhancement: cluster mode cleanup will wait for pods to be removed after deletion
+
 1.0.0b15
 ++++++++
 * Feature: Add local mode support - run AKS agent in Docker container on local machine as an alternative to cluster deployment

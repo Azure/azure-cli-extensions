@@ -25,12 +25,17 @@ from azext_fleet._client_factory import get_role_assignments_client
 logger = get_logger(__name__)
 
 
+def is_stdout_path(path):
+    """Check if the path represents stdout."""
+    return path == "-"
+
+
 def print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_name):
     """Merge an unencrypted kubeconfig into the file at the specified path, or print it to
     stdout if the path is "-".
     """
     # Special case for printing to stdout
-    if path == "-":
+    if is_stdout_path(path):
         print(kubeconfig)
         return
 
