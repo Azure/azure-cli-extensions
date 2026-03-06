@@ -11,6 +11,18 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* `az aks update`: Fix `--enable-secret-rotation`, `--disable-secret-rotation`, and `--rotation-poll-interval` flags being silently ignored when updating Azure Key Vault Secrets Provider addon configuration.
+* `az aks create/update`: Add `--enable-azure-monitor-logs` support to container network logs validation.
+* `az aks create/update`: Add `--enable-default-domain` and `--disable-default-domain` parameters to manage the default domain feature for web app routing.
+
+19.0.0b22
++++++++
+* `az aks create/update`: Automatically enable `--enable-high-log-scale-mode` when `--enable-container-network-logs` is specified. Raises an error if user explicitly disables HLSM while enabling CNL.
+
+19.0.0b21
++++++++
+* `az aks nodepool get-rollback-versions`: New command to get available rollback versions for an agent pool.
+* `az aks nodepool rollback`: New command to rollback an agent pool to the most recently used configuration (N-1).
 
 19.0.0b20
 +++++++
