@@ -3567,3 +3567,15 @@ confcom containers from_image:
     image:
       rule_exclusions:
         - no_positional_parameters
+
+confcom containers from_radius:
+  parameters:
+    template:
+      rule_exclusions:
+        - no_positional_parameters
+
+confcom radius policy_insert:
+  parameters:
+    policy_file:
+      rule_exclusions:
+        - no_positional_parameters

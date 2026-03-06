@@ -21,3 +21,7 @@ def load_command_table(self, _):
     with self.command_group("confcom containers") as g:
         g.custom_command("from_vn2", "containers_from_vn2")
         g.custom_command("from_image", "containers_from_image")
+        g.custom_command("from_radius", "containers_from_radius", is_preview=True)
+
+    with self.command_group("confcom radius") as g:
+        g.custom_command("policy_insert", "radius_policy_insert", is_preview=True)
