@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clustermanagers/{}", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clustermanagers/{}", "2026-01-01-preview"],
         ]
     }
 
@@ -119,7 +119,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-01-01-preview",
                     required=True,
                 ),
             }
@@ -159,6 +159,7 @@ class Wait(AAZWaitCommand):
                 flags={"read_only": True},
             )
             _schema_on_200.identity = AAZIdentityObjectType()
+            _schema_on_200.kind = AAZStrType()
             _schema_on_200.location = AAZStrType(
                 flags={"required": True},
             )
@@ -242,6 +243,10 @@ class Wait(AAZWaitCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.relay_configuration = AAZObjectType(
+                serialized_name="relayConfiguration",
+                flags={"read_only": True},
+            )
             properties.vm_size = AAZStrType(
                 serialized_name="vmSize",
             )
@@ -272,6 +277,11 @@ class Wait(AAZWaitCommand):
             )
             manager_extended_location.type = AAZStrType(
                 flags={"required": True},
+            )
+
+            relay_configuration = cls._schema_on_200.properties.relay_configuration
+            relay_configuration.relay_namespace_id = AAZStrType(
+                serialized_name="relayNamespaceId",
             )
 
             system_data = cls._schema_on_200.system_data

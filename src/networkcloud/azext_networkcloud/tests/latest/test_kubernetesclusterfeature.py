@@ -27,7 +27,7 @@ def cleanup_scenario1(test):
 def call_scenario1(test):
     """# Testcase: scenario1"""
     setup_scenario1(test)
-    step_create(test)
+    step_create_scenario1(test)
     step_update(test)
     step_show(test)
     step_list(test)
@@ -35,7 +35,14 @@ def call_scenario1(test):
     cleanup_scenario1(test)
 
 
-def step_create(test, checks=None):
+def call_scenario2(test):
+    """# Testcase: scenario2"""
+    setup_scenario1(test)
+    step_create_scenario2(test)
+    cleanup_scenario1(test)
+
+
+def step_create_scenario1(test, checks=None):
     """Kubernetescluster feature create operation"""
     if checks is None:
         checks = []
@@ -43,6 +50,19 @@ def step_create(test, checks=None):
         "az networkcloud kubernetescluster feature create --name {name} "
         "--kubernetes-cluster-name {clusterName} --resource-group {rg} "
         "--location {location} "
+        "--tags {tags}"
+    )
+
+
+def step_create_scenario2(test, checks=None):
+    """Kubernetescluster feature create operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud kubernetescluster feature create --feature-name {name} "
+        "--kc-name {clusterName} --resource-group {rg} "
+        "--location {location} "
+        "--options {options} "
         "--tags {tags}"
     )
 
@@ -101,9 +121,14 @@ class KubernetesClusterFeatureScenarioTest(ScenarioTest):
                 "location": CONFIG.get("KUBERNETESCLUSTER_FEATURE", "location"),
                 "tags": CONFIG.get("KUBERNETESCLUSTER_AGENTPOOL", "tags"),
                 "tagsUpdate": CONFIG.get("KUBERNETESCLUSTER_FEATURE", "tags_update"),
+                "options": CONFIG.get("KUBERNETESCLUSTER_FEATURE", "options"),
             }
         )
 
-    def test_kubernetesclusterfeature_scenario(self):
+    def test_kubernetesclusterfeature_scenario1(self):
         """test scenario for kubernetes cluster feature CRUD operations"""
         call_scenario1(self)
+
+    def test_kubernetesclusterfeature_scenario2(self):
+        """test scenario for kubernetes cluster feature create operation"""
+        call_scenario2(self)

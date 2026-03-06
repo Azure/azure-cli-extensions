@@ -28,10 +28,10 @@ def cleanup_scenario1(test):
     pass
 
 
-def call_scenario1(test):
-    """# Testcase: scenario1"""
+def call_scenario1a(test):
+    """# Testcase: scenario1a"""
     setup_scenario1(test)
-    step_create(
+    step_create_scenario1(
         test,
         checks=[
             test.check("name", "{name}"),
@@ -43,6 +43,20 @@ def call_scenario1(test):
     step_list_subscription(test, checks=[])
     step_list_resource_group(test, checks=[])
     step_delete(test, checks=[])
+    cleanup_scenario1(test)
+
+
+def call_scenario1b(test):
+    """# Testcase: scenario1b"""
+    setup_scenario1(test)
+    step_create_scenario2(
+        test,
+        checks=[
+            test.check("name", "{name}"),
+            test.check("provisioningState", "Succeeded"),
+        ],
+    )
+    step_update_scenario2(test, checks=[])
     cleanup_scenario1(test)
 
 
@@ -112,10 +126,17 @@ def cleanup_scenario4(test):
     pass
 
 
-def call_scenario4(test):
+def call_scenario4a(test):
     """# Testcase: scenario4 split of cluster deploy operation to work with the already created and deployed simulator"""
     setup_scenario4(test)
-    step_deploy_sim(test, checks=[])
+    step_deploy_sim_scenario1(test, checks=[])
+    cleanup_scenario4(test)
+
+
+def call_scenario4b(test):
+    """# Testcase: scenario4 split of cluster deploy operation to work with the already created and deployed simulator"""
+    setup_scenario4(test)
+    step_deploy_sim_scenario2(test, checks=[])
     cleanup_scenario4(test)
 
 
@@ -166,14 +187,14 @@ def cleanup_scenario7(test):
 def call_scenario7a(test):
     """# Testcase: scenario7 split of cluster update operation for user assigned identity, runtime protection configuration, secret-archive, strategy to work with the new cluster simulator"""
     setup_scenario7(test)
-    step_create(
+    step_create_scenario1(
         test,
         checks=[
             test.check("name", "{name}"),
             test.check("provisioningState", "Succeeded"),
         ],
     )
-    step_update(test, checks=[])
+    step_update_scenario1(test, checks=[])
     step_update_runtime_protection(test, checks=[])
     step_update_secret_archive_settings_scenario1(test, checks=[])
     step_update_strategy(test, checks=[])
@@ -199,10 +220,17 @@ def cleanup_scenario8(test):
     pass
 
 
-def call_scenario8(test):
+def call_scenario8a(test):
     """# Testcase: scenario8 split of cluster continue update version operation to work with the already created and deployed simulator"""
     setup_scenario7(test)
-    step_continue_update_version_sim(test, checks=[])
+    step_continue_update_version_sim_scenario1(test, checks=[])
+    cleanup_scenario8(test)
+
+
+def call_scenario8b(test):
+    """# Testcase: scenario8 split of cluster continue update version operation to work with the already created and deployed simulator"""
+    setup_scenario7(test)
+    step_continue_update_version_sim_scenario2(test, checks=[])
     cleanup_scenario8(test)
 
 
@@ -258,13 +286,30 @@ def call_scenario10(test):
     cleanup_scenario10(test)
 
 
-def step_create(test, checks=None):
+def setup_scenario11(test):
+    """Env setup_scenario11"""
+    pass
+
+
+def cleanup_scenario11(test):
+    """Env cleanup_scenario11"""
+    pass
+
+
+def call_scenario11(test):
+    """# Testcase: scenario11 inspect action"""
+    setup_scenario11(test)
+    step_update_inspect_secnario1(test, checks=[])
+    cleanup_scenario10(test)
+
+
+def step_create_scenario1(test, checks=None):
     """cluster create operation"""
     if checks is None:
         checks = []
     test.cmd(
         "az networkcloud cluster create --name {name} --resource-group {rg} --extended-location "
-        "name={extendedLocation} type={extendedLocationType} --location {location} "
+        "name={extendedLocation} type={extendedLocationType} --location {location} --kind {kind} "
         "--cluster-location {clusterLocation} "
         "--cluster-sp application-id={applicationId} password={password} principal-id={principalId} "
         "tenant-id={tenantId} --cluster-type {clusterType} --cluster-version {clusterVersion} "
@@ -282,13 +327,38 @@ def step_create(test, checks=None):
     )
 
 
+def step_create_scenario2(test, checks=None):
+    """cluster create operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud cluster create --name {name} --resource-group {rg} --extended-location "
+        "name={extendedLocation} type={extendedLocationType} --location {location} --kind {kind} "
+        "--cluster-location {clusterLocation} "
+        "--cluster-sp application-id={applicationId} password={password} principal-id={principalId} "
+        "tenant-id={tenantId} --cluster-type {clusterTypeMultiRack} --cluster-version {clusterVersion} "
+        "--compute-dt type={thresholdType} grouping={thresholdGrouping} value={thresholdValue} "
+        "--network-fabric-id {networkFabricId} --managed-resource-group-configuration name={mrgGroupName} location={mrgGroupLocation} "
+        "--aggregator-or-single-rack-definition network-rack-id={networkRackId} rack-sku-id={rackSkuId} "
+        " rack-serial-number={rackSerialNumber} "
+        " rack-location={rackLocation} "
+        " availability-zone={availabilityZone} "
+        " storage-appliance-configuration-data={storageApplianceConfigurationData} "
+        " bare-metal-machine-configuration-data={bareMetalMachineConfigurationData} "
+        "--tags {tags} --sa-settings identity-resource-id={miUserAssigned} identity-type={identityType} vault-uri={containerUrl} "
+        "--update-strategy strategy-type={strategyType} threshold-type={strategyThresholdType} threshold-value={strategyThresholdValue} max-unavailable={maxUnavailable} wait-time-minutes={waitTimeMinutes} "
+        "--compute-rack-definitions {computeRackDefinitions} ",
+        checks=checks,
+    )
+
+
 def step_json_create(test, checks=None):
     """cluster create operation"""
     if checks is None:
         checks = []
     test.cmd(
         "az networkcloud cluster create --name {name} --resource-group {rg} --extended-location "
-        "name={extendedLocation} type={extendedLocationType} --location {location} "
+        "name={extendedLocation} type={extendedLocationType} --location {location} --kind {kind} "
         "--cluster-location {clusterLocation} --mrg name={mrgGroupName} location={mrgGroupLocation} "
         "--cluster-service-principal application-id={applicationId} password={password} principal-id={principalId} "
         "tenant-id={tenantId} --cluster-type {clusterType} --cluster-version {clusterVersion} "
@@ -306,7 +376,7 @@ def step_create_with_uai(test, checks=None):
         checks = []
     test.cmd(
         "az networkcloud cluster create --cluster-name {name} --resource-group {rg} --extended-location "
-        "name={extendedLocation} type={extendedLocationType} --location {location} "
+        "name={extendedLocation} type={extendedLocationType} --location {location} --kind {kind} "
         "--ao-settings analytics-workspace-id={analyticsWorkspaceId} "
         "--cluster-location {clusterLocation} --co-settings container-url={containerUrl} "
         " identity-resource-id={uaiResourceId} identity-type={identityType} "
@@ -327,7 +397,7 @@ def step_create_with_overrides(test, checks=None):
         checks = []
     test.cmd(
         "az networkcloud cluster create --name {name} --resource-group {rg} --extended-location "
-        "name={extendedLocation} type={extendedLocationType} --location {location} "
+        "name={extendedLocation} type={extendedLocationType} --location {location} --kind {kind} "
         "--analytics-output-settings analytics-workspace-id={analyticsWorkspaceId} "
         "--cluster-location {clusterLocation} --command-output-settings container-url={containerUrl} "
         " identity-resource-id={uaiResourceId} identity-type={identityType} overrides={storageOverrides} "
@@ -344,12 +414,22 @@ def step_create_with_overrides(test, checks=None):
 
 # Cluster deploy action takes hours and requires at the moment a real lab or updates to the simulator to support it.
 # The current test will execute the deploy command in async mode.
-def step_deploy_sim(test, checks=None):
+def step_deploy_sim_scenario1(test, checks=None):
     """cluster deploy operation"""
     if checks is None:
         checks = []
     test.cmd(
         "az networkcloud cluster deploy --no-wait --name {nameDeploy} --resource-group {rgDeploy} --skip-validations-for-machines {skipValidationForMachines}",
+        checks=checks,
+    )
+
+
+def step_deploy_sim_scenario2(test, checks=None):
+    """cluster deploy operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud cluster deploy --no-wait --cluster-name {nameDeploy} --resource-group {rgDeploy} --skip-val-machines {skipValidationForMachines}",
         checks=checks,
     )
 
@@ -382,13 +462,24 @@ def step_list_subscription(test, checks=None):
     test.cmd("az networkcloud cluster list")
 
 
-def step_update(test, checks=None):
+def step_update_scenario1(test, checks=None):
     """cluster update operation"""
     if checks is None:
         checks = []
     test.cmd(
         "az networkcloud cluster update --name {name} --cluster-location {clusterLocationUpdate}"
-        " --tags {tagsUpdate} --resource-group {rg}"
+        " --tags {tagsUpdate} --resource-group {rg} "
+    )
+
+
+def step_update_scenario2(test, checks=None):
+    """cluster update operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud cluster update --name {name} --cluster-location {clusterLocationUpdate}"
+        " --tags {tagsUpdate} --resource-group {rg} "
+        "--compute-rack-definitions {computeRackDefinitions} "
     )
 
 
@@ -403,12 +494,21 @@ def step_update_version_sim(test, checks=None):
     )
 
 
-def step_continue_update_version_sim(test, checks=None):
+def step_continue_update_version_sim_scenario1(test, checks=None):
     """cluster continue-update-version operation"""
     if checks is None:
         checks = []
     test.cmd(
         "az networkcloud cluster continue-update-version --name {nameClusterUpdate} --resource-group {rgClusterUpdate} --machine-group-targeting-mode {mgtMode} --no-wait"
+    )
+
+
+def step_continue_update_version_sim_scenario2(test, checks=None):
+    """cluster continue-update-version operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud cluster continue-update-version --cluster-name {nameClusterUpdate} --resource-group {rgClusterUpdate} --mode {mgtMode} --no-wait"
     )
 
 
@@ -537,6 +637,18 @@ def step_update_vulnerability_scanning_settings_scenario2(test, checks=None):
     )
 
 
+def step_update_inspect_secnario1(test, checks=None):
+    """ClusterManager inspect operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud cluster inspect --name {nameClusterUpdate} "
+        "--resource-group {rg} "
+        "--additional-actions {additionalActions} "
+        "--filter-devices {filterDevices}"
+    )
+
+
 class ClusterScenarioTest(ScenarioTest):
     """Cluster scenario test"""
 
@@ -544,6 +656,7 @@ class ClusterScenarioTest(ScenarioTest):
         super().__init__(*args, **kwargs)
         self.kwargs.update(
             {
+                "kind": CONFIG.get("CLUSTER", "kind"),
                 "name": self.create_random_name(prefix="cli-test-cluster-", length=24),
                 "extendedLocation": CONFIG.get("CLUSTER", "extended_location"),
                 "extendedLocationType": CONFIG.get("CLUSTER", "extended_location_type"),
@@ -629,6 +742,11 @@ class ClusterScenarioTest(ScenarioTest):
                 "storageOverrides": CONFIG.get("CLUSTER", "storage_overrides"),
                 "mrgGroupName": CONFIG.get("CLUSTER", "mrg_name"),
                 "mrgGroupLocation": CONFIG.get("CLUSTER", "mrg_location"),
+                "computeRackDefinitions": os.environ.get("AAZ_EXT_DIR", ".")
+                + CONFIG.get("CLUSTER", "compute_rack_definitions_directory"),
+                "clusterTypeMultiRack": CONFIG.get("CLUSTER", "cluster_type_multirack"),
+                "additionalActions": CONFIG.get("CLUSTER", "inspect_actions"),
+                "filterDevices": CONFIG.get("CLUSTER", "filter_devices"),
             }
         )
 
@@ -639,9 +757,20 @@ class ClusterScenarioTest(ScenarioTest):
         parameter_name="rg",
         random_name_length=24,
     )
-    def test_cluster_scenario1(self):
+    def test_cluster_scenario1a(self):
         """test scenario for Cluster create operations"""
-        call_scenario1(self)
+        call_scenario1a(self)
+
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(
+        name_prefix="clitest_rg"[:7],
+        key="rg",
+        parameter_name="rg",
+        random_name_length=24,
+    )
+    def test_cluster_scenario1b(self):
+        """test scenario for Cluster create operations"""
+        call_scenario1b(self)
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(
@@ -665,9 +794,13 @@ class ClusterScenarioTest(ScenarioTest):
         """test scenario for Cluster create operation with user assigned identity"""
         call_scenario3(self)
 
-    def test_cluster_scenario4(self):
+    def test_cluster_scenario4a(self):
         """test scenario for Cluster deploy operation"""
-        call_scenario4(self)
+        call_scenario4a(self)
+
+    def test_cluster_scenario4b(self):
+        """test scenario for Cluster deploy operation"""
+        call_scenario4b(self)
 
     # scenario5 will use the existing cluster resources created outside of the testing framework because of the API limitations
     def test_cluster_scenario5(self):
@@ -693,9 +826,13 @@ class ClusterScenarioTest(ScenarioTest):
         """test scenario for Cluster update operation for user assigned identity, runtime protection configuration, secret-archive, strategy"""
         call_scenario7b(self)
 
-    def test_cluster_scenario8(self):
+    def test_cluster_scenario8a(self):
         """test scenario for Cluster continue update version operation"""
-        call_scenario8(self)
+        call_scenario8a(self)
+
+    def test_cluster_scenario8b(self):
+        """test scenario for Cluster continue update version operation"""
+        call_scenario8b(self)
 
     def test_cluster_scenario9a(self):
         """test scenario for Cluster vulnerablity setting update operation"""
@@ -715,3 +852,7 @@ class ClusterScenarioTest(ScenarioTest):
     def test_cluster_scenario10(self):
         """test scenario for Cluster create and update operations with storage overrides"""
         call_scenario10(self)
+
+    def test_cluster_scenario11(self):
+        """test scenario for Cluster Inspect"""
+        call_scenario11(self)
