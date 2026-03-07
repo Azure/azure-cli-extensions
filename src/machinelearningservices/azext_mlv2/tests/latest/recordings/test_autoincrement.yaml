@@ -1,0 +1,733 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.7.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.10.11 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/environments/test-environment-000004?api-version=0000-00-00
+  response:
+    body:
+      string: '{"error": {"code": "UserError", "message": "No environment exists for
+        name: test-environment-000004, version: , label: ", "details": [], "additionalInfo":
+        [{"type": "ComponentName", "info": {"value": "managementfrontend"}}, {"type":
+        "Correlation", "info": {"value": {"operation": "f7bb4392f7f8d7f8a1e6200253f0c72b",
+        "request": "13a7d235a7433b97"}}}, {"type": "Environment", "info": {"value":
+        "eastus"}}, {"type": "Location", "info": {"value": "eastus"}}, {"type": "Time",
+        "info": {"value": "2023-04-27T16:38:00.0995215+00:00"}}, {"type": "InnerError",
+        "info": {"value": {"code": "NotFoundError", "innerError": null}}}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '620'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 27 Apr 2023 16:37:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - error
+      x-request-time:
+      - '0.058'
+    status:
+      code: 404
+      message: 'No environment exists for name: test-environment-000004, version:
+        , label:'
+- request:
+    body: '{"properties": {"description": "This is description", "isAnonymous": false,
+      "isArchived": false, "condaFile": "channels:\n- conda-forge\ndependencies:\n-
+      python=3.8\n- pip\n- pip:\n  - nbgitpuller\n  - sphinx-gallery\n  - pandas\n  -
+      matplotlib\nname: example-environment\n", "image": "mcr.microsoft.com/azureml/openmpi3.1.2-ubuntu18.04"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '339'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.7.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.10.11 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/environments/000000000000000/versions/1?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/environments/test-environment-000004/versions/1",
+        "name": "1", "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
+        "properties": {"description": "This is description", "tags": {}, "properties":
+        {}, "isArchived": false, "isAnonymous": false, "autoDeleteSetting": null,
+        "environmentType": "UserCreated", "image": "mcr.microsoft.com/azureml/openmpi3.1.2-ubuntu18.04",
+        "condaFile": "{\n  \"channels\": [\n    \"conda-forge\"\n  ],\n  \"dependencies\":
+        [\n    \"python=3.8\",\n    \"pip\",\n    {\n      \"pip\": [\n        \"nbgitpuller\",\n        \"sphinx-gallery\",\n        \"pandas\",\n        \"matplotlib\"\n      ]\n    }\n  ],\n  \"name\":
+        \"example-environment\"\n}", "osType": "Linux", "autoRebuild": "Disabled",
+        "provisioningState": "Succeeded", "stage": "Development", "intellectualProperty":
+        null}, "systemData": {"createdAt": "2023-04-27T16:38:00.4914018+00:00", "createdBy":
+        "Diondra Peck", "createdByType": "User", "lastModifiedAt": "2023-04-27T16:38:00.4914018+00:00",
+        "lastModifiedBy": "Diondra Peck", "lastModifiedByType": "User"}}'
+    headers:
+      build-id:
+      - ca4
+      cache-control:
+      - no-cache
+      content-length:
+      - '1233'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 27 Apr 2023 16:38:11 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dipeck-rg-04242023/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/environments/test-environment-000004/versions/1?api-version=2023-04-01-preview
+      log-url:
+      - https://eusmanaged165.blob.core.windows.net/eb8d4eccb6784809b9f6973d5c6cda71-vtyxzhbns8/logs/ca4/rawtext.log?sv=2018-03-28&sr=b&sig=***&se=2023-04-27T18%3A18%3A02Z&sp=r
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-4401c9d5ae20429222dc1d58c34d8320-fbfc49ab23587bc0-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-eastus-01
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '11.039'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.7.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.10.11 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/codes/000000000000000/versions?api-version=0000-00-00&hash=4e52a86566310f35d5af74fd1150f3fff7cd3d8c689be98febd72151eed53fd7&hashVersion=202208
+  response:
+    body:
+      string: '{"value": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/codes/9c1e70a8-72d9-49d8-a51e-dd711ab1f769/versions/1",
+        "name": "1", "type": "Microsoft.MachineLearningServices/workspaces/codes/versions",
+        "properties": {"description": null, "tags": {}, "properties": {"hash_sha256":
+        "4e52a86566310f35d5af74fd1150f3fff7cd3d8c689be98febd72151eed53fd7", "hash_version":
+        "202208"}, "isArchived": false, "isAnonymous": false, "codeUri": "https://saffdddxt7cx3fo.blob.core.windows.net:443/1b153698-c-0ad95c82-f36b-583e-84bf-cef7bf341c57/python",
+        "provisioningState": "Succeeded"}, "systemData": {"createdAt": "2023-04-27T16:27:05.7071878+00:00",
+        "createdBy": "Diondra Peck", "createdByType": "User", "lastModifiedAt": "2023-04-27T16:27:05.7071878+00:00",
+        "lastModifiedBy": "Diondra Peck", "lastModifiedByType": "User"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '921'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 27 Apr 2023 16:38:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-d3e87b1f01d3f5fcf1bae5a041341edc-b257e5ef004ec6bf-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.145'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.7.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.10.11 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/codes/000000000000000/versions/1?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/codes/9c1e70a8-72d9-49d8-a51e-dd711ab1f769/versions/1",
+        "name": "1", "type": "Microsoft.MachineLearningServices/workspaces/codes/versions",
+        "properties": {"description": null, "tags": {}, "properties": {"hash_sha256":
+        "4e52a86566310f35d5af74fd1150f3fff7cd3d8c689be98febd72151eed53fd7", "hash_version":
+        "202208"}, "isArchived": false, "isAnonymous": false, "codeUri": "https://saffdddxt7cx3fo.blob.core.windows.net:443/1b153698-c-0ad95c82-f36b-583e-84bf-cef7bf341c57/python",
+        "provisioningState": "Succeeded"}, "systemData": {"createdAt": "2023-04-27T16:27:05.7071878+00:00",
+        "createdBy": "Diondra Peck", "createdByType": "User", "lastModifiedAt": "2023-04-27T16:27:05.7071878+00:00",
+        "lastModifiedBy": "Diondra Peck", "lastModifiedByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '908'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 27 Apr 2023 16:38:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-7c2c9e1a303d3906a61ee08e083bcf76-ed5f1fd66ea2aaf7-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.094'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.7.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.10.11 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/components/000000000000000?api-version=0000-00-00
+  response:
+    body:
+      string: '{"error": {"code": "UserError", "message": "Not found component test_component_000012.",
+        "details": [], "additionalInfo": [{"type": "ComponentName", "info": {"value":
+        "managementfrontend"}}, {"type": "Correlation", "info": {"value": {"operation":
+        "44fd9ffcca1a000ef2d7ad30d366a574", "request": "238246ca2e1cdecc"}}}, {"type":
+        "Environment", "info": {"value": "eastus"}}, {"type": "Location", "info":
+        {"value": "eastus"}}, {"type": "Time", "info": {"value": "2023-04-27T16:38:14.7038646+00:00"}},
+        {"type": "InnerError", "info": {"value": {"code": "NotFound", "innerError":
+        {"code": "ComponentNotFound", "innerError": null}}}}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '627'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 27 Apr 2023 16:38:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - error
+      x-request-time:
+      - '0.173'
+    status:
+      code: 404
+      message: Not found component test_component_000012.
+- request:
+    body: '{"properties": {"properties": {}, "tags": {}, "isAnonymous": false, "isArchived":
+      false, "componentSpec": {"command": "echo ${{outputs.output_path}}", "code":
+      "azureml:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dipeck-rg-04242023/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/codes/9c1e70a8-72d9-49d8-a51e-dd711ab1f769/versions/1",
+      "environment": "azureml:AzureML-Minimal:2", "name": "test_component_000012",
+      "$schema": "https://azuremlschemas.azureedge.net/development/commandComponent.schema.json",
+      "is_deterministic": true, "outputs": {"output_path": {"type": "uri_folder"}},
+      "type": "command", "_source": "YAML.COMPONENT"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '675'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.7.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.10.11 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/components/000000000000000/versions/1?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/components/test_component_000012/versions/1",
+        "name": "1", "type": "Microsoft.MachineLearningServices/workspaces/components/versions",
+        "properties": {"description": null, "tags": {}, "properties": {}, "isArchived":
+        false, "isAnonymous": false, "componentSpec": {"$schema": "https://azuremlschemas.azureedge.net/development/commandComponent.schema.json",
+        "name": "test_component_000012", "version": "1", "is_deterministic": "True",
+        "type": "command", "outputs": {"output_path": {"type": "uri_folder"}}, "code":
+        "azureml:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/codes/9c1e70a8-72d9-49d8-a51e-dd711ab1f769/versions/1",
+        "environment": "azureml://registries/azureml/environments/AzureML-Minimal/versions/2",
+        "resources": {"instance_count": "1"}, "command": "echo ${{outputs.output_path}}"}},
+        "systemData": {"createdAt": "2023-04-27T16:38:15.9565169+00:00", "createdBy":
+        "Diondra Peck", "createdByType": "User", "lastModifiedAt": "2023-04-27T16:38:16.0382955+00:00",
+        "lastModifiedBy": "Diondra Peck", "lastModifiedByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1296'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 27 Apr 2023 16:38:16 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dipeck-rg-04242023/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/components/test_component_000012/versions/1?api-version=2022-10-01
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-8ad13544ca9779ee9ae5fb4b49136b58-9090ec69b7a293e6-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-eastus-01
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.972'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.7.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.10.11 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/models/00000000-0000-0000-0000-000000000000?api-version=0000-00-00
+  response:
+    body:
+      string: '{"error": {"code": "UserError", "message": "The specified resource
+        was not found.", "details": [{"code": "ModelNotFound", "message": "Model container
+        with name: test-model-000003 not found.", "details": [], "additionalInfo":
+        []}], "additionalInfo": [{"type": "ComponentName", "info": {"value": "managementfrontend"}},
+        {"type": "Correlation", "info": {"value": {"operation": "6dfbc7462cfd1eb62282b161eb06597c",
+        "request": "8a7248136e49af08"}}}, {"type": "Environment", "info": {"value":
+        "eastus"}}, {"type": "Location", "info": {"value": "eastus"}}, {"type": "Time",
+        "info": {"value": "2023-04-27T16:38:16.8801051+00:00"}}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '624'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 27 Apr 2023 16:38:16 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - error
+      x-request-time:
+      - '0.095'
+    status:
+      code: 404
+      message: The specified resource was not found.
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.7.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.10.11 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/datastores/workspaceblobstore?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/datastores/workspaceblobstore",
+        "name": "workspaceblobstore", "type": "Microsoft.MachineLearningServices/workspaces/datastores",
+        "properties": {"description": null, "tags": null, "properties": null, "isDefault":
+        true, "credentials": {"credentialsType": "AccountKey"}, "datastoreType": "AzureBlob",
+        "accountName": "saffdddxt7cx3fo", "containerName": "azureml-blobstore-1b153698-cf4d-467d-8bdc-e0982bdc06fb",
+        "endpoint": "core.windows.net", "protocol": "https", "serviceDataAccessAuthIdentity":
+        "WorkspaceSystemAssignedIdentity"}, "systemData": {"createdAt": "2023-04-24T19:50:14.7943758+00:00",
+        "createdBy": "779301c0-18b2-4cdc-801b-a0a3368fee0a", "createdByType": "Application",
+        "lastModifiedAt": "2023-04-24T19:50:15.3265461+00:00", "lastModifiedBy": "779301c0-18b2-4cdc-801b-a0a3368fee0a",
+        "lastModifiedByType": "Application"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '989'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 27 Apr 2023 16:38:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-668898c1bfee9b753c771014d881ea31-6844ad8f6be748fb-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.150'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.7.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.10.11 (Windows-10-10.0.19045-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/datastores/workspaceblobstore/listSecrets?api-version=0000-00-00
+  response:
+    body:
+      string: '{"secretsType": "AccountKey", "key": "ba3a874278ab9921e0d66feaa172e6bc556d16d13aab56f8c451729edc070332"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '104'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 27 Apr 2023 16:38:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-144043f503cadc481d5d6baf97ea02cf-2ed3f82547fc7aa5-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus-01
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.221'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/xml
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-storage-blob/12.15.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+      x-ms-date:
+      - Thu, 27 Apr 2023 16:38:18 GMT
+      x-ms-version:
+      - '2021-12-02'
+    method: HEAD
+    uri: https://xxxxxxxxxxxxxxxxxxxxxx.blob.core.windows.net/azureml-blobstore-00000000-0000-0000-0000-000000000000/xxxxx/00000000-0000-0000-0000-00000000000/model.pkl
+  response:
+    body:
+      string: ''
+    headers:
+      date:
+      - Thu, 27 Apr 2023 16:38:19 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      transfer-encoding:
+      - chunked
+      x-ms-error-code:
+      - BlobNotFound
+      x-ms-version:
+      - '2021-12-02'
+    status:
+      code: 404
+      message: The specified blob does not exist.
+- request:
+    body: "hello\r\n"
+    headers:
+      Accept:
+      - application/xml
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '7'
+      Content-Type:
+      - application/octet-stream
+      If-None-Match:
+      - '*'
+      User-Agent:
+      - azsdk-python-storage-blob/12.15.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+      x-ms-blob-type:
+      - BlockBlob
+      x-ms-date:
+      - Thu, 27 Apr 2023 16:38:19 GMT
+      x-ms-version:
+      - '2021-12-02'
+    method: PUT
+    uri: https://xxxxxxxxxxxxxxxxxxxxxx.blob.core.windows.net/azureml-blobstore-00000000-0000-0000-0000-000000000000/xxxxx/00000000-0000-0000-0000-00000000000/model.pkl
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      date:
+      - Thu, 27 Apr 2023 16:38:20 GMT
+      etag:
+      - '"0x8DB473DCFAF8C61"'
+      last-modified:
+      - Thu, 27 Apr 2023 16:38:20 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-content-crc64:
+      - X7Wo1zTeigw=
+      x-ms-request-server-encrypted:
+      - 'true'
+      x-ms-version:
+      - '2021-12-02'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/xml
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - azsdk-python-storage-blob/12.15.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+      x-ms-date:
+      - Thu, 27 Apr 2023 16:38:19 GMT
+      x-ms-meta-name:
+      - test-model-000003
+      x-ms-meta-upload_status:
+      - completed
+      x-ms-meta-version:
+      - '1'
+      x-ms-version:
+      - '2021-12-02'
+    method: PUT
+    uri: https://xxxxxxxxxxxxxxxxxxxxxx.blob.core.windows.net/azureml-blobstore-00000000-0000-0000-0000-000000000000/xxxxx/00000000-0000-0000-0000-00000000000/model.pkl?se=0000-00-00T00&sp=rt&sv=0000-00-00&sr=b&sig=000000000000000
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      date:
+      - Thu, 27 Apr 2023 16:38:20 GMT
+      etag:
+      - '"0x8DB473DCFDA189E"'
+      last-modified:
+      - Thu, 27 Apr 2023 16:38:20 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-request-server-encrypted:
+      - 'true'
+      x-ms-version:
+      - '2021-12-02'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"properties": {}, "tags": {}, "isAnonymous": false, "isArchived":
+      false, "modelType": "custom_model", "modelUri": "azureml://subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/dipeck-rg-04242023/workspaces/sdk_vnext_cli/datastores/workspaceblobstore/paths/LocalUpload/5b90126f4721a98e2b4fcda9204a387e/model.pkl"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '344'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.7.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.10.11 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/models/00000000-0000-0000-0000-000000000000/versions/1?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/models/test-model-000003/versions/1",
+        "name": "1", "type": "Microsoft.MachineLearningServices/workspaces/models/versions",
+        "properties": {"description": null, "tags": {}, "properties": {}, "isArchived":
+        false, "isAnonymous": false, "autoDeleteSetting": null, "flavors": {}, "modelType":
+        "custom_model", "modelUri": "azureml://subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/workspaces/sdk_vnext_cli/datastores/workspaceblobstore/paths/LocalUpload/5b90126f4721a98e2b4fcda9204a387e/model.pkl",
+        "jobName": null, "provisioningState": "Succeeded", "stage": "Development",
+        "intellectualProperty": null}, "systemData": {"createdAt": "2023-04-27T16:38:22.1074312+00:00",
+        "createdBy": "Diondra Peck", "createdByType": "User", "lastModifiedAt": "2023-04-27T16:38:22.1074312+00:00",
+        "lastModifiedBy": "Diondra Peck", "lastModifiedByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1030'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 27 Apr 2023 16:38:22 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dipeck-rg-04242023/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/models/test-model-000003/versions/1?api-version=2023-04-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-2dff2a2e835172d2d59de9a7036c8ae4-d715485c8bcee091-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-eastus-02
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.894'
+    status:
+      code: 201
+      message: Created
+version: 1

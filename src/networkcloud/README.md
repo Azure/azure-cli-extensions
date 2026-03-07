@@ -1,6 +1,6 @@
-# Azure CLI Networkcloud Extension #
+# Microsoft Azure CLI 'networkcloud' Extension #
 
-This is an extension to Azure CLI to manage Azure Operator Nexus - Network Cloud on-premises clusters and their resources, such as racks, bare metal hosts, virtual machines, workload networks and more.
+This is an extension to Azure CLI to manage Microsoft.NetworkCloud on-premises clusters and their resources, such as racks, bare metal hosts, virtual machines, workload networks and more.
 
 ## How to use ##
 

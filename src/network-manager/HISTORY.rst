@@ -2,6 +2,18 @@
 
 Release History
 ===============
+3.0.1
++++++
+* Add NG of type Subnet support for routing config
+
+3.0.0
++++++
+* Add new parameter connect-capabilities to cmd `az network manager connect-config`
+
+2.0.1
++++++
+* Fix the post commit commands for AVNM configuration (All config types)
+
 2.0.0
 +++++
 * Modify cmd `az network manager routing-config`

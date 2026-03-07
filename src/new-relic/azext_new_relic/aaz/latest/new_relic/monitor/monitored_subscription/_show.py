@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "new-relic monitor monitored-subscription show",
 )
 class Show(AAZCommand):
-    """Get the subscriptions currently being monitored by the NewRelic monitor resource.
+    """Get detailed information about all subscriptions currently being monitored by the New Relic monitor resource.
 
     :example: List the subscriptions currently being monitored by the NewRelic monitor resource.
         az new-relic monitor monitored-subscription show --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor --configuration-name default

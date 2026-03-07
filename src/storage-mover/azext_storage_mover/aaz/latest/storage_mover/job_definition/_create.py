@@ -22,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-07-01",
+        "version": "2025-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/projects/{}/jobdefinitions/{}", "2024-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/projects/{}/jobdefinitions/{}", "2025-07-01"],
         ]
     }
 
@@ -82,6 +82,13 @@ class Create(AAZCommand):
             options=["--description"],
             arg_group="Properties",
             help="A description for the Job Definition.",
+        )
+        _args_schema.job_type = AAZStrArg(
+            options=["--job-type"],
+            arg_group="Properties",
+            help="The type of the Job.",
+            default="OnPremToCloud",
+            enum={"CloudToCloud": "CloudToCloud", "OnPremToCloud": "OnPremToCloud"},
         )
         _args_schema.source_name = AAZStrArg(
             options=["--source-name"],
@@ -180,7 +187,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-07-01",
+                    "api-version", "2025-07-01",
                     required=True,
                 ),
             }
@@ -212,6 +219,7 @@ class Create(AAZCommand):
                 properties.set_prop("agentName", AAZStrType, ".agent_name")
                 properties.set_prop("copyMode", AAZStrType, ".copy_mode", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("description", AAZStrType, ".description")
+                properties.set_prop("jobType", AAZStrType, ".job_type")
                 properties.set_prop("sourceName", AAZStrType, ".source_name", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("sourceSubpath", AAZStrType, ".source_subpath")
                 properties.set_prop("targetName", AAZStrType, ".target_name", typ_kwargs={"flags": {"required": True}})
@@ -267,6 +275,9 @@ class Create(AAZCommand):
                 flags={"required": True},
             )
             properties.description = AAZStrType()
+            properties.job_type = AAZStrType(
+                serialized_name="jobType",
+            )
             properties.latest_job_run_name = AAZStrType(
                 serialized_name="latestJobRunName",
                 flags={"read_only": True},
@@ -294,6 +305,9 @@ class Create(AAZCommand):
             properties.source_subpath = AAZStrType(
                 serialized_name="sourceSubpath",
             )
+            properties.source_target_map = AAZObjectType(
+                serialized_name="sourceTargetMap",
+            )
             properties.target_name = AAZStrType(
                 serialized_name="targetName",
                 flags={"required": True},
@@ -304,6 +318,51 @@ class Create(AAZCommand):
             )
             properties.target_subpath = AAZStrType(
                 serialized_name="targetSubpath",
+            )
+
+            source_target_map = cls._schema_on_200.properties.source_target_map
+            source_target_map.value = AAZListType(
+                flags={"read_only": True},
+            )
+
+            value = cls._schema_on_200.properties.source_target_map.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.source_target_map.value.Element
+            _element.source_endpoint = AAZObjectType(
+                serialized_name="sourceEndpoint",
+                flags={"required": True},
+            )
+            _element.target_endpoint = AAZObjectType(
+                serialized_name="targetEndpoint",
+                flags={"required": True},
+            )
+
+            source_endpoint = cls._schema_on_200.properties.source_target_map.value.Element.source_endpoint
+            source_endpoint.properties = AAZObjectType()
+
+            properties = cls._schema_on_200.properties.source_target_map.value.Element.source_endpoint.properties
+            properties.aws_s3_bucket_id = AAZStrType(
+                serialized_name="awsS3BucketId",
+            )
+            properties.name = AAZStrType()
+            properties.source_endpoint_resource_id = AAZStrType(
+                serialized_name="sourceEndpointResourceId",
+            )
+
+            target_endpoint = cls._schema_on_200.properties.source_target_map.value.Element.target_endpoint
+            target_endpoint.properties = AAZObjectType()
+
+            properties = cls._schema_on_200.properties.source_target_map.value.Element.target_endpoint.properties
+            properties.azure_storage_account_resource_id = AAZStrType(
+                serialized_name="azureStorageAccountResourceId",
+            )
+            properties.azure_storage_blob_container_name = AAZStrType(
+                serialized_name="azureStorageBlobContainerName",
+            )
+            properties.name = AAZStrType()
+            properties.target_endpoint_resource_id = AAZStrType(
+                serialized_name="targetEndpointResourceId",
             )
 
             system_data = cls._schema_on_200.system_data

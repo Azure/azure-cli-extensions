@@ -9,3 +9,52 @@
 # pylint: disable=too-many-lines
 
 from knack.help_files import helps  # pylint: disable=unused-import
+
+
+helps['neon postgres endpoint create'] = """
+type: command
+short-summary: Create a new Neon PostgreSQL endpoint
+examples:
+  - name: Create a read-only endpoint
+    text: |
+        az neon postgres endpoint create --resource-group myResourceGroup --organization-name myOrg --project-name myProject --branch-name main --endpoint-name myEndpoint --endpoint-type read_only
+  - name: Create a read-write endpoint with custom compute settings
+    text: |
+        az neon postgres endpoint create --resource-group myResourceGroup --organization-name myOrg --project-name myProject --branch-name main --endpoint-name myEndpoint --endpoint-type read_write --compute-name custom-compute --size '{"autoscaling-limit-min-cu": 0.25, "autoscaling-limit-max-cu": 4}'
+"""
+
+helps['neon postgres get-postgres-version'] = """
+type: command
+short-summary: Get available PostgreSQL versions for Neon
+examples:
+  - name: List all available PostgreSQL versions
+    text: |
+        az neon postgres get-postgres-version --resource-group myResourceGroup
+  - name: Get information for a specific PostgreSQL version
+    text: |
+        az neon postgres get-postgres-version --resource-group myResourceGroup --version 15
+"""
+
+helps['neon postgres neon-role create'] = """
+type: command
+short-summary: Create a new database role in a Neon PostgreSQL branch
+examples:
+  - name: Create a new database role
+    text: |
+        az neon postgres neon-role create --resource-group myResourceGroup --organization-name myOrg --project-name myProject --branch-name main --neon-role-name myRole
+  - name: Create a role with specific attributes
+    text: |
+        az neon postgres neon-role create --resource-group myResourceGroup --organization-name myOrg --project-name myProject --branch-name main --neon-role-name myRole --attributes '[{"name":"roleType","value":"admin"}]'
+"""
+
+helps['neon postgres neon-database create'] = """
+type: command
+short-summary: Create a new database in a Neon PostgreSQL branch
+examples:
+  - name: Create a new database with a specific owner
+    text: |
+        az neon postgres neon-database create --resource-group myResourceGroup --organization-name myOrg --project-name myProject --branch-name main --neon-database-name myDatabase --owner-name myRole
+  - name: Create a database with custom attributes
+    text: |
+        az neon postgres neon-database create --resource-group myResourceGroup --organization-name myOrg --project-name myProject --branch-name main --neon-database-name myDatabase --owner-name myRole --attributes '[{"name":"encoding","value":"UTF8"}]'
+"""

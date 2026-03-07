@@ -4,6 +4,9 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 
+import json
+import argparse
+import sys
 from knack.arguments import CLIArgumentType
 from azext_confcom._validators import (
     validate_params_file,
@@ -23,6 +26,7 @@ from azext_confcom._validators import (
     validate_fragment_json,
     validate_fragment_json_policy,
     validate_image_target,
+    validate_stdio,
     validate_upload_fragment,
     validate_infrastructure_svn,
 )
@@ -41,6 +45,38 @@ def load_arguments(self, _):
     with self.argument_context("confcom") as c:
         c.argument("tags", tags_type)
         c.argument("confcom_name", confcom_name_type, options_list=["--name", "-n"])
+
+    with self.argument_context("confcom fragment attach") as c:
+        c.positional(
+            "signed_fragment",
+            nargs='?',
+            type=argparse.FileType('rb'),
+            default=sys.stdin.buffer,
+            help="Signed fragment to attach",
+        )
+        c.argument(
+            "manifest_tag",
+            help="Manifest tag for the fragment",
+        )
+        c.argument(
+            "platform",
+            options_list=("--platform",),
+            required=False,
+            type=str,
+            help="The target platform to attach the fragment to in the format os/architecture. If not specified, this will be auto-detected from the registry.",
+        )
+    with self.argument_context("confcom fragment push") as c:
+        c.positional(
+            "signed_fragment",
+            nargs='?',
+            type=argparse.FileType('rb'),
+            default=sys.stdin.buffer,
+            help="Signed fragment to push",
+        )
+        c.argument(
+            "manifest_tag",
+            help="Manifest tag for the fragment",
+        )
 
     with self.argument_context("confcom acipolicygen") as c:
         c.argument(
@@ -105,9 +141,15 @@ def load_arguments(self, _):
         )
         c.argument(
             "disable_stdio",
-            options_list=("--disable-stdio",),
-            required=False,
+            action="store_true",
             help="Disabling container stdio will disable the ability to see the output of the container in the terminal for Confidential ACI",
+            validator=validate_stdio,
+        )
+        c.argument(
+            "enable_stdio",
+            action="store_true",
+            help="Enable the standard io streams to leave the container",
+            validator=validate_stdio,
         )
         c.argument(
             "diff",
@@ -172,7 +214,6 @@ def load_arguments(self, _):
             required=False,
             help="Omit the id field in the policy. This is helpful if the image being used will be present in multiple registries and used interchangeably.",
         )
-
         c.argument(
             "include_fragments",
             options_list=("--include-fragments", "-f"),
@@ -191,6 +232,14 @@ def load_arguments(self, _):
             options_list=("--exclude-default-fragments", "-e"),
             required=False,
             help="Exclude default fragments in the generated policy",
+        )
+        c.argument(
+            "container_definitions",
+            options_list=['--with-containers'],
+            action='append',
+            type=json.loads,
+            required=False,
+            help='Container definitions to include in the policy'
         )
 
     with self.argument_context("confcom acifragmentgen") as c:
@@ -266,7 +315,7 @@ def load_arguments(self, _):
             "fragment_path",
             options_list=("--fragment-path", "-p"),
             required=False,
-            help="Path to a policy fragment to be used with --generate-import to make import statements without having access to the fragment's OCI registry",
+            help="Path to a signed policy fragment to be used with --generate-import to make import statements without having access to the fragment's OCI registry. This can either be a local path or a registry address.",
             validator=validate_fragment_path,
         )
         c.argument(
@@ -291,9 +340,15 @@ def load_arguments(self, _):
         )
         c.argument(
             "disable_stdio",
-            options_list=("--disable-stdio",),
-            required=False,
+            action="store_true",
             help="Disabling container stdio will disable the ability to see the output of the container in the terminal for Confidential ACI",
+            validator=validate_stdio,
+        )
+        c.argument(
+            "enable_stdio",
+            action="store_true",
+            help="Enable the standard io streams to leave the container",
+            validator=validate_stdio,
         )
         c.argument(
             "debug_mode",
@@ -332,6 +387,21 @@ def load_arguments(self, _):
             required=False,
             help="Path to JSON file to write fragment import information. This is used with --generate-import. If not specified, the import statement will print to the console",
             validator=validate_fragment_json,
+        )
+        c.argument(
+            "container_definitions",
+            options_list=['--with-containers'],
+            action='append',
+            required=False,
+            type=json.loads,
+            help='Container definitions to include in the policy'
+        )
+        c.argument(
+            "out_signed_fragment",
+            action="store_true",
+            default=False,
+            required=False,
+            help="Emit only the signed fragment bytes",
         )
 
     with self.argument_context("confcom katapolicygen") as c:
@@ -404,4 +474,33 @@ def load_arguments(self, _):
             required=False,
             help="Path to containerd socket if not using the default",
             validator=validate_katapolicygen_input,
+        )
+
+    with self.argument_context("confcom containers from_image") as c:
+        c.positional(
+            "image",
+            type=str,
+            help="Image to create container definition from",
+        )
+        c.argument(
+            "platform",
+            options_list=("--platform",),
+            required=False,
+            default="aci",
+            type=str,
+            help="Platform to create container definition for",
+        )
+
+    with self.argument_context("confcom containers from_vn2") as c:
+        c.positional(
+            "template",
+            type=str,
+            help="Template to create container definitions from",
+        )
+        c.argument(
+            "container_name",
+            options_list=['--name', "-n"],
+            required=False,
+            type=str,
+            help='The name of the container in the template to use. If omitted, all containers are returned.'
         )

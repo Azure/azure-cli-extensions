@@ -18,6 +18,8 @@ from ._models import ArtifactManifestPropertiesFormat
 from ._models import ArtifactManifestUpdateState
 from ._models import ArtifactProfile
 from ._models import ArtifactStore
+from ._models import ArtifactStoreNetworkFabricControllerEndPoints
+from ._models import ArtifactStorePrivateEndPointsFormat
 from ._models import ArtifactStorePropertiesFormat
 from ._models import ArtifactStorePropertiesFormatManagedResourceGroupConfiguration
 from ._models import AzureArcK8SClusterNFVIDetails
@@ -143,6 +145,7 @@ from ._enums import ArtifactType
 from ._enums import AzureArcKubernetesArtifactType
 from ._enums import AzureCoreArtifactType
 from ._enums import AzureOperatorNexusArtifactType
+from ._enums import BackingResourcePublicNetworkAccess
 from ._enums import ConfigurationGenerationType
 from ._enums import ConfigurationGroupValueConfigurationType
 from ._enums import ContainerizedNetworkFunctionNFVIType
@@ -183,6 +186,8 @@ __all__ = [
     "ArtifactManifestUpdateState",
     "ArtifactProfile",
     "ArtifactStore",
+    "ArtifactStoreNetworkFabricControllerEndPoints",
+    "ArtifactStorePrivateEndPointsFormat",
     "ArtifactStorePropertiesFormat",
     "ArtifactStorePropertiesFormatManagedResourceGroupConfiguration",
     "AzureArcK8SClusterNFVIDetails",
@@ -307,6 +312,7 @@ __all__ = [
     "AzureArcKubernetesArtifactType",
     "AzureCoreArtifactType",
     "AzureOperatorNexusArtifactType",
+    "BackingResourcePublicNetworkAccess",
     "ConfigurationGenerationType",
     "ConfigurationGroupValueConfigurationType",
     "ContainerizedNetworkFunctionNFVIType",

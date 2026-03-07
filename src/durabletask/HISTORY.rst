@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0b5
++++++
+* Update ARM API version to first stable release `2025-11-01`
+
 1.0.0b4
 +++++
 * Adding various retention-policy commands.

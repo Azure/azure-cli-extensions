@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "new-relic organization list",
 )
 class List(AAZCommand):
-    """List all the existing organizations
+    """Lists all the New Relic organizations in your Azure subscription, helping you understand the existing organizations that have been created.
 
     :example: List all the existing organizations.
         az new-relic organization list --location eastus2euap --user-email UserEmail@123.com

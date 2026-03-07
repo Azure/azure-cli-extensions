@@ -16,6 +16,15 @@ def validate_member_cluster_id(namespace):
             "--member-cluster-id is not a valid Azure resource ID.")
 
 
+def validate_member_cluster_names(namespace):
+    if namespace.member_cluster_names:
+        valid_subresource = re.compile(r'^[a-z0-9]$|^[a-z0-9][-a-z0-9]{0,48}[a-z0-9]$')
+        for name in namespace.member_cluster_names:
+            if not valid_subresource.match(name):
+                raise InvalidArgumentValueError(
+                    f"--member-cluster-names {name} is not a valid member cluster name.")
+
+
 def validate_kubernetes_version(namespace):
     if namespace.kubernetes_version:
         k8s_release_regex = re.compile(r'^[v|V]?(\d+\.\d+(?:\.\d+)?)$')
@@ -60,6 +69,13 @@ def validate_assign_identity(namespace):
                 "--assign-identity is not a valid Azure resource ID.")
 
 
+def validate_enable_vnet_integration(namespace):
+    if namespace.enable_vnet_integration:
+        if not namespace.enable_managed_identity or namespace.assign_identity is None:
+            raise CLIError("--enable-vnet-integration requires user assigned managed identity to be enabled. "
+                           "Please add --enable-managed-identity and --assign-identity <identity-id> to your command.")
+
+
 def validate_targets(namespace):
     ts = namespace.targets
     if not ts:
@@ -96,3 +112,13 @@ def validate_update_strategy_id(namespace):
     if not is_valid_resource_id(update_strategy_id):
         raise InvalidArgumentValueError(
             "--update-strategy-id is not a valid Azure resource ID.")
+
+
+def validate_labels(val):
+    result = {}
+    for item in val.split():
+        if '=' not in item:
+            raise ValueError("Expected key=value format")
+        k, v = item.split('=', 1)
+        result[k] = v
+    return result

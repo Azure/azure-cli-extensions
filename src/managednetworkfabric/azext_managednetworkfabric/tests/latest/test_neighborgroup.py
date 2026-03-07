@@ -14,34 +14,54 @@ from azure.cli.testsdk import ScenarioTest
 from .config import CONFIG
 
 
-def setup_scenario1(test):
-    """Env setup_scenario1"""
+def setup_scenario(test):
+    """Env setup_scenario"""
     pass
 
 
-def cleanup_scenario1(test):
-    """Env cleanup_scenario1"""
+def cleanup_scenario(test):
+    """Env cleanup_scenario"""
     pass
 
 
 def call_scenario1(test):
-    """# Testcase: scenario1"""
-    setup_scenario1(test)
-    step_create(test, checks=[])
+    """Testcase: scenario"""
+    setup_scenario(test)
+    step_create_scenario1(test, checks=[])
     step_show(test, checks=[])
     step_list_subscription(test, checks=[])
     step_list_resource_group(test, checks=[])
-    step_update(test, checks=[])
+    step_update_scenario1(test, checks=[])
     step_delete(test, checks=[])
-    cleanup_scenario1(test)
+    cleanup_scenario(test)
 
 
-def step_create(test, checks=None):
+def call_scenario2(test):
+    """Testcase: scenario"""
+    setup_scenario(test)
+    step_create_scenario2(test, checks=[])
+    step_update_scenario2(test, checks=[])
+    cleanup_scenario(test)
+
+
+def step_create_scenario1(test, checks=None):
     """Neighbor Group create operation"""
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric neighborgroup create --resource-group {rg} --location {location} --resource-name {name} --destination {destination}",
+        "az networkfabric neighborgroup create --resource-group {rg} --location {location} --resource-name {name} --destination {destination} --annotation {annotation}"
+        " --mi-user-assigned {userAssignedIdentity} --mi-system-assigned {systemAssignedIdentity}",
+        checks=checks,
+    )
+
+
+def step_create_scenario2(test, checks=None):
+    """Neighbor Group create operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkfabric neighborgroup create --resource-group {rg} --location {location} --resource-name {name} --destination {destination} --annotation {annotation}"
+        " --user-assigned {userAssignedIdentity} --system-assigned {systemAssignedIdentity}",
         checks=checks,
     )
 
@@ -69,12 +89,24 @@ def step_list_subscription(test, checks=None):
     test.cmd("az networkfabric neighborgroup list")
 
 
-def step_update(test, checks=None):
+def step_update_scenario1(test, checks=None):
     """Neighbor Group update operation"""
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric neighborgroup update --resource-group {rg} --resource-name {name} --destination {destinationUpdate}",
+        "az networkfabric neighborgroup update --resource-group {rg} --resource-name {name} --destination {destinationUpdate} --annotation {annotation}"
+        " --mi-user-assigned {userAssignedIdentity} --mi-system-assigned {systemAssignedIdentity}",
+        checks=checks,
+    )
+
+
+def step_update_scenario2(test, checks=None):
+    """Neighbor Group update operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkfabric neighborgroup update --resource-group {rg} --resource-name {name} --destination {destinationUpdate} --annotation {annotation}"
+        " --user-assigned {userAssignedIdentity} --system-assigned {systemAssignedIdentity}",
         checks=checks,
     )
 
@@ -100,6 +132,13 @@ class GA_NeighborGroupScenarioTest1(ScenarioTest):
                 "location": CONFIG.get("NEIGHBOR_GROUP", "location"),
                 "destination": CONFIG.get("NEIGHBOR_GROUP", "destination"),
                 "destinationUpdate": CONFIG.get("NEIGHBOR_GROUP", "destination_update"),
+                "annotation": CONFIG.get("NETWORK_TAP_RULE", "annotation"),
+                "userAssignedIdentity": CONFIG.get(
+                    "MANAGED_IDENTITY", "user_assigned_identity"
+                ),
+                "systemAssignedIdentity": CONFIG.get(
+                    "MANAGED_IDENTITY", "system_assigned_identity"
+                ),
             }
         )
 

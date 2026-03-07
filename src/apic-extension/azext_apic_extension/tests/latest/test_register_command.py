@@ -47,7 +47,7 @@ class RegisterCommandTests(ScenarioTest):
             self.check('description', 'API Description'), # default value when spec does not have description
             self.check('name', 'openapi'), # hard coded when spec is swagger or openapi
             self.check('specification.name', 'openapi'),
-            self.check('specification.version', '3-0-0'),
+            self.check('specification.version', '3.0.0'),
             self.check('title', 'openapi'),
         ])
 
@@ -98,7 +98,7 @@ class RegisterCommandTests(ScenarioTest):
             self.check('description', 'This is a sample Pet Store Server based on the OpenAPI 3.0 specification.  You can find out more about\nSwagger at [http://swagger.io](http://swagger.io). In the third iteration of the pet store, we\'ve switched to the design first approach!\nYou can now help us improve the API whether it\'s by making changes to the definition itself or to the code.\nThat way, with time, we can improve the API in general, and expose some of the new features in OAS3.\n\nSome useful links:\n- [The Pet Store repository](https://github.com/swagger-api/swagger-petstore)\n- [The source API definition for the Pet Store](https://github.com/swagger-api/swagger-petstore/blob/master/src/main/resources/openapi.yaml)'),
             self.check('name', 'openapi'),
             self.check('specification.name', 'openapi'),
-            self.check('specification.version', '3-0-2'),
+            self.check('specification.version', '3.0.2'),
             self.check('title', 'openapi'),
         ])
 
@@ -149,7 +149,7 @@ class RegisterCommandTests(ScenarioTest):
             self.check('description', 'This is a sample server Petstore server.  You can find out more about Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).  For this sample, you can use the api key `special-key` to test the authorization filters.'),
             self.check('name', 'openapi'),
             self.check('specification.name', 'openapi'),
-            self.check('specification.version', '2-0'),
+            self.check('specification.version', '2.0'),
             self.check('title', 'openapi'),
         ])
 
@@ -185,7 +185,7 @@ class RegisterCommandTests(ScenarioTest):
             self.check('description', 'This is a sample server Petstore server.  You can find out more about Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).  For this sample, you can use the api key `special-key` to test the authorization filters.'),
             self.check('name', 'openapi'),
             self.check('specification.name', 'openapi'),
-            self.check('specification.version', '2-0'),
+            self.check('specification.version', '2.0'),
             self.check('title', 'openapi'),
         ])
 

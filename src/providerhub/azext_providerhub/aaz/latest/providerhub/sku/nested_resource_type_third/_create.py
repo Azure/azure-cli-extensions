@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create the resource type skus in the given resource type.
+
+    :example: Create a sku in the resource type.
+        az providerhub sku nested-resource-type-third create --provider-namespace Microsoft.Contoso --resource-type testResourceType --nested-resource-type-first nestedResourceTypeFirst --nested-resource-type-second nestedResourceTypeSecond --nested-resource-type-third nestedResourceTypeThird --name testSku --sku-settings "[{name:freeSku,tier:Tier1,kind:Standard},{name:premiumSku,tier:Tier2,kind:Premium,costs:[{meter-id:xxx}]}]"
     """
 
     _aaz_info = {

@@ -9,12 +9,16 @@
 # flake8: noqa
 
 from .__cmd_group import *
+from ._action import *
+from ._change_disaster_recovery_configuration import *
 from ._create import *
 from ._delete import *
 from ._failover import *
+from ._generate_wallet import *
 from ._list import *
 from ._restore import *
 from ._show import *
+from ._shrink import *
 from ._switchover import *
 from ._update import *
 from ._wait import *

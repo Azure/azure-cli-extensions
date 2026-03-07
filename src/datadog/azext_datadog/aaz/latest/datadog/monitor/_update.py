@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2021-03-01",
+        "version": "2025-06-11",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}", "2021-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}", "2025-06-11"],
         ]
     }
 
@@ -52,6 +52,11 @@ class Update(AAZCommand):
             help="Monitor resource name",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9_][a-zA-Z0-9_-]+$",
+                max_length=32,
+                min_length=2,
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -65,12 +70,6 @@ class Update(AAZCommand):
             arg_group="Body",
             nullable=True,
         )
-        _args_schema.location = AAZResourceLocationArg(
-            arg_group="Body",
-            fmt=AAZResourceLocationArgFormat(
-                resource_group_arg="resource_group",
-            ),
-        )
         _args_schema.sku = AAZObjectArg(
             options=["--sku"],
             arg_group="Body",
@@ -79,6 +78,7 @@ class Update(AAZCommand):
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
             arg_group="Body",
+            help="Resource tags.",
             nullable=True,
         )
 
@@ -104,6 +104,12 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
+        _args_schema.org_properties = AAZObjectArg(
+            options=["--org-properties"],
+            arg_group="Properties",
+            help="Specify the Datadog organization name. In the case of linking to existing organizations, Id, ApiKey, and Applicationkey is required as well.",
+            nullable=True,
+        )
         _args_schema.monitoring_status = AAZStrArg(
             options=["--monitoring-status"],
             arg_group="Properties",
@@ -115,6 +121,18 @@ class Update(AAZCommand):
             options=["--user-info"],
             arg_group="Properties",
             help="User info",
+            nullable=True,
+        )
+
+        org_properties = cls._args_schema.org_properties
+        org_properties.cspm = AAZBoolArg(
+            options=["cspm"],
+            help="The configuration which describes the state of cloud security posture management. This collects configuration information for all resources in a subscription and track conformance to industry benchmarks.",
+            nullable=True,
+        )
+        org_properties.resource_collection = AAZBoolArg(
+            options=["resource-collection"],
+            help="The configuration which describes the state of resource collection. This collects configuration information for all resources in a subscription.",
             nullable=True,
         )
 
@@ -223,7 +241,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2021-03-01",
+                    "api-version", "2025-06-11",
                     required=True,
                 ),
             }
@@ -322,7 +340,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2021-03-01",
+                    "api-version", "2025-06-11",
                     required=True,
                 ),
             }
@@ -381,7 +399,6 @@ class Update(AAZCommand):
                 typ=AAZObjectType
             )
             _builder.set_prop("identity", AAZObjectType, ".identity")
-            _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("properties", AAZObjectType)
             _builder.set_prop("sku", AAZObjectType, ".sku")
             _builder.set_prop("tags", AAZDictType, ".tags")
@@ -392,8 +409,14 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_prop("datadogOrganizationProperties", AAZObjectType, ".org_properties")
                 properties.set_prop("monitoringStatus", AAZStrType, ".monitoring_status")
-                properties.set_prop("userInfo", AAZObjectType, ".user_info", typ_kwargs={"flags": {"secret": True}})
+                properties.set_prop("userInfo", AAZObjectType, ".user_info")
+
+            datadog_organization_properties = _builder.get(".properties.datadogOrganizationProperties")
+            if datadog_organization_properties is not None:
+                datadog_organization_properties.set_prop("cspm", AAZBoolType, ".cspm")
+                datadog_organization_properties.set_prop("resourceCollection", AAZBoolType, ".resource_collection")
 
             user_info = _builder.get(".properties.userInfo")
             if user_info is not None:
@@ -499,15 +522,14 @@ class _UpdateHelper:
         )
         properties.user_info = AAZObjectType(
             serialized_name="userInfo",
-            flags={"secret": True},
         )
 
         datadog_organization_properties = _schema_datadog_monitor_resource_read.properties.datadog_organization_properties
-        datadog_organization_properties.id = AAZStrType(
-            flags={"read_only": True},
-        )
-        datadog_organization_properties.name = AAZStrType(
-            flags={"read_only": True},
+        datadog_organization_properties.cspm = AAZBoolType()
+        datadog_organization_properties.id = AAZStrType()
+        datadog_organization_properties.name = AAZStrType()
+        datadog_organization_properties.resource_collection = AAZBoolType(
+            serialized_name="resourceCollection",
         )
 
         user_info = _schema_datadog_monitor_resource_read.properties.user_info

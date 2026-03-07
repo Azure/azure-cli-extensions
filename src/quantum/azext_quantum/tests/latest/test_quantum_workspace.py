@@ -139,7 +139,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
                 self.check("properties.provisioningState", "Deleting")
             ])
 
-            # Repeat without the "--skip-role-assignment" or "--skip-autoadd" parameters (Uses ARM template and adds C4A plans)
+            # Repeat without the "--skip-role-assignment" or "--skip-autoadd" parameters (Uses ARM template and adds basic plans)
             test_workspace_temp = get_test_workspace_random_name()
             self.cmd(f'az quantum workspace create --auto-accept -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_account} -r {test_provider_sku_list} -o json', checks=[
                 self.check("name", DEPLOYMENT_NAME_PREFIX + test_workspace_temp),

@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "new-relic monitor",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage NewRelic Monitor resource
+    """Provides a set of commands to manage New Relic monitor resources in your Azure subscription, enabling integration and observability of your Azure resources through New Relic.
     """
     pass
 

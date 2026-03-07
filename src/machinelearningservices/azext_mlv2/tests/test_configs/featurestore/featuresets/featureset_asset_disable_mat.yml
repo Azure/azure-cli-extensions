@@ -1,0 +1,23 @@
+$schema: http://azureml/sdk-2-0/Featureset.json
+
+name: transactions
+version: "1"
+description: 7-day and 3-day rolling aggregation of transactions featureset
+specification:
+  path: ./spec # path to feature set specification folder
+entities: # entities associated with this feature-set
+  - azureml:account:1
+stage: Development
+tags:
+  "data_type": "nonPII"
+materialization_settings:
+  offline_enabled: false
+  online_enabled: false
+  resource:
+    instance_type: Standard_E8S_V3
+  spark_configuration:
+    spark.driver.cores: 4
+    spark.driver.memory: 36g
+    spark.executor.cores: 4
+    spark.executor.instances: 2
+    spark.executor.memory: 36g

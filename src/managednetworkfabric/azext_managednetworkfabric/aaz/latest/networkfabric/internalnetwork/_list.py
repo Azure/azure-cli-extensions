@@ -22,9 +22,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2025-07-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l3isolationdomains/{}/internalnetworks", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l3isolationdomains/{}/internalnetworks", "2025-07-15"],
         ]
     }
 
@@ -124,7 +124,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-07-15",
                     required=True,
                 ),
             }
@@ -206,6 +206,7 @@ class List(AAZCommand):
             )
             properties.egress_acl_id = AAZStrType(
                 serialized_name="egressAclId",
+                nullable=True,
             )
             properties.export_route_policy = AAZObjectType(
                 serialized_name="exportRoutePolicy",
@@ -216,6 +217,7 @@ class List(AAZCommand):
             )
             properties.ingress_acl_id = AAZStrType(
                 serialized_name="ingressAclId",
+                nullable=True,
             )
             properties.is_monitoring_enabled = AAZStrType(
                 serialized_name="isMonitoringEnabled",
@@ -230,6 +232,11 @@ class List(AAZCommand):
             )
             properties.native_ipv6_prefix_limit = AAZObjectType(
                 serialized_name="nativeIpv6PrefixLimit",
+            )
+            properties.network_fabric_id = AAZStrType(
+                serialized_name="networkFabricId",
+                nullable=True,
+                flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -292,9 +299,20 @@ class List(AAZCommand):
             bmp_configuration.bmp_configuration_state = AAZStrType(
                 serialized_name="bmpConfigurationState",
             )
+            bmp_configuration.export_policy_configuration = AAZObjectType(
+                serialized_name="exportPolicyConfiguration",
+            )
             bmp_configuration.neighbor_ip_exclusions = AAZListType(
                 serialized_name="neighborIpExclusions",
             )
+
+            export_policy_configuration = cls._schema_on_200.value.Element.properties.bgp_configuration.bmp_configuration.export_policy_configuration
+            export_policy_configuration.export_policies = AAZListType(
+                serialized_name="exportPolicies",
+            )
+
+            export_policies = cls._schema_on_200.value.Element.properties.bgp_configuration.bmp_configuration.export_policy_configuration.export_policies
+            export_policies.Element = AAZStrType()
 
             neighbor_ip_exclusions = cls._schema_on_200.value.Element.properties.bgp_configuration.bmp_configuration.neighbor_ip_exclusions
             neighbor_ip_exclusions.Element = AAZStrType()
@@ -324,17 +342,21 @@ class List(AAZCommand):
             export_route_policy = cls._schema_on_200.value.Element.properties.export_route_policy
             export_route_policy.export_ipv4_route_policy_id = AAZStrType(
                 serialized_name="exportIpv4RoutePolicyId",
+                nullable=True,
             )
             export_route_policy.export_ipv6_route_policy_id = AAZStrType(
                 serialized_name="exportIpv6RoutePolicyId",
+                nullable=True,
             )
 
             import_route_policy = cls._schema_on_200.value.Element.properties.import_route_policy
             import_route_policy.import_ipv4_route_policy_id = AAZStrType(
                 serialized_name="importIpv4RoutePolicyId",
+                nullable=True,
             )
             import_route_policy.import_ipv6_route_policy_id = AAZStrType(
                 serialized_name="importIpv6RoutePolicyId",
+                nullable=True,
             )
 
             last_operation = cls._schema_on_200.value.Element.properties.last_operation

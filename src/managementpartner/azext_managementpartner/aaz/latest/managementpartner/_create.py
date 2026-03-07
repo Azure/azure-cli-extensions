@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Associates a Microsoft Partner Network(MPN) ID to the current authenticated user or service principal.
+
+    :example: Associates a Microsoft Partner Network(MPN) ID to the current authenticated user or service principal.
+        az managementpartner create --partner-id 12345678-1234-1234-1234-123456789012
     """
 
     _aaz_info = {

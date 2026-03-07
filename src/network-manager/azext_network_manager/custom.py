@@ -17,6 +17,7 @@ from .aaz.latest.network.manager.connection.management_group import Create as _C
 from .aaz.latest.network.manager.connection.subscription import Create as _ConnectionSubscriptionCreate
 from .aaz.latest.network.manager.connect_config import Create as _ConnectConfigCreate
 from .aaz.latest.network.manager.connect_config import Update as _ConnectConfigUpdate
+from .aaz.latest.network.manager.ipam_pool.static_cidr import Update as _StaticCidrUpdate
 
 
 def network_manager_create(cmd,
@@ -312,3 +313,25 @@ class ConnectConfigUpdate(_ConnectConfigUpdate):
                      "virtualNetworks/{}",
         )
         return args_schema
+
+
+class StaticCidrUpdate(_StaticCidrUpdate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        return args_schema
+
+    def pre_operations(self):
+        from azure.cli.core.aaz import has_value
+        args = self.ctx.args
+
+        address_prefixes_provided = has_value(args.address_prefixes)
+        num_ip_provided = has_value(args.number_of_ip_addresses_to_allocate)
+
+        # if address_prefixes is provided and number_of_ip_addresses_to_allocate is not provided
+        if address_prefixes_provided and not num_ip_provided:
+            args.number_of_ip_addresses_to_allocate = "0"
+
+        # if number_of_ip_addresses_to_allocate is provided and address_prefixes is not provided
+        elif num_ip_provided and not address_prefixes_provided:
+            args.address_prefixes = []

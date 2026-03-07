@@ -36,6 +36,29 @@ kubeDnsOverridesExpected = {
         }
     }
 
+kubeDnsOverridesExpectedDefault = {
+     ".": {
+         "cacheDurationInSeconds": 3600,
+         "forwardDestination": "ClusterCoreDNS",
+         "forwardPolicy": "Sequential",
+         "maxConcurrent": 1000,
+         "protocol": "PreferUDP",
+         "queryLogging": "Error",
+         "serveStale": "Immediate",
+         "serveStaleDurationInSeconds": 3600
+      },
+      "cluster.local": {
+         "cacheDurationInSeconds": 3600,
+         "forwardDestination": "ClusterCoreDNS",
+         "forwardPolicy": "Sequential",
+         "maxConcurrent": 1000,
+         "protocol": "ForceTCP",
+         "queryLogging": "Error",
+         "serveStale": "Immediate",
+         "serveStaleDurationInSeconds": 3600
+      }
+}
+
 vnetDnsOverridesExpected = {
         ".": {
             "cacheDurationInSeconds": 3600,
@@ -58,6 +81,29 @@ vnetDnsOverridesExpected = {
             "serveStaleDurationInSeconds": 3600
         }
     }
+
+vnetDnsOverridesExpectedDefault = {
+     ".": {
+         "cacheDurationInSeconds": 3600,
+         "forwardDestination": "VnetDNS",
+         "forwardPolicy": "Sequential",
+         "maxConcurrent": 1000,
+         "protocol": "PreferUDP",
+         "queryLogging": "Error",
+         "serveStale": "Immediate",
+         "serveStaleDurationInSeconds": 3600
+      },
+      "cluster.local": {
+         "cacheDurationInSeconds": 3600,
+         "forwardDestination": "ClusterCoreDNS",
+         "forwardPolicy": "Sequential",
+         "maxConcurrent": 1000,
+         "protocol": "ForceTCP",
+         "queryLogging": "Error",
+         "serveStale": "Immediate",
+         "serveStaleDurationInSeconds": 3600
+      }
+}
 
 def assert_dns_overrides_equal(actual, expected):
     """Assert that all keys and subkeys in expected are present and equal in actual, case-insensitive for keys."""

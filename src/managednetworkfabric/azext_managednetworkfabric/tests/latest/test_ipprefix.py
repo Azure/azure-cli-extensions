@@ -26,7 +26,7 @@ def cleanup_scenario1(test):
 
 
 def call_scenario1(test):
-    """# Testcase: scenario1"""
+    """Testcase: scenario1"""
     setup_scenario1(test)
     step_create(test, checks=[])
     step_show(test, checks=[])
@@ -42,7 +42,7 @@ def step_create(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric ipprefix create --resource-group {rg} --location {location} --resource-name {name} --ip-prefix-rules {ipPrefixRules} ",
+        "az networkfabric ipprefix create --resource-group {rg} --location {location} --resource-name {name} --ip-prefix-rules {ipPrefixRules} --annotation {annotation}",
         checks=checks,
     )
 
@@ -61,7 +61,7 @@ def step_update(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric ipprefix create --resource-group {rg} --location {location} --resource-name {name} --ip-prefix-rules {updatedIpPrefixRules} ",
+        "az networkfabric ipprefix update --resource-group {rg} --resource-name {name} --ip-prefix-rules {updatedIpPrefixRules} --annotation {annotation}",
         checks=checks,
     )
 
@@ -97,6 +97,7 @@ class GA_IpPrefixScenarioTest1(ScenarioTest):
         self.kwargs.update(
             {
                 "name": CONFIG.get("IP_PREFIX", "name"),
+                "annotation": CONFIG.get("IP_PREFIX", "annotation"),
                 "rg": CONFIG.get("IP_PREFIX", "resource_group"),
                 "location": CONFIG.get("IP_PREFIX", "location"),
                 "ipPrefixRules": CONFIG.get("IP_PREFIX", "ip_prefix_rules"),

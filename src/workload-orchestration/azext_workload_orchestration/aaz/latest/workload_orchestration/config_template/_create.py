@@ -22,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-06-01",
+        "version": "2025-08-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.Edge/configtemplates/{}", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.Edge/configtemplates/{}", "2025-08-01"],
         ]
     }
 
@@ -101,7 +101,8 @@ class Create(AAZCommand):
 
         _args_schema.configurations = AAZFileArg(
             options=["--config-template-file","--configuration-template-file"],
-            help="Link to File containing Config expressions  for this config version"
+            help="Link to File containing Config expressions  for this config version",
+            required=True
         )
         return cls._args_schema
 
@@ -207,7 +208,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2025-08-01",
                     required=True,
                 ),
             }
@@ -409,7 +410,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2025-08-01",
                     required=True,
                 ),
             }

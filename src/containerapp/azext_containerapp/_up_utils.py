@@ -183,6 +183,7 @@ class ContainerAppEnvironment(Resource):
         workload_profile_type=None,
         workload_profile_name=None,
         is_env_for_azml_app=None,
+        environment_mode=None
     ):
         self.resource_type = None
         super().__init__(cmd, name, resource_group, exists)
@@ -211,6 +212,7 @@ class ContainerAppEnvironment(Resource):
         self.workload_profile_type = workload_profile_type
         self.workload_profile_name = workload_profile_name
         self.is_env_for_azml_app = is_env_for_azml_app
+        self.environment_mode = environment_mode
 
     def set_name(self, name_or_rid):
         if is_valid_resource_id(name_or_rid):
@@ -283,6 +285,7 @@ class ContainerAppEnvironment(Resource):
                 workload_profile_type=self.workload_profile_type,
                 workload_profile_name=self.workload_profile_name,
                 is_env_for_azml_app=self.is_env_for_azml_app,
+                environment_mode=self.environment_mode
             )
             self.exists = True
 
@@ -430,6 +433,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         target_label=None,
         cpu=None,
         memory=None,
+        kind=None,
     ):
 
         super().__init__(cmd, name, resource_group, exists)
@@ -451,6 +455,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
 
         self.cpu = cpu
         self.memory = memory
+        self.kind = kind
 
         self.should_create_acr = False
         self.acr: "AzureContainerRegistry" = None
@@ -492,6 +497,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             target_label=self.target_label,
             cpu=self.cpu,
             memory=self.memory,
+            kind=self.kind,
         )
 
     def set_force_single_container_updates(self, force_single_container_updates):

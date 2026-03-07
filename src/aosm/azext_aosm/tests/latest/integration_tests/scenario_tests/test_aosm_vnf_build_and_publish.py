@@ -38,7 +38,8 @@ NSD_INPUT_TEMPLATE_NAME = "vnf_nsd_input_template.jsonc"
 NSD_INPUT_FILE_NAME = "nsd_input.jsonc"
 ARM_TEMPLATE_NAME = "ubuntu_template.json"
 VHD_NAME = "ubuntu.vhd"
-
+SNS_INPUT_TEMPLATE_NAME = "vnf_sns_input_template.jsonc"
+SNS_INPUT_FILE_NAME = "vnf_sns_input.jsonc"
 
 class VnfNsdTest(ScenarioTest):
     """This class contains the integration tests for the aosm extension for vnf definition type."""
@@ -121,5 +122,16 @@ class VnfNsdTest(ScenarioTest):
                 self.cmd(f'az aosm nsd build -f "{nsd_input_file_path}"')
 
                 self.cmd("az aosm nsd publish --build-output-folder nsd-cli-output")
+
+                sns_input_file_path = os.path.join(test_dir, SNS_INPUT_FILE_NAME)
+                update_input_file(
+                    SNS_INPUT_TEMPLATE_NAME,
+                    sns_input_file_path,
+                    params={"publisher_resource_group_name": resource_group},
+                )
+
+                self.cmd(f'az aosm sns build -f "{sns_input_file_path}"')
+
+                self.cmd("az aosm sns deploy --build-output-folder sns-cli-output")                                                
             finally:
                 os.chdir(starting_directory)

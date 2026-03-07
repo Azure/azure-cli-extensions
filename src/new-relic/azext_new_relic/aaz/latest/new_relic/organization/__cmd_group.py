@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "new-relic organization",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage NewRelic Organization resource
+    """Manage the New Relic organization.
     """
     pass
 

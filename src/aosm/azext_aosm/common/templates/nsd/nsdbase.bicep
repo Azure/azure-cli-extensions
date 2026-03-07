@@ -8,17 +8,22 @@ param publisherName string
 param acrArtifactStoreName string
 @description('Name of an Network Service Design Group')
 param nsDesignGroup string
+param disablePublicNetworkAccess bool
 
 // The publisher resource is the top level AOSM resource under which all other designer resources
 // are created.
-resource publisher 'Microsoft.HybridNetwork/publishers@2023-09-01' = {
+resource publisher 'Microsoft.HybridNetwork/publishers@2024-04-15' = {
   name: publisherName
+  identity: {
+    type: 'SystemAssigned' 
+  }
   location: location
   properties: { scope: 'Private'}
 }
 
+
 // The artifact store is the resource in which all the artifacts required to deploy the NF are stored.
-resource acrArtifactStore 'Microsoft.HybridNetwork/publishers/artifactStores@2023-09-01' = {
+resource acrArtifactStore 'Microsoft.HybridNetwork/publishers/artifactStores@2024-04-15' = if (!disablePublicNetworkAccess) {
   parent: publisher
   name: acrArtifactStoreName
   location: location
@@ -27,8 +32,19 @@ resource acrArtifactStore 'Microsoft.HybridNetwork/publishers/artifactStores@202
   }
 }
 
+// The artifact store is the resource in which all the artifacts required to deploy the NF are stored.
+resource acrArtifactStorePADisabled 'Microsoft.HybridNetwork/publishers/artifactStores@2024-04-15' = if (disablePublicNetworkAccess) {
+  parent: publisher
+  name: acrArtifactStoreName
+  location: location
+  properties: {
+    storeType: 'AzureContainerRegistry'
+    backingResourcePublicNetworkAccess: 'Disabled'
+  }
+}
+
 // The NSD Group is the parent resource under which all NSD versions will be created.
-resource nsdGroup 'Microsoft.Hybridnetwork/publishers/networkservicedesigngroups@2023-09-01' = {
+resource nsdGroup 'Microsoft.Hybridnetwork/publishers/networkservicedesigngroups@2024-04-15' = {
   parent: publisher
   name: nsDesignGroup
   location: location

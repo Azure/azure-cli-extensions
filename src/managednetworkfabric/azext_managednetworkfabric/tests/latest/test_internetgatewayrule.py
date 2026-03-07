@@ -25,7 +25,7 @@ def cleanup_scenario1(test):
 
 
 def call_scenario1(test):
-    """# Testcase: scenario1"""
+    """Testcase: scenario1"""
     setup_scenario1(test)
     step_create(test, checks=[])
     step_show(test, checks=[])
@@ -40,7 +40,7 @@ def step_create(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric internetgatewayrule create --resource-group {rg} --location {location} --resource-name {name} --rule-properties {ruleProperties}",
+        "az networkfabric internetgatewayrule create --resource-group {rg} --location {location} --resource-name {name} --rule-properties {ruleProperties} --annotation {annotation}",
         checks=checks,
     )
 
@@ -95,6 +95,7 @@ class GA_InternetGatewayRuleScenarioTest1(ScenarioTest):
         self.kwargs.update(
             {
                 "name": CONFIG.get("INTERNET_GATEWAY_RULE", "name"),
+                "annotation": CONFIG.get("INTERNET_GATEWAY_RULE", "annotation"),
                 "rg": CONFIG.get("INTERNET_GATEWAY_RULE", "resource_group"),
                 "location": CONFIG.get("INTERNET_GATEWAY_RULE", "location"),
                 "ruleProperties": CONFIG.get(

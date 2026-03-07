@@ -18,6 +18,7 @@ class ManagedCassandraScenarioTest(ScenarioTest):
     # pylint: disable=line-too-long
     # pylint: disable=broad-except
     @ResourceGroupPreparer(name_prefix='cli_managed_cassandra')
+    @AllowLargeResponse()
     def test_managed_cassandra_cluster_without_datacenters(self, resource_group):
 
         self.kwargs.update({

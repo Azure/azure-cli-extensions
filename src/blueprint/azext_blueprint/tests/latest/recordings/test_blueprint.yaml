@@ -15,7 +15,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_blueprint000001?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_blueprint000001?api-version=2024-11-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_blueprint000001","name":"cli_test_blueprint000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","test":"test_blueprint","date":"2023-08-10T03:17:10Z","module":"blueprint"},"properties":{"provisioningState":"Succeeded"}}'
@@ -61,7 +61,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 azsdk-python-azure-mgmt-msi/7.0.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_blueprint000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000004?api-version=2023-01-31
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_blueprint000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000004?api-version=2024-11-30
   response:
     body:
       string: '{"location":"westus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_blueprint000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000004","name":"testid_000004","type":"Microsoft.ManagedIdentity/userAssignedIdentities","properties":{"tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","principalId":"5f72f451-8f84-4052-b3b4-461584f37db8","clientId":"3b474454-65d4-4e53-bce6-42488649961f"}}'

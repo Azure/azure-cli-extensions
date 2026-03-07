@@ -20,6 +20,7 @@ import azext_connectedk8s._constants as consts
 import azext_connectedk8s._utils as azext_utils
 
 if TYPE_CHECKING:
+    from knack.commands import CLICommand
     from kubernetes.client import BatchV1Api, CoreV1Api
 
 logger = get_logger(__name__)
@@ -30,6 +31,7 @@ diagnoser_output: list[str] = []
 
 
 def fetch_diagnostic_checks_results(
+    cmd: CLICommand,
     corev1_api_instance: CoreV1Api,
     batchv1_api_instance: BatchV1Api,
     helm_client_location: str,
@@ -52,6 +54,7 @@ def fetch_diagnostic_checks_results(
         # Executing the cluster_diagnostic_checks job and fetching the logs obtained
         cluster_diagnostic_checks_container_log = (
             executing_cluster_diagnostic_checks_job(
+                cmd,
                 corev1_api_instance,
                 batchv1_api_instance,
                 helm_client_location,
@@ -135,6 +138,7 @@ def fetch_diagnostic_checks_results(
 
 
 def executing_cluster_diagnostic_checks_job(
+    cmd: CLICommand,
     corev1_api_instance: CoreV1Api,
     batchv1_api_instance: BatchV1Api,
     helm_client_location: str,
@@ -208,8 +212,10 @@ def executing_cluster_diagnostic_checks_job(
                     )
                     return None
 
+        mcr_url = azext_utils.get_mcr_path(cmd.cli_ctx.cloud.endpoints.active_directory)
+
         chart_path = azext_utils.get_chart_path(
-            consts.Cluster_Diagnostic_Checks_Job_Registry_Path,
+            f"{mcr_url}/{consts.Cluster_Diagnostic_Checks_Job_Registry_Path}",
             kube_config,
             kube_context,
             helm_client_location,

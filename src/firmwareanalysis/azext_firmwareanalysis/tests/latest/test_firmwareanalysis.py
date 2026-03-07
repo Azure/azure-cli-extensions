@@ -11,6 +11,7 @@ from azure.cli.testsdk import ScenarioTest
 
 
 class FirmwareanalysisScenario(ScenarioTest):
+    # developers, comment out @record_only() in order to record live tests. then put the decorator back when creating a PR
     @record_only()
     def test_generate_upload_url(self):
         self.kwargs.update({
@@ -19,13 +20,16 @@ class FirmwareanalysisScenario(ScenarioTest):
             'workspace_name': 'default'
         })
 
+        # VERY IMPORTANT: after recording this test, manually edit the generated test_generate_upload_url.yaml file to
+        #                 redact the sas token that gets saved in response.body.string
         self.cmd('az firmwareanalysis workspace generate-upload-url '
                  '--resource-group {resource_group} '
                  '--workspace-name {workspace_name} '
                  '--firmware-id {firmware_id}',
                  checks=[self.check('length(@)', 1),
-                         self.check("url.contains(@, '{firmware_id}')", True)]).get_output_in_json()
+                         self.check('url', 'REDACTED')]).get_output_in_json()
 
+    # developers, comment out @record_only() in order to record live tests. then put the decorator back when creating a PR
     @record_only()
     @AllowLargeResponse()
     def test_workspace_commands(self):
@@ -58,19 +62,20 @@ class FirmwareanalysisScenario(ScenarioTest):
                          self.check('[0].type', '{resource_type}'),
                          self.check('[0].resourceGroup', '{resource_group}')]).get_output_in_json()
 
+    # developers, comment out @record_only() in order to record live tests. then put the decorator back when creating a PR
     @record_only()
     @AllowLargeResponse()
     def test_firmware_commands(self):
         self.kwargs.update({
-            'resource_group': 'FirmwareAnalysisRG',
-            'firmware_id': 'cd4e9671-72cf-4f78-9c9e-8e8bb2c5eaa4',
+            'resource_group': 'sdk-tests-rg',
+            'firmware_id': '6da8e809-d382-269b-8b82-ac62993fb781',
             'workspace_name': 'default',
             'file_name': 'file_name',
             'vendor_name': 'vendor_name',
+            'model_name': 'model_name',
             'version_name': 'version_name',
-            'fw_description': 'fw_description',
-            'fwid_model': 'fwid_model',
-            'status': 'Pending',
+            'description': 'description',
+            'status': 'Ready',
             'file_size': 1,
             'resource_type': 'microsoft.iotfirmwaredefense/workspaces/firmwares'
         })
@@ -82,19 +87,21 @@ class FirmwareanalysisScenario(ScenarioTest):
                  '--file-name {file_name} '
                  '--file-size {file_size} '
                  '--vendor {vendor_name} '
-                 '--status  {status} '
+                 '--model {model_name} '
                  '--version {version_name} '
-                 '--description {fw_description} '
-                 '--model {fwid_model} ',
+                 '--status  {status} '
+                 '--description {description} ',
                  checks=[self.greater_than('length(@)', 1),
-                         self.check('description', '{fw_description}'),
-                         self.check('vendor', '{vendor_name}'),
-                         self.check('fileName', '{file_name}'),
-                         self.check('fileSize', '{file_size}'),
-                         self.check('status', '{status}'),
-                         self.check('version', '{version_name}'),
-                         self.check("id.contains(@, '{firmware_id}')", True),
-                         self.check('model', '{fwid_model}')]).get_output_in_json()
+                         self.check('properties.description', '{description}'),
+                         self.check('properties.vendor', '{vendor_name}'),
+                         self.check('properties.model', '{model_name}'),
+                         self.check('properties.version', '{version_name}'),
+                         self.check('properties.fileName', '{file_name}'),
+                         self.check('properties.fileSize', '{file_size}'),
+                         self.check('properties.status', '{status}'),
+                         self.check('properties.version', '{version_name}'),
+                         self.check("id.contains(@, '{firmware_id}')", True)
+                         ]).get_output_in_json()
 
         self.cmd('az firmwareanalysis firmware  show '
                  '--resource-group {resource_group} '
@@ -111,12 +118,13 @@ class FirmwareanalysisScenario(ScenarioTest):
                          self.check('[0].type', '{resource_type}'),
                          self.check('[0].resourceGroup', '{resource_group}')]).get_output_in_json()
 
+    # developers, comment out @record_only() in order to record live tests. then put the decorator back when creating a PR
     @record_only()
     @AllowLargeResponse()
-    def test_analyser_commands(self):
+    def test_analyzer_commands(self):
         self.kwargs.update({
-            'resource_group': 'FirmwareAnalysisRG',
-            'firmware_id': '80ac3a57-b985-888b-ae28-b6eb8c8393a4',
+            'resource_group': 'sdk-tests-rg',
+            'firmware_id': '6da8e809-d382-269b-8b82-ac62993fb781',
             'workspace_name': 'default'
         })
 
@@ -133,7 +141,7 @@ class FirmwareanalysisScenario(ScenarioTest):
                  '--workspace-name {workspace_name} '
                  '--firmware-id {firmware_id}',
                  checks=[self.greater_than('length(@)', 1),
-                         self.check('[0].type', 'Microsoft.IoTFirmwareDefense/workspaces/firmwares/sbomComponents'),
+                         self.check('[0].type', 'Microsoft.IoTFirmwareDefense/workspaces/firmwares/components'),
                          self.check('[0].resourceGroup', '{resource_group}')]).get_output_in_json()
 
         self.cmd('az firmwareanalysis firmware  cve '

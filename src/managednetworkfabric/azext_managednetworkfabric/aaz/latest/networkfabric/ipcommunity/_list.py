@@ -25,10 +25,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2025-07-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.managednetworkfabric/ipcommunities", "2024-06-15-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/ipcommunities", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.managednetworkfabric/ipcommunities", "2025-07-15"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/ipcommunities", "2025-07-15"],
         ]
     }
 
@@ -115,7 +115,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-07-15",
                     required=True,
                 ),
             }
@@ -200,6 +200,7 @@ class List(AAZCommand):
             )
             properties.network_fabric_id = AAZStrType(
                 serialized_name="networkFabricId",
+                nullable=True,
                 flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
@@ -306,7 +307,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-07-15",
                     required=True,
                 ),
             }
@@ -391,6 +392,7 @@ class List(AAZCommand):
             )
             properties.network_fabric_id = AAZStrType(
                 serialized_name="networkFabricId",
+                nullable=True,
                 flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(

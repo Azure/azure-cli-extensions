@@ -15,17 +15,17 @@ from azure.cli.core.aaz import *
     "palo-alto cloudngfw firewall list",
 )
 class List(AAZCommand):
-    """List FirewallResource resources by subscription ID
+    """List all Palo Alto Networks Cloud NGFW on Azure resources under the current subscription.
 
-    :example: List FirewallResource resources by subscription ID
+    :example: List all Palo Alto Networks Cloud NGFW on Azure resources under the current subscription.
         az palo-alto cloudngfw firewall list --resource-group MyResourceGroup
     """
 
     _aaz_info = {
-        "version": "2022-08-29",
+        "version": "2025-10-08",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/paloaltonetworks.cloudngfw/firewalls", "2022-08-29"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/firewalls", "2022-08-29"],
+            ["mgmt-plane", "/subscriptions/{}/providers/paloaltonetworks.cloudngfw/firewalls", "2025-10-08"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/firewalls", "2025-10-08"],
         ]
     }
 
@@ -51,12 +51,12 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        condition_0 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
-        condition_1 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_0 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_1 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
         if condition_0:
-            self.FirewallsListByResourceGroup(ctx=self.ctx)()
-        if condition_1:
             self.FirewallsListBySubscription(ctx=self.ctx)()
+        if condition_1:
+            self.FirewallsListByResourceGroup(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -71,6 +71,411 @@ class List(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
+
+    class FirewallsListBySubscription(AAZHttpOperation):
+        CLIENT_TYPE = "MgmtClient"
+
+        def __call__(self, *args, **kwargs):
+            request = self.make_request()
+            session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [200]:
+                return self.on_200(session)
+
+            return self.on_error(session.http_response)
+
+        @property
+        def url(self):
+            return self.client.format_url(
+                "/subscriptions/{subscriptionId}/providers/PaloAltoNetworks.Cloudngfw/firewalls",
+                **self.url_parameters
+            )
+
+        @property
+        def method(self):
+            return "GET"
+
+        @property
+        def error_format(self):
+            return "MgmtErrorFormat"
+
+        @property
+        def url_parameters(self):
+            parameters = {
+                **self.serialize_url_param(
+                    "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def query_parameters(self):
+            parameters = {
+                **self.serialize_query_param(
+                    "api-version", "2025-10-08",
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Accept", "application/json",
+                ),
+            }
+            return parameters
+
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
+            )
+
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
+            )
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
+
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.identity = AAZObjectType()
+            _element.location = AAZStrType(
+                flags={"required": True},
+            )
+            _element.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.properties = AAZObjectType(
+                flags={"required": True, "client_flatten": True},
+            )
+            _element.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _element.tags = AAZDictType()
+            _element.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            identity = cls._schema_on_200.value.Element.identity
+            identity.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+            identity.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"read_only": True},
+            )
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+            identity.user_assigned_identities = AAZDictType(
+                serialized_name="userAssignedIdentities",
+            )
+
+            user_assigned_identities = cls._schema_on_200.value.Element.identity.user_assigned_identities
+            user_assigned_identities.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.identity.user_assigned_identities.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+            )
+            _element.principal_id = AAZStrType(
+                serialized_name="principalId",
+            )
+
+            properties = cls._schema_on_200.value.Element.properties
+            properties.associated_rulestack = AAZObjectType(
+                serialized_name="associatedRulestack",
+            )
+            properties.dns_settings = AAZObjectType(
+                serialized_name="dnsSettings",
+                flags={"required": True},
+            )
+            properties.front_end_settings = AAZListType(
+                serialized_name="frontEndSettings",
+            )
+            properties.is_panorama_managed = AAZStrType(
+                serialized_name="isPanoramaManaged",
+            )
+            properties.is_strata_cloud_managed = AAZStrType(
+                serialized_name="isStrataCloudManaged",
+            )
+            properties.marketplace_details = AAZObjectType(
+                serialized_name="marketplaceDetails",
+                flags={"required": True},
+            )
+            properties.network_profile = AAZObjectType(
+                serialized_name="networkProfile",
+                flags={"required": True},
+            )
+            properties.pan_etag = AAZStrType(
+                serialized_name="panEtag",
+            )
+            properties.panorama_config = AAZObjectType(
+                serialized_name="panoramaConfig",
+            )
+            properties.plan_data = AAZObjectType(
+                serialized_name="planData",
+                flags={"required": True},
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.strata_cloud_manager_config = AAZObjectType(
+                serialized_name="strataCloudManagerConfig",
+            )
+
+            associated_rulestack = cls._schema_on_200.value.Element.properties.associated_rulestack
+            associated_rulestack.location = AAZStrType()
+            associated_rulestack.resource_id = AAZStrType(
+                serialized_name="resourceId",
+            )
+            associated_rulestack.rulestack_id = AAZStrType(
+                serialized_name="rulestackId",
+            )
+
+            dns_settings = cls._schema_on_200.value.Element.properties.dns_settings
+            dns_settings.dns_servers = AAZListType(
+                serialized_name="dnsServers",
+            )
+            dns_settings.enable_dns_proxy = AAZStrType(
+                serialized_name="enableDnsProxy",
+            )
+            dns_settings.enabled_dns_type = AAZStrType(
+                serialized_name="enabledDnsType",
+            )
+
+            dns_servers = cls._schema_on_200.value.Element.properties.dns_settings.dns_servers
+            dns_servers.Element = AAZObjectType()
+            _ListHelper._build_schema_ip_address_read(dns_servers.Element)
+
+            front_end_settings = cls._schema_on_200.value.Element.properties.front_end_settings
+            front_end_settings.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.front_end_settings.Element
+            _element.backend_configuration = AAZObjectType(
+                serialized_name="backendConfiguration",
+                flags={"required": True},
+            )
+            _ListHelper._build_schema_endpoint_configuration_read(_element.backend_configuration)
+            _element.frontend_configuration = AAZObjectType(
+                serialized_name="frontendConfiguration",
+                flags={"required": True},
+            )
+            _ListHelper._build_schema_endpoint_configuration_read(_element.frontend_configuration)
+            _element.name = AAZStrType(
+                flags={"required": True},
+            )
+            _element.protocol = AAZStrType(
+                flags={"required": True},
+            )
+
+            marketplace_details = cls._schema_on_200.value.Element.properties.marketplace_details
+            marketplace_details.marketplace_subscription_id = AAZStrType(
+                serialized_name="marketplaceSubscriptionId",
+                flags={"read_only": True},
+            )
+            marketplace_details.marketplace_subscription_status = AAZStrType(
+                serialized_name="marketplaceSubscriptionStatus",
+            )
+            marketplace_details.offer_id = AAZStrType(
+                serialized_name="offerId",
+                flags={"required": True},
+            )
+            marketplace_details.publisher_id = AAZStrType(
+                serialized_name="publisherId",
+                flags={"required": True},
+            )
+
+            network_profile = cls._schema_on_200.value.Element.properties.network_profile
+            network_profile.egress_nat_ip = AAZListType(
+                serialized_name="egressNatIp",
+            )
+            network_profile.enable_egress_nat = AAZStrType(
+                serialized_name="enableEgressNat",
+                flags={"required": True},
+            )
+            network_profile.network_type = AAZStrType(
+                serialized_name="networkType",
+                flags={"required": True},
+            )
+            network_profile.private_source_nat_rules_destination = AAZListType(
+                serialized_name="privateSourceNatRulesDestination",
+            )
+            network_profile.public_ips = AAZListType(
+                serialized_name="publicIps",
+                flags={"required": True},
+            )
+            network_profile.trusted_ranges = AAZListType(
+                serialized_name="trustedRanges",
+            )
+            network_profile.vnet_configuration = AAZObjectType(
+                serialized_name="vnetConfiguration",
+            )
+            network_profile.vwan_configuration = AAZObjectType(
+                serialized_name="vwanConfiguration",
+            )
+
+            egress_nat_ip = cls._schema_on_200.value.Element.properties.network_profile.egress_nat_ip
+            egress_nat_ip.Element = AAZObjectType()
+            _ListHelper._build_schema_ip_address_read(egress_nat_ip.Element)
+
+            private_source_nat_rules_destination = cls._schema_on_200.value.Element.properties.network_profile.private_source_nat_rules_destination
+            private_source_nat_rules_destination.Element = AAZStrType()
+
+            public_ips = cls._schema_on_200.value.Element.properties.network_profile.public_ips
+            public_ips.Element = AAZObjectType()
+            _ListHelper._build_schema_ip_address_read(public_ips.Element)
+
+            trusted_ranges = cls._schema_on_200.value.Element.properties.network_profile.trusted_ranges
+            trusted_ranges.Element = AAZStrType()
+
+            vnet_configuration = cls._schema_on_200.value.Element.properties.network_profile.vnet_configuration
+            vnet_configuration.ip_of_trust_subnet_for_udr = AAZObjectType(
+                serialized_name="ipOfTrustSubnetForUdr",
+            )
+            _ListHelper._build_schema_ip_address_read(vnet_configuration.ip_of_trust_subnet_for_udr)
+            vnet_configuration.trust_subnet = AAZObjectType(
+                serialized_name="trustSubnet",
+                flags={"required": True},
+            )
+            _ListHelper._build_schema_ip_address_space_read(vnet_configuration.trust_subnet)
+            vnet_configuration.un_trust_subnet = AAZObjectType(
+                serialized_name="unTrustSubnet",
+                flags={"required": True},
+            )
+            _ListHelper._build_schema_ip_address_space_read(vnet_configuration.un_trust_subnet)
+            vnet_configuration.vnet = AAZObjectType(
+                flags={"required": True},
+            )
+            _ListHelper._build_schema_ip_address_space_read(vnet_configuration.vnet)
+
+            vwan_configuration = cls._schema_on_200.value.Element.properties.network_profile.vwan_configuration
+            vwan_configuration.ip_of_trust_subnet_for_udr = AAZObjectType(
+                serialized_name="ipOfTrustSubnetForUdr",
+            )
+            _ListHelper._build_schema_ip_address_read(vwan_configuration.ip_of_trust_subnet_for_udr)
+            vwan_configuration.network_virtual_appliance_id = AAZStrType(
+                serialized_name="networkVirtualApplianceId",
+            )
+            vwan_configuration.trust_subnet = AAZObjectType(
+                serialized_name="trustSubnet",
+            )
+            _ListHelper._build_schema_ip_address_space_read(vwan_configuration.trust_subnet)
+            vwan_configuration.un_trust_subnet = AAZObjectType(
+                serialized_name="unTrustSubnet",
+            )
+            _ListHelper._build_schema_ip_address_space_read(vwan_configuration.un_trust_subnet)
+            vwan_configuration.v_hub = AAZObjectType(
+                serialized_name="vHub",
+                flags={"required": True},
+            )
+            _ListHelper._build_schema_ip_address_space_read(vwan_configuration.v_hub)
+
+            panorama_config = cls._schema_on_200.value.Element.properties.panorama_config
+            panorama_config.cg_name = AAZStrType(
+                serialized_name="cgName",
+                flags={"read_only": True},
+            )
+            panorama_config.config_string = AAZStrType(
+                serialized_name="configString",
+                flags={"required": True},
+            )
+            panorama_config.dg_name = AAZStrType(
+                serialized_name="dgName",
+                flags={"read_only": True},
+            )
+            panorama_config.host_name = AAZStrType(
+                serialized_name="hostName",
+                flags={"read_only": True},
+            )
+            panorama_config.panorama_server = AAZStrType(
+                serialized_name="panoramaServer",
+                flags={"read_only": True},
+            )
+            panorama_config.panorama_server2 = AAZStrType(
+                serialized_name="panoramaServer2",
+                flags={"read_only": True},
+            )
+            panorama_config.tpl_name = AAZStrType(
+                serialized_name="tplName",
+                flags={"read_only": True},
+            )
+            panorama_config.vm_auth_key = AAZStrType(
+                serialized_name="vmAuthKey",
+                flags={"read_only": True},
+            )
+
+            plan_data = cls._schema_on_200.value.Element.properties.plan_data
+            plan_data.billing_cycle = AAZStrType(
+                serialized_name="billingCycle",
+                flags={"required": True},
+            )
+            plan_data.effective_date = AAZStrType(
+                serialized_name="effectiveDate",
+                flags={"read_only": True},
+            )
+            plan_data.plan_id = AAZStrType(
+                serialized_name="planId",
+                flags={"required": True},
+            )
+            plan_data.usage_type = AAZStrType(
+                serialized_name="usageType",
+            )
+
+            strata_cloud_manager_config = cls._schema_on_200.value.Element.properties.strata_cloud_manager_config
+            strata_cloud_manager_config.cloud_manager_name = AAZStrType(
+                serialized_name="cloudManagerName",
+                flags={"required": True},
+            )
+
+            system_data = cls._schema_on_200.value.Element.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
+
+            tags = cls._schema_on_200.value.Element.tags
+            tags.Element = AAZStrType()
+
+            return cls._schema_on_200
 
     class FirewallsListByResourceGroup(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
@@ -116,7 +521,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-08-29",
+                    "api-version", "2025-10-08",
                     required=True,
                 ),
             }
@@ -223,6 +628,9 @@ class List(AAZCommand):
             properties.is_panorama_managed = AAZStrType(
                 serialized_name="isPanoramaManaged",
             )
+            properties.is_strata_cloud_managed = AAZStrType(
+                serialized_name="isStrataCloudManaged",
+            )
             properties.marketplace_details = AAZObjectType(
                 serialized_name="marketplaceDetails",
                 flags={"required": True},
@@ -243,6 +651,10 @@ class List(AAZCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.strata_cloud_manager_config = AAZObjectType(
+                serialized_name="strataCloudManagerConfig",
             )
 
             associated_rulestack = cls._schema_on_200.value.Element.properties.associated_rulestack
@@ -319,9 +731,15 @@ class List(AAZCommand):
                 serialized_name="networkType",
                 flags={"required": True},
             )
+            network_profile.private_source_nat_rules_destination = AAZListType(
+                serialized_name="privateSourceNatRulesDestination",
+            )
             network_profile.public_ips = AAZListType(
                 serialized_name="publicIps",
                 flags={"required": True},
+            )
+            network_profile.trusted_ranges = AAZListType(
+                serialized_name="trustedRanges",
             )
             network_profile.vnet_configuration = AAZObjectType(
                 serialized_name="vnetConfiguration",
@@ -334,9 +752,15 @@ class List(AAZCommand):
             egress_nat_ip.Element = AAZObjectType()
             _ListHelper._build_schema_ip_address_read(egress_nat_ip.Element)
 
+            private_source_nat_rules_destination = cls._schema_on_200.value.Element.properties.network_profile.private_source_nat_rules_destination
+            private_source_nat_rules_destination.Element = AAZStrType()
+
             public_ips = cls._schema_on_200.value.Element.properties.network_profile.public_ips
             public_ips.Element = AAZObjectType()
             _ListHelper._build_schema_ip_address_read(public_ips.Element)
+
+            trusted_ranges = cls._schema_on_200.value.Element.properties.network_profile.trusted_ranges
+            trusted_ranges.Element = AAZStrType()
 
             vnet_configuration = cls._schema_on_200.value.Element.properties.network_profile.vnet_configuration
             vnet_configuration.ip_of_trust_subnet_for_udr = AAZObjectType(
@@ -431,384 +855,10 @@ class List(AAZCommand):
                 serialized_name="usageType",
             )
 
-            system_data = cls._schema_on_200.value.Element.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
-
-            tags = cls._schema_on_200.value.Element.tags
-            tags.Element = AAZStrType()
-
-            return cls._schema_on_200
-
-    class FirewallsListBySubscription(AAZHttpOperation):
-        CLIENT_TYPE = "MgmtClient"
-
-        def __call__(self, *args, **kwargs):
-            request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200]:
-                return self.on_200(session)
-
-            return self.on_error(session.http_response)
-
-        @property
-        def url(self):
-            return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/PaloAltoNetworks.Cloudngfw/firewalls",
-                **self.url_parameters
-            )
-
-        @property
-        def method(self):
-            return "GET"
-
-        @property
-        def error_format(self):
-            return "MgmtErrorFormat"
-
-        @property
-        def url_parameters(self):
-            parameters = {
-                **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def query_parameters(self):
-            parameters = {
-                **self.serialize_query_param(
-                    "api-version", "2022-08-29",
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
-            }
-            return parameters
-
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
-
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.next_link = AAZStrType(
-                serialized_name="nextLink",
-            )
-            _schema_on_200.value = AAZListType(
+            strata_cloud_manager_config = cls._schema_on_200.value.Element.properties.strata_cloud_manager_config
+            strata_cloud_manager_config.cloud_manager_name = AAZStrType(
+                serialized_name="cloudManagerName",
                 flags={"required": True},
-            )
-
-            value = cls._schema_on_200.value
-            value.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element
-            _element.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.identity = AAZObjectType()
-            _element.location = AAZStrType(
-                flags={"required": True},
-            )
-            _element.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.properties = AAZObjectType(
-                flags={"required": True, "client_flatten": True},
-            )
-            _element.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _element.tags = AAZDictType()
-            _element.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            identity = cls._schema_on_200.value.Element.identity
-            identity.principal_id = AAZStrType(
-                serialized_name="principalId",
-                flags={"read_only": True},
-            )
-            identity.tenant_id = AAZStrType(
-                serialized_name="tenantId",
-                flags={"read_only": True},
-            )
-            identity.type = AAZStrType(
-                flags={"required": True},
-            )
-            identity.user_assigned_identities = AAZDictType(
-                serialized_name="userAssignedIdentities",
-            )
-
-            user_assigned_identities = cls._schema_on_200.value.Element.identity.user_assigned_identities
-            user_assigned_identities.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element.identity.user_assigned_identities.Element
-            _element.client_id = AAZStrType(
-                serialized_name="clientId",
-            )
-            _element.principal_id = AAZStrType(
-                serialized_name="principalId",
-            )
-
-            properties = cls._schema_on_200.value.Element.properties
-            properties.associated_rulestack = AAZObjectType(
-                serialized_name="associatedRulestack",
-            )
-            properties.dns_settings = AAZObjectType(
-                serialized_name="dnsSettings",
-                flags={"required": True},
-            )
-            properties.front_end_settings = AAZListType(
-                serialized_name="frontEndSettings",
-            )
-            properties.is_panorama_managed = AAZStrType(
-                serialized_name="isPanoramaManaged",
-            )
-            properties.marketplace_details = AAZObjectType(
-                serialized_name="marketplaceDetails",
-                flags={"required": True},
-            )
-            properties.network_profile = AAZObjectType(
-                serialized_name="networkProfile",
-                flags={"required": True},
-            )
-            properties.pan_etag = AAZStrType(
-                serialized_name="panEtag",
-            )
-            properties.panorama_config = AAZObjectType(
-                serialized_name="panoramaConfig",
-            )
-            properties.plan_data = AAZObjectType(
-                serialized_name="planData",
-                flags={"required": True},
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-            )
-
-            associated_rulestack = cls._schema_on_200.value.Element.properties.associated_rulestack
-            associated_rulestack.location = AAZStrType()
-            associated_rulestack.resource_id = AAZStrType(
-                serialized_name="resourceId",
-            )
-            associated_rulestack.rulestack_id = AAZStrType(
-                serialized_name="rulestackId",
-            )
-
-            dns_settings = cls._schema_on_200.value.Element.properties.dns_settings
-            dns_settings.dns_servers = AAZListType(
-                serialized_name="dnsServers",
-            )
-            dns_settings.enable_dns_proxy = AAZStrType(
-                serialized_name="enableDnsProxy",
-            )
-            dns_settings.enabled_dns_type = AAZStrType(
-                serialized_name="enabledDnsType",
-            )
-
-            dns_servers = cls._schema_on_200.value.Element.properties.dns_settings.dns_servers
-            dns_servers.Element = AAZObjectType()
-            _ListHelper._build_schema_ip_address_read(dns_servers.Element)
-
-            front_end_settings = cls._schema_on_200.value.Element.properties.front_end_settings
-            front_end_settings.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element.properties.front_end_settings.Element
-            _element.backend_configuration = AAZObjectType(
-                serialized_name="backendConfiguration",
-                flags={"required": True},
-            )
-            _ListHelper._build_schema_endpoint_configuration_read(_element.backend_configuration)
-            _element.frontend_configuration = AAZObjectType(
-                serialized_name="frontendConfiguration",
-                flags={"required": True},
-            )
-            _ListHelper._build_schema_endpoint_configuration_read(_element.frontend_configuration)
-            _element.name = AAZStrType(
-                flags={"required": True},
-            )
-            _element.protocol = AAZStrType(
-                flags={"required": True},
-            )
-
-            marketplace_details = cls._schema_on_200.value.Element.properties.marketplace_details
-            marketplace_details.marketplace_subscription_id = AAZStrType(
-                serialized_name="marketplaceSubscriptionId",
-                flags={"read_only": True},
-            )
-            marketplace_details.marketplace_subscription_status = AAZStrType(
-                serialized_name="marketplaceSubscriptionStatus",
-            )
-            marketplace_details.offer_id = AAZStrType(
-                serialized_name="offerId",
-                flags={"required": True},
-            )
-            marketplace_details.publisher_id = AAZStrType(
-                serialized_name="publisherId",
-                flags={"required": True},
-            )
-
-            network_profile = cls._schema_on_200.value.Element.properties.network_profile
-            network_profile.egress_nat_ip = AAZListType(
-                serialized_name="egressNatIp",
-            )
-            network_profile.enable_egress_nat = AAZStrType(
-                serialized_name="enableEgressNat",
-                flags={"required": True},
-            )
-            network_profile.network_type = AAZStrType(
-                serialized_name="networkType",
-                flags={"required": True},
-            )
-            network_profile.public_ips = AAZListType(
-                serialized_name="publicIps",
-                flags={"required": True},
-            )
-            network_profile.vnet_configuration = AAZObjectType(
-                serialized_name="vnetConfiguration",
-            )
-            network_profile.vwan_configuration = AAZObjectType(
-                serialized_name="vwanConfiguration",
-            )
-
-            egress_nat_ip = cls._schema_on_200.value.Element.properties.network_profile.egress_nat_ip
-            egress_nat_ip.Element = AAZObjectType()
-            _ListHelper._build_schema_ip_address_read(egress_nat_ip.Element)
-
-            public_ips = cls._schema_on_200.value.Element.properties.network_profile.public_ips
-            public_ips.Element = AAZObjectType()
-            _ListHelper._build_schema_ip_address_read(public_ips.Element)
-
-            vnet_configuration = cls._schema_on_200.value.Element.properties.network_profile.vnet_configuration
-            vnet_configuration.ip_of_trust_subnet_for_udr = AAZObjectType(
-                serialized_name="ipOfTrustSubnetForUdr",
-            )
-            _ListHelper._build_schema_ip_address_read(vnet_configuration.ip_of_trust_subnet_for_udr)
-            vnet_configuration.trust_subnet = AAZObjectType(
-                serialized_name="trustSubnet",
-                flags={"required": True},
-            )
-            _ListHelper._build_schema_ip_address_space_read(vnet_configuration.trust_subnet)
-            vnet_configuration.un_trust_subnet = AAZObjectType(
-                serialized_name="unTrustSubnet",
-                flags={"required": True},
-            )
-            _ListHelper._build_schema_ip_address_space_read(vnet_configuration.un_trust_subnet)
-            vnet_configuration.vnet = AAZObjectType(
-                flags={"required": True},
-            )
-            _ListHelper._build_schema_ip_address_space_read(vnet_configuration.vnet)
-
-            vwan_configuration = cls._schema_on_200.value.Element.properties.network_profile.vwan_configuration
-            vwan_configuration.ip_of_trust_subnet_for_udr = AAZObjectType(
-                serialized_name="ipOfTrustSubnetForUdr",
-            )
-            _ListHelper._build_schema_ip_address_read(vwan_configuration.ip_of_trust_subnet_for_udr)
-            vwan_configuration.network_virtual_appliance_id = AAZStrType(
-                serialized_name="networkVirtualApplianceId",
-            )
-            vwan_configuration.trust_subnet = AAZObjectType(
-                serialized_name="trustSubnet",
-            )
-            _ListHelper._build_schema_ip_address_space_read(vwan_configuration.trust_subnet)
-            vwan_configuration.un_trust_subnet = AAZObjectType(
-                serialized_name="unTrustSubnet",
-            )
-            _ListHelper._build_schema_ip_address_space_read(vwan_configuration.un_trust_subnet)
-            vwan_configuration.v_hub = AAZObjectType(
-                serialized_name="vHub",
-                flags={"required": True},
-            )
-            _ListHelper._build_schema_ip_address_space_read(vwan_configuration.v_hub)
-
-            panorama_config = cls._schema_on_200.value.Element.properties.panorama_config
-            panorama_config.cg_name = AAZStrType(
-                serialized_name="cgName",
-                flags={"read_only": True},
-            )
-            panorama_config.config_string = AAZStrType(
-                serialized_name="configString",
-                flags={"required": True},
-            )
-            panorama_config.dg_name = AAZStrType(
-                serialized_name="dgName",
-                flags={"read_only": True},
-            )
-            panorama_config.host_name = AAZStrType(
-                serialized_name="hostName",
-                flags={"read_only": True},
-            )
-            panorama_config.panorama_server = AAZStrType(
-                serialized_name="panoramaServer",
-                flags={"read_only": True},
-            )
-            panorama_config.panorama_server2 = AAZStrType(
-                serialized_name="panoramaServer2",
-                flags={"read_only": True},
-            )
-            panorama_config.tpl_name = AAZStrType(
-                serialized_name="tplName",
-                flags={"read_only": True},
-            )
-            panorama_config.vm_auth_key = AAZStrType(
-                serialized_name="vmAuthKey",
-                flags={"read_only": True},
-            )
-
-            plan_data = cls._schema_on_200.value.Element.properties.plan_data
-            plan_data.billing_cycle = AAZStrType(
-                serialized_name="billingCycle",
-                flags={"required": True},
-            )
-            plan_data.effective_date = AAZStrType(
-                serialized_name="effectiveDate",
-                flags={"read_only": True},
-            )
-            plan_data.plan_id = AAZStrType(
-                serialized_name="planId",
-                flags={"required": True},
-            )
-            plan_data.usage_type = AAZStrType(
-                serialized_name="usageType",
             )
 
             system_data = cls._schema_on_200.value.Element.system_data

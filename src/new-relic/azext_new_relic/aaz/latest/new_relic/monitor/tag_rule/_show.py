@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "new-relic monitor tag-rule show",
 )
 class Show(AAZCommand):
-    """Get a TagRule
+    """Retrieves the details of the tag rules for a specific New Relic monitor resource, providing insight into its setup and status.
 
     :example: Get a TagRule.
         az new-relic monitor tag-rule show --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor --name default

@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "palo-alto cloudngfw local-rulestack fqdnlist",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage local-rulestack fqdnlist resource
+    """Manage FQDN list for Palo Alto Networks local rulestacks.
     """
     pass
 

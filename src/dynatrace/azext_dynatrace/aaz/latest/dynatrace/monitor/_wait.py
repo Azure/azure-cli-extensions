@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}", "2021-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}", "2024-04-24"],
         ]
     }
 
@@ -45,6 +45,9 @@ class Wait(AAZWaitCommand):
             help="Monitor resource name",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9_-]*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -116,7 +119,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2021-09-01",
+                    "api-version", "2024-04-24",
                     required=True,
                 ),
             }
@@ -193,11 +196,11 @@ class Wait(AAZWaitCommand):
             _element = cls._schema_on_200.identity.user_assigned_identities.Element
             _element.client_id = AAZStrType(
                 serialized_name="clientId",
-                flags={"required": True},
+                flags={"read_only": True},
             )
             _element.principal_id = AAZStrType(
                 serialized_name="principalId",
-                flags={"required": True},
+                flags={"read_only": True},
             )
 
             properties = cls._schema_on_200.properties
@@ -206,10 +209,14 @@ class Wait(AAZWaitCommand):
             )
             properties.liftr_resource_category = AAZStrType(
                 serialized_name="liftrResourceCategory",
+                flags={"read_only": True},
             )
             properties.liftr_resource_preference = AAZIntType(
                 serialized_name="liftrResourcePreference",
                 flags={"read_only": True},
+            )
+            properties.marketplace_saas_auto_renew = AAZStrType(
+                serialized_name="marketplaceSaasAutoRenew",
             )
             properties.marketplace_subscription_status = AAZStrType(
                 serialized_name="marketplaceSubscriptionStatus",
@@ -222,6 +229,7 @@ class Wait(AAZWaitCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
             )
             properties.user_info = AAZObjectType(
                 serialized_name="userInfo",
@@ -244,6 +252,9 @@ class Wait(AAZWaitCommand):
             account_info = cls._schema_on_200.properties.dynatrace_environment_properties.account_info
             account_info.account_id = AAZStrType(
                 serialized_name="accountId",
+            )
+            account_info.company_name = AAZStrType(
+                serialized_name="companyName",
             )
             account_info.region_id = AAZStrType(
                 serialized_name="regionId",
@@ -272,6 +283,7 @@ class Wait(AAZWaitCommand):
             )
             single_sign_on_properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
             )
             single_sign_on_properties.single_sign_on_state = AAZStrType(
                 serialized_name="singleSignOnState",

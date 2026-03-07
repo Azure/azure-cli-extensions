@@ -63,6 +63,45 @@ def step_create(test, checks=None):
     )
 
 
+def call_scenario2(test):
+    """# Testcase: scenario2"""
+    setup_scenario1(test)
+    step_create2(
+        test,
+        checks=[
+            test.check("name", "{name}"),
+            test.check("provisioningState", "Succeeded"),
+        ],
+    )
+    step_update(
+        test,
+        checks=[
+            test.check("tags", "{tagsUpdate}"),
+            test.check("provisioningState", "Succeeded"),
+        ],
+    )
+    step_show(test, checks=[])
+    step_list_resource_group(test, checks=[])
+    step_delete(test, checks=[])
+    cleanup_scenario1(test)
+
+
+def step_create2(test, checks=None):
+    """BaremetalMachineKeyset create operation with privilege level 'Other'"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud cluster baremetalmachinekeyset create --name {name} "
+        '--extended-location name={extendedLocation} type="CustomLocation" '
+        "--location {location} --azure-group-id {azureGroupId} --expiration {expiration} "
+        "--jump-hosts-allowed {jumpHostsAllowed} --os-group-name {osGroupName} "
+        "--privilege-level {privilegeLevelOther} --privilege-level-name {privilegeLevelName} --user-list {userList} "
+        '--tags key1="myvalue1" key2="myvalue2" --cluster-name {clusterName} '
+        "--resource-group {rg}",
+        checks=checks,
+    )
+
+
 def step_show(test, checks=None):
     """BaremetalMachineKeyset show operation"""
     if checks is None:
@@ -134,6 +173,12 @@ class BaremetalMachineKeysetScenarioTest(ScenarioTest):
                 "privilegeLevel": CONFIG.get(
                     "BAREMETALMACHINE_KEYSET", "privilege_level"
                 ),
+                "privilegeLevelOther": CONFIG.get(
+                    "BAREMETALMACHINE_KEYSET", "privilege_level_other"
+                ),
+                "privilegeLevelName": CONFIG.get(
+                    "BAREMETALMACHINE_KEYSET", "privilege_level_name"
+                ),
                 "userList": CONFIG.get("BAREMETALMACHINE_KEYSET", "user_list"),
                 "userListUpdate": CONFIG.get(
                     "BAREMETALMACHINE_KEYSET", "user_list_update"
@@ -143,5 +188,9 @@ class BaremetalMachineKeysetScenarioTest(ScenarioTest):
         )
 
     def test_baremetalmachinekeyset_scenario1(self):
-        """test scenario for BaremetalMachineKeyset CRUD operations"""
+        """test scenario for BaremetalMachineKeyset CRUD operations with privilege level "Standard" """
         call_scenario1(self)
+
+    def test_baremetalmachinekeyset_scenario2(self):
+        """test scenario for BaremetalMachineKeyset CRUD operations with privilege level "Other" """
+        call_scenario2(self)

@@ -2,6 +2,28 @@
 
 Release History
 ===============
+
+2.1.0
+++++++
+* `az network firewall policy intrusion-detection add`: Update IDPS profile handling to use the latest supported profile values (`Off`, `Emerging`, `Core`, `Extended`).
+* `az network firewall policy draft intrusion-detection add`: Update IDPS profile handling to use the latest supported profile values (`Off`, `Emerging`, `Core`, `Extended`).
+
+2.0.1
+++++++
+* Remove `__import__('pkg_resources').declare_namespace(__name__)` to fix the namespace package issue.
+
+2.0.0
+++++++
+* `az network firewall packet-capture-operation`: Add packet capture operation support for the azure firewall
+
+1.5.0
+++++++
+* `az network firewall create`: Add parameter `--enable-dnstap-logging`
+
+1.4.0
+++++++
+* `az network firewall create`: Add parameters `--min-capacity` and `--max-capacity` to support autoscale configuration
+
 1.3.0
 ++++++
 * `az network firewall create`: Add parameter `--edge-zone` to support extended location

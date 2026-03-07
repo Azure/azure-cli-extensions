@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "palo-alto cloudngfw local-rulestack certificate",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage local-rulestack certificate resource
+    """Manage certificates for Palo Alto Networks local rulestacks.
     """
     pass
 

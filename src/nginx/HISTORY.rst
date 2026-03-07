@@ -3,6 +3,14 @@
 Release History
 ===============
 
+2.0.0b10
+++++++
+* Updated Nginx Deployment documentation to show new marketplace SKU in examples.
+
+2.0.0b9
+++++++
+* Added support for WAF v2.
+
 2.0.0b8
 ++++++
 * Added support for updating subnet.

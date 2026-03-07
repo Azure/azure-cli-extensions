@@ -22,7 +22,7 @@ import os
 TEST_RESOURCE_IDENTIFIER = "sanitized"
 TEST_SOURCE_PHONENUMBER_DEFAULT = "sanitized"
 TEST_RECIPIENT_PHONENUMBER_DEFAULT = "sanitized"
-
+TEST_CONNECTION_STRING_DEFAULT = "endpoint=https://sanitized.communication.azure.com/;accesskey=fake==="
 
 def get_from_os_environment(env_name, default):
     import os
@@ -51,6 +51,11 @@ def get_test_recipient_phonenumber(is_live, in_recording):
     else:
         return get_from_os_environment("AZURE_COMMUNICATION_RECIPIENT_PHONENUMBER", None)
 
+def get_test_connection_string(is_live, in_recording):
+    if not is_live and not in_recording:
+        return TEST_CONNECTION_STRING_DEFAULT
+    else:
+        return get_from_os_environment("AZURE_COMMUNICATION_CONNECTION_STRING", None)
 
 def get_new_phonenumber(connection_string):
     try:

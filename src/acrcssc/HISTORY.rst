@@ -2,6 +2,19 @@
 
 Release History
 ===============
+
+1.0.0b6
+++++++++
+* Fix issue with DNL registry names when scheduling tasks
+
+1.0.0b5
+++++++++
+* Update minCliCoreVersion
+
+1.0.0b4
++++++++
+* Fix resource SDK import error
+
 1.0.0b3
 +++++++
 * Remove msrestazure dependency

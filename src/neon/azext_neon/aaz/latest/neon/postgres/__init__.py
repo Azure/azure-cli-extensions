@@ -10,3 +10,4 @@
 
 from .__cmd_group import *
 from ._create import *
+from ._get_postgres_version import *

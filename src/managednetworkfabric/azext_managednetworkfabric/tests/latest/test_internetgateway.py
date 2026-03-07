@@ -14,28 +14,34 @@ from azure.cli.testsdk import ScenarioTest
 from .config import CONFIG
 
 
-def setup_scenario1(test):
-    """Env setup_scenario1"""
+def setup_scenario(test):
+    """Env setup_scenario"""
     pass
 
 
-def cleanup_scenario1(test):
-    """Env cleanup_scenario1"""
+def cleanup_scenario(test):
+    """Env cleanup_scenario"""
     pass
 
 
 def call_scenario1(test):
-    """# Testcase: scenario1"""
-    setup_scenario1(test)
+    """Testcase: scenario1"""
+    setup_scenario(test)
+    step_update_scenario1(test, checks=[])
     step_show(test, checks=[])
-    step_list_subscription(test, checks=[])
     step_list_resource_group(test, checks=[])
-    step_update(test, checks=[])
-    cleanup_scenario1(test)
+    cleanup_scenario(test)
+
+
+def call_scenario2(test):
+    """Testcase: scenario2"""
+    setup_scenario(test)
+    step_update_scenario1(test, checks=[])
+    cleanup_scenario(test)
 
 
 def step_show(test, checks=None):
-    """Internet Gateway show operation"""
+    """internetgateway show operation"""
     if checks is None:
         checks = []
     test.cmd(
@@ -43,22 +49,18 @@ def step_show(test, checks=None):
     )
 
 
-def step_list_resource_group(test, checks=None):
-    """Internet Gateway list by resource group operation"""
+def step_update_scenario1(test, checks=None):
+    """internetgateway update operation"""
     if checks is None:
         checks = []
-    test.cmd("az networkfabric internetgateway list --resource-group {rg}")
+    test.cmd(
+        "az networkfabric internetgateway update --resource-group {rg} --resource-name {name} --gateway-rule-id {internetGatewayRuleId}",
+        checks=checks,
+    )
 
 
-def step_list_subscription(test, checks=None):
-    """Internet Gateway list by subscription operation"""
-    if checks is None:
-        checks = []
-    test.cmd("az networkfabric internetgateway list")
-
-
-def step_update(test, checks=None):
-    """Internet Gateway update operation"""
+def step_update_scenario2(test, checks=None):
+    """internetgateway update operation"""
     if checks is None:
         checks = []
     test.cmd(
@@ -67,7 +69,14 @@ def step_update(test, checks=None):
     )
 
 
-class GA_InternetGatewayScenarioTest1(ScenarioTest):
+def step_list_resource_group(test, checks=None):
+    """internetgateway list by resource group operation"""
+    if checks is None:
+        checks = []
+    test.cmd("az networkfabric internetgateway list --resource-group {rg}")
+
+
+class GA_internetgatewayScenarioTest1(ScenarioTest):
     """Internet Gateway Scenario test"""
 
     def __init__(self, *args, **kwargs):
@@ -82,7 +91,6 @@ class GA_InternetGatewayScenarioTest1(ScenarioTest):
             }
         )
 
-    # TODO: Revist test to fix failures
-    # def test_GA_internetgateway_scenario1(self):
-    #     ''' test scenario for Internet Gateway CRUD operations'''
-    #     call_scenario1(self)
+    def test_GA_internetgateway_scenario1(self):
+        """test scenario for internetgateway CRUD operations"""
+        call_scenario1(self)

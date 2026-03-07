@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2025-07-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/internetgateways/{}", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/internetgateways/{}", "2025-07-15"],
         ]
     }
 
@@ -62,7 +62,7 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.internet_gateway_rule_id = AAZResourceIdArg(
-            options=["--internet-gateway-rule-id"],
+            options=["--gateway-rule-id", "--internet-gateway-rule-id"],
             arg_group="Properties",
             help="ARM Resource ID of the Internet Gateway Rule.",
             nullable=True,
@@ -158,7 +158,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-07-15",
                     required=True,
                 ),
             }
@@ -183,7 +183,7 @@ class Update(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("properties", AAZObjectType)
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
@@ -224,7 +224,7 @@ class Update(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200.properties = AAZObjectType(
-                flags={"required": True, "client_flatten": True},
+                flags={"required": True},
             )
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -239,6 +239,7 @@ class Update(AAZCommand):
             properties.annotation = AAZStrType()
             properties.internet_gateway_rule_id = AAZStrType(
                 serialized_name="internetGatewayRuleId",
+                nullable=True,
             )
             properties.internet_gateway_type = AAZStrType(
                 serialized_name="internetGatewayType",
@@ -254,6 +255,7 @@ class Update(AAZCommand):
             properties.network_fabric_controller_id = AAZStrType(
                 serialized_name="networkFabricControllerId",
                 flags={"required": True},
+                nullable=True,
             )
             properties.port = AAZIntType(
                 flags={"read_only": True},

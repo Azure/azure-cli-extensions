@@ -256,7 +256,7 @@ class NetworkScenarioTest(ScenarioTest):
         })
 
         self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" '
-                 '--scope-accesses "SecurityAdmin" "Connectivity" '
+                 '--scope-accesses "Connectivity" "SecurityAdmin" '
                  '--network-manager-scopes '
                  ' subscriptions={sub} '
                  '-l eastus2 '
@@ -386,7 +386,7 @@ class NetworkScenarioTest(ScenarioTest):
         })
 
         self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" '
-                 '--scope-accesses "SecurityAdmin" "Connectivity" '
+                 '--scope-accesses "Connectivity" '
                  '--network-manager-scopes '
                  ' subscriptions={sub} '
                  '-l eastus2 '
@@ -399,10 +399,9 @@ class NetworkScenarioTest(ScenarioTest):
                  '--resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}"  -g {rg} ')
 
         self.cmd('network manager connect-config create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
-                 '--applies-to-group group-connectivity="None" network-group-id={sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{manager_name}/networkGroups/{group_name} '
-                 'is-global=false use-hub-gateway=true --connectivity-topology "HubAndSpoke" --delete-existing-peering true --hub '
-                 'resource-id={sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network} '
-                 'resource-type="Microsoft.Network/virtualNetworks" --description "Sample Configuration" --is-global true')
+                 '--applies-to-group group-connectivity="DirectlyConnected" network-group-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{manager_name}/networkGroups/{group_name}" is-global=false use-hub-gateway=true '
+                 '--connectivity-topology "HubAndSpoke" --delete-existing-peering true --hub resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}" resource-type="Microsoft.Network/virtualNetworks" '
+                 '--description "Sample Configuration" --is-global true')
         config_id = self.cmd('network manager connect-config show --configuration-name {config_name} --network-manager-name {manager_name} -g {rg}').get_output_in_json()["id"]
         self.kwargs.update({"config_id": config_id})
 
@@ -597,10 +596,12 @@ class NetworkScenarioTest(ScenarioTest):
         self.kwargs.update({
             'manager_name': 'TestNetworkManager',
             "group_name": 'TestNetworkManagerGroup',
+            "subnet_group_name": 'TestNetworkManagerSubnetGroup',
             'sub': '/subscriptions/{}'.format(self.get_subscription_id()),
             "routing_config": self.create_random_name("routing-config-", 20),
             "rule_collection": self.create_random_name("rule-collection-", 20),
             "rule_name": self.create_random_name("rule-", 10),
+            "subnet_type": 'Subnet'
         })
 
         self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" '
@@ -612,8 +613,11 @@ class NetworkScenarioTest(ScenarioTest):
 
         manager_group = self.cmd('network manager group create --name {group_name} --network-manager-name {manager_name} -g {rg}').get_output_in_json()
 
+        manager_subnet_group = self.cmd('network manager group create --name {subnet_group_name} --network-manager-name {manager_name} -g {rg} --member-type {subnet_type}').get_output_in_json()
+
         self.kwargs.update({
             'manager_id': manager_group['id'],
+            'subnet_group_id': manager_subnet_group['id']
         })
 
         self.cmd('az network manager routing-config create --name {routing_config} --manager-name {manager_name} --resource-group {rg}',
@@ -625,7 +629,7 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('az network manager routing-config update --name {routing_config} --manager-name {manager_name} --resource-group {rg} --description "test"',
                  self.check('description', 'test'))
 
-        self.cmd('az network manager routing-config rule-collection create --config-name {routing_config} --manager-name {manager_name} --name {rule_collection} --resource-group {rg} --applies-to [{{"network_group_id":{manager_id}}}] --disable-bgp-route true',
+        self.cmd('az network manager routing-config rule-collection create --config-name {routing_config} --manager-name {manager_name} --name {rule_collection} --resource-group {rg} --applies-to [{{"network_group_id":"{manager_id}"}},{{"network_group_id":"{subnet_group_id}"}}] --disable-bgp-route true',
                  self.check('name', '{rule_collection}'))
         self.cmd('az network manager routing-config rule-collection list --config-name {routing_config} --manager-name {manager_name} --resource-group {rg}',
                  self.check('length(@)', 1))
@@ -654,7 +658,7 @@ class NetworkScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='test_network_manager_static_cidr_crud', location='eastus2')
     def test_network_manager_static_cidr_crud(self, resource_group):
         self.kwargs.update({
-            'manager_name': 'TestNetworkManager',
+            'manager_name': 'TestNetworkManagerIPAM',
             'sub': '/subscriptions/{}'.format(self.get_subscription_id()),
             "pool_name": self.create_random_name("pool-", 10),
             "staticCidr_name": self.create_random_name("staticCidr-", 15),
@@ -663,7 +667,7 @@ class NetworkScenarioTest(ScenarioTest):
         })
 
         self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" '
-                 '--scope-accesses "SecurityAdmin" '
+                 '--scope-accesses "Connectivity" '
                  '--network-manager-scopes '
                  'subscriptions={sub} '
                  '-l eastus2euap '
@@ -675,17 +679,27 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('az network manager ipam-pool show --name {pool_name} --manager-name {manager_name} --resource-group {rg}',
                  self.check('name', '{pool_name}'))
         
-        self.cmd('az network manager ipam-pool update --name {pool_name} --manager-name {manager_name} --resource-group {rg} --description "updated desc"')
-        
+        self.cmd('az network manager ipam-pool update --name {pool_name} --manager-name {manager_name} --resource-group {rg} --description "updated desc" --address-prefixes \'["10.0.0.0/16", "192.168.0.0/16"]\'',
+                 self.check('properties.addressPrefixes[1]', '192.168.0.0/16'))
+
         self.cmd('az network manager ipam-pool show --name {pool_name} --manager-name {manager_name} --resource-group {rg}',
                  self.check('properties.description', 'updated desc'))
         
-        self.cmd('az network manager ipam-pool static-cidr create --name {staticCidr_name} --pool-name {pool_name} --manager-name {manager_name} --resource-group {rg} --number-of-ip-addresses-to-allocate {num_to_allocate}')
+        self.cmd('az network manager ipam-pool static-cidr create --name {staticCidr_name} --pool-name {pool_name} --manager-name {manager_name} --resource-group {rg} --number-of-ip-addresses-to-allocate {num_to_allocate} --description "First decription"')
         self.cmd('az resource wait --created --name {staticCidr_name} --resource-group {rg} --resource-type "Microsoft.Network/networkManagers/ipamPools/staticCidrs" --timeout 60')
-
 
         self.cmd('az network manager ipam-pool static-cidr list --pool-name {pool_name} --manager-name {manager_name} --resource-group {rg}',
                  self.check('length(@)', 1))
+        self.cmd('az network manager ipam-pool static-cidr show --name {staticCidr_name} --pool-name {pool_name} --manager-name {manager_name} --resource-group {rg}',
+                 self.check('name', '{staticCidr_name}'))
+
+        self.cmd('az network manager ipam-pool static-cidr update --name {staticCidr_name} --pool-name {pool_name} --manager-name {manager_name} --resource-group {rg} --address-prefixes "[\"10.0.0.0/20\"]"',
+                 self.check('properties.addressPrefixes[0]', '10.0.0.0/20'))
+        self.cmd('az network manager ipam-pool static-cidr show --name {staticCidr_name} --pool-name {pool_name} --manager-name {manager_name} --resource-group {rg}',
+                 self.check('name', '{staticCidr_name}'))
+
+        self.cmd('az network manager ipam-pool static-cidr update --name {staticCidr_name} --pool-name {pool_name} --manager-name {manager_name} --resource-group {rg} --number-of-ip-addresses-to-allocate {num_to_allocate} --description "Updated description"',
+                 self.check('properties.description', "Updated description"))
         self.cmd('az network manager ipam-pool static-cidr show --name {staticCidr_name} --pool-name {pool_name} --manager-name {manager_name} --resource-group {rg}',
                  self.check('name', '{staticCidr_name}'))
 
@@ -697,6 +711,64 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('az network manager ipam-pool show --name {pool_name} --manager-name {manager_name} --resource-group {rg}', expect_failure=True)
         
         self.cmd('az group delete --name {rg} --yes --no-wait')
+
+    @serial_test()
+    @ResourceGroupPreparer(name_prefix='test_network_manager_connect_config_with_capabilities', location='eastus2euap')
+    @VirtualNetworkPreparer()
+    def test_network_manager_connect_config_with_capabilities(self, virtual_network, resource_group):
+        self.kwargs.update({
+            'config_name': 'myTestConnectConfigWithCapabilities',
+            'manager_name': 'TestNetworkManager',
+            'group_name': 'TestNetworkGroup',
+            'description': '"A sample policy with capabilities"',
+            'sub': '/subscriptions/{}'.format(self.get_subscription_id()),
+            'virtual_network': virtual_network,
+            'name': 'TestStaticMember'
+        })
+
+        self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" '
+                 '--scope-accesses "Connectivity" '
+                 '--network-manager-scopes '
+                 ' subscriptions={sub} '
+                 '-l eastus2euap '
+                 '--resource-group {rg}')
+
+        self.cmd('network manager group create --name {group_name} --network-manager-name {manager_name} --description {description} '
+                 ' -g {rg} ')
+
+        self.cmd('network manager group static-member create --name {name} --network-group-name {group_name} --network-manager-name {manager_name} '
+                 '--resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}"  -g {rg} ')
+
+        self.cmd('network manager connect-config create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
+                 '--applies-to-group group-connectivity="DirectlyConnected" network-group-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{manager_name}/networkGroups/{group_name}" is-global=false use-hub-gateway=true '
+                 '--connectivity-topology "HubAndSpoke" --delete-existing-peering true --hub resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}" resource-type="Microsoft.Network/virtualNetworks" '
+                 '--description "Sample Configuration with Capabilities" --is-global true '
+                 '--connect-capabilities connected-group-address-overlap="Disallowed" connected-group-private-endpoints-scale="HighScale" peering-enforcement="Enforced"')
+        
+        # Test SHOW with connect-capabilities validation
+        config_id = self.cmd('network manager connect-config show --configuration-name {config_name} --network-manager-name {manager_name} -g {rg}', checks=[
+            self.check('connectivityCapabilities.connectedGroupAddressOverlap', 'Disallowed'),
+            self.check('connectivityCapabilities.connectedGroupPrivateEndpointsScale', 'HighScale'),
+            self.check('connectivityCapabilities.peeringEnforcement', 'Enforced')
+        ]).get_output_in_json()["id"]
+        self.kwargs.update({"config_id": config_id})
+
+        self.cmd('network manager connect-config update --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
+                 '--connect-capabilities connected-group-address-overlap="Allowed" connected-group-private-endpoints-scale="Standard" peering-enforcement="Unenforced"', checks=[
+            self.check('connectivityCapabilities.connectedGroupAddressOverlap', 'Allowed'),
+            self.check('connectivityCapabilities.connectedGroupPrivateEndpointsScale', 'Standard'),
+            self.check('connectivityCapabilities.peeringEnforcement', 'Unenforced')
+        ])
+        
+        # Test LIST operation (should work normally)
+        self.cmd('network manager connect-config list --network-manager-name {manager_name} -g {rg}')
+        
+        # Test DELETE operation
+        self.cmd('network manager connect-config delete --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} --force --yes')
+
+        # Cleanup resources
+        self.cmd('network manager group delete -g {rg} --name {group_name} --network-manager-name {manager_name} --force --yes')
+        self.cmd('network manager delete --resource-group {rg} --name {manager_name} --force --yes')
 
     @serial_test()
     @AllowLargeResponse()
@@ -777,4 +849,3 @@ class NetworkScenarioTest(ScenarioTest):
         self.cmd('az resource wait --deleted --name {workspace_name} --resource-group {rg} --resource-type {workspace_resource_type}')
 
         self.cmd('az group delete --name {rg} --yes --no-wait')
-        

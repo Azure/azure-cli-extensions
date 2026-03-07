@@ -7,6 +7,9 @@
 # --------------------------------------------------------------------------
 
 from ._client import HybridNetworkManagementClient
+from ._version import VERSION
+
+__version__ = VERSION
 
 try:
     from ._patch import __all__ as _patch_all

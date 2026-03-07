@@ -308,8 +308,8 @@ class ContainerAppJobUpdateDecorator(ContainerAppJobDecorator):
             or self.get_argument_scale_rule_type() \
             or self.get_argument_scale_rule_auth() \
             or self.get_argument_polling_interval() \
-            or self.get_argument_min_executions() \
-            or self.get_argument_max_executions()
+            or self.get_argument_min_executions() is not None \
+            or self.get_argument_max_executions() is not None
 
     def set_up_trigger_configurations(self):
         if self.should_update_trigger_configurations():  # pylint: disable=too-many-nested-blocks

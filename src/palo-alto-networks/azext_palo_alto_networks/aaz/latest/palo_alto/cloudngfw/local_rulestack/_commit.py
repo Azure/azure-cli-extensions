@@ -15,13 +15,16 @@ from azure.cli.core.aaz import *
     "palo-alto cloudngfw local-rulestack commit",
 )
 class Commit(AAZCommand):
-    """Commit rulestack configuration
+    """Commit configuration changes to a Palo Alto Networks local rulestack.
+
+    :example: Commit configuration changes to a Palo Alto Networks local rulestack
+        az palo-alto cloudngfw local-rulestack commit -g MyResourceGroup --local-rulestack-name MyLocalRulestacks
     """
 
     _aaz_info = {
-        "version": "2022-08-29",
+        "version": "2025-10-08",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/localrulestacks/{}/commit", "2022-08-29"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/localrulestacks/{}/commit", "2025-10-08"],
         ]
     }
 
@@ -134,7 +137,7 @@ class Commit(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-08-29",
+                    "api-version", "2025-10-08",
                     required=True,
                 ),
             }

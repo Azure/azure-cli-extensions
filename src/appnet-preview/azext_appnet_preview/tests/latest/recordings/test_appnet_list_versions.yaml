@@ -1,0 +1,54 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - appnet list-versions
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location
+      User-Agent:
+      - AZURECLI/2.84.0 azsdk-python-core/1.38.0 Python/3.10.12 (Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.AppLink/locations/westus2/availableVersions?api-version=2025-08-01-preview
+  response:
+    body:
+      string: '{"value":[{"properties":{"fullyManagedVersions":{"releaseChannels":[{"releaseChannel":"Stable","version":"1.27"},{"releaseChannel":"Rapid","version":"1.28"}]},"kubernetesVersion":"1.31","selfManagedVersions":{"versions":[{"upgrades":["1.26"],"version":"1.25"},{"upgrades":["1.27"],"version":"1.26"},{"upgrades":["1.28"],"version":"1.27"},{"upgrades":[],"version":"1.28"}]}}},{"properties":{"fullyManagedVersions":{"releaseChannels":[{"releaseChannel":"Stable","version":"1.27"},{"releaseChannel":"Rapid","version":"1.28"}]},"kubernetesVersion":"1.32","selfManagedVersions":{"versions":[{"upgrades":["1.26"],"version":"1.25"},{"upgrades":["1.27"],"version":"1.26"},{"upgrades":["1.28"],"version":"1.27"},{"upgrades":[],"version":"1.28"}]}}},{"properties":{"fullyManagedVersions":{"releaseChannels":[{"releaseChannel":"Stable","version":"1.27"},{"releaseChannel":"Rapid","version":"1.28"}]},"kubernetesVersion":"1.33","selfManagedVersions":{"versions":[{"upgrades":["1.26"],"version":"1.25"},{"upgrades":["1.27"],"version":"1.26"},{"upgrades":["1.28"],"version":"1.27"},{"upgrades":[],"version":"1.28"}]}}},{"properties":{"fullyManagedVersions":{"releaseChannels":[{"releaseChannel":"Stable","version":"1.27"},{"releaseChannel":"Rapid","version":"1.28"}]},"kubernetesVersion":"1.34","selfManagedVersions":{"versions":[{"upgrades":["1.27"],"version":"1.26"},{"upgrades":["1.28"],"version":"1.27"},{"upgrades":[],"version":"1.28"}]}}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1432'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 06 Mar 2026 02:55:37 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '1'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=65637ed6-6841-46fa-8bae-8051a8b691f7/westus/90ebbbea-e665-4f74-9bd8-7406fe06864e
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 3B0E7EE4BF2C4FD88464C3F44D9BA54A Ref B: BY1AA1072320023 Ref C: 2026-03-06T02:55:38Z'
+    status:
+      code: 200
+      message: OK
+version: 1

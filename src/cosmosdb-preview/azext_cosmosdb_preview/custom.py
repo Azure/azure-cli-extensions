@@ -2280,7 +2280,7 @@ def cli_begin_retrieve_sql_container_partition_throughput(client,
             resource_group_name, account_name, database_name, container_name)
     except Exception as ex:
         if ex.error.code == "NotFound":
-            raise CLIError("(NotFound) Container with name '{}' in database '{} could not be found.".format(container_name, database_name))
+            raise CLIError("(NotFound) Container with name '{}' in database '{}' could not be found.".format(container_name, database_name))
 
     if len(physical_partition_ids) == 0 and all_partitions is False:
         raise CLIError(
@@ -2319,6 +2319,15 @@ def cli_cosmosdb_sql_container_throughput_update(client,
                                                  max_throughput=None,
                                                  throughput_buckets=None):
     """Update an Azure Cosmos DB SQL container throughput"""
+
+    # If throughput_buckets is None (not explicitly provided), preserve existing throughput buckets
+    if throughput_buckets is None:
+        logger.debug('reading SQL container throughput to preserve existing throughput buckets')
+        current_throughput = client.get_sql_container_throughput(resource_group_name, account_name, database_name, container_name)
+
+        if current_throughput.resource and current_throughput.resource.throughput_buckets is not None:
+            throughput_buckets = current_throughput.resource.throughput_buckets
+
     throughput_update_resource = _get_throughput_settings_update_parameters(throughput=throughput,
                                                                             max_throughput=max_throughput,
                                                                             throughput_buckets=throughput_buckets)
@@ -2372,7 +2381,7 @@ def cli_begin_redistribute_sql_container_partition_throughput(client,
             resource_group_name, account_name, database_name, container_name)
     except Exception as ex:
         if ex.error.code == "NotFound":
-            raise CLIError("(NotFound) Container with name '{}' in database '{} could not be found.".format(container_name, database_name))
+            raise CLIError("(NotFound) Container with name '{}' in database '{}' could not be found.".format(container_name, database_name))
 
     if evenly_distribute:
         redistribute_throughput_properties_resource = RedistributeThroughputPropertiesResource(
@@ -2413,7 +2422,7 @@ def cli_begin_retrieve_mongo_container_partition_throughput(client,
             resource_group_name, account_name, database_name, collection_name)
     except Exception as ex:
         if ex.error.code == "NotFound":
-            raise CLIError("(NotFound) Container with name '{}' in database '{} could not be found.".format(collection_name, database_name))
+            raise CLIError("(NotFound) Container with name '{}' in database '{}' could not be found.".format(collection_name, database_name))
 
     if len(physical_partition_ids) == 0 and all_partitions is False:
         raise CLIError(
@@ -2458,7 +2467,7 @@ def cli_begin_redistribute_mongo_container_partition_throughput(client,
             resource_group_name, account_name, database_name, collection_name)
     except Exception as ex:
         if ex.error.code == "NotFound":
-            raise CLIError("(NotFound) Container with name '{}' in database '{} could not be found.".format(collection_name, database_name))
+            raise CLIError("(NotFound) Container with name '{}' in database '{}' could not be found.".format(collection_name, database_name))
 
     if evenly_distribute:
         redistribute_throughput_properties_resource = RedistributeThroughputPropertiesResource(
@@ -3296,23 +3305,33 @@ def cli_cosmosdb_fleetspace_create(client,
 
     """Creates an Azure Cosmos DB Fleetspace."""
 
+    # Extract service_tier and data_regions from base level (mandatory for create)
+    service_tier = fleetspace_body['properties'].get('serviceTier')
+    data_regions = fleetspace_body['properties'].get('dataRegions')
+
+    if not service_tier:
+        raise CLIError('Missing required field "serviceTier" in properties.')
+
+    if not data_regions:
+        raise CLIError('Missing required field "dataRegions" in properties.')
+
     throughput_pool_config = FleetspacePropertiesThroughputPoolConfiguration(
         min_throughput=fleetspace_body['properties']['throughputPoolConfiguration']['minThroughput'],
-        max_throughput=fleetspace_body['properties']['throughputPoolConfiguration']['maxThroughput'],
-        service_tier=fleetspace_body['properties']['throughputPoolConfiguration']['serviceTier'],
-        data_regions=fleetspace_body['properties']['throughputPoolConfiguration']['dataRegions']
+        max_throughput=fleetspace_body['properties']['throughputPoolConfiguration']['maxThroughput']
     )
 
-    fleetspace_body = FleetspaceResource(
+    fleetspace_resource = FleetspaceResource(
         fleetspace_api_kind="NoSQL",
-        throughput_pool_configuration=throughput_pool_config
+        throughput_pool_configuration=throughput_pool_config,
+        service_tier=service_tier,
+        data_regions=data_regions
     )
 
     return client.begin_create(
         resource_group_name=resource_group_name,
         fleet_name=fleet_name,
         fleetspace_name=fleetspace_name,
-        body=fleetspace_body
+        body=fleetspace_resource
     )
 
 
@@ -3324,22 +3343,27 @@ def cli_cosmosdb_fleetspace_update(client,
 
     """Updates an existing Azure Cosmos DB Fleetspace."""
 
+    # Extract service_tier and data_regions from base level (optional for update)
+    service_tier = fleetspace_body['properties'].get('serviceTier')
+    data_regions = fleetspace_body['properties'].get('dataRegions')
+
     throughput_pool_config = FleetspacePropertiesThroughputPoolConfiguration(
         min_throughput=fleetspace_body['properties']['throughputPoolConfiguration']['minThroughput'],
-        max_throughput=fleetspace_body['properties']['throughputPoolConfiguration']['maxThroughput'],
-        service_tier=fleetspace_body['properties']['throughputPoolConfiguration']['serviceTier']
+        max_throughput=fleetspace_body['properties']['throughputPoolConfiguration']['maxThroughput']
     )
 
-    fleetspace_body = FleetspaceResource(
+    fleetspace_resource = FleetspaceResource(
         fleetspace_api_kind="NoSQL",
-        throughput_pool_configuration=throughput_pool_config
+        throughput_pool_configuration=throughput_pool_config,
+        service_tier=service_tier,
+        data_regions=data_regions
     )
 
     return client.begin_update(
         resource_group_name=resource_group_name,
         fleet_name=fleet_name,
         fleetspace_name=fleetspace_name,
-        body=fleetspace_body
+        body=fleetspace_resource
     )
 
 

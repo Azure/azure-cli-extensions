@@ -1,0 +1,1380 @@
+interactions:
+- request:
+    body: '{"properties": {"description": "a weekly retrain schedule", "properties":
+      {}, "tags": {}, "action": {"actionType": "CreateJob", "jobDefinition": {"properties":
+      {}, "tags": {}, "computeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/kevindestin-rg/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/computes/cpu-cluster",
+      "displayName": "hello_pipeline_abc", "isArchived": false, "jobType": "Pipeline",
+      "inputs": {"hello_string_top_level_input": {"jobInputType": "literal", "value":
+      "${{name}}"}}, "jobs": {"a": {"name": "a", "type": "command", "inputs": {"hello_string":
+      {"job_input_type": "literal", "value": "${{parent.inputs.hello_string_top_level_input}}"}},
+      "_source": "YAML.JOB", "componentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/kevindestin-rg/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/components/azureml_anonymous/versions/94d8afef-0667-4413-bd7b-13c36384077b"},
+      "b": {"name": "b", "type": "command", "_source": "YAML.JOB", "componentId":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/kevindestin-rg/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/components/azureml_anonymous/versions/c110c8df-20ce-486b-ae8b-d17e1aa4c6ec"},
+      "c": {"name": "c", "type": "command", "inputs": {"world_input": {"job_input_type":
+      "literal", "value": "${{parent.jobs.b.outputs.world_output}}"}}, "_source":
+      "YAML.JOB", "componentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/kevindestin-rg/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/components/azureml_anonymous/versions/8a49bcf8-2c92-471e-a8a6-6be330860463"}},
+      "outputs": {}, "settings": {"_source": "YAML.JOB"}}}, "displayName": "weekly
+      retrain schedule", "trigger": {"endTime": "2023-06-10 10:15:00", "startTime":
+      "2023-03-10 10:15:00", "timeZone": "Pacific Standard Time", "triggerType": "Cron",
+      "expression": "15 10 * * 1"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1965'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.4.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.10.6 (Linux-5.15.79.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/schedules/test-schedule-000001-1?api-version=0000-00-00
+  response:
+    body:
+      string: '{"properties": {"description": "a weekly retrain schedule", "tags":
+        {}, "properties": {}, "displayName": "weekly retrain schedule", "isEnabled":
+        true, "trigger": {"endTime": "2023-06-10 10:15:00", "startTime": "2023-03-10
+        10:15:00", "timeZone": "Pacific Standard Time", "triggerType": "Cron", "expression":
+        "15 10 * * 1"}, "action": {"actionType": "CreateJob", "jobDefinition": {"description":
+        null, "tags": {}, "properties": {}, "displayName": "hello_pipeline_abc", "status":
+        "NotStarted", "experimentName": "Default", "services": null, "computeId":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/computes/cpu-cluster",
+        "isArchived": false, "identity": null, "componentId": null, "jobType": "Pipeline",
+        "settings": {"_source": "YAML.JOB"}, "jobs": {"a": {"name": "a", "type": "command",
+        "inputs": {"hello_string": {"job_input_type": "literal", "value": "${{parent.inputs.hello_string_top_level_input}}"}},
+        "_source": "YAML.JOB", "componentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/components/azureml_anonymous/versions/94d8afef-0667-4413-bd7b-13c36384077b"},
+        "b": {"name": "b", "type": "command", "_source": "YAML.JOB", "componentId":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/components/azureml_anonymous/versions/c110c8df-20ce-486b-ae8b-d17e1aa4c6ec"},
+        "c": {"name": "c", "type": "command", "inputs": {"world_input": {"job_input_type":
+        "literal", "value": "${{parent.jobs.b.outputs.world_output}}"}}, "_source":
+        "YAML.JOB", "componentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/components/azureml_anonymous/versions/8a49bcf8-2c92-471e-a8a6-6be330860463"}},
+        "inputs": {"hello_string_top_level_input": {"description": null, "jobInputType":
+        "literal", "value": "${{name}}"}}, "outputs": {}, "sourceJobId": null}}, "provisioningState":
+        "Creating"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/s:39c71948-a8ee-4d35-88d5-3b3c025de5d4:1YKfB-Tfql-wPJpvUuOvqRrVjx_0phxflFBpBTI3_lQ?api-version=2022-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '2194'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Jan 2023 13:53:22 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/kevindestin-rg/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/schedules/test-schedule-000001-1?api-version=2022-10-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-b13902ad7a684ca1305779ecd3a30a94-e808d0441dc51f67-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - PT30M
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.688'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.4.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.10.6 (Linux-5.15.79.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/s:39c71948-a8ee-4d35-88d5-3b3c025de5d4:1YKfB-Tfql-wPJpvUuOvqRrVjx_0phxflFBpBTI3_lQ?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationResults/s:39c71948-a8ee-4d35-88d5-3b3c025de5d4:1YKfB-Tfql-wPJpvUuOvqRrVjx_0phxflFBpBTI3_lQ",
+        "name": "s:39c71948-a8ee-4d35-88d5-3b3c025de5d4:1YKfB-Tfql-wPJpvUuOvqRrVjx_0phxflFBpBTI3_lQ",
+        "status": "Creating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '342'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Jan 2023 13:53:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-e99e09eebdb0e15ce5fec9dc5494d699-256c7860d3241252-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.088'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.4.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.10.6 (Linux-5.15.79.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/s:39c71948-a8ee-4d35-88d5-3b3c025de5d4:1YKfB-Tfql-wPJpvUuOvqRrVjx_0phxflFBpBTI3_lQ?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationResults/s:39c71948-a8ee-4d35-88d5-3b3c025de5d4:1YKfB-Tfql-wPJpvUuOvqRrVjx_0phxflFBpBTI3_lQ",
+        "name": "s:39c71948-a8ee-4d35-88d5-3b3c025de5d4:1YKfB-Tfql-wPJpvUuOvqRrVjx_0phxflFBpBTI3_lQ",
+        "status": "Succeeded", "startTime": "2023-01-09T13:53:22.9040132+00:00", "endTime":
+        "2023-01-09T13:53:25+00:00"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '433'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Jan 2023 13:53:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-b405ca2fef5e63544eca7cbb8cde628f-2b909ae8c4fc4065-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.018'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.4.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.10.6 (Linux-5.15.79.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/schedules/test-schedule-000001-1?api-version=0000-00-00
+  response:
+    body:
+      string: '{"name": "test-schedule-000001-1", "properties": {"description": "a
+        weekly retrain schedule", "tags": {}, "properties": {}, "displayName": "weekly
+        retrain schedule", "isEnabled": true, "trigger": {"endTime": "2023-06-10 10:15:00",
+        "startTime": "2023-03-10 10:15:00", "timeZone": "Pacific Standard Time", "triggerType":
+        "Cron", "expression": "15 10 * * 1"}, "action": {"actionType": "CreateJob",
+        "jobDefinition": {"description": null, "tags": {}, "properties": {}, "displayName":
+        "hello_pipeline_abc", "status": "NotStarted", "experimentName": "Default",
+        "services": null, "computeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/computes/cpu-cluster",
+        "isArchived": false, "identity": null, "componentId": null, "jobType": "Pipeline",
+        "settings": {"_source": "YAML.JOB"}, "jobs": {"a": {"name": "a", "type": "command",
+        "inputs": {"hello_string": {"job_input_type": "literal", "value": "${{parent.inputs.hello_string_top_level_input}}"}},
+        "_source": "YAML.JOB", "componentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/components/azureml_anonymous/versions/94d8afef-0667-4413-bd7b-13c36384077b"},
+        "b": {"name": "b", "type": "command", "_source": "YAML.JOB", "componentId":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/components/azureml_anonymous/versions/c110c8df-20ce-486b-ae8b-d17e1aa4c6ec"},
+        "c": {"name": "c", "type": "command", "inputs": {"world_input": {"job_input_type":
+        "literal", "value": "${{parent.jobs.b.outputs.world_output}}"}}, "_source":
+        "YAML.JOB", "componentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/components/azureml_anonymous/versions/8a49bcf8-2c92-471e-a8a6-6be330860463"}},
+        "inputs": {"hello_string_top_level_input": {"description": null, "jobInputType":
+        "literal", "value": "${{name}}"}}, "outputs": {}, "sourceJobId": null}}, "provisioningState":
+        "Succeeded"}, "systemData": {"createdAt": "2023-01-09T05:50:22.6681901+00:00",
+        "createdBy": "Kevin Destin", "createdByType": "User", "lastModifiedAt": "2023-01-09T13:53:25.3125023+00:00",
+        "lastModifiedBy": "Kevin Destin", "lastModifiedByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2468'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Jan 2023 13:53:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-7893c518a501a3492eaec0747ecd2f10-75c4576cb78edbdd-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.299'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.4.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.10.6 (Linux-5.15.79.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/schedules/test-schedule-000001-1?api-version=0000-00-00
+  response:
+    body:
+      string: '{"name": "test-schedule-000001-1", "properties": {"description": "a
+        weekly retrain schedule", "tags": {}, "properties": {}, "displayName": "weekly
+        retrain schedule", "isEnabled": true, "trigger": {"endTime": "2023-06-10 10:15:00",
+        "startTime": "2023-03-10 10:15:00", "timeZone": "Pacific Standard Time", "triggerType":
+        "Cron", "expression": "15 10 * * 1"}, "action": {"actionType": "CreateJob",
+        "jobDefinition": {"description": null, "tags": {}, "properties": {}, "displayName":
+        "hello_pipeline_abc", "status": "NotStarted", "experimentName": "Default",
+        "services": null, "computeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/computes/cpu-cluster",
+        "isArchived": false, "identity": null, "componentId": null, "jobType": "Pipeline",
+        "settings": {"_source": "YAML.JOB"}, "jobs": {"a": {"name": "a", "type": "command",
+        "inputs": {"hello_string": {"job_input_type": "literal", "value": "${{parent.inputs.hello_string_top_level_input}}"}},
+        "_source": "YAML.JOB", "componentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/components/azureml_anonymous/versions/94d8afef-0667-4413-bd7b-13c36384077b"},
+        "b": {"name": "b", "type": "command", "_source": "YAML.JOB", "componentId":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/components/azureml_anonymous/versions/c110c8df-20ce-486b-ae8b-d17e1aa4c6ec"},
+        "c": {"name": "c", "type": "command", "inputs": {"world_input": {"job_input_type":
+        "literal", "value": "${{parent.jobs.b.outputs.world_output}}"}}, "_source":
+        "YAML.JOB", "componentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/components/azureml_anonymous/versions/8a49bcf8-2c92-471e-a8a6-6be330860463"}},
+        "inputs": {"hello_string_top_level_input": {"description": null, "jobInputType":
+        "literal", "value": "${{name}}"}}, "outputs": {}, "sourceJobId": null}}, "provisioningState":
+        "Succeeded"}, "systemData": {"createdAt": "2023-01-09T05:50:22.6681901+00:00",
+        "createdBy": "Kevin Destin", "createdByType": "User", "lastModifiedAt": "2023-01-09T13:53:25.3125023+00:00",
+        "lastModifiedBy": "Kevin Destin", "lastModifiedByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2468'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Jan 2023 13:53:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-3de6ddcec80f4947740820d511fb0c16-b7f40991c6ed4a58-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.115'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.4.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.10.6 (Linux-5.15.79.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/schedules/test-schedule-000001-1?api-version=0000-00-00
+  response:
+    body:
+      string: '{"name": "test-schedule-000001-1", "properties": {"description": "a
+        weekly retrain schedule", "tags": {}, "properties": {}, "displayName": "weekly
+        retrain schedule", "isEnabled": true, "trigger": {"endTime": "2023-06-10 10:15:00",
+        "startTime": "2023-03-10 10:15:00", "timeZone": "Pacific Standard Time", "triggerType":
+        "Cron", "expression": "15 10 * * 1"}, "action": {"actionType": "CreateJob",
+        "jobDefinition": {"description": null, "tags": {}, "properties": {}, "displayName":
+        "hello_pipeline_abc", "status": "NotStarted", "experimentName": "Default",
+        "services": null, "computeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/computes/cpu-cluster",
+        "isArchived": false, "identity": null, "componentId": null, "jobType": "Pipeline",
+        "settings": {"_source": "YAML.JOB"}, "jobs": {"a": {"name": "a", "type": "command",
+        "inputs": {"hello_string": {"job_input_type": "literal", "value": "${{parent.inputs.hello_string_top_level_input}}"}},
+        "_source": "YAML.JOB", "componentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/components/azureml_anonymous/versions/94d8afef-0667-4413-bd7b-13c36384077b"},
+        "b": {"name": "b", "type": "command", "_source": "YAML.JOB", "componentId":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/components/azureml_anonymous/versions/c110c8df-20ce-486b-ae8b-d17e1aa4c6ec"},
+        "c": {"name": "c", "type": "command", "inputs": {"world_input": {"job_input_type":
+        "literal", "value": "${{parent.jobs.b.outputs.world_output}}"}}, "_source":
+        "YAML.JOB", "componentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/components/azureml_anonymous/versions/8a49bcf8-2c92-471e-a8a6-6be330860463"}},
+        "inputs": {"hello_string_top_level_input": {"description": null, "jobInputType":
+        "literal", "value": "${{name}}"}}, "outputs": {}, "sourceJobId": null}}, "provisioningState":
+        "Succeeded"}, "systemData": {"createdAt": "2023-01-09T05:50:22.6681901+00:00",
+        "createdBy": "Kevin Destin", "createdByType": "User", "lastModifiedAt": "2023-01-09T13:53:25.3125023+00:00",
+        "lastModifiedBy": "Kevin Destin", "lastModifiedByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2468'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Jan 2023 13:53:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-ebf6a8239ba31ec0b6f948cddcff66b3-4de1bb8af68973c7-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.086'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"description": "a weekly retrain schedule", "properties":
+      {}, "tags": {}, "action": {"actionType": "CreateJob", "jobDefinition": {"properties":
+      {}, "tags": {}, "computeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/kevindestin-rg/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/computes/cpu-cluster",
+      "displayName": "hello_pipeline_abc", "experimentName": "Default", "isArchived":
+      false, "jobType": "Pipeline", "inputs": {"hello_string_top_level_input": {"jobInputType":
+      "literal", "value": "${{name}}"}}, "jobs": {"a": {"name": "a", "type": "command",
+      "inputs": {"hello_string": {"job_input_type": "literal", "value": "${{parent.inputs.hello_string_top_level_input}}"}},
+      "_source": "REMOTE.WORKSPACE.COMPONENT", "componentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/kevindestin-rg/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/components/azureml_anonymous/versions/94d8afef-0667-4413-bd7b-13c36384077b"},
+      "b": {"name": "b", "type": "command", "_source": "REMOTE.WORKSPACE.COMPONENT",
+      "componentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/kevindestin-rg/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/components/azureml_anonymous/versions/c110c8df-20ce-486b-ae8b-d17e1aa4c6ec"},
+      "c": {"name": "c", "type": "command", "inputs": {"world_input": {"job_input_type":
+      "literal", "value": "${{parent.jobs.b.outputs.world_output}}"}}, "_source":
+      "REMOTE.WORKSPACE.COMPONENT", "componentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/kevindestin-rg/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/components/azureml_anonymous/versions/8a49bcf8-2c92-471e-a8a6-6be330860463"}},
+      "outputs": {}, "settings": {"_source": "YAML.JOB"}}}, "displayName": "weekly
+      retrain schedule", "trigger": {"endTime": "2023-06-10 10:15:00", "startTime":
+      "2023-03-10 10:15:00", "timeZone": "Pacific Standard Time", "triggerType": "Cron",
+      "expression": "*/15 * * * 1"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '2049'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.4.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.10.6 (Linux-5.15.79.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/schedules/test-schedule-000001-1?api-version=0000-00-00
+  response:
+    body:
+      string: '{"properties": {"description": "a weekly retrain schedule", "tags":
+        {}, "properties": {}, "displayName": "weekly retrain schedule", "isEnabled":
+        true, "trigger": {"endTime": "2023-06-10 10:15:00", "startTime": "2023-03-10
+        10:15:00", "timeZone": "Pacific Standard Time", "triggerType": "Cron", "expression":
+        "*/15 * * * 1"}, "action": {"actionType": "CreateJob", "jobDefinition": {"description":
+        null, "tags": {}, "properties": {}, "displayName": "hello_pipeline_abc", "status":
+        "NotStarted", "experimentName": "Default", "services": null, "computeId":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/computes/cpu-cluster",
+        "isArchived": false, "identity": null, "componentId": null, "jobType": "Pipeline",
+        "settings": {"_source": "YAML.JOB"}, "jobs": {"a": {"name": "a", "type": "command",
+        "inputs": {"hello_string": {"job_input_type": "literal", "value": "${{parent.inputs.hello_string_top_level_input}}"}},
+        "_source": "REMOTE.WORKSPACE.COMPONENT", "componentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/components/azureml_anonymous/versions/94d8afef-0667-4413-bd7b-13c36384077b"},
+        "b": {"name": "b", "type": "command", "_source": "REMOTE.WORKSPACE.COMPONENT",
+        "componentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/components/azureml_anonymous/versions/c110c8df-20ce-486b-ae8b-d17e1aa4c6ec"},
+        "c": {"name": "c", "type": "command", "inputs": {"world_input": {"job_input_type":
+        "literal", "value": "${{parent.jobs.b.outputs.world_output}}"}}, "_source":
+        "REMOTE.WORKSPACE.COMPONENT", "componentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/components/azureml_anonymous/versions/8a49bcf8-2c92-471e-a8a6-6be330860463"}},
+        "inputs": {"hello_string_top_level_input": {"description": null, "jobInputType":
+        "literal", "value": "${{name}}"}}, "outputs": {}, "sourceJobId": null}}, "provisioningState":
+        "Creating"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/s:39c71948-a8ee-4d35-88d5-3b3c025de5d4:UdKUmMVY4cQoaSaRFpm6sXwMTXsThReD6cLrLtBOSN4?api-version=2022-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '2249'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Jan 2023 13:53:34 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/kevindestin-rg/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/schedules/test-schedule-000001-1?api-version=2022-10-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-1b7c9d935d6864a70e7c4e87cbf5db15-54104872f1c559b1-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - PT30M
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.037'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.4.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.10.6 (Linux-5.15.79.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/s:39c71948-a8ee-4d35-88d5-3b3c025de5d4:UdKUmMVY4cQoaSaRFpm6sXwMTXsThReD6cLrLtBOSN4?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationResults/s:39c71948-a8ee-4d35-88d5-3b3c025de5d4:UdKUmMVY4cQoaSaRFpm6sXwMTXsThReD6cLrLtBOSN4",
+        "name": "s:39c71948-a8ee-4d35-88d5-3b3c025de5d4:UdKUmMVY4cQoaSaRFpm6sXwMTXsThReD6cLrLtBOSN4",
+        "status": "Creating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '342'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Jan 2023 13:53:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-aa10d7d779ed3f959d87862c1c275a24-478dc7e994cc9de3-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.015'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.4.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.10.6 (Linux-5.15.79.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/s:39c71948-a8ee-4d35-88d5-3b3c025de5d4:UdKUmMVY4cQoaSaRFpm6sXwMTXsThReD6cLrLtBOSN4?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationResults/s:39c71948-a8ee-4d35-88d5-3b3c025de5d4:UdKUmMVY4cQoaSaRFpm6sXwMTXsThReD6cLrLtBOSN4",
+        "name": "s:39c71948-a8ee-4d35-88d5-3b3c025de5d4:UdKUmMVY4cQoaSaRFpm6sXwMTXsThReD6cLrLtBOSN4",
+        "status": "Succeeded", "startTime": "2023-01-09T13:53:34.5347886+00:00", "endTime":
+        "2023-01-09T13:53:36+00:00"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '433'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Jan 2023 13:53:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-d2a101304cd0ab1221428bba144897f9-0bd53d439d437441-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.027'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.4.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.10.6 (Linux-5.15.79.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/schedules/test-schedule-000001-1?api-version=0000-00-00
+  response:
+    body:
+      string: '{"name": "test-schedule-000001-1", "properties": {"description": "a
+        weekly retrain schedule", "tags": {}, "properties": {}, "displayName": "weekly
+        retrain schedule", "isEnabled": true, "trigger": {"endTime": "2023-06-10 10:15:00",
+        "startTime": "2023-03-10 10:15:00", "timeZone": "Pacific Standard Time", "triggerType":
+        "Cron", "expression": "*/15 * * * 1"}, "action": {"actionType": "CreateJob",
+        "jobDefinition": {"description": null, "tags": {}, "properties": {}, "displayName":
+        "hello_pipeline_abc", "status": "NotStarted", "experimentName": "Default",
+        "services": null, "computeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/computes/cpu-cluster",
+        "isArchived": false, "identity": null, "componentId": null, "jobType": "Pipeline",
+        "settings": {"_source": "YAML.JOB"}, "jobs": {"a": {"name": "a", "type": "command",
+        "inputs": {"hello_string": {"job_input_type": "literal", "value": "${{parent.inputs.hello_string_top_level_input}}"}},
+        "_source": "REMOTE.WORKSPACE.COMPONENT", "componentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/components/azureml_anonymous/versions/94d8afef-0667-4413-bd7b-13c36384077b"},
+        "b": {"name": "b", "type": "command", "_source": "REMOTE.WORKSPACE.COMPONENT",
+        "componentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/components/azureml_anonymous/versions/c110c8df-20ce-486b-ae8b-d17e1aa4c6ec"},
+        "c": {"name": "c", "type": "command", "inputs": {"world_input": {"job_input_type":
+        "literal", "value": "${{parent.jobs.b.outputs.world_output}}"}}, "_source":
+        "REMOTE.WORKSPACE.COMPONENT", "componentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/components/azureml_anonymous/versions/8a49bcf8-2c92-471e-a8a6-6be330860463"}},
+        "inputs": {"hello_string_top_level_input": {"description": null, "jobInputType":
+        "literal", "value": "${{name}}"}}, "outputs": {}, "sourceJobId": null}}, "provisioningState":
+        "Succeeded"}, "systemData": {"createdAt": "2023-01-09T05:50:22.6681901+00:00",
+        "createdBy": "Kevin Destin", "createdByType": "User", "lastModifiedAt": "2023-01-09T13:53:36.2555208+00:00",
+        "lastModifiedBy": "Kevin Destin", "lastModifiedByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2523'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Jan 2023 13:53:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-d5980567edebff40b1fb90d7a80a7289-4a4d70c627932848-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.021'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.4.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.10.6 (Linux-5.15.79.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/schedules/test-schedule-000001-1?api-version=0000-00-00
+  response:
+    body:
+      string: '{"name": "test-schedule-000001-1", "properties": {"description": "a
+        weekly retrain schedule", "tags": {}, "properties": {}, "displayName": "weekly
+        retrain schedule", "isEnabled": true, "trigger": {"endTime": "2023-06-10 10:15:00",
+        "startTime": "2023-03-10 10:15:00", "timeZone": "Pacific Standard Time", "triggerType":
+        "Cron", "expression": "*/15 * * * 1"}, "action": {"actionType": "CreateJob",
+        "jobDefinition": {"description": null, "tags": {}, "properties": {}, "displayName":
+        "hello_pipeline_abc", "status": "NotStarted", "experimentName": "Default",
+        "services": null, "computeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/computes/cpu-cluster",
+        "isArchived": false, "identity": null, "componentId": null, "jobType": "Pipeline",
+        "settings": {"_source": "YAML.JOB"}, "jobs": {"a": {"name": "a", "type": "command",
+        "inputs": {"hello_string": {"job_input_type": "literal", "value": "${{parent.inputs.hello_string_top_level_input}}"}},
+        "_source": "REMOTE.WORKSPACE.COMPONENT", "componentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/components/azureml_anonymous/versions/94d8afef-0667-4413-bd7b-13c36384077b"},
+        "b": {"name": "b", "type": "command", "_source": "REMOTE.WORKSPACE.COMPONENT",
+        "componentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/components/azureml_anonymous/versions/c110c8df-20ce-486b-ae8b-d17e1aa4c6ec"},
+        "c": {"name": "c", "type": "command", "inputs": {"world_input": {"job_input_type":
+        "literal", "value": "${{parent.jobs.b.outputs.world_output}}"}}, "_source":
+        "REMOTE.WORKSPACE.COMPONENT", "componentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/components/azureml_anonymous/versions/8a49bcf8-2c92-471e-a8a6-6be330860463"}},
+        "inputs": {"hello_string_top_level_input": {"description": null, "jobInputType":
+        "literal", "value": "${{name}}"}}, "outputs": {}, "sourceJobId": null}}, "provisioningState":
+        "Succeeded"}, "systemData": {"createdAt": "2023-01-09T05:50:22.6681901+00:00",
+        "createdBy": "Kevin Destin", "createdByType": "User", "lastModifiedAt": "2023-01-09T13:53:36.2555208+00:00",
+        "lastModifiedBy": "Kevin Destin", "lastModifiedByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2523'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Jan 2023 13:53:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-392d0214233f0fb9beeaa0489eddf070-683cb3f9087d291f-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.026'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"description": "a weekly retrain schedule", "properties":
+      {}, "tags": {}, "action": {"actionType": "CreateJob", "jobDefinition": {"properties":
+      {}, "tags": {}, "computeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/kevindestin-rg/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/computes/cpu-cluster",
+      "displayName": "hello_pipeline_abc", "experimentName": "Default", "isArchived":
+      false, "jobType": "Pipeline", "inputs": {"hello_string_top_level_input": {"jobInputType":
+      "literal", "value": "${{name}}"}}, "jobs": {"a": {"name": "a", "type": "command",
+      "inputs": {"hello_string": {"job_input_type": "literal", "value": "${{parent.inputs.hello_string_top_level_input}}"}},
+      "_source": "REMOTE.WORKSPACE.COMPONENT", "componentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/kevindestin-rg/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/components/azureml_anonymous/versions/94d8afef-0667-4413-bd7b-13c36384077b"},
+      "b": {"name": "b", "type": "command", "_source": "REMOTE.WORKSPACE.COMPONENT",
+      "componentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/kevindestin-rg/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/components/azureml_anonymous/versions/c110c8df-20ce-486b-ae8b-d17e1aa4c6ec"},
+      "c": {"name": "c", "type": "command", "inputs": {"world_input": {"job_input_type":
+      "literal", "value": "${{parent.jobs.b.outputs.world_output}}"}}, "_source":
+      "REMOTE.WORKSPACE.COMPONENT", "componentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/kevindestin-rg/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/components/azureml_anonymous/versions/8a49bcf8-2c92-471e-a8a6-6be330860463"}},
+      "outputs": {}, "settings": {"_source": "YAML.JOB"}}}, "displayName": "weekly
+      retrain schedule", "isEnabled": false, "trigger": {"endTime": "2023-06-10 10:15:00",
+      "startTime": "2023-03-10 10:15:00", "timeZone": "Pacific Standard Time", "triggerType":
+      "Cron", "expression": "*/15 * * * 1"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '2069'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.4.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.10.6 (Linux-5.15.79.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/schedules/test-schedule-000001-1?api-version=0000-00-00
+  response:
+    body:
+      string: '{"properties": {"description": "a weekly retrain schedule", "tags":
+        {}, "properties": {}, "displayName": "weekly retrain schedule", "isEnabled":
+        false, "trigger": {"endTime": "2023-06-10 10:15:00", "startTime": "2023-03-10
+        10:15:00", "timeZone": "Pacific Standard Time", "triggerType": "Cron", "expression":
+        "*/15 * * * 1"}, "action": {"actionType": "CreateJob", "jobDefinition": {"description":
+        null, "tags": {}, "properties": {}, "displayName": "hello_pipeline_abc", "status":
+        "NotStarted", "experimentName": "Default", "services": null, "computeId":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/computes/cpu-cluster",
+        "isArchived": false, "identity": null, "componentId": null, "jobType": "Pipeline",
+        "settings": {"_source": "YAML.JOB"}, "jobs": {"a": {"name": "a", "type": "command",
+        "inputs": {"hello_string": {"job_input_type": "literal", "value": "${{parent.inputs.hello_string_top_level_input}}"}},
+        "_source": "REMOTE.WORKSPACE.COMPONENT", "componentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/components/azureml_anonymous/versions/94d8afef-0667-4413-bd7b-13c36384077b"},
+        "b": {"name": "b", "type": "command", "_source": "REMOTE.WORKSPACE.COMPONENT",
+        "componentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/components/azureml_anonymous/versions/c110c8df-20ce-486b-ae8b-d17e1aa4c6ec"},
+        "c": {"name": "c", "type": "command", "inputs": {"world_input": {"job_input_type":
+        "literal", "value": "${{parent.jobs.b.outputs.world_output}}"}}, "_source":
+        "REMOTE.WORKSPACE.COMPONENT", "componentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/components/azureml_anonymous/versions/8a49bcf8-2c92-471e-a8a6-6be330860463"}},
+        "inputs": {"hello_string_top_level_input": {"description": null, "jobInputType":
+        "literal", "value": "${{name}}"}}, "outputs": {}, "sourceJobId": null}}, "provisioningState":
+        "Creating"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/s:39c71948-a8ee-4d35-88d5-3b3c025de5d4:CkWhXA3j_ShKQHbaPQQutX3c3HnZKT4nJltrLgSc8xI?api-version=2022-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '2250'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Jan 2023 13:53:41 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/kevindestin-rg/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/schedules/test-schedule-000001-1?api-version=2022-10-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-2fff3c6aee204131f0499115830e2e6b-a3836c9ec9bdc645-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-eastus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - PT30M
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.076'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.4.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.10.6 (Linux-5.15.79.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/s:39c71948-a8ee-4d35-88d5-3b3c025de5d4:CkWhXA3j_ShKQHbaPQQutX3c3HnZKT4nJltrLgSc8xI?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationResults/s:39c71948-a8ee-4d35-88d5-3b3c025de5d4:CkWhXA3j_ShKQHbaPQQutX3c3HnZKT4nJltrLgSc8xI",
+        "name": "s:39c71948-a8ee-4d35-88d5-3b3c025de5d4:CkWhXA3j_ShKQHbaPQQutX3c3HnZKT4nJltrLgSc8xI",
+        "status": "Creating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '342'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Jan 2023 13:53:41 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-0227c4414df700e5c436fde7f6d4a144-88b222fc60ffda49-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.014'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.4.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.10.6 (Linux-5.15.79.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/s:39c71948-a8ee-4d35-88d5-3b3c025de5d4:CkWhXA3j_ShKQHbaPQQutX3c3HnZKT4nJltrLgSc8xI?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationResults/s:39c71948-a8ee-4d35-88d5-3b3c025de5d4:CkWhXA3j_ShKQHbaPQQutX3c3HnZKT4nJltrLgSc8xI",
+        "name": "s:39c71948-a8ee-4d35-88d5-3b3c025de5d4:CkWhXA3j_ShKQHbaPQQutX3c3HnZKT4nJltrLgSc8xI",
+        "status": "Succeeded", "startTime": "2023-01-09T13:53:41.8459797+00:00", "endTime":
+        "2023-01-09T13:53:43+00:00"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '433'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Jan 2023 13:53:46 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-b6dadcd0bb240dadb7299f002c6977c3-1de7347083c5a49f-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.012'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.4.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.10.6 (Linux-5.15.79.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/schedules/test-schedule-000001-1?api-version=0000-00-00
+  response:
+    body:
+      string: '{"name": "test-schedule-000001-1", "properties": {"description": "a
+        weekly retrain schedule", "tags": {}, "properties": {}, "displayName": "weekly
+        retrain schedule", "isEnabled": false, "trigger": {"endTime": "2023-06-10
+        10:15:00", "startTime": "2023-03-10 10:15:00", "timeZone": "Pacific Standard
+        Time", "triggerType": "Cron", "expression": "*/15 * * * 1"}, "action": {"actionType":
+        "CreateJob", "jobDefinition": {"description": null, "tags": {}, "properties":
+        {}, "displayName": "hello_pipeline_abc", "status": "NotStarted", "experimentName":
+        "Default", "services": null, "computeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/computes/cpu-cluster",
+        "isArchived": false, "identity": null, "componentId": null, "jobType": "Pipeline",
+        "settings": {"_source": "YAML.JOB"}, "jobs": {"a": {"name": "a", "type": "command",
+        "inputs": {"hello_string": {"job_input_type": "literal", "value": "${{parent.inputs.hello_string_top_level_input}}"}},
+        "_source": "REMOTE.WORKSPACE.COMPONENT", "componentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/components/azureml_anonymous/versions/94d8afef-0667-4413-bd7b-13c36384077b"},
+        "b": {"name": "b", "type": "command", "_source": "REMOTE.WORKSPACE.COMPONENT",
+        "componentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/components/azureml_anonymous/versions/c110c8df-20ce-486b-ae8b-d17e1aa4c6ec"},
+        "c": {"name": "c", "type": "command", "inputs": {"world_input": {"job_input_type":
+        "literal", "value": "${{parent.jobs.b.outputs.world_output}}"}}, "_source":
+        "REMOTE.WORKSPACE.COMPONENT", "componentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/components/azureml_anonymous/versions/8a49bcf8-2c92-471e-a8a6-6be330860463"}},
+        "inputs": {"hello_string_top_level_input": {"description": null, "jobInputType":
+        "literal", "value": "${{name}}"}}, "outputs": {}, "sourceJobId": null}}, "provisioningState":
+        "Succeeded"}, "systemData": {"createdAt": "2023-01-09T05:50:22.6681901+00:00",
+        "createdBy": "Kevin Destin", "createdByType": "User", "lastModifiedAt": "2023-01-09T13:53:43.7993381+00:00",
+        "lastModifiedBy": "Kevin Destin", "lastModifiedByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2524'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Jan 2023 13:53:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-09a5b9cf0796697e144df5a4dde668de-12a6a64fc97da9f7-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.028'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.4.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.10.6 (Linux-5.15.79.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/schedules/test-schedule-000001-1?api-version=0000-00-00
+  response:
+    body:
+      string: '{"name": "test-schedule-000001-1", "properties": {"description": "a
+        weekly retrain schedule", "tags": {}, "properties": {}, "displayName": "weekly
+        retrain schedule", "isEnabled": false, "trigger": {"endTime": "2023-06-10
+        10:15:00", "startTime": "2023-03-10 10:15:00", "timeZone": "Pacific Standard
+        Time", "triggerType": "Cron", "expression": "*/15 * * * 1"}, "action": {"actionType":
+        "CreateJob", "jobDefinition": {"description": null, "tags": {}, "properties":
+        {}, "displayName": "hello_pipeline_abc", "status": "NotStarted", "experimentName":
+        "Default", "services": null, "computeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/computes/cpu-cluster",
+        "isArchived": false, "identity": null, "componentId": null, "jobType": "Pipeline",
+        "settings": {"_source": "YAML.JOB"}, "jobs": {"a": {"name": "a", "type": "command",
+        "inputs": {"hello_string": {"job_input_type": "literal", "value": "${{parent.inputs.hello_string_top_level_input}}"}},
+        "_source": "REMOTE.WORKSPACE.COMPONENT", "componentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/components/azureml_anonymous/versions/94d8afef-0667-4413-bd7b-13c36384077b"},
+        "b": {"name": "b", "type": "command", "_source": "REMOTE.WORKSPACE.COMPONENT",
+        "componentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/components/azureml_anonymous/versions/c110c8df-20ce-486b-ae8b-d17e1aa4c6ec"},
+        "c": {"name": "c", "type": "command", "inputs": {"world_input": {"job_input_type":
+        "literal", "value": "${{parent.jobs.b.outputs.world_output}}"}}, "_source":
+        "REMOTE.WORKSPACE.COMPONENT", "componentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/components/azureml_anonymous/versions/8a49bcf8-2c92-471e-a8a6-6be330860463"}},
+        "inputs": {"hello_string_top_level_input": {"description": null, "jobInputType":
+        "literal", "value": "${{name}}"}}, "outputs": {}, "sourceJobId": null}}, "provisioningState":
+        "Succeeded"}, "systemData": {"createdAt": "2023-01-09T05:50:22.6681901+00:00",
+        "createdBy": "Kevin Destin", "createdByType": "User", "lastModifiedAt": "2023-01-09T13:53:43.7993381+00:00",
+        "lastModifiedBy": "Kevin Destin", "lastModifiedByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2524'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Jan 2023 13:53:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-41d73c2b917f7db01d240e5aad2724f7-5880e1c89d85cd8d-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.030'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"description": "a weekly retrain schedule", "properties":
+      {}, "tags": {}, "action": {"actionType": "CreateJob", "jobDefinition": {"properties":
+      {}, "tags": {}, "computeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/kevindestin-rg/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/computes/cpu-cluster",
+      "displayName": "hello_pipeline_abc", "experimentName": "Default", "isArchived":
+      false, "jobType": "Pipeline", "inputs": {"hello_string_top_level_input": {"jobInputType":
+      "literal", "value": "${{name}}"}}, "jobs": {"a": {"name": "a", "type": "command",
+      "inputs": {"hello_string": {"job_input_type": "literal", "value": "${{parent.inputs.hello_string_top_level_input}}"}},
+      "_source": "REMOTE.WORKSPACE.COMPONENT", "componentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/kevindestin-rg/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/components/azureml_anonymous/versions/94d8afef-0667-4413-bd7b-13c36384077b"},
+      "b": {"name": "b", "type": "command", "_source": "REMOTE.WORKSPACE.COMPONENT",
+      "componentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/kevindestin-rg/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/components/azureml_anonymous/versions/c110c8df-20ce-486b-ae8b-d17e1aa4c6ec"},
+      "c": {"name": "c", "type": "command", "inputs": {"world_input": {"job_input_type":
+      "literal", "value": "${{parent.jobs.b.outputs.world_output}}"}}, "_source":
+      "REMOTE.WORKSPACE.COMPONENT", "componentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/kevindestin-rg/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/components/azureml_anonymous/versions/8a49bcf8-2c92-471e-a8a6-6be330860463"}},
+      "outputs": {}, "settings": {"_source": "YAML.JOB"}}}, "displayName": "weekly
+      retrain schedule", "isEnabled": true, "trigger": {"endTime": "2023-06-10 10:15:00",
+      "startTime": "2023-03-10 10:15:00", "timeZone": "Pacific Standard Time", "triggerType":
+      "Cron", "expression": "*/15 * * * 1"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '2068'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.4.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.10.6 (Linux-5.15.79.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/schedules/test-schedule-000001-1?api-version=0000-00-00
+  response:
+    body:
+      string: '{"properties": {"description": "a weekly retrain schedule", "tags":
+        {}, "properties": {}, "displayName": "weekly retrain schedule", "isEnabled":
+        true, "trigger": {"endTime": "2023-06-10 10:15:00", "startTime": "2023-03-10
+        10:15:00", "timeZone": "Pacific Standard Time", "triggerType": "Cron", "expression":
+        "*/15 * * * 1"}, "action": {"actionType": "CreateJob", "jobDefinition": {"description":
+        null, "tags": {}, "properties": {}, "displayName": "hello_pipeline_abc", "status":
+        "NotStarted", "experimentName": "Default", "services": null, "computeId":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/computes/cpu-cluster",
+        "isArchived": false, "identity": null, "componentId": null, "jobType": "Pipeline",
+        "settings": {"_source": "YAML.JOB"}, "jobs": {"a": {"name": "a", "type": "command",
+        "inputs": {"hello_string": {"job_input_type": "literal", "value": "${{parent.inputs.hello_string_top_level_input}}"}},
+        "_source": "REMOTE.WORKSPACE.COMPONENT", "componentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/components/azureml_anonymous/versions/94d8afef-0667-4413-bd7b-13c36384077b"},
+        "b": {"name": "b", "type": "command", "_source": "REMOTE.WORKSPACE.COMPONENT",
+        "componentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/components/azureml_anonymous/versions/c110c8df-20ce-486b-ae8b-d17e1aa4c6ec"},
+        "c": {"name": "c", "type": "command", "inputs": {"world_input": {"job_input_type":
+        "literal", "value": "${{parent.jobs.b.outputs.world_output}}"}}, "_source":
+        "REMOTE.WORKSPACE.COMPONENT", "componentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/components/azureml_anonymous/versions/8a49bcf8-2c92-471e-a8a6-6be330860463"}},
+        "inputs": {"hello_string_top_level_input": {"description": null, "jobInputType":
+        "literal", "value": "${{name}}"}}, "outputs": {}, "sourceJobId": null}}, "provisioningState":
+        "Creating"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/s:39c71948-a8ee-4d35-88d5-3b3c025de5d4:1SUVEpX99BmfVqe2IvbRg4JnUCpZcKVClOSOUF6iJ9E?api-version=2022-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '2249'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Jan 2023 13:53:49 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/kevindestin-rg/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/schedules/test-schedule-000001-1?api-version=2022-10-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-531ebc9ebfe9d7e32e40bc5722f077f6-f9a977398d510566-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - PT30M
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.051'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.4.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.10.6 (Linux-5.15.79.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/s:39c71948-a8ee-4d35-88d5-3b3c025de5d4:1SUVEpX99BmfVqe2IvbRg4JnUCpZcKVClOSOUF6iJ9E?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationResults/s:39c71948-a8ee-4d35-88d5-3b3c025de5d4:1SUVEpX99BmfVqe2IvbRg4JnUCpZcKVClOSOUF6iJ9E",
+        "name": "s:39c71948-a8ee-4d35-88d5-3b3c025de5d4:1SUVEpX99BmfVqe2IvbRg4JnUCpZcKVClOSOUF6iJ9E",
+        "status": "Creating"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '342'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Jan 2023 13:53:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-0a2168ecdf79f4106e66a2f87c2b315f-77998dac7527f34d-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.015'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.4.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.10.6 (Linux-5.15.79.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationsStatus/s:39c71948-a8ee-4d35-88d5-3b3c025de5d4:1SUVEpX99BmfVqe2IvbRg4JnUCpZcKVClOSOUF6iJ9E?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MachineLearningServices/locations/eastus2/mfeOperationResults/s:39c71948-a8ee-4d35-88d5-3b3c025de5d4:1SUVEpX99BmfVqe2IvbRg4JnUCpZcKVClOSOUF6iJ9E",
+        "name": "s:39c71948-a8ee-4d35-88d5-3b3c025de5d4:1SUVEpX99BmfVqe2IvbRg4JnUCpZcKVClOSOUF6iJ9E",
+        "status": "Succeeded", "startTime": "2023-01-09T13:53:49.7041188+00:00", "endTime":
+        "2023-01-09T13:53:51+00:00"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '433'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Jan 2023 13:53:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-33662b70a595006137e9a2047121e72c-156fe167529345e7-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.013'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.4.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.10.6 (Linux-5.15.79.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/schedules/test-schedule-000001-1?api-version=0000-00-00
+  response:
+    body:
+      string: '{"name": "test-schedule-000001-1", "properties": {"description": "a
+        weekly retrain schedule", "tags": {}, "properties": {}, "displayName": "weekly
+        retrain schedule", "isEnabled": true, "trigger": {"endTime": "2023-06-10 10:15:00",
+        "startTime": "2023-03-10 10:15:00", "timeZone": "Pacific Standard Time", "triggerType":
+        "Cron", "expression": "*/15 * * * 1"}, "action": {"actionType": "CreateJob",
+        "jobDefinition": {"description": null, "tags": {}, "properties": {}, "displayName":
+        "hello_pipeline_abc", "status": "NotStarted", "experimentName": "Default",
+        "services": null, "computeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/computes/cpu-cluster",
+        "isArchived": false, "identity": null, "componentId": null, "jobType": "Pipeline",
+        "settings": {"_source": "YAML.JOB"}, "jobs": {"a": {"name": "a", "type": "command",
+        "inputs": {"hello_string": {"job_input_type": "literal", "value": "${{parent.inputs.hello_string_top_level_input}}"}},
+        "_source": "REMOTE.WORKSPACE.COMPONENT", "componentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/components/azureml_anonymous/versions/94d8afef-0667-4413-bd7b-13c36384077b"},
+        "b": {"name": "b", "type": "command", "_source": "REMOTE.WORKSPACE.COMPONENT",
+        "componentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/components/azureml_anonymous/versions/c110c8df-20ce-486b-ae8b-d17e1aa4c6ec"},
+        "c": {"name": "c", "type": "command", "inputs": {"world_input": {"job_input_type":
+        "literal", "value": "${{parent.jobs.b.outputs.world_output}}"}}, "_source":
+        "REMOTE.WORKSPACE.COMPONENT", "componentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/components/azureml_anonymous/versions/8a49bcf8-2c92-471e-a8a6-6be330860463"}},
+        "inputs": {"hello_string_top_level_input": {"description": null, "jobInputType":
+        "literal", "value": "${{name}}"}}, "outputs": {}, "sourceJobId": null}}, "provisioningState":
+        "Succeeded"}, "systemData": {"createdAt": "2023-01-09T05:50:22.6681901+00:00",
+        "createdBy": "Kevin Destin", "createdByType": "User", "lastModifiedAt": "2023-01-09T13:53:51.3759885+00:00",
+        "lastModifiedBy": "Kevin Destin", "lastModifiedByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2523'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Jan 2023 13:53:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-03ae9de2478ade98ee0422ef47b25248-00b28ecedcb24311-00"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.023'
+    status:
+      code: 200
+      message: OK
+version: 1

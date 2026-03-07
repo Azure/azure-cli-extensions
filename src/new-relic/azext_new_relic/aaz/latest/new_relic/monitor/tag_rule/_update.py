@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "new-relic monitor tag-rule update",
 )
 class Update(AAZCommand):
-    """Update a TagRule
+    """Updates the tag rules for a specific New Relic monitor resource, allowing you to modify the rules that control which Azure resources are monitored.
 
     :example: Update a TagRule.
         az new-relic monitor tag-rule update --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor --name default --log-rules "{send-aad-logs:'Enabled',send-subscription-logs:'Enabled',send-activity-logs:'Enabled',filtering-tags:[{name:'Environment',value:'Prod',action:'Include'}]}" --metric-rules "{user-email:'UserEmail@123.com',filtering-tags:[{name:'Environment',value:'Prod',action:'Include'}]}"

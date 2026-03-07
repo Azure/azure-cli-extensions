@@ -9,9 +9,10 @@ import unittest
 import time
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only)
 
 class OracleDatabaseAdbsScenario(ScenarioTest):
+    @live_only()
     @AllowLargeResponse(size_kb=10240)
     @ResourceGroupPreparer(name_prefix='cli_test_odba_rg')
     def test_oracledatabase_adbs(self, resource_group):
@@ -24,15 +25,15 @@ class OracleDatabaseAdbsScenario(ScenarioTest):
         self.cmd('az oracle-database dns-private-zone list --location eastus ')
         self.cmd('az oracle-database dns-private-view list --location eastus ')
         self.cmd('az oracle-database autonomous-database create --location eastus '
-                '--autonomousdatabasename ADBScli1 '
-                '--resource-group SDKTestRG '
-                '--subnet-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SDKTestRG/providers/Microsoft.Network/virtualNetworks/SDKVnet/subnets/SDKSubnet '
-                '--display-name ADBScli1 '
+                '--autonomousdatabasename ADBScliTest '
+                '--resource-group PowerShellTestRg '
+                '--subnet-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Microsoft.Network/virtualNetworks/PSTestVnet/subnets/delegated '
+                '--display-name ADBScli1Mih '
                 '--compute-model ECPU --compute-count 2 '
                 '--data-storage-size-in-gbs 32 --license-model BringYourOwnLicense '
                 '--db-workload OLTP --admin-password TestPass#2024# '
                 '--db-version 19c --character-set AL32UTF8 --ncharacter-set AL16UTF16 '
-                '--vnet-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SDKTestRG/providers/Microsoft.Network/virtualNetworks/SDKVnet --regular --no-wait ')
+                '--vnet-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Microsoft.Network/virtualNetworks/PSTestVnet  --regular --no-wait ')
         self.cmd('az oracle-database autonomous-database delete '
                 '--autonomousdatabasename ADBScli '
-                '--resource-group SDKTestRG --yes --no-wait ')
+                '--resource-group PowerShellTestRg --yes --no-wait ')

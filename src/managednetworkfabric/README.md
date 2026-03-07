@@ -22,10 +22,14 @@ Below is a high-level overview of managednetworkfabric commands.
 | Commands                             | Description                                      |
 |--------------------------------------|--------------------------------------------------|
 | az networkfabric acl                 | Manage Access Control List Resource.             |
+| az networkfabric bootstrapdevice     | Manage Network Bootstrap Device Resource.        |
+| az networkfabric bootstrapinterface  | Manage Network Bootstrap Interface Resource.     |
 | az networkfabric controller          | Manage Network Fabric Controller Resource.       |
 | az networkfabric device              | Manage Network Device Resource.                  |
+| az networkfabric devicesku           | Manage Network Device SKU Resource.              |
 | az networkfabric externalnetwork     | Manage External Network Resource.                |
 | az networkfabric fabric              | Manage Network Fabric Resource.                  |
+| az networkfabric fabricsku           | Manage Network Fabric SKU Resource               |
 | az networkfabric interface           | Manage Network Interface Resource.               |
 | az networkfabric internalnetwork     | Manage Internal Network Resource.                |
 | az networkfabric internetgateway     | Manage Internet Gateway Resource.                |
@@ -36,6 +40,7 @@ Below is a high-level overview of managednetworkfabric commands.
 | az networkfabric l2domain            | Manage L2 Isolation Domain Resource.             |
 | az networkfabric l3domain            | Manage L3 Isolation Domain Resource.             |
 | az networkfabric neighborgroup       | Manage Neighbor Group Resource.                  |
+| az networkfabric networkmonitor      | Manage Network Monitor Resource.                 |
 | az networkfabric nni                 | Manage Network To Network Interconnect Resource. |
 | az networkfabric npb                 | Manage Network Packet Broker Resource.           |
 | az networkfabric rack                | Manage Network Rack Resource.                    |

@@ -1,0 +1,116 @@
+interactions:
+- request:
+    body: '{"properties": {"accepted": true}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datadog terms create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '34'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --subscription --accepted
+      User-Agent:
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.11.9 (Windows-10-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Datadog/agreements/default?api-version=2025-06-11
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Datadog/agreements/default","name":"default","type":"microsoft.datadog/agreements","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-10-31T07:59:53.3867773Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-10-31T07:59:53.3867773Z"},"properties":{"publisher":null,"product":null,"plan":null,"licenseTextLink":null,"privacyPolicyLink":null,"retrieveDatetime":null,"signature":null,"accepted":true}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '550'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 31 Oct 2025 07:59:53 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 49e69a04-86e1-433d-b549-780b63cd0b64
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:0b211baa-00db-496b-b625-0e3961b2c5bd
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=888d76fa-54b2-4ced-8ee5-aac1585adee7,objectId=88551f9d-e011-4f80-8154-fa258dcd4ccb/eastus2euap/f7ab10b8-11a4-457a-988e-158c66d684ea
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-ms-throttling-version:
+      - v2
+      x-msedge-ref:
+      - 'Ref A: 6C2190B992A74B87B22A3A78435F4BA3 Ref B: MAA201060515045 Ref C: 2025-10-31T07:59:52Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datadog terms list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --subscription
+      User-Agent:
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.11.9 (Windows-10-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Datadog/agreements?api-version=2025-06-11
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Datadog/agreements/marketplace","name":"marketplace","type":"Microsoft.Datadog/agreements","properties":{"publisher":"Microsoft","product":"Marketplace","plan":"Marketplace","licenseTextLink":"https://azure.microsoft.com/en-us/support/legal/marketplace-terms/","privacyPolicyLink":"http://www.microsoft.com/privacy","signature":"","accepted":true}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Datadog/agreements/datadog","name":"datadog","type":"Microsoft.Datadog/agreements","properties":{"publisher":"Datadog","product":"Datadog","plan":"Datadog","licenseTextLink":"https://www.datadoghq.com/pdf/Datadog_AzureMarketplace.pdf","privacyPolicyLink":"https://www.datadoghq.com/legal/privacy/","signature":"","accepted":true}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '849'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 31 Oct 2025 07:59:55 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - d7dd5286-6587-4e8f-8cfb-22e546acf615
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:0b211baa-00db-496b-b625-0e3961b2c5bd
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=888d76fa-54b2-4ced-8ee5-aac1585adee7,objectId=88551f9d-e011-4f80-8154-fa258dcd4ccb/southindia/449122d7-017f-4438-884a-637822134452
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: CFD2AC9359E644CD8A3499CDBC604990 Ref B: MAA201060515027 Ref C: 2025-10-31T07:59:54Z'
+    status:
+      code: 200
+      message: OK
+version: 1

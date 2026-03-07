@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "new-relic monitor tag-rule delete",
 )
 class Delete(AAZCommand):
-    """Delete a TagRule
+    """Delete a tag rule set for a given New Relic monitor resource, removing fine-grained control over observability based on resource tags.
 
     :example: Delete a TagRule.
         az new-relic monitor tag-rule delete --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor --name default

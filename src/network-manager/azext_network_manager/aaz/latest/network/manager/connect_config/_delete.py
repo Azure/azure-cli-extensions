@@ -17,15 +17,12 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a network manager connectivity configuration, specified by the resource group, network manager name, and connectivity configuration name
-
-    :example: Delete Azure Virtual Network Manager Connectivity Configuration
-        az network manager connect-config delete --configuration-name "myTestConnectivityConfig" --network-manager-name "testNetworkManager" --resource-group "myResourceGroup"
     """
 
     _aaz_info = {
-        "version": "2022-01-01",
+        "version": "2024-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/connectivityconfigurations/{}", "2022-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/connectivityconfigurations/{}", "2024-07-01"],
         ]
     }
 
@@ -53,7 +50,7 @@ class Delete(AAZCommand):
             id_part="child_name_1",
         )
         _args_schema.network_manager_name = AAZStrArg(
-            options=["-n", "--name", "--network-manager-name"],
+            options=["--name", "--network-manager-name", "-n"],
             help="The name of the network manager.",
             required=True,
             id_part="name",
@@ -160,7 +157,7 @@ class Delete(AAZCommand):
                     "force", self.ctx.args.force,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2022-01-01",
+                    "api-version", "2024-07-01",
                     required=True,
                 ),
             }

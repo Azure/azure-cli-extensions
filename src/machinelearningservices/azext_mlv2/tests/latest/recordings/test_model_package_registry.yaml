@@ -1,0 +1,1526 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.9.13
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/dhmani-eastus2euap-ws2",
+        "name": "dhmani-eastus2euap-ws2", "type": "Microsoft.MachineLearningServices/workspaces",
+        "location": "eastus2euap", "tags": {}, "etag": null, "properties": {"friendlyName":
+        "dhmani-eastus2euap-ws2", "description": "", "storageAccount": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Storage/storageAccounts/dhmanieastus2e0187149969",
+        "keyVault": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.Keyvault/vaults/dhmanieastus2e0278265832",
+        "applicationInsights": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.insights/components/dhmanieastus2e0078826832",
+        "hbiWorkspace": false, "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+        "imageBuildCompute": null, "provisioningState": "Succeeded", "managedNetwork":
+        {"changeableIsolationModes": ["AllowInternetOutbound", "AllowOnlyApprovedOutbound"],
+        "isolationMode": "Disabled"}, "v1LegacyMode": false, "softDeleteEnabled":
+        false, "containerRegistry": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.ContainerRegistry/registries/dhmanieastus2euapacr2",
+        "creationTime": "2023-02-16T00:49:01.5699902Z", "notebookInfo": {"resourceId":
+        "1d14e80fccc8433480b8c6a4df90c311", "fqdn": "ml-dhmani-east-eastus2euap-60106ea5-8e62-4d03-90a5-f1aa66fb613e.eastus2euap.notebooks.azure.net",
+        "isPrivateLinkEnabled": false, "notebookPreparationError": null}, "storageHnsEnabled":
+        false, "workspaceId": "60106ea5-8e62-4d03-90a5-f1aa66fb613e", "linkedModelInventoryArmId":
+        null, "privateLinkCount": 0, "publicNetworkAccess": "Enabled", "discoveryUrl":
+        "https://eastus2euap.api.azureml.ms/discovery", "mlFlowTrackingUri": "azureml://eastus2euap.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/dhmani-eastus2euap-ws2",
+        "sdkTelemetryAppInsightsKey": "bf5fc3cc-fd87-47a0-99e2-70f15d4bb11e", "sasGetterUri":
+        "", "enableDataIsolation": false}, "identity": {"type": "SystemAssigned",
+        "principalId": "da3847bb-f5f5-4c0f-8c79-9c94d22e4ea8", "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"},
+        "kind": "Default", "sku": {"name": "Basic", "tier": "Basic"}, "systemData":
+        {"createdAt": "2023-02-16T00:49:01.5699902Z", "createdBy": "dhmani@ntdev.microsoft.com",
+        "createdByType": "User", "lastModifiedAt": "2023-02-16T00:49:01.5699902Z",
+        "lastModifiedBy": "dhmani@ntdev.microsoft.com", "lastModifiedByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2740'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 17:36:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:17d65b70-e9ce-4ed5-9347-1f660ec782e9
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2euap-02
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-msedge-ref:
+      - 'Ref A: 797DF3117AA84CA6950F6F6ABCF3E0AD Ref B: CO6AA3150217023 Ref C: 2023-09-15T17:36:00Z'
+      x-request-time:
+      - '0.014'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json, text/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.9.13
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://eastus.api.azureml.ms/registrymanagement/v1.0/registries/azureml/discovery
+  response:
+    body:
+      string: '{"registryId": "b98c40bc-36d6-4175-b131-bad4502fe1a3", "registryName":
+        "azureml", "tenantId": "33e01921-4d64-4f8c-a055-5bdaffd5e33d", "primaryRegion":
+        "EastUS", "regions": ["eastus", "australiaeast", "australiasoutheast", "brazilsouth",
+        "canadacentral", "canadaeast", "centralindia", "centralus", "eastasia", "eastus2",
+        "francecentral", "germanywestcentral", "japaneast", "japanwest", "jioindiawest",
+        "koreacentral", "northcentralus", "northeurope", "norwayeast", "southafricanorth",
+        "southcentralus", "southeastasia", "swedencentral", "switzerlandnorth", "uaenorth",
+        "uksouth", "ukwest", "westcentralus", "westeurope", "westus", "westus2", "westus3",
+        "qatarcentral", "polandcentral", "southindia", "centraluseuap", "eastus2euap"],
+        "subscriptionId": "00000000-0000-0000-0000-000000000000", "resourceGroup":
+        "registry-builtin-prod-eastus-01", "workspaceName": null, "primaryRegionResourceProviderUri":
+        "https://cert-EastUS.experiments.azureml.net/", "registryFqdns": {"eastus":
+        {"uri": "https://eastus.api.azureml.ms"}, "australiaeast": {"uri": "https://australiaeast.api.azureml.ms"},
+        "australiasoutheast": {"uri": "https://australiasoutheast.api.azureml.ms"},
+        "brazilsouth": {"uri": "https://brazilsouth.api.azureml.ms"}, "canadacentral":
+        {"uri": "https://canadacentral.api.azureml.ms"}, "canadaeast": {"uri": "https://canadaeast.api.azureml.ms"},
+        "centralindia": {"uri": "https://centralindia.api.azureml.ms"}, "centralus":
+        {"uri": "https://centralus.api.azureml.ms"}, "eastasia": {"uri": "https://eastasia.api.azureml.ms"},
+        "eastus2": {"uri": "https://eastus2.api.azureml.ms"}, "francecentral": {"uri":
+        "https://francecentral.api.azureml.ms"}, "germanywestcentral": {"uri": "https://germanywestcentral.api.azureml.ms"},
+        "japaneast": {"uri": "https://japaneast.api.azureml.ms"}, "japanwest": {"uri":
+        "https://japanwest.api.azureml.ms"}, "jioindiawest": {"uri": "https://jioindiawest.api.azureml.ms"},
+        "koreacentral": {"uri": "https://koreacentral.api.azureml.ms"}, "northcentralus":
+        {"uri": "https://northcentralus.api.azureml.ms"}, "northeurope": {"uri": "https://northeurope.api.azureml.ms"},
+        "norwayeast": {"uri": "https://norwayeast.api.azureml.ms"}, "southafricanorth":
+        {"uri": "https://southafricanorth.api.azureml.ms"}, "southcentralus": {"uri":
+        "https://southcentralus.api.azureml.ms"}, "southeastasia": {"uri": "https://southeastasia.api.azureml.ms"},
+        "swedencentral": {"uri": "https://swedencentral.api.azureml.ms"}, "switzerlandnorth":
+        {"uri": "https://switzerlandnorth.api.azureml.ms"}, "uaenorth": {"uri": "https://uaenorth.api.azureml.ms"},
+        "uksouth": {"uri": "https://uksouth.api.azureml.ms"}, "ukwest": {"uri": "https://ukwest.api.azureml.ms"},
+        "westcentralus": {"uri": "https://westcentralus.api.azureml.ms"}, "westeurope":
+        {"uri": "https://westeurope.api.azureml.ms"}, "westus": {"uri": "https://westus.api.azureml.ms"},
+        "westus2": {"uri": "https://westus2.api.azureml.ms"}, "westus3": {"uri": "https://westus3.api.azureml.ms"},
+        "qatarcentral": {"uri": "https://qatarcentral.api.azureml.ms"}, "polandcentral":
+        {"uri": "https://polandcentral.api.azureml.ms"}, "southindia": {"uri": "https://southindia.api.azureml.ms"},
+        "centraluseuap": {"uri": "https://int.api.azureml-test.ms"}, "int": {"uri":
+        "https://int.api.azureml-test.ms"}, "eastus2euap": {"uri": "https://eastus2euap.api.azureml.ms"}},
+        "intellectualPropertyPublisher": null}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '3352'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 17:36:01 GMT
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.022'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"inferencingServer": {"serverType": "AzureMLOnline"}, "modelConfiguration":
+      {"mode": "download", "mountPath": "."}, "targetEnvironmentId": "azureml://locations/eastus2euap/workspaces/60106ea5-8e62-4d03-90a5-f1aa66fb613e/environments/diabetes-online-mlflow"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '258'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.9.13
+        (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://cert-eastus2euap.experiments.azureml.net/mferp/managementfrontend/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/azureml/models/00000000-0000-0000-0000-000000000000/versions/5/package?api-version=0000-00-00
+  response:
+    body:
+      string: '"PT30M"'
+    headers:
+      azure-asyncoperation:
+      - https://eastus2euap.api.azureml.ms/modelregistry/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dhmani-eastus2euap-rg2/providers/Microsoft.MachineLearningServices/workspaces/dhmani-eastus2euap-ws2/operations/6f5c35e2-1c46-4ae0-9698-d8ded09b36b7
+      connection:
+      - keep-alive
+      content-length:
+      - '7'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 17:36:03 GMT
+      location:
+      - https://eastus2euap.api.azureml.ms/modelregistry/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dhmani-eastus2euap-rg2/providers/Microsoft.MachineLearningServices/workspaces/dhmani-eastus2euap-ws2/operations/6f5c35e2-1c46-4ae0-9698-d8ded09b36b7
+      request-context:
+      - appId=cid-v1:17d65b70-e9ce-4ed5-9347-1f660ec782e9
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      x-aml-cluster:
+      - vienna-eastus2euap-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.789'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.9.13
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://eastus2euap.api.azureml.ms/modelregistry/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/operations/6f5c35e2-1c46-4ae0-9698-d8ded09b36b7
+  response:
+    body:
+      string: '{"status": "InProgress"}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '24'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 17:36:04 GMT
+      request-context:
+      - appId=cid-v1:17d65b70-e9ce-4ed5-9347-1f660ec782e9
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      x-aml-cluster:
+      - vienna-eastus2euap-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.842'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.9.13
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://eastus2euap.api.azureml.ms/modelregistry/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/operations/6f5c35e2-1c46-4ae0-9698-d8ded09b36b7
+  response:
+    body:
+      string: '{"status": "InProgress"}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '24'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 17:36:34 GMT
+      request-context:
+      - appId=cid-v1:17d65b70-e9ce-4ed5-9347-1f660ec782e9
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      x-aml-cluster:
+      - vienna-eastus2euap-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.275'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.9.13
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://eastus2euap.api.azureml.ms/modelregistry/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/operations/6f5c35e2-1c46-4ae0-9698-d8ded09b36b7
+  response:
+    body:
+      string: '{"status": "InProgress"}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '24'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 17:37:04 GMT
+      request-context:
+      - appId=cid-v1:17d65b70-e9ce-4ed5-9347-1f660ec782e9
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      x-aml-cluster:
+      - vienna-eastus2euap-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.151'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.9.13
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://eastus2euap.api.azureml.ms/modelregistry/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/operations/6f5c35e2-1c46-4ae0-9698-d8ded09b36b7
+  response:
+    body:
+      string: '{"status": "InProgress"}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '24'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 17:37:35 GMT
+      request-context:
+      - appId=cid-v1:17d65b70-e9ce-4ed5-9347-1f660ec782e9
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      x-aml-cluster:
+      - vienna-eastus2euap-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.279'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.9.13
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://eastus2euap.api.azureml.ms/modelregistry/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/operations/6f5c35e2-1c46-4ae0-9698-d8ded09b36b7
+  response:
+    body:
+      string: '{"status": "InProgress"}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '24'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 17:38:05 GMT
+      request-context:
+      - appId=cid-v1:17d65b70-e9ce-4ed5-9347-1f660ec782e9
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      x-aml-cluster:
+      - vienna-eastus2euap-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.204'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.9.13
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://eastus2euap.api.azureml.ms/modelregistry/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/operations/6f5c35e2-1c46-4ae0-9698-d8ded09b36b7
+  response:
+    body:
+      string: '{"status": "InProgress"}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '24'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 17:38:35 GMT
+      request-context:
+      - appId=cid-v1:17d65b70-e9ce-4ed5-9347-1f660ec782e9
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      x-aml-cluster:
+      - vienna-eastus2euap-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.405'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.9.13
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://eastus2euap.api.azureml.ms/modelregistry/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/operations/6f5c35e2-1c46-4ae0-9698-d8ded09b36b7
+  response:
+    body:
+      string: '{"status": "InProgress"}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '24'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 17:39:06 GMT
+      request-context:
+      - appId=cid-v1:17d65b70-e9ce-4ed5-9347-1f660ec782e9
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      x-aml-cluster:
+      - vienna-eastus2euap-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.156'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.9.13
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://eastus2euap.api.azureml.ms/modelregistry/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/operations/6f5c35e2-1c46-4ae0-9698-d8ded09b36b7
+  response:
+    body:
+      string: '{"status": "InProgress"}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '24'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 17:39:36 GMT
+      request-context:
+      - appId=cid-v1:17d65b70-e9ce-4ed5-9347-1f660ec782e9
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      x-aml-cluster:
+      - vienna-eastus2euap-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.165'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.9.13
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://eastus2euap.api.azureml.ms/modelregistry/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/operations/6f5c35e2-1c46-4ae0-9698-d8ded09b36b7
+  response:
+    body:
+      string: '{"status": "InProgress"}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '24'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 17:40:06 GMT
+      request-context:
+      - appId=cid-v1:17d65b70-e9ce-4ed5-9347-1f660ec782e9
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      x-aml-cluster:
+      - vienna-eastus2euap-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.272'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.9.13
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://eastus2euap.api.azureml.ms/modelregistry/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/operations/6f5c35e2-1c46-4ae0-9698-d8ded09b36b7
+  response:
+    body:
+      string: '{"status": "InProgress"}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '24'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 17:40:37 GMT
+      request-context:
+      - appId=cid-v1:17d65b70-e9ce-4ed5-9347-1f660ec782e9
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      x-aml-cluster:
+      - vienna-eastus2euap-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.191'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.9.13
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://eastus2euap.api.azureml.ms/modelregistry/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/operations/6f5c35e2-1c46-4ae0-9698-d8ded09b36b7
+  response:
+    body:
+      string: '{"status": "InProgress"}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '24'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 17:41:07 GMT
+      request-context:
+      - appId=cid-v1:17d65b70-e9ce-4ed5-9347-1f660ec782e9
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      x-aml-cluster:
+      - vienna-eastus2euap-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.320'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.9.13
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://eastus2euap.api.azureml.ms/modelregistry/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/operations/6f5c35e2-1c46-4ae0-9698-d8ded09b36b7
+  response:
+    body:
+      string: '{"status": "InProgress"}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '24'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 17:41:37 GMT
+      request-context:
+      - appId=cid-v1:17d65b70-e9ce-4ed5-9347-1f660ec782e9
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      x-aml-cluster:
+      - vienna-eastus2euap-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.160'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.9.13
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://eastus2euap.api.azureml.ms/modelregistry/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/operations/6f5c35e2-1c46-4ae0-9698-d8ded09b36b7
+  response:
+    body:
+      string: '{"status": "InProgress"}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '24'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 17:42:08 GMT
+      request-context:
+      - appId=cid-v1:17d65b70-e9ce-4ed5-9347-1f660ec782e9
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      x-aml-cluster:
+      - vienna-eastus2euap-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.318'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.9.13
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://eastus2euap.api.azureml.ms/modelregistry/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/operations/6f5c35e2-1c46-4ae0-9698-d8ded09b36b7
+  response:
+    body:
+      string: '{"status": "InProgress"}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '24'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 17:42:38 GMT
+      request-context:
+      - appId=cid-v1:17d65b70-e9ce-4ed5-9347-1f660ec782e9
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      x-aml-cluster:
+      - vienna-eastus2euap-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.260'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.9.13
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://eastus2euap.api.azureml.ms/modelregistry/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/operations/6f5c35e2-1c46-4ae0-9698-d8ded09b36b7
+  response:
+    body:
+      string: '{"status": "InProgress"}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '24'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 17:43:08 GMT
+      request-context:
+      - appId=cid-v1:17d65b70-e9ce-4ed5-9347-1f660ec782e9
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      x-aml-cluster:
+      - vienna-eastus2euap-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.209'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.9.13
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://eastus2euap.api.azureml.ms/modelregistry/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/operations/6f5c35e2-1c46-4ae0-9698-d8ded09b36b7
+  response:
+    body:
+      string: '{"status": "InProgress"}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '24'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 17:43:39 GMT
+      request-context:
+      - appId=cid-v1:17d65b70-e9ce-4ed5-9347-1f660ec782e9
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      x-aml-cluster:
+      - vienna-eastus2euap-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.443'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.9.13
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://eastus2euap.api.azureml.ms/modelregistry/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/operations/6f5c35e2-1c46-4ae0-9698-d8ded09b36b7
+  response:
+    body:
+      string: '{"status": "InProgress"}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '24'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 17:44:09 GMT
+      request-context:
+      - appId=cid-v1:17d65b70-e9ce-4ed5-9347-1f660ec782e9
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      x-aml-cluster:
+      - vienna-eastus2euap-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.292'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.9.13
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://eastus2euap.api.azureml.ms/modelregistry/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/operations/6f5c35e2-1c46-4ae0-9698-d8ded09b36b7
+  response:
+    body:
+      string: '{"status": "InProgress"}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '24'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 17:44:39 GMT
+      request-context:
+      - appId=cid-v1:17d65b70-e9ce-4ed5-9347-1f660ec782e9
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      x-aml-cluster:
+      - vienna-eastus2euap-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.167'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.9.13
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://eastus2euap.api.azureml.ms/modelregistry/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/operations/6f5c35e2-1c46-4ae0-9698-d8ded09b36b7
+  response:
+    body:
+      string: '{"status": "InProgress"}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '24'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 17:45:10 GMT
+      request-context:
+      - appId=cid-v1:17d65b70-e9ce-4ed5-9347-1f660ec782e9
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      x-aml-cluster:
+      - vienna-eastus2euap-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.231'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.9.13
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://eastus2euap.api.azureml.ms/modelregistry/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/operations/6f5c35e2-1c46-4ae0-9698-d8ded09b36b7
+  response:
+    body:
+      string: '{"status": "InProgress"}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '24'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 17:45:40 GMT
+      request-context:
+      - appId=cid-v1:17d65b70-e9ce-4ed5-9347-1f660ec782e9
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      x-aml-cluster:
+      - vienna-eastus2euap-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.274'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.9.13
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://eastus2euap.api.azureml.ms/modelregistry/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/operations/6f5c35e2-1c46-4ae0-9698-d8ded09b36b7
+  response:
+    body:
+      string: '{"status": "InProgress"}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '24'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 17:46:11 GMT
+      request-context:
+      - appId=cid-v1:17d65b70-e9ce-4ed5-9347-1f660ec782e9
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      x-aml-cluster:
+      - vienna-eastus2euap-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.406'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.9.13
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://eastus2euap.api.azureml.ms/modelregistry/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/operations/6f5c35e2-1c46-4ae0-9698-d8ded09b36b7
+  response:
+    body:
+      string: '{"status": "InProgress"}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '24'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 17:46:41 GMT
+      request-context:
+      - appId=cid-v1:17d65b70-e9ce-4ed5-9347-1f660ec782e9
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      x-aml-cluster:
+      - vienna-eastus2euap-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.180'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.9.13
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://eastus2euap.api.azureml.ms/modelregistry/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/operations/6f5c35e2-1c46-4ae0-9698-d8ded09b36b7
+  response:
+    body:
+      string: '{"status": "InProgress"}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '24'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 17:47:11 GMT
+      request-context:
+      - appId=cid-v1:17d65b70-e9ce-4ed5-9347-1f660ec782e9
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      x-aml-cluster:
+      - vienna-eastus2euap-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.223'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.9.13
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://eastus2euap.api.azureml.ms/modelregistry/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/operations/6f5c35e2-1c46-4ae0-9698-d8ded09b36b7
+  response:
+    body:
+      string: '{"status": "InProgress"}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '24'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 17:47:41 GMT
+      request-context:
+      - appId=cid-v1:17d65b70-e9ce-4ed5-9347-1f660ec782e9
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      x-aml-cluster:
+      - vienna-eastus2euap-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.263'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.9.13
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://eastus2euap.api.azureml.ms/modelregistry/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/operations/6f5c35e2-1c46-4ae0-9698-d8ded09b36b7
+  response:
+    body:
+      string: '{"status": "InProgress"}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '24'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 17:48:12 GMT
+      request-context:
+      - appId=cid-v1:17d65b70-e9ce-4ed5-9347-1f660ec782e9
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      x-aml-cluster:
+      - vienna-eastus2euap-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.258'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.9.13
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://eastus2euap.api.azureml.ms/modelregistry/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/operations/6f5c35e2-1c46-4ae0-9698-d8ded09b36b7
+  response:
+    body:
+      string: '{"status": "InProgress"}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '24'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 17:48:42 GMT
+      request-context:
+      - appId=cid-v1:17d65b70-e9ce-4ed5-9347-1f660ec782e9
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      x-aml-cluster:
+      - vienna-eastus2euap-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.527'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.9.13
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://eastus2euap.api.azureml.ms/modelregistry/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/operations/6f5c35e2-1c46-4ae0-9698-d8ded09b36b7
+  response:
+    body:
+      string: '{"status": "InProgress"}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '24'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 17:49:13 GMT
+      request-context:
+      - appId=cid-v1:17d65b70-e9ce-4ed5-9347-1f660ec782e9
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      x-aml-cluster:
+      - vienna-eastus2euap-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.234'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.9.13
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://eastus2euap.api.azureml.ms/modelregistry/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/operations/6f5c35e2-1c46-4ae0-9698-d8ded09b36b7
+  response:
+    body:
+      string: '{"status": "InProgress"}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '24'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 17:49:43 GMT
+      request-context:
+      - appId=cid-v1:17d65b70-e9ce-4ed5-9347-1f660ec782e9
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      x-aml-cluster:
+      - vienna-eastus2euap-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.208'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.9.13
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://eastus2euap.api.azureml.ms/modelregistry/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/operations/6f5c35e2-1c46-4ae0-9698-d8ded09b36b7
+  response:
+    body:
+      string: '{"packageBuildState": "Succeeded", "status": "Succeeded", "logUrl":
+        "https://eus2euapmanaged2.blob.core.windows.net/65560886db2d492f8828f23ae2b80048-xdiibjmw2y/logs/wb39/rawtext.log?sv=2021-12-02&se=2023-09-15T19%3A16%3A07Z&sr=b&sp=r&sig=***",
+        "buildId": "wb39", "targetEnvironmentName": "diabetes-online-mlflow", "targetEnvironmentVersion":
+        "20", "error": null, "targetEnvironmentId": "azureml://locations/eastus2euap/workspaces/60106ea5-8e62-4d03-90a5-f1aa66fb613e/environments/diabetes-online-mlflow/versions/20",
+        "baseEnvironment": null, "inferencingServer": {"serverType": "AzureMLOnline",
+        "codeConfiguration": null}, "environmentVariables": null, "modelPath": "azureml://registries/azureml/models/distilbert-base-uncased/versions/5",
+        "modelConfiguration": {"mode": "Download", "mountPath": ""}, "inputs": [],
+        "tags": {"ModelPackageGenerated": "azureml://registries/azureml/models/distilbert-base-uncased/versions/5",
+        "ModelConfiguration": "Download, ", "InferencingServerType": "AzureMLOnline"},
+        "properties": null, "skuArchitectureType": null}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '1093'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 17:50:13 GMT
+      request-context:
+      - appId=cid-v1:17d65b70-e9ce-4ed5-9347-1f660ec782e9
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2euap-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.268'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.9.13
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://eastus2euap.api.azureml.ms/modelregistry/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/operations/6f5c35e2-1c46-4ae0-9698-d8ded09b36b7
+  response:
+    body:
+      string: '{"packageBuildState": "Succeeded", "status": "Succeeded", "logUrl":
+        "https://eus2euapmanaged2.blob.core.windows.net/65560886db2d492f8828f23ae2b80048-xdiibjmw2y/logs/wb39/rawtext.log?sv=2021-12-02&se=2023-09-15T19%3A16%3A07Z&sr=b&sp=r&sig=***",
+        "buildId": "wb39", "targetEnvironmentName": "diabetes-online-mlflow", "targetEnvironmentVersion":
+        "20", "error": null, "targetEnvironmentId": "azureml://locations/eastus2euap/workspaces/60106ea5-8e62-4d03-90a5-f1aa66fb613e/environments/diabetes-online-mlflow/versions/20",
+        "baseEnvironment": null, "inferencingServer": {"serverType": "AzureMLOnline",
+        "codeConfiguration": null}, "environmentVariables": null, "modelPath": "azureml://registries/azureml/models/distilbert-base-uncased/versions/5",
+        "modelConfiguration": {"mode": "Download", "mountPath": ""}, "inputs": [],
+        "tags": {"ModelPackageGenerated": "azureml://registries/azureml/models/distilbert-base-uncased/versions/5",
+        "ModelConfiguration": "Download, ", "InferencingServerType": "AzureMLOnline"},
+        "properties": null, "skuArchitectureType": null}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '1093'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 17:50:14 GMT
+      request-context:
+      - appId=cid-v1:17d65b70-e9ce-4ed5-9347-1f660ec782e9
+      strict-transport-security:
+      - max-age=15724800; includeSubDomains; preload
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2euap-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.154'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.11.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/environments/000000000000000/versions/20?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/dhmani-eastus2euap-ws2/environments/diabetes-online-mlflow/versions/20",
+        "name": "20", "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
+        "properties": {"description": null, "tags": {"ModelPackageGenerated": "azureml://registries/azureml/models/distilbert-base-uncased/versions/5",
+        "ModelConfiguration": "Download, ", "InferencingServerType": "AzureMLOnline"},
+        "properties": {}, "isArchived": false, "isAnonymous": false, "autoDeleteSetting":
+        null, "environmentType": "UserCreated", "condaFile": "", "build": {"contextUri":
+        "https://dhmanieastus2e0187149969.blob.core.windows.net/azureml-blobstore-60106ea5-8e62-4d03-90a5-f1aa66fb613e/azureml/DockerBuildContext/1024418468",
+        "dockerfilePath": "Dockerfile"}, "osType": "Linux", "autoRebuild": "OnBaseImageUpdate",
+        "provisioningState": "Succeeded", "stage": "Development", "intellectualProperty":
+        null}, "systemData": {"createdAt": "2023-09-15T17:36:05.5674258+00:00", "createdBy":
+        "Banibrata De", "createdByType": "User", "lastModifiedAt": "2023-09-15T17:36:05.5674258+00:00",
+        "lastModifiedBy": "Banibrata De", "lastModifiedByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1263'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 15 Sep 2023 17:50:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:17d65b70-e9ce-4ed5-9347-1f660ec782e9
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus2euap-02
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-msedge-ref:
+      - 'Ref A: D8BFC8D90A6D45B6B01E6C4C76A534CC Ref B: CO6AA3150218037 Ref C: 2023-09-15T17:50:14Z'
+      x-request-time:
+      - '0.088'
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -15,23 +15,24 @@ from azure.cli.core.aaz import *
     "connectedmachine extension image list",
 )
 class List(AAZCommand):
-    """List all Extension versions based on location, publisher, extensionType.
+    """List all Extension versions based on location, publisher, extensionType
 
-    :example: Sample command for extension image list
-        az connectedmachine extension image list --publisher microsoft.azure.monitor --extension-type azuremonitorlinuxagent --location eastus
+    :example: GET a list of extension metadata
+        az connectedmachine extension image list --location EastUS --publisher microsoft.azure.monitor --extension-type azuremonitorlinuxagent
     """
 
     _aaz_info = {
         "version": "2024-11-10-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.hybridcompute/locations/{}/publishers/{}/extensiontypes/{}/versions", "2024-11-10-preview"],
+            ["mgmt-plane", "/providers/microsoft.hybridcompute/locations/{}/publishers/{}/extensiontypes/{}/versions", "2024-11-10-preview"],
         ]
     }
 
+    AZ_SUPPORT_PAGINATION = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_paging(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -61,7 +62,7 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ExtensionMetadataList(ctx=self.ctx)()
+        self.ExtensionMetadataV2List(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -74,9 +75,10 @@ class List(AAZCommand):
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
-        return result
+        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
+        return result, next_link
 
-    class ExtensionMetadataList(AAZHttpOperation):
+    class ExtensionMetadataV2List(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -90,7 +92,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/Microsoft.HybridCompute/locations/{location}/publishers/{publisher}/extensionTypes/{extensionType}/versions",
+                "/providers/Microsoft.HybridCompute/locations/{location}/publishers/{publisher}/extensionTypes/{extensionType}/versions",
                 **self.url_parameters
             )
 
@@ -115,10 +117,6 @@ class List(AAZCommand):
                 ),
                 **self.serialize_url_param(
                     "publisher", self.ctx.args.publisher,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
                     required=True,
                 ),
             }
@@ -161,6 +159,9 @@ class List(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
+            )
             _schema_on_200.value = AAZListType(
                 flags={"read_only": True},
             )
@@ -187,8 +188,23 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
+            properties.architecture = AAZListType(
+                flags={"read_only": True},
+            )
+            properties.extension_signature_uri = AAZStrType(
+                serialized_name="extensionSignatureUri",
+                flags={"read_only": True},
+            )
             properties.extension_type = AAZStrType(
                 serialized_name="extensionType",
+                flags={"read_only": True},
+            )
+            properties.extension_uris = AAZListType(
+                serialized_name="extensionUris",
+                flags={"read_only": True},
+            )
+            properties.operating_system = AAZStrType(
+                serialized_name="operatingSystem",
                 flags={"read_only": True},
             )
             properties.publisher = AAZStrType(
@@ -197,6 +213,12 @@ class List(AAZCommand):
             properties.version = AAZStrType(
                 flags={"read_only": True},
             )
+
+            architecture = cls._schema_on_200.value.Element.properties.architecture
+            architecture.Element = AAZStrType()
+
+            extension_uris = cls._schema_on_200.value.Element.properties.extension_uris
+            extension_uris.Element = AAZStrType()
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(

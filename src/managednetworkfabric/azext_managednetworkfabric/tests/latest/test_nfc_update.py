@@ -14,29 +14,66 @@ from azure.cli.testsdk import ScenarioTest
 from .config import CONFIG
 
 
-def setup_scenario1(test):
-    """Env setup_scenario1"""
+def setup_scenario(test):
+    """Env setup_scenario"""
     pass
 
 
-def cleanup_scenario1(test):
-    """Env cleanup_scenario1"""
+def cleanup_scenario(test):
+    """Env cleanup_scenario"""
     pass
 
 
 def call_scenario1(test):
-    """# Testcase: scenario1"""
-    setup_scenario1(test)
-    step_update(test, checks=[])
-    cleanup_scenario1(test)
+    """Testcase: scenario"""
+    setup_scenario(test)
+    step_update_scenario1(test, checks=[])
+    cleanup_scenario(test)
 
 
-def step_update(test, checks=None):
+def call_scenario2(test):
+    """Testcase: scenario"""
+    setup_scenario(test)
+    step_update_scenario2(test, checks=[])
+    cleanup_scenario(test)
+
+
+def call_scenario3(test):
+    """Testcase: scenario"""
+    setup_scenario(test)
+    step_update_scenario3(test, checks=[])
+    cleanup_scenario(test)
+
+
+def step_update_scenario1(test, checks=None):
     """nni delete operation"""
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric controller update --resource-name {name} --resource-group {rg} --infra-er-connections {infraERConnections} --workload-er-connections {workloadERConnections}",
+        "az networkfabric controller update --resource-name {name} --resource-group {rg} --infra-er-connections {infraERConnections} --workload-er-connections {workloadERConnections}"
+        " --user-assigned {userAssignedIdentity} --system-assigned {systemAssignedIdentity}",
+        checks=checks,
+    )
+
+
+def step_update_scenario2(test, checks=None):
+    """nni delete operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkfabric controller update --resource-name {name} --resource-group {rg} --infrastructure-express-route-connections {infraERConnections} "
+        " --workload-express-route-connections {workloadERConnections} --mi-user-assigned {userAssignedIdentity} --mi-system-assigned {systemAssignedIdentity}",
+        checks=checks,
+    )
+
+
+def step_update_scenario3(test, checks=None):
+    """nni delete operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkfabric controller update --resource-name {name} --resource-group {rg} --infrastructure-express-route-connections {infraERConnections} "
+        " --wl-er-connections {workloadERConnections} --mi-user-assigned {userAssignedIdentity} --mi-system-assigned {systemAssignedIdentity}",
         checks=checks,
     )
 
@@ -55,6 +92,12 @@ class GA_NFCUpdateScenarioTest1(ScenarioTest):
                 ),
                 "workloadERConnections": CONFIG.get(
                     "NETWORK_FABRIC_CONTROLLER", "updated_workload_ER_Connections"
+                ),
+                "userAssignedIdentity": CONFIG.get(
+                    "MANAGED_IDENTITY", "user_assigned_identity"
+                ),
+                "systemAssignedIdentity": CONFIG.get(
+                    "MANAGED_IDENTITY", "system_assigned_identity"
                 ),
             }
         )

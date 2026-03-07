@@ -22,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2021-03-01",
+        "version": "2025-06-11",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}", "2021-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.datadog/monitors/{}", "2025-06-11"],
         ]
     }
 
@@ -49,6 +49,11 @@ class Show(AAZCommand):
             help="Monitor resource name",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9_][a-zA-Z0-9_-]+$",
+                max_length=32,
+                min_length=2,
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -120,7 +125,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2021-03-01",
+                    "api-version", "2025-06-11",
                     required=True,
                 ),
             }
@@ -210,15 +215,14 @@ class Show(AAZCommand):
             )
             properties.user_info = AAZObjectType(
                 serialized_name="userInfo",
-                flags={"secret": True},
             )
 
             datadog_organization_properties = cls._schema_on_200.properties.datadog_organization_properties
-            datadog_organization_properties.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            datadog_organization_properties.name = AAZStrType(
-                flags={"read_only": True},
+            datadog_organization_properties.cspm = AAZBoolType()
+            datadog_organization_properties.id = AAZStrType()
+            datadog_organization_properties.name = AAZStrType()
+            datadog_organization_properties.resource_collection = AAZBoolType(
+                serialized_name="resourceCollection",
             )
 
             user_info = cls._schema_on_200.properties.user_info

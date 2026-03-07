@@ -8,13 +8,11 @@ from typing import Tuple
 from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_ACSTOR_ALL,
     CONST_ACSTOR_IO_ENGINE_LABEL_KEY,
-    CONST_ACSTOR_K8S_EXTENSION_NAME,
     CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY,
     CONST_DISK_TYPE_PV_WITH_ANNOTATION,
     CONST_EPHEMERAL_NVME_PERF_TIER_BASIC,
     CONST_EPHEMERAL_NVME_PERF_TIER_PREMIUM,
     CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD,
-    CONST_EXT_INSTALLATION_NAME,
     CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME,
     CONST_K8S_EXTENSION_CUSTOM_MOD_NAME,
     CONST_K8S_EXTENSION_NAME,
@@ -23,13 +21,15 @@ from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_STORAGE_POOL_TYPE_AZURE_DISK,
     CONST_STORAGE_POOL_TYPE_ELASTIC_SAN,
     CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK,
+    CONST_ACSTOR_V1_K8S_EXTENSION_NAME,
+    CONST_ACSTOR_V1_EXT_INSTALLATION_NAME,
 )
 from azure.cli.command_modules.acs._roleassignments import (
     add_role_assignment,
     build_role_scope,
     delete_role_assignments,
 )
-from azure.cli.core.azclierror import UnknownError
+from azure.cli.core.azclierror import ResourceNotFoundError, UnknownError
 from knack.log import get_logger
 
 logger = get_logger(__name__)
@@ -133,12 +133,12 @@ def check_if_extension_is_installed(cmd, resource_group, cluster_name) -> bool:
             client,
             resource_group,
             cluster_name,
-            CONST_EXT_INSTALLATION_NAME,
+            CONST_ACSTOR_V1_EXT_INSTALLATION_NAME,
             "managedClusters",
         )
 
         extension_type = extension.extension_type.lower()
-        if extension_type != CONST_ACSTOR_K8S_EXTENSION_NAME:
+        if extension_type != CONST_ACSTOR_V1_K8S_EXTENSION_NAME:
             return_val = False
     except:  # pylint: disable=bare-except
         return_val = False
@@ -177,11 +177,11 @@ def get_extension_installed_and_cluster_configs(
             client,
             resource_group,
             cluster_name,
-            CONST_EXT_INSTALLATION_NAME,
+            CONST_ACSTOR_V1_EXT_INSTALLATION_NAME,
             "managedClusters",
         )
 
-        is_extension_installed = extension.extension_type.lower() == CONST_ACSTOR_K8S_EXTENSION_NAME
+        is_extension_installed = extension.extension_type.lower() == CONST_ACSTOR_V1_K8S_EXTENSION_NAME
         config_settings = extension.configuration_settings
 
         if is_extension_installed and config_settings is not None:
@@ -250,6 +250,35 @@ def get_extension_installed_and_cluster_configs(
         ephemeral_disk_volume_type,
         perf_tier
     )
+
+
+def get_container_storage_extension_installed(
+    cmd,
+    resource_group,
+    cluster_name,
+    extension_name,
+) -> Tuple[bool, str]:
+
+    client_factory = get_k8s_extension_module(CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME)
+    client = client_factory.cf_k8s_extension_operation(cmd.cli_ctx)
+    k8s_extension_custom_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_CUSTOM_MOD_NAME)
+    is_extension_installed = False
+    extension_version = ""
+
+    try:
+        extension = k8s_extension_custom_mod.show_k8s_extension(
+            client,
+            resource_group,
+            cluster_name,
+            extension_name,
+            "managedClusters",
+        )
+        is_extension_installed = True
+        extension_version = extension.current_version
+    except ResourceNotFoundError:
+        # Extension not found, which is expected if not installed.
+        is_extension_installed = False
+    return is_extension_installed, extension_version
 
 
 def get_initial_resource_value_args(

@@ -3,19 +3,23 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import subprocess
 import json
-import platform
+import os
 import re
-from knack.log import get_logger
-from typing import List
-from azext_confcom.errors import eprint
-from azext_confcom.config import ARTIFACT_TYPE
-from azext_confcom.cose_proxy import CoseSignToolProxy
-from azext_confcom.os_util import delete_silently
+import subprocess
+from tempfile import mkdtemp
+from typing import List, Optional
 
-host_os = platform.system()
-machine = platform.machine()
+from azext_confcom.config import ARTIFACT_TYPE, DEFAULT_REGO_FRAGMENTS
+from azext_confcom.cose_proxy import CoseSignToolProxy
+from azext_confcom.errors import eprint
+from azext_confcom.os_util import clean_up_temp_folder, delete_silently
+from azext_confcom.template_util import (
+    extract_containers_and_fragments_from_text, extract_svn_from_text)
+from knack.log import get_logger
+
+SHA256_PREFIX = "@sha256:"
+FRAGMENT_DISCOVERY_PLATFORM = "linux/amd64"
 
 logger = get_logger(__name__)
 
@@ -38,7 +42,7 @@ def prepend_docker_registry(image_name: str) -> str:
 
     registry = ""
     # Check if the image name contains a registry (e.g., docker.io, custom registry)
-    if "/" not in name or "." not in name.split("/")[0]:
+    if ("/" not in name or "." not in name.split("/")[0]) and not name.startswith("localhost"):
         # If no registry is specified, assume docker.io/library
         if "/" not in name:
             # Add the `library` namespace for official images
@@ -53,52 +57,200 @@ def call_oras_cli(args, check=False):
     return subprocess.run(args, check=check, capture_output=True, timeout=120)
 
 
+def manifest_fetch(image_tag: str) -> Optional[dict]:
+    """Fetch manifest from registry using ORAS.
+
+    Returns the parsed JSON manifest or None if operation fails.
+    """
+    try:
+        result = subprocess.run(
+            ["oras", "manifest", "fetch", "--format", "json", image_tag],
+            capture_output=True,
+            text=True,
+            timeout=30,
+            check=True,
+        )
+        return json.loads(result.stdout)
+    except subprocess.CalledProcessError as e:
+        logger.warning("Failed to oras manifest fetch %s: %s", image_tag, e.stderr)
+        return None
+    except (subprocess.TimeoutExpired, json.JSONDecodeError) as e:
+        logger.warning("Failed to oras manifest fetch %s: %s", image_tag, e)
+        return None
+
+
+def manifest_fetch_config(image_tag: str) -> Optional[dict]:
+    """Fetch manifest config from registry using ORAS.
+
+    Returns the parsed JSON config or None if operation fails.
+    """
+    try:
+        result = subprocess.run(
+            ["oras", "manifest", "fetch-config", image_tag],
+            capture_output=True,
+            text=True,
+            timeout=30,
+            check=True,
+        )
+        return json.loads(result.stdout)
+    except subprocess.CalledProcessError as e:
+        logger.warning(
+            "Failed to oras manifest fetch-config %s: %s", image_tag, e.stderr
+        )
+        return None
+    except (subprocess.TimeoutExpired, json.JSONDecodeError) as e:
+        logger.warning("Failed to oras manifest fetch-config %s: %s", image_tag, e)
+        return None
+
+
+def get_image_platforms(manifest_tag: str) -> List[str]:
+    """Get the platform(s) of an image in a registry.
+
+    Returns list of platforms in the format ["os/architecture"] or [] if detection fails.
+    "unknown/unknown" is automatically excluded.
+    """
+    manifest_tag = prepend_docker_registry(manifest_tag)
+    fetch_res = manifest_fetch(manifest_tag)
+
+    if not fetch_res:
+        return []
+
+    manifest_data = fetch_res.get("content")
+    if not manifest_data:
+        logger.warning("Fetched manifest for %s has no content", manifest_tag)
+        return []
+
+    # Check if this is an index manifest with multiple platforms
+    media_type = fetch_res.get("mediaType")
+    if not media_type:
+        media_type = manifest_data.get("mediaType")
+    if not media_type:
+        logger.warning(
+            "Could not determine media type for manifest of %s", manifest_tag
+        )
+
+    is_manifest_list = False
+    if (
+        media_type == "application/vnd.oci.image.index.v1+json"
+        or media_type == "application/vnd.docker.distribution.manifest.list.v2+json"
+    ):
+        is_manifest_list = True
+        if not manifest_data.get("manifests", []):
+            eprint(
+                "Manifest data for %s of type %s is expected to have manifest list, "
+                + "but .manifests is empty or not present",
+                manifest_tag,
+                media_type,
+                exit_code=1,
+            )
+    elif manifest_data.get("manifests", []):
+        # Unknown media type but has manifest list, treat it as an index
+        is_manifest_list = True
+
+    found_platforms = []
+    if is_manifest_list:
+        for manifest in manifest_data["manifests"]:
+            if "platform" in manifest:
+                platform_info = manifest["platform"]
+                # Handle both unknown/unknown and missing arch/os fields
+                arch = platform_info.get("architecture", "unknown")
+                os_name = platform_info.get("os", "unknown")
+                # Skip manifests with unknown platform (e.g. attestation)
+                if arch != "unknown" and os_name != "unknown":
+                    found_platforms.append(f"{os_name}/{arch}")
+        return found_platforms
+
+    # For single manifests, oras manifest fetch does not return the necessary information, so we need fetch-config
+    config_data = manifest_fetch_config(manifest_tag)
+    if config_data and "architecture" in config_data and "os" in config_data:
+        return [f"{config_data['os']}/{config_data['architecture']}"]
+
+    # If all detection methods fail, return empty list
+    return []
+
+
 # discover if there are policy artifacts associated with the image
 # return their digests in a list if there are some
 def discover(
     image: str,
-) -> List[str]:
+    platform: Optional[str] = None,
+) -> tuple[bool, List[str]]:
+    image_exists = True
     # normalize the name in case the docker registry is implied
     image = prepend_docker_registry(image)
 
     arg_list = ["oras", "discover", image, "-o", "json", "--artifact-type", ARTIFACT_TYPE]
+    if platform:
+        arg_list.extend(["--platform", platform])
+
     item = call_oras_cli(arg_list, check=False)
     hashes = []
 
     logger.info("Discovering fragments for %s: %s", image, item.stdout.decode('utf-8'))
     if item.returncode == 0:
         json_output = json.loads(item.stdout.decode("utf-8"))
-        manifests = json_output.get("manifests", [])
+        # ORAS >= 1.3.0 renamed "manifests" to "referrers"
+        manifests = json_output.get("referrers") or json_output.get("manifests", [])
         if manifests is not None:
             for manifest in manifests:
                 hashes.append(manifest["digest"])
     # get the exit code from the subprocess
     else:
-        if "401: Unauthorized" in item.stderr.decode("utf-8"):
-            eprint(
-                f"Error pulling the policy fragment from {image}.\n\n"
-                + "Please log into the registry and try again.\n\n"
+        err_str = item.stderr.decode("utf-8")
+        if "unauthorized" in err_str.lower():
+            logger.warning(
+                "Error pulling the policy fragment from %s.\n\nPlease log into the registry and try again.\n\n",
+                image
             )
-        eprint(f"Error retrieving fragments from remote repo: {item.stderr.decode('utf-8')}", exit_code=item.returncode)
-    return hashes
+            image_exists = False
+        # this happens when the image isn't found in the remote repo or there is no access to the remote repo
+        elif f"{image}: not found" in err_str:
+            logger.warning("No policy fragments found for image %s", image)
+            image_exists = False
+        elif "dial tcp: lookup" in err_str:
+            logger.warning("Could not access registry for %s", image)
+            image_exists = False
+        else:
+            eprint(f"Error retrieving fragments from remote repo: {err_str}", exit_code=item.returncode)
+    return image_exists, hashes
 
 
-# pull the policy fragment from the remote repo and return its contents as a string
 def pull(
-    image: str,
-    image_hash: str,
+    artifact: str,
+    hash_val: str = "",
+    tag: str = "",
 ) -> str:
-    if "@sha256:" in image:
-        image = image.split("@")[0]
-    arg_list = ["oras", "pull", f"{image}@{image_hash}"]
-    logger.info("Pulling fragment: %s@%s", image, image_hash)
+    """
+    pull the policy fragment from the remote repo and return its filepath after downloaded.
+    This file must be cleaned up after use.
+    """
+
+    full_path = ""
+    if SHA256_PREFIX in artifact:
+        artifact, temp_hash_val = artifact.split(SHA256_PREFIX)
+        if temp_hash_val != hash_val:
+            eprint(f"Input '{hash_val}' does not match what is present in registry '{temp_hash_val}'")
+        full_path = f"{artifact}{SHA256_PREFIX}{hash_val}"
+    elif artifact and hash_val:
+        # response from discover function includes "sha256:" but not "@"
+        full_path = f"{artifact}@{hash_val}"
+    elif ":" in artifact:
+        artifact, tag = artifact.rsplit(":", maxsplit=1)
+        full_path = f"{artifact}:{tag}"
+    else:
+        eprint(f"Invalid artifact name: {artifact}")
+    logger.info("Pulling fragment: %s", full_path)
+
+    temp_folder = mkdtemp()
+    arg_list = ["oras", "pull", full_path, "-o", temp_folder]
+
     item = call_oras_cli(arg_list, check=False)
 
     # get the exit code from the subprocess
     if item.returncode != 0:
         if "401: Unauthorized" in item.stderr.decode("utf-8"):
             eprint(
-                f"Error pulling the policy fragment: {image}@{image_hash}.\n\n"
+                f"Error pulling the policy fragment: {full_path}.\n\n"
                 + "Please log into the registry and try again.\n\n"
             )
         eprint(f"Error while pulling fragment: {item.stderr.decode('utf-8')}", exit_code=item.returncode)
@@ -112,32 +264,78 @@ def pull(
             break
 
     if filename == "":
-        eprint(f"Could not find the filename of the pulled fragment for {image}@{image_hash}")
-
-    return filename
+        eprint(f"Could not find the filename of the pulled fragment for {full_path}")
+    out_filename = os.path.join(temp_folder, filename)
+    return out_filename
 
 
 def pull_all_image_attached_fragments(image):
     # TODO: be smart about if we're pulling a fragment directly or trying to discover them from an image tag
     # TODO: this will be for standalone fragments
-    fragments = discover(image)
+    image_exists, fragments = discover(image, platform=FRAGMENT_DISCOVERY_PLATFORM)
+    fragment_contents = []
+    feeds = []
+    if image_exists:
+        proxy = CoseSignToolProxy()
+        for fragment_digest in fragments:
+            filename = pull(image, hash_val=fragment_digest)
+            text = proxy.extract_payload_from_path(filename)
+            feed = proxy.extract_feed_from_path(filename)
+            clean_up_temp_folder(filename)
+            fragment_contents.append(text)
+            feeds.append(feed)
+
+    return fragment_contents, feeds
+
+
+def create_list_of_standalone_imports(fragment_feeds):
+    # the output will be a list of dicts that will reflect the same output as pull_all_standalone_fragments
+    proxy = CoseSignToolProxy()
+    standalone_imports = []
+    for feed in fragment_feeds:
+        filename = pull(artifact=feed)
+        standalone_import = proxy.generate_import_from_path(filename, minimum_svn=-1)
+        clean_up_temp_folder(filename)
+        standalone_imports.append(standalone_import)
+    return standalone_imports
+
+
+def pull_all_standalone_fragments(fragment_imports):
     fragment_contents = []
     feeds = []
     proxy = CoseSignToolProxy()
-    for fragment_digest in fragments:
-        filename = pull(image, fragment_digest)
-        text = proxy.extract_payload_from_path(filename)
-        feed = proxy.extract_feed_from_path(filename)
-        # containers = extract_containers_from_text(text, REGO_CONTAINER_START)
-        # new_fragments = extract_containers_from_text(text, REGO_FRAGMENT_START)
-        # if new_fragments:
-        #     for new_fragment in new_fragments:
-        #         feed = new_fragment.get("feed")
-        #         # if we don't have the feed in the list of feeds we've already pulled, pull it
-        #         if feed not in fragment_feeds:
-        #             fragment_contents.extend(pull_all_image_attached_fragments(feed, fragment_feeds=fragment_feeds))
-        fragment_contents.append(text)
+
+    for fragment in fragment_imports:
+        if any(
+            fragment["feed"] == default["feed"] and fragment["issuer"] == default["issuer"]
+            for default in DEFAULT_REGO_FRAGMENTS
+        ):
+            continue
+        path = fragment.get("path")
+        feed = fragment.get("feed")
+        minimum_svn = int(fragment.get("minimum_svn"))
         feeds.append(feed)
+
+        if path:
+            text = proxy.extract_payload_from_path(path)
+        else:
+            filename = pull(artifact=feed)
+            text = proxy.extract_payload_from_path(filename)
+            svn = extract_svn_from_text(text)
+            if svn < minimum_svn:
+                logger.warning(
+                    "found fragment %s but the svn of %s is lower than the the specified minimum_svn of %s",
+                    feed,
+                    svn,
+                    minimum_svn
+                )
+                continue
+            clean_up_temp_folder(filename)
+        # put new fragments to the end of the list
+        fragment_contents.append(text)
+        _, fragments = extract_containers_and_fragments_from_text(text)
+        fragment_imports.extend(fragments)
+
     return fragment_contents, feeds
 
 
@@ -151,7 +349,8 @@ def check_oras_cli():
         eprint(text)
 
 
-def attach_fragment_to_image(image_name: str, filename: str):
+# used for image-attached fragments
+def attach_fragment_to_image(image_name: str, filename: str, platform: Optional[str] = None):
     if ":" not in image_name:
         image_name += ":latest"
     # attach the fragment to the image
@@ -160,9 +359,17 @@ def attach_fragment_to_image(image_name: str, filename: str):
         "attach",
         "--artifact-type",
         ARTIFACT_TYPE,
+    ]
+
+    # Add platform parameter if provided
+    if platform:
+        arg_list.extend(["--platform", platform])
+
+    arg_list.extend([
         image_name,
         filename + ":application/cose-x509+rego"
-    ]
+    ])
+
     item = call_oras_cli(arg_list, check=False)
     if item.returncode != 0:
         eprint(f"Could not attach fragment to image: {image_name}. Failed with {item.stderr}")
@@ -177,18 +384,36 @@ def attach_fragment_to_image(image_name: str, filename: str):
 
 def generate_imports_from_image_name(image_name: str, minimum_svn: str) -> List[dict]:
     cose_proxy = CoseSignToolProxy()
-    fragment_hashes = discover(image_name)
+    image_exists, fragment_hashes = discover(image_name, platform=FRAGMENT_DISCOVERY_PLATFORM)
     import_list = []
 
-    for fragment_hash in fragment_hashes:
-        filename = ""
-        try:
-            filename = pull(image_name, fragment_hash)
-            import_statement = cose_proxy.generate_import_from_path(filename, minimum_svn)
-            if import_statement not in import_list:
-                import_list.append(import_statement)
-        finally:
-            # clean up the fragment file
-            delete_silently(filename)
+    if image_exists:
+        for fragment_hash in fragment_hashes:
+            filename = ""
+            try:
+                filename = pull(image_name, fragment_hash)
+                import_statement = cose_proxy.generate_import_from_path(filename, minimum_svn)
+                if import_statement not in import_list:
+                    import_list.append(import_statement)
+            finally:
+                # clean up the fragment file
+                delete_silently(filename)
 
     return import_list
+
+
+# used for standalone fragments
+def push_fragment_to_registry(feed_name: str, filename: str) -> None:
+    # push the fragment to the registry
+    arg_list = [
+        "oras",
+        "push",
+        feed_name,
+        "--artifact-type",
+        ARTIFACT_TYPE,
+        filename + ":application/cose-x509+rego"
+    ]
+    item = call_oras_cli(arg_list, check=False)
+    if item.returncode != 0:
+        eprint(f"Could not push fragment to registry: {feed_name}. Failed with {item.stderr}")
+    print(f"Fragment pushed to registry '{feed_name}'")
