@@ -12,17 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "connectedmachine show",
+    "connectedmachine wait",
 )
-class Show(AAZCommand):
-    """Get information about the model view or the instance view of an Azure Arc-Enabled Server.
-
-    :example: Sample command for show
-        az connectedmachine show --name myMachine --resource-group myResourceGroup
+class Wait(AAZWaitCommand):
+    """Place the CLI in a waiting state until a condition is met.
     """
 
     _aaz_info = {
-        "version": "2025-02-19-preview",
         "resources": [
             ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}", "2025-02-19-preview"],
         ]
@@ -79,7 +75,7 @@ class Show(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
         return result
 
     class MachinesGet(AAZHttpOperation):
@@ -187,7 +183,7 @@ class Show(AAZCommand):
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _ShowHelper._build_schema_system_data_read(_schema_on_200.system_data)
+            _WaitHelper._build_schema_system_data_read(_schema_on_200.system_data)
             _schema_on_200.tags = AAZDictType()
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
@@ -371,11 +367,11 @@ class Show(AAZCommand):
 
             extensions_allow_list = cls._schema_on_200.properties.agent_configuration.extensions_allow_list
             extensions_allow_list.Element = AAZObjectType()
-            _ShowHelper._build_schema_configuration_extension_read(extensions_allow_list.Element)
+            _WaitHelper._build_schema_configuration_extension_read(extensions_allow_list.Element)
 
             extensions_block_list = cls._schema_on_200.properties.agent_configuration.extensions_block_list
             extensions_block_list.Element = AAZObjectType()
-            _ShowHelper._build_schema_configuration_extension_read(extensions_block_list.Element)
+            _WaitHelper._build_schema_configuration_extension_read(extensions_block_list.Element)
 
             incoming_connections_ports = cls._schema_on_200.properties.agent_configuration.incoming_connections_ports
             incoming_connections_ports.Element = AAZStrType()
@@ -420,11 +416,11 @@ class Show(AAZCommand):
 
             error_details = cls._schema_on_200.properties.error_details
             error_details.Element = AAZObjectType()
-            _ShowHelper._build_schema_error_detail_read(error_details.Element)
+            _WaitHelper._build_schema_error_detail_read(error_details.Element)
 
             extensions = cls._schema_on_200.properties.extensions
             extensions.Element = AAZObjectType()
-            _ShowHelper._build_schema_machine_extension_instance_view_read(extensions.Element)
+            _WaitHelper._build_schema_machine_extension_instance_view_read(extensions.Element)
 
             firmware_profile = cls._schema_on_200.properties.firmware_profile
             firmware_profile.serial_number = AAZStrType(
@@ -528,7 +524,7 @@ class Show(AAZCommand):
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _ShowHelper._build_schema_system_data_read(assigned_license.system_data)
+            _WaitHelper._build_schema_system_data_read(assigned_license.system_data)
             assigned_license.tags = AAZDictType()
             assigned_license.type = AAZStrType(
                 flags={"read_only": True},
@@ -610,7 +606,7 @@ class Show(AAZCommand):
             product_profile.error = AAZObjectType(
                 flags={"read_only": True},
             )
-            _ShowHelper._build_schema_error_detail_read(product_profile.error)
+            _WaitHelper._build_schema_error_detail_read(product_profile.error)
             product_profile.product_features = AAZListType(
                 serialized_name="productFeatures",
             )
@@ -644,7 +640,7 @@ class Show(AAZCommand):
             _element.error = AAZObjectType(
                 flags={"read_only": True},
             )
-            _ShowHelper._build_schema_error_detail_read(_element.error)
+            _WaitHelper._build_schema_error_detail_read(_element.error)
             _element.name = AAZStrType()
             _element.subscription_status = AAZStrType(
                 serialized_name="subscriptionStatus",
@@ -721,24 +717,24 @@ class Show(AAZCommand):
                 serialized_name="patchSettings",
                 flags={"client_flatten": True},
             )
-            _ShowHelper._build_schema_patch_settings_read(linux_configuration.patch_settings)
+            _WaitHelper._build_schema_patch_settings_read(linux_configuration.patch_settings)
 
             windows_configuration = cls._schema_on_200.properties.os_profile.windows_configuration
             windows_configuration.patch_settings = AAZObjectType(
                 serialized_name="patchSettings",
                 flags={"client_flatten": True},
             )
-            _ShowHelper._build_schema_patch_settings_read(windows_configuration.patch_settings)
+            _WaitHelper._build_schema_patch_settings_read(windows_configuration.patch_settings)
 
             service_statuses = cls._schema_on_200.properties.service_statuses
             service_statuses.extension_service = AAZObjectType(
                 serialized_name="extensionService",
             )
-            _ShowHelper._build_schema_service_status_read(service_statuses.extension_service)
+            _WaitHelper._build_schema_service_status_read(service_statuses.extension_service)
             service_statuses.guest_configuration_service = AAZObjectType(
                 serialized_name="guestConfigurationService",
             )
-            _ShowHelper._build_schema_service_status_read(service_statuses.guest_configuration_service)
+            _WaitHelper._build_schema_service_status_read(service_statuses.guest_configuration_service)
 
             storage_profile = cls._schema_on_200.properties.storage_profile
             storage_profile.disks = AAZListType()
@@ -783,7 +779,7 @@ class Show(AAZCommand):
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _ShowHelper._build_schema_system_data_read(_element.system_data)
+            _WaitHelper._build_schema_system_data_read(_element.system_data)
             _element.tags = AAZDictType()
             _element.type = AAZStrType(
                 flags={"read_only": True},
@@ -802,7 +798,7 @@ class Show(AAZCommand):
             properties.instance_view = AAZObjectType(
                 serialized_name="instanceView",
             )
-            _ShowHelper._build_schema_machine_extension_instance_view_read(properties.instance_view)
+            _WaitHelper._build_schema_machine_extension_instance_view_read(properties.instance_view)
             properties.protected_settings = AAZDictType(
                 serialized_name="protectedSettings",
             )
@@ -832,8 +828,8 @@ class Show(AAZCommand):
             return cls._schema_on_200
 
 
-class _ShowHelper:
-    """Helper class for Show"""
+class _WaitHelper:
+    """Helper class for Wait"""
 
     _schema_configuration_extension_read = None
 
@@ -1056,4 +1052,4 @@ class _ShowHelper:
         _schema.last_modified_by_type = cls._schema_system_data_read.last_modified_by_type
 
 
-__all__ = ["Show"]
+__all__ = ["Wait"]
