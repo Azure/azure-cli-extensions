@@ -14,9 +14,19 @@ from azure.cli.core.profiles import (
 CUSTOM_MGMT_FLEET = CustomResourceType('azext_fleet.vendored_sdks', 'ContainerServiceFleetMgmtClient')
 
 
+# TODO: Remove this override once the API version is rolled out to production ARM.
+# During preview, this API version is only available in the centraluseuap environment.
+FLEET_BASE_URL = "https://centraluseuap.management.azure.com"
+
+
 # container service clients
 def get_container_service_client(cli_ctx, subscription_id=None):
-    return get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_FLEET, subscription_id=subscription_id)
+    return get_mgmt_service_client(
+        cli_ctx, CUSTOM_MGMT_FLEET,
+        subscription_id=subscription_id,
+        base_url_bound=False,
+        base_url=FLEET_BASE_URL
+    )
 
 
 def cf_fleets(cli_ctx, *_):
@@ -54,6 +64,10 @@ def cf_auto_upgrade_profiles(cli_ctx, *_):
 
 def cf_auto_upgrade_profile_operations(cli_ctx, *_):
     return get_container_service_client(cli_ctx).auto_upgrade_profile_operations
+
+
+def cf_cluster_mesh_profiles(cli_ctx, *_):
+    return get_container_service_client(cli_ctx).cluster_mesh_profiles
 
 
 def get_provider_client(cli_ctx):

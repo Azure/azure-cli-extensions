@@ -43,7 +43,7 @@ class ContainerServiceFleetMgmtClientConfiguration:  # pylint: disable=too-many-
         self.credential = credential
         self.subscription_id = subscription_id
         self.api_version = api_version
-        self.credential_scopes = kwargs.pop("credential_scopes", ["https://management.azure.com/.default"])
+        self.credential_scopes = kwargs.pop("credential_scopes", ["https://centraluseuap.management.azure.com/.default"])
         kwargs.setdefault("sdk_moniker", "mgmt-containerservicefleet/{}".format(VERSION))
         self.polling_interval = kwargs.get("polling_interval", 30)
         self._configure(**kwargs)
