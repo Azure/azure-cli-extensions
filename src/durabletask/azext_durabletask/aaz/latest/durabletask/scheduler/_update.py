@@ -16,6 +16,12 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a Scheduler
+
+    :example: Update a scheduler's IP allowlist and tags
+        az durabletask scheduler update --resource-group testrg --name testscheduler --ip-allowlist "[0.0.0.0/0]" --tags "{department:research}"
+
+    :example: Update a scheduler to disable public network access
+        az durabletask scheduler update --resource-group testrg --name testscheduler --public-network-access Disabled
     """
 
     _aaz_info = {
