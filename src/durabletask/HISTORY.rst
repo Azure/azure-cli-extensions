@@ -4,6 +4,7 @@ Release History
 ===============
 
 1.0.0b6
++++++
 * Update ARM API version to `2026-02-01`
 * Scheduler public network access can now be controlled with `--public-network-access`
 
