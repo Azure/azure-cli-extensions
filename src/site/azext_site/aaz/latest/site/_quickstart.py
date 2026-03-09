@@ -2,8 +2,10 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-
 import json
+import logging
+from contextlib import contextmanager
+from importlib import resources as pkg_resources
 from pathlib import Path
 from azure.cli.core.aaz import (  # type: ignore[import-unresolved]
     AAZCommand,
@@ -25,10 +27,48 @@ from knack.log import get_logger
 logger = get_logger(__name__)
 
 
+_TEMPLATE_RESOURCE = ("templates", "infra", "main.json")
+
+
+@contextmanager
+def _template_file():
+    """Yield the bundled ARM template as a real file path.
+
+    This avoids relying on repo-relative or local developer filesystem layout.
+    """
+    try:
+        trav = pkg_resources.files("azext_site").joinpath(*_TEMPLATE_RESOURCE)
+        with pkg_resources.as_file(trav) as template_path:
+            yield template_path
+    except FileNotFoundError as ex:
+        az_error = FileOperationError(
+            f"Internal ARM template not found in extension package: {'/'.join(_TEMPLATE_RESOURCE)}"
+        )
+        az_error.set_recommendation([
+            "Reinstall or update the 'site' extension to restore the bundled templates.",
+            f"Details: {ex}",
+        ])
+        raise az_error
+
+
+def _get_configuration_defaults_version(template_path: Path) -> str | None:
+    """Best-effort: read parameters.configuration.defaultValue.version from main.json."""
+    try:
+        data = json.loads(template_path.read_text(encoding="utf-8"))
+        params = data.get("parameters") if isinstance(data, dict) else None
+        params = params if isinstance(params, dict) else {}
+        cfg = params.get("configuration") if isinstance(params.get("configuration"), dict) else {}
+        dv = cfg.get("defaultValue") if isinstance(cfg.get("defaultValue"), dict) else {}
+        ver = dv.get("version")
+        return ver if isinstance(ver, str) and ver else None
+    except Exception:
+        return None
+
+
 def _resolve_template_path() -> Path:
-    # ...\azext_site\aaz\latest\site\_quickstart.py -> ...\azext_site\templates\infra\main.json
-    azext_root = Path(__file__).resolve().parents[3]  # ...\azext_site
-    return azext_root / "templates" / "infra" / "main.json"
+    # Back-compat helper retained for callers/tests; quickstart should use _template_file().
+    # This path is not used for deployment in order to avoid local filesystem assumptions.
+    return Path("templates") / "infra" / "main.json"
 
 
 def _load_template_configuration_children(template_path: Path, config_id: str | None) -> list[dict]:
@@ -275,15 +315,6 @@ class Quickstart(AAZCommand):
         return self.handle()
 
     def handle(self):
-        template = _resolve_template_path()
-        if not template.exists():
-            az_error = FileOperationError(f"Internal ARM template not found: {template}")
-            az_error.set_recommendation([
-                "Reinstall or update the 'site' extension to restore the bundled templates.",
-                "If you are developing locally, ensure 'templates/infra/main.json' exists under the extension root.",
-            ])
-            raise az_error
-
         scope = "resource-group"
         if has_value(self.ctx.args.scope):
             scope = (self.ctx.args.scope.to_serialized_data() or "").strip().lower() or "resource-group"
@@ -312,80 +343,100 @@ class Quickstart(AAZCommand):
 
         deployment_name = f"site-quickstart-{site_name}"
 
-        invoke_args = [
-            "deployment", "group", "create",
-            "--name", deployment_name,
-            "--resource-group", rg,
-            "--template-file", str(template),
-            "--parameters", f"siteName={site_name}",
-            "--parameters", f"location={rg_location}",
-            "--only-show-errors",
-            "--output", "none",
-        ]
-
-        if has_value(self.ctx.args.config_name):
-            cfg = self.ctx.args.config_name.to_serialized_data()
-            invoke_args.extend(["--parameters", f"configName={cfg}"])
-
-        rc = cli.invoke(invoke_args)
-        if rc != 0:
-            # Capture the original error first (before more invokes overwrite cli.result)
-            underlying_error = None
-            if getattr(cli, "result", None) is not None:
-                underlying_error = getattr(cli.result, "error", None)
-
-            all_ops = _get_deployment_ops(cli, deployment_name, rg)
-            succeeded_site_id, succeeded_config_id, succeeded_config_ref_id, failed_ops = _summarize_deployment_ops(all_ops)
-
-            # Print succeeded resources even if the overall deployment failed
-            if succeeded_site_id:
-                print(f"Site created successfully. Azure Resource ID - {succeeded_site_id}")
-            if succeeded_config_id:
-                print(f"Config created successfully. Azure Resource ID - {succeeded_config_id}")
-            if succeeded_config_ref_id:
-                print(f"Config reference created successfully. Azure Resource ID - {succeeded_config_ref_id}")
-
-            az_error = CLIInternalError(
-                f"Deployment failed to create all required resources. Deployment name '{deployment_name}', resource group '{rg}'."
-            )
-
-            recommendations = [
-                f"Run: az deployment group show --resource-group {rg} --name {deployment_name} --query properties.error --output jsonc",
-                f"Run: az deployment operation group list --resource-group {rg} --name {deployment_name} --output table",
+        with _template_file() as template:
+            invoke_args = [
+                "deployment", "group", "create",
+                "--name", deployment_name,
+                "--resource-group", rg,
+                "--template-file", str(template),
+                "--parameters", f"siteName={site_name}",
+                "--parameters", f"location={rg_location}",
+                "--only-show-errors",
+                "--output", "none",
             ]
 
-            if failed_ops:
-                failed_summary = "; ".join(
-                    f"{op.get('type')} '{op.get('name')}' ({op.get('state')})"
-                    for op in failed_ops
-                    if isinstance(op, dict)
+            config_name = None
+            if has_value(self.ctx.args.config_name):
+                config_name = self.ctx.args.config_name.to_serialized_data()
+                invoke_args.extend(["--parameters", f"configName={config_name}"])
+
+            if logger.isEnabledFor(logging.DEBUG):
+                defaults_version = _get_configuration_defaults_version(template)
+                logger.debug("Quickstart configuration defaults version: %s", defaults_version)
+                logger.debug(
+                    "Quickstart effective deployment parameters: %s",
+                    json.dumps(
+                        {
+                            "siteName": site_name,
+                            "location": rg_location,
+                            **({"configName": config_name} if config_name else {}),
+                        },
+                        indent=2,
+                        sort_keys=True,
+                    ),
                 )
-                if failed_summary:
-                    recommendations.append(f"Review failed resources: {failed_summary}")
 
-            if succeeded_site_id or succeeded_config_id or succeeded_config_ref_id:
-                recommendations.append("Some resources may have been created. Review the resource group resources and clean up if needed.")
+            rc = cli.invoke(invoke_args)
+            if rc != 0:
+                # Capture the original error first (before more invokes overwrite cli.result)
+                underlying_error = None
+                if getattr(cli, "result", None) is not None:
+                    underlying_error = getattr(cli.result, "error", None)
 
-            if underlying_error:
-                recommendations.append(f"Review the Azure CLI error details: {underlying_error}")
+                all_ops = _get_deployment_ops(cli, deployment_name, rg)
+                succeeded_site_id, succeeded_config_id, succeeded_config_ref_id, failed_ops = _summarize_deployment_ops(all_ops)
 
-            az_error.set_recommendation(recommendations)
-            raise az_error
+                # Print succeeded resources even if the overall deployment failed
+                if succeeded_site_id:
+                    print(f"Site created successfully. Azure Resource ID - {succeeded_site_id}")
+                if succeeded_config_id:
+                    print(f"Config created successfully. Azure Resource ID - {succeeded_config_id}")
+                if succeeded_config_ref_id:
+                    print(f"Config reference created successfully. Azure Resource ID - {succeeded_config_ref_id}")
 
-        # Success: return structured output (JSON by default).
-        all_ops = _get_deployment_ops(cli, deployment_name, rg)
-        site_id, config_id, config_ref_id, _ = _summarize_deployment_ops(all_ops)
+                az_error = CLIInternalError(
+                    f"Deployment failed to create all required resources. Deployment name '{deployment_name}', resource group '{rg}'."
+                )
 
-        child_configs = _load_template_configuration_children(template, config_id)
+                recommendations = [
+                    f"Run: az deployment group show --resource-group {rg} --name {deployment_name} --query properties.error --output jsonc",
+                    f"Run: az deployment operation group list --resource-group {rg} --name {deployment_name} --output table",
+                ]
 
-        return {
-            "siteId": site_id,
-            "siteName": site_name,
-            "type": "Microsoft.Edge/sites",
-            "siteConfiguration": {
-                "configurationId": config_id,
-                "location": rg_location,
-                "childConfigurations": child_configs,
-                "configurationReferenceId": config_ref_id,
-            },
-        }
+                if failed_ops:
+                    failed_summary = "; ".join(
+                        f"{op.get('type')} '{op.get('name')}' ({op.get('state')})"
+                        for op in failed_ops
+                        if isinstance(op, dict)
+                    )
+                    if failed_summary:
+                        recommendations.append(f"Review failed resources: {failed_summary}")
+
+                if succeeded_site_id or succeeded_config_id or succeeded_config_ref_id:
+                    recommendations.append(
+                        "Some resources may have been created. Review the resource group resources and clean up if needed."
+                    )
+
+                if underlying_error:
+                    recommendations.append(f"Review the Azure CLI error details: {underlying_error}")
+
+                az_error.set_recommendation(recommendations)
+                raise az_error
+
+            # Success: return structured output (JSON by default).
+            all_ops = _get_deployment_ops(cli, deployment_name, rg)
+            site_id, config_id, config_ref_id, _ = _summarize_deployment_ops(all_ops)
+
+            child_configs = _load_template_configuration_children(template, config_id)
+
+            return {
+                "siteId": site_id,
+                "siteName": site_name,
+                "type": "Microsoft.Edge/sites",
+                "siteConfiguration": {
+                    "configurationId": config_id,
+                    "location": rg_location,
+                    "childConfigurations": child_configs,
+                    "configurationReferenceId": config_ref_id,
+                },
+            }
