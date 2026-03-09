@@ -4,7 +4,8 @@
 # --------------------------------------------------------------------------------------------
 
 """
-Unit tests for the _map_* helper functions in containers_from_radius.
+Unit tests for the _map_* and _normalize_* helper functions in
+containers_from_radius.
 
 Each function maps one Radius template field to its corresponding policy field.
 Tests are grouped by helper function.
@@ -17,6 +18,8 @@ from azext_confcom.command.containers_from_radius import (
     _map_connection_env_rules,
     _map_volume_mounts,
     _map_exec_processes,
+    _normalize_compute_container,
+    _normalize_compute_probe,
 )
 
 
@@ -270,3 +273,145 @@ def test_exec_tcp_probe_ignored():
 def test_exec_probe_without_command_ignored():
     result = _map_exec_processes({"livenessProbe": {"kind": "exec"}})
     assert result == []
+
+
+# ---------------------------------------------------------------------------
+# _normalize_compute_probe
+# ---------------------------------------------------------------------------
+
+def test_normalize_probe_exec():
+    result = _normalize_compute_probe({"exec": {"command": ["cat", "/tmp/healthy"]}})
+    assert result == {"kind": "exec", "command": ["cat", "/tmp/healthy"]}
+
+
+def test_normalize_probe_httpget():
+    result = _normalize_compute_probe({"httpGet": {"path": "/health", "port": 8080}})
+    assert result == {"kind": "httpGet", "containerPort": 8080, "path": "/health"}
+
+
+def test_normalize_probe_tcp():
+    result = _normalize_compute_probe({"tcpSocket": {"port": 3000}})
+    assert result == {"kind": "tcp", "containerPort": 3000}
+
+
+def test_normalize_probe_empty():
+    assert _normalize_compute_probe({}) is None
+    assert _normalize_compute_probe(None) is None
+
+
+# ---------------------------------------------------------------------------
+# _normalize_compute_container
+# ---------------------------------------------------------------------------
+
+def test_normalize_compute_passthrough_fields():
+    """Fields shared between schemas pass through unchanged."""
+    container = {
+        "image": "nginx:latest",
+        "command": ["/bin/sh"],
+        "args": ["-c", "echo hi"],
+        "workingDir": "/app",
+        "env": {"FOO": {"value": "bar"}},
+    }
+    result = _normalize_compute_container(container, {})
+    assert result["image"] == "nginx:latest"
+    assert result["command"] == ["/bin/sh"]
+    assert result["args"] == ["-c", "echo hi"]
+    assert result["workingDir"] == "/app"
+    assert result["env"] == {"FOO": {"value": "bar"}}
+
+
+def test_normalize_compute_emptydir_volume():
+    """emptyDir volumes normalize to ephemeral with managedStore."""
+    container = {
+        "image": "nginx",
+        "volumeMounts": [{"volumeName": "tmp", "mountPath": "/tmp/data"}],
+    }
+    resource_volumes = {"tmp": {"emptyDir": {"medium": "memory"}}}
+    result = _normalize_compute_container(container, resource_volumes)
+
+    assert "volumes" in result
+    assert result["volumes"]["tmp"] == {
+        "kind": "ephemeral",
+        "mountPath": "/tmp/data",
+        "managedStore": "memory",
+    }
+
+
+def test_normalize_compute_emptydir_default_medium():
+    """emptyDir without medium defaults to 'disk'."""
+    container = {
+        "image": "nginx",
+        "volumeMounts": [{"volumeName": "scratch", "mountPath": "/scratch"}],
+    }
+    resource_volumes = {"scratch": {"emptyDir": {}}}
+    result = _normalize_compute_container(container, resource_volumes)
+    assert result["volumes"]["scratch"]["managedStore"] == "disk"
+
+
+def test_normalize_compute_persistent_volume():
+    """persistentVolume normalizes to persistent with source and permission."""
+    container = {
+        "image": "nginx",
+        "volumeMounts": [{"volumeName": "data", "mountPath": "/data"}],
+    }
+    resource_volumes = {"data": {"persistentVolume": {"resourceId": "vol.id"}}}
+    result = _normalize_compute_container(container, resource_volumes)
+
+    assert result["volumes"]["data"] == {
+        "kind": "persistent",
+        "mountPath": "/data",
+        "source": "vol.id",
+        "permission": "write",  # ReadWriteOnce default → write
+    }
+
+
+def test_normalize_compute_persistent_readonly():
+    """ReadOnlyMany access mode maps to permission 'read'."""
+    container = {
+        "image": "nginx",
+        "volumeMounts": [{"volumeName": "cfg", "mountPath": "/cfg"}],
+    }
+    resource_volumes = {"cfg": {"persistentVolume": {
+        "resourceId": "vol.id",
+        "accessMode": "ReadOnlyMany",
+    }}}
+    result = _normalize_compute_container(container, resource_volumes)
+    assert result["volumes"]["cfg"]["permission"] == "read"
+
+
+def test_normalize_compute_secret_volume():
+    """secretName volumes normalize to persistent read-only."""
+    container = {
+        "image": "nginx",
+        "volumeMounts": [{"volumeName": "certs", "mountPath": "/etc/certs"}],
+    }
+    resource_volumes = {"certs": {"secretName": "my-tls-secret"}}
+    result = _normalize_compute_container(container, resource_volumes)
+
+    assert result["volumes"]["certs"] == {
+        "kind": "persistent",
+        "mountPath": "/etc/certs",
+        "source": "my-tls-secret",
+        "permission": "read",
+    }
+
+
+def test_normalize_compute_probes():
+    """Structured probes convert to canonical {kind, ...} format."""
+    container = {
+        "image": "nginx",
+        "livenessProbe": {"exec": {"command": ["cat", "/tmp/healthy"]}},
+        "readinessProbe": {"httpGet": {"path": "/ready", "port": 8080}},
+    }
+    result = _normalize_compute_container(container, {})
+
+    assert result["livenessProbe"] == {"kind": "exec", "command": ["cat", "/tmp/healthy"]}
+    assert result["readinessProbe"] == {"kind": "httpGet", "containerPort": 8080, "path": "/ready"}
+
+
+def test_normalize_compute_no_volumes_or_probes():
+    """Minimal container with no volumes or probes passes through cleanly."""
+    container = {"image": "nginx", "ports": {"web": {"containerPort": 80}}}
+    result = _normalize_compute_container(container, {})
+    assert result["image"] == "nginx"
+    assert "volumes" not in result
