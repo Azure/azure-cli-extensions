@@ -16,16 +16,15 @@ class AcrTransferScenarioTest(ScenarioTest):
             'location': 'eastus',
             'sku': 'Premium'
         })
-        
+
         self.cmd('acr create -n {registry_name} -g {rg} -l {location} --sku {sku}', checks=[
             self.check('name', '{registry_name}'),
             self.check('location', '{location}'),
             self.check('sku.name', '{sku}')
         ])
-        
+
         self.cmd('acr import-pipeline list -r {registry_name} -g {rg}', checks=[
             self.check('length(@)', 0)
         ])
-        
         self.cmd('acr delete -n {registry_name} -g {rg} -y')
 
