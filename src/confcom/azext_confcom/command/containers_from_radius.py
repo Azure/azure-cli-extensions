@@ -6,8 +6,9 @@
 """
 Extract container definitions from Radius templates for policy generation.
 
-Supports the Applications.Core/containers resource type as defined in:
-https://docs.radapp.io/reference/resource-schema/core-schema/container-schema/
+Supports two Radius container resource types:
+  - Applications.Core/containers   (singular ``container`` property)
+  - Radius.Compute/containers      (``containers`` dict of named containers)
 
 Each Radius template field is mapped to its corresponding policy container
 field by a dedicated ``_map_*`` function.  The overall flow is:
@@ -21,6 +22,11 @@ field by a dedicated ``_map_*`` function.  The overall flow is:
      exec_processes, signals) are concatenated; scalar fields are replaced
      by the template value when present.
 
+The ``_map_*`` functions operate on a canonical container dict with inline
+``volumes`` and ``{kind, command, ...}``-style probes.  For
+``Radius.Compute`` resources, ``_normalize_compute_container`` converts
+each container to that canonical form first.
+
 Template field                          Policy field      Mapper
 --------------------------------------  ----------------  --------------------------
 container.image                         id, name, layers  from_image
@@ -31,7 +37,7 @@ resource.connections                    env_rules         _map_connection_env_ru
 container.volumes                       mounts            _map_volume_mounts
 container.livenessProbe                 exec_processes    _map_exec_processes
 container.readinessProbe                exec_processes    _map_exec_processes
-runtimes.kubernetes.pod.containers      (sidecars — processed like main containers)
+runtimes.kubernetes.pod.containers      (sidecars — Applications.Core only)
 """
 
 import json
@@ -177,6 +183,131 @@ def _map_exec_processes(container: dict) -> list[dict]:
 
 
 # ---------------------------------------------------------------------------
+# Radius.Compute schema normalization
+# ---------------------------------------------------------------------------
+
+# Both resource types represent container workloads; the schema differs.
+_CONTAINER_RESOURCE_TYPES = {
+    "Applications.Core/containers",
+    "Radius.Compute/containers",
+}
+
+
+def _normalize_compute_probe(probe: dict) -> dict | None:
+    """Convert a Radius.Compute probe to canonical {kind, command, ...} format."""
+    if not probe:
+        return None
+    if "exec" in probe:
+        return {"kind": "exec", "command": probe["exec"].get("command")}
+    if "httpGet" in probe:
+        hg = probe["httpGet"]
+        return {"kind": "httpGet", "containerPort": hg.get("port"), "path": hg.get("path")}
+    if "tcpSocket" in probe:
+        return {"kind": "tcp", "containerPort": probe["tcpSocket"].get("port")}
+    return None
+
+
+def _normalize_compute_container(container: dict, resource_volumes: dict) -> dict:
+    """Normalize a Radius.Compute/containers entry to canonical internal format.
+
+    Converts:
+      - volumeMounts[] + resource-level volumes → inline volumes dict
+      - Structured probes (exec/httpGet/tcpSocket) → {kind, ...} format
+    All other fields (image, command, args, env, workingDir) are identical.
+    """
+    normalized = dict(container)
+
+    # --- volumeMounts + resource-level volumes → legacy inline volumes ---
+    volume_mounts = container.get("volumeMounts", [])
+    if volume_mounts and resource_volumes:
+        old_volumes = {}
+        for vm in volume_mounts:
+            vol_name = vm["volumeName"]
+            vol_def = resource_volumes.get(vol_name, {})
+            mount_path = vm["mountPath"]
+
+            if "emptyDir" in vol_def:
+                old_volumes[vol_name] = {
+                    "kind": "ephemeral",
+                    "mountPath": mount_path,
+                    "managedStore": vol_def["emptyDir"].get("medium", "disk"),
+                }
+            elif "persistentVolume" in vol_def:
+                pv = vol_def["persistentVolume"]
+                access = pv.get("accessMode", "ReadWriteOnce")
+                old_volumes[vol_name] = {
+                    "kind": "persistent",
+                    "mountPath": mount_path,
+                    "source": pv.get("resourceId", ""),
+                    "permission": "read" if access == "ReadOnlyMany" else "write",
+                }
+            elif "secretName" in vol_def:
+                old_volumes[vol_name] = {
+                    "kind": "persistent",
+                    "mountPath": mount_path,
+                    "source": vol_def["secretName"],
+                    "permission": "read",
+                }
+        normalized["volumes"] = old_volumes
+
+    # --- probes: structured → legacy ---
+    for probe_key in ("livenessProbe", "readinessProbe"):
+        probe = container.get(probe_key)
+        if probe:
+            legacy = _normalize_compute_probe(probe)
+            if legacy:
+                normalized[probe_key] = legacy
+
+    return normalized
+
+
+# ---------------------------------------------------------------------------
+# Per-resource-type container collectors
+# ---------------------------------------------------------------------------
+
+def _collect_applications_core_containers(resource: dict) -> list[dict]:
+    """Extract containers from an Applications.Core/containers resource.
+
+    The main container lives at ``properties.container`` (singular).
+    Sidecar containers come from ``runtimes.kubernetes.pod.containers``.
+    """
+    props = resource.get("properties", {})
+    results = []
+
+    main_container = props.get("container", {})
+    if main_container.get("image"):
+        results.append({"container": main_container, "resource": props})
+
+    runtimes = props.get("runtimes", {})
+    pod_spec = runtimes.get("kubernetes", {}).get("pod", {})
+    for sidecar in pod_spec.get("containers", []):
+        if sidecar.get("image"):
+            results.append({"container": sidecar, "resource": props})
+
+    return results
+
+
+def _collect_radius_compute_containers(resource: dict) -> list[dict]:
+    """Extract containers from a Radius.Compute/containers resource.
+
+    All containers live in ``properties.containers`` (dict of named
+    containers).  Volumes are defined at ``properties.volumes`` and
+    referenced via ``volumeMounts`` inside each container.  Each container
+    is normalized to the canonical internal format before being returned.
+    """
+    props = resource.get("properties", {})
+    resource_volumes = props.get("volumes", {})
+    results = []
+
+    for _name, raw_container in props.get("containers", {}).items():
+        if raw_container.get("image"):
+            container = _normalize_compute_container(raw_container, resource_volumes)
+            results.append({"container": container, "resource": props})
+
+    return results
+
+
+# ---------------------------------------------------------------------------
 # Container extraction
 # ---------------------------------------------------------------------------
 
@@ -241,11 +372,13 @@ def containers_from_radius(
         JSON string containing the container definition for policy generation.
     """
 
-    # Remove the radius extension inclusion to avoid parsing errors
-    # For the purpose of extracting the container info we don't care about it
+    # Remove radius extension lines to avoid bicep compilation errors.
+    # Uses line-level regex so that 'extension radiusResources' etc. are
+    # removed cleanly without leaving stray text.
     with tempfile.NamedTemporaryFile('w+', delete=True, suffix=".bicep") as temp_template_file:
         with open(template, 'r') as f:
-            temp_template_file.write(f.read().replace("extension radius", ""))
+            content = re.sub(r'^extension\s+\S+.*$', '', f.read(), flags=re.MULTILINE)
+            temp_template_file.write(content)
         temp_template_file.flush()
 
         # Handle parameters file if it's a path
@@ -272,39 +405,24 @@ def containers_from_radius(
             parameters,
         )
 
-    # Find all Applications.Core/containers resources
+    # Find all container resources (both resource type schemas)
     container_resources = [
         r for r in parsed_template.get("resources", [])
-        if r.get("type") == "Applications.Core/containers"
+        if r.get("type") in _CONTAINER_RESOURCE_TYPES
     ]
 
-    # Build a flat list of all containers (main + sidecars)
+    # Each resource type has its own extraction function that returns a flat
+    # list of (container_dict, resource_props) pairs.
+    _RESOURCE_COLLECTORS = {
+        "Applications.Core/containers": _collect_applications_core_containers,
+        "Radius.Compute/containers": _collect_radius_compute_containers,
+    }
+
     all_containers = []
-
     for resource in container_resources:
-        props = resource.get("properties", {})
-        main_container = props.get("container", {})
-
-        if main_container.get("image"):
-            all_containers.append({
-                "container": main_container,
-                "resource": props,
-                "source": "main",
-            })
-
-        # Extract sidecar containers from runtimes.kubernetes.pod.containers
-        runtimes = props.get("runtimes", {})
-        k8s_runtime = runtimes.get("kubernetes", {})
-        pod_spec = k8s_runtime.get("pod", {})
-        sidecar_containers = pod_spec.get("containers", [])
-
-        for sidecar in sidecar_containers:
-            if sidecar.get("image"):
-                all_containers.append({
-                    "container": sidecar,
-                    "resource": props,  # Sidecars share the resource context
-                    "source": "sidecar",
-                })
+        collector = _RESOURCE_COLLECTORS.get(resource.get("type", ""))
+        if collector:
+            all_containers.extend(collector(resource))
 
     if container_index >= len(all_containers):
         raise IndexError(
