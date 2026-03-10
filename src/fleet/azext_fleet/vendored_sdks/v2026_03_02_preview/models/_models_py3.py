@@ -581,9 +581,9 @@ class ClusterMeshProfileStatus(_serialization.Model):
     :ivar state: The state of the cluster mesh. Required. Known values are: "NotConnected",
      "Connecting", "Connected", and "Failed".
     :vartype state: str or ~azure.mgmt.containerservicefleet.models.ClusterMeshState
-    :ivar last_applied_member_label_selector: The last applied Kubernetes-style label selector
-     defining which Fleet members are in the mesh, e.g. ``env=production``.
-    :vartype last_applied_member_label_selector: str
+    :ivar last_applied_member_selector: The last applied MemberSelector for the cluster mesh
+     profile.
+    :vartype last_applied_member_selector: ~azure.mgmt.containerservicefleet.models.MemberSelector
     :ivar last_operation_id: The last operation ID for the cluster mesh profile.
     :vartype last_operation_id: str
     :ivar last_operation_error: The last operation error of the cluster mesh profile.
@@ -592,14 +592,14 @@ class ClusterMeshProfileStatus(_serialization.Model):
 
     _validation = {
         "state": {"required": True, "readonly": True},
-        "last_applied_member_label_selector": {"readonly": True, "max_length": 512},
+        "last_applied_member_selector": {"readonly": True},
         "last_operation_id": {"readonly": True},
         "last_operation_error": {"readonly": True},
     }
 
     _attribute_map = {
         "state": {"key": "state", "type": "str"},
-        "last_applied_member_label_selector": {"key": "lastAppliedMemberLabelSelector", "type": "str"},
+        "last_applied_member_selector": {"key": "lastAppliedMemberSelector", "type": "MemberSelector"},
         "last_operation_id": {"key": "lastOperationId", "type": "str"},
         "last_operation_error": {"key": "lastOperationError", "type": "ErrorDetail"},
     }
@@ -608,7 +608,7 @@ class ClusterMeshProfileStatus(_serialization.Model):
         """ """
         super().__init__(**kwargs)
         self.state: Optional[Union[str, "_models.ClusterMeshState"]] = None
-        self.last_applied_member_label_selector: Optional[str] = None
+        self.last_applied_member_selector: Optional["_models.MemberSelector"] = None
         self.last_operation_id: Optional[str] = None
         self.last_operation_error: Optional["_models.ErrorDetail"] = None
 

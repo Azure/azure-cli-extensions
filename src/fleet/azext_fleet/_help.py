@@ -596,7 +596,7 @@ helps['fleet clustermeshprofile create'] = """
     type: command
     short-summary: Creates or updates a cluster mesh profile.
     parameters:
-        - name: --member-selector --selector
+        - name: --member-selector --selector -s
           type: string
           short-summary: "Kubernetes-style label selector for selecting Fleet members, e.g. 'env=production'."
     examples:
@@ -624,7 +624,7 @@ helps['fleet clustermeshprofile list'] = """
 
 helps['fleet clustermeshprofile delete'] = """
     type: command
-    short-summary: Deletes a cluster mesh profile.
+    short-summary: Deletes a cluster mesh profile. All members must be removed from the cluster mesh profile before it can be deleted.
     examples:
         - name: Delete a specific cluster mesh profile.
           text: az fleet clustermeshprofile delete -g MyFleetResourceGroup -f MyFleetName -n MyClusterMeshProfile
