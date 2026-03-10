@@ -5318,8 +5318,21 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                         cluster, cluster_resource_id, self.cmd
                     )
             elif (self.context.raw_param.get("enable_addons") is not None or
-                  self.context.raw_param.get("enable-azure-monitor-logs") is not None):
-                # Create the DCR Association here
+                  self.context.raw_param.get("enable-azure-monitor-logs") is not None or
+                  self.context.raw_param.get("enable_container_network_logs") is not None or
+                  self.context.raw_param.get("enable_retina_flow_logs") is not None or
+                  self.context.raw_param.get("disable_container_network_logs") is not None or
+                  self.context.raw_param.get("disable_retina_flow_logs") is not None or
+                  self.context.raw_param.get("enable_high_log_scale_mode") is not None):
+                # Create/update the DCR when CNL or HLSM flags change so that the DCR streams
+                # (e.g. Microsoft-ContainerLogV2-HighScale) are kept in sync.
+                cnl_or_hlsm_changing = (
+                    self.context.raw_param.get("enable_container_network_logs") is not None or
+                    self.context.raw_param.get("enable_retina_flow_logs") is not None or
+                    self.context.raw_param.get("disable_container_network_logs") is not None or
+                    self.context.raw_param.get("disable_retina_flow_logs") is not None or
+                    self.context.raw_param.get("enable_high_log_scale_mode") is not None
+                )
                 addon_consts = self.context.get_addon_consts()
                 CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
                 self.context.external_functions.ensure_container_insights_for_monitoring(
@@ -5331,7 +5344,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                     self.context.get_location(),
                     remove_monitoring=False,
                     aad_route=self.context.get_enable_msi_auth_for_monitoring(),
-                    create_dcr=False,
+                    create_dcr=cnl_or_hlsm_changing,
                     create_dcra=True,
                     enable_syslog=self.context.get_enable_syslog(),
                     data_collection_settings=self.context.get_data_collection_settings(),
