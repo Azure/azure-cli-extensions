@@ -15,11 +15,11 @@ def _check_and_assign_role(cmd, role, assignee, scope, identity_name="identity",
 
     Args:
         cmd: CLI command context
-        role: Role name (e.g., 'Contributor', 'Reader', 'Storage Blob Data Contributor')
+        role: Role name (e.g., 'Contributor', 'Reader')
         assignee: Principal ID of the identity to assign the role to
         scope: Resource ID scope for the role assignment
-        identity_name: Friendly name of the identity for error messages
-        max_retries: Max retries for transient failures (like identity not propagated yet)
+        identity_name: Friendly name for log messages
+        max_retries: Max retries for transient failures
         retry_delay: Delay in seconds between retries
 
     Returns:
@@ -27,73 +27,52 @@ def _check_and_assign_role(cmd, role, assignee, scope, identity_name="identity",
     """
     import time
     from azure.cli.command_modules.role.custom import list_role_assignments, create_role_assignment
-    from azure.core.exceptions import HttpResponseError
 
     # Check if role assignment already exists
     try:
-        existing_assignments = list_role_assignments(
-            cmd,
-            assignee=assignee,
-            role=role,
-            scope=scope,
-            include_inherited=True
-        )
-
-        if existing_assignments:
+        if list_role_assignments(cmd, assignee=assignee, role=role, scope=scope, include_inherited=True):
             print(f"\tRole '{role}' already assigned to {identity_name}")
             return True
-    except Exception:
-        # If we can't list, we'll try to create and handle any errors there
-        pass
+    except Exception as e:
+        print(f"\tWarning: Could not list role assignments for {identity_name}: {str(e)[:100]}")
+        # Continue to try creating the assignment
 
-    # Try to create the role assignment with retries for transient failures
-    last_error = None
+    # Try to create with retries for identity propagation delay
     for attempt in range(max_retries):
         try:
-            create_role_assignment(
-                cmd,
-                role=role,
-                assignee=assignee,
-                scope=scope
-            )
+            create_role_assignment(cmd, role=role, assignee=assignee, scope=scope)
             print(f"\tRole '{role}' assigned to {identity_name}")
             return True
-        except (HttpResponseError, Exception) as e:
-            error_message = str(e)
-            last_error = error_message
+        except Exception as e:
+            error_str = str(e).lower()
 
-            # Check if this is a "already exists" conflict (409)
-            if "already exists" in error_message.lower() or "conflict" in error_message.lower():
+            # Already exists — treat as success
+            if "conflict" in error_str or "already exists" in error_str:
                 print(f"\tRole '{role}' already assigned to {identity_name}")
                 return True
 
-            # Check if this is a permission/authorization error (not retryable)
-            if "authorization" in error_message.lower() or "forbidden" in error_message.lower() or "permission" in error_message.lower():
+            # Principal not found — retryable (identity propagation)
+            is_propagation_error = "principal" in error_str or "does not exist" in error_str or "cannot find" in error_str
+            if is_propagation_error and attempt < max_retries - 1:
+                print(f"\tWaiting for identity to propagate... (attempt {attempt + 1}/{max_retries})")
+                time.sleep(retry_delay)
+                continue
+
+            # Permission denied — actionable error
+            if "authorization" in error_str or "forbidden" in error_str:
                 raise InvalidArgumentValueError(
-                    f"Failed to assign '{role}' role to {identity_name}.\n"
-                    f"You don't have sufficient permissions to create role assignments.\n\n"
-                    f"Please ask your administrator to run the following command:\n\n"
-                    f"  az role assignment create --role \"{role}\" --assignee \"{assignee}\" --scope \"{scope}\"\n\n"
-                    f"After the role is assigned, re-run this command."
+                    f"Insufficient permissions to assign '{role}' role to {identity_name}.\n"
+                    f"Run manually:\n\n"
+                    f"  az role assignment create --role \"{role}\" --assignee \"{assignee}\" --scope \"{scope}\"\n"
                 )
 
-            # Check if this is a "principal not found" error (retryable - identity propagation)
-            if "cannot find" in error_message.lower() or "does not exist" in error_message.lower() or "principal" in error_message.lower():
-                if attempt < max_retries - 1:
-                    print(f"\tWaiting for identity to propagate... (attempt {attempt + 1}/{max_retries})")
-                    time.sleep(retry_delay)
-                    continue
-
-            # For other errors, don't retry
+            # Non-retryable error — break and raise
             break
 
-    # If we get here, we've exhausted retries or hit a non-retryable error
     raise InvalidArgumentValueError(
         f"Failed to assign '{role}' role to {identity_name}.\n"
-        f"Error: {last_error}\n\n"
-        f"You can try to manually assign the role using:\n\n"
-        f"  az role assignment create --role \"{role}\" --assignee \"{assignee}\" --scope \"{scope}\"\n\n"
-        f"After the role is assigned, re-run this command."
+        f"Run manually:\n\n"
+        f"  az role assignment create --role \"{role}\" --assignee \"{assignee}\" --scope \"{scope}\"\n"
     )
 
 
@@ -218,7 +197,7 @@ def _check_existing_backup_instance(resource_client, datasource_id, cluster_name
         # Format: /subscriptions/.../resourceGroups/.../providers/Microsoft.DataProtection/backupVaults/{vault}/backupInstances/{bi}
         vault_name = "Unknown"
         vault_rg = "Unknown"
-        if bi_id and '/backupVaults/' in str(bi_id):
+        if bi_id and '/backupvaults/' in str(bi_id).lower():
             bi_parts = parse_resource_id(bi_id)
             vault_name = bi_parts.get('name', 'Unknown')
             vault_rg = bi_parts.get('resource_group', 'Unknown')
@@ -412,6 +391,7 @@ def _setup_storage_account(cmd, cluster_subscription_id, storage_account_id, blo
                 "kind": "StorageV2",
                 "sku": {"name": "Standard_LRS"},
                 "allow_blob_public_access": False,
+                "allow_shared_key_access": False,
                 "tags": sa_tags
             }
             backup_storage_account = storage_client.storage_accounts.begin_create(
@@ -450,6 +430,85 @@ def _install_backup_extension(cmd, cluster_subscription_id, cluster_resource_gro
     print("\t[OK] Backup extension ready")
 
     return backup_extension
+
+
+def _get_existing_backup_extension(cmd, cluster_subscription_id, cluster_resource_group_name, cluster_name):
+    """
+    Check if a backup extension already exists on the cluster.
+
+    Returns:
+        extension object if found and healthy, None if not found.
+        Raises on Failed or transient states.
+    """
+    from azext_dataprotection.vendored_sdks.azure_mgmt_kubernetesconfiguration import SourceControlConfigurationClient
+    k8s_configuration_client = get_mgmt_service_client(cmd.cli_ctx, SourceControlConfigurationClient, subscription_id=cluster_subscription_id)
+
+    try:
+        extensions = k8s_configuration_client.extensions.list(
+            cluster_rp="Microsoft.ContainerService",
+            cluster_resource_name="managedClusters",
+            resource_group_name=cluster_resource_group_name,
+            cluster_name=cluster_name)
+
+        for page in extensions.by_page():
+            for extension in page:
+                if extension.extension_type and extension.extension_type.lower() == 'microsoft.dataprotection.kubernetes':
+                    provisioning_state = extension.provisioning_state
+                    if provisioning_state == "Succeeded":
+                        return extension
+                    elif provisioning_state == "Failed":
+                        raise InvalidArgumentValueError(
+                            f"Data protection extension '{extension.name}' exists on cluster '{cluster_name}' but is in Failed state.\n"
+                            f"Please take corrective action before running this command again:\n"
+                            f"  1. Check extension logs: az k8s-extension show --name {extension.name} --cluster-name {cluster_name} --resource-group {cluster_resource_group_name} --cluster-type managedClusters\n"
+                            f"  2. Delete the failed extension: az k8s-extension delete --name {extension.name} --cluster-name {cluster_name} --resource-group {cluster_resource_group_name} --cluster-type managedClusters --yes\n"
+                            f"  3. Re-run this command to install a fresh extension.\n"
+                            f"For troubleshooting, visit: https://aka.ms/aksclusterbackup"
+                        )
+                    else:
+                        raise InvalidArgumentValueError(
+                            f"Data protection extension '{extension.name}' is in '{provisioning_state}' state.\n"
+                            f"Please wait for the operation to complete and try again."
+                        )
+    except InvalidArgumentValueError:
+        raise
+    except Exception:
+        pass
+
+    return None
+
+
+def _get_storage_account_from_extension(cmd, extension, cluster_subscription_id):
+    """
+    Extract the storage account details from an existing backup extension's configuration.
+
+    The extension stores config in Velero-style keys:
+      - configuration.backupStorageLocation.config.storageAccount
+      - configuration.backupStorageLocation.bucket
+      - configuration.backupStorageLocation.config.resourceGroup
+
+    Returns:
+        tuple: (storage_account_object, storage_account_name, container_name, resource_group)
+    """
+    from azure.mgmt.storage import StorageManagementClient
+
+    config = extension.configuration_settings or {}
+    sa_name = config.get("configuration.backupStorageLocation.config.storageAccount")
+    container = config.get("configuration.backupStorageLocation.bucket")
+    sa_rg = config.get("configuration.backupStorageLocation.config.resourceGroup")
+
+    if not sa_name or not sa_rg:
+        return None, None, None, None
+
+    print(f"\tExtension is configured with storage account: {sa_name} (RG: {sa_rg}, container: {container})")
+
+    storage_client = get_mgmt_service_client(cmd.cli_ctx, StorageManagementClient, subscription_id=cluster_subscription_id)
+    try:
+        sa = storage_client.storage_accounts.get_properties(sa_rg, sa_name)
+        return sa, sa_name, container, sa_rg
+    except Exception as e:
+        print(f"\tWarning: Could not fetch storage account '{sa_name}' from extension config: {str(e)[:100]}")
+        return None, None, None, None
 
 
 def _find_existing_backup_vault(cmd, cluster_subscription_id, cluster_location):
@@ -537,6 +596,13 @@ def _setup_backup_vault(cmd, backup_strategy, backup_vault_id, cluster_subscript
         assignee=backup_vault["identity"]["principalId"],
         scope=backup_resource_group.id,
         identity_name="backup vault identity (on resource group)")
+
+    _check_and_assign_role(
+        cmd,
+        role="Disk Snapshot Contributor",
+        assignee=backup_vault["identity"]["principalId"],
+        scope=backup_resource_group.id,
+        identity_name="backup vault identity (snapshot contributor on resource group)")
     print("\t[OK] Backup vault ready")
 
     return backup_vault, backup_vault_name
@@ -750,24 +816,70 @@ def dataprotection_enable_backup_helper(cmd, datasource_id: str, backup_strategy
         cmd, resource_client, backup_resource_group_id, cluster_location, cluster_name,
         cluster_resource.identity.principal_id, resource_tags)
 
-    # Step 3: Setup storage account
-    print("\n[3/8] Setting up storage account...")
-    backup_storage_account, backup_storage_account_name, backup_storage_account_container_name = _setup_storage_account(
-        cmd, cluster_subscription_id, storage_account_id, blob_container_name,
-        backup_resource_group_name, cluster_location, cluster_name, cluster_resource_group_name, resource_tags)
+    # Step 3 & 4: Check extension first, then handle storage account accordingly
+    # If the extension is already installed, use its configured storage account
+    # instead of creating/finding a new one (which may be different).
+    print("\n[3/8] Checking for existing backup extension...")
+    existing_extension = _get_existing_backup_extension(
+        cmd, cluster_subscription_id, cluster_resource_group_name, cluster_name)
 
-    # Step 4: Install backup extension
-    print("\n[4/8] Installing backup extension...")
-    _install_backup_extension(
-        cmd, cluster_subscription_id, cluster_resource_group_name, cluster_name,
-        backup_storage_account_name, backup_storage_account_container_name,
-        backup_resource_group_name, backup_storage_account)
+    if existing_extension:
+        print(f"\tBackup extension already installed: {existing_extension.name}")
+
+        # Extract the storage account the extension is actually configured with
+        ext_sa, ext_sa_name, ext_container, ext_sa_rg = _get_storage_account_from_extension(
+            cmd, existing_extension, cluster_subscription_id)
+
+        if ext_sa:
+            # Use the extension's configured storage account for all subsequent operations
+            backup_storage_account = ext_sa
+            backup_storage_account_name = ext_sa_name
+            backup_storage_account_container_name = ext_container
+            print(f"\tUsing extension's storage account: {ext_sa_name}")
+        else:
+            # Fallback: extension exists but we can't read its config — setup storage account normally
+            print("\tWarning: Could not read extension storage config, setting up storage account...")
+            backup_storage_account, backup_storage_account_name, backup_storage_account_container_name = _setup_storage_account(
+                cmd, cluster_subscription_id, storage_account_id, blob_container_name,
+                backup_resource_group_name, cluster_location, cluster_name, cluster_resource_group_name, resource_tags)
+
+        # Ensure extension identity has correct role on its storage account
+        _check_and_assign_role(
+            cmd,
+            role="Storage Blob Data Contributor",
+            assignee=existing_extension.aks_assigned_identity.principal_id,
+            scope=backup_storage_account.id,
+            identity_name="backup extension identity")
+        print("\t[OK] Storage account ready")
+
+        print("\n[4/8] Backup extension already installed...")
+        print("\t[OK] Backup extension ready")
+    else:
+        # No extension — setup storage account first, then install extension
+        print("\tNo existing extension found, setting up storage account...")
+        backup_storage_account, backup_storage_account_name, backup_storage_account_container_name = _setup_storage_account(
+            cmd, cluster_subscription_id, storage_account_id, blob_container_name,
+            backup_resource_group_name, cluster_location, cluster_name, cluster_resource_group_name, resource_tags)
+
+        print("\n[4/8] Installing backup extension...")
+        _install_backup_extension(
+            cmd, cluster_subscription_id, cluster_resource_group_name, cluster_name,
+            backup_storage_account_name, backup_storage_account_container_name,
+            backup_resource_group_name, backup_storage_account)
 
     # Step 5: Setup backup vault
     print("\n[5/8] Setting up backup vault...")
     backup_vault, backup_vault_name = _setup_backup_vault(
         cmd, backup_strategy, backup_vault_id, cluster_subscription_id, cluster_location, backup_resource_group_name,
         cluster_resource, backup_resource_group, resource_tags)
+
+    # Grant vault identity read access to the backup storage account
+    _check_and_assign_role(
+        cmd,
+        role="Storage Blob Data Reader",
+        assignee=backup_vault["identity"]["principalId"],
+        scope=backup_storage_account.id,
+        identity_name="backup vault identity (on storage account)")
 
     # Step 6: Setup backup policy
     print("\n[6/8] Setting up backup policy...")
