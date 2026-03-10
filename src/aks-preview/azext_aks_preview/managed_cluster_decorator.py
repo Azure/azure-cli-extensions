@@ -3767,6 +3767,20 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             raise RequiredArgumentMissingError('"--enable-hosted-system" requires "--sku automatic".')
         return enable_hosted_system
 
+    def get_enable_continuous_control_plane_monitor(self) -> bool:
+        """Obtain the value of enable_continuous_control_plane_monitor.
+
+        :return: bool
+        """
+        return self.raw_param.get("enable_continuous_control_plane_monitor")
+
+    def get_disable_continuous_control_plane_monitor(self) -> bool:
+        """Obtain the value of disable_continuous_control_plane_monitor.
+
+        :return: bool
+        """
+        return self.raw_param.get("disable_continuous_control_plane_monitor")
+
 
 # pylint: disable=too-many-public-methods
 class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
@@ -4796,6 +4810,22 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         return mc
 
+    def set_up_health_monitor_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up health monitor profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        if self.context.get_enable_continuous_control_plane_monitor():
+            if mc.health_monitor_profile is None:
+                mc.health_monitor_profile = (
+                    self.models.ManagedClusterHealthMonitorProfile()  # pylint: disable=no-member
+                )
+            mc.health_monitor_profile.enable_continuous_control_plane_and_addon_monitor = True
+
+        return mc
+
     def set_up_static_egress_gateway(self, mc: ManagedCluster) -> ManagedCluster:
         self._ensure_mc(mc)
 
@@ -4920,6 +4950,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_bootstrap_profile(mc)
         # set up static egress gateway profile
         mc = self.set_up_static_egress_gateway(mc)
+        # set up health monitor profile
+        mc = self.set_up_health_monitor_profile(mc)
         # set up imds restriction(a property in network profile)
         mc = self.set_up_imds_restriction(mc)
         # set up user-defined scheduler configuration for kube-scheduler upstream
@@ -7132,6 +7164,32 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             mc.network_profile.static_egress_gateway_profile.enabled = False
         return mc
 
+    def update_health_monitor_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update health monitor profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        enable = self.context.get_enable_continuous_control_plane_monitor()
+        disable = self.context.get_disable_continuous_control_plane_monitor()
+
+        if not enable and not disable:
+            return mc
+        if enable and disable:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-continuous-control-plane-monitor and "
+                "--disable-continuous-control-plane-monitor at the same time."
+            )
+
+        if mc.health_monitor_profile is None:
+            mc.health_monitor_profile = (
+                self.models.ManagedClusterHealthMonitorProfile()  # pylint: disable=no-member
+            )
+        mc.health_monitor_profile.enable_continuous_control_plane_and_addon_monitor = bool(enable)
+
+        return mc
+
     def update_imds_restriction(self, mc: ManagedCluster) -> ManagedCluster:
         """Update imds restriction for the ManagedCluster object.
 
@@ -7552,6 +7610,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_bootstrap_profile(mc)
         # update static egress gateway
         mc = self.update_static_egress_gateway(mc)
+        # update health monitor profile
+        mc = self.update_health_monitor_profile(mc)
         # update imds restriction
         mc = self.update_imds_restriction(mc)
         # update VMAS to VMS
