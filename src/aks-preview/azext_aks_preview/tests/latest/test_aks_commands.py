@@ -22161,6 +22161,7 @@ spec:
             "--enable-app-routing "
             "--enable-app-routing-istio "
             "--ssh-key-value={ssh_key_value} -o json "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AppRoutingIstioGatewayAPIPreview "
         )
         self.cmd(
             create_cmd,
@@ -22194,6 +22195,7 @@ spec:
         update_cmd = (
             "aks update --resource-group={resource_group} --name={name} "
             "--enable-app-routing-istio "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AppRoutingIstioGatewayAPIPreview "
         )
         self.cmd(
             update_cmd,
@@ -22231,6 +22233,7 @@ spec:
             "--enable-app-routing "
             "--enable-app-routing-istio "
             "--ssh-key-value={ssh_key_value} -o json "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AppRoutingIstioGatewayAPIPreview "
         )
         with self.assertRaises(HttpResponseError) as context:
             self.cmd(create_cmd)
@@ -22278,6 +22281,7 @@ spec:
         update_cmd = (
             "aks update --resource-group={resource_group} --name={name} "
             "--enable-app-routing-istio "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AppRoutingIstioGatewayAPIPreview "
         )
         with self.assertRaises(HttpResponseError) as context:
             self.cmd(update_cmd)
@@ -22326,6 +22330,7 @@ spec:
             "aks update --resource-group={resource_group} --name={name} "
             "--disable-azure-service-mesh "
             "--enable-app-routing-istio "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AppRoutingIstioGatewayAPIPreview "
         )
         with self.assertRaises(HttpResponseError) as context:
             self.cmd(update_cmd)
@@ -22353,6 +22358,7 @@ spec:
         enable_ari_cmd = (
             "aks update --resource-group={resource_group} --name={name} "
             "--enable-app-routing-istio "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AppRoutingIstioGatewayAPIPreview "
         )
         self.cmd(
             enable_ari_cmd,
@@ -22389,6 +22395,7 @@ spec:
             "--enable-app-routing "
             "--enable-app-routing-istio "
             "--ssh-key-value={ssh_key_value} -o json "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AppRoutingIstioGatewayAPIPreview "
         )
         self.cmd(
             create_cmd,
@@ -22482,6 +22489,7 @@ spec:
         enable_cmd = (
             "aks approuting gateway istio enable "
             "--resource-group={resource_group} --name={name} "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AppRoutingIstioGatewayAPIPreview "
         )
         self.cmd(
             enable_cmd,
