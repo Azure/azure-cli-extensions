@@ -3767,6 +3767,28 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             raise RequiredArgumentMissingError('"--enable-hosted-system" requires "--sku automatic".')
         return enable_hosted_system
 
+    def get_control_plane_scaling_size(self) -> Union[str, None]:
+        """Obtain the value of control_plane_scaling_size.
+
+        :return: str or None
+        """
+        # try to read from raw parameters first
+        control_plane_scaling_size = self.raw_param.get("control_plane_scaling_size")
+
+        # for update scenarios, read from existing mc if raw parameter not set
+        if (
+            control_plane_scaling_size is None and
+            self.decorator_mode == DecoratorMode.UPDATE
+        ):
+            if (
+                self.mc and
+                self.mc.control_plane_scaling_profile is not None and
+                self.mc.control_plane_scaling_profile.scaling_size is not None
+            ):
+                control_plane_scaling_size = self.mc.control_plane_scaling_profile.scaling_size
+
+        return control_plane_scaling_size
+
 
 # pylint: disable=too-many-public-methods
 class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
@@ -4796,6 +4818,23 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         return mc
 
+    def set_up_control_plane_scaling_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up the control plane scaling profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        control_plane_scaling_size = self.context.get_control_plane_scaling_size()
+        if control_plane_scaling_size is not None:
+            mc.control_plane_scaling_profile = (
+                self.models.ManagedClusterControlPlaneScalingProfile(  # pylint: disable=no-member
+                    scaling_size=control_plane_scaling_size,
+                )
+            )
+
+        return mc
+
     def set_up_static_egress_gateway(self, mc: ManagedCluster) -> ManagedCluster:
         self._ensure_mc(mc)
 
@@ -4918,6 +4957,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_agentpool_profile_ssh_access(mc)
         # set up bootstrap profile
         mc = self.set_up_bootstrap_profile(mc)
+        # set up control plane scaling profile
+        mc = self.set_up_control_plane_scaling_profile(mc)
         # set up static egress gateway profile
         mc = self.set_up_static_egress_gateway(mc)
         # set up imds restriction(a property in network profile)
@@ -7102,6 +7143,23 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
+    def update_control_plane_scaling_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update the control plane scaling profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        control_plane_scaling_size = self.context.get_control_plane_scaling_size()
+        if control_plane_scaling_size is not None:
+            if mc.control_plane_scaling_profile is None:
+                mc.control_plane_scaling_profile = (
+                    self.models.ManagedClusterControlPlaneScalingProfile()  # pylint: disable=no-member
+                )
+            mc.control_plane_scaling_profile.scaling_size = control_plane_scaling_size
+
+        return mc
+
     def update_static_egress_gateway(self, mc: ManagedCluster) -> ManagedCluster:
         """Update static egress gateway addon for the ManagedCluster object.
 
@@ -7550,6 +7608,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_node_provisioning_profile(mc)
         # update bootstrap profile
         mc = self.update_bootstrap_profile(mc)
+        # update control plane scaling profile
+        mc = self.update_control_plane_scaling_profile(mc)
         # update static egress gateway
         mc = self.update_static_egress_gateway(mc)
         # update imds restriction

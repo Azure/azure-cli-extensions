@@ -5002,6 +5002,60 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         disable_default_domain_3 = ctx_3.get_disable_default_domain()
         self.assertEqual(disable_default_domain_3, False)
 
+    def test_get_control_plane_scaling_size(self):
+        # default value - None
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertIsNone(ctx_1.get_control_plane_scaling_size())
+
+        # custom value - H4
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"control_plane_scaling_size": "H4"}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_2.get_control_plane_scaling_size(), "H4")
+
+        # update mode - reads from existing mc when raw param not set
+        ctx_3 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        from azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.models import (
+            ManagedClusterControlPlaneScalingProfile,
+        )
+        mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            control_plane_scaling_profile=ManagedClusterControlPlaneScalingProfile(
+                scaling_size="H8",
+            ),
+        )
+        ctx_3.attach_mc(mc_3)
+        self.assertEqual(ctx_3.get_control_plane_scaling_size(), "H8")
+
+        # update mode - raw param overrides existing mc
+        ctx_4 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"control_plane_scaling_size": "H2"}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        mc_4 = self.models.ManagedCluster(
+            location="test_location",
+            control_plane_scaling_profile=ManagedClusterControlPlaneScalingProfile(
+                scaling_size="H8",
+            ),
+        )
+        ctx_4.attach_mc(mc_4)
+        self.assertEqual(ctx_4.get_control_plane_scaling_size(), "H2")
+
 class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
     def setUp(self):
         # manually register CUSTOM_MGMT_AKS_PREVIEW
@@ -7453,6 +7507,56 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         # Should succeed in CREATE mode even if addon appears enabled
         result = ctx_1.get_enable_azure_monitor_logs()
         self.assertTrue(result)
+
+    def test_set_up_control_plane_scaling_profile(self):
+        # Not specified case - profile should not be set
+        dec_0 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_0 = self.models.ManagedCluster(location="test_location")
+        dec_0.context.attach_mc(mc_0)
+        dec_mc_0 = dec_0.set_up_control_plane_scaling_profile(mc_0)
+        self.assertIsNone(dec_mc_0.control_plane_scaling_profile)
+
+        # H4 specified - profile should be set
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "control_plane_scaling_size": "H4",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.set_up_control_plane_scaling_profile(mc_1)
+        from azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.models import (
+            ManagedClusterControlPlaneScalingProfile,
+        )
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            control_plane_scaling_profile=ManagedClusterControlPlaneScalingProfile(
+                scaling_size="H4",
+            ),
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        # H8 specified - profile should be set
+        dec_2 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "control_plane_scaling_size": "H8",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(location="test_location")
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.set_up_control_plane_scaling_profile(mc_2)
+        self.assertEqual(dec_mc_2.control_plane_scaling_profile.scaling_size, "H8")
 
 
 class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
@@ -13794,6 +13898,56 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         # Should raise UnknownError
         with self.assertRaises(UnknownError):
             dec_4.update_agentpool_profile(mc_4)
+
+    def test_update_control_plane_scaling_profile(self):
+        from azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.models import (
+            ManagedClusterControlPlaneScalingProfile,
+        )
+
+        # Not specified case - profile should remain None
+        dec_0 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_0 = self.models.ManagedCluster(location="test_location")
+        dec_0.context.attach_mc(mc_0)
+        dec_mc_0 = dec_0.update_control_plane_scaling_profile(mc_0)
+        self.assertIsNone(dec_mc_0.control_plane_scaling_profile)
+
+        # Specified with no existing profile - should create profile
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "control_plane_scaling_size": "H4",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.update_control_plane_scaling_profile(mc_1)
+        self.assertEqual(dec_mc_1.control_plane_scaling_profile.scaling_size, "H4")
+
+        # Specified with existing profile - should update profile
+        dec_2 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "control_plane_scaling_size": "H8",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            control_plane_scaling_profile=ManagedClusterControlPlaneScalingProfile(
+                scaling_size="H4",
+            ),
+        )
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.update_control_plane_scaling_profile(mc_2)
+        self.assertEqual(dec_mc_2.control_plane_scaling_profile.scaling_size, "H8")
 
 if __name__ == "__main__":
     unittest.main()

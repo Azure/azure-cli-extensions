@@ -1201,6 +1201,13 @@ def load_arguments(self, _):
             help="Enable managed installation of Gateway API CRDs from the standard release channel."
         )
         c.argument("enable_hosted_system", action="store_true", is_preview=True)
+        c.argument(
+            "control_plane_scaling_size",
+            arg_type=get_enum_type(["H2", "H4", "H8"]),
+            is_preview=True,
+            help="The control plane scaling size. Provides scaled and performance-guaranteed control plane capacity. "
+                 "Available values are 'H2', 'H4', and 'H8'.",
+        )
 
     with self.argument_context("aks update") as c:
         # managed cluster paramerters
@@ -1778,6 +1785,13 @@ def load_arguments(self, _):
             action="store_true",
             is_preview=True,
             help="Disable Application Load Balancer (Application Gateway for Containers)."
+        )
+        c.argument(
+            "control_plane_scaling_size",
+            arg_type=get_enum_type(["H2", "H4", "H8"]),
+            is_preview=True,
+            help="The control plane scaling size. Provides scaled and performance-guaranteed control plane capacity. "
+                 "Available values are 'H2', 'H4', and 'H8'.",
         )
 
     with self.argument_context("aks upgrade") as c:

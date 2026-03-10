@@ -1160,7 +1160,8 @@ def aks_create(
     enable_upstream_kubescheduler_user_configuration=False,
     # managed gateway installation
     enable_gateway_api=False,
-    enable_hosted_system=False
+    enable_hosted_system=False,
+    control_plane_scaling_size=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1404,6 +1405,7 @@ def aks_update(
     # application load balancer
     enable_application_load_balancer=False,
     disable_application_load_balancer=False,
+    control_plane_scaling_size=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
