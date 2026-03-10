@@ -1377,6 +1377,34 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         return disable_image_integrity
 
+    def get_enable_service_account_image_pull(self) -> bool:
+        """Obtain the value of enable_service_account_image_pull.
+
+        :return: bool
+        """
+        # read the original value passed by the command
+        enable_service_account_image_pull = self.raw_param.get("enable_service_account_image_pull")
+
+        return enable_service_account_image_pull
+
+    def get_disable_service_account_image_pull(self) -> bool:
+        """Obtain the value of disable_service_account_image_pull.
+
+        :return: bool
+        """
+        # read the original value passed by the command
+        disable_service_account_image_pull = self.raw_param.get("disable_service_account_image_pull")
+
+        return disable_service_account_image_pull
+
+    def get_service_account_image_pull_default_managed_identity_id(self):
+        """Obtain the value of service_account_image_pull_default_managed_identity_id.
+
+        :return: str or None
+        """
+        # read the original value passed by the command
+        return self.raw_param.get("service_account_image_pull_default_managed_identity_id")
+
     def get_kms_infrastructure_encryption(self) -> str:
         """Obtain the value of kms_infrastructure_encryption.
 
@@ -4141,6 +4169,25 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         return mc
 
+    def set_up_service_account_image_pull(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up security profile serviceAccountImagePullProfile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        if self.context.get_enable_service_account_image_pull():
+            if mc.security_profile is None:
+                mc.security_profile = self.models.ManagedClusterSecurityProfile()  # pylint: disable=no-member
+            mc.security_profile.service_account_image_pull_profile = (
+                self.models.ServiceAccountImagePullProfile(  # pylint: disable=no-member
+                    enabled=True,
+                    default_managed_identity_id=self.context.get_service_account_image_pull_default_managed_identity_id(),
+                )
+            )
+
+        return mc
+
     def set_up_kms_pmk_and_cmk(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up security profile KubernetesResourceObjectEncryptionProfile and AzureKeyVaultKms for
         the ManagedCluster object.
@@ -4993,6 +5040,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_image_cleaner(mc)
         # set up image integrity
         mc = self.set_up_image_integrity(mc)
+        # set up service account image pull
+        mc = self.set_up_service_account_image_pull(mc)
         # set up KMS infrastructure encryption
         mc = self.set_up_kms_pmk_and_cmk(mc)
         # set up cluster snapshot
@@ -6374,6 +6423,44 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
+    def update_service_account_image_pull(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update security profile serviceAccountImagePullProfile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        enable_service_account_image_pull = self.context.get_enable_service_account_image_pull()
+        disable_service_account_image_pull = self.context.get_disable_service_account_image_pull()
+        default_managed_identity_id = self.context.get_service_account_image_pull_default_managed_identity_id()
+
+        # no service account image pull related changes
+        if not enable_service_account_image_pull and not disable_service_account_image_pull and default_managed_identity_id is None:
+            return mc
+        if enable_service_account_image_pull and disable_service_account_image_pull:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-service-account-image-pull and "
+                "--disable-service-account-image-pull at the same time."
+            )
+
+        if mc.security_profile is None:
+            mc.security_profile = self.models.ManagedClusterSecurityProfile()  # pylint: disable=no-member
+
+        profile = mc.security_profile.service_account_image_pull_profile
+        if profile is None:
+            profile = self.models.ServiceAccountImagePullProfile()  # pylint: disable=no-member
+            mc.security_profile.service_account_image_pull_profile = profile
+
+        if enable_service_account_image_pull:
+            profile.enabled = True
+        elif disable_service_account_image_pull:
+            profile.enabled = False
+
+        if default_managed_identity_id is not None:
+            profile.default_managed_identity_id = default_managed_identity_id
+
+        return mc
+
     def update_kms_pmk_cmk(self, mc: ManagedCluster) -> ManagedCluster:
         """Update security profile KubernetesResourceObjectEncryptionProfile for the ManagedCluster object.
 
@@ -7711,6 +7798,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_image_cleaner(mc)
         # update image integrity
         mc = self.update_image_integrity(mc)
+        # update service account image pull
+        mc = self.update_service_account_image_pull(mc)
         # update KMS infrastructure encryption
         mc = self.update_kms_pmk_cmk(mc)
         # update workload auto scaler profile
