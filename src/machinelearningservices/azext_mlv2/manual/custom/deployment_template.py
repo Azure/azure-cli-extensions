@@ -146,8 +146,10 @@ def _ml_deployment_template_update(
     try:
         deployment_template = ml_client.deployment_templates.get(name=parameters["name"], version=parameters["version"])
 
-        deployment_template.description = parameters["description"]
-        deployment_template.tags = parameters["tags"]
+        # Use .get() instead of [] to avoid KeyError when optional fields like
+        # "tags" or "description" are absent from the parameters dict
+        deployment_template.description = parameters.get("description")
+        deployment_template.tags = parameters.get("tags")
 
         deployment_template_result = ml_client.deployment_templates.create_or_update(deployment_template)
 
