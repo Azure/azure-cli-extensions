@@ -699,6 +699,9 @@ helps['aks create'] = f"""
         - name: --enable-gateway-api
           type: bool
           short-summary: Enable managed installation of Gateway API CRDs from the standard release channel.
+        - name: --enable-app-routing-istio --enable-ari
+          type: bool
+          short-summary: Enable Istio as a Gateway API implementation for App Routing.
         - name: --enable-hosted-system
           type: bool
           short-summary: Create a cluster with fully hosted system components. This applies only when creating a new automatic cluster.
@@ -1424,6 +1427,12 @@ helps['aks update'] = """
         - name: --disable-gateway-api
           type: bool
           short-summary: Disable managed installation of Gateway API CRDs.
+        - name: --enable-app-routing-istio --enable-ari
+          type: bool
+          short-summary: Enable Istio as a Gateway API implementation for App Routing.
+        - name: --disable-app-routing-istio --disable-ari
+          type: bool
+          short-summary: Disable Istio as a Gateway API implementation for App Routing.
         - name: --enable-application-load-balancer
           type: bool
           short-summary: Enable Application Load Balancer (Application Gateway for Containers) addon.
@@ -3811,6 +3820,36 @@ helps['aks approuting defaultdomain show'] = """
     examples:
       - name: Show the default domain for a cluster.
         text: az aks approuting defaultdomain show --resource-group MyResourceGroup --name MyManagedCluster
+"""
+
+helps['aks approuting gateway'] = """
+    type: group
+    short-summary: Commands to manage App Routing Gateway API implementations.
+    long-summary: A group of commands to manage Gateway API implementations for App Routing in a given cluster.
+"""
+
+helps['aks approuting gateway istio'] = """
+    type: group
+    short-summary: Commands to manage the Istio Gateway API implementation for App Routing.
+    long-summary: A group of commands to manage the Istio-based Gateway API implementation for App Routing in a given cluster.
+"""
+
+helps['aks approuting gateway istio enable'] = """
+    type: command
+    short-summary: Enable the Istio Gateway API implementation for App Routing.
+    long-summary: This command enables Istio as a Gateway API implementation for App Routing in the given cluster.
+    examples:
+      - name: Enable Istio Gateway API implementation for App Routing.
+        text: az aks approuting gateway istio enable --resource-group MyResourceGroup --name MyManagedCluster
+"""
+
+helps['aks approuting gateway istio disable'] = """
+    type: command
+    short-summary: Disable the Istio Gateway API implementation for App Routing.
+    long-summary: This command disables Istio as a Gateway API implementation for App Routing in the given cluster.
+    examples:
+      - name: Disable Istio Gateway API implementation for App Routing.
+        text: az aks approuting gateway istio disable --resource-group MyResourceGroup --name MyManagedCluster
 """
 
 helps['aks check-network'] = """

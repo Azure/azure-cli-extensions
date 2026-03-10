@@ -1160,6 +1160,8 @@ def aks_create(
     enable_upstream_kubescheduler_user_configuration=False,
     # managed gateway installation
     enable_gateway_api=False,
+    # app routing istio
+    enable_app_routing_istio=False,
     enable_hosted_system=False
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
@@ -1401,6 +1403,9 @@ def aks_update(
     # managed gateway installation
     enable_gateway_api=False,
     disable_gateway_api=False,
+    # app routing istio
+    enable_app_routing_istio=False,
+    disable_app_routing_istio=False,
     # application load balancer
     enable_application_load_balancer=False,
     disable_application_load_balancer=False,
@@ -4343,6 +4348,34 @@ def aks_approuting_disable(
         enable_app_routing=False)
 
 
+def aks_approuting_gateway_istio_enable(
+        cmd,
+        client,
+        resource_group_name,
+        name
+):
+    return _aks_approuting_update(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        enable_app_routing_istio=True)
+
+
+def aks_approuting_gateway_istio_disable(
+        cmd,
+        client,
+        resource_group_name,
+        name
+):
+    return _aks_approuting_update(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        disable_app_routing_istio=True)
+
+
 def aks_approuting_update(
         cmd,
         client,
@@ -4511,6 +4544,8 @@ def _aks_approuting_update(
         nginx=None,
         enable_default_domain=None,
         disable_default_domain=None,
+        enable_app_routing_istio=None,
+        disable_app_routing_istio=None,
 ):
     from azure.cli.command_modules.acs._consts import DecoratorEarlyExitException
     from azext_aks_preview.managed_cluster_decorator import AKSPreviewManagedClusterUpdateDecorator
@@ -4527,6 +4562,7 @@ def _aks_approuting_update(
     try:
         mc = aks_update_decorator.fetch_mc()
         mc = aks_update_decorator.update_app_routing_profile(mc)
+        mc = aks_update_decorator.update_ingress_profile_app_routing_istio(mc)
     except DecoratorEarlyExitException:
         return None
 

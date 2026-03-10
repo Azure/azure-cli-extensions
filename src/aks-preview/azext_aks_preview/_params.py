@@ -1200,6 +1200,13 @@ def load_arguments(self, _):
             action="store_true",
             help="Enable managed installation of Gateway API CRDs from the standard release channel."
         )
+        c.argument(
+            "enable_app_routing_istio",
+            options_list=["--enable-app-routing-istio", "--enable-ari"],
+            action="store_true",
+            is_preview=True,
+            help="Enable Istio as a Gateway API implementation for App Routing."
+        )
         c.argument("enable_hosted_system", action="store_true", is_preview=True)
 
     with self.argument_context("aks update") as c:
@@ -1766,6 +1773,20 @@ def load_arguments(self, _):
             "disable_gateway_api",
             action="store_true",
             help="Disable managed installation of Gateway API CRDs."
+        )
+        c.argument(
+            "enable_app_routing_istio",
+            options_list=["--enable-app-routing-istio", "--enable-ari"],
+            action="store_true",
+            is_preview=True,
+            help="Enable Istio as a Gateway API implementation for App Routing."
+        )
+        c.argument(
+            "disable_app_routing_istio",
+            options_list=["--disable-app-routing-istio", "--disable-ari"],
+            action="store_true",
+            is_preview=True,
+            help="Disable Istio as a Gateway API implementation for App Routing."
         )
         c.argument(
             "enable_application_load_balancer",
