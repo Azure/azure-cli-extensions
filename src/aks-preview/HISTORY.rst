@@ -12,6 +12,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+19.0.0b25
++++++++
+* Vendor new SDK and bump API version to 2026-01-02-preview.
+* `az aks create/update`: Add `--control-plane-scaling-size` parameter to configure control plane scaling profile with available sizes 'H2', 'H4', and 'H8'.
+
 19.0.0b23
 +++++++
 * `az aks update`: Fix `--enable-secret-rotation`, `--disable-secret-rotation`, and `--rotation-poll-interval` flags being silently ignored when updating Azure Key Vault Secrets Provider addon configuration.
