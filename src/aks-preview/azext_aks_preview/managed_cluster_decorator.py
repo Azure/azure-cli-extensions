@@ -3767,19 +3767,19 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             raise RequiredArgumentMissingError('"--enable-hosted-system" requires "--sku automatic".')
         return enable_hosted_system
 
-    def get_enable_continuous_control_plane_monitor(self) -> bool:
-        """Obtain the value of enable_continuous_control_plane_monitor.
+    def get_enable_continuous_control_plane_and_addon_monitor(self) -> bool:
+        """Obtain the value of enable_continuous_control_plane_and_addon_monitor.
 
         :return: bool
         """
-        return self.raw_param.get("enable_continuous_control_plane_monitor")
+        return self.raw_param.get("enable_continuous_control_plane_and_addon_monitor")
 
-    def get_disable_continuous_control_plane_monitor(self) -> bool:
-        """Obtain the value of disable_continuous_control_plane_monitor.
+    def get_disable_continuous_control_plane_and_addon_monitor(self) -> bool:
+        """Obtain the value of disable_continuous_control_plane_and_addon_monitor.
 
         :return: bool
         """
-        return self.raw_param.get("disable_continuous_control_plane_monitor")
+        return self.raw_param.get("disable_continuous_control_plane_and_addon_monitor")
 
 
 # pylint: disable=too-many-public-methods
@@ -4817,7 +4817,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         """
         self._ensure_mc(mc)
 
-        if self.context.get_enable_continuous_control_plane_monitor():
+        if self.context.get_enable_continuous_control_plane_and_addon_monitor():
             if mc.health_monitor_profile is None:
                 mc.health_monitor_profile = (
                     self.models.ManagedClusterHealthMonitorProfile()  # pylint: disable=no-member
@@ -7171,15 +7171,15 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         """
         self._ensure_mc(mc)
 
-        enable = self.context.get_enable_continuous_control_plane_monitor()
-        disable = self.context.get_disable_continuous_control_plane_monitor()
+        enable = self.context.get_enable_continuous_control_plane_and_addon_monitor()
+        disable = self.context.get_disable_continuous_control_plane_and_addon_monitor()
 
         if not enable and not disable:
             return mc
         if enable and disable:
             raise MutuallyExclusiveArgumentError(
-                "Cannot specify --enable-continuous-control-plane-monitor and "
-                "--disable-continuous-control-plane-monitor at the same time."
+                "Cannot specify --enable-continuous-control-plane-and-addon-monitor and "
+                "--disable-continuous-control-plane-and-addon-monitor at the same time."
             )
 
         if mc.health_monitor_profile is None:

@@ -5002,7 +5002,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         disable_default_domain_3 = ctx_3.get_disable_default_domain()
         self.assertEqual(disable_default_domain_3, False)
 
-    def test_get_enable_continuous_control_plane_monitor(self):
+    def test_get_enable_continuous_control_plane_and_addon_monitor(self):
         # default value
         ctx_0 = AKSPreviewManagedClusterContext(
             self.cmd,
@@ -5010,27 +5010,27 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        self.assertEqual(ctx_0.get_enable_continuous_control_plane_monitor(), None)
+        self.assertEqual(ctx_0.get_enable_continuous_control_plane_and_addon_monitor(), None)
 
         # custom value - True
         ctx_1 = AKSPreviewManagedClusterContext(
             self.cmd,
-            AKSManagedClusterParamDict({"enable_continuous_control_plane_monitor": True}),
+            AKSManagedClusterParamDict({"enable_continuous_control_plane_and_addon_monitor": True}),
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        self.assertEqual(ctx_1.get_enable_continuous_control_plane_monitor(), True)
+        self.assertEqual(ctx_1.get_enable_continuous_control_plane_and_addon_monitor(), True)
 
         # custom value - False
         ctx_2 = AKSPreviewManagedClusterContext(
             self.cmd,
-            AKSManagedClusterParamDict({"enable_continuous_control_plane_monitor": False}),
+            AKSManagedClusterParamDict({"enable_continuous_control_plane_and_addon_monitor": False}),
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        self.assertEqual(ctx_2.get_enable_continuous_control_plane_monitor(), False)
+        self.assertEqual(ctx_2.get_enable_continuous_control_plane_and_addon_monitor(), False)
 
-    def test_get_disable_continuous_control_plane_monitor(self):
+    def test_get_disable_continuous_control_plane_and_addon_monitor(self):
         # default value
         ctx_0 = AKSPreviewManagedClusterContext(
             self.cmd,
@@ -5038,25 +5038,25 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
-        self.assertEqual(ctx_0.get_disable_continuous_control_plane_monitor(), None)
+        self.assertEqual(ctx_0.get_disable_continuous_control_plane_and_addon_monitor(), None)
 
         # custom value - True
         ctx_1 = AKSPreviewManagedClusterContext(
             self.cmd,
-            AKSManagedClusterParamDict({"disable_continuous_control_plane_monitor": True}),
+            AKSManagedClusterParamDict({"disable_continuous_control_plane_and_addon_monitor": True}),
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
-        self.assertEqual(ctx_1.get_disable_continuous_control_plane_monitor(), True)
+        self.assertEqual(ctx_1.get_disable_continuous_control_plane_and_addon_monitor(), True)
 
         # custom value - False
         ctx_2 = AKSPreviewManagedClusterContext(
             self.cmd,
-            AKSManagedClusterParamDict({"disable_continuous_control_plane_monitor": False}),
+            AKSManagedClusterParamDict({"disable_continuous_control_plane_and_addon_monitor": False}),
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
-        self.assertEqual(ctx_2.get_disable_continuous_control_plane_monitor(), False)
+        self.assertEqual(ctx_2.get_disable_continuous_control_plane_and_addon_monitor(), False)
 
 
 class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
@@ -7539,7 +7539,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             self.cmd,
             self.client,
             {
-                "enable_continuous_control_plane_monitor": True,
+                "enable_continuous_control_plane_and_addon_monitor": True,
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -13914,8 +13914,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             self.cmd,
             self.client,
             {
-                "enable_continuous_control_plane_monitor": True,
-                "disable_continuous_control_plane_monitor": True,
+                "enable_continuous_control_plane_and_addon_monitor": True,
+                "disable_continuous_control_plane_and_addon_monitor": True,
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -13929,7 +13929,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             self.cmd,
             self.client,
             {
-                "enable_continuous_control_plane_monitor": True,
+                "enable_continuous_control_plane_and_addon_monitor": True,
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -13949,7 +13949,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             self.cmd,
             self.client,
             {
-                "disable_continuous_control_plane_monitor": True,
+                "disable_continuous_control_plane_and_addon_monitor": True,
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
