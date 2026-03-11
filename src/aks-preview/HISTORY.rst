@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+19.0.0b30
++++++++
+* Add option `AzureContainerLinux` to `--os-sku` for `az aks create`, `az aks nodepool add`, and `az aks nodepool update`.
+
 19.0.0b29
 +++++++
 * Add MIG (Multi-Instance GPU) strategy option to node pool property in `az aks nodepool add` and `az aks nodepool update`.
