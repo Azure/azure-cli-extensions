@@ -185,32 +185,53 @@ Main entry point. Wires collectors + validators together.
 
 ## How to Add a New Check
 
-Adding a new prerequisite check takes 2 steps:
+Adding a new prerequisite check takes 3 steps: write the check, register it, add a test.
 
 ### Step 1: Write the check function in `validators.py`
+
+Every check function has the **exact same signature** — 4 arguments, returns a dict:
+
+```python
+def _check_my_new_thing(clients, bundle_dir, cluster_info, capabilities):
+    """Check that my new thing is properly configured."""
+```
+
+**Arguments available to every check:**
+
+| Argument | Type | What it gives you |
+|----------|------|-------------------|
+| `clients` | dict | K8s API clients: `clients["core_v1"]` (CoreV1Api), `clients["apps_v1"]` (AppsV1Api), `clients["storage_v1"]`, `clients["admissionregistration_v1"]`, `clients["custom_objects"]` |
+| `bundle_dir` | str | Path to bundle directory — pass to `write_check_result()` |
+| `cluster_info` | dict | Pre-collected cluster data: `cluster_info["nodes"]` (list), `cluster_info["server_version"]`, `cluster_info["namespaces"]` |
+| `capabilities` | dict | Detected components: `capabilities["has_symphony"]`, `capabilities["has_cert_manager"]`, `capabilities["has_gatekeeper"]`, `capabilities["has_metrics"]`, `capabilities["has_kyverno"]`, `capabilities["has_openshift"]` |
+
+**Template — copy this and modify:**
 
 ```python
 def _check_my_new_thing(clients, bundle_dir, cluster_info, capabilities):
     """Check that my new thing is properly configured."""
     core = clients["core_v1"]
 
-    # Use safe_api_call for ALL K8s API calls
+    # 1. Call K8s API using safe_api_call (handles timeouts, retries, RBAC)
     result, err = safe_api_call(
         core.list_namespaced_pod, "my-namespace",
         description="list pods in my-namespace",
     )
+
+    # 2. Handle API errors gracefully (never crash)
     if err:
         return write_check_result(
             bundle_dir, CATEGORY_WO_COMPONENTS, "my-new-check",
-            STATUS_WARN, f"Could not check: {err}"
+            STATUS_WARN, f"Could not verify: {err}"
         )
 
-    # Your validation logic here
+    # 3. Validate and return PASS/FAIL/WARN
     pods = result.items
     if len(pods) >= 1:
         return write_check_result(
             bundle_dir, CATEGORY_WO_COMPONENTS, "my-new-check",
-            STATUS_PASS, f"{len(pods)} pod(s) found"
+            STATUS_PASS, f"{len(pods)} pod(s) found",
+            details={"pod_count": len(pods)},  # optional extra data
         )
     else:
         return write_check_result(
@@ -220,15 +241,55 @@ def _check_my_new_thing(clients, bundle_dir, cluster_info, capabilities):
 ```
 
 **Rules for check functions:**
-- Signature: `(clients, bundle_dir, cluster_info, capabilities)` — always the same 4 args
-- Always use `safe_api_call()` — never call K8s APIs directly
+- Signature must be `(clients, bundle_dir, cluster_info, capabilities)` — always 4 args
+- Always use `safe_api_call()` for K8s API calls — never call APIs directly
 - Always return `write_check_result()` — never return raw dicts
-- Use `STATUS_PASS`, `STATUS_FAIL`, `STATUS_WARN`, or `STATUS_SKIP`
+- Use `STATUS_PASS`, `STATUS_FAIL`, `STATUS_WARN`, or `STATUS_SKIP` from consts
 - Never raise exceptions — handle errors and return WARN/ERROR status
+- Use `capabilities` dict to skip checks when a component isn't installed
+
+**Real example — checking if a CRD exists:**
+
+```python
+def _check_symphony_crds(clients, bundle_dir, cluster_info, capabilities):
+    """Check that Symphony CRDs are installed."""
+    if not capabilities.get("has_symphony"):
+        return write_check_result(
+            bundle_dir, CATEGORY_WO_COMPONENTS, "symphony-crds",
+            STATUS_SKIP, "Symphony not detected on this cluster"
+        )
+
+    custom = clients["custom_objects"]
+    result, err = safe_api_call(
+        custom.list_cluster_custom_object,
+        "apiextensions.k8s.io", "v1", "customresourcedefinitions",
+        description="list CRDs for Symphony check",
+    )
+    if err:
+        return write_check_result(
+            bundle_dir, CATEGORY_WO_COMPONENTS, "symphony-crds",
+            STATUS_WARN, f"Could not list CRDs: {err}"
+        )
+
+    symphony_crds = [
+        c for c in result.get("items", [])
+        if "symphony" in c.get("spec", {}).get("group", "")
+    ]
+    if symphony_crds:
+        return write_check_result(
+            bundle_dir, CATEGORY_WO_COMPONENTS, "symphony-crds",
+            STATUS_PASS, f"{len(symphony_crds)} Symphony CRD(s) installed",
+            details={"crds": [c["metadata"]["name"] for c in symphony_crds]},
+        )
+    return write_check_result(
+        bundle_dir, CATEGORY_WO_COMPONENTS, "symphony-crds",
+        STATUS_FAIL, "No Symphony CRDs found — WO extension may not be installed"
+    )
+```
 
 ### Step 2: Register in `run_all_checks()`
 
-Add one line to the `checks` list:
+Add one line to the `checks` list in `validators.py`:
 
 ```python
 checks = [
@@ -239,17 +300,88 @@ checks = [
 ]
 ```
 
-That's it. The check will automatically:
+The string (second element) is a human-readable description used in log messages.
+The check will automatically:
 - Run during bundle creation
-- Show [PASS]/[FAIL] in console output
-- Write result to `checks/wo-components--my-new-check.json`
-- Count toward the health summary score
+- Show `[PASS]`/`[FAIL]`/`[WARN]` in console output
+- Write result JSON to `checks/{category}--{check-name}.json`
+- Count toward the health summary score (PASS=100%, WARN=50%, FAIL=0%)
+
+### Step 3: Add a unit test in `test_support_bundle.py`
+
+Every check should have at least 2 tests: one for PASS, one for FAIL/WARN.
+
+```python
+class TestMyNewCheck(unittest.TestCase):
+    """Tests for _check_my_new_thing."""
+
+    def _run_check(self, pods):
+        """Helper: run the check with mocked pods."""
+        from azext_workload_orchestration.support.validators import _check_my_new_thing
+
+        # Build mock pod list
+        pod_list = MagicMock()
+        pod_list.items = pods
+
+        # Build mock clients
+        clients = {"core_v1": MagicMock(), "apps_v1": MagicMock(),
+                   "custom_objects": MagicMock(), "storage_v1": MagicMock(),
+                   "admissionregistration_v1": MagicMock(), "apis": MagicMock(),
+                   "version": MagicMock()}
+        clients["core_v1"].list_namespaced_pod = MagicMock(return_value=pod_list)
+
+        cluster_info = {"nodes": [], "server_version": {}, "namespaces": []}
+        capabilities = {"has_symphony": True, "has_cert_manager": True}
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            os.makedirs(os.path.join(tmpdir, "checks"), exist_ok=True)
+            return _check_my_new_thing(clients, tmpdir, cluster_info, capabilities)
+
+    def test_pods_found_passes(self):
+        pod = MagicMock()
+        pod.metadata.name = "my-pod"
+        result = self._run_check([pod])
+        self.assertEqual(result["status"], "PASS")
+
+    def test_no_pods_fails(self):
+        result = self._run_check([])
+        self.assertEqual(result["status"], "FAIL")
+
+    def test_api_error_returns_warn(self):
+        from azext_workload_orchestration.support.validators import _check_my_new_thing
+        from kubernetes.client.exceptions import ApiException
+
+        clients = {"core_v1": MagicMock(), "apps_v1": MagicMock(),
+                   "custom_objects": MagicMock(), "storage_v1": MagicMock(),
+                   "admissionregistration_v1": MagicMock(), "apis": MagicMock(),
+                   "version": MagicMock()}
+        clients["core_v1"].list_namespaced_pod = MagicMock(
+            side_effect=ApiException(status=403, reason="Forbidden")
+        )
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            os.makedirs(os.path.join(tmpdir, "checks"), exist_ok=True)
+            result = _check_my_new_thing(clients, tmpdir, {}, {})
+        self.assertEqual(result["status"], "WARN")
+        self.assertIn("403", result["message"])
+```
+
+### Checklist for adding a new check
+
+- [ ] Function name starts with `_check_` and is in `validators.py`
+- [ ] Uses `safe_api_call()` for all K8s API calls
+- [ ] Returns `write_check_result()` in every code path (PASS, FAIL, WARN, SKIP)
+- [ ] Handles API errors gracefully (never raises)
+- [ ] Uses `capabilities` to skip when component isn't installed
+- [ ] Registered in the `checks` list in `run_all_checks()`
+- [ ] Has at least 2 unit tests (PASS path + FAIL/error path)
+- [ ] All 170+ tests still pass after adding
 
 ## How to Add a New Resource Collector
 
 ### Namespace-scoped resource
 
-Add to `collect_namespace_resources()` in `collectors.py`:
+Add a block to `collect_namespace_resources()` in `collectors.py`. Pattern:
 
 ```python
 # HorizontalPodAutoscalers
@@ -269,9 +401,35 @@ except Exception as ex:
     logger.debug("Autoscaling API not available: %s", ex)
 ```
 
+**Rules:**
+- Use `safe_api_call()` — never call K8s APIs directly
+- Wrap non-core APIs in `try/except` (they may not be available on all clusters)
+- Only extract fields that are useful for diagnostics (name, status, counts)
+- Never collect secrets/tokens/credentials
+- Add the resource key to the `resources` dict (e.g., `resources["hpas"]`)
+
 ### Cluster-scoped resource
 
-Add to `collect_cluster_resources()` in `collectors.py`.
+Same pattern, but add to `collect_cluster_resources()` in `collectors.py`.
+Uses `list_*` instead of `list_namespaced_*`.
+
+### Adding a test for a new collector
+
+```python
+class TestCollectHPAs(unittest.TestCase):
+    def test_hpas_collected(self):
+        from azext_workload_orchestration.support.collectors import collect_namespace_resources
+
+        hpa = MagicMock()
+        hpa.metadata.name = "my-hpa"
+        hpa.spec.min_replicas = 1
+        hpa.spec.max_replicas = 10
+        hpa_list = MagicMock()
+        hpa_list.items = [hpa]
+
+        # ... setup clients with mock, call collect_namespace_resources
+        # ... assert "hpas" in result
+```
 
 ## CLI Parameters
 
