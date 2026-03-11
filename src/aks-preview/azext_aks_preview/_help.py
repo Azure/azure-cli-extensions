@@ -702,7 +702,7 @@ helps['aks create'] = f"""
         - name: --enable-hosted-system
           type: bool
           short-summary: Create a cluster with fully hosted system components. This applies only when creating a new automatic cluster.
-        - name: --control-plane-scaling-size
+        - name: --control-plane-scaling-size --cp-scaling-size
           type: string
           short-summary: (PREVIEW) The control plane scaling size for the cluster.
           long-summary: |
@@ -1440,7 +1440,7 @@ helps['aks update'] = """
         - name: --disable-application-load-balancer
           type: bool
           short-summary: Disable Application Load Balancer (Application Gateway for Containers) addon.
-        - name: --control-plane-scaling-size
+        - name: --control-plane-scaling-size --cp-scaling-size
           type: string
           short-summary: (PREVIEW) The control plane scaling size for the cluster.
           long-summary: |
