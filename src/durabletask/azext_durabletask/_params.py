@@ -10,4 +10,25 @@
 
 
 def load_arguments(self, _):  # pylint: disable=unused-argument
-    pass
+    with self.argument_context('durabletask scheduler attach') as c:
+        c.argument('resource_group_name', options_list=['--resource-group', '-g'],
+                   help='Name of the resource group containing the scheduler.')
+        c.argument('scheduler_name', options_list=['--name', '-n'],
+                   help='Name of the Durable Task scheduler.')
+        c.argument('task_hub_name', options_list=['--task-hub-name'],
+                   help='Name of the Durable Task task hub.')
+        c.argument('target_type', options_list=['--target-type'],
+                   help='The type of compute resource to attach.',
+                   choices=['functionapp', 'containerapp'], required=True)
+        c.argument('target_name', options_list=['--target-name'],
+                   help='Name of the target resource (Function App or Container App) to attach.')
+        c.argument('target_resource_group', options_list=['--target-resource-group'],
+                   help='Resource group of the target resource. Defaults to the scheduler resource group.')
+        c.argument('target_subscription', options_list=['--target-subscription'],
+                   help='Subscription ID of the target resource. Defaults to the current subscription.')
+        c.argument('role_type', options_list=['--role-type'],
+                   help='The type of role to assign to the target managed identity.',
+                   choices=['worker', 'contributor', 'reader'], required=True)
+        c.argument('identity', options_list=['--identity'],
+                   help='Resource ID of a user-assigned managed identity. '
+                        'If omitted, the system-assigned managed identity is used.')
