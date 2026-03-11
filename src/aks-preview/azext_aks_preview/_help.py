@@ -3850,6 +3850,10 @@ helps['aks approuting gateway istio enable'] = """
         in the given cluster. This Istio instance only reconciles Gateway API resources and does not provide
         service mesh functionality (e.g. mTLS, traffic management between services). Cannot be used
         simultaneously with Azure Service Mesh (az aks mesh enable).
+    parameters:
+      - name: --aks-custom-headers
+        type: string
+        short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2. Use AKSHTTPCustomFeatures=Microsoft.ContainerService/AppRoutingIstioGatewayAPIPreview to enable the preview feature flag after registering your subscription to use it.
     examples:
       - name: Enable Istio Gateway API implementation for App Routing.
         text: az aks approuting gateway istio enable --resource-group MyResourceGroup --name MyManagedCluster
@@ -3860,6 +3864,10 @@ helps['aks approuting gateway istio disable'] = """
     short-summary: Disable the Istio Gateway API implementation for App Routing.
     long-summary: |
         This command disables the ingress-only Istio Gateway API implementation for App Routing in the given cluster.
+    parameters:
+      - name: --aks-custom-headers
+        type: string
+        short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2. Use AKSHTTPCustomFeatures=Microsoft.ContainerService/AppRoutingIstioGatewayAPIPreview to enable the preview feature flag after registering your subscription to use it.
     examples:
       - name: Disable Istio Gateway API implementation for App Routing.
         text: az aks approuting gateway istio disable --resource-group MyResourceGroup --name MyManagedCluster
