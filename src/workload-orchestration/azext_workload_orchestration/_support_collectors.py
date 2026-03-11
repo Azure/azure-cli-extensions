@@ -60,6 +60,10 @@ def collect_cluster_info(clients, bundle_dir):
         nodes = []
         for node in result.items:
             status = node.status
+            conditions_list = [
+                {"type": c.type, "status": c.status, "reason": c.reason, "message": c.message}
+                for c in (status.conditions or [])
+            ]
             conditions = {c.type: c.status for c in (status.conditions or [])}
             alloc = status.allocatable or {}
             nodes.append({
@@ -71,7 +75,12 @@ def collect_cluster_info(clients, bundle_dir):
                 "kubelet_version": status.node_info.kubelet_version if status.node_info else "unknown",
                 "allocatable_cpu": alloc.get("cpu", "0"),
                 "allocatable_memory": alloc.get("memory", "0"),
+                "taints": [
+                    {"key": t.key, "effect": t.effect, "value": t.value}
+                    for t in (node.spec.taints or [])
+                ],
                 "conditions": conditions,
+                "conditions_detail": conditions_list,
             })
         info["nodes"] = nodes
         info["node_count"] = len(nodes)
@@ -125,7 +134,7 @@ def collect_namespace_resources(clients, bundle_dir, namespace):
                 "ready": _pod_ready_count(p),
                 "restarts": _pod_restart_count(p),
                 "node": p.spec.node_name,
-                "containers": [c.name for c in (p.spec.containers or [])],
+                "containers": _get_container_details(p),
             }
             for p in result.items
         ]
@@ -177,6 +186,21 @@ def collect_namespace_resources(clients, bundle_dir, namespace):
             for ds in result.items
         ]
 
+    # StatefulSets
+    result, err = safe_api_call(
+        apps.list_namespaced_stateful_set, namespace,
+        description=f"list statefulsets in {namespace}"
+    )
+    if result:
+        resources["statefulsets"] = [
+            {
+                "name": ss.metadata.name,
+                "replicas": ss.spec.replicas,
+                "ready_replicas": ss.status.ready_replicas or 0,
+            }
+            for ss in result.items
+        ]
+
     # Events
     result, err = safe_api_call(
         core.list_namespaced_event, namespace, description=f"list events in {namespace}"
@@ -209,6 +233,36 @@ def collect_namespace_resources(clients, bundle_dir, namespace):
     pod_count = len(resources.get("pods", []))
     logger.info("Collected resources for %s: %d pods", namespace, pod_count)
     return resources
+
+
+def _get_container_details(pod):
+    """Extract container status details for a pod."""
+    details = []
+    statuses = {cs.name: cs for cs in (pod.status.container_statuses or [])}
+    for c in (pod.spec.containers or []):
+        cs = statuses.get(c.name)
+        info = {"name": c.name}
+        if cs:
+            info["ready"] = cs.ready
+            info["restart_count"] = cs.restart_count
+            # Extract current state
+            if cs.state:
+                if cs.state.running:
+                    info["state"] = "running"
+                elif cs.state.waiting:
+                    info["state"] = "waiting"
+                    info["reason"] = cs.state.waiting.reason
+                    info["message"] = cs.state.waiting.message
+                elif cs.state.terminated:
+                    info["state"] = "terminated"
+                    info["reason"] = cs.state.terminated.reason
+                    info["exit_code"] = cs.state.terminated.exit_code
+            # Extract last state (previous run)
+            if cs.last_state and cs.last_state.terminated:
+                info["last_terminated_reason"] = cs.last_state.terminated.reason
+                info["last_exit_code"] = cs.last_state.terminated.exit_code
+        details.append(info)
+    return details
 
 
 def _pod_ready_count(pod):

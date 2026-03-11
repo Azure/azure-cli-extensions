@@ -97,6 +97,11 @@ def create_support_bundle(cmd,
             "and you have write permissions."
         )
 
+    # Pre-flight: check disk space
+    ok, free = check_disk_space(output_dir or os.getcwd(), 100 * 1024 * 1024)
+    if not ok:
+        _out("  [WARN] Low disk space (%s free). Bundle may fail.", format_bytes(free))
+
     # --- Step 3: Collect cluster info ---
     cluster_info = {}
     _out("")

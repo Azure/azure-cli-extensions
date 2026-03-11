@@ -178,7 +178,19 @@ def safe_api_call(func, *args, description="API call", **kwargs):
         return result, None
     except ApiException as ex:
         if ex.status == 403:
-            msg = f"Permission denied for {description} (403 Forbidden)"
+            msg = (
+                f"Permission denied for {description} (403 Forbidden). "
+                "The service account may lack the required RBAC role. "
+                "Ensure the user has at least 'view' ClusterRole binding."
+            )
+            logger.warning(msg)
+            return None, msg
+        if ex.status == 401:
+            msg = (
+                f"Authentication failed for {description} (401 Unauthorized). "
+                "Cluster credentials may be expired. "
+                "Run 'az aks get-credentials' to refresh."
+            )
             logger.warning(msg)
             return None, msg
         if ex.status == 404:
