@@ -6,6 +6,14 @@ Release History
 5.0.0
 ++++++
 * November 2025 release
+* Added `az workload-orchestration support create-bundle` command for troubleshooting Day 0 (installation) and Day N (runtime) issues on 3rd-party Kubernetes clusters:
+  * Collects cluster info, node details, pod/deployment/service/event descriptions across configurable namespaces
+  * Collects container logs (current + previous for crash-looping pods) with configurable tail lines
+  * Runs 18 prerequisite validation checks across 10 categories: K8s version, node readiness, CoreDNS health, registry access, cert-manager, namespace validation, resource availability, admission controllers, storage configuration, and WO component health
+  * Generates a zip bundle with health summary score (HEALTHY/DEGRADED/CRITICAL) for sharing with Microsoft support
+  * Supports `--skip-checks`, `--skip-logs`, `--full-logs`, `--namespaces`, `--kube-config`, `--kube-context` options
+  * Includes retry with exponential backoff and per-call timeout for resilient K8s API access
+  * RBAC-aware error handling with actionable remediation guidance
 
 4.1.0
 ++++++
