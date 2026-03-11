@@ -731,13 +731,12 @@ def process_target_fabric(cmd,
                           amh_solution):
     # Get source fabric agent (DRA)
     source_fabric_name = source_fabric.get('name')
-    dras_uri = (
+    source_dras = send_get_request(
+        cmd,
         f"{rg_uri}/providers/Microsoft.DataReplication"
         f"/replicationFabrics/{source_fabric_name}/fabricAgents"
         f"?api-version={APIVersion.Microsoft_DataReplication.value}"
-    )
-    source_dras_response = send_get_request(cmd, dras_uri)
-    source_dras = source_dras_response.json().get('value', [])
+    ).json().get('value', [])
 
     source_dra = None
     source_found_not_responsive = None
@@ -750,8 +749,7 @@ def process_target_fabric(cmd,
             if bool(props.get('isResponsive')):
                 source_dra = dra
                 break
-            else:
-                source_found_not_responsive = dra
+            source_found_not_responsive = dra
 
     if not source_dra and source_found_not_responsive:
         nr_props = source_found_not_responsive.get('properties', {})
@@ -791,13 +789,12 @@ def process_target_fabric(cmd,
 
     # Get target fabric agent (DRA)
     target_fabric_name = target_fabric.get('name')
-    target_dras_uri = (
+    target_dras = send_get_request(
+        cmd,
         f"{rg_uri}/providers/Microsoft.DataReplication"
         f"/replicationFabrics/{target_fabric_name}/fabricAgents"
         f"?api-version={APIVersion.Microsoft_DataReplication.value}"
-    )
-    target_dras_response = send_get_request(cmd, target_dras_uri)
-    target_dras = target_dras_response.json().get('value', [])
+    ).json().get('value', [])
 
     target_dra = None
     target_found_not_responsive = None
@@ -811,8 +808,7 @@ def process_target_fabric(cmd,
             if bool(props.get('isResponsive')):
                 target_dra = dra
                 break
-            else:
-                target_found_not_responsive = dra
+            target_found_not_responsive = dra
 
     if not target_dra and target_found_not_responsive:
         nr_props = target_found_not_responsive.get('properties', {})

@@ -191,8 +191,7 @@ def get_fabric_agent(cmd, replication_fabrics_uri, fabric, appliance_name,
             if bool(props.get('isResponsive')):
                 dra = candidate
                 break
-            else:
-                found_but_not_responsive = candidate
+            found_but_not_responsive = candidate
 
     # Accept a non-responsive DRA if it's the only match and is provisioned
     if not dra and found_but_not_responsive:
