@@ -5002,6 +5002,63 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         disable_default_domain_3 = ctx_3.get_disable_default_domain()
         self.assertEqual(disable_default_domain_3, False)
 
+    def test_get_enable_continuous_control_plane_monitor(self):
+        # default value
+        ctx_0 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_0.get_enable_continuous_control_plane_monitor(), None)
+
+        # custom value - True
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"enable_continuous_control_plane_monitor": True}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_enable_continuous_control_plane_monitor(), True)
+
+        # custom value - False
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"enable_continuous_control_plane_monitor": False}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_2.get_enable_continuous_control_plane_monitor(), False)
+
+    def test_get_disable_continuous_control_plane_monitor(self):
+        # default value
+        ctx_0 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.assertEqual(ctx_0.get_disable_continuous_control_plane_monitor(), None)
+
+        # custom value - True
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"disable_continuous_control_plane_monitor": True}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.assertEqual(ctx_1.get_disable_continuous_control_plane_monitor(), True)
+
+        # custom value - False
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"disable_continuous_control_plane_monitor": False}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.assertEqual(ctx_2.get_disable_continuous_control_plane_monitor(), False)
+
+
 class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
     def setUp(self):
         # manually register CUSTOM_MGMT_AKS_PREVIEW
@@ -7461,6 +7518,41 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         # Should succeed in CREATE mode even if addon appears enabled
         result = ctx_1.get_enable_azure_monitor_logs()
         self.assertTrue(result)
+
+
+    def test_set_up_health_monitor_profile(self):
+        # no flag - no change
+        dec_0 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_0 = self.models.ManagedCluster(location="test_location")
+        dec_0.context.attach_mc(mc_0)
+        dec_mc_0 = dec_0.set_up_health_monitor_profile(mc_0)
+        ground_truth_mc_0 = self.models.ManagedCluster(location="test_location")
+        self.assertEqual(dec_mc_0, ground_truth_mc_0)
+
+        # enable flag set
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_continuous_control_plane_monitor": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.set_up_health_monitor_profile(mc_1)
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            health_monitor_profile=self.models.ManagedClusterHealthMonitorProfile(
+                enable_continuous_control_plane_and_addon_monitor=True,
+            ),
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
 
 class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
@@ -13802,6 +13894,81 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         # Should raise UnknownError
         with self.assertRaises(UnknownError):
             dec_4.update_agentpool_profile(mc_4)
+
+    def test_update_health_monitor_profile(self):
+        # no flags - no change
+        dec_0 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_0 = self.models.ManagedCluster(location="test_location")
+        dec_0.context.attach_mc(mc_0)
+        dec_mc_0 = dec_0.update_health_monitor_profile(mc_0)
+        ground_truth_mc_0 = self.models.ManagedCluster(location="test_location")
+        self.assertEqual(dec_mc_0, ground_truth_mc_0)
+
+        # both flags - mutual exclusivity error
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_continuous_control_plane_monitor": True,
+                "disable_continuous_control_plane_monitor": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            dec_1.update_health_monitor_profile(mc_1)
+
+        # enable flag
+        dec_2 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_continuous_control_plane_monitor": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(location="test_location")
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.update_health_monitor_profile(mc_2)
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            health_monitor_profile=self.models.ManagedClusterHealthMonitorProfile(
+                enable_continuous_control_plane_and_addon_monitor=True,
+            ),
+        )
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+        # disable flag on existing enabled profile
+        dec_3 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_continuous_control_plane_monitor": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            health_monitor_profile=self.models.ManagedClusterHealthMonitorProfile(
+                enable_continuous_control_plane_and_addon_monitor=True,
+            ),
+        )
+        dec_3.context.attach_mc(mc_3)
+        dec_mc_3 = dec_3.update_health_monitor_profile(mc_3)
+        ground_truth_mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            health_monitor_profile=self.models.ManagedClusterHealthMonitorProfile(
+                enable_continuous_control_plane_and_addon_monitor=False,
+            ),
+        )
+        self.assertEqual(dec_mc_3, ground_truth_mc_3)
+
 
 if __name__ == "__main__":
     unittest.main()
