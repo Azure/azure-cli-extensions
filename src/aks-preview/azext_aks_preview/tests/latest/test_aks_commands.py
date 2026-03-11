@@ -22281,7 +22281,7 @@ spec:
             "--enable-app-routing-istio "
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AppRoutingIstioGatewayAPIPreview "
         )
-        with self.assertRaises(BadRequestError) as context:
+        with self.assertRaises(HttpResponseError) as context:
             self.cmd(update_cmd)
         self.assertIn(
             "Requested change from Istio add-on to AppRouting Istio Gateway API implementation is disallowed",
@@ -22328,7 +22328,7 @@ spec:
             "--enable-app-routing-istio "
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AppRoutingIstioGatewayAPIPreview "
         )
-        with self.assertRaises(BadRequestError) as context:
+        with self.assertRaises(HttpResponseError) as context:
             self.cmd(update_cmd)
         self.assertIn(
             "Requested change from Istio add-on to AppRouting Istio Gateway API implementation is disallowed",
@@ -22404,7 +22404,7 @@ spec:
         enable_asm_cmd_fail = (
             "aks mesh enable --resource-group={resource_group} --name={name}"
         )
-        with self.assertRaises(BadRequestError) as context:
+        with self.assertRaises(HttpResponseError) as context:
             self.cmd(enable_asm_cmd_fail)
         self.assertIn(
             "Requested change from AppRouting Istio Gateway API implementation to Istio add-on is disallowed",
