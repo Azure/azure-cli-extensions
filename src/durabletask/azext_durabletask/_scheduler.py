@@ -91,7 +91,7 @@ def _check_access(cli_ctx, scope, actions, resource_label):
     try:
         response = send_raw_request(cli_ctx, 'POST', url, body=body)
         data = response.json()
-    except Exception as ex:
+    except Exception as ex:  # pylint: disable=broad-exception-caught
         logger.warning("Failed to check access on %s: %s. Proceeding anyway.", resource_label, ex)
         return
 
@@ -163,8 +163,8 @@ def _ensure_identity_on_functionapp(cli_ctx, target_name, target_resource_group,
         return
 
     existing_ua[identity_resource_id] = {}
-    identity_type = "SystemAssigned,UserAssigned" if (app.identity and app.identity.type and \
-        "SystemAssigned" in app.identity.type) else "UserAssigned"
+    has_system = app.identity and app.identity.type and "SystemAssigned" in app.identity.type
+    identity_type = "SystemAssigned,UserAssigned" if has_system else "UserAssigned"
 
     web_client.web_apps.update(
         target_resource_group, target_name,
@@ -196,8 +196,8 @@ def _ensure_identity_on_containerapp(cli_ctx, target_name, target_resource_group
         return
 
     existing_ua[identity_resource_id] = {}
-    identity_type = "SystemAssigned,UserAssigned" if (app.identity and app.identity.type and \
-        "SystemAssigned" in app.identity.type) else "UserAssigned"
+    has_system = app.identity and app.identity.type and "SystemAssigned" in app.identity.type
+    identity_type = "SystemAssigned,UserAssigned" if has_system else "UserAssigned"
 
     ca_client.container_apps.begin_update(
         target_resource_group, target_name,
@@ -367,7 +367,7 @@ def _update_containerapp_env_vars(cli_ctx, target_name, target_resource_group, t
     logger.info("Container app environment variables updated successfully.")
 
 
-def attach_scheduler(cmd, resource_group_name, scheduler_name, task_hub_name,
+def attach_scheduler(cmd, resource_group_name, scheduler_name, task_hub_name,  # pylint: disable=too-many-locals
                      target_type, target_name, role_type,
                      target_resource_group=None, target_subscription=None,
                      identity=None):
@@ -428,11 +428,13 @@ def attach_scheduler(cmd, resource_group_name, scheduler_name, task_hub_name,
 
         logger.info("Ensuring identity is attached to %s '%s'...", target_type, target_name)
         if target_type == "functionapp":
-            _ensure_identity_on_functionapp(cli_ctx, target_name, target_resource_group,
-                                           target_subscription, identity)
+            _ensure_identity_on_functionapp(
+                cli_ctx, target_name, target_resource_group,
+                target_subscription, identity)
         else:
-            _ensure_identity_on_containerapp(cli_ctx, target_name, target_resource_group,
-                                            target_subscription, identity)
+            _ensure_identity_on_containerapp(
+                cli_ctx, target_name, target_resource_group,
+                target_subscription, identity)
     else:
         # System-assigned identity: retrieve from the target resource
         logger.info("Retrieving %s '%s' in resource group '%s'...",
@@ -483,11 +485,13 @@ def attach_scheduler(cmd, resource_group_name, scheduler_name, task_hub_name,
     # Step 4: Update the target's app settings / environment variables
     logger.info("Updating settings for %s '%s'...", target_type, target_name)
     if target_type == "functionapp":
-        _update_functionapp_settings(cli_ctx, target_name, target_resource_group,
-                                    target_subscription, endpoint, task_hub_name, client_id)
+        _update_functionapp_settings(
+            cli_ctx, target_name, target_resource_group,
+            target_subscription, endpoint, task_hub_name, client_id)
     else:
-        _update_containerapp_env_vars(cli_ctx, target_name, target_resource_group,
-                                      target_subscription, endpoint, task_hub_name, client_id)
+        _update_containerapp_env_vars(
+            cli_ctx, target_name, target_resource_group,
+            target_subscription, endpoint, task_hub_name, client_id)
 
     result = {
         "scheduler": scheduler_name,

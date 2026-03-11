@@ -13,7 +13,7 @@
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
     from ._format import (scheduler_table_format, scheduler_list_table_format,
-                            taskhub_table_format, taskhub_list_table_format)
+                          taskhub_table_format, taskhub_list_table_format)
 
     with self.command_group('durabletask scheduler'):
         from .custom import CreateScheduler, UpdateScheduler
@@ -41,5 +41,7 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
         from .custom import CreatePolicy
         self.command_table["durabletask retention-policy create"] = CreatePolicy(loader=self)
 
-    with self.command_group('durabletask scheduler', custom_command_type=self.module_kwargs['custom_command_type']) as g:
+    with self.command_group(
+            'durabletask scheduler',
+            custom_command_type=self.module_kwargs['custom_command_type']) as g:
         g.custom_command('attach', 'attach_scheduler')
