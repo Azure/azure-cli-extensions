@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+19.0.0b25
++++++++
+* `az aks bastion`: Fix `--subscription` not being passed to internal `az network bastion tunnel` and bastion discovery commands.
+
 19.0.0b24
 +++++++
 * Vendor new SDK and bump API version to 2026-01-02-preview.
