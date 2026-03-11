@@ -8,8 +8,6 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 
-from azure.cli.core.commands.parameters import get_enum_type
-
 
 def load_arguments(self, _):  # pylint: disable=unused-argument
     with self.argument_context('workload-orchestration support create-bundle') as c:
