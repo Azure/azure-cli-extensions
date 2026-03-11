@@ -740,19 +740,41 @@ def process_target_fabric(cmd,
     source_dras = source_dras_response.json().get('value', [])
 
     source_dra = None
+    source_found_not_responsive = None
     for dra in source_dras:
         props = dra.get('properties', {})
         custom_props = props.get('customProperties', {})
-        if (props.get('machineName') == source_appliance_name and
-                custom_props.get('instanceType') == fabric_instance_type and
-                bool(props.get('isResponsive'))):
-            source_dra = dra
-            break
+        machine_name = props.get('machineName', '')
+        if (machine_name.lower() == source_appliance_name.lower() and
+                custom_props.get('instanceType') == fabric_instance_type):
+            if bool(props.get('isResponsive')):
+                source_dra = dra
+                break
+            else:
+                source_found_not_responsive = dra
+
+    if not source_dra and source_found_not_responsive:
+        nr_props = source_found_not_responsive.get('properties', {})
+        last_hb = nr_props.get('lastHeartbeat', 'unknown')
+        if (nr_props.get('provisioningState') ==
+                ProvisioningState.Succeeded.value):
+            logger.warning(
+                "The source appliance '%s' DRA is not responsive "
+                "(last heartbeat: %s). Proceeding since provisioning "
+                "state is 'Succeeded'.",
+                source_appliance_name, last_hb)
+            source_dra = source_found_not_responsive
+        else:
+            raise CLIError(
+                f"The source appliance '{source_appliance_name}' is in a "
+                f"disconnected state (last heartbeat: {last_hb}).")
 
     if not source_dra:
         raise CLIError(
-            f"The source appliance '{source_appliance_name}' is in a "
-            f"disconnected state.")
+            f"No fabric agent found for source appliance "
+            f"'{source_appliance_name}' on fabric "
+            f"'{source_fabric_name}'. Verify that the appliance is "
+            f"properly registered and connected.")
 
     target_fabric, target_fabric_candidates, \
         target_fabric_instance_type = _process_target_fabrics(
@@ -778,19 +800,41 @@ def process_target_fabric(cmd,
     target_dras = target_dras_response.json().get('value', [])
 
     target_dra = None
+    target_found_not_responsive = None
     for dra in target_dras:
         props = dra.get('properties', {})
         custom_props = props.get('customProperties', {})
-        if (props.get('machineName') == target_appliance_name and
+        machine_name = props.get('machineName', '')
+        if (machine_name.lower() == target_appliance_name.lower() and
                 custom_props.get('instanceType') ==
-                target_fabric_instance_type and
-                bool(props.get('isResponsive'))):
-            target_dra = dra
-            break
+                target_fabric_instance_type):
+            if bool(props.get('isResponsive')):
+                target_dra = dra
+                break
+            else:
+                target_found_not_responsive = dra
+
+    if not target_dra and target_found_not_responsive:
+        nr_props = target_found_not_responsive.get('properties', {})
+        last_hb = nr_props.get('lastHeartbeat', 'unknown')
+        if (nr_props.get('provisioningState') ==
+                ProvisioningState.Succeeded.value):
+            logger.warning(
+                "The target appliance '%s' DRA is not responsive "
+                "(last heartbeat: %s). Proceeding since provisioning "
+                "state is 'Succeeded'.",
+                target_appliance_name, last_hb)
+            target_dra = target_found_not_responsive
+        else:
+            raise CLIError(
+                f"The target appliance '{target_appliance_name}' is in a "
+                f"disconnected state (last heartbeat: {last_hb}).")
 
     if not target_dra:
         raise CLIError(
-            f"The target appliance '{target_appliance_name}' is in a "
-            f"disconnected state.")
+            f"No fabric agent found for target appliance "
+            f"'{target_appliance_name}' on fabric "
+            f"'{target_fabric_name}'. Verify that the appliance is "
+            f"properly registered and connected.")
 
     return target_fabric, source_dra, target_dra

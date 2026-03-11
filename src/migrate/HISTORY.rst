@@ -2,6 +2,9 @@
 
 Release History
 ===============
+3.0.0b4
++++++++++++++++
+* Fix edge case bugs in az migrate local replication init & new commands.
 
 3.0.0b3
 +++++++++++++++
