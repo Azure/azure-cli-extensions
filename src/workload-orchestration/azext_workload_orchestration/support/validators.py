@@ -8,8 +8,6 @@
 Each check function returns a dict with 'status', 'message', and optional 'details'.
 """
 
-import os
-
 from knack.log import get_logger
 
 from azext_workload_orchestration.support.consts import (

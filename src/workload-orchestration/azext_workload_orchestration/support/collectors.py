@@ -9,7 +9,6 @@ Responsible for gathering cluster information, resource descriptions, and
 container logs into the bundle directory structure.
 """
 
-import json
 import os
 from concurrent.futures import ThreadPoolExecutor, as_completed
 

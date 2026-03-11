@@ -8,7 +8,6 @@
 import json
 import os
 import shutil
-import tempfile
 from datetime import datetime, timezone
 
 from knack.log import get_logger
