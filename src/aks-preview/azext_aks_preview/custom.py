@@ -5539,10 +5539,11 @@ def aks_bastion(cmd, client, resource_group_name, name, bastion=None, port=None,
         kubeconfig_path = os.path.join(temp_dir, ".kube", "config")
 
     try:
+        subscription_id = get_subscription_id(cmd.cli_ctx)
         mc = client.get(resource_group_name, name)
         mc_id = mc.id
         nrg = mc.node_resource_group
-        bastion_resource = aks_bastion_parse_bastion_resource(bastion, [nrg])
+        bastion_resource = aks_bastion_parse_bastion_resource(bastion, [nrg], subscription_id)
         port = aks_bastion_get_local_port(port)
 
         # Fetch credentials only if kubeconfig not provided
@@ -5574,6 +5575,7 @@ def aks_bastion(cmd, client, resource_group_name, name, bastion=None, port=None,
                 port,
                 mc_id,
                 kubeconfig_path,
+                subscription_id=subscription_id,
                 test_hook=os.getenv("AKS_BASTION_TEST_HOOK"),
             )
         )
