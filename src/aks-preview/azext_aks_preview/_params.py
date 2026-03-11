@@ -1205,7 +1205,7 @@ def load_arguments(self, _):
             "enable_continuous_control_plane_and_addon_monitor",
             action="store_true",
             is_preview=True,
-            help="Enable continuous control plane and addon monitoring for the cluster.",
+            help="Enable continuous control plane and addon monitor for the cluster.",
         )
 
     with self.argument_context("aks update") as c:
@@ -1789,13 +1789,13 @@ def load_arguments(self, _):
             "enable_continuous_control_plane_and_addon_monitor",
             action="store_true",
             is_preview=True,
-            help="Enable continuous control plane and addon monitoring for the cluster.",
+            help="Enable continuous control plane and addon monitor for the cluster.",
         )
         c.argument(
             "disable_continuous_control_plane_and_addon_monitor",
             action="store_true",
             is_preview=True,
-            help="Disable continuous control plane and addon monitoring for the cluster.",
+            help="Disable continuous control plane and addon monitor for the cluster.",
         )
 
     with self.argument_context("aks upgrade") as c:
