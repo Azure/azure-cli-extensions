@@ -101,13 +101,22 @@ def find_fabric(all_fabrics, appliance_name, fabric_instance_type,
             })
 
         if is_succeeded and is_correct_instance and name_matches:
-            # If solution doesn't match, log warning but still consider it
-            if not is_correct_solution:
-                logger.warning(
-                    "Fabric '%s' matches name and type but has "
-                    "different solution ID", fabric_name)
-            fabric = candidate
-            break
+            if is_correct_solution:
+                # Perfect match - use it immediately
+                fabric = candidate
+                break
+            # Name/type match but wrong solution ID - keep as fallback
+            if not fabric:
+                fabric = candidate
+
+    if fabric:
+        fabric_props = fabric.get('properties', {}).get('customProperties', {})
+        fabric_sol_id = fabric_props.get('migrationSolutionId', '').rstrip('/')
+        expected_sol_id = amh_solution.get('id', '').rstrip('/')
+        if fabric_sol_id.lower() != expected_sol_id.lower():
+            logger.warning(
+                "Fabric '%s' matches name and type but has "
+                "different solution ID", fabric.get('name'))
 
     if not fabric:
         appliance_type_label = "source" if is_source else "target"

@@ -482,15 +482,23 @@ def _process_source_fabrics(all_fabrics,
             })
 
         if is_succeeded and is_correct_instance and name_matches:
-            # If solution doesn't match, log warning but still consider it
-            if not is_correct_solution:
-                logger.warning(
-                    "Fabric '%s' matches name and type but has different "
-                    "solution ID",
-                    fabric_name
-                )
-            source_fabric = fabric
-            break
+            if is_correct_solution:
+                source_fabric = fabric
+                break
+            if not source_fabric:
+                source_fabric = fabric
+
+    if source_fabric:
+        sf_props = source_fabric.get('properties', {}).get(
+            'customProperties', {})
+        sf_sol_id = sf_props.get('migrationSolutionId', '').rstrip('/')
+        exp_sol_id = amh_solution.get('id', '').rstrip('/')
+        if sf_sol_id.lower() != exp_sol_id.lower():
+            logger.warning(
+                "Fabric '%s' matches name and type but has different "
+                "solution ID",
+                source_fabric.get('name'))
+
     return source_fabric, source_fabric_candidates
 
 
@@ -679,12 +687,22 @@ def _process_target_fabrics(all_fabrics,
             })
 
         if is_succeeded and is_correct_instance and name_matches:
-            if not is_correct_solution:
-                logger.warning(
-                    "Fabric '%s' matches name and type but has different "
-                    "solution ID", fabric_name)
-            target_fabric = fabric
-            break
+            if is_correct_solution:
+                target_fabric = fabric
+                break
+            if not target_fabric:
+                target_fabric = fabric
+
+    if target_fabric:
+        tf_props = target_fabric.get('properties', {}).get(
+            'customProperties', {})
+        tf_sol_id = tf_props.get('migrationSolutionId', '').rstrip('/')
+        exp_sol_id = amh_solution.get('id', '').rstrip('/')
+        if tf_sol_id.lower() != exp_sol_id.lower():
+            logger.warning(
+                "Fabric '%s' matches name and type but has different "
+                "solution ID", target_fabric.get('name'))
+
     return target_fabric, target_fabric_candidates, \
         target_fabric_instance_type
 
