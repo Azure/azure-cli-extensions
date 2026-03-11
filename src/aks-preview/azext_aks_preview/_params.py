@@ -1205,7 +1205,7 @@ def load_arguments(self, _):
             options_list=["--enable-app-routing-istio", "--enable-ari"],
             action="store_true",
             is_preview=True,
-            help="Enable Istio as a Gateway API implementation for App Routing."
+            help="Enable Gateway API based ingress on App Routing via Istio"
         )
         c.argument("enable_hosted_system", action="store_true", is_preview=True)
 
@@ -1779,14 +1779,14 @@ def load_arguments(self, _):
             options_list=["--enable-app-routing-istio", "--enable-ari"],
             action="store_true",
             is_preview=True,
-            help="Enable Istio as a Gateway API implementation for App Routing."
+            help="Enable Gateway API based ingress on App Routing via Istio."
         )
         c.argument(
             "disable_app_routing_istio",
             options_list=["--disable-app-routing-istio", "--disable-ari"],
             action="store_true",
             is_preview=True,
-            help="Disable Istio as a Gateway API implementation for App Routing."
+            help="Disable Gateway API based ingress on App Routing via Istio."
         )
         c.argument(
             "enable_application_load_balancer",
