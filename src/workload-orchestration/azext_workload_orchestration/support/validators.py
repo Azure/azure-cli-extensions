@@ -12,7 +12,7 @@ import os
 
 from knack.log import get_logger
 
-from azext_workload_orchestration._support_consts import (
+from azext_workload_orchestration.support.consts import (
     CATEGORY_CLUSTER_INFO,
     CATEGORY_NODE_HEALTH,
     CATEGORY_DNS_HEALTH,
@@ -36,7 +36,7 @@ from azext_workload_orchestration._support_consts import (
     FOLDER_CHECKS,
     PSA_LABEL_PREFIX,
 )
-from azext_workload_orchestration._support_utils import (
+from azext_workload_orchestration.support.utils import (
     safe_api_call,
     write_check_result,
     parse_cpu,
@@ -267,7 +267,7 @@ def _check_default_storage_class(clients, bundle_dir, cluster_info, capabilities
             STATUS_WARN, f"Could not list StorageClasses: {err}"
         )
 
-    from azext_workload_orchestration._support_consts import SC_DEFAULT_ANNOTATION_V1, SC_DEFAULT_ANNOTATION_BETA
+    from azext_workload_orchestration.support.consts import SC_DEFAULT_ANNOTATION_V1, SC_DEFAULT_ANNOTATION_BETA
 
     scs = result.items if result else []
     defaults = []
@@ -484,7 +484,7 @@ def _check_dns_resolution(clients, bundle_dir, cluster_info, capabilities):
     """Check DNS resolution works for internal and external names (client-side)."""
     import socket
 
-    from azext_workload_orchestration._support_consts import DNS_INTERNAL_HOST, DNS_EXTERNAL_HOST
+    from azext_workload_orchestration.support.consts import DNS_INTERNAL_HOST, DNS_EXTERNAL_HOST
 
     results_detail = {}
 

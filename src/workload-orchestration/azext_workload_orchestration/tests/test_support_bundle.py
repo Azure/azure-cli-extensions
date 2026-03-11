@@ -58,18 +58,18 @@ for mod_name, mod in [
 
 class TestConstants(unittest.TestCase):
     def test_default_namespaces(self):
-        from azext_workload_orchestration._support_consts import DEFAULT_NAMESPACES
+        from azext_workload_orchestration.support.consts import DEFAULT_NAMESPACES
         self.assertEqual(len(DEFAULT_NAMESPACES), 3)
         self.assertIn("kube-system", DEFAULT_NAMESPACES)
         self.assertIn("workloadorchestration", DEFAULT_NAMESPACES)
         self.assertIn("cert-manager", DEFAULT_NAMESPACES)
 
     def test_default_tail_lines(self):
-        from azext_workload_orchestration._support_consts import DEFAULT_TAIL_LINES
+        from azext_workload_orchestration.support.consts import DEFAULT_TAIL_LINES
         self.assertEqual(DEFAULT_TAIL_LINES, 1000)
 
     def test_status_constants(self):
-        from azext_workload_orchestration._support_consts import (
+        from azext_workload_orchestration.support.consts import (
             STATUS_PASS, STATUS_FAIL, STATUS_WARN, STATUS_SKIP, STATUS_ERROR,
         )
         self.assertEqual(STATUS_PASS, "PASS")
@@ -85,62 +85,62 @@ class TestConstants(unittest.TestCase):
 
 class TestParseCpu(unittest.TestCase):
     def test_millicores(self):
-        from azext_workload_orchestration._support_utils import parse_cpu
+        from azext_workload_orchestration.support.utils import parse_cpu
         self.assertAlmostEqual(parse_cpu("3860m"), 3.86)
         self.assertAlmostEqual(parse_cpu("500m"), 0.5)
         self.assertAlmostEqual(parse_cpu("100m"), 0.1)
 
     def test_whole_cores(self):
-        from azext_workload_orchestration._support_utils import parse_cpu
+        from azext_workload_orchestration.support.utils import parse_cpu
         self.assertEqual(parse_cpu("4"), 4.0)
         self.assertEqual(parse_cpu("1"), 1.0)
 
     def test_empty_and_none(self):
-        from azext_workload_orchestration._support_utils import parse_cpu
+        from azext_workload_orchestration.support.utils import parse_cpu
         self.assertEqual(parse_cpu(""), 0.0)
         self.assertEqual(parse_cpu(None), 0.0)
 
 
 class TestParseMemory(unittest.TestCase):
     def test_ki(self):
-        from azext_workload_orchestration._support_utils import parse_memory_gi
+        from azext_workload_orchestration.support.utils import parse_memory_gi
         result = parse_memory_gi("27601704Ki")
         self.assertAlmostEqual(result, 26.32, places=1)
 
     def test_mi(self):
-        from azext_workload_orchestration._support_utils import parse_memory_gi
+        from azext_workload_orchestration.support.utils import parse_memory_gi
         self.assertAlmostEqual(parse_memory_gi("4096Mi"), 4.0)
 
     def test_gi(self):
-        from azext_workload_orchestration._support_utils import parse_memory_gi
+        from azext_workload_orchestration.support.utils import parse_memory_gi
         self.assertEqual(parse_memory_gi("4Gi"), 4.0)
         self.assertEqual(parse_memory_gi("16Gi"), 16.0)
 
     def test_ti(self):
-        from azext_workload_orchestration._support_utils import parse_memory_gi
+        from azext_workload_orchestration.support.utils import parse_memory_gi
         self.assertEqual(parse_memory_gi("1Ti"), 1024.0)
 
     def test_empty_and_none(self):
-        from azext_workload_orchestration._support_utils import parse_memory_gi
+        from azext_workload_orchestration.support.utils import parse_memory_gi
         self.assertEqual(parse_memory_gi(""), 0.0)
         self.assertEqual(parse_memory_gi(None), 0.0)
 
 
 class TestFormatBytes(unittest.TestCase):
     def test_bytes(self):
-        from azext_workload_orchestration._support_utils import format_bytes
+        from azext_workload_orchestration.support.utils import format_bytes
         self.assertEqual(format_bytes(500), "500 B")
 
     def test_kb(self):
-        from azext_workload_orchestration._support_utils import format_bytes
+        from azext_workload_orchestration.support.utils import format_bytes
         self.assertEqual(format_bytes(1536), "1.5 KB")
 
     def test_mb(self):
-        from azext_workload_orchestration._support_utils import format_bytes
+        from azext_workload_orchestration.support.utils import format_bytes
         self.assertEqual(format_bytes(3660710), "3.5 MB")
 
     def test_gb(self):
-        from azext_workload_orchestration._support_utils import format_bytes
+        from azext_workload_orchestration.support.utils import format_bytes
         result = format_bytes(2 * 1024 * 1024 * 1024)
         self.assertEqual(result, "2.0 GB")
 
@@ -153,8 +153,8 @@ class TestBundleDirectory(unittest.TestCase):
         shutil.rmtree(self.tmpdir, ignore_errors=True)
 
     def test_creates_structure(self):
-        from azext_workload_orchestration._support_utils import create_bundle_directory
-        from azext_workload_orchestration._support_consts import (
+        from azext_workload_orchestration.support.utils import create_bundle_directory
+        from azext_workload_orchestration.support.consts import (
             FOLDER_LOGS, FOLDER_RESOURCES, FOLDER_CHECKS, FOLDER_CLUSTER_INFO,
         )
         bundle_dir, bundle_name = create_bundle_directory(self.tmpdir)
@@ -166,7 +166,7 @@ class TestBundleDirectory(unittest.TestCase):
         self.assertTrue(bundle_name.startswith("wo-support-bundle-"))
 
     def test_zip_bundle(self):
-        from azext_workload_orchestration._support_utils import (
+        from azext_workload_orchestration.support.utils import (
             create_bundle_directory, create_zip_bundle, write_text,
         )
         bundle_dir, bundle_name = create_bundle_directory(self.tmpdir)
@@ -180,14 +180,14 @@ class TestBundleDirectory(unittest.TestCase):
 
 class TestSafeApiCall(unittest.TestCase):
     def test_success(self):
-        from azext_workload_orchestration._support_utils import safe_api_call
+        from azext_workload_orchestration.support.utils import safe_api_call
         mock_fn = MagicMock(return_value="result")
         result, err = safe_api_call(mock_fn, "arg1", description="test")
         self.assertEqual(result, "result")
         self.assertIsNone(err)
 
     def test_403(self):
-        from azext_workload_orchestration._support_utils import safe_api_call
+        from azext_workload_orchestration.support.utils import safe_api_call
         from kubernetes.client.exceptions import ApiException
         mock_fn = MagicMock(side_effect=ApiException(status=403, reason="Forbidden"))
         result, err = safe_api_call(mock_fn, description="test")
@@ -195,7 +195,7 @@ class TestSafeApiCall(unittest.TestCase):
         self.assertIn("403", err)
 
     def test_404(self):
-        from azext_workload_orchestration._support_utils import safe_api_call
+        from azext_workload_orchestration.support.utils import safe_api_call
         from kubernetes.client.exceptions import ApiException
         mock_fn = MagicMock(side_effect=ApiException(status=404, reason="Not Found"))
         result, err = safe_api_call(mock_fn, description="test")
@@ -203,7 +203,7 @@ class TestSafeApiCall(unittest.TestCase):
         self.assertIn("404", err)
 
     def test_generic_exception(self):
-        from azext_workload_orchestration._support_utils import safe_api_call
+        from azext_workload_orchestration.support.utils import safe_api_call
         mock_fn = MagicMock(side_effect=RuntimeError("boom"))
         result, err = safe_api_call(mock_fn, description="test")
         self.assertIsNone(result)
@@ -213,14 +213,14 @@ class TestSafeApiCall(unittest.TestCase):
 class TestWriteCheckResult(unittest.TestCase):
     def setUp(self):
         self.tmpdir = tempfile.mkdtemp()
-        from azext_workload_orchestration._support_utils import create_bundle_directory
+        from azext_workload_orchestration.support.utils import create_bundle_directory
         self.bundle_dir, _ = create_bundle_directory(self.tmpdir)
 
     def tearDown(self):
         shutil.rmtree(self.tmpdir, ignore_errors=True)
 
     def test_writes_json(self):
-        from azext_workload_orchestration._support_utils import write_check_result
+        from azext_workload_orchestration.support.utils import write_check_result
         result = write_check_result(
             self.bundle_dir, "test-cat", "test-check", "PASS", "all good"
         )
@@ -233,7 +233,7 @@ class TestWriteCheckResult(unittest.TestCase):
         self.assertEqual(data["status"], "PASS")
 
     def test_with_details(self):
-        from azext_workload_orchestration._support_utils import write_check_result
+        from azext_workload_orchestration.support.utils import write_check_result
         result = write_check_result(
             self.bundle_dir, "cat", "chk", "WARN", "not great",
             details={"nodes": ["n1", "n2"]}
@@ -243,7 +243,7 @@ class TestWriteCheckResult(unittest.TestCase):
 
 class TestCheckDiskSpace(unittest.TestCase):
     def test_enough_space(self):
-        from azext_workload_orchestration._support_utils import check_disk_space
+        from azext_workload_orchestration.support.utils import check_disk_space
         ok, free = check_disk_space(tempfile.gettempdir(), 1024)
         self.assertTrue(ok)
         self.assertGreater(free, 0)
@@ -251,7 +251,7 @@ class TestCheckDiskSpace(unittest.TestCase):
 
 class TestDetectCapabilities(unittest.TestCase):
     def test_detects_groups(self):
-        from azext_workload_orchestration._support_utils import detect_cluster_capabilities
+        from azext_workload_orchestration.support.utils import detect_cluster_capabilities
 
         # Mock the API response
         mock_group = MagicMock()
@@ -276,26 +276,26 @@ class TestDetectCapabilities(unittest.TestCase):
 class TestKubernetesVersionCheck(unittest.TestCase):
     def setUp(self):
         self.tmpdir = tempfile.mkdtemp()
-        from azext_workload_orchestration._support_utils import create_bundle_directory
+        from azext_workload_orchestration.support.utils import create_bundle_directory
         self.bundle_dir, _ = create_bundle_directory(self.tmpdir)
 
     def tearDown(self):
         shutil.rmtree(self.tmpdir, ignore_errors=True)
 
     def test_supported_version(self):
-        from azext_workload_orchestration._support_validators import _check_k8s_version
+        from azext_workload_orchestration.support.validators import _check_k8s_version
         info = {"server_version": {"major": "1", "minor": "33", "git_version": "v1.33.5"}}
         result = _check_k8s_version(None, self.bundle_dir, info, {})
         self.assertEqual(result["status"], "PASS")
 
     def test_old_version(self):
-        from azext_workload_orchestration._support_validators import _check_k8s_version
+        from azext_workload_orchestration.support.validators import _check_k8s_version
         info = {"server_version": {"major": "1", "minor": "22", "git_version": "v1.22.0"}}
         result = _check_k8s_version(None, self.bundle_dir, info, {})
         self.assertEqual(result["status"], "FAIL")
 
     def test_edge_version_124(self):
-        from azext_workload_orchestration._support_validators import _check_k8s_version
+        from azext_workload_orchestration.support.validators import _check_k8s_version
         info = {"server_version": {"major": "1", "minor": "24", "git_version": "v1.24.0"}}
         result = _check_k8s_version(None, self.bundle_dir, info, {})
         self.assertEqual(result["status"], "PASS")
@@ -304,14 +304,14 @@ class TestKubernetesVersionCheck(unittest.TestCase):
 class TestNodeReadinessCheck(unittest.TestCase):
     def setUp(self):
         self.tmpdir = tempfile.mkdtemp()
-        from azext_workload_orchestration._support_utils import create_bundle_directory
+        from azext_workload_orchestration.support.utils import create_bundle_directory
         self.bundle_dir, _ = create_bundle_directory(self.tmpdir)
 
     def tearDown(self):
         shutil.rmtree(self.tmpdir, ignore_errors=True)
 
     def test_all_ready(self):
-        from azext_workload_orchestration._support_validators import _check_node_readiness
+        from azext_workload_orchestration.support.validators import _check_node_readiness
         info = {
             "nodes": [
                 {"name": "node1", "ready": "True", "conditions": {"Ready": "True"}},
@@ -322,7 +322,7 @@ class TestNodeReadinessCheck(unittest.TestCase):
         self.assertEqual(result["status"], "PASS")
 
     def test_node_not_ready(self):
-        from azext_workload_orchestration._support_validators import _check_node_readiness
+        from azext_workload_orchestration.support.validators import _check_node_readiness
         info = {
             "nodes": [
                 {"name": "node1", "ready": "True", "conditions": {"Ready": "True"}},
@@ -334,7 +334,7 @@ class TestNodeReadinessCheck(unittest.TestCase):
         self.assertIn("node2", result["message"])
 
     def test_node_pressure(self):
-        from azext_workload_orchestration._support_validators import _check_node_readiness
+        from azext_workload_orchestration.support.validators import _check_node_readiness
         info = {
             "nodes": [
                 {
@@ -347,7 +347,7 @@ class TestNodeReadinessCheck(unittest.TestCase):
         self.assertEqual(result["status"], "WARN")
 
     def test_no_nodes(self):
-        from azext_workload_orchestration._support_validators import _check_node_readiness
+        from azext_workload_orchestration.support.validators import _check_node_readiness
         result = _check_node_readiness(None, self.bundle_dir, {"nodes": []}, {})
         self.assertEqual(result["status"], "FAIL")
 
@@ -355,14 +355,14 @@ class TestNodeReadinessCheck(unittest.TestCase):
 class TestNodeCapacityCheck(unittest.TestCase):
     def setUp(self):
         self.tmpdir = tempfile.mkdtemp()
-        from azext_workload_orchestration._support_utils import create_bundle_directory
+        from azext_workload_orchestration.support.utils import create_bundle_directory
         self.bundle_dir, _ = create_bundle_directory(self.tmpdir)
 
     def tearDown(self):
         shutil.rmtree(self.tmpdir, ignore_errors=True)
 
     def test_sufficient_capacity(self):
-        from azext_workload_orchestration._support_validators import _check_node_capacity
+        from azext_workload_orchestration.support.validators import _check_node_capacity
         info = {"nodes": [
             {"name": "n1", "allocatable_cpu": "4", "allocatable_memory": "16Gi"},
         ]}
@@ -370,7 +370,7 @@ class TestNodeCapacityCheck(unittest.TestCase):
         self.assertEqual(result["status"], "PASS")
 
     def test_low_cpu(self):
-        from azext_workload_orchestration._support_validators import _check_node_capacity
+        from azext_workload_orchestration.support.validators import _check_node_capacity
         info = {"nodes": [
             {"name": "n1", "allocatable_cpu": "1", "allocatable_memory": "16Gi"},
         ]}
@@ -382,19 +382,19 @@ class TestNodeCapacityCheck(unittest.TestCase):
 class TestCertManagerCheck(unittest.TestCase):
     def setUp(self):
         self.tmpdir = tempfile.mkdtemp()
-        from azext_workload_orchestration._support_utils import create_bundle_directory
+        from azext_workload_orchestration.support.utils import create_bundle_directory
         self.bundle_dir, _ = create_bundle_directory(self.tmpdir)
 
     def tearDown(self):
         shutil.rmtree(self.tmpdir, ignore_errors=True)
 
     def test_not_installed(self):
-        from azext_workload_orchestration._support_validators import _check_cert_manager
+        from azext_workload_orchestration.support.validators import _check_cert_manager
         result = _check_cert_manager(None, self.bundle_dir, {}, {"has_cert_manager": False})
         self.assertEqual(result["status"], "FAIL")
 
     def test_installed_and_healthy(self):
-        from azext_workload_orchestration._support_validators import _check_cert_manager
+        from azext_workload_orchestration.support.validators import _check_cert_manager
         mock_pod = MagicMock()
         mock_pod.metadata.name = "cert-manager-xyz"
         mock_pod.status.phase = "Running"
@@ -413,21 +413,21 @@ class TestCertManagerCheck(unittest.TestCase):
 class TestAdmissionControllersCheck(unittest.TestCase):
     def setUp(self):
         self.tmpdir = tempfile.mkdtemp()
-        from azext_workload_orchestration._support_utils import create_bundle_directory
+        from azext_workload_orchestration.support.utils import create_bundle_directory
         self.bundle_dir, _ = create_bundle_directory(self.tmpdir)
 
     def tearDown(self):
         shutil.rmtree(self.tmpdir, ignore_errors=True)
 
     def test_no_engines(self):
-        from azext_workload_orchestration._support_validators import _check_admission_controllers
+        from azext_workload_orchestration.support.validators import _check_admission_controllers
         caps = {"has_gatekeeper": False, "has_kyverno": False, "has_openshift": False}
         result = _check_admission_controllers(None, self.bundle_dir, {}, caps)
         self.assertEqual(result["status"], "PASS")
         self.assertIn("No additional", result["message"])
 
     def test_gatekeeper_detected(self):
-        from azext_workload_orchestration._support_validators import _check_admission_controllers
+        from azext_workload_orchestration.support.validators import _check_admission_controllers
         caps = {"has_gatekeeper": True, "has_kyverno": False, "has_openshift": False}
         result = _check_admission_controllers(None, self.bundle_dir, {}, caps)
         self.assertEqual(result["status"], "PASS")
@@ -437,14 +437,14 @@ class TestAdmissionControllersCheck(unittest.TestCase):
 class TestPsaLabelsCheck(unittest.TestCase):
     def setUp(self):
         self.tmpdir = tempfile.mkdtemp()
-        from azext_workload_orchestration._support_utils import create_bundle_directory
+        from azext_workload_orchestration.support.utils import create_bundle_directory
         self.bundle_dir, _ = create_bundle_directory(self.tmpdir)
 
     def tearDown(self):
         shutil.rmtree(self.tmpdir, ignore_errors=True)
 
     def test_no_psa(self):
-        from azext_workload_orchestration._support_validators import _check_psa_labels
+        from azext_workload_orchestration.support.validators import _check_psa_labels
         info = {"namespaces": [
             {"name": "workloadorchestration", "labels": {}},
             {"name": "cert-manager", "labels": {}},
@@ -453,7 +453,7 @@ class TestPsaLabelsCheck(unittest.TestCase):
         self.assertEqual(result["status"], "PASS")
 
     def test_restricted_psa(self):
-        from azext_workload_orchestration._support_validators import _check_psa_labels
+        from azext_workload_orchestration.support.validators import _check_psa_labels
         info = {"namespaces": [
             {"name": "workloadorchestration", "labels": {
                 "pod-security.kubernetes.io/enforce": "restricted"
@@ -470,14 +470,14 @@ class TestPsaLabelsCheck(unittest.TestCase):
 class TestCollectClusterInfo(unittest.TestCase):
     def setUp(self):
         self.tmpdir = tempfile.mkdtemp()
-        from azext_workload_orchestration._support_utils import create_bundle_directory
+        from azext_workload_orchestration.support.utils import create_bundle_directory
         self.bundle_dir, _ = create_bundle_directory(self.tmpdir)
 
     def tearDown(self):
         shutil.rmtree(self.tmpdir, ignore_errors=True)
 
     def test_collects_version_and_nodes(self):
-        from azext_workload_orchestration._support_collectors import collect_cluster_info
+        from azext_workload_orchestration.support.collectors import collect_cluster_info
 
         # Mock version
         mock_version = MagicMock()
@@ -533,7 +533,7 @@ class TestWriteJsonResilience(unittest.TestCase):
     """Test that write_json handles I/O errors gracefully."""
 
     def test_returns_true_on_success(self):
-        from azext_workload_orchestration._support_utils import write_json
+        from azext_workload_orchestration.support.utils import write_json
         import tempfile
         fd, path = tempfile.mkstemp(suffix=".json")
         os.close(fd)
@@ -544,12 +544,12 @@ class TestWriteJsonResilience(unittest.TestCase):
             os.unlink(path)
 
     def test_returns_false_on_bad_path(self):
-        from azext_workload_orchestration._support_utils import write_json
+        from azext_workload_orchestration.support.utils import write_json
         result = write_json("/nonexistent/dir/file.json", {"key": "value"})
         self.assertFalse(result)
 
     def test_handles_non_serializable_data(self):
-        from azext_workload_orchestration._support_utils import write_json
+        from azext_workload_orchestration.support.utils import write_json
         import tempfile
         fd, path = tempfile.mkstemp(suffix=".json")
         os.close(fd)
@@ -565,7 +565,7 @@ class TestWriteTextResilience(unittest.TestCase):
     """Test that write_text handles I/O errors gracefully."""
 
     def test_returns_true_on_success(self):
-        from azext_workload_orchestration._support_utils import write_text
+        from azext_workload_orchestration.support.utils import write_text
         import tempfile
         fd, path = tempfile.mkstemp(suffix=".txt")
         os.close(fd)
@@ -576,12 +576,12 @@ class TestWriteTextResilience(unittest.TestCase):
             os.unlink(path)
 
     def test_returns_false_on_bad_path(self):
-        from azext_workload_orchestration._support_utils import write_text
+        from azext_workload_orchestration.support.utils import write_text
         result = write_text("/nonexistent/dir/file.txt", "hello")
         self.assertFalse(result)
 
     def test_handles_none_text(self):
-        from azext_workload_orchestration._support_utils import write_text
+        from azext_workload_orchestration.support.utils import write_text
         import tempfile
         fd, path = tempfile.mkstemp(suffix=".txt")
         os.close(fd)
@@ -598,7 +598,7 @@ class TestSafeApiCallRBAC(unittest.TestCase):
     """Test RBAC-specific error handling in safe_api_call."""
 
     def test_401_unauthorized(self):
-        from azext_workload_orchestration._support_utils import safe_api_call
+        from azext_workload_orchestration.support.utils import safe_api_call
         from kubernetes.client.exceptions import ApiException
         fn = MagicMock(side_effect=ApiException(status=401, reason="Unauthorized"))
         result, err = safe_api_call(fn, description="test auth")
@@ -606,7 +606,7 @@ class TestSafeApiCallRBAC(unittest.TestCase):
         self.assertIn("401", err)
 
     def test_500_server_error(self):
-        from azext_workload_orchestration._support_utils import safe_api_call
+        from azext_workload_orchestration.support.utils import safe_api_call
         from kubernetes.client.exceptions import ApiException
         fn = MagicMock(side_effect=ApiException(status=500, reason="Internal Server Error"))
         result, err = safe_api_call(fn, description="test server err")
@@ -614,7 +614,7 @@ class TestSafeApiCallRBAC(unittest.TestCase):
         self.assertIn("500", err)
 
     def test_timeout_error(self):
-        from azext_workload_orchestration._support_utils import safe_api_call
+        from azext_workload_orchestration.support.utils import safe_api_call
         from urllib3.exceptions import MaxRetryError, NewConnectionError
         fn = MagicMock(side_effect=MaxRetryError(None, None, "timed out"))
         result, err = safe_api_call(fn, description="test timeout")
@@ -622,7 +622,7 @@ class TestSafeApiCallRBAC(unittest.TestCase):
         self.assertIn("timed out", err)
 
     def test_connection_refused(self):
-        from azext_workload_orchestration._support_utils import safe_api_call
+        from azext_workload_orchestration.support.utils import safe_api_call
         fn = MagicMock(side_effect=ConnectionRefusedError("refused"))
         result, err = safe_api_call(fn, description="test refused")
         self.assertIsNone(result)
@@ -633,7 +633,7 @@ class TestDetectCapabilitiesResilience(unittest.TestCase):
     """Test detect_cluster_capabilities handles failures."""
 
     def test_api_failure_returns_all_false(self):
-        from azext_workload_orchestration._support_utils import detect_cluster_capabilities
+        from azext_workload_orchestration.support.utils import detect_cluster_capabilities
         from kubernetes.client.exceptions import ApiException
         mock_apis = MagicMock()
         mock_apis.get_api_versions.side_effect = ApiException(status=403, reason="Forbidden")
@@ -643,7 +643,7 @@ class TestDetectCapabilitiesResilience(unittest.TestCase):
         self.assertFalse(caps.get("has_symphony"))
 
     def test_empty_groups_returns_all_false(self):
-        from azext_workload_orchestration._support_utils import detect_cluster_capabilities
+        from azext_workload_orchestration.support.utils import detect_cluster_capabilities
         mock_apis = MagicMock()
         mock_result = MagicMock()
         mock_result.groups = []
@@ -653,7 +653,7 @@ class TestDetectCapabilitiesResilience(unittest.TestCase):
         self.assertFalse(caps["has_cert_manager"])
 
     def test_none_groups_returns_all_false(self):
-        from azext_workload_orchestration._support_utils import detect_cluster_capabilities
+        from azext_workload_orchestration.support.utils import detect_cluster_capabilities
         mock_apis = MagicMock()
         mock_result = MagicMock()
         mock_result.groups = None
@@ -667,45 +667,45 @@ class TestNodeChecksWithNoneData(unittest.TestCase):
 
     def setUp(self):
         self.tmpdir = tempfile.mkdtemp()
-        from azext_workload_orchestration._support_utils import create_bundle_directory
+        from azext_workload_orchestration.support.utils import create_bundle_directory
         self.bundle_dir, _ = create_bundle_directory(self.tmpdir)
 
     def tearDown(self):
         shutil.rmtree(self.tmpdir, ignore_errors=True)
 
     def test_node_readiness_with_none_nodes(self):
-        from azext_workload_orchestration._support_validators import _check_node_readiness
+        from azext_workload_orchestration.support.validators import _check_node_readiness
         result = _check_node_readiness(None, self.bundle_dir, {"nodes": None}, {})
         self.assertEqual(result["status"], "FAIL")
 
     def test_node_capacity_with_none_nodes(self):
-        from azext_workload_orchestration._support_validators import _check_node_capacity
+        from azext_workload_orchestration.support.validators import _check_node_capacity
         result = _check_node_capacity(None, self.bundle_dir, {"nodes": None}, {})
         self.assertEqual(result["status"], "SKIP")
 
     def test_wo_namespace_with_none_namespaces(self):
-        from azext_workload_orchestration._support_validators import _check_wo_namespace
+        from azext_workload_orchestration.support.validators import _check_wo_namespace
         result = _check_wo_namespace(None, self.bundle_dir, {"namespaces": None}, {})
         self.assertEqual(result["status"], "FAIL")
 
     def test_psa_labels_with_none_namespaces(self):
-        from azext_workload_orchestration._support_validators import _check_psa_labels
+        from azext_workload_orchestration.support.validators import _check_psa_labels
         result = _check_psa_labels(None, self.bundle_dir, {"namespaces": None}, {})
         self.assertEqual(result["status"], "PASS")
 
     def test_cluster_resources_with_none_nodes(self):
-        from azext_workload_orchestration._support_validators import _check_cluster_resources
+        from azext_workload_orchestration.support.validators import _check_cluster_resources
         result = _check_cluster_resources(None, self.bundle_dir, {"nodes": None}, {})
         self.assertEqual(result["status"], "SKIP")
 
     def test_empty_cluster_info(self):
-        from azext_workload_orchestration._support_validators import _check_k8s_version
+        from azext_workload_orchestration.support.validators import _check_k8s_version
         result = _check_k8s_version(None, self.bundle_dir, {}, {})
         # Empty version info → can't parse → WARN or FAIL (both acceptable)
         self.assertIn(result["status"], ("WARN", "FAIL"))
 
     def test_version_with_plus_suffix(self):
-        from azext_workload_orchestration._support_validators import _check_k8s_version
+        from azext_workload_orchestration.support.validators import _check_k8s_version
         info = {"server_version": {"major": "1", "minor": "28+", "git_version": "v1.28.2-gke.1"}}
         result = _check_k8s_version(None, self.bundle_dir, info, {})
         self.assertEqual(result["status"], "PASS")
@@ -716,14 +716,14 @@ class TestProtectedNamespaceCheck(unittest.TestCase):
 
     def setUp(self):
         self.tmpdir = tempfile.mkdtemp()
-        from azext_workload_orchestration._support_utils import create_bundle_directory
+        from azext_workload_orchestration.support.utils import create_bundle_directory
         self.bundle_dir, _ = create_bundle_directory(self.tmpdir)
 
     def tearDown(self):
         shutil.rmtree(self.tmpdir, ignore_errors=True)
 
     def test_wo_namespace_is_not_protected(self):
-        from azext_workload_orchestration._support_validators import _check_protected_namespace
+        from azext_workload_orchestration.support.validators import _check_protected_namespace
         result = _check_protected_namespace(None, self.bundle_dir, {}, {})
         self.assertEqual(result["status"], "PASS")
 
@@ -733,14 +733,14 @@ class TestCsiDriversCheck(unittest.TestCase):
 
     def setUp(self):
         self.tmpdir = tempfile.mkdtemp()
-        from azext_workload_orchestration._support_utils import create_bundle_directory
+        from azext_workload_orchestration.support.utils import create_bundle_directory
         self.bundle_dir, _ = create_bundle_directory(self.tmpdir)
 
     def tearDown(self):
         shutil.rmtree(self.tmpdir, ignore_errors=True)
 
     def test_no_drivers(self):
-        from azext_workload_orchestration._support_validators import _check_csi_drivers
+        from azext_workload_orchestration.support.validators import _check_csi_drivers
         mock_storage = MagicMock()
         mock_result = MagicMock()
         mock_result.items = []
@@ -749,7 +749,7 @@ class TestCsiDriversCheck(unittest.TestCase):
         self.assertEqual(result["status"], "WARN")
 
     def test_with_drivers(self):
-        from azext_workload_orchestration._support_validators import _check_csi_drivers
+        from azext_workload_orchestration.support.validators import _check_csi_drivers
         mock_storage = MagicMock()
         mock_driver = MagicMock()
         mock_driver.metadata.name = "disk.csi.azure.com"
@@ -761,7 +761,7 @@ class TestCsiDriversCheck(unittest.TestCase):
         self.assertIn("disk.csi.azure.com", result["message"])
 
     def test_rbac_denied(self):
-        from azext_workload_orchestration._support_validators import _check_csi_drivers
+        from azext_workload_orchestration.support.validators import _check_csi_drivers
         from kubernetes.client.exceptions import ApiException
         mock_storage = MagicMock()
         mock_storage.list_csi_driver.side_effect = ApiException(status=403, reason="Forbidden")
@@ -774,14 +774,14 @@ class TestProxyCheck(unittest.TestCase):
 
     def setUp(self):
         self.tmpdir = tempfile.mkdtemp()
-        from azext_workload_orchestration._support_utils import create_bundle_directory
+        from azext_workload_orchestration.support.utils import create_bundle_directory
         self.bundle_dir, _ = create_bundle_directory(self.tmpdir)
 
     def tearDown(self):
         shutil.rmtree(self.tmpdir, ignore_errors=True)
 
     def test_no_proxy(self):
-        from azext_workload_orchestration._support_validators import _check_proxy_settings
+        from azext_workload_orchestration.support.validators import _check_proxy_settings
         mock_core = MagicMock()
         mock_pod = MagicMock()
         mock_pod.metadata.name = "pod1"
@@ -796,7 +796,7 @@ class TestProxyCheck(unittest.TestCase):
         self.assertEqual(result["status"], "PASS")
 
     def test_with_proxy(self):
-        from azext_workload_orchestration._support_validators import _check_proxy_settings
+        from azext_workload_orchestration.support.validators import _check_proxy_settings
         mock_core = MagicMock()
         mock_pod = MagicMock()
         mock_pod.metadata.name = "pod1"
@@ -820,7 +820,7 @@ class TestZipBundleResilience(unittest.TestCase):
 
     def test_empty_bundle_dir(self):
         """Zip creation works even with empty bundle directory."""
-        from azext_workload_orchestration._support_utils import (
+        from azext_workload_orchestration.support.utils import (
             create_bundle_directory, create_zip_bundle,
         )
         tmpdir = tempfile.mkdtemp()
@@ -838,14 +838,14 @@ class TestClusterResourcesCheck(unittest.TestCase):
 
     def setUp(self):
         self.tmpdir = tempfile.mkdtemp()
-        from azext_workload_orchestration._support_utils import create_bundle_directory
+        from azext_workload_orchestration.support.utils import create_bundle_directory
         self.bundle_dir, _ = create_bundle_directory(self.tmpdir)
 
     def tearDown(self):
         shutil.rmtree(self.tmpdir, ignore_errors=True)
 
     def test_sufficient_total(self):
-        from azext_workload_orchestration._support_validators import _check_cluster_resources
+        from azext_workload_orchestration.support.validators import _check_cluster_resources
         info = {"nodes": [
             {"name": "n1", "allocatable_cpu": "4", "allocatable_memory": "16Gi"},
             {"name": "n2", "allocatable_cpu": "4", "allocatable_memory": "16Gi"},
@@ -855,7 +855,7 @@ class TestClusterResourcesCheck(unittest.TestCase):
         self.assertIn("8.0 CPU", result["message"])
 
     def test_insufficient_total(self):
-        from azext_workload_orchestration._support_validators import _check_cluster_resources
+        from azext_workload_orchestration.support.validators import _check_cluster_resources
         info = {"nodes": [
             {"name": "n1", "allocatable_cpu": "500m", "allocatable_memory": "1Gi"},
         ]}
@@ -871,13 +871,13 @@ class TestGetNodeRoles(unittest.TestCase):
     """Test _get_node_roles helper."""
 
     def test_control_plane_role(self):
-        from azext_workload_orchestration._support_collectors import _get_node_roles
+        from azext_workload_orchestration.support.collectors import _get_node_roles
         node = MagicMock()
         node.metadata.labels = {"node-role.kubernetes.io/control-plane": ""}
         self.assertEqual(_get_node_roles(node), ["control-plane"])
 
     def test_multiple_roles(self):
-        from azext_workload_orchestration._support_collectors import _get_node_roles
+        from azext_workload_orchestration.support.collectors import _get_node_roles
         node = MagicMock()
         node.metadata.labels = {
             "node-role.kubernetes.io/control-plane": "",
@@ -888,13 +888,13 @@ class TestGetNodeRoles(unittest.TestCase):
         self.assertIn("master", roles)
 
     def test_no_roles(self):
-        from azext_workload_orchestration._support_collectors import _get_node_roles
+        from azext_workload_orchestration.support.collectors import _get_node_roles
         node = MagicMock()
         node.metadata.labels = {"kubernetes.io/os": "linux"}
         self.assertEqual(_get_node_roles(node), ["<none>"])
 
     def test_no_labels(self):
-        from azext_workload_orchestration._support_collectors import _get_node_roles
+        from azext_workload_orchestration.support.collectors import _get_node_roles
         node = MagicMock()
         node.metadata.labels = None
         self.assertEqual(_get_node_roles(node), ["<none>"])
@@ -904,7 +904,7 @@ class TestPodReadyCount(unittest.TestCase):
     """Test _pod_ready_count helper."""
 
     def test_all_ready(self):
-        from azext_workload_orchestration._support_collectors import _pod_ready_count
+        from azext_workload_orchestration.support.collectors import _pod_ready_count
         pod = MagicMock()
         pod.spec.containers = [MagicMock(), MagicMock()]
         cs1 = MagicMock(); cs1.ready = True
@@ -913,7 +913,7 @@ class TestPodReadyCount(unittest.TestCase):
         self.assertEqual(_pod_ready_count(pod), "2/2")
 
     def test_partial_ready(self):
-        from azext_workload_orchestration._support_collectors import _pod_ready_count
+        from azext_workload_orchestration.support.collectors import _pod_ready_count
         pod = MagicMock()
         pod.spec.containers = [MagicMock(), MagicMock(), MagicMock()]
         cs1 = MagicMock(); cs1.ready = True
@@ -922,7 +922,7 @@ class TestPodReadyCount(unittest.TestCase):
         self.assertEqual(_pod_ready_count(pod), "1/3")
 
     def test_no_container_statuses(self):
-        from azext_workload_orchestration._support_collectors import _pod_ready_count
+        from azext_workload_orchestration.support.collectors import _pod_ready_count
         pod = MagicMock()
         pod.spec.containers = [MagicMock()]
         pod.status.container_statuses = None
@@ -933,14 +933,14 @@ class TestPodRestartCount(unittest.TestCase):
     """Test _pod_restart_count helper."""
 
     def test_no_restarts(self):
-        from azext_workload_orchestration._support_collectors import _pod_restart_count
+        from azext_workload_orchestration.support.collectors import _pod_restart_count
         pod = MagicMock()
         cs = MagicMock(); cs.restart_count = 0
         pod.status.container_statuses = [cs]
         self.assertEqual(_pod_restart_count(pod), 0)
 
     def test_high_restarts(self):
-        from azext_workload_orchestration._support_collectors import _pod_restart_count
+        from azext_workload_orchestration.support.collectors import _pod_restart_count
         pod = MagicMock()
         cs1 = MagicMock(); cs1.restart_count = 15
         cs2 = MagicMock(); cs2.restart_count = 3
@@ -948,7 +948,7 @@ class TestPodRestartCount(unittest.TestCase):
         self.assertEqual(_pod_restart_count(pod), 18)
 
     def test_none_statuses(self):
-        from azext_workload_orchestration._support_collectors import _pod_restart_count
+        from azext_workload_orchestration.support.collectors import _pod_restart_count
         pod = MagicMock()
         pod.status.container_statuses = None
         self.assertEqual(_pod_restart_count(pod), 0)
@@ -958,25 +958,25 @@ class TestIsDefaultSC(unittest.TestCase):
     """Test _is_default_sc helper."""
 
     def test_v1_annotation(self):
-        from azext_workload_orchestration._support_collectors import _is_default_sc
+        from azext_workload_orchestration.support.collectors import _is_default_sc
         sc = MagicMock()
         sc.metadata.annotations = {"storageclass.kubernetes.io/is-default-class": "true"}
         self.assertTrue(_is_default_sc(sc))
 
     def test_beta_annotation(self):
-        from azext_workload_orchestration._support_collectors import _is_default_sc
+        from azext_workload_orchestration.support.collectors import _is_default_sc
         sc = MagicMock()
         sc.metadata.annotations = {"storageclass.beta.kubernetes.io/is-default-class": "true"}
         self.assertTrue(_is_default_sc(sc))
 
     def test_not_default(self):
-        from azext_workload_orchestration._support_collectors import _is_default_sc
+        from azext_workload_orchestration.support.collectors import _is_default_sc
         sc = MagicMock()
         sc.metadata.annotations = {}
         self.assertFalse(_is_default_sc(sc))
 
     def test_none_annotations(self):
-        from azext_workload_orchestration._support_collectors import _is_default_sc
+        from azext_workload_orchestration.support.collectors import _is_default_sc
         sc = MagicMock()
         sc.metadata.annotations = None
         self.assertFalse(_is_default_sc(sc))
@@ -986,21 +986,21 @@ class TestCertIssuerReady(unittest.TestCase):
     """Test _cert_issuer_ready helper."""
 
     def test_ready_true(self):
-        from azext_workload_orchestration._support_collectors import _cert_issuer_ready
+        from azext_workload_orchestration.support.collectors import _cert_issuer_ready
         issuer = {"status": {"conditions": [{"type": "Ready", "status": "True"}]}}
         self.assertTrue(_cert_issuer_ready(issuer))
 
     def test_ready_false(self):
-        from azext_workload_orchestration._support_collectors import _cert_issuer_ready
+        from azext_workload_orchestration.support.collectors import _cert_issuer_ready
         issuer = {"status": {"conditions": [{"type": "Ready", "status": "False"}]}}
         self.assertFalse(_cert_issuer_ready(issuer))
 
     def test_no_conditions(self):
-        from azext_workload_orchestration._support_collectors import _cert_issuer_ready
+        from azext_workload_orchestration.support.collectors import _cert_issuer_ready
         self.assertFalse(_cert_issuer_ready({"status": {}}))
 
     def test_no_status(self):
-        from azext_workload_orchestration._support_collectors import _cert_issuer_ready
+        from azext_workload_orchestration.support.collectors import _cert_issuer_ready
         self.assertFalse(_cert_issuer_ready({}))
 
 
@@ -1009,20 +1009,20 @@ class TestCreateNamespaceLogDir(unittest.TestCase):
 
     def setUp(self):
         self.tmpdir = tempfile.mkdtemp()
-        from azext_workload_orchestration._support_utils import create_bundle_directory
+        from azext_workload_orchestration.support.utils import create_bundle_directory
         self.bundle_dir, _ = create_bundle_directory(self.tmpdir)
 
     def tearDown(self):
         shutil.rmtree(self.tmpdir, ignore_errors=True)
 
     def test_creates_dir(self):
-        from azext_workload_orchestration._support_utils import create_namespace_log_dir
+        from azext_workload_orchestration.support.utils import create_namespace_log_dir
         log_dir = create_namespace_log_dir(self.bundle_dir, "kube-system")
         self.assertTrue(os.path.isdir(log_dir))
         self.assertTrue(log_dir.endswith("kube-system"))
 
     def test_idempotent(self):
-        from azext_workload_orchestration._support_utils import create_namespace_log_dir
+        from azext_workload_orchestration.support.utils import create_namespace_log_dir
         d1 = create_namespace_log_dir(self.bundle_dir, "test-ns")
         d2 = create_namespace_log_dir(self.bundle_dir, "test-ns")
         self.assertEqual(d1, d2)
@@ -1037,14 +1037,14 @@ class TestDnsHealthCheck(unittest.TestCase):
 
     def setUp(self):
         self.tmpdir = tempfile.mkdtemp()
-        from azext_workload_orchestration._support_utils import create_bundle_directory
+        from azext_workload_orchestration.support.utils import create_bundle_directory
         self.bundle_dir, _ = create_bundle_directory(self.tmpdir)
 
     def tearDown(self):
         shutil.rmtree(self.tmpdir, ignore_errors=True)
 
     def test_dns_pods_running(self):
-        from azext_workload_orchestration._support_validators import _check_dns_health
+        from azext_workload_orchestration.support.validators import _check_dns_health
         mock_core = MagicMock()
         pod = MagicMock()
         pod.metadata.name = "coredns-abc"
@@ -1056,7 +1056,7 @@ class TestDnsHealthCheck(unittest.TestCase):
         self.assertEqual(result["status"], "PASS")
 
     def test_dns_pods_not_running(self):
-        from azext_workload_orchestration._support_validators import _check_dns_health
+        from azext_workload_orchestration.support.validators import _check_dns_health
         mock_core = MagicMock()
         pod = MagicMock()
         pod.metadata.name = "coredns-abc"
@@ -1068,7 +1068,7 @@ class TestDnsHealthCheck(unittest.TestCase):
         self.assertEqual(result["status"], "WARN")
 
     def test_no_dns_pods_fallback_by_name(self):
-        from azext_workload_orchestration._support_validators import _check_dns_health
+        from azext_workload_orchestration.support.validators import _check_dns_health
         mock_core = MagicMock()
         empty = MagicMock(); empty.items = []
         dns_pod = MagicMock()
@@ -1080,7 +1080,7 @@ class TestDnsHealthCheck(unittest.TestCase):
         self.assertEqual(result["status"], "PASS")
 
     def test_rbac_denied(self):
-        from azext_workload_orchestration._support_validators import _check_dns_health
+        from azext_workload_orchestration.support.validators import _check_dns_health
         from kubernetes.client.exceptions import ApiException
         mock_core = MagicMock()
         mock_core.list_namespaced_pod.side_effect = ApiException(status=403, reason="Forbidden")
@@ -1093,14 +1093,14 @@ class TestDefaultStorageClassCheck(unittest.TestCase):
 
     def setUp(self):
         self.tmpdir = tempfile.mkdtemp()
-        from azext_workload_orchestration._support_utils import create_bundle_directory
+        from azext_workload_orchestration.support.utils import create_bundle_directory
         self.bundle_dir, _ = create_bundle_directory(self.tmpdir)
 
     def tearDown(self):
         shutil.rmtree(self.tmpdir, ignore_errors=True)
 
     def test_has_default(self):
-        from azext_workload_orchestration._support_validators import _check_default_storage_class
+        from azext_workload_orchestration.support.validators import _check_default_storage_class
         mock_storage = MagicMock()
         sc = MagicMock()
         sc.metadata.name = "default"
@@ -1112,7 +1112,7 @@ class TestDefaultStorageClassCheck(unittest.TestCase):
         self.assertIn("default", result["message"])
 
     def test_no_default(self):
-        from azext_workload_orchestration._support_validators import _check_default_storage_class
+        from azext_workload_orchestration.support.validators import _check_default_storage_class
         mock_storage = MagicMock()
         sc = MagicMock()
         sc.metadata.name = "managed-premium"
@@ -1123,7 +1123,7 @@ class TestDefaultStorageClassCheck(unittest.TestCase):
         self.assertEqual(result["status"], "WARN")
 
     def test_no_storage_classes(self):
-        from azext_workload_orchestration._support_validators import _check_default_storage_class
+        from azext_workload_orchestration.support.validators import _check_default_storage_class
         mock_storage = MagicMock()
         result_obj = MagicMock(); result_obj.items = []
         mock_storage.list_storage_class.return_value = result_obj
@@ -1136,14 +1136,14 @@ class TestWoPodsCheck(unittest.TestCase):
 
     def setUp(self):
         self.tmpdir = tempfile.mkdtemp()
-        from azext_workload_orchestration._support_utils import create_bundle_directory
+        from azext_workload_orchestration.support.utils import create_bundle_directory
         self.bundle_dir, _ = create_bundle_directory(self.tmpdir)
 
     def tearDown(self):
         shutil.rmtree(self.tmpdir, ignore_errors=True)
 
     def test_all_running(self):
-        from azext_workload_orchestration._support_validators import _check_wo_pods
+        from azext_workload_orchestration.support.validators import _check_wo_pods
         mock_core = MagicMock()
         p1 = MagicMock(); p1.metadata.name = "sym-api"; p1.status.phase = "Running"
         p2 = MagicMock(); p2.metadata.name = "sym-ctrl"; p2.status.phase = "Running"
@@ -1153,7 +1153,7 @@ class TestWoPodsCheck(unittest.TestCase):
         self.assertEqual(result["status"], "PASS")
 
     def test_some_pending(self):
-        from azext_workload_orchestration._support_validators import _check_wo_pods
+        from azext_workload_orchestration.support.validators import _check_wo_pods
         mock_core = MagicMock()
         p1 = MagicMock(); p1.metadata.name = "sym-api"; p1.status.phase = "Running"
         p2 = MagicMock(); p2.metadata.name = "sym-ctrl"; p2.status.phase = "Pending"
@@ -1163,7 +1163,7 @@ class TestWoPodsCheck(unittest.TestCase):
         self.assertEqual(result["status"], "WARN")
 
     def test_no_pods(self):
-        from azext_workload_orchestration._support_validators import _check_wo_pods
+        from azext_workload_orchestration.support.validators import _check_wo_pods
         mock_core = MagicMock()
         result_obj = MagicMock(); result_obj.items = []
         mock_core.list_namespaced_pod.return_value = result_obj
@@ -1171,7 +1171,7 @@ class TestWoPodsCheck(unittest.TestCase):
         self.assertEqual(result["status"], "FAIL")
 
     def test_rbac_denied(self):
-        from azext_workload_orchestration._support_validators import _check_wo_pods
+        from azext_workload_orchestration.support.validators import _check_wo_pods
         from kubernetes.client.exceptions import ApiException
         mock_core = MagicMock()
         mock_core.list_namespaced_pod.side_effect = ApiException(status=403, reason="Forbidden")
@@ -1184,14 +1184,14 @@ class TestWoWebhooksCheck(unittest.TestCase):
 
     def setUp(self):
         self.tmpdir = tempfile.mkdtemp()
-        from azext_workload_orchestration._support_utils import create_bundle_directory
+        from azext_workload_orchestration.support.utils import create_bundle_directory
         self.bundle_dir, _ = create_bundle_directory(self.tmpdir)
 
     def tearDown(self):
         shutil.rmtree(self.tmpdir, ignore_errors=True)
 
     def test_symphony_webhooks_found(self):
-        from azext_workload_orchestration._support_validators import _check_wo_webhooks
+        from azext_workload_orchestration.support.validators import _check_wo_webhooks
         mock_adm = MagicMock()
         wh = MagicMock()
         wh.metadata.name = "symphony-validating-webhook"
@@ -1205,7 +1205,7 @@ class TestWoWebhooksCheck(unittest.TestCase):
         self.assertIn("2 hooks", result["message"])
 
     def test_no_symphony_webhooks(self):
-        from azext_workload_orchestration._support_validators import _check_wo_webhooks
+        from azext_workload_orchestration.support.validators import _check_wo_webhooks
         mock_adm = MagicMock()
         wh = MagicMock()
         wh.metadata.name = "gatekeeper-validating"
@@ -1221,14 +1221,14 @@ class TestResourceQuotasCheck(unittest.TestCase):
 
     def setUp(self):
         self.tmpdir = tempfile.mkdtemp()
-        from azext_workload_orchestration._support_utils import create_bundle_directory
+        from azext_workload_orchestration.support.utils import create_bundle_directory
         self.bundle_dir, _ = create_bundle_directory(self.tmpdir)
 
     def tearDown(self):
         shutil.rmtree(self.tmpdir, ignore_errors=True)
 
     def test_no_quotas(self):
-        from azext_workload_orchestration._support_validators import _check_resource_quotas
+        from azext_workload_orchestration.support.validators import _check_resource_quotas
         mock_core = MagicMock()
         result_obj = MagicMock(); result_obj.items = []
         mock_core.list_namespaced_resource_quota.return_value = result_obj
@@ -1236,7 +1236,7 @@ class TestResourceQuotasCheck(unittest.TestCase):
         self.assertEqual(result["status"], "PASS")
 
     def test_quota_over_80_percent(self):
-        from azext_workload_orchestration._support_validators import _check_resource_quotas
+        from azext_workload_orchestration.support.validators import _check_resource_quotas
         mock_core = MagicMock()
         rq = MagicMock()
         rq.metadata.name = "compute-quota"
@@ -1248,7 +1248,7 @@ class TestResourceQuotasCheck(unittest.TestCase):
         self.assertEqual(result["status"], "WARN")
 
     def test_quota_under_80_percent(self):
-        from azext_workload_orchestration._support_validators import _check_resource_quotas
+        from azext_workload_orchestration.support.validators import _check_resource_quotas
         mock_core = MagicMock()
         rq = MagicMock()
         rq.metadata.name = "compute-quota"
@@ -1265,14 +1265,14 @@ class TestImagePullSecretsCheck(unittest.TestCase):
 
     def setUp(self):
         self.tmpdir = tempfile.mkdtemp()
-        from azext_workload_orchestration._support_utils import create_bundle_directory
+        from azext_workload_orchestration.support.utils import create_bundle_directory
         self.bundle_dir, _ = create_bundle_directory(self.tmpdir)
 
     def tearDown(self):
         shutil.rmtree(self.tmpdir, ignore_errors=True)
 
     def test_no_secrets(self):
-        from azext_workload_orchestration._support_validators import _check_image_pull_secrets
+        from azext_workload_orchestration.support.validators import _check_image_pull_secrets
         mock_core = MagicMock()
         result_obj = MagicMock(); result_obj.items = []
         mock_core.list_namespaced_secret.return_value = result_obj
@@ -1281,7 +1281,7 @@ class TestImagePullSecretsCheck(unittest.TestCase):
         self.assertIn("default service account", result["message"])
 
     def test_has_secrets(self):
-        from azext_workload_orchestration._support_validators import _check_image_pull_secrets
+        from azext_workload_orchestration.support.validators import _check_image_pull_secrets
         mock_core = MagicMock()
         sec = MagicMock(); sec.metadata.name = "acr-creds"
         result_with = MagicMock(); result_with.items = [sec]
@@ -1297,14 +1297,14 @@ class TestCollectNamespaceResources(unittest.TestCase):
 
     def setUp(self):
         self.tmpdir = tempfile.mkdtemp()
-        from azext_workload_orchestration._support_utils import create_bundle_directory
+        from azext_workload_orchestration.support.utils import create_bundle_directory
         self.bundle_dir, _ = create_bundle_directory(self.tmpdir)
 
     def tearDown(self):
         shutil.rmtree(self.tmpdir, ignore_errors=True)
 
     def test_empty_namespace(self):
-        from azext_workload_orchestration._support_collectors import collect_namespace_resources
+        from azext_workload_orchestration.support.collectors import collect_namespace_resources
         mock_core = MagicMock()
         mock_apps = MagicMock()
         empty = MagicMock(); empty.items = []
@@ -1322,7 +1322,7 @@ class TestCollectNamespaceResources(unittest.TestCase):
         self.assertEqual(result.get("deployments"), [])
 
     def test_namespace_with_pod(self):
-        from azext_workload_orchestration._support_collectors import collect_namespace_resources
+        from azext_workload_orchestration.support.collectors import collect_namespace_resources
         mock_core = MagicMock()
         mock_apps = MagicMock()
         pod = MagicMock()
@@ -1353,14 +1353,14 @@ class TestCollectPreviousLogs(unittest.TestCase):
 
     def setUp(self):
         self.tmpdir = tempfile.mkdtemp()
-        from azext_workload_orchestration._support_utils import create_bundle_directory
+        from azext_workload_orchestration.support.utils import create_bundle_directory
         self.bundle_dir, _ = create_bundle_directory(self.tmpdir)
 
     def tearDown(self):
         shutil.rmtree(self.tmpdir, ignore_errors=True)
 
     def test_no_restarted_containers(self):
-        from azext_workload_orchestration._support_collectors import collect_previous_logs
+        from azext_workload_orchestration.support.collectors import collect_previous_logs
         mock_core = MagicMock()
         pod = MagicMock()
         pod.metadata.name = "pod1"
@@ -1372,7 +1372,7 @@ class TestCollectPreviousLogs(unittest.TestCase):
         self.assertEqual(count, 0)
 
     def test_restarted_container_collects(self):
-        from azext_workload_orchestration._support_collectors import collect_previous_logs
+        from azext_workload_orchestration.support.collectors import collect_previous_logs
         mock_core = MagicMock()
         pod = MagicMock()
         pod.metadata.name = "crash-pod"
@@ -1387,7 +1387,7 @@ class TestCollectPreviousLogs(unittest.TestCase):
         self.assertTrue(os.path.isdir(log_dir))
 
     def test_previous_log_api_fails(self):
-        from azext_workload_orchestration._support_collectors import collect_previous_logs
+        from azext_workload_orchestration.support.collectors import collect_previous_logs
         from kubernetes.client.exceptions import ApiException
         mock_core = MagicMock()
         pod = MagicMock()
@@ -1406,15 +1406,15 @@ class TestLogTruncation(unittest.TestCase):
 
     def setUp(self):
         self.tmpdir = tempfile.mkdtemp()
-        from azext_workload_orchestration._support_utils import create_bundle_directory
+        from azext_workload_orchestration.support.utils import create_bundle_directory
         self.bundle_dir, _ = create_bundle_directory(self.tmpdir)
 
     def tearDown(self):
         shutil.rmtree(self.tmpdir, ignore_errors=True)
 
     def test_large_log_gets_truncated(self):
-        from azext_workload_orchestration._support_collectors import collect_container_logs
-        from azext_workload_orchestration._support_consts import DEFAULT_MAX_LOG_SIZE_BYTES
+        from azext_workload_orchestration.support.collectors import collect_container_logs
+        from azext_workload_orchestration.support.consts import DEFAULT_MAX_LOG_SIZE_BYTES
         mock_core = MagicMock()
         pod = MagicMock()
         pod.metadata.name = "chatty-pod"
@@ -1439,20 +1439,20 @@ class TestParseCpuEdgeCases(unittest.TestCase):
     """Additional edge cases for CPU parsing."""
 
     def test_zero(self):
-        from azext_workload_orchestration._support_utils import parse_cpu
+        from azext_workload_orchestration.support.utils import parse_cpu
         self.assertEqual(parse_cpu("0"), 0.0)
         self.assertEqual(parse_cpu("0m"), 0.0)
 
     def test_large_millicores(self):
-        from azext_workload_orchestration._support_utils import parse_cpu
+        from azext_workload_orchestration.support.utils import parse_cpu
         self.assertAlmostEqual(parse_cpu("32000m"), 32.0)
 
     def test_decimal_cores(self):
-        from azext_workload_orchestration._support_utils import parse_cpu
+        from azext_workload_orchestration.support.utils import parse_cpu
         self.assertAlmostEqual(parse_cpu("0.5"), 0.5)
 
     def test_whitespace(self):
-        from azext_workload_orchestration._support_utils import parse_cpu
+        from azext_workload_orchestration.support.utils import parse_cpu
         self.assertAlmostEqual(parse_cpu("  4  "), 4.0)
         self.assertAlmostEqual(parse_cpu("  500m  "), 0.5)
 
@@ -1461,16 +1461,16 @@ class TestParseMemoryEdgeCases(unittest.TestCase):
     """Additional edge cases for memory parsing."""
 
     def test_plain_bytes(self):
-        from azext_workload_orchestration._support_utils import parse_memory_gi
+        from azext_workload_orchestration.support.utils import parse_memory_gi
         result = parse_memory_gi("1073741824")
         self.assertAlmostEqual(result, 1.0, places=1)
 
     def test_invalid_string(self):
-        from azext_workload_orchestration._support_utils import parse_memory_gi
+        from azext_workload_orchestration.support.utils import parse_memory_gi
         self.assertEqual(parse_memory_gi("not-a-number"), 0.0)
 
     def test_zero(self):
-        from azext_workload_orchestration._support_utils import parse_memory_gi
+        from azext_workload_orchestration.support.utils import parse_memory_gi
         self.assertEqual(parse_memory_gi("0"), 0.0)
         self.assertEqual(parse_memory_gi("0Ki"), 0.0)
 
@@ -1505,11 +1505,11 @@ class IntegrationTestFullBundle(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        from azext_workload_orchestration._support_utils import (
+        from azext_workload_orchestration.support.utils import (
             get_kubernetes_client, create_bundle_directory,
             detect_cluster_capabilities,
         )
-        from azext_workload_orchestration._support_collectors import collect_cluster_info
+        from azext_workload_orchestration.support.collectors import collect_cluster_info
 
         cls.tmpdir = tempfile.mkdtemp(prefix="wo-integration-test-")
         cls.bundle_dir, cls.bundle_name = create_bundle_directory(cls.tmpdir)
@@ -1555,8 +1555,8 @@ class IntegrationTestFullBundle(unittest.TestCase):
     # -- Prerequisite checks -------------------------------------------------
 
     def test_all_checks_run_without_crash(self):
-        from azext_workload_orchestration._support_validators import run_all_checks
-        from azext_workload_orchestration._support_consts import (
+        from azext_workload_orchestration.support.validators import run_all_checks
+        from azext_workload_orchestration.support.consts import (
             STATUS_PASS, STATUS_FAIL, STATUS_WARN, STATUS_SKIP, STATUS_ERROR,
         )
         valid_statuses = {STATUS_PASS, STATUS_FAIL, STATUS_WARN, STATUS_SKIP, STATUS_ERROR}
@@ -1576,13 +1576,13 @@ class IntegrationTestFullBundle(unittest.TestCase):
                                 f"Check crashed: {r.get('check_name')} — {r['message']}")
 
     def test_k8s_version_passes(self):
-        from azext_workload_orchestration._support_validators import _check_k8s_version
+        from azext_workload_orchestration.support.validators import _check_k8s_version
         result = _check_k8s_version(self.clients, self.bundle_dir,
                                     self.cluster_info, self.capabilities)
         self.assertEqual(result["status"], "PASS")
 
     def test_node_readiness_returns_valid_status(self):
-        from azext_workload_orchestration._support_validators import _check_node_readiness
+        from azext_workload_orchestration.support.validators import _check_node_readiness
         result = _check_node_readiness(self.clients, self.bundle_dir,
                                        self.cluster_info, self.capabilities)
         self.assertIn(result["status"], ("PASS", "WARN", "FAIL"))
@@ -1590,7 +1590,7 @@ class IntegrationTestFullBundle(unittest.TestCase):
     # -- Collectors ----------------------------------------------------------
 
     def test_collect_cluster_resources(self):
-        from azext_workload_orchestration._support_collectors import collect_cluster_resources
+        from azext_workload_orchestration.support.collectors import collect_cluster_resources
         cr = collect_cluster_resources(self.clients, self.bundle_dir)
         self.assertIn("storage_classes", cr)
         self.assertIn("validating_webhooks", cr)
@@ -1598,7 +1598,7 @@ class IntegrationTestFullBundle(unittest.TestCase):
         self.assertIsInstance(cr["storage_classes"], list)
 
     def test_collect_namespace_resources_kube_system(self):
-        from azext_workload_orchestration._support_collectors import collect_namespace_resources
+        from azext_workload_orchestration.support.collectors import collect_namespace_resources
         nr = collect_namespace_resources(self.clients, self.bundle_dir, "kube-system")
         self.assertIn("pods", nr)
         self.assertGreater(len(nr["pods"]), 0, "kube-system should have pods")
@@ -1607,7 +1607,7 @@ class IntegrationTestFullBundle(unittest.TestCase):
             self.assertIn(key, pod)
 
     def test_collect_container_logs(self):
-        from azext_workload_orchestration._support_collectors import collect_container_logs
+        from azext_workload_orchestration.support.collectors import collect_container_logs
         count = collect_container_logs(
             self.clients, self.bundle_dir, "kube-system", tail_lines=10,
         )
@@ -1618,7 +1618,7 @@ class IntegrationTestFullBundle(unittest.TestCase):
         self.assertGreater(len(log_files), 0)
 
     def test_collect_metrics_if_available(self):
-        from azext_workload_orchestration._support_collectors import collect_metrics
+        from azext_workload_orchestration.support.collectors import collect_metrics
         m = collect_metrics(self.clients, self.bundle_dir, self.capabilities)
         if self.capabilities.get("has_metrics"):
             self.assertIn("node_metrics", m)
@@ -1627,18 +1627,18 @@ class IntegrationTestFullBundle(unittest.TestCase):
             self.assertEqual(m, {})
 
     def test_collect_resource_quotas(self):
-        from azext_workload_orchestration._support_collectors import collect_resource_quotas
+        from azext_workload_orchestration.support.collectors import collect_resource_quotas
         # Should not crash on any namespace
         q = collect_resource_quotas(self.clients, self.bundle_dir, "kube-system")
         self.assertIsInstance(q, dict)
 
     def test_collect_pvcs(self):
-        from azext_workload_orchestration._support_collectors import collect_pvcs
+        from azext_workload_orchestration.support.collectors import collect_pvcs
         p = collect_pvcs(self.clients, self.bundle_dir, "kube-system")
         self.assertIsInstance(p, list)
 
     def test_collect_wo_components(self):
-        from azext_workload_orchestration._support_collectors import collect_wo_components
+        from azext_workload_orchestration.support.collectors import collect_wo_components
         wo = collect_wo_components(self.clients, self.bundle_dir, self.capabilities)
         self.assertIsInstance(wo, dict)
 
@@ -1651,15 +1651,15 @@ class IntegrationTestFullBundle(unittest.TestCase):
         that other tests rely on.
         """
         import zipfile
-        from azext_workload_orchestration._support_utils import (
+        from azext_workload_orchestration.support.utils import (
             create_bundle_directory, create_zip_bundle, detect_cluster_capabilities,
             write_json,
         )
-        from azext_workload_orchestration._support_collectors import (
+        from azext_workload_orchestration.support.collectors import (
             collect_cluster_info, collect_namespace_resources,
             collect_cluster_resources, collect_container_logs,
         )
-        from azext_workload_orchestration._support_validators import run_all_checks
+        from azext_workload_orchestration.support.validators import run_all_checks
 
         zip_tmpdir = tempfile.mkdtemp(prefix="wo-zip-test-")
         try:
@@ -1704,7 +1704,7 @@ class TestSafeApiCallRetry(unittest.TestCase):
 
     def test_retries_on_500_error(self):
         """safe_api_call retries on 500 server error."""
-        from azext_workload_orchestration._support_utils import safe_api_call
+        from azext_workload_orchestration.support.utils import safe_api_call
         from kubernetes.client.exceptions import ApiException
 
         call_count = [0]
@@ -1725,7 +1725,7 @@ class TestSafeApiCallRetry(unittest.TestCase):
 
     def test_no_retry_on_403(self):
         """safe_api_call does NOT retry on 403 Forbidden."""
-        from azext_workload_orchestration._support_utils import safe_api_call
+        from azext_workload_orchestration.support.utils import safe_api_call
 
         call_count = [0]
 
@@ -1746,7 +1746,7 @@ class TestSafeApiCallRetry(unittest.TestCase):
 
     def test_no_retry_on_404(self):
         """safe_api_call does NOT retry on 404."""
-        from azext_workload_orchestration._support_utils import safe_api_call
+        from azext_workload_orchestration.support.utils import safe_api_call
 
         call_count = [0]
 
@@ -1763,7 +1763,7 @@ class TestSafeApiCallRetry(unittest.TestCase):
 
     def test_retries_on_connection_error(self):
         """safe_api_call retries on ConnectionError."""
-        from azext_workload_orchestration._support_utils import safe_api_call
+        from azext_workload_orchestration.support.utils import safe_api_call
 
         call_count = [0]
 
@@ -1781,7 +1781,7 @@ class TestSafeApiCallRetry(unittest.TestCase):
 
     def test_retries_on_timeout_error(self):
         """safe_api_call retries on TimeoutError."""
-        from azext_workload_orchestration._support_utils import safe_api_call
+        from azext_workload_orchestration.support.utils import safe_api_call
 
         call_count = [0]
 
@@ -1798,7 +1798,7 @@ class TestSafeApiCallRetry(unittest.TestCase):
 
     def test_exhausted_retries_returns_error(self):
         """safe_api_call returns error after exhausting retries."""
-        from azext_workload_orchestration._support_utils import safe_api_call
+        from azext_workload_orchestration.support.utils import safe_api_call
 
         func = MagicMock(side_effect=ConnectionError("always fails"))
         result, err = safe_api_call(func, description="always-fail", max_retries=2, timeout_seconds=5)
@@ -1808,7 +1808,7 @@ class TestSafeApiCallRetry(unittest.TestCase):
 
     def test_no_retry_on_generic_exception(self):
         """safe_api_call does NOT retry on generic exceptions like ValueError."""
-        from azext_workload_orchestration._support_utils import safe_api_call
+        from azext_workload_orchestration.support.utils import safe_api_call
 
         func = MagicMock(side_effect=ValueError("bad value"))
         result, err = safe_api_call(func, description="val-err", max_retries=3)
@@ -1818,7 +1818,7 @@ class TestSafeApiCallRetry(unittest.TestCase):
 
     def test_timeout_is_passed_to_api_call(self):
         """safe_api_call passes _request_timeout to the underlying API call."""
-        from azext_workload_orchestration._support_utils import safe_api_call
+        from azext_workload_orchestration.support.utils import safe_api_call
 
         func = MagicMock(return_value="ok")
         result, err = safe_api_call(func, description="timeout-test", timeout_seconds=42)
@@ -1829,7 +1829,7 @@ class TestSafeApiCallRetry(unittest.TestCase):
 
     def test_existing_request_timeout_not_overwritten(self):
         """safe_api_call doesn't overwrite an existing _request_timeout."""
-        from azext_workload_orchestration._support_utils import safe_api_call
+        from azext_workload_orchestration.support.utils import safe_api_call
 
         func = MagicMock(return_value="ok")
         result, err = safe_api_call(
@@ -1842,7 +1842,7 @@ class TestSafeApiCallRetry(unittest.TestCase):
 
     def test_max_retries_zero_means_no_retry(self):
         """max_retries=0 means try once, no retries."""
-        from azext_workload_orchestration._support_utils import safe_api_call
+        from azext_workload_orchestration.support.utils import safe_api_call
 
         func = MagicMock(side_effect=ConnectionError("fail"))
         result, err = safe_api_call(func, description="no-retry", max_retries=0)
@@ -1865,7 +1865,7 @@ class TestValidateNamespaces(unittest.TestCase):
         return ns
 
     def test_all_valid(self):
-        from azext_workload_orchestration._support_collectors import validate_namespaces
+        from azext_workload_orchestration.support.collectors import validate_namespaces
 
         clients = {"core_v1": MagicMock()}
         clients["core_v1"].read_namespace = MagicMock(
@@ -1877,7 +1877,7 @@ class TestValidateNamespaces(unittest.TestCase):
         self.assertEqual(skipped, [])
 
     def test_nonexistent_namespace_skipped(self):
-        from azext_workload_orchestration._support_collectors import validate_namespaces
+        from azext_workload_orchestration.support.collectors import validate_namespaces
         from kubernetes.client.exceptions import ApiException
 
         def read_ns(ns, **kwargs):
@@ -1894,7 +1894,7 @@ class TestValidateNamespaces(unittest.TestCase):
         self.assertEqual(skipped[0][0], "missing-ns")
 
     def test_terminating_namespace_skipped(self):
-        from azext_workload_orchestration._support_collectors import validate_namespaces
+        from azext_workload_orchestration.support.collectors import validate_namespaces
 
         def read_ns(ns, **kwargs):
             if ns == "dying-ns":
@@ -1910,7 +1910,7 @@ class TestValidateNamespaces(unittest.TestCase):
         self.assertIn("terminating", skipped[0][1])
 
     def test_all_namespaces_invalid(self):
-        from azext_workload_orchestration._support_collectors import validate_namespaces
+        from azext_workload_orchestration.support.collectors import validate_namespaces
         from kubernetes.client.exceptions import ApiException
 
         clients = {"core_v1": MagicMock()}
@@ -1923,7 +1923,7 @@ class TestValidateNamespaces(unittest.TestCase):
         self.assertEqual(len(skipped), 2)
 
     def test_empty_namespace_list(self):
-        from azext_workload_orchestration._support_collectors import validate_namespaces
+        from azext_workload_orchestration.support.collectors import validate_namespaces
 
         clients = {"core_v1": MagicMock()}
         valid, skipped = validate_namespaces(clients, [])
@@ -1931,7 +1931,7 @@ class TestValidateNamespaces(unittest.TestCase):
         self.assertEqual(skipped, [])
 
     def test_rbac_denied_namespace(self):
-        from azext_workload_orchestration._support_collectors import validate_namespaces
+        from azext_workload_orchestration.support.collectors import validate_namespaces
         from kubernetes.client.exceptions import ApiException
 
         clients = {"core_v1": MagicMock()}
@@ -1954,7 +1954,7 @@ class TestCollectReplicaSets(unittest.TestCase):
     """Test ReplicaSet collection in collect_namespace_resources."""
 
     def test_replicasets_collected(self):
-        from azext_workload_orchestration._support_collectors import collect_namespace_resources
+        from azext_workload_orchestration.support.collectors import collect_namespace_resources
 
         # Build mock replicaset
         rs = MagicMock()
@@ -1986,9 +1986,9 @@ class TestCollectReplicaSets(unittest.TestCase):
 class TestCollectJobs(unittest.TestCase):
     """Test Job and CronJob collection."""
 
-    @patch("azext_workload_orchestration._support_collectors.safe_api_call")
+    @patch("azext_workload_orchestration.support.collectors.safe_api_call")
     def test_jobs_collected(self, mock_safe_call):
-        from azext_workload_orchestration._support_collectors import collect_namespace_resources
+        from azext_workload_orchestration.support.collectors import collect_namespace_resources
 
         # Build mock job
         job = MagicMock()
@@ -2031,7 +2031,7 @@ class TestCollectIngresses(unittest.TestCase):
 
     def test_no_crash_on_missing_networking_api(self):
         """Ingress collection handles missing networking API gracefully."""
-        from azext_workload_orchestration._support_collectors import collect_namespace_resources
+        from azext_workload_orchestration.support.collectors import collect_namespace_resources
 
         clients = _make_clients()
 
@@ -2047,7 +2047,7 @@ class TestCollectServiceAccounts(unittest.TestCase):
     """Test ServiceAccount collection."""
 
     def test_service_accounts_collected(self):
-        from azext_workload_orchestration._support_collectors import collect_namespace_resources
+        from azext_workload_orchestration.support.collectors import collect_namespace_resources
 
         sa = MagicMock()
         sa.metadata.name = "default"
@@ -2076,7 +2076,7 @@ class TestGetOwnerRef(unittest.TestCase):
     """Test _get_owner_ref helper."""
 
     def test_with_owner(self):
-        from azext_workload_orchestration._support_collectors import _get_owner_ref
+        from azext_workload_orchestration.support.collectors import _get_owner_ref
 
         resource = MagicMock()
         owner = MagicMock()
@@ -2088,7 +2088,7 @@ class TestGetOwnerRef(unittest.TestCase):
         self.assertEqual(result, {"kind": "Deployment", "name": "nginx"})
 
     def test_without_owner(self):
-        from azext_workload_orchestration._support_collectors import _get_owner_ref
+        from azext_workload_orchestration.support.collectors import _get_owner_ref
 
         resource = MagicMock()
         resource.metadata.owner_references = []
@@ -2097,7 +2097,7 @@ class TestGetOwnerRef(unittest.TestCase):
         self.assertIsNone(result)
 
     def test_none_owner_refs(self):
-        from azext_workload_orchestration._support_collectors import _get_owner_ref
+        from azext_workload_orchestration.support.collectors import _get_owner_ref
 
         resource = MagicMock()
         resource.metadata.owner_references = None
@@ -2115,7 +2115,7 @@ class TestHealthSummary(unittest.TestCase):
     """Test _compute_health_summary."""
 
     def test_all_pass_is_healthy(self):
-        from azext_workload_orchestration.custom import _compute_health_summary
+        from azext_workload_orchestration.support.bundle import _compute_health_summary
 
         checks = [
             {"status": "PASS", "check_name": "c1"},
@@ -2127,7 +2127,7 @@ class TestHealthSummary(unittest.TestCase):
         self.assertEqual(result["health_score"], 100)
 
     def test_warnings_is_degraded(self):
-        from azext_workload_orchestration.custom import _compute_health_summary
+        from azext_workload_orchestration.support.bundle import _compute_health_summary
 
         checks = [
             {"status": "PASS", "check_name": "c1"},
@@ -2140,7 +2140,7 @@ class TestHealthSummary(unittest.TestCase):
         self.assertEqual(result["health_score"], 83)
 
     def test_few_failures_is_degraded(self):
-        from azext_workload_orchestration.custom import _compute_health_summary
+        from azext_workload_orchestration.support.bundle import _compute_health_summary
 
         checks = [
             {"status": "PASS", "check_name": "c1"},
@@ -2154,7 +2154,7 @@ class TestHealthSummary(unittest.TestCase):
         self.assertEqual(result["health_score"], 75)
 
     def test_many_failures_is_critical(self):
-        from azext_workload_orchestration.custom import _compute_health_summary
+        from azext_workload_orchestration.support.bundle import _compute_health_summary
 
         checks = [
             {"status": "FAIL", "check_name": "c1"},
@@ -2168,14 +2168,14 @@ class TestHealthSummary(unittest.TestCase):
         self.assertEqual(result["health_score"], 25)
 
     def test_no_checks_is_unknown(self):
-        from azext_workload_orchestration.custom import _compute_health_summary
+        from azext_workload_orchestration.support.bundle import _compute_health_summary
 
         result = _compute_health_summary([], [])
         self.assertEqual(result["overall_status"], "UNKNOWN")
         self.assertEqual(result["health_score"], 0)
 
     def test_errors_bump_to_degraded(self):
-        from azext_workload_orchestration.custom import _compute_health_summary
+        from azext_workload_orchestration.support.bundle import _compute_health_summary
 
         checks = [
             {"status": "PASS", "check_name": "c1"},
@@ -2186,7 +2186,7 @@ class TestHealthSummary(unittest.TestCase):
         self.assertEqual(result["collection_errors"], 1)
 
     def test_all_warn_is_degraded(self):
-        from azext_workload_orchestration.custom import _compute_health_summary
+        from azext_workload_orchestration.support.bundle import _compute_health_summary
 
         checks = [
             {"status": "WARN", "check_name": "c1"},
@@ -2197,7 +2197,7 @@ class TestHealthSummary(unittest.TestCase):
         self.assertEqual(result["health_score"], 50)
 
     def test_mixed_all_statuses(self):
-        from azext_workload_orchestration.custom import _compute_health_summary
+        from azext_workload_orchestration.support.bundle import _compute_health_summary
 
         checks = [
             {"status": "PASS", "check_name": "c1"},
@@ -2219,15 +2219,15 @@ class TestNewConstants(unittest.TestCase):
     """Verify new constants are properly defined."""
 
     def test_api_timeout_constant(self):
-        from azext_workload_orchestration._support_consts import DEFAULT_API_TIMEOUT_SECONDS
+        from azext_workload_orchestration.support.consts import DEFAULT_API_TIMEOUT_SECONDS
         self.assertEqual(DEFAULT_API_TIMEOUT_SECONDS, 30)
 
     def test_log_timeout_constant(self):
-        from azext_workload_orchestration._support_consts import DEFAULT_LOG_TIMEOUT_SECONDS
+        from azext_workload_orchestration.support.consts import DEFAULT_LOG_TIMEOUT_SECONDS
         self.assertEqual(DEFAULT_LOG_TIMEOUT_SECONDS, 60)
 
     def test_retry_constants(self):
-        from azext_workload_orchestration._support_consts import (
+        from azext_workload_orchestration.support.consts import (
             DEFAULT_MAX_RETRIES,
             DEFAULT_RETRY_BACKOFF_BASE,
         )

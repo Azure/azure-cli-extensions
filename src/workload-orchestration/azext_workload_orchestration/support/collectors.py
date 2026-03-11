@@ -15,7 +15,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from knack.log import get_logger
 
-from azext_workload_orchestration._support_consts import (
+from azext_workload_orchestration.support.consts import (
     DEFAULT_TAIL_LINES,
     DEFAULT_MAX_LOG_SIZE_BYTES,
     FOLDER_LOGS,
@@ -23,7 +23,7 @@ from azext_workload_orchestration._support_consts import (
     FOLDER_CLUSTER_INFO,
     WO_NAMESPACE,
 )
-from azext_workload_orchestration._support_utils import (
+from azext_workload_orchestration.support.utils import (
     safe_api_call,
     write_json,
     write_text,
@@ -449,7 +449,7 @@ def collect_cluster_resources(clients, bundle_dir):
     storage = clients["storage_v1"]
     result, err = safe_api_call(storage.list_storage_class, description="list storage classes")
     if result:
-        from azext_workload_orchestration._support_consts import (
+        from azext_workload_orchestration.support.consts import (
             SC_DEFAULT_ANNOTATION_V1, SC_DEFAULT_ANNOTATION_BETA,
         )
         cluster["storage_classes"] = [
@@ -547,7 +547,7 @@ def collect_cluster_resources(clients, bundle_dir):
 
 def _is_default_sc(sc):
     """Check if a StorageClass is the default (v1 or beta annotation)."""
-    from azext_workload_orchestration._support_consts import (
+    from azext_workload_orchestration.support.consts import (
         SC_DEFAULT_ANNOTATION_V1, SC_DEFAULT_ANNOTATION_BETA,
     )
     ann = sc.metadata.annotations or {}
@@ -567,7 +567,7 @@ def collect_container_logs(clients, bundle_dir, namespace, tail_lines=DEFAULT_TA
 
     Uses threading for parallel log fetching. Returns count of logs collected.
     """
-    from azext_workload_orchestration._support_consts import DEFAULT_LOG_TIMEOUT_SECONDS
+    from azext_workload_orchestration.support.consts import DEFAULT_LOG_TIMEOUT_SECONDS
 
     per_log_timeout = log_timeout or DEFAULT_LOG_TIMEOUT_SECONDS
     core = clients["core_v1"]

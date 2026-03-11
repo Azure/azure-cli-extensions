@@ -13,7 +13,7 @@ from datetime import datetime, timezone
 
 from knack.log import get_logger
 
-from azext_workload_orchestration._support_consts import (
+from azext_workload_orchestration.support.consts import (
     BUNDLE_PREFIX,
     FOLDER_LOGS,
     FOLDER_RESOURCES,
@@ -183,7 +183,7 @@ def safe_api_call(func, *args, description="API call", max_retries=None,
     except ImportError:
         return None, "kubernetes package not available"
 
-    from azext_workload_orchestration._support_consts import (
+    from azext_workload_orchestration.support.consts import (
         DEFAULT_MAX_RETRIES,
         DEFAULT_RETRY_BACKOFF_BASE,
         DEFAULT_API_TIMEOUT_SECONDS,
@@ -379,7 +379,7 @@ def detect_cluster_capabilities(clients):
 
     group_names = {g.name for g in (result.groups or [])}
 
-    from azext_workload_orchestration._support_consts import (
+    from azext_workload_orchestration.support.consts import (
         API_GROUP_GATEKEEPER_TEMPLATES,
         API_GROUP_KYVERNO,
         API_GROUP_CERT_MANAGER,
