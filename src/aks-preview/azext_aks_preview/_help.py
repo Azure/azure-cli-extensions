@@ -701,7 +701,11 @@ helps['aks create'] = f"""
           short-summary: Enable managed installation of Gateway API CRDs from the standard release channel.
         - name: --enable-app-routing-istio --enable-ari
           type: bool
-          short-summary: Enable Istio as a Gateway API implementation for App Routing.
+          short-summary: Enable Istio in App Routing for Gateway API based ingress only without service mesh functionality.
+          long-summary: |
+              This enables an ingress-only version of Istio that reconciles Gateway API resources for App Routing.
+              It does not provide service mesh functionality (e.g. mTLS, traffic management between services).
+              Cannot be used simultaneously with Azure Service Mesh (--enable-azure-service-mesh).
         - name: --enable-hosted-system
           type: bool
           short-summary: Create a cluster with fully hosted system components. This applies only when creating a new automatic cluster.
@@ -1429,7 +1433,11 @@ helps['aks update'] = """
           short-summary: Disable managed installation of Gateway API CRDs.
         - name: --enable-app-routing-istio --enable-ari
           type: bool
-          short-summary: Enable Istio as a Gateway API implementation for App Routing.
+          short-summary: Enable Istio in App Routing for Gateway API based ingress only without service mesh functionality.
+          long-summary: |
+              This enables an ingress-only version of Istio that reconciles Gateway API resources for App Routing.
+              It does not provide service mesh functionality (e.g. mTLS, traffic management between services).
+              Cannot be used simultaneously with Azure Service Mesh (--enable-azure-service-mesh).
         - name: --disable-app-routing-istio --disable-ari
           type: bool
           short-summary: Disable Istio as a Gateway API implementation for App Routing.
@@ -3836,8 +3844,12 @@ helps['aks approuting gateway istio'] = """
 
 helps['aks approuting gateway istio enable'] = """
     type: command
-    short-summary: Enable the Istio Gateway API implementation for App Routing.
-    long-summary: This command enables Istio as a Gateway API implementation for App Routing in the given cluster.
+    short-summary: Enable Istio in App Routing for Gateway API based ingress only without service mesh functionality.
+    long-summary: |
+        This command enables an ingress-only version of Istio as a Gateway API implementation for App Routing
+        in the given cluster. This Istio instance only reconciles Gateway API resources and does not provide
+        service mesh functionality (e.g. mTLS, traffic management between services). Cannot be used
+        simultaneously with Azure Service Mesh (az aks mesh enable).
     examples:
       - name: Enable Istio Gateway API implementation for App Routing.
         text: az aks approuting gateway istio enable --resource-group MyResourceGroup --name MyManagedCluster
@@ -3846,7 +3858,8 @@ helps['aks approuting gateway istio enable'] = """
 helps['aks approuting gateway istio disable'] = """
     type: command
     short-summary: Disable the Istio Gateway API implementation for App Routing.
-    long-summary: This command disables Istio as a Gateway API implementation for App Routing in the given cluster.
+    long-summary: |
+        This command disables the ingress-only Istio Gateway API implementation for App Routing in the given cluster.
     examples:
       - name: Disable Istio Gateway API implementation for App Routing.
         text: az aks approuting gateway istio disable --resource-group MyResourceGroup --name MyManagedCluster

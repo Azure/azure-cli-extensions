@@ -7120,7 +7120,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 mc.ingress_profile = self.models.ManagedClusterIngressProfile()  # pylint: disable=no-member
             if mc.ingress_profile.web_app_routing is None:
                 mc.ingress_profile.web_app_routing = (
-                    self.models.ManagedClusterIngressProfileWebAppRouting(enabled=True)  # pylint: disable=no-member
+                    self.models.ManagedClusterIngressProfileWebAppRouting()  # pylint: disable=no-member
                 )
             if mc.ingress_profile.web_app_routing.gateway_api_implementations is None:
                 mc.ingress_profile.web_app_routing.gateway_api_implementations = (

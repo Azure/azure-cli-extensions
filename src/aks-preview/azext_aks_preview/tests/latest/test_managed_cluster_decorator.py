@@ -13392,7 +13392,6 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
 
         ground_truth_ingress_profile_1 = self.models.ManagedClusterIngressProfile(
             web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
-                enabled=True,
                 gateway_api_implementations=self.models.ManagedClusterWebAppRoutingGatewayAPIImplementations(
                     app_routing_istio=self.models.ManagedClusterAppRoutingIstio(
                         mode=CONST_APP_ROUTING_ISTIO_MODE_ENABLED
