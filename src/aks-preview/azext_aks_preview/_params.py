@@ -2878,6 +2878,12 @@ def load_arguments(self, _):
         c.argument("dns_zone_resource_ids", options_list=["--ids"], required=True)
         c.argument("attach_zones")
 
+    with self.argument_context("aks approuting gateway istio enable") as c:
+        c.argument("aks_custom_headers")
+
+    with self.argument_context("aks approuting gateway istio disable") as c:
+        c.argument("aks_custom_headers")
+
     with self.argument_context('aks check-network outbound') as c:
         c.argument('cluster_name', options_list=['--name', '-n'],
                    required=True, help='Name of the managed cluster.')

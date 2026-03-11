@@ -4352,28 +4352,32 @@ def aks_approuting_gateway_istio_enable(
         cmd,
         client,
         resource_group_name,
-        name
+        name,
+        aks_custom_headers=None
 ):
     return _aks_approuting_update(
         cmd,
         client,
         resource_group_name,
         name,
-        enable_app_routing_istio=True)
+        enable_app_routing_istio=True,
+        aks_custom_headers=aks_custom_headers)
 
 
 def aks_approuting_gateway_istio_disable(
         cmd,
         client,
         resource_group_name,
-        name
+        name,
+        aks_custom_headers=None
 ):
     return _aks_approuting_update(
         cmd,
         client,
         resource_group_name,
         name,
-        disable_app_routing_istio=True)
+        disable_app_routing_istio=True,
+        aks_custom_headers=aks_custom_headers)
 
 
 def aks_approuting_update(
@@ -4546,6 +4550,7 @@ def _aks_approuting_update(
         disable_default_domain=None,
         enable_app_routing_istio=None,
         disable_app_routing_istio=None,
+        aks_custom_headers=None,
 ):
     from azure.cli.command_modules.acs._consts import DecoratorEarlyExitException
     from azext_aks_preview.managed_cluster_decorator import AKSPreviewManagedClusterUpdateDecorator

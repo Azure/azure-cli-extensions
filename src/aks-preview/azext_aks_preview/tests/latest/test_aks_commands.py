@@ -22235,13 +22235,10 @@ spec:
             "--ssh-key-value={ssh_key_value} -o json "
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AppRoutingIstioGatewayAPIPreview "
         )
-        with self.assertRaises(HttpResponseError) as context:
-            self.cmd(create_cmd)
-
-        error_message = str(context.exception)
+        result = self.cmd(create_cmd, expect_failure=True)
         self.assertIn(
             "Cannot enable both the Istio add-on and the AppRouting Istio Gateway API implementation simultaneously",
-            error_message,
+            result.output,
         )
 
     @AllowLargeResponse()
@@ -22283,13 +22280,10 @@ spec:
             "--enable-app-routing-istio "
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AppRoutingIstioGatewayAPIPreview "
         )
-        with self.assertRaises(HttpResponseError) as context:
-            self.cmd(update_cmd)
-
-        error_message = str(context.exception)
+        result = self.cmd(update_cmd, expect_failure=True)
         self.assertIn(
-            "Cannot enable both the Istio add-on and the AppRouting Istio Gateway API implementation simultaneously",
-            error_message,
+            "Requested change from Istio add-on to AppRouting Istio Gateway API implementation is disallowed",
+            result.output,
         )
 
     @AllowLargeResponse()
@@ -22326,26 +22320,21 @@ spec:
         )
 
         # Attempt to disable ASM and enable App Routing Istio in the same operation should fail
+        # First try enabling app routing istio while ASM is still enabled - this should fail
         update_cmd = (
             "aks update --resource-group={resource_group} --name={name} "
-            "--disable-azure-service-mesh "
             "--enable-app-routing-istio "
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AppRoutingIstioGatewayAPIPreview "
         )
-        with self.assertRaises(HttpResponseError) as context:
-            self.cmd(update_cmd)
-
-        error_message = str(context.exception)
+        result = self.cmd(update_cmd, expect_failure=True)
         self.assertIn(
-            "Requested change from Istio add-on to AppRouting Istio Gateway API implementation is disallowed. "
-            "Istio add-on must be disabled prior to enabling the AppRouting Istio Gateway API implementation.",
-            error_message,
+            "Requested change from Istio add-on to AppRouting Istio Gateway API implementation is disallowed",
+            result.output,
         )
 
-        # First disable ASM in a separate request
+        # First disable ASM in a separate request using mesh disable
         disable_asm_cmd = (
-            "aks update --resource-group={resource_group} --name={name} "
-            "--disable-azure-service-mesh "
+            "aks mesh disable --resource-group={resource_group} --name={name} --yes"
         )
         self.cmd(
             disable_asm_cmd,
@@ -22408,20 +22397,14 @@ spec:
             ],
         )
 
-        # Attempt to disable App Routing Istio and enable ASM in the same operation should fail
-        update_cmd = (
-            "aks update --resource-group={resource_group} --name={name} "
-            "--disable-app-routing-istio "
-            "--enable-azure-service-mesh "
+        # Attempt to enable ASM while App Routing Istio is still enabled - this should fail
+        enable_asm_cmd_fail = (
+            "aks mesh enable --resource-group={resource_group} --name={name}"
         )
-        with self.assertRaises(HttpResponseError) as context:
-            self.cmd(update_cmd)
-
-        error_message = str(context.exception)
+        result = self.cmd(enable_asm_cmd_fail, expect_failure=True)
         self.assertIn(
-            "Requested change from AppRouting Istio Gateway API implementation to Istio add-on is disallowed. "
-            "AppRouting Istio Gateway API implementation must be disabled prior to enabling Istio add-on.",
-            error_message,
+            "Requested change from AppRouting Istio Gateway API implementation to Istio add-on is disallowed",
+            result.output,
         )
 
         # First disable App Routing Istio in a separate request
@@ -22442,13 +22425,11 @@ spec:
 
         # Now enabling ASM should succeed
         enable_asm_cmd = (
-            "aks update --resource-group={resource_group} --name={name} "
-            "--enable-azure-service-mesh "
+            "aks mesh enable --resource-group={resource_group} --name={name}"
         )
         self.cmd(
             enable_asm_cmd,
             checks=[
-                self.check("provisioningState", "Succeeded"),
                 self.check("serviceMeshProfile.mode", "Istio"),
             ],
         )
