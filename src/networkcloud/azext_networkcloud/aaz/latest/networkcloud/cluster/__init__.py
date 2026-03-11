@@ -13,6 +13,7 @@ from ._continue_update_version import *
 from ._create import *
 from ._delete import *
 from ._deploy import *
+from ._inspect import *
 from ._list import *
 from ._scan_runtime import *
 from ._show import *

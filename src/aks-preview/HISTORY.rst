@@ -14,8 +14,11 @@ Pending
 
 19.0.0b25
 +++++++
-* Vendor new SDK and bump API version to 2026-01-02-preview.
 * `az aks create/update`: Add `--control-plane-scaling-size` parameter to configure control plane scaling profile with available sizes 'H2', 'H4', and 'H8'.
+
+19.0.0b24
++++++++
+* Vendor new SDK and bump API version to 2026-01-02-preview.
 
 19.0.0b23
 +++++++
