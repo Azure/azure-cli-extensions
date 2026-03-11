@@ -206,6 +206,11 @@ def validate_server_parameters(  # pylint: disable=too-many-locals,too-many-bran
         # machine_id was provided directly
         # Check if it's in Microsoft.Migrate format and needs to be resolved
         if "/Microsoft.Migrate/MigrateProjects/" in machine_id or "/Microsoft.Migrate/migrateprojects/" in machine_id:
+            # Extract project_name from the Microsoft.Migrate machine ID
+            migrate_id_parts = machine_id.split("/")
+            if len(migrate_id_parts) >= 9 and not project_name:
+                project_name = migrate_id_parts[8]
+
             # This is a Migrate Project machine ID, need to resolve to OffAzure machine ID
             migrate_machine = get_resource_by_id(
                 cmd, machine_id, APIVersion.Microsoft_Migrate.value)
@@ -257,7 +262,7 @@ def validate_server_parameters(  # pylint: disable=too-many-locals,too-many-bran
             f"/subscriptions/{subscription_id}/"
             f"resourceGroups/{resource_group_name}")
 
-    return rg_uri, machine_id, subscription_id
+    return rg_uri, machine_id, subscription_id, project_name
 
 
 def validate_required_parameters(machine_id,

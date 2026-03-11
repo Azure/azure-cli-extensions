@@ -3246,7 +3246,7 @@ class MigrateNewProcessInputsAdditionalTests(unittest.TestCase):
         
         mock_get_resource.side_effect = [mock_project, mock_amh]
         
-        amh, project, props = process_amh_solution(
+        amh, _, _, _ = process_amh_solution(
             mock_cmd, mock_machine, mock_site, None, 'rg1', 'machine1',
             '/subscriptions/sub1/resourceGroups/rg1'
         )

@@ -228,7 +228,7 @@ def process_amh_solution(cmd,
             f"'{resource_group_name}' and project '{project_name}'. "
             "Please verify your appliance setup."
         )
-    return amh_solution, migrate_project, machine_props
+    return amh_solution, migrate_project, machine_props, project_name
 
 
 def process_replication_vault(cmd,
