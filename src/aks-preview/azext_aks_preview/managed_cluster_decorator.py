@@ -5292,6 +5292,19 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                     "Could not create a role assignment for subnet. Are you an Owner on this subscription?"
                 )
 
+    def _should_create_dcra(self) -> bool:
+        """Return True if any flag that triggers a DCRA/DCR create or update was provided."""
+        params = self.context.raw_param
+        return (
+            params.get("enable_addons") is not None or
+            params.get("enable-azure-monitor-logs") is not None or
+            params.get("enable_container_network_logs") is not None or
+            params.get("enable_retina_flow_logs") is not None or
+            params.get("disable_container_network_logs") is not None or
+            params.get("disable_retina_flow_logs") is not None or
+            params.get("enable_high_log_scale_mode") is not None
+        )
+
     # pylint: disable=too-many-locals,too-many-branches
     def postprocessing_after_mc_created(self, cluster: ManagedCluster) -> None:
         """Postprocessing performed after the cluster is created.
@@ -5317,13 +5330,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                     self.context.external_functions.add_monitoring_role_assignment(
                         cluster, cluster_resource_id, self.cmd
                     )
-            elif (self.context.raw_param.get("enable_addons") is not None or
-                  self.context.raw_param.get("enable-azure-monitor-logs") is not None or
-                  self.context.raw_param.get("enable_container_network_logs") is not None or
-                  self.context.raw_param.get("enable_retina_flow_logs") is not None or
-                  self.context.raw_param.get("disable_container_network_logs") is not None or
-                  self.context.raw_param.get("disable_retina_flow_logs") is not None or
-                  self.context.raw_param.get("enable_high_log_scale_mode") is not None):
+            elif self._should_create_dcra():
                 # Create/update the DCR when CNL or HLSM flags change so that the DCR streams
                 # (e.g. Microsoft-ContainerLogV2-HighScale) are kept in sync.
                 cnl_or_hlsm_changing = (
@@ -5852,6 +5859,49 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     config = monitoring_addon_profile.config or {}
                     config["enableRetinaNetworkFlags"] = str(container_network_logs_enabled)
                     mc.addon_profiles[CONST_MONITORING_ADDON_NAME].config = config
+
+        # When enabling CNL, the DCR must be updated to add the high-scale stream.
+        # Set the postprocessing intermediate so that the update path calls ensure_container_insights.
+        if self.context.raw_param.get("enable_container_network_logs") or \
+           self.context.raw_param.get("enable_retina_flow_logs"):
+            self.context.set_intermediate("monitoring_addon_postprocessing_required", True, overwrite_exists=True)
+
+        # When --enable-high-log-scale-mode is passed standalone on the update path, validate that
+        # monitoring with MSI auth is already enabled, then trigger the DCR update via postprocessing.
+        enable_high_log_scale_mode = self.context.raw_param.get("enable_high_log_scale_mode")
+        if enable_high_log_scale_mode is True:
+            addon_consts = self.context.get_addon_consts()
+            CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
+            CONST_MONITORING_USING_AAD_MSI_AUTH = addon_consts.get("CONST_MONITORING_USING_AAD_MSI_AUTH")
+
+            # Resolve the addon profile, handling both "omsagent" and "omsAgent" key variants.
+            monitoring_addon_profile = None
+            if mc.addon_profiles:
+                monitoring_addon_profile = (
+                    mc.addon_profiles.get(CONST_MONITORING_ADDON_NAME) or
+                    mc.addon_profiles.get(CONST_MONITORING_ADDON_NAME_CAMELCASE)
+                )
+
+            if not monitoring_addon_profile or not monitoring_addon_profile.enabled:
+                raise RequiredArgumentMissingError(
+                    "--enable-high-log-scale-mode requires the Azure Monitor logs addon (omsagent) "
+                    "to be enabled on the cluster. Please enable it first with "
+                    "--enable-addons monitoring or --enable-azure-monitor-logs."
+                )
+
+            addon_config = monitoring_addon_profile.config or {}
+            msi_auth_enabled = (
+                CONST_MONITORING_USING_AAD_MSI_AUTH in addon_config and
+                str(addon_config[CONST_MONITORING_USING_AAD_MSI_AUTH]).lower() == "true"
+            )
+            if not msi_auth_enabled:
+                raise RequiredArgumentMissingError(
+                    "--enable-high-log-scale-mode requires MSI authentication to be enabled "
+                    "for the monitoring addon. Please enable it with --enable-msi-auth-for-monitoring."
+                )
+
+            self.context.set_intermediate("monitoring_addon_postprocessing_required", True, overwrite_exists=True)
+
         return mc
 
     # pylint: disable=too-many-statements,too-many-locals,too-many-branches
