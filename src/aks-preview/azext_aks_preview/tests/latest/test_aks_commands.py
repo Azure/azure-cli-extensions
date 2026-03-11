@@ -22,7 +22,7 @@ from azure.cli.command_modules.acs._helpers import (
     get_shared_kubelet_identity,
     use_shared_identity,
 )
-from azure.cli.core.azclierror import ClientRequestError, InvalidArgumentValueError
+from azure.cli.core.azclierror import BadRequestError, ClientRequestError, InvalidArgumentValueError
 from azure.cli.testsdk.exceptions import CliExecutionError
 from azure.cli.testsdk import CliTestError, ScenarioTest, live_only
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
@@ -22235,10 +22235,11 @@ spec:
             "--ssh-key-value={ssh_key_value} -o json "
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AppRoutingIstioGatewayAPIPreview "
         )
-        result = self.cmd(create_cmd, expect_failure=True)
+        with self.assertRaises(BadRequestError) as context:
+            self.cmd(create_cmd)
         self.assertIn(
             "Cannot enable both the Istio add-on and the AppRouting Istio Gateway API implementation simultaneously",
-            result.output,
+            str(context.exception),
         )
 
     @AllowLargeResponse()
@@ -22280,10 +22281,11 @@ spec:
             "--enable-app-routing-istio "
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AppRoutingIstioGatewayAPIPreview "
         )
-        result = self.cmd(update_cmd, expect_failure=True)
+        with self.assertRaises(BadRequestError) as context:
+            self.cmd(update_cmd)
         self.assertIn(
             "Requested change from Istio add-on to AppRouting Istio Gateway API implementation is disallowed",
-            result.output,
+            str(context.exception),
         )
 
     @AllowLargeResponse()
@@ -22326,10 +22328,11 @@ spec:
             "--enable-app-routing-istio "
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AppRoutingIstioGatewayAPIPreview "
         )
-        result = self.cmd(update_cmd, expect_failure=True)
+        with self.assertRaises(BadRequestError) as context:
+            self.cmd(update_cmd)
         self.assertIn(
             "Requested change from Istio add-on to AppRouting Istio Gateway API implementation is disallowed",
-            result.output,
+            str(context.exception),
         )
 
         # First disable ASM in a separate request using mesh disable
@@ -22401,10 +22404,11 @@ spec:
         enable_asm_cmd_fail = (
             "aks mesh enable --resource-group={resource_group} --name={name}"
         )
-        result = self.cmd(enable_asm_cmd_fail, expect_failure=True)
+        with self.assertRaises(BadRequestError) as context:
+            self.cmd(enable_asm_cmd_fail)
         self.assertIn(
             "Requested change from AppRouting Istio Gateway API implementation to Istio add-on is disallowed",
-            result.output,
+            str(context.exception),
         )
 
         # First disable App Routing Istio in a separate request
