@@ -26,7 +26,9 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = []
+DEPENDENCIES = [
+    'kubernetes>=24.2.0',
+]
 
 with open('README.md', 'r', encoding='utf-8') as f:
     README = f.read()
