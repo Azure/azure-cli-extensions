@@ -162,48 +162,96 @@ def create_zip_bundle(bundle_dir, bundle_name, output_dir=None):
 # Safe API call wrapper
 # ---------------------------------------------------------------------------
 
-def safe_api_call(func, *args, description="API call", **kwargs):
-    """Execute a kubernetes API call with error handling.
+def safe_api_call(func, *args, description="API call", max_retries=None,
+                  timeout_seconds=None, **kwargs):
+    """Execute a kubernetes API call with error handling, timeout, and retry.
 
     Returns (result, error_string). On success error_string is None.
     On failure result is None and error_string describes the problem.
+
+    Args:
+        func: The kubernetes API method to call.
+        description: Human-readable description for logging.
+        max_retries: Number of retries on transient errors (default from consts).
+        timeout_seconds: Per-call timeout in seconds (default from consts).
+        **kwargs: Additional keyword arguments passed to the API call.
     """
+    import time as _time
+
     try:
         from kubernetes.client.exceptions import ApiException
     except ImportError:
         return None, "kubernetes package not available"
 
-    try:
-        result = func(*args, **kwargs)
-        return result, None
-    except ApiException as ex:
-        if ex.status == 403:
-            msg = (
-                f"Permission denied for {description} (403 Forbidden). "
-                "The service account may lack the required RBAC role. "
-                "Ensure the user has at least 'view' ClusterRole binding."
-            )
+    from azext_workload_orchestration._support_consts import (
+        DEFAULT_MAX_RETRIES,
+        DEFAULT_RETRY_BACKOFF_BASE,
+        DEFAULT_API_TIMEOUT_SECONDS,
+    )
+
+    retries = max_retries if max_retries is not None else DEFAULT_MAX_RETRIES
+    timeout = timeout_seconds if timeout_seconds is not None else DEFAULT_API_TIMEOUT_SECONDS
+
+    # Inject timeout into the API call if not already set
+    if "_request_timeout" not in kwargs:
+        kwargs["_request_timeout"] = timeout
+
+    _NON_RETRYABLE = {400, 401, 403, 404, 405, 409, 422}
+
+    last_err = None
+    for attempt in range(retries + 1):
+        try:
+            result = func(*args, **kwargs)
+            return result, None
+        except ApiException as ex:
+            if ex.status == 403:
+                msg = (
+                    f"Permission denied for {description} (403 Forbidden). "
+                    "The service account may lack the required RBAC role. "
+                    "Ensure the user has at least 'view' ClusterRole binding."
+                )
+                logger.warning(msg)
+                return None, msg
+            if ex.status == 401:
+                msg = (
+                    f"Authentication failed for {description} (401 Unauthorized). "
+                    "Cluster credentials may be expired. "
+                    "Run 'az aks get-credentials' to refresh."
+                )
+                logger.warning(msg)
+                return None, msg
+            if ex.status == 404:
+                msg = f"Resource not found for {description} (404)"
+                logger.debug(msg)
+                return None, msg
+            if ex.status in _NON_RETRYABLE:
+                msg = f"{description} failed: {ex.status} {ex.reason}"
+                logger.warning(msg)
+                return None, msg
+            # Retryable error (429, 500, 502, 503, 504, etc.)
+            last_err = f"{description} failed: {ex.status} {ex.reason}"
+            if attempt < retries:
+                wait = DEFAULT_RETRY_BACKOFF_BASE * (2 ** attempt)
+                logger.debug("Retrying %s in %.1fs (attempt %d/%d): %s",
+                             description, wait, attempt + 1, retries, last_err)
+                _time.sleep(wait)
+            else:
+                logger.warning("%s (exhausted %d retries)", last_err, retries)
+        except (ConnectionError, TimeoutError, OSError) as ex:
+            last_err = f"{description} failed: {type(ex).__name__}: {ex}"
+            if attempt < retries:
+                wait = DEFAULT_RETRY_BACKOFF_BASE * (2 ** attempt)
+                logger.debug("Retrying %s in %.1fs (attempt %d/%d): %s",
+                             description, wait, attempt + 1, retries, last_err)
+                _time.sleep(wait)
+            else:
+                logger.warning("%s (exhausted %d retries)", last_err, retries)
+        except Exception as ex:
+            msg = f"{description} failed: {type(ex).__name__}: {ex}"
             logger.warning(msg)
             return None, msg
-        if ex.status == 401:
-            msg = (
-                f"Authentication failed for {description} (401 Unauthorized). "
-                "Cluster credentials may be expired. "
-                "Run 'az aks get-credentials' to refresh."
-            )
-            logger.warning(msg)
-            return None, msg
-        if ex.status == 404:
-            msg = f"Resource not found for {description} (404)"
-            logger.debug(msg)
-            return None, msg
-        msg = f"{description} failed: {ex.status} {ex.reason}"
-        logger.warning(msg)
-        return None, msg
-    except Exception as ex:
-        msg = f"{description} failed: {type(ex).__name__}: {ex}"
-        logger.warning(msg)
-        return None, msg
+
+    return None, last_err
 
 
 # ---------------------------------------------------------------------------

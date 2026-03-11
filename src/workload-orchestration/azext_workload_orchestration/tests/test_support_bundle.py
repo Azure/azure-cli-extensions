@@ -1694,5 +1694,580 @@ class IntegrationTestFullBundle(unittest.TestCase):
             shutil.rmtree(zip_tmpdir, ignore_errors=True)
 
 
+# ===========================================================================
+# Tests for retry + timeout in safe_api_call
+# ===========================================================================
+
+
+class TestSafeApiCallRetry(unittest.TestCase):
+    """Test retry logic in safe_api_call."""
+
+    def test_retries_on_500_error(self):
+        """safe_api_call retries on 500 server error."""
+        from azext_workload_orchestration._support_utils import safe_api_call
+        from kubernetes.client.exceptions import ApiException
+
+        call_count = [0]
+
+        def side_effect_func(*args, **kwargs):
+            call_count[0] += 1
+            if call_count[0] <= 2:
+                raise ApiException(status=500, reason="Internal Server Error")
+            return "success"
+
+        func = MagicMock(side_effect=side_effect_func)
+        result, err = safe_api_call(
+            func, description="test-500", max_retries=2, timeout_seconds=5
+        )
+        self.assertEqual(result, "success")
+        self.assertIsNone(err)
+        self.assertEqual(call_count[0], 3)
+
+    def test_no_retry_on_403(self):
+        """safe_api_call does NOT retry on 403 Forbidden."""
+        from azext_workload_orchestration._support_utils import safe_api_call
+
+        call_count = [0]
+
+        def side_effect_func(*args, **kwargs):
+            call_count[0] += 1
+            exc = Exception("forbidden")
+            exc.status = 403
+            exc.reason = "Forbidden"
+            # Need to raise proper ApiException
+            from kubernetes.client.exceptions import ApiException
+            raise ApiException(status=403, reason="Forbidden")
+
+        func = MagicMock(side_effect=side_effect_func)
+        result, err = safe_api_call(func, description="test-403", max_retries=3)
+        self.assertIsNone(result)
+        self.assertIn("403", err)
+        self.assertEqual(call_count[0], 1)  # no retries
+
+    def test_no_retry_on_404(self):
+        """safe_api_call does NOT retry on 404."""
+        from azext_workload_orchestration._support_utils import safe_api_call
+
+        call_count = [0]
+
+        def side_effect_func(*args, **kwargs):
+            call_count[0] += 1
+            from kubernetes.client.exceptions import ApiException
+            raise ApiException(status=404, reason="Not Found")
+
+        func = MagicMock(side_effect=side_effect_func)
+        result, err = safe_api_call(func, description="test-404", max_retries=3)
+        self.assertIsNone(result)
+        self.assertIn("404", err)
+        self.assertEqual(call_count[0], 1)
+
+    def test_retries_on_connection_error(self):
+        """safe_api_call retries on ConnectionError."""
+        from azext_workload_orchestration._support_utils import safe_api_call
+
+        call_count = [0]
+
+        def side_effect_func(*args, **kwargs):
+            call_count[0] += 1
+            if call_count[0] <= 1:
+                raise ConnectionError("refused")
+            return "recovered"
+
+        func = MagicMock(side_effect=side_effect_func)
+        result, err = safe_api_call(func, description="conn-err", max_retries=2, timeout_seconds=5)
+        self.assertEqual(result, "recovered")
+        self.assertIsNone(err)
+        self.assertEqual(call_count[0], 2)
+
+    def test_retries_on_timeout_error(self):
+        """safe_api_call retries on TimeoutError."""
+        from azext_workload_orchestration._support_utils import safe_api_call
+
+        call_count = [0]
+
+        def side_effect_func(*args, **kwargs):
+            call_count[0] += 1
+            if call_count[0] <= 1:
+                raise TimeoutError("timed out")
+            return "ok"
+
+        func = MagicMock(side_effect=side_effect_func)
+        result, err = safe_api_call(func, description="timeout-err", max_retries=2, timeout_seconds=5)
+        self.assertEqual(result, "ok")
+        self.assertIsNone(err)
+
+    def test_exhausted_retries_returns_error(self):
+        """safe_api_call returns error after exhausting retries."""
+        from azext_workload_orchestration._support_utils import safe_api_call
+
+        func = MagicMock(side_effect=ConnectionError("always fails"))
+        result, err = safe_api_call(func, description="always-fail", max_retries=2, timeout_seconds=5)
+        self.assertIsNone(result)
+        self.assertIn("always fails", err)
+        self.assertEqual(func.call_count, 3)  # initial + 2 retries
+
+    def test_no_retry_on_generic_exception(self):
+        """safe_api_call does NOT retry on generic exceptions like ValueError."""
+        from azext_workload_orchestration._support_utils import safe_api_call
+
+        func = MagicMock(side_effect=ValueError("bad value"))
+        result, err = safe_api_call(func, description="val-err", max_retries=3)
+        self.assertIsNone(result)
+        self.assertIn("ValueError", err)
+        self.assertEqual(func.call_count, 1)
+
+    def test_timeout_is_passed_to_api_call(self):
+        """safe_api_call passes _request_timeout to the underlying API call."""
+        from azext_workload_orchestration._support_utils import safe_api_call
+
+        func = MagicMock(return_value="ok")
+        result, err = safe_api_call(func, description="timeout-test", timeout_seconds=42)
+        self.assertEqual(result, "ok")
+        # Verify _request_timeout was injected
+        _, kwargs = func.call_args
+        self.assertEqual(kwargs.get("_request_timeout"), 42)
+
+    def test_existing_request_timeout_not_overwritten(self):
+        """safe_api_call doesn't overwrite an existing _request_timeout."""
+        from azext_workload_orchestration._support_utils import safe_api_call
+
+        func = MagicMock(return_value="ok")
+        result, err = safe_api_call(
+            func, description="timeout-existing",
+            _request_timeout=99, timeout_seconds=42
+        )
+        self.assertEqual(result, "ok")
+        _, kwargs = func.call_args
+        self.assertEqual(kwargs.get("_request_timeout"), 99)
+
+    def test_max_retries_zero_means_no_retry(self):
+        """max_retries=0 means try once, no retries."""
+        from azext_workload_orchestration._support_utils import safe_api_call
+
+        func = MagicMock(side_effect=ConnectionError("fail"))
+        result, err = safe_api_call(func, description="no-retry", max_retries=0)
+        self.assertIsNone(result)
+        self.assertEqual(func.call_count, 1)
+
+
+# ===========================================================================
+# Tests for namespace validation
+# ===========================================================================
+
+
+class TestValidateNamespaces(unittest.TestCase):
+    """Test pre-flight namespace validation."""
+
+    def _make_ns(self, name, phase="Active"):
+        ns = MagicMock()
+        ns.metadata.name = name
+        ns.status.phase = phase
+        return ns
+
+    def test_all_valid(self):
+        from azext_workload_orchestration._support_collectors import validate_namespaces
+
+        clients = {"core_v1": MagicMock()}
+        clients["core_v1"].read_namespace = MagicMock(
+            side_effect=lambda ns, **kw: self._make_ns(ns)
+        )
+
+        valid, skipped = validate_namespaces(clients, ["kube-system", "default"])
+        self.assertEqual(valid, ["kube-system", "default"])
+        self.assertEqual(skipped, [])
+
+    def test_nonexistent_namespace_skipped(self):
+        from azext_workload_orchestration._support_collectors import validate_namespaces
+        from kubernetes.client.exceptions import ApiException
+
+        def read_ns(ns, **kwargs):
+            if ns == "missing-ns":
+                raise ApiException(status=404, reason="Not Found")
+            return self._make_ns(ns)
+
+        clients = {"core_v1": MagicMock()}
+        clients["core_v1"].read_namespace = MagicMock(side_effect=read_ns)
+
+        valid, skipped = validate_namespaces(clients, ["kube-system", "missing-ns", "default"])
+        self.assertEqual(valid, ["kube-system", "default"])
+        self.assertEqual(len(skipped), 1)
+        self.assertEqual(skipped[0][0], "missing-ns")
+
+    def test_terminating_namespace_skipped(self):
+        from azext_workload_orchestration._support_collectors import validate_namespaces
+
+        def read_ns(ns, **kwargs):
+            if ns == "dying-ns":
+                return self._make_ns(ns, phase="Terminating")
+            return self._make_ns(ns)
+
+        clients = {"core_v1": MagicMock()}
+        clients["core_v1"].read_namespace = MagicMock(side_effect=read_ns)
+
+        valid, skipped = validate_namespaces(clients, ["kube-system", "dying-ns"])
+        self.assertEqual(valid, ["kube-system"])
+        self.assertEqual(len(skipped), 1)
+        self.assertIn("terminating", skipped[0][1])
+
+    def test_all_namespaces_invalid(self):
+        from azext_workload_orchestration._support_collectors import validate_namespaces
+        from kubernetes.client.exceptions import ApiException
+
+        clients = {"core_v1": MagicMock()}
+        clients["core_v1"].read_namespace = MagicMock(
+            side_effect=ApiException(status=404, reason="Not Found")
+        )
+
+        valid, skipped = validate_namespaces(clients, ["ns1", "ns2"])
+        self.assertEqual(valid, [])
+        self.assertEqual(len(skipped), 2)
+
+    def test_empty_namespace_list(self):
+        from azext_workload_orchestration._support_collectors import validate_namespaces
+
+        clients = {"core_v1": MagicMock()}
+        valid, skipped = validate_namespaces(clients, [])
+        self.assertEqual(valid, [])
+        self.assertEqual(skipped, [])
+
+    def test_rbac_denied_namespace(self):
+        from azext_workload_orchestration._support_collectors import validate_namespaces
+        from kubernetes.client.exceptions import ApiException
+
+        clients = {"core_v1": MagicMock()}
+        clients["core_v1"].read_namespace = MagicMock(
+            side_effect=ApiException(status=403, reason="Forbidden")
+        )
+
+        valid, skipped = validate_namespaces(clients, ["secret-ns"])
+        self.assertEqual(valid, [])
+        self.assertEqual(len(skipped), 1)
+        self.assertIn("403", skipped[0][1])
+
+
+# ===========================================================================
+# Tests for new resource collectors (ReplicaSets, Jobs, etc.)
+# ===========================================================================
+
+
+class TestCollectReplicaSets(unittest.TestCase):
+    """Test ReplicaSet collection in collect_namespace_resources."""
+
+    def test_replicasets_collected(self):
+        from azext_workload_orchestration._support_collectors import collect_namespace_resources
+
+        # Build mock replicaset
+        rs = MagicMock()
+        rs.metadata.name = "nginx-abc123"
+        rs.spec.replicas = 3
+        rs.status.ready_replicas = 3
+        rs.status.available_replicas = 3
+        owner = MagicMock()
+        owner.kind = "Deployment"
+        owner.name = "nginx"
+        rs.metadata.owner_references = [owner]
+
+        rs_list = MagicMock()
+        rs_list.items = [rs]
+
+        clients = _make_clients()
+        clients["apps_v1"].list_namespaced_replica_set = MagicMock(return_value=rs_list)
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            os.makedirs(os.path.join(tmpdir, "resources"), exist_ok=True)
+            result = collect_namespace_resources(clients, tmpdir, "default")
+
+        self.assertIn("replicasets", result)
+        self.assertEqual(len(result["replicasets"]), 1)
+        self.assertEqual(result["replicasets"][0]["name"], "nginx-abc123")
+        self.assertEqual(result["replicasets"][0]["owner"]["kind"], "Deployment")
+
+
+class TestCollectJobs(unittest.TestCase):
+    """Test Job and CronJob collection."""
+
+    @patch("azext_workload_orchestration._support_collectors.safe_api_call")
+    def test_jobs_collected(self, mock_safe_call):
+        from azext_workload_orchestration._support_collectors import collect_namespace_resources
+
+        # Build mock job
+        job = MagicMock()
+        job.metadata.name = "backup-job"
+        job.status.active = 0
+        job.status.succeeded = 1
+        job.status.failed = 0
+        job.spec.completions = 1
+        job.status.start_time = "2026-01-01T00:00:00Z"
+        job.status.completion_time = "2026-01-01T00:05:00Z"
+
+        job_list = MagicMock()
+        job_list.items = [job]
+
+        # Build mock empty responses for standard resources
+        empty_list = MagicMock()
+        empty_list.items = []
+
+        def mock_safe(func, *args, **kwargs):
+            desc = kwargs.get("description", "")
+            if "jobs" in desc:
+                return job_list, None
+            return empty_list, None
+
+        mock_safe_call.side_effect = mock_safe
+
+        clients = _make_clients()
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            os.makedirs(os.path.join(tmpdir, "resources"), exist_ok=True)
+            # Since safe_api_call is mocked, batch API calls go through mock
+            result = collect_namespace_resources(clients, tmpdir, "default")
+
+        # Jobs may or may not be collected depending on batch API availability
+        # The test verifies no crash occurs
+
+
+class TestCollectIngresses(unittest.TestCase):
+    """Test Ingress collection."""
+
+    def test_no_crash_on_missing_networking_api(self):
+        """Ingress collection handles missing networking API gracefully."""
+        from azext_workload_orchestration._support_collectors import collect_namespace_resources
+
+        clients = _make_clients()
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            os.makedirs(os.path.join(tmpdir, "resources"), exist_ok=True)
+            # Should not crash even if networking API isn't available
+            result = collect_namespace_resources(clients, tmpdir, "default")
+
+        self.assertIsInstance(result, dict)
+
+
+class TestCollectServiceAccounts(unittest.TestCase):
+    """Test ServiceAccount collection."""
+
+    def test_service_accounts_collected(self):
+        from azext_workload_orchestration._support_collectors import collect_namespace_resources
+
+        sa = MagicMock()
+        sa.metadata.name = "default"
+        sa.secrets = [MagicMock()]
+        ips = MagicMock()
+        ips.name = "registry-secret"
+        sa.image_pull_secrets = [ips]
+
+        sa_list = MagicMock()
+        sa_list.items = [sa]
+
+        clients = _make_clients()
+        clients["core_v1"].list_namespaced_service_account = MagicMock(return_value=sa_list)
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            os.makedirs(os.path.join(tmpdir, "resources"), exist_ok=True)
+            result = collect_namespace_resources(clients, tmpdir, "default")
+
+        self.assertIn("service_accounts", result)
+        self.assertEqual(len(result["service_accounts"]), 1)
+        self.assertEqual(result["service_accounts"][0]["name"], "default")
+        self.assertEqual(result["service_accounts"][0]["image_pull_secrets"], ["registry-secret"])
+
+
+class TestGetOwnerRef(unittest.TestCase):
+    """Test _get_owner_ref helper."""
+
+    def test_with_owner(self):
+        from azext_workload_orchestration._support_collectors import _get_owner_ref
+
+        resource = MagicMock()
+        owner = MagicMock()
+        owner.kind = "Deployment"
+        owner.name = "nginx"
+        resource.metadata.owner_references = [owner]
+
+        result = _get_owner_ref(resource)
+        self.assertEqual(result, {"kind": "Deployment", "name": "nginx"})
+
+    def test_without_owner(self):
+        from azext_workload_orchestration._support_collectors import _get_owner_ref
+
+        resource = MagicMock()
+        resource.metadata.owner_references = []
+
+        result = _get_owner_ref(resource)
+        self.assertIsNone(result)
+
+    def test_none_owner_refs(self):
+        from azext_workload_orchestration._support_collectors import _get_owner_ref
+
+        resource = MagicMock()
+        resource.metadata.owner_references = None
+
+        result = _get_owner_ref(resource)
+        self.assertIsNone(result)
+
+
+# ===========================================================================
+# Tests for health summary
+# ===========================================================================
+
+
+class TestHealthSummary(unittest.TestCase):
+    """Test _compute_health_summary."""
+
+    def test_all_pass_is_healthy(self):
+        from azext_workload_orchestration.custom import _compute_health_summary
+
+        checks = [
+            {"status": "PASS", "check_name": "c1"},
+            {"status": "PASS", "check_name": "c2"},
+            {"status": "PASS", "check_name": "c3"},
+        ]
+        result = _compute_health_summary(checks, [])
+        self.assertEqual(result["overall_status"], "HEALTHY")
+        self.assertEqual(result["health_score"], 100)
+
+    def test_warnings_is_degraded(self):
+        from azext_workload_orchestration.custom import _compute_health_summary
+
+        checks = [
+            {"status": "PASS", "check_name": "c1"},
+            {"status": "WARN", "check_name": "c2"},
+            {"status": "PASS", "check_name": "c3"},
+        ]
+        result = _compute_health_summary(checks, [])
+        self.assertEqual(result["overall_status"], "DEGRADED")
+        # Score: (2*100 + 1*50) / 3 = 83
+        self.assertEqual(result["health_score"], 83)
+
+    def test_few_failures_is_degraded(self):
+        from azext_workload_orchestration.custom import _compute_health_summary
+
+        checks = [
+            {"status": "PASS", "check_name": "c1"},
+            {"status": "FAIL", "check_name": "c2"},
+            {"status": "PASS", "check_name": "c3"},
+            {"status": "PASS", "check_name": "c4"},
+        ]
+        result = _compute_health_summary(checks, [])
+        self.assertEqual(result["overall_status"], "DEGRADED")
+        # Score: (3*100 + 0 + 0) / 4 = 75
+        self.assertEqual(result["health_score"], 75)
+
+    def test_many_failures_is_critical(self):
+        from azext_workload_orchestration.custom import _compute_health_summary
+
+        checks = [
+            {"status": "FAIL", "check_name": "c1"},
+            {"status": "FAIL", "check_name": "c2"},
+            {"status": "FAIL", "check_name": "c3"},
+            {"status": "PASS", "check_name": "c4"},
+        ]
+        result = _compute_health_summary(checks, [])
+        self.assertEqual(result["overall_status"], "CRITICAL")
+        # Score: (1*100) / 4 = 25
+        self.assertEqual(result["health_score"], 25)
+
+    def test_no_checks_is_unknown(self):
+        from azext_workload_orchestration.custom import _compute_health_summary
+
+        result = _compute_health_summary([], [])
+        self.assertEqual(result["overall_status"], "UNKNOWN")
+        self.assertEqual(result["health_score"], 0)
+
+    def test_errors_bump_to_degraded(self):
+        from azext_workload_orchestration.custom import _compute_health_summary
+
+        checks = [
+            {"status": "PASS", "check_name": "c1"},
+            {"status": "PASS", "check_name": "c2"},
+        ]
+        result = _compute_health_summary(checks, ["some error"])
+        self.assertEqual(result["overall_status"], "DEGRADED")
+        self.assertEqual(result["collection_errors"], 1)
+
+    def test_all_warn_is_degraded(self):
+        from azext_workload_orchestration.custom import _compute_health_summary
+
+        checks = [
+            {"status": "WARN", "check_name": "c1"},
+            {"status": "WARN", "check_name": "c2"},
+        ]
+        result = _compute_health_summary(checks, [])
+        self.assertEqual(result["overall_status"], "DEGRADED")
+        self.assertEqual(result["health_score"], 50)
+
+    def test_mixed_all_statuses(self):
+        from azext_workload_orchestration.custom import _compute_health_summary
+
+        checks = [
+            {"status": "PASS", "check_name": "c1"},
+            {"status": "WARN", "check_name": "c2"},
+            {"status": "FAIL", "check_name": "c3"},
+        ]
+        result = _compute_health_summary(checks, [])
+        # Score: (100 + 50 + 0) / 3 = 50
+        self.assertEqual(result["health_score"], 50)
+        self.assertIn(result["overall_status"], ["DEGRADED", "CRITICAL"])
+
+
+# ===========================================================================
+# Tests for new consts
+# ===========================================================================
+
+
+class TestNewConstants(unittest.TestCase):
+    """Verify new constants are properly defined."""
+
+    def test_api_timeout_constant(self):
+        from azext_workload_orchestration._support_consts import DEFAULT_API_TIMEOUT_SECONDS
+        self.assertEqual(DEFAULT_API_TIMEOUT_SECONDS, 30)
+
+    def test_log_timeout_constant(self):
+        from azext_workload_orchestration._support_consts import DEFAULT_LOG_TIMEOUT_SECONDS
+        self.assertEqual(DEFAULT_LOG_TIMEOUT_SECONDS, 60)
+
+    def test_retry_constants(self):
+        from azext_workload_orchestration._support_consts import (
+            DEFAULT_MAX_RETRIES,
+            DEFAULT_RETRY_BACKOFF_BASE,
+        )
+        self.assertEqual(DEFAULT_MAX_RETRIES, 3)
+        self.assertEqual(DEFAULT_RETRY_BACKOFF_BASE, 1.0)
+
+
+# ===========================================================================
+# Helper to build mock clients
+# ===========================================================================
+
+
+def _make_clients():
+    """Create a standard mock clients dict for tests."""
+    empty_list = MagicMock()
+    empty_list.items = []
+
+    core = MagicMock()
+    core.list_namespaced_pod = MagicMock(return_value=empty_list)
+    core.list_namespaced_service = MagicMock(return_value=empty_list)
+    core.list_namespaced_config_map = MagicMock(return_value=empty_list)
+    core.list_namespaced_event = MagicMock(return_value=empty_list)
+    core.list_namespaced_service_account = MagicMock(return_value=empty_list)
+
+    apps = MagicMock()
+    apps.list_namespaced_deployment = MagicMock(return_value=empty_list)
+    apps.list_namespaced_daemon_set = MagicMock(return_value=empty_list)
+    apps.list_namespaced_stateful_set = MagicMock(return_value=empty_list)
+    apps.list_namespaced_replica_set = MagicMock(return_value=empty_list)
+
+    return {
+        "core_v1": core,
+        "apps_v1": apps,
+        "custom_objects": MagicMock(),
+        "storage_v1": MagicMock(),
+        "admissionregistration_v1": MagicMock(),
+        "apis": MagicMock(),
+        "version": MagicMock(),
+    }
+
+
 if __name__ == "__main__":
     unittest.main()

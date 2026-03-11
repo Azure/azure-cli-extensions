@@ -57,6 +57,7 @@ def create_support_bundle(cmd,
         collect_resource_quotas,
         collect_metrics,
         collect_pvcs,
+        validate_namespaces,
     )
     from azext_workload_orchestration._support_validators import run_all_checks
 
@@ -156,6 +157,20 @@ def create_support_bundle(cmd,
         errors.append(err_msg)
         _out("  [ERROR] %s", err_msg)
 
+    # --- Step 6b: Validate namespaces exist ---
+    skipped_ns = []
+    try:
+        namespaces, skipped_ns = validate_namespaces(clients, namespaces)
+        if skipped_ns:
+            for ns, reason in skipped_ns:
+                _out("  [SKIP] Namespace '%s': %s", ns, reason)
+        if not namespaces:
+            _out("  [WARN] No valid namespaces to collect resources from")
+    except Exception as ex:
+        err_msg = "Step 6b - Namespace validation failed: %s" % ex
+        errors.append(err_msg)
+        _out("  [ERROR] %s (proceeding with original list)", err_msg)
+
     # --- Step 7: Collect per-namespace resources ---
     for ns in namespaces:
         try:
@@ -165,7 +180,15 @@ def create_support_bundle(cmd,
             pod_count = len(ns_res.get("pods", []))
             dep_count = len(ns_res.get("deployments", []))
             svc_count = len(ns_res.get("services", []))
-            _out("  %s: %d pods, %d deployments, %d services", ns, pod_count, dep_count, svc_count)
+            job_count = len(ns_res.get("jobs", []))
+            parts = ["%d pods" % pod_count, "%d deployments" % dep_count,
+                     "%d services" % svc_count]
+            if job_count:
+                parts.append("%d jobs" % job_count)
+            rs_count = len(ns_res.get("replicasets", []))
+            if rs_count:
+                parts.append("%d replicasets" % rs_count)
+            _out("  %s: %s", ns, ", ".join(parts))
         except Exception as ex:
             err_msg = "Step 7 - Collect namespace '%s' resources failed: %s" % (ns, ex)
             errors.append(err_msg)
@@ -223,11 +246,14 @@ def create_support_bundle(cmd,
 
     # --- Step 10: Write bundle metadata ---
     elapsed = time.time() - start_time
+    health_summary = _compute_health_summary(check_results, errors)
     metadata = {
         "bundle_name": bundle_name,
         "created_at": datetime.now(timezone.utc).isoformat(),
         "collection_time_seconds": round(elapsed, 1),
+        "health_summary": health_summary,
         "namespaces_collected": namespaces,
+        "namespaces_skipped": [{"name": ns, "reason": r} for ns, r in skipped_ns] if skipped_ns else None,
         "tail_lines": tail,
         "full_logs": full_logs,
         "skip_checks": skip_checks,
@@ -268,6 +294,8 @@ def create_support_bundle(cmd,
     _out("  File:   %s", zip_path)
     _out("  Size:   %s", format_bytes(zip_size))
     _out("  Time:   %.1fs", elapsed)
+    if health_summary:
+        _out("  Health: %s (score: %d/100)", health_summary["overall_status"], health_summary["health_score"])
     _out("")
     if check_results:
         _out("  Checks: %d passed, %d failed, %d warnings", passed, failed, warned)
@@ -296,6 +324,51 @@ def create_support_bundle(cmd,
         "checks_failed": failed,
         "checks_warned": warned,
         "errors": errors if errors else None,
+    }
+
+
+def _compute_health_summary(check_results, errors):
+    """Compute an overall health summary from check results.
+
+    Returns a dict with overall_status (HEALTHY/DEGRADED/CRITICAL/UNKNOWN),
+    health_score (0-100), and category breakdown.
+    """
+    if not check_results:
+        return {
+            "overall_status": "UNKNOWN",
+            "health_score": 0,
+            "reason": "No checks were run",
+        }
+
+    total = len(check_results)
+    passed = sum(1 for c in check_results if c.get("status") == STATUS_PASS)
+    failed = sum(1 for c in check_results if c.get("status") == STATUS_FAIL)
+    warned = sum(1 for c in check_results if c.get("status") == STATUS_WARN)
+
+    # Health score: PASS=100%, WARN=50%, FAIL=0%
+    score = int(round(((passed * 100) + (warned * 50)) / total)) if total else 0
+
+    if failed == 0 and warned == 0:
+        status = "HEALTHY"
+    elif failed == 0 and warned > 0:
+        status = "DEGRADED"
+    elif failed <= 2:
+        status = "DEGRADED"
+    else:
+        status = "CRITICAL"
+
+    # Bump to CRITICAL if there were collection errors
+    if errors and status != "CRITICAL":
+        status = "DEGRADED"
+
+    return {
+        "overall_status": status,
+        "health_score": score,
+        "checks_total": total,
+        "checks_passed": passed,
+        "checks_failed": failed,
+        "checks_warned": warned,
+        "collection_errors": len(errors) if errors else 0,
     }
 
 

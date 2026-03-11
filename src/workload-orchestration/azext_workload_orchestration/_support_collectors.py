@@ -35,6 +35,39 @@ logger = get_logger(__name__)
 
 
 # ---------------------------------------------------------------------------
+# Namespace validation (pre-flight)
+# ---------------------------------------------------------------------------
+
+def validate_namespaces(clients, namespaces):
+    """Validate that requested namespaces exist on the cluster.
+
+    Returns (valid_namespaces, skipped_namespaces) where skipped_namespaces
+    is a list of (namespace, reason) tuples.
+    """
+    core = clients["core_v1"]
+    valid = []
+    skipped = []
+
+    for ns in namespaces:
+        result, err = safe_api_call(
+            core.read_namespace, ns,
+            description=f"validate namespace '{ns}'",
+            max_retries=1,
+        )
+        if result:
+            if result.status and result.status.phase == "Terminating":
+                skipped.append((ns, "namespace is terminating"))
+                logger.warning("Namespace '%s' is terminating, skipping", ns)
+            else:
+                valid.append(ns)
+        else:
+            skipped.append((ns, err or "namespace not found"))
+            logger.warning("Namespace '%s' not found, skipping: %s", ns, err)
+
+    return valid, skipped
+
+
+# ---------------------------------------------------------------------------
 # Cluster info collection
 # ---------------------------------------------------------------------------
 
@@ -228,11 +261,135 @@ def collect_namespace_resources(clients, bundle_dir, namespace):
             for cm in result.items
         ]
 
+    # ReplicaSets
+    result, err = safe_api_call(
+        apps.list_namespaced_replica_set, namespace,
+        description=f"list replicasets in {namespace}"
+    )
+    if result:
+        resources["replicasets"] = [
+            {
+                "name": rs.metadata.name,
+                "replicas": rs.spec.replicas,
+                "ready_replicas": rs.status.ready_replicas or 0,
+                "available_replicas": rs.status.available_replicas or 0,
+                "owner": _get_owner_ref(rs),
+            }
+            for rs in result.items
+        ]
+
+    # Jobs
+    try:
+        from kubernetes import client as _k8s_client
+        batch_v1 = _k8s_client.BatchV1Api()
+        result, err = safe_api_call(
+            batch_v1.list_namespaced_job, namespace,
+            description=f"list jobs in {namespace}"
+        )
+        if result:
+            resources["jobs"] = [
+                {
+                    "name": j.metadata.name,
+                    "active": j.status.active or 0,
+                    "succeeded": j.status.succeeded or 0,
+                    "failed": j.status.failed or 0,
+                    "completions": j.spec.completions,
+                    "start_time": str(j.status.start_time) if j.status.start_time else None,
+                    "completion_time": str(j.status.completion_time) if j.status.completion_time else None,
+                }
+                for j in result.items
+            ]
+
+        # CronJobs
+        result, err = safe_api_call(
+            batch_v1.list_namespaced_cron_job, namespace,
+            description=f"list cronjobs in {namespace}"
+        )
+        if result:
+            resources["cronjobs"] = [
+                {
+                    "name": cj.metadata.name,
+                    "schedule": cj.spec.schedule,
+                    "suspend": cj.spec.suspend,
+                    "active_jobs": len(cj.status.active or []),
+                    "last_schedule": str(cj.status.last_schedule_time) if cj.status.last_schedule_time else None,
+                    "last_successful": str(cj.status.last_successful_time) if cj.status.last_successful_time else None,
+                }
+                for cj in result.items
+            ]
+    except Exception as ex:
+        logger.debug("Batch API not available for %s: %s", namespace, ex)
+
+    # Ingresses
+    try:
+        from kubernetes import client as _k8s_client
+        networking_v1 = _k8s_client.NetworkingV1Api()
+        result, err = safe_api_call(
+            networking_v1.list_namespaced_ingress, namespace,
+            description=f"list ingresses in {namespace}"
+        )
+        if result:
+            resources["ingresses"] = [
+                {
+                    "name": ing.metadata.name,
+                    "class_name": ing.spec.ingress_class_name,
+                    "rules_count": len(ing.spec.rules or []),
+                    "tls_count": len(ing.spec.tls or []),
+                    "hosts": [r.host for r in (ing.spec.rules or []) if r.host],
+                }
+                for ing in result.items
+            ]
+
+        # NetworkPolicies
+        result, err = safe_api_call(
+            networking_v1.list_namespaced_network_policy, namespace,
+            description=f"list network policies in {namespace}"
+        )
+        if result:
+            resources["network_policies"] = [
+                {
+                    "name": np.metadata.name,
+                    "pod_selector": dict(np.spec.pod_selector.match_labels or {}) if np.spec.pod_selector and np.spec.pod_selector.match_labels else {},
+                    "policy_types": np.spec.policy_types or [],
+                    "ingress_rules": len(np.spec.ingress or []) if np.spec.ingress else 0,
+                    "egress_rules": len(np.spec.egress or []) if np.spec.egress else 0,
+                }
+                for np in result.items
+            ]
+    except Exception as ex:
+        logger.debug("Networking API not available for %s: %s", namespace, ex)
+
+    # ServiceAccounts
+    result, err = safe_api_call(
+        core.list_namespaced_service_account, namespace,
+        description=f"list service accounts in {namespace}"
+    )
+    if result:
+        resources["service_accounts"] = [
+            {
+                "name": sa.metadata.name,
+                "secrets_count": len(sa.secrets or []) if sa.secrets else 0,
+                "image_pull_secrets": [
+                    ips.name for ips in (sa.image_pull_secrets or [])
+                ],
+            }
+            for sa in result.items
+        ]
+
     filepath = os.path.join(bundle_dir, FOLDER_RESOURCES, f"{namespace}-resources.json")
     write_json(filepath, resources)
     pod_count = len(resources.get("pods", []))
-    logger.info("Collected resources for %s: %d pods", namespace, pod_count)
+    logger.info("Collected resources for %s: %d pods, %d resource types",
+                namespace, pod_count, len(resources))
     return resources
+
+
+def _get_owner_ref(resource):
+    """Extract owner reference (controller) for a resource."""
+    refs = resource.metadata.owner_references or []
+    if refs:
+        return {"kind": refs[0].kind, "name": refs[0].name}
+    return None
 
 
 def _get_container_details(pod):
@@ -405,11 +562,14 @@ def _is_default_sc(sc):
 # ---------------------------------------------------------------------------
 
 def collect_container_logs(clients, bundle_dir, namespace, tail_lines=DEFAULT_TAIL_LINES,
-                           max_workers=5):
+                           max_workers=5, log_timeout=None):
     """Collect container logs for all pods in a namespace.
 
     Uses threading for parallel log fetching. Returns count of logs collected.
     """
+    from azext_workload_orchestration._support_consts import DEFAULT_LOG_TIMEOUT_SECONDS
+
+    per_log_timeout = log_timeout or DEFAULT_LOG_TIMEOUT_SECONDS
     core = clients["core_v1"]
     result, err = safe_api_call(
         core.list_namespaced_pod, namespace, description=f"list pods for logs in {namespace}"
@@ -464,11 +624,13 @@ def collect_container_logs(clients, bundle_dir, namespace, tail_lines=DEFAULT_TA
             executor.submit(_fetch_log, pod, container): (pod, container)
             for pod, container in targets
         }
-        for future in as_completed(futures):
+        for future in as_completed(futures, timeout=per_log_timeout * len(targets)):
             pod, container = futures[future]
             try:
-                if future.result():
+                if future.result(timeout=per_log_timeout):
                     collected += 1
+            except TimeoutError:
+                logger.debug("Timeout collecting log for %s/%s", pod, container)
             except Exception as ex:
                 logger.debug("Failed to collect log for %s/%s: %s", pod, container, ex)
 

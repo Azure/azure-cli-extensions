@@ -7,10 +7,16 @@
 
 # Bundle defaults
 DEFAULT_TAIL_LINES = 1000
-DEFAULT_TIMEOUT_SECONDS = 600  # 10 minutes
+DEFAULT_TIMEOUT_SECONDS = 600  # 10 minutes total
+DEFAULT_API_TIMEOUT_SECONDS = 30  # per-API-call timeout
+DEFAULT_LOG_TIMEOUT_SECONDS = 60  # per-container log fetch timeout
 DEFAULT_MAX_LOG_SIZE_BYTES = 5 * 1024 * 1024  # 5 MB per container
 DEFAULT_MAX_BUNDLE_SIZE_BYTES = 500 * 1024 * 1024  # 500 MB total
 BUNDLE_PREFIX = "wo-support-bundle"
+
+# Retry defaults
+DEFAULT_MAX_RETRIES = 3
+DEFAULT_RETRY_BACKOFF_BASE = 1.0  # seconds; retries wait 1s, 2s, 4s
 
 # WO-relevant namespaces
 WO_NAMESPACE = "workloadorchestration"
