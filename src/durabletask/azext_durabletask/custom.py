@@ -6,7 +6,38 @@
 # --------------------------------------------------------------------------------------------
 
 from .aaz.latest.durabletask.retention_policy import Create as _Create
+from .aaz.latest.durabletask.scheduler import Create as _SchedulerCreate
+from .aaz.latest.durabletask.scheduler import Update as _SchedulerUpdate
 from azure.cli.core.aaz import AAZStrArg
+from azure.cli.core.azclierror import ValidationError
+
+
+class CreateScheduler(_SchedulerCreate):
+    """Create a Durabletask scheduler."""
+
+    def pre_operations(self):
+        """Validate SKU parameters before executing the operation."""
+        args = self.ctx.args
+
+        if not args.sku_name or args.sku_name.to_serialized_data() is None:
+            raise ValidationError("The --sku-name parameter is required.")
+
+        if args.sku_name.to_serialized_data() == "Dedicated":
+            if not args.sku_capacity or args.sku_capacity.to_serialized_data() is None:
+                raise ValidationError(
+                    "The --sku-capacity parameter is required when --sku-name is 'Dedicated'."
+                )
+
+
+class UpdateScheduler(_SchedulerUpdate):
+    """Update a Durabletask scheduler."""
+
+    def post_instance_update(self, instance):
+        """Remove sku capacity from the payload if it is not set or is 0."""
+        sku = instance.properties.sku
+        capacity = sku.capacity.to_serialized_data()
+        if capacity is None or capacity == 0:
+            sku.capacity = None
 
 
 class CreatePolicy(_Create):
