@@ -6,11 +6,21 @@
 from collections import OrderedDict
 
 
+def _get_resource_group(result):
+    """Derive the resource group name from the resource id."""
+    resource_id = result.get('id', '')
+    if resource_id:
+        from azure.mgmt.core.tools import parse_resource_id
+        parsed = parse_resource_id(resource_id)
+        return parsed.get('resource_group', '')
+    return ''
+
+
 def scheduler_table_format(result):
     """Format a single scheduler for table output."""
     return OrderedDict([
         ('Name', result.get('name', '')),
-        ('ResourceGroup', result.get('resourceGroup', '')),
+        ('ResourceGroup', _get_resource_group(result)),
         ('Location', result.get('location', '')),
         ('State', result.get('properties', {}).get('provisioningState', '')),
         ('SKU', result.get('properties', {}).get('sku', {}).get('name', '')),
@@ -27,7 +37,7 @@ def taskhub_table_format(result):
     """Format a single task hub for table output."""
     return OrderedDict([
         ('Name', result.get('name', '')),
-        ('ResourceGroup', result.get('resourceGroup', '')),
+        ('ResourceGroup', _get_resource_group(result)),
         ('State', result.get('properties', {}).get('provisioningState', '')),
     ])
 

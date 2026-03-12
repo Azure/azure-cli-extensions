@@ -8,6 +8,7 @@ from .aaz.latest.durabletask.scheduler import Update as _SchedulerUpdate
 from .aaz.latest.durabletask.scheduler import Show as _SchedulerShow
 from .aaz.latest.durabletask.taskhub import Show as _TaskHubShow
 from azure.cli.core.azclierror import ValidationError, ResourceNotFoundError
+from azure.core.exceptions import HttpResponseError
 
 import logging
 logger = logging.getLogger(__name__)
@@ -155,11 +156,13 @@ def _resolve_user_assigned_identity(cli_ctx, identity_resource_id):
                                          subscription_id=sub)
     try:
         identity = msi_client.user_assigned_identities.get(rg, name)
-    except Exception as ex:
-        raise ResourceNotFoundError(
-            f"User-assigned identity '{identity_resource_id}' not found. "
-            "Please verify the resource ID."
-        ) from ex
+    except HttpResponseError as ex:
+        if ex.status_code == 404:
+            raise ResourceNotFoundError(
+                f"User-assigned identity '{identity_resource_id}' not found. "
+                "Please verify the resource ID."
+            ) from ex
+        raise
 
     if identity is None or identity.principal_id is None:
         raise ResourceNotFoundError(
@@ -243,11 +246,13 @@ def _get_functionapp_identity(cli_ctx, target_name, target_resource_group, targe
                                          subscription_id=target_subscription)
     try:
         app = web_client.web_apps.get(target_resource_group, target_name)
-    except Exception as ex:
-        raise ResourceNotFoundError(
-            f"Function app '{target_name}' not found in resource group "
-            f"'{target_resource_group}'. Please verify the name and resource group."
-        ) from ex
+    except HttpResponseError as ex:
+        if ex.status_code == 404:
+            raise ResourceNotFoundError(
+                f"Function app '{target_name}' not found in resource group "
+                f"'{target_resource_group}'. Please verify the name and resource group."
+            ) from ex
+        raise
 
     if app is None or app.name is None:
         raise ResourceNotFoundError(
@@ -275,11 +280,13 @@ def _get_containerapp_identity(cli_ctx, target_name, target_resource_group, targ
                                         api_version='2024-03-01')
     try:
         app = ca_client.container_apps.get(target_resource_group, target_name)
-    except Exception as ex:
-        raise ResourceNotFoundError(
-            f"Container app '{target_name}' not found in resource group "
-            f"'{target_resource_group}'. Please verify the name and resource group."
-        ) from ex
+    except HttpResponseError as ex:
+        if ex.status_code == 404:
+            raise ResourceNotFoundError(
+                f"Container app '{target_name}' not found in resource group "
+                f"'{target_resource_group}'. Please verify the name and resource group."
+            ) from ex
+        raise
 
     if app is None or app.name is None:
         raise ResourceNotFoundError(
@@ -433,12 +440,14 @@ def attach_scheduler(cmd, resource_group_name, scheduler_name, task_hub_name,  #
             "scheduler_name": scheduler_name,
             "name": task_hub_name,
         })
-    except Exception as ex:
-        raise ResourceNotFoundError(
-            f"Task hub '{task_hub_name}' not found under scheduler '{scheduler_name}' "
-            f"in resource group '{resource_group_name}'. "
-            "Please verify the task hub name."
-        ) from ex
+    except HttpResponseError as ex:
+        if ex.status_code == 404:
+            raise ResourceNotFoundError(
+                f"Task hub '{task_hub_name}' not found under scheduler '{scheduler_name}' "
+                f"in resource group '{resource_group_name}'. "
+                "Please verify the task hub name."
+            ) from ex
+        raise
 
     # Step 2: Resolve the identity to use for role assignment
     if identity:
