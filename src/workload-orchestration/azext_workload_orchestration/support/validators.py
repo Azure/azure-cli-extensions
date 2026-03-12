@@ -19,6 +19,7 @@ from azext_workload_orchestration.support.consts import (
     CATEGORY_CERT_MANAGER,
     CATEGORY_WO_COMPONENTS,
     CATEGORY_ADMISSION_CONTROLLERS,
+    CATEGORY_CONNECTIVITY,
     MIN_CPU_CORES,
     MIN_MEMORY_GI,
     MIN_NODE_COUNT_PROD,
@@ -61,9 +62,11 @@ def run_all_checks(clients, bundle_dir, cluster_info, capabilities):
         (_check_default_storage_class, "Default StorageClass"),
         (_check_csi_drivers, "CSI drivers"),
         (_check_cert_manager, "cert-manager installation"),
+        (_check_arc_dependencies, "Azure Arc dependencies"),
         (_check_wo_namespace, "WO namespace exists"),
         (_check_protected_namespace, "Protected namespace check"),
         (_check_wo_pods, "WO pods running"),
+        (_check_wo_services_deployments, "WO services and deployments"),
         (_check_wo_webhooks, "WO webhook health"),
         (_check_admission_controllers, "Admission controller detection"),
         (_check_psa_labels, "Pod Security Admission labels"),
@@ -325,6 +328,72 @@ def _check_cert_manager(clients, bundle_dir, cluster_info, capabilities):
     )
 
 
+# ---------------------------------------------------------------------------
+# Azure Arc dependency checks
+# ---------------------------------------------------------------------------
+
+ARC_DEPENDENCY_NAMESPACES = ["azure-arc", "azure-extensions"]
+
+
+def _check_arc_dependencies(clients, bundle_dir, cluster_info, capabilities):
+    """Check that Azure Arc prerequisite namespaces and components exist."""
+    namespaces = cluster_info.get("namespaces") or []
+    ns_names = {ns["name"] for ns in namespaces}
+
+    missing = [ns for ns in ARC_DEPENDENCY_NAMESPACES if ns not in ns_names]
+    found = [ns for ns in ARC_DEPENDENCY_NAMESPACES if ns in ns_names]
+
+    if missing and not found:
+        return write_check_result(
+            bundle_dir, CATEGORY_CONNECTIVITY, "arc-dependencies",
+            STATUS_FAIL,
+            f"Azure Arc namespaces missing: {', '.join(missing)}. "
+            "WO requires an Arc-enabled cluster. Run 'az connectedk8s connect' first.",
+        )
+
+    if missing:
+        return write_check_result(
+            bundle_dir, CATEGORY_CONNECTIVITY, "arc-dependencies",
+            STATUS_WARN,
+            f"Partial Arc setup: found {', '.join(found)}, "
+            f"missing {', '.join(missing)}",
+            details={"found": found, "missing": missing},
+        )
+
+    # Check azure-arc namespace has healthy pods
+    core = clients["core_v1"]
+    result, err = safe_api_call(
+        core.list_namespaced_pod, "azure-arc",
+        description="list pods in azure-arc",
+    )
+    if err:
+        return write_check_result(
+            bundle_dir, CATEGORY_CONNECTIVITY, "arc-dependencies",
+            STATUS_WARN, f"Arc namespaces exist but could not verify pods: {err}",
+        )
+
+    pods = result.items or []
+    running = [p for p in pods if p.status.phase == "Running"]
+    not_running = [p for p in pods if p.status.phase != "Running"]
+
+    if not_running:
+        names = [p.metadata.name for p in not_running[:5]]
+        return write_check_result(
+            bundle_dir, CATEGORY_CONNECTIVITY, "arc-dependencies",
+            STATUS_WARN,
+            f"Arc namespaces present, {len(running)} pod(s) Running, "
+            f"{len(not_running)} not Running: {', '.join(names)}",
+            details={"running": len(running), "not_running_pods": names},
+        )
+
+    return write_check_result(
+        bundle_dir, CATEGORY_CONNECTIVITY, "arc-dependencies",
+        STATUS_PASS,
+        f"Azure Arc healthy: namespaces {', '.join(found)} present, "
+        f"{len(running)} pod(s) Running",
+    )
+
+
 def _check_wo_namespace(clients, bundle_dir, cluster_info, capabilities):
     """Check the WO namespace exists."""
     namespaces = cluster_info.get("namespaces") or []
@@ -380,6 +449,61 @@ def _check_wo_pods(clients, bundle_dir, cluster_info, capabilities):
     return write_check_result(
         bundle_dir, CATEGORY_WO_COMPONENTS, "wo-pods",
         STATUS_PASS, f"All {len(running)} WO pods Running"
+    )
+
+
+def _check_wo_services_deployments(clients, bundle_dir, cluster_info, capabilities):
+    """Check WO services and deployments are healthy."""
+    core = clients["core_v1"]
+    apps = clients["apps_v1"]
+
+    issues = []
+
+    # Check deployments
+    result, err = safe_api_call(
+        apps.list_namespaced_deployment, WO_NAMESPACE,
+        description=f"list deployments in {WO_NAMESPACE}",
+    )
+    if err:
+        return write_check_result(
+            bundle_dir, CATEGORY_WO_COMPONENTS, "wo-services-deployments",
+            STATUS_WARN, f"Could not check WO deployments: {err}"
+        )
+
+    deployments = result.items or []
+    dep_details = []
+    for d in deployments:
+        desired = d.spec.replicas or 0
+        ready = d.status.ready_replicas or 0
+        dep_details.append({
+            "name": d.metadata.name,
+            "desired": desired,
+            "ready": ready,
+        })
+        if ready < desired:
+            issues.append(f"Deployment {d.metadata.name}: {ready}/{desired} ready")
+
+    # Check services
+    result, err = safe_api_call(
+        core.list_namespaced_service, WO_NAMESPACE,
+        description=f"list services in {WO_NAMESPACE}",
+    )
+    svc_count = len(result.items) if result else 0
+
+    if issues:
+        return write_check_result(
+            bundle_dir, CATEGORY_WO_COMPONENTS, "wo-services-deployments",
+            STATUS_WARN,
+            f"{len(deployments)} deployment(s), {svc_count} service(s) — "
+            f"issues: {'; '.join(issues)}",
+            details={"deployments": dep_details, "services": svc_count, "issues": issues},
+        )
+
+    return write_check_result(
+        bundle_dir, CATEGORY_WO_COMPONENTS, "wo-services-deployments",
+        STATUS_PASS,
+        f"{len(deployments)} deployment(s) all healthy, {svc_count} service(s)",
+        details={"deployments": dep_details, "services": svc_count},
     )
 
 

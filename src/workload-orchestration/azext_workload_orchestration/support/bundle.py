@@ -58,6 +58,7 @@ def create_support_bundle(cmd,
         collect_pvcs,
         validate_namespaces,
         collect_network_config,
+        collect_all_events,
     )
     from azext_workload_orchestration.support.validators import run_all_checks
 
@@ -126,6 +127,17 @@ def create_support_bundle(cmd,
         _print_capabilities(capabilities)
     except Exception as ex:
         err_msg = "Step 4 - Detect capabilities failed: %s" % ex
+        errors.append(err_msg)
+        _out("  [ERROR] %s", err_msg)
+
+    # --- Step 4b: Collect cluster-wide events ---
+    try:
+        all_events = collect_all_events(clients, bundle_dir)
+        if all_events:
+            warning_count = sum(1 for e in all_events if e["type"] == "Warning")
+            _out("  Events:   %d total (%d warnings)", len(all_events), warning_count)
+    except Exception as ex:
+        err_msg = "Step 4b - Collect cluster events failed: %s" % ex
         errors.append(err_msg)
         _out("  [ERROR] %s", err_msg)
 

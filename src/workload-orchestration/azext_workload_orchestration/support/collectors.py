@@ -153,6 +153,47 @@ def collect_cluster_info(clients, bundle_dir):
     return info
 
 
+def collect_all_events(clients, bundle_dir):
+    """Collect events from all namespaces (Warning events prioritized).
+
+    Saves to cluster-info/events.json. Limits to most recent 500 events
+    to keep bundle size reasonable.
+    """
+    core = clients["core_v1"]
+    result, err = safe_api_call(
+        core.list_event_for_all_namespaces,
+        description="list events across all namespaces",
+    )
+    if not result:
+        logger.debug("Could not collect cluster events: %s", err)
+        return []
+
+    events = []
+    for e in result.items:
+        events.append({
+            "namespace": e.metadata.namespace,
+            "type": e.type,
+            "reason": e.reason,
+            "message": e.message,
+            "involved_object": f"{e.involved_object.kind}/{e.involved_object.name}",
+            "count": e.count,
+            "first_timestamp": str(e.first_timestamp) if e.first_timestamp else None,
+            "last_timestamp": str(e.last_timestamp) if e.last_timestamp else None,
+        })
+
+    # Sort: Warning first, then by last_timestamp descending, limit to 500
+    events.sort(key=lambda e: (
+        0 if e["type"] == "Warning" else 1,
+        e.get("last_timestamp") or "",
+    ))
+    events = events[:500]
+
+    write_json(os.path.join(bundle_dir, FOLDER_CLUSTER_INFO, "events.json"), events)
+    warning_count = sum(1 for e in events if e["type"] == "Warning")
+    logger.info("Collected %d cluster events (%d warnings)", len(events), warning_count)
+    return events
+
+
 def _get_node_roles(node):
     """Extract node roles from labels."""
     roles = []
