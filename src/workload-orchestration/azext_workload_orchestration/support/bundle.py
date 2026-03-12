@@ -310,6 +310,10 @@ def create_support_bundle(cmd,
         }
         write_json(os.path.join(bundle_dir, FOLDER_CHECKS, "summary.json"), checks_summary)
 
+    # --- Step 10c: Write human-readable summary ---
+    _write_summary_md(bundle_dir, bundle_name, cluster_info, capabilities,
+                      check_results, namespaces, total_logs, total_prev, errors)
+
     # --- Step 11: Create zip ---
     zip_path = create_zip_bundle(bundle_dir, bundle_name, output_dir)
 
@@ -388,6 +392,222 @@ def _compute_health_summary(check_results, errors):
         "checks_warned": sum(1 for c in check_results if c.get("status") == STATUS_WARN),
         "collection_errors": len(errors) if errors else 0,
     }
+
+
+def _write_summary_md(bundle_dir, bundle_name, cluster_info, capabilities,
+                      check_results, namespaces, total_logs, total_prev, errors):
+    """Write a comprehensive SUMMARY.md at the bundle root.
+
+    This is the single file a DRI opens first — it summarizes everything
+    in the bundle: cluster state, check results, collected resources, errors.
+    """
+    from azext_workload_orchestration.support.utils import write_text
+    import json as _json
+
+    lines = []
+    lines.append("# WO Support Bundle — Summary Report")
+    lines.append("")
+
+    sv = cluster_info.get("server_version", {})
+    ctx_name = cluster_info.get("context", "unknown")
+    lines.append("## Cluster Overview")
+    lines.append("")
+    lines.append("| Field | Value |")
+    lines.append("|-------|-------|")
+    lines.append(f"| **Bundle** | `{bundle_name}` |")
+    lines.append(f"| **Kubernetes Version** | {sv.get('git_version', 'unknown')} |")
+    lines.append(f"| **Platform** | {sv.get('platform', 'unknown')} |")
+    lines.append(f"| **Node Count** | {cluster_info.get('node_count', 0)} |")
+    lines.append(f"| **Namespace Count** | {len(cluster_info.get('namespaces', []))} |")
+    lines.append(f"| **Namespaces Collected** | {', '.join(namespaces)} |")
+
+    # Detected capabilities
+    detected = [k.replace("has_", "") for k, v in capabilities.items() if v]
+    not_detected = [k.replace("has_", "") for k, v in capabilities.items() if not v]
+    lines.append(f"| **Components Detected** | {', '.join(detected) if detected else 'none'} |")
+    if not_detected:
+        lines.append(f"| **Not Detected** | {', '.join(not_detected)} |")
+    lines.append("")
+
+    # Nodes
+    nodes = cluster_info.get("nodes", [])
+    if nodes:
+        lines.append("## Nodes")
+        lines.append("")
+        lines.append("| Name | Ready | Roles | CPU | Memory | Runtime | Kubelet |")
+        lines.append("|------|-------|-------|-----|--------|---------|---------|")
+        for n in nodes:
+            ready = "✅ Yes" if n.get("ready") == "True" else "❌ No"
+            roles = ", ".join(n.get("roles", ["<none>"]))
+            lines.append(
+                f"| {n['name']} | {ready} | {roles} "
+                f"| {n.get('allocatable_cpu', '?')} "
+                f"| {n.get('allocatable_memory', '?')} "
+                f"| {n.get('container_runtime', '?')} "
+                f"| {n.get('kubelet_version', '?')} |"
+            )
+
+        # Node conditions (pressure, etc.)
+        has_issues = False
+        for n in nodes:
+            conditions = n.get("conditions", {})
+            for cond, val in conditions.items():
+                if cond != "Ready" and val == "True":
+                    if not has_issues:
+                        lines.append("")
+                        lines.append("### ⚠️ Node Conditions")
+                        lines.append("")
+                        has_issues = True
+                    lines.append(f"- **{n['name']}**: {cond} = True")
+
+        # Taints
+        tainted = [n for n in nodes if n.get("taints")]
+        if tainted:
+            lines.append("")
+            lines.append("### Node Taints")
+            lines.append("")
+            for n in tainted:
+                for t in n["taints"]:
+                    lines.append(f"- **{n['name']}**: `{t.get('key', '?')}={t.get('value', '')}:{t.get('effect', '?')}`")
+        lines.append("")
+
+    # Checks — the main section
+    if check_results:
+        passed = sum(1 for c in check_results if c.get("status") == STATUS_PASS)
+        failed = sum(1 for c in check_results if c.get("status") == STATUS_FAIL)
+        warned = sum(1 for c in check_results if c.get("status") == STATUS_WARN)
+
+        lines.append("## Prerequisite Checks")
+        lines.append("")
+        lines.append(f"> **{passed} passed, {failed} failed, {warned} warnings** "
+                      f"(out of {len(check_results)} total)")
+        lines.append("")
+
+        # Failed checks first (most important)
+        failed_checks = [c for c in check_results if c.get("status") == STATUS_FAIL]
+        if failed_checks:
+            lines.append("### ❌ Failed Checks (Action Required)")
+            lines.append("")
+            for c in failed_checks:
+                lines.append(f"- **{c.get('check_name', '?')}** ({c.get('category', '?')}): {c.get('message', '')}")
+            lines.append("")
+
+        # Warnings
+        warn_checks = [c for c in check_results if c.get("status") == STATUS_WARN]
+        if warn_checks:
+            lines.append("### ⚠️ Warnings")
+            lines.append("")
+            for c in warn_checks:
+                lines.append(f"- **{c.get('check_name', '?')}** ({c.get('category', '?')}): {c.get('message', '')}")
+            lines.append("")
+
+        # Full table
+        lines.append("### All Checks")
+        lines.append("")
+        lines.append("| Status | Check | Category | Details |")
+        lines.append("|--------|-------|----------|---------|")
+
+        status_icons = {
+            STATUS_PASS: "✅ PASS",
+            STATUS_FAIL: "❌ FAIL",
+            STATUS_WARN: "⚠️ WARN",
+            "SKIP": "⏭️ SKIP",
+            "ERROR": "💥 ERROR",
+        }
+        for c in check_results:
+            icon = status_icons.get(c.get("status"), c.get("status", "?"))
+            name = c.get("check_name", "unknown")
+            cat = c.get("category", "")
+            msg = c.get("message", "").replace("|", "\\|")
+            lines.append(f"| {icon} | {name} | {cat} | {msg} |")
+        lines.append("")
+
+    # Data collected
+    lines.append("## Data Collected")
+    lines.append("")
+    lines.append("| Item | Count |")
+    lines.append("|------|-------|")
+    lines.append(f"| Container logs | {total_logs} |")
+    if total_prev:
+        lines.append(f"| Previous logs (crash-looping pods) | {total_prev} |")
+    lines.append(f"| Namespaces collected | {len(namespaces)} |")
+    lines.append(f"| Prerequisite checks | {len(check_results)} |")
+    lines.append("")
+
+    # Per-namespace resource counts (read from collected files)
+    lines.append("### Resources Per Namespace")
+    lines.append("")
+    for ns in namespaces:
+        res_file = os.path.join(bundle_dir, "resources", f"{ns}-resources.json")
+        if os.path.exists(res_file):
+            try:
+                import json as _j
+                with open(res_file, "r") as f:
+                    res_data = _j.load(f)
+                parts = []
+                for key, items in res_data.items():
+                    if isinstance(items, list) and items:
+                        parts.append(f"{len(items)} {key}")
+                if parts:
+                    lines.append(f"**{ns}:** {', '.join(parts)}")
+                    lines.append("")
+            except Exception:
+                pass
+
+    # WO components
+    wo_file = os.path.join(bundle_dir, "resources", "wo-components.json")
+    if os.path.exists(wo_file):
+        try:
+            with open(wo_file, "r") as f:
+                wo_data = _json.load(f)
+            if wo_data:
+                lines.append("### WO Components")
+                lines.append("")
+                for key, items in wo_data.items():
+                    if isinstance(items, list):
+                        label = key.replace("_", " ").title()
+                        lines.append(f"- **{label}:** {len(items)}")
+                        for item in items:
+                            name = item.get("name", "?")
+                            status = item.get("status", item.get("ready", "?"))
+                            lines.append(f"  - `{name}` — {status}")
+                lines.append("")
+        except Exception:
+            pass
+
+    # Errors
+    if errors:
+        lines.append("## ⚠️ Collection Errors")
+        lines.append("")
+        lines.append("The following errors occurred during bundle collection. "
+                      "The bundle was still generated but may be missing some data.")
+        lines.append("")
+        for err in errors:
+            lines.append(f"- {err}")
+        lines.append("")
+
+    # Bundle contents guide
+    lines.append("## How to Read This Bundle")
+    lines.append("")
+    lines.append("| File/Folder | What's Inside |")
+    lines.append("|-------------|---------------|")
+    lines.append("| 📄 `SUMMARY.md` | This file — start here |")
+    lines.append("| 📄 `metadata.json` | Bundle parameters, timestamps, capabilities |")
+    lines.append("| 📁 `checks/` | Individual check results (JSON) + `summary.json` |")
+    lines.append("| 📁 `cluster-info/` | K8s version, node details, namespace list, metrics |")
+    lines.append("| 📁 `resources/` | Per-namespace resource descriptions, cluster-scoped resources, network config |")
+    lines.append("| 📁 `logs/` | Container logs organized by `namespace/pod--container.log` |")
+    lines.append("")
+    lines.append("### Quick Troubleshooting")
+    lines.append("")
+    lines.append("1. **Check failed?** → Look at the ❌ Failed Checks section above")
+    lines.append("2. **Pod crashing?** → Check `logs/<namespace>/<pod>--<container>--previous.log`")
+    lines.append("3. **WO not working?** → Check `resources/wo-components.json` and `logs/workloadorchestration/`")
+    lines.append("4. **Network issues?** → Check `resources/network-config.json`")
+    lines.append("5. **Storage issues?** → Check `resources/cluster-resources.json` (storage_classes, csi_drivers)")
+    lines.append("")
+
+    write_text(os.path.join(bundle_dir, "SUMMARY.md"), "\n".join(lines))
 
 
 def _out(msg, *args):
