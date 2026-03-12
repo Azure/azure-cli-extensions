@@ -5237,6 +5237,161 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         result = ctx.get_container_network_logs(mc)
         self.assertTrue(result)
 
+    def test_get_container_network_logs_with_azure_monitor_logs(self):
+        """Test get_container_network_logs succeeds when monitoring is enabled via enable_azure_monitor_logs param."""
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({
+                "enable_container_network_logs": True,
+                "enable_acns": True,
+                "enable_azure_monitor_logs": True,
+            }),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                advanced_networking=self.models.AdvancedNetworking(
+                    enabled=True,
+                ),
+            ),
+        )
+        ctx.attach_mc(mc)
+        result = ctx.get_container_network_logs(mc)
+        self.assertTrue(result)
+
+    def test_get_container_network_logs_legacy_disable_retina_flow_logs(self):
+        """Test get_container_network_logs returns False when legacy disable_retina_flow_logs is specified."""
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({
+                "disable_retina_flow_logs": True,
+            }),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        mc = self.models.ManagedCluster(location="test_location")
+        ctx.attach_mc(mc)
+        result = ctx.get_container_network_logs(mc)
+        self.assertFalse(result)
+
+    def test_get_container_network_logs_with_acns_already_on_mc(self):
+        """Test get_container_network_logs succeeds when ACNS is already enabled on mc (not via raw param)."""
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({
+                "enable_container_network_logs": True,
+                "enable_addons": "monitoring",
+            }),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                advanced_networking=self.models.AdvancedNetworking(
+                    enabled=True,
+                ),
+            ),
+        )
+        ctx.attach_mc(mc)
+        result = ctx.get_container_network_logs(mc)
+        self.assertTrue(result)
+
+    def test_get_enable_high_log_scale_mode_cnl_with_explicit_true(self):
+        """Test when user enables both CNL and HLSM=True explicitly. Should succeed and return True."""
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({
+                "enable_container_network_logs": True,
+                "enable_high_log_scale_mode": True,
+                "enable_acns": True,
+                "enable_addons": "monitoring",
+            }),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        result = ctx.get_enable_high_log_scale_mode()
+        self.assertTrue(result)
+
+    def test_get_enable_high_log_scale_mode_update_explicit_false_without_cnl(self):
+        """Test that HLSM=False without CNL returns False in update mode without error."""
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({
+                "enable_high_log_scale_mode": False,
+            }),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                )
+            },
+        )
+        ctx.attach_mc(mc)
+        result = ctx.get_enable_high_log_scale_mode()
+        self.assertFalse(result)
+
+    def test_get_enable_high_log_scale_mode_update_error_explicit_false_with_cnl(self):
+        """Test error when user explicitly disables HLSM with CNL enabled in update mode."""
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({
+                "enable_container_network_logs": True,
+                "enable_high_log_scale_mode": False,
+            }),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                advanced_networking=self.models.AdvancedNetworking(
+                    enabled=True,
+                ),
+            ),
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                )
+            },
+        )
+        ctx.attach_mc(mc)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx.get_enable_high_log_scale_mode()
+
+    def test_get_enable_high_log_scale_mode_update_monitoring_camelcase_key(self):
+        """Test auto-enable HLSM in update mode when monitoring uses camelCase 'omsAgent' key."""
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({
+                "enable_container_network_logs": True,
+            }),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                advanced_networking=self.models.AdvancedNetworking(
+                    enabled=True,
+                ),
+            ),
+            addon_profiles={
+                "omsAgent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                )
+            },
+        )
+        ctx.attach_mc(mc)
+        result = ctx.get_enable_high_log_scale_mode()
+        self.assertTrue(result)
+
     def test_get_enable_default_domain(self):
         # default value
         ctx_1 = AKSPreviewManagedClusterContext(
@@ -5894,6 +6049,65 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             # Verify high log scale mode is auto-enabled
             self.assertTrue(dec.context.get_enable_high_log_scale_mode())
 
+    def test_set_up_addon_profiles_cnl_and_hlsm_flag_without_value(self):
+        """Regression test: CREATE with --enable-container-network-logs --enable-acns
+        --enable-addons monitoring --enable-high-log-scale-mode (flag without boolean value).
+
+        When --enable-high-log-scale-mode is passed without a value, get_three_state_flag()
+        sets it to True via nargs='?'. This must NOT trigger the 'Container network logs
+        requires --enable-acns...' error when ACNS and monitoring are both provided.
+        """
+        dec = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_addons": "monitoring",
+                "enable_container_network_logs": True,
+                "enable_high_log_scale_mode": True,  # simulates --enable-high-log-scale-mode without value
+                "enable_acns": True,
+                "workspace_resource_id": "test_workspace_resource_id",
+                "enable_msi_auth_for_monitoring": True,
+                "enable_syslog": False,
+                "data_collection_settings": None,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        network_profile = self.models.ContainerServiceNetworkProfile(
+            advanced_networking=self.models.AdvancedNetworking(enabled=True),
+        )
+        mc = self.models.ManagedCluster(location="test_location", network_profile=network_profile)
+        dec.context.attach_mc(mc)
+        dec.context.set_intermediate("subscription_id", "test_subscription_id")
+        external_functions = dec.context.external_functions
+        with patch.object(external_functions, 'ensure_container_insights_for_monitoring', return_value=None):
+            # Should NOT raise InvalidArgumentValueError
+            dec_mc = dec.set_up_addon_profiles(mc)
+            self.assertTrue(dec.context.get_enable_high_log_scale_mode())
+
+    def test_set_up_addon_profiles_hlsm_only_no_cnl(self):
+        """Test that enabling HLSM without CNL does not set enableRetinaNetworkFlags in config."""
+        dec = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_addons": "monitoring",
+                "enable_high_log_scale_mode": True,
+                "workspace_resource_id": "test_workspace_resource_id",
+                "enable_msi_auth_for_monitoring": True,
+                "enable_syslog": False,
+                "data_collection_settings": None,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(location="test_location")
+        dec.context.attach_mc(mc)
+        dec.context.set_intermediate("subscription_id", "test_subscription_id")
+        external_functions = dec.context.external_functions
+        with patch.object(external_functions, 'ensure_container_insights_for_monitoring', return_value=None):
+            dec_mc = dec.set_up_addon_profiles(mc)
+            # enableRetinaNetworkFlags should NOT be set when CNL is not enabled
+            omsagent_config = dec_mc.addon_profiles[CONST_MONITORING_ADDON_NAME].config
+            self.assertNotIn("enableRetinaNetworkFlags", omsagent_config)
 
     def test_set_up_http_proxy_config(self):
         dec_1 = AKSPreviewManagedClusterCreateDecorator(
@@ -13913,6 +14127,129 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_8.context.attach_mc(mc_8)
         dec_8.update_monitoring_profile_flow_logs(mc_8)
         self.assertTrue(dec_8.context.get_intermediate("monitoring_addon_postprocessing_required"))
+
+    def test_update_monitoring_profile_flow_logs_no_flags_noop(self):
+        """Test that update_monitoring_profile_flow_logs is a no-op when no CNL/HLSM flags are specified."""
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={"enableRetinaNetworkFlags": "True"},
+                )
+            },
+        )
+        dec.context.attach_mc(mc)
+        dec_mc = dec.update_monitoring_profile_flow_logs(mc)
+        # Existing config should remain unchanged
+        self.assertEqual(
+            dec_mc.addon_profiles["omsagent"].config["enableRetinaNetworkFlags"],
+            "True",
+        )
+        self.assertFalse(
+            dec.context.get_intermediate("monitoring_addon_postprocessing_required", default_value=False)
+        )
+
+    def test_update_enable_cnl_with_azure_monitor_logs_on_cluster(self):
+        """Test enabling CNL on update when monitoring was enabled via enable_azure_monitor_logs on existing cluster."""
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_container_network_logs": True,
+                "enable_azure_monitor_logs": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                advanced_networking=self.models.AdvancedNetworking(
+                    enabled=True,
+                ),
+            ),
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                )
+            },
+        )
+        dec.context.attach_mc(mc)
+        dec_mc = dec.update_monitoring_profile_flow_logs(mc)
+        self.assertEqual(
+            dec_mc.addon_profiles["omsagent"].config["enableRetinaNetworkFlags"],
+            "True",
+        )
+        self.assertTrue(dec.context.get_intermediate("monitoring_addon_postprocessing_required"))
+
+    def test_update_cnl_explicit_true_hlsm_with_prerequisites(self):
+        """Test enabling CNL + HLSM=True explicitly on update with all prerequisites met."""
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_container_network_logs": True,
+                "enable_high_log_scale_mode": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                advanced_networking=self.models.AdvancedNetworking(
+                    enabled=True,
+                ),
+            ),
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={
+                        CONST_MONITORING_USING_AAD_MSI_AUTH: "true",
+                    }
+                )
+            },
+        )
+        dec.context.attach_mc(mc)
+        dec_mc = dec.update_monitoring_profile_flow_logs(mc)
+        self.assertEqual(
+            dec_mc.addon_profiles["omsagent"].config["enableRetinaNetworkFlags"],
+            "True",
+        )
+        self.assertTrue(dec.context.get_enable_high_log_scale_mode())
+        self.assertTrue(dec.context.get_intermediate("monitoring_addon_postprocessing_required"))
+
+    def test_update_disable_hlsm_standalone_no_postprocessing(self):
+        """Test that disabling HLSM standalone (no CNL flag) does not trigger postprocessing."""
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_high_log_scale_mode": False,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={
+                        CONST_MONITORING_USING_AAD_MSI_AUTH: "true",
+                    }
+                )
+            },
+        )
+        dec.context.attach_mc(mc)
+        dec.update_monitoring_profile_flow_logs(mc)
+        self.assertFalse(
+            dec.context.get_intermediate("monitoring_addon_postprocessing_required", default_value=False)
+        )
 
     def test_update_node_provisioning_profile(self):
         dec_0 = AKSPreviewManagedClusterUpdateDecorator(
