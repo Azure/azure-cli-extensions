@@ -18,6 +18,9 @@ class AnalyzeWafPolicy(AAZCommand):
     """Analyze an Nginx Deployment WAF Policy
 
     Analyze an Nginx Deployment WAF Policy for correctness
+
+    :example: NginxDeploymentWafPolicies_Analysis
+        az nginx deployment waf-policy analyze-waf-policy --resource-group myResourceGroup --deployment-name myDeployment --waf-policy-name myWafPolicy
     """
 
     _aaz_info = {
