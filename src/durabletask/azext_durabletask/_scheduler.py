@@ -362,26 +362,27 @@ def _update_containerapp_env_vars(cli_ctx, target_name, target_resource_group, t
             f"Container app '{target_name}' has no containers in its template."
         )
 
-    container = template.containers[0]
-    env_vars = list(container.env or [])
-
     conn_str = f"Endpoint={endpoint};Authentication=ManagedIdentity"
     if client_id:
         conn_str += f";ClientID={client_id}"
     env_map = {"DURABLE_TASK_SCHEDULER_CONNECTION_STRING": conn_str,
                "TASKHUB_NAME": task_hub_name}
-    for name, value in env_map.items():
-        found = False
-        for ev in env_vars:
-            if ev.name == name:
-                ev.value = value
-                found = True
-                break
-        if not found:
-            from azure.mgmt.appcontainers.models import EnvironmentVar
-            env_vars.append(EnvironmentVar(name=name, value=value))
 
-    container.env = env_vars
+    from azure.mgmt.appcontainers.models import EnvironmentVar
+
+    # Apply the environment variables to all containers in the template.
+    for container in template.containers:
+        env_vars = list(container.env or [])
+        for name, value in env_map.items():
+            found = False
+            for ev in env_vars:
+                if ev.name == name:
+                    ev.value = value
+                    found = True
+                    break
+            if not found:
+                env_vars.append(EnvironmentVar(name=name, value=value))
+        container.env = env_vars
     ca_client.container_apps.begin_update(
         target_resource_group, target_name,
         {"template": template},
