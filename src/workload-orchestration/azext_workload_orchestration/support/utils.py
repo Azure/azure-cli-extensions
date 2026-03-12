@@ -98,13 +98,24 @@ def get_kubernetes_client(kube_config=None, kube_context=None):
 # Bundle directory management
 # ---------------------------------------------------------------------------
 
-def create_bundle_directory(output_dir=None):
+def create_bundle_directory(output_dir=None, bundle_name=None):
     """Create the bundle directory structure and return its path.
+
+    Args:
+        output_dir: Optional directory to create the bundle in.
+        bundle_name: Optional custom name for the bundle. Defaults to
+                     wo-support-bundle-YYYYMMDD-HHMMSS.
 
     Returns (bundle_dir, bundle_name) tuple.
     """
     timestamp = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
-    bundle_name = f"{BUNDLE_PREFIX}-{timestamp}"
+    if bundle_name:
+        # Sanitize: replace spaces/special chars, append timestamp for uniqueness
+        import re
+        safe_name = re.sub(r'[^\w\-.]', '-', bundle_name).strip('-')
+        bundle_name = f"{safe_name}-{timestamp}"
+    else:
+        bundle_name = f"{BUNDLE_PREFIX}-{timestamp}"
 
     if output_dir:
         base = os.path.abspath(output_dir)

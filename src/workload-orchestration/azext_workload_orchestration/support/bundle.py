@@ -35,6 +35,7 @@ logger = get_logger(__name__)
 
 
 def create_support_bundle(cmd,
+                          bundle_name=None,
                           output_dir=None,
                           namespaces=None,
                           tail_lines=None,
@@ -56,6 +57,7 @@ def create_support_bundle(cmd,
         collect_metrics,
         collect_pvcs,
         validate_namespaces,
+        collect_network_config,
     )
     from azext_workload_orchestration.support.validators import run_all_checks
 
@@ -88,7 +90,7 @@ def create_support_bundle(cmd,
 
     # --- Step 2: Create bundle directory ---
     try:
-        bundle_dir, bundle_name = create_bundle_directory(output_dir)
+        bundle_dir, bundle_name = create_bundle_directory(output_dir, bundle_name)
     except Exception as ex:
         raise CLIError(
             f"Failed to create bundle directory: {ex}. "
@@ -219,6 +221,26 @@ def create_support_bundle(cmd,
             _out("  Metrics: %d node(s), %d WO pod(s)", nm, pm)
     except Exception as ex:
         err_msg = "Step 8b - Collect metrics failed: %s" % ex
+        errors.append(err_msg)
+        _out("  [ERROR] %s", err_msg)
+
+    # --- Step 8c: Collect network configuration ---
+    try:
+        net_info = collect_network_config(clients, bundle_dir)
+        if net_info:
+            parts = []
+            if net_info.get("kube_proxy_config"):
+                parts.append("kube-proxy config")
+            ep_count = len(net_info.get("endpoint_slices", []))
+            if ep_count:
+                parts.append("%d endpoint slices" % ep_count)
+            svc_count = len(net_info.get("external_services", []))
+            if svc_count:
+                parts.append("%d external services" % svc_count)
+            if parts:
+                _out("  Network: %s", ", ".join(parts))
+    except Exception as ex:
+        err_msg = "Step 8c - Collect network config failed: %s" % ex
         errors.append(err_msg)
         _out("  [ERROR] %s", err_msg)
 

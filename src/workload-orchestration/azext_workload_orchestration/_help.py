@@ -28,12 +28,15 @@ long-summary: |
     - Cluster info (version, nodes, namespaces)
     - Pod/Deployment/Service/DaemonSet/Event descriptions per namespace
     - Container logs (tailed by default)
+    - Network configuration (kube-proxy, external services, pod CIDRs)
     - StorageClass, PV, webhook, CRD inventory
     - WO component health (Symphony, cert-manager)
     - Prerequisite checks (K8s version, node capacity, DNS, storage, RBAC)
 examples:
   - name: Create a support bundle with defaults
     text: az workload-orchestration support create-bundle
+  - name: Create a named bundle
+    text: az workload-orchestration support create-bundle --bundle-name my-cluster-debug
   - name: Create a bundle in a specific directory
     text: az workload-orchestration support create-bundle --output-dir /tmp/bundles
   - name: Collect full logs (no tail) for WO namespace only

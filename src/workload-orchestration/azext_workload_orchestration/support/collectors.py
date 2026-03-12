@@ -896,3 +896,116 @@ def collect_pvcs(clients, bundle_dir, namespace):
     filepath = os.path.join(bundle_dir, FOLDER_RESOURCES, f"{namespace}-pvcs.json")
     write_json(filepath, pvcs)
     return pvcs
+
+
+# ---------------------------------------------------------------------------
+# Network configuration collection (iptables/proxy/connectivity)
+# ---------------------------------------------------------------------------
+
+def collect_network_config(clients, bundle_dir):
+    """Collect network configuration for diagnosing connectivity issues.
+
+    Collects: kube-proxy ConfigMap (contains iptables mode/rules config),
+    Services with external access (LoadBalancer/NodePort), and endpoint slices
+    for kube-system to verify service mesh health.
+    """
+    core = clients["core_v1"]
+    net_info = {}
+
+    # 1. kube-proxy ConfigMap — contains iptables mode, CIDR ranges, proxy rules
+    result, err = safe_api_call(
+        core.read_namespaced_config_map, "kube-proxy", "kube-system",
+        description="read kube-proxy ConfigMap",
+    )
+    if result:
+        data = result.data or {}
+        net_info["kube_proxy_config"] = {
+            "data_keys": list(data.keys()),
+        }
+        # Parse the config.conf or kubeconfig if present
+        for key in ("config.conf", "kubeconfig.conf"):
+            if key in data:
+                net_info["kube_proxy_config"][key] = data[key]
+    else:
+        logger.debug("kube-proxy ConfigMap not found: %s", err)
+
+    # 2. Services with external access (LoadBalancer, NodePort, ExternalName)
+    result, err = safe_api_call(
+        core.list_service_for_all_namespaces,
+        description="list all services for network config",
+    )
+    if result:
+        external_svcs = []
+        for svc in result.items:
+            svc_type = svc.spec.type
+            if svc_type in ("LoadBalancer", "NodePort", "ExternalName"):
+                external_svcs.append({
+                    "name": svc.metadata.name,
+                    "namespace": svc.metadata.namespace,
+                    "type": svc_type,
+                    "cluster_ip": svc.spec.cluster_ip,
+                    "external_ips": getattr(svc.spec, 'external_i_ps', None) or getattr(svc.spec, 'external_ips', []),
+                    "ports": [
+                        {
+                            "port": p.port,
+                            "target_port": str(p.target_port),
+                            "node_port": p.node_port,
+                            "protocol": p.protocol,
+                        }
+                        for p in (svc.spec.ports or [])
+                    ],
+                    "load_balancer_ip": (
+                        svc.status.load_balancer.ingress[0].ip
+                        if svc.status and svc.status.load_balancer
+                        and svc.status.load_balancer.ingress
+                        else None
+                    ),
+                })
+        net_info["external_services"] = external_svcs
+
+    # 3. Endpoint slices for kube-system (verify service discovery works)
+    try:
+        from kubernetes import client as _k8s_client
+        discovery_v1 = _k8s_client.DiscoveryV1Api()
+        result, err = safe_api_call(
+            discovery_v1.list_namespaced_endpoint_slice, "kube-system",
+            description="list endpoint slices in kube-system",
+        )
+        if result:
+            net_info["endpoint_slices"] = [
+                {
+                    "name": eps.metadata.name,
+                    "address_type": eps.address_type,
+                    "endpoints_count": len(eps.endpoints or []),
+                    "ports": [
+                        {"port": p.port, "protocol": p.protocol, "name": p.name}
+                        for p in (eps.ports or [])
+                    ],
+                }
+                for eps in result.items
+            ]
+    except Exception as ex:
+        logger.debug("Discovery API not available: %s", ex)
+
+    # 4. Cluster CIDR / pod CIDR from node specs
+    result, err = safe_api_call(
+        core.list_node, description="list nodes for pod CIDRs",
+    )
+    if result:
+        net_info["node_cidrs"] = [
+            {
+                "name": node.metadata.name,
+                "pod_cidr": node.spec.pod_cidr,
+                "pod_cidrs": getattr(node.spec, 'pod_cid_rs', None) or getattr(node.spec, 'pod_cidrs', None),
+            }
+            for node in result.items
+        ]
+
+    if net_info:
+        filepath = os.path.join(bundle_dir, FOLDER_RESOURCES, "network-config.json")
+        write_json(filepath, net_info)
+        logger.info("Collected network config: %d external services, %s",
+                     len(net_info.get("external_services", [])),
+                     "kube-proxy config found" if net_info.get("kube_proxy_config") else "no kube-proxy")
+
+    return net_info
