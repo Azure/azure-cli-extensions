@@ -1144,3 +1144,32 @@ def validate_azure_monitor_logs_enable_disable(namespace):
             "Cannot specify both '--enable-azure-monitor-logs' and '--disable-azure-monitor-logs'. "
             "Use either '--enable-azure-monitor-logs' or '--disable-azure-monitor-logs'."
         )
+
+
+def validate_nat_gateway_managed_outbound_ipv6_count(namespace):
+    """validate NAT gateway profile managed outbound IPv6 count"""
+    if namespace.nat_gateway_managed_outbound_ipv6_count is not None:
+        if (namespace.nat_gateway_managed_outbound_ipv6_count < 1 or
+                namespace.nat_gateway_managed_outbound_ipv6_count > 16):
+            raise InvalidArgumentValueError(
+                "--nat-gateway-managed-outbound-ipv6-count "
+                "must be in the range [1,16]"
+            )
+
+
+def validate_nat_gateway_v2_params(namespace):
+    """Validate that V2-only NAT gateway params require managedNATGatewayV2."""
+    v2_params = [
+        getattr(namespace, 'nat_gateway_managed_outbound_ipv6_count', None),
+        getattr(namespace, 'nat_gateway_outbound_ip_ids', None),
+        getattr(namespace, 'nat_gateway_outbound_ip_prefix_ids', None),
+    ]
+    if any(p is not None for p in v2_params):
+        outbound_type = getattr(namespace, 'outbound_type', None)
+        if outbound_type != 'managedNATGatewayV2':
+            raise InvalidArgumentValueError(
+                "--nat-gateway-managed-outbound-ipv6-count, "
+                "--nat-gateway-outbound-ips, and "
+                "--nat-gateway-outbound-ip-prefixes are only "
+                "valid with --outbound-type managedNATGatewayV2."
+            )
