@@ -266,10 +266,12 @@ def create_support_bundle(cmd,
 
     # --- Step 10: Write bundle metadata ---
     elapsed = time.time() - start_time
+    health_summary = _compute_health_summary(check_results, errors)
     metadata = {
         "bundle_name": bundle_name,
         "created_at": datetime.now(timezone.utc).isoformat(),
         "collection_time_seconds": round(elapsed, 1),
+        "health_summary": health_summary,
         "namespaces_collected": namespaces,
         "namespaces_skipped": [{"name": ns, "reason": r} for ns, r in skipped_ns] if skipped_ns else None,
         "tail_lines": tail,
@@ -362,6 +364,29 @@ def create_support_bundle(cmd,
         "checks_failed": failed,
         "checks_warned": warned,
         "errors": errors if errors else None,
+    }
+
+
+def _compute_health_summary(check_results, errors):
+    """Compute a health summary from check results.
+
+    Returns a dict with check counts and collection error count.
+    """
+    if not check_results:
+        return {
+            "checks_total": 0,
+            "checks_passed": 0,
+            "checks_failed": 0,
+            "checks_warned": 0,
+            "collection_errors": len(errors) if errors else 0,
+        }
+
+    return {
+        "checks_total": len(check_results),
+        "checks_passed": sum(1 for c in check_results if c.get("status") == STATUS_PASS),
+        "checks_failed": sum(1 for c in check_results if c.get("status") == STATUS_FAIL),
+        "checks_warned": sum(1 for c in check_results if c.get("status") == STATUS_WARN),
+        "collection_errors": len(errors) if errors else 0,
     }
 
 

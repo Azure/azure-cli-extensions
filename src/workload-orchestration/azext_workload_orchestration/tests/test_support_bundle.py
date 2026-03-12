@@ -2107,6 +2107,55 @@ class TestGetOwnerRef(unittest.TestCase):
 
 
 # ===========================================================================
+# Tests for health summary
+# ===========================================================================
+
+
+class TestHealthSummary(unittest.TestCase):
+    """Test _compute_health_summary."""
+
+    def test_all_pass(self):
+        from azext_workload_orchestration.support.bundle import _compute_health_summary
+
+        checks = [
+            {"status": "PASS", "check_name": "c1"},
+            {"status": "PASS", "check_name": "c2"},
+            {"status": "PASS", "check_name": "c3"},
+        ]
+        result = _compute_health_summary(checks, [])
+        self.assertEqual(result["checks_passed"], 3)
+        self.assertEqual(result["checks_failed"], 0)
+        self.assertEqual(result["checks_warned"], 0)
+        self.assertEqual(result["checks_total"], 3)
+
+    def test_mixed_statuses(self):
+        from azext_workload_orchestration.support.bundle import _compute_health_summary
+
+        checks = [
+            {"status": "PASS", "check_name": "c1"},
+            {"status": "WARN", "check_name": "c2"},
+            {"status": "FAIL", "check_name": "c3"},
+        ]
+        result = _compute_health_summary(checks, [])
+        self.assertEqual(result["checks_passed"], 1)
+        self.assertEqual(result["checks_failed"], 1)
+        self.assertEqual(result["checks_warned"], 1)
+
+    def test_no_checks(self):
+        from azext_workload_orchestration.support.bundle import _compute_health_summary
+
+        result = _compute_health_summary([], [])
+        self.assertEqual(result["checks_total"], 0)
+
+    def test_collection_errors_counted(self):
+        from azext_workload_orchestration.support.bundle import _compute_health_summary
+
+        checks = [{"status": "PASS", "check_name": "c1"}]
+        result = _compute_health_summary(checks, ["err1", "err2"])
+        self.assertEqual(result["collection_errors"], 2)
+
+
+# ===========================================================================
 # Tests for new consts
 # ===========================================================================
 
