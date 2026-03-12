@@ -266,12 +266,10 @@ def create_support_bundle(cmd,
 
     # --- Step 10: Write bundle metadata ---
     elapsed = time.time() - start_time
-    health_summary = _compute_health_summary(check_results, errors)
     metadata = {
         "bundle_name": bundle_name,
         "created_at": datetime.now(timezone.utc).isoformat(),
         "collection_time_seconds": round(elapsed, 1),
-        "health_summary": health_summary,
         "namespaces_collected": namespaces,
         "namespaces_skipped": [{"name": ns, "reason": r} for ns, r in skipped_ns] if skipped_ns else None,
         "tail_lines": tail,
@@ -298,8 +296,6 @@ def create_support_bundle(cmd,
             "warned": sum(1 for c in check_results if c.get("status") == STATUS_WARN),
             "skipped": sum(1 for c in check_results if c.get("status") == "SKIP"),
             "errored": sum(1 for c in check_results if c.get("status") == "ERROR"),
-            "health_status": health_summary.get("overall_status", "UNKNOWN"),
-            "health_score": health_summary.get("health_score", 0),
             "checks": [
                 {
                     "name": c.get("check_name", "unknown"),
@@ -338,8 +334,6 @@ def create_support_bundle(cmd,
     _out("  File:   %s", zip_path)
     _out("  Size:   %s", format_bytes(zip_size))
     _out("  Time:   %.1fs", elapsed)
-    if health_summary:
-        _out("  Health: %s (score: %d/100)", health_summary["overall_status"], health_summary["health_score"])
     _out("")
     if check_results:
         _out("  Checks: %d passed, %d failed, %d warnings", passed, failed, warned)
@@ -368,51 +362,6 @@ def create_support_bundle(cmd,
         "checks_failed": failed,
         "checks_warned": warned,
         "errors": errors if errors else None,
-    }
-
-
-def _compute_health_summary(check_results, errors):
-    """Compute an overall health summary from check results.
-
-    Returns a dict with overall_status (HEALTHY/DEGRADED/CRITICAL/UNKNOWN),
-    health_score (0-100), and category breakdown.
-    """
-    if not check_results:
-        return {
-            "overall_status": "UNKNOWN",
-            "health_score": 0,
-            "reason": "No checks were run",
-        }
-
-    total = len(check_results)
-    passed = sum(1 for c in check_results if c.get("status") == STATUS_PASS)
-    failed = sum(1 for c in check_results if c.get("status") == STATUS_FAIL)
-    warned = sum(1 for c in check_results if c.get("status") == STATUS_WARN)
-
-    # Health score: PASS=100%, WARN=50%, FAIL=0%
-    score = int(round(((passed * 100) + (warned * 50)) / total)) if total else 0
-
-    if failed == 0 and warned == 0:
-        status = "HEALTHY"
-    elif failed == 0 and warned > 0:
-        status = "DEGRADED"
-    elif failed <= 2:
-        status = "DEGRADED"
-    else:
-        status = "CRITICAL"
-
-    # Bump to CRITICAL if there were collection errors
-    if errors and status != "CRITICAL":
-        status = "DEGRADED"
-
-    return {
-        "overall_status": status,
-        "health_score": score,
-        "checks_total": total,
-        "checks_passed": passed,
-        "checks_failed": failed,
-        "checks_warned": warned,
-        "collection_errors": len(errors) if errors else 0,
     }
 
 
