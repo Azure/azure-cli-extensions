@@ -19,7 +19,7 @@ def setup_scenario1(test):
     pass
 
 
-def cleanup_scenario1(test):
+def cleanup_scenario(test):
     """Env cleanup_scenario1"""
     pass
 
@@ -27,14 +27,14 @@ def cleanup_scenario1(test):
 def call_scenario1(test):
     """# Testcase: scenario1"""
     setup_scenario1(test)
-    step_create(
+    step_create_scenario1(
         test,
         checks=[
             test.check("name", "{name}"),
             test.check("provisioningState", "Succeeded"),
         ],
     )
-    step_update(
+    step_update_scenario1(
         test,
         checks=[
             test.check("tags", "{tagsUpdate}"),
@@ -45,10 +45,30 @@ def call_scenario1(test):
     step_list_subscription(test, checks=[])
     step_list_resource_group(test, checks=[])
     step_delete(test, checks=[])
-    cleanup_scenario1(test)
+    cleanup_scenario(test)
 
 
-def step_create(test, checks=None):
+def call_scenario2(test):
+    """# Testcase: scenario2"""
+    setup_scenario1(test)
+    step_create_scenario2(
+        test,
+        checks=[
+            test.check("name", "{name}"),
+            test.check("provisioningState", "Succeeded"),
+        ],
+    )
+    step_update_scenario2(
+        test,
+        checks=[
+            test.check("tags", "{tagsUpdate}"),
+            test.check("provisioningState", "Succeeded"),
+        ],
+    )
+    cleanup_scenario(test)
+
+
+def step_create_scenario1(test, checks=None):
     """cloudservicesnetwork create operation"""
     if checks is None:
         checks = []
@@ -59,6 +79,22 @@ def step_create(test, checks=None):
         "--enable-default-egress-endpoints  {defaultEgressEndpoint} "
         " --tags {tags} "
         " --resource-group {rg}",
+        checks=checks,
+    )
+
+
+def step_create_scenario2(test, checks=None):
+    """cloudservicesnetwork create operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud cloudservicesnetwork create --cloud-services-network-name {name} --extended-location "
+        'name={extendedLocation} type="CustomLocation" --location {location} '
+        "--additional-endpoints {additionalEgressEndpoint} "
+        "--enable-endpoints  {defaultEgressEndpoint} "
+        " --tags {tags} "
+        " --resource-group {rg} "
+        " --storage-options mode={mode} size-mi-b={sizeMiB} storage-appliance-id={storageApplianceId} ",
         checks=checks,
     )
 
@@ -95,7 +131,7 @@ def step_list_subscription(test, checks=None):
     test.cmd("az networkcloud cloudservicesnetwork list")
 
 
-def step_update(test, checks=None):
+def step_update_scenario1(test, checks=None):
     """cloudservicesnetwork update operation"""
     if checks is None:
         checks = []
@@ -105,6 +141,20 @@ def step_update(test, checks=None):
         "--enable-default-egress-endpoints {defaultEgressEndpoint} "
         "--tags {tagsUpdate} "
         "--resource-group {rg}"
+    )
+
+
+def step_update_scenario2(test, checks=None):
+    """cloudservicesnetwork update operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud cloudservicesnetwork update --cloud-services-network-name {name} "
+        "--additional-endpoints {additionalEgressEndpoint} "
+        "--enable-endpoints {defaultEgressEndpoint} "
+        "--tags {tagsUpdate} "
+        "--resource-group {rg} "
+        "--storage-options mode={mode} size-mi-b={sizeMiB} storage-appliance-id={storageApplianceId}"
     )
 
 
@@ -128,6 +178,11 @@ class CloudServicesNetworkScenarioTest(ScenarioTest):
                 ),
                 "tags": CONFIG.get("CLOUD_SERVICES_NETWORK", "tags"),
                 "tagsUpdate": CONFIG.get("CLOUD_SERVICES_NETWORK", "tags_update"),
+                "mode": CONFIG.get("CLOUD_SERVICES_NETWORK", "storage_mode"),
+                "sizeMiB": CONFIG.get("CLOUD_SERVICES_NETWORK", "storage_size_mi_b"),
+                "storageApplianceId": CONFIG.get(
+                    "CLOUD_SERVICES_NETWORK", "storage_appliance_id"
+                ),
             }
         )
 
@@ -135,3 +190,8 @@ class CloudServicesNetworkScenarioTest(ScenarioTest):
     def test_cloudservicesnetwork_scenario1(self):
         """test scenario for CloudServicesNetwork CRUD operations"""
         call_scenario1(self)
+
+    @ResourceGroupPreparer(name_prefix="clitest_rg"[:7], key="rg", parameter_name="rg")
+    def test_cloudservicesnetwork_scenario2(self):
+        """test scenario for CloudServicesNetwork create and update operations"""
+        call_scenario2(self)

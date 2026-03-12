@@ -12,6 +12,11 @@
 
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
+    with self.command_group('durabletask scheduler'):
+        from .custom import CreateScheduler, UpdateScheduler
+        self.command_table["durabletask scheduler create"] = CreateScheduler(loader=self)
+        self.command_table["durabletask scheduler update"] = UpdateScheduler(loader=self)
+
     with self.command_group('durabletask retention-policy'):
         from .custom import CreatePolicy
         self.command_table["durabletask retention-policy create"] = CreatePolicy(loader=self)
