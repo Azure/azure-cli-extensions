@@ -538,7 +538,7 @@ def _write_summary_md(bundle_dir, bundle_name, cluster_info, capabilities,
     lines.append("### Resources Per Namespace")
     lines.append("")
     for ns in namespaces:
-        res_file = os.path.join(bundle_dir, "resources", f"{ns}-resources.json")
+        res_file = os.path.join(bundle_dir, "resources", ns, "resources.json")
         if os.path.exists(res_file):
             try:
                 import json as _j
@@ -555,7 +555,7 @@ def _write_summary_md(bundle_dir, bundle_name, cluster_info, capabilities,
                 pass
 
     # WO components
-    wo_file = os.path.join(bundle_dir, "resources", "wo-components.json")
+    wo_file = os.path.join(bundle_dir, "resources", "cluster", "wo-components.json")
     if os.path.exists(wo_file):
         try:
             with open(wo_file, "r") as f:

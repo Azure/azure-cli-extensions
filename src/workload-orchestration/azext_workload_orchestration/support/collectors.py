@@ -67,6 +67,24 @@ def validate_namespaces(clients, namespaces):
 
 
 # ---------------------------------------------------------------------------
+# Resource directory helpers
+# ---------------------------------------------------------------------------
+
+def _get_ns_resource_dir(bundle_dir, namespace):
+    """Get (and create) the per-namespace resource subdirectory."""
+    ns_dir = os.path.join(bundle_dir, FOLDER_RESOURCES, namespace)
+    os.makedirs(ns_dir, exist_ok=True)
+    return ns_dir
+
+
+def _get_cluster_resource_dir(bundle_dir):
+    """Get (and create) the cluster-scoped resource subdirectory."""
+    cluster_dir = os.path.join(bundle_dir, FOLDER_RESOURCES, "cluster")
+    os.makedirs(cluster_dir, exist_ok=True)
+    return cluster_dir
+
+
+# ---------------------------------------------------------------------------
 # Cluster info collection
 # ---------------------------------------------------------------------------
 
@@ -375,7 +393,8 @@ def collect_namespace_resources(clients, bundle_dir, namespace):
             for sa in result.items
         ]
 
-    filepath = os.path.join(bundle_dir, FOLDER_RESOURCES, f"{namespace}-resources.json")
+    ns_res_dir = _get_ns_resource_dir(bundle_dir, namespace)
+    filepath = os.path.join(ns_res_dir, "resources.json")
     write_json(filepath, resources)
     pod_count = len(resources.get("pods", []))
     logger.info("Collected resources for %s: %d pods, %d resource types",
@@ -534,7 +553,8 @@ def collect_cluster_resources(clients, bundle_dir):
             for d in result.items
         ]
 
-    filepath = os.path.join(bundle_dir, FOLDER_RESOURCES, "cluster-resources.json")
+    cluster_dir = _get_cluster_resource_dir(bundle_dir)
+    filepath = os.path.join(cluster_dir, "resources.json")
     write_json(filepath, cluster)
     logger.info("Collected cluster resources: %d SCs, %d webhooks, %d CRDs, %d CSI drivers",
                 len(cluster.get("storage_classes", [])),
@@ -690,7 +710,7 @@ def collect_wo_components(clients, bundle_dir, capabilities):
                 {"name": t.get("metadata", {}).get("name", "unknown")} for t in result.get("items", [])
             ]
 
-    filepath = os.path.join(bundle_dir, FOLDER_RESOURCES, "wo-components.json")
+    filepath = os.path.join(_get_cluster_resource_dir(bundle_dir), "wo-components.json")
     write_json(filepath, wo_info)
     return wo_info
 
@@ -800,7 +820,8 @@ def collect_resource_quotas(clients, bundle_dir, namespace):
         ]
 
     if quota_data:
-        filepath = os.path.join(bundle_dir, FOLDER_RESOURCES, f"{namespace}-quotas.json")
+        ns_res_dir = _get_ns_resource_dir(bundle_dir, namespace)
+        filepath = os.path.join(ns_res_dir, "quotas.json")
         write_json(filepath, quota_data)
 
     return quota_data
@@ -893,7 +914,8 @@ def collect_pvcs(clients, bundle_dir, namespace):
         for pvc in result.items
     ]
 
-    filepath = os.path.join(bundle_dir, FOLDER_RESOURCES, f"{namespace}-pvcs.json")
+    ns_res_dir = _get_ns_resource_dir(bundle_dir, namespace)
+    filepath = os.path.join(ns_res_dir, "pvcs.json")
     write_json(filepath, pvcs)
     return pvcs
 
@@ -1002,7 +1024,7 @@ def collect_network_config(clients, bundle_dir):
         ]
 
     if net_info:
-        filepath = os.path.join(bundle_dir, FOLDER_RESOURCES, "network-config.json")
+        filepath = os.path.join(_get_cluster_resource_dir(bundle_dir), "network-config.json")
         write_json(filepath, net_info)
         logger.info("Collected network config: %d external services, %s",
                      len(net_info.get("external_services", [])),
