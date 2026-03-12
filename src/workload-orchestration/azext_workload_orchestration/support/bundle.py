@@ -288,6 +288,30 @@ def create_support_bundle(cmd,
     }
     write_json(os.path.join(bundle_dir, "metadata.json"), metadata)
 
+    # --- Step 10b: Write checks summary ---
+    if check_results:
+        from azext_workload_orchestration.support.consts import FOLDER_CHECKS
+        checks_summary = {
+            "total": len(check_results),
+            "passed": sum(1 for c in check_results if c.get("status") == STATUS_PASS),
+            "failed": sum(1 for c in check_results if c.get("status") == STATUS_FAIL),
+            "warned": sum(1 for c in check_results if c.get("status") == STATUS_WARN),
+            "skipped": sum(1 for c in check_results if c.get("status") == "SKIP"),
+            "errored": sum(1 for c in check_results if c.get("status") == "ERROR"),
+            "health_status": health_summary.get("overall_status", "UNKNOWN"),
+            "health_score": health_summary.get("health_score", 0),
+            "checks": [
+                {
+                    "name": c.get("check_name", "unknown"),
+                    "category": c.get("category", "unknown"),
+                    "status": c.get("status", "UNKNOWN"),
+                    "message": c.get("message", ""),
+                }
+                for c in check_results
+            ],
+        }
+        write_json(os.path.join(bundle_dir, FOLDER_CHECKS, "summary.json"), checks_summary)
+
     # --- Step 11: Create zip ---
     zip_path = create_zip_bundle(bundle_dir, bundle_name, output_dir)
 
