@@ -404,7 +404,7 @@ def attach_scheduler(cmd, resource_group_name, scheduler_name, task_hub_name,  #
     from azure.cli.core.commands.arm import resolve_role_id
     from azure.mgmt.authorization import AuthorizationManagementClient
     from azure.mgmt.authorization.models import RoleAssignmentCreateParameters
-    from azure.core.exceptions import ResourceExistsError, HttpResponseError
+    from azure.core.exceptions import ResourceExistsError
     import uuid
 
     cli_ctx = cmd.cli_ctx
