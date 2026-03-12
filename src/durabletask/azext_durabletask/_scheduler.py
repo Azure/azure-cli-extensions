@@ -12,6 +12,33 @@ from azure.cli.core.azclierror import ValidationError, ResourceNotFoundError
 import logging
 logger = logging.getLogger(__name__)
 
+RESOURCE_TYPE_MAP = {
+    "microsoft.web/sites": "functionapp",
+    "microsoft.app/containerapps": "containerapp",
+}
+
+
+def _parse_target(target):
+    """Parse a target resource ID and return (target_type, name, rg, subscription)."""
+    from azure.mgmt.core.tools import parse_resource_id
+
+    parsed = parse_resource_id(target)
+    name = parsed.get("name")
+    rg = parsed.get("resource_group")
+    sub = parsed.get("subscription")
+    namespace = parsed.get("namespace", "")
+    rtype = parsed.get("type", "")
+    provider_key = f"{namespace}/{rtype}".lower()
+    target_type = RESOURCE_TYPE_MAP.get(provider_key)
+    if not target_type or not name or not rg or not sub:
+        raise ValidationError(
+            f"Invalid target resource ID: '{target}'. "
+            "Expected a Function App (Microsoft.Web/sites) or "
+            "Container App (Microsoft.App/containerApps) resource ID."
+        )
+    return target_type, name, rg, sub
+
+
 ROLE_TYPE_MAP = {
     "worker": "Durable Task Worker",
     "contributor": "Durable Task Data Contributor",
@@ -270,27 +297,22 @@ def _get_containerapp_identity(cli_ctx, target_name, target_resource_group, targ
     return identity.principal_id
 
 
-def _check_target_permissions(cli_ctx, target_type, target_name, target_resource_group, target_subscription):
+def _check_target_permissions(cli_ctx, target_type, target_id):
     """Check that the caller has the required permissions on the target resource."""
-    sub = target_subscription or cli_ctx.data.get("subscription_id", "")
-
     if target_type == "functionapp":
-        scope = (f"/subscriptions/{sub}/resourceGroups/{target_resource_group}"
-                 f"/providers/Microsoft.Web/sites/{target_name}")
         required_actions = [
             "Microsoft.Web/sites/config/list/action",
             "Microsoft.Web/sites/config/write",
         ]
     else:  # containerapp
-        scope = (f"/subscriptions/{sub}/resourceGroups/{target_resource_group}"
-                 f"/providers/Microsoft.App/containerApps/{target_name}")
         required_actions = [
             "Microsoft.App/containerApps/read",
             "Microsoft.App/containerApps/write",
         ]
 
-    logger.info("Checking permissions on %s '%s'...", target_type, target_name)
-    _check_access(cli_ctx, scope, required_actions, f"{target_type} '{target_name}'")
+    logger.info("Checking permissions on target...")
+    _check_access(cli_ctx, target_id, required_actions,
+                  f"{target_type} '{target_id}'")
 
 
 def _update_functionapp_settings(cli_ctx, target_name, target_resource_group, target_subscription,
@@ -368,9 +390,7 @@ def _update_containerapp_env_vars(cli_ctx, target_name, target_resource_group, t
 
 
 def attach_scheduler(cmd, resource_group_name, scheduler_name, task_hub_name,  # pylint: disable=too-many-locals
-                     target_type, target_name, role_type,
-                     target_resource_group=None, target_subscription=None,
-                     identity=None):
+                     target, role_type, identity=None):
     """Attach a Durable Task scheduler to a Function App or Container App."""
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     from azure.cli.core.commands.arm import resolve_role_id
@@ -379,11 +399,11 @@ def attach_scheduler(cmd, resource_group_name, scheduler_name, task_hub_name,  #
     from azure.core.exceptions import ResourceExistsError, HttpResponseError
     import uuid
 
-    if target_resource_group is None:
-        target_resource_group = resource_group_name
-
     cli_ctx = cmd.cli_ctx
     client_id = None
+
+    # Parse the target resource ID
+    target_type, target_name, target_rg, target_sub = _parse_target(target)
 
     # Step 1: Get the scheduler to retrieve its endpoint
     logger.info("Retrieving scheduler '%s' in resource group '%s'...", scheduler_name, resource_group_name)
@@ -429,24 +449,26 @@ def attach_scheduler(cmd, resource_group_name, scheduler_name, task_hub_name,  #
         logger.info("Ensuring identity is attached to %s '%s'...", target_type, target_name)
         if target_type == "functionapp":
             _ensure_identity_on_functionapp(
-                cli_ctx, target_name, target_resource_group,
-                target_subscription, identity)
+                cli_ctx, target_name, target_rg,
+                target_sub, identity)
         else:
             _ensure_identity_on_containerapp(
-                cli_ctx, target_name, target_resource_group,
-                target_subscription, identity)
+                cli_ctx, target_name, target_rg,
+                target_sub, identity)
     else:
         # System-assigned identity: retrieve from the target resource
         logger.info("Retrieving %s '%s' in resource group '%s'...",
-                    target_type, target_name, target_resource_group)
+                    target_type, target_name, target_rg)
         if target_type == "functionapp":
-            principal_id = _get_functionapp_identity(cli_ctx, target_name, target_resource_group, target_subscription)
+            principal_id = _get_functionapp_identity(
+                cli_ctx, target_name, target_rg, target_sub)
         else:
-            principal_id = _get_containerapp_identity(cli_ctx, target_name, target_resource_group, target_subscription)
+            principal_id = _get_containerapp_identity(
+                cli_ctx, target_name, target_rg, target_sub)
     logger.info("Managed identity principal ID: %s", principal_id)
 
     # Step 2b: Check permissions on the target and scheduler
-    _check_target_permissions(cli_ctx, target_type, target_name, target_resource_group, target_subscription)
+    _check_target_permissions(cli_ctx, target_type, target)
 
     scheduler_id = scheduler.get("id")
     logger.info("Checking permissions on scheduler '%s'...", scheduler_name)
@@ -486,21 +508,22 @@ def attach_scheduler(cmd, resource_group_name, scheduler_name, task_hub_name,  #
     logger.info("Updating settings for %s '%s'...", target_type, target_name)
     if target_type == "functionapp":
         _update_functionapp_settings(
-            cli_ctx, target_name, target_resource_group,
-            target_subscription, endpoint, task_hub_name, client_id)
+            cli_ctx, target_name, target_rg,
+            target_sub, endpoint, task_hub_name, client_id)
     else:
         _update_containerapp_env_vars(
-            cli_ctx, target_name, target_resource_group,
-            target_subscription, endpoint, task_hub_name, client_id)
+            cli_ctx, target_name, target_rg,
+            target_sub, endpoint, task_hub_name, client_id)
 
     result = {
         "scheduler": scheduler_name,
         "resourceGroup": resource_group_name,
         "taskHubName": task_hub_name,
         "schedulerEndpoint": endpoint,
+        "target": target,
         "targetType": target_type,
         "targetName": target_name,
-        "targetResourceGroup": target_resource_group,
+        "targetResourceGroup": target_rg,
         "identityPrincipalId": principal_id,
         "roleAssigned": role_name,
     }

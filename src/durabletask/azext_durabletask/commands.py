@@ -15,7 +15,9 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
     from ._format import (scheduler_table_format, scheduler_list_table_format,
                           taskhub_table_format, taskhub_list_table_format)
 
-    with self.command_group('durabletask scheduler'):
+    with self.command_group(
+            'durabletask scheduler',
+            custom_command_type=self.module_kwargs['custom_command_type']) as g:
         from .custom import CreateScheduler, UpdateScheduler
         from .aaz.latest.durabletask.scheduler import Show as _SchedulerShow, List as _SchedulerList
         self.command_table["durabletask scheduler create"] = CreateScheduler(
@@ -26,6 +28,7 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
             loader=self, table_transformer=scheduler_table_format)
         self.command_table["durabletask scheduler list"] = _SchedulerList(
             loader=self, table_transformer=scheduler_list_table_format)
+        g.custom_command('attach', 'attach_scheduler')
 
     with self.command_group('durabletask taskhub'):
         from .aaz.latest.durabletask.taskhub import (
@@ -40,8 +43,3 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
     with self.command_group('durabletask retention-policy'):
         from .custom import CreatePolicy
         self.command_table["durabletask retention-policy create"] = CreatePolicy(loader=self)
-
-    with self.command_group(
-            'durabletask scheduler',
-            custom_command_type=self.module_kwargs['custom_command_type']) as g:
-        g.custom_command('attach', 'attach_scheduler')
