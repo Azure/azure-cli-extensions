@@ -4872,6 +4872,23 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         result = ctx.get_enable_high_log_scale_mode()
         self.assertTrue(result)
 
+    def test_get_enable_high_log_scale_mode_flag_without_value_create(self):
+        """Test passing --enable-high-log-scale-mode without an explicit boolean value.
+
+        When using get_three_state_flag() and the user passes the flag without a value
+        (e.g. --enable-high-log-scale-mode), argparse sets it to True via nargs='?'.
+        This should behave identically to passing --enable-high-log-scale-mode true.
+        """
+        # get_three_state_flag uses nargs='?'; no value => True
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"enable_high_log_scale_mode": True}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        result = ctx.get_enable_high_log_scale_mode()
+        self.assertTrue(result)
+
     def test_get_enable_high_log_scale_mode_auto_enable_with_container_network_logs(self):
         """Test auto-enable when container network logs are enabled with proper prerequisites."""
         ctx = AKSPreviewManagedClusterContext(
@@ -5034,6 +5051,31 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         ctx.attach_mc(mc)
         with self.assertRaises(RequiredArgumentMissingError):
             ctx.get_enable_high_log_scale_mode()
+
+    def test_get_enable_high_log_scale_mode_flag_without_value_update(self):
+        """Test passing --enable-high-log-scale-mode without an explicit boolean in update mode.
+
+        When using get_three_state_flag() and the user passes the flag without a value
+        (e.g. --enable-high-log-scale-mode), argparse sets it to True via nargs='?'.
+        In update mode this should enable HLSM on the existing cluster.
+        """
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"enable_high_log_scale_mode": True}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                )
+            },
+        )
+        ctx.attach_mc(mc)
+        result = ctx.get_enable_high_log_scale_mode()
+        self.assertTrue(result)
 
     def test_get_container_network_logs_returns_none_when_not_specified(self):
         """Test get_container_network_logs returns None when neither enable nor disable is specified."""
