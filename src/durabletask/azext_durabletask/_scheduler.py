@@ -515,15 +515,17 @@ def attach_scheduler(cmd, resource_group_name, scheduler_name, task_hub_name,  #
             cli_ctx, target_name, target_rg,
             target_sub, endpoint, task_hub_name, client_id)
 
+    conn_str = f"Endpoint={endpoint};Authentication=ManagedIdentity"
+    if client_id:
+        conn_str += f";ClientID={client_id}"
+
     result = {
-        "scheduler": scheduler_name,
-        "resourceGroup": resource_group_name,
+        "schedulerName": scheduler_name,
+        "resourceGroupName": resource_group_name,
         "taskHubName": task_hub_name,
-        "schedulerEndpoint": endpoint,
-        "target": target,
+        "targetResourceId": target,
         "targetType": target_type,
-        "targetName": target_name,
-        "targetResourceGroup": target_rg,
+        "connectionString": conn_str,
         "identityPrincipalId": principal_id,
         "roleAssigned": role_name,
     }
