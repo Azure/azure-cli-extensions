@@ -28,6 +28,18 @@ _azure_cli_commands.CliCommandType = type("CliCommandType", (), {"__init__": lam
 _azure_cli_aaz = types.ModuleType("azure.cli.core.aaz")
 _azure_cli_aaz.__path__ = []
 _azure_cli_aaz.load_aaz_command_table = lambda **kw: None
+# Mock AAZ decorators and base classes used by __cmd_group.py files
+_azure_cli_aaz.register_command_group = lambda *a, **kw: (lambda cls: cls)
+_azure_cli_aaz.register_command = lambda *a, **kw: (lambda cls: cls)
+_azure_cli_aaz.AAZCommandGroup = type("AAZCommandGroup", (), {})
+_azure_cli_aaz.AAZCommand = type("AAZCommand", (), {
+    "__init__": lambda self, *a, **kw: None,
+})
+# Expose as module globals for `from azure.cli.core.aaz import *`
+_azure_cli_aaz.__all__ = [
+    "register_command_group", "register_command", "AAZCommandGroup",
+    "AAZCommand", "load_aaz_command_table",
+]
 _azure_cli_params = types.ModuleType("azure.cli.core.commands.parameters")
 _azure_cli_params.get_enum_type = lambda x: x
 _azure_cli_azclierror = types.ModuleType("azure.cli.core.azclierror")
@@ -51,4 +63,5 @@ for mod_name, mod in [
     ("knack.log", _knack_log),
     ("knack.help_files", _knack_help),
 ]:
+    # Install mocks — use setdefault to not break if real modules exist
     sys.modules.setdefault(mod_name, mod)
