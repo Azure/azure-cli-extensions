@@ -450,11 +450,11 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                     self.mc.addon_profiles.get(CONST_MONITORING_ADDON_NAME) or
                     self.mc.addon_profiles.get(CONST_MONITORING_ADDON_NAME_CAMELCASE)
                 )
-                if (monitoring_profile and monitoring_profile.config and
-                    str(monitoring_profile.config.get(CONST_MONITORING_USING_AAD_MSI_AUTH, "")).lower() == "true"):
-                    result = True
-                else:
-                    result = False
+                result = bool(
+                    monitoring_profile and monitoring_profile.config and
+                    str(monitoring_profile.config.get(
+                        CONST_MONITORING_USING_AAD_MSI_AUTH, "")).lower() == "true"
+                )
             else:
                 result = False
         elif enable_msi_auth_for_monitoring is None and not disable_msi_auth and not enable_msi_auth:
