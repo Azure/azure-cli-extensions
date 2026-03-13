@@ -43,6 +43,7 @@ from azext_aks_preview._consts import (
     CONST_APP_ROUTING_ISTIO_MODE_ENABLED,
     CONST_APP_ROUTING_ISTIO_MODE_DISABLED,
     CONST_MONITORING_ADDON_NAME,
+    CONST_MONITORING_ADDON_NAME_CAMELCASE,
     CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID,
     CONST_MONITORING_USING_AAD_MSI_AUTH,
     CONST_NODEPOOL_MODE_SYSTEM,
@@ -5392,6 +5393,36 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         result = ctx.get_enable_high_log_scale_mode()
         self.assertTrue(result)
 
+    def test_get_enable_msi_auth_for_monitoring_with_msi_service_principal(self):
+        """Test that MSI auth is correctly detected when service_principal_profile.client_id='msi'.
+
+        The base class returns False when client_id is not None, but MSI-based clusters set
+        client_id to 'msi'. The preview override should check the addon config for useAADAuth.
+        """
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            service_principal_profile=self.models.ManagedClusterServicePrincipalProfile(
+                client_id="msi",
+            ),
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={
+                        CONST_MONITORING_USING_AAD_MSI_AUTH: "true",
+                    }
+                )
+            },
+        )
+        ctx.attach_mc(mc)
+        result = ctx.get_enable_msi_auth_for_monitoring()
+        self.assertTrue(result)
+
     def test_get_enable_default_domain(self):
         # default value
         ctx_1 = AKSPreviewManagedClusterContext(
@@ -8317,6 +8348,33 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             {"enable_container_network_logs": True, "enable_high_log_scale_mode": True}
         )
         cluster = self._make_cluster_with_monitoring()
+        external_functions = dec.context.external_functions
+        with patch.object(
+            external_functions, "ensure_container_insights_for_monitoring", return_value=None
+        ) as mock_ecifm, patch.object(
+            dec.context, "get_enable_high_log_scale_mode", return_value=True
+        ):
+            dec.postprocessing_after_mc_created(cluster)
+        mock_ecifm.assert_called_once()
+        _, kwargs = mock_ecifm.call_args
+        self.assertTrue(kwargs["create_dcr"])
+
+    def test_postprocessing_create_dcr_true_with_camelcase_addon_key(self):
+        """create_dcr=True when the API response uses the camelCase 'omsAgent' addon key.
+
+        The API may return 'omsAgent' instead of 'omsagent'. The postprocessing must
+        handle both key variants to ensure the DCR is updated.
+        """
+        dec = self._make_postprocessing_decorator(
+            {"enable_container_network_logs": True, "enable_high_log_scale_mode": True}
+        )
+        # Build cluster with camelCase addon key (as the API might return)
+        cluster = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                CONST_MONITORING_ADDON_NAME_CAMELCASE: self.models.ManagedClusterAddonProfile(enabled=True)
+            },
+        )
         external_functions = dec.context.external_functions
         with patch.object(
             external_functions, "ensure_container_insights_for_monitoring", return_value=None
@@ -14250,6 +14308,71 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         self.assertFalse(
             dec.context.get_intermediate("monitoring_addon_postprocessing_required", default_value=False)
         )
+
+    def test_update_postprocessing_with_camelcase_addon_key(self):
+        """Test that update postprocessing works when the API response uses 'omsAgent' (camelCase).
+
+        The API may return the monitoring addon as 'omsAgent' instead of 'omsagent'.
+        The postprocessing must handle both key variants so the DCR gets updated.
+        """
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_container_network_logs": True,
+                "enable_high_log_scale_mode": True,
+                "name": "test_name",
+                "resource_group_name": "test_rg_name",
+                "location": "test_location",
+                "enable_msi_auth_for_monitoring": True,
+                "enable_syslog": False,
+                "data_collection_settings": None,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                advanced_networking=self.models.AdvancedNetworking(
+                    enabled=True,
+                ),
+            ),
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={
+                        CONST_MONITORING_USING_AAD_MSI_AUTH: "true",
+                    }
+                )
+            },
+        )
+        dec.context.attach_mc(mc)
+        dec.context.set_intermediate("subscription_id", "test_subscription_id")
+        # Simulate profile update setting the postprocessing flag
+        dec.update_monitoring_profile_flow_logs(mc)
+        self.assertTrue(dec.context.get_intermediate("monitoring_addon_postprocessing_required"))
+
+        # Build API response cluster with camelCase addon key
+        cluster = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                CONST_MONITORING_ADDON_NAME_CAMELCASE: self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={
+                        CONST_MONITORING_USING_AAD_MSI_AUTH: "true",
+                    }
+                )
+            },
+        )
+        external_functions = dec.context.external_functions
+        with patch.object(
+            external_functions, "ensure_container_insights_for_monitoring", return_value=None
+        ) as mock_ecifm:
+            dec.postprocessing_after_mc_created(cluster)
+        mock_ecifm.assert_called_once()
+        _, kwargs = mock_ecifm.call_args
+        self.assertTrue(kwargs["create_dcr"])
+        self.assertTrue(kwargs["enable_high_log_scale_mode"])
 
     def test_update_node_provisioning_profile(self):
         dec_0 = AKSPreviewManagedClusterUpdateDecorator(

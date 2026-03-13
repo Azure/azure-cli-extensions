@@ -439,7 +439,24 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         elif enable_azure_monitor_logs:
             result = True
         elif enable_msi_auth_for_monitoring is False:
-            result = False
+            # The base class returns False when service_principal_profile.client_id is not None,
+            # but MSI-based clusters set client_id to "msi". Check if the monitoring addon
+            # already has useAADAuth=true, which indicates MSI auth is actually in use.
+            addon_consts = self.get_addon_consts()
+            CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
+            CONST_MONITORING_USING_AAD_MSI_AUTH = addon_consts.get("CONST_MONITORING_USING_AAD_MSI_AUTH")
+            if self.mc and self.mc.addon_profiles:
+                monitoring_profile = (
+                    self.mc.addon_profiles.get(CONST_MONITORING_ADDON_NAME) or
+                    self.mc.addon_profiles.get(CONST_MONITORING_ADDON_NAME_CAMELCASE)
+                )
+                if (monitoring_profile and monitoring_profile.config and
+                    str(monitoring_profile.config.get(CONST_MONITORING_USING_AAD_MSI_AUTH, "")).lower() == "true"):
+                    result = True
+                else:
+                    result = False
+            else:
+                result = False
         elif enable_msi_auth_for_monitoring is None and not disable_msi_auth and not enable_msi_auth:
             result = True
         else:
@@ -5342,9 +5359,14 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 )
                 addon_consts = self.context.get_addon_consts()
                 CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
+                # The API response may return the addon key as either "omsagent" or "omsAgent"
+                monitoring_addon_key = CONST_MONITORING_ADDON_NAME
+                if CONST_MONITORING_ADDON_NAME not in cluster.addon_profiles and \
+                   CONST_MONITORING_ADDON_NAME_CAMELCASE in cluster.addon_profiles:
+                    monitoring_addon_key = CONST_MONITORING_ADDON_NAME_CAMELCASE
                 self.context.external_functions.ensure_container_insights_for_monitoring(
                     self.cmd,
-                    cluster.addon_profiles[CONST_MONITORING_ADDON_NAME],
+                    cluster.addon_profiles[monitoring_addon_key],
                     self.context.get_subscription_id(),
                     self.context.get_resource_group_name(),
                     self.context.get_name(),
@@ -8131,14 +8153,21 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
             CONST_MONITORING_USING_AAD_MSI_AUTH = addon_consts.get("CONST_MONITORING_USING_AAD_MSI_AUTH")
 
-            if (cluster.addon_profiles and
-                    CONST_MONITORING_ADDON_NAME in cluster.addon_profiles and
-                    cluster.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled):
+            # The API response may return the addon key as either "omsagent" or "omsAgent"
+            monitoring_addon_key = None
+            if cluster.addon_profiles:
+                if CONST_MONITORING_ADDON_NAME in cluster.addon_profiles:
+                    monitoring_addon_key = CONST_MONITORING_ADDON_NAME
+                elif CONST_MONITORING_ADDON_NAME_CAMELCASE in cluster.addon_profiles:
+                    monitoring_addon_key = CONST_MONITORING_ADDON_NAME_CAMELCASE
+
+            if (monitoring_addon_key and
+                    cluster.addon_profiles[monitoring_addon_key].enabled):
 
                 # Check if MSI auth is enabled
                 if (CONST_MONITORING_USING_AAD_MSI_AUTH in
-                    cluster.addon_profiles[CONST_MONITORING_ADDON_NAME].config and
-                    str(cluster.addon_profiles[CONST_MONITORING_ADDON_NAME].config[
+                    cluster.addon_profiles[monitoring_addon_key].config and
+                    str(cluster.addon_profiles[monitoring_addon_key].config[
                         CONST_MONITORING_USING_AAD_MSI_AUTH]).lower() == "true"):
 
                     # Check parameter sizes to identify what might be causing large headers
@@ -8153,7 +8182,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
                     self.context.external_functions.ensure_container_insights_for_monitoring(
                         self.cmd,
-                        cluster.addon_profiles[CONST_MONITORING_ADDON_NAME],
+                        cluster.addon_profiles[monitoring_addon_key],
                         self.context.get_subscription_id(),
                         self.context.get_resource_group_name(),
                         self.context.get_name(),
