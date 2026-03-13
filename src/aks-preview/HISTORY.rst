@@ -14,6 +14,11 @@ Pending
 * `az aks create/update`: Add `--enable-app-routing-istio` / `--disable-app-routing-istio` (short: `--enable-ari` / `--disable-ari`) flags to enable or disable Istio as a Gateway API implementation for App Routing.
 * `az aks approuting gateway istio enable/disable`: Add new subcommands to enable or disable the Istio Gateway API implementation for App Routing on an existing cluster.
 
+19.0.0b25
++++++++
+* `az aks create`: Add `--enable-continuous-control-plane-and-addon-monitor` to enable continuous control plane and addon monitor.
+* `az aks update`: Add `--enable-continuous-control-plane-and-addon-monitor` and `--disable-continuous-control-plane-and-addon-monitor` to manage continuous control plane and addon monitor.
+
 19.0.0b24
 +++++++
 * Vendor new SDK and bump API version to 2026-01-02-preview.

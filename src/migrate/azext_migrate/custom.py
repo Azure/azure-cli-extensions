@@ -172,7 +172,7 @@ def new_local_server_replication(cmd,
         subscription_id = get_subscription_id(cmd.cli_ctx)
         print(f"Selected Subscription Id: '{subscription_id}'")
 
-    rg_uri, machine_id, subscription_id = validate_server_parameters(
+    rg_uri, machine_id, subscription_id, project_name = validate_server_parameters(
         cmd,
         machine_id,
         machine_index,
@@ -239,7 +239,7 @@ def new_local_server_replication(cmd,
                 "Please verify your appliance setup and provided "
                 "-machine_id.")
 
-        amh_solution, migrate_project, machine_props = process_amh_solution(
+        amh_solution, migrate_project, machine_props, project_name = process_amh_solution(
             cmd,
             machine,
             site_object,
