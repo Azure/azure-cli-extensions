@@ -13911,6 +13911,59 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_mc_13, ground_truth_mc_13)
 
+        # Case 13b: Disable CNL with omsAgent (camelCase key) - verifies the fix
+        # for the bug where disable-container-network-logs didn't work when Azure API
+        # returned the addon profile key as "omsAgent" instead of "omsagent"
+        dec_13b = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_container_network_logs": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_13b = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                network_plugin_mode="overlay",
+                network_dataplane="cilium",
+                pod_cidr="100.64.0.0/16",
+                service_cidr="192.168.0.0/16",
+                advanced_networking=self.models.AdvancedNetworking(
+                    enabled=True,
+                ),
+            ),
+            addon_profiles={
+                "omsAgent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={"enableRetinaNetworkFlags": "True"}
+                )
+            },
+        )
+        dec_13b.context.attach_mc(mc_13b)
+        dec_mc_13b = dec_13b.update_monitoring_profile_flow_logs(mc_13b)
+        ground_truth_mc_13b = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                network_plugin_mode="overlay",
+                network_dataplane="cilium",
+                pod_cidr="100.64.0.0/16",
+                service_cidr="192.168.0.0/16",
+                advanced_networking=self.models.AdvancedNetworking(
+                    enabled=True,
+                ),
+            ),
+            addon_profiles={
+                "omsAgent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={"enableRetinaNetworkFlags": "False"}
+                )
+            },
+        )
+        self.assertEqual(dec_mc_13b, ground_truth_mc_13b)
+
         # Case 14: Verify monitoring_addon_postprocessing_required is set when using deprecated flag (update path)
         dec_14 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
@@ -14043,8 +14096,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         dec_18.context.attach_mc(mc_18)
         dec_mc_18 = dec_18.update_monitoring_profile_flow_logs(mc_18)
-        # HLSM=false should not trigger postprocessing
-        self.assertFalse(dec_18.context.get_intermediate("monitoring_addon_postprocessing_required", default_value=False))
+        # HLSM=false should trigger postprocessing to update DCR (remove high-scale stream)
+        self.assertTrue(dec_18.context.get_intermediate("monitoring_addon_postprocessing_required", default_value=False))
 
         # Case 19: Standalone HLSM enable with omsAgent (camelCase key)
         dec_19 = AKSPreviewManagedClusterUpdateDecorator(

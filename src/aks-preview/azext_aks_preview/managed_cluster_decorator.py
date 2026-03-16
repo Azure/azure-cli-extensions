@@ -5898,11 +5898,19 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             if mc.addon_profiles:
                 addon_consts = self.context.get_addon_consts()
                 CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
-                monitoring_addon_profile = mc.addon_profiles.get(CONST_MONITORING_ADDON_NAME)
+                # Handle both "omsagent" and "omsAgent" key variants
+                monitoring_addon_profile = (
+                    mc.addon_profiles.get(CONST_MONITORING_ADDON_NAME) or
+                    mc.addon_profiles.get(CONST_MONITORING_ADDON_NAME_CAMELCASE)
+                )
                 if monitoring_addon_profile:
+                    monitoring_addon_key = (
+                        CONST_MONITORING_ADDON_NAME if CONST_MONITORING_ADDON_NAME in mc.addon_profiles
+                        else CONST_MONITORING_ADDON_NAME_CAMELCASE
+                    )
                     config = monitoring_addon_profile.config or {}
                     config["enableRetinaNetworkFlags"] = str(container_network_logs_enabled)
-                    mc.addon_profiles[CONST_MONITORING_ADDON_NAME].config = config
+                    mc.addon_profiles[monitoring_addon_key].config = config
 
         # When enabling CNL, the DCR must be updated to add the high-scale stream.
         # Set the postprocessing intermediate so that the update path calls ensure_container_insights.
