@@ -538,47 +538,36 @@ def _find_existing_backup_vault(cmd, cluster_subscription_id, cluster_location):
     return None
 
 
-def _get_best_vault_storage_type(cmd, subscription_id, location):
+def _try_create_vault_with_storage_type(cmd, vault_create_cls, backup_vault_name, backup_resource_group_name, cluster_location, vault_tags, storage_type):
     """
-    Determine the best storage redundancy for a backup vault based on region capabilities.
-
-    Uses the Azure Subscription Locations API to check:
-    - If region has a paired region → GeoRedundant (GRS)
-    - If region has availability zones → ZoneRedundant (ZRS)
-    - Otherwise → LocallyRedundant (LRS)
+    Attempt to create a backup vault with the given storage type.
 
     Returns:
-        str: 'GeoRedundant', 'ZoneRedundant', or 'LocallyRedundant'
+        backup_vault dict on success, None on failure
     """
-    from azure.mgmt.resource import SubscriptionClient
+    backup_vault_args = {
+        "vault_name": backup_vault_name,
+        "resource_group": backup_resource_group_name,
+        "location": cluster_location,
+        "type": "SystemAssigned",
+        "storage_setting": [{'type': storage_type, 'datastore-type': 'VaultStore'}],
+        "soft_delete_state": "On",
+        "retention_duration_in_days": 14.0,
+        "immutability_state": "Unlocked",
+        "cross_subscription_restore_state": "Enabled",
+        "tags": vault_tags
+    }
+
+    # Enable CRR only for GRS vaults (requires paired region)
+    if storage_type == 'GeoRedundant':
+        backup_vault_args["cross_region_restore_state"] = "Enabled"
 
     try:
-        sub_client = get_mgmt_service_client(cmd.cli_ctx, SubscriptionClient)
-        locations = sub_client.subscriptions.list_locations(subscription_id)
-
-        for loc in locations:
-            if loc.name.lower() == location.lower():
-                # Check for paired region → GRS
-                if hasattr(loc, 'metadata') and loc.metadata:
-                    paired = getattr(loc.metadata, 'paired_region', None)
-                    if paired and len(paired) > 0:
-                        print(f"\tRegion {location} has paired region → GeoRedundant")
-                        return 'GeoRedundant'
-
-                # Check for availability zones → ZRS
-                if hasattr(loc, 'availability_zone_mappings') and loc.availability_zone_mappings:
-                    if len(loc.availability_zone_mappings) > 0:
-                        print(f"\tRegion {location} has availability zones → ZoneRedundant")
-                        return 'ZoneRedundant'
-
-                # No pair, no zones → LRS
-                print(f"\tRegion {location} has no paired region or zones → LocallyRedundant")
-                return 'LocallyRedundant'
+        backup_vault = vault_create_cls(cli_ctx=cmd.cli_ctx)(command_args=backup_vault_args).result()
+        return backup_vault
     except Exception as e:
-        print(f"\tWarning: Could not determine region capabilities: {str(e)[:100]}")
-
-    # Default fallback
-    return 'LocallyRedundant'
+        print(f"\tVault creation with {storage_type} failed: {str(e)[:120]}")
+        return None
 
 
 def _setup_backup_vault(cmd, backup_strategy, backup_vault_id, cluster_subscription_id, cluster_location, backup_resource_group_name, cluster_resource, backup_resource_group, resource_tags):
@@ -615,28 +604,27 @@ def _setup_backup_vault(cmd, backup_strategy, backup_vault_id, cluster_subscript
             if resource_tags:
                 vault_tags.update(resource_tags)
 
-            # Determine best storage type based on region capabilities
-            storage_type = _get_best_vault_storage_type(cmd, cluster_subscription_id, cluster_location)
-            print(f"\tStorage type: {storage_type}")
+            # Try storage types in order of preference: GRS → ZRS → LRS
+            # Not all regions support all types, so we fall back gracefully.
+            backup_vault = None
+            storage_type = None
 
-            backup_vault_args = {
-                "vault_name": backup_vault_name,
-                "resource_group": backup_resource_group_name,
-                "location": cluster_location,
-                "type": "SystemAssigned",
-                "storage_setting": [{'type': storage_type, 'datastore-type': 'VaultStore'}],
-                "soft_delete_state": "On",
-                "soft_delete_retention": 14,
-                "immutability_state": "Unlocked",
-                "cross_subscription_restore_state": "Enabled",
-                "tags": vault_tags
-            }
+            for try_type in ['GeoRedundant', 'ZoneRedundant', 'LocallyRedundant']:
+                print(f"\tTrying storage type: {try_type}...")
+                backup_vault = _try_create_vault_with_storage_type(
+                    cmd, _BackupVaultCreate, backup_vault_name, backup_resource_group_name,
+                    cluster_location, vault_tags, try_type)
+                if backup_vault:
+                    storage_type = try_type
+                    print(f"\tVault created with storage type: {storage_type}")
+                    break
 
-            # Enable CRR only for GRS vaults (requires paired region)
-            if storage_type == 'GeoRedundant':
-                backup_vault_args["cross_region_restore_state"] = "Enabled"
-
-            backup_vault = _BackupVaultCreate(cli_ctx=cmd.cli_ctx)(command_args=backup_vault_args).result()
+            if not backup_vault:
+                raise InvalidArgumentValueError(
+                    f"Failed to create backup vault '{backup_vault_name}' in region '{cluster_location}' "
+                    f"with any storage type (GeoRedundant, ZoneRedundant, LocallyRedundant).\n"
+                    f"Please check region availability and try again."
+                )
 
     print(f"\tBackup Vault: {backup_vault['id']}")
     _check_and_assign_role(
