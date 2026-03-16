@@ -954,10 +954,20 @@ def validate_asm_egress_name(namespace):
 
 
 def validate_artifact_streaming(namespace):
-    """Validates that artifact streaming enablement can only be used on Linux."""
-    if namespace.enable_artifact_streaming:
-        if hasattr(namespace, 'os_type') and str(namespace.os_type).lower() == "windows":
+    """Validates artifact streaming flags for mutual exclusivity and OS support."""
+    enable_artifact_streaming = getattr(namespace, "enable_artifact_streaming", False)
+    disable_artifact_streaming = getattr(namespace, "disable_artifact_streaming", False)
+
+    if enable_artifact_streaming and disable_artifact_streaming:
+        raise MutuallyExclusiveArgumentError(
+            "Cannot specify both --enable-artifact-streaming and --disable-artifact-streaming at the same time."
+        )
+
+    if hasattr(namespace, "os_type") and str(namespace.os_type).lower() == "windows":
+        if enable_artifact_streaming:
             raise ArgumentUsageError('--enable-artifact-streaming can only be set for Linux nodepools')
+        if disable_artifact_streaming:
+            raise ArgumentUsageError('--disable-artifact-streaming can only be set for Linux nodepools')
 
 
 def validate_custom_endpoints(namespace):

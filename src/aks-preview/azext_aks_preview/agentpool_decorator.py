@@ -588,6 +588,11 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
                 self.agentpool.artifact_streaming_profile.enabled is not None
             ):
                 enable_artifact_streaming = self.agentpool.artifact_streaming_profile.enabled
+
+        if enable_artifact_streaming and self.get_disable_artifact_streaming():
+            raise MutuallyExclusiveArgumentError(
+                'Cannot specify "--enable-artifact-streaming" and "--disable-artifact-streaming" at the same time'
+            )
         return enable_artifact_streaming
 
     def get_enable_managed_gpu(self) -> Union[bool, None]:
@@ -610,6 +615,13 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
                     self.agentpool.gpu_profile.nvidia.management_mode == CONST_GPU_MANAGEMENT_MODE_MANAGED
                 )
         return enable_managed_gpu
+
+    def get_disable_artifact_streaming(self) -> bool:
+        """Obtain the value of disable_artifact_streaming.
+        :return: bool
+        """
+
+        return self.raw_param.get("disable_artifact_streaming")
 
     def get_pod_ip_allocation_mode(self: bool = False) -> Union[str, None]:
         """Get the value of pod_ip_allocation_mode.
@@ -1743,6 +1755,11 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
             if agentpool.artifact_streaming_profile is None:
                 agentpool.artifact_streaming_profile = self.models.AgentPoolArtifactStreamingProfile()  # pylint: disable=no-member
             agentpool.artifact_streaming_profile.enabled = True
+
+        if self.context.get_disable_artifact_streaming():
+            if agentpool.artifact_streaming_profile is None:
+                agentpool.artifact_streaming_profile = self.models.AgentPoolArtifactStreamingProfile()  # pylint: disable=no-member
+            agentpool.artifact_streaming_profile.enabled = False
         return agentpool
 
     def update_managed_gpu(self, agentpool: AgentPool) -> AgentPool:

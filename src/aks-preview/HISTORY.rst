@@ -20,6 +20,7 @@ Pending
 * `az aks list-vm-skus`: New command to list available VM SKUs for AKS clusters in a given region.
 * Add managed GPU enablement option to node pool property in `az aks nodepool add` and `az aks nodepool update`.
 * `az aks namespace update`: Fix location should use existing namespace location.
+* `az aks nodepool update`: Add `--disable-artifact-streaming` to disable artifact streaming.
 
 19.0.0b27
 +++++++

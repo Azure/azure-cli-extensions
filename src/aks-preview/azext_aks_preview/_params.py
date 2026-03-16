@@ -2152,6 +2152,12 @@ def load_arguments(self, _):
             is_preview=True,
         )
         c.argument(
+            "disable_artifact_streaming",
+            action="store_true",
+            validator=validate_artifact_streaming,
+            is_preview=True,
+        )
+        c.argument(
             "enable_managed_gpu",
             action="store_true",
             is_preview=True,
