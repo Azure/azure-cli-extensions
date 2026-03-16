@@ -7,6 +7,7 @@ import os
 from unittest import mock
 from azure.cli.core import azclierror
 from azext_sftp import sftp_info
+from azext_sftp import constants as const
 
 
 class SftpInfoTests(unittest.TestCase):
@@ -36,6 +37,36 @@ class SftpInfoTests(unittest.TestCase):
         args = session.build_args()
         
         self.assertNotIn("-P", args, "build_args should not include -P flag for standard port 22")
+
+    def test_buffer_size_default(self):
+        """Test that SFTPSession uses default buffer size when not specified."""
+        session = sftp_info.SFTPSession(
+            storage_account="teststorage",
+            username="test.user",
+            host="test.blob.core.windows.net"
+        )
+
+        self.assertEqual(session.buffer_size, const.DEFAULT_BUFFER_SIZE_BYTES,
+                         "Default buffer size should be 256 KB")
+        self.assertNotIn("-B", session.build_args(),
+                         "build_args should not include -B flag for default buffer size")
+
+    def test_buffer_size_custom(self):
+        """Test that SFTPSession uses custom buffer size and includes -B flag."""
+        custom_buffer = 1048576  # 1 MB
+        session = sftp_info.SFTPSession(
+            storage_account="teststorage",
+            username="test.user",
+            host="test.blob.core.windows.net",
+            buffer_size=custom_buffer
+        )
+
+        self.assertEqual(session.buffer_size, custom_buffer)
+        args = session.build_args()
+        self.assertIn("-B", args, "build_args should include -B flag for non-default buffer size")
+        b_index = args.index("-B")
+        self.assertEqual(args[b_index + 1], str(custom_buffer),
+                         "Buffer size value should follow -B flag")
 
     @mock.patch('os.path.isfile')
     @mock.patch('os.path.abspath')

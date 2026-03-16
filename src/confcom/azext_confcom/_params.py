@@ -58,7 +58,13 @@ def load_arguments(self, _):
             "manifest_tag",
             help="Manifest tag for the fragment",
         )
-
+        c.argument(
+            "platform",
+            options_list=("--platform",),
+            required=False,
+            type=str,
+            help="The target platform to attach the fragment to in the format os/architecture. If not specified, this will be auto-detected from the registry.",
+        )
     with self.argument_context("confcom fragment push") as c:
         c.positional(
             "signed_fragment",

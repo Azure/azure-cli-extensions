@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/storageappliances/{}", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/storageappliances/{}", "2026-01-01-preview"],
         ]
     }
 
@@ -119,7 +119,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-01-01-preview",
                     required=True,
                 ),
             }
@@ -216,6 +216,10 @@ class Wait(AAZWaitCommand):
                 serialized_name="detailedStatusMessage",
                 flags={"read_only": True},
             )
+            properties.expansion_shelves = AAZListType(
+                serialized_name="expansionShelves",
+                flags={"read_only": True},
+            )
             properties.management_ipv4_address = AAZStrType(
                 serialized_name="managementIpv4Address",
                 flags={"read_only": True},
@@ -277,6 +281,13 @@ class Wait(AAZWaitCommand):
             ca_certificate.value = AAZStrType(
                 flags={"read_only": True},
             )
+
+            expansion_shelves = cls._schema_on_200.properties.expansion_shelves
+            expansion_shelves.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.expansion_shelves.Element
+            _element.model = AAZStrType()
+            _element.version = AAZStrType()
 
             secret_rotation_status = cls._schema_on_200.properties.secret_rotation_status
             secret_rotation_status.Element = AAZObjectType()

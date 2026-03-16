@@ -23,9 +23,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}/metricsconfigurations/{}", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}/metricsconfigurations/{}", "2026-01-01-preview"],
         ]
     }
 
@@ -195,7 +195,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-01-01-preview",
                     required=True,
                 ),
             }
@@ -260,132 +260,103 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_cluster_metrics_configuration_read(cls._schema_on_200)
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.etag = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.extended_location = AAZObjectType(
+                serialized_name="extendedLocation",
+                flags={"required": True},
+            )
+            _schema_on_200.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.location = AAZStrType(
+                flags={"required": True},
+            )
+            _schema_on_200.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.properties = AAZObjectType(
+                flags={"required": True, "client_flatten": True},
+            )
+            _schema_on_200.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _schema_on_200.tags = AAZDictType()
+            _schema_on_200.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            extended_location = cls._schema_on_200.extended_location
+            extended_location.name = AAZStrType(
+                flags={"required": True},
+            )
+            extended_location.type = AAZStrType(
+                flags={"required": True},
+            )
+
+            properties = cls._schema_on_200.properties
+            properties.collection_interval = AAZIntType(
+                serialized_name="collectionInterval",
+                flags={"required": True},
+            )
+            properties.detailed_status = AAZStrType(
+                serialized_name="detailedStatus",
+                flags={"read_only": True},
+            )
+            properties.detailed_status_message = AAZStrType(
+                serialized_name="detailedStatusMessage",
+                flags={"read_only": True},
+            )
+            properties.disabled_metrics = AAZListType(
+                serialized_name="disabledMetrics",
+                flags={"read_only": True},
+            )
+            properties.enabled_metrics = AAZListType(
+                serialized_name="enabledMetrics",
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+
+            disabled_metrics = cls._schema_on_200.properties.disabled_metrics
+            disabled_metrics.Element = AAZStrType()
+
+            enabled_metrics = cls._schema_on_200.properties.enabled_metrics
+            enabled_metrics.Element = AAZStrType()
+
+            system_data = cls._schema_on_200.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
+
+            tags = cls._schema_on_200.tags
+            tags.Element = AAZStrType()
 
             return cls._schema_on_200
 
 
 class _UpdateHelper:
     """Helper class for Update"""
-
-    _schema_cluster_metrics_configuration_read = None
-
-    @classmethod
-    def _build_schema_cluster_metrics_configuration_read(cls, _schema):
-        if cls._schema_cluster_metrics_configuration_read is not None:
-            _schema.etag = cls._schema_cluster_metrics_configuration_read.etag
-            _schema.extended_location = cls._schema_cluster_metrics_configuration_read.extended_location
-            _schema.id = cls._schema_cluster_metrics_configuration_read.id
-            _schema.location = cls._schema_cluster_metrics_configuration_read.location
-            _schema.name = cls._schema_cluster_metrics_configuration_read.name
-            _schema.properties = cls._schema_cluster_metrics_configuration_read.properties
-            _schema.system_data = cls._schema_cluster_metrics_configuration_read.system_data
-            _schema.tags = cls._schema_cluster_metrics_configuration_read.tags
-            _schema.type = cls._schema_cluster_metrics_configuration_read.type
-            return
-
-        cls._schema_cluster_metrics_configuration_read = _schema_cluster_metrics_configuration_read = AAZObjectType()
-
-        cluster_metrics_configuration_read = _schema_cluster_metrics_configuration_read
-        cluster_metrics_configuration_read.etag = AAZStrType(
-            flags={"read_only": True},
-        )
-        cluster_metrics_configuration_read.extended_location = AAZObjectType(
-            serialized_name="extendedLocation",
-            flags={"required": True},
-        )
-        cluster_metrics_configuration_read.id = AAZStrType(
-            flags={"read_only": True},
-        )
-        cluster_metrics_configuration_read.location = AAZStrType(
-            flags={"required": True},
-        )
-        cluster_metrics_configuration_read.name = AAZStrType(
-            flags={"read_only": True},
-        )
-        cluster_metrics_configuration_read.properties = AAZObjectType(
-            flags={"required": True, "client_flatten": True},
-        )
-        cluster_metrics_configuration_read.system_data = AAZObjectType(
-            serialized_name="systemData",
-            flags={"read_only": True},
-        )
-        cluster_metrics_configuration_read.tags = AAZDictType()
-        cluster_metrics_configuration_read.type = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        extended_location = _schema_cluster_metrics_configuration_read.extended_location
-        extended_location.name = AAZStrType(
-            flags={"required": True},
-        )
-        extended_location.type = AAZStrType(
-            flags={"required": True},
-        )
-
-        properties = _schema_cluster_metrics_configuration_read.properties
-        properties.collection_interval = AAZIntType(
-            serialized_name="collectionInterval",
-            flags={"required": True},
-        )
-        properties.detailed_status = AAZStrType(
-            serialized_name="detailedStatus",
-            flags={"read_only": True},
-        )
-        properties.detailed_status_message = AAZStrType(
-            serialized_name="detailedStatusMessage",
-            flags={"read_only": True},
-        )
-        properties.disabled_metrics = AAZListType(
-            serialized_name="disabledMetrics",
-            flags={"read_only": True},
-        )
-        properties.enabled_metrics = AAZListType(
-            serialized_name="enabledMetrics",
-        )
-        properties.provisioning_state = AAZStrType(
-            serialized_name="provisioningState",
-            flags={"read_only": True},
-        )
-
-        disabled_metrics = _schema_cluster_metrics_configuration_read.properties.disabled_metrics
-        disabled_metrics.Element = AAZStrType()
-
-        enabled_metrics = _schema_cluster_metrics_configuration_read.properties.enabled_metrics
-        enabled_metrics.Element = AAZStrType()
-
-        system_data = _schema_cluster_metrics_configuration_read.system_data
-        system_data.created_at = AAZStrType(
-            serialized_name="createdAt",
-        )
-        system_data.created_by = AAZStrType(
-            serialized_name="createdBy",
-        )
-        system_data.created_by_type = AAZStrType(
-            serialized_name="createdByType",
-        )
-        system_data.last_modified_at = AAZStrType(
-            serialized_name="lastModifiedAt",
-        )
-        system_data.last_modified_by = AAZStrType(
-            serialized_name="lastModifiedBy",
-        )
-        system_data.last_modified_by_type = AAZStrType(
-            serialized_name="lastModifiedByType",
-        )
-
-        tags = _schema_cluster_metrics_configuration_read.tags
-        tags.Element = AAZStrType()
-
-        _schema.etag = cls._schema_cluster_metrics_configuration_read.etag
-        _schema.extended_location = cls._schema_cluster_metrics_configuration_read.extended_location
-        _schema.id = cls._schema_cluster_metrics_configuration_read.id
-        _schema.location = cls._schema_cluster_metrics_configuration_read.location
-        _schema.name = cls._schema_cluster_metrics_configuration_read.name
-        _schema.properties = cls._schema_cluster_metrics_configuration_read.properties
-        _schema.system_data = cls._schema_cluster_metrics_configuration_read.system_data
-        _schema.tags = cls._schema_cluster_metrics_configuration_read.tags
-        _schema.type = cls._schema_cluster_metrics_configuration_read.type
 
 
 __all__ = ["Update"]

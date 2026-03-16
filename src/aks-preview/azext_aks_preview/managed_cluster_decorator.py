@@ -87,8 +87,7 @@ from azext_aks_preview.agentpool_decorator import (
 from azext_aks_preview.azurecontainerstorage.acstor_ops import (
     perform_disable_azure_container_storage_v1,
     perform_enable_azure_container_storage_v1,
-    perform_disable_azure_container_storage,
-    perform_enable_azure_container_storage,
+    perform_azure_container_storage_update,
 )
 from azext_aks_preview.azuremonitormetrics.azuremonitorprofile import (
     ensure_azure_monitor_profile_prerequisites,
@@ -231,8 +230,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             external_functions[
                 "perform_disable_azure_container_storage_v1"
             ] = perform_disable_azure_container_storage_v1
-            external_functions["perform_enable_azure_container_storage"] = perform_enable_azure_container_storage
-            external_functions["perform_disable_azure_container_storage"] = perform_disable_azure_container_storage
+            external_functions["perform_azure_container_storage_update"] = perform_azure_container_storage_update
             external_functions["sanitize_loganalytics_ws_resource_id"] = sanitize_loganalytics_ws_resource_id
             # Override base module function with preview version that uses REST API to avoid
             # "Request Header Fields Too Large" errors
@@ -3769,6 +3767,20 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             raise RequiredArgumentMissingError('"--enable-hosted-system" requires "--sku automatic".')
         return enable_hosted_system
 
+    def get_enable_continuous_control_plane_and_addon_monitor(self) -> bool:
+        """Obtain the value of enable_continuous_control_plane_and_addon_monitor.
+
+        :return: bool
+        """
+        return self.raw_param.get("enable_continuous_control_plane_and_addon_monitor")
+
+    def get_disable_continuous_control_plane_and_addon_monitor(self) -> bool:
+        """Obtain the value of disable_continuous_control_plane_and_addon_monitor.
+
+        :return: bool
+        """
+        return self.raw_param.get("disable_continuous_control_plane_and_addon_monitor")
+
 
 # pylint: disable=too-many-public-methods
 class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
@@ -4504,13 +4516,18 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         """
         self._ensure_mc(mc)
 
-        if self.context.raw_param.get("enable_azure_container_storage") is not None:
-            self.context.set_intermediate("enable_azure_container_storage", True, overwrite_exists=True)
+        enable_azure_container_storage_param = self.context.raw_param.get("enable_azure_container_storage")
+        if enable_azure_container_storage_param:
+            self.context.set_intermediate(
+                "enable_azure_container_storage",
+                enable_azure_container_storage_param,
+                overwrite_exists=True,
+            )
             container_storage_version = self.context.raw_param.get("container_storage_version")
 
             if container_storage_version is not None and container_storage_version == CONST_ACSTOR_VERSION_V1:
                 # read the azure container storage values passed
-                pool_type = self.context.raw_param.get("enable_azure_container_storage")
+                pool_type = enable_azure_container_storage_param
                 enable_azure_container_storage = pool_type is not None
                 ephemeral_disk_volume_type = self.context.raw_param.get("ephemeral_disk_volume_type")
                 ephemeral_disk_nvme_perf_tier = self.context.raw_param.get("ephemeral_disk_nvme_perf_tier")
@@ -4618,7 +4635,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                         overwrite_exists=True
                     )
             else:
-                enable_azure_container_storage = self.context.raw_param.get("enable_azure_container_storage")
                 storage_pool_name = self.context.raw_param.get("storage_pool_name")
                 pool_sku = self.context.raw_param.get("storage_pool_sku")
                 pool_option = self.context.raw_param.get("storage_pool_option")
@@ -4628,10 +4644,12 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                     validate_enable_azure_container_storage_params,
                 )
                 validate_enable_azure_container_storage_params(
+                    enable_azure_container_storage_param,
+                    False,
+                    False,
                     False,
                     False,
                     "",
-                    enable_azure_container_storage,
                     storage_pool_name,
                     pool_sku,
                     pool_option,
@@ -4792,6 +4810,22 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         return mc
 
+    def set_up_health_monitor_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up health monitor profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        if self.context.get_enable_continuous_control_plane_and_addon_monitor():
+            if mc.health_monitor_profile is None:
+                mc.health_monitor_profile = (
+                    self.models.ManagedClusterHealthMonitorProfile()  # pylint: disable=no-member
+                )
+            mc.health_monitor_profile.enable_continuous_control_plane_and_addon_monitor = True
+
+        return mc
+
     def set_up_static_egress_gateway(self, mc: ManagedCluster) -> ManagedCluster:
         self._ensure_mc(mc)
 
@@ -4916,6 +4950,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_bootstrap_profile(mc)
         # set up static egress gateway profile
         mc = self.set_up_static_egress_gateway(mc)
+        # set up health monitor profile
+        mc = self.set_up_health_monitor_profile(mc)
         # set up imds restriction(a property in network profile)
         mc = self.set_up_imds_restriction(mc)
         # set up user-defined scheduler configuration for kube-scheduler upstream
@@ -5228,10 +5264,11 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                     is_called_from_extension=True,
                 )
             else:
-                self.context.external_functions.perform_enable_azure_container_storage(
+                self.context.external_functions.perform_azure_container_storage_update(
                     self.cmd,
                     self.context.get_resource_group_name(),
                     self.context.get_name(),
+                    enable_azure_container_storage,
                     is_called_from_extension=True,
                 )
 
@@ -5611,7 +5648,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 pool_size = self.context.raw_param.get("storage_pool_size")
                 agentpool_details = {}
                 from azext_aks_preview.azurecontainerstorage._helpers import (
-                    get_extension_installed_and_cluster_configs
+                    get_extension_installed_and_cluster_configs_v1
                 )
                 try:
                     (
@@ -5623,7 +5660,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                         current_core_value,
                         existing_ephemeral_disk_volume_type,
                         existing_perf_tier,
-                    ) = get_extension_installed_and_cluster_configs(
+                    ) = get_extension_installed_and_cluster_configs_v1(
                         self.cmd,
                         self.context.get_resource_group_name(),
                         self.context.get_name(),
@@ -5887,13 +5924,16 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     )
 
                 from azext_aks_preview.azurecontainerstorage._helpers import (
-                    get_container_storage_extension_installed
+                    get_extension_installed_and_cluster_configs
                 )
-                is_extension_installed, _ = get_container_storage_extension_installed(
+                (
+                    is_extension_installed,
+                    is_ephemeralDisk_enabled,
+                    is_elasticSan_enabled,
+                ) = get_extension_installed_and_cluster_configs(
                     self.cmd,
                     self.context.get_resource_group_name(),
                     self.context.get_name(),
-                    CONST_ACSTOR_EXT_INSTALLATION_NAME,
                 )
 
                 from azext_aks_preview.azurecontainerstorage._helpers import (
@@ -5917,10 +5957,12 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                         validate_enable_azure_container_storage_params,
                     )
                     validate_enable_azure_container_storage_params(
+                        enable_azure_container_storage_param,
                         is_extension_installed,
+                        is_ephemeralDisk_enabled,
+                        is_elasticSan_enabled,
                         is_containerstorage_v1_installed,
                         v1_extension_version,
-                        enable_azure_container_storage_param,
                         storage_pool_name,
                         pool_sku,
                         pool_option,
@@ -5947,6 +5989,24 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                             " after re-enabling it by running 'az aks update --enable-azure-container-storage'."
                             " Would you like to proceed with the disabling?"
                         )
+                        from azext_aks_preview.azurecontainerstorage._helpers import should_delete_extension
+                        if not should_delete_extension(disable_azure_container_storage_param):
+                            storage_option_display = storage_option_param_str = disable_azure_container_storage_param
+                            if isinstance(disable_azure_container_storage_param, list):
+                                storage_options = disable_azure_container_storage_param
+                                storage_option_param_str = " ".join(storage_options)
+                                if len(storage_options) > 2:
+                                    storage_options = ["', '".join(storage_options[:-1]), storage_options[-1]]
+                                storage_option_display = "' and '".join(storage_options)
+                            msg = (
+                                "Please make sure there are no existing PVs and PVCs that are provisioned by Azure"
+                                f" Container Storage for '{storage_option_display}' before disabling."
+                                " If storage options are disabled with remaining PVs and PVCs, any data associated with"
+                                " those PVs and PVCs will not be erased and the nodes will be left in an unclean state."
+                                " The PVs and PVCs can only be cleaned up after re-enabling it by running"
+                                f" 'az aks update --enable-azure-container-storage {storage_option_param_str}'."
+                                " Would you like to proceed with the disabling?"
+                            )
                         if not self.context.get_yes() and not prompt_y_n(msg, default="n"):
                             pre_disable_validate = True
                             raise DecoratorEarlyExitException()
@@ -5955,8 +6015,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                             validate_disable_azure_container_storage_params
                         )
                         validate_disable_azure_container_storage_params(
-                            is_extension_installed,
                             disable_azure_container_storage_param,
+                            is_extension_installed,
+                            is_ephemeralDisk_enabled,
+                            is_elasticSan_enabled,
                             storage_pool_name,
                             pool_sku,
                             pool_option,
@@ -5969,11 +6031,17 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                             overwrite_exists=True
                         )
 
-                if enable_azure_container_storage_param:
-                    self.context.set_intermediate("enable_azure_container_storage", True)
-
-                if disable_azure_container_storage_param:
-                    self.context.set_intermediate("disable_azure_container_storage", True)
+                self.context.set_intermediate(
+                    "enable_azure_container_storage",
+                    enable_azure_container_storage_param,
+                    overwrite_exists=True,
+                )
+                self.context.set_intermediate(
+                    "disable_azure_container_storage",
+                    disable_azure_container_storage_param,
+                    overwrite_exists=True,
+                )
+                self.context.set_intermediate("is_extension_installed", is_extension_installed, overwrite_exists=True)
 
         return mc
 
@@ -7096,6 +7164,32 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             mc.network_profile.static_egress_gateway_profile.enabled = False
         return mc
 
+    def update_health_monitor_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update health monitor profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        enable = self.context.get_enable_continuous_control_plane_and_addon_monitor()
+        disable = self.context.get_disable_continuous_control_plane_and_addon_monitor()
+
+        if not enable and not disable:
+            return mc
+        if enable and disable:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-continuous-control-plane-and-addon-monitor and "
+                "--disable-continuous-control-plane-and-addon-monitor at the same time."
+            )
+
+        if mc.health_monitor_profile is None:
+            mc.health_monitor_profile = (
+                self.models.ManagedClusterHealthMonitorProfile()  # pylint: disable=no-member
+            )
+        mc.health_monitor_profile.enable_continuous_control_plane_and_addon_monitor = bool(enable)
+
+        return mc
+
     def update_imds_restriction(self, mc: ManagedCluster) -> ManagedCluster:
         """Update imds restriction for the ManagedCluster object.
 
@@ -7516,6 +7610,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_bootstrap_profile(mc)
         # update static egress gateway
         mc = self.update_static_egress_gateway(mc)
+        # update health monitor profile
+        mc = self.update_health_monitor_profile(mc)
         # update imds restriction
         mc = self.update_imds_restriction(mc)
         # update VMAS to VMS
@@ -7678,10 +7774,11 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     is_called_from_extension=True,
                 )
             else:
-                self.context.external_functions.perform_enable_azure_container_storage(
+                self.context.external_functions.perform_azure_container_storage_update(
                     self.cmd,
                     self.context.get_resource_group_name(),
                     self.context.get_name(),
+                    enable_azure_container_storage,
                     is_called_from_extension=True,
                 )
 
@@ -7712,10 +7809,13 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                         is_called_from_extension=True,
                     )
             else:
-                self.context.external_functions.perform_disable_azure_container_storage(
+                self.context.external_functions.perform_azure_container_storage_update(
                     self.cmd,
                     self.context.get_resource_group_name(),
                     self.context.get_name(),
+                    None,
+                    is_extension_installed,
+                    disable_azure_container_storage,
                     is_called_from_extension=True,
                 )
 

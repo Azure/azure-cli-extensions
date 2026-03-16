@@ -27,14 +27,14 @@ def cleanup_scenario1(test):
 def call_scenario1(test):
     """# Testcase: scenario1"""
     setup_scenario1(test)
-    step_create(
+    step_create_scenario1(
         test,
         checks=[
             test.check("name", "{name}"),
             test.check("provisioningState", "Succeeded"),
         ],
     )
-    step_update(
+    step_update_scenario1(
         test,
         checks=[
             test.check("tags", "{tagsUpdate}"),
@@ -47,7 +47,7 @@ def call_scenario1(test):
     cleanup_scenario1(test)
 
 
-def step_create(test, checks=None):
+def step_create_scenario1(test, checks=None):
     """BaremetalMachineKeyset create operation"""
     if checks is None:
         checks = []
@@ -66,14 +66,14 @@ def step_create(test, checks=None):
 def call_scenario2(test):
     """# Testcase: scenario2"""
     setup_scenario1(test)
-    step_create2(
+    step_create_scenario2(
         test,
         checks=[
             test.check("name", "{name}"),
             test.check("provisioningState", "Succeeded"),
         ],
     )
-    step_update(
+    step_update_scenario2(
         test,
         checks=[
             test.check("tags", "{tagsUpdate}"),
@@ -86,7 +86,7 @@ def call_scenario2(test):
     cleanup_scenario1(test)
 
 
-def step_create2(test, checks=None):
+def step_create_scenario2(test, checks=None):
     """BaremetalMachineKeyset create operation with privilege level 'Other'"""
     if checks is None:
         checks = []
@@ -132,7 +132,7 @@ def step_list_resource_group(test, checks=None):
     )
 
 
-def step_update(test, checks=None):
+def step_update_scenario1(test, checks=None):
     """BaremetalMachineKeyset update operation"""
     if checks is None:
         checks = []
@@ -141,6 +141,19 @@ def step_update(test, checks=None):
         "--name {name} --tags {tagsUpdate} --cluster-name {clusterName} "
         "--jump-hosts-allowed {jumpHostsAllowedUpdate} "
         "--user-list {userListUpdate} --resource-group {rg}"
+    )
+
+
+def step_update_scenario2(test, checks=None):
+    """BaremetalMachineKeyset update operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud cluster baremetalmachinekeyset update "
+        "--name {name} --tags {tagsUpdate} --cluster-name {clusterName} "
+        "--jump-hosts-allowed {jumpHostsAllowedUpdate} "
+        "--user-list {userListUpdate} --resource-group {rg} "
+        "--expiration {expiration} "
     )
 
 

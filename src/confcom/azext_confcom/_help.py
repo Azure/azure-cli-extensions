@@ -314,7 +314,9 @@ helps[
       - name: --manifest-tag
         type: string
         short-summary: 'The reference to attach the signed fragment to'
-
+      - name: --platform
+        type: string
+        short-summary: The target platform to attach the fragment to in the format os/architecture. If not specified, this will be auto-detected from the registry.
     examples:
         - name: Attach a signed fragment to a registry
           text: az confcom fragment attach ./fragment.reg.cose --manifest-tag myregistry.azurecr.io/image:latest
