@@ -12,17 +12,16 @@ class TargetHelper:
     """Shared helper for target commands."""
 
     @staticmethod
-    def get_solution_template_unique_identifier(subscription_id, resource_group_name, template_name, client):
-        """Fetch the solution template and return its uniqueIdentifier from properties.
+    def get_solution_template_unique_identifier(solution_template_resource_id, client):
+        """Fetch the solution template by its full ARM resource ID and return its uniqueIdentifier.
 
         Args:
-            subscription_id: The subscription ID
-            resource_group_name: The resource group name
-            template_name: The solution template name
+            solution_template_resource_id: Full ARM resource ID of the solution template
+                (e.g. /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Edge/solutionTemplates/{name})
             client: HTTP client for making the request
 
         Returns:
-            str: The uniqueIdentifier from template properties, or template_name as fallback
+            str: The uniqueIdentifier from template properties, or the template name extracted from the ID as fallback
 
         Raises:
             CLIInternalError: If the template does not exist or the request fails
@@ -31,10 +30,8 @@ class TargetHelper:
         import json
 
         template_url = client.format_url(
-            "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/solutionTemplates/{solutionTemplateName}",
-            subscriptionId=subscription_id,
-            resourceGroupName=resource_group_name,
-            solutionTemplateName=template_name
+            "{solutionTemplateId}",
+            solutionTemplateId=solution_template_resource_id
         )
         request = client._request("GET", template_url, {
             "api-version": "2025-08-01"
@@ -47,11 +44,11 @@ class TargetHelper:
 
             if response.http_response.status_code == 404:
                 raise CLIInternalError(
-                    f"Solution template '{template_name}' not found in resource group '{resource_group_name}'."
+                    f"Solution template not found: '{solution_template_resource_id}'."
                 )
             if response.http_response.status_code != 200:
                 raise CLIInternalError(
-                    f"Failed to get solution template '{template_name}': HTTP {response.http_response.status_code}"
+                    f"Failed to get solution template '{solution_template_resource_id}': HTTP {response.http_response.status_code}"
                 )
 
             data = json.loads(response.http_response.text())
@@ -59,7 +56,8 @@ class TargetHelper:
 
             if unique_identifier and unique_identifier.strip():
                 return unique_identifier
-            return template_name
+            # Fallback: extract the template name from the ARM resource ID
+            return solution_template_resource_id.rstrip("/").split("/")[-1]
         except CLIInternalError:
             # Propagate explicitly raised CLIInternalError instances unchanged.
             raise
@@ -67,5 +65,5 @@ class TargetHelper:
             # Wrap unexpected errors (e.g., network issues, JSON parsing failures)
             # in CLIInternalError to match the documented behavior.
             raise CLIInternalError(
-                f"Failed to get solution template '{template_name}': {exc}"
+                f"Failed to get solution template '{solution_template_resource_id}': {exc}"
             ) from exc

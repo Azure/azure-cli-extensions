@@ -19,7 +19,7 @@ class ListRevisions(AAZCommand):
     """List all revisions of a solution deployed on a target    
     :example:
         List all revisions of a solution on a target
-        az workload-orchestration target solution-revision-list -g MyResourceGroup --target-name MyTarget --solution-name MySolution
+        az workload-orchestration target solution-revision-list -g MyResourceGroup --target-name MyTarget --solution-template-id MySolution
     """
 
     _aaz_info = {
@@ -50,14 +50,9 @@ class ListRevisions(AAZCommand):
             required=True,
         )
         _args_schema.solution_name = AAZStrArg(
-            options=["--solution-template-name", "--solution"],
-            help="Name of the solution",
+            options=["--solution-template-id", "--solution-id"],
+            help="ARM resource ID of the solution template (e.g. /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Edge/solutionTemplates/{name})",
             required=True,
-            fmt=AAZStrArgFormat(
-                pattern="^(?!v-)(?!.*-v-)[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?(\\.[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?)*$",
-                max_length=61,
-                min_length=3,
-            ),
         )
         _args_schema.target_name = AAZStrArg(
             options=["--target-name", "--name", "-n"],
@@ -93,10 +88,8 @@ class ListRevisions(AAZCommand):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
-            # Resolve solution template name to its uniqueIdentifier
+            # Resolve solution template ARM resource ID to its uniqueIdentifier
             self.unique_identifier = TargetHelper.get_solution_template_unique_identifier(
-                self.ctx.subscription_id,
-                self.ctx.args.resource_group,
                 self.ctx.args.solution_name,
                 self.client
             )

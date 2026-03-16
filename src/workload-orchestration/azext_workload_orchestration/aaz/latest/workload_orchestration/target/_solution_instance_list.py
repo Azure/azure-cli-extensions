@@ -18,7 +18,7 @@ from ._target_helper import TargetHelper
 class ListSolutionInstances(AAZCommand):
     """List all solution instances of a solution deployed on a target
     :example:
-        az workload-orchestration solution-instance list -g MyResourceGroup --solution-name MySolution
+        az workload-orchestration solution-instance list -g MyResourceGroup --solution-template-id MySolution
     """
 
     _aaz_info = {
@@ -57,14 +57,9 @@ class ListSolutionInstances(AAZCommand):
             ),
         )
         _args_schema.solution_name = AAZStrArg(
-            options=["--solution-template-name", "--solution"],
-            help="Name of the solution",
+            options=["--solution-template-id", "--solution-id"],
+            help="ARM resource ID of the solution template (e.g. /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Edge/solutionTemplates/{name})",
             required=True,
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?(\\.[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?)*$",
-                max_length=61,
-                min_length=3,
-            ),
         )
         return cls._args_schema
 
@@ -90,10 +85,8 @@ class ListSolutionInstances(AAZCommand):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
-            # Resolve solution template name to its uniqueIdentifier
+            # Resolve solution template ARM resource ID to its uniqueIdentifier
             self.unique_identifier = TargetHelper.get_solution_template_unique_identifier(
-                self.ctx.subscription_id,
-                self.ctx.args.resource_group,
                 self.ctx.args.solution_name,
                 self.client
             )
