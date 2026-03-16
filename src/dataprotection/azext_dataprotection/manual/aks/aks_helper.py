@@ -538,6 +538,49 @@ def _find_existing_backup_vault(cmd, cluster_subscription_id, cluster_location):
     return None
 
 
+def _get_best_vault_storage_type(cmd, subscription_id, location):
+    """
+    Determine the best storage redundancy for a backup vault based on region capabilities.
+
+    Uses the Azure Subscription Locations API to check:
+    - If region has a paired region → GeoRedundant (GRS)
+    - If region has availability zones → ZoneRedundant (ZRS)
+    - Otherwise → LocallyRedundant (LRS)
+
+    Returns:
+        str: 'GeoRedundant', 'ZoneRedundant', or 'LocallyRedundant'
+    """
+    from azure.mgmt.resource import SubscriptionClient
+
+    try:
+        sub_client = get_mgmt_service_client(cmd.cli_ctx, SubscriptionClient)
+        locations = sub_client.subscriptions.list_locations(subscription_id)
+
+        for loc in locations:
+            if loc.name.lower() == location.lower():
+                # Check for paired region → GRS
+                if hasattr(loc, 'metadata') and loc.metadata:
+                    paired = getattr(loc.metadata, 'paired_region', None)
+                    if paired and len(paired) > 0:
+                        print(f"\tRegion {location} has paired region → GeoRedundant")
+                        return 'GeoRedundant'
+
+                # Check for availability zones → ZRS
+                if hasattr(loc, 'availability_zone_mappings') and loc.availability_zone_mappings:
+                    if len(loc.availability_zone_mappings) > 0:
+                        print(f"\tRegion {location} has availability zones → ZoneRedundant")
+                        return 'ZoneRedundant'
+
+                # No pair, no zones → LRS
+                print(f"\tRegion {location} has no paired region or zones → LocallyRedundant")
+                return 'LocallyRedundant'
+    except Exception as e:
+        print(f"\tWarning: Could not determine region capabilities: {str(e)[:100]}")
+
+    # Default fallback
+    return 'LocallyRedundant'
+
+
 def _setup_backup_vault(cmd, backup_strategy, backup_vault_id, cluster_subscription_id, cluster_location, backup_resource_group_name, cluster_resource, backup_resource_group, resource_tags):
     """Create or use backup vault."""
     from azext_dataprotection.aaz.latest.dataprotection.backup_vault import Create as _BackupVaultCreate
@@ -572,14 +615,27 @@ def _setup_backup_vault(cmd, backup_strategy, backup_vault_id, cluster_subscript
             if resource_tags:
                 vault_tags.update(resource_tags)
 
+            # Determine best storage type based on region capabilities
+            storage_type = _get_best_vault_storage_type(cmd, cluster_subscription_id, cluster_location)
+            print(f"\tStorage type: {storage_type}")
+
             backup_vault_args = {
                 "vault_name": backup_vault_name,
                 "resource_group": backup_resource_group_name,
                 "location": cluster_location,
                 "type": "SystemAssigned",
-                "storage_setting": [{'type': 'LocallyRedundant', 'datastore-type': 'VaultStore'}],
+                "storage_setting": [{'type': storage_type, 'datastore-type': 'VaultStore'}],
+                "soft_delete_state": "On",
+                "soft_delete_retention": 14,
+                "immutability_state": "Unlocked",
+                "cross_subscription_restore_state": "Enabled",
                 "tags": vault_tags
             }
+
+            # Enable CRR only for GRS vaults (requires paired region)
+            if storage_type == 'GeoRedundant':
+                backup_vault_args["cross_region_restore_state"] = "Enabled"
+
             backup_vault = _BackupVaultCreate(cli_ctx=cmd.cli_ctx)(command_args=backup_vault_args).result()
 
     print(f"\tBackup Vault: {backup_vault['id']}")
@@ -915,36 +971,32 @@ def _get_policy_config_for_strategy(backup_strategy):
     """Get backup policy configuration based on strategy.
 
     Strategies:
-    - Week: 7 days operational tier, 7 days vault tier
-    - Month: 30 days operational tier, 30 days vault tier
-    - Immutable: 7 days operational tier, 30 days vault tier (with immutable retention)
-    - DisasterRecovery: 7 days operational tier, 90 days vault tier (for cross-region restore)
+    - Week: 7 days operational tier only, daily incremental
+    - Month: 30 days operational tier only, daily incremental
+    - DisasterRecovery: 7 days operational tier + 90 days vault tier, daily incremental with FirstOfDay vault copy
     """
-    # Operational tier retention based on strategy
-    op_tier_retention = "P7D"  # Week default
-    vault_tier_retention = "P7D"  # Week default
-
     if backup_strategy == 'Week':
-        op_tier_retention = "P7D"
-        vault_tier_retention = "P7D"
+        op_retention = "P7D"
+        vault_retention = None
     elif backup_strategy == 'Month':
-        op_tier_retention = "P30D"
-        vault_tier_retention = "P30D"
-    elif backup_strategy == 'Immutable':
-        op_tier_retention = "P7D"
-        vault_tier_retention = "P30D"  # Longer vault retention for immutable
+        op_retention = "P30D"
+        vault_retention = None
     elif backup_strategy == 'DisasterRecovery':
-        op_tier_retention = "P7D"
-        vault_tier_retention = "P90D"  # 90 days for DR scenarios
+        op_retention = "P7D"
+        vault_retention = "P90D"
+    else:
+        raise InvalidArgumentValueError(
+            f"Unknown backup strategy '{backup_strategy}'. Supported strategies: Week, Month, DisasterRecovery, Custom."
+        )
 
+    # Operational Store retention rule (all strategies)
     policy_rules = [
-        # Operational Store Default Retention Rule
         {
             "isDefault": True,
             "lifecycles": [
                 {
                     "deleteAfter": {
-                        "duration": op_tier_retention,
+                        "duration": op_retention,
                         "objectType": "AbsoluteDeleteOption"
                     },
                     "sourceDataStore": {
@@ -956,14 +1008,17 @@ def _get_policy_config_for_strategy(backup_strategy):
             ],
             "name": "Default",
             "objectType": "AzureRetentionRule"
-        },
-        # Vault Store Retention Rule
-        {
+        }
+    ]
+
+    # Vault Store retention rule (only when vault_retention is set)
+    if vault_retention:
+        policy_rules.append({
             "isDefault": False,
             "lifecycles": [
                 {
                     "deleteAfter": {
-                        "duration": vault_tier_retention,
+                        "duration": vault_retention,
                         "objectType": "AbsoluteDeleteOption"
                     },
                     "sourceDataStore": {
@@ -975,60 +1030,54 @@ def _get_policy_config_for_strategy(backup_strategy):
             ],
             "name": "Vault",
             "objectType": "AzureRetentionRule"
-        },
-        # Backup Rule - Daily backup to Operational Store
+        })
+
+    # Tagging criteria — Default for all, Vault (FirstOfDay) when vault tier is enabled
+    tagging_criteria = [
         {
-            "backupParameters": {
-                "backupType": "Incremental",
-                "objectType": "AzureBackupParams"
-            },
-            "dataStore": {
-                "dataStoreType": "OperationalStore",
-                "objectType": "DataStoreInfoBase"
-            },
-            "name": "BackupDaily",
-            "objectType": "AzureBackupRule",
-            "trigger": {
-                "objectType": "ScheduleBasedTriggerContext",
-                "schedule": {
-                    "repeatingTimeIntervals": [
-                        "R/2024-01-01T00:00:00+00:00/P1D"
-                    ],
-                    "timeZone": "Coordinated Universal Time"
-                },
-                "taggingCriteria": [
-                    {
-                        "isDefault": True,
-                        "tagInfo": {
-                            "id": "Default_",
-                            "tagName": "Default"
-                        },
-                        "taggingPriority": 99
-                    },
-                    {
-                        "isDefault": False,
-                        "tagInfo": {
-                            "id": "Vault_",
-                            "tagName": "Vault"
-                        },
-                        "taggingPriority": 50,
-                        "criteria": [
-                            {
-                                "objectType": "ScheduleBasedBackupCriteria",
-                                "absoluteCriteria": ["FirstOfDay"]
-                            }
-                        ]
-                    }
-                ]
-            }
+            "isDefault": True,
+            "tagInfo": {"id": "Default_", "tagName": "Default"},
+            "taggingPriority": 99
         }
     ]
+    if vault_retention:
+        tagging_criteria.append({
+            "isDefault": False,
+            "tagInfo": {"id": "Vault_", "tagName": "Vault"},
+            "taggingPriority": 50,
+            "criteria": [
+                {
+                    "objectType": "ScheduleBasedBackupCriteria",
+                    "absoluteCriteria": ["FirstOfDay"]
+                }
+            ]
+        })
+
+    # Backup rule — daily incremental
+    policy_rules.append({
+        "backupParameters": {
+            "backupType": "Incremental",
+            "objectType": "AzureBackupParams"
+        },
+        "dataStore": {
+            "dataStoreType": "OperationalStore",
+            "objectType": "DataStoreInfoBase"
+        },
+        "name": "BackupDaily",
+        "objectType": "AzureBackupRule",
+        "trigger": {
+            "objectType": "ScheduleBasedTriggerContext",
+            "schedule": {
+                "repeatingTimeIntervals": ["R/2024-01-01T00:00:00+00:00/P1D"],
+                "timeZone": "Coordinated Universal Time"
+            },
+            "taggingCriteria": tagging_criteria
+        }
+    })
 
     return {
         "objectType": "BackupPolicy",
-        "datasourceTypes": [
-            "Microsoft.ContainerService/managedClusters"
-        ],
+        "datasourceTypes": ["Microsoft.ContainerService/managedClusters"],
         "policyRules": policy_rules
     }
 

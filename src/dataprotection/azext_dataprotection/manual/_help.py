@@ -317,10 +317,9 @@ helps['dataprotection enable-backup trigger'] = """
           - tags: Dictionary of tags to apply to created resources (e.g., {"Owner": "team", "Env": "prod"})
 
         Backup strategy presets (--backup-strategy):
-          - Week (default): Daily backups with 7-day retention in both Operational and Vault tiers.
-          - Month: Daily backups with 30-day retention in both Operational and Vault tiers.
-          - Immutable: Daily backups with 7-day Operational tier + 30-day Vault tier retention.
-          - DisasterRecovery: Daily backups with 7-day Operational tier + 90-day Vault tier retention for cross-region restore scenarios.
+          - Week (default): Daily incremental backups with 7-day retention in Operational Store.
+          - Month: Daily incremental backups with 30-day retention in Operational Store.
+          - DisasterRecovery: Daily incremental backups with 7-day Operational Store + 90-day Vault Store retention. FirstOfDay backups are copied to Vault Store for cross-region restore.
           - Custom: Bring your own vault and policy. Requires backupVaultId and backupPolicyId in --backup-configuration-file.
     examples:
       - name: Enable backup for an AKS cluster with default Week strategy
