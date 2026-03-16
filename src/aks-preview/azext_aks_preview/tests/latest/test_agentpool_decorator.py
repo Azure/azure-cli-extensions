@@ -1839,7 +1839,6 @@ class AKSPreviewAgentPoolAddDecoratorCommonTestCase(unittest.TestCase):
         for attr_name in vars(agentpool):
             if attr_name not in ['name', 'mode'] and not attr_name.startswith('_'):
                 attr_value = getattr(agentpool, attr_name)
-                print(f"Checking attribute '{attr_name}' with value '{attr_value}'")
                 self.assertIsNone(attr_value,
                     f"Attribute '{attr_name}' should be None but was '{attr_value}' when mode is Machines")
 
