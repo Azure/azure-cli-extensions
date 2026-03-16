@@ -6183,6 +6183,20 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_mc_3, ground_truth_mc_3)
 
+        # test identity id without enable raises RequiredArgumentMissingError
+        dec_4 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "service_account_image_pull_default_managed_identity_id": "test_identity_id",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_4 = self.models.ManagedCluster(location="test_location")
+        dec_4.context.attach_mc(mc_4)
+        with self.assertRaises(RequiredArgumentMissingError):
+            dec_4.set_up_service_account_image_pull(mc_4)
+
     def test_set_up_azure_keyvault_kms(self):
         key_id_1 = (
             "https://fakekeyvault.vault.azure.net/secrets/fakekeyname/fakekeyversion"
@@ -9506,6 +9520,35 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             security_profile=ground_truth_security_profile_5,
         )
         self.assertEqual(dec_mc_5, ground_truth_mc_5)
+
+        # test disable + identity id raises MutuallyExclusiveArgumentError
+        dec_6 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_service_account_image_pull": True,
+                "service_account_image_pull_default_managed_identity_id": "test_identity_id",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_6 = self.models.ManagedCluster(location="test_location")
+        dec_6.context.attach_mc(mc_6)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            dec_6.update_service_account_image_pull(mc_6)
+
+        # test identity id only on cluster without feature enabled raises RequiredArgumentMissingError
+        dec_7 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "service_account_image_pull_default_managed_identity_id": "test_identity_id",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_7 = self.models.ManagedCluster(location="test_location")
+        dec_7.context.attach_mc(mc_7)
+        with self.assertRaises(RequiredArgumentMissingError):
+            dec_7.update_service_account_image_pull(mc_7)
 
     def test_update_azure_keyvault_kms(self):
         dec_1 = AKSPreviewManagedClusterUpdateDecorator(
