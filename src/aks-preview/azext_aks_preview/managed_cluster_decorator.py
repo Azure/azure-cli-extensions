@@ -4176,13 +4176,22 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         """
         self._ensure_mc(mc)
 
-        if self.context.get_enable_service_account_image_pull():
+        enable_service_account_image_pull = self.context.get_enable_service_account_image_pull()
+        default_managed_identity_id = self.context.get_service_account_image_pull_default_managed_identity_id()
+
+        if not enable_service_account_image_pull and default_managed_identity_id is not None:
+            raise RequiredArgumentMissingError(
+                "--enable-service-account-image-pull is required when "
+                "--service-account-image-pull-default-managed-identity-id is specified."
+            )
+
+        if enable_service_account_image_pull:
             if mc.security_profile is None:
                 mc.security_profile = self.models.ManagedClusterSecurityProfile()  # pylint: disable=no-member
             mc.security_profile.service_account_image_pull_profile = (
                 self.models.ServiceAccountImagePullProfile(  # pylint: disable=no-member
                     enabled=True,
-                    default_managed_identity_id=self.context.get_service_account_image_pull_default_managed_identity_id(),
+                    default_managed_identity_id=default_managed_identity_id,
                 )
             )
 
@@ -6442,6 +6451,11 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 "Cannot specify --enable-service-account-image-pull and "
                 "--disable-service-account-image-pull at the same time."
             )
+        if disable_service_account_image_pull and default_managed_identity_id is not None:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --disable-service-account-image-pull and "
+                "--service-account-image-pull-default-managed-identity-id at the same time."
+            )
 
         if mc.security_profile is None:
             mc.security_profile = self.models.ManagedClusterSecurityProfile()  # pylint: disable=no-member
@@ -6450,6 +6464,15 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         if profile is None:
             profile = self.models.ServiceAccountImagePullProfile()  # pylint: disable=no-member
             mc.security_profile.service_account_image_pull_profile = profile
+
+        # If only identity ID is provided without enable/disable, ensure the feature is already enabled
+        if default_managed_identity_id is not None and not enable_service_account_image_pull and not disable_service_account_image_pull:
+            if not profile.enabled:
+                raise RequiredArgumentMissingError(
+                    "--enable-service-account-image-pull is required when setting "
+                    "--service-account-image-pull-default-managed-identity-id on a cluster "
+                    "that does not have service account image pull enabled."
+                )
 
         if enable_service_account_image_pull:
             profile.enabled = True
