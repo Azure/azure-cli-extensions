@@ -6444,7 +6444,11 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         default_managed_identity_id = self.context.get_service_account_image_pull_default_managed_identity_id()
 
         # no service account image pull related changes
-        if not enable_service_account_image_pull and not disable_service_account_image_pull and default_managed_identity_id is None:
+        if (
+            not enable_service_account_image_pull
+            and not disable_service_account_image_pull
+            and default_managed_identity_id is None
+        ):
             return mc
         if enable_service_account_image_pull and disable_service_account_image_pull:
             raise MutuallyExclusiveArgumentError(
@@ -6466,7 +6470,11 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             mc.security_profile.service_account_image_pull_profile = profile
 
         # If only identity ID is provided without enable/disable, ensure the feature is already enabled
-        if default_managed_identity_id is not None and not enable_service_account_image_pull and not disable_service_account_image_pull:
+        if (
+            default_managed_identity_id is not None
+            and not enable_service_account_image_pull
+            and not disable_service_account_image_pull
+        ):
             if not profile.enabled:
                 raise RequiredArgumentMissingError(
                     "--enable-service-account-image-pull is required when setting "
