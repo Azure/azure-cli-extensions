@@ -9,6 +9,8 @@
 # flake8: noqa
 
 from azure.cli.core.aaz import *
+from azure.cli.core.azclierror import ValidationError
+
 
 @register_command(
     "workload-orchestration config-template link",
@@ -71,6 +73,7 @@ class Link(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
+        self.ValidateHierarchyIdsExist(ctx=self.ctx)()
         yield self.ConfigTemplatesLinkToHierarchies(ctx=self.ctx)()
         self.post_operations()
 
@@ -198,6 +201,74 @@ class Link(AAZCommand):
             _schema_on_200_202.status = AAZStrType()
 
             return cls._schema_on_200_202
+
+
+    class ValidateHierarchyIdsExist(AAZHttpOperation):
+        CLIENT_TYPE = "MgmtClient"
+
+        def __call__(self, *args, **kwargs):
+            if not has_value(self.ctx.args.hierarchy_ids):
+                return
+
+            for hierarchy_id in self.ctx.args.hierarchy_ids:
+                self._current_hierarchy_id = str(hierarchy_id)
+                request = self.make_request()
+                session = self.client.send_request(request=request, stream=False, **kwargs)
+                if session.http_response.status_code == 404:
+                    raise ValidationError(
+                        f"Hierarchy resource not found. The resource with ID '{self._current_hierarchy_id}' does not exist. "
+                        "Please provide a valid hierarchy resource ID."
+                    )
+                if session.http_response.status_code != 200:
+                    raise ValidationError(
+                        f"Failed to validate hierarchy resource existence for ID '{self._current_hierarchy_id}'. "
+                        f"Received status code: {session.http_response.status_code}"
+                    )
+
+        @property
+        def url(self):
+            return self.client.format_url(
+                "{hierarchyId}",
+                **self.url_parameters
+            )
+
+        @property
+        def method(self):
+            return "GET"
+
+        @property
+        def error_format(self):
+            return "MgmtErrorFormat"
+
+        @property
+        def url_parameters(self):
+            parameters = {
+                **self.serialize_url_param(
+                    "hierarchyId", self._current_hierarchy_id,
+                    required=True,
+                    skip_quote=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def query_parameters(self):
+            parameters = {
+                **self.serialize_query_param(
+                    "api-version", "2025-06-01",
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Accept", "application/json",
+                ),
+            }
+            return parameters
 
 
 class _LinkHelper:

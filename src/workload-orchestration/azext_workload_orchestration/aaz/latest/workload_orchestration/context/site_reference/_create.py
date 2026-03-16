@@ -9,6 +9,7 @@
 # flake8: noqa
 
 from azure.cli.core.aaz import *
+from azure.cli.core.azclierror import ValidationError
 
 
 @register_command(
@@ -78,6 +79,7 @@ class Create(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
+        self.ValidateSiteExists(ctx=self.ctx)()
         yield self.SiteReferencesCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
@@ -258,6 +260,72 @@ class Create(AAZCommand):
             )
 
             return cls._schema_on_200_201
+
+
+    class ValidateSiteExists(AAZHttpOperation):
+        CLIENT_TYPE = "MgmtClient"
+
+        def __call__(self, *args, **kwargs):
+            if not has_value(self.ctx.args.site_id):
+                return
+
+            request = self.make_request()
+            session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code == 404:
+                raise ValidationError(
+                    f"Site not found. The site with ID '{self.ctx.args.site_id}' does not exist. "
+                    "Please provide a valid site resource ID."
+                )
+            if session.http_response.status_code != 200:
+                raise ValidationError(
+                    f"Failed to validate site existence for site ID '{self.ctx.args.site_id}'. "
+                    f"Received status code: {session.http_response.status_code}"
+                )
+
+        @property
+        def url(self):
+            return self.client.format_url(
+                "{siteId}",
+                **self.url_parameters
+            )
+
+        @property
+        def method(self):
+            return "GET"
+
+        @property
+        def error_format(self):
+            return "MgmtErrorFormat"
+
+        @property
+        def url_parameters(self):
+            parameters = {
+                **self.serialize_url_param(
+                    "siteId", self.ctx.args.site_id,
+                    required=True,
+                    skip_quote=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def query_parameters(self):
+            parameters = {
+                **self.serialize_query_param(
+                    "api-version", "2025-06-01",
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Accept", "application/json",
+                ),
+            }
+            return parameters
 
 
 class _CreateHelper:
