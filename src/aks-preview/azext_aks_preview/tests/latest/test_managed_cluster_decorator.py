@@ -5366,6 +5366,57 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         with self.assertRaises(MutuallyExclusiveArgumentError):
             ctx.get_enable_high_log_scale_mode()
 
+    def test_get_enable_high_log_scale_mode_update_error_disable_hlsm_with_existing_cnl(self):
+        """Test error when user disables HLSM while CNL is already enabled on the cluster.
+
+        When CNL (enableRetinaNetworkFlags) is already set to 'True' on the existing cluster
+        and the user passes --enable-high-log-scale-mode false without --enable-container-network-logs,
+        the method should raise a MutuallyExclusiveArgumentError.
+        """
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({
+                "enable_high_log_scale_mode": False,
+            }),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={"enableRetinaNetworkFlags": "True"},
+                )
+            },
+        )
+        ctx.attach_mc(mc)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx.get_enable_high_log_scale_mode()
+
+    def test_get_enable_high_log_scale_mode_update_error_disable_hlsm_with_existing_cnl_camelcase(self):
+        """Test error when user disables HLSM while CNL is already enabled (omsAgent camelCase key)."""
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({
+                "enable_high_log_scale_mode": False,
+            }),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                "omsAgent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={"enableRetinaNetworkFlags": "True"},
+                )
+            },
+        )
+        ctx.attach_mc(mc)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx.get_enable_high_log_scale_mode()
+
     def test_get_enable_high_log_scale_mode_update_monitoring_camelcase_key(self):
         """Test auto-enable HLSM in update mode when monitoring uses camelCase 'omsAgent' key."""
         ctx = AKSPreviewManagedClusterContext(
@@ -14122,7 +14173,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         with self.assertRaises(RequiredArgumentMissingError):
             dec_5.update_monitoring_profile_flow_logs(mc_5)
 
-        # Case 6: enable_high_log_scale_mode=False → no postprocessing, no error
+        # Case 6: enable_high_log_scale_mode=False (no CNL) → postprocessing triggered to update DCR
         dec_6 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
@@ -14140,7 +14191,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         dec_6.context.attach_mc(mc_6)
         dec_6.update_monitoring_profile_flow_logs(mc_6)
-        self.assertFalse(
+        self.assertTrue(
             dec_6.context.get_intermediate("monitoring_addon_postprocessing_required", default_value=False)
         )
 
@@ -14308,6 +14359,32 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         self.assertFalse(
             dec.context.get_intermediate("monitoring_addon_postprocessing_required", default_value=False)
         )
+
+    def test_update_disable_hlsm_error_when_cnl_already_enabled(self):
+        """Test that disabling HLSM raises error when CNL is already enabled on the cluster."""
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_high_log_scale_mode": False,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={
+                        "enableRetinaNetworkFlags": "True",
+                        CONST_MONITORING_USING_AAD_MSI_AUTH: "true",
+                    }
+                )
+            },
+        )
+        dec.context.attach_mc(mc)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            dec.update_monitoring_profile_flow_logs(mc)
 
     def test_update_postprocessing_with_camelcase_addon_key(self):
         """Test that update postprocessing works when the API response uses 'omsAgent' (camelCase).

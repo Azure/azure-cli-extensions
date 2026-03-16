@@ -3039,6 +3039,27 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             # Auto-enable high log scale mode
             return True
 
+        # If user explicitly disables HLSM, check if CNL is already enabled on the cluster
+        if enable_high_log_scale_mode is False:
+            cnl_already_enabled = False
+            if self.mc and self.mc.addon_profiles:
+                addon_consts = self.get_addon_consts()
+                CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
+                monitoring_profile = (
+                    self.mc.addon_profiles.get(CONST_MONITORING_ADDON_NAME) or
+                    self.mc.addon_profiles.get(CONST_MONITORING_ADDON_NAME_CAMELCASE)
+                )
+                if monitoring_profile and monitoring_profile.config:
+                    cnl_already_enabled = str(
+                        monitoring_profile.config.get("enableRetinaNetworkFlags", "")
+                    ).lower() == "true"
+            if cnl_already_enabled:
+                raise MutuallyExclusiveArgumentError(
+                    "Cannot explicitly disable --enable-high-log-scale-mode while "
+                    "container network logs are enabled on the cluster. "
+                    "Please disable container network logs first with --disable-container-network-logs."
+                )
+
         # If container network logs are not being enabled, return the original value
         # Return False if not explicitly set to maintain backward compatibility with base class
         if enable_high_log_scale_mode is None:
@@ -5682,6 +5703,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             (self.context.get_nat_gateway_managed_outbound_ipv6_count(), None),
             (self.context.get_nat_gateway_outbound_ip_ids(), None),
             (self.context.get_nat_gateway_outbound_ip_prefix_ids(), None),
+            (self.context.raw_param.get("enable_high_log_scale_mode"), None),
         ]
 
     def check_raw_parameters(self):
@@ -5922,6 +5944,28 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     "for the monitoring addon. Please enable it with --enable-msi-auth-for-monitoring."
                 )
 
+            self.context.set_intermediate("monitoring_addon_postprocessing_required", True, overwrite_exists=True)
+
+        elif enable_high_log_scale_mode is False:
+            # Check if CNL is already enabled on the cluster — cannot disable HLSM while CNL is on
+            cnl_already_enabled = False
+            if mc.addon_profiles:
+                addon_consts = self.context.get_addon_consts()
+                CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
+                monitoring_profile = (
+                    mc.addon_profiles.get(CONST_MONITORING_ADDON_NAME) or
+                    mc.addon_profiles.get(CONST_MONITORING_ADDON_NAME_CAMELCASE)
+                )
+                if monitoring_profile and monitoring_profile.config:
+                    cnl_already_enabled = str(
+                        monitoring_profile.config.get("enableRetinaNetworkFlags", "")
+                    ).lower() == "true"
+            if cnl_already_enabled:
+                raise MutuallyExclusiveArgumentError(
+                    "Cannot explicitly disable --enable-high-log-scale-mode while "
+                    "container network logs are enabled on the cluster. "
+                    "Please disable container network logs first with --disable-container-network-logs."
+                )
             self.context.set_intermediate("monitoring_addon_postprocessing_required", True, overwrite_exists=True)
 
         return mc
