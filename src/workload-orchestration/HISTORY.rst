@@ -2,8 +2,9 @@
 
 Release History
 ===============
-5.1.1
+6.0.0
 ++++++
+* March 2026 release
 * Resolved solution template name to uniqueIdentifier for ``az workload-orchestration target solution-revision-list`` and ``az workload-orchestration target solution-instance-list``
 * Added shared ``_target_helper.py`` for reusable solution template resolution logic
 
