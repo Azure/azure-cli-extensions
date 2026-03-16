@@ -4453,3 +4453,115 @@ helps['aks jwtauthenticator show'] = """
         - name: Show a specific JWT authenticator configuration
           text: az aks jwtauthenticator show -g MyResourceGroup --cluster-name MyCluster --name myjwt
 """
+
+helps['aks openclaw'] = """
+    type: group
+    short-summary: Commands to deploy and manage OpenClaw on an AKS cluster.
+"""
+
+helps['aks openclaw deploy'] = """
+    type: command
+    short-summary: Deploy OpenClaw with Azure AI Foundry on an AKS cluster.
+    long-summary: |
+        Provisions Azure AI Foundry resources (or uses an existing one), deploys the
+        openclaw-kubernetes Helm chart with LiteLLM proxy, and configures the web UI.
+        By default, a new AIServices account is created using the resource group's location
+        and an auto-generated name. Use --ai-foundry-resource-id or --ai-foundry-endpoint
+        to bring your own AI Foundry resource instead.
+    parameters:
+        - name: --cluster-name
+          type: string
+          short-summary: Name of the AKS cluster.
+        - name: --ai-foundry-resource-id
+          type: string
+          short-summary: Full ARM resource ID of an existing AIServices account (BYO mode).
+        - name: --ai-foundry-endpoint
+          type: string
+          short-summary: Endpoint URL of an existing AI Foundry resource (BYO mode). Requires --ai-foundry-api-key.
+        - name: --ai-foundry-api-key
+          type: string
+          short-summary: API key for the AI Foundry endpoint. Required with --ai-foundry-endpoint.
+        - name: --ai-foundry-location
+          type: string
+          short-summary: Azure region for provisioning a new AIServices account. Defaults to the resource group's location.
+        - name: --model
+          type: string
+          short-summary: Model name to deploy. Default is gpt-5.1-chat.
+        - name: --model-version
+          type: string
+          short-summary: Model version to deploy. Default is 2025-11-13. Only used when provisioning new resources.
+        - name: --deployment-name
+          type: string
+          short-summary: Azure model deployment name. Auto-generated if not specified.
+        - name: --capacity
+          type: int
+          short-summary: Tokens-per-minute capacity for the model deployment. Default is 50. Only used when provisioning new resources.
+        - name: --namespace
+          type: string
+          short-summary: Kubernetes namespace for OpenClaw. Default is openclaw.
+    examples:
+        - name: Deploy OpenClaw with auto-provisioned AI Foundry (simplest)
+          text: az aks openclaw deploy -g MyResourceGroup --cluster-name MyCluster
+        - name: Deploy with a specific model and region override
+          text: az aks openclaw deploy -g MyResourceGroup --cluster-name MyCluster --model gpt-4o --ai-foundry-location westus
+        - name: Deploy using an existing AI Foundry resource (BYO by resource ID)
+          text: az aks openclaw deploy -g MyResourceGroup --cluster-name MyCluster --ai-foundry-resource-id /subscriptions/SUB_ID/resourceGroups/RG/providers/Microsoft.CognitiveServices/accounts/myaccount
+        - name: Deploy using a raw endpoint and API key (BYO by endpoint)
+          text: az aks openclaw deploy -g MyResourceGroup --cluster-name MyCluster --ai-foundry-endpoint https://eastus.api.cognitive.microsoft.com --ai-foundry-api-key MY_KEY --deployment-name gpt51chat
+"""
+
+helps['aks openclaw delete'] = """
+    type: command
+    short-summary: Delete OpenClaw deployment from an AKS cluster.
+    parameters:
+        - name: --cluster-name
+          type: string
+          short-summary: Name of the AKS cluster.
+        - name: --namespace
+          type: string
+          short-summary: Kubernetes namespace where OpenClaw is deployed. Default is openclaw.
+        - name: --delete-ai-resources
+          type: bool
+          short-summary: Also delete the auto-provisioned AIServices account. Default is false.
+    examples:
+        - name: Delete OpenClaw deployment
+          text: az aks openclaw delete -g MyResourceGroup --cluster-name MyCluster --yes
+        - name: Delete OpenClaw and the provisioned AI Foundry resources
+          text: az aks openclaw delete -g MyResourceGroup --cluster-name MyCluster --delete-ai-resources --yes
+"""
+
+helps['aks openclaw show'] = """
+    type: command
+    short-summary: Show OpenClaw deployment status on an AKS cluster.
+    parameters:
+        - name: --cluster-name
+          type: string
+          short-summary: Name of the AKS cluster.
+        - name: --namespace
+          type: string
+          short-summary: Kubernetes namespace where OpenClaw is deployed. Default is openclaw.
+    examples:
+        - name: Show OpenClaw status
+          text: az aks openclaw show -g MyResourceGroup --cluster-name MyCluster
+"""
+
+helps['aks openclaw connect'] = """
+    type: command
+    short-summary: Get OpenClaw gateway token and help with web UI connection.
+    long-summary: |
+        Retrieves the OpenClaw gateway authentication token from the K8s secret
+        and displays instructions for connecting to the web UI via port-forward.
+        Provides a direct link with the token embedded as a query parameter.
+    parameters:
+        - name: --cluster-name
+          type: string
+          short-summary: Name of the AKS cluster.
+        - name: --namespace
+          type: string
+          short-summary: Kubernetes namespace where OpenClaw is deployed. Default is openclaw.
+    examples:
+        - name: Get connection info and token
+          text: az aks openclaw connect -g MyResourceGroup --cluster-name MyCluster
+        - name: Get connection info for custom namespace
+          text: az aks openclaw connect -g MyResourceGroup --cluster-name MyCluster --namespace custom-ns
+"""
