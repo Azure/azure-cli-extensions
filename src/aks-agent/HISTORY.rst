@@ -12,6 +12,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+1.0.0b20
+++++++++
+* Bump aks-agent to v0.5.0
+  * Add probe and seccompProfile to address compatibility with AKS Automatic clusters
+
 1.0.0b19
 ++++++++
 * Bump aks-agent to v0.4.0
@@ -29,7 +34,7 @@ Pending
 1.0.0b17
 ++++++++
 * Fix: remove the prompt to user about managed identity client id during `az aks agent-init`
- 
+
 1.0.0b16
 ++++++++
 * Fix: client mode use AzureCLICredential to authenticate with Azure

@@ -74,7 +74,8 @@ def sftp_cert(cmd, cert_path=None, public_key_file=None, ssh_client_folder=None)
 
 
 def sftp_connect(cmd, storage_account, port=None, cert_file=None, private_key_file=None,
-                 public_key_file=None, sftp_args=None, ssh_client_folder=None):
+                 public_key_file=None, sftp_args=None, ssh_client_folder=None,
+                 buffer_size=None, endpoint_suffix=None):
     """Connect to Azure Storage Account via SFTP with automatic certificate generation if needed."""
     logger.debug("Starting SFTP connection to storage account: %s", storage_account)
 
@@ -138,7 +139,7 @@ def sftp_connect(cmd, storage_account, port=None, cert_file=None, private_key_fi
 
         username = f"{storage_account}.{user}"
 
-        storage_suffix = _get_storage_endpoint_suffix(cmd)
+        storage_suffix = _resolve_endpoint_suffix(cmd, endpoint_suffix)
         hostname = f"{storage_account}.{storage_suffix}"
 
         sftp_session = sftp_info.SFTPSession(
@@ -152,7 +153,8 @@ def sftp_connect(cmd, storage_account, port=None, cert_file=None, private_key_fi
             ssh_client_folder=ssh_client_folder,
             ssh_proxy_folder=None,
             credentials_folder=credentials_folder,
-            yes_without_prompt=False
+            yes_without_prompt=False,
+            buffer_size=buffer_size
         )
 
         sftp_session.local_user = user
@@ -221,8 +223,22 @@ def _cleanup_credentials(delete_keys, delete_cert, credentials_folder, cert_file
         logger.warning("Failed to clean up credentials: %s", str(e))
 
 
-def _get_storage_endpoint_suffix(cmd):
-    """Get the appropriate storage endpoint suffix based on Azure cloud environment."""
+def _resolve_endpoint_suffix(cmd, endpoint_suffix=None):
+    """Resolve storage endpoint suffix, using custom value if provided or cloud-specific default."""
+    if endpoint_suffix:
+        normalized = endpoint_suffix.strip().lstrip('.')
+
+        if '://' in normalized or '/' in normalized:
+            raise azclierror.InvalidArgumentValueError(
+                "--endpoint-suffix must be a DNS suffix such as 'blob.core.windows.net' "
+                "and must not contain a scheme or path.")
+
+        if not normalized:
+            raise azclierror.InvalidArgumentValueError("--endpoint-suffix cannot be empty.")
+
+        logger.debug("Using custom endpoint suffix: %s", normalized)
+        return normalized
+
     cloud_suffixes = {
         "azurecloud": "blob.core.windows.net",
         "azurechinacloud": "blob.core.chinacloudapi.cn",
