@@ -591,7 +591,7 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
 
         if enable_artifact_streaming and self.get_disable_artifact_streaming():
             raise MutuallyExclusiveArgumentError(
-                'Cannot specify "--enable-artifact-streaming" and "--disable-artifact-streaming" at the same time'
+                'Cannot specify both --enable-artifact-streaming and --disable-artifact-streaming.'
             )
         return enable_artifact_streaming
 
