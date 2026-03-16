@@ -14386,8 +14386,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         self.assertTrue(dec.context.get_enable_high_log_scale_mode())
         self.assertTrue(dec.context.get_intermediate("monitoring_addon_postprocessing_required"))
 
-    def test_update_disable_hlsm_standalone_no_postprocessing(self):
-        """Test that disabling HLSM standalone (no CNL flag) does not trigger postprocessing."""
+    def test_update_disable_hlsm_standalone_triggers_postprocessing(self):
+        """Test that disabling HLSM standalone (no CNL flag) triggers postprocessing to update DCR."""
         dec = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
@@ -14409,7 +14409,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         dec.context.attach_mc(mc)
         dec.update_monitoring_profile_flow_logs(mc)
-        self.assertFalse(
+        self.assertTrue(
             dec.context.get_intermediate("monitoring_addon_postprocessing_required", default_value=False)
         )
 
