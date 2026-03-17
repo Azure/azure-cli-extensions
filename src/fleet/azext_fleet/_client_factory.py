@@ -14,9 +14,7 @@ from azure.cli.core.profiles import (
 CUSTOM_MGMT_FLEET = CustomResourceType('azext_fleet.vendored_sdks', 'ContainerServiceFleetMgmtClient')
 
 
-# TODO: Remove this override once the API version is rolled out to production ARM.
-# During preview, this API version is only available in the centraluseuap environment.
-FLEET_BASE_URL = "https://centraluseuap.management.azure.com"
+FLEET_BASE_URL = "https://management.azure.com"
 
 
 # container service clients

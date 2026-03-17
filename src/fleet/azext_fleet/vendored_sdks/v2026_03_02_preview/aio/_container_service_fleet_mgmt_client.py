@@ -80,7 +80,7 @@ class ContainerServiceFleetMgmtClient:  # pylint: disable=too-many-instance-attr
         self,
         credential: "AsyncTokenCredential",
         subscription_id: str,
-        base_url: str = "https://centraluseuap.management.azure.com",
+        base_url: str = "https://management.azure.com",
         **kwargs: Any
     ) -> None:
         self._config = ContainerServiceFleetMgmtClientConfiguration(
