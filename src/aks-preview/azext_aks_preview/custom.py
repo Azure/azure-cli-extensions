@@ -2721,6 +2721,7 @@ def aks_machine_add(
     vm_size=None,
     kubernetes_version=None,
     no_wait=False,
+    spot_max_price=None,
 ):
     existedMachine = None
     try:

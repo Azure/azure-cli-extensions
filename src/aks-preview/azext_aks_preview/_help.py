@@ -2685,6 +2685,9 @@ helps['aks machine add'] = """
        - name: --node-public-ip-tags
          type: string
          short-summary: The ipTags of the machine public IPs.
+       - name: --spot-max-price
+         type: number
+         short-summary: The max price (in US Dollars) you are willing to pay for spot instances.
 """
 
 helps['aks machine update'] = """

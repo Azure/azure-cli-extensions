@@ -90,8 +90,10 @@ def constructMachine(cmd, raw_parameters, machine_name):
         network=set_machine_network(cmd, raw_parameters),
         hardware=set_machine_hardware_profile(cmd, raw_parameters),
         kubernetes=set_machine_kubernetes_profile(cmd, raw_parameters),
-        operating_system=set_machine_os_profile(cmd, raw_parameters)
+        operating_system=set_machine_os_profile(cmd, raw_parameters),
+        billing=set_machine_billing_profile(cmd, raw_parameters)
     )
+
     Machine = cmd.get_models(
         "Machine",
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
@@ -196,3 +198,15 @@ def set_machine_os_profile(cmd, raw_parameters):
         enable_fips=enable_fips
     )
     return machineOSProfile
+
+def set_machine_billing_profile(cmd, raw_parameters):
+    spot_max_price = raw_parameters.get("spot_max_price")
+    MachineBillingProfile = cmd.get_models(
+        "MachineBillingProfile",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="machines"
+    )
+    machineBillingProfile = MachineBillingProfile(
+        spot_max_price=spot_max_price
+    )
+    return machineBillingProfile

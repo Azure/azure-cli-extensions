@@ -2315,6 +2315,13 @@ def load_arguments(self, _):
             help="Version of Kubernetes to use for the machine.",
         )
 
+        c.argument(
+            "spot_max_price", 
+            type=float, 
+            validator=validate_spot_max_price, 
+            help="The max price (in US Dollars) you are willing to pay for spot instances. Possible values are any decimal value greater than zero or -1 which indicates default price to be up-to on-demand. For more details on spot pricing, see [spot VMs pricing](https://docs.microsoft.com/azure/virtual-machines/spot-vms#pricing)"
+        )
+
     with self.argument_context("aks machine update") as c:
         c.argument(
             "machine_name", help="The machine name."
