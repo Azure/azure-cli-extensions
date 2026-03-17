@@ -116,6 +116,8 @@ helps['managedcleanroom frontend collaboration list'] = """
     examples:
         - name: List all collaborations
           text: az managedcleanroom frontend collaboration list
+        - name: List only active collaborations
+          text: az managedcleanroom frontend collaboration list --active-only
 """
 
 helps['managedcleanroom frontend show'] = """
@@ -124,24 +126,30 @@ helps['managedcleanroom frontend show'] = """
     examples:
         - name: Show collaboration details
           text: az managedcleanroom frontend show --collaboration-id <id>
+        - name: Show collaboration details (active collaborations only)
+          text: az managedcleanroom frontend show --collaboration-id <id> --active-only
 """
 
 
 # ============================================================================
-# Workloads Help
+# Report Help
 # ============================================================================
 
-helps['managedcleanroom frontend workloads'] = """
-    type: group
-    short-summary: Manage collaboration workloads
-"""
-
-helps['managedcleanroom frontend workloads list'] = """
+helps['managedcleanroom frontend report'] = """
     type: command
-    short-summary: List workloads for a collaboration
+    short-summary: Get comprehensive attestation report
+    long-summary: |
+        Retrieves a comprehensive attestation report for a collaboration,
+        including CGS attestation and cleanroom attestation information.
+
+        This command replaces the deprecated 'attestation cgs' and
+        'attestationreport cleanroom' commands, providing a unified
+        report endpoint.
     examples:
-        - name: List workloads
-          text: az managedcleanroom frontend workloads list -c <collaboration-id>
+        - name: Get attestation report for a collaboration
+          text: az managedcleanroom frontend report --collaboration-id <id>
+        - name: Get attestation report (short form)
+          text: az managedcleanroom frontend report -c <id>
 """
 
 
@@ -162,14 +170,6 @@ helps['managedcleanroom frontend analytics show'] = """
           text: az managedcleanroom frontend analytics show -c <collaboration-id>
 """
 
-helps['managedcleanroom frontend analytics deploymentinfo'] = """
-    type: command
-    short-summary: Get deployment information
-    examples:
-        - name: Get deployment info
-          text: az managedcleanroom frontend analytics deploymentinfo -c <collaboration-id>
-"""
-
 helps['managedcleanroom frontend analytics cleanroompolicy'] = """
     type: command
     short-summary: Get cleanroom policy
@@ -180,12 +180,69 @@ helps['managedcleanroom frontend analytics cleanroompolicy'] = """
 
 
 # ============================================================================
+# Analytics Secret Help
+# ============================================================================
+
+helps['managedcleanroom frontend analytics secret'] = """
+    type: group
+    short-summary: Manage analytics secrets
+"""
+
+helps['managedcleanroom frontend analytics secret set'] = """
+    type: command
+    short-summary: Set an analytics secret
+    long-summary: |
+        Sets or updates a secret in the analytics collaboration. Secrets are
+        used for secure configuration values needed by analytics workloads.
+    examples:
+        - name: Set an analytics secret
+          text: |
+            az managedcleanroom frontend analytics secret set \
+              --collaboration-id <cid> \
+              --secret-name <name> \
+              --secret-value <value>
+        - name: Set secret (short form)
+          text: az managedcleanroom frontend analytics secret set -c <cid> --secret-name mySecret --secret-value myValue
+"""
+
+
+# ============================================================================
 # OIDC Help
 # ============================================================================
 
 helps['managedcleanroom frontend oidc'] = """
     type: group
     short-summary: Manage OIDC configuration
+"""
+
+helps['managedcleanroom frontend oidc set-issuer-url'] = """
+    type: command
+    short-summary: Set OIDC issuer URL for a collaboration
+    long-summary: |
+        Configures the OIDC issuer URL for the collaboration. This URL is used
+        for OpenID Connect authentication and token validation.
+    examples:
+        - name: Set OIDC issuer URL
+          text: |
+            az managedcleanroom frontend oidc set-issuer-url \
+              --collaboration-id <cid> \
+              --url https://oidc.example.com
+        - name: Set OIDC issuer URL (short form)
+          text: az managedcleanroom frontend oidc set-issuer-url -c <cid> --url https://oidc.example.com
+"""
+
+helps['managedcleanroom frontend oidc keys'] = """
+    type: command
+    short-summary: Get OIDC signing keys (JWKS)
+    long-summary: |
+        Retrieves the JSON Web Key Set (JWKS) containing the public keys used
+        to verify OIDC tokens issued by the collaboration. This endpoint returns
+        the keys in standard JWKS format.
+    examples:
+        - name: Get OIDC signing keys
+          text: az managedcleanroom frontend oidc keys --collaboration-id <cid>
+        - name: Get OIDC signing keys (short form)
+          text: az managedcleanroom frontend oidc keys -c <cid>
 """
 
 helps['managedcleanroom frontend oidc issuerinfo'] = """
@@ -215,8 +272,10 @@ helps['managedcleanroom frontend invitation list'] = """
     type: command
     short-summary: List invitations for a collaboration
     examples:
-        - name: List invitations
+        - name: List all invitations
           text: az managedcleanroom frontend invitation list -c <collaboration-id>
+        - name: List only pending invitations
+          text: az managedcleanroom frontend invitation list -c <collaboration-id> --pending-only
 """
 
 helps['managedcleanroom frontend invitation show'] = """
@@ -259,6 +318,23 @@ helps['managedcleanroom frontend analytics dataset show'] = """
     examples:
         - name: Show dataset details
           text: az managedcleanroom frontend analytics dataset show -c <cid> -d <document-id>
+"""
+
+helps['managedcleanroom frontend analytics dataset queries'] = """
+    type: command
+    short-summary: List queries that use a specific dataset
+    long-summary: |
+        Retrieves a list of all queries that reference the specified dataset
+        as an input. This is useful for understanding dataset dependencies
+        and impact analysis.
+    examples:
+        - name: List queries using a dataset
+          text: |
+            az managedcleanroom frontend analytics dataset queries \
+              --collaboration-id <cid> \
+              --document-id <dataset-document-id>
+        - name: List queries using a dataset (short form)
+          text: az managedcleanroom frontend analytics dataset queries -c <cid> -d <dataset-doc-id>
 """
 
 helps['managedcleanroom frontend analytics dataset publish'] = """
@@ -309,6 +385,11 @@ helps['managedcleanroom frontend consent check'] = """
 helps['managedcleanroom frontend consent set'] = """
     type: command
     short-summary: Set consent document action
+    long-summary: |
+        Enables or disables consent for a specific document in the collaboration.
+
+        Note: This command was updated in version 1.0.0b4. The consent actions
+        changed from 'accept/reject' to 'enable/disable'.
     examples:
         - name: Enable consent
           text: az managedcleanroom frontend consent set -c <cid> --document-id <doc-id> --consent-action enable
@@ -415,70 +496,37 @@ helps['managedcleanroom frontend analytics query run'] = """
 # ============================================================================
 
 helps['managedcleanroom frontend analytics query vote'] = """
-    type: group
-    short-summary: Manage query voting
-"""
-
-helps['managedcleanroom frontend analytics query vote accept'] = """
     type: command
-    short-summary: Accept a query vote
+    short-summary: Vote on a query (accept or reject)
     long-summary: |
-        Accepts a query vote for the specified collaboration and query document.
-        Optionally accepts a --body parameter for additional vote configuration.
-    parameters:
-        - name: --body
-          type: string
-          short-summary: Optional vote configuration (JSON string or @file path)
-          long-summary: |
-            Optional JSON configuration containing:
-            - reason: Text explanation for accepting the vote
-            - metadata: Additional metadata for the vote
-    examples:
-        - name: Accept query vote
-          text: az managedcleanroom frontend analytics query vote accept -c <cid> --document-id <document-id>
-        - name: Accept query vote with reason
-          text: |
-            az managedcleanroom frontend analytics query vote accept \
-              -c <cid> \
-              --document-id <document-id> \
-              --body '{"reason": "Query meets all compliance requirements"}'
-        - name: Accept query vote with configuration from file
-          text: |
-            az managedcleanroom frontend analytics query vote accept \
-              -c <cid> \
-              --document-id <document-id> \
-              --body @vote-config.json
-"""
+        Submits a vote for a query in the collaboration. This unified endpoint
+        allows you to accept or reject a query with a single command.
 
-helps['managedcleanroom frontend analytics query vote reject'] = """
-    type: command
-    short-summary: Reject a query vote
-    long-summary: |
-        Rejects a query vote for the specified collaboration and query document.
-        Optionally accepts a --body parameter for additional vote configuration.
+        This command replaces the deprecated 'vote accept' and 'vote reject'
+        commands in version 1.0.0b4.
     parameters:
-        - name: --body
+        - name: --vote-action
           type: string
-          short-summary: Optional vote configuration (JSON string or @file path)
+          short-summary: Vote action (accept or reject)
           long-summary: |
-            Optional JSON configuration containing:
-            - reason: Text explanation for rejecting the vote
-            - metadata: Additional metadata for the vote
+            The vote action to perform:
+            - accept: Approve the query
+            - reject: Reject the query
     examples:
-        - name: Reject query vote
-          text: az managedcleanroom frontend analytics query vote reject -c <cid> --document-id <document-id>
-        - name: Reject query vote with reason
+        - name: Accept a query vote
           text: |
-            az managedcleanroom frontend analytics query vote reject \
-              -c <cid> \
+            az managedcleanroom frontend analytics query vote \
+              --collaboration-id <cid> \
               --document-id <document-id> \
-              --body '{"reason": "Query violates data access policy"}'
-        - name: Reject query vote with configuration from file
+              --vote-action accept
+        - name: Reject a query vote
           text: |
-            az managedcleanroom frontend analytics query vote reject \
-              -c <cid> \
+            az managedcleanroom frontend analytics query vote \
+              --collaboration-id <cid> \
               --document-id <document-id> \
-              --body @vote-config.json
+              --vote-action reject
+        - name: Accept query vote (short form)
+          text: az managedcleanroom frontend analytics query vote -c <cid> -d <doc-id> --vote-action accept
 """
 
 
@@ -528,38 +576,36 @@ helps['managedcleanroom frontend analytics auditevent'] = """
 helps['managedcleanroom frontend analytics auditevent list'] = """
     type: command
     short-summary: List audit events for a collaboration
+    long-summary: |
+        Retrieves audit events for a collaboration with optional filtering.
+
+        Filter options:
+        - scope: Filter by audit event scope (e.g., 'dataset', 'query', 'collaboration')
+        - from_seqno: Starting sequence number for event range
+        - to_seqno: Ending sequence number for event range
     examples:
-        - name: List audit events
+        - name: List all audit events
           text: az managedcleanroom frontend analytics auditevent list -c <collaboration-id>
+        - name: List audit events for dataset scope
+          text: |
+            az managedcleanroom frontend analytics auditevent list \
+              --collaboration-id <cid> \
+              --scope dataset
+        - name: List audit events in sequence number range
+          text: |
+            az managedcleanroom frontend analytics auditevent list \
+              --collaboration-id <cid> \
+              --from-seqno 100 \
+              --to-seqno 200
+        - name: List dataset audit events in specific range
+          text: |
+            az managedcleanroom frontend analytics auditevent list \
+              -c <cid> \
+              --scope dataset \
+              --from-seqno 50 \
+              --to-seqno 150
 """
-
 
 # ============================================================================
-# Attestation Help
+# Attestation Help (Deprecated - Use 'report' command instead)
 # ============================================================================
-
-helps['managedcleanroom frontend attestation'] = """
-    type: group
-    short-summary: View attestation reports
-"""
-
-helps['managedcleanroom frontend attestation cgs'] = """
-    type: command
-    short-summary: Get CGS attestation report
-    examples:
-        - name: Get CGS attestation report
-          text: az managedcleanroom frontend attestation cgs -c <collaboration-id>
-"""
-
-helps['managedcleanroom frontend analytics attestationreport'] = """
-    type: group
-    short-summary: View attestation reports
-"""
-
-helps['managedcleanroom frontend analytics attestationreport cleanroom'] = """
-    type: command
-    short-summary: Get cleanroom attestation report
-    examples:
-        - name: Get cleanroom attestation report
-          text: az managedcleanroom frontend analytics attestationreport cleanroom -c <collaboration-id>
-"""

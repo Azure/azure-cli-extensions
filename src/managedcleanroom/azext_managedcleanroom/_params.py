@@ -35,15 +35,29 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
 
     consent_action_type = CLIArgumentType(
         options_list=['--consent-action', '-a'],
-        help='Consent action (enable/disable)'
+        help="Consent action: 'enable' or 'disable'"
+    )
+
+    vote_action_type = CLIArgumentType(
+        options_list=['--vote-action'],
+        help="Vote action: 'accept' or 'reject'"
     )
 
     # Show command context
     with self.argument_context('managedcleanroom frontend show') as c:
         c.argument('collaboration_id', collaboration_id_type)
+        c.argument('active_only', options_list=['--active-only'],
+                   action='store_true',
+                   help='Query only active collaborations')
 
-    # Workloads context
-    with self.argument_context('managedcleanroom frontend workloads') as c:
+    # Collaboration list context
+    with self.argument_context('managedcleanroom frontend collaboration list') as c:
+        c.argument('active_only', options_list=['--active-only'],
+                   action='store_true',
+                   help='Filter to active collaborations only')
+
+    # Report context
+    with self.argument_context('managedcleanroom frontend report') as c:
         c.argument('collaboration_id', collaboration_id_type)
 
     # Analytics context
@@ -54,9 +68,23 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
     with self.argument_context('managedcleanroom frontend oidc issuerinfo') as c:
         c.argument('collaboration_id', collaboration_id_type)
 
+    # OIDC set-issuer-url context
+    with self.argument_context('managedcleanroom frontend oidc set-issuer-url') as c:
+        c.argument('collaboration_id', collaboration_id_type)
+        c.argument('url', options_list=['--url'], help='OIDC issuer URL')
+
+    # OIDC keys context
+    with self.argument_context('managedcleanroom frontend oidc keys') as c:
+        c.argument('collaboration_id', collaboration_id_type)
+
     # Invitation context
     with self.argument_context('managedcleanroom frontend invitation') as c:
         c.argument('collaboration_id', collaboration_id_type)
+
+    with self.argument_context('managedcleanroom frontend invitation list') as c:
+        c.argument('pending_only', options_list=['--pending-only'],
+                   action='store_true',
+                   help='Filter to pending invitations only')
 
     with self.argument_context('managedcleanroom frontend invitation show') as c:
         c.argument('invitation_id', invitation_id_type)
@@ -78,6 +106,10 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
             type=str,
             help='JSON string or @file path containing publish configuration. '
             'Must include datasetAccessPoint with name, path, and protection details.')
+
+    # Dataset queries context
+    with self.argument_context('managedcleanroom frontend analytics dataset queries') as c:
+        c.argument('document_id', document_id_type)
 
     # Consent context
     with self.argument_context('managedcleanroom frontend consent') as c:
@@ -108,24 +140,13 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
             'body', type=str, help='JSON string or @file path containing run configuration. '
             'Optional fields: runId (auto-generated if not provided), dryRun, startDate, endDate, useOptimizer.')
 
-    # Query vote context
+    # Query vote context (unified)
     with self.argument_context('managedcleanroom frontend analytics query vote') as c:
         c.argument('collaboration_id', collaboration_id_type)
         c.argument('document_id', document_id_type)
-
-    # Add body parameter for vote accept
-    with self.argument_context('managedcleanroom frontend analytics query vote accept') as c:
-        c.argument(
-            'body',
-            type=str,
-            help='Optional JSON string or @file path containing vote accept configuration.')
-
-    # Add body parameter for vote reject
-    with self.argument_context('managedcleanroom frontend analytics query vote reject') as c:
-        c.argument(
-            'body',
-            type=str,
-            help='Optional JSON string or @file path containing vote reject configuration.')
+        c.argument('vote_action', vote_action_type)
+        c.argument('proposal_id', options_list=['--proposal-id'],
+                   help='Optional proposal ID')
 
     # Query runhistory context
     with self.argument_context('managedcleanroom frontend analytics query runhistory') as c:
@@ -144,6 +165,23 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
     # Audit context
     with self.argument_context('managedcleanroom frontend analytics auditevent') as c:
         c.argument('collaboration_id', collaboration_id_type)
+
+    # Audit event list context
+    with self.argument_context('managedcleanroom frontend analytics auditevent list') as c:
+        c.argument('scope', options_list=['--scope'],
+                   help='Optional scope filter')
+        c.argument('from_seqno', options_list=['--from-seqno'],
+                   help='Optional starting sequence number')
+        c.argument('to_seqno', options_list=['--to-seqno'],
+                   help='Optional ending sequence number')
+
+    # Analytics secrets context
+    with self.argument_context('managedcleanroom frontend analytics secret set') as c:
+        c.argument('collaboration_id', collaboration_id_type)
+        c.argument('secret_name', options_list=['--secret-name', '-n'],
+                   help='Secret name')
+        c.argument('secret_value', options_list=['--secret-value', '-v'],
+                   help='Secret value')
 
     # Attestation context
     with self.argument_context('managedcleanroom frontend attestation') as c:

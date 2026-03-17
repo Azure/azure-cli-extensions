@@ -16,40 +16,41 @@ logger = get_logger(__name__)
 # Base Collaboration Commands
 # ============================================================================
 
-def frontend_collaboration_list(cmd):
+def frontend_collaboration_list(cmd, active_only=False):
     """List all collaborations
 
     :param cmd: CLI command context
-    :return: List of collaboration IDs
+    :param active_only: When true, returns only active collaborations (default: False)
+    :return: List of collaboration objects with collaborationId, collaborationName, userStatus
     """
     client = get_frontend_client(cmd)
-    return client.collaboration.list()
+    return client.collaboration.list(active_only=active_only)
 
 
-def frontend_collaboration_show(cmd, collaboration_id):
+def frontend_collaboration_show(cmd, collaboration_id, active_only=False):
     """Show collaboration details
 
     :param cmd: CLI command context
     :param collaboration_id: Collaboration identifier
+    :param active_only: When true, queries only active collaborations (default: False)
     :return: Collaboration details
     """
     client = get_frontend_client(cmd)
-    return client.collaboration.id_get(collaboration_id)
+    return client.collaboration.id_get(collaboration_id, active_only=active_only)
 
 
-# ============================================================================
-# Workloads Commands
-# ============================================================================
+def frontend_collaboration_report_show(cmd, collaboration_id):
+    """Get collaboration report (comprehensive attestation report)
 
-def frontend_collaboration_workloads_list(cmd, collaboration_id):
-    """List workloads for a collaboration
+    Replaces the deprecated attestation cgs and cleanroom commands.
+    Returns attestation reports from CGS and consortium manager.
 
     :param cmd: CLI command context
     :param collaboration_id: Collaboration identifier
-    :return: List of workloads
+    :return: Collaboration report with cgs and consortiumManager attestation details
     """
     client = get_frontend_client(cmd)
-    return client.collaboration.workloads_get(collaboration_id)
+    return client.collaboration.report_get(collaboration_id)
 
 
 # ============================================================================
@@ -65,18 +66,6 @@ def frontend_collaboration_analytics_show(cmd, collaboration_id):
     """
     client = get_frontend_client(cmd)
     return client.collaboration.analytics_get(collaboration_id)
-
-
-def frontend_collaboration_analytics_deploymentinfo(cmd, collaboration_id):
-    """Get deployment info for analytics workload
-
-    :param cmd: CLI command context
-    :param collaboration_id: Collaboration identifier
-    :return: Deployment information
-    """
-    client = get_frontend_client(cmd)
-    return client.collaboration.analytics_deployment_info_get(
-        collaboration_id)
 
 
 def frontend_collaboration_analytics_cleanroompolicy(cmd, collaboration_id):
@@ -106,19 +95,44 @@ def frontend_collaboration_oidc_issuerinfo_show(cmd, collaboration_id):
     return client.collaboration.oidc_issuer_info_get(collaboration_id)
 
 
+def frontend_collaboration_oidc_set_issuer_url(cmd, collaboration_id, url):
+    """Set collaboration OIDC issuer URL
+
+    :param cmd: CLI command context
+    :param collaboration_id: Collaboration identifier
+    :param url: OIDC issuer URL
+    :return: Operation result
+    """
+    body = {"url": url}
+    client = get_frontend_client(cmd)
+    return client.collaboration.oidc_set_issuer_url_post(collaboration_id, body=body)
+
+
+def frontend_collaboration_oidc_keys_show(cmd, collaboration_id):
+    """Get collaboration OIDC signing keys (JWKS format)
+
+    :param cmd: CLI command context
+    :param collaboration_id: Collaboration identifier
+    :return: OIDC keys in JWKS format
+    """
+    client = get_frontend_client(cmd)
+    return client.collaboration.oidc_keys_get(collaboration_id)
+
+
 # ============================================================================
 # Invitation Commands
 # ============================================================================
 
-def frontend_collaboration_invitation_list(cmd, collaboration_id):
+def frontend_collaboration_invitation_list(cmd, collaboration_id, pending_only=False):
     """List invitations for a collaboration
 
     :param cmd: CLI command context
     :param collaboration_id: Collaboration identifier
-    :return: List of invitations
+    :param pending_only: When true, returns only pending invitations (default: False)
+    :return: Invitations object with array of invitation details
     """
     client = get_frontend_client(cmd)
-    return client.collaboration.invitations_get(collaboration_id)
+    return client.collaboration.invitations_get(collaboration_id, pending_only=pending_only)
 
 
 def frontend_collaboration_invitation_show(
@@ -198,6 +212,19 @@ def frontend_collaboration_dataset_publish(
         collaboration_id, document_id, body)
 
 
+def frontend_collaboration_dataset_queries_list(cmd, collaboration_id, document_id):
+    """List queries that use a specific dataset
+
+    :param cmd: CLI command context
+    :param collaboration_id: Collaboration identifier
+    :param document_id: Dataset document identifier
+    :return: List of query IDs using this dataset
+    """
+    client = get_frontend_client(cmd)
+    return client.collaboration.analytics_datasets_document_id_queries_get(
+        collaboration_id, document_id)
+
+
 # ============================================================================
 # Consent Commands
 # ============================================================================
@@ -219,15 +246,18 @@ def frontend_collaboration_consent_set(
         cmd, collaboration_id, document_id, consent_action):
     """Set consent document action
 
+    NOTE: API changed - consent action is now 'enable' or 'disable' (not accept/reject)
+
     :param cmd: CLI command context
     :param collaboration_id: Collaboration identifier
     :param document_id: Consent document identifier
-    :param consent_action: Consent action (e.g., 'enable', 'disable')
+    :param consent_action: Consent action ('enable' or 'disable')
     :return: Action result
     """
+    body = {"consentAction": consent_action}
     client = get_frontend_client(cmd)
-    return client.collaboration.set_consent_document_id_consent_action_post(
-        collaboration_id, document_id, consent_action
+    return client.collaboration.set_consent_document_id_put(
+        collaboration_id, document_id, body=body
     )
 
 
@@ -314,52 +344,26 @@ def frontend_collaboration_query_run(
         collaboration_id, document_id, body=body)
 
 
-# ============================================================================
-# Query Vote Commands
-# ============================================================================
-
-def frontend_collaboration_query_vote_accept(
-        cmd, collaboration_id, document_id, body=None):
-    """Accept query vote
+def frontend_collaboration_query_vote(cmd, collaboration_id, document_id, vote_action, proposal_id=None):
+    """Vote on a query (unified accept/reject endpoint)
 
     :param cmd: CLI command context
     :param collaboration_id: Collaboration identifier
     :param document_id: Query document identifier
-    :param body: Optional vote configuration JSON (string, dict, or @file)
-    :return: Vote result
+    :param vote_action: Vote action ('accept' or 'reject')
+    :param proposal_id: Optional proposal ID
+    :return: Vote result (None on success - 204 No Content)
     """
-    import json
+    body = {
+        "voteAction": vote_action
+    }
 
-    # Handle body parameter - convert string to dict if needed
-    if body and isinstance(body, str):
-        body = json.loads(body)
+    if proposal_id:
+        body["proposalId"] = proposal_id
 
     client = get_frontend_client(cmd)
-    return client.collaboration.analytics_queries_document_id_vote_accept_post(
-        collaboration_id, document_id, body=body
-    )
-
-
-def frontend_collaboration_query_vote_reject(
-        cmd, collaboration_id, document_id, body=None):
-    """Reject query vote
-
-    :param cmd: CLI command context
-    :param collaboration_id: Collaboration identifier
-    :param document_id: Query document identifier
-    :param body: Optional vote configuration JSON (string, dict, or @file)
-    :return: Vote result
-    """
-    import json
-
-    # Handle body parameter - convert string to dict if needed
-    if body and isinstance(body, str):
-        body = json.loads(body)
-
-    client = get_frontend_client(cmd)
-    return client.collaboration.analytics_queries_document_id_vote_reject_post(
-        collaboration_id, document_id, body=body
-    )
+    return client.collaboration.analytics_queries_document_id_vote_post(
+        collaboration_id, document_id, body=body)
 
 
 # ============================================================================
@@ -399,42 +403,34 @@ def frontend_collaboration_query_runresult_show(
 # Audit Commands
 # ============================================================================
 
-def frontend_collaboration_audit_list(cmd, collaboration_id):
+def frontend_collaboration_audit_list(cmd, collaboration_id, scope=None, from_seqno=None, to_seqno=None):
     """List audit events for a collaboration
 
     :param cmd: CLI command context
     :param collaboration_id: Collaboration identifier
-    :return: List of audit events
+    :param scope: Optional scope filter
+    :param from_seqno: Optional starting sequence number
+    :param to_seqno: Optional ending sequence number
+    :return: Paginated audit events with nextLink and value array
     """
     client = get_frontend_client(cmd)
-    return client.collaboration.analytics_auditevents_get(collaboration_id)
+    return client.collaboration.analytics_auditevents_get(
+        collaboration_id, scope=scope, from_seqno=from_seqno, to_seqno=to_seqno)
 
 
-# ============================================================================
-# Attestation Commands
-# ============================================================================
-
-def frontend_collaboration_attestation_cgs(cmd, collaboration_id):
-    """Get CGS attestation report
+def frontend_collaboration_analytics_secret_set(cmd, collaboration_id, secret_name, secret_value):
+    """Set secret for analytics workload
 
     :param cmd: CLI command context
     :param collaboration_id: Collaboration identifier
-    :return: CGS attestation report
+    :param secret_name: Secret name
+    :param secret_value: Secret value
+    :return: Operation result
     """
+    body = {"secretValue": secret_value}
     client = get_frontend_client(cmd)
-    return client.collaboration.attestationreport_cgs_get(collaboration_id)
-
-
-def frontend_collaboration_attestation_cleanroom(cmd, collaboration_id):
-    """Get cleanroom attestation report
-
-    :param cmd: CLI command context
-    :param collaboration_id: Collaboration identifier
-    :return: Cleanroom attestation report
-    """
-    client = get_frontend_client(cmd)
-    return client.collaboration.attestationreport_cleanroom_get(
-        collaboration_id)
+    return client.collaboration.analytics_secrets_secret_name_put(
+        collaboration_id, secret_name, body=body)
 
 
 # ============================================================================

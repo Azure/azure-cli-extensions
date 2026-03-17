@@ -15,8 +15,7 @@ from azext_managedcleanroom._frontend_custom import (
     frontend_collaboration_query_show,
     frontend_collaboration_query_publish,
     frontend_collaboration_query_run,
-    frontend_collaboration_query_vote_accept,
-    frontend_collaboration_query_vote_reject,
+    frontend_collaboration_query_vote,
     frontend_collaboration_query_runhistory_list,
     frontend_collaboration_query_runresult_show
 )
@@ -156,42 +155,42 @@ class TestFrontendQuery(unittest.TestCase):
         """Test accepting a query vote"""
         # Mock the client and its method chain
         mock_client = Mock()
-        mock_client.collaboration.analytics_queries_document_id_vote_accept_post.return_value = {
-            "queryId": "test-query-123", "voteStatus": "accepted", "votedAt": "2024-01-01T00:00:00Z"}
+        mock_client.collaboration.analytics_queries_document_id_vote_post.return_value = None  # 204 No Content
         mock_get_client.return_value = mock_client
 
         # Execute
-        result = frontend_collaboration_query_vote_accept(
+        result = frontend_collaboration_query_vote(
             cmd=Mock(),
             collaboration_id="test-collab-123",
-            document_id="test-query-123"
+            document_id="test-query-123",
+            vote_action="accept"
         )
 
         # Verify
-        self.assertEqual(result["voteStatus"], "accepted")
-        mock_client.collaboration.analytics_queries_document_id_vote_accept_post.assert_called_once_with(
-            "test-collab-123", "test-query-123", body=None)
+        self.assertIsNone(result)  # 204 No Content returns None
+        mock_client.collaboration.analytics_queries_document_id_vote_post.assert_called_once_with(
+            "test-collab-123", "test-query-123", body={"voteAction": "accept"})
 
     @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
     def test_vote_reject_query(self, mock_get_client):
         """Test rejecting a query vote"""
         # Mock the client and its method chain
         mock_client = Mock()
-        mock_client.collaboration.analytics_queries_document_id_vote_reject_post.return_value = {
-            "queryId": "test-query-123", "voteStatus": "rejected", "votedAt": "2024-01-01T00:00:00Z"}
+        mock_client.collaboration.analytics_queries_document_id_vote_post.return_value = None  # 204 No Content
         mock_get_client.return_value = mock_client
 
         # Execute
-        result = frontend_collaboration_query_vote_reject(
+        result = frontend_collaboration_query_vote(
             cmd=Mock(),
             collaboration_id="test-collab-123",
-            document_id="test-query-123"
+            document_id="test-query-123",
+            vote_action="reject"
         )
 
         # Verify
-        self.assertEqual(result["voteStatus"], "rejected")
-        mock_client.collaboration.analytics_queries_document_id_vote_reject_post.assert_called_once_with(
-            "test-collab-123", "test-query-123", body=None)
+        self.assertIsNone(result)  # 204 No Content returns None
+        mock_client.collaboration.analytics_queries_document_id_vote_post.assert_called_once_with(
+            "test-collab-123", "test-query-123", body={"voteAction": "reject"})
 
     # Query Run History Tests
 

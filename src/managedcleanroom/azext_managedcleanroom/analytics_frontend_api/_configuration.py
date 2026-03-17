@@ -3,8 +3,6 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------
-# flake8: noqa
-# pylint: disable=too-few-public-methods
 
 from typing import Any
 
@@ -13,7 +11,7 @@ from azure.core.pipeline import policies
 VERSION = "unknown"
 
 
-class AnalyticsFrontendAPIConfiguration:  # pylint: disable=too-many-instance-attributes
+class AnalyticsFrontendAPIConfiguration:  # pylint: disable=too-many-instance-attributes,too-few-public-methods
     """Configuration for AnalyticsFrontendAPI.
 
     Note that all parameters used to create this instance are saved as instance
