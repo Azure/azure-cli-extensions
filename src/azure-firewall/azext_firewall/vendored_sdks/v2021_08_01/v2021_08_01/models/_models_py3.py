@@ -5315,7 +5315,7 @@ class AzureFirewall(Resource):
         'type': {'key': 'type', 'type': 'str'},
         'location': {'key': 'location', 'type': 'str'},
         'tags': {'key': 'tags', 'type': '{str}'},
-        "extended_location": {"key": "extendedLocation", "type": "ExtendedLocation"},
+        'extended_location': {'key': 'extendedLocation', 'type': 'ExtendedLocation'},
         'zones': {'key': 'zones', 'type': '[str]'},
         'etag': {'key': 'etag', 'type': 'str'},
         'application_rule_collections': {'key': 'properties.applicationRuleCollections', 'type': '[AzureFirewallApplicationRuleCollection]'},
