@@ -2316,9 +2316,9 @@ def load_arguments(self, _):
         )
         c.argument(
             "spot_max_price", 
-            type=float, 
-            validator=validate_spot_max_price, 
-            help="The max price (in US Dollars) you are willing to pay for spot instances. Possible values are any decimal value greater than zero or -1 which indicates default price to be up-to on-demand. For more details on spot pricing, see [spot VMs pricing](https://docs.microsoft.com/azure/virtual-machines/spot-vms#pricing)"
+            type=float,
+            validator=validate_spot_max_price,
+            help="The max price (in US Dollars) you are willing to pay for spot instances."
         )
         c.argument(
             "enable_ultra_ssd",

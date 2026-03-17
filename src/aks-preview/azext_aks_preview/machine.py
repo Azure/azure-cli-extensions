@@ -203,6 +203,7 @@ def set_machine_os_profile(cmd, raw_parameters):
     )
     return machineOSProfile
 
+
 def set_machine_billing_profile(cmd, raw_parameters):
     spot_max_price = raw_parameters.get("spot_max_price")
     MachineBillingProfile = cmd.get_models(
