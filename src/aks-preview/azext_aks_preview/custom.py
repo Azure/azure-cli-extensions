@@ -3451,6 +3451,71 @@ def aks_get_versions(cmd, client, location):    # pylint: disable=unused-argumen
     return client.list_kubernetes_versions(location)
 
 
+def aks_list_vm_skus(cmd, client, location, size=None, zone=None, show_all=None):  # pylint: disable=unused-argument
+    """List VM SKUs available for AKS node pools in a given location.
+
+    Mirrors the shape and filtering behavior of 'az vm list-skus', but queries the
+    AKS-specific endpoint so only SKUs accepted by AKS are returned.
+
+    :param location: Azure region to query.
+    :param size: Optional partial VM size name filter (case-insensitive).
+    :param zone: When True, show only SKUs that support availability zones.
+    :param show_all: When True, include SKUs not available to the current subscription.
+    """
+    result = list(client.list(location))
+
+    if not show_all:
+        result = [sku for sku in result if _aks_is_vm_sku_available(sku, zone)]
+
+    if size:
+        result = [sku for sku in result if sku.name and size.lower() in sku.name.lower()]
+
+    if zone:
+        result = [
+            sku for sku in result
+            if sku.location_info and sku.location_info[0].zones
+        ]
+
+    return result
+
+
+def _aks_is_vm_sku_available(sku, zone):
+    """Return True if the SKU is available for the current subscription.
+
+    A SKU is considered unavailable when:
+    1. It has a Location restriction that covers this region, or
+    2. The --zones flag is set AND all availability zones in the region are restricted.
+    """
+    if not sku.restrictions:
+        return True
+
+    for restriction in sku.restrictions:
+        if restriction.reason_code != "NotAvailableForSubscription":
+            continue
+
+        restriction_type = restriction.type
+        restriction_info = restriction.restriction_info
+
+        if restriction_type == "Location":
+            restricted_locations = (restriction_info.locations or []) if restriction_info else []
+            location_info = sku.location_info[0] if sku.location_info else None
+            if location_info and location_info.location in restricted_locations:
+                return False
+
+        if restriction_type == "Zone" and zone:
+            location_info = sku.location_info[0] if sku.location_info else None
+            if location_info:
+                available_zones = set(location_info.zones or [])
+                restricted_zones = set(
+                    (restriction_info.zones or []) if restriction_info else []
+                )
+                # If all zones are restricted, the SKU is unavailable
+                if not (available_zones - restricted_zones):
+                    return False
+
+    return True
+
+
 def get_aks_custom_headers(aks_custom_headers=None):
     headers = {}
     if aks_custom_headers is not None:
