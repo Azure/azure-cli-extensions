@@ -84,9 +84,11 @@ def constructMachine(cmd, raw_parameters, machine_name):
     )
     tags = raw_parameters.get("tags")
     priority = raw_parameters.get("priority")
+    eviction_policy = raw_parameters.get("eviction_policy")
     machineProperties = MachineProperties(
         tags=tags,
         priority=priority,
+        eviction_policy=eviction_policy,
         network=set_machine_network(cmd, raw_parameters),
         hardware=set_machine_hardware_profile(cmd, raw_parameters),
         kubernetes=set_machine_kubernetes_profile(cmd, raw_parameters),
@@ -108,6 +110,7 @@ def constructMachine(cmd, raw_parameters, machine_name):
 
 
 def set_machine_hardware_profile(cmd, raw_parameters):
+    enable_ultra_ssd = raw_parameters.get("enable_ultra_ssd")
     vm_size = raw_parameters.get("vm_size")
     if vm_size is None:
         raise RequiredArgumentMissingError(
@@ -119,7 +122,8 @@ def set_machine_hardware_profile(cmd, raw_parameters):
         operation_group="machines"
     )
     machine_hardware_profile = MachineHardwareProfile(
-        vm_size=vm_size
+        vm_size=vm_size,
+        enable_ultra_ssd=enable_ultra_ssd
     )
     return machine_hardware_profile
 
