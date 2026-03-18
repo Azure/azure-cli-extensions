@@ -8,7 +8,7 @@
     },
     "configApiVersion": {
       "type": "string",
-      "defaultValue": "2025-06-01"
+      "defaultValue": "2025-12-01-preview"
     },
     "configChildApiVersion": {
       "type": "string",
@@ -121,6 +121,10 @@
           }
         }
       }
+    },
+    "additionalIdentitiesMetadata": {
+      "type": "array",
+      "defaultValue": []
     }
   },
   "variables": {
@@ -151,7 +155,12 @@
       "apiVersion": "[parameters('configApiVersion')]",
       "name": "[parameters('configName')]",
       "location": "[parameters('location')]",
-      "properties": {},
+      "properties": {
+        "managedResourcesConfiguration": {
+          "enabled": true,
+          "additionalIdentitiesMetadata": "[parameters('additionalIdentitiesMetadata')]"
+        }
+      },
       "resources": [
         {
           "type": "NetworkConfigurations",

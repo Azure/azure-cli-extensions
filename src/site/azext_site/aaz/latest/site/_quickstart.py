@@ -22,12 +22,35 @@ from azure.cli.core.azclierror import (  # type: ignore[import-unresolved]
     CLIInternalError,
 )
 from azure.cli.core import get_default_cli  # type: ignore[import-unresolved]
+from azure.cli.command_modules.role import graph_client_factory  # type: ignore[import-unresolved]
 from knack.log import get_logger
 
 logger = get_logger(__name__)
 
 
 _TEMPLATE_RESOURCE = ("templates", "infra", "main.json")
+
+_MANAGED_RESOURCE_APP_IDS = {
+    "AzureLocal": "1322e676-dee7-41ee-a874-ac923822781c",
+    "AzureEdgeOnboardingService": "47cb7c39-a99c-4dab-b91c-3a45ea22b1a8",
+}
+
+
+def _resolve_additional_identities(cli_ctx) -> list[dict]:
+    graph_client = graph_client_factory(cli_ctx)
+    identities: list[dict] = []
+    for name, app_id in _MANAGED_RESOURCE_APP_IDS.items():
+        result = graph_client.service_principal_list(filter=f"appId eq '{app_id}'")
+        if len(result) == 0:
+            az_error = CLIInternalError(
+                f"Service principal for '{name}' (appId: {app_id}) was not found in this tenant."
+            )
+            raise az_error
+        identities.append({
+            "servicePrincipalObjectId": result[0]["id"],
+            "name": name,
+        })
+    return identities
 
 
 @contextmanager
@@ -341,6 +364,8 @@ class Quickstart(AAZCommand):
         rg = self.ctx.args.resource_group.to_serialized_data() if has_value(self.ctx.args.resource_group) else site_name
         rg_location = _create_resource_group(cli, rg, location_arg)
 
+        additional_identities = _resolve_additional_identities(self.cli_ctx)
+
         deployment_name = f"site-quickstart-{site_name}"
 
         with _template_file() as template:
@@ -359,6 +384,12 @@ class Quickstart(AAZCommand):
             if has_value(self.ctx.args.config_name):
                 config_name = self.ctx.args.config_name.to_serialized_data()
                 invoke_args.extend(["--parameters", f"configName={config_name}"])
+
+            if additional_identities:
+                invoke_args.extend([
+                    "--parameters",
+                    json.dumps({"additionalIdentitiesMetadata": {"value": additional_identities}}),
+                ])
 
             if logger.isEnabledFor(logging.DEBUG):
                 defaults_version = _get_configuration_defaults_version(template)
