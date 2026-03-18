@@ -5160,6 +5160,33 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         result = ctx.get_container_network_logs(mc)
         self.assertTrue(result)
 
+    def test_get_container_network_logs_with_monitoring_camelcase_key_on_mc(self):
+        """Test get_container_network_logs succeeds when monitoring uses omsAgent (camelCase) key on mc."""
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({
+                "enable_container_network_logs": True,
+            }),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                advanced_networking=self.models.AdvancedNetworking(
+                    enabled=True,
+                ),
+            ),
+            addon_profiles={
+                "omsAgent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                )
+            },
+        )
+        ctx.attach_mc(mc)
+        result = ctx.get_container_network_logs(mc)
+        self.assertTrue(result)
+
     def test_get_container_network_logs_error_without_acns(self):
         """Test get_container_network_logs raises error when ACNS is not enabled."""
         ctx = AKSPreviewManagedClusterContext(
@@ -11565,7 +11592,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         # Verify: omsAgent should be disabled
         self.assertIn("omsAgent", mc_1.addon_profiles)
         self.assertFalse(mc_1.addon_profiles["omsAgent"].enabled)
-        self.assertIsNone(mc_1.addon_profiles["omsAgent"].config)
+        self.assertEqual(mc_1.addon_profiles["omsAgent"].config, {})
 
     def test_disable_azure_monitor_logs_with_omsagent_lowercase(self):
         # Test that _disable_azure_monitor_logs handles omsagent (lowercase) correctly
@@ -11601,7 +11628,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         # Verify: omsagent should be disabled
         self.assertIn("omsagent", mc_1.addon_profiles)
         self.assertFalse(mc_1.addon_profiles["omsagent"].enabled)
-        self.assertIsNone(mc_1.addon_profiles["omsagent"].config)
+        self.assertEqual(mc_1.addon_profiles["omsagent"].config, {})
 
     def test_get_enable_opentelemetry_logs_validation_with_omsagent_camelcase(self):
         # Test that OpenTelemetry logs validation recognizes omsAgent (camelCase) as enabled

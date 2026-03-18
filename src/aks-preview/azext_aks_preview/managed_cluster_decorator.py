@@ -1083,8 +1083,12 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             )
             monitoring_already_enabled = (
                 mc.addon_profiles and
-                mc.addon_profiles.get("omsagent") and
-                mc.addon_profiles["omsagent"].enabled
+                (
+                    (mc.addon_profiles.get("omsagent") and
+                     mc.addon_profiles["omsagent"].enabled) or
+                    (mc.addon_profiles.get(CONST_MONITORING_ADDON_NAME_CAMELCASE) and
+                     mc.addon_profiles[CONST_MONITORING_ADDON_NAME_CAMELCASE].enabled)
+                )
             )
             monitoring_enabled = monitoring_being_enabled or monitoring_already_enabled
             if not acns_enabled or not monitoring_enabled:
@@ -4707,16 +4711,27 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         }
         mc.addon_profiles[CONST_MONITORING_ADDON_NAME] = addon_profile
 
+        # Create DCR before the cluster is created (matching base class build_monitoring_addon_profile pattern).
+        # The DCRA will be created later in postprocessing_after_mc_created.
+        self.context.external_functions.ensure_container_insights_for_monitoring(
+            self.cmd,
+            addon_profile,
+            self.context.get_subscription_id(),
+            self.context.get_resource_group_name(),
+            self.context.get_name(),
+            self.context.get_location(),
+            remove_monitoring=False,
+            aad_route=self.context.get_enable_msi_auth_for_monitoring(),
+            create_dcr=True,
+            create_dcra=False,
+            enable_syslog=self.context.get_enable_syslog(),
+            data_collection_settings=self.context.get_data_collection_settings(),
+            is_private_cluster=self.context.get_enable_private_cluster(),
+            ampls_resource_id=self.context.get_ampls_resource_id(),
+            enable_high_log_scale_mode=self.context.get_enable_high_log_scale_mode(),
+        )
+
         self.context.set_intermediate("monitoring_addon_enabled", True, overwrite_exists=True)
-
-        # Call ensure_container_insights_for_monitoring with all parameters (similar to postprocessing)
-        CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
-        if (mc.addon_profiles and
-                CONST_MONITORING_ADDON_NAME in mc.addon_profiles and
-                mc.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled):
-
-            # Set intermediate value to trigger postprocessing
-            self.context.set_intermediate("monitoring_addon_postprocessing_required", True, overwrite_exists=True)
 
     def _setup_opentelemetry_metrics(self, mc: ManagedCluster) -> None:
         """Set up OpenTelemetry metrics configuration."""
@@ -7915,13 +7930,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         mc.addon_profiles[existing_key] = addon_profile
         self.context.set_intermediate("monitoring_addon_enabled", True, overwrite_exists=True)
-        # Call ensure_container_insights_for_monitoring with all parameters (similar to postprocessing)
-        if (mc.addon_profiles and
-                existing_key in mc.addon_profiles and
-                mc.addon_profiles[existing_key].enabled):
-
-            # Set intermediate value to trigger postprocessing
-            self.context.set_intermediate("monitoring_addon_postprocessing_required", True, overwrite_exists=True)
 
     def _disable_azure_monitor_logs(self, mc: ManagedCluster) -> None:
         """Disable Azure Monitor logs configuration."""
@@ -8005,8 +8013,9 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         # Now disable the addon and clear configuration
         mc.addon_profiles[addon_key].enabled = False
 
-        # Clear the config to remove old workspace resource ID and other settings
-        mc.addon_profiles[addon_key].config = None
+        # Use empty dict instead of None - setting config=None causes the SDK serializer
+        # to omit the config key entirely, which Azure interprets as "keep existing config"
+        mc.addon_profiles[addon_key].config = {}
 
         # Also disable OpenTelemetry logs when disabling Azure Monitor logs
         if opentelemetry_logs_enabled:
