@@ -15,7 +15,6 @@
 # pylint: disable=no-else-raise
 import json
 import time
-import json
 from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
     InvalidArgumentValueError,
@@ -1200,7 +1199,6 @@ def dataprotection_enable_backup(cmd, datasource_type, datasource_id, backup_str
 
         from azext_dataprotection.manual.aks.aks_helper import dataprotection_enable_backup_helper
         dataprotection_enable_backup_helper(cmd, datasource_id, backup_strategy, config)
-        return
 
 
 def _parse_backup_configuration(backup_configuration_file):
@@ -1215,8 +1213,6 @@ def _parse_backup_configuration(backup_configuration_file):
     Returns:
         dict: Parsed configuration
     """
-    import json
-
     if backup_configuration_file is None:
         return {}
 
