@@ -9,7 +9,7 @@ import logging
 
 from collections import OrderedDict
 from azure.cli.core.commands import CliCommandType
-from ._validators import validate_workspace_info, validate_target_info, validate_workspace_and_target_info, validate_workspace_info_no_location, validate_provider_and_sku_info
+from ._validators import validate_workspace_info, validate_target_info, validate_workspace_and_target_info, validate_provider_and_sku_info
 
 logger = logging.getLogger(__name__)
 
@@ -126,9 +126,9 @@ def load_command_table(self, _):
 
     with self.command_group('quantum workspace', workspace_ops) as w:
         w.command('create', 'create')
-        w.command('delete', 'delete', validator=validate_workspace_info_no_location)
+        w.command('delete', 'delete', validator=validate_workspace_info)
         w.command('list', 'list')
-        w.show_command('show', validator=validate_workspace_info_no_location)
+        w.show_command('show', validator=validate_workspace_info)
         w.command('set', 'set', validator=validate_workspace_info)
         w.command('clear', 'clear')
         w.command('quotas', 'quotas', validator=validate_workspace_info)

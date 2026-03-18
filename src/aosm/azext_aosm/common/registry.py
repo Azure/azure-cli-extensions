@@ -20,6 +20,10 @@ from azext_aosm.common.utils import (
 logger = get_logger(__name__)
 ACR_REGISTRY_NAME_PATTERN = r"^([a-zA-Z0-9]+\.azurecr\.io)"
 
+# Azure Container Registry constants
+ACR_OAUTH_SCOPE = "https://containerregistry.azure.net/.default"
+ACR_IMPORT_SERVICE_PRINCIPAL_ID = "00000000-0000-0000-0000-000000000000"
+
 
 # pylint: disable=too-few-public-methods
 class ContainerRegistry:
@@ -239,7 +243,15 @@ class AzureContainerRegistry(ContainerRegistry):
             # the format of input.json. Our usage here won't work cross-tenant since
             # we're attempting to get the token (source) with the same context as that
             # in which we are creating the ACR (i.e. the target tenant)
-            get_token_cmd = [str(shutil.which("az")), "account", "get-access-token"]
+
+            # Get access token with ACR scope to ensure proper repository permissions
+            get_token_cmd = [
+                str(shutil.which("az")),
+                "account",
+                "get-access-token",
+                "--scope",
+                ACR_OAUTH_SCOPE
+            ]
             # Dont use call_subprocess_raise_output here as we don't want to log the
             # output
             called_process = subprocess.run(  # noqa: S603
@@ -269,6 +281,39 @@ class AzureContainerRegistry(ContainerRegistry):
             )
 
         try:
+            # Extract source registry name for the --registry parameter
+            source_registry_name = self.registry_name.replace(".azurecr.io", "")
+
+            # Get the full resource ID for the source registry
+            source_registry_id_cmd = [
+                str(shutil.which("az")),
+                "acr",
+                "show",
+                "--name",
+                source_registry_name,
+                "--query",
+                "id",
+                "--output",
+                "tsv"
+            ]
+            try:
+                called_process = subprocess.run(  # noqa: S603
+                    source_registry_id_cmd,
+                    encoding="utf-8",
+                    capture_output=True,
+                    text=True,
+                    check=True,
+                )
+                source_registry_id = called_process.stdout.strip()
+            except subprocess.CalledProcessError as exc:
+                error_output = exc.stderr or exc.stdout or str(exc)
+                raise ClientRequestError(
+                    "Failed to resolve source registry "
+                    f"'{source_registry_name}'. Please ensure the registry exists "
+                    "and that you have sufficient permissions. "
+                    f"Details: {error_output}"
+                ) from exc
+
             acr_import_image_cmd = [
                 str(shutil.which("az")),
                 "acr",
@@ -279,8 +324,12 @@ class AzureContainerRegistry(ContainerRegistry):
                 source_image,
                 "--image",
                 f"{image_name}:{image_version}",
+                "--username",
+                ACR_IMPORT_SERVICE_PRINCIPAL_ID,
                 "--password",
                 access_token,
+                "--registry",
+                source_registry_id,
             ]
             call_subprocess_raise_output(acr_import_image_cmd)
         except CLIError as error:

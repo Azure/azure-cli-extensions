@@ -10,6 +10,7 @@ an Azure Quantum Workspace.
 from __future__ import annotations
 from datetime import datetime
 import logging
+# from urllib.parse import quote
 from typing import (
     Any,
     Dict,
@@ -20,15 +21,19 @@ from typing import (
     Tuple,
     Union,
 )
-# from azure.quantum._client import QuantumClient
-from ._client import QuantumClient
-# from azure.quantum._client.operations import (
-#     JobsOperations,
-#     StorageOperations,
-#     QuotasOperations,
-#     SessionsOperations,
-#     TopLevelItemsOperations
-# )
+from typing_extensions import Self
+# from azure.core.paging import ItemPaged
+# from azure.quantum._client import WorkspaceClient
+from ._client import WorkspaceClient
+# from azure.quantum._client.models import JobDetails, ItemDetails, SessionDetails
+# from azure.quantum._client.operations._operations import (
+from ._client.operations._operations import (
+    # ServicesJobsOperations,
+    ServicesStorageOperations,
+    # ServicesQuotasOperations,
+    # ServicesSessionsOperations,
+    # ServicesTopLevelItemsOperations
+)
 # from azure.quantum._client.models import (
 from ._client.models import (
     BlobDetails,
@@ -47,13 +52,12 @@ from ._constants import (
 )
 # from azure.quantum.storage import (
 from .storage import (
-    create_container_using_client,
     get_container_uri,
-    ContainerClient
 )
+# from azure.quantum._mgmt_client import WorkspaceMgmtClient
+from ._mgmt_client import WorkspaceMgmtClient
 # if TYPE_CHECKING:
 #     from azure.quantum.target import Target
-
 
 logger = logging.getLogger(__name__)
 
@@ -65,10 +69,11 @@ class Workspace:
     """
     Represents an Azure Quantum workspace.
 
-    When creating a Workspace object, callers have two options for
+    When creating a Workspace object, callers have several options for
     identifying the Azure Quantum workspace (in order of precedence):
-    1. specify a valid location and resource ID; or
-    2. specify a valid location, subscription ID, resource group, and workspace name.
+    1. specify a valid resource ID; or
+    2. specify a valid subscription ID, resource group, and workspace name; or
+    3. specify a valid workspace name.
 
     You can also use a connection string to specify the connection parameters
     to an Azure Quantum Workspace by calling
@@ -113,6 +118,13 @@ class Workspace:
         Add the specified value as a prefix to the HTTP User-Agent header
         when communicating to the Azure Quantum service.
     """
+    
+    # Internal parameter names
+    _FROM_CONNECTION_STRING_PARAM = '_from_connection_string'
+    _QUANTUM_ENDPOINT_PARAM = '_quantum_endpoint'
+    _WORKSPACE_KIND_PARAM = '_workspace_kind'
+    _MGMT_CLIENT_PARAM = '_mgmt_client'
+    
     def __init__(
         self,
         subscription_id: Optional[str] = None,
@@ -125,6 +137,15 @@ class Workspace:
         user_agent: Optional[str] = None,
         **kwargs: Any,
     ) -> None:
+        # Extract internal params before passing kwargs to WorkspaceConnectionParams
+        # Param to track whether the workspace was created from a connection string
+        from_connection_string = kwargs.pop(Workspace._FROM_CONNECTION_STRING_PARAM, False)
+        # In case from connection string, quantum_endpoint must be passed
+        quantum_endpoint = kwargs.pop(Workspace._QUANTUM_ENDPOINT_PARAM, None)
+        workspace_kind = kwargs.pop(Workspace._WORKSPACE_KIND_PARAM, None)
+        # Params to pass a mock in tests
+        self._mgmt_client = kwargs.pop(Workspace._MGMT_CLIENT_PARAM, None)
+        
         connection_params = WorkspaceConnectionParams(
             location=location,
             subscription_id=subscription_id,
@@ -132,20 +153,48 @@ class Workspace:
             workspace_name=name,
             credential=credential,
             resource_id=resource_id,
+            quantum_endpoint=quantum_endpoint,
             user_agent=user_agent,
+            workspace_kind=workspace_kind,
             **kwargs
         ).default_from_env_vars()
 
         logger.info("Using %s environment.", connection_params.environment)
 
-        connection_params.assert_complete()
+        connection_params.assert_have_enough_for_discovery()
 
         connection_params.on_new_client_request = self._on_new_client_request
 
         self._connection_params = connection_params
         self._storage = storage
 
-        # Create QuantumClient
+        if not self._mgmt_client:
+            credential = connection_params.get_credential_or_default()
+            self._mgmt_client = WorkspaceMgmtClient(
+                credential=credential, 
+                base_url=connection_params.arm_endpoint, 
+                user_agent=connection_params.get_full_user_agent(),
+            )
+        
+        # pylint: disable=protected-access
+        using_connection_string = (
+            from_connection_string
+            or connection_params._used_connection_string
+        )
+
+        # Populate workspace details from ARG if not using connection string and 
+        # name is provided but missing subscription and/or resource group
+        if not using_connection_string \
+           and not connection_params.can_build_resource_id():
+            self._mgmt_client.load_workspace_from_arg(connection_params)
+
+        # Populate workspace details from ARM if not using connection string and not loaded from ARG
+        if not using_connection_string and not connection_params.is_complete():
+            self._mgmt_client.load_workspace_from_arm(connection_params)
+        
+        connection_params.assert_complete()
+
+        # Create WorkspaceClient
         self._client = self._create_client()
 
     def _on_new_client_request(self) -> None:
@@ -168,35 +217,35 @@ class Workspace:
     #     """
     #     return self._connection_params.location
 
-    # @property
-    # def subscription_id(self) -> str:
-    #     """
-    #     Returns the Azure Subscription ID of the Quantum Workspace.
+    @property
+    def subscription_id(self) -> str:
+        """
+        Returns the Azure Subscription ID of the Quantum Workspace.
 
-    #     :return: Azure Subscription ID.
-    #     :rtype: str
-    #     """
-    #     return self._connection_params.subscription_id
+        :return: Azure Subscription ID.
+        :rtype: str
+        """
+        return self._connection_params.subscription_id
 
-    # @property
-    # def resource_group(self) -> str:
-    #     """
-    #     Returns the Azure Resource Group of the Quantum Workspace.
+    @property
+    def resource_group(self) -> str:
+        """
+        Returns the Azure Resource Group of the Quantum Workspace.
 
-    #     :return: Azure Resource Group name.
-    #     :rtype: str
-    #     """
-    #     return self._connection_params.resource_group
+        :return: Azure Resource Group name.
+        :rtype: str
+        """
+        return self._connection_params.resource_group
 
-    # @property
-    # def name(self) -> str:
-    #     """
-    #     Returns the Name of the Quantum Workspace.
+    @property
+    def name(self) -> str:
+        """
+        Returns the Name of the Quantum Workspace.
 
-    #     :return: Azure Quantum Workspace name.
-    #     :rtype: str
-    #     """
-    #     return self._connection_params.workspace_name
+        :return: Azure Quantum Workspace name.
+        :rtype: str
+        """
+        return self._connection_params.workspace_name
 
     # @property
     # def credential(self) -> Any:
@@ -218,23 +267,23 @@ class Workspace:
         """
         return self._storage
 
-    def _create_client(self) -> QuantumClient:
+    def _create_client(self) -> WorkspaceClient:
         """"
         An internal method to (re)create the underlying Azure SDK REST API client.
 
         :return: Azure SDK REST API client for Azure Quantum.
-        :rtype: QuantumClient
+        :rtype: WorkspaceClient
         """
         connection_params = self._connection_params
         kwargs = {}
         if connection_params.api_version:
             kwargs["api_version"] = connection_params.api_version
-        client = QuantumClient(
+        client = WorkspaceClient(
+            region=connection_params.location,
             credential=connection_params.get_credential_or_default(),
             subscription_id=connection_params.subscription_id,
             resource_group_name=connection_params.resource_group,
             workspace_name=connection_params.workspace_name,
-            azure_region=connection_params.location,
             user_agent=connection_params.get_full_user_agent(),
             credential_scopes = [ConnectionConstants.DATA_PLANE_CREDENTIAL_SCOPE],
             endpoint=connection_params.quantum_endpoint,
@@ -277,6 +326,9 @@ class Workspace:
     #     :rtype: Workspace
     #     """
     #     connection_params = WorkspaceConnectionParams(connection_string=connection_string)
+    #     kwargs[cls._FROM_CONNECTION_STRING_PARAM] = True
+    #     kwargs[cls._QUANTUM_ENDPOINT_PARAM] = connection_params.quantum_endpoint
+    #     kwargs[cls._WORKSPACE_KIND_PARAM] = connection_params.workspace_kind.value if connection_params.workspace_kind else None
     #     return cls(
     #         subscription_id=connection_params.subscription_id,
     #         resource_group=connection_params.resource_group,
@@ -285,55 +337,55 @@ class Workspace:
     #         credential=connection_params.get_credential_or_default(),
     #         **kwargs)
 
-    # def _get_top_level_items_client(self) -> TopLevelItemsOperations:
+    # def _get_top_level_items_client(self) -> ServicesTopLevelItemsOperations:
     #     """
     #     Returns the internal Azure SDK REST API client
     #     for the `{workspace}/topLevelItems` API.
 
     #     :return: REST API client for the `topLevelItems` API.
-    #     :rtype: TopLevelItemsOperations
+    #     :rtype: ServicesTopLevelItemsOperations
     #     """
-    #     return self._client.top_level_items
+    #     return self._client.services.top_level_items
 
-    # def _get_sessions_client(self) -> SessionsOperations:
+    # def _get_sessions_client(self) -> ServicesSessionsOperations:
     #     """
     #     Returns the internal Azure SDK REST API client
     #     for the `{workspace}/sessions` API.
 
     #     :return: REST API client for the `sessions` API.
-    #     :rtype: SessionsOperations
+    #     :rtype: ServicesSessionsOperations
     #     """
-    #     return self._client.sessions
+    #     return self._client.services.sessions
 
-    # def _get_jobs_client(self) -> JobsOperations:
+    # def _get_jobs_client(self) -> ServicesJobsOperations:
     #     """
     #     Returns the internal Azure SDK REST API client
     #     for the `{workspace}/jobs` API.
 
     #     :return: REST API client for the `jobs` API.
-    #     :rtype: JobsOperations
+    #     :rtype: ServicesJobsOperations
     #     """
-    #     return self._client.jobs
+    #     return self._client.services.jobs
 
-    def _get_workspace_storage_client(self) -> StorageOperations:
+    def _get_workspace_storage_client(self) -> ServicesStorageOperations:
         """
         Returns the internal Azure SDK REST API client
         for the `{workspace}/storage` API.
 
         :return: REST API client for the `storage` API.
-        :rtype: StorageOperations
+        :rtype: ServicesStorageOperations
         """
-        return self._client.storage
+        return self._client.services.storage
 
-    # def _get_quotas_client(self) -> QuotasOperations:
+    # def _get_quotas_client(self) -> ServicesQuotasOperations:
     #     """
     #     Returns the internal Azure SDK REST API client
     #     for the `{workspace}/quotas` API.
 
     #     :return: REST API client for the `quotas` API.
-    #     :rtype: QuotasOperations
+    #     :rtype: ServicesQuotasOperations
     #     """
-    #     return self._client.quotas
+    #     return self._client.services.quotas
 
     def _get_linked_storage_sas_uri(
         self,
@@ -357,7 +409,11 @@ class Workspace:
         blob_details = BlobDetails(
             container_name=container_name, blob_name=blob_name
         )
-        container_uri = client.sas_uri(blob_details=blob_details)
+        container_uri = client.get_sas_uri(
+            self.subscription_id,
+            self.resource_group,
+            self.name, 
+            blob_details=blob_details)
 
         logger.debug("Container URI from service: %s", container_uri)
         return container_uri.sas_uri
@@ -374,7 +430,11 @@ class Workspace:
     #     """
     #     client = self._get_jobs_client()
     #     details = client.create(
-    #         job.details.id, job.details
+    #         self.subscription_id,
+    #         self.resource_group,
+    #         self.name,
+    #         job.details.id, 
+    #         job.details
     #     )
     #     return Job(self, details)
 
@@ -390,8 +450,16 @@ class Workspace:
     #     :rtype: Job
     #     """
     #     client = self._get_jobs_client()
-    #     client.cancel(job.details.id)
-    #     details = client.get(job.id)
+    #     client.delete(
+    #         self.subscription_id,
+    #         self.resource_group,
+    #         self.name,
+    #         job.details.id)
+    #     details = client.get(
+    #         self.subscription_id,
+    #         self.resource_group,
+    #         self.name,
+    #         job.id)
     #     return Job(self, details)
 
     # def get_job(self, job_id: str) -> Job:
@@ -409,7 +477,11 @@ class Workspace:
     #     from azure.quantum.target import Target
 
     #     client = self._get_jobs_client()
-    #     details = client.get(job_id)
+    #     details = client.get(
+    #         self.subscription_id,
+    #         self.resource_group,
+    #         self.name,
+    #         job_id)
     #     target_factory = TargetFactory(base_cls=Target, workspace=self)
     #     # pylint: disable=protected-access
     #     target_cls = target_factory._target_cls(
@@ -421,8 +493,14 @@ class Workspace:
     # def list_jobs(
     #     self,
     #     name_match: Optional[str] = None,
-    #     status: Optional[JobStatus] = None,
-    #     created_after: Optional[datetime] = None
+    #     job_type: Optional[list[str]]= None,
+    #     provider: Optional[list[str]]= None,
+    #     target: Optional[list[str]]= None,
+    #     status: Optional[list[JobStatus]] = None,
+    #     created_after: Optional[datetime] = None,
+    #     created_before: Optional[datetime] = None,
+    #     orderby_property: Optional[str] = None,
+    #     is_asc: Optional[bool] = True
     # ) -> List[Job]:
     #     """
     #     Returns list of jobs that meet optional (limited) filter criteria.
@@ -439,16 +517,53 @@ class Workspace:
     #     :return: Jobs that matched the search criteria.
     #     :rtype: typing.List[Job]
     #     """
-    #     client = self._get_jobs_client()
-    #     jobs = client.list()
+    #     paginator = self.list_jobs_paginated (
+    #         name_match=name_match,
+    #         job_type=job_type,
+    #         provider=provider,
+    #         target=target,
+    #         status=status,
+    #         created_after=created_after,
+    #         created_before=created_before,
+    #         orderby_property=orderby_property,
+    #         is_asc=is_asc)
 
     #     result = []
-    #     for j in jobs:
+    #     for j in paginator:
     #         deserialized_job = Job(self, j)
-    #         if deserialized_job.matches_filter(name_match, status, created_after):
-    #             result.append(deserialized_job)
+    #         result.append(deserialized_job)
 
     #     return result
+
+    # def list_jobs_paginated( 
+    #     self,
+    #     *,
+    #     name_match: Optional[str] = None, 
+    #     job_type: Optional[str]= None, 
+    #     provider: Optional[list[str]]= None, 
+    #     target: Optional[list[str]]= None, 
+    #     status: Optional[list[JobStatus]] = None, 
+    #     created_after: Optional[datetime] = None,
+    #     created_before: Optional[datetime] = None, 
+    #     skip: Optional[int] = 0,
+    #     top: Optional[int]=100,
+    #     orderby_property: Optional[str] = None,
+    #     is_asc: Optional[bool] = True
+    # ) -> ItemPaged[JobDetails]:
+    #     client = self._get_jobs_client()
+
+    #     job_filter = self._create_filter(
+    #         job_name=name_match,
+    #         job_type=job_type,
+    #         provider_ids=provider,
+    #         target=target,
+    #         status=status,
+    #         created_after=created_after,
+    #         created_before=created_before
+    #     )
+    #     orderby = self._create_orderby(orderby_property, is_asc)
+
+    #     return client.list(subscription_id=self.subscription_id, resource_group_name=self.resource_group, workspace_name=self.name, filter=job_filter, orderby=orderby, top = top, skip = skip)
 
     # def _get_target_status(
     #         self,
@@ -470,7 +585,10 @@ class Workspace:
     #     """
     #     return [
     #         (provider.id, target)
-    #         for provider in self._client.providers.get_status()
+    #         for provider in self._client.services.providers.list(
+    #             self.subscription_id,
+    #             self.resource_group,
+    #             self.name)
     #         for target in provider.targets
     #         if (provider_id is None or provider.id.lower() == provider_id.lower())
     #             and (name is None or target.id.lower() == name.lower())
@@ -526,10 +644,24 @@ class Workspace:
     #     :rtype: typing.List[typing.Dict[str, typing.Any]
     #     """
     #     client = self._get_quotas_client()
-    #     return [q.as_dict() for q in client.list()]
+    #     return [q.as_dict() for q in client.list(
+    #         self.subscription_id,
+    #         self.resource_group,
+    #         self.name
+    #     )]
 
     # def list_top_level_items(
-    #     self
+    #     self,
+    #     name_match: Optional[str] = None,
+    #     item_type: Optional[list[str]]= None,
+    #     job_type: Optional[list[str]]= None,
+    #     provider: Optional[list[str]]= None,
+    #     target: Optional[list[str]]= None,
+    #     status: Optional[list[JobStatus]] = None,
+    #     created_after: Optional[datetime] = None,
+    #     created_before: Optional[datetime] = None,
+    #     orderby_property: Optional[str] = None,
+    #     is_asc: Optional[bool] = True
     # ) -> List[Union[Job, Session]]:
     #     """
     #     Get a list of top level items for the given workspace,
@@ -539,14 +671,64 @@ class Workspace:
     #     :return: List of Workspace top level Jobs or Sessions.
     #     :rtype: typing.List[typing.Union[Job, Session]]
     #     """
-    #     client = self._get_top_level_items_client()
-    #     item_details_list = client.list()
+    #     paginator = self.list_top_level_items_paginated(
+    #         name_match=name_match,
+    #         item_type=item_type,
+    #         job_type=job_type,
+    #         provider=provider,
+    #         target=target,
+    #         status=status,
+    #         created_after=created_after,
+    #         created_before=created_before,
+    #         orderby_property=orderby_property,
+    #         is_asc=is_asc
+    #     )
+
     #     result = [WorkspaceItemFactory.__new__(workspace=self, item_details=item_details)
-    #               for item_details in item_details_list]
+    #               for item_details in paginator]
     #     return result
 
+    # def list_top_level_items_paginated( 
+    #     self,
+    #     *,
+    #     name_match: Optional[str] = None, 
+    #     item_type: Optional[str]= None, 
+    #     job_type: Optional[str]= None, 
+    #     provider: Optional[list[str]]= None, 
+    #     target: Optional[list[str]]= None, 
+    #     status: Optional[list[JobStatus]] = None, 
+    #     created_after: Optional[datetime] = None,
+    #     created_before: Optional[datetime] = None, 
+    #     skip: Optional[int] = 0,
+    #     top: Optional[int]=100,
+    #     orderby_property: Optional[str] = None,
+    #     is_asc: Optional[bool] = True
+    # ) -> ItemPaged[ItemDetails]:
+    #     client = self._get_top_level_items_client()
+
+    #     top_level_item_filter = self._create_filter(
+    #         job_name=name_match,
+    #         item_type=item_type,
+    #         job_type=job_type,
+    #         provider_ids=provider,
+    #         target=target,
+    #         status=status,
+    #         created_after=created_after,
+    #         created_before=created_before
+    #     )
+    #     orderby = self._create_orderby(orderby_property, is_asc)
+
+    #     return client.listv2(subscription_id=self.subscription_id, resource_group_name=self.resource_group, workspace_name=self.name, filter=top_level_item_filter, orderby=orderby, top = top, skip = skip)
+
     # def list_sessions(
-    #     self
+    #     self,
+    #     provider: Optional[list[str]]= None,
+    #     target: Optional[list[str]]= None,
+    #     status: Optional[list[JobStatus]] = None,
+    #     created_after: Optional[datetime] = None,
+    #     created_before: Optional[datetime] = None,
+    #     orderby_property: Optional[str] = None,
+    #     is_asc: Optional[bool] = True
     # ) -> List[Session]:
     #     """
     #     Get the list of sessions in the given workspace.
@@ -554,11 +736,50 @@ class Workspace:
     #     :return: List of Workspace Sessions.
     #     :rtype: typing.List[Session]
     #     """
-    #     client = self._get_sessions_client()
-    #     session_details_list = client.list()
+    #     paginator = self.list_sessions_paginated(
+    #         provider=provider,
+    #         target=target,
+    #         status=status,
+    #         created_after=created_after,
+    #         created_before=created_before,
+    #         orderby_property=orderby_property,
+    #         is_asc=is_asc)
+
     #     result = [Session(workspace=self,details=session_details)
-    #               for session_details in session_details_list]
+    #               for session_details in paginator]
     #     return result
+    
+    # def list_sessions_paginated(
+    #     self,
+    #     *,
+    #     provider: Optional[list[str]]= None, 
+    #     target: Optional[list[str]]= None, 
+    #     status: Optional[list[JobStatus]] = None, 
+    #     created_after: Optional[datetime] = None,
+    #     created_before: Optional[datetime] = None, 
+    #     skip: Optional[int] = 0, 
+    #     top: Optional[int]=100, 
+    #     orderby_property: Optional[str] = None,
+    #     is_asc: Optional[bool] = True
+    # ) -> ItemPaged[SessionDetails]:
+    #     """
+    #     Get the list of sessions in the given workspace.
+
+    #     :return: List of Workspace Sessions.
+    #     :rtype: typing.List[Session]
+    #     """
+    #     client = self._get_sessions_client()
+    #     session_filter = self._create_filter(
+    #         provider_ids=provider,
+    #         target=target,
+    #         status=status,
+    #         created_after=created_after,
+    #         created_before=created_before
+    #     )
+
+    #     orderby = self._create_orderby(orderby_property=orderby_property, is_asc=is_asc)
+
+    #     return client.listv2(subscription_id=self.subscription_id, resource_group_name=self.resource_group, workspace_name=self.name, filter = session_filter, orderby=orderby, skip=skip, top=top)
 
     # def open_session(
     #     self,
@@ -575,8 +796,11 @@ class Workspace:
     #     """
     #     client = self._get_sessions_client()
     #     session.details = client.open(
-    #         session_id=session.id,
-    #         session=session.details)
+    #         self.subscription_id,
+    #         self.resource_group,
+    #         self.name,
+    #         session.id,
+    #         session.details)
 
     # def close_session(
     #     self,
@@ -592,9 +816,17 @@ class Workspace:
     #     """
     #     client = self._get_sessions_client()
     #     if not session.is_in_terminal_state():
-    #         session.details = client.close(session_id=session.id)
+    #         session.details = client.close(
+    #             self.subscription_id,
+    #             self.resource_group,
+    #             self.name,
+    #             session_id=session.id)
     #     else:
-    #         session.details = client.get(session_id=session.id)
+    #         session.details = client.get(
+    #             self.subscription_id,
+    #             self.resource_group,
+    #             self.name,
+    #             session_id=session.id)
 
     #     if session.target:
     #         if (session.target.latest_session
@@ -628,13 +860,21 @@ class Workspace:
     #     :rtype: Session
     #     """
     #     client = self._get_sessions_client()
-    #     session_details = client.get(session_id=session_id)
+    #     session_details = client.get(
+    #         self.subscription_id,
+    #         self.resource_group,
+    #         self.name,
+    #         session_id=session_id)
     #     result = Session(workspace=self, details=session_details)
     #     return result
 
     # def list_session_jobs(
     #     self,
-    #     session_id: str
+    #     session_id: str,
+    #     name_match: Optional[str] = None,
+    #     status: Optional[list[JobStatus]] = None,
+    #     orderby_property: Optional[str] = None,
+    #     is_asc: Optional[bool] = True
     # ) -> List[Job]:
     #     """
     #     Gets all jobs associated with a session.
@@ -645,11 +885,47 @@ class Workspace:
     #     :return: List of all jobs associated with a session.
     #     :rtype: typing.List[Job]
     #     """
-    #     client = self._get_sessions_client()
-    #     job_details_list = client.jobs_list(session_id=session_id)
+    #     paginator = self.list_session_jobs_paginated(
+    #         session_id=session_id,
+    #         name_match=name_match,
+    #         status=status,
+    #         orderby_property=orderby_property,
+    #         is_asc=is_asc)
+
     #     result = [Job(workspace=self, job_details=job_details)
-    #               for job_details in job_details_list]
+    #               for job_details in paginator]
     #     return result
+
+    # def list_session_jobs_paginated(
+    #     self,
+    #     *,
+    #     session_id: str,
+    #     name_match: Optional[str] = None,
+    #     status: Optional[list[JobStatus]] = None,
+    #     skip: Optional[int] = 0,
+    #     top: Optional[int]=100,
+    #     orderby_property: Optional[str] = None,
+    #     is_asc: Optional[bool] = True
+    # ) -> ItemPaged[JobDetails]:
+    #     """
+    #     Gets all jobs associated with a session.
+
+    #     :param session_id:
+    #         The id of session.
+
+    #     :return: List of all jobs associated with a session.
+    #     :rtype: typing.List[Job]
+    #     """
+    #     client = self._get_sessions_client()
+
+    #     session_job_filter = self._create_filter(
+    #         job_name=name_match,
+    #         status=status
+    #     )
+
+    #     orderby = self._create_orderby(orderby_property=orderby_property, is_asc=is_asc)
+
+    #     return client.jobs_list(subscription_id=self.subscription_id, resource_group_name=self.resource_group, workspace_name=self.name, session_id=session_id, filter = session_job_filter, orderby=orderby, skip=skip, top=top)
 
     def get_container_uri(
         self,
@@ -680,15 +956,11 @@ class Workspace:
                 container_name = f"{self.name}-data"
         # Create container URI and get container client
         if self.storage is None:
-            # Get linked storage account from the service, create
-            # a new container if it does not yet exist
+            # Get linked storage account from the service, a new container
+            # is created by the service if it does not yet exist
             container_uri = self._get_linked_storage_sas_uri(
                 container_name
             )
-            container_client = ContainerClient.from_container_url(
-                container_uri
-            )
-            create_container_using_client(container_client)
         else:
             # Use the storage acount specified to generate container URI,
             # create a new container if it does not yet exist
@@ -696,3 +968,119 @@ class Workspace:
                 self.storage, container_name
             )
         return container_uri
+
+    # def _create_filter(self,
+    #         job_name: Optional[str] = None,
+    #         item_type: Optional[List[str]] = None,
+    #         job_type: Optional[List[str]] = None,
+    #         provider_ids: Optional[List[str]] = None,
+    #         target: Optional[List[str]] = None,
+    #         status: Optional[List[str]] = None,
+    #         created_after: Optional[datetime] = None,
+    #         created_before: Optional[datetime] = None,) -> str:
+    #     has_filter = False
+    #     filter_string = ""
+
+    #     if job_name:
+    #         filter_string += f"startswith(Name, '{job_name}')"
+    #         has_filter = True
+
+    #     if (item_type is not None and len(item_type) != 0):
+    #         if has_filter:
+    #             filter_string += " and "
+
+    #         filter_string += "("
+
+    #         item_type_filter = " or ".join([f"ItemType eq '{iid}'" for iid in item_type])
+
+    #         filter_string += f"{item_type_filter})"
+    #         has_filter = True
+
+    #     if (job_type is not None and len(job_type) != 0):
+    #         if has_filter:
+    #             filter_string += " and "
+
+    #         filter_string += "("
+
+    #         job_type_filter = " or ".join([f"JobType eq '{jid}'" for jid in job_type])
+
+    #         filter_string += f"{job_type_filter})"
+    #         has_filter = True
+
+    #     if (provider_ids is not None and len(provider_ids) != 0):
+    #         if has_filter:
+    #             filter_string += " and "
+
+    #         filter_string += "("
+
+    #         provider_filter = " or ".join([f"ProviderId eq '{pid}'" for pid in provider_ids])
+
+    #         filter_string += f"{provider_filter})"
+    #         has_filter = True
+
+    #     if (target is not None and len(target) != 0):
+    #         if has_filter:
+    #             filter_string += " and "
+
+    #         filter_string += "("
+
+    #         target_filter = " or ".join([f"Target eq '{tid}'" for tid in target])
+
+    #         filter_string += f"{target_filter})"
+    #         has_filter = True
+
+    #     if (status is not None and len(status) != 0):
+    #         if has_filter:
+    #             filter_string += " and "
+
+    #         filter_string += "("
+
+    #         status_filter = " or ".join([f"State eq '{sid}'" for sid in status])
+
+    #         filter_string += f"{status_filter})"
+    #         has_filter = True
+
+    #     if created_after is not None:
+    #         if has_filter:
+    #             filter_string += " and "
+
+    #         iso_date_string = created_after.date().isoformat()
+    #         filter_string += f"CreationTime ge {iso_date_string}"
+
+    #     if created_before is not None:
+    #         if has_filter:
+    #             filter_string += " and "
+
+    #         iso_date_string = created_before.date().isoformat()
+    #         filter_string += f"CreationTime le {iso_date_string}"
+
+    #     if filter_string:
+    #         return filter_string
+    #     else:
+    #         return None
+
+    # def _create_orderby(self, orderby_property: str, is_asc: bool) -> str:
+    #     if orderby_property:
+    #         var_names = ["Name", "ItemType", "JobType", "ProviderId", "Target", "State", "CreationTime"]
+
+    #         if orderby_property in var_names:
+    #             orderby = f"{orderby_property} asc" if is_asc else f"{orderby_property} desc"
+    #         else:
+    #             raise ValueError(f"Invalid orderby property: {orderby_property}")
+
+    #         return orderby
+    #     else:
+    #         return None
+    
+    def close(self) -> None:
+        self._mgmt_client.close()
+        self._client.close()
+
+    def __enter__(self) -> Self:
+        self._client.__enter__()
+        self._mgmt_client.__enter__()
+        return self
+
+    def __exit__(self, *exc_details: Any) -> None:
+        self._mgmt_client.__exit__(*exc_details)
+        self._client.__exit__(*exc_details)

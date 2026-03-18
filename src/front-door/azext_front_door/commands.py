@@ -9,7 +9,7 @@ from azure.cli.core.commands import CliCommandType
 from .custom import (
     list_frontdoor_resource_property, get_frontdoor_resource_property_entry, delete_frontdoor_resource_property_entry)
 from ._client_factory import (
-    cf_frontdoor, cf_fd_endpoints, cf_waf_policies, cf_fd_rules_engines, cf_front_door_name_availability)
+    cf_frontdoor, cf_fd_endpoints, cf_fd_rules_engines, cf_front_door_name_availability)
 
 
 # pylint: disable=too-many-locals, too-many-statements
@@ -57,10 +57,10 @@ def load_command_table(self, _):
         client_factory=cf_fd_rules_engines
     )
 
-    waf_policy_sdk = CliCommandType(
-        operations_tmpl='azext_front_door.vendored_sdks.operations._policies_operations#PoliciesOperations.{}',
-        client_factory=cf_waf_policies
-    )
+    # waf_policy_sdk = CliCommandType(
+    #     operations_tmpl='azext_front_door.vendored_sdks.operations._policies_operations#PoliciesOperations.{}',
+    #     client_factory=cf_waf_policies
+    # )
 
     fd_frontdoor_custom_sdk = CliCommandType(
         operations_tmpl='azext_front_door.custom#{}',
@@ -154,39 +154,55 @@ def load_command_table(self, _):
     #     g.command('list', 'list')
     #     g.show_command('show')
     #     g.generic_update_command('update', custom_func_name='update_waf_policy', setter_name="begin_create_or_update")
-    from .custom_waf import WafPolicyCreate, WafPolicyUpdate
+    from .custom_waf import (
+        WafPolicyCreate, WafPolicyUpdate,
+        AddAzureManagedRuleSet, RemoveAzureManagedRuleSet, ListAzureManagedRuleSet,
+        AddOverrideAzureManagedRuleSet, RemoveOverrideAzureManagedRuleSet, ListOverrideAzureManagedRuleSet,
+        AddExclusionAzureManagedRuleSet, RemoveExclusionAzureManagedRuleSet, ListExclusionAzureManagedRuleSet,
+        CreateCustomRule, UpdateCustomRule, DeleteCustomRule, ListCustomRules, ShowCustomRule,
+        AddCustomRuleMatchCondition, RemoveCustomRuleMatchCondition, ListCustomRuleMatchConditions
+    )
     self.command_table['network front-door waf-policy create'] = WafPolicyCreate(loader=self)
     self.command_table['network front-door waf-policy update'] = WafPolicyUpdate(loader=self)
 
-    with self.command_group('network front-door waf-policy managed-rules', waf_policy_sdk) as g:
-        g.custom_command('add', 'add_azure_managed_rule_set')
-        g.custom_command('remove', 'remove_azure_managed_rule_set')
-        g.custom_command('list', 'list_azure_managed_rule_set')
+    # Register command groups for waf-policy subcommands
+    with self.command_group('network front-door waf-policy managed-rules'):
+        pass
+    with self.command_group('network front-door waf-policy managed-rules exclusion'):
+        pass
+    with self.command_group('network front-door waf-policy managed-rules override'):
+        pass
+    with self.command_group('network front-door waf-policy rule'):
+        pass
+    with self.command_group('network front-door waf-policy rule match-condition'):
+        pass
 
-    with self.command_group('network front-door waf-policy managed-rules override', waf_policy_sdk) as g:
-        g.custom_command('add', 'add_override_azure_managed_rule_set')
-        g.custom_command('remove', 'remove_override_azure_managed_rule_set')
-        g.custom_command('list', 'list_override_azure_managed_rule_set')
+    # Managed rules commands
+    self.command_table['network front-door waf-policy managed-rules add'] = AddAzureManagedRuleSet(loader=self)
+    self.command_table['network front-door waf-policy managed-rules remove'] = RemoveAzureManagedRuleSet(loader=self)
+    self.command_table['network front-door waf-policy managed-rules list'] = ListAzureManagedRuleSet(loader=self)
 
-    with self.command_group('network front-door waf-policy managed-rules exclusion', waf_policy_sdk) as g:
-        g.custom_command('add', 'add_exclusion_azure_managed_rule_set')
-        g.custom_command('remove', 'remove_exclusion_azure_managed_rule_set')
-        g.custom_command('list', 'list_exclusion_azure_managed_rule_set')
+    # Managed rules override commands
+    self.command_table['network front-door waf-policy managed-rules override add'] = AddOverrideAzureManagedRuleSet(loader=self)
+    self.command_table['network front-door waf-policy managed-rules override remove'] = RemoveOverrideAzureManagedRuleSet(loader=self)
+    self.command_table['network front-door waf-policy managed-rules override list'] = ListOverrideAzureManagedRuleSet(loader=self)
 
-    with self.command_group('network front-door waf-policy managed-rule-definition', waf_policy_sdk) as g:
-        g.custom_command('list', 'list_managed_rules_definitions')
+    # Managed rules exclusion commands
+    self.command_table['network front-door waf-policy managed-rules exclusion add'] = AddExclusionAzureManagedRuleSet(loader=self)
+    self.command_table['network front-door waf-policy managed-rules exclusion remove'] = RemoveExclusionAzureManagedRuleSet(loader=self)
+    self.command_table['network front-door waf-policy managed-rules exclusion list'] = ListExclusionAzureManagedRuleSet(loader=self)
 
-    with self.command_group('network front-door waf-policy rule', waf_policy_sdk, supports_local_cache=True, model_path='azext_front_door.vendored_sdks.models') as g:
-        g.custom_command('create', 'create_wp_custom_rule')
-        g.custom_command('update', 'update_wp_custom_rule')
-        g.custom_command('delete', 'delete_wp_custom_rule')
-        g.custom_command('list', 'list_wp_custom_rules')
-        g.custom_show_command('show', 'show_wp_custom_rule')
+    # Custom rules commands
+    self.command_table['network front-door waf-policy rule create'] = CreateCustomRule(loader=self)
+    self.command_table['network front-door waf-policy rule update'] = UpdateCustomRule(loader=self)
+    self.command_table['network front-door waf-policy rule delete'] = DeleteCustomRule(loader=self)
+    self.command_table['network front-door waf-policy rule list'] = ListCustomRules(loader=self)
+    self.command_table['network front-door waf-policy rule show'] = ShowCustomRule(loader=self)
 
-    with self.command_group('network front-door waf-policy rule match-condition', waf_policy_sdk, supports_local_cache=True, model_path='azext_front_door.vendored_sdks.models') as g:
-        g.custom_command('add', 'add_custom_rule_match_condition')
-        g.custom_command('remove', 'remove_custom_rule_match_condition')
-        g.custom_command('list', 'list_custom_rule_match_conditions')
+    # Custom rule match condition commands
+    self.command_table['network front-door waf-policy rule match-condition add'] = AddCustomRuleMatchCondition(loader=self)
+    self.command_table['network front-door waf-policy rule match-condition remove'] = RemoveCustomRuleMatchCondition(loader=self)
+    self.command_table['network front-door waf-policy rule match-condition list'] = ListCustomRuleMatchConditions(loader=self)
     # endregion
 
     # region RulesEngine

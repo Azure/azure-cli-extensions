@@ -26,8 +26,9 @@ from azext_confcom.template_util import (
 from azext_confcom.command.fragment_attach import fragment_attach as _fragment_attach
 from azext_confcom.command.fragment_push import fragment_push as _fragment_push
 from azext_confcom.command.containers_from_image import containers_from_image as _containers_from_image
+from azext_confcom.command.containers_from_vn2 import containers_from_vn2 as _containers_from_vn2
 from knack.log import get_logger
-from pkg_resources import parse_version
+from packaging.version import Version
 
 logger = get_logger(__name__)
 
@@ -392,9 +393,26 @@ def acifragmentgen_confcom(
         # the fragment to the first image specified in input
         # (or --image-target if specified)
         if upload_fragment:
+            target_image = image_target or policy_images[0].containerImage
+            # Try to detect platform from the image itself
+            image_platforms = oras_proxy.get_image_platforms(target_image)
+            if len(image_platforms) > 1:
+                eprint(
+                    "Multiarch image detected. Please use `az confcom fragment attach` "
+                    + "explicitly with the --platform parameter to specify the target "
+                    + "platform to attach the fragment to.",
+                    exit_code=1,
+                )
+            elif len(image_platforms) == 0:
+                logger.warning(
+                    "Platform detection failed for image %s. Fragment will be attached to linux/amd64.",
+                    target_image
+                )
+            image_platform = image_platforms[0] if image_platforms else "linux/amd64"
             oras_proxy.attach_fragment_to_image(
-                image_name=image_target or policy_images[0].containerImage,
+                image_name=target_image,
                 filename=out_path,
+                platform=image_platform,
             )
 
         if out_signed_fragment:
@@ -438,7 +456,7 @@ def update_confcom(cmd, instance, tags=None):
 
 
 def check_infrastructure_svn(infrastructure_svn):
-    if infrastructure_svn and parse_version(infrastructure_svn) < parse_version(
+    if infrastructure_svn and Version(infrastructure_svn) < Version(
         DEFAULT_REGO_FRAGMENTS[0]["minimum_svn"]
     ):
         logger.warning(
@@ -538,10 +556,12 @@ def get_fragment_output_type(outraw):
 def fragment_attach(
     signed_fragment: BinaryIO,
     manifest_tag: str,
+    platform: Optional[str] = None,
 ) -> None:
     _fragment_attach(
         signed_fragment=signed_fragment,
-        manifest_tag=manifest_tag
+        manifest_tag=manifest_tag,
+        platform=platform,
     )
 
 
@@ -563,3 +583,13 @@ def containers_from_image(
         image=image,
         platform=platform,
     )
+
+
+def containers_from_vn2(
+    template: str,
+    container_name: Optional[str] = None,
+) -> None:
+    print(_containers_from_vn2(
+        template=template,
+        container_name=container_name,
+    ))

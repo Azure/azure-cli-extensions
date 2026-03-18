@@ -174,6 +174,7 @@ def load_arguments(self, _):
     with self.argument_context('containerapp env') as c:
         c.argument('public_network_access', arg_type=get_enum_type(['Enabled', 'Disabled']),
                    help="Allow or block all public traffic", is_preview=True)
+        c.argument('environment_mode', options_list=["--environment-mode"], help="Mode of the environment.", is_preview=True)
 
     with self.argument_context('containerapp env', arg_group='Custom Domain') as c:
         c.argument('certificate_identity', options_list=['--custom-domain-certificate-identity', '--certificate-identity'],
@@ -336,6 +337,9 @@ def load_arguments(self, _):
     with self.argument_context('containerapp') as c:
         c.argument('managed_env', validator=validate_env_name_or_id, options_list=['--environment'], help="Name or resource ID of the container app's environment.")
         c.argument('environment_type', arg_type=get_enum_type(["managed", "connected"]), help="Type of environment.", is_preview=True)
+
+    with self.argument_context('containerapp list') as c:
+        c.argument('kind', arg_type=get_enum_type(['functionapp', 'logicapp']), help="Filter by kind. Use 'functionapp' to list only Azure Functions on Container Apps.", is_preview=True)
 
     with self.argument_context('containerapp connected-env') as c:
         c.argument('name', name_type, help='Name of the Container Apps connected environment.')

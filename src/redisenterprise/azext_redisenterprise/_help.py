@@ -33,3 +33,16 @@ helps['redisenterprise show'] = """
     type: command
     short-summary: Get information about a RedisEnterprise cluster
 """
+
+helps['redisenterprise test-connection'] = """
+    type: command
+    short-summary: Test connection to a Redis Enterprise cluster
+    long-summary: Test the connection to a Redis Enterprise cluster using the specified authentication method.
+    examples:
+      - name: Test connection using Entra authentication
+        text: |-
+               az redisenterprise test-connection --cluster-name "cache1" --resource-group "rg1" --auth entra
+      - name: Test connection using access key authentication
+        text: |-
+               az redisenterprise test-connection --cluster-name "cache1" --resource-group "rg1" --auth access-key
+"""

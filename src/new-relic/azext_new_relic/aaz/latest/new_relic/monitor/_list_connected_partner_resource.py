@@ -61,7 +61,7 @@ class ListConnectedPartnerResource(AAZCommand):
             options=["--body"],
             help="Reusable representation of an email address",
             fmt=AAZStrArgFormat(
-                pattern="^[A-Za-z0-9._%+-]+@(?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,}$",
+                pattern="^[A-Za-z0-9._%+-]+@(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}$",
             ),
         )
         return cls._args_schema

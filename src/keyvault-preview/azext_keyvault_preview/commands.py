@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 from azure.cli.core.commands import CliCommandType
-from ._client_factory import is_azure_stack_profile, cf_mhsm, cf_mhsm_region
+from ._client_factory import cf_mhsm, cf_mhsm_region
 from .profiles import CUSTOM_MGMT_KEYVAULT
 
 

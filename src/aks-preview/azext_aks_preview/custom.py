@@ -232,7 +232,7 @@ def ensure_container_insights_for_monitoring_preview(
     data_collection_settings=None,
     is_private_cluster=False,
     ampls_resource_id=None,
-    enable_high_log_scale_mode=False,
+    enable_high_log_scale_mode=None,
 ):
     """
     Preview extension version of ensure_container_insights_for_monitoring that uses REST API
@@ -1012,10 +1012,10 @@ def aks_create(
     enable_azure_monitor_logs=False,
     workspace_resource_id=None,
     enable_msi_auth_for_monitoring=True,
-    enable_syslog=False,
+    enable_syslog=None,
     data_collection_settings=None,
     ampls_resource_id=None,
-    enable_high_log_scale_mode=False,
+    enable_high_log_scale_mode=None,
     aci_subnet_name=None,
     appgw_name=None,
     appgw_subnet_cidr=None,
@@ -1028,6 +1028,7 @@ def aks_create(
     enable_application_load_balancer=False,
     enable_app_routing=False,
     app_routing_default_nginx_controller=None,
+    enable_default_domain=False,
     # nodepool paramerters
     nodepool_name="nodepool1",
     node_vm_size=None,
@@ -1159,7 +1160,11 @@ def aks_create(
     enable_upstream_kubescheduler_user_configuration=False,
     # managed gateway installation
     enable_gateway_api=False,
-    enable_hosted_system=False
+    # app routing istio
+    enable_app_routing_istio=False,
+    enable_hosted_system=False,
+    # health monitor
+    enable_continuous_control_plane_and_addon_monitor=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1275,9 +1280,9 @@ def aks_update(
     disable_azure_monitor_logs=False,
     workspace_resource_id=None,
     enable_msi_auth_for_monitoring=None,
-    enable_syslog=False,
+    enable_syslog=None,
     data_collection_settings=None,
-    enable_high_log_scale_mode=False,
+    enable_high_log_scale_mode=None,
     ampls_resource_id=None,
     enable_secret_rotation=False,
     disable_secret_rotation=False,
@@ -1400,9 +1405,15 @@ def aks_update(
     # managed gateway installation
     enable_gateway_api=False,
     disable_gateway_api=False,
+    # app routing istio
+    enable_app_routing_istio=False,
+    disable_app_routing_istio=False,
     # application load balancer
     enable_application_load_balancer=False,
     disable_application_load_balancer=False,
+    # health monitor
+    enable_continuous_control_plane_and_addon_monitor=False,
+    disable_continuous_control_plane_and_addon_monitor=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -2222,6 +2233,114 @@ def aks_agentpool_get_upgrade_profile(cmd,   # pylint: disable=unused-argument
     return client.get_upgrade_profile(resource_group_name, cluster_name, nodepool_name)
 
 
+def aks_agentpool_get_rollback_versions(cmd,   # pylint: disable=unused-argument
+                                        client,
+                                        resource_group_name,
+                                        cluster_name,
+                                        nodepool_name):
+    """Get rollback versions for a nodepool."""
+    upgrade_profile = client.get_upgrade_profile(resource_group_name, cluster_name, nodepool_name)
+    return upgrade_profile.recently_used_versions
+
+
+def aks_agentpool_rollback(cmd,   # pylint: disable=unused-argument
+                           client,
+                           resource_group_name,
+                           cluster_name,
+                           nodepool_name,
+                           aks_custom_headers=None,
+                           if_match=None,
+                           if_none_match=None,
+                           no_wait=False):
+    """Rollback a nodepool to the most recent previous version configuration."""
+    from azext_aks_preview._client_factory import cf_managed_clusters
+
+    # Warn users when auto-upgrade is enabled
+    if cmd and getattr(cmd, "cli_ctx", None):
+        try:
+            managed_clusters_client = cf_managed_clusters(cmd.cli_ctx)
+            managed_cluster = managed_clusters_client.get(resource_group_name, cluster_name)
+            auto_upgrade_profile = getattr(managed_cluster, "auto_upgrade_profile", None)
+
+            upgrade_channel = getattr(auto_upgrade_profile, "upgrade_channel", None) if auto_upgrade_profile else None
+            node_os_upgrade_channel = (
+                getattr(auto_upgrade_profile, "node_os_upgrade_channel", None)
+                if auto_upgrade_profile
+                else None
+            )
+
+            upgrade_channel_enabled = upgrade_channel and str(upgrade_channel).lower() != "none"
+            node_os_channel_enabled = node_os_upgrade_channel and str(node_os_upgrade_channel).lower() not in [
+                "none",
+                "unmanaged",
+            ]
+
+            if upgrade_channel_enabled or node_os_channel_enabled:
+                logger.warning(
+                    "Auto-upgrade is enabled on cluster '%s' (upgradeChannel=%s, nodeOSUpgradeChannel=%s). "
+                    "Rollback will not succeed until auto-upgrade is disabled. Please disable auto-upgrade to roll back the node pool.",
+                    cluster_name,
+                    upgrade_channel or "none",
+                    node_os_upgrade_channel or "Unmanaged",
+                )
+        except Exception as ex:  # pylint: disable=broad-except
+            logger.debug("Unable to retrieve auto-upgrade configuration before rollback: %s", ex)
+
+    logger.info("Fetching the most recent rollback version...")
+
+    # Get upgrade profile to retrieve recently used versions
+    upgrade_profile = client.get_upgrade_profile(resource_group_name, cluster_name, nodepool_name)
+
+    if not upgrade_profile.recently_used_versions or len(upgrade_profile.recently_used_versions) == 0:
+        raise CLIError(
+            "No rollback versions available. The nodepool must have been upgraded at least once "
+            "to have rollback history available."
+        )
+
+    # Sort by timestamp (most recent first) and get the most recent version
+    sorted_versions = sorted(
+        upgrade_profile.recently_used_versions,
+        key=lambda v: v.timestamp if v.timestamp else datetime.datetime.min,
+        reverse=True
+    )
+    most_recent = sorted_versions[0]
+
+    kubernetes_version = most_recent.orchestrator_version
+    node_image_version = most_recent.node_image_version
+
+    logger.info(
+        "Rolling back to the most recent version: "
+        "Kubernetes version: %s, Node image version: %s (timestamp: %s)",
+        kubernetes_version, node_image_version, most_recent.timestamp
+    )
+
+    # Get the current agent pool
+    current_agentpool = client.get(resource_group_name, cluster_name, nodepool_name)
+
+    # Update the agent pool configuration with rollback versions
+    current_agentpool.orchestrator_version = kubernetes_version
+    current_agentpool.node_image_version = node_image_version
+
+    # Set custom headers if provided
+    headers = get_aks_custom_headers(aks_custom_headers)
+    if if_match:
+        headers['If-Match'] = if_match
+    if if_none_match:
+        headers['If-None-Match'] = if_none_match
+
+    # Perform the rollback by updating the agent pool
+    # Server-side will validate the versions
+    return sdk_no_wait(
+        no_wait,
+        client.begin_create_or_update,
+        resource_group_name,
+        cluster_name,
+        nodepool_name,
+        current_agentpool,
+        headers=headers if headers else None
+    )
+
+
 def aks_agentpool_stop(cmd,   # pylint: disable=unused-argument
                        client,
                        resource_group_name,
@@ -2758,10 +2877,10 @@ def aks_addon_enable(
     enable_msi_auth_for_monitoring=True,
     dns_zone_resource_id=None,
     dns_zone_resource_ids=None,
-    enable_syslog=False,
+    enable_syslog=None,
     data_collection_settings=None,
     ampls_resource_id=None,
-    enable_high_log_scale_mode=False
+    enable_high_log_scale_mode=None
 ):
     return enable_addons(
         cmd,
@@ -2816,10 +2935,10 @@ def aks_addon_update(
     enable_msi_auth_for_monitoring=None,
     dns_zone_resource_id=None,
     dns_zone_resource_ids=None,
-    enable_syslog=False,
+    enable_syslog=None,
     data_collection_settings=None,
     ampls_resource_id=None,
-    enable_high_log_scale_mode=False
+    enable_high_log_scale_mode=None
 ):
     instance = client.get(resource_group_name, name)
     addon_profiles = instance.addon_profiles
@@ -2947,10 +3066,10 @@ def aks_enable_addons(
     enable_msi_auth_for_monitoring=True,
     dns_zone_resource_id=None,
     dns_zone_resource_ids=None,
-    enable_syslog=False,
+    enable_syslog=None,
     data_collection_settings=None,
     ampls_resource_id=None,
-    enable_high_log_scale_mode=False,
+    enable_high_log_scale_mode=None,
     aks_custom_headers=None,
 ):
     headers = get_aks_custom_headers(aks_custom_headers)
@@ -4206,6 +4325,7 @@ def aks_approuting_enable(
         enable_kv=False,
         keyvault_id=None,
         nginx=None,
+        enable_default_domain=False
 ):
     return _aks_approuting_update(
         cmd,
@@ -4215,7 +4335,8 @@ def aks_approuting_enable(
         enable_app_routing=True,
         keyvault_id=keyvault_id,
         enable_kv=enable_kv,
-        nginx=nginx)
+        nginx=nginx,
+        enable_default_domain=enable_default_domain)
 
 
 def aks_approuting_disable(
@@ -4232,6 +4353,38 @@ def aks_approuting_disable(
         enable_app_routing=False)
 
 
+def aks_approuting_gateway_istio_enable(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        aks_custom_headers=None
+):
+    return _aks_approuting_update(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        enable_app_routing_istio=True,
+        aks_custom_headers=aks_custom_headers)
+
+
+def aks_approuting_gateway_istio_disable(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        aks_custom_headers=None
+):
+    return _aks_approuting_update(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        disable_app_routing_istio=True,
+        aks_custom_headers=aks_custom_headers)
+
+
 def aks_approuting_update(
         cmd,
         client,
@@ -4239,8 +4392,14 @@ def aks_approuting_update(
         name,
         keyvault_id=None,
         enable_kv=False,
-        nginx=None
+        nginx=None,
+        enable_default_domain=False,
+        disable_default_domain=False
 ):
+
+    if enable_default_domain and disable_default_domain:
+        raise CLIError("Conflicting flags. Cannot --enable-default-domain and --disable-default-domain at the same time.")
+
     return _aks_approuting_update(
         cmd,
         client,
@@ -4248,7 +4407,9 @@ def aks_approuting_update(
         name,
         keyvault_id=keyvault_id,
         enable_kv=enable_kv,
-        nginx=nginx)
+        nginx=nginx,
+        enable_default_domain=enable_default_domain,
+        disable_default_domain=disable_default_domain)
 
 
 def aks_approuting_zone_add(
@@ -4330,6 +4491,21 @@ def aks_approuting_zone_list(
     raise CLIError('App routing addon is not enabled')
 
 
+def aks_approuting_default_domain_show(
+        cmd,
+        client,
+        resource_group_name,
+        name
+):
+    mc = client.get(resource_group_name, name)
+
+    if mc.ingress_profile and mc.ingress_profile.web_app_routing and mc.ingress_profile.web_app_routing.enabled:
+        if mc.ingress_profile.web_app_routing.default_domain:
+            return mc.ingress_profile.web_app_routing.default_domain
+        raise CLIError('Default domain is not configured for this cluster')
+    raise CLIError('App routing addon is not enabled')
+
+
 # pylint: disable=unused-argument
 def _aks_applicationloadbalancer_update(
         cmd,
@@ -4374,7 +4550,12 @@ def _aks_approuting_update(
         update_dns_zone=None,
         dns_zone_resource_ids=None,
         attach_zones=None,
-        nginx=None
+        nginx=None,
+        enable_default_domain=None,
+        disable_default_domain=None,
+        enable_app_routing_istio=None,
+        disable_app_routing_istio=None,
+        aks_custom_headers=None,
 ):
     from azure.cli.command_modules.acs._consts import DecoratorEarlyExitException
     from azext_aks_preview.managed_cluster_decorator import AKSPreviewManagedClusterUpdateDecorator
@@ -4391,6 +4572,7 @@ def _aks_approuting_update(
     try:
         mc = aks_update_decorator.fetch_mc()
         mc = aks_update_decorator.update_app_routing_profile(mc)
+        mc = aks_update_decorator.update_ingress_profile_app_routing_istio(mc)
     except DecoratorEarlyExitException:
         return None
 
