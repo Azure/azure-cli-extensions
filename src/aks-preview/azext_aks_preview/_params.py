@@ -3220,6 +3220,9 @@ def load_arguments(self, _):
             action="store_true",
             help="Show only VM SKUs that support availability zones.",
         )
+        # TODO: Eventually deprecate the -all param.
+        # The List VM SKUs API already performs regional filtering so once AZ filtering is also implemented
+        # within the API, this param will no longer be required.
         c.argument(
             "show_all",
             options_list=["--all"],

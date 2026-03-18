@@ -3452,10 +3452,9 @@ def aks_get_versions(cmd, client, location):    # pylint: disable=unused-argumen
 
 
 def aks_list_vm_skus(cmd, client, location, size=None, zone=None, show_all=None):  # pylint: disable=unused-argument
-    """List VM SKUs available for AKS node pools in a given location.
+    """Lists the VM SKUs accepted by AKS when creating node pools in a specified location.
 
-    Mirrors the shape and filtering behavior of 'az vm list-skus', but queries the
-    AKS-specific endpoint so only SKUs accepted by AKS are returned.
+    AKS will perform a best effort approach to provision the requested VM SKUs, but availability is not guaranteed.
 
     :param location: Azure region to query.
     :param size: Optional partial VM size name filter (case-insensitive).
