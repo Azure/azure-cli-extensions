@@ -15,7 +15,6 @@ from knack.log import get_logger
 from azext_workload_orchestration.support.consts import (
     DEFAULT_NAMESPACES,
     DEFAULT_TAIL_LINES,
-    DEFAULT_TIMEOUT_SECONDS,
     STATUS_PASS,
     STATUS_FAIL,
     STATUS_WARN,
@@ -406,22 +405,71 @@ def _compute_health_summary(check_results, errors):
     }
 
 
+def _append_namespace_resources(bundle_dir, namespaces, lines):
+    """Append per-namespace resource counts to summary lines."""
+    import json
+    for ns in namespaces:
+        res_file = os.path.join(bundle_dir, "resources", ns, "resources.json")
+        if not os.path.exists(res_file):
+            continue
+        try:
+            with open(res_file, "r") as f:
+                res_data = json.load(f)
+            parts = [
+                f"{len(items)} {key}"
+                for key, items in res_data.items()
+                if isinstance(items, list) and items
+            ]
+            if parts:
+                lines.append(f"**{ns}:** {', '.join(parts)}")
+                lines.append("")
+        except Exception:  # pylint: disable=broad-exception-caught
+            pass
+
+
+def _append_wo_components(bundle_dir, lines):
+    """Append WO component details to summary lines."""
+    import json
+    wo_file = os.path.join(bundle_dir, "resources", "cluster", "wo-components.json")
+    if not os.path.exists(wo_file):
+        return
+    try:
+        with open(wo_file, "r") as f:
+            wo_data = json.load(f)
+        if not wo_data:
+            return
+        lines.append("### WO Components")
+        lines.append("")
+        for key, items in wo_data.items():
+            if not isinstance(items, list):
+                continue
+            label = key.replace("_", " ").title()
+            lines.append(f"- **{label}:** {len(items)}")
+            for item in items:
+                name = item.get("name", "?")
+                _status = item.get("status", item.get("ready", "?"))
+                lines.append(f"  - `{name}` — {_status}")
+        lines.append("")
+    except Exception:  # pylint: disable=broad-exception-caught
+        pass
+
+
 def _write_summary_md(bundle_dir, bundle_name, cluster_info, capabilities,
                       check_results, namespaces, total_logs, total_prev, errors):
+    # pylint: disable=too-many-branches
     """Write a comprehensive SUMMARY.md at the bundle root.
 
     This is the single file a DRI opens first — it summarizes everything
     in the bundle: cluster state, check results, collected resources, errors.
     """
     from azext_workload_orchestration.support.utils import write_text
-    import json as _json
 
     lines = []
     lines.append("# WO Support Bundle — Summary Report")
     lines.append("")
 
     sv = cluster_info.get("server_version", {})
-    ctx_name = cluster_info.get("context", "unknown")
+    _ctx_name = cluster_info.get("context", "unknown")  # noqa: F841
     lines.append("## Cluster Overview")
     lines.append("")
     lines.append("| Field | Value |")
@@ -495,7 +543,7 @@ def _write_summary_md(bundle_dir, bundle_name, cluster_info, capabilities,
         lines.append("## Prerequisite Checks")
         lines.append("")
         lines.append(f"> **{passed} passed, {failed} failed, {warned} warnings** "
-                      f"(out of {len(check_results)} total)")
+                     f"(out of {len(check_results)} total)")
         lines.append("")
 
         # Failed checks first (most important)
@@ -552,50 +600,17 @@ def _write_summary_md(bundle_dir, bundle_name, cluster_info, capabilities,
     # Per-namespace resource counts (read from collected files)
     lines.append("### Resources Per Namespace")
     lines.append("")
-    for ns in namespaces:
-        res_file = os.path.join(bundle_dir, "resources", ns, "resources.json")
-        if os.path.exists(res_file):
-            try:
-                import json as _j
-                with open(res_file, "r") as f:
-                    res_data = _j.load(f)
-                parts = []
-                for key, items in res_data.items():
-                    if isinstance(items, list) and items:
-                        parts.append(f"{len(items)} {key}")
-                if parts:
-                    lines.append(f"**{ns}:** {', '.join(parts)}")
-                    lines.append("")
-            except Exception:
-                pass
+    _append_namespace_resources(bundle_dir, namespaces, lines)
 
     # WO components
-    wo_file = os.path.join(bundle_dir, "resources", "cluster", "wo-components.json")
-    if os.path.exists(wo_file):
-        try:
-            with open(wo_file, "r") as f:
-                wo_data = _json.load(f)
-            if wo_data:
-                lines.append("### WO Components")
-                lines.append("")
-                for key, items in wo_data.items():
-                    if isinstance(items, list):
-                        label = key.replace("_", " ").title()
-                        lines.append(f"- **{label}:** {len(items)}")
-                        for item in items:
-                            name = item.get("name", "?")
-                            status = item.get("status", item.get("ready", "?"))
-                            lines.append(f"  - `{name}` — {status}")
-                lines.append("")
-        except Exception:
-            pass
+    _append_wo_components(bundle_dir, lines)
 
     # Errors
     if errors:
         lines.append("## ⚠️ Collection Errors")
         lines.append("")
         lines.append("The following errors occurred during bundle collection. "
-                      "The bundle was still generated but may be missing some data.")
+                     "The bundle was still generated but may be missing some data.")
         lines.append("")
         for err in errors:
             lines.append(f"- {err}")
@@ -651,7 +666,7 @@ def _print_cluster_info(cluster_info):
         mem = node.get("allocatable_memory", "?")
         ready = node.get("ready", "?")
         roles = ", ".join(node.get("roles", ["<none>"]))
-        status = "Ready" if ready == "True" else "NOT READY"
+        _status = "Ready" if ready == "True" else "NOT READY"  # noqa: F841
         _out("  %s  %s  [%s]  cpu=%s  mem=%s",
              "  " if ready == "True" else "! ", node["name"], roles, cpu, mem)
 

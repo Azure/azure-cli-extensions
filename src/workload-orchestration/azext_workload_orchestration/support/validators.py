@@ -3,9 +3,12 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+# pylint: disable=unused-argument
+
 """Prerequisite validators for the workload-orchestration support bundle feature.
 
-Each check function returns a dict with 'status', 'message', and optional 'details'.
+Each check function has the same signature (clients, bundle_dir, cluster_info, capabilities)
+for consistency. Not all checks use all arguments.
 """
 
 from knack.log import get_logger
@@ -32,7 +35,6 @@ from azext_workload_orchestration.support.consts import (
     STATUS_WARN,
     STATUS_SKIP,
     STATUS_ERROR,
-    FOLDER_CHECKS,
     PSA_LABEL_PREFIX,
 )
 from azext_workload_orchestration.support.utils import (
@@ -84,7 +86,7 @@ def run_all_checks(clients, bundle_dir, cluster_info, capabilities):
                 STATUS_SKIP: "—", STATUS_ERROR: "!"
             }.get(result["status"], "?")
             logger.info("  %s %s: %s", status_icon, description, result["message"])
-        except Exception as ex:
+        except Exception as ex:  # pylint: disable=broad-exception-caught
             err_result = write_check_result(
                 bundle_dir, "error", description.replace(" ", "-").lower(),
                 STATUS_ERROR, f"Check crashed: {ex}"
@@ -236,7 +238,11 @@ def _check_dns_health(clients, bundle_dir, cluster_info, capabilities):
             description="list all kube-system pods for DNS fallback",
         )
         if result:
-            dns_pods = [p for p in result.items if "dns" in p.metadata.name.lower() or "coredns" in p.metadata.name.lower()]
+            dns_pods = [
+                p for p in result.items
+                if "dns" in p.metadata.name.lower()
+                or "coredns" in p.metadata.name.lower()
+            ]
 
     if not dns_pods:
         return write_check_result(
@@ -606,7 +612,7 @@ def _check_dns_resolution(clients, bundle_dir, cluster_info, capabilities):
     """Check DNS resolution works for internal and external names (client-side)."""
     import socket
 
-    from azext_workload_orchestration.support.consts import DNS_INTERNAL_HOST, DNS_EXTERNAL_HOST
+    from azext_workload_orchestration.support.consts import DNS_EXTERNAL_HOST
 
     results_detail = {}
 
@@ -669,7 +675,7 @@ def _check_resource_quotas(clients, bundle_dir, cluster_info, capabilities):
                 limit_val = float(limit_str)
                 used_val = float(used_str)
                 if limit_val > 0 and used_val / limit_val > 0.8:
-                    warnings.append(f"{resource}: {used_str}/{limit_str} ({used_val/limit_val*100:.0f}%)")
+                    warnings.append(f"{resource}: {used_str}/{limit_str} ({used_val / limit_val * 100:.0f}%)")
             except (ValueError, ZeroDivisionError):
                 pass
 
@@ -776,7 +782,7 @@ def _check_image_pull_secrets(clients, bundle_dir, cluster_info, capabilities):
     pull_secrets = {}
 
     for ns in [WO_NAMESPACE, CERT_MANAGER_NAMESPACE]:
-        result, err = safe_api_call(
+        result, _err = safe_api_call(
             core.list_namespaced_secret, ns,
             field_selector="type=kubernetes.io/dockerconfigjson",
             description=f"list pull secrets in {ns}",

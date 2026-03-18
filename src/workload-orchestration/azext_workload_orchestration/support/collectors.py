@@ -406,8 +406,8 @@ def collect_namespace_resources(clients, bundle_dir, namespace):
                 {
                     "name": np.metadata.name,
                     "pod_selector": (dict(np.spec.pod_selector.match_labels or {})
-                                            if np.spec.pod_selector and np.spec.pod_selector.match_labels
-                                            else {}),
+                                     if np.spec.pod_selector and np.spec.pod_selector.match_labels
+                                     else {}),
                     "policy_types": np.spec.policy_types or [],
                     "ingress_rules": len(np.spec.ingress or []) if np.spec.ingress else 0,
                     "egress_rules": len(np.spec.egress or []) if np.spec.egress else 0,
@@ -1065,7 +1065,7 @@ def collect_network_config(clients, bundle_dir):
         filepath = os.path.join(_get_cluster_resource_dir(bundle_dir), "network-config.json")
         write_json(filepath, net_info)
         logger.info("Collected network config: %d external services, %s",
-                     len(net_info.get("external_services", [])),
-                     "kube-proxy config found" if net_info.get("kube_proxy_config") else "no kube-proxy")
+                    len(net_info.get("external_services", [])),
+                    "kube-proxy config found" if net_info.get("kube_proxy_config") else "no kube-proxy")
 
     return net_info
