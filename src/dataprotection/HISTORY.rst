@@ -4,7 +4,7 @@ Release History
 ===============
 1.9.0
 +++++
-* `az dataprotection enable-backup trigger`: New command to enable backup for AKS clusters with a single command. Supports preset backup strategies (Week, Month, Immutable, DisasterRecovery) and Custom strategy with user-provided configuration.
+* `az dataprotection enable-backup trigger`: New command to enable backup for AKS clusters with a single command. Supports preset backup strategies (Week, Month, DisasterRecovery) and Custom strategy with user-provided configuration.
 * Added vendored SDKs: `azure-mgmt-containerservice` (40.2.0), `azure-mgmt-kubernetesconfiguration` (3.1.0), `azure-mgmt-resourcegraph` (8.0.0).
 
 1.8.0
