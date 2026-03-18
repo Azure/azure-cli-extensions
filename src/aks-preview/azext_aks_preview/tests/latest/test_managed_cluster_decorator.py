@@ -8275,7 +8275,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
     def test_postprocessing_ensure_container_insights_not_called_without_relevant_flags(self):
         """ensure_container_insights_for_monitoring is NOT called when no relevant flags are set.
 
-        When neither enable_addons, enable-azure-monitor-logs, nor any CNL/HLSM flag is
+        When neither enable_addons, enable_azure_monitor_logs, nor any CNL/HLSM flag is
         present in raw_params, the outer elif is not entered.
         """
         dec = self._make_postprocessing_decorator({})
@@ -8436,6 +8436,23 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         mock_ecifm.assert_called_once()
         _, kwargs = mock_ecifm.call_args
         self.assertTrue(kwargs["create_dcr"])
+
+    def test_postprocessing_create_dcr_false_when_enable_azure_monitor_logs(self):
+        """create_dcr=False when enable_azure_monitor_logs triggers ensure_container_insights_for_monitoring.
+
+        enable_azure_monitor_logs is in the outer _should_create_dcra condition but NOT in
+        _is_cnl_or_hlsm_changing, so create_dcr must be False.
+        """
+        dec = self._make_postprocessing_decorator({"enable_azure_monitor_logs": True})
+        cluster = self._make_cluster_with_monitoring()
+        external_functions = dec.context.external_functions
+        with patch.object(
+            external_functions, "ensure_container_insights_for_monitoring", return_value=None
+        ) as mock_ecifm:
+            dec.postprocessing_after_mc_created(cluster)
+        mock_ecifm.assert_called_once()
+        _, kwargs = mock_ecifm.call_args
+        self.assertFalse(kwargs["create_dcr"])
 
 
     def test_set_up_health_monitor_profile(self):

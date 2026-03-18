@@ -183,6 +183,21 @@ ServiceMeshProfile = TypeVar("ServiceMeshProfile")
 ResourceReference = TypeVar("ResourceReference")
 
 
+def _get_monitoring_addon_key(cluster, addon_consts):
+    """Resolve the monitoring addon key from the cluster's addon_profiles.
+
+    The API response may return the addon key as either "omsagent" or "omsAgent".
+    Returns the key present in addon_profiles, or the default constant if neither is found.
+    """
+    const_monitoring = addon_consts.get("CONST_MONITORING_ADDON_NAME")
+    if cluster.addon_profiles:
+        if const_monitoring in cluster.addon_profiles:
+            return const_monitoring
+        if CONST_MONITORING_ADDON_NAME_CAMELCASE in cluster.addon_profiles:
+            return CONST_MONITORING_ADDON_NAME_CAMELCASE
+    return const_monitoring
+
+
 # pylint: disable=too-few-public-methods
 class AKSPreviewManagedClusterModels(AKSManagedClusterModels):
     """Store the models used in aks series of commands.
@@ -5335,13 +5350,92 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         params = self.context.raw_param
         return (
             params.get("enable_addons") is not None or
-            params.get("enable-azure-monitor-logs") is not None or
+            params.get("enable_azure_monitor_logs") is not None or
+            self._is_cnl_or_hlsm_changing()
+        )
+
+    def _is_cnl_or_hlsm_changing(self) -> bool:
+        """Return True if any CNL or High Log Scale Mode flag was provided."""
+        params = self.context.raw_param
+        return (
             params.get("enable_container_network_logs") is not None or
             params.get("enable_retina_flow_logs") is not None or
             params.get("disable_container_network_logs") is not None or
             params.get("disable_retina_flow_logs") is not None or
             params.get("enable_high_log_scale_mode") is not None
         )
+
+    def _postprocess_monitoring_enable(self, cluster: ManagedCluster) -> None:
+        """Handle monitoring addon postprocessing for the enable case."""
+        enable_msi_auth_for_monitoring = self.context.get_enable_msi_auth_for_monitoring()
+        if not enable_msi_auth_for_monitoring:
+            # add cluster spn/msi Monitoring Metrics Publisher role assignment to publish metrics to MDM
+            # mdm metrics is supported only in azure public cloud, so add the role assignment only in this cloud
+            cloud_name = self.cmd.cli_ctx.cloud.name
+            if cloud_name.lower() == "azurecloud":
+                cluster_resource_id = resource_id(
+                    subscription=self.context.get_subscription_id(),
+                    resource_group=self.context.get_resource_group_name(),
+                    namespace="Microsoft.ContainerService",
+                    type="managedClusters",
+                    name=self.context.get_name(),
+                )
+                self.context.external_functions.add_monitoring_role_assignment(
+                    cluster, cluster_resource_id, self.cmd
+                )
+        elif self._should_create_dcra():
+            addon_consts = self.context.get_addon_consts()
+            monitoring_addon_key = _get_monitoring_addon_key(cluster, addon_consts)
+            self.context.external_functions.ensure_container_insights_for_monitoring(
+                self.cmd,
+                cluster.addon_profiles[monitoring_addon_key],
+                self.context.get_subscription_id(),
+                self.context.get_resource_group_name(),
+                self.context.get_name(),
+                self.context.get_location(),
+                remove_monitoring=False,
+                aad_route=self.context.get_enable_msi_auth_for_monitoring(),
+                create_dcr=self._is_cnl_or_hlsm_changing(),
+                create_dcra=True,
+                enable_syslog=self.context.get_enable_syslog(),
+                data_collection_settings=self.context.get_data_collection_settings(),
+                is_private_cluster=self.context.get_enable_private_cluster(),
+                ampls_resource_id=self.context.get_ampls_resource_id(),
+                enable_high_log_scale_mode=self.context.get_enable_high_log_scale_mode(),
+            )
+
+    def _postprocess_monitoring_disable(self) -> None:
+        """Handle monitoring addon postprocessing for the disable case."""
+        addon_consts = self.context.get_addon_consts()
+        CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
+
+        # Get the current cluster state to check config before it was disabled
+        current_cluster = self.client.get(self.context.get_resource_group_name(), self.context.get_name())
+
+        if (current_cluster.addon_profiles and
+                CONST_MONITORING_ADDON_NAME in current_cluster.addon_profiles):
+
+            addon_profile = current_cluster.addon_profiles[CONST_MONITORING_ADDON_NAME]
+
+            try:
+                self.context.external_functions.ensure_container_insights_for_monitoring(
+                    self.cmd,
+                    addon_profile,
+                    self.context.get_subscription_id(),
+                    self.context.get_resource_group_name(),
+                    self.context.get_name(),
+                    self.context.get_location(),
+                    remove_monitoring=True,
+                    aad_route=True,
+                    create_dcr=False,
+                    create_dcra=True,
+                    enable_syslog=False,
+                    data_collection_settings=None,
+                    ampls_resource_id=None,
+                    enable_high_log_scale_mode=False
+                )
+            except TypeError:
+                pass
 
     # pylint: disable=too-many-locals,too-many-branches
     def postprocessing_after_mc_created(self, cluster: ManagedCluster) -> None:
@@ -5352,56 +5446,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         # monitoring addon
         monitoring_addon_enabled = self.context.get_intermediate("monitoring_addon_enabled", default_value=False)
         if monitoring_addon_enabled:
-            enable_msi_auth_for_monitoring = self.context.get_enable_msi_auth_for_monitoring()
-            if not enable_msi_auth_for_monitoring:
-                # add cluster spn/msi Monitoring Metrics Publisher role assignment to publish metrics to MDM
-                # mdm metrics is supported only in azure public cloud, so add the role assignment only in this cloud
-                cloud_name = self.cmd.cli_ctx.cloud.name
-                if cloud_name.lower() == "azurecloud":
-                    cluster_resource_id = resource_id(
-                        subscription=self.context.get_subscription_id(),
-                        resource_group=self.context.get_resource_group_name(),
-                        namespace="Microsoft.ContainerService",
-                        type="managedClusters",
-                        name=self.context.get_name(),
-                    )
-                    self.context.external_functions.add_monitoring_role_assignment(
-                        cluster, cluster_resource_id, self.cmd
-                    )
-            elif self._should_create_dcra():
-                # Create/update the DCR when CNL or HLSM flags change so that the DCR streams
-                # (e.g. Microsoft-ContainerLogV2-HighScale) are kept in sync.
-                cnl_or_hlsm_changing = (
-                    self.context.raw_param.get("enable_container_network_logs") is not None or
-                    self.context.raw_param.get("enable_retina_flow_logs") is not None or
-                    self.context.raw_param.get("disable_container_network_logs") is not None or
-                    self.context.raw_param.get("disable_retina_flow_logs") is not None or
-                    self.context.raw_param.get("enable_high_log_scale_mode") is not None
-                )
-                addon_consts = self.context.get_addon_consts()
-                CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
-                # The API response may return the addon key as either "omsagent" or "omsAgent"
-                monitoring_addon_key = CONST_MONITORING_ADDON_NAME
-                if CONST_MONITORING_ADDON_NAME not in cluster.addon_profiles and \
-                   CONST_MONITORING_ADDON_NAME_CAMELCASE in cluster.addon_profiles:
-                    monitoring_addon_key = CONST_MONITORING_ADDON_NAME_CAMELCASE
-                self.context.external_functions.ensure_container_insights_for_monitoring(
-                    self.cmd,
-                    cluster.addon_profiles[monitoring_addon_key],
-                    self.context.get_subscription_id(),
-                    self.context.get_resource_group_name(),
-                    self.context.get_name(),
-                    self.context.get_location(),
-                    remove_monitoring=False,
-                    aad_route=self.context.get_enable_msi_auth_for_monitoring(),
-                    create_dcr=cnl_or_hlsm_changing,
-                    create_dcra=True,
-                    enable_syslog=self.context.get_enable_syslog(),
-                    data_collection_settings=self.context.get_data_collection_settings(),
-                    is_private_cluster=self.context.get_enable_private_cluster(),
-                    ampls_resource_id=self.context.get_ampls_resource_id(),
-                    enable_high_log_scale_mode=self.context.get_enable_high_log_scale_mode(),
-                )
+            self._postprocess_monitoring_enable(cluster)
 
         # Handle monitoring addon postprocessing (disable case) - same logic as aks_disable_addons
         monitoring_addon_disable_postprocessing_required = self.context.get_intermediate(
@@ -5409,39 +5454,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         )
 
         if monitoring_addon_disable_postprocessing_required:
-            addon_consts = self.context.get_addon_consts()
-            CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
-
-            # Get the current cluster state to check config before it was disabled
-            current_cluster = self.client.get(self.context.get_resource_group_name(), self.context.get_name())
-
-            if (current_cluster.addon_profiles and
-                    CONST_MONITORING_ADDON_NAME in current_cluster.addon_profiles):
-
-                # Use the current cluster addon profile for cleanup
-                addon_profile = current_cluster.addon_profiles[CONST_MONITORING_ADDON_NAME]
-
-                # Call ensure_container_insights_for_monitoring with remove_monitoring=True (same as aks_disable_addons)
-                try:
-                    self.context.external_functions.ensure_container_insights_for_monitoring(
-                        self.cmd,
-                        addon_profile,
-                        self.context.get_subscription_id(),
-                        self.context.get_resource_group_name(),
-                        self.context.get_name(),
-                        self.context.get_location(),
-                        remove_monitoring=True,
-                        aad_route=True,
-                        create_dcr=False,
-                        create_dcra=True,
-                        enable_syslog=False,
-                        data_collection_settings=None,
-                        ampls_resource_id=None,
-                        enable_high_log_scale_mode=False
-                    )
-                except TypeError:
-                    # Ignore TypeError just like aks_disable_addons does
-                    pass
+            self._postprocess_monitoring_disable()
 
         # ingress appgw addon
         ingress_appgw_addon_enabled = self.context.get_intermediate("ingress_appgw_addon_enabled", default_value=False)
@@ -8202,18 +8215,12 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         )
         if monitoring_addon_postprocessing_required:
             addon_consts = self.context.get_addon_consts()
-            CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
             CONST_MONITORING_USING_AAD_MSI_AUTH = addon_consts.get("CONST_MONITORING_USING_AAD_MSI_AUTH")
 
-            # The API response may return the addon key as either "omsagent" or "omsAgent"
-            monitoring_addon_key = None
-            if cluster.addon_profiles:
-                if CONST_MONITORING_ADDON_NAME in cluster.addon_profiles:
-                    monitoring_addon_key = CONST_MONITORING_ADDON_NAME
-                elif CONST_MONITORING_ADDON_NAME_CAMELCASE in cluster.addon_profiles:
-                    monitoring_addon_key = CONST_MONITORING_ADDON_NAME_CAMELCASE
+            monitoring_addon_key = _get_monitoring_addon_key(cluster, addon_consts)
 
-            if (monitoring_addon_key and
+            if (cluster.addon_profiles and
+                    monitoring_addon_key in cluster.addon_profiles and
                     cluster.addon_profiles[monitoring_addon_key].enabled):
 
                 # Check if MSI auth is enabled
