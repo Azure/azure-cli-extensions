@@ -11271,7 +11271,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="westus2"
+        random_name_length=17, name_prefix="clitest", location="eastus2euap"
     )
     def test_aks_create_with_service_account_image_pull(
         self, resource_group, resource_group_location
@@ -11295,7 +11295,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "aks create --resource-group={resource_group} --name={name} "
             "--nodepool-name {node_pool_name} -c 1 "
             "--location {location} --ssh-key-value={ssh_key_value} "
-            "--enable-service-account-image-pull"
+            "--enable-service-account-image-pull "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ServiceAccountImagePullPreview"
         )
         self.cmd(
             create_cmd,
@@ -11310,7 +11311,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="westus2"
+        random_name_length=17, name_prefix="clitest", location="eastus2euap"
     )
     def test_aks_update_with_service_account_image_pull(
         self, resource_group, resource_group_location
@@ -11344,7 +11345,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # update: enable service account image pull
         update_cmd = (
             "aks update --resource-group={resource_group} --name={name} "
-            "--enable-service-account-image-pull"
+            "--enable-service-account-image-pull "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ServiceAccountImagePullPreview"
         )
         self.cmd(
             update_cmd,
