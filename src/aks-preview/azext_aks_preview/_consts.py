@@ -40,6 +40,7 @@ CONST_OS_SKU_WINDOWS2025 = "Windows2025"
 CONST_OS_SKU_WINDOWSANNUAL = "WindowsAnnual"
 CONST_OS_SKU_AZURELINUX = "AzureLinux"
 CONST_OS_SKU_AZURELINUX3 = "AzureLinux3"
+CONST_OS_SKU_FLATCAR = "Flatcar"
 CONST_OS_SKU_UBUNTU2204 = "Ubuntu2204"
 CONST_OS_SKU_UBUNTU2404 = "Ubuntu2404"
 CONST_OS_SKU_AZURELINUXOSGUARD = "AzureLinuxOSGuard"
@@ -60,7 +61,8 @@ CONST_DEFAULT_WINDOWS_VMS_VM_SIZE = "Standard_D2s_v3"
 # workload runtime
 CONST_WORKLOAD_RUNTIME_OCI_CONTAINER = "OCIContainer"
 CONST_WORKLOAD_RUNTIME_WASM_WASI = "WasmWasi"
-CONST_WORKLOAD_RUNTIME_KATA_MSHV_VM_ISOLATION = "KataMshvVmIsolation"
+CONST_WORKLOAD_RUNTIME_KATA_VM_ISOLATION = "KataVmIsolation"
+CONST_WORKLOAD_RUNTIME_OLD_KATA_VM_ISOLATION = "KataMshvVmIsolation"
 CONST_WORKLOAD_RUNTIME_KATA_CC_ISOLATION = "KataCcIsolation"
 
 # gpu instance
@@ -152,6 +154,7 @@ CONST_ADVANCED_NETWORKPOLICIES_L7 = "L7"
 # ACNS transit encryption type
 CONST_TRANSIT_ENCRYPTION_TYPE_NONE = "None"
 CONST_TRANSIT_ENCRYPTION_TYPE_WIREGUARD = "WireGuard"
+CONST_TRANSIT_ENCRYPTION_TYPE_MTLS = "mTLS"
 
 # ACNS performance acceleration mode
 CONST_ACNS_DATAPATH_ACCELERATION_MODE_NONE = "None"
@@ -166,11 +169,15 @@ CONST_DISK_DRIVER_V1 = "v1"
 CONST_DISK_DRIVER_V2 = "v2"
 
 # consts for addons
+# application load balancer (Application Gateway for Containers)
+CONST_APPLICATION_LOAD_BALANCER_ADDON_NAME = "applicationLoadBalancer"
+
 # http application routing
 CONST_HTTP_APPLICATION_ROUTING_ADDON_NAME = "httpApplicationRouting"
 
 # monitoring
 CONST_MONITORING_ADDON_NAME = "omsagent"
+CONST_MONITORING_ADDON_NAME_CAMELCASE = "omsAgent"
 CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID = "logAnalyticsWorkspaceResourceID"
 CONST_MONITORING_USING_AAD_MSI_AUTH = "useAADAuth"
 
@@ -216,8 +223,17 @@ CONST_APP_ROUTING_EXTERNAL_NGINX = "External"
 CONST_APP_ROUTING_INTERNAL_NGINX = "Internal"
 CONST_APP_ROUTING_NONE_NGINX = "None"
 
+# managed gateway api installation
+CONST_MANAGED_GATEWAY_INSTALLATION_DISABLED = "Disabled"
+CONST_MANAGED_GATEWAY_INSTALLATION_STANDARD = "Standard"
+
+# app routing istio mode
+CONST_APP_ROUTING_ISTIO_MODE_ENABLED = "Enabled"
+CONST_APP_ROUTING_ISTIO_MODE_DISABLED = "Disabled"
+
 # all supported addons
 ADDONS = {
+    "application-load-balancer": CONST_APPLICATION_LOAD_BALANCER_ADDON_NAME,
     "http_application_routing": CONST_HTTP_APPLICATION_ROUTING_ADDON_NAME,
     "monitoring": CONST_MONITORING_ADDON_NAME,
     "virtual-node": CONST_VIRTUAL_NODE_ADDON_NAME,
@@ -248,7 +264,10 @@ ADDONS_DESCRIPTIONS = {
         "- enable Azure policy. The Azure Policy add-on for AKS enables at-scale enforcements and safeguards on "
         "your clusters in a centralized, consistent manner.\nLearn more at aka.ms/aks/policy."
     ),
-    CONST_INGRESS_APPGW_ADDON_NAME: "- enable Application Gateway Ingress Controller addon (PREVIEW).",
+    CONST_APPLICATION_LOAD_BALANCER_ADDON_NAME: (
+        "- enable Application Load Balancer (Application Gateway for Containers) addon (PREVIEW)."
+    ),
+    CONST_INGRESS_APPGW_ADDON_NAME: "- enable Application Gateway Ingress Controller addon.",
     CONST_CONFCOM_ADDON_NAME: "- enable confcom addon, this will enable SGX device plugin by default (PREVIEW).",
     CONST_OPEN_SERVICE_MESH_ADDON_NAME: "- enable Open Service Mesh addon (PREVIEW).",
     CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME: "- enable Azure Keyvault Secrets Provider addon.",
@@ -328,6 +347,8 @@ CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE = "Complete"
 CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK = "Rollback"
 CONST_AZURE_SERVICE_MESH_DEFAULT_EGRESS_NAMESPACE = "aks-istio-egress"
 CONST_AZURE_SERVICE_MESH_MAX_EGRESS_NAME_LENGTH = 253
+CONST_AZURE_SERVICE_MESH_PROXY_REDIRECTION_INIT_CONTAINERS = "InitContainers"
+CONST_AZURE_SERVICE_MESH_PROXY_REDIRECTION_CNI_CHAINING = "CNIChaining"
 
 # Node Provisioning Mode Consts
 CONST_NODE_PROVISIONING_MODE_MANUAL = "Manual"
@@ -346,6 +367,7 @@ CONST_MIN_NODE_IMAGE_VERSION = "202403.13.0"
 # SSH Access Consts
 CONST_SSH_ACCESS_DISABLED = "disabled"
 CONST_SSH_ACCESS_LOCALUSER = "localuser"
+CONST_SSH_ACCESS_ENTRAID = "entraid"
 
 # Dns zone contributor role
 CONST_PRIVATE_DNS_ZONE_CONTRIBUTOR_ROLE = "Private DNS Zone Contributor"

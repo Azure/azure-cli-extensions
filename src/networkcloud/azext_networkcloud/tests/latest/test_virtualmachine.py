@@ -5,6 +5,10 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=too-few-public-methods,unnecessary-pass,unused-argument
 
+# customizations-ignore-deprecations={"virtualmachine_create": ["--nd", "--network-data", "--ud", "--user-data"]}
+# customizations-ignore-removed={"virtualmachine_create": ["--ssh-public-keys"], "virtualmachine_update": ["--ssh-public-keys"]}
+# customizations-custom-params={"virtualmachine_create":["--ssh-key-values"]}
+
 """
 VirtualMachine tests scenarios
 """
@@ -45,7 +49,7 @@ def call_scenario1(test):
             test.check("provisioningState", "Succeeded"),
         ],
     )
-    step_update(
+    step_update_scenario1(
         test,
         checks=[
             test.check("tags", "{tagsUpdate}"),
@@ -74,14 +78,14 @@ def call_scenario2(test):
             test.check("provisioningState", "Succeeded"),
         ],
     )
-    step_update_UA_to_SA_managedidentity(
+    step_update_UA_to_SA_managedidentity_scenario1(
         test,
         checks=[
             test.check("tags", "{tagsUpdate}"),
             test.check("provisioningState", "Succeeded"),
         ],
     )
-    step_update(
+    step_update_scenario2(
         test,
         checks=[
             test.check("tags", "{tagsUpdate}"),
@@ -104,7 +108,7 @@ def call_scenario3(test):
             test.check("provisioningState", "Succeeded"),
         ],
     )
-    step_update(
+    step_update_UA_to_SA_managedidentity_scenario2(
         test,
         checks=[
             test.check("tags", "{tagsUpdate}"),
@@ -127,13 +131,6 @@ def call_scenario4(test):
             test.check("provisioningState", "Succeeded"),
         ],
     )
-    step_update(
-        test,
-        checks=[
-            test.check("tags", "{tagsUpdate}"),
-            test.check("provisioningState", "Succeeded"),
-        ],
-    )
     step_show(test, checks=[])
     step_list_resource_group(test, checks=[])
     step_delete(test, checks=[])
@@ -146,6 +143,8 @@ def step_create(test, checks=None):
         checks = []
     test.cmd(
         "az networkcloud virtualmachine create --name {name} --extended-location "
+        'name={extendedLocation} type="CustomLocation" --location {location} '
+        "--console-extended-location "
         'name={extendedLocation} type="CustomLocation" --location {location} '
         "--admin-username {adminUserName} --boot-method {bootMethod} "
         "--cloud-services-network-attachment  attached-network-id={attachedNetworkID} "
@@ -168,16 +167,18 @@ def step_create_with_userassigned_identity(test, checks=None):
     test.cmd(
         "az networkcloud virtualmachine create --name {name} --extended-location "
         'name={extendedLocation} type="CustomLocation" --location {location} '
+        "--ce-location "
+        'name={extendedLocation} type="CustomLocation" --location {location} '
         "--admin-username {adminUserName} --boot-method {bootMethod} "
         "--cloud-services-network-attachment  attached-network-id={attachedNetworkID} "
         "--cpu-cores {cpuCores} "
-        "--memory-size {memorySize} --network-attachments {networkAttachments} "
-        "--network-data-content {networkDataContent} --placement-hints {placementHints} "
+        "--memory-size-gb {memorySize} --na {networkAttachments} "
+        "--ndc {networkDataContent} --ph {placementHints} "
         "--ssh-key-values {sshKeyValues} --storage-profile disk-size={diskSize} create-option={createOpt} "
         " delete-option={deleteOpt} --tags {tags} "
-        "--user-data-content {userDataContent} --vm-device-model {vmDeviceModel} "
-        "--vm-image {vmName} --vm-image-repository-credentials password={password} "
-        "registry-url={registryURL} username={userName} --resource-group {rg} --mi-user-assigned {miUserAssigned}",
+        "--udc {userDataContent} --vm-device-model {vmDeviceModel} "
+        "--vm-image {vmName} --vmi-creds password={password} "
+        "registry-url={registryURL} username={userName} --resource-group {rg} --user-assigned {miUserAssigned}",
         checks=checks,
     )
 
@@ -187,18 +188,18 @@ def step_create_systemassigned_managedidentity(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkcloud virtualmachine create --name {name} --extended-location "
+        "az networkcloud virtualmachine create --virtual-machine-name {name} --extended-location "
         'name={extendedLocation} type="CustomLocation" --location {location} '
         "--admin-username {adminUserName} --boot-method {bootMethod} "
-        "--cloud-services-network-attachment  attached-network-id={attachedNetworkID} "
+        "--csn  attached-network-id={attachedNetworkID} "
         "--cpu-cores {cpuCores} "
-        "--memory-size {memorySize} --network-attachments {networkAttachments} "
+        "--memory-size-gib {memorySize} --network-attachments {networkAttachments} "
         "--network-data-content {networkDataContent} --placement-hints {placementHints} "
         "--ssh-key-values {sshKeyValues} --storage-profile disk-size={diskSize} create-option={createOpt} "
         " delete-option={deleteOpt} --tags {tags} "
         "--user-data-content {userDataContent} --vm-device-model {vmDeviceModel} "
         "--vm-image {vmName} --vm-image-repository-credentials password={password} "
-        "registry-url={registryURL} username={userName} --resource-group {rg} --mi-system-assigned",
+        "registry-url={registryURL} username={userName} --resource-group {rg} --system-assigned",
         checks=checks,
     )
 
@@ -301,26 +302,51 @@ def step_list_subscription(test, checks=None):
     test.cmd("az networkcloud virtualmachine list")
 
 
-def step_update(test, checks=None):
+def step_update_scenario1(test, checks=None):
     """VirtualMachine update operation"""
     if checks is None:
         checks = []
     test.cmd(
         "az networkcloud virtualmachine update --name {name} "
         "--vm-image-repository-credentials password={password} registry-url={registryURL} username={userName} "
-        "--tags {tagsUpdate} --resource-group {rg}"
+        "--tags {tagsUpdate} --resource-group {rg} --vmi-creds password={password} "
+        "registry-url={registryURL} username={userName} --user-assigned {miUserAssigned}"
     )
 
 
-def step_update_UA_to_SA_managedidentity(test, checks=None):
+def step_update_scenario2(test, checks=None):
+    """VirtualMachine update operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud virtualmachine update --name {name} "
+        "--vm-image-repository-credentials password={password} registry-url={registryURL} username={userName} "
+        "--tags {tagsUpdate} --resource-group {rg} --vmi-creds password={password} "
+        "registry-url={registryURL} username={userName} --mi-user-assigned {miUserAssigned}"
+    )
+
+
+def step_update_UA_to_SA_managedidentity_scenario1(test, checks=None):
     """VirtualMachine update operation UA to SA"""
     if checks is None:
         checks = []
     test.cmd(
-        "az networkcloud VirtualMachine update --name {name} "
+        "az networkcloud virtualmachine update --virtual-machine-name {name} "
         "--vm-image-repository-credentials password={password} registry-url={registryURL} username={userName} "
         "--tags {tagsUpdate} --resource-group {rg} "
         "--mi-system-assigned"
+    )
+
+
+def step_update_UA_to_SA_managedidentity_scenario2(test, checks=None):
+    """VirtualMachine update operation UA to SA"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud virtualmachine update --virtual-machine-name {name} "
+        "--vm-image-repository-credentials password={password} registry-url={registryURL} username={userName} "
+        "--tags {tagsUpdate} --resource-group {rg} "
+        "--system-assigned"
     )
 
 

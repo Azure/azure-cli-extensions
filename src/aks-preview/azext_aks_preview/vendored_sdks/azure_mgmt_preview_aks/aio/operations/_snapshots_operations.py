@@ -7,7 +7,7 @@
 # --------------------------------------------------------------------------
 from collections.abc import MutableMapping
 from io import IOBase
-from typing import Any, Callable, IO, Optional, TypeVar, Union, overload
+from typing import Any, AsyncIterable, Callable, Dict, IO, Optional, TypeVar, Union, overload
 import urllib.parse
 
 from azure.core import AsyncPipelineClient
@@ -28,7 +28,7 @@ from azure.core.utils import case_insensitive_dict
 from azure.mgmt.core.exceptions import ARMErrorFormat
 
 from ... import models as _models
-from ..._utils.serialization import Deserializer, Serializer
+from ..._serialization import Deserializer, Serializer
 from ...operations._snapshots_operations import (
     build_create_or_update_request,
     build_delete_request,
@@ -39,9 +39,8 @@ from ...operations._snapshots_operations import (
 )
 from .._configuration import ContainerServiceClientConfiguration
 
-List = list
 T = TypeVar("T")
-ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, dict[str, Any]], Any]]
+ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
 
 class SnapshotsOperations:
@@ -64,10 +63,8 @@ class SnapshotsOperations:
         self._deserialize: Deserializer = input_args.pop(0) if input_args else kwargs.pop("deserializer")
 
     @distributed_trace
-    def list(self, **kwargs: Any) -> AsyncItemPaged["_models.Snapshot"]:
+    def list(self, **kwargs: Any) -> AsyncIterable["_models.Snapshot"]:
         """Gets a list of snapshots in the specified subscription.
-
-        Gets a list of snapshots in the specified subscription.
 
         :return: An iterator like instance of either Snapshot or the result of cls(response)
         :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerservice.models.Snapshot]
@@ -141,10 +138,8 @@ class SnapshotsOperations:
         return AsyncItemPaged(get_next, extract_data)
 
     @distributed_trace
-    def list_by_resource_group(self, resource_group_name: str, **kwargs: Any) -> AsyncItemPaged["_models.Snapshot"]:
+    def list_by_resource_group(self, resource_group_name: str, **kwargs: Any) -> AsyncIterable["_models.Snapshot"]:
         """Lists snapshots in the specified subscription and resource group.
-
-        Lists snapshots in the specified subscription and resource group.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -225,8 +220,6 @@ class SnapshotsOperations:
     async def get(self, resource_group_name: str, resource_name: str, **kwargs: Any) -> _models.Snapshot:
         """Gets a snapshot.
 
-        Gets a snapshot.
-
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
@@ -291,8 +284,6 @@ class SnapshotsOperations:
     ) -> _models.Snapshot:
         """Creates or updates a snapshot.
 
-        Creates or updates a snapshot.
-
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
@@ -320,8 +311,6 @@ class SnapshotsOperations:
     ) -> _models.Snapshot:
         """Creates or updates a snapshot.
 
-        Creates or updates a snapshot.
-
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
@@ -346,8 +335,6 @@ class SnapshotsOperations:
         **kwargs: Any
     ) -> _models.Snapshot:
         """Creates or updates a snapshot.
-
-        Creates or updates a snapshot.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -428,8 +415,6 @@ class SnapshotsOperations:
     ) -> _models.Snapshot:
         """Updates tags on a snapshot.
 
-        Updates tags on a snapshot.
-
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
@@ -457,8 +442,6 @@ class SnapshotsOperations:
     ) -> _models.Snapshot:
         """Updates tags on a snapshot.
 
-        Updates tags on a snapshot.
-
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
@@ -483,8 +466,6 @@ class SnapshotsOperations:
         **kwargs: Any
     ) -> _models.Snapshot:
         """Updates tags on a snapshot.
-
-        Updates tags on a snapshot.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -556,8 +537,6 @@ class SnapshotsOperations:
     @distributed_trace_async
     async def delete(self, resource_group_name: str, resource_name: str, **kwargs: Any) -> None:
         """Deletes a snapshot.
-
-        Deletes a snapshot.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.

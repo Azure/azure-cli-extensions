@@ -22,9 +22,9 @@ class AddVm(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-09-01",
+        "version": "2025-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/cloudvmclusters/{}/addvms", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/cloudvmclusters/{}/addvms", "2025-09-01"],
         ]
     }
 
@@ -158,7 +158,7 @@ class AddVm(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2025-09-01",
                     required=True,
                 ),
             }
@@ -218,9 +218,7 @@ class AddVm(AAZCommand):
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
+            _schema_on_200.properties = AAZObjectType()
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -243,6 +241,11 @@ class AddVm(AAZCommand):
             )
             properties.compartment_id = AAZStrType(
                 serialized_name="compartmentId",
+                flags={"read_only": True},
+            )
+            properties.compute_model = AAZStrType(
+                serialized_name="computeModel",
+                flags={"read_only": True},
             )
             properties.cpu_core_count = AAZIntType(
                 serialized_name="cpuCoreCount",
@@ -265,12 +268,19 @@ class AddVm(AAZCommand):
             )
             properties.disk_redundancy = AAZStrType(
                 serialized_name="diskRedundancy",
+                flags={"read_only": True},
             )
             properties.display_name = AAZStrType(
                 serialized_name="displayName",
                 flags={"required": True},
             )
             properties.domain = AAZStrType()
+            properties.exascale_db_storage_vault_id = AAZStrType(
+                serialized_name="exascaleDbStorageVaultId",
+            )
+            properties.file_system_configuration_details = AAZListType(
+                serialized_name="fileSystemConfigurationDetails",
+            )
             properties.gi_version = AAZStrType(
                 serialized_name="giVersion",
                 flags={"required": True},
@@ -280,6 +290,7 @@ class AddVm(AAZCommand):
             )
             properties.iorm_config_cache = AAZObjectType(
                 serialized_name="iormConfigCache",
+                flags={"read_only": True},
             )
             properties.is_local_backup_enabled = AAZBoolType(
                 serialized_name="isLocalBackupEnabled",
@@ -289,6 +300,7 @@ class AddVm(AAZCommand):
             )
             properties.last_update_history_entry_id = AAZStrType(
                 serialized_name="lastUpdateHistoryEntryId",
+                flags={"read_only": True},
             )
             properties.license_model = AAZStrType(
                 serialized_name="licenseModel",
@@ -299,6 +311,7 @@ class AddVm(AAZCommand):
             )
             properties.lifecycle_state = AAZStrType(
                 serialized_name="lifecycleState",
+                flags={"read_only": True},
             )
             properties.listener_port = AAZIntType(
                 serialized_name="listenerPort",
@@ -322,7 +335,9 @@ class AddVm(AAZCommand):
                 serialized_name="ociUrl",
                 flags={"read_only": True},
             )
-            properties.ocid = AAZStrType()
+            properties.ocid = AAZStrType(
+                flags={"read_only": True},
+            )
             properties.ocpu_count = AAZFloatType(
                 serialized_name="ocpuCount",
             )
@@ -336,6 +351,7 @@ class AddVm(AAZCommand):
             )
             properties.scan_dns_record_id = AAZStrType(
                 serialized_name="scanDnsRecordId",
+                flags={"read_only": True},
             )
             properties.scan_ip_ids = AAZListType(
                 serialized_name="scanIpIds",
@@ -354,6 +370,10 @@ class AddVm(AAZCommand):
                 serialized_name="sshPublicKeys",
                 flags={"required": True},
             )
+            properties.storage_management_type = AAZStrType(
+                serialized_name="storageManagementType",
+                flags={"read_only": True},
+            )
             properties.storage_size_in_gbs = AAZIntType(
                 serialized_name="storageSizeInGbs",
             )
@@ -363,6 +383,7 @@ class AddVm(AAZCommand):
             )
             properties.subnet_ocid = AAZStrType(
                 serialized_name="subnetOcid",
+                flags={"read_only": True},
             )
             properties.system_version = AAZStrType(
                 serialized_name="systemVersion",
@@ -399,6 +420,17 @@ class AddVm(AAZCommand):
 
             db_servers = cls._schema_on_200.properties.db_servers
             db_servers.Element = AAZStrType()
+
+            file_system_configuration_details = cls._schema_on_200.properties.file_system_configuration_details
+            file_system_configuration_details.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.file_system_configuration_details.Element
+            _element.file_system_size_gb = AAZIntType(
+                serialized_name="fileSystemSizeGb",
+            )
+            _element.mount_point = AAZStrType(
+                serialized_name="mountPoint",
+            )
 
             iorm_config_cache = cls._schema_on_200.properties.iorm_config_cache
             iorm_config_cache.db_plans = AAZListType(

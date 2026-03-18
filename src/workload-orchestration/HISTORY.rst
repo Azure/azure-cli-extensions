@@ -2,6 +2,29 @@
 
 Release History
 ===============
+5.1.0
+++++++
+* Added new target solution management command:
+  * ``az workload-orchestration target unstage`` - Unstage a solution version from a target
+* Added double confirmation before ``az workload-orchestration target remove-revision`` to prevent accidental deletions
+
+5.0.0
+++++++
+* November 2025 release
+
+4.1.0
+++++++
+* Added currentStage and latestActionTriggeredBy fields in response of below commands:
+  * ``az workload-orchestration target review`` - Post request to review configuration.
+  * ``az workload-orchestration target solution-revision-list`` - List all revisions of a solution deployed on a target.
+
+4.0.0
+++++++
+* Added new bulk management commands:
+  * ``az workload-orchestration solution-template bulk-review`` - Review solutions across multiple targets and apply target-specific configurations in bulk
+* Added option in bulk publish to publish solution even without review
+* Updated context ID validation during target create for improved reliability
+* Upgraded API version from 2025-06-01 to 2025-08-01
 
 3.0.0
 ++++++

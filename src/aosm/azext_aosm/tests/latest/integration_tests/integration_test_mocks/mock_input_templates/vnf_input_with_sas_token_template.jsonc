@@ -5,15 +5,27 @@
   // Will be created if it does not exist.
   "publisher_name": "automated-cli-test-ubuntu-publisher",
   // Optional. Resource group for the Publisher resource.
-  // Will be created if it does not exist (with a default name if none is supplied).
+  // CLI extension will attempt to create it if it does not exist.
   "publisher_resource_group_name": "{{publisher_resource_group_name}}",
   // Optional. Name of the ACR Artifact Store resource.
   // Will be created if it does not exist (with a default name if none is supplied).
   "acr_artifact_store_name": "ubuntu-acr",
+  // Disable public network access on the ACR.
+  // Default is false. Set to true to disable.
+  "disable_public_network_access": false,
+  // List of Resource id of Private End Points to access ACR that needs to be approved.
+  "vnet_private_end_points": [
+  ],
+  // List of Resource id of NNF to access ACR that needs to be approved.
+  "network_fabric_controller_ids": [
+  ],    
   // Name of NF definition.
   "nf_name": "ubuntu-vm",
   // Version of the NF definition in A.B.C format.
   "version": "1.0.0",
+  // If set to true, all NFD configuration parameters are made available to the designer, including optional parameters and those with defaults.
+  // If not set or set to false, only required parameters without defaults will be exposed.
+  "expose_all_parameters": false,    
   // Optional. Name of the storage account Artifact Store resource.
   // Will be created if it does not exist (with a default name if none is supplied).
   "blob_artifact_store_name": "ubuntu-blob-store",

@@ -93,6 +93,7 @@ from azext_aks_preview._consts import (
     CONST_OS_DISK_TYPE_MANAGED,
     CONST_OS_SKU_AZURELINUX,
     CONST_OS_SKU_AZURELINUX3,
+    CONST_OS_SKU_FLATCAR,
     CONST_OS_SKU_CBLMARINER,
     CONST_OS_SKU_MARINER,
     CONST_OS_SKU_AZURELINUXOSGUARD,
@@ -126,7 +127,8 @@ from azext_aks_preview._consts import (
     CONST_WEEKINDEX_SECOND,
     CONST_WEEKINDEX_THIRD,
     CONST_WEEKLY_MAINTENANCE_SCHEDULE,
-    CONST_WORKLOAD_RUNTIME_KATA_MSHV_VM_ISOLATION,
+    CONST_WORKLOAD_RUNTIME_KATA_VM_ISOLATION,
+    CONST_WORKLOAD_RUNTIME_OLD_KATA_VM_ISOLATION,
     CONST_WORKLOAD_RUNTIME_KATA_CC_ISOLATION,
     CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
     CONST_WORKLOAD_RUNTIME_WASM_WASI,
@@ -138,6 +140,7 @@ from azext_aks_preview._consts import (
     CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC,
     CONST_SSH_ACCESS_LOCALUSER,
     CONST_SSH_ACCESS_DISABLED,
+    CONST_SSH_ACCESS_ENTRAID,
     CONST_CLUSTER_SERVICE_HEALTH_PROBE_MODE_SERVICE_NODE_PORT,
     CONST_CLUSTER_SERVICE_HEALTH_PROBE_MODE_SHARED,
     CONST_ARTIFACT_SOURCE_DIRECT,
@@ -155,6 +158,7 @@ from azext_aks_preview._consts import (
     CONST_ADVANCED_NETWORKPOLICIES_L7,
     CONST_TRANSIT_ENCRYPTION_TYPE_NONE,
     CONST_TRANSIT_ENCRYPTION_TYPE_WIREGUARD,
+    CONST_TRANSIT_ENCRYPTION_TYPE_MTLS,
     CONST_ACNS_DATAPATH_ACCELERATION_MODE_BPFVETH,
     CONST_ACNS_DATAPATH_ACCELERATION_MODE_NONE,
     CONST_UPGRADE_STRATEGY_ROLLING,
@@ -175,6 +179,10 @@ from azext_aks_preview._validators import (
     validate_assign_kubelet_identity,
     validate_azure_keyvault_kms_key_id,
     validate_azure_keyvault_kms_key_vault_resource_id,
+    validate_azure_monitor_and_opentelemetry_for_create,
+    validate_azure_monitor_and_opentelemetry_for_update,
+    validate_azure_monitor_logs_and_enable_addons,
+    validate_azure_monitor_logs_enable_disable,
     validate_azuremonitorworkspaceresourceid,
     validate_cluster_id,
     validate_cluster_snapshot_id,
@@ -185,7 +193,6 @@ from azext_aks_preview._validators import (
     validate_defender_disable_and_enable_parameters,
     validate_disable_windows_outbound_nat,
     validate_asm_egress_name,
-    validate_enable_custom_ca_trust,
     validate_eviction_policy,
     validate_grafanaresourceid,
     validate_host_group_id,
@@ -280,6 +287,7 @@ node_mode_types = [
 node_os_skus_create = [
     CONST_OS_SKU_AZURELINUX,
     CONST_OS_SKU_AZURELINUX3,
+    CONST_OS_SKU_FLATCAR,
     CONST_OS_SKU_UBUNTU,
     CONST_OS_SKU_CBLMARINER,
     CONST_OS_SKU_MARINER,
@@ -297,6 +305,7 @@ node_os_skus_add = node_os_skus_create + [
 node_os_skus_update = [
     CONST_OS_SKU_AZURELINUX,
     CONST_OS_SKU_AZURELINUX3,
+    CONST_OS_SKU_FLATCAR,
     CONST_OS_SKU_UBUNTU,
     CONST_OS_SKU_UBUNTU2204,
     CONST_OS_SKU_UBUNTU2404,
@@ -307,7 +316,8 @@ scale_down_modes = [CONST_SCALE_DOWN_MODE_DELETE, CONST_SCALE_DOWN_MODE_DEALLOCA
 workload_runtimes = [
     CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
     CONST_WORKLOAD_RUNTIME_WASM_WASI,
-    CONST_WORKLOAD_RUNTIME_KATA_MSHV_VM_ISOLATION,
+    CONST_WORKLOAD_RUNTIME_KATA_VM_ISOLATION,
+    CONST_WORKLOAD_RUNTIME_OLD_KATA_VM_ISOLATION,
     CONST_WORKLOAD_RUNTIME_KATA_CC_ISOLATION,
 ]
 gpu_instance_profiles = [
@@ -351,6 +361,7 @@ advanced_networkpolicies = [
 transit_encryption_types = [
     CONST_TRANSIT_ENCRYPTION_TYPE_NONE,
     CONST_TRANSIT_ENCRYPTION_TYPE_WIREGUARD,
+    CONST_TRANSIT_ENCRYPTION_TYPE_MTLS,
 ]
 acns_datapath_acceleration_modes = [
     CONST_ACNS_DATAPATH_ACCELERATION_MODE_NONE,
@@ -441,6 +452,12 @@ ingress_gateway_types = [
 ]
 
 # azure container storage
+# azure container storage
+container_storage_versions = [
+    "1",
+    "2"
+]
+
 storage_pool_types = [
     CONST_STORAGE_POOL_TYPE_AZURE_DISK,
     CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK,
@@ -499,6 +516,7 @@ node_provisioning_default_pools = [
 ssh_accesses = [
     CONST_SSH_ACCESS_LOCALUSER,
     CONST_SSH_ACCESS_DISABLED,
+    CONST_SSH_ACCESS_ENTRAID,
 ]
 
 health_probe_modes = [
@@ -741,6 +759,12 @@ def load_arguments(self, _):
             options_list=["--enable-addons", "-a"],
             validator=validate_addons,
         )
+        c.argument(
+            "enable_azure_monitor_logs",
+            action="store_true",
+            validator=validate_azure_monitor_logs_and_enable_addons,
+            help="Enable Azure Monitor logs for the cluster. Equivalent to '--enable-addons monitoring'."
+        )
         c.argument("workspace_resource_id")
         c.argument(
             "enable_msi_auth_for_monitoring",
@@ -760,12 +784,14 @@ def load_arguments(self, _):
         c.argument("enable_secret_rotation", action="store_true")
         c.argument("rotation_poll_interval")
         c.argument("enable_sgxquotehelper", action="store_true")
+        c.argument("enable_application_load_balancer", action="store_true", is_preview=True)
         c.argument("enable_app_routing", action="store_true", is_preview=True)
         c.argument(
             "app_routing_default_nginx_controller",
             arg_type=get_enum_type(app_routing_nginx_configs),
             options_list=["--app-routing-default-nginx-controller", "--ardnc"]
         )
+        c.argument("enable_default_domain", action="store_true", is_preview=True)
         # nodepool paramerters
         c.argument(
             "nodepool_name",
@@ -946,10 +972,19 @@ def load_arguments(self, _):
             "acns_transit_encryption_type",
             is_preview=True,
             arg_type=get_enum_type(transit_encryption_types),
-            help="Specify the transit encryption type for ACNS. Available values are 'None' and 'WireGuard'.",
+            help="Specify the transit encryption type for ACNS. Available values are 'None', 'WireGuard', and 'mTLS'.",
         )
         c.argument(
             "enable_retina_flow_logs",
+            action="store_true",
+            deprecate_info=c.deprecate(
+                target="--enable-retina-flow-logs",
+                redirect="--enable-container-network-logs",
+                hide=True,
+            ),
+        )
+        c.argument(
+            "enable_container_network_logs",
             action="store_true",
         )
         c.argument(
@@ -967,8 +1002,6 @@ def load_arguments(self, _):
             arg_type=get_enum_type(workload_runtimes),
             default=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
         )
-        # no validation for aks create because it already only supports Linux.
-        c.argument("enable_custom_ca_trust", action="store_true")
         c.argument(
             "nodepool_allowed_host_ports",
             validator=validate_allowed_host_ports,
@@ -1022,14 +1055,61 @@ def load_arguments(self, _):
         c.argument("ksm_metric_annotations_allow_list")
         c.argument("grafana_resource_id", validator=validate_grafanaresourceid)
         c.argument("enable_windows_recording_rules", action="store_true")
-        c.argument("enable_azure_monitor_app_monitoring", is_preview=True, action="store_true")
-        c.argument("enable_cost_analysis", action="store_true")
-        c.argument('enable_ai_toolchain_operator', is_preview=True, action='store_true')
+        c.argument("enable_azure_monitor_app_monitoring",
+                   is_preview=True,
+                   action="store_true"
+                   )
+        # OpenTelemetry parameters
+        c.argument("enable_opentelemetry_metrics",
+                   is_preview=True,
+                   action="store_true",
+                   help="Enable OpenTelemetry metrics collection",
+                   validator=validate_azure_monitor_and_opentelemetry_for_create
+                   )
+        c.argument("opentelemetry_metrics_port",
+                   is_preview=True,
+                   type=int,
+                   help="Port for OpenTelemetry metrics collection"
+                   )
+        c.argument("disable_opentelemetry_metrics",
+                   is_preview=True,
+                   action="store_true",
+                   help="Disable OpenTelemetry metrics collection"
+                   )
+        c.argument("enable_opentelemetry_logs",
+                   options_list=["--enable-opentelemetry-logs"],
+                   is_preview=True,
+                   action="store_true",
+                   help="Enable OpenTelemetry logs collection"
+                   )
+        c.argument("opentelemetry_logs_port",
+                   is_preview=True,
+                   type=int,
+                   help="Port for OpenTelemetry logs collection"
+                   )
+        c.argument("disable_opentelemetry_logs",
+                   is_preview=True,
+                   action="store_true",
+                   help="Disable OpenTelemetry logs collection"
+                   )
+        c.argument("enable_cost_analysis",
+                   action="store_true"
+                   )
+        c.argument("enable_ai_toolchain_operator",
+                   is_preview=True,
+                   action="store_true"
+                   )
         # azure container storage
         c.argument(
             "enable_azure_container_storage",
-            arg_type=get_enum_type(storage_pool_types),
-            help="enable azure container storage and define storage pool type",
+            arg_type=_get_container_storage_enum_type(storage_pool_types),
+            help="enable azure container storage. Can be used as a flag (defaults to True) or with a"
+            " storage pool type value: (azureDisk, ephemeralDisk, elasticSan)",
+        )
+        c.argument(
+            "container_storage_version",
+            arg_type=get_enum_type(container_storage_versions),
+            help="set azure container storage version, the latest version will be installed by default",
         )
         c.argument(
             "storage_pool_name",
@@ -1112,8 +1192,30 @@ def load_arguments(self, _):
         # virtual machines
         c.argument("vm_sizes", is_preview=True)
         c.argument("enable_imds_restriction", action="store_true", is_preview=True)
-        c.argument("enable_managed_system_pool", action="store_true", is_preview=True)
+        c.argument("enable_managed_system_pool",
+                   action="store_true",
+                   is_preview=True,
+                   deprecate_info=c.deprecate(target="--enable-managed-system-pool", hide=True))
         c.argument("enable_upstream_kubescheduler_user_configuration", action="store_true", is_preview=True)
+        c.argument(
+            "enable_gateway_api",
+            action="store_true",
+            help="Enable managed installation of Gateway API CRDs from the standard release channel."
+        )
+        c.argument(
+            "enable_app_routing_istio",
+            options_list=["--enable-app-routing-istio", "--enable-ari"],
+            action="store_true",
+            is_preview=True,
+            help="Enable Gateway API based ingress on App Routing via Istio"
+        )
+        c.argument("enable_hosted_system", action="store_true", is_preview=True)
+        c.argument(
+            "enable_continuous_control_plane_and_addon_monitor",
+            action="store_true",
+            is_preview=True,
+            help="Enable continuous control plane and addon monitor for the cluster.",
+        )
 
     with self.argument_context("aks update") as c:
         # managed cluster paramerters
@@ -1249,6 +1351,11 @@ def load_arguments(self, _):
             "azure_keyvault_kms_key_vault_resource_id",
             validator=validate_azure_keyvault_kms_key_vault_resource_id,
         )
+        c.argument(
+            "kms_infrastructure_encryption",
+            arg_type=get_enum_type(["Enabled", "Disabled"]),
+            is_preview=True,
+        )
         c.argument("http_proxy_config")
         c.argument(
             "bootstrap_artifact_source",
@@ -1261,6 +1368,18 @@ def load_arguments(self, _):
             is_preview=True,
         )
         # addons
+        c.argument(
+            "enable_azure_monitor_logs",
+            action="store_true",
+            validator=validate_azure_monitor_logs_enable_disable,
+            help="Enable Azure Monitor logs for the cluster. Equivalent to 'az aks enable-addons -a monitoring'."
+        )
+# Monitoring parameters are inherited from base CLI
+        c.argument(
+            "disable_azure_monitor_logs",
+            action="store_true",
+            help="Disable Azure Monitor logs for the cluster. Equivalent to 'az aks disable-addons -a monitoring'."
+        )
         c.argument("enable_secret_rotation", action="store_true")
         c.argument("disable_secret_rotation", action="store_true")
         c.argument("rotation_poll_interval")
@@ -1387,9 +1506,69 @@ def load_arguments(self, _):
                 hide=True,
             ),
         )
-        c.argument("disable_azure_monitor_metrics", action="store_true")
-        c.argument("enable_azure_monitor_app_monitoring", action="store_true", is_preview=True)
-        c.argument("disable_azure_monitor_app_monitoring", action="store_true", is_preview=True)
+        c.argument("enable_azure_monitor_app_monitoring",
+                   action="store_true",
+                   is_preview=True
+                   )
+        c.argument("disable_azure_monitor_app_monitoring",
+                   action="store_true",
+                   is_preview=True
+                   )
+        # Azure Monitor logs additional parameters
+        c.argument("workspace_resource_id",
+                   help="Resource ID of the Azure Log Analytics workspace to use for monitoring")
+        c.argument(
+            "enable_msi_auth_for_monitoring",
+            arg_type=get_three_state_flag(),
+            is_preview=True,
+            help="Enable managed identity authentication for Azure Monitor logs"
+        )
+        c.argument("enable_syslog",
+                   arg_type=get_three_state_flag(),
+                   is_preview=True,
+                   help="Enable syslog collection for Azure Monitor logs")
+        c.argument("data_collection_settings",
+                   is_preview=True,
+                   help="Data collection settings for Azure Monitor logs")
+        c.argument("enable_high_log_scale_mode",
+                   arg_type=get_three_state_flag(),
+                   is_preview=True,
+                   help="Enable high log scale mode for Azure Monitor logs")
+        c.argument("ampls_resource_id",
+                   is_preview=True,
+                   help="Resource ID of the Azure Monitor Private Link Scope to associate with the cluster")
+        # OpenTelemetry parameters
+        c.argument("enable_opentelemetry_metrics",
+                   is_preview=True,
+                   action="store_true",
+                   help="Enable OpenTelemetry metrics collection",
+                   validator=validate_azure_monitor_and_opentelemetry_for_update
+                   )
+        c.argument("opentelemetry_metrics_port",
+                   is_preview=True,
+                   type=int,
+                   help="Port for OpenTelemetry metrics collection"
+                   )
+        c.argument("disable_opentelemetry_metrics",
+                   is_preview=True,
+                   action="store_true",
+                   help="Disable OpenTelemetry metrics collection"
+                   )
+        c.argument("enable_opentelemetry_logs",
+                   is_preview=True,
+                   action="store_true",
+                   help="Enable OpenTelemetry logs collection"
+                   )
+        c.argument("opentelemetry_logs_port",
+                   is_preview=True,
+                   type=int,
+                   help="Port for OpenTelemetry logs collection"
+                   )
+        c.argument("disable_opentelemetry_logs",
+                   is_preview=True,
+                   action="store_true",
+                   help="Disable OpenTelemetry logs collection"
+                   )
         c.argument(
             "enable_vpa",
             action="store_true",
@@ -1471,14 +1650,32 @@ def load_arguments(self, _):
             "acns_transit_encryption_type",
             is_preview=True,
             arg_type=get_enum_type(transit_encryption_types),
-            help="Specify the transit encryption type for ACNS. Available values are 'None' and 'WireGuard'.",
+            help="Specify the transit encryption type for ACNS. Available values are 'None', 'WireGuard', and 'mTLS'.",
         )
         c.argument(
             "enable_retina_flow_logs",
             action="store_true",
+            deprecate_info=c.deprecate(
+                target="--enable-retina-flow-logs",
+                redirect="--enable-container-network-logs",
+                hide=True,
+            ),
+        )
+        c.argument(
+            "enable_container_network_logs",
+            action="store_true",
         )
         c.argument(
             "disable_retina_flow_logs",
+            action="store_true",
+            deprecate_info=c.deprecate(
+                target="--disable-retina-flow-logs",
+                redirect="--disable-container-network-logs",
+                hide=True,
+            ),
+        )
+        c.argument(
+            "disable_container_network_logs",
             action="store_true",
         )
         c.argument("enable_cost_analysis", action="store_true")
@@ -1488,13 +1685,21 @@ def load_arguments(self, _):
         # azure container storage
         c.argument(
             "enable_azure_container_storage",
-            arg_type=get_enum_type(storage_pool_types),
-            help="enable azure container storage and define storage pool type",
+            arg_type=_get_container_storage_enum_type(storage_pool_types),
+            help="enable azure container storage. Can be used as a flag (defaults to True) or with a"
+            " storage pool type value: (azureDisk, ephemeralDisk, elasticSan)",
         )
         c.argument(
             "disable_azure_container_storage",
-            arg_type=get_enum_type(disable_storage_pool_types),
-            help="disable azure container storage or any one of the storage pool types",
+            arg_type=_get_container_storage_enum_type(disable_storage_pool_types),
+            help="disable azure container storage or any one of the storage pool types."
+            " Can be used as a flag (defaults to True) or with a storagepool type value:"
+            " azureDisk, ephemeralDisk, elasticSan, all (to disable all storage pools).",
+        )
+        c.argument(
+            "container_storage_version",
+            arg_type=get_enum_type(container_storage_versions),
+            help="set azure container storage version, the latest version will be installed by default",
         )
         c.argument(
             "storage_pool_name",
@@ -1567,6 +1772,54 @@ def load_arguments(self, _):
         c.argument("enable_http_proxy", action="store_true", is_preview=True)
         c.argument("enable_upstream_kubescheduler_user_configuration", action="store_true", is_preview=True)
         c.argument("disable_upstream_kubescheduler_user_configuration", action="store_true", is_preview=True)
+        c.argument(
+            "enable_gateway_api",
+            action="store_true",
+            help="Enable managed installation of Gateway API CRDs from the standard release channel."
+        )
+        c.argument(
+            "disable_gateway_api",
+            action="store_true",
+            help="Disable managed installation of Gateway API CRDs."
+        )
+        c.argument(
+            "enable_app_routing_istio",
+            options_list=["--enable-app-routing-istio", "--enable-ari"],
+            action="store_true",
+            is_preview=True,
+            help="Enable Gateway API based ingress on App Routing via Istio."
+        )
+        c.argument(
+            "disable_app_routing_istio",
+            options_list=["--disable-app-routing-istio", "--disable-ari"],
+            action="store_true",
+            is_preview=True,
+            help="Disable Gateway API based ingress on App Routing via Istio."
+        )
+        c.argument(
+            "enable_application_load_balancer",
+            action="store_true",
+            is_preview=True,
+            help="Enable Application Load Balancer (Application Gateway for Containers)."
+        )
+        c.argument(
+            "disable_application_load_balancer",
+            action="store_true",
+            is_preview=True,
+            help="Disable Application Load Balancer (Application Gateway for Containers)."
+        )
+        c.argument(
+            "enable_continuous_control_plane_and_addon_monitor",
+            action="store_true",
+            is_preview=True,
+            help="Enable continuous control plane and addon monitor for the cluster.",
+        )
+        c.argument(
+            "disable_continuous_control_plane_and_addon_monitor",
+            action="store_true",
+            is_preview=True,
+            help="Disable continuous control plane and addon monitor for the cluster.",
+        )
 
     with self.argument_context("aks upgrade") as c:
         c.argument("kubernetes_version", completer=get_k8s_upgrades_completion_list)
@@ -1757,11 +2010,6 @@ def load_arguments(self, _):
             default=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
         )
         c.argument(
-            "enable_custom_ca_trust",
-            action="store_true",
-            validator=validate_enable_custom_ca_trust,
-        )
-        c.argument(
             "disable_windows_outbound_nat",
             action="store_true",
             validator=validate_disable_windows_outbound_nat,
@@ -1876,16 +2124,6 @@ def load_arguments(self, _):
         c.argument("scale_down_mode", arg_type=get_enum_type(scale_down_modes))
         # extensions
         c.argument(
-            "enable_custom_ca_trust",
-            action="store_true",
-            validator=validate_enable_custom_ca_trust,
-        )
-        c.argument(
-            "disable_custom_ca_trust",
-            options_list=["--disable-custom-ca-trust", "--dcat"],
-            action="store_true",
-        )
-        c.argument(
             "allowed_host_ports", validator=validate_allowed_host_ports, is_preview=True
         )
         c.argument(
@@ -1946,6 +2184,10 @@ def load_arguments(self, _):
             options_list=["--node-vm-size", "-s"],
             completer=get_vm_size_completion_list,
         )
+        c.argument(
+            "gpu_driver",
+            arg_type=get_enum_type(gpu_driver_install_modes)
+        )
 
     with self.argument_context("aks nodepool upgrade") as c:
         # upgrade strategy
@@ -1998,6 +2240,14 @@ def load_arguments(self, _):
 
     with self.argument_context("aks nodepool manual-scale delete") as c:
         c.argument("current_vm_sizes", is_preview=True)
+
+    with self.argument_context("aks nodepool get-rollback-versions") as c:
+        pass  # Uses common nodepool parameters
+
+    with self.argument_context("aks nodepool rollback") as c:
+        c.argument("aks_custom_headers", nargs="*")
+        c.argument("if_match")
+        c.argument("if_none_match")
 
     with self.argument_context("aks machine") as c:
         c.argument("cluster_name", help="The cluster name.")
@@ -2066,6 +2316,14 @@ def load_arguments(self, _):
             validator=validate_k8s_version,
             help="Version of Kubernetes to use for the machine.",
         )
+
+    with self.argument_context("aks machine update") as c:
+        c.argument(
+            "machine_name", help="The machine name."
+        )
+        c.argument("tags", tags_type, help="The tags to set on the machine.")
+        c.argument("node_taints", validator=validate_nodepool_taints)
+        c.argument("labels", nargs="*", help="Labels to set on the machine.")
 
     with self.argument_context("aks operation") as c:
         c.argument(
@@ -2620,11 +2878,14 @@ def load_arguments(self, _):
         c.argument("enable_kv", action="store_true")
         c.argument("keyvault_id", options_list=["--attach-kv"])
         c.argument("nginx", arg_type=get_enum_type(app_routing_nginx_configs))
+        c.argument("enable_default_domain", action="store_true", is_preview=True)
 
     with self.argument_context("aks approuting update") as c:
         c.argument("keyvault_id", options_list=["--attach-kv"])
         c.argument("enable_kv", action="store_true")
         c.argument("nginx", arg_type=get_enum_type(app_routing_nginx_configs))
+        c.argument("enable_default_domain", action="store_true", is_preview=True)
+        c.argument("disable_default_domain", action="store_true", is_preview=True)
 
     with self.argument_context("aks approuting zone add") as c:
         c.argument("dns_zone_resource_ids", options_list=["--ids"], required=True)
@@ -2636,6 +2897,12 @@ def load_arguments(self, _):
     with self.argument_context("aks approuting zone update") as c:
         c.argument("dns_zone_resource_ids", options_list=["--ids"], required=True)
         c.argument("attach_zones")
+
+    with self.argument_context("aks approuting gateway istio enable") as c:
+        c.argument("aks_custom_headers")
+
+    with self.argument_context("aks approuting gateway istio disable") as c:
+        c.argument("aks_custom_headers")
 
     with self.argument_context('aks check-network outbound') as c:
         c.argument('cluster_name', options_list=['--name', '-n'],
@@ -2900,12 +3167,34 @@ def load_arguments(self, _):
         c.argument("bastion")
         c.argument("port", type=int)
         c.argument("admin", action="store_true")
+        c.argument("kubeconfig_path")
         c.argument(
             "yes",
             options_list=["--yes", "-y"],
             help="Do not prompt for confirmation.",
             action="store_true",
         )
+
+    # JWT Authenticator commands
+    with self.argument_context("aks jwtauthenticator") as c:
+        c.argument("cluster_name", help="The cluster name.")
+        c.argument(
+            "aks_custom_headers",
+            help="Send custom headers. When specified, format should be Key1=Value1,Key2=Value2.",
+        )
+
+    for scope in ['aks jwtauthenticator add',
+                  'aks jwtauthenticator update',
+                  'aks jwtauthenticator delete',
+                  'aks jwtauthenticator show']:
+        with self.argument_context(scope) as c:
+            c.argument('name', options_list=['--name', '-n'], required=True, help='Name of the JWT authenticator.')
+
+    for scope in ['aks jwtauthenticator add',
+                  'aks jwtauthenticator update']:
+        with self.argument_context(scope) as c:
+            c.argument('config_file', options_list=['--config-file'], type=file_type, completer=FilesCompleter(),
+                       help='Path to the JSON configuration file containing JWT authenticator properties.')
 
 
 def _get_default_install_location(exe_name):
@@ -2922,3 +3211,35 @@ def _get_default_install_location(exe_name):
     else:
         install_location = None
     return install_location
+
+
+def _get_container_storage_enum_type(choices):
+    """Custom argument type that accepts both None and enum values"""
+    import argparse
+    from azure.cli.core.azclierror import InvalidArgumentValueError
+
+    class AzureContainerStorageAction(argparse.Action):
+        def __call__(self, parser, namespace, values, option_string=None):
+            if values in [[], None]:
+                # When used as a flag without value, set as True
+                setattr(namespace, self.dest, True)
+                return
+
+            # Allow multiple enum values in a case insensitive manner
+            normalized_value_arr = values if isinstance(values, list) else str(values).split(',')
+            normalized_value_arr = [str(v).lower().strip() for v in normalized_value_arr]
+            valid_value_arr = [v for v in choices if v.lower() in normalized_value_arr]
+            if len(valid_value_arr) == len(normalized_value_arr):
+                normalized_values = valid_value_arr[0] if len(valid_value_arr) == 1 else valid_value_arr
+                setattr(namespace, self.dest, normalized_values)
+                return
+
+            # Invalid value
+            raise InvalidArgumentValueError(
+                f"Invalid value '{values}'. Valid values are: {', '.join(choices)}"
+            )
+
+    return CLIArgumentType(
+        nargs='*',  # Allow multiple values
+        action=AzureContainerStorageAction,
+    )

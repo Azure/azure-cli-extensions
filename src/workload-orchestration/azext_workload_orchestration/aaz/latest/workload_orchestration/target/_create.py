@@ -10,7 +10,10 @@
 
 from azure.cli.core.aaz import *
 from azure.cli.core.azclierror import CLIInternalError
+import configparser
+import logging
 
+logger = logging.getLogger(__name__)
 
 @register_command(
     "workload-orchestration target create",
@@ -23,9 +26,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-06-01",
+        "version": "2025-08-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.edge/targets/{}", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.Edge/targets/{}", "2025-08-01"],
         ]
     }
 
@@ -167,13 +170,26 @@ class Create(AAZCommand):
 
     @register_callback
     def pre_operations(self):
-        # If context_id is not provided, try to get it from config
+         # If context_id is not provided, try to get it from config
         if not self.ctx.args.context_id:
-            context_id = self.ctx.cli_ctx.config.get('workload_orchestration', 'context_id')
-            if context_id:
-                self.ctx.args.context_id = context_id
-            else:
-                raise CLIInternalError("No context-id provided and no default context found. Please provide --context-id or use 'az workload-orchestration context use' to set a default context.")
+            try:
+                # Attempt to retrieve the context_id from the config file
+                context_id = self.ctx.cli_ctx.config.get('workload_orchestration', 'context_id')
+                if context_id:
+                    self.ctx.args.context_id = context_id
+                else:
+                    # This else block handles the case where the section exists, but the key is empty
+                    raise CLIInternalError(
+                        "No context-id was provided, and no default context is set. "
+                        "Please provide the --context-id argument or set a default context using 'az workload-orchestration context use'."
+                    )
+            except configparser.NoSectionError as e:
+                logger.debug("Config section 'workload_orchestration' not found: %s", e)
+                # This is the fix: catch the specific error when the [workload_orchestration] section is missing
+                raise CLIInternalError(
+                    "No context-id was provided, and no default context is set. "
+                    "Please provide the --context-id argument or set a default context using 'az workload-orchestration context use'."
+                )
 
     @register_callback
     def post_operations(self):
@@ -213,7 +229,7 @@ class Create(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.edge/targets/{targetName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Edge/targets/{targetName}",
                 **self.url_parameters
             )
 
@@ -247,7 +263,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2025-08-01",
                     required=True,
                 ),
             }

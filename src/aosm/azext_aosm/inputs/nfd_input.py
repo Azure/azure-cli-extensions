@@ -36,7 +36,7 @@ class NFDInput(BaseInput):
     :type default_config: Optional[Dict[str, Any]]
     """
 
-    def __init__(
+    def __init__(  # pylint: disable=too-many-positional-arguments
         self,
         artifact_name: str,
         artifact_version: str,

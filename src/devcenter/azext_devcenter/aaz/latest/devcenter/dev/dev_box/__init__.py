@@ -24,6 +24,7 @@ from ._list_snapshot import *
 from ._repair import *
 from ._restart import *
 from ._restore_snapshot import *
+from ._schedule_delete import *
 from ._set_active_hours import *
 from ._show import *
 from ._show_action import *

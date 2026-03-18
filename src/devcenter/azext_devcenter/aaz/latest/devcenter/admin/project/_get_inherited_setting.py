@@ -22,9 +22,9 @@ class GetInheritedSetting(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-04-01-preview",
+        "version": "2025-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/getinheritedsettings", "2025-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/getinheritedsettings", "2025-10-01-preview"],
         ]
     }
 
@@ -125,7 +125,7 @@ class GetInheritedSetting(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-04-01-preview",
+                    "api-version", "2025-10-01-preview",
                     required=True,
                 ),
             }
@@ -158,6 +158,31 @@ class GetInheritedSetting(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
+            _schema_on_200.azure_ai_services_settings = AAZObjectType(
+                serialized_name="azureAiServicesSettings",
+                flags={"read_only": True},
+            )
+            _GetInheritedSettingHelper._build_schema_feature_state_read(_schema_on_200.azure_ai_services_settings)
+            _schema_on_200.dev_box_limits_settings = AAZObjectType(
+                serialized_name="devBoxLimitsSettings",
+                flags={"read_only": True},
+            )
+            _GetInheritedSettingHelper._build_schema_feature_state_read(_schema_on_200.dev_box_limits_settings)
+            _schema_on_200.dev_box_schedule_delete_settings = AAZObjectType(
+                serialized_name="devBoxScheduleDeleteSettings",
+                flags={"read_only": True},
+            )
+            _GetInheritedSettingHelper._build_schema_feature_state_read(_schema_on_200.dev_box_schedule_delete_settings)
+            _schema_on_200.dev_box_tunnel_settings = AAZObjectType(
+                serialized_name="devBoxTunnelSettings",
+                flags={"read_only": True},
+            )
+            _GetInheritedSettingHelper._build_schema_feature_state_read(_schema_on_200.dev_box_tunnel_settings)
+            _schema_on_200.display_name_settings = AAZObjectType(
+                serialized_name="displayNameSettings",
+                flags={"read_only": True},
+            )
+            _GetInheritedSettingHelper._build_schema_feature_state_read(_schema_on_200.display_name_settings)
             _schema_on_200.network_settings = AAZObjectType(
                 serialized_name="networkSettings",
                 flags={"read_only": True},
@@ -166,6 +191,21 @@ class GetInheritedSetting(AAZCommand):
                 serialized_name="projectCatalogSettings",
                 flags={"read_only": True},
             )
+            _schema_on_200.serverless_gpu_sessions_settings = AAZObjectType(
+                serialized_name="serverlessGpuSessionsSettings",
+                flags={"read_only": True},
+            )
+            _GetInheritedSettingHelper._build_schema_feature_state_read(_schema_on_200.serverless_gpu_sessions_settings)
+            _schema_on_200.user_customizations_settings = AAZObjectType(
+                serialized_name="userCustomizationsSettings",
+                flags={"read_only": True},
+            )
+            _GetInheritedSettingHelper._build_schema_feature_state_read(_schema_on_200.user_customizations_settings)
+            _schema_on_200.workspace_storage_settings = AAZObjectType(
+                serialized_name="workspaceStorageSettings",
+                flags={"read_only": True},
+            )
+            _GetInheritedSettingHelper._build_schema_feature_state_read(_schema_on_200.workspace_storage_settings)
 
             network_settings = cls._schema_on_200.network_settings
             network_settings.microsoft_hosted_network_enable_status = AAZStrType(
@@ -177,12 +217,64 @@ class GetInheritedSetting(AAZCommand):
             project_catalog_settings.catalog_item_sync_enable_status = AAZStrType(
                 serialized_name="catalogItemSyncEnableStatus",
             )
+            project_catalog_settings.default_status = AAZStrType(
+                serialized_name="defaultStatus",
+            )
+            project_catalog_settings.default_values = AAZDictType(
+                serialized_name="defaultValues",
+            )
+            project_catalog_settings.status_modifiable = AAZStrType(
+                serialized_name="statusModifiable",
+            )
+            project_catalog_settings.values_modifiable = AAZStrType(
+                serialized_name="valuesModifiable",
+            )
+
+            default_values = cls._schema_on_200.project_catalog_settings.default_values
+            default_values.Element = AAZStrType()
 
             return cls._schema_on_200
 
 
 class _GetInheritedSettingHelper:
     """Helper class for GetInheritedSetting"""
+
+    _schema_feature_state_read = None
+
+    @classmethod
+    def _build_schema_feature_state_read(cls, _schema):
+        if cls._schema_feature_state_read is not None:
+            _schema.default_status = cls._schema_feature_state_read.default_status
+            _schema.default_values = cls._schema_feature_state_read.default_values
+            _schema.status_modifiable = cls._schema_feature_state_read.status_modifiable
+            _schema.values_modifiable = cls._schema_feature_state_read.values_modifiable
+            return
+
+        cls._schema_feature_state_read = _schema_feature_state_read = AAZObjectType(
+            flags={"read_only": True}
+        )
+
+        feature_state_read = _schema_feature_state_read
+        feature_state_read.default_status = AAZStrType(
+            serialized_name="defaultStatus",
+        )
+        feature_state_read.default_values = AAZDictType(
+            serialized_name="defaultValues",
+        )
+        feature_state_read.status_modifiable = AAZStrType(
+            serialized_name="statusModifiable",
+        )
+        feature_state_read.values_modifiable = AAZStrType(
+            serialized_name="valuesModifiable",
+        )
+
+        default_values = _schema_feature_state_read.default_values
+        default_values.Element = AAZStrType()
+
+        _schema.default_status = cls._schema_feature_state_read.default_status
+        _schema.default_values = cls._schema_feature_state_read.default_values
+        _schema.status_modifiable = cls._schema_feature_state_read.status_modifiable
+        _schema.values_modifiable = cls._schema_feature_state_read.values_modifiable
 
 
 __all__ = ["GetInheritedSetting"]

@@ -30,3 +30,7 @@ Release History
 1.0.0b4
 ++++++
 * Update the CLI command description to support AI related queries.
+
+1.0.0b5
+++++++
+* Deprecate 'az neon' command group with end-of-life notice and migration guidance.

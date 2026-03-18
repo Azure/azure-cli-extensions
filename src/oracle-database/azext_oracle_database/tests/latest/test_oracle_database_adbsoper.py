@@ -9,12 +9,13 @@ import unittest
 import time
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only)
 
 class OracleDatabaseAdbsGetScenario(ScenarioTest):
+    @live_only()
     @AllowLargeResponse(size_kb=10240)
     @ResourceGroupPreparer(name_prefix='cli_test_odba_rg')
     def test_oracledatabase_adbsget(self, resource_group):
         subscription_id = self.get_subscription_id()
-        self.cmd('az oracle-database autonomous-database show --name eamonterraformtest501 --resource-group eamonterraformtest500 ')
-        self.cmd('az oracle-database autonomous-database list --resource-group eamonterraformtest500 ')
+        self.cmd('az oracle-database autonomous-database show --name ADBScli1 --resource-group PowerShellTestRg ')
+        self.cmd('az oracle-database autonomous-database list --resource-group PowerShellTestRg ')

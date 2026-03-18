@@ -43,7 +43,7 @@ def step_reboot(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkfabric device reboot --resource-name {name} --resource-group {rg} --reboot-type {rebootType}"
+        "az networkfabric device reboot --network-device-name {name} --resource-group {rg} --reboot-type {rebootType}"
     )
 
 
@@ -61,6 +61,6 @@ class GA_DeviceRebootGracefulZTPScenarioTest1(ScenarioTest):
         )
 
     @AllowLargeResponse()
-    def test_GA_Device_Reboot_GracefulZTP_scenario1(self):
+    def test_GA_device_reboot_graceful_ztp_scenario1(self):
         """test scenario for Device CRUD operations"""
         call_scenario1(self)

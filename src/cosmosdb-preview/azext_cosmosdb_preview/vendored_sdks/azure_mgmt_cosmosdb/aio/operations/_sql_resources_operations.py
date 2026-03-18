@@ -8,7 +8,7 @@
 # --------------------------------------------------------------------------
 from collections.abc import MutableMapping
 from io import IOBase
-from typing import Any, AsyncIterable, AsyncIterator, Callable, Dict, IO, Optional, TypeVar, Union, cast, overload
+from typing import Any, AsyncIterator, Callable, IO, Optional, TypeVar, Union, cast, overload
 import urllib.parse
 
 from azure.core import AsyncPipelineClient
@@ -85,7 +85,8 @@ from ...operations._sql_resources_operations import (
 from .._configuration import CosmosDBManagementClientConfiguration
 
 T = TypeVar("T")
-ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
+ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, dict[str, Any]], Any]]
+List = list
 
 
 class SqlResourcesOperations:  # pylint: disable=too-many-public-methods
@@ -110,7 +111,7 @@ class SqlResourcesOperations:  # pylint: disable=too-many-public-methods
     @distributed_trace
     def list_sql_databases(
         self, resource_group_name: str, account_name: str, **kwargs: Any
-    ) -> AsyncIterable["_models.SqlDatabaseGetResults"]:
+    ) -> AsyncItemPaged["_models.SqlDatabaseGetResults"]:
         """Lists the SQL databases under an existing Azure Cosmos DB database account.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
@@ -1111,7 +1112,7 @@ class SqlResourcesOperations:  # pylint: disable=too-many-public-methods
     @distributed_trace
     def list_client_encryption_keys(
         self, resource_group_name: str, account_name: str, database_name: str, **kwargs: Any
-    ) -> AsyncIterable["_models.ClientEncryptionKeyGetResults"]:
+    ) -> AsyncItemPaged["_models.ClientEncryptionKeyGetResults"]:
         """Lists the ClientEncryptionKeys under an existing Azure Cosmos DB SQL database.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
@@ -1507,7 +1508,7 @@ class SqlResourcesOperations:  # pylint: disable=too-many-public-methods
     @distributed_trace
     def list_sql_containers(
         self, resource_group_name: str, account_name: str, database_name: str, **kwargs: Any
-    ) -> AsyncIterable["_models.SqlContainerGetResults"]:
+    ) -> AsyncItemPaged["_models.SqlContainerGetResults"]:
         """Lists the SQL container under an existing Azure Cosmos DB database account.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
@@ -3902,7 +3903,7 @@ class SqlResourcesOperations:  # pylint: disable=too-many-public-methods
     @distributed_trace
     def list_sql_stored_procedures(
         self, resource_group_name: str, account_name: str, database_name: str, container_name: str, **kwargs: Any
-    ) -> AsyncIterable["_models.SqlStoredProcedureGetResults"]:
+    ) -> AsyncItemPaged["_models.SqlStoredProcedureGetResults"]:
         """Lists the SQL storedProcedure under an existing Azure Cosmos DB database account.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
@@ -4450,7 +4451,7 @@ class SqlResourcesOperations:  # pylint: disable=too-many-public-methods
     @distributed_trace
     def list_sql_user_defined_functions(
         self, resource_group_name: str, account_name: str, database_name: str, container_name: str, **kwargs: Any
-    ) -> AsyncIterable["_models.SqlUserDefinedFunctionGetResults"]:
+    ) -> AsyncItemPaged["_models.SqlUserDefinedFunctionGetResults"]:
         """Lists the SQL userDefinedFunction under an existing Azure Cosmos DB database account.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
@@ -4998,7 +4999,7 @@ class SqlResourcesOperations:  # pylint: disable=too-many-public-methods
     @distributed_trace
     def list_sql_triggers(
         self, resource_group_name: str, account_name: str, database_name: str, container_name: str, **kwargs: Any
-    ) -> AsyncIterable["_models.SqlTriggerGetResults"]:
+    ) -> AsyncItemPaged["_models.SqlTriggerGetResults"]:
         """Lists the SQL trigger under an existing Azure Cosmos DB database account.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
@@ -5919,7 +5920,7 @@ class SqlResourcesOperations:  # pylint: disable=too-many-public-methods
     @distributed_trace
     def list_sql_role_definitions(
         self, resource_group_name: str, account_name: str, **kwargs: Any
-    ) -> AsyncIterable["_models.SqlRoleDefinitionGetResults"]:
+    ) -> AsyncItemPaged["_models.SqlRoleDefinitionGetResults"]:
         """Retrieves the list of all Azure Cosmos DB SQL Role Definitions.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
@@ -6387,7 +6388,7 @@ class SqlResourcesOperations:  # pylint: disable=too-many-public-methods
     @distributed_trace
     def list_sql_role_assignments(
         self, resource_group_name: str, account_name: str, **kwargs: Any
-    ) -> AsyncIterable["_models.SqlRoleAssignmentGetResults"]:
+    ) -> AsyncItemPaged["_models.SqlRoleAssignmentGetResults"]:
         """Retrieves the list of all Azure Cosmos DB SQL Role Assignments.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.

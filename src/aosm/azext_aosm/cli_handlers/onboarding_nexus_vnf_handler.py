@@ -3,18 +3,13 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 from __future__ import annotations
-
-import json
 from pathlib import Path
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List
 from knack.log import get_logger
 
 from azext_aosm.build_processors.arm_processor import NexusArmBuildProcessor
 from azext_aosm.build_processors.nexus_image_processor import NexusImageProcessor
 from azext_aosm.common.constants import (
-    BASE_FOLDER_NAME,
-    VNF_TEMPLATE_FOLDER_NAME,
-    VNF_OUTPUT_FOLDER_FILENAME,
     DEPLOY_PARAMETERS_FILENAME,
     NEXUS_IMAGE_PARAMETERS_FILENAME,
     TEMPLATE_PARAMETERS_FILENAME,
@@ -26,16 +21,10 @@ from azext_aosm.configuration_models.onboarding_vnf_input_config import (
 from azext_aosm.configuration_models.common_parameters_config import (
     NexusVNFCommonParametersConfig,
 )
-from azext_aosm.definition_folder.builder.bicep_builder import (
-    BicepDefinitionElementBuilder,
-)
-from azext_aosm.definition_folder.builder.json_builder import (
-    JSONDefinitionElementBuilder,
-)
 from azext_aosm.inputs.arm_template_input import ArmTemplateInput
 from azext_aosm.inputs.nexus_image_input import NexusImageFileInput
 from .onboarding_vnf_handler import OnboardingVNFCLIHandler
-from azext_aosm.common.utils import render_bicep_contents_from_j2, get_template_path, split_image_path
+from azext_aosm.common.utils import split_image_path
 
 logger = get_logger(__name__)
 
@@ -45,23 +34,17 @@ class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
 
     config: OnboardingNexusVNFInputConfig
 
-    def _get_input_config(
-        self, input_config: Optional[dict] = None
-    ) -> OnboardingNexusVNFInputConfig:
-        """Get the configuration for the command."""
-        if input_config is None:
-            input_config = {}
-        return OnboardingNexusVNFInputConfig(**input_config)
+    @property
+    def input_config(self):
+        return OnboardingNexusVNFInputConfig
 
-    def _get_params_config(
-        self, config_file: Path
-    ) -> NexusVNFCommonParametersConfig:
-        """Get the configuration for the command."""
-        with open(config_file, "r", encoding="utf-8") as _file:
-            params_dict = json.load(_file)
-        if params_dict is None:
-            params_dict = {}
-        return NexusVNFCommonParametersConfig(**params_dict)
+    @property
+    def params_config(self):
+        return NexusVNFCommonParametersConfig
+
+    @property
+    def base_template_filename(self):
+        return VNF_NEXUS_BASE_TEMPLATE_FILENAME
 
     def _get_processor_list(self) -> List[NexusArmBuildProcessor | NexusImageProcessor]:
         processor_list: List[NexusArmBuildProcessor | NexusImageProcessor] = []
@@ -93,22 +76,8 @@ class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
 
         return processor_list
 
-    def build_base_bicep(self) -> BicepDefinitionElementBuilder:
-        """Build the base bicep file."""
-        # Build manifest bicep contents, with j2 template
-        template_path = get_template_path(
-            VNF_TEMPLATE_FOLDER_NAME, VNF_NEXUS_BASE_TEMPLATE_FILENAME
-        )
-        bicep_contents = render_bicep_contents_from_j2(template_path, {})
-        # Create Bicep element with manifest contents
-        bicep_file = BicepDefinitionElementBuilder(
-            Path(VNF_OUTPUT_FOLDER_FILENAME, BASE_FOLDER_NAME), bicep_contents
-        )
-        return bicep_file
-
-    def build_all_parameters_json(self) -> JSONDefinitionElementBuilder:
-        """Build the all parameters json file."""
-        params_content = {
+    def get_params_content(self):
+        return {
             "location": self.config.location,
             "publisherName": self.config.publisher_name,
             "publisherResourceGroupName": self.config.publisher_resource_group_name,
@@ -117,10 +86,6 @@ class OnboardingNexusVNFCLIHandler(OnboardingVNFCLIHandler):
             "nfDefinitionGroup": self.config.nf_name,
             "nfDefinitionVersion": self.config.version
         }
-        base_file = JSONDefinitionElementBuilder(
-            Path(VNF_OUTPUT_FOLDER_FILENAME), json.dumps(params_content, indent=4)
-        )
-        return base_file
 
     def _generate_type_specific_nf_application(self, processor) -> "tuple[list, list]":
         """Generate the type specific nf application."""

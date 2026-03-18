@@ -7,7 +7,7 @@
 # --------------------------------------------------------------------------
 from collections.abc import MutableMapping
 from io import IOBase
-from typing import Any, Callable, IO, Optional, TypeVar, Union, overload
+from typing import Any, AsyncIterable, Callable, Dict, IO, Optional, TypeVar, Union, overload
 import urllib.parse
 
 from azure.core import AsyncPipelineClient
@@ -28,7 +28,7 @@ from azure.core.utils import case_insensitive_dict
 from azure.mgmt.core.exceptions import ARMErrorFormat
 
 from ... import models as _models
-from ..._utils.serialization import Deserializer, Serializer
+from ..._serialization import Deserializer, Serializer
 from ...operations._managed_cluster_snapshots_operations import (
     build_create_or_update_request,
     build_delete_request,
@@ -39,9 +39,8 @@ from ...operations._managed_cluster_snapshots_operations import (
 )
 from .._configuration import ContainerServiceClientConfiguration
 
-List = list
 T = TypeVar("T")
-ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, dict[str, Any]], Any]]
+ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
 
 class ManagedClusterSnapshotsOperations:
@@ -64,10 +63,8 @@ class ManagedClusterSnapshotsOperations:
         self._deserialize: Deserializer = input_args.pop(0) if input_args else kwargs.pop("deserializer")
 
     @distributed_trace
-    def list(self, **kwargs: Any) -> AsyncItemPaged["_models.ManagedClusterSnapshot"]:
+    def list(self, **kwargs: Any) -> AsyncIterable["_models.ManagedClusterSnapshot"]:
         """Gets a list of managed cluster snapshots in the specified subscription.
-
-        Gets a list of managed cluster snapshots in the specified subscription.
 
         :return: An iterator like instance of either ManagedClusterSnapshot or the result of
          cls(response)
@@ -145,10 +142,8 @@ class ManagedClusterSnapshotsOperations:
     @distributed_trace
     def list_by_resource_group(
         self, resource_group_name: str, **kwargs: Any
-    ) -> AsyncItemPaged["_models.ManagedClusterSnapshot"]:
+    ) -> AsyncIterable["_models.ManagedClusterSnapshot"]:
         """Lists managed cluster snapshots in the specified subscription and resource group.
-
-        Lists managed cluster snapshots in the specified subscription and resource group.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -231,8 +226,6 @@ class ManagedClusterSnapshotsOperations:
     async def get(self, resource_group_name: str, resource_name: str, **kwargs: Any) -> _models.ManagedClusterSnapshot:
         """Gets a managed cluster snapshot.
 
-        Gets a managed cluster snapshot.
-
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
@@ -297,8 +290,6 @@ class ManagedClusterSnapshotsOperations:
     ) -> _models.ManagedClusterSnapshot:
         """Creates or updates a managed cluster snapshot.
 
-        Creates or updates a managed cluster snapshot.
-
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
@@ -326,8 +317,6 @@ class ManagedClusterSnapshotsOperations:
     ) -> _models.ManagedClusterSnapshot:
         """Creates or updates a managed cluster snapshot.
 
-        Creates or updates a managed cluster snapshot.
-
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
@@ -352,8 +341,6 @@ class ManagedClusterSnapshotsOperations:
         **kwargs: Any
     ) -> _models.ManagedClusterSnapshot:
         """Creates or updates a managed cluster snapshot.
-
-        Creates or updates a managed cluster snapshot.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -434,8 +421,6 @@ class ManagedClusterSnapshotsOperations:
     ) -> _models.ManagedClusterSnapshot:
         """Updates tags on a managed cluster snapshot.
 
-        Updates tags on a managed cluster snapshot.
-
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
@@ -464,8 +449,6 @@ class ManagedClusterSnapshotsOperations:
     ) -> _models.ManagedClusterSnapshot:
         """Updates tags on a managed cluster snapshot.
 
-        Updates tags on a managed cluster snapshot.
-
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
@@ -491,8 +474,6 @@ class ManagedClusterSnapshotsOperations:
         **kwargs: Any
     ) -> _models.ManagedClusterSnapshot:
         """Updates tags on a managed cluster snapshot.
-
-        Updates tags on a managed cluster snapshot.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -564,8 +545,6 @@ class ManagedClusterSnapshotsOperations:
     @distributed_trace_async
     async def delete(self, resource_group_name: str, resource_name: str, **kwargs: Any) -> None:
         """Deletes a managed cluster snapshot.
-
-        Deletes a managed cluster snapshot.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.

@@ -24,8 +24,7 @@ class ContainerAppSessionCustomContainerTests(ScenarioTest):
                     service_endpoints="Microsoft.Storage.Global")
     def test_containerapp_session_custom_container_e2e(self, resource_group, subnet_id, vnet_name, subnet_name):
         location = TEST_LOCATION
-        if format_location(location) == format_location(STAGE_LOCATION):
-            location = "eastasia"
+
         self.cmd('configure --defaults location={}'.format(location))
 
         env_name = self.create_random_name(prefix='aca-sp-env-custom', length=24)
@@ -77,7 +76,7 @@ class ContainerAppSessionCustomContainerTests(ScenarioTest):
         # start session and stop session
         self.cmd('rest --method get --url {}/health?identifier={} --resource https://dynamicsessions.io'.format(pool_management_endpoint, identifier_name), expect_failure=False)
         stop_session_output = self.cmd('containerapp session stop -g {} -n {} --identifier {}'.format(resource_group, sessionpool_name_custom, identifier_name), expect_failure=False).output
-        self.assertIn(f"Session '{identifier_name}' in session pool '{sessionpool_name_custom}' stopped.", stop_session_output)
+        self.assertIn(f"Session {identifier_name} in session pool {sessionpool_name_custom} stopped.", stop_session_output)
 
         with self.assertRaises(CLIError):
             self.cmd('containerapp session stop -g {} -n {} --identifier {}'.format(resource_group, sessionpool_name_custom, identifier_name))

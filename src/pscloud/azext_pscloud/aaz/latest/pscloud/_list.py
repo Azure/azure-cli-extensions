@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "pscloud list",
-    is_preview=True,
 )
 class List(AAZCommand):
     """List reservations by Azure subscription ID

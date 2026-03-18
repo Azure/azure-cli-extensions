@@ -142,6 +142,28 @@ def load_arguments(self, _):
             help="The name of a pool of " "dev boxes.",
         )
 
+    with self.argument_context("devcenter dev pool align") as c:
+        c.argument(
+            "dev_center",
+            arg_type=dev_center_type,
+        )
+        c.argument(
+            "project_name",
+            arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
+            "pool_name",
+            options_list=["--name", "-n", "--pool-name"],
+            type=str,
+            help="The name of a pool of " "dev boxes.",
+        )
+        c.argument('targets', nargs='+',
+                   help='Space separated configurations to align on. Possible values are "NetworkProperties", "HibernateSupport", or "SingleSignOnStatus".',)
+
     with self.argument_context("devcenter dev schedule list") as c:
         c.argument(
             "dev_center",
@@ -327,6 +349,8 @@ def load_arguments(self, _):
             "endpoint",
             arg_type=endpoint,
         )
+        c.argument('targets', nargs='+',
+                   help='Space separated configurations to align on. Possible values are "NetworkProperties", "HibernateSupport", or "SingleSignOnStatus".',)
         c.argument(
             "user_id",
             type=str,
@@ -408,6 +432,39 @@ def load_arguments(self, _):
             options_list=["--time-zone"],
             type=str,
             help="The timezone of the active hours.",
+        )
+        c.argument('days_of_week', nargs='+',
+                   help='Space separated days of the week for active hours. Possible values are "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday".',)
+
+    with self.argument_context("devcenter dev dev-box schedule-delete") as c:
+        c.argument(
+            "dev_center",
+            arg_type=dev_center_type,
+        )
+        c.argument(
+            "project_name",
+            arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
+            "user_id",
+            type=str,
+            help="The AAD object id of the user. If value is 'me', the identity is taken "
+            "from the authentication context.",
+        )
+        c.argument(
+            "dev_box_name",
+            options_list=["--name", "-n", "--dev-box-name"],
+            type=str,
+            help="The name of a dev " "box.",
+        )
+        c.argument(
+            "delete_at",
+            type=str,
+            help="The scheduled deletion time of the Dev Box, in RFC3339 format.",
         )
 
     with self.argument_context("devcenter dev dev-box stop") as c:

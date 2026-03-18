@@ -25,9 +25,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2025-07-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics/{}/networktonetworkinterconnects/{}", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics/{}/networktonetworkinterconnects/{}", "2025-07-15"],
         ]
     }
 
@@ -98,7 +98,7 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.layer2_configuration = AAZObjectArg(
-            options=["--layer2-configuration"],
+            options=["--l2-config", "--layer2-configuration"],
             arg_group="Properties",
             help="Common properties for Layer2Configuration.",
             nullable=True,
@@ -111,19 +111,19 @@ class Update(AAZCommand):
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
         _args_schema.npb_static_route_configuration = AAZObjectArg(
-            options=["--npb-static-route-configuration"],
+            options=["--npb-static-route-conf", "--npb-static-route-configuration"],
             arg_group="Properties",
             help="NPB Static Route Configuration properties.",
             nullable=True,
         )
         _args_schema.option_b_layer3_configuration = AAZObjectArg(
-            options=["--option-b-layer3-configuration"],
+            options=["--option-b-l3-config", "--option-b-layer3-configuration"],
             arg_group="Properties",
             help="Common properties for Layer3Configuration.",
             nullable=True,
         )
         _args_schema.static_route_configuration = AAZObjectArg(
-            options=["--static-route-configuration"],
+            options=["--static-route-config", "--static-route-configuration"],
             arg_group="Properties",
             help="Static Route Configuration.",
             nullable=True,
@@ -183,16 +183,10 @@ class Update(AAZCommand):
         npb_static_route_configuration.ipv4_routes = AAZListArg(
             options=["ipv4-routes"],
             help="List of IPv4 Routes.",
-            fmt=AAZListArgFormat(
-                min_length=1,
-            ),
         )
         npb_static_route_configuration.ipv6_routes = AAZListArg(
             options=["ipv6-routes"],
             help="List of IPv6 Routes.",
-            fmt=AAZListArgFormat(
-                min_length=1,
-            ),
         )
 
         bfd_configuration = cls._args_schema.npb_static_route_configuration.bfd_configuration
@@ -233,9 +227,6 @@ class Update(AAZCommand):
         option_b_layer3_configuration.prefix_limits = AAZListArg(
             options=["prefix-limits"],
             help="OptionB Layer3 prefix limit configuration.",
-            fmt=AAZListArgFormat(
-                min_length=1,
-            ),
         )
         option_b_layer3_configuration.primary_ipv4_prefix = AAZStrArg(
             options=["primary-ipv4-prefix"],
@@ -449,7 +440,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-07-15",
                     required=True,
                 ),
             }

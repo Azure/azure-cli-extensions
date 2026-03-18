@@ -127,7 +127,7 @@ class SftpCustomCommandTest(unittest.TestCase):
 
     @mock.patch('azext_sftp.custom._assert_args')
     @mock.patch('azext_sftp.custom.Profile')
-    @mock.patch('azext_sftp.custom._get_storage_endpoint_suffix')
+    @mock.patch('azext_sftp.custom._resolve_endpoint_suffix')
     @mock.patch('azext_sftp.custom._do_sftp_op')
     @mock.patch('azext_sftp.file_utils.get_and_write_certificate')
     @mock.patch('azext_sftp.file_utils.check_or_create_public_private_files')
@@ -665,8 +665,8 @@ class SftpCustomCommandTest(unittest.TestCase):
                 # Should log warning but not raise exception
                 mock_logger.warning.assert_called_once()
 
-    def test_get_storage_endpoint_suffix_cloud_variants(self):
-        """Test _get_storage_endpoint_suffix for different Azure clouds."""
+    def test_resolve_endpoint_suffix_cloud_variants(self):
+        """Test _resolve_endpoint_suffix for different Azure clouds."""
         cloud_test_cases = [
             # (cloud_name, expected_suffix, description)
             ("azurecloud", "blob.core.windows.net", "public cloud"),
@@ -681,5 +681,37 @@ class SftpCustomCommandTest(unittest.TestCase):
                 cmd = mock.Mock()
                 cmd.cli_ctx.cloud.name = cloud_name
                 
-                result = custom._get_storage_endpoint_suffix(cmd)
+                result = custom._resolve_endpoint_suffix(cmd)
                 self.assertEqual(result, expected_suffix)
+
+    def test_resolve_endpoint_suffix_custom_value(self):
+        """Test _resolve_endpoint_suffix with a custom endpoint suffix."""
+        cmd = mock.Mock()
+        cmd.cli_ctx.cloud.name = "azurecloud"
+
+        result = custom._resolve_endpoint_suffix(cmd, "blob.core.custom.net")
+        self.assertEqual(result, "blob.core.custom.net")
+
+    def test_resolve_endpoint_suffix_custom_value_with_leading_dot(self):
+        """Test _resolve_endpoint_suffix strips leading dots from custom suffix."""
+        cmd = mock.Mock()
+        cmd.cli_ctx.cloud.name = "azurecloud"
+
+        result = custom._resolve_endpoint_suffix(cmd, ".blob.core.windows.net")
+        self.assertEqual(result, "blob.core.windows.net")
+
+    def test_resolve_endpoint_suffix_rejects_url(self):
+        """Test _resolve_endpoint_suffix rejects full URLs."""
+        cmd = mock.Mock()
+        cmd.cli_ctx.cloud.name = "azurecloud"
+
+        with self.assertRaises(azclierror.InvalidArgumentValueError):
+            custom._resolve_endpoint_suffix(cmd, "https://blob.core.windows.net")
+
+    def test_resolve_endpoint_suffix_rejects_path(self):
+        """Test _resolve_endpoint_suffix rejects values with paths."""
+        cmd = mock.Mock()
+        cmd.cli_ctx.cloud.name = "azurecloud"
+
+        with self.assertRaises(azclierror.InvalidArgumentValueError):
+            custom._resolve_endpoint_suffix(cmd, "blob.core.windows.net/container")

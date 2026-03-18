@@ -7,19 +7,17 @@
 # --------------------------------------------------------------------------
 
 from copy import deepcopy
-from typing import Any, Optional, TYPE_CHECKING, cast
+from typing import Any, TYPE_CHECKING
 from typing_extensions import Self
 
 from azure.core.pipeline import policies
 from azure.core.rest import HttpRequest, HttpResponse
-from azure.core.settings import settings
 from azure.mgmt.core import ARMPipelineClient
 from azure.mgmt.core.policies import ARMAutoResourceProviderRegistrationPolicy
-from azure.mgmt.core.tools import get_arm_endpoints
 
 from . import models as _models
 from ._configuration import ContainerServiceClientConfiguration
-from ._utils.serialization import Deserializer, Serializer
+from ._serialization import Deserializer, Serializer
 from .operations import (
     AgentPoolsOperations,
     ContainerServiceOperations,
@@ -31,6 +29,7 @@ from .operations import (
     ManagedClusterSnapshotsOperations,
     ManagedClustersOperations,
     ManagedNamespacesOperations,
+    MeshMembershipsOperations,
     OperationStatusResultOperations,
     Operations,
     PrivateEndpointConnectionsOperations,
@@ -39,10 +38,10 @@ from .operations import (
     SnapshotsOperations,
     TrustedAccessRoleBindingsOperations,
     TrustedAccessRolesOperations,
+    VmSkusOperations,
 )
 
 if TYPE_CHECKING:
-    from azure.core import AzureClouds
     from azure.core.credentials import TokenCredential
 
 
@@ -55,15 +54,36 @@ class ContainerServiceClient:  # pylint: disable=too-many-instance-attributes
     :vartype managed_clusters: azure.mgmt.containerservice.operations.ManagedClustersOperations
     :ivar container_service: ContainerServiceOperations operations
     :vartype container_service: azure.mgmt.containerservice.operations.ContainerServiceOperations
+    :ivar trusted_access_roles: TrustedAccessRolesOperations operations
+    :vartype trusted_access_roles:
+     azure.mgmt.containerservice.operations.TrustedAccessRolesOperations
+    :ivar vm_skus: VmSkusOperations operations
+    :vartype vm_skus: azure.mgmt.containerservice.operations.VmSkusOperations
+    :ivar managed_cluster_snapshots: ManagedClusterSnapshotsOperations operations
+    :vartype managed_cluster_snapshots:
+     azure.mgmt.containerservice.operations.ManagedClusterSnapshotsOperations
+    :ivar snapshots: SnapshotsOperations operations
+    :vartype snapshots: azure.mgmt.containerservice.operations.SnapshotsOperations
+    :ivar agent_pools: AgentPoolsOperations operations
+    :vartype agent_pools: azure.mgmt.containerservice.operations.AgentPoolsOperations
+    :ivar machines: MachinesOperations operations
+    :vartype machines: azure.mgmt.containerservice.operations.MachinesOperations
+    :ivar operation_status_result: OperationStatusResultOperations operations
+    :vartype operation_status_result:
+     azure.mgmt.containerservice.operations.OperationStatusResultOperations
+    :ivar identity_bindings: IdentityBindingsOperations operations
+    :vartype identity_bindings: azure.mgmt.containerservice.operations.IdentityBindingsOperations
+    :ivar jwt_authenticators: JWTAuthenticatorsOperations operations
+    :vartype jwt_authenticators: azure.mgmt.containerservice.operations.JWTAuthenticatorsOperations
+    :ivar load_balancers: LoadBalancersOperations operations
+    :vartype load_balancers: azure.mgmt.containerservice.operations.LoadBalancersOperations
     :ivar maintenance_configurations: MaintenanceConfigurationsOperations operations
     :vartype maintenance_configurations:
      azure.mgmt.containerservice.operations.MaintenanceConfigurationsOperations
     :ivar managed_namespaces: ManagedNamespacesOperations operations
     :vartype managed_namespaces: azure.mgmt.containerservice.operations.ManagedNamespacesOperations
-    :ivar agent_pools: AgentPoolsOperations operations
-    :vartype agent_pools: azure.mgmt.containerservice.operations.AgentPoolsOperations
-    :ivar machines: MachinesOperations operations
-    :vartype machines: azure.mgmt.containerservice.operations.MachinesOperations
+    :ivar mesh_memberships: MeshMembershipsOperations operations
+    :vartype mesh_memberships: azure.mgmt.containerservice.operations.MeshMembershipsOperations
     :ivar private_endpoint_connections: PrivateEndpointConnectionsOperations operations
     :vartype private_endpoint_connections:
      azure.mgmt.containerservice.operations.PrivateEndpointConnectionsOperations
@@ -73,36 +93,16 @@ class ContainerServiceClient:  # pylint: disable=too-many-instance-attributes
     :ivar resolve_private_link_service_id: ResolvePrivateLinkServiceIdOperations operations
     :vartype resolve_private_link_service_id:
      azure.mgmt.containerservice.operations.ResolvePrivateLinkServiceIdOperations
-    :ivar operation_status_result: OperationStatusResultOperations operations
-    :vartype operation_status_result:
-     azure.mgmt.containerservice.operations.OperationStatusResultOperations
-    :ivar snapshots: SnapshotsOperations operations
-    :vartype snapshots: azure.mgmt.containerservice.operations.SnapshotsOperations
-    :ivar managed_cluster_snapshots: ManagedClusterSnapshotsOperations operations
-    :vartype managed_cluster_snapshots:
-     azure.mgmt.containerservice.operations.ManagedClusterSnapshotsOperations
-    :ivar trusted_access_roles: TrustedAccessRolesOperations operations
-    :vartype trusted_access_roles:
-     azure.mgmt.containerservice.operations.TrustedAccessRolesOperations
     :ivar trusted_access_role_bindings: TrustedAccessRoleBindingsOperations operations
     :vartype trusted_access_role_bindings:
      azure.mgmt.containerservice.operations.TrustedAccessRoleBindingsOperations
-    :ivar load_balancers: LoadBalancersOperations operations
-    :vartype load_balancers: azure.mgmt.containerservice.operations.LoadBalancersOperations
-    :ivar identity_bindings: IdentityBindingsOperations operations
-    :vartype identity_bindings: azure.mgmt.containerservice.operations.IdentityBindingsOperations
-    :ivar jwt_authenticators: JWTAuthenticatorsOperations operations
-    :vartype jwt_authenticators: azure.mgmt.containerservice.operations.JWTAuthenticatorsOperations
     :param credential: Credential needed for the client to connect to Azure. Required.
     :type credential: ~azure.core.credentials.TokenCredential
     :param subscription_id: The ID of the target subscription. The value must be an UUID. Required.
     :type subscription_id: str
-    :param base_url: Service URL. Default value is None.
+    :param base_url: Service URL. Default value is "https://management.azure.com".
     :type base_url: str
-    :keyword cloud_setting: The cloud setting for which to get the ARM endpoint. Default value is
-     None.
-    :paramtype cloud_setting: ~azure.core.AzureClouds
-    :keyword api_version: Api Version. Default value is "2025-07-02-preview". Note that overriding
+    :keyword api_version: Api Version. Default value is "2026-01-02-preview". Note that overriding
      this default value may result in unsupported behavior.
     :paramtype api_version: str
     :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
@@ -113,24 +113,12 @@ class ContainerServiceClient:  # pylint: disable=too-many-instance-attributes
         self,
         credential: "TokenCredential",
         subscription_id: str,
-        base_url: Optional[str] = None,
-        *,
-        cloud_setting: Optional["AzureClouds"] = None,
+        base_url: str = "https://management.azure.com",
         **kwargs: Any
     ) -> None:
-        _cloud = cloud_setting or settings.current.azure_cloud  # type: ignore
-        _endpoints = get_arm_endpoints(_cloud)
-        if not base_url:
-            base_url = _endpoints["resource_manager"]
-        credential_scopes = kwargs.pop("credential_scopes", _endpoints["credential_scopes"])
         self._config = ContainerServiceClientConfiguration(
-            credential=credential,
-            subscription_id=subscription_id,
-            cloud_setting=cloud_setting,
-            credential_scopes=credential_scopes,
-            **kwargs
+            credential=credential, subscription_id=subscription_id, **kwargs
         )
-
         _policies = kwargs.pop("policies", None)
         if _policies is None:
             _policies = [
@@ -149,7 +137,7 @@ class ContainerServiceClient:  # pylint: disable=too-many-instance-attributes
                 policies.SensitiveHeaderCleanupPolicy(**kwargs) if self._config.redirect_policy else None,
                 self._config.http_logging_policy,
             ]
-        self._client: ARMPipelineClient = ARMPipelineClient(base_url=cast(str, base_url), policies=_policies, **kwargs)
+        self._client: ARMPipelineClient = ARMPipelineClient(base_url=base_url, policies=_policies, **kwargs)
 
         client_models = {k: v for k, v in _models.__dict__.items() if isinstance(v, type)}
         self._serialize = Serializer(client_models)
@@ -162,14 +150,35 @@ class ContainerServiceClient:  # pylint: disable=too-many-instance-attributes
         self.container_service = ContainerServiceOperations(
             self._client, self._config, self._serialize, self._deserialize
         )
+        self.trusted_access_roles = TrustedAccessRolesOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.vm_skus = VmSkusOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.managed_cluster_snapshots = ManagedClusterSnapshotsOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.snapshots = SnapshotsOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.agent_pools = AgentPoolsOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.machines = MachinesOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.operation_status_result = OperationStatusResultOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.identity_bindings = IdentityBindingsOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.jwt_authenticators = JWTAuthenticatorsOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.load_balancers = LoadBalancersOperations(self._client, self._config, self._serialize, self._deserialize)
         self.maintenance_configurations = MaintenanceConfigurationsOperations(
             self._client, self._config, self._serialize, self._deserialize
         )
         self.managed_namespaces = ManagedNamespacesOperations(
             self._client, self._config, self._serialize, self._deserialize
         )
-        self.agent_pools = AgentPoolsOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.machines = MachinesOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.mesh_memberships = MeshMembershipsOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
         self.private_endpoint_connections = PrivateEndpointConnectionsOperations(
             self._client, self._config, self._serialize, self._deserialize
         )
@@ -179,24 +188,7 @@ class ContainerServiceClient:  # pylint: disable=too-many-instance-attributes
         self.resolve_private_link_service_id = ResolvePrivateLinkServiceIdOperations(
             self._client, self._config, self._serialize, self._deserialize
         )
-        self.operation_status_result = OperationStatusResultOperations(
-            self._client, self._config, self._serialize, self._deserialize
-        )
-        self.snapshots = SnapshotsOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.managed_cluster_snapshots = ManagedClusterSnapshotsOperations(
-            self._client, self._config, self._serialize, self._deserialize
-        )
-        self.trusted_access_roles = TrustedAccessRolesOperations(
-            self._client, self._config, self._serialize, self._deserialize
-        )
         self.trusted_access_role_bindings = TrustedAccessRoleBindingsOperations(
-            self._client, self._config, self._serialize, self._deserialize
-        )
-        self.load_balancers = LoadBalancersOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.identity_bindings = IdentityBindingsOperations(
-            self._client, self._config, self._serialize, self._deserialize
-        )
-        self.jwt_authenticators = JWTAuthenticatorsOperations(
             self._client, self._config, self._serialize, self._deserialize
         )
 

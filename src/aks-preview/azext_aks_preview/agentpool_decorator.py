@@ -46,10 +46,12 @@ from azext_aks_preview._consts import (
     CONST_SSH_ACCESS_LOCALUSER,
     CONST_GPU_DRIVER_NONE,
     CONST_NODEPOOL_MODE_MANAGEDSYSTEM,
+    CONST_NODEPOOL_MODE_MACHINES,
 )
 from azext_aks_preview._helpers import (
     get_nodepool_snapshot_by_snapshot_id,
     filter_hard_taints,
+    process_dns_overrides,
 )
 
 logger = get_logger(__name__)
@@ -239,65 +241,6 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         # this parameter does not need dynamic completion
         # this parameter does not need validation
         return workload_runtime
-
-    def _get_enable_custom_ca_trust(self, enable_validation: bool = False) -> bool:
-        """Internal function to obtain the value of enable_custom_ca_trust.
-
-        This function supports the option of enable_validation. When enabled, if both enable_custom_ca_trust and
-        disable_custom_ca_trust are specified, raise a MutuallyExclusiveArgumentError.
-
-        :return: bool
-        """
-        # read the original value passed by the command
-        enable_custom_ca_trust = self.raw_param.get("enable_custom_ca_trust")
-        # In create mode, try to read the property value corresponding to the parameter from the `agentpool` object
-        if self.decorator_mode == DecoratorMode.CREATE:
-            if self.agentpool and self.agentpool.enable_custom_ca_trust is not None:
-                enable_custom_ca_trust = self.agentpool.enable_custom_ca_trust
-
-        # this parameter does not need dynamic completion
-        # validation
-        if enable_validation:
-            if enable_custom_ca_trust and self._get_disable_custom_ca_trust(enable_validation=False):
-                raise MutuallyExclusiveArgumentError(
-                    'Cannot specify "--enable-custom-ca-trust" and "--disable-custom-ca-trust" at the same time'
-                )
-        return enable_custom_ca_trust
-
-    def get_enable_custom_ca_trust(self) -> bool:
-        """Obtain the value of enable_custom_ca_trust.
-
-        :return: bool
-        """
-        return self._get_enable_custom_ca_trust(enable_validation=True)
-
-    def _get_disable_custom_ca_trust(self, enable_validation: bool = False) -> bool:
-        """Internal function to obtain the value of disable_custom_ca_trust.
-
-        This function supports the option of enable_validation. When enabled, if both enable_custom_ca_trust and
-        disable_custom_ca_trust are specified, raise a MutuallyExclusiveArgumentError.
-
-        :return: bool
-        """
-        # read the original value passed by the command
-        disable_custom_ca_trust = self.raw_param.get("disable_custom_ca_trust")
-        # This option is not supported in create mode, so its value is not read from `agentpool`.
-
-        # this parameter does not need dynamic completion
-        # validation
-        if enable_validation:
-            if disable_custom_ca_trust and self._get_enable_custom_ca_trust(enable_validation=False):
-                raise MutuallyExclusiveArgumentError(
-                    'Cannot specify "--enable-custom-ca-trust" and "--disable-custom-ca-trust" at the same time'
-                )
-        return disable_custom_ca_trust
-
-    def get_disable_custom_ca_trust(self) -> bool:
-        """Obtain the value of disable_custom_ca_trust.
-
-        :return: bool
-        """
-        return self._get_disable_custom_ca_trust(enable_validation=True)
 
     def _get_disable_windows_outbound_nat(self) -> bool:
         """Internal function to obtain the value of disable_windows_outbound_nat.
@@ -939,6 +882,78 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
             return profile
         return None
 
+    def build_localdns_profile(self, agentpool: AgentPool) -> AgentPool:
+        """Build local DNS profile for the AgentPool object if provided via --localdns-config."""
+        localdns_profile = self.get_localdns_profile()
+        kube_dns_overrides, vnet_dns_overrides = None, None
+
+        if localdns_profile is not None:
+            def find_keys_case_insensitive(dictionary, target_keys):
+                """Find multiple keys case-insensitively and return a dict mapping target_key -> actual_key"""
+                result = {}
+                lowered_keys = {key.lower(): key for key in dictionary.keys()}
+                for target_key in target_keys:
+                    lowered_target = target_key.lower()
+                    if lowered_target in lowered_keys:
+                        result[target_key] = lowered_keys[lowered_target]
+                    else:
+                        result[target_key] = None
+                return result
+
+            def build_override(override_dict):
+                if not isinstance(override_dict, dict):
+                    raise InvalidArgumentValueError(
+                        f"Expected a dictionary for DNS override settings,"
+                        f" but got {type(override_dict).__name__}: {override_dict}"
+                    )
+                camel_to_snake_case = {
+                    "queryLogging": "query_logging",
+                    "protocol": "protocol",
+                    "forwardDestination": "forward_destination",
+                    "forwardPolicy": "forward_policy",
+                    "maxConcurrent": "max_concurrent",
+                    "cacheDurationInSeconds": "cache_duration_in_seconds",
+                    "serveStaleDurationInSeconds": "serve_stale_duration_in_seconds",
+                    "serveStale": "serve_stale",
+                }
+                valid_keys = set(camel_to_snake_case.values())
+                filtered = {}
+                for k, v in override_dict.items():
+                    if k in camel_to_snake_case:
+                        filtered[camel_to_snake_case[k]] = v
+                    elif k in valid_keys:
+                        filtered[k] = v
+                return self.models.LocalDNSOverride(**filtered)
+
+            # Build kubeDNSOverrides and vnetDNSOverrides from the localdns_profile
+            key_mappings = find_keys_case_insensitive(localdns_profile, ["kubeDNSOverrides", "vnetDNSOverrides"])
+            actual_kube_key = key_mappings["kubeDNSOverrides"]
+            if actual_kube_key:
+                logger.debug("Found kubeDNSOverrides key as: %s", actual_kube_key)
+                kube_dns_overrides = {}
+                process_dns_overrides(
+                    localdns_profile.get(actual_kube_key),
+                    kube_dns_overrides,
+                    build_override
+                )
+
+            actual_vnet_key = key_mappings["vnetDNSOverrides"]
+            if actual_vnet_key:
+                logger.debug("Found vnetDNSOverrides key as: %s", actual_vnet_key)
+                vnet_dns_overrides = {}
+                process_dns_overrides(
+                    localdns_profile.get(actual_vnet_key),
+                    vnet_dns_overrides,
+                    build_override
+                )
+
+            agentpool.local_dns_profile = self.models.LocalDNSProfile(
+                mode=localdns_profile.get("mode"),
+                kube_dns_overrides=kube_dns_overrides,
+                vnet_dns_overrides=vnet_dns_overrides,
+            )
+        return agentpool
+
     def get_node_count_and_enable_cluster_autoscaler_min_max_count_vms(
         self,
     ) -> Tuple[int, bool, Union[int, None], Union[int, None]]:
@@ -1194,16 +1209,6 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool.workload_runtime = self.context.get_workload_runtime()
         return agentpool
 
-    def set_up_custom_ca_trust(self, agentpool: AgentPool) -> AgentPool:
-        """Set up custom ca trust property for the AgentPool object.
-
-        :return: the AgentPool object
-        """
-        self._ensure_agentpool(agentpool)
-
-        agentpool.enable_custom_ca_trust = self.context.get_enable_custom_ca_trust()
-        return agentpool
-
     def set_up_agentpool_windows_profile(self, agentpool: AgentPool) -> AgentPool:
         """Set up windows profile for the AgentPool object.
 
@@ -1448,49 +1453,29 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
 
         return agentpool
 
+    def set_up_machines_mode(self, agentpool: AgentPool) -> AgentPool:
+        """Handle the special Machines mode by resetting all properties except name and mode.
+
+        :param agentpool: the AgentPool object
+        :return: the AgentPool object
+        """
+        self._ensure_agentpool(agentpool)
+
+        mode = self.context.get_mode()
+        if mode == CONST_NODEPOOL_MODE_MACHINES:
+            agentpool.mode = CONST_NODEPOOL_MODE_MACHINES
+            # Make sure all other attributes are None
+            for attr in vars(agentpool):
+                if attr != 'name' and attr != 'mode' and not attr.startswith('_'):
+                    if hasattr(agentpool, attr):
+                        setattr(agentpool, attr, None)
+
+        return agentpool
+
     def set_up_localdns_profile(self, agentpool: AgentPool) -> AgentPool:
         """Set up local DNS profile for the AgentPool object if provided via --localdns-config."""
         self._ensure_agentpool(agentpool)
-        localdns_profile = self.context.get_localdns_profile()
-        if localdns_profile is not None:
-            kube_dns_overrides = {}
-            vnet_dns_overrides = {}
-
-            def build_override(override_dict):
-                camel_to_snake_case = {
-                    "queryLogging": "query_logging",
-                    "protocol": "protocol",
-                    "forwardDestination": "forward_destination",
-                    "forwardPolicy": "forward_policy",
-                    "maxConcurrent": "max_concurrent",
-                    "cacheDurationInSeconds": "cache_duration_in_seconds",
-                    "serveStaleDurationInSeconds": "serve_stale_duration_in_seconds",
-                    "serveStale": "serve_stale",
-                }
-                valid_keys = set(camel_to_snake_case.values())
-                filtered = {}
-                for k, v in override_dict.items():
-                    if k in camel_to_snake_case:
-                        filtered[camel_to_snake_case[k]] = v
-                    elif k in valid_keys:
-                        filtered[k] = v
-                return self.models.LocalDNSOverride(**filtered)
-
-            # Build kubeDNSOverrides and vnetDNSOverrides from the localdns_profile
-            kube_overrides = localdns_profile.get("kubeDNSOverrides")
-            for key, value in kube_overrides.items():
-                kube_dns_overrides[key] = build_override(value)
-
-            vnet_overrides = localdns_profile.get("vnetDNSOverrides")
-            for key, value in vnet_overrides.items():
-                vnet_dns_overrides[key] = build_override(value)
-
-            agentpool.local_dns_profile = self.models.LocalDNSProfile(
-                mode=localdns_profile.get("mode"),
-                kube_dns_overrides=kube_dns_overrides,
-                vnet_dns_overrides=vnet_dns_overrides,
-            )
-        return agentpool
+        return self.context.build_localdns_profile(agentpool)
 
     def construct_agentpool_profile_preview(self) -> AgentPool:
         """The overall controller used to construct the preview AgentPool profile.
@@ -1503,19 +1488,18 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         # DO NOT MOVE: keep this on top, construct the default AgentPool profile
         agentpool = self.construct_agentpool_profile_default(bypass_restore_defaults=True)
 
-        # Check if mode is ManagedSystem, if yes, reset all properties
+        # Check if mode is ManagedSystem or Machines, if yes, reset all other properties
         agentpool = self.set_up_managed_system_mode(agentpool)
+        agentpool = self.set_up_machines_mode(agentpool)
 
-        # If mode is ManagedSystem, skip all other property setups
-        if agentpool.mode == CONST_NODEPOOL_MODE_MANAGEDSYSTEM:
+        # If mode is ManagedSystem or Machines, skip all other property setups
+        if agentpool.mode == CONST_NODEPOOL_MODE_MANAGEDSYSTEM or agentpool.mode == CONST_NODEPOOL_MODE_MACHINES:
             return agentpool
 
         # set up preview vm properties
         agentpool = self.set_up_preview_vm_properties(agentpool)
         # set up message of the day
         agentpool = self.set_up_motd(agentpool)
-        # set up custom ca trust
-        agentpool = self.set_up_custom_ca_trust(agentpool)
         # set up agentpool windows profile
         agentpool = self.set_up_agentpool_windows_profile(agentpool)
         # set up agentpool network profile
@@ -1668,20 +1652,6 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
             self.agentpool_decorator_mode,
         )
 
-    def update_custom_ca_trust(self, agentpool: AgentPool) -> AgentPool:
-        """Update custom ca trust property for the AgentPool object.
-
-        :return: the AgentPool object
-        """
-        self._ensure_agentpool(agentpool)
-
-        if self.context.get_enable_custom_ca_trust():
-            agentpool.enable_custom_ca_trust = True
-
-        if self.context.get_disable_custom_ca_trust():
-            agentpool.enable_custom_ca_trust = False
-        return agentpool
-
     def update_network_profile(self, agentpool: AgentPool) -> AgentPool:
         self._ensure_agentpool(agentpool)
 
@@ -1693,6 +1663,17 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
             agentpool.network_profile.application_security_groups = asg_ids
         if allowed_host_ports is not None:
             agentpool.network_profile.allowed_host_ports = allowed_host_ports
+        return agentpool
+
+    def update_gpu_profile(self, agentpool: AgentPool) -> AgentPool:
+        self._ensure_agentpool(agentpool)
+
+        gpu_driver = self.context.get_gpu_driver()
+        driver_type = self.context.get_driver_type()
+        if not agentpool.gpu_profile and (gpu_driver or driver_type):
+            agentpool.gpu_profile = self.models.GPUProfile()
+        if gpu_driver is not None:
+            agentpool.gpu_profile.driver = gpu_driver
         return agentpool
 
     def update_artifact_streaming(self, agentpool: AgentPool) -> AgentPool:
@@ -1790,46 +1771,7 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
     def update_localdns_profile(self, agentpool: AgentPool) -> AgentPool:
         """Update local DNS profile for the AgentPool object if provided via --localdns-config."""
         self._ensure_agentpool(agentpool)
-        localdns_profile = self.context.get_localdns_profile()
-        if localdns_profile is not None:
-            kube_dns_overrides = {}
-            vnet_dns_overrides = {}
-
-            def build_override(override_dict):
-                camel_to_snake_case = {
-                    "queryLogging": "query_logging",
-                    "protocol": "protocol",
-                    "forwardDestination": "forward_destination",
-                    "forwardPolicy": "forward_policy",
-                    "maxConcurrent": "max_concurrent",
-                    "cacheDurationInSeconds": "cache_duration_in_seconds",
-                    "serveStaleDurationInSeconds": "serve_stale_duration_in_seconds",
-                    "serveStale": "serve_stale",
-                }
-                valid_keys = set(camel_to_snake_case.values())
-                filtered = {}
-                for k, v in override_dict.items():
-                    if k in camel_to_snake_case:
-                        filtered[camel_to_snake_case[k]] = v
-                    elif k in valid_keys:
-                        filtered[k] = v
-                return self.models.LocalDNSOverride(**filtered)
-
-            # Build kubeDNSOverrides and vnetDNSOverrides from the localdns_profile
-            kube_overrides = localdns_profile.get("kubeDNSOverrides")
-            for key, value in kube_overrides.items():
-                kube_dns_overrides[key] = build_override(value)
-
-            vnet_overrides = localdns_profile.get("vnetDNSOverrides")
-            for key, value in vnet_overrides.items():
-                vnet_dns_overrides[key] = build_override(value)
-
-            agentpool.local_dns_profile = self.models.LocalDNSProfile(
-                mode=localdns_profile.get("mode"),
-                kube_dns_overrides=kube_dns_overrides,
-                vnet_dns_overrides=vnet_dns_overrides,
-            )
-        return agentpool
+        return self.context.build_localdns_profile(agentpool)
 
     def update_upgrade_strategy(self, agentpool: AgentPool) -> AgentPool:
         """Update upgrade strategy for the AgentPool object.
@@ -1864,9 +1806,6 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
                         setattr(agentpool, attr, None)
             return agentpool
 
-        # update custom ca trust
-        agentpool = self.update_custom_ca_trust(agentpool)
-
         # update network profile
         agentpool = self.update_network_profile(agentpool)
 
@@ -1899,6 +1838,9 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
 
         # update blue-green upgrade settings
         agentpool = self.update_blue_green_upgrade_settings(agentpool)
+
+        # update gpu profile
+        agentpool = self.update_gpu_profile(agentpool)
 
         return agentpool
 

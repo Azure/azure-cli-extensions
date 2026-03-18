@@ -212,7 +212,7 @@ def executing_cluster_diagnostic_checks_job(
                     )
                     return None
 
-        mcr_url = azext_utils.get_mcr_path(cmd)
+        mcr_url = azext_utils.get_mcr_path(cmd.cli_ctx.cloud.endpoints.active_directory)
 
         chart_path = azext_utils.get_chart_path(
             f"{mcr_url}/{consts.Cluster_Diagnostic_Checks_Job_Registry_Path}",

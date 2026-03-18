@@ -14,15 +14,17 @@ They test the following commands:
 import os
 import logging
 import sys
+import shutil
 import unittest.mock as mock
 from tempfile import TemporaryDirectory
 
-from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
+from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer, live_only
 from knack.log import get_logger
 from azext_aosm.tests.latest.integration_tests.utils import (
     mock_in_unit_test,
     update_input_file,
     get_path_to_test_chart,
+    get_cgv_path
 )
 from azext_aosm.tests.latest.integration_tests.scenario_tests.recording_processors import (
     TokenReplacer,
@@ -36,7 +38,10 @@ logger = get_logger(__name__)
 # We use the TEMPLATE file as a jinja2 template to populate some input parameters at runtime.
 NFD_INPUT_TEMPLATE_NAME = "cnf_input_template.jsonc"
 NFD_INPUT_FILE_NAME = "cnf_input.jsonc"
-
+NSD_INPUT_TEMPLATE_NAME = "cnf_nsd_input_template.jsonc"
+NSD_INPUT_FILE_NAME = "cnf_nsd_input.jsonc"
+SNS_INPUT_TEMPLATE_NAME = "cnf_sns_input_template.jsonc"
+SNS_INPUT_FILE_NAME = "cnf_sns_input.jsonc"
 
 def patch_call_subprocess_raise_output(unit_test):
     """Patch the call_subprocess_raise_output function to return a valid mocked output."""
@@ -104,6 +109,7 @@ class CnfNfdTest(ScenarioTest):
         )
 
     @ResourceGroupPreparer(name_prefix="cli_test_cnf_nfd_", location="uksouth")
+    @live_only()  # to avoid 'CannotOverwriteExistingCassetteException' when run from recording
     def test_cnf_nfd_build_and_publish(self, resource_group):
         """
         This test builds a cnf nfd output folder and publishes it.
@@ -137,5 +143,28 @@ class CnfNfdTest(ScenarioTest):
                 )
 
                 self.cmd("az aosm nfd publish -b cnf-cli-output --definition-type cnf")
+
+                nsd_input_file_path = os.path.join(test_dir, NSD_INPUT_FILE_NAME)
+                update_input_file(
+                    NSD_INPUT_TEMPLATE_NAME,
+                    nsd_input_file_path,
+                    params={"publisher_resource_group_name": resource_group},
+                )
+
+                self.cmd(f'az aosm nsd build -f "{nsd_input_file_path}"')
+
+                self.cmd("az aosm nsd publish --build-output-folder nsd-cli-output")                
+                
+                sns_input_file_path = os.path.join(test_dir, SNS_INPUT_FILE_NAME)
+                update_input_file(
+                    SNS_INPUT_TEMPLATE_NAME,
+                    sns_input_file_path,
+                    params={"publisher_resource_group_name": resource_group},
+                )
+
+                self.cmd(f'az aosm sns build -f "{sns_input_file_path}"')
+                cgv_file = get_cgv_path()               
+                shutil.copy(cgv_file, "sns-cli-output")
+                self.cmd("az aosm sns deploy --build-output-folder sns-cli-output")                                
             finally:
                 os.chdir(starting_directory)

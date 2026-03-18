@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: workload-identity
+  labels:
+    azure.workload.identity/use: "true"
+spec:
+  containers:
+    - name: app
+      image: mcr.microsoft.com/azurelinux/distroless/base@sha256:1e77d97e1e39f22ed9c52f49b3508b4c1044cec23743df9098ac44e025f654f2
