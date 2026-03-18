@@ -4,11 +4,12 @@
 # license information.
 # --------------------------------------------------------------------------
 # pylint: disable=line-too-long
+# pylint: disable=missing-function-docstring
 
 """Unit tests for azext_dataprotection.manual.aks.aks_helper functions."""
 
 import unittest
-from unittest.mock import MagicMock, patch, PropertyMock
+from unittest.mock import MagicMock, patch
 from azure.cli.core.azclierror import InvalidArgumentValueError
 
 # Module under test
@@ -330,14 +331,14 @@ class TestFindExistingBackupStorageAccount(unittest.TestCase):
         sa = self._make_sa("aksbkpeastus123", "eastus")
         client = MagicMock()
         client.storage_accounts.list.return_value = [sa]
-        result_sa, result_rg = _find_existing_backup_storage_account(client, "eastus")
+        result_sa, _ = _find_existing_backup_storage_account(client, "eastus")
         self.assertEqual(result_sa.name, "aksbkpeastus123")
 
     def test_returns_none_when_no_match(self):
         sa = self._make_sa("mysa", "westus")
         client = MagicMock()
         client.storage_accounts.list.return_value = [sa]
-        result_sa, result_rg = _find_existing_backup_storage_account(client, "eastus")
+        result_sa, _ = _find_existing_backup_storage_account(client, "eastus")
         self.assertIsNone(result_sa)
 
 
@@ -354,8 +355,7 @@ class TestCheckExistingBackupInstance(unittest.TestCase):
         response.value = []
         response.additional_properties = {"value": []}
         client.resources.get_by_id.return_value = response
-        result = _check_existing_backup_instance(client, CLUSTER_ID, CLUSTER_NAME)
-        self.assertIsNone(result)
+        self.assertIsNone(_check_existing_backup_instance(client, CLUSTER_ID, CLUSTER_NAME))
 
     def test_existing_backup_instance_raises(self):
         """Existing BI should raise InvalidArgumentValueError."""
@@ -375,8 +375,7 @@ class TestCheckExistingBackupInstance(unittest.TestCase):
         """404 from ARM means no backup instances — should return None."""
         client = MagicMock()
         client.resources.get_by_id.side_effect = Exception("Resource not found (404)")
-        result = _check_existing_backup_instance(client, CLUSTER_ID, CLUSTER_NAME)
-        self.assertIsNone(result)
+        self.assertIsNone(_check_existing_backup_instance(client, CLUSTER_ID, CLUSTER_NAME))
 
 
 if __name__ == "__main__":

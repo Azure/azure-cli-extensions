@@ -925,7 +925,7 @@ def dataprotection_enable_backup_helper(cmd, datasource_id: str, backup_strategy
     print("")
     print(f"  Subscription: {cluster_subscription_id}")
     print(f"  Cluster:      {cluster_name}")
-    print(f"  Region:       (will be determined from cluster)")
+    print("  Region:       (will be determined from cluster)")
     print(f"  Strategy:     {backup_strategy}")
     print("")
     print("NOTE: This command requires elevated privileges (Owner or")
@@ -1038,7 +1038,7 @@ def dataprotection_enable_backup_helper(cmd, datasource_id: str, backup_strategy
     for remaining in range(wait_seconds, 0, -10):
         print(f"\t  {remaining} seconds remaining...", end='\r')
         time.sleep(min(10, remaining))
-    print(f"\t  Permission propagation wait complete.      ")
+    print("\t  Permission propagation wait complete.      ")
 
     # Step 8: Create backup instance
     print("\n[8/8] Configuring backup instance...")
