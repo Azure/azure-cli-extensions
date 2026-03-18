@@ -125,6 +125,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
 
         _request = build_collaboration_list_request(
             active_only=active_only,
+            api_version=self._config.api_version,
             headers=_headers,
             params=_params,
         )
@@ -213,6 +214,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         _request = build_collaboration_id_get_request(
             collaboration_id=collaboration_id,
             active_only=active_only,
+            api_version=self._config.api_version,
             headers=_headers,
             params=_params,
         )
@@ -322,6 +324,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
 
         _request = build_collaboration_report_get_request(
             collaboration_id=collaboration_id,
+            api_version=self._config.api_version,
             headers=_headers,
             params=_params,
         )
@@ -405,6 +408,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
 
         _request = build_collaboration_analytics_get_request(
             collaboration_id=collaboration_id,
+            api_version=self._config.api_version,
             headers=_headers,
             params=_params,
         )
@@ -490,6 +494,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
 
         _request = build_collaboration_analytics_cleanroompolicy_get_request(
             collaboration_id=collaboration_id,
+            api_version=self._config.api_version,
             headers=_headers,
             params=_params,
         )
@@ -575,6 +580,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
 
         _request = build_collaboration_oidc_issuer_info_get_request(
             collaboration_id=collaboration_id,
+            api_version=self._config.api_version,
             headers=_headers,
             params=_params,
         )
@@ -768,6 +774,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         _request = build_collaboration_oidc_set_issuer_url_post_request(
             collaboration_id=collaboration_id,
             content_type=content_type,
+            api_version=self._config.api_version,
             json=_json,
             content=_content,
             headers=_headers,
@@ -864,6 +871,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
 
         _request = build_collaboration_oidc_keys_get_request(
             collaboration_id=collaboration_id,
+            api_version=self._config.api_version,
             headers=_headers,
             params=_params,
         )
@@ -952,6 +960,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         _request = build_collaboration_invitations_get_request(
             collaboration_id=collaboration_id,
             pending_only=pending_only,
+            api_version=self._config.api_version,
             headers=_headers,
             params=_params,
         )
@@ -1044,6 +1053,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         _request = build_collaboration_invitation_id_get_request(
             collaboration_id=collaboration_id,
             invitation_id=invitation_id,
+            api_version=self._config.api_version,
             headers=_headers,
             params=_params,
         )
@@ -1122,6 +1132,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         _request = build_collaboration_invitation_id_accept_post_request(
             collaboration_id=collaboration_id,
             invitation_id=invitation_id,
+            api_version=self._config.api_version,
             headers=_headers,
             params=_params,
         )
@@ -1204,6 +1215,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
 
         _request = build_collaboration_analytics_datasets_list_get_request(
             collaboration_id=collaboration_id,
+            api_version=self._config.api_version,
             headers=_headers,
             params=_params,
         )
@@ -1332,6 +1344,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         _request = build_collaboration_analytics_dataset_document_id_get_request(
             collaboration_id=collaboration_id,
             document_id=document_id,
+            api_version=self._config.api_version,
             headers=_headers,
             params=_params,
         )
@@ -1589,6 +1602,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
             collaboration_id=collaboration_id,
             document_id=document_id,
             content_type=content_type,
+            api_version=self._config.api_version,
             json=_json,
             content=_content,
             headers=_headers,
@@ -1676,6 +1690,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         _request = build_collaboration_check_consent_document_id_get_request(
             collaboration_id=collaboration_id,
             document_id=document_id,
+            api_version=self._config.api_version,
             headers=_headers,
             params=_params,
         )
@@ -1861,6 +1876,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
             collaboration_id=collaboration_id,
             document_id=document_id,
             content_type=content_type,
+            api_version=self._config.api_version,
             json=_json,
             content=_content,
             headers=_headers,
@@ -2058,6 +2074,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
             collaboration_id=collaboration_id,
             document_id=document_id,
             content_type=content_type,
+            api_version=self._config.api_version,
             json=_json,
             content=_content,
             headers=_headers,
@@ -2144,6 +2161,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
 
         _request = build_collaboration_analytics_queries_list_get_request(
             collaboration_id=collaboration_id,
+            api_version=self._config.api_version,
             headers=_headers,
             params=_params,
         )
@@ -2250,6 +2268,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         _request = build_collaboration_analytics_queries_document_id_get_request(
             collaboration_id=collaboration_id,
             document_id=document_id,
+            api_version=self._config.api_version,
             headers=_headers,
             params=_params,
         )
@@ -2437,6 +2456,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
             collaboration_id=collaboration_id,
             document_id=document_id,
             content_type=content_type,
+            api_version=self._config.api_version,
             json=_json,
             content=_content,
             headers=_headers,
@@ -2706,6 +2726,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
             collaboration_id=collaboration_id,
             document_id=document_id,
             content_type=content_type,
+            api_version=self._config.api_version,
             json=_json,
             content=_content,
             headers=_headers,
@@ -2809,6 +2830,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         _request = build_collaboration_analytics_queries_jobid_get_request(
             collaboration_id=collaboration_id,
             jobid=jobid,
+            api_version=self._config.api_version,
             headers=_headers,
             params=_params,
         )
@@ -2934,6 +2956,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         _request = build_collaboration_analytics_queries_document_id_runhistory_get_request(
             collaboration_id=collaboration_id,
             document_id=document_id,
+            api_version=self._config.api_version,
             headers=_headers,
             params=_params,
         )
@@ -3012,6 +3035,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         _request = build_collaboration_analytics_datasets_document_id_queries_get_request(
             collaboration_id=collaboration_id,
             document_id=document_id,
+            api_version=self._config.api_version,
             headers=_headers,
             params=_params,
         )
@@ -3208,6 +3232,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
             collaboration_id=collaboration_id,
             secret_name=secret_name,
             content_type=content_type,
+            api_version=self._config.api_version,
             json=_json,
             content=_content,
             headers=_headers,
@@ -3316,6 +3341,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
             scope=scope,
             from_seqno=from_seqno,
             to_seqno=to_seqno,
+            api_version=self._config.api_version,
             headers=_headers,
             params=_params,
         )

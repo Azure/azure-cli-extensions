@@ -155,7 +155,8 @@ class TestFrontendQuery(unittest.TestCase):
         """Test accepting a query vote"""
         # Mock the client and its method chain
         mock_client = Mock()
-        mock_client.collaboration.analytics_queries_document_id_vote_post.return_value = None  # 204 No Content
+        # 204 No Content
+        mock_client.collaboration.analytics_queries_document_id_vote_post.return_value = None
         mock_get_client.return_value = mock_client
 
         # Execute
@@ -176,7 +177,8 @@ class TestFrontendQuery(unittest.TestCase):
         """Test rejecting a query vote"""
         # Mock the client and its method chain
         mock_client = Mock()
-        mock_client.collaboration.analytics_queries_document_id_vote_post.return_value = None  # 204 No Content
+        # 204 No Content
+        mock_client.collaboration.analytics_queries_document_id_vote_post.return_value = None
         mock_get_client.return_value = mock_client
 
         # Execute

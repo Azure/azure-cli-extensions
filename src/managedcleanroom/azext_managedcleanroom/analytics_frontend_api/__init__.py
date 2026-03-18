@@ -14,6 +14,7 @@ from ._client import AnalyticsFrontendAPI  # type: ignore
 
 try:
     from ._patch import __all__ as _patch_all
+    from ._patch import *  # noqa: F403
 except ImportError:
     _patch_all = []
 from ._patch import patch_sdk as _patch_sdk

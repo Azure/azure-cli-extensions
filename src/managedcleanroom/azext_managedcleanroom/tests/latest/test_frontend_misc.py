@@ -285,11 +285,7 @@ class TestFrontendMisc(unittest.TestCase):
         self.assertEqual(len(result), 1)
         self.assertEqual(result[0]["action"], "query_executed")
         mock_client.collaboration.analytics_auditevents_get.assert_called_once_with(
-            "test-collab-123",
-            scope="analytics",
-            from_seqno=100,
-            to_seqno=200)
-
+            "test-collab-123", scope="analytics", from_seqno=100, to_seqno=200)
 
 
 if __name__ == '__main__':

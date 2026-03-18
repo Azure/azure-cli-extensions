@@ -5,6 +5,10 @@ Release History
 
 1.0.0b4
 +++++++
+* Regenerated analytics_frontend_api SDK from V2026_03_01_Preview OpenAPI specification
+* BREAKING CHANGE: All frontend API endpoints now require api-version=2026-03-01-preview query parameter
+* Added: --api-version parameter to all frontend commands (default: 2026-03-01-preview)
+* Updated: SDK client now automatically injects api-version into all API requests
 * BREAKING CHANGE: Removed deprecated commands (APIs no longer supported in SDK):
   - `az managedcleanroom frontend workloads list`
   - `az managedcleanroom frontend analytics deploymentinfo`
@@ -24,7 +28,6 @@ Release History
 * Updated: Added --pending-only filter to invitation list command
 * Updated: Added --scope, --from-seqno, --to-seqno filters to audit event list command
 * Updated: Response structures modernized (many list endpoints now return structured objects with value arrays)
-* Updated: Regenerated frontend SDK from OpenAPI spec to support new APIs
 
 1.0.0b3
 +++++++

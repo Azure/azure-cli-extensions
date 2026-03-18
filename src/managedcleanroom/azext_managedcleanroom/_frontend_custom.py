@@ -16,30 +16,38 @@ logger = get_logger(__name__)
 # Base Collaboration Commands
 # ============================================================================
 
-def frontend_collaboration_list(cmd, active_only=False):
+def frontend_collaboration_list(cmd, active_only=False, api_version=None):
     """List all collaborations
 
     :param cmd: CLI command context
     :param active_only: When true, returns only active collaborations (default: False)
+    :param api_version: API version to use for this request
     :return: List of collaboration objects with collaborationId, collaborationName, userStatus
     """
-    client = get_frontend_client(cmd)
+    client = get_frontend_client(cmd, api_version=api_version)
     return client.collaboration.list(active_only=active_only)
 
 
-def frontend_collaboration_show(cmd, collaboration_id, active_only=False):
+def frontend_collaboration_show(
+        cmd,
+        collaboration_id,
+        active_only=False,
+        api_version=None):
     """Show collaboration details
 
     :param cmd: CLI command context
     :param collaboration_id: Collaboration identifier
     :param active_only: When true, queries only active collaborations (default: False)
+    :param api_version: API version to use for this request
     :return: Collaboration details
     """
-    client = get_frontend_client(cmd)
-    return client.collaboration.id_get(collaboration_id, active_only=active_only)
+    client = get_frontend_client(cmd, api_version=api_version)
+    return client.collaboration.id_get(
+        collaboration_id, active_only=active_only)
 
 
-def frontend_collaboration_report_show(cmd, collaboration_id):
+def frontend_collaboration_report_show(
+        cmd, collaboration_id, api_version=None):
     """Get collaboration report (comprehensive attestation report)
 
     Replaces the deprecated attestation cgs and cleanroom commands.
@@ -47,9 +55,10 @@ def frontend_collaboration_report_show(cmd, collaboration_id):
 
     :param cmd: CLI command context
     :param collaboration_id: Collaboration identifier
+    :param api_version: API version to use for this request
     :return: Collaboration report with cgs and consortiumManager attestation details
     """
-    client = get_frontend_client(cmd)
+    client = get_frontend_client(cmd, api_version=api_version)
     return client.collaboration.report_get(collaboration_id)
 
 
@@ -57,25 +66,29 @@ def frontend_collaboration_report_show(cmd, collaboration_id):
 # Analytics Commands
 # ============================================================================
 
-def frontend_collaboration_analytics_show(cmd, collaboration_id):
+def frontend_collaboration_analytics_show(
+        cmd, collaboration_id, api_version=None):
     """Show analytics information for a collaboration
 
     :param cmd: CLI command context
     :param collaboration_id: Collaboration identifier
+    :param api_version: API version to use for this request
     :return: Analytics information
     """
-    client = get_frontend_client(cmd)
+    client = get_frontend_client(cmd, api_version=api_version)
     return client.collaboration.analytics_get(collaboration_id)
 
 
-def frontend_collaboration_analytics_cleanroompolicy(cmd, collaboration_id):
+def frontend_collaboration_analytics_cleanroompolicy(
+        cmd, collaboration_id, api_version=None):
     """Get cleanroom policy for analytics workload
 
     :param cmd: CLI command context
     :param collaboration_id: Collaboration identifier
+    :param api_version: API version to use for this request
     :return: Cleanroom policy
     """
-    client = get_frontend_client(cmd)
+    client = get_frontend_client(cmd, api_version=api_version)
     return client.collaboration.analytics_cleanroompolicy_get(
         collaboration_id)
 
@@ -84,38 +97,45 @@ def frontend_collaboration_analytics_cleanroompolicy(cmd, collaboration_id):
 # OIDC Commands
 # ============================================================================
 
-def frontend_collaboration_oidc_issuerinfo_show(cmd, collaboration_id):
+def frontend_collaboration_oidc_issuerinfo_show(
+        cmd, collaboration_id, api_version=None):
     """Show OIDC issuer information
 
     :param cmd: CLI command context
     :param collaboration_id: Collaboration identifier
+    :param api_version: API version to use for this request
     :return: OIDC issuer information
     """
-    client = get_frontend_client(cmd)
+    client = get_frontend_client(cmd, api_version=api_version)
     return client.collaboration.oidc_issuer_info_get(collaboration_id)
 
 
-def frontend_collaboration_oidc_set_issuer_url(cmd, collaboration_id, url):
+def frontend_collaboration_oidc_set_issuer_url(
+        cmd, collaboration_id, url, api_version=None):
     """Set collaboration OIDC issuer URL
 
     :param cmd: CLI command context
     :param collaboration_id: Collaboration identifier
     :param url: OIDC issuer URL
+    :param api_version: API version to use for this request
     :return: Operation result
     """
     body = {"url": url}
-    client = get_frontend_client(cmd)
-    return client.collaboration.oidc_set_issuer_url_post(collaboration_id, body=body)
+    client = get_frontend_client(cmd, api_version=api_version)
+    return client.collaboration.oidc_set_issuer_url_post(
+        collaboration_id, body=body)
 
 
-def frontend_collaboration_oidc_keys_show(cmd, collaboration_id):
+def frontend_collaboration_oidc_keys_show(
+        cmd, collaboration_id, api_version=None):
     """Get collaboration OIDC signing keys (JWKS format)
 
     :param cmd: CLI command context
     :param collaboration_id: Collaboration identifier
+    :param api_version: API version to use for this request
     :return: OIDC keys in JWKS format
     """
-    client = get_frontend_client(cmd)
+    client = get_frontend_client(cmd, api_version=api_version)
     return client.collaboration.oidc_keys_get(collaboration_id)
 
 
@@ -123,42 +143,50 @@ def frontend_collaboration_oidc_keys_show(cmd, collaboration_id):
 # Invitation Commands
 # ============================================================================
 
-def frontend_collaboration_invitation_list(cmd, collaboration_id, pending_only=False):
+def frontend_collaboration_invitation_list(
+        cmd,
+        collaboration_id,
+        pending_only=False,
+        api_version=None):
     """List invitations for a collaboration
 
     :param cmd: CLI command context
     :param collaboration_id: Collaboration identifier
     :param pending_only: When true, returns only pending invitations (default: False)
+    :param api_version: API version to use for this request
     :return: Invitations object with array of invitation details
     """
-    client = get_frontend_client(cmd)
-    return client.collaboration.invitations_get(collaboration_id, pending_only=pending_only)
+    client = get_frontend_client(cmd, api_version=api_version)
+    return client.collaboration.invitations_get(
+        collaboration_id, pending_only=pending_only)
 
 
 def frontend_collaboration_invitation_show(
-        cmd, collaboration_id, invitation_id):
+        cmd, collaboration_id, invitation_id, api_version=None):
     """Show invitation details
 
     :param cmd: CLI command context
     :param collaboration_id: Collaboration identifier
     :param invitation_id: Invitation identifier
+    :param api_version: API version to use for this request
     :return: Invitation details
     """
-    client = get_frontend_client(cmd)
+    client = get_frontend_client(cmd, api_version=api_version)
     return client.collaboration.invitation_id_get(
         collaboration_id, invitation_id)
 
 
 def frontend_collaboration_invitation_accept(
-        cmd, collaboration_id, invitation_id):
+        cmd, collaboration_id, invitation_id, api_version=None):
     """Accept an invitation
 
     :param cmd: CLI command context
     :param collaboration_id: Collaboration identifier
     :param invitation_id: Invitation identifier
+    :param api_version: API version to use for this request
     :return: Acceptance result
     """
-    client = get_frontend_client(cmd)
+    client = get_frontend_client(cmd, api_version=api_version)
     return client.collaboration.invitation_id_accept_post(
         collaboration_id, invitation_id)
 
@@ -167,38 +195,46 @@ def frontend_collaboration_invitation_accept(
 # Dataset Commands
 # ============================================================================
 
-def frontend_collaboration_dataset_list(cmd, collaboration_id):
+def frontend_collaboration_dataset_list(
+        cmd, collaboration_id, api_version=None):
     """List datasets for a collaboration
 
     :param cmd: CLI command context
     :param collaboration_id: Collaboration identifier
+    :param api_version: API version to use for this request
     :return: List of datasets
     """
-    client = get_frontend_client(cmd)
+    client = get_frontend_client(cmd, api_version=api_version)
     return client.collaboration.analytics_datasets_list_get(collaboration_id)
 
 
-def frontend_collaboration_dataset_show(cmd, collaboration_id, document_id):
+def frontend_collaboration_dataset_show(
+        cmd,
+        collaboration_id,
+        document_id,
+        api_version=None):
     """Show dataset details
 
     :param cmd: CLI command context
     :param collaboration_id: Collaboration identifier
     :param document_id: Dataset document identifier
+    :param api_version: API version to use for this request
     :return: Dataset details
     """
-    client = get_frontend_client(cmd)
+    client = get_frontend_client(cmd, api_version=api_version)
     return client.collaboration.analytics_dataset_document_id_get(
         collaboration_id, document_id)
 
 
 def frontend_collaboration_dataset_publish(
-        cmd, collaboration_id, document_id, body):
+        cmd, collaboration_id, document_id, body, api_version=None):
     """Publish a dataset
 
     :param cmd: CLI command context
     :param collaboration_id: Collaboration identifier
     :param document_id: Dataset document identifier
     :param body: Publish configuration JSON (string, dict, or @file)
+    :param api_version: API version to use for this request
     :return: Publish result
     """
     import json
@@ -207,20 +243,22 @@ def frontend_collaboration_dataset_publish(
     if isinstance(body, str):
         body = json.loads(body)
 
-    client = get_frontend_client(cmd)
+    client = get_frontend_client(cmd, api_version=api_version)
     return client.collaboration.analytics_dataset_document_id_publish_post(
         collaboration_id, document_id, body)
 
 
-def frontend_collaboration_dataset_queries_list(cmd, collaboration_id, document_id):
+def frontend_collaboration_dataset_queries_list(
+        cmd, collaboration_id, document_id, api_version=None):
     """List queries that use a specific dataset
 
     :param cmd: CLI command context
     :param collaboration_id: Collaboration identifier
     :param document_id: Dataset document identifier
+    :param api_version: API version to use for this request
     :return: List of query IDs using this dataset
     """
-    client = get_frontend_client(cmd)
+    client = get_frontend_client(cmd, api_version=api_version)
     return client.collaboration.analytics_datasets_document_id_queries_get(
         collaboration_id, document_id)
 
@@ -229,21 +267,26 @@ def frontend_collaboration_dataset_queries_list(cmd, collaboration_id, document_
 # Consent Commands
 # ============================================================================
 
-def frontend_collaboration_consent_check(cmd, collaboration_id, document_id):
+def frontend_collaboration_consent_check(
+        cmd,
+        collaboration_id,
+        document_id,
+        api_version=None):
     """Check consent document status
 
     :param cmd: CLI command context
     :param collaboration_id: Collaboration identifier
     :param document_id: Consent document identifier
+    :param api_version: API version to use for this request
     :return: Consent status
     """
-    client = get_frontend_client(cmd)
+    client = get_frontend_client(cmd, api_version=api_version)
     return client.collaboration.check_consent_document_id_get(
         collaboration_id, document_id)
 
 
 def frontend_collaboration_consent_set(
-        cmd, collaboration_id, document_id, consent_action):
+        cmd, collaboration_id, document_id, consent_action, api_version=None):
     """Set consent document action
 
     NOTE: API changed - consent action is now 'enable' or 'disable' (not accept/reject)
@@ -252,10 +295,11 @@ def frontend_collaboration_consent_set(
     :param collaboration_id: Collaboration identifier
     :param document_id: Consent document identifier
     :param consent_action: Consent action ('enable' or 'disable')
+    :param api_version: API version to use for this request
     :return: Action result
     """
     body = {"consentAction": consent_action}
-    client = get_frontend_client(cmd)
+    client = get_frontend_client(cmd, api_version=api_version)
     return client.collaboration.set_consent_document_id_put(
         collaboration_id, document_id, body=body
     )
@@ -265,38 +309,45 @@ def frontend_collaboration_consent_set(
 # Query Commands
 # ============================================================================
 
-def frontend_collaboration_query_list(cmd, collaboration_id):
+def frontend_collaboration_query_list(cmd, collaboration_id, api_version=None):
     """List queries for a collaboration
 
     :param cmd: CLI command context
     :param collaboration_id: Collaboration identifier
+    :param api_version: API version to use for this request
     :return: List of queries
     """
-    client = get_frontend_client(cmd)
+    client = get_frontend_client(cmd, api_version=api_version)
     return client.collaboration.analytics_queries_list_get(collaboration_id)
 
 
-def frontend_collaboration_query_show(cmd, collaboration_id, document_id):
+def frontend_collaboration_query_show(
+        cmd,
+        collaboration_id,
+        document_id,
+        api_version=None):
     """Show query details
 
     :param cmd: CLI command context
     :param collaboration_id: Collaboration identifier
     :param document_id: Query document identifier
+    :param api_version: API version to use for this request
     :return: Query details
     """
-    client = get_frontend_client(cmd)
+    client = get_frontend_client(cmd, api_version=api_version)
     return client.collaboration.analytics_queries_document_id_get(
         collaboration_id, document_id)
 
 
 def frontend_collaboration_query_publish(
-        cmd, collaboration_id, document_id, body):
+        cmd, collaboration_id, document_id, body, api_version=None):
     """Publish a query
 
     :param cmd: CLI command context
     :param collaboration_id: Collaboration identifier
     :param document_id: Query document identifier
     :param body: Publish configuration JSON (string, dict, or @file)
+    :param api_version: API version to use for this request
     :return: Publish result
     """
     import json
@@ -305,7 +356,7 @@ def frontend_collaboration_query_publish(
     if isinstance(body, str):
         body = json.loads(body)
 
-    client = get_frontend_client(cmd)
+    client = get_frontend_client(cmd, api_version=api_version)
     return client.collaboration.analytics_queries_document_id_publish_post(
         collaboration_id, document_id, body)
 
@@ -314,7 +365,8 @@ def frontend_collaboration_query_run(
         cmd,
         collaboration_id,
         document_id,
-        body=None):
+        body=None,
+        api_version=None):
     """Run a query
 
     :param cmd: CLI command context
@@ -322,6 +374,7 @@ def frontend_collaboration_query_run(
     :param document_id: Query document identifier
     :param body: Run configuration JSON (string, dict, or @file). Optional fields:
                  runId (auto-generated if not provided), dryRun, startDate, endDate, useOptimizer
+    :param api_version: API version to use for this request
     :return: Run result
     """
     import json
@@ -339,12 +392,18 @@ def frontend_collaboration_query_run(
     if 'runId' not in body:
         body['runId'] = str(uuid.uuid4())
 
-    client = get_frontend_client(cmd)
+    client = get_frontend_client(cmd, api_version=api_version)
     return client.collaboration.analytics_queries_document_id_run_post(
         collaboration_id, document_id, body=body)
 
 
-def frontend_collaboration_query_vote(cmd, collaboration_id, document_id, vote_action, proposal_id=None):
+def frontend_collaboration_query_vote(
+        cmd,
+        collaboration_id,
+        document_id,
+        vote_action,
+        proposal_id=None,
+        api_version=None):
     """Vote on a query (unified accept/reject endpoint)
 
     :param cmd: CLI command context
@@ -352,6 +411,7 @@ def frontend_collaboration_query_vote(cmd, collaboration_id, document_id, vote_a
     :param document_id: Query document identifier
     :param vote_action: Vote action ('accept' or 'reject')
     :param proposal_id: Optional proposal ID
+    :param api_version: API version to use for this request
     :return: Vote result (None on success - 204 No Content)
     """
     body = {
@@ -361,7 +421,7 @@ def frontend_collaboration_query_vote(cmd, collaboration_id, document_id, vote_a
     if proposal_id:
         body["proposalId"] = proposal_id
 
-    client = get_frontend_client(cmd)
+    client = get_frontend_client(cmd, api_version=api_version)
     return client.collaboration.analytics_queries_document_id_vote_post(
         collaboration_id, document_id, body=body)
 
@@ -371,30 +431,32 @@ def frontend_collaboration_query_vote(cmd, collaboration_id, document_id, vote_a
 # ============================================================================
 
 def frontend_collaboration_query_runhistory_list(
-        cmd, collaboration_id, document_id):
+        cmd, collaboration_id, document_id, api_version=None):
     """List query run history
 
     :param cmd: CLI command context
     :param collaboration_id: Collaboration identifier
     :param document_id: Query document identifier
+    :param api_version: API version to use for this request
     :return: List of query runs
     """
-    client = get_frontend_client(cmd)
+    client = get_frontend_client(cmd, api_version=api_version)
     return client.collaboration.analytics_queries_document_id_runhistory_get(
         collaboration_id, document_id
     )
 
 
 def frontend_collaboration_query_runresult_show(
-        cmd, collaboration_id, job_id):
+        cmd, collaboration_id, job_id, api_version=None):
     """Show query job result details
 
     :param cmd: CLI command context
     :param collaboration_id: Collaboration identifier
     :param job_id: Query job identifier
+    :param api_version: API version to use for this request
     :return: Query job result details
     """
-    client = get_frontend_client(cmd)
+    client = get_frontend_client(cmd, api_version=api_version)
     return client.collaboration.analytics_queries_jobid_get(
         collaboration_id, job_id)
 
@@ -403,7 +465,13 @@ def frontend_collaboration_query_runresult_show(
 # Audit Commands
 # ============================================================================
 
-def frontend_collaboration_audit_list(cmd, collaboration_id, scope=None, from_seqno=None, to_seqno=None):
+def frontend_collaboration_audit_list(
+        cmd,
+        collaboration_id,
+        scope=None,
+        from_seqno=None,
+        to_seqno=None,
+        api_version=None):
     """List audit events for a collaboration
 
     :param cmd: CLI command context
@@ -411,24 +479,31 @@ def frontend_collaboration_audit_list(cmd, collaboration_id, scope=None, from_se
     :param scope: Optional scope filter
     :param from_seqno: Optional starting sequence number
     :param to_seqno: Optional ending sequence number
+    :param api_version: API version to use for this request
     :return: Paginated audit events with nextLink and value array
     """
-    client = get_frontend_client(cmd)
+    client = get_frontend_client(cmd, api_version=api_version)
     return client.collaboration.analytics_auditevents_get(
         collaboration_id, scope=scope, from_seqno=from_seqno, to_seqno=to_seqno)
 
 
-def frontend_collaboration_analytics_secret_set(cmd, collaboration_id, secret_name, secret_value):
+def frontend_collaboration_analytics_secret_set(
+        cmd,
+        collaboration_id,
+        secret_name,
+        secret_value,
+        api_version=None):
     """Set secret for analytics workload
 
     :param cmd: CLI command context
     :param collaboration_id: Collaboration identifier
     :param secret_name: Secret name
     :param secret_value: Secret value
+    :param api_version: API version to use for this request
     :return: Operation result
     """
     body = {"secretValue": secret_value}
-    client = get_frontend_client(cmd)
+    client = get_frontend_client(cmd, api_version=api_version)
     return client.collaboration.analytics_secrets_secret_name_put(
         collaboration_id, secret_name, body=body)
 

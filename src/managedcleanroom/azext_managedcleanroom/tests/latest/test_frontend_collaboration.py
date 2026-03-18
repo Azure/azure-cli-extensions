@@ -288,7 +288,8 @@ class TestFrontendCollaboration(unittest.TestCase):
     # Filter Tests
 
     @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
-    def test_list_collaborations_with_active_only_filter(self, mock_get_client):
+    def test_list_collaborations_with_active_only_filter(
+            self, mock_get_client):
         """Test listing collaborations with active_only filter"""
         # Mock the client
         mock_client = Mock()
@@ -306,7 +307,8 @@ class TestFrontendCollaboration(unittest.TestCase):
         # Verify
         self.assertEqual(len(result), 1)
         self.assertEqual(result[0]["status"], "active")
-        mock_client.collaboration.list.assert_called_once_with(active_only=True)
+        mock_client.collaboration.list.assert_called_once_with(
+            active_only=True)
 
     @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
     def test_show_collaboration_with_active_only_filter(self, mock_get_client):
@@ -327,7 +329,6 @@ class TestFrontendCollaboration(unittest.TestCase):
         self.assertEqual(result["collaborationId"], "test-collab-123")
         mock_client.collaboration.id_get.assert_called_once_with(
             "test-collab-123", active_only=True)
-
 
 
 if __name__ == '__main__':

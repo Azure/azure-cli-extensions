@@ -37,7 +37,9 @@ def load_frontend_command_table(loader, _):
 
     # OIDC commands
     with loader.command_group('managedcleanroom frontend oidc', custom_command_type=frontend_custom) as g:
-        g.custom_command('set-issuer-url', 'frontend_collaboration_oidc_set_issuer_url')
+        g.custom_command(
+            'set-issuer-url',
+            'frontend_collaboration_oidc_set_issuer_url')
         g.custom_show_command('keys', 'frontend_collaboration_oidc_keys_show')
 
     # Keep issuerinfo for backwards compatibility
@@ -56,7 +58,9 @@ def load_frontend_command_table(loader, _):
         g.custom_command('list', 'frontend_collaboration_dataset_list')
         g.custom_show_command('show', 'frontend_collaboration_dataset_show')
         g.custom_command('publish', 'frontend_collaboration_dataset_publish')
-        g.custom_command('queries', 'frontend_collaboration_dataset_queries_list')
+        g.custom_command(
+            'queries',
+            'frontend_collaboration_dataset_queries_list')
 
     # Consent commands
     with loader.command_group('managedcleanroom frontend consent', custom_command_type=frontend_custom) as g:

@@ -12,6 +12,17 @@
 def load_arguments(self, _):  # pylint: disable=unused-argument
     from knack.arguments import CLIArgumentType
 
+    # Global API versioning parameter for all frontend commands
+    with self.argument_context('managedcleanroom frontend') as c:
+        from azure.cli.core.commands.parameters import get_enum_type
+        c.argument(
+            'api_version',
+            options_list=['--api-version'],
+            help='API version to use for this request. Default: 2026-03-01-preview',
+            arg_type=get_enum_type(
+                ['2026-03-01-preview']),
+            default='2026-03-01-preview')
+
     # Define argument types for frontend commands
     collaboration_id_type = CLIArgumentType(
         options_list=['--collaboration-id', '-c'],

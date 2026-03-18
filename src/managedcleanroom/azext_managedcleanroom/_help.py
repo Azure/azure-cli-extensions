@@ -24,6 +24,12 @@ helps['managedcleanroom frontend'] = """
         2. Azure CLI authentication (az login)
 
         You must configure the Analytics Frontend API endpoint URL before using these commands.
+
+        All frontend commands support the --api-version parameter to specify the API version.
+        Default: 2026-03-01-preview
+
+        Supported versions:
+          - 2026-03-01-preview
 """
 
 helps['managedcleanroom frontend login'] = """

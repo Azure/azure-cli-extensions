@@ -16,10 +16,16 @@ class AnalyticsFrontendAPIConfiguration:  # pylint: disable=too-many-instance-at
 
     Note that all parameters used to create this instance are saved as instance
     attributes.
+
+    :keyword api_version: Api Version. Default value is "2026-03-01-preview". Note that overriding
+     this default value may result in unsupported behavior.
+    :paramtype api_version: str
     """
 
     def __init__(self, **kwargs: Any) -> None:
+        api_version: str = kwargs.pop("api_version", "2026-03-01-preview")
 
+        self.api_version = api_version
         kwargs.setdefault(
             "sdk_moniker",
             "analyticsfrontendapi/{}".format(VERSION))
