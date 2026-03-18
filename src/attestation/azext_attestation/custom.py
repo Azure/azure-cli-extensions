@@ -7,7 +7,7 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
-# pylint: disable=too-many-lines
+# pylint: disable=too-many-lines, line-too-long, protected-access
 
 import base64
 import jwt
@@ -254,7 +254,7 @@ class RemoveSigner(_RemoveSigner):
     def _output(self, *args, **kwargs):
         args = self.ctx.args
         list_args = {"resource_group": args.resource_group, "provider_name": args.provider_name}
-        from azext_attestation.aaz.latest.attestation.signer import List
+        from azext_attestation.aaz.latest.attestation.signer import List  # pylint: disable=reimported
         token = List(cli_ctx=self.cli_ctx)(command_args=list_args)['token']
         result = {'Jwt': token}
         if has_value(token):
@@ -417,7 +417,7 @@ class SetPolicy(_SetPolicy):
                 new_attestation_policy = f.read()
 
         show_args = {"resource_group": args.resource_group, "provider_name": args.provider_name}
-        from azext_attestation.aaz.latest.attestation import Show
+        from azext_attestation.aaz.latest.attestation import Show  # pylint: disable=reimported
         provider = Show(cli_ctx=self.cli_ctx)(command_args=show_args)
 
         if args.policy_format == 'Text':
