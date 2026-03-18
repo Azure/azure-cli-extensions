@@ -10,7 +10,7 @@ def _aks_is_vm_sku_available(sku, zone):
 
     A SKU is considered unavailable when:
     1. It has a Location restriction that covers this region, or
-    2. The --zones flag is set AND all availability zones in the region are restricted.
+    2. The --zone flag is set AND all availability zones in the region are restricted.
     """
     if not sku.restrictions:
         return True
