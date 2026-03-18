@@ -3,7 +3,7 @@
 Release History
 ===============
 
-1.0.0b4
+1.0.0b3
 +++++++
 * Regenerated analytics_frontend_api SDK from V2026_03_01_Preview OpenAPI specification
 * BREAKING CHANGE: All frontend API endpoints now require api-version=2026-03-01-preview query parameter
@@ -28,10 +28,6 @@ Release History
 * Updated: Added --pending-only filter to invitation list command
 * Updated: Added --scope, --from-seqno, --to-seqno filters to audit event list command
 * Updated: Response structures modernized (many list endpoints now return structured objects with value arrays)
-
-1.0.0b3
-+++++++
-* Regenerate analytics_frontend_api SDK from updated frontend.yaml OpenAPI spec
 * Remove empty enum value from ApplicationState schema
 
 1.0.0b1
