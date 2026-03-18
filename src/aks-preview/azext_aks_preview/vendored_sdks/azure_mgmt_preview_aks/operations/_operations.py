@@ -40,7 +40,7 @@ def build_list_request(**kwargs: Any) -> HttpRequest:
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-10-02-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-01-02-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -77,8 +77,6 @@ class Operations:
     @distributed_trace
     def list(self, **kwargs: Any) -> Iterable["_models.OperationValue"]:
         """Gets a list of operations.
-
-        Gets a list of operations.
 
         :return: An iterator like instance of either OperationValue or the result of cls(response)
         :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.containerservice.models.OperationValue]
@@ -130,7 +128,7 @@ class Operations:
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)  # type: ignore
-            return None, iter(list_of_elem)
+            return deserialized.next_link or None, iter(list_of_elem)
 
         def get_next(next_link=None):
             _request = prepare_request(next_link)

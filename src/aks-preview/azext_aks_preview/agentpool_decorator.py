@@ -46,6 +46,7 @@ from azext_aks_preview._consts import (
     CONST_SSH_ACCESS_LOCALUSER,
     CONST_GPU_DRIVER_NONE,
     CONST_NODEPOOL_MODE_MANAGEDSYSTEM,
+    CONST_NODEPOOL_MODE_MACHINES,
 )
 from azext_aks_preview._helpers import (
     get_nodepool_snapshot_by_snapshot_id,
@@ -1452,6 +1453,25 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
 
         return agentpool
 
+    def set_up_machines_mode(self, agentpool: AgentPool) -> AgentPool:
+        """Handle the special Machines mode by resetting all properties except name and mode.
+
+        :param agentpool: the AgentPool object
+        :return: the AgentPool object
+        """
+        self._ensure_agentpool(agentpool)
+
+        mode = self.context.get_mode()
+        if mode == CONST_NODEPOOL_MODE_MACHINES:
+            agentpool.mode = CONST_NODEPOOL_MODE_MACHINES
+            # Make sure all other attributes are None
+            for attr in vars(agentpool):
+                if attr != 'name' and attr != 'mode' and not attr.startswith('_'):
+                    if hasattr(agentpool, attr):
+                        setattr(agentpool, attr, None)
+
+        return agentpool
+
     def set_up_localdns_profile(self, agentpool: AgentPool) -> AgentPool:
         """Set up local DNS profile for the AgentPool object if provided via --localdns-config."""
         self._ensure_agentpool(agentpool)
@@ -1468,11 +1488,12 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         # DO NOT MOVE: keep this on top, construct the default AgentPool profile
         agentpool = self.construct_agentpool_profile_default(bypass_restore_defaults=True)
 
-        # Check if mode is ManagedSystem, if yes, reset all properties
+        # Check if mode is ManagedSystem or Machines, if yes, reset all other properties
         agentpool = self.set_up_managed_system_mode(agentpool)
+        agentpool = self.set_up_machines_mode(agentpool)
 
-        # If mode is ManagedSystem, skip all other property setups
-        if agentpool.mode == CONST_NODEPOOL_MODE_MANAGEDSYSTEM:
+        # If mode is ManagedSystem or Machines, skip all other property setups
+        if agentpool.mode == CONST_NODEPOOL_MODE_MANAGEDSYSTEM or agentpool.mode == CONST_NODEPOOL_MODE_MACHINES:
             return agentpool
 
         # set up preview vm properties

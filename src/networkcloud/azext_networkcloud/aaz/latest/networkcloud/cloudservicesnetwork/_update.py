@@ -23,9 +23,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/cloudservicesnetworks/{}", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/cloudservicesnetworks/{}", "2026-01-01-preview"],
         ]
     }
 
@@ -235,7 +235,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-01-01-preview",
                     required=True,
                 ),
             }
@@ -321,198 +321,169 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_cloud_services_network_read(cls._schema_on_200)
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.etag = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.extended_location = AAZObjectType(
+                serialized_name="extendedLocation",
+                flags={"required": True},
+            )
+            _schema_on_200.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.location = AAZStrType(
+                flags={"required": True},
+            )
+            _schema_on_200.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+            _schema_on_200.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _schema_on_200.tags = AAZDictType()
+            _schema_on_200.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            extended_location = cls._schema_on_200.extended_location
+            extended_location.name = AAZStrType(
+                flags={"required": True},
+            )
+            extended_location.type = AAZStrType(
+                flags={"required": True},
+            )
+
+            properties = cls._schema_on_200.properties
+            properties.additional_egress_endpoints = AAZListType(
+                serialized_name="additionalEgressEndpoints",
+            )
+            properties.associated_resource_ids = AAZListType(
+                serialized_name="associatedResourceIds",
+                flags={"read_only": True},
+            )
+            properties.cluster_id = AAZStrType(
+                serialized_name="clusterId",
+                flags={"read_only": True},
+            )
+            properties.detailed_status = AAZStrType(
+                serialized_name="detailedStatus",
+                flags={"read_only": True},
+            )
+            properties.detailed_status_message = AAZStrType(
+                serialized_name="detailedStatusMessage",
+                flags={"read_only": True},
+            )
+            properties.enable_default_egress_endpoints = AAZStrType(
+                serialized_name="enableDefaultEgressEndpoints",
+            )
+            properties.enabled_egress_endpoints = AAZListType(
+                serialized_name="enabledEgressEndpoints",
+                flags={"read_only": True},
+            )
+            properties.hybrid_aks_clusters_associated_ids = AAZListType(
+                serialized_name="hybridAksClustersAssociatedIds",
+                flags={"read_only": True},
+            )
+            properties.interface_name = AAZStrType(
+                serialized_name="interfaceName",
+                flags={"read_only": True},
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.storage_options = AAZObjectType(
+                serialized_name="storageOptions",
+            )
+            properties.storage_status = AAZObjectType(
+                serialized_name="storageStatus",
+                flags={"read_only": True},
+            )
+            properties.virtual_machines_associated_ids = AAZListType(
+                serialized_name="virtualMachinesAssociatedIds",
+                flags={"read_only": True},
+            )
+
+            additional_egress_endpoints = cls._schema_on_200.properties.additional_egress_endpoints
+            additional_egress_endpoints.Element = AAZObjectType()
+            _UpdateHelper._build_schema_egress_endpoint_read(additional_egress_endpoints.Element)
+
+            associated_resource_ids = cls._schema_on_200.properties.associated_resource_ids
+            associated_resource_ids.Element = AAZStrType()
+
+            enabled_egress_endpoints = cls._schema_on_200.properties.enabled_egress_endpoints
+            enabled_egress_endpoints.Element = AAZObjectType()
+            _UpdateHelper._build_schema_egress_endpoint_read(enabled_egress_endpoints.Element)
+
+            hybrid_aks_clusters_associated_ids = cls._schema_on_200.properties.hybrid_aks_clusters_associated_ids
+            hybrid_aks_clusters_associated_ids.Element = AAZStrType()
+
+            storage_options = cls._schema_on_200.properties.storage_options
+            storage_options.mode = AAZStrType()
+            storage_options.size_mi_b = AAZIntType(
+                serialized_name="sizeMiB",
+            )
+            storage_options.storage_appliance_id = AAZStrType(
+                serialized_name="storageApplianceId",
+            )
+
+            storage_status = cls._schema_on_200.properties.storage_status
+            storage_status.mode = AAZStrType(
+                flags={"read_only": True},
+            )
+            storage_status.size_mi_b = AAZIntType(
+                serialized_name="sizeMiB",
+                flags={"read_only": True},
+            )
+            storage_status.status = AAZStrType(
+                flags={"read_only": True},
+            )
+            storage_status.status_message = AAZStrType(
+                serialized_name="statusMessage",
+                flags={"read_only": True},
+            )
+            storage_status.volume_id = AAZStrType(
+                serialized_name="volumeId",
+                flags={"read_only": True},
+            )
+
+            virtual_machines_associated_ids = cls._schema_on_200.properties.virtual_machines_associated_ids
+            virtual_machines_associated_ids.Element = AAZStrType()
+
+            system_data = cls._schema_on_200.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
+
+            tags = cls._schema_on_200.tags
+            tags.Element = AAZStrType()
 
             return cls._schema_on_200
 
 
 class _UpdateHelper:
     """Helper class for Update"""
-
-    _schema_cloud_services_network_read = None
-
-    @classmethod
-    def _build_schema_cloud_services_network_read(cls, _schema):
-        if cls._schema_cloud_services_network_read is not None:
-            _schema.etag = cls._schema_cloud_services_network_read.etag
-            _schema.extended_location = cls._schema_cloud_services_network_read.extended_location
-            _schema.id = cls._schema_cloud_services_network_read.id
-            _schema.location = cls._schema_cloud_services_network_read.location
-            _schema.name = cls._schema_cloud_services_network_read.name
-            _schema.properties = cls._schema_cloud_services_network_read.properties
-            _schema.system_data = cls._schema_cloud_services_network_read.system_data
-            _schema.tags = cls._schema_cloud_services_network_read.tags
-            _schema.type = cls._schema_cloud_services_network_read.type
-            return
-
-        cls._schema_cloud_services_network_read = _schema_cloud_services_network_read = AAZObjectType()
-
-        cloud_services_network_read = _schema_cloud_services_network_read
-        cloud_services_network_read.etag = AAZStrType(
-            flags={"read_only": True},
-        )
-        cloud_services_network_read.extended_location = AAZObjectType(
-            serialized_name="extendedLocation",
-            flags={"required": True},
-        )
-        cloud_services_network_read.id = AAZStrType(
-            flags={"read_only": True},
-        )
-        cloud_services_network_read.location = AAZStrType(
-            flags={"required": True},
-        )
-        cloud_services_network_read.name = AAZStrType(
-            flags={"read_only": True},
-        )
-        cloud_services_network_read.properties = AAZObjectType(
-            flags={"client_flatten": True},
-        )
-        cloud_services_network_read.system_data = AAZObjectType(
-            serialized_name="systemData",
-            flags={"read_only": True},
-        )
-        cloud_services_network_read.tags = AAZDictType()
-        cloud_services_network_read.type = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        extended_location = _schema_cloud_services_network_read.extended_location
-        extended_location.name = AAZStrType(
-            flags={"required": True},
-        )
-        extended_location.type = AAZStrType(
-            flags={"required": True},
-        )
-
-        properties = _schema_cloud_services_network_read.properties
-        properties.additional_egress_endpoints = AAZListType(
-            serialized_name="additionalEgressEndpoints",
-        )
-        properties.associated_resource_ids = AAZListType(
-            serialized_name="associatedResourceIds",
-            flags={"read_only": True},
-        )
-        properties.cluster_id = AAZStrType(
-            serialized_name="clusterId",
-            flags={"read_only": True},
-        )
-        properties.detailed_status = AAZStrType(
-            serialized_name="detailedStatus",
-            flags={"read_only": True},
-        )
-        properties.detailed_status_message = AAZStrType(
-            serialized_name="detailedStatusMessage",
-            flags={"read_only": True},
-        )
-        properties.enable_default_egress_endpoints = AAZStrType(
-            serialized_name="enableDefaultEgressEndpoints",
-        )
-        properties.enabled_egress_endpoints = AAZListType(
-            serialized_name="enabledEgressEndpoints",
-            flags={"read_only": True},
-        )
-        properties.hybrid_aks_clusters_associated_ids = AAZListType(
-            serialized_name="hybridAksClustersAssociatedIds",
-            flags={"read_only": True},
-        )
-        properties.interface_name = AAZStrType(
-            serialized_name="interfaceName",
-            flags={"read_only": True},
-        )
-        properties.provisioning_state = AAZStrType(
-            serialized_name="provisioningState",
-            flags={"read_only": True},
-        )
-        properties.storage_options = AAZObjectType(
-            serialized_name="storageOptions",
-        )
-        properties.storage_status = AAZObjectType(
-            serialized_name="storageStatus",
-            flags={"read_only": True},
-        )
-        properties.virtual_machines_associated_ids = AAZListType(
-            serialized_name="virtualMachinesAssociatedIds",
-            flags={"read_only": True},
-        )
-
-        additional_egress_endpoints = _schema_cloud_services_network_read.properties.additional_egress_endpoints
-        additional_egress_endpoints.Element = AAZObjectType()
-        cls._build_schema_egress_endpoint_read(additional_egress_endpoints.Element)
-
-        associated_resource_ids = _schema_cloud_services_network_read.properties.associated_resource_ids
-        associated_resource_ids.Element = AAZStrType()
-
-        enabled_egress_endpoints = _schema_cloud_services_network_read.properties.enabled_egress_endpoints
-        enabled_egress_endpoints.Element = AAZObjectType()
-        cls._build_schema_egress_endpoint_read(enabled_egress_endpoints.Element)
-
-        hybrid_aks_clusters_associated_ids = _schema_cloud_services_network_read.properties.hybrid_aks_clusters_associated_ids
-        hybrid_aks_clusters_associated_ids.Element = AAZStrType()
-
-        storage_options = _schema_cloud_services_network_read.properties.storage_options
-        storage_options.mode = AAZStrType()
-        storage_options.size_mi_b = AAZIntType(
-            serialized_name="sizeMiB",
-        )
-        storage_options.storage_appliance_id = AAZStrType(
-            serialized_name="storageApplianceId",
-        )
-
-        storage_status = _schema_cloud_services_network_read.properties.storage_status
-        storage_status.mode = AAZStrType(
-            flags={"read_only": True},
-        )
-        storage_status.size_mi_b = AAZIntType(
-            serialized_name="sizeMiB",
-            flags={"read_only": True},
-        )
-        storage_status.status = AAZStrType(
-            flags={"read_only": True},
-        )
-        storage_status.status_message = AAZStrType(
-            serialized_name="statusMessage",
-            flags={"read_only": True},
-        )
-        storage_status.volume_id = AAZStrType(
-            serialized_name="volumeId",
-            flags={"read_only": True},
-        )
-
-        virtual_machines_associated_ids = _schema_cloud_services_network_read.properties.virtual_machines_associated_ids
-        virtual_machines_associated_ids.Element = AAZStrType()
-
-        system_data = _schema_cloud_services_network_read.system_data
-        system_data.created_at = AAZStrType(
-            serialized_name="createdAt",
-        )
-        system_data.created_by = AAZStrType(
-            serialized_name="createdBy",
-        )
-        system_data.created_by_type = AAZStrType(
-            serialized_name="createdByType",
-        )
-        system_data.last_modified_at = AAZStrType(
-            serialized_name="lastModifiedAt",
-        )
-        system_data.last_modified_by = AAZStrType(
-            serialized_name="lastModifiedBy",
-        )
-        system_data.last_modified_by_type = AAZStrType(
-            serialized_name="lastModifiedByType",
-        )
-
-        tags = _schema_cloud_services_network_read.tags
-        tags.Element = AAZStrType()
-
-        _schema.etag = cls._schema_cloud_services_network_read.etag
-        _schema.extended_location = cls._schema_cloud_services_network_read.extended_location
-        _schema.id = cls._schema_cloud_services_network_read.id
-        _schema.location = cls._schema_cloud_services_network_read.location
-        _schema.name = cls._schema_cloud_services_network_read.name
-        _schema.properties = cls._schema_cloud_services_network_read.properties
-        _schema.system_data = cls._schema_cloud_services_network_read.system_data
-        _schema.tags = cls._schema_cloud_services_network_read.tags
-        _schema.type = cls._schema_cloud_services_network_read.type
 
     _schema_egress_endpoint_read = None
 

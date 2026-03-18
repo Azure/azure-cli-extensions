@@ -1,0 +1,239 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware license list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --private-cloud-name
+      User-Agent:
+      - AZURECLI/2.82.0 azsdk-python-core/1.37.0 Python/3.10.11 (Windows-10-10.0.26200-SP0)
+    method: GET
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_license/providers/Microsoft.AVS/privateClouds/cloud1/licenses?api-version=2025-09-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/licenses/vcf-license-001","name":"VmwareFirewall","type":"Microsoft.AVS/privateClouds/licenses","properties":{"kind":"VmwareFirewall","provisioningState":"Succeeded","cores":64,"endDate":"2025-01-01T00:00:00Z","broadcomSiteId":"123456","broadcomContractNumber":"123456"}}]}'
+    headers:
+      content-length:
+      - '409'
+      content-type:
+      - application/json
+      date:
+      - Fri, 16 Jan 2026 17:40:53 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"kind": "VmwareFirewall", "broadcomContractNumber": "12345",
+      "broadcomSiteId": "site123", "cores": 100, "endDate": "2027-01-01T00:00:00.000Z",
+      "licenseKey": "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware license create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '206'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --private-cloud-name --license-name --vmware-firewall
+      User-Agent:
+      - AZURECLI/2.82.0 azsdk-python-core/1.37.0 Python/3.10.11 (Windows-10-10.0.26200-SP0)
+    method: PUT
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_license/providers/Microsoft.AVS/privateClouds/cloud1/licenses/VmwareFirewall?api-version=2025-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/licenses/VmwareFirewall","name":"VmwareFirewall","type":"Microsoft.AVS/privateClouds/licenses","properties":{"kind":"VmwareFirewall","provisioningState":"Succeeded","cores":16,"endDate":"2025-12-31T23:59:59Z","broadcomSiteId":"123456","broadcomContractNumber":"123456"}}'
+    headers:
+      content-length:
+      - '396'
+      content-type:
+      - application/json
+      date:
+      - Fri, 16 Jan 2026 17:40:55 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware license show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --private-cloud-name --license-name
+      User-Agent:
+      - AZURECLI/2.82.0 azsdk-python-core/1.37.0 Python/3.10.11 (Windows-10-10.0.26200-SP0)
+    method: GET
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_license/providers/Microsoft.AVS/privateClouds/cloud1/licenses/VmwareFirewall?api-version=2025-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/licenses/VmwareFirewall","name":"VmwareFirewall","type":"Microsoft.AVS/privateClouds/licenses","properties":{"kind":"VmwareFirewall","provisioningState":"Succeeded","cores":16,"endDate":"2025-06-01T00:00:00Z","broadcomSiteId":"123456","broadcomContractNumber":"123456"}}'
+    headers:
+      content-length:
+      - '396'
+      content-type:
+      - application/json
+      date:
+      - Fri, 16 Jan 2026 17:40:58 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware license get-property
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-group --private-cloud-name --license-name
+      User-Agent:
+      - AZURECLI/2.82.0 azsdk-python-core/1.37.0 Python/3.10.11 (Windows-10-10.0.26200-SP0)
+    method: POST
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_license/providers/Microsoft.AVS/privateClouds/cloud1/licenses/VmwareFirewall/getProperties?api-version=2025-09-01
+  response:
+    body:
+      string: '{"kind":"VmwareFirewall","provisioningState":"Succeeded","licenseKey":"12345-12345-12345-12345-12345","cores":16,"endDate":"2025-12-31T23:59:59Z","broadcomSiteId":"123456","broadcomContractNumber":"123456"}'
+    headers:
+      content-length:
+      - '206'
+      content-type:
+      - application/json
+      date:
+      - Fri, 16 Jan 2026 17:41:00 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware license update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --private-cloud-name --license-name --vmware-firewall
+      User-Agent:
+      - AZURECLI/2.82.0 azsdk-python-core/1.37.0 Python/3.10.11 (Windows-10-10.0.26200-SP0)
+    method: GET
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_license/providers/Microsoft.AVS/privateClouds/cloud1/licenses/VmwareFirewall?api-version=2025-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/licenses/VmwareFirewall","name":"VmwareFirewall","type":"Microsoft.AVS/privateClouds/licenses","properties":{"kind":"VmwareFirewall","provisioningState":"Succeeded","cores":16,"endDate":"2025-06-01T00:00:00Z","broadcomSiteId":"123456","broadcomContractNumber":"123456"}}'
+    headers:
+      content-length:
+      - '396'
+      content-type:
+      - application/json
+      date:
+      - Fri, 16 Jan 2026 17:41:02 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"kind": "VmwareFirewall", "broadcomContractNumber": "12345",
+      "broadcomSiteId": "site123", "cores": 150, "endDate": "2027-01-01T00:00:00.000Z"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware license update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '159'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --private-cloud-name --license-name --vmware-firewall
+      User-Agent:
+      - AZURECLI/2.82.0 azsdk-python-core/1.37.0 Python/3.10.11 (Windows-10-10.0.26200-SP0)
+    method: PUT
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_license/providers/Microsoft.AVS/privateClouds/cloud1/licenses/VmwareFirewall?api-version=2025-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/licenses/VmwareFirewall","name":"VmwareFirewall","type":"Microsoft.AVS/privateClouds/licenses","properties":{"kind":"VmwareFirewall","provisioningState":"Succeeded","cores":16,"endDate":"2025-12-31T23:59:59Z","broadcomSiteId":"123456","broadcomContractNumber":"123456"}}'
+    headers:
+      content-length:
+      - '396'
+      content-type:
+      - application/json
+      date:
+      - Fri, 16 Jan 2026 17:41:04 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware license delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-group --private-cloud-name --license-name --yes
+      User-Agent:
+      - AZURECLI/2.82.0 azsdk-python-core/1.37.0 Python/3.10.11 (Windows-10-10.0.26200-SP0)
+    method: DELETE
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_license/providers/Microsoft.AVS/privateClouds/cloud1/licenses/VmwareFirewall?api-version=2025-09-01
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      date:
+      - Fri, 16 Jan 2026 17:41:07 GMT
+      server:
+      - Rocket
+    status:
+      code: 204
+      message: No Content
+version: 1

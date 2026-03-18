@@ -7,28 +7,36 @@ Introduction
 
 The AKS Agent extension provides the "az aks agent" command, an AI-powered assistant that helps analyze and troubleshoot Azure Kubernetes Service (AKS) clusters using Large Language Models (LLMs). The agent combines cluster context, configurable toolsets, and LLMs to answer natural-language questions about your cluster (for example, "Why are my pods not starting?") and can investigate issues in both interactive and non-interactive (batch) modes.
 
-New in this version: **az aks agent-init** command for containerized agent deployment!
+New in this version: **az aks agent-init** command for flexible agent deployment!
 
-The `az aks agent-init` command deploys the AKS agent as a Helm chart directly in your AKS cluster with enterprise-grade security:
+The `az aks agent-init` command supports two deployment modes:
 
-- **Kubernetes RBAC**: Uses cluster roles to securely access Kubernetes resources with least-privilege principles
-- **Workload Identity**: Leverages Azure workload identity for secure, keyless access to Azure resources
-- **Interactive LLM Configuration**: Guides you through setting up LLM models with encrypted storage in Kubernetes secrets
+- **Cluster mode**: Deploys the AKS agent as a Helm chart directly in your AKS cluster with enterprise-grade security (Kubernetes RBAC, workload identity, encrypted secrets)
+- **Local mode**: Runs the AKS agent in a Docker container on your local machine with automatic credential and kubeconfig mounting
+
+During initialization, you'll be prompted to:
+
+- Choose between cluster or local deployment mode
+- Configure your LLM provider and model interactively
+- For cluster mode: specify namespace and service account for RBAC
+- Validate connectivity and save the configuration
 
 When asking questions with `az aks agent`:
 
 - The agent automatically uses the last configured model
 - Use `--model` to select a specific model when you have multiple models configured
+- For local mode: Ensure Docker is installed and running
 
-This architecture provides better security, scalability, and manageability for production AKS troubleshooting workflows.
+This architecture provides flexibility to choose between production-ready cluster deployment or convenient local troubleshooting workflows.
 
 Key capabilities
 ----------------
 
 
-- **Containerized Deployment**: Agent runs as a Helm chart in your AKS cluster with `az aks agent-init`.
-- **Secure Access**: Uses Kubernetes RBAC for cluster resources and Azure workload identity for Azure resources.
-- **LLM Configuration**: Interactively configure LLM models with credentials stored securely in Kubernetes secrets.
+- **Flexible Deployment**: Choose between cluster mode (Helm chart) or local mode (Docker container) with `az aks agent-init`.
+- **Interactive Configuration**: Guided setup for deployment mode, namespace selection, and service account configuration.
+- **Secure Access**: Cluster mode uses Kubernetes RBAC for cluster resources and Azure workload identity for Azure resources.
+- **LLM Configuration**: Interactively configure LLM models with credentials stored securely (Kubernetes secrets for cluster mode, local files for local mode).
 - Support for multiple LLM providers (Azure OpenAI, OpenAI, Anthropic, Gemini, etc.).
 - Automatically uses the last configured model by default.
 - Optionally use --model to select a specific model when you have multiple models configured.
@@ -38,6 +46,9 @@ Key capabilities
 
 Prerequisites
 -------------
+- **For cluster mode**: Kubernetes cluster access with sufficient permissions to create namespaces, deployments, and RBAC resources
+- **For local mode**: Docker installed and running on your local machine
+
 No need to manually set environment variables! All model and credential information can be configured interactively using `az aks agent-init`.
 For more details about supported model providers and required
 variables, see: https://docs.litellm.ai/docs/providers
@@ -60,12 +71,23 @@ Initialize and configure the AKS agent
 
     az aks agent-init --resource-group MyResourceGroup --name MyManagedCluster
 
-This command will configure the LLM configuration and:
+This command will interactively guide you through the initialization process:
 
-1. Guide you through LLM model configuration with credentials stored securely in Kubernetes secrets
-2. Deploy the AKS agent Helm chart in your cluster
-3. Configure Kubernetes RBAC for secure cluster resource access
-4. Optionally configure Azure workload identity for Azure resource access
+1. **Choose deployment mode**: Select between cluster mode (agent runs as Helm chart in AKS) or local mode (agent runs in Docker container on your machine)
+2. **Configure LLM model**: Select and validate LLM provider with credentials stored securely
+3. **Cluster mode setup**:
+   
+   - Specify the namespace for deployment (e.g., aks-agent)
+   - Provide service account name for Kubernetes RBAC
+   - Deploy the AKS agent Helm chart in your cluster
+   - Configure Kubernetes RBAC for secure cluster resource access
+   - Optionally configure Azure workload identity for Azure resource access
+
+4. **Local mode setup**:
+   
+   - Configure Docker-based agent execution
+   - Store configuration files locally for cluster-specific access
+   - Mount Azure credentials and kubeconfig automatically
 
 You can run it multiple times to update configurations or add more models.
 
