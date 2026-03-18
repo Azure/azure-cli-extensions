@@ -498,6 +498,13 @@ def load_command_table(self, _):
     ) as g:
         g.custom_show_command("show", "aks_approuting_default_domain_show")
 
+    # AKS approuting gateway istio commands
+    with self.command_group(
+        "aks approuting gateway istio", managed_clusters_sdk, client_factory=cf_managed_clusters
+    ) as g:
+        g.custom_command("enable", "aks_approuting_gateway_istio_enable")
+        g.custom_command("disable", "aks_approuting_gateway_istio_disable", confirmation=True)
+
     # AKS check-network command
     with self.command_group(
         "aks check-network", managed_clusters_sdk, client_factory=cf_managed_clusters
