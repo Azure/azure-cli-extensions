@@ -699,6 +699,13 @@ helps['aks create'] = f"""
         - name: --enable-gateway-api
           type: bool
           short-summary: Enable managed installation of Gateway API CRDs from the standard release channel.
+        - name: --enable-app-routing-istio --enable-ari
+          type: bool
+          short-summary: Enable Gateway API based ingress on App Routing via Istio without service mesh functionality.
+          long-summary: |
+              This enables an ingress-only version of Istio that reconciles Gateway API resources for App Routing.
+              It does not provide service mesh functionality (e.g. mTLS, traffic management between services).
+              Cannot be used simultaneously with the Istio service mesh add-on (--enable-azure-service-mesh).
         - name: --enable-hosted-system
           type: bool
           short-summary: Create a cluster with fully hosted system components. This applies only when creating a new automatic cluster.
@@ -1424,6 +1431,16 @@ helps['aks update'] = """
         - name: --disable-gateway-api
           type: bool
           short-summary: Disable managed installation of Gateway API CRDs.
+        - name: --enable-app-routing-istio --enable-ari
+          type: bool
+          short-summary: Enable Gateway API based ingress on App Routing via Istio without service mesh functionality.
+          long-summary: |
+              This enables an ingress-only version of Istio that reconciles Gateway API resources for App Routing.
+              It does not provide service mesh functionality (e.g. mTLS, traffic management between services).
+              Cannot be used simultaneously with the Istio service mesh add-on (--enable-azure-service-mesh).
+        - name: --disable-app-routing-istio --disable-ari
+          type: bool
+          short-summary: Disable Gateway API based ingress on App Routing via Istio.
         - name: --enable-application-load-balancer
           type: bool
           short-summary: Enable Application Load Balancer (Application Gateway for Containers) addon.
@@ -3811,6 +3828,49 @@ helps['aks approuting defaultdomain show'] = """
     examples:
       - name: Show the default domain for a cluster.
         text: az aks approuting defaultdomain show --resource-group MyResourceGroup --name MyManagedCluster
+"""
+
+helps['aks approuting gateway'] = """
+    type: group
+    short-summary: Commands to manage App Routing Gateway API implementations.
+    long-summary: A group of commands to manage Gateway API implementations for App Routing in a given cluster.
+"""
+
+helps['aks approuting gateway istio'] = """
+    type: group
+    short-summary: Commands to manage the Istio Gateway API implementation for App Routing.
+    long-summary: A group of commands to manage the Istio-based Gateway API implementation for App Routing in a given cluster.
+"""
+
+helps['aks approuting gateway istio enable'] = """
+    type: command
+    short-summary: Enable Gateway API based ingress on App Routing via Istio without service mesh functionality.
+    long-summary: |
+        This command enables an ingress-only version of Istio as a Gateway API implementation for App Routing
+        in the given cluster. This Istio instance only reconciles Gateway API resources and does not provide
+        service mesh functionality (e.g. mTLS, traffic management between services). Cannot be used
+        simultaneously with Azure Service Mesh (az aks mesh enable).
+    parameters:
+      - name: --aks-custom-headers
+        type: string
+        short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2. Use AKSHTTPCustomFeatures=Microsoft.ContainerService/AppRoutingIstioGatewayAPIPreview to enable the preview feature flag after registering your subscription to use it.
+    examples:
+      - name: Enable Istio Gateway API implementation for App Routing.
+        text: az aks approuting gateway istio enable --resource-group MyResourceGroup --name MyManagedCluster
+"""
+
+helps['aks approuting gateway istio disable'] = """
+    type: command
+    short-summary: Disable Gateway API based ingress on App Routing via Istio.
+    long-summary: |
+        This command disables the ingress-only Istio Gateway API implementation for App Routing in the given cluster.
+    parameters:
+      - name: --aks-custom-headers
+        type: string
+        short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2. Use AKSHTTPCustomFeatures=Microsoft.ContainerService/AppRoutingIstioGatewayAPIPreview to enable the preview feature flag after registering your subscription to use it.
+    examples:
+      - name: Disable Istio Gateway API implementation for App Routing.
+        text: az aks approuting gateway istio disable --resource-group MyResourceGroup --name MyManagedCluster
 """
 
 helps['aks check-network'] = """
