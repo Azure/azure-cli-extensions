@@ -23,9 +23,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-10-31-preview",
+        "version": "2026-03-31-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cleanroom/collaborations/{}", "2025-10-31-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cleanroom/collaborations/{}", "2026-03-31-preview"],
         ]
     }
 
@@ -67,30 +67,6 @@ class Create(AAZCommand):
             help="Gets or sets the consortium type.",
             required=True,
             enum={"ConfidentialACI": "ConfidentialACI"},
-        )
-        _args_schema.user_identity = AAZObjectArg(
-            options=["--user-identity"],
-            arg_group="Properties",
-            help="Gets or sets the user identity.",
-            required=True,
-        )
-
-        user_identity = cls._args_schema.user_identity
-        user_identity.account_type = AAZStrArg(
-            options=["account-type"],
-            help="Account type of the user identity.",
-            required=True,
-            enum={"microsoft": "microsoft"},
-        )
-        user_identity.object_id = AAZStrArg(
-            options=["object-id"],
-            help="Object ID of the user identity.",
-            required=True,
-        )
-        user_identity.tenant_id = AAZStrArg(
-            options=["tenant-id"],
-            help="Tenant ID of the user identity.",
-            required=True,
         )
 
         # define Arg Group "Resource"
@@ -203,7 +179,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-10-31-preview",
+                    "api-version", "2026-03-31-preview",
                     required=True,
                 ),
             }
@@ -236,13 +212,6 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("consortiumType", AAZStrType, ".consortium_type", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("userIdentity", AAZObjectType, ".user_identity", typ_kwargs={"flags": {"required": True}})
-
-            user_identity = _builder.get(".properties.userIdentity")
-            if user_identity is not None:
-                user_identity.set_prop("accountType", AAZStrType, ".account_type", typ_kwargs={"flags": {"required": True}})
-                user_identity.set_prop("objectId", AAZStrType, ".object_id", typ_kwargs={"flags": {"required": True}})
-                user_identity.set_prop("tenantId", AAZStrType, ".tenant_id", typ_kwargs={"flags": {"required": True}})
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -295,6 +264,13 @@ class Create(AAZCommand):
                 serialized_name="clusterEndpoint",
                 flags={"read_only": True},
             )
+            properties.collaboration_state = AAZStrType(
+                serialized_name="collaborationState",
+                flags={"read_only": True},
+            )
+            properties.collaborators = AAZListType(
+                flags={"read_only": True},
+            )
             properties.consortium_arm_id = AAZStrType(
                 serialized_name="consortiumArmId",
                 flags={"read_only": True},
@@ -314,12 +290,27 @@ class Create(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.user_identity = AAZObjectType(
-                serialized_name="userIdentity",
-                flags={"required": True},
-            )
             properties.workloads = AAZListType(
                 flags={"read_only": True},
+            )
+
+            collaborators = cls._schema_on_200_201.properties.collaborators
+            collaborators.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.properties.collaborators.Element
+            _element.email = AAZStrType()
+            _element.identity_type = AAZStrType(
+                serialized_name="identityType",
+            )
+            _element.is_collaboration_owner = AAZBoolType(
+                serialized_name="isCollaborationOwner",
+                flags={"read_only": True},
+            )
+            _element.object_id = AAZStrType(
+                serialized_name="objectId",
+            )
+            _element.tenant_id = AAZStrType(
+                serialized_name="tenantId",
             )
 
             health = cls._schema_on_200_201.properties.health
@@ -352,20 +343,6 @@ class Create(AAZCommand):
 
             _element = cls._schema_on_200_201.properties.managed_on_behalf_of_configuration.mobo_broker_resources.Element
             _element.id = AAZStrType()
-
-            user_identity = cls._schema_on_200_201.properties.user_identity
-            user_identity.account_type = AAZStrType(
-                serialized_name="accountType",
-                flags={"required": True},
-            )
-            user_identity.object_id = AAZStrType(
-                serialized_name="objectId",
-                flags={"required": True},
-            )
-            user_identity.tenant_id = AAZStrType(
-                serialized_name="tenantId",
-                flags={"required": True},
-            )
 
             workloads = cls._schema_on_200_201.properties.workloads
             workloads.Element = AAZObjectType()
