@@ -247,14 +247,66 @@ def _check_existing_backup_instance(resource_client, datasource_id, cluster_name
     return None
 
 
+def _get_cluster_msi_principal_id(cluster_resource, cluster_name):
+    """
+    Extract the managed identity principal ID from an AKS cluster resource.
+
+    Supports both:
+    - System-Assigned Managed Identity (SAMI): identity.principal_id
+    - User-Assigned Managed Identity (UAMI): identity.user_assigned_identities[*].principal_id
+
+    Returns:
+        str: principal ID of the cluster's managed identity
+    Raises:
+        InvalidArgumentValueError if no managed identity is found
+    """
+    identity = cluster_resource.identity
+    if not identity:
+        raise InvalidArgumentValueError(
+            f"Cluster '{cluster_name}' does not have a managed identity configured.\n"
+            f"AKS backup requires a cluster with managed identity enabled."
+        )
+
+    identity_type = getattr(identity, 'type', '') or ''
+
+    # System-assigned identity
+    if identity.principal_id:
+        print(f"\tIdentity type: {identity_type} (system-assigned)")
+        return identity.principal_id
+
+    # User-assigned identity — get the first UAMI's principal ID
+    user_assigned = getattr(identity, 'user_assigned_identities', None)
+    if user_assigned:
+        # user_assigned_identities is a dict: {resource_id: {principal_id, client_id}}
+        if isinstance(user_assigned, dict):
+            for uami_id, uami_info in user_assigned.items():
+                principal_id = None
+                if isinstance(uami_info, dict):
+                    principal_id = uami_info.get('principal_id') or uami_info.get('principalId')
+                else:
+                    principal_id = getattr(uami_info, 'principal_id', None) or getattr(uami_info, 'principalId', None)
+
+                if principal_id:
+                    uami_name = uami_id.split('/')[-1] if '/' in uami_id else uami_id
+                    print(f"\tIdentity type: {identity_type} (user-assigned: {uami_name})")
+                    return principal_id
+
+    raise InvalidArgumentValueError(
+        f"Could not extract managed identity principal ID from cluster '{cluster_name}'.\n"
+        f"Identity type: {identity_type}\n"
+        f"AKS backup requires a cluster with a system-assigned or user-assigned managed identity."
+    )
+
+
 def _validate_cluster(resource_client, datasource_id, cluster_name):
     """Validate the AKS cluster exists and get its details."""
     cluster_resource = resource_client.resources.get_by_id(datasource_id, api_version="2024-08-01")
     cluster_location = cluster_resource.location
     print(f"\tCluster: {cluster_name}")
     print(f"\tLocation: {cluster_location}")
+    cluster_identity_principal_id = _get_cluster_msi_principal_id(cluster_resource, cluster_name)
     print("\t[OK] Cluster validated")
-    return cluster_resource, cluster_location
+    return cluster_resource, cluster_location, cluster_identity_principal_id
 
 
 def _find_existing_backup_resource_group(resource_client, cluster_location):
@@ -523,8 +575,10 @@ def _find_existing_backup_vault(cmd, cluster_subscription_id, cluster_location):
     from azext_dataprotection.aaz.latest.dataprotection.backup_vault import List as _BackupVaultList
 
     try:
-        # List all backup vaults in the subscription
-        vaults = _BackupVaultList(cli_ctx=cmd.cli_ctx)(command_args={})
+        # List all backup vaults in the cluster's subscription
+        vaults = _BackupVaultList(cli_ctx=cmd.cli_ctx)(command_args={
+            "subscription": cluster_subscription_id
+        })
 
         for vault in vaults:
             if vault.get('tags'):
@@ -538,7 +592,7 @@ def _find_existing_backup_vault(cmd, cluster_subscription_id, cluster_location):
     return None
 
 
-def _try_create_vault_with_storage_type(cmd, vault_create_cls, backup_vault_name, backup_resource_group_name, cluster_location, vault_tags, storage_type):
+def _try_create_vault_with_storage_type(cmd, vault_create_cls, backup_vault_name, backup_resource_group_name, cluster_location, vault_tags, storage_type, cluster_subscription_id=None):
     """
     Attempt to create a backup vault with the given storage type.
 
@@ -557,6 +611,9 @@ def _try_create_vault_with_storage_type(cmd, vault_create_cls, backup_vault_name
         "cross_subscription_restore_state": "Enabled",
         "tags": vault_tags
     }
+
+    if cluster_subscription_id:
+        backup_vault_args["subscription"] = cluster_subscription_id
 
     # Enable CRR only for GRS vaults (requires paired region)
     if storage_type == 'GeoRedundant':
@@ -583,7 +640,8 @@ def _setup_backup_vault(cmd, backup_strategy, backup_vault_id, cluster_subscript
         from azext_dataprotection.aaz.latest.dataprotection.backup_vault import Show as _BackupVaultShow
         backup_vault = _BackupVaultShow(cli_ctx=cmd.cli_ctx)(command_args={
             "vault_name": backup_vault_name,
-            "resource_group": vault_rg
+            "resource_group": vault_rg,
+            "subscription": cluster_subscription_id
         })
     else:
         # Search for existing backup vault with matching tag
@@ -613,7 +671,7 @@ def _setup_backup_vault(cmd, backup_strategy, backup_vault_id, cluster_subscript
                 print(f"\tTrying storage type: {try_type}...")
                 backup_vault = _try_create_vault_with_storage_type(
                     cmd, _BackupVaultCreate, backup_vault_name, backup_resource_group_name,
-                    cluster_location, vault_tags, try_type)
+                    cluster_location, vault_tags, try_type, cluster_subscription_id)
                 if backup_vault:
                     storage_type = try_type
                     print(f"\tVault created with storage type: {storage_type}")
@@ -652,7 +710,7 @@ def _setup_backup_vault(cmd, backup_strategy, backup_vault_id, cluster_subscript
     return backup_vault, backup_vault_name
 
 
-def _setup_backup_policy(cmd, backup_vault, backup_vault_name, backup_resource_group_name, backup_strategy, backup_vault_id, backup_policy_id):
+def _setup_backup_policy(cmd, backup_vault, backup_vault_name, backup_resource_group_name, backup_strategy, backup_vault_id, backup_policy_id, cluster_subscription_id):
     """Create or use backup policy."""
     from azext_dataprotection.manual.aaz_operations.backup_policy import Create as _BackupPolicyCreate
     from azext_dataprotection.aaz.latest.dataprotection.backup_policy import List as _BackupPolicyList
@@ -675,7 +733,8 @@ def _setup_backup_policy(cmd, backup_vault, backup_vault_name, backup_resource_g
         try:
             policies = _BackupPolicyList(cli_ctx=cmd.cli_ctx)(command_args={
                 "resource_group": vault_rg_for_policy,
-                "vault_name": backup_vault_name
+                "vault_name": backup_vault_name,
+                "subscription": cluster_subscription_id
             })
             for policy in policies:
                 if policy.get('name') == backup_policy_name:
@@ -696,7 +755,8 @@ def _setup_backup_policy(cmd, backup_vault, backup_vault_name, backup_resource_g
                 "backup_policy_name": backup_policy_name,
                 "resource_group": vault_rg_for_policy,
                 "vault_name": backup_vault_name,
-                "policy": policy_config
+                "policy": policy_config,
+                "subscription": cluster_subscription_id
             })
 
     print(f"\tBackup Policy: {backup_policy.get('id', backup_policy_id if backup_policy_id else 'N/A')}")
@@ -751,7 +811,7 @@ def _setup_trusted_access(cmd, cluster_subscription_id, cluster_resource_group_n
     print("\t[OK] Trusted access configured - vault can now access cluster for backup operations")
 
 
-def _create_backup_instance(cmd, cluster_name, cluster_resource_group_name, datasource_id, cluster_location, backup_vault_name, backup_resource_group_name, backup_strategy, backup_vault_id, backup_policy, backup_policy_id, backup_resource_group):
+def _create_backup_instance(cmd, cluster_name, cluster_resource_group_name, datasource_id, cluster_location, backup_vault_name, backup_resource_group_name, backup_strategy, backup_vault_id, backup_policy, backup_policy_id, backup_resource_group, cluster_subscription_id):
     """Create backup instance."""
     from azext_dataprotection.manual.aaz_operations.backup_instance import ValidateAndCreate as _BackupInstanceValidateAndCreate
     import uuid
@@ -780,7 +840,8 @@ def _create_backup_instance(cmd, cluster_name, cluster_resource_group_name, data
         "backup_instance_name": backup_instance_name,
         "resource_group": vault_rg_for_bi,
         "vault_name": backup_vault_name,
-        "backup_instance": backup_instance_payload
+        "backup_instance": backup_instance_payload,
+        "subscription": cluster_subscription_id
     }).result()
 
     # Check and report the protection state
@@ -843,6 +904,40 @@ def dataprotection_enable_backup_helper(cmd, datasource_id: str, backup_strategy
     if resource_tags:
         print(f"Resource Tags: {json.dumps(resource_tags)}")
 
+    # Show execution plan and get user confirmation
+    print("\nThis command will perform the following steps:")
+    print("  [1] Validate the AKS cluster")
+    print("  [2] Create or reuse a backup resource group (AKSAzureBackup_<region>)")
+    print("  [3] Create or reuse a storage account for backup data")
+    print("  [4] Install the data protection extension on the cluster")
+    print("  [5] Create or reuse a backup vault")
+    print("  [6] Create or reuse a backup policy")
+    print("  [7] Configure trusted access between vault and cluster")
+    print("  [8] Create a backup instance to start protection")
+    print("")
+    print("The following RBAC role assignments will be created:")
+    print("  - Cluster MSI   → Contributor on Backup Resource Group")
+    print("  - Extension MSI → Storage Blob Data Contributor on Storage Account")
+    print("  - Vault MSI     → Reader on AKS Cluster")
+    print("  - Vault MSI     → Reader on Backup Resource Group")
+    print("  - Vault MSI     → Disk Snapshot Contributor on Backup Resource Group")
+    print("  - Vault MSI     → Storage Blob Data Reader on Storage Account")
+    print("")
+    print(f"  Subscription: {cluster_subscription_id}")
+    print(f"  Cluster:      {cluster_name}")
+    print(f"  Region:       (will be determined from cluster)")
+    print(f"  Strategy:     {backup_strategy}")
+    print("")
+    print("NOTE: This command requires elevated privileges (Owner or")
+    print("  User Access Administrator) on the subscription to create")
+    print("  RBAC role assignments listed above.")
+    print("")
+
+    from knack.prompting import prompt_y_n
+    if not prompt_y_n("Do you want to proceed?", default='y'):
+        print("Operation cancelled by user.")
+        return
+
     from azure.mgmt.resource import ResourceManagementClient
     resource_client = get_mgmt_service_client(cmd.cli_ctx, ResourceManagementClient, subscription_id=cluster_subscription_id)
 
@@ -852,13 +947,13 @@ def dataprotection_enable_backup_helper(cmd, datasource_id: str, backup_strategy
 
     # Step 1: Validate cluster
     print("\n[1/8] Validating cluster...")
-    cluster_resource, cluster_location = _validate_cluster(resource_client, datasource_id, cluster_name)
+    cluster_resource, cluster_location, cluster_identity_principal_id = _validate_cluster(resource_client, datasource_id, cluster_name)
 
     # Step 2: Setup resource group
     print("\n[2/8] Setting up backup resource group...")
     backup_resource_group, backup_resource_group_name = _setup_resource_group(
         cmd, resource_client, backup_resource_group_id, cluster_location, cluster_name,
-        cluster_resource.identity.principal_id, resource_tags)
+        cluster_identity_principal_id, resource_tags)
 
     # Step 3 & 4: Check extension first, then handle storage account accordingly
     # If the extension is already installed, use its configured storage account
@@ -929,18 +1024,27 @@ def dataprotection_enable_backup_helper(cmd, datasource_id: str, backup_strategy
     print("\n[6/8] Setting up backup policy...")
     backup_policy = _setup_backup_policy(
         cmd, backup_vault, backup_vault_name, backup_resource_group_name,
-        backup_strategy, backup_vault_id, backup_policy_id)
+        backup_strategy, backup_vault_id, backup_policy_id, cluster_subscription_id)
 
     # Step 7: Setup trusted access
     print("\n[7/8] Setting up trusted access...")
     _setup_trusted_access(
         cmd, cluster_subscription_id, cluster_resource_group_name, cluster_name, backup_vault)
 
+    # Wait for role assignment propagation before creating backup instance
+    import time
+    wait_seconds = 120
+    print(f"\n\tWaiting {wait_seconds} seconds for permission propagation across Azure AD...")
+    for remaining in range(wait_seconds, 0, -10):
+        print(f"\t  {remaining} seconds remaining...", end='\r')
+        time.sleep(min(10, remaining))
+    print(f"\t  Permission propagation wait complete.      ")
+
     # Step 8: Create backup instance
     print("\n[8/8] Configuring backup instance...")
     backup_instance, policy_id_for_bi = _create_backup_instance(
         cmd, cluster_name, cluster_resource_group_name, datasource_id, cluster_location,
-        backup_vault_name, backup_resource_group_name, backup_strategy, backup_vault_id, backup_policy, backup_policy_id, backup_resource_group)
+        backup_vault_name, backup_resource_group_name, backup_strategy, backup_vault_id, backup_policy, backup_policy_id, backup_resource_group, cluster_subscription_id)
 
     # Print summary
     print("\n" + "=" * 60)
