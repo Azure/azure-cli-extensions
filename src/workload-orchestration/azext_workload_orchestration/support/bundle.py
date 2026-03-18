@@ -480,7 +480,10 @@ def _write_summary_md(bundle_dir, bundle_name, cluster_info, capabilities,
             lines.append("")
             for n in tainted:
                 for t in n["taints"]:
-                    lines.append(f"- **{n['name']}**: `{t.get('key', '?')}={t.get('value', '')}:{t.get('effect', '?')}`")
+                    lines.append(
+                        f"- **{n['name']}**: `{t.get('key', '?')}="
+                        f"{t.get('value', '')}:{t.get('effect', '?')}`"
+                    )
         lines.append("")
 
     # Checks — the main section

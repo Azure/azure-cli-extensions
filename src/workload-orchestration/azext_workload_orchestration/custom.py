@@ -6,4 +6,4 @@
 # --------------------------------------------------------------------------------------------
 
 # Support bundle command
-from azext_workload_orchestration.support import create_support_bundle  # noqa: F401
+from azext_workload_orchestration.support import create_support_bundle  # pylint: disable=unused-import  # noqa: F401

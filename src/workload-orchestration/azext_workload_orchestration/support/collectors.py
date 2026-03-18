@@ -17,7 +17,6 @@ from knack.log import get_logger
 from azext_workload_orchestration.support.consts import (
     DEFAULT_TAIL_LINES,
     DEFAULT_MAX_LOG_SIZE_BYTES,
-    FOLDER_LOGS,
     FOLDER_RESOURCES,
     FOLDER_CLUSTER_INFO,
     WO_NAMESPACE,
@@ -27,7 +26,6 @@ from azext_workload_orchestration.support.utils import (
     write_json,
     write_text,
     create_namespace_log_dir,
-    format_bytes,
 )
 
 logger = get_logger(__name__)
@@ -94,7 +92,7 @@ def collect_cluster_info(clients, bundle_dir):
 
     # Kubernetes version
     version_client = clients["version"]
-    result, err = safe_api_call(version_client.get_code, description="get server version")
+    result, _err = safe_api_call(version_client.get_code, description="get server version")
     if result:
         info["server_version"] = {
             "major": result.major,
@@ -105,7 +103,7 @@ def collect_cluster_info(clients, bundle_dir):
 
     # Node summary
     core = clients["core_v1"]
-    result, err = safe_api_call(core.list_node, description="list nodes")
+    result, _err = safe_api_call(core.list_node, description="list nodes")
     if result:
         nodes = []
         for node in result.items:
@@ -136,7 +134,7 @@ def collect_cluster_info(clients, bundle_dir):
         info["node_count"] = len(nodes)
 
     # Namespace list
-    result, err = safe_api_call(core.list_namespace, description="list namespaces")
+    result, _err = safe_api_call(core.list_namespace, description="list namespaces")
     if result:
         info["namespaces"] = [
             {
@@ -197,7 +195,7 @@ def collect_all_events(clients, bundle_dir):
 def _get_node_roles(node):
     """Extract node roles from labels."""
     roles = []
-    for label, value in (node.metadata.labels or {}).items():
+    for label in (node.metadata.labels or {}):
         if label.startswith("node-role.kubernetes.io/"):
             roles.append(label.split("/")[-1])
     return roles if roles else ["<none>"]
@@ -214,7 +212,7 @@ def collect_namespace_resources(clients, bundle_dir, namespace):
     resources = {}
 
     # Pods
-    result, err = safe_api_call(
+    result, _err = safe_api_call(
         core.list_namespaced_pod, namespace, description=f"list pods in {namespace}"
     )
     if result:
@@ -231,7 +229,7 @@ def collect_namespace_resources(clients, bundle_dir, namespace):
         ]
 
     # Deployments
-    result, err = safe_api_call(
+    result, _err = safe_api_call(
         apps.list_namespaced_deployment, namespace, description=f"list deployments in {namespace}"
     )
     if result:
@@ -246,7 +244,7 @@ def collect_namespace_resources(clients, bundle_dir, namespace):
         ]
 
     # Services
-    result, err = safe_api_call(
+    result, _err = safe_api_call(
         core.list_namespaced_service, namespace, description=f"list services in {namespace}"
     )
     if result:
@@ -264,7 +262,7 @@ def collect_namespace_resources(clients, bundle_dir, namespace):
         ]
 
     # DaemonSets
-    result, err = safe_api_call(
+    result, _err = safe_api_call(
         apps.list_namespaced_daemon_set, namespace, description=f"list daemonsets in {namespace}"
     )
     if result:
@@ -278,7 +276,7 @@ def collect_namespace_resources(clients, bundle_dir, namespace):
         ]
 
     # StatefulSets
-    result, err = safe_api_call(
+    result, _err = safe_api_call(
         apps.list_namespaced_stateful_set, namespace,
         description=f"list statefulsets in {namespace}"
     )
@@ -293,7 +291,7 @@ def collect_namespace_resources(clients, bundle_dir, namespace):
         ]
 
     # Events
-    result, err = safe_api_call(
+    result, _err = safe_api_call(
         core.list_namespaced_event, namespace, description=f"list events in {namespace}"
     )
     if result:
@@ -310,7 +308,7 @@ def collect_namespace_resources(clients, bundle_dir, namespace):
         ]
 
     # ConfigMaps (names only, not data — could contain secrets)
-    result, err = safe_api_call(
+    result, _err = safe_api_call(
         core.list_namespaced_config_map, namespace, description=f"list configmaps in {namespace}"
     )
     if result:
@@ -320,7 +318,7 @@ def collect_namespace_resources(clients, bundle_dir, namespace):
         ]
 
     # ReplicaSets
-    result, err = safe_api_call(
+    result, _err = safe_api_call(
         apps.list_namespaced_replica_set, namespace,
         description=f"list replicasets in {namespace}"
     )
@@ -340,7 +338,7 @@ def collect_namespace_resources(clients, bundle_dir, namespace):
     try:
         from kubernetes import client as _k8s_client
         batch_v1 = _k8s_client.BatchV1Api()
-        result, err = safe_api_call(
+        result, _err = safe_api_call(
             batch_v1.list_namespaced_job, namespace,
             description=f"list jobs in {namespace}"
         )
@@ -359,7 +357,7 @@ def collect_namespace_resources(clients, bundle_dir, namespace):
             ]
 
         # CronJobs
-        result, err = safe_api_call(
+        result, _err = safe_api_call(
             batch_v1.list_namespaced_cron_job, namespace,
             description=f"list cronjobs in {namespace}"
         )
@@ -375,14 +373,14 @@ def collect_namespace_resources(clients, bundle_dir, namespace):
                 }
                 for cj in result.items
             ]
-    except Exception as ex:
+    except Exception as ex:  # pylint: disable=broad-exception-caught
         logger.debug("Batch API not available for %s: %s", namespace, ex)
 
     # Ingresses
     try:
         from kubernetes import client as _k8s_client
         networking_v1 = _k8s_client.NetworkingV1Api()
-        result, err = safe_api_call(
+        result, _err = safe_api_call(
             networking_v1.list_namespaced_ingress, namespace,
             description=f"list ingresses in {namespace}"
         )
@@ -399,7 +397,7 @@ def collect_namespace_resources(clients, bundle_dir, namespace):
             ]
 
         # NetworkPolicies
-        result, err = safe_api_call(
+        result, _err = safe_api_call(
             networking_v1.list_namespaced_network_policy, namespace,
             description=f"list network policies in {namespace}"
         )
@@ -407,18 +405,20 @@ def collect_namespace_resources(clients, bundle_dir, namespace):
             resources["network_policies"] = [
                 {
                     "name": np.metadata.name,
-                    "pod_selector": dict(np.spec.pod_selector.match_labels or {}) if np.spec.pod_selector and np.spec.pod_selector.match_labels else {},
+                    "pod_selector": (dict(np.spec.pod_selector.match_labels or {})
+                                            if np.spec.pod_selector and np.spec.pod_selector.match_labels
+                                            else {}),
                     "policy_types": np.spec.policy_types or [],
                     "ingress_rules": len(np.spec.ingress or []) if np.spec.ingress else 0,
                     "egress_rules": len(np.spec.egress or []) if np.spec.egress else 0,
                 }
                 for np in result.items
             ]
-    except Exception as ex:
+    except Exception as ex:  # pylint: disable=broad-exception-caught
         logger.debug("Networking API not available for %s: %s", namespace, ex)
 
     # ServiceAccounts
-    result, err = safe_api_call(
+    result, _err = safe_api_call(
         core.list_namespaced_service_account, namespace,
         description=f"list service accounts in {namespace}"
     )
@@ -506,11 +506,8 @@ def collect_cluster_resources(clients, bundle_dir):
 
     # StorageClasses
     storage = clients["storage_v1"]
-    result, err = safe_api_call(storage.list_storage_class, description="list storage classes")
+    result, _err = safe_api_call(storage.list_storage_class, description="list storage classes")
     if result:
-        from azext_workload_orchestration.support.consts import (
-            SC_DEFAULT_ANNOTATION_V1, SC_DEFAULT_ANNOTATION_BETA,
-        )
         cluster["storage_classes"] = [
             {
                 "name": sc.metadata.name,
@@ -523,7 +520,7 @@ def collect_cluster_resources(clients, bundle_dir):
 
     # PersistentVolumes
     core = clients["core_v1"]
-    result, err = safe_api_call(core.list_persistent_volume, description="list PVs")
+    result, _err = safe_api_call(core.list_persistent_volume, description="list PVs")
     if result:
         cluster["persistent_volumes"] = [
             {
@@ -538,7 +535,7 @@ def collect_cluster_resources(clients, bundle_dir):
 
     # Validating Webhooks
     admission = clients["admissionregistration_v1"]
-    result, err = safe_api_call(
+    result, _err = safe_api_call(
         admission.list_validating_webhook_configuration,
         description="list validating webhooks",
     )
@@ -553,7 +550,7 @@ def collect_cluster_resources(clients, bundle_dir):
         ]
 
     # Mutating Webhooks
-    result, err = safe_api_call(
+    result, _err = safe_api_call(
         admission.list_mutating_webhook_configuration,
         description="list mutating webhooks",
     )
@@ -569,7 +566,7 @@ def collect_cluster_resources(clients, bundle_dir):
 
     # CRDs (names only — full JSON is huge)
     custom = clients["custom_objects"]
-    result, err = safe_api_call(
+    result, _err = safe_api_call(
         custom.list_cluster_custom_object,
         "apiextensions.k8s.io", "v1", "customresourcedefinitions",
         description="list CRDs",
@@ -584,7 +581,7 @@ def collect_cluster_resources(clients, bundle_dir):
         ]
 
     # CSI Drivers
-    result, err = safe_api_call(storage.list_csi_driver, description="list CSI drivers")
+    result, _err = safe_api_call(storage.list_csi_driver, description="list CSI drivers")
     if result:
         cluster["csi_drivers"] = [
             {
@@ -652,7 +649,7 @@ def collect_container_logs(clients, bundle_dir, namespace, tail_lines=DEFAULT_TA
     collected = 0
 
     def _fetch_log(pod_name, container_name):
-        log_result, log_err = safe_api_call(
+        log_result, _log_err = safe_api_call(
             core.read_namespaced_pod_log,
             pod_name, namespace,
             container=container_name,
@@ -691,7 +688,7 @@ def collect_container_logs(clients, bundle_dir, namespace, tail_lines=DEFAULT_TA
                     collected += 1
             except TimeoutError:
                 logger.debug("Timeout collecting log for %s/%s", pod, container)
-            except Exception as ex:
+            except Exception as ex:  # pylint: disable=broad-exception-caught
                 logger.debug("Failed to collect log for %s/%s: %s", pod, container, ex)
 
     logger.info("Collected %d/%d container logs in %s", collected, len(targets), namespace)
@@ -709,7 +706,7 @@ def collect_wo_components(clients, bundle_dir, capabilities):
 
     # Symphony targets (if symphony is installed)
     if capabilities.get("has_symphony"):
-        result, err = safe_api_call(
+        result, _err = safe_api_call(
             custom.list_namespaced_custom_object,
             "fabric.symphony", "v1", WO_NAMESPACE, "targets",
             description="list Symphony targets",
@@ -725,7 +722,7 @@ def collect_wo_components(clients, bundle_dir, capabilities):
 
     # cert-manager ClusterIssuers (if cert-manager is installed)
     if capabilities.get("has_cert_manager"):
-        result, err = safe_api_call(
+        result, _err = safe_api_call(
             custom.list_cluster_custom_object,
             "cert-manager.io", "v1", "clusterissuers",
             description="list ClusterIssuers",
@@ -741,7 +738,7 @@ def collect_wo_components(clients, bundle_dir, capabilities):
 
     # Gatekeeper constraints (if gatekeeper is installed)
     if capabilities.get("has_gatekeeper"):
-        result, err = safe_api_call(
+        result, _err = safe_api_call(
             custom.list_cluster_custom_object,
             "templates.gatekeeper.sh", "v1", "constrainttemplates",
             description="list Gatekeeper ConstraintTemplates",
@@ -776,7 +773,7 @@ def collect_previous_logs(clients, bundle_dir, namespace, tail_lines=DEFAULT_TAI
     Returns count of previous logs collected.
     """
     core = clients["core_v1"]
-    result, err = safe_api_call(
+    result, _err = safe_api_call(
         core.list_namespaced_pod, namespace,
         description=f"list pods for previous logs in {namespace}",
     )
@@ -789,7 +786,7 @@ def collect_previous_logs(clients, bundle_dir, namespace, tail_lines=DEFAULT_TAI
     for pod in result.items:
         for cs in (pod.status.container_statuses or []):
             if cs.restart_count and cs.restart_count > 0:
-                log_result, log_err = safe_api_call(
+                log_result, _log_err = safe_api_call(
                     core.read_namespaced_pod_log,
                     pod.metadata.name, namespace,
                     container=cs.name,
@@ -823,7 +820,7 @@ def collect_resource_quotas(clients, bundle_dir, namespace):
     quota_data = {}
 
     # ResourceQuotas
-    result, err = safe_api_call(
+    result, _err = safe_api_call(
         core.list_namespaced_resource_quota, namespace,
         description=f"list resource quotas in {namespace}",
     )
@@ -838,7 +835,7 @@ def collect_resource_quotas(clients, bundle_dir, namespace):
         ]
 
     # LimitRanges
-    result, err = safe_api_call(
+    result, _err = safe_api_call(
         core.list_namespaced_limit_range, namespace,
         description=f"list limit ranges in {namespace}",
     )
@@ -882,7 +879,7 @@ def collect_metrics(clients, bundle_dir, capabilities):
     metrics = {}
 
     # Node metrics
-    result, err = safe_api_call(
+    result, _err = safe_api_call(
         custom.list_cluster_custom_object,
         "metrics.k8s.io", "v1beta1", "nodes",
         description="get node metrics",
@@ -898,7 +895,7 @@ def collect_metrics(clients, bundle_dir, capabilities):
         ]
 
     # Pod metrics (WO namespace)
-    result, err = safe_api_call(
+    result, _err = safe_api_call(
         custom.list_namespaced_custom_object,
         "metrics.k8s.io", "v1beta1", WO_NAMESPACE, "pods",
         description="get WO pod metrics",
@@ -936,7 +933,7 @@ def collect_metrics(clients, bundle_dir, capabilities):
 def collect_pvcs(clients, bundle_dir, namespace):
     """Collect PVC information for a namespace."""
     core = clients["core_v1"]
-    result, err = safe_api_call(
+    result, _err = safe_api_call(
         core.list_namespaced_persistent_volume_claim, namespace,
         description=f"list PVCs in {namespace}",
     )
@@ -993,7 +990,7 @@ def collect_network_config(clients, bundle_dir):
         logger.debug("kube-proxy ConfigMap not found: %s", err)
 
     # 2. Services with external access (LoadBalancer, NodePort, ExternalName)
-    result, err = safe_api_call(
+    result, _err = safe_api_call(
         core.list_service_for_all_namespaces,
         description="list all services for network config",
     )
@@ -1030,7 +1027,7 @@ def collect_network_config(clients, bundle_dir):
     try:
         from kubernetes import client as _k8s_client
         discovery_v1 = _k8s_client.DiscoveryV1Api()
-        result, err = safe_api_call(
+        result, _err = safe_api_call(
             discovery_v1.list_namespaced_endpoint_slice, "kube-system",
             description="list endpoint slices in kube-system",
         )
@@ -1047,11 +1044,11 @@ def collect_network_config(clients, bundle_dir):
                 }
                 for eps in result.items
             ]
-    except Exception as ex:
+    except Exception as ex:  # pylint: disable=broad-exception-caught
         logger.debug("Discovery API not available: %s", ex)
 
     # 4. Cluster CIDR / pod CIDR from node specs
-    result, err = safe_api_call(
+    result, _err = safe_api_call(
         core.list_node, description="list nodes for pod CIDRs",
     )
     if result:
