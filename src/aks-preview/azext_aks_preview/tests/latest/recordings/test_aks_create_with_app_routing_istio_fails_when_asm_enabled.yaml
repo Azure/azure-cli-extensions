@@ -1,0 +1,353 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks get-versions
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -l --query
+      User-Agent:
+      - AZURECLI/2.84.0 (DOCKER) azsdk-python-core/1.38.0 Python/3.12.9 (Linux-6.8.0-1044-azure-x86_64-with-glibc2.38)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/centraluseuap/kubernetesVersions?api-version=2026-01-02-preview
+  response:
+    body:
+      string: "{\n \"values\": [\n  {\n   \"version\": \"1.35\",\n   \"capabilities\"\
+        : {\n    \"supportPlan\": [\n     \"KubernetesOfficial\"\n    ]\n   },\n \
+        \  \"isPreview\": true,\n   \"patchVersions\": {\n    \"1.35.0\": {\n    \
+        \ \"upgrades\": []\n    }\n   }\n  },\n  {\n   \"version\": \"1.32\",\n  \
+        \ \"capabilities\": {\n    \"supportPlan\": [\n     \"KubernetesOfficial\"\
+        ,\n     \"AKSLongTermSupport\"\n    ]\n   },\n   \"patchVersions\": {\n  \
+        \  \"1.32.0\": {\n     \"upgrades\": [\n      \"1.32.11\",\n      \"1.32.10\"\
+        ,\n      \"1.32.9\",\n      \"1.32.8\",\n      \"1.32.7\",\n      \"1.32.6\"\
+        ,\n      \"1.32.5\",\n      \"1.32.4\",\n      \"1.32.3\",\n      \"1.32.2\"\
+        ,\n      \"1.32.1\",\n      \"1.33.7\",\n      \"1.33.6\",\n      \"1.33.5\"\
+        ,\n      \"1.33.4\",\n      \"1.33.3\",\n      \"1.33.2\",\n      \"1.33.1\"\
+        ,\n      \"1.33.0\"\n     ]\n    },\n    \"1.32.1\": {\n     \"upgrades\"\
+        : [\n      \"1.32.11\",\n      \"1.32.10\",\n      \"1.32.9\",\n      \"1.32.8\"\
+        ,\n      \"1.32.7\",\n      \"1.32.6\",\n      \"1.32.5\",\n      \"1.32.4\"\
+        ,\n      \"1.32.3\",\n      \"1.32.2\",\n      \"1.33.7\",\n      \"1.33.6\"\
+        ,\n      \"1.33.5\",\n      \"1.33.4\",\n      \"1.33.3\",\n      \"1.33.2\"\
+        ,\n      \"1.33.1\",\n      \"1.33.0\"\n     ]\n    },\n    \"1.32.10\": {\n\
+        \     \"upgrades\": [\n      \"1.32.11\",\n      \"1.33.7\",\n      \"1.33.6\"\
+        ,\n      \"1.33.5\",\n      \"1.33.4\",\n      \"1.33.3\",\n      \"1.33.2\"\
+        ,\n      \"1.33.1\",\n      \"1.33.0\"\n     ]\n    },\n    \"1.32.11\": {\n\
+        \     \"upgrades\": [\n      \"1.33.7\",\n      \"1.33.6\",\n      \"1.33.5\"\
+        ,\n      \"1.33.4\",\n      \"1.33.3\",\n      \"1.33.2\",\n      \"1.33.1\"\
+        ,\n      \"1.33.0\"\n     ]\n    },\n    \"1.32.2\": {\n     \"upgrades\"\
+        : [\n      \"1.32.11\",\n      \"1.32.10\",\n      \"1.32.9\",\n      \"1.32.8\"\
+        ,\n      \"1.32.7\",\n      \"1.32.6\",\n      \"1.32.5\",\n      \"1.32.4\"\
+        ,\n      \"1.32.3\",\n      \"1.33.7\",\n      \"1.33.6\",\n      \"1.33.5\"\
+        ,\n      \"1.33.4\",\n      \"1.33.3\",\n      \"1.33.2\",\n      \"1.33.1\"\
+        ,\n      \"1.33.0\"\n     ]\n    },\n    \"1.32.3\": {\n     \"upgrades\"\
+        : [\n      \"1.32.11\",\n      \"1.32.10\",\n      \"1.32.9\",\n      \"1.32.8\"\
+        ,\n      \"1.32.7\",\n      \"1.32.6\",\n      \"1.32.5\",\n      \"1.32.4\"\
+        ,\n      \"1.33.7\",\n      \"1.33.6\",\n      \"1.33.5\",\n      \"1.33.4\"\
+        ,\n      \"1.33.3\",\n      \"1.33.2\",\n      \"1.33.1\",\n      \"1.33.0\"\
+        \n     ]\n    },\n    \"1.32.4\": {\n     \"upgrades\": [\n      \"1.32.11\"\
+        ,\n      \"1.32.10\",\n      \"1.32.9\",\n      \"1.32.8\",\n      \"1.32.7\"\
+        ,\n      \"1.32.6\",\n      \"1.32.5\",\n      \"1.33.7\",\n      \"1.33.6\"\
+        ,\n      \"1.33.5\",\n      \"1.33.4\",\n      \"1.33.3\",\n      \"1.33.2\"\
+        ,\n      \"1.33.1\",\n      \"1.33.0\"\n     ]\n    },\n    \"1.32.5\": {\n\
+        \     \"upgrades\": [\n      \"1.32.11\",\n      \"1.32.10\",\n      \"1.32.9\"\
+        ,\n      \"1.32.8\",\n      \"1.32.7\",\n      \"1.32.6\",\n      \"1.33.7\"\
+        ,\n      \"1.33.6\",\n      \"1.33.5\",\n      \"1.33.4\",\n      \"1.33.3\"\
+        ,\n      \"1.33.2\",\n      \"1.33.1\",\n      \"1.33.0\"\n     ]\n    },\n\
+        \    \"1.32.6\": {\n     \"upgrades\": [\n      \"1.32.11\",\n      \"1.32.10\"\
+        ,\n      \"1.32.9\",\n      \"1.32.8\",\n      \"1.32.7\",\n      \"1.33.7\"\
+        ,\n      \"1.33.6\",\n      \"1.33.5\",\n      \"1.33.4\",\n      \"1.33.3\"\
+        ,\n      \"1.33.2\",\n      \"1.33.1\",\n      \"1.33.0\"\n     ]\n    },\n\
+        \    \"1.32.7\": {\n     \"upgrades\": [\n      \"1.32.11\",\n      \"1.32.10\"\
+        ,\n      \"1.32.9\",\n      \"1.32.8\",\n      \"1.33.7\",\n      \"1.33.6\"\
+        ,\n      \"1.33.5\",\n      \"1.33.4\",\n      \"1.33.3\",\n      \"1.33.2\"\
+        ,\n      \"1.33.1\",\n      \"1.33.0\"\n     ]\n    },\n    \"1.32.8\": {\n\
+        \     \"upgrades\": [\n      \"1.32.11\",\n      \"1.32.10\",\n      \"1.32.9\"\
+        ,\n      \"1.33.7\",\n      \"1.33.6\",\n      \"1.33.5\",\n      \"1.33.4\"\
+        ,\n      \"1.33.3\",\n      \"1.33.2\",\n      \"1.33.1\",\n      \"1.33.0\"\
+        \n     ]\n    },\n    \"1.32.9\": {\n     \"upgrades\": [\n      \"1.32.11\"\
+        ,\n      \"1.32.10\",\n      \"1.33.7\",\n      \"1.33.6\",\n      \"1.33.5\"\
+        ,\n      \"1.33.4\",\n      \"1.33.3\",\n      \"1.33.2\",\n      \"1.33.1\"\
+        ,\n      \"1.33.0\"\n     ]\n    }\n   }\n  },\n  {\n   \"version\": \"1.34\"\
+        ,\n   \"capabilities\": {\n    \"supportPlan\": [\n     \"KubernetesOfficial\"\
+        ,\n     \"AKSLongTermSupport\"\n    ]\n   },\n   \"patchVersions\": {\n  \
+        \  \"1.34.0\": {\n     \"upgrades\": [\n      \"1.34.3\",\n      \"1.34.2\"\
+        ,\n      \"1.34.1\",\n      \"1.35.0\"\n     ]\n    },\n    \"1.34.1\": {\n\
+        \     \"upgrades\": [\n      \"1.34.3\",\n      \"1.34.2\",\n      \"1.35.0\"\
+        \n     ]\n    },\n    \"1.34.2\": {\n     \"upgrades\": [\n      \"1.34.3\"\
+        ,\n      \"1.35.0\"\n     ]\n    },\n    \"1.34.3\": {\n     \"upgrades\"\
+        : [\n      \"1.35.0\"\n     ]\n    }\n   }\n  },\n  {\n   \"version\": \"\
+        1.33\",\n   \"capabilities\": {\n    \"supportPlan\": [\n     \"KubernetesOfficial\"\
+        ,\n     \"AKSLongTermSupport\"\n    ]\n   },\n   \"isDefault\": true,\n  \
+        \ \"patchVersions\": {\n    \"1.33.0\": {\n     \"upgrades\": [\n      \"\
+        1.33.7\",\n      \"1.33.6\",\n      \"1.33.5\",\n      \"1.33.4\",\n     \
+        \ \"1.33.3\",\n      \"1.33.2\",\n      \"1.33.1\",\n      \"1.34.3\",\n \
+        \     \"1.34.2\",\n      \"1.34.1\",\n      \"1.34.0\"\n     ]\n    },\n \
+        \   \"1.33.1\": {\n     \"upgrades\": [\n      \"1.33.7\",\n      \"1.33.6\"\
+        ,\n      \"1.33.5\",\n      \"1.33.4\",\n      \"1.33.3\",\n      \"1.33.2\"\
+        ,\n      \"1.34.3\",\n      \"1.34.2\",\n      \"1.34.1\",\n      \"1.34.0\"\
+        \n     ]\n    },\n    \"1.33.2\": {\n     \"upgrades\": [\n      \"1.33.7\"\
+        ,\n      \"1.33.6\",\n      \"1.33.5\",\n      \"1.33.4\",\n      \"1.33.3\"\
+        ,\n      \"1.34.3\",\n      \"1.34.2\",\n      \"1.34.1\",\n      \"1.34.0\"\
+        \n     ]\n    },\n    \"1.33.3\": {\n     \"upgrades\": [\n      \"1.33.7\"\
+        ,\n      \"1.33.6\",\n      \"1.33.5\",\n      \"1.33.4\",\n      \"1.34.3\"\
+        ,\n      \"1.34.2\",\n      \"1.34.1\",\n      \"1.34.0\"\n     ]\n    },\n\
+        \    \"1.33.4\": {\n     \"upgrades\": [\n      \"1.33.7\",\n      \"1.33.6\"\
+        ,\n      \"1.33.5\",\n      \"1.34.3\",\n      \"1.34.2\",\n      \"1.34.1\"\
+        ,\n      \"1.34.0\"\n     ]\n    },\n    \"1.33.5\": {\n     \"upgrades\"\
+        : [\n      \"1.33.7\",\n      \"1.33.6\",\n      \"1.34.3\",\n      \"1.34.2\"\
+        ,\n      \"1.34.1\",\n      \"1.34.0\"\n     ]\n    },\n    \"1.33.6\": {\n\
+        \     \"upgrades\": [\n      \"1.33.7\",\n      \"1.34.3\",\n      \"1.34.2\"\
+        ,\n      \"1.34.1\",\n      \"1.34.0\"\n     ]\n    },\n    \"1.33.7\": {\n\
+        \     \"upgrades\": [\n      \"1.34.3\",\n      \"1.34.2\",\n      \"1.34.1\"\
+        ,\n      \"1.34.0\"\n     ]\n    }\n   }\n  },\n  {\n   \"version\": \"1.31\"\
+        ,\n   \"capabilities\": {\n    \"supportPlan\": [\n     \"AKSLongTermSupport\"\
+        \n    ]\n   },\n   \"patchVersions\": {\n    \"1.31.100\": {\n     \"upgrades\"\
+        : [\n      \"1.34.3\",\n      \"1.34.2\",\n      \"1.34.1\",\n      \"1.34.0\"\
+        ,\n      \"1.33.7\",\n      \"1.33.6\",\n      \"1.33.5\",\n      \"1.33.4\"\
+        ,\n      \"1.33.3\",\n      \"1.33.2\",\n      \"1.33.1\",\n      \"1.33.0\"\
+        ,\n      \"1.32.11\",\n      \"1.32.10\",\n      \"1.32.9\",\n      \"1.32.8\"\
+        ,\n      \"1.32.7\",\n      \"1.32.6\",\n      \"1.32.5\",\n      \"1.32.4\"\
+        ,\n      \"1.32.3\",\n      \"1.32.2\",\n      \"1.32.1\",\n      \"1.32.0\"\
+        \n     ]\n    },\n    \"1.31.13\": {\n     \"upgrades\": [\n      \"1.34.3\"\
+        ,\n      \"1.34.2\",\n      \"1.34.1\",\n      \"1.34.0\",\n      \"1.33.7\"\
+        ,\n      \"1.33.6\",\n      \"1.33.5\",\n      \"1.33.4\",\n      \"1.33.3\"\
+        ,\n      \"1.33.2\",\n      \"1.33.1\",\n      \"1.33.0\",\n      \"1.32.11\"\
+        ,\n      \"1.32.10\",\n      \"1.32.9\",\n      \"1.32.8\",\n      \"1.32.7\"\
+        ,\n      \"1.32.6\",\n      \"1.32.5\",\n      \"1.32.4\",\n      \"1.32.3\"\
+        ,\n      \"1.32.2\",\n      \"1.32.1\",\n      \"1.32.0\",\n      \"1.31.100\"\
+        \n     ]\n    }\n   }\n  },\n  {\n   \"version\": \"1.30\",\n   \"capabilities\"\
+        : {\n    \"supportPlan\": [\n     \"AKSLongTermSupport\"\n    ]\n   },\n \
+        \  \"patchVersions\": {\n    \"1.30.100\": {\n     \"upgrades\": [\n     \
+        \ \"1.33.7\",\n      \"1.33.6\",\n      \"1.33.5\",\n      \"1.33.4\",\n \
+        \     \"1.33.3\",\n      \"1.33.2\",\n      \"1.33.1\",\n      \"1.33.0\"\
+        ,\n      \"1.32.11\",\n      \"1.32.10\",\n      \"1.32.9\",\n      \"1.32.8\"\
+        ,\n      \"1.32.7\",\n      \"1.32.6\",\n      \"1.32.5\",\n      \"1.32.4\"\
+        ,\n      \"1.32.3\",\n      \"1.32.2\",\n      \"1.32.1\",\n      \"1.32.0\"\
+        ,\n      \"1.31.100\",\n      \"1.31.13\",\n      \"1.30.101\"\n     ]\n \
+        \   },\n    \"1.30.101\": {\n     \"upgrades\": [\n      \"1.32.11\",\n  \
+        \    \"1.32.10\",\n      \"1.32.9\",\n      \"1.32.8\",\n      \"1.32.7\"\
+        ,\n      \"1.32.6\",\n      \"1.32.5\",\n      \"1.32.4\",\n      \"1.32.3\"\
+        ,\n      \"1.32.2\",\n      \"1.32.1\",\n      \"1.32.0\",\n      \"1.31.100\"\
+        ,\n      \"1.31.13\",\n      \"1.33.7\",\n      \"1.33.6\",\n      \"1.33.5\"\
+        ,\n      \"1.33.4\",\n      \"1.33.3\",\n      \"1.33.2\",\n      \"1.33.1\"\
+        ,\n      \"1.33.0\"\n     ]\n    }\n   }\n  },\n  {\n   \"version\": \"1.29\"\
+        ,\n   \"capabilities\": {\n    \"supportPlan\": [\n     \"AKSLongTermSupport\"\
+        \n    ]\n   },\n   \"patchVersions\": {\n    \"1.29.100\": {\n     \"upgrades\"\
+        : [\n      \"1.29.101\",\n      \"1.32.11\",\n      \"1.32.10\",\n      \"\
+        1.32.9\",\n      \"1.32.8\",\n      \"1.32.7\",\n      \"1.32.6\",\n     \
+        \ \"1.32.5\",\n      \"1.32.4\",\n      \"1.32.3\",\n      \"1.32.2\",\n \
+        \     \"1.32.1\",\n      \"1.32.0\",\n      \"1.31.100\",\n      \"1.31.13\"\
+        ,\n      \"1.30.101\",\n      \"1.30.100\"\n     ]\n    },\n    \"1.29.101\"\
+        : {\n     \"upgrades\": [\n      \"1.32.11\",\n      \"1.32.10\",\n      \"\
+        1.32.9\",\n      \"1.32.8\",\n      \"1.32.7\",\n      \"1.32.6\",\n     \
+        \ \"1.32.5\",\n      \"1.32.4\",\n      \"1.32.3\",\n      \"1.32.2\",\n \
+        \     \"1.32.1\",\n      \"1.32.0\",\n      \"1.31.100\",\n      \"1.31.13\"\
+        ,\n      \"1.30.101\",\n      \"1.30.100\"\n     ]\n    }\n   }\n  }\n ]\n\
+        }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '8401'
+      content-type:
+      - application/json
+      date:
+      - Wed, 11 Mar 2026 15:54:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - appId=705ac000-bf67-4eed-9ba0-9ee723df283a,tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=5af09b5f-af8f-4912-b9fb-db5c227ad834/eastus2/10f4d269-51bb-4675-bd51-beb84d5224ae
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: CD154963CD004875A550C3687D701A35 Ref B: BN1AA2051014021 Ref C: 2026-03-11T15:54:01Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --enable-azure-service-mesh --enable-app-routing --enable-app-routing-istio
+        --ssh-key-value -o --aks-custom-headers
+      User-Agent:
+      - AZURECLI/2.84.0 (DOCKER) azsdk-python-core/1.38.0 Python/3.12.9 (Linux-6.8.0-1044-azure-x86_64-with-glibc2.38)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2026-01-02-preview
+  response:
+    body:
+      string: '{"error":{"code":"ResourceNotFound","message":"The Resource ''Microsoft.ContainerService/managedClusters/cliakstest000002''
+        under resource group ''clitest000001'' was not found. For more details please
+        go to https://aka.ms/ARMResourceNotFoundFix"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '244'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Mar 2026 15:54:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+      x-msedge-ref:
+      - 'Ref A: 527B582D103E4F99A012D8E4FC5C066E Ref B: BN1AA2051014051 Ref C: 2026-03-11T15:54:03Z'
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --enable-azure-service-mesh --enable-app-routing --enable-app-routing-istio
+        --ssh-key-value -o --aks-custom-headers
+      User-Agent:
+      - AZURECLI/2.84.0 (DOCKER) azsdk-python-core/1.38.0 Python/3.12.9 (Linux-6.8.0-1044-azure-x86_64-with-glibc2.38)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001?api-version=2024-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001","name":"clitest000001","type":"Microsoft.Resources/resourceGroups","location":"centraluseuap","tags":{"product":"azurecli","cause":"automation","test":"test_aks_create_with_app_routing_istio_fails_when_asm_enabled","date":"2026-03-11T15:53:56Z","module":"aks-preview"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '399'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Mar 2026 15:54:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 247B02576A574959A8DD49D8E39A9D14 Ref B: BN1AA2051013021 Ref C: 2026-03-11T15:54:03Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "centraluseuap", "sku": {"name": "Base", "tier": "Free"}, "identity":
+      {"type": "UserAssigned", "userAssignedIdentities": {"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-managed-identity-pool/providers/Microsoft.ManagedIdentity/userAssignedIdentities/cp-82":
+      {}}}, "kind": "Base", "properties": {"kubernetesVersion": "", "dnsPrefix": "cliakstest-clitestl2xpmexfw-79a739",
+      "agentPoolProfiles": [{"count": 3, "vmSize": "", "osDiskSizeGB": 0, "workloadRuntime":
+      "OCIContainer", "osType": "Linux", "enableAutoScaling": false, "type": "VirtualMachineScaleSets",
+      "mode": "System", "orchestratorVersion": "", "upgradeSettings": {}, "upgradeSettingsBlueGreen":
+      {}, "enableNodePublicIP": false, "scaleSetPriority": "Regular", "spotMaxPrice":
+      -1.0, "nodeTaints": [], "nodeInitializationTaints": [], "enableEncryptionAtHost":
+      false, "enableUltraSSD": false, "enableFIPS": false, "networkProfile": {}, "securityProfile":
+      {"sshAccess": "localuser"}, "name": "nodepool1"}], "linuxProfile": {"adminUsername":
+      "azureuser", "ssh": {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCPZUrR83DGi3rdO9QtYiukvikwxVz+KFa9JmC/mg2kVnw8mLDweK1mOh2aAJ0xdK3VUEkIiOee6Iu6N2smdZD89u9xRVtwTiyOaWf2ZwuoQo9plqCtviiXzsVleXTKb+CaNZTUlDujwzJTxo9kBnJlPqliGwq5E0cz5q4WfzSlT+4qWc+6FnOp0bDqEDU8VzWIMV46c8exZZJNSop383eSAyYYtnklKTWkpmk5uzkbQTHbJE1U14WmiIKpC4dPkqA0MGbTL3vswP2Dei03Ue/jL//TS50NAk+Y9A0cpUZA+yO2X8DdkaNBQ2y7hkJTF4pM5QaMAslpmOZpyjqCkiG5
+      azcli_aks_live_test@example.com\n"}]}}, "addonProfiles": {}, "enableRBAC": true,
+      "networkProfile": {"podCidr": "10.244.0.0/16", "serviceCidr": "10.0.0.0/16",
+      "dnsServiceIP": "10.0.0.10", "outboundType": "loadBalancer", "loadBalancerSku":
+      "standard"}, "disableLocalAccounts": false, "storageProfile": {}, "ingressProfile":
+      {"webAppRouting": {"enabled": true, "gatewayAPIImplementations": {"appRoutingIstio":
+      {"mode": "Enabled"}}}}, "serviceMeshProfile": {"mode": "Istio", "istio": {}},
+      "bootstrapProfile": {"artifactSource": "Direct"}}}'
+    headers:
+      AKSHTTPCustomFeatures:
+      - Microsoft.ContainerService/AppRoutingIstioGatewayAPIPreview
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1990'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --name --enable-azure-service-mesh --enable-app-routing --enable-app-routing-istio
+        --ssh-key-value -o --aks-custom-headers
+      User-Agent:
+      - AZURECLI/2.84.0 (DOCKER) azsdk-python-core/1.38.0 Python/3.12.9 (Linux-6.8.0-1044-azure-x86_64-with-glibc2.38)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2026-01-02-preview
+  response:
+    body:
+      string: "{\n  \"code\": \"BadRequest\",\n  \"details\": null,\n  \"message\"\
+        : \"Cannot enable both the Istio add-on and the AppRouting Istio Gateway API\
+        \ implementation simultaneously.\",\n  \"subcode\": \"\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '183'
+      content-type:
+      - application/json
+      date:
+      - Wed, 11 Mar 2026 15:54:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - appId=705ac000-bf67-4eed-9ba0-9ee723df283a,tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=5af09b5f-af8f-4912-b9fb-db5c227ad834/centraluseuap/2e6aad08-51f3-4593-aa95-4e5163c960b4
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 5AE62F44EC834369BE766E4BFC1CCF2A Ref B: BN1AA2051015033 Ref C: 2026-03-11T15:54:03Z'
+    status:
+      code: 400
+      message: Bad Request
+version: 1

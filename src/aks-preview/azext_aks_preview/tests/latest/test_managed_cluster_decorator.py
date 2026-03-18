@@ -40,6 +40,8 @@ from azext_aks_preview._consts import (
     CONST_LOAD_BALANCER_SKU_BASIC,
     CONST_MANAGED_GATEWAY_INSTALLATION_DISABLED,
     CONST_MANAGED_GATEWAY_INSTALLATION_STANDARD,
+    CONST_APP_ROUTING_ISTIO_MODE_ENABLED,
+    CONST_APP_ROUTING_ISTIO_MODE_DISABLED,
     CONST_MONITORING_ADDON_NAME,
     CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID,
     CONST_MONITORING_USING_AAD_MSI_AUTH,
@@ -62,6 +64,7 @@ from azext_aks_preview._consts import (
     CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK,
     CONST_SSH_ACCESS_LOCALUSER,
     CONST_ARTIFACT_SOURCE_DIRECT,
+    CONST_AZURE_SERVICE_MESH_MODE_ISTIO,
 )
 from azext_aks_preview.agentpool_decorator import AKSPreviewAgentPoolContext
 from azext_aks_preview.managed_cluster_decorator import (
@@ -916,6 +919,19 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             decorator_mode=DecoratorMode.CREATE,
         )
         self.assertEqual(ctx_3.get_acns_transit_encryption_type(), "WireGuard")
+        # Flag set to mTLS
+        ctx_4 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_acns": True,
+                    "acns_transit_encryption_type": "mTLS",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_4.get_acns_transit_encryption_type(), "mTLS")
         # Fail on setting transit_encryption_type and disable acns
         ctx_5 = AKSPreviewManagedClusterContext(
             self.cmd,
@@ -944,7 +960,83 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         with self.assertRaises(MutuallyExclusiveArgumentError):
             ctx_6.get_acns_transit_encryption_type()
-
+        # Fail on setting mTLS with L7 advanced network policies
+        ctx_7 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_acns": True,
+                    "acns_transit_encryption_type": "mTLS",
+                    "acns_advanced_networkpolicies": "L7",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_7.get_acns_transit_encryption_type()
+        # Fail on setting mTLS with Istio service mesh
+        ctx_8 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_acns": True,
+                    "acns_transit_encryption_type": "mTLS",
+                    "enable_azure_service_mesh": True,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_8.get_acns_transit_encryption_type()
+        # Fail on update: existing cluster has L7 and user sets mTLS
+        ctx_9 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_acns": True,
+                    "acns_transit_encryption_type": "mTLS",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        mc_9 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                advanced_networking=self.models.AdvancedNetworking(
+                    enabled=True,
+                    security=self.models.AdvancedNetworkingSecurity(
+                        advanced_network_policies="L7",
+                    ),
+                ),
+            ),
+        )
+        ctx_9.attach_mc(mc_9)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_9.get_acns_transit_encryption_type()
+        # Fail on update: existing cluster has Istio and user sets mTLS
+        ctx_10 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_acns": True,
+                    "acns_transit_encryption_type": "mTLS",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        mc_10 = self.models.ManagedCluster(
+            location="test_location",
+            service_mesh_profile=self.models.ServiceMeshProfile(
+                mode=CONST_AZURE_SERVICE_MESH_MODE_ISTIO,
+            ),
+        )
+        ctx_10.attach_mc(mc_10)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_10.get_acns_transit_encryption_type()
 
     def test_mc_get_acns_enablement(self):
         # Default, not set.
@@ -4577,6 +4669,71 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         disable_gateway_api_3 = ctx_3.get_disable_gateway_api()
         self.assertEqual(disable_gateway_api_3, False)
 
+    def test_get_enable_app_routing_istio(self):
+        # default value
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_enable_app_routing_istio(), False)
+
+        # custom value
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"enable_app_routing_istio": True}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_2.get_enable_app_routing_istio(), True)
+
+        # custom value
+        ctx_3 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"enable_app_routing_istio": False}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_3.get_enable_app_routing_istio(), False)
+
+        # update value
+        ctx_4 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"enable_app_routing_istio": True}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.assertEqual(ctx_4.get_enable_app_routing_istio(), True)
+
+    def test_get_disable_app_routing_istio(self):
+        # default value
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.assertEqual(ctx_1.get_disable_app_routing_istio(), False)
+
+        # custom value
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"disable_app_routing_istio": True}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.assertEqual(ctx_2.get_disable_app_routing_istio(), True)
+
+        # custom value
+        ctx_3 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"disable_app_routing_istio": False}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.assertEqual(ctx_3.get_disable_app_routing_istio(), False)
+
     def test_get_enable_high_log_scale_mode_default(self):
         """Test default behavior when no container network logs or high log scale mode is specified.
 
@@ -5001,6 +5158,63 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         disable_default_domain_3 = ctx_3.get_disable_default_domain()
         self.assertEqual(disable_default_domain_3, False)
+
+    def test_get_enable_continuous_control_plane_and_addon_monitor(self):
+        # default value
+        ctx_0 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_0.get_enable_continuous_control_plane_and_addon_monitor(), None)
+
+        # custom value - True
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"enable_continuous_control_plane_and_addon_monitor": True}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_enable_continuous_control_plane_and_addon_monitor(), True)
+
+        # custom value - False
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"enable_continuous_control_plane_and_addon_monitor": False}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_2.get_enable_continuous_control_plane_and_addon_monitor(), False)
+
+    def test_get_disable_continuous_control_plane_and_addon_monitor(self):
+        # default value
+        ctx_0 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.assertEqual(ctx_0.get_disable_continuous_control_plane_and_addon_monitor(), None)
+
+        # custom value - True
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"disable_continuous_control_plane_and_addon_monitor": True}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.assertEqual(ctx_1.get_disable_continuous_control_plane_and_addon_monitor(), True)
+
+        # custom value - False
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"disable_continuous_control_plane_and_addon_monitor": False}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.assertEqual(ctx_2.get_disable_continuous_control_plane_and_addon_monitor(), False)
+
 
 class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
     def setUp(self):
@@ -6213,6 +6427,60 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         mc_3 = self.models.ManagedCluster(location="test_location")
         dec_3.context.attach_mc(mc_3)
         dec_mc_3 = dec_3.set_up_ingress_profile_gateway_api(mc_3)
+
+        ground_truth_mc_3 = self.models.ManagedCluster(location="test_location")
+        self.assertEqual(dec_mc_3, ground_truth_mc_3)
+
+    def test_set_up_ingress_profile_app_routing_istio(self):
+        # Test with enable_app_routing_istio parameter
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_app_routing_istio": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.set_up_ingress_profile_app_routing_istio(mc_1)
+
+        ground_truth_ingress_profile_1 = self.models.ManagedClusterIngressProfile(
+            web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
+                gateway_api_implementations=self.models.ManagedClusterWebAppRoutingGatewayAPIImplementations(
+                    app_routing_istio=self.models.ManagedClusterAppRoutingIstio(
+                        mode=CONST_APP_ROUTING_ISTIO_MODE_ENABLED
+                    )
+                )
+            )
+        )
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location", ingress_profile=ground_truth_ingress_profile_1
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        # Test without enable_app_routing_istio parameter (should not set anything)
+        dec_2 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(location="test_location")
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.set_up_ingress_profile_app_routing_istio(mc_2)
+
+        ground_truth_mc_2 = self.models.ManagedCluster(location="test_location")
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+        # Test with enable_app_routing_istio=False (should not set anything)
+        dec_3 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_app_routing_istio": False},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_3 = self.models.ManagedCluster(location="test_location")
+        dec_3.context.attach_mc(mc_3)
+        dec_mc_3 = dec_3.set_up_ingress_profile_app_routing_istio(mc_3)
 
         ground_truth_mc_3 = self.models.ManagedCluster(location="test_location")
         self.assertEqual(dec_mc_3, ground_truth_mc_3)
@@ -7461,6 +7729,41 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         # Should succeed in CREATE mode even if addon appears enabled
         result = ctx_1.get_enable_azure_monitor_logs()
         self.assertTrue(result)
+
+
+    def test_set_up_health_monitor_profile(self):
+        # no flag - no change
+        dec_0 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_0 = self.models.ManagedCluster(location="test_location")
+        dec_0.context.attach_mc(mc_0)
+        dec_mc_0 = dec_0.set_up_health_monitor_profile(mc_0)
+        ground_truth_mc_0 = self.models.ManagedCluster(location="test_location")
+        self.assertEqual(dec_mc_0, ground_truth_mc_0)
+
+        # enable flag set
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_continuous_control_plane_and_addon_monitor": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.set_up_health_monitor_profile(mc_1)
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            health_monitor_profile=self.models.ManagedClusterHealthMonitorProfile(
+                enable_continuous_control_plane_and_addon_monitor=True,
+            ),
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
 
 class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
@@ -13256,6 +13559,135 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_mc_5, ground_truth_mc_5)
 
+    def test_update_ingress_profile_app_routing_istio(self):
+        # Test enabling app routing istio on fresh cluster
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_app_routing_istio": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.update_ingress_profile_app_routing_istio(mc_1)
+
+        ground_truth_ingress_profile_1 = self.models.ManagedClusterIngressProfile(
+            web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
+                gateway_api_implementations=self.models.ManagedClusterWebAppRoutingGatewayAPIImplementations(
+                    app_routing_istio=self.models.ManagedClusterAppRoutingIstio(
+                        mode=CONST_APP_ROUTING_ISTIO_MODE_ENABLED
+                    )
+                )
+            )
+        )
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location", ingress_profile=ground_truth_ingress_profile_1
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        # Test disabling app routing istio
+        dec_2 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"disable_app_routing_istio": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            ingress_profile=self.models.ManagedClusterIngressProfile(
+                web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
+                    enabled=True,
+                    gateway_api_implementations=self.models.ManagedClusterWebAppRoutingGatewayAPIImplementations(
+                        app_routing_istio=self.models.ManagedClusterAppRoutingIstio(
+                            mode=CONST_APP_ROUTING_ISTIO_MODE_ENABLED
+                        )
+                    )
+                )
+            )
+        )
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.update_ingress_profile_app_routing_istio(mc_2)
+
+        ground_truth_ingress_profile_2 = self.models.ManagedClusterIngressProfile(
+            web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
+                enabled=True,
+                gateway_api_implementations=self.models.ManagedClusterWebAppRoutingGatewayAPIImplementations(
+                    app_routing_istio=self.models.ManagedClusterAppRoutingIstio(
+                        mode=CONST_APP_ROUTING_ISTIO_MODE_DISABLED
+                    )
+                )
+            )
+        )
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location", ingress_profile=ground_truth_ingress_profile_2
+        )
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+        # Test mutual exclusion - both enable and disable should raise exception
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            dec = AKSPreviewManagedClusterUpdateDecorator(
+                self.cmd,
+                self.client,
+                {"enable_app_routing_istio": True, "disable_app_routing_istio": True},
+                CUSTOM_MGMT_AKS_PREVIEW,
+            )
+            mc = self.models.ManagedCluster(location="test_location")
+            dec.context.attach_mc(mc)
+            dec.update_ingress_profile_app_routing_istio(mc)
+
+        # Test without any app_routing_istio parameters (should not modify anything)
+        dec_3 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_3 = self.models.ManagedCluster(location="test_location")
+        dec_3.context.attach_mc(mc_3)
+        dec_mc_3 = dec_3.update_ingress_profile_app_routing_istio(mc_3)
+
+        ground_truth_mc_3 = self.models.ManagedCluster(location="test_location")
+        self.assertEqual(dec_mc_3, ground_truth_mc_3)
+
+        # Test without any app_routing_istio parameters but with existing config (should not modify)
+        dec_4 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_4 = self.models.ManagedCluster(
+            location="test_location",
+            ingress_profile=self.models.ManagedClusterIngressProfile(
+                web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
+                    enabled=True,
+                    gateway_api_implementations=self.models.ManagedClusterWebAppRoutingGatewayAPIImplementations(
+                        app_routing_istio=self.models.ManagedClusterAppRoutingIstio(
+                            mode=CONST_APP_ROUTING_ISTIO_MODE_ENABLED
+                        )
+                    )
+                )
+            )
+        )
+        dec_4.context.attach_mc(mc_4)
+        dec_mc_4 = dec_4.update_ingress_profile_app_routing_istio(mc_4)
+
+        # Should remain unchanged
+        ground_truth_mc_4 = self.models.ManagedCluster(
+            location="test_location",
+            ingress_profile=self.models.ManagedClusterIngressProfile(
+                web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
+                    enabled=True,
+                    gateway_api_implementations=self.models.ManagedClusterWebAppRoutingGatewayAPIImplementations(
+                        app_routing_istio=self.models.ManagedClusterAppRoutingIstio(
+                            mode=CONST_APP_ROUTING_ISTIO_MODE_ENABLED
+                        )
+                    )
+                )
+            )
+        )
+        self.assertEqual(dec_mc_4, ground_truth_mc_4)
+
     def test_update_azure_monitor_profile_with_opentelemetry_metrics(self):
         # Test enabling OpenTelemetry metrics on update
         dec_1 = AKSPreviewManagedClusterUpdateDecorator(
@@ -13802,6 +14234,81 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         # Should raise UnknownError
         with self.assertRaises(UnknownError):
             dec_4.update_agentpool_profile(mc_4)
+
+    def test_update_health_monitor_profile(self):
+        # no flags - no change
+        dec_0 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_0 = self.models.ManagedCluster(location="test_location")
+        dec_0.context.attach_mc(mc_0)
+        dec_mc_0 = dec_0.update_health_monitor_profile(mc_0)
+        ground_truth_mc_0 = self.models.ManagedCluster(location="test_location")
+        self.assertEqual(dec_mc_0, ground_truth_mc_0)
+
+        # both flags - mutual exclusivity error
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_continuous_control_plane_and_addon_monitor": True,
+                "disable_continuous_control_plane_and_addon_monitor": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            dec_1.update_health_monitor_profile(mc_1)
+
+        # enable flag
+        dec_2 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_continuous_control_plane_and_addon_monitor": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(location="test_location")
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.update_health_monitor_profile(mc_2)
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            health_monitor_profile=self.models.ManagedClusterHealthMonitorProfile(
+                enable_continuous_control_plane_and_addon_monitor=True,
+            ),
+        )
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+        # disable flag on existing enabled profile
+        dec_3 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_continuous_control_plane_and_addon_monitor": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            health_monitor_profile=self.models.ManagedClusterHealthMonitorProfile(
+                enable_continuous_control_plane_and_addon_monitor=True,
+            ),
+        )
+        dec_3.context.attach_mc(mc_3)
+        dec_mc_3 = dec_3.update_health_monitor_profile(mc_3)
+        ground_truth_mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            health_monitor_profile=self.models.ManagedClusterHealthMonitorProfile(
+                enable_continuous_control_plane_and_addon_monitor=False,
+            ),
+        )
+        self.assertEqual(dec_mc_3, ground_truth_mc_3)
+
 
 if __name__ == "__main__":
     unittest.main()

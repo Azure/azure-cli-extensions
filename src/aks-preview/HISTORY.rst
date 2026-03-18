@@ -11,6 +11,16 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+19.0.0b26
++++++++
+* `az aks create/update`: Add `--enable-app-routing-istio` / `--disable-app-routing-istio` (short: `--enable-ari` / `--disable-ari`) flags to enable or disable Istio as a Gateway API implementation for App Routing.
+* `az aks approuting gateway istio enable/disable`: Add new subcommands to enable or disable the Istio Gateway API implementation for App Routing on an existing cluster.
+* Add 'mTLS' as a transit encryption type option for `--acns-transit-encryption-type` in `az aks create/update`
+
+19.0.0b25
++++++++
+* `az aks create`: Add `--enable-continuous-control-plane-and-addon-monitor` to enable continuous control plane and addon monitor.
+* `az aks update`: Add `--enable-continuous-control-plane-and-addon-monitor` and `--disable-continuous-control-plane-and-addon-monitor` to manage continuous control plane and addon monitor.
 
 19.0.0b24
 +++++++

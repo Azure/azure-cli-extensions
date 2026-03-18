@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.0.0b7
++++++
+* Add experimental `az durabletask scheduler attach` command to attach a Durable Task scheduler to a Function App or Container App.
+* Update table output to provide more relevant information for schedulers.
+
 1.0.0b6
 +++++
 * Update ARM API version to `2026-02-01`

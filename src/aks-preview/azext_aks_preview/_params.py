@@ -158,6 +158,7 @@ from azext_aks_preview._consts import (
     CONST_ADVANCED_NETWORKPOLICIES_L7,
     CONST_TRANSIT_ENCRYPTION_TYPE_NONE,
     CONST_TRANSIT_ENCRYPTION_TYPE_WIREGUARD,
+    CONST_TRANSIT_ENCRYPTION_TYPE_MTLS,
     CONST_ACNS_DATAPATH_ACCELERATION_MODE_BPFVETH,
     CONST_ACNS_DATAPATH_ACCELERATION_MODE_NONE,
     CONST_UPGRADE_STRATEGY_ROLLING,
@@ -360,6 +361,7 @@ advanced_networkpolicies = [
 transit_encryption_types = [
     CONST_TRANSIT_ENCRYPTION_TYPE_NONE,
     CONST_TRANSIT_ENCRYPTION_TYPE_WIREGUARD,
+    CONST_TRANSIT_ENCRYPTION_TYPE_MTLS,
 ]
 acns_datapath_acceleration_modes = [
     CONST_ACNS_DATAPATH_ACCELERATION_MODE_NONE,
@@ -970,7 +972,7 @@ def load_arguments(self, _):
             "acns_transit_encryption_type",
             is_preview=True,
             arg_type=get_enum_type(transit_encryption_types),
-            help="Specify the transit encryption type for ACNS. Available values are 'None' and 'WireGuard'.",
+            help="Specify the transit encryption type for ACNS. Available values are 'None', 'WireGuard', and 'mTLS'.",
         )
         c.argument(
             "enable_retina_flow_logs",
@@ -1200,7 +1202,20 @@ def load_arguments(self, _):
             action="store_true",
             help="Enable managed installation of Gateway API CRDs from the standard release channel."
         )
+        c.argument(
+            "enable_app_routing_istio",
+            options_list=["--enable-app-routing-istio", "--enable-ari"],
+            action="store_true",
+            is_preview=True,
+            help="Enable Gateway API based ingress on App Routing via Istio"
+        )
         c.argument("enable_hosted_system", action="store_true", is_preview=True)
+        c.argument(
+            "enable_continuous_control_plane_and_addon_monitor",
+            action="store_true",
+            is_preview=True,
+            help="Enable continuous control plane and addon monitor for the cluster.",
+        )
 
     with self.argument_context("aks update") as c:
         # managed cluster paramerters
@@ -1635,7 +1650,7 @@ def load_arguments(self, _):
             "acns_transit_encryption_type",
             is_preview=True,
             arg_type=get_enum_type(transit_encryption_types),
-            help="Specify the transit encryption type for ACNS. Available values are 'None' and 'WireGuard'.",
+            help="Specify the transit encryption type for ACNS. Available values are 'None', 'WireGuard', and 'mTLS'.",
         )
         c.argument(
             "enable_retina_flow_logs",
@@ -1768,6 +1783,20 @@ def load_arguments(self, _):
             help="Disable managed installation of Gateway API CRDs."
         )
         c.argument(
+            "enable_app_routing_istio",
+            options_list=["--enable-app-routing-istio", "--enable-ari"],
+            action="store_true",
+            is_preview=True,
+            help="Enable Gateway API based ingress on App Routing via Istio."
+        )
+        c.argument(
+            "disable_app_routing_istio",
+            options_list=["--disable-app-routing-istio", "--disable-ari"],
+            action="store_true",
+            is_preview=True,
+            help="Disable Gateway API based ingress on App Routing via Istio."
+        )
+        c.argument(
             "enable_application_load_balancer",
             action="store_true",
             is_preview=True,
@@ -1778,6 +1807,18 @@ def load_arguments(self, _):
             action="store_true",
             is_preview=True,
             help="Disable Application Load Balancer (Application Gateway for Containers)."
+        )
+        c.argument(
+            "enable_continuous_control_plane_and_addon_monitor",
+            action="store_true",
+            is_preview=True,
+            help="Enable continuous control plane and addon monitor for the cluster.",
+        )
+        c.argument(
+            "disable_continuous_control_plane_and_addon_monitor",
+            action="store_true",
+            is_preview=True,
+            help="Disable continuous control plane and addon monitor for the cluster.",
         )
 
     with self.argument_context("aks upgrade") as c:
@@ -2856,6 +2897,12 @@ def load_arguments(self, _):
     with self.argument_context("aks approuting zone update") as c:
         c.argument("dns_zone_resource_ids", options_list=["--ids"], required=True)
         c.argument("attach_zones")
+
+    with self.argument_context("aks approuting gateway istio enable") as c:
+        c.argument("aks_custom_headers")
+
+    with self.argument_context("aks approuting gateway istio disable") as c:
+        c.argument("aks_custom_headers")
 
     with self.argument_context('aks check-network outbound') as c:
         c.argument('cluster_name', options_list=['--name', '-n'],

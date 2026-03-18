@@ -48,8 +48,12 @@ from azext_aks_preview._consts import (
     CONST_VIRTUAL_MACHINES,
     CONST_MANAGED_GATEWAY_INSTALLATION_STANDARD,
     CONST_MANAGED_GATEWAY_INSTALLATION_DISABLED,
+    CONST_APP_ROUTING_ISTIO_MODE_ENABLED,
+    CONST_APP_ROUTING_ISTIO_MODE_DISABLED,
     CONST_ACNS_DATAPATH_ACCELERATION_MODE_BPFVETH,
-    CONST_ACNS_DATAPATH_ACCELERATION_MODE_NONE
+    CONST_ACNS_DATAPATH_ACCELERATION_MODE_NONE,
+    CONST_TRANSIT_ENCRYPTION_TYPE_MTLS,
+    CONST_ADVANCED_NETWORKPOLICIES_L7,
 )
 from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_ACSTOR_EXT_INSTALLATION_NAME,
@@ -917,6 +921,49 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 raise MutuallyExclusiveArgumentError(
                     "--disable-acns-security and --disable-acns cannot be used with --acns-transit-encryption-type."
                 )
+            if acns_transit_encryption_type == CONST_TRANSIT_ENCRYPTION_TYPE_MTLS:
+                # Check CLI args for L7
+                acns_advanced_networkpolicies = self.raw_param.get("acns_advanced_networkpolicies")
+                if acns_advanced_networkpolicies == CONST_ADVANCED_NETWORKPOLICIES_L7:
+                    raise MutuallyExclusiveArgumentError(
+                        "'--acns-transit-encryption-type mTLS' cannot be used with "
+                        "'--acns-advanced-networkpolicies L7'. "
+                        "Please choose either '--acns-advanced-networkpolicies L7' or "
+                        "'--acns-transit-encryption-type mTLS', but not both."
+                    )
+                # Check CLI args for Istio
+                enable_asm = self.raw_param.get("enable_azure_service_mesh", False)
+                if enable_asm:
+                    raise MutuallyExclusiveArgumentError(
+                        "'--acns-transit-encryption-type mTLS' cannot be used with "
+                        "'--enable-azure-service-mesh'. "
+                        "Please remove '--enable-azure-service-mesh' or choose a different "
+                        "transit encryption type."
+                    )
+                # On update, check existing cluster state
+                if self.decorator_mode == DecoratorMode.UPDATE and self.mc:
+                    # Check if existing cluster has L7 enabled and user is not changing it
+                    if (acns_advanced_networkpolicies is None and
+                            self.mc.network_profile and
+                            self.mc.network_profile.advanced_networking and
+                            self.mc.network_profile.advanced_networking.security and
+                            self.mc.network_profile.advanced_networking.security.advanced_network_policies ==
+                            CONST_ADVANCED_NETWORKPOLICIES_L7):
+                        raise MutuallyExclusiveArgumentError(
+                            "'--acns-transit-encryption-type mTLS' cannot be used with L7 advanced network policies. "
+                            "The existing cluster already has L7 enabled. Please disable L7 by passing "
+                            "'--acns-advanced-networkpolicies None' or choose a different transit encryption type."
+                        )
+                    # Check if existing cluster has Istio enabled and user is not disabling it
+                    disable_asm = self.raw_param.get("disable_azure_service_mesh", False)
+                    if (not disable_asm and
+                            self.mc.service_mesh_profile and
+                            self.mc.service_mesh_profile.mode == CONST_AZURE_SERVICE_MESH_MODE_ISTIO):
+                        raise MutuallyExclusiveArgumentError(
+                            "'--acns-transit-encryption-type mTLS' cannot be used with Istio service mesh. "
+                            "The existing cluster already has Istio enabled. Please disable Istio by passing "
+                            "'--disable-azure-service-mesh' or choose a different transit encryption type."
+                        )
         return self.raw_param.get("acns_transit_encryption_type")
 
     # Container network logs is the new name for retina flow logs.
@@ -3757,6 +3804,20 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self.raw_param.get("disable_gateway_api", False)
 
+    def get_enable_app_routing_istio(self) -> bool:
+        """Obtain the value of enable_app_routing_istio.
+
+        :return: bool
+        """
+        return self.raw_param.get("enable_app_routing_istio", False)
+
+    def get_disable_app_routing_istio(self) -> bool:
+        """Obtain the value of disable_app_routing_istio.
+
+        :return: bool
+        """
+        return self.raw_param.get("disable_app_routing_istio", False)
+
     def get_enable_hosted_system(self) -> bool:
         """Obtain the value of enable_hosted_system.
 
@@ -3766,6 +3827,20 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         if enable_hosted_system and self.get_sku_name() != CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
             raise RequiredArgumentMissingError('"--enable-hosted-system" requires "--sku automatic".')
         return enable_hosted_system
+
+    def get_enable_continuous_control_plane_and_addon_monitor(self) -> bool:
+        """Obtain the value of enable_continuous_control_plane_and_addon_monitor.
+
+        :return: bool
+        """
+        return self.raw_param.get("enable_continuous_control_plane_and_addon_monitor")
+
+    def get_disable_continuous_control_plane_and_addon_monitor(self) -> bool:
+        """Obtain the value of disable_continuous_control_plane_and_addon_monitor.
+
+        :return: bool
+        """
+        return self.raw_param.get("disable_continuous_control_plane_and_addon_monitor")
 
 
 # pylint: disable=too-many-public-methods
@@ -4211,6 +4286,32 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                         installation=CONST_MANAGED_GATEWAY_INSTALLATION_STANDARD
                     )
                 )
+
+        return mc
+
+    def set_up_ingress_profile_app_routing_istio(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up App Routing Istio configuration in ingress profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        if self.context.get_enable_app_routing_istio():
+            if mc.ingress_profile is None:
+                mc.ingress_profile = self.models.ManagedClusterIngressProfile()  # pylint: disable=no-member
+            if mc.ingress_profile.web_app_routing is None:
+                mc.ingress_profile.web_app_routing = (
+                    self.models.ManagedClusterIngressProfileWebAppRouting()  # pylint: disable=no-member
+                )
+            if mc.ingress_profile.web_app_routing.gateway_api_implementations is None:
+                mc.ingress_profile.web_app_routing.gateway_api_implementations = (
+                    self.models.ManagedClusterWebAppRoutingGatewayAPIImplementations()  # pylint: disable=no-member
+                )
+            mc.ingress_profile.web_app_routing.gateway_api_implementations.app_routing_istio = (
+                self.models.ManagedClusterAppRoutingIstio(  # pylint: disable=no-member
+                    mode=CONST_APP_ROUTING_ISTIO_MODE_ENABLED
+                )
+            )
 
         return mc
 
@@ -4796,6 +4897,22 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         return mc
 
+    def set_up_health_monitor_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up health monitor profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        if self.context.get_enable_continuous_control_plane_and_addon_monitor():
+            if mc.health_monitor_profile is None:
+                mc.health_monitor_profile = (
+                    self.models.ManagedClusterHealthMonitorProfile()  # pylint: disable=no-member
+                )
+            mc.health_monitor_profile.enable_continuous_control_plane_and_addon_monitor = True
+
+        return mc
+
     def set_up_static_egress_gateway(self, mc: ManagedCluster) -> ManagedCluster:
         self._ensure_mc(mc)
 
@@ -4886,6 +5003,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_ingress_web_app_routing(mc)
         # set up gateway api profile
         mc = self.set_up_ingress_profile_gateway_api(mc)
+        # set up app routing istio profile
+        mc = self.set_up_ingress_profile_app_routing_istio(mc)
         # set up workload auto scaler profile
         mc = self.set_up_workload_auto_scaler_profile(mc)
         # set up vpa
@@ -4920,6 +5039,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_bootstrap_profile(mc)
         # set up static egress gateway profile
         mc = self.set_up_static_egress_gateway(mc)
+        # set up health monitor profile
+        mc = self.set_up_health_monitor_profile(mc)
         # set up imds restriction(a property in network profile)
         mc = self.set_up_imds_restriction(mc)
         # set up user-defined scheduler configuration for kube-scheduler upstream
@@ -7055,6 +7176,48 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
+    def update_ingress_profile_app_routing_istio(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update App Routing Istio configuration in ingress profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        enable_app_routing_istio = self.context.get_enable_app_routing_istio()
+        disable_app_routing_istio = self.context.get_disable_app_routing_istio()
+
+        # Check for mutually exclusive arguments
+        if enable_app_routing_istio and disable_app_routing_istio:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-app-routing-istio and --disable-app-routing-istio at the same time."
+            )
+
+        if enable_app_routing_istio or disable_app_routing_istio:
+            if mc.ingress_profile is None:
+                mc.ingress_profile = self.models.ManagedClusterIngressProfile()  # pylint: disable=no-member
+            if mc.ingress_profile.web_app_routing is None:
+                mc.ingress_profile.web_app_routing = (
+                    self.models.ManagedClusterIngressProfileWebAppRouting()  # pylint: disable=no-member
+                )
+            if mc.ingress_profile.web_app_routing.gateway_api_implementations is None:
+                mc.ingress_profile.web_app_routing.gateway_api_implementations = (
+                    self.models.ManagedClusterWebAppRoutingGatewayAPIImplementations()  # pylint: disable=no-member
+                )
+            if enable_app_routing_istio:
+                mc.ingress_profile.web_app_routing.gateway_api_implementations.app_routing_istio = (
+                    self.models.ManagedClusterAppRoutingIstio(  # pylint: disable=no-member
+                        mode=CONST_APP_ROUTING_ISTIO_MODE_ENABLED
+                    )
+                )
+            elif disable_app_routing_istio:
+                mc.ingress_profile.web_app_routing.gateway_api_implementations.app_routing_istio = (
+                    self.models.ManagedClusterAppRoutingIstio(  # pylint: disable=no-member
+                        mode=CONST_APP_ROUTING_ISTIO_MODE_DISABLED
+                    )
+                )
+
+        return mc
+
     def update_node_provisioning_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Updates the nodeProvisioningProfile field of the managed cluster
 
@@ -7130,6 +7293,32 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     self.models.ManagedClusterStaticEgressGatewayProfile()  # pylint: disable=no-member
                 )
             mc.network_profile.static_egress_gateway_profile.enabled = False
+        return mc
+
+    def update_health_monitor_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update health monitor profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        enable = self.context.get_enable_continuous_control_plane_and_addon_monitor()
+        disable = self.context.get_disable_continuous_control_plane_and_addon_monitor()
+
+        if not enable and not disable:
+            return mc
+        if enable and disable:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-continuous-control-plane-and-addon-monitor and "
+                "--disable-continuous-control-plane-and-addon-monitor at the same time."
+            )
+
+        if mc.health_monitor_profile is None:
+            mc.health_monitor_profile = (
+                self.models.ManagedClusterHealthMonitorProfile()  # pylint: disable=no-member
+            )
+        mc.health_monitor_profile.enable_continuous_control_plane_and_addon_monitor = bool(enable)
+
         return mc
 
     def update_imds_restriction(self, mc: ManagedCluster) -> ManagedCluster:
@@ -7524,6 +7713,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_application_load_balancer_profile(mc)
         # update ingress profile gateway api
         mc = self.update_ingress_profile_gateway_api(mc)
+        # update app routing istio profile
+        mc = self.update_ingress_profile_app_routing_istio(mc)
         # update custom ca trust certificates
         mc = self.update_custom_ca_trust_certificates(mc)
         # update run command
@@ -7552,6 +7743,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_bootstrap_profile(mc)
         # update static egress gateway
         mc = self.update_static_egress_gateway(mc)
+        # update health monitor profile
+        mc = self.update_health_monitor_profile(mc)
         # update imds restriction
         mc = self.update_imds_restriction(mc)
         # update VMAS to VMS
