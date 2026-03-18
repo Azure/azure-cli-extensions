@@ -64,6 +64,7 @@ from azext_aks_preview._consts import (
     CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK,
     CONST_SSH_ACCESS_LOCALUSER,
     CONST_ARTIFACT_SOURCE_DIRECT,
+    CONST_AZURE_SERVICE_MESH_MODE_ISTIO,
 )
 from azext_aks_preview.agentpool_decorator import AKSPreviewAgentPoolContext
 from azext_aks_preview.managed_cluster_decorator import (
@@ -918,6 +919,19 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             decorator_mode=DecoratorMode.CREATE,
         )
         self.assertEqual(ctx_3.get_acns_transit_encryption_type(), "WireGuard")
+        # Flag set to mTLS
+        ctx_4 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_acns": True,
+                    "acns_transit_encryption_type": "mTLS",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_4.get_acns_transit_encryption_type(), "mTLS")
         # Fail on setting transit_encryption_type and disable acns
         ctx_5 = AKSPreviewManagedClusterContext(
             self.cmd,
@@ -946,7 +960,83 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         with self.assertRaises(MutuallyExclusiveArgumentError):
             ctx_6.get_acns_transit_encryption_type()
-
+        # Fail on setting mTLS with L7 advanced network policies
+        ctx_7 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_acns": True,
+                    "acns_transit_encryption_type": "mTLS",
+                    "acns_advanced_networkpolicies": "L7",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_7.get_acns_transit_encryption_type()
+        # Fail on setting mTLS with Istio service mesh
+        ctx_8 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_acns": True,
+                    "acns_transit_encryption_type": "mTLS",
+                    "enable_azure_service_mesh": True,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_8.get_acns_transit_encryption_type()
+        # Fail on update: existing cluster has L7 and user sets mTLS
+        ctx_9 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_acns": True,
+                    "acns_transit_encryption_type": "mTLS",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        mc_9 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                advanced_networking=self.models.AdvancedNetworking(
+                    enabled=True,
+                    security=self.models.AdvancedNetworkingSecurity(
+                        advanced_network_policies="L7",
+                    ),
+                ),
+            ),
+        )
+        ctx_9.attach_mc(mc_9)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_9.get_acns_transit_encryption_type()
+        # Fail on update: existing cluster has Istio and user sets mTLS
+        ctx_10 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_acns": True,
+                    "acns_transit_encryption_type": "mTLS",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        mc_10 = self.models.ManagedCluster(
+            location="test_location",
+            service_mesh_profile=self.models.ServiceMeshProfile(
+                mode=CONST_AZURE_SERVICE_MESH_MODE_ISTIO,
+            ),
+        )
+        ctx_10.attach_mc(mc_10)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_10.get_acns_transit_encryption_type()
 
     def test_mc_get_acns_enablement(self):
         # Default, not set.

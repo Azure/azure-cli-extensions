@@ -158,6 +158,7 @@ from azext_aks_preview._consts import (
     CONST_ADVANCED_NETWORKPOLICIES_L7,
     CONST_TRANSIT_ENCRYPTION_TYPE_NONE,
     CONST_TRANSIT_ENCRYPTION_TYPE_WIREGUARD,
+    CONST_TRANSIT_ENCRYPTION_TYPE_MTLS,
     CONST_ACNS_DATAPATH_ACCELERATION_MODE_BPFVETH,
     CONST_ACNS_DATAPATH_ACCELERATION_MODE_NONE,
     CONST_UPGRADE_STRATEGY_ROLLING,
@@ -360,6 +361,7 @@ advanced_networkpolicies = [
 transit_encryption_types = [
     CONST_TRANSIT_ENCRYPTION_TYPE_NONE,
     CONST_TRANSIT_ENCRYPTION_TYPE_WIREGUARD,
+    CONST_TRANSIT_ENCRYPTION_TYPE_MTLS,
 ]
 acns_datapath_acceleration_modes = [
     CONST_ACNS_DATAPATH_ACCELERATION_MODE_NONE,
@@ -970,7 +972,7 @@ def load_arguments(self, _):
             "acns_transit_encryption_type",
             is_preview=True,
             arg_type=get_enum_type(transit_encryption_types),
-            help="Specify the transit encryption type for ACNS. Available values are 'None' and 'WireGuard'.",
+            help="Specify the transit encryption type for ACNS. Available values are 'None', 'WireGuard', and 'mTLS'.",
         )
         c.argument(
             "enable_retina_flow_logs",
@@ -1648,7 +1650,7 @@ def load_arguments(self, _):
             "acns_transit_encryption_type",
             is_preview=True,
             arg_type=get_enum_type(transit_encryption_types),
-            help="Specify the transit encryption type for ACNS. Available values are 'None' and 'WireGuard'.",
+            help="Specify the transit encryption type for ACNS. Available values are 'None', 'WireGuard', and 'mTLS'.",
         )
         c.argument(
             "enable_retina_flow_logs",

@@ -51,7 +51,9 @@ from azext_aks_preview._consts import (
     CONST_APP_ROUTING_ISTIO_MODE_ENABLED,
     CONST_APP_ROUTING_ISTIO_MODE_DISABLED,
     CONST_ACNS_DATAPATH_ACCELERATION_MODE_BPFVETH,
-    CONST_ACNS_DATAPATH_ACCELERATION_MODE_NONE
+    CONST_ACNS_DATAPATH_ACCELERATION_MODE_NONE,
+    CONST_TRANSIT_ENCRYPTION_TYPE_MTLS,
+    CONST_ADVANCED_NETWORKPOLICIES_L7,
 )
 from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_ACSTOR_EXT_INSTALLATION_NAME,
@@ -919,6 +921,49 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 raise MutuallyExclusiveArgumentError(
                     "--disable-acns-security and --disable-acns cannot be used with --acns-transit-encryption-type."
                 )
+            if acns_transit_encryption_type == CONST_TRANSIT_ENCRYPTION_TYPE_MTLS:
+                # Check CLI args for L7
+                acns_advanced_networkpolicies = self.raw_param.get("acns_advanced_networkpolicies")
+                if acns_advanced_networkpolicies == CONST_ADVANCED_NETWORKPOLICIES_L7:
+                    raise MutuallyExclusiveArgumentError(
+                        "'--acns-transit-encryption-type mTLS' cannot be used with "
+                        "'--acns-advanced-networkpolicies L7'. "
+                        "Please choose either '--acns-advanced-networkpolicies L7' or "
+                        "'--acns-transit-encryption-type mTLS', but not both."
+                    )
+                # Check CLI args for Istio
+                enable_asm = self.raw_param.get("enable_azure_service_mesh", False)
+                if enable_asm:
+                    raise MutuallyExclusiveArgumentError(
+                        "'--acns-transit-encryption-type mTLS' cannot be used with "
+                        "'--enable-azure-service-mesh'. "
+                        "Please remove '--enable-azure-service-mesh' or choose a different "
+                        "transit encryption type."
+                    )
+                # On update, check existing cluster state
+                if self.decorator_mode == DecoratorMode.UPDATE and self.mc:
+                    # Check if existing cluster has L7 enabled and user is not changing it
+                    if (acns_advanced_networkpolicies is None and
+                            self.mc.network_profile and
+                            self.mc.network_profile.advanced_networking and
+                            self.mc.network_profile.advanced_networking.security and
+                            self.mc.network_profile.advanced_networking.security.advanced_network_policies ==
+                            CONST_ADVANCED_NETWORKPOLICIES_L7):
+                        raise MutuallyExclusiveArgumentError(
+                            "'--acns-transit-encryption-type mTLS' cannot be used with L7 advanced network policies. "
+                            "The existing cluster already has L7 enabled. Please disable L7 by passing "
+                            "'--acns-advanced-networkpolicies None' or choose a different transit encryption type."
+                        )
+                    # Check if existing cluster has Istio enabled and user is not disabling it
+                    disable_asm = self.raw_param.get("disable_azure_service_mesh", False)
+                    if (not disable_asm and
+                            self.mc.service_mesh_profile and
+                            self.mc.service_mesh_profile.mode == CONST_AZURE_SERVICE_MESH_MODE_ISTIO):
+                        raise MutuallyExclusiveArgumentError(
+                            "'--acns-transit-encryption-type mTLS' cannot be used with Istio service mesh. "
+                            "The existing cluster already has Istio enabled. Please disable Istio by passing "
+                            "'--disable-azure-service-mesh' or choose a different transit encryption type."
+                        )
         return self.raw_param.get("acns_transit_encryption_type")
 
     # Container network logs is the new name for retina flow logs.
