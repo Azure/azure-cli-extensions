@@ -12,6 +12,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 * Fix `match_condition` kwarg leaking to HTTP transport by overriding `put_mc` and `add_agentpool` to pass `if_match` / `if_none_match` directly to the vendored SDK. This change fixes the compatibility issue as azure-cli/acs module adopts TypeSpec emitted SDKs while azure-cli-extensions/aks-preview still uses the autorest emitted SDK.
++ `az aks list-vm-skus`: New command to list available VM SKUs for AKS clusters in a given region.
 
 19.0.0b27
 +++++++
