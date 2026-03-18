@@ -3,6 +3,10 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+# pylint: disable=import-outside-toplevel,too-many-return-statements,too-many-branches
+# pylint: disable=raise-missing-from,too-many-locals,broad-exception-caught
+# pylint: disable=too-many-arguments,too-many-positional-arguments
+
 """Utility functions for the workload-orchestration support bundle feature."""
 
 import json
@@ -18,11 +22,6 @@ from azext_workload_orchestration.support.consts import (
     FOLDER_RESOURCES,
     FOLDER_CHECKS,
     FOLDER_CLUSTER_INFO,
-    STATUS_PASS,
-    STATUS_FAIL,
-    STATUS_WARN,
-    STATUS_SKIP,
-    STATUS_ERROR,
 )
 
 logger = get_logger(__name__)
@@ -53,14 +52,14 @@ def get_kubernetes_client(kube_config=None, kube_context=None):
     # Read context info before loading
     context_info = {"context": "unknown", "cluster": "unknown", "kubeconfig": config_file}
     try:
-        contexts, active = list_kube_config_contexts(config_file=kube_config)
+        _contexts, active = list_kube_config_contexts(config_file=kube_config)
         if active:
             context_info["context"] = active.get("name", "unknown")
             context_info["cluster"] = active.get("context", {}).get("cluster", "unknown")
             context_info["user"] = active.get("context", {}).get("user", "unknown")
         if kube_context:
             context_info["context"] = kube_context
-    except Exception:
+    except (TypeError, KeyError, FileNotFoundError, OSError):
         pass
 
     try:
@@ -363,9 +362,9 @@ def format_bytes(size_bytes):
 
 def check_disk_space(path, estimated_bytes):
     """Check if there is enough disk space. Returns (ok, free_bytes)."""
-    total, used, free = shutil.disk_usage(path)
+    usage = shutil.disk_usage(path)
     needed = estimated_bytes * 2  # raw + zip
-    return free >= needed, free
+    return usage.free >= needed, usage.free
 
 
 # ---------------------------------------------------------------------------

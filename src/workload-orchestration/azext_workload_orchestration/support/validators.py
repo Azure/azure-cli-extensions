@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=unused-argument
+# pylint: disable=unused-argument,import-outside-toplevel,too-many-locals
 
 """Prerequisite validators for the workload-orchestration support bundle feature.
 

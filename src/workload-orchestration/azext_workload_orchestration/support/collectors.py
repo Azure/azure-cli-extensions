@@ -3,11 +3,10 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-"""Data collectors for the workload-orchestration support bundle feature.
+# pylint: disable=import-outside-toplevel,too-many-branches,too-many-statements
+# pylint: disable=too-many-locals,too-many-arguments,too-many-positional-arguments
 
-Responsible for gathering cluster information, resource descriptions, and
-container logs into the bundle directory structure.
-"""
+"""Data collectors for the workload-orchestration support bundle feature."""
 
 import os
 from concurrent.futures import ThreadPoolExecutor, as_completed

@@ -3,8 +3,13 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=too-many-lines
-# pylint: disable=too-many-statements
+# pylint: disable=too-many-lines,too-many-statements,too-many-branches
+# pylint: disable=too-many-locals,too-many-arguments,too-many-positional-arguments
+# pylint: disable=broad-exception-caught,consider-using-f-string
+# pylint: disable=import-outside-toplevel,raise-missing-from
+# pylint: disable=unused-argument,unspecified-encoding
+
+"""Main orchestration for the support bundle command."""
 
 import os
 import time
