@@ -3217,13 +3217,13 @@ def load_arguments(self, _):
         c.argument(
             "zone",
             options_list=["--zone", "-z"],
-            arg_type=get_three_state_flag(),
+            action="store_true",
             help="Show only VM SKUs that support availability zones.",
         )
         c.argument(
             "show_all",
             options_list=["--all"],
-            arg_type=get_three_state_flag(),
+            action="store_true",
             help="Show all VM SKU information including those not available for the current subscription.",
         )
 
