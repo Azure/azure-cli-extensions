@@ -4,7 +4,7 @@
   "features": {
     "ghcr.io/devcontainers/features/github-cli:1": {}
   },
-  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "workspaceFolder": "/workspaces",
   "onCreateCommand": "python -m venv venv",
   "postCreateCommand": "REPO_NAME=$(basename $GITHUB_REPOSITORY) && cat $REPO_NAME/.devcontainer/login.sh >> ~/.bashrc && cp $REPO_NAME/.devcontainer/setup.sh easy_setup.sh && chmod +x easy_setup.sh",
   "hostRequirements": {
