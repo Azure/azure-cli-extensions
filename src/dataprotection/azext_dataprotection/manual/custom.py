@@ -1151,7 +1151,10 @@ def restore_initialize_for_item_recovery(cmd, datasource_type, source_datastore,
     return restore_request
 
 
-def dataprotection_enable_backup(cmd, datasource_type, datasource_id, backup_strategy=None, backup_configuration_file=None):
+def dataprotection_enable_backup(cmd, datasource_type, datasource_id,
+                                 backup_strategy=None,
+                                 backup_configuration_file=None,
+                                 yes=False):
     """Enable backup for a datasource using a single command.
 
     This command orchestrates all the steps required to enable backup:
@@ -1198,7 +1201,8 @@ def dataprotection_enable_backup(cmd, datasource_type, datasource_id, backup_str
             )
 
         from azext_dataprotection.manual.aks.aks_helper import dataprotection_enable_backup_helper
-        dataprotection_enable_backup_helper(cmd, datasource_id, backup_strategy, config)
+        dataprotection_enable_backup_helper(
+            cmd, datasource_id, backup_strategy, config, yes=yes)
 
 
 def _parse_backup_configuration(backup_configuration_file):

@@ -196,6 +196,8 @@ def load_arguments(self, _):
                    help="Path to backup configuration file (JSON) or inline JSON string. "
                         "Available settings: storageAccountResourceId, blobContainerName, backupResourceGroupId, "
                         "backupVaultId (required for Custom), backupPolicyId (required for Custom), tags.")
+        c.argument('yes', options_list=['--yes', '-y'], action='store_true',
+                   help='Do not prompt for confirmation.')
 
     with self.argument_context('dataprotection job show') as c:
         c.argument('resource_group_name', resource_group_name_type)

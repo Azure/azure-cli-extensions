@@ -33,7 +33,7 @@ def _check_and_assign_role(cmd, role, assignee, scope, identity_name="identity",
         if list_role_assignments(cmd, assignee=assignee, role=role, scope=scope, include_inherited=True):
             print(f"\tRole '{role}' already assigned to {identity_name}")
             return True
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught
         print(f"\tWarning: Could not list role assignments for {identity_name}: {str(e)[:100]}")
         # Continue to try creating the assignment
 
@@ -43,7 +43,7 @@ def _check_and_assign_role(cmd, role, assignee, scope, identity_name="identity",
             create_role_assignment(cmd, role=role, assignee=assignee, scope=scope)
             print(f"\tRole '{role}' assigned to {identity_name}")
             return True
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught
             error_str = str(e).lower()
 
             # Already exists — treat as success
@@ -52,7 +52,11 @@ def _check_and_assign_role(cmd, role, assignee, scope, identity_name="identity",
                 return True
 
             # Principal not found — retryable (identity propagation)
-            is_propagation_error = "principal" in error_str or "does not exist" in error_str or "cannot find" in error_str
+            is_propagation_error = (
+                "principal" in error_str
+                or "does not exist" in error_str
+                or "cannot find" in error_str
+            )
             if is_propagation_error and attempt < max_retries - 1:
                 print(f"\tWaiting for identity to propagate... (attempt {attempt + 1}/{max_retries})")
                 time.sleep(retry_delay)
@@ -124,7 +128,8 @@ def _validate_request(datasource_id, backup_strategy, configuration_params):
         if rg_parts['subscription'].lower() != cluster_subscription_id.lower():
             raise InvalidArgumentValueError(
                 f"backupResourceGroupId must be in the same subscription as the cluster. "
-                f"Cluster subscription: {cluster_subscription_id}, Resource group subscription: {rg_parts['subscription']}"
+                f"Cluster subscription: {cluster_subscription_id}, "
+                f"Resource group subscription: {rg_parts['subscription']}"
             )
 
     storage_account_id = configuration_params.get("storageAccountResourceId")
@@ -133,7 +138,8 @@ def _validate_request(datasource_id, backup_strategy, configuration_params):
         if sa_parts['subscription'].lower() != cluster_subscription_id.lower():
             raise InvalidArgumentValueError(
                 f"storageAccountResourceId must be in the same subscription as the cluster. "
-                f"Cluster subscription: {cluster_subscription_id}, Storage account subscription: {sa_parts['subscription']}"
+                f"Cluster subscription: {cluster_subscription_id}, "
+                f"Storage account subscription: {sa_parts['subscription']}"
             )
 
     backup_vault_id = configuration_params.get("backupVaultId")
@@ -142,7 +148,8 @@ def _validate_request(datasource_id, backup_strategy, configuration_params):
         if vault_parts['subscription'].lower() != cluster_subscription_id.lower():
             raise InvalidArgumentValueError(
                 f"backupVaultId must be in the same subscription as the cluster. "
-                f"Cluster subscription: {cluster_subscription_id}, Backup vault subscription: {vault_parts['subscription']}"
+                f"Cluster subscription: {cluster_subscription_id}, "
+                f"Backup vault subscription: {vault_parts['subscription']}"
             )
 
 
@@ -194,7 +201,8 @@ def _check_existing_backup_instance(resource_client, datasource_id, cluster_name
             protection_error = getattr(bi_properties, 'protection_error_details', None)
 
         # Parse vault info from the BI resource ID
-        # Format: /subscriptions/.../resourceGroups/.../providers/Microsoft.DataProtection/backupVaults/{vault}/backupInstances/{bi}
+        # Format: /subscriptions/../resourceGroups/../providers/
+        #   Microsoft.DataProtection/backupVaults/{vault}/backupInstances/{bi}
         vault_name = "Unknown"
         vault_rg = "Unknown"
         if bi_id and '/backupvaults/' in str(bi_id).lower():
@@ -210,8 +218,14 @@ def _check_existing_backup_instance(resource_client, datasource_id, cluster_name
 
         error_info = ""
         if protection_error:
-            error_msg = protection_error.get('message', str(protection_error)) if isinstance(protection_error, dict) else str(protection_error)
-            print(f"\t\t- Error Details:   {error_msg[:100]}..." if len(str(error_msg)) > 100 else f"        - Error Details:   {error_msg}")
+            if isinstance(protection_error, dict):
+                error_msg = protection_error.get('message', str(protection_error))
+            else:
+                error_msg = str(protection_error)
+            if len(str(error_msg)) > 100:
+                print(f"\t\t- Error Details:   {error_msg[:100]}...")
+            else:
+                print(f"\t\t- Error Details:   {error_msg}")
             error_info = f"\n  Protection Error: {error_msg}\n"
 
         raise InvalidArgumentValueError(
@@ -231,10 +245,9 @@ def _check_existing_backup_instance(resource_client, datasource_id, cluster_name
         )
 
     except InvalidArgumentValueError:
-        # Re-raise our own error
         raise
-    except Exception as e:
-        # 404 or other errors mean no backup instance exists - that's fine
+    except Exception as e:  # pylint: disable=broad-exception-caught
+        # 404 or other errors mean no backup instance exists
         error_str = str(e).lower()
         if "not found" in error_str or "404" in error_str or "does not exist" in error_str:
             print("\tNo existing backup instance found")
@@ -326,23 +339,27 @@ def _find_existing_backup_resource_group(resource_client, cluster_location):
                 tag_value = rg.tags.get(AKS_BACKUP_TAG_KEY)
                 if tag_value and tag_value.lower() == cluster_location.lower():
                     return rg
-    except Exception:
+    except Exception:  # pylint: disable=broad-exception-caught
         # If we can't list resource groups, we'll create a new one
         pass
     return None
 
 
-def _setup_resource_group(cmd, resource_client, backup_resource_group_id, cluster_location, cluster_name, cluster_identity_principal_id, resource_tags):
+def _setup_resource_group(cmd, resource_client, backup_resource_group_id,
+                          cluster_location, _cluster_name,
+                          cluster_identity_principal_id, resource_tags):
     """Create or use backup resource group."""
     if backup_resource_group_id:
         backup_resource_group_name = parse_resource_id(backup_resource_group_id)['resource_group']
         print(f"\tUsing provided resource group: {backup_resource_group_name}")
         try:
             backup_resource_group = resource_client.resource_groups.get(backup_resource_group_name)
-        except Exception:
+        except Exception:  # pylint: disable=broad-exception-caught
             raise InvalidArgumentValueError(
                 f"Resource group '{backup_resource_group_name}' not found. "
-                f"Please ensure the resource group exists or remove 'backupResourceGroupId' from configuration to create one automatically."
+                "Please ensure the resource group exists or remove "
+                "'backupResourceGroupId' from configuration to create "
+                "one automatically."
             )
     else:
         # Search for existing backup resource group with matching tag
@@ -364,7 +381,8 @@ def _setup_resource_group(cmd, resource_client, backup_resource_group_id, cluste
                 rg_tags.update(resource_tags)
 
             rg_params = {"location": cluster_location, "tags": rg_tags}
-            backup_resource_group = resource_client.resource_groups.create_or_update(backup_resource_group_name, rg_params)
+            backup_resource_group = resource_client.resource_groups.create_or_update(
+                backup_resource_group_name, rg_params)
 
     print(f"\tResource Group: {backup_resource_group.id}")
     _check_and_assign_role(
@@ -397,18 +415,23 @@ def _find_existing_backup_storage_account(storage_client, cluster_location):
                     # Parse resource group from the SA id
                     sa_parts = parse_resource_id(sa.id)
                     return sa, sa_parts['resource_group']
-    except Exception:
+    except Exception:  # pylint: disable=broad-exception-caught
         # If we can't list storage accounts, we'll create a new one
         pass
     return None, None
 
 
-def _setup_storage_account(cmd, cluster_subscription_id, storage_account_id, blob_container_name, backup_resource_group_name, cluster_location, cluster_name, cluster_resource_group_name, resource_tags):
+def _setup_storage_account(cmd, cluster_subscription_id, storage_account_id,
+                           blob_container_name, backup_resource_group_name,
+                           cluster_location, cluster_name,
+                           cluster_resource_group_name, resource_tags):
     """Create or use storage account."""
     from azure.mgmt.storage import StorageManagementClient
 
-    storage_client = get_mgmt_service_client(cmd.cli_ctx, StorageManagementClient, subscription_id=cluster_subscription_id)
-    storage_account_rg = backup_resource_group_name  # Default to backup RG
+    storage_client = get_mgmt_service_client(
+        cmd.cli_ctx, StorageManagementClient,
+        subscription_id=cluster_subscription_id)
+    storage_account_rg = backup_resource_group_name
 
     if storage_account_id:
         # Use provided storage account
@@ -416,8 +439,13 @@ def _setup_storage_account(cmd, cluster_subscription_id, storage_account_id, blo
         backup_storage_account_name = sa_parts['name']
         storage_account_rg = sa_parts['resource_group']
         print(f"\tUsing provided storage account: {backup_storage_account_name}")
-        backup_storage_account = storage_client.storage_accounts.get_properties(storage_account_rg, backup_storage_account_name)
-        backup_storage_account_container_name = blob_container_name if blob_container_name else _generate_backup_storage_account_container_name(cluster_name, cluster_resource_group_name)
+        backup_storage_account = storage_client.storage_accounts.get_properties(
+            storage_account_rg, backup_storage_account_name)
+        if blob_container_name:
+            backup_storage_account_container_name = blob_container_name
+        else:
+            backup_storage_account_container_name = _generate_backup_storage_account_container_name(
+                cluster_name, cluster_resource_group_name)
     else:
         # Search for existing backup storage account with matching tag
         print(f"\tSearching for existing AKS backup storage account in region {cluster_location}...")
@@ -451,17 +479,25 @@ def _setup_storage_account(cmd, cluster_subscription_id, storage_account_id, blo
                 account_name=backup_storage_account_name,
                 parameters=storage_params).result()
 
-        backup_storage_account_container_name = _generate_backup_storage_account_container_name(cluster_name, cluster_resource_group_name)
+        backup_storage_account_container_name = _generate_backup_storage_account_container_name(
+            cluster_name, cluster_resource_group_name)
 
     print(f"\tStorage Account: {backup_storage_account.id}")
     print(f"\tCreating blob container: {backup_storage_account_container_name}")
-    storage_client.blob_containers.create(storage_account_rg, backup_storage_account_name, backup_storage_account_container_name, {})
+    storage_client.blob_containers.create(
+        storage_account_rg, backup_storage_account_name,
+        backup_storage_account_container_name, {})
     print("\t[OK] Storage account ready")
 
     return backup_storage_account, backup_storage_account_name, backup_storage_account_container_name
 
 
-def _install_backup_extension(cmd, cluster_subscription_id, cluster_resource_group_name, cluster_name, backup_storage_account_name, backup_storage_account_container_name, backup_resource_group_name, backup_storage_account):
+def _install_backup_extension(cmd, cluster_subscription_id,
+                              cluster_resource_group_name, cluster_name,
+                              backup_storage_account_name,
+                              backup_storage_account_container_name,
+                              backup_resource_group_name,
+                              backup_storage_account):
     """Install backup extension on the cluster."""
     backup_extension = _create_backup_extension(
         cmd,
@@ -484,7 +520,8 @@ def _install_backup_extension(cmd, cluster_subscription_id, cluster_resource_gro
     return backup_extension
 
 
-def _get_existing_backup_extension(cmd, cluster_subscription_id, cluster_resource_group_name, cluster_name):
+def _get_existing_backup_extension(cmd, cluster_subscription_id,
+                                   cluster_resource_group_name, cluster_name):
     """
     Check if a backup extension already exists on the cluster.
 
@@ -492,8 +529,11 @@ def _get_existing_backup_extension(cmd, cluster_subscription_id, cluster_resourc
         extension object if found and healthy, None if not found.
         Raises on Failed or transient states.
     """
-    from azext_dataprotection.vendored_sdks.azure_mgmt_kubernetesconfiguration import SourceControlConfigurationClient
-    k8s_configuration_client = get_mgmt_service_client(cmd.cli_ctx, SourceControlConfigurationClient, subscription_id=cluster_subscription_id)
+    from azext_dataprotection.vendored_sdks.azure_mgmt_kubernetesconfiguration import (
+        SourceControlConfigurationClient)
+    k8s_configuration_client = get_mgmt_service_client(
+        cmd.cli_ctx, SourceControlConfigurationClient,
+        subscription_id=cluster_subscription_id)
 
     try:
         extensions = k8s_configuration_client.extensions.list(
@@ -504,27 +544,35 @@ def _get_existing_backup_extension(cmd, cluster_subscription_id, cluster_resourc
 
         for page in extensions.by_page():
             for extension in page:
-                if extension.extension_type and extension.extension_type.lower() == 'microsoft.dataprotection.kubernetes':
+                ext_type = extension.extension_type
+                if ext_type and ext_type.lower() == 'microsoft.dataprotection.kubernetes':
                     provisioning_state = extension.provisioning_state
                     if provisioning_state == "Succeeded":
                         return extension
-                    elif provisioning_state == "Failed":
+                    if provisioning_state == "Failed":
                         raise InvalidArgumentValueError(
-                            f"Data protection extension '{extension.name}' exists on cluster '{cluster_name}' but is in Failed state.\n"
+                            f"Data protection extension '{extension.name}' exists "
+                            f"on cluster '{cluster_name}' but is in Failed state.\n"
                             f"Please take corrective action before running this command again:\n"
-                            f"  1. Check extension logs: az k8s-extension show --name {extension.name} --cluster-name {cluster_name} --resource-group {cluster_resource_group_name} --cluster-type managedClusters\n"
-                            f"  2. Delete the failed extension: az k8s-extension delete --name {extension.name} --cluster-name {cluster_name} --resource-group {cluster_resource_group_name} --cluster-type managedClusters --yes\n"
+                            f"  1. Check extension logs: az k8s-extension show "
+                            f"--name {extension.name} --cluster-name {cluster_name} "
+                            f"--resource-group {cluster_resource_group_name} "
+                            f"--cluster-type managedClusters\n"
+                            f"  2. Delete the failed extension: az k8s-extension delete "
+                            f"--name {extension.name} --cluster-name {cluster_name} "
+                            f"--resource-group {cluster_resource_group_name} "
+                            f"--cluster-type managedClusters --yes\n"
                             f"  3. Re-run this command to install a fresh extension.\n"
                             f"For troubleshooting, visit: https://aka.ms/aksclusterbackup"
                         )
-                    else:
-                        raise InvalidArgumentValueError(
-                            f"Data protection extension '{extension.name}' is in '{provisioning_state}' state.\n"
-                            f"Please wait for the operation to complete and try again."
-                        )
+                    raise InvalidArgumentValueError(
+                        f"Data protection extension '{extension.name}' "
+                        f"is in '{provisioning_state}' state.\n"
+                        f"Please wait for the operation to complete and try again."
+                    )
     except InvalidArgumentValueError:
         raise
-    except Exception:
+    except Exception:  # pylint: disable=broad-exception-caught
         pass
 
     return None
@@ -552,14 +600,20 @@ def _get_storage_account_from_extension(cmd, extension, cluster_subscription_id)
     if not sa_name or not sa_rg:
         return None, None, None, None
 
-    print(f"\tExtension is configured with storage account: {sa_name} (RG: {sa_rg}, container: {container})")
+    print(
+        f"\tExtension is configured with storage account: "
+        f"{sa_name} (RG: {sa_rg}, container: {container})")
 
-    storage_client = get_mgmt_service_client(cmd.cli_ctx, StorageManagementClient, subscription_id=cluster_subscription_id)
+    storage_client = get_mgmt_service_client(
+        cmd.cli_ctx, StorageManagementClient,
+        subscription_id=cluster_subscription_id)
     try:
         sa = storage_client.storage_accounts.get_properties(sa_rg, sa_name)
         return sa, sa_name, container, sa_rg
-    except Exception as e:
-        print(f"\tWarning: Could not fetch storage account '{sa_name}' from extension config: {str(e)[:100]}")
+    except Exception as e:  # pylint: disable=broad-exception-caught
+        print(
+            f"\tWarning: Could not fetch storage account '{sa_name}' "
+            f"from extension config: {str(e)[:100]}")
         return None, None, None, None
 
 
@@ -586,13 +640,16 @@ def _find_existing_backup_vault(cmd, cluster_subscription_id, cluster_location):
                 tag_value = vault['tags'].get(AKS_BACKUP_TAG_KEY)
                 if tag_value and tag_value.lower() == cluster_location.lower():
                     return vault
-    except Exception:
+    except Exception:  # pylint: disable=broad-exception-caught
         # If we can't list vaults, we'll create a new one
         pass
     return None
 
 
-def _try_create_vault_with_storage_type(cmd, vault_create_cls, backup_vault_name, backup_resource_group_name, cluster_location, vault_tags, storage_type, cluster_subscription_id=None):
+def _try_create_vault_with_storage_type(
+        cmd, vault_create_cls, backup_vault_name,
+        backup_resource_group_name, cluster_location, vault_tags,
+        storage_type, cluster_subscription_id=None):
     """
     Attempt to create a backup vault with the given storage type.
 
@@ -622,12 +679,15 @@ def _try_create_vault_with_storage_type(cmd, vault_create_cls, backup_vault_name
     try:
         backup_vault = vault_create_cls(cli_ctx=cmd.cli_ctx)(command_args=backup_vault_args).result()
         return backup_vault
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught
         print(f"\tVault creation with {storage_type} failed: {str(e)[:120]}")
         return None
 
 
-def _setup_backup_vault(cmd, backup_strategy, backup_vault_id, cluster_subscription_id, cluster_location, backup_resource_group_name, cluster_resource, backup_resource_group, resource_tags):
+def _setup_backup_vault(
+        cmd, backup_strategy, backup_vault_id, cluster_subscription_id,
+        cluster_location, backup_resource_group_name, cluster_resource,
+        backup_resource_group, resource_tags):
     """Create or use backup vault."""
     from azext_dataprotection.aaz.latest.dataprotection.backup_vault import Create as _BackupVaultCreate
 
@@ -710,7 +770,10 @@ def _setup_backup_vault(cmd, backup_strategy, backup_vault_id, cluster_subscript
     return backup_vault, backup_vault_name
 
 
-def _setup_backup_policy(cmd, backup_vault, backup_vault_name, backup_resource_group_name, backup_strategy, backup_vault_id, backup_policy_id, cluster_subscription_id):
+def _setup_backup_policy(cmd, _backup_vault, backup_vault_name,
+                         backup_resource_group_name, backup_strategy,
+                         backup_vault_id, backup_policy_id,
+                         cluster_subscription_id):
     """Create or use backup policy."""
     from azext_dataprotection.manual.aaz_operations.backup_policy import Create as _BackupPolicyCreate
     from azext_dataprotection.aaz.latest.dataprotection.backup_policy import List as _BackupPolicyList
@@ -740,7 +803,7 @@ def _setup_backup_policy(cmd, backup_vault, backup_vault_name, backup_resource_g
                 if policy.get('name') == backup_policy_name:
                     existing_policy = policy
                     break
-        except Exception:
+        except Exception:  # pylint: disable=broad-exception-caught
             pass
 
         if existing_policy:
@@ -759,18 +822,22 @@ def _setup_backup_policy(cmd, backup_vault, backup_vault_name, backup_resource_g
                 "subscription": cluster_subscription_id
             })
 
-    print(f"\tBackup Policy: {backup_policy.get('id', backup_policy_id if backup_policy_id else 'N/A')}")
+    print(f"\tBackup Policy: {backup_policy.get('id', backup_policy_id or 'N/A')}")
     print("\t[OK] Backup policy ready")
 
     return backup_policy
 
 
-def _setup_trusted_access(cmd, cluster_subscription_id, cluster_resource_group_name, cluster_name, backup_vault):
+def _setup_trusted_access(cmd, cluster_subscription_id,
+                          cluster_resource_group_name, cluster_name,
+                          backup_vault):
     """Setup trusted access role binding between backup vault and cluster."""
     from azext_dataprotection.vendored_sdks.azure_mgmt_containerservice import ContainerServiceClient
     from azext_dataprotection.vendored_sdks.azure_mgmt_containerservice.models import TrustedAccessRoleBinding
 
-    cluster_client = get_mgmt_service_client(cmd.cli_ctx, ContainerServiceClient, subscription_id=cluster_subscription_id)
+    cluster_client = get_mgmt_service_client(
+        cmd.cli_ctx, ContainerServiceClient,
+        subscription_id=cluster_subscription_id)
     vault_id = backup_vault["id"]
     vault_name = backup_vault["name"]
 
@@ -790,7 +857,7 @@ def _setup_trusted_access(cmd, cluster_subscription_id, cluster_resource_group_n
                 print(f"\tFound existing binding: {binding.name}")
                 print("\t[OK] Trusted access already configured")
                 return
-    except Exception:
+    except Exception:  # pylint: disable=broad-exception-caught
         # If we can't list, we'll try to create
         pass
 
@@ -811,9 +878,14 @@ def _setup_trusted_access(cmd, cluster_subscription_id, cluster_resource_group_n
     print("\t[OK] Trusted access configured - vault can now access cluster for backup operations")
 
 
-def _create_backup_instance(cmd, cluster_name, cluster_resource_group_name, datasource_id, cluster_location, backup_vault_name, backup_resource_group_name, backup_strategy, backup_vault_id, backup_policy, backup_policy_id, backup_resource_group, cluster_subscription_id):
+def _create_backup_instance(
+        cmd, cluster_name, _cluster_resource_group_name, datasource_id,
+        cluster_location, backup_vault_name, backup_resource_group_name,
+        backup_strategy, backup_vault_id, backup_policy, backup_policy_id,
+        backup_resource_group, cluster_subscription_id):
     """Create backup instance."""
-    from azext_dataprotection.manual.aaz_operations.backup_instance import ValidateAndCreate as _BackupInstanceValidateAndCreate
+    from azext_dataprotection.manual.aaz_operations.backup_instance import (
+        ValidateAndCreate as _BackupInstanceValidateAndCreate)
     import uuid
 
     backup_instance_name = f"{cluster_name}-{str(uuid.uuid4())[:8]}"
@@ -853,61 +925,54 @@ def _create_backup_instance(cmd, cluster_name, cluster_resource_group_name, data
     elif protection_state == "ConfiguringProtection":
         print("\t[OK] Backup instance created - protection configuration in progress")
     elif protection_state == "ProtectionError":
-        error_details = backup_instance.get('properties', {}).get('protectionErrorDetails', {})
-        error_msg = error_details.get('message', 'Unknown error') if isinstance(error_details, dict) else str(error_details)
-        print(f"\t[WARNING] Backup instance created but protection has errors: {error_msg}")
+        error_details = backup_instance.get('properties', {}).get(
+            'protectionErrorDetails', {})
+        if isinstance(error_details, dict):
+            error_msg = error_details.get('message', 'Unknown error')
+        else:
+            error_msg = str(error_details)
+        print(
+            f"\t[WARNING] Backup instance created but "
+            f"protection has errors: {error_msg}")
     else:
         print("\t[OK] Backup instance created")
 
     return backup_instance, policy_id_for_bi
 
 
-def dataprotection_enable_backup_helper(cmd, datasource_id: str, backup_strategy='Week', configuration_params=None):
-    """
-    Enable backup for an AKS cluster.
+def _parse_and_validate_config(datasource_id, backup_strategy, configuration_params):
+    """Parse, validate configuration and extract settings.
 
-    Args:
-        cmd: CLI command context
-        datasource_id: Full ARM resource ID of the AKS cluster
-        backup_strategy: Backup strategy (Week, Month, Immutable, DisasterRecovery, Custom)
-        configuration_params: Dict with configuration settings
+    Returns:
+        tuple: (config_dict, cluster_subscription_id, cluster_resource_group_name,
+                cluster_name)
     """
-    print("=" * 60)
-    print("Enabling backup for AKS cluster")
-    print("=" * 60)
-    print(f"Datasource ID: {datasource_id}")
-    print(f"Backup Strategy: {backup_strategy}")
-
-    # Parse configuration_params
     if configuration_params is None:
         configuration_params = {}
     if isinstance(configuration_params, str):
         configuration_params = json.loads(configuration_params)
 
-    # Validate request (raises on failure)
     _validate_request(datasource_id, backup_strategy, configuration_params)
 
-    # Extract configuration values (camelCase keys)
-    resource_tags = configuration_params.get("tags")
-    storage_account_id = configuration_params.get("storageAccountResourceId")
-    blob_container_name = configuration_params.get("blobContainerName")
-    backup_resource_group_id = configuration_params.get("backupResourceGroupId")
-    backup_vault_id = configuration_params.get("backupVaultId")
-    backup_policy_id = configuration_params.get("backupPolicyId")
-
-    # Parse cluster details from resource ID
     cluster_id_parts = parse_resource_id(datasource_id)
-    cluster_subscription_id = cluster_id_parts['subscription']
-    cluster_resource_group_name = cluster_id_parts['resource_group']
-    cluster_name = cluster_id_parts['name']
+    return (
+        configuration_params,
+        cluster_id_parts['subscription'],
+        cluster_id_parts['resource_group'],
+        cluster_id_parts['name'],
+    )
 
-    if resource_tags:
-        print(f"Resource Tags: {json.dumps(resource_tags)}")
 
-    # Show execution plan and get user confirmation
+def _show_plan_and_confirm(cluster_subscription_id, cluster_name,
+                           backup_strategy):
+    """Display the execution plan and prompt for user confirmation.
+
+    Returns:
+        True if user confirmed, False otherwise
+    """
     print("\nThis command will perform the following steps:")
     print("  [1] Validate the AKS cluster")
-    print("  [2] Create or reuse a backup resource group (AKSAzureBackup_<region>)")
+    print("  [2] Create or reuse a backup resource group")
     print("  [3] Create or reuse a storage account for backup data")
     print("  [4] Install the data protection extension on the cluster")
     print("  [5] Create or reuse a backup vault")
@@ -916,12 +981,12 @@ def dataprotection_enable_backup_helper(cmd, datasource_id: str, backup_strategy
     print("  [8] Create a backup instance to start protection")
     print("")
     print("The following RBAC role assignments will be created:")
-    print("  - Cluster MSI   → Contributor on Backup Resource Group")
-    print("  - Extension MSI → Storage Blob Data Contributor on Storage Account")
-    print("  - Vault MSI     → Reader on AKS Cluster")
-    print("  - Vault MSI     → Reader on Backup Resource Group")
-    print("  - Vault MSI     → Disk Snapshot Contributor on Backup Resource Group")
-    print("  - Vault MSI     → Storage Blob Data Reader on Storage Account")
+    print("  - Cluster MSI   -> Contributor on Backup Resource Group")
+    print("  - Extension MSI -> Storage Blob Data Contributor on SA")
+    print("  - Vault MSI     -> Reader on AKS Cluster")
+    print("  - Vault MSI     -> Reader on Backup Resource Group")
+    print("  - Vault MSI     -> Disk Snapshot Contributor on Backup RG")
+    print("  - Vault MSI     -> Storage Blob Data Reader on SA")
     print("")
     print(f"  Subscription: {cluster_subscription_id}")
     print(f"  Cluster:      {cluster_name}")
@@ -934,55 +999,45 @@ def dataprotection_enable_backup_helper(cmd, datasource_id: str, backup_strategy
     print("")
 
     from knack.prompting import prompt_y_n
-    if not prompt_y_n("Do you want to proceed?", default='y'):
-        print("Operation cancelled by user.")
-        return
+    return prompt_y_n("Do you want to proceed?", default='y')
 
-    from azure.mgmt.resource import ResourceManagementClient
-    resource_client = get_mgmt_service_client(cmd.cli_ctx, ResourceManagementClient, subscription_id=cluster_subscription_id)
 
-    # Pre-check: Verify no existing backup instance for this cluster
-    print("\n[Pre-check] Checking for existing backup...")
-    _check_existing_backup_instance(resource_client, datasource_id, cluster_name)
+def _setup_extension_and_storage(
+        cmd, cluster_subscription_id, cluster_resource_group_name,
+        cluster_name, storage_account_id, blob_container_name,
+        backup_resource_group_name, cluster_location, resource_tags):
+    """Setup backup extension and storage account (steps 3 & 4).
 
-    # Step 1: Validate cluster
-    print("\n[1/8] Validating cluster...")
-    cluster_resource, cluster_location, cluster_identity_principal_id = _validate_cluster(resource_client, datasource_id, cluster_name)
+    If the extension is already installed, reuses its configured storage
+    account. Otherwise creates storage first, then installs the extension.
 
-    # Step 2: Setup resource group
-    print("\n[2/8] Setting up backup resource group...")
-    backup_resource_group, backup_resource_group_name = _setup_resource_group(
-        cmd, resource_client, backup_resource_group_id, cluster_location, cluster_name,
-        cluster_identity_principal_id, resource_tags)
-
-    # Step 3 & 4: Check extension first, then handle storage account accordingly
-    # If the extension is already installed, use its configured storage account
-    # instead of creating/finding a new one (which may be different).
+    Returns:
+        storage account object
+    """
     print("\n[3/8] Checking for existing backup extension...")
     existing_extension = _get_existing_backup_extension(
-        cmd, cluster_subscription_id, cluster_resource_group_name, cluster_name)
+        cmd, cluster_subscription_id,
+        cluster_resource_group_name, cluster_name)
 
     if existing_extension:
-        print(f"\tBackup extension already installed: {existing_extension.name}")
-
-        # Extract the storage account the extension is actually configured with
-        ext_sa, ext_sa_name, ext_container, ext_sa_rg = _get_storage_account_from_extension(
-            cmd, existing_extension, cluster_subscription_id)
+        print(f"\tBackup extension already installed: "
+              f"{existing_extension.name}")
+        ext_sa, ext_sa_name, _, _ = \
+            _get_storage_account_from_extension(
+                cmd, existing_extension, cluster_subscription_id)
 
         if ext_sa:
-            # Use the extension's configured storage account for all subsequent operations
             backup_storage_account = ext_sa
-            backup_storage_account_name = ext_sa_name
-            backup_storage_account_container_name = ext_container
             print(f"\tUsing extension's storage account: {ext_sa_name}")
         else:
-            # Fallback: extension exists but we can't read its config — setup storage account normally
-            print("\tWarning: Could not read extension storage config, setting up storage account...")
-            backup_storage_account, backup_storage_account_name, backup_storage_account_container_name = _setup_storage_account(
-                cmd, cluster_subscription_id, storage_account_id, blob_container_name,
-                backup_resource_group_name, cluster_location, cluster_name, cluster_resource_group_name, resource_tags)
+            print("\tWarning: Could not read extension storage "
+                  "config, setting up storage account...")
+            backup_storage_account = _setup_storage_account(
+                cmd, cluster_subscription_id, storage_account_id,
+                blob_container_name, backup_resource_group_name,
+                cluster_location, cluster_name,
+                cluster_resource_group_name, resource_tags)[0]
 
-        # Ensure extension identity has correct role on its storage account
         _check_and_assign_role(
             cmd,
             role="Storage Blob Data Contributor",
@@ -994,23 +1049,96 @@ def dataprotection_enable_backup_helper(cmd, datasource_id: str, backup_strategy
         print("\n[4/8] Backup extension already installed...")
         print("\t[OK] Backup extension ready")
     else:
-        # No extension — setup storage account first, then install extension
-        print("\tNo existing extension found, setting up storage account...")
-        backup_storage_account, backup_storage_account_name, backup_storage_account_container_name = _setup_storage_account(
-            cmd, cluster_subscription_id, storage_account_id, blob_container_name,
-            backup_resource_group_name, cluster_location, cluster_name, cluster_resource_group_name, resource_tags)
+        print("\tNo existing extension found, setting up storage...")
+        sa_result = _setup_storage_account(
+            cmd, cluster_subscription_id, storage_account_id,
+            blob_container_name, backup_resource_group_name,
+            cluster_location, cluster_name,
+            cluster_resource_group_name, resource_tags)
+        backup_storage_account = sa_result[0]
 
         print("\n[4/8] Installing backup extension...")
         _install_backup_extension(
-            cmd, cluster_subscription_id, cluster_resource_group_name, cluster_name,
-            backup_storage_account_name, backup_storage_account_container_name,
+            cmd, cluster_subscription_id,
+            cluster_resource_group_name, cluster_name,
+            sa_result[1], sa_result[2],
             backup_resource_group_name, backup_storage_account)
+
+    return backup_storage_account
+
+
+def dataprotection_enable_backup_helper(
+        cmd, datasource_id: str, backup_strategy='Week',
+        configuration_params=None, yes=False):
+    """
+    Enable backup for an AKS cluster.
+
+    Args:
+        cmd: CLI command context
+        datasource_id: Full ARM resource ID of the AKS cluster
+        backup_strategy: Backup strategy
+        configuration_params: Dict with configuration settings
+    """
+    print("=" * 60)
+    print("Enabling backup for AKS cluster")
+    print("=" * 60)
+    print(f"Datasource ID: {datasource_id}")
+    print(f"Backup Strategy: {backup_strategy}")
+
+    # Parse and validate configuration
+    configuration_params, cluster_subscription_id, \
+        cluster_resource_group_name, cluster_name = \
+        _parse_and_validate_config(
+            datasource_id, backup_strategy, configuration_params)
+
+    # Extract configuration values (camelCase keys)
+    config = configuration_params
+    resource_tags = config.get("tags")
+
+    if resource_tags:
+        print(f"Resource Tags: {json.dumps(resource_tags)}")
+
+    # Show execution plan and get user confirmation
+    if not yes and not _show_plan_and_confirm(
+            cluster_subscription_id, cluster_name, backup_strategy):
+        print("Operation cancelled by user.")
+        return
+
+    from azure.mgmt.resource import ResourceManagementClient
+    resource_client = get_mgmt_service_client(
+        cmd.cli_ctx, ResourceManagementClient,
+        subscription_id=cluster_subscription_id)
+
+    # Pre-check: Verify no existing backup instance for this cluster
+    print("\n[Pre-check] Checking for existing backup...")
+    _check_existing_backup_instance(resource_client, datasource_id, cluster_name)
+
+    # Step 1: Validate cluster
+    print("\n[1/8] Validating cluster...")
+    cluster_resource, cluster_location, cluster_identity_principal_id = \
+        _validate_cluster(resource_client, datasource_id, cluster_name)
+
+    # Step 2: Setup resource group
+    print("\n[2/8] Setting up backup resource group...")
+    backup_resource_group, backup_resource_group_name = _setup_resource_group(
+        cmd, resource_client, config.get("backupResourceGroupId"),
+        cluster_location, cluster_name,
+        cluster_identity_principal_id, resource_tags)
+
+    # Step 3 & 4: Setup storage and extension
+    backup_storage_account = _setup_extension_and_storage(
+        cmd, cluster_subscription_id, cluster_resource_group_name,
+        cluster_name, config.get("storageAccountResourceId"),
+        config.get("blobContainerName"),
+        backup_resource_group_name, cluster_location, resource_tags)
 
     # Step 5: Setup backup vault
     print("\n[5/8] Setting up backup vault...")
     backup_vault, backup_vault_name = _setup_backup_vault(
-        cmd, backup_strategy, backup_vault_id, cluster_subscription_id, cluster_location, backup_resource_group_name,
-        cluster_resource, backup_resource_group, resource_tags)
+        cmd, backup_strategy, config.get("backupVaultId"),
+        cluster_subscription_id, cluster_location,
+        backup_resource_group_name, cluster_resource,
+        backup_resource_group, resource_tags)
 
     # Grant vault identity read access to the backup storage account
     _check_and_assign_role(
@@ -1023,13 +1151,16 @@ def dataprotection_enable_backup_helper(cmd, datasource_id: str, backup_strategy
     # Step 6: Setup backup policy
     print("\n[6/8] Setting up backup policy...")
     backup_policy = _setup_backup_policy(
-        cmd, backup_vault, backup_vault_name, backup_resource_group_name,
-        backup_strategy, backup_vault_id, backup_policy_id, cluster_subscription_id)
+        cmd, backup_vault, backup_vault_name,
+        backup_resource_group_name, backup_strategy,
+        config.get("backupVaultId"), config.get("backupPolicyId"),
+        cluster_subscription_id)
 
     # Step 7: Setup trusted access
     print("\n[7/8] Setting up trusted access...")
     _setup_trusted_access(
-        cmd, cluster_subscription_id, cluster_resource_group_name, cluster_name, backup_vault)
+        cmd, cluster_subscription_id, cluster_resource_group_name,
+        cluster_name, backup_vault)
 
     # Wait for role assignment propagation before creating backup instance
     import time
@@ -1043,8 +1174,12 @@ def dataprotection_enable_backup_helper(cmd, datasource_id: str, backup_strategy
     # Step 8: Create backup instance
     print("\n[8/8] Configuring backup instance...")
     backup_instance, policy_id_for_bi = _create_backup_instance(
-        cmd, cluster_name, cluster_resource_group_name, datasource_id, cluster_location,
-        backup_vault_name, backup_resource_group_name, backup_strategy, backup_vault_id, backup_policy, backup_policy_id, backup_resource_group, cluster_subscription_id)
+        cmd, cluster_name, cluster_resource_group_name,
+        datasource_id, cluster_location, backup_vault_name,
+        backup_resource_group_name, backup_strategy,
+        config.get("backupVaultId"),
+        backup_policy, config.get("backupPolicyId"),
+        backup_resource_group, cluster_subscription_id)
 
     # Print summary
     print("\n" + "=" * 60)
@@ -1174,7 +1309,9 @@ def _get_policy_config_for_strategy(backup_strategy):
     }
 
 
-def _get_backup_instance_payload(backup_instance_name, cluster_name, datasource_id, cluster_location, policy_id, backup_resource_group_id):
+def _get_backup_instance_payload(
+        backup_instance_name, cluster_name, datasource_id,
+        cluster_location, policy_id, backup_resource_group_id):
     """Get backup instance payload for AKS cluster."""
     return {
         "backup_instance_name": backup_instance_name,
@@ -1222,8 +1359,14 @@ def _get_backup_instance_payload(backup_instance_name, cluster_name, datasource_
     }
 
 
-def _generate_arm_id(subscription_id, resource_group_name, resource_type, resource_name):
-    return f"/subscriptions/{subscription_id}/resourceGroups/{resource_group_name}/providers/{resource_type}/{resource_name}"
+def _generate_arm_id(subscription_id, resource_group_name,
+                     resource_type, resource_name):
+    """Generate a full ARM resource ID."""
+    return (
+        f"/subscriptions/{subscription_id}"
+        f"/resourceGroups/{resource_group_name}"
+        f"/providers/{resource_type}/{resource_name}"
+    )
 
 
 def _generate_backup_resource_group_name(cluster_location):
@@ -1341,9 +1484,16 @@ def _generate_trusted_access_role_binding_name():
     return f"tarb-{guid_suffix}"
 
 
-def _create_backup_extension(cmd, subscription_id, resource_group_name, cluster_name, storage_account_name, storage_account_container_name, storage_account_resource_group, storage_account_subscription_id):
+def _create_backup_extension(
+        cmd, subscription_id, resource_group_name, cluster_name,
+        storage_account_name, storage_account_container_name,
+        storage_account_resource_group,
+        storage_account_subscription_id):
+    """Create or reuse the data protection k8s extension."""
     from azext_dataprotection.vendored_sdks.azure_mgmt_kubernetesconfiguration import SourceControlConfigurationClient
-    k8s_configuration_client = get_mgmt_service_client(cmd.cli_ctx, SourceControlConfigurationClient, subscription_id=subscription_id)
+    k8s_configuration_client = get_mgmt_service_client(
+        cmd.cli_ctx, SourceControlConfigurationClient,
+        subscription_id=subscription_id)
 
     extensions = k8s_configuration_client.extensions.list(
         cluster_rp="Microsoft.ContainerService",
@@ -1354,38 +1504,55 @@ def _create_backup_extension(cmd, subscription_id, resource_group_name, cluster_
     for page in extensions.by_page():
         for extension in page:
             if extension.extension_type.lower() == 'microsoft.dataprotection.kubernetes':
-                # Check extension provisioning state
                 provisioning_state = extension.provisioning_state
                 if provisioning_state == "Succeeded":
-                    print(f"\tData protection extension ({extension.name}) is already installed and healthy.")
+                    print(
+                        f"\tData protection extension ({extension.name}) "
+                        "is already installed and healthy.")
                     return extension
-                elif provisioning_state == "Failed":
+                if provisioning_state == "Failed":
                     raise InvalidArgumentValueError(
-                        f"Data protection extension '{extension.name}' exists on cluster '{cluster_name}' but is in Failed state.\n"
-                        f"Please take corrective action before running this command again:\n"
-                        f"  1. Check extension logs: az k8s-extension show --name {extension.name} --cluster-name {cluster_name} --resource-group {resource_group_name} --cluster-type managedClusters\n"
-                        f"  2. Delete the failed extension: az k8s-extension delete --name {extension.name} --cluster-name {cluster_name} --resource-group {resource_group_name} --cluster-type managedClusters --yes\n"
-                        f"  3. Re-run this command to install a fresh extension.\n"
-                        f"For troubleshooting, visit: https://aka.ms/aksclusterbackup"
+                        f"Data protection extension '{extension.name}' "
+                        f"exists on cluster '{cluster_name}' "
+                        f"but is in Failed state.\n"
+                        f"Please take corrective action:\n"
+                        f"  1. Check extension logs: az k8s-extension "
+                        f"show --name {extension.name} "
+                        f"--cluster-name {cluster_name} "
+                        f"--resource-group {resource_group_name} "
+                        f"--cluster-type managedClusters\n"
+                        f"  2. Delete: az k8s-extension delete "
+                        f"--name {extension.name} "
+                        f"--cluster-name {cluster_name} "
+                        f"--resource-group {resource_group_name} "
+                        f"--cluster-type managedClusters --yes\n"
+                        f"  3. Re-run this command.\n"
+                        f"For troubleshooting: "
+                        f"https://aka.ms/aksclusterbackup"
                     )
-                else:
-                    # Extension is in a transient state (Creating, Updating, Deleting, etc.)
-                    raise InvalidArgumentValueError(
-                        f"Data protection extension '{extension.name}' is in '{provisioning_state}' state.\n"
-                        f"Please wait for the operation to complete and try again."
-                    )
+                raise InvalidArgumentValueError(
+                    f"Data protection extension '{extension.name}' "
+                    f"is in '{provisioning_state}' state.\n"
+                    f"Please wait for the operation to complete "
+                    f"and try again."
+                )
 
     print("\tInstalling data protection extension (azure-aks-backup)...")
 
     from azure.cli.core.extension.operations import add_extension_to_path
     from importlib import import_module
     add_extension_to_path("k8s-extension")
-    K8s_extension_client_factory = import_module("azext_k8s_extension._client_factory")
+    k8s_ext_client_factory = import_module(
+        "azext_k8s_extension._client_factory")
     k8s_extension_module = import_module("azext_k8s_extension.custom")
 
+    # The k8s-extension client factory uses the CLI context subscription,
+    # not a parameter. Set it to the cluster's subscription.
+    cmd.cli_ctx.data['subscription_id'] = subscription_id
     extension = k8s_extension_module.create_k8s_extension(
         cmd=cmd,
-        client=K8s_extension_client_factory.cf_k8s_extension_operation(cmd.cli_ctx),
+        client=k8s_ext_client_factory.cf_k8s_extension_operation(
+            cmd.cli_ctx),
         resource_group_name=resource_group_name,
         cluster_name=cluster_name,
         name="azure-aks-backup",
@@ -1398,8 +1565,10 @@ def _create_backup_extension(cmd, subscription_id, resource_group_name, cluster_
         configuration_settings=[{
             "blobContainer": storage_account_container_name,
             "storageAccount": storage_account_name,
-            "storageAccountResourceGroup": storage_account_resource_group,
-            "storageAccountSubscriptionId": storage_account_subscription_id
+            "storageAccountResourceGroup":
+                storage_account_resource_group,
+            "storageAccountSubscriptionId":
+                storage_account_subscription_id
         }]
     ).result()
 
