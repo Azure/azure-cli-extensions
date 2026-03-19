@@ -2721,7 +2721,7 @@ def aks_machine_add(
     vm_size=None,
     kubernetes_version=None,
     no_wait=False,
-    spot_max_price=None,
+    spot_max_price=float("nan"),
     enable_ultra_ssd=False,
     eviction_policy=None,
 ):
