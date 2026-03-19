@@ -2030,7 +2030,7 @@ def load_arguments(self, _):
             "enable_managed_gpu",
             action="store_true",
             is_preview=True,
-            help="Enable the Managed GPU experience, which installs additional components like DCGM metrics for monitoring on top of the GPU driver.",
+            help="Enable the Managed GPU experience.",
         )
         c.argument(
             "node_public_ip_tags",
@@ -2145,7 +2145,7 @@ def load_arguments(self, _):
             "enable_managed_gpu",
             action="store_true",
             is_preview=True,
-            help="Enable the Managed GPU experience, which installs additional components like DCGM metrics for monitoring on top of the GPU driver.",
+            help="Enable the Managed GPU experience.",
         )
         c.argument(
             "os_sku",

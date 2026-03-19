@@ -596,6 +596,9 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
 
         # read the original value passed by the command
         enable_managed_gpu = self.raw_param.get("enable_managed_gpu")
+        if enable_managed_gpu is None:
+            enable_managed_gpu = False
+            
         # In create mode, try to read the property value corresponding to the parameter from the `agentpool` object
         if self.decorator_mode == DecoratorMode.CREATE:
             if (
@@ -604,7 +607,9 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
                 self.agentpool.gpu_profile.nvidia is not None and
                 self.agentpool.gpu_profile.nvidia.management_mode is not None
             ):
-                enable_managed_gpu = self.agentpool.gpu_profile.nvidia.management_mode == CONST_GPU_MANAGEMENT_MODE_MANAGED
+                enable_managed_gpu = (
+                    self.agentpool.gpu_profile.nvidia.management_mode == CONST_GPU_MANAGEMENT_MODE_MANAGED
+                )
         return enable_managed_gpu
 
     def get_pod_ip_allocation_mode(self: bool = False) -> Union[str, None]:
