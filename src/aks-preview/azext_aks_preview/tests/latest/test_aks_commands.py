@@ -6907,7 +6907,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(
             "aks nodepool add --resource-group={resource_group} --cluster-name={name} --name={node_pool_name} "
             "--node-vm-size={node_vm_size} --node-count 1"
-            "--enable-managed-gpu",
+            " --enable-managed-gpu",
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check(
