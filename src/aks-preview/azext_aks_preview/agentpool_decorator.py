@@ -598,7 +598,7 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         enable_managed_gpu = self.raw_param.get("enable_managed_gpu")
         if enable_managed_gpu is None:
             enable_managed_gpu = False
-            
+
         # In create mode, try to read the property value corresponding to the parameter from the `agentpool` object
         if self.decorator_mode == DecoratorMode.CREATE:
             if (
