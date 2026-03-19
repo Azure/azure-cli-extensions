@@ -2027,6 +2027,12 @@ def load_arguments(self, _):
             is_preview=True,
         )
         c.argument(
+            "enable_managed_gpu",
+            action="store_true",
+            is_preview=True,
+            help="Enable the Managed GPU experience, which installs additional components like DCGM metrics for monitoring on top of the GPU driver.",
+        )
+        c.argument(
             "node_public_ip_tags",
             arg_type=tags_type,
             validator=validate_node_public_ip_tags,
@@ -2134,6 +2140,12 @@ def load_arguments(self, _):
             action="store_true",
             validator=validate_artifact_streaming,
             is_preview=True,
+        )
+        c.argument(
+            "enable_managed_gpu",
+            action="store_true",
+            is_preview=True,
+            help="Enable the Managed GPU experience, which installs additional components like DCGM metrics for monitoring on top of the GPU driver.",
         )
         c.argument(
             "os_sku",

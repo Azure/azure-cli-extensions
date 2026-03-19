@@ -76,6 +76,10 @@ CONST_GPU_INSTANCE_PROFILE_MIG7_G = "MIG7g"
 CONST_GPU_DRIVER_INSTALL = "Install"
 CONST_GPU_DRIVER_NONE = "None"
 
+# gpu management mode
+CONST_GPU_MANAGEMENT_MODE_MANAGED = "Managed"
+CONST_GPU_MANAGEMENT_MODE_UNMANAGED = "Unmanaged"
+
 # consts for ManagedCluster
 # load balancer sku
 CONST_LOAD_BALANCER_SKU_BASIC = "basic"

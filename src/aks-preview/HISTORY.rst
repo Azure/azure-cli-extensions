@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Add managed GPU enablement option to node pool property in `az aks nodepool add` and `az aks nodepool update`.
 
 19.0.0b27
 +++++++
