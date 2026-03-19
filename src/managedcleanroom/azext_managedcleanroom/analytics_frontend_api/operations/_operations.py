@@ -27,45 +27,31 @@ from .._utils.serialization import Deserializer, Serializer
 
 JSON = MutableMapping[str, Any]
 T = TypeVar("T")
-ClsType = Optional[Callable[[
-    PipelineResponse[HttpRequest, HttpResponse], T, dict[str, Any]], Any]]
-List = list
+ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, dict[str, Any]], Any]]
 
 _SERIALIZER = Serializer()
 _SERIALIZER.client_side_validation = False
 
 
-def build_collaboration_list_request(
-    *,
-    active_only: bool = False,
-        **kwargs: Any) -> HttpRequest:
+def build_collaboration_list_get_request(*, active_only: bool = False, **kwargs: Any) -> HttpRequest:
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop(
-        "api_version", _params.pop(
-            "api-version", "2026-03-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-03-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
     _url = "/collaborations"
 
     # Construct parameters
-    _params["api-version"] = _SERIALIZER.query(
-        "api_version", api_version, "str")
     if active_only is not None:
-        _params["activeOnly"] = _SERIALIZER.query(
-            "active_only", active_only, "bool")
+        _params["activeOnly"] = _SERIALIZER.query("active_only", active_only, "bool")
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
 
     # Construct headers
     _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
 
-    return HttpRequest(
-        method="GET",
-        url=_url,
-        params=_params,
-        headers=_headers,
-        **kwargs)
+    return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
 
 
 def build_collaboration_id_get_request(
@@ -74,69 +60,50 @@ def build_collaboration_id_get_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop(
-        "api_version", _params.pop(
-            "api-version", "2026-03-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-03-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
-    _url = "/collaborations/{collaboration_id}"
+    _url = "/collaborations/{collaborationId}"
     path_format_arguments = {
-        "collaboration_id": _SERIALIZER.url(
-            "collaboration_id", collaboration_id, "str"), }
+        "collaborationId": _SERIALIZER.url("collaboration_id", collaboration_id, "str"),
+    }
 
     _url: str = _url.format(**path_format_arguments)  # type: ignore
 
     # Construct parameters
-    _params["api-version"] = _SERIALIZER.query(
-        "api_version", api_version, "str")
     if active_only is not None:
-        _params["activeOnly"] = _SERIALIZER.query(
-            "active_only", active_only, "bool")
+        _params["activeOnly"] = _SERIALIZER.query("active_only", active_only, "bool")
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
 
     # Construct headers
     _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
 
-    return HttpRequest(
-        method="GET",
-        url=_url,
-        params=_params,
-        headers=_headers,
-        **kwargs)
+    return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
 
 
-def build_collaboration_report_get_request(
-        collaboration_id: str,
-        **kwargs: Any) -> HttpRequest:
+def build_collaboration_report_get_request(collaboration_id: str, **kwargs: Any) -> HttpRequest:
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop(
-        "api_version", _params.pop(
-            "api-version", "2026-03-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-03-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
-    _url = "/collaborations/{collaboration_id}/report"
+    _url = "/collaborations/{collaborationId}/report"
     path_format_arguments = {
-        "collaboration_id": _SERIALIZER.url(
-            "collaboration_id", collaboration_id, "str"), }
+        "collaborationId": _SERIALIZER.url("collaboration_id", collaboration_id, "str"),
+    }
 
     _url: str = _url.format(**path_format_arguments)  # type: ignore
 
     # Construct parameters
-    _params["api-version"] = _SERIALIZER.query(
-        "api_version", api_version, "str")
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
 
     # Construct headers
     _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
 
-    return HttpRequest(
-        method="GET",
-        url=_url,
-        params=_params,
-        headers=_headers,
-        **kwargs)
+    return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
 
 
 def build_collaboration_analytics_get_request(  # pylint: disable=name-too-long
@@ -145,32 +112,24 @@ def build_collaboration_analytics_get_request(  # pylint: disable=name-too-long
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop(
-        "api_version", _params.pop(
-            "api-version", "2026-03-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-03-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
-    _url = "/collaborations/{collaboration_id}/analytics"
+    _url = "/collaborations/{collaborationId}/analytics"
     path_format_arguments = {
-        "collaboration_id": _SERIALIZER.url(
-            "collaboration_id", collaboration_id, "str"), }
+        "collaborationId": _SERIALIZER.url("collaboration_id", collaboration_id, "str"),
+    }
 
     _url: str = _url.format(**path_format_arguments)  # type: ignore
 
     # Construct parameters
-    _params["api-version"] = _SERIALIZER.query(
-        "api_version", api_version, "str")
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
 
     # Construct headers
     _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
 
-    return HttpRequest(
-        method="GET",
-        url=_url,
-        params=_params,
-        headers=_headers,
-        **kwargs)
+    return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
 
 
 def build_collaboration_analytics_cleanroompolicy_get_request(  # pylint: disable=name-too-long
@@ -179,32 +138,24 @@ def build_collaboration_analytics_cleanroompolicy_get_request(  # pylint: disabl
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop(
-        "api_version", _params.pop(
-            "api-version", "2026-03-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-03-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
-    _url = "/collaborations/{collaboration_id}/analytics/cleanroompolicy"
+    _url = "/collaborations/{collaborationId}/analytics/cleanroompolicy"
     path_format_arguments = {
-        "collaboration_id": _SERIALIZER.url(
-            "collaboration_id", collaboration_id, "str"), }
+        "collaborationId": _SERIALIZER.url("collaboration_id", collaboration_id, "str"),
+    }
 
     _url: str = _url.format(**path_format_arguments)  # type: ignore
 
     # Construct parameters
-    _params["api-version"] = _SERIALIZER.query(
-        "api_version", api_version, "str")
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
 
     # Construct headers
     _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
 
-    return HttpRequest(
-        method="GET",
-        url=_url,
-        params=_params,
-        headers=_headers,
-        **kwargs)
+    return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
 
 
 def build_collaboration_oidc_issuer_info_get_request(  # pylint: disable=name-too-long
@@ -213,32 +164,24 @@ def build_collaboration_oidc_issuer_info_get_request(  # pylint: disable=name-to
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop(
-        "api_version", _params.pop(
-            "api-version", "2026-03-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-03-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
-    _url = "/collaborations/{collaboration_id}/oidc/issuerInfo"
+    _url = "/collaborations/{collaborationId}/oidc/issuerInfo"
     path_format_arguments = {
-        "collaboration_id": _SERIALIZER.url(
-            "collaboration_id", collaboration_id, "str"), }
+        "collaborationId": _SERIALIZER.url("collaboration_id", collaboration_id, "str"),
+    }
 
     _url: str = _url.format(**path_format_arguments)  # type: ignore
 
     # Construct parameters
-    _params["api-version"] = _SERIALIZER.query(
-        "api_version", api_version, "str")
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
 
     # Construct headers
     _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
 
-    return HttpRequest(
-        method="GET",
-        url=_url,
-        params=_params,
-        headers=_headers,
-        **kwargs)
+    return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
 
 
 def build_collaboration_oidc_set_issuer_url_post_request(  # pylint: disable=name-too-long
@@ -247,38 +190,27 @@ def build_collaboration_oidc_set_issuer_url_post_request(  # pylint: disable=nam
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    content_type: Optional[str] = kwargs.pop(
-        "content_type", _headers.pop(
-            "Content-Type", None))
-    api_version: str = kwargs.pop(
-        "api_version", _params.pop(
-            "api-version", "2026-03-01-preview"))
+    content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-03-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
-    _url = "/collaborations/{collaboration_id}/oidc/setIssuerUrl"
+    _url = "/collaborations/{collaborationId}/oidc/setIssuerUrl"
     path_format_arguments = {
-        "collaboration_id": _SERIALIZER.url(
-            "collaboration_id", collaboration_id, "str"), }
+        "collaborationId": _SERIALIZER.url("collaboration_id", collaboration_id, "str"),
+    }
 
     _url: str = _url.format(**path_format_arguments)  # type: ignore
 
     # Construct parameters
-    _params["api-version"] = _SERIALIZER.query(
-        "api_version", api_version, "str")
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
 
     # Construct headers
     if content_type is not None:
-        _headers["Content-Type"] = _SERIALIZER.header(
-            "content_type", content_type, "str")
+        _headers["Content-Type"] = _SERIALIZER.header("content_type", content_type, "str")
     _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
 
-    return HttpRequest(
-        method="POST",
-        url=_url,
-        params=_params,
-        headers=_headers,
-        **kwargs)
+    return HttpRequest(method="POST", url=_url, params=_params, headers=_headers, **kwargs)
 
 
 def build_collaboration_oidc_keys_get_request(  # pylint: disable=name-too-long
@@ -287,32 +219,24 @@ def build_collaboration_oidc_keys_get_request(  # pylint: disable=name-too-long
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop(
-        "api_version", _params.pop(
-            "api-version", "2026-03-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-03-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
-    _url = "/collaborations/{collaboration_id}/oidc/keys"
+    _url = "/collaborations/{collaborationId}/oidc/keys"
     path_format_arguments = {
-        "collaboration_id": _SERIALIZER.url(
-            "collaboration_id", collaboration_id, "str"), }
+        "collaborationId": _SERIALIZER.url("collaboration_id", collaboration_id, "str"),
+    }
 
     _url: str = _url.format(**path_format_arguments)  # type: ignore
 
     # Construct parameters
-    _params["api-version"] = _SERIALIZER.query(
-        "api_version", api_version, "str")
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
 
     # Construct headers
     _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
 
-    return HttpRequest(
-        method="GET",
-        url=_url,
-        params=_params,
-        headers=_headers,
-        **kwargs)
+    return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
 
 
 def build_collaboration_invitations_get_request(  # pylint: disable=name-too-long
@@ -321,35 +245,26 @@ def build_collaboration_invitations_get_request(  # pylint: disable=name-too-lon
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop(
-        "api_version", _params.pop(
-            "api-version", "2026-03-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-03-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
-    _url = "/collaborations/{collaboration_id}/invitations"
+    _url = "/collaborations/{collaborationId}/invitations"
     path_format_arguments = {
-        "collaboration_id": _SERIALIZER.url(
-            "collaboration_id", collaboration_id, "str"), }
+        "collaborationId": _SERIALIZER.url("collaboration_id", collaboration_id, "str"),
+    }
 
     _url: str = _url.format(**path_format_arguments)  # type: ignore
 
     # Construct parameters
-    _params["api-version"] = _SERIALIZER.query(
-        "api_version", api_version, "str")
     if pending_only is not None:
-        _params["pendingOnly"] = _SERIALIZER.query(
-            "pending_only", pending_only, "bool")
+        _params["pendingOnly"] = _SERIALIZER.query("pending_only", pending_only, "bool")
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
 
     # Construct headers
     _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
 
-    return HttpRequest(
-        method="GET",
-        url=_url,
-        params=_params,
-        headers=_headers,
-        **kwargs)
+    return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
 
 
 def build_collaboration_invitation_id_get_request(  # pylint: disable=name-too-long
@@ -358,39 +273,25 @@ def build_collaboration_invitation_id_get_request(  # pylint: disable=name-too-l
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop(
-        "api_version", _params.pop(
-            "api-version", "2026-03-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-03-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
-    _url = "/collaborations/{collaboration_id}/invitations/{invitation_id}"
+    _url = "/collaborations/{collaborationId}/invitations/{invitationId}"
     path_format_arguments = {
-        "collaboration_id": _SERIALIZER.url(
-            "collaboration_id",
-            collaboration_id,
-            "str"),
-        "invitation_id": _SERIALIZER.url(
-            "invitation_id",
-            invitation_id,
-            "str"),
+        "collaborationId": _SERIALIZER.url("collaboration_id", collaboration_id, "str"),
+        "invitationId": _SERIALIZER.url("invitation_id", invitation_id, "str"),
     }
 
     _url: str = _url.format(**path_format_arguments)  # type: ignore
 
     # Construct parameters
-    _params["api-version"] = _SERIALIZER.query(
-        "api_version", api_version, "str")
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
 
     # Construct headers
     _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
 
-    return HttpRequest(
-        method="GET",
-        url=_url,
-        params=_params,
-        headers=_headers,
-        **kwargs)
+    return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
 
 
 def build_collaboration_invitation_id_accept_post_request(  # pylint: disable=name-too-long
@@ -399,39 +300,25 @@ def build_collaboration_invitation_id_accept_post_request(  # pylint: disable=na
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop(
-        "api_version", _params.pop(
-            "api-version", "2026-03-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-03-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
-    _url = "/collaborations/{collaboration_id}/invitations/{invitation_id}/accept"
+    _url = "/collaborations/{collaborationId}/invitations/{invitationId}/accept"
     path_format_arguments = {
-        "collaboration_id": _SERIALIZER.url(
-            "collaboration_id",
-            collaboration_id,
-            "str"),
-        "invitation_id": _SERIALIZER.url(
-            "invitation_id",
-            invitation_id,
-            "str"),
+        "collaborationId": _SERIALIZER.url("collaboration_id", collaboration_id, "str"),
+        "invitationId": _SERIALIZER.url("invitation_id", invitation_id, "str"),
     }
 
     _url: str = _url.format(**path_format_arguments)  # type: ignore
 
     # Construct parameters
-    _params["api-version"] = _SERIALIZER.query(
-        "api_version", api_version, "str")
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
 
     # Construct headers
     _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
 
-    return HttpRequest(
-        method="POST",
-        url=_url,
-        params=_params,
-        headers=_headers,
-        **kwargs)
+    return HttpRequest(method="POST", url=_url, params=_params, headers=_headers, **kwargs)
 
 
 def build_collaboration_analytics_datasets_list_get_request(  # pylint: disable=name-too-long
@@ -440,184 +327,138 @@ def build_collaboration_analytics_datasets_list_get_request(  # pylint: disable=
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop(
-        "api_version", _params.pop(
-            "api-version", "2026-03-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-03-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
-    _url = "/collaborations/{collaboration_id}/analytics/datasets"
+    _url = "/collaborations/{collaborationId}/analytics/datasets"
     path_format_arguments = {
-        "collaboration_id": _SERIALIZER.url(
-            "collaboration_id", collaboration_id, "str"), }
+        "collaborationId": _SERIALIZER.url("collaboration_id", collaboration_id, "str"),
+    }
 
     _url: str = _url.format(**path_format_arguments)  # type: ignore
 
     # Construct parameters
-    _params["api-version"] = _SERIALIZER.query(
-        "api_version", api_version, "str")
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
 
     # Construct headers
     _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
 
-    return HttpRequest(
-        method="GET",
-        url=_url,
-        params=_params,
-        headers=_headers,
-        **kwargs)
+    return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
 
 
-def build_collaboration_analytics_dataset_document_id_get_request(  # pylint: disable=name-too-long
+def build_collaboration_analytics_datasets_document_id_get_request(  # pylint: disable=name-too-long
     collaboration_id: str, document_id: str, **kwargs: Any
 ) -> HttpRequest:
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop(
-        "api_version", _params.pop(
-            "api-version", "2026-03-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-03-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
-    _url = "/collaborations/{collaboration_id}/analytics/datasets/{document_id}"
+    _url = "/collaborations/{collaborationId}/analytics/datasets/{documentId}"
     path_format_arguments = {
-        "collaboration_id": _SERIALIZER.url(
-            "collaboration_id", collaboration_id, "str"), "document_id": _SERIALIZER.url(
-            "document_id", document_id, "str"), }
+        "collaborationId": _SERIALIZER.url("collaboration_id", collaboration_id, "str"),
+        "documentId": _SERIALIZER.url("document_id", document_id, "str"),
+    }
 
     _url: str = _url.format(**path_format_arguments)  # type: ignore
 
     # Construct parameters
-    _params["api-version"] = _SERIALIZER.query(
-        "api_version", api_version, "str")
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
 
     # Construct headers
     _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
 
-    return HttpRequest(
-        method="GET",
-        url=_url,
-        params=_params,
-        headers=_headers,
-        **kwargs)
+    return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
 
 
-def build_collaboration_analytics_dataset_document_id_publish_post_request(  # pylint: disable=name-too-long
+def build_collaboration_analytics_datasets_document_id_publish_post_request(  # pylint: disable=name-too-long
     collaboration_id: str, document_id: str, **kwargs: Any
 ) -> HttpRequest:
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    content_type: Optional[str] = kwargs.pop(
-        "content_type", _headers.pop(
-            "Content-Type", None))
-    api_version: str = kwargs.pop(
-        "api_version", _params.pop(
-            "api-version", "2026-03-01-preview"))
+    content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-03-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
-    _url = "/collaborations/{collaboration_id}/analytics/datasets/{document_id}/publish"
+    _url = "/collaborations/{collaborationId}/analytics/datasets/{documentId}/publish"
     path_format_arguments = {
-        "collaboration_id": _SERIALIZER.url(
-            "collaboration_id", collaboration_id, "str"), "document_id": _SERIALIZER.url(
-            "document_id", document_id, "str"), }
+        "collaborationId": _SERIALIZER.url("collaboration_id", collaboration_id, "str"),
+        "documentId": _SERIALIZER.url("document_id", document_id, "str"),
+    }
 
     _url: str = _url.format(**path_format_arguments)  # type: ignore
 
     # Construct parameters
-    _params["api-version"] = _SERIALIZER.query(
-        "api_version", api_version, "str")
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
 
     # Construct headers
     if content_type is not None:
-        _headers["Content-Type"] = _SERIALIZER.header(
-            "content_type", content_type, "str")
+        _headers["Content-Type"] = _SERIALIZER.header("content_type", content_type, "str")
     _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
 
-    return HttpRequest(
-        method="POST",
-        url=_url,
-        params=_params,
-        headers=_headers,
-        **kwargs)
+    return HttpRequest(method="POST", url=_url, params=_params, headers=_headers, **kwargs)
 
 
-def build_collaboration_check_consent_document_id_get_request(  # pylint: disable=name-too-long
+def build_collaboration_consent_document_id_get_request(  # pylint: disable=name-too-long
     collaboration_id: str, document_id: str, **kwargs: Any
 ) -> HttpRequest:
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop(
-        "api_version", _params.pop(
-            "api-version", "2026-03-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-03-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
-    _url = "/collaborations/{collaboration_id}/consent/{document_id}"
+    _url = "/collaborations/{collaborationId}/consent/{documentId}"
     path_format_arguments = {
-        "collaboration_id": _SERIALIZER.url(
-            "collaboration_id", collaboration_id, "str"), "document_id": _SERIALIZER.url(
-            "document_id", document_id, "str"), }
+        "collaborationId": _SERIALIZER.url("collaboration_id", collaboration_id, "str"),
+        "documentId": _SERIALIZER.url("document_id", document_id, "str"),
+    }
 
     _url: str = _url.format(**path_format_arguments)  # type: ignore
 
     # Construct parameters
-    _params["api-version"] = _SERIALIZER.query(
-        "api_version", api_version, "str")
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
 
     # Construct headers
     _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
 
-    return HttpRequest(
-        method="GET",
-        url=_url,
-        params=_params,
-        headers=_headers,
-        **kwargs)
+    return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
 
 
-def build_collaboration_set_consent_document_id_put_request(  # pylint: disable=name-too-long
+def build_collaboration_consent_document_id_put_request(  # pylint: disable=name-too-long
     collaboration_id: str, document_id: str, **kwargs: Any
 ) -> HttpRequest:
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    content_type: Optional[str] = kwargs.pop(
-        "content_type", _headers.pop(
-            "Content-Type", None))
-    api_version: str = kwargs.pop(
-        "api_version", _params.pop(
-            "api-version", "2026-03-01-preview"))
+    content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-03-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
-    _url = "/collaborations/{collaboration_id}/consent/{document_id}"
+    _url = "/collaborations/{collaborationId}/consent/{documentId}"
     path_format_arguments = {
-        "collaboration_id": _SERIALIZER.url(
-            "collaboration_id", collaboration_id, "str"), "document_id": _SERIALIZER.url(
-            "document_id", document_id, "str"), }
+        "collaborationId": _SERIALIZER.url("collaboration_id", collaboration_id, "str"),
+        "documentId": _SERIALIZER.url("document_id", document_id, "str"),
+    }
 
     _url: str = _url.format(**path_format_arguments)  # type: ignore
 
     # Construct parameters
-    _params["api-version"] = _SERIALIZER.query(
-        "api_version", api_version, "str")
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
 
     # Construct headers
     if content_type is not None:
-        _headers["Content-Type"] = _SERIALIZER.header(
-            "content_type", content_type, "str")
+        _headers["Content-Type"] = _SERIALIZER.header("content_type", content_type, "str")
     _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
 
-    return HttpRequest(
-        method="PUT",
-        url=_url,
-        params=_params,
-        headers=_headers,
-        **kwargs)
+    return HttpRequest(method="PUT", url=_url, params=_params, headers=_headers, **kwargs)
 
 
 def build_collaboration_analytics_queries_document_id_publish_post_request(  # pylint: disable=name-too-long
@@ -626,39 +467,28 @@ def build_collaboration_analytics_queries_document_id_publish_post_request(  # p
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    content_type: Optional[str] = kwargs.pop(
-        "content_type", _headers.pop(
-            "Content-Type", None))
-    api_version: str = kwargs.pop(
-        "api_version", _params.pop(
-            "api-version", "2026-03-01-preview"))
+    content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-03-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
-    _url = "/collaborations/{collaboration_id}/analytics/queries/{document_id}/publish"
+    _url = "/collaborations/{collaborationId}/analytics/queries/{documentId}/publish"
     path_format_arguments = {
-        "collaboration_id": _SERIALIZER.url(
-            "collaboration_id", collaboration_id, "str"), "document_id": _SERIALIZER.url(
-            "document_id", document_id, "str"), }
+        "collaborationId": _SERIALIZER.url("collaboration_id", collaboration_id, "str"),
+        "documentId": _SERIALIZER.url("document_id", document_id, "str"),
+    }
 
     _url: str = _url.format(**path_format_arguments)  # type: ignore
 
     # Construct parameters
-    _params["api-version"] = _SERIALIZER.query(
-        "api_version", api_version, "str")
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
 
     # Construct headers
     if content_type is not None:
-        _headers["Content-Type"] = _SERIALIZER.header(
-            "content_type", content_type, "str")
+        _headers["Content-Type"] = _SERIALIZER.header("content_type", content_type, "str")
     _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
 
-    return HttpRequest(
-        method="POST",
-        url=_url,
-        params=_params,
-        headers=_headers,
-        **kwargs)
+    return HttpRequest(method="POST", url=_url, params=_params, headers=_headers, **kwargs)
 
 
 def build_collaboration_analytics_queries_list_get_request(  # pylint: disable=name-too-long
@@ -667,32 +497,24 @@ def build_collaboration_analytics_queries_list_get_request(  # pylint: disable=n
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop(
-        "api_version", _params.pop(
-            "api-version", "2026-03-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-03-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
-    _url = "/collaborations/{collaboration_id}/analytics/queries"
+    _url = "/collaborations/{collaborationId}/analytics/queries"
     path_format_arguments = {
-        "collaboration_id": _SERIALIZER.url(
-            "collaboration_id", collaboration_id, "str"), }
+        "collaborationId": _SERIALIZER.url("collaboration_id", collaboration_id, "str"),
+    }
 
     _url: str = _url.format(**path_format_arguments)  # type: ignore
 
     # Construct parameters
-    _params["api-version"] = _SERIALIZER.query(
-        "api_version", api_version, "str")
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
 
     # Construct headers
     _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
 
-    return HttpRequest(
-        method="GET",
-        url=_url,
-        params=_params,
-        headers=_headers,
-        **kwargs)
+    return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
 
 
 def build_collaboration_analytics_queries_document_id_get_request(  # pylint: disable=name-too-long
@@ -701,33 +523,25 @@ def build_collaboration_analytics_queries_document_id_get_request(  # pylint: di
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop(
-        "api_version", _params.pop(
-            "api-version", "2026-03-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-03-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
-    _url = "/collaborations/{collaboration_id}/analytics/queries/{document_id}"
+    _url = "/collaborations/{collaborationId}/analytics/queries/{documentId}"
     path_format_arguments = {
-        "collaboration_id": _SERIALIZER.url(
-            "collaboration_id", collaboration_id, "str"), "document_id": _SERIALIZER.url(
-            "document_id", document_id, "str"), }
+        "collaborationId": _SERIALIZER.url("collaboration_id", collaboration_id, "str"),
+        "documentId": _SERIALIZER.url("document_id", document_id, "str"),
+    }
 
     _url: str = _url.format(**path_format_arguments)  # type: ignore
 
     # Construct parameters
-    _params["api-version"] = _SERIALIZER.query(
-        "api_version", api_version, "str")
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
 
     # Construct headers
     _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
 
-    return HttpRequest(
-        method="GET",
-        url=_url,
-        params=_params,
-        headers=_headers,
-        **kwargs)
+    return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
 
 
 def build_collaboration_analytics_queries_document_id_vote_post_request(  # pylint: disable=name-too-long
@@ -736,39 +550,28 @@ def build_collaboration_analytics_queries_document_id_vote_post_request(  # pyli
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    content_type: Optional[str] = kwargs.pop(
-        "content_type", _headers.pop(
-            "Content-Type", None))
-    api_version: str = kwargs.pop(
-        "api_version", _params.pop(
-            "api-version", "2026-03-01-preview"))
+    content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-03-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
-    _url = "/collaborations/{collaboration_id}/analytics/queries/{document_id}/vote"
+    _url = "/collaborations/{collaborationId}/analytics/queries/{documentId}/vote"
     path_format_arguments = {
-        "collaboration_id": _SERIALIZER.url(
-            "collaboration_id", collaboration_id, "str"), "document_id": _SERIALIZER.url(
-            "document_id", document_id, "str"), }
+        "collaborationId": _SERIALIZER.url("collaboration_id", collaboration_id, "str"),
+        "documentId": _SERIALIZER.url("document_id", document_id, "str"),
+    }
 
     _url: str = _url.format(**path_format_arguments)  # type: ignore
 
     # Construct parameters
-    _params["api-version"] = _SERIALIZER.query(
-        "api_version", api_version, "str")
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
 
     # Construct headers
     if content_type is not None:
-        _headers["Content-Type"] = _SERIALIZER.header(
-            "content_type", content_type, "str")
+        _headers["Content-Type"] = _SERIALIZER.header("content_type", content_type, "str")
     _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
 
-    return HttpRequest(
-        method="POST",
-        url=_url,
-        params=_params,
-        headers=_headers,
-        **kwargs)
+    return HttpRequest(method="POST", url=_url, params=_params, headers=_headers, **kwargs)
 
 
 def build_collaboration_analytics_queries_document_id_run_post_request(  # pylint: disable=name-too-long
@@ -777,109 +580,82 @@ def build_collaboration_analytics_queries_document_id_run_post_request(  # pylin
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    content_type: Optional[str] = kwargs.pop(
-        "content_type", _headers.pop(
-            "Content-Type", None))
-    api_version: str = kwargs.pop(
-        "api_version", _params.pop(
-            "api-version", "2026-03-01-preview"))
+    content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-03-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
-    _url = "/collaborations/{collaboration_id}/analytics/queries/{document_id}/run"
+    _url = "/collaborations/{collaborationId}/analytics/queries/{documentId}/run"
     path_format_arguments = {
-        "collaboration_id": _SERIALIZER.url(
-            "collaboration_id", collaboration_id, "str"), "document_id": _SERIALIZER.url(
-            "document_id", document_id, "str"), }
+        "collaborationId": _SERIALIZER.url("collaboration_id", collaboration_id, "str"),
+        "documentId": _SERIALIZER.url("document_id", document_id, "str"),
+    }
 
     _url: str = _url.format(**path_format_arguments)  # type: ignore
 
     # Construct parameters
-    _params["api-version"] = _SERIALIZER.query(
-        "api_version", api_version, "str")
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
 
     # Construct headers
     if content_type is not None:
-        _headers["Content-Type"] = _SERIALIZER.header(
-            "content_type", content_type, "str")
+        _headers["Content-Type"] = _SERIALIZER.header("content_type", content_type, "str")
     _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
 
-    return HttpRequest(
-        method="POST",
-        url=_url,
-        params=_params,
-        headers=_headers,
-        **kwargs)
+    return HttpRequest(method="POST", url=_url, params=_params, headers=_headers, **kwargs)
 
 
-def build_collaboration_analytics_queries_jobid_get_request(  # pylint: disable=name-too-long
-    collaboration_id: str, jobid: str, **kwargs: Any
+def build_collaboration_analytics_runs_job_id_get_request(  # pylint: disable=name-too-long
+    collaboration_id: str, job_id: str, **kwargs: Any
 ) -> HttpRequest:
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop(
-        "api_version", _params.pop(
-            "api-version", "2026-03-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-03-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
-    _url = "/collaborations/{collaboration_id}/analytics/runs/{jobid}"
+    _url = "/collaborations/{collaborationId}/analytics/runs/{jobId}"
     path_format_arguments = {
-        "collaboration_id": _SERIALIZER.url(
-            "collaboration_id", collaboration_id, "str"), "jobid": _SERIALIZER.url(
-            "jobid", jobid, "str"), }
+        "collaborationId": _SERIALIZER.url("collaboration_id", collaboration_id, "str"),
+        "jobId": _SERIALIZER.url("job_id", job_id, "str"),
+    }
 
     _url: str = _url.format(**path_format_arguments)  # type: ignore
 
     # Construct parameters
-    _params["api-version"] = _SERIALIZER.query(
-        "api_version", api_version, "str")
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
 
     # Construct headers
     _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
 
-    return HttpRequest(
-        method="GET",
-        url=_url,
-        params=_params,
-        headers=_headers,
-        **kwargs)
+    return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
 
 
-def build_collaboration_analytics_queries_document_id_runhistory_get_request(  # pylint: disable=name-too-long
+def build_collaboration_analytics_queries_document_id_runs_get_request(  # pylint: disable=name-too-long
     collaboration_id: str, document_id: str, **kwargs: Any
 ) -> HttpRequest:
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop(
-        "api_version", _params.pop(
-            "api-version", "2026-03-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-03-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
-    _url = "/collaborations/{collaboration_id}/analytics/queries/{document_id}/runs"
+    _url = "/collaborations/{collaborationId}/analytics/queries/{documentId}/runs"
     path_format_arguments = {
-        "collaboration_id": _SERIALIZER.url(
-            "collaboration_id", collaboration_id, "str"), "document_id": _SERIALIZER.url(
-            "document_id", document_id, "str"), }
+        "collaborationId": _SERIALIZER.url("collaboration_id", collaboration_id, "str"),
+        "documentId": _SERIALIZER.url("document_id", document_id, "str"),
+    }
 
     _url: str = _url.format(**path_format_arguments)  # type: ignore
 
     # Construct parameters
-    _params["api-version"] = _SERIALIZER.query(
-        "api_version", api_version, "str")
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
 
     # Construct headers
     _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
 
-    return HttpRequest(
-        method="GET",
-        url=_url,
-        params=_params,
-        headers=_headers,
-        **kwargs)
+    return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
 
 
 def build_collaboration_analytics_datasets_document_id_queries_get_request(  # pylint: disable=name-too-long
@@ -888,33 +664,25 @@ def build_collaboration_analytics_datasets_document_id_queries_get_request(  # p
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop(
-        "api_version", _params.pop(
-            "api-version", "2026-03-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-03-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
-    _url = "/collaborations/{collaboration_id}/analytics/datasets/{document_id}/queries"
+    _url = "/collaborations/{collaborationId}/analytics/datasets/{documentId}/queries"
     path_format_arguments = {
-        "collaboration_id": _SERIALIZER.url(
-            "collaboration_id", collaboration_id, "str"), "document_id": _SERIALIZER.url(
-            "document_id", document_id, "str"), }
+        "collaborationId": _SERIALIZER.url("collaboration_id", collaboration_id, "str"),
+        "documentId": _SERIALIZER.url("document_id", document_id, "str"),
+    }
 
     _url: str = _url.format(**path_format_arguments)  # type: ignore
 
     # Construct parameters
-    _params["api-version"] = _SERIALIZER.query(
-        "api_version", api_version, "str")
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
 
     # Construct headers
     _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
 
-    return HttpRequest(
-        method="GET",
-        url=_url,
-        params=_params,
-        headers=_headers,
-        **kwargs)
+    return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
 
 
 def build_collaboration_analytics_secrets_secret_name_put_request(  # pylint: disable=name-too-long
@@ -923,39 +691,28 @@ def build_collaboration_analytics_secrets_secret_name_put_request(  # pylint: di
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    content_type: Optional[str] = kwargs.pop(
-        "content_type", _headers.pop(
-            "Content-Type", None))
-    api_version: str = kwargs.pop(
-        "api_version", _params.pop(
-            "api-version", "2026-03-01-preview"))
+    content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-03-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
-    _url = "/collaborations/{collaboration_id}/analytics/secrets/{secret_name}"
+    _url = "/collaborations/{collaborationId}/analytics/secrets/{secretName}"
     path_format_arguments = {
-        "collaboration_id": _SERIALIZER.url(
-            "collaboration_id", collaboration_id, "str"), "secret_name": _SERIALIZER.url(
-            "secret_name", secret_name, "str"), }
+        "collaborationId": _SERIALIZER.url("collaboration_id", collaboration_id, "str"),
+        "secretName": _SERIALIZER.url("secret_name", secret_name, "str"),
+    }
 
     _url: str = _url.format(**path_format_arguments)  # type: ignore
 
     # Construct parameters
-    _params["api-version"] = _SERIALIZER.query(
-        "api_version", api_version, "str")
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
 
     # Construct headers
     if content_type is not None:
-        _headers["Content-Type"] = _SERIALIZER.header(
-            "content_type", content_type, "str")
+        _headers["Content-Type"] = _SERIALIZER.header("content_type", content_type, "str")
     _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
 
-    return HttpRequest(
-        method="PUT",
-        url=_url,
-        params=_params,
-        headers=_headers,
-        **kwargs)
+    return HttpRequest(method="PUT", url=_url, params=_params, headers=_headers, **kwargs)
 
 
 def build_collaboration_analytics_auditevents_get_request(  # pylint: disable=name-too-long
@@ -969,39 +726,30 @@ def build_collaboration_analytics_auditevents_get_request(  # pylint: disable=na
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop(
-        "api_version", _params.pop(
-            "api-version", "2026-03-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-03-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
-    _url = "/collaborations/{collaboration_id}/analytics/auditevents"
+    _url = "/collaborations/{collaborationId}/analytics/auditevents"
     path_format_arguments = {
-        "collaboration_id": _SERIALIZER.url(
-            "collaboration_id", collaboration_id, "str"), }
+        "collaborationId": _SERIALIZER.url("collaboration_id", collaboration_id, "str"),
+    }
 
     _url: str = _url.format(**path_format_arguments)  # type: ignore
 
     # Construct parameters
-    _params["api-version"] = _SERIALIZER.query(
-        "api_version", api_version, "str")
     if scope is not None:
         _params["scope"] = _SERIALIZER.query("scope", scope, "str")
     if from_seqno is not None:
-        _params["from_seqno"] = _SERIALIZER.query(
-            "from_seqno", from_seqno, "str")
+        _params["from_seqno"] = _SERIALIZER.query("from_seqno", from_seqno, "str")
     if to_seqno is not None:
         _params["to_seqno"] = _SERIALIZER.query("to_seqno", to_seqno, "str")
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
 
     # Construct headers
     _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
 
-    return HttpRequest(
-        method="GET",
-        url=_url,
-        params=_params,
-        headers=_headers,
-        **kwargs)
+    return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
 
 
 class CollaborationOperations:  # pylint: disable=too-many-public-methods
@@ -1016,17 +764,13 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
 
     def __init__(self, *args, **kwargs) -> None:
         input_args = list(args)
-        self._client: PipelineClient = input_args.pop(
-            0) if input_args else kwargs.pop("client")
-        self._config: AnalyticsFrontendAPIConfiguration = input_args.pop(
-            0) if input_args else kwargs.pop("config")
-        self._serialize: Serializer = input_args.pop(
-            0) if input_args else kwargs.pop("serializer")
-        self._deserialize: Deserializer = input_args.pop(
-            0) if input_args else kwargs.pop("deserializer")
+        self._client: PipelineClient = input_args.pop(0) if input_args else kwargs.pop("client")
+        self._config: AnalyticsFrontendAPIConfiguration = input_args.pop(0) if input_args else kwargs.pop("config")
+        self._serialize: Serializer = input_args.pop(0) if input_args else kwargs.pop("serializer")
+        self._deserialize: Deserializer = input_args.pop(0) if input_args else kwargs.pop("deserializer")
 
     @distributed_trace
-    def list(self, *, active_only: bool = False, **kwargs: Any) -> List[JSON]:
+    def list_get(self, *, active_only: bool = False, **kwargs: Any) -> list[JSON]:
         """List all collaborations.
 
         List all collaborations.
@@ -1061,9 +805,9 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = kwargs.pop("params", {}) or {}
 
-        cls: ClsType[List[JSON]] = kwargs.pop("cls", None)
+        cls: ClsType[list[JSON]] = kwargs.pop("cls", None)
 
-        _request = build_collaboration_list_request(
+        _request = build_collaboration_list_get_request(
             active_only=active_only,
             api_version=self._config.api_version,
             headers=_headers,
@@ -1079,10 +823,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            map_error(
-                status_code=response.status_code,
-                response=response,
-                error_map=error_map)
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response)
 
         if response.content:
@@ -1091,22 +832,12 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(
-                pipeline_response,
-                cast(
-                    List[JSON],
-                    deserialized),
-                {})  # type: ignore
+            return cls(pipeline_response, cast(list[JSON], deserialized), {})  # type: ignore
 
-        return cast(List[JSON], deserialized)  # type: ignore
+        return cast(list[JSON], deserialized)  # type: ignore
 
     @distributed_trace
-    def id_get(
-            self,
-            collaboration_id: str,
-            *,
-            active_only: bool = False,
-            **kwargs: Any) -> JSON:
+    def id_get(self, collaboration_id: str, *, active_only: bool = False, **kwargs: Any) -> JSON:
         """Get collaboration by id.
 
         Get collaboration by id.
@@ -1168,10 +899,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 422]:
-            map_error(
-                status_code=response.status_code,
-                response=response,
-                error_map=error_map)
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response)
 
         if response.content:
@@ -1180,12 +908,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(
-                pipeline_response,
-                cast(
-                    JSON,
-                    deserialized),
-                {})  # type: ignore
+            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
 
         return cast(JSON, deserialized)  # type: ignore
 
@@ -1278,10 +1001,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 400, 422]:
-            map_error(
-                status_code=response.status_code,
-                response=response,
-                error_map=error_map)
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response)
 
         if response.content:
@@ -1290,12 +1010,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(
-                pipeline_response,
-                cast(
-                    JSON,
-                    deserialized),
-                {})  # type: ignore
+            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
 
         return cast(JSON, deserialized)  # type: ignore
 
@@ -1359,10 +1074,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 422]:
-            map_error(
-                status_code=response.status_code,
-                response=response,
-                error_map=error_map)
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response)
 
         if response.content:
@@ -1371,20 +1083,12 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(
-                pipeline_response,
-                cast(
-                    JSON,
-                    deserialized),
-                {})  # type: ignore
+            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
 
         return cast(JSON, deserialized)  # type: ignore
 
     @distributed_trace
-    def analytics_cleanroompolicy_get(
-            self,
-            collaboration_id: str,
-            **kwargs: Any) -> JSON:
+    def analytics_cleanroompolicy_get(self, collaboration_id: str, **kwargs: Any) -> JSON:
         """Get collaboration analytics cleanroompolicy.
 
         Get collaboration analytics cleanroompolicy.
@@ -1447,10 +1151,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 422]:
-            map_error(
-                status_code=response.status_code,
-                response=response,
-                error_map=error_map)
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response)
 
         if response.content:
@@ -1459,23 +1160,15 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(
-                pipeline_response,
-                cast(
-                    JSON,
-                    deserialized),
-                {})  # type: ignore
+            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
 
         return cast(JSON, deserialized)  # type: ignore
 
     @distributed_trace
-    def oidc_issuer_info_get(
-            self,
-            collaboration_id: str,
-            **kwargs: Any) -> JSON:
-        """Get collaboration oidcissuer.
+    def oidc_issuer_info_get(self, collaboration_id: str, **kwargs: Any) -> JSON:
+        """Get collaboration OIDC issuer info.
 
-        Get collaboration oidcissuer.
+        Get collaboration OIDC issuer info.
 
         :param collaboration_id: Required.
         :type collaboration_id: str
@@ -1533,10 +1226,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 422]:
-            map_error(
-                status_code=response.status_code,
-                response=response,
-                error_map=error_map)
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response)
 
         if response.content:
@@ -1545,12 +1235,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(
-                pipeline_response,
-                cast(
-                    JSON,
-                    deserialized),
-                {})  # type: ignore
+            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
 
         return cast(JSON, deserialized)  # type: ignore
 
@@ -1644,11 +1329,9 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         """
 
     @distributed_trace
-    def oidc_set_issuer_url_post(self,
-                                 collaboration_id: str,
-                                 body: Optional[Union[JSON,
-                                                      IO[bytes]]] = None,
-                                 **kwargs: Any) -> JSON:
+    def oidc_set_issuer_url_post(
+        self, collaboration_id: str, body: Optional[Union[JSON, IO[bytes]]] = None, **kwargs: Any
+    ) -> JSON:
         """Set collaboration oidc issuer url.
 
         Set collaboration oidc issuer url.
@@ -1694,8 +1377,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = kwargs.pop("params", {}) or {}
 
-        content_type: Optional[str] = kwargs.pop(
-            "content_type", _headers.pop("Content-Type", None))
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         content_type = content_type if body else None
         cls: ClsType[JSON] = kwargs.pop("cls", None)
 
@@ -1729,10 +1411,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 422]:
-            map_error(
-                status_code=response.status_code,
-                response=response,
-                error_map=error_map)
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response)
 
         if response.content:
@@ -1741,12 +1420,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(
-                pipeline_response,
-                cast(
-                    JSON,
-                    deserialized),
-                {})  # type: ignore
+            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
 
         return cast(JSON, deserialized)  # type: ignore
 
@@ -1821,10 +1495,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 422]:
-            map_error(
-                status_code=response.status_code,
-                response=response,
-                error_map=error_map)
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response)
 
         if response.content:
@@ -1833,22 +1504,12 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(
-                pipeline_response,
-                cast(
-                    JSON,
-                    deserialized),
-                {})  # type: ignore
+            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
 
         return cast(JSON, deserialized)  # type: ignore
 
     @distributed_trace
-    def invitations_get(
-            self,
-            collaboration_id: str,
-            *,
-            pending_only: bool = False,
-            **kwargs: Any) -> JSON:
+    def invitations_get(self, collaboration_id: str, *, pending_only: bool = False, **kwargs: Any) -> JSON:
         """List all invitations.
 
         List all invitations.
@@ -1910,10 +1571,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 422]:
-            map_error(
-                status_code=response.status_code,
-                response=response,
-                error_map=error_map)
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response)
 
         if response.content:
@@ -1922,21 +1580,12 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(
-                pipeline_response,
-                cast(
-                    JSON,
-                    deserialized),
-                {})  # type: ignore
+            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
 
         return cast(JSON, deserialized)  # type: ignore
 
     @distributed_trace
-    def invitation_id_get(
-            self,
-            collaboration_id: str,
-            invitation_id: str,
-            **kwargs: Any) -> JSON:
+    def invitation_id_get(self, collaboration_id: str, invitation_id: str, **kwargs: Any) -> JSON:
         """Get invitation by id.
 
         Get invitation by id.
@@ -2003,10 +1652,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 422]:
-            map_error(
-                status_code=response.status_code,
-                response=response,
-                error_map=error_map)
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response)
 
         if response.content:
@@ -2015,21 +1661,12 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(
-                pipeline_response,
-                cast(
-                    JSON,
-                    deserialized),
-                {})  # type: ignore
+            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
 
         return cast(JSON, deserialized)  # type: ignore
 
     @distributed_trace
-    def invitation_id_accept_post(
-            self,
-            collaboration_id: str,
-            invitation_id: str,
-            **kwargs: Any) -> Optional[JSON]:
+    def invitation_id_accept_post(self, collaboration_id: str, invitation_id: str, **kwargs: Any) -> Optional[JSON]:
         """Accept invitation by id.
 
         Accept invitation by id.
@@ -2084,10 +1721,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [204, 422]:
-            map_error(
-                status_code=response.status_code,
-                response=response,
-                error_map=error_map)
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response)
 
         deserialized = None
@@ -2103,10 +1737,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         return deserialized  # type: ignore
 
     @distributed_trace
-    def analytics_datasets_list_get(
-            self,
-            collaboration_id: str,
-            **kwargs: Any) -> JSON:
+    def analytics_datasets_list_get(self, collaboration_id: str, **kwargs: Any) -> JSON:
         """List all datasets.
 
         List all datasets.
@@ -2169,10 +1800,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 422]:
-            map_error(
-                status_code=response.status_code,
-                response=response,
-                error_map=error_map)
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response)
 
         if response.content:
@@ -2181,21 +1809,12 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(
-                pipeline_response,
-                cast(
-                    JSON,
-                    deserialized),
-                {})  # type: ignore
+            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
 
         return cast(JSON, deserialized)  # type: ignore
 
     @distributed_trace
-    def analytics_dataset_document_id_get(
-            self,
-            collaboration_id: str,
-            document_id: str,
-            **kwargs: Any) -> JSON:
+    def analytics_datasets_document_id_get(self, collaboration_id: str, document_id: str, **kwargs: Any) -> JSON:
         """Get dataset by id.
 
         Get dataset by id.
@@ -2281,7 +1900,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
 
         cls: ClsType[JSON] = kwargs.pop("cls", None)
 
-        _request = build_collaboration_analytics_dataset_document_id_get_request(
+        _request = build_collaboration_analytics_datasets_document_id_get_request(
             collaboration_id=collaboration_id,
             document_id=document_id,
             api_version=self._config.api_version,
@@ -2298,10 +1917,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 422]:
-            map_error(
-                status_code=response.status_code,
-                response=response,
-                error_map=error_map)
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response)
 
         if response.content:
@@ -2310,17 +1926,12 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(
-                pipeline_response,
-                cast(
-                    JSON,
-                    deserialized),
-                {})  # type: ignore
+            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
 
         return cast(JSON, deserialized)  # type: ignore
 
     @overload
-    def analytics_dataset_document_id_publish_post(  # pylint: disable=name-too-long
+    def analytics_datasets_document_id_publish_post(  # pylint: disable=name-too-long
         self,
         collaboration_id: str,
         document_id: str,
@@ -2403,7 +2014,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         """
 
     @overload
-    def analytics_dataset_document_id_publish_post(  # pylint: disable=name-too-long
+    def analytics_datasets_document_id_publish_post(  # pylint: disable=name-too-long
         self,
         collaboration_id: str,
         document_id: str,
@@ -2443,7 +2054,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         """
 
     @distributed_trace
-    def analytics_dataset_document_id_publish_post(  # pylint: disable=name-too-long
+    def analytics_datasets_document_id_publish_post(  # pylint: disable=name-too-long
         self, collaboration_id: str, document_id: str, body: Union[JSON, IO[bytes]], **kwargs: Any
     ) -> Optional[JSON]:
         """Publish dataset by id.
@@ -2526,8 +2137,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = kwargs.pop("params", {}) or {}
 
-        content_type: Optional[str] = kwargs.pop(
-            "content_type", _headers.pop("Content-Type", None))
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[Optional[JSON]] = kwargs.pop("cls", None)
 
         content_type = content_type or "application/json"
@@ -2538,7 +2148,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         else:
             _json = body
 
-        _request = build_collaboration_analytics_dataset_document_id_publish_post_request(
+        _request = build_collaboration_analytics_datasets_document_id_publish_post_request(
             collaboration_id=collaboration_id,
             document_id=document_id,
             content_type=content_type,
@@ -2558,10 +2168,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [204, 422]:
-            map_error(
-                status_code=response.status_code,
-                response=response,
-                error_map=error_map)
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response)
 
         deserialized = None
@@ -2577,11 +2184,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         return deserialized  # type: ignore
 
     @distributed_trace
-    def check_consent_document_id_get(
-            self,
-            collaboration_id: str,
-            document_id: str,
-            **kwargs: Any) -> JSON:
+    def consent_document_id_get(self, collaboration_id: str, document_id: str, **kwargs: Any) -> JSON:
         """Check execution consent by ID of the Query or the Dataset.
 
         Check execution consent by ID of the Query or the Dataset.
@@ -2627,7 +2230,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
 
         cls: ClsType[JSON] = kwargs.pop("cls", None)
 
-        _request = build_collaboration_check_consent_document_id_get_request(
+        _request = build_collaboration_consent_document_id_get_request(
             collaboration_id=collaboration_id,
             document_id=document_id,
             api_version=self._config.api_version,
@@ -2644,10 +2247,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 422]:
-            map_error(
-                status_code=response.status_code,
-                response=response,
-                error_map=error_map)
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response)
 
         if response.content:
@@ -2656,17 +2256,12 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(
-                pipeline_response,
-                cast(
-                    JSON,
-                    deserialized),
-                {})  # type: ignore
+            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
 
         return cast(JSON, deserialized)  # type: ignore
 
     @overload
-    def set_consent_document_id_put(
+    def consent_document_id_put(
         self,
         collaboration_id: str,
         document_id: str,
@@ -2674,7 +2269,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         *,
         content_type: str = "application/json",
         **kwargs: Any
-    ) -> Union[Any, JSON]:
+    ) -> Optional[JSON]:
         """Set execution consent (enable / disable) by ID of the Query or the Dataset.
 
         Set execution consent (enable / disable) by ID of the Query or the Dataset.
@@ -2688,8 +2283,8 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
         :paramtype content_type: str
-        :return: any or JSON object
-        :rtype: any or JSON
+        :return: JSON object or None
+        :rtype: JSON or None
         :raises ~azure.core.exceptions.HttpResponseError:
 
         Example:
@@ -2711,7 +2306,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         """
 
     @overload
-    def set_consent_document_id_put(
+    def consent_document_id_put(
         self,
         collaboration_id: str,
         document_id: str,
@@ -2719,7 +2314,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         *,
         content_type: str = "application/json",
         **kwargs: Any
-    ) -> Union[Any, JSON]:
+    ) -> Optional[JSON]:
         """Set execution consent (enable / disable) by ID of the Query or the Dataset.
 
         Set execution consent (enable / disable) by ID of the Query or the Dataset.
@@ -2733,8 +2328,8 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
-        :return: any or JSON object
-        :rtype: any or JSON
+        :return: JSON object or None
+        :rtype: JSON or None
         :raises ~azure.core.exceptions.HttpResponseError:
 
         Example:
@@ -2751,13 +2346,9 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         """
 
     @distributed_trace
-    def set_consent_document_id_put(self,
-                                    collaboration_id: str,
-                                    document_id: str,
-                                    body: Union[JSON,
-                                                IO[bytes]],
-                                    **kwargs: Any) -> Union[Any,
-                                                            JSON]:
+    def consent_document_id_put(
+        self, collaboration_id: str, document_id: str, body: Union[JSON, IO[bytes]], **kwargs: Any
+    ) -> Optional[JSON]:
         """Set execution consent (enable / disable) by ID of the Query or the Dataset.
 
         Set execution consent (enable / disable) by ID of the Query or the Dataset.
@@ -2768,8 +2359,8 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         :type document_id: str
         :param body: Is either a JSON type or a IO[bytes] type. Required.
         :type body: JSON or IO[bytes]
-        :return: any or JSON object
-        :rtype: any or JSON
+        :return: JSON object or None
+        :rtype: JSON or None
         :raises ~azure.core.exceptions.HttpResponseError:
 
         Example:
@@ -2800,9 +2391,8 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = kwargs.pop("params", {}) or {}
 
-        content_type: Optional[str] = kwargs.pop(
-            "content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[Union[Any, JSON]] = kwargs.pop("cls", None)
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+        cls: ClsType[Optional[JSON]] = kwargs.pop("cls", None)
 
         content_type = content_type or "application/json"
         _json = None
@@ -2812,7 +2402,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         else:
             _json = body
 
-        _request = build_collaboration_set_consent_document_id_put_request(
+        _request = build_collaboration_consent_document_id_put_request(
             collaboration_id=collaboration_id,
             document_id=document_id,
             content_type=content_type,
@@ -2831,23 +2421,21 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
 
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 422]:
-            map_error(
-                status_code=response.status_code,
-                response=response,
-                error_map=error_map)
+        if response.status_code not in [204, 422]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response)
 
-        if response.content:
-            deserialized = response.json()
-        else:
-            deserialized = None
+        deserialized = None
+        if response.status_code == 422:
+            if response.content:
+                deserialized = response.json()
+            else:
+                deserialized = None
 
         if cls:
-            return cls(pipeline_response, cast(
-                Union[Any, JSON], deserialized), {})  # type: ignore
+            return cls(pipeline_response, deserialized, {})  # type: ignore
 
-        return cast(Union[Any, JSON], deserialized)  # type: ignore
+        return deserialized  # type: ignore
 
     @overload
     def analytics_queries_document_id_publish_post(  # pylint: disable=name-too-long
@@ -2998,8 +2586,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = kwargs.pop("params", {}) or {}
 
-        content_type: Optional[str] = kwargs.pop(
-            "content_type", _headers.pop("Content-Type", None))
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[Optional[JSON]] = kwargs.pop("cls", None)
 
         content_type = content_type or "application/json"
@@ -3030,10 +2617,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [204, 422]:
-            map_error(
-                status_code=response.status_code,
-                response=response,
-                error_map=error_map)
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response)
 
         deserialized = None
@@ -3049,10 +2633,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         return deserialized  # type: ignore
 
     @distributed_trace
-    def analytics_queries_list_get(
-            self,
-            collaboration_id: str,
-            **kwargs: Any) -> JSON:
+    def analytics_queries_list_get(self, collaboration_id: str, **kwargs: Any) -> JSON:
         """List all queries.
 
         List all queries.
@@ -3115,10 +2696,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 422]:
-            map_error(
-                status_code=response.status_code,
-                response=response,
-                error_map=error_map)
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response)
 
         if response.content:
@@ -3127,21 +2705,12 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(
-                pipeline_response,
-                cast(
-                    JSON,
-                    deserialized),
-                {})  # type: ignore
+            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
 
         return cast(JSON, deserialized)  # type: ignore
 
     @distributed_trace
-    def analytics_queries_document_id_get(
-            self,
-            collaboration_id: str,
-            document_id: str,
-            **kwargs: Any) -> JSON:
+    def analytics_queries_document_id_get(self, collaboration_id: str, document_id: str, **kwargs: Any) -> JSON:
         """Get query by id.
 
         Get query by id.
@@ -3222,10 +2791,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 422]:
-            map_error(
-                status_code=response.status_code,
-                response=response,
-                error_map=error_map)
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response)
 
         if response.content:
@@ -3234,12 +2800,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(
-                pipeline_response,
-                cast(
-                    JSON,
-                    deserialized),
-                {})  # type: ignore
+            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
 
         return cast(JSON, deserialized)  # type: ignore
 
@@ -3330,12 +2891,9 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         """
 
     @distributed_trace
-    def analytics_queries_document_id_vote_post(self,
-                                                collaboration_id: str,
-                                                document_id: str,
-                                                body: Optional[Union[JSON,
-                                                                     IO[bytes]]] = None,
-                                                **kwargs: Any) -> Optional[JSON]:
+    def analytics_queries_document_id_vote_post(
+        self, collaboration_id: str, document_id: str, body: Optional[Union[JSON, IO[bytes]]] = None, **kwargs: Any
+    ) -> Optional[JSON]:
         """Vote on query by id.
 
         Vote on query by id.
@@ -3379,8 +2937,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = kwargs.pop("params", {}) or {}
 
-        content_type: Optional[str] = kwargs.pop(
-            "content_type", _headers.pop("Content-Type", None))
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         content_type = content_type if body else None
         cls: ClsType[Optional[JSON]] = kwargs.pop("cls", None)
 
@@ -3415,10 +2972,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [204, 422]:
-            map_error(
-                status_code=response.status_code,
-                response=response,
-                error_map=error_map)
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response)
 
         deserialized = None
@@ -3653,8 +3207,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = kwargs.pop("params", {}) or {}
 
-        content_type: Optional[str] = kwargs.pop(
-            "content_type", _headers.pop("Content-Type", None))
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[JSON] = kwargs.pop("cls", None)
 
         content_type = content_type or "application/json"
@@ -3685,10 +3238,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 422]:
-            map_error(
-                status_code=response.status_code,
-                response=response,
-                error_map=error_map)
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response)
 
         if response.content:
@@ -3697,29 +3247,20 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(
-                pipeline_response,
-                cast(
-                    JSON,
-                    deserialized),
-                {})  # type: ignore
+            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
 
         return cast(JSON, deserialized)  # type: ignore
 
     @distributed_trace
-    def analytics_queries_jobid_get(
-            self,
-            collaboration_id: str,
-            jobid: str,
-            **kwargs: Any) -> JSON:
+    def analytics_runs_job_id_get(self, collaboration_id: str, job_id: str, **kwargs: Any) -> JSON:
         """Get query run result by job id.
 
         Get query run result by job id.
 
         :param collaboration_id: Required.
         :type collaboration_id: str
-        :param jobid: Required.
-        :type jobid: str
+        :param job_id: Required.
+        :type job_id: str
         :return: JSON object
         :rtype: JSON
         :raises ~azure.core.exceptions.HttpResponseError:
@@ -3770,9 +3311,9 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
 
         cls: ClsType[JSON] = kwargs.pop("cls", None)
 
-        _request = build_collaboration_analytics_queries_jobid_get_request(
+        _request = build_collaboration_analytics_runs_job_id_get_request(
             collaboration_id=collaboration_id,
-            jobid=jobid,
+            job_id=job_id,
             api_version=self._config.api_version,
             headers=_headers,
             params=_params,
@@ -3787,10 +3328,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 422]:
-            map_error(
-                status_code=response.status_code,
-                response=response,
-                error_map=error_map)
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response)
 
         if response.content:
@@ -3799,19 +3337,14 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(
-                pipeline_response,
-                cast(
-                    JSON,
-                    deserialized),
-                {})  # type: ignore
+            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
 
         return cast(JSON, deserialized)  # type: ignore
 
     @distributed_trace
-    def analytics_queries_document_id_runhistory_get(  # pylint: disable=name-too-long
+    def analytics_queries_document_id_runs_get(
         self, collaboration_id: str, document_id: str, **kwargs: Any
-    ) -> Union[List[JSON], JSON]:
+    ) -> Union[list[JSON], JSON]:
         """Get query run history by query id.
 
         Get query run history by query id.
@@ -3894,9 +3427,9 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = kwargs.pop("params", {}) or {}
 
-        cls: ClsType[Union[List[JSON], JSON]] = kwargs.pop("cls", None)
+        cls: ClsType[Union[list[JSON], JSON]] = kwargs.pop("cls", None)
 
-        _request = build_collaboration_analytics_queries_document_id_runhistory_get_request(
+        _request = build_collaboration_analytics_queries_document_id_runs_get_request(
             collaboration_id=collaboration_id,
             document_id=document_id,
             api_version=self._config.api_version,
@@ -3913,10 +3446,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 422]:
-            map_error(
-                status_code=response.status_code,
-                response=response,
-                error_map=error_map)
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response)
 
         if response.content:
@@ -3925,15 +3455,14 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(pipeline_response, cast(
-                Union[List[JSON], JSON], deserialized), {})  # type: ignore
+            return cls(pipeline_response, cast(Union[list[JSON], JSON], deserialized), {})  # type: ignore
 
-        return cast(Union[List[JSON], JSON], deserialized)  # type: ignore
+        return cast(Union[list[JSON], JSON], deserialized)  # type: ignore
 
     @distributed_trace
     def analytics_datasets_document_id_queries_get(  # pylint: disable=name-too-long
         self, collaboration_id: str, document_id: str, **kwargs: Any
-    ) -> Union[List[str], JSON]:
+    ) -> Union[list[str], JSON]:
         """Get queries by dataset id.
 
         Get queries by dataset id.
@@ -3973,7 +3502,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         _headers = kwargs.pop("headers", {}) or {}
         _params = kwargs.pop("params", {}) or {}
 
-        cls: ClsType[Union[List[str], JSON]] = kwargs.pop("cls", None)
+        cls: ClsType[Union[list[str], JSON]] = kwargs.pop("cls", None)
 
         _request = build_collaboration_analytics_datasets_document_id_queries_get_request(
             collaboration_id=collaboration_id,
@@ -3992,10 +3521,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 422]:
-            map_error(
-                status_code=response.status_code,
-                response=response,
-                error_map=error_map)
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response)
 
         if response.content:
@@ -4004,10 +3530,9 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(pipeline_response, cast(
-                Union[List[str], JSON], deserialized), {})  # type: ignore
+            return cls(pipeline_response, cast(Union[list[str], JSON], deserialized), {})  # type: ignore
 
-        return cast(Union[List[str], JSON], deserialized)  # type: ignore
+        return cast(Union[list[str], JSON], deserialized)  # type: ignore
 
     @overload
     def analytics_secrets_secret_name_put(
@@ -4103,12 +3628,9 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         """
 
     @distributed_trace
-    def analytics_secrets_secret_name_put(self,
-                                          collaboration_id: str,
-                                          secret_name: str,
-                                          body: Optional[Union[JSON,
-                                                               IO[bytes]]] = None,
-                                          **kwargs: Any) -> JSON:
+    def analytics_secrets_secret_name_put(
+        self, collaboration_id: str, secret_name: str, body: Optional[Union[JSON, IO[bytes]]] = None, **kwargs: Any
+    ) -> JSON:
         """Set secret for analytics workload.
 
         Set secret for analytics workload.
@@ -4155,8 +3677,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = kwargs.pop("params", {}) or {}
 
-        content_type: Optional[str] = kwargs.pop(
-            "content_type", _headers.pop("Content-Type", None))
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         content_type = content_type if body else None
         cls: ClsType[JSON] = kwargs.pop("cls", None)
 
@@ -4191,10 +3712,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 422]:
-            map_error(
-                status_code=response.status_code,
-                response=response,
-                error_map=error_map)
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response)
 
         if response.content:
@@ -4203,12 +3721,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(
-                pipeline_response,
-                cast(
-                    JSON,
-                    deserialized),
-                {})  # type: ignore
+            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
 
         return cast(JSON, deserialized)  # type: ignore
 
@@ -4298,10 +3811,7 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 422]:
-            map_error(
-                status_code=response.status_code,
-                response=response,
-                error_map=error_map)
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response)
 
         if response.content:
@@ -4310,11 +3820,6 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(
-                pipeline_response,
-                cast(
-                    JSON,
-                    deserialized),
-                {})  # type: ignore
+            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
 
         return cast(JSON, deserialized)  # type: ignore

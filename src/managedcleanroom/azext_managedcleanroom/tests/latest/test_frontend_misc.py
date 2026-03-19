@@ -119,7 +119,7 @@ class TestFrontendMisc(unittest.TestCase):
         """Test checking consent status"""
         # Mock the client and its method chain
         mock_client = Mock()
-        mock_client.collaboration.check_consent_document_id_get.return_value = {
+        mock_client.collaboration.consent_document_id_get.return_value = {
             "documentId": "doc-123",
             "consentGiven": True,
             "consentedAt": "2024-01-01T00:00:00Z"
@@ -136,7 +136,7 @@ class TestFrontendMisc(unittest.TestCase):
         # Verify
         self.assertEqual(result["documentId"], "doc-123")
         self.assertTrue(result["consentGiven"])
-        mock_client.collaboration.check_consent_document_id_get.assert_called_once_with(
+        mock_client.collaboration.consent_document_id_get.assert_called_once_with(
             "test-collab-123", "doc-123")
 
     @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
@@ -144,7 +144,7 @@ class TestFrontendMisc(unittest.TestCase):
         """Test setting consent action"""
         # Mock the client and its method chain
         mock_client = Mock()
-        mock_client.collaboration.set_consent_document_id_put.return_value = {
+        mock_client.collaboration.consent_document_id_put.return_value = {
             "documentId": "doc-123", "action": "enable", "updatedAt": "2024-01-01T00:00:00Z"}
         mock_get_client.return_value = mock_client
 
@@ -158,7 +158,7 @@ class TestFrontendMisc(unittest.TestCase):
 
         # Verify
         self.assertEqual(result["action"], "enable")
-        mock_client.collaboration.set_consent_document_id_put.assert_called_once_with(
+        mock_client.collaboration.consent_document_id_put.assert_called_once_with(
             "test-collab-123", "doc-123", body={"consentAction": "enable"})
 
     # Audit Test

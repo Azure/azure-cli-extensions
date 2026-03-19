@@ -25,7 +25,7 @@ def frontend_collaboration_list(cmd, active_only=False, api_version=None):
     :return: List of collaboration objects with collaborationId, collaborationName, userStatus
     """
     client = get_frontend_client(cmd, api_version=api_version)
-    return client.collaboration.list(active_only=active_only)
+    return client.collaboration.list_get(active_only=active_only)
 
 
 def frontend_collaboration_show(
@@ -222,7 +222,7 @@ def frontend_collaboration_dataset_show(
     :return: Dataset details
     """
     client = get_frontend_client(cmd, api_version=api_version)
-    return client.collaboration.analytics_dataset_document_id_get(
+    return client.collaboration.analytics_datasets_document_id_get(
         collaboration_id, document_id)
 
 
@@ -244,7 +244,7 @@ def frontend_collaboration_dataset_publish(
         body = json.loads(body)
 
     client = get_frontend_client(cmd, api_version=api_version)
-    return client.collaboration.analytics_dataset_document_id_publish_post(
+    return client.collaboration.analytics_datasets_document_id_publish_post(
         collaboration_id, document_id, body)
 
 
@@ -281,7 +281,7 @@ def frontend_collaboration_consent_check(
     :return: Consent status
     """
     client = get_frontend_client(cmd, api_version=api_version)
-    return client.collaboration.check_consent_document_id_get(
+    return client.collaboration.consent_document_id_get(
         collaboration_id, document_id)
 
 
@@ -300,7 +300,7 @@ def frontend_collaboration_consent_set(
     """
     body = {"consentAction": consent_action}
     client = get_frontend_client(cmd, api_version=api_version)
-    return client.collaboration.set_consent_document_id_put(
+    return client.collaboration.consent_document_id_put(
         collaboration_id, document_id, body=body
     )
 

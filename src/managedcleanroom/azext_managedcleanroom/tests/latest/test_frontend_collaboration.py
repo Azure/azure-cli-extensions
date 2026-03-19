@@ -38,7 +38,7 @@ class TestFrontendCollaboration(unittest.TestCase):
         """Test listing collaborations returns correct data"""
         # Mock the client and its methods
         mock_client = Mock()
-        mock_client.collaboration.list.return_value = MOCK_COLLABORATION_LIST
+        mock_client.collaboration.list_get.return_value = MOCK_COLLABORATION_LIST
         mock_get_client.return_value = mock_client
 
         # Execute
@@ -48,14 +48,14 @@ class TestFrontendCollaboration(unittest.TestCase):
         self.assertEqual(len(result), 2)
         self.assertEqual(result[0]["collaborationId"], "collab-1")
         self.assertEqual(result[1]["collaborationId"], "collab-2")
-        mock_client.collaboration.list.assert_called_once()
+        mock_client.collaboration.list_get.assert_called_once()
 
     @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
     def test_list_collaborations_empty(self, mock_get_client):
         """Test listing collaborations with no results"""
         # Mock the client
         mock_client = Mock()
-        mock_client.collaboration.list.return_value = []
+        mock_client.collaboration.list_get.return_value = []
         mock_get_client.return_value = mock_client
 
         # Execute
@@ -293,7 +293,7 @@ class TestFrontendCollaboration(unittest.TestCase):
         """Test listing collaborations with active_only filter"""
         # Mock the client
         mock_client = Mock()
-        mock_client.collaboration.list.return_value = [
+        mock_client.collaboration.list_get.return_value = [
             {"collaborationId": "collab-1", "name": "Active Collab 1", "status": "active"}
         ]
         mock_get_client.return_value = mock_client
@@ -307,7 +307,7 @@ class TestFrontendCollaboration(unittest.TestCase):
         # Verify
         self.assertEqual(len(result), 1)
         self.assertEqual(result[0]["status"], "active")
-        mock_client.collaboration.list.assert_called_once_with(
+        mock_client.collaboration.list_get.assert_called_once_with(
             active_only=True)
 
     @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')

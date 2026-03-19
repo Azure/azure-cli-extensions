@@ -5,7 +5,13 @@ Release History
 
 1.0.0b3
 +++++++
-* Regenerated analytics_frontend_api SDK from V2026_03_01_Preview OpenAPI specification
+* Updated to latest Frontend API spec from develop branch (2026-03-01-preview)
+* Regenerated analytics_frontend_api SDK with updated method signatures
+* SDK Changes (internal, transparent to CLI users):
+  - Method renames: collaboration.list → collaboration.list_get
+  - Method renames: analytics_dataset_* → analytics_datasets_* (dataset → datasets, plural)
+  - Method renames: check_consent_document_id_get → consent_document_id_get
+  - Method renames: set_consent_document_id_put → consent_document_id_put
 * BREAKING CHANGE: All frontend API endpoints now require api-version=2026-03-01-preview query parameter
 * Added: --api-version parameter to all frontend commands (default: 2026-03-01-preview)
 * Updated: SDK client now automatically injects api-version into all API requests
