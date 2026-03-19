@@ -22693,12 +22693,12 @@ spec:
             ],
         )
 
-    @AllowLargeResponse()
+    @AllowLargeResponse(8192)
     def test_aks_list_vm_skus(self):
         # Basic call: should return a non-empty list of SKUs for a well-known region.
-        cmd = "aks list-vm-skus --location eastus"
+        cmd = "aks list-vm-skus --location westus2"
         skus = self.cmd(cmd).get_output_in_json()
-        assert len(skus) > 0, "expected at least one SKU in eastus"
+        assert len(skus) > 0, "expected at least one SKU in westus2"
 
         # Every entry must have a non-empty name.
         for sku in skus:
@@ -22707,7 +22707,7 @@ spec:
         # --size filter: results must all contain the substring (case-insensitive).
         size = "Standard_D4"
         filtered = self.cmd(
-            f"aks list-vm-skus --location eastus --size {size}"
+            f"aks list-vm-skus --location westus2 --size {size}"
         ).get_output_in_json()
         assert len(filtered) > 0, f"expected SKUs matching size '{size}'"
         for sku in filtered:
@@ -22717,9 +22717,9 @@ spec:
 
         # --zone filter: every returned SKU must advertise at least one zone.
         zonal = self.cmd(
-            "aks list-vm-skus --location eastus --zone"
+            "aks list-vm-skus --location westus2 --zone"
         ).get_output_in_json()
-        assert len(zonal) > 0, "expected zone-capable SKUs in eastus"
+        assert len(zonal) > 0, "expected zone-capable SKUs in westus2"
         for sku in zonal:
             zones = (
                 (sku.get("locationInfo") or [{}])[0].get("zones") or []
