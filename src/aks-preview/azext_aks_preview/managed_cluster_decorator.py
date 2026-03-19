@@ -7,6 +7,7 @@
 import copy
 import datetime
 import os
+import time
 from types import SimpleNamespace
 from typing import Any, Dict, List, Optional, Tuple, TypeVar, Union
 
@@ -56,6 +57,7 @@ from azext_aks_preview._consts import (
     CONST_TRANSIT_ENCRYPTION_TYPE_MTLS,
     CONST_ADVANCED_NETWORKPOLICIES_L7,
 )
+from azure.core.exceptions import HttpResponseError, ResourceExistsError
 from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_ACSTOR_EXT_INSTALLATION_NAME,
     CONST_ACSTOR_V1_EXT_INSTALLATION_NAME,
@@ -4682,11 +4684,21 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         if not workspace_resource_id:
             ensure_workspace_func = (
                 self.context.external_functions.ensure_default_log_analytics_workspace_for_monitoring)
-            workspace_resource_id = ensure_workspace_func(
-                self.cmd,
-                self.context.get_subscription_id(),
-                self.context.get_resource_group_name()
-            )
+            # Retry with backoff to handle 409 Conflict when workspace is still provisioning
+            # (common when parallel tests or commands target the same default workspace)
+            for attempt in range(3):
+                try:
+                    workspace_resource_id = ensure_workspace_func(
+                        self.cmd,
+                        self.context.get_subscription_id(),
+                        self.context.get_resource_group_name()
+                    )
+                    break
+                except (HttpResponseError, ResourceExistsError):
+                    if attempt < 2:
+                        time.sleep(30)
+                    else:
+                        raise
 
         # Sanitize and configure
         sanitize_func = self.context.external_functions.sanitize_loganalytics_ws_resource_id
@@ -7901,11 +7913,21 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         if not workspace_resource_id:
             ensure_workspace_func = (
                 self.context.external_functions.ensure_default_log_analytics_workspace_for_monitoring)
-            workspace_resource_id = ensure_workspace_func(
-                self.cmd,
-                self.context.get_subscription_id(),
-                self.context.get_resource_group_name()
-            )
+            # Retry with backoff to handle 409 Conflict when workspace is still provisioning
+            # (common when parallel tests or commands target the same default workspace)
+            for attempt in range(3):
+                try:
+                    workspace_resource_id = ensure_workspace_func(
+                        self.cmd,
+                        self.context.get_subscription_id(),
+                        self.context.get_resource_group_name()
+                    )
+                    break
+                except (HttpResponseError, ResourceExistsError):
+                    if attempt < 2:
+                        time.sleep(30)
+                    else:
+                        raise
 
         # Sanitize and configure
         sanitize_func = self.context.external_functions.sanitize_loganalytics_ws_resource_id
@@ -7939,6 +7961,13 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: workspace_resource_id,
             CONST_MONITORING_USING_AAD_MSI_AUTH: enable_msi_auth
         }
+
+        # Also set enableRetinaNetworkFlags if container network logs are being enabled
+        # in the same command. This must be done here because update_monitoring_profile_flow_logs
+        # may run before update_addon_profiles when the base class calls it first.
+        container_network_logs_enabled = self.context.get_container_network_logs(mc)
+        if container_network_logs_enabled is not None:
+            new_config["enableRetinaNetworkFlags"] = str(container_network_logs_enabled)
 
         # Replace the entire config, not just individual keys
         addon_profile.config = new_config

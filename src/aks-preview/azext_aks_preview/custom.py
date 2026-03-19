@@ -562,7 +562,7 @@ def ensure_container_insights_for_monitoring_preview(
             )
 
             resources = get_resources_client(cmd.cli_ctx, cluster_subscription)
-            for _ in range(3):
+            for attempt in range(3):
                 try:
                     if enable_syslog:
                         resources.begin_create_or_update_by_id(
@@ -578,8 +578,12 @@ def ensure_container_insights_for_monitoring_preview(
                         )
                     error = None
                     break
-                except CLIError as e:
+                except (CLIError, HttpResponseError) as e:
                     error = e
+                    # Wait before retry to allow workspace tables to become available
+                    if attempt < 2:
+                        import time
+                        time.sleep(30)
             else:
                 raise error
 
