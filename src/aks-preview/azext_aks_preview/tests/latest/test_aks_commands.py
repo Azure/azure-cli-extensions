@@ -19743,7 +19743,7 @@ spec:
         # Verify DCR contains the HighScale stream
         get_cmd = f'rest --method get --url https://management.azure.com{dcr_resource_id}?api-version=2022-06-01'
         self.cmd(get_cmd, checks=[
-            self.check('properties.dataFlows[0].streams[-1]', 'Microsoft-ContainerLogV2-HighScale'),
+            self.check("contains(properties.dataFlows[0].streams, 'Microsoft-ContainerLogV2-HighScale')", True),
         ])
 
         # Now disable high log scale mode

@@ -11592,7 +11592,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         # Verify: omsAgent should be disabled
         self.assertIn("omsAgent", mc_1.addon_profiles)
         self.assertFalse(mc_1.addon_profiles["omsAgent"].enabled)
-        self.assertEqual(mc_1.addon_profiles["omsAgent"].config, {})
+        self.assertIsNone(mc_1.addon_profiles["omsAgent"].config)
 
     def test_disable_azure_monitor_logs_with_omsagent_lowercase(self):
         # Test that _disable_azure_monitor_logs handles omsagent (lowercase) correctly
@@ -11628,7 +11628,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         # Verify: omsagent should be disabled
         self.assertIn("omsagent", mc_1.addon_profiles)
         self.assertFalse(mc_1.addon_profiles["omsagent"].enabled)
-        self.assertEqual(mc_1.addon_profiles["omsagent"].config, {})
+        self.assertIsNone(mc_1.addon_profiles["omsagent"].config)
 
     def test_get_enable_opentelemetry_logs_validation_with_omsagent_camelcase(self):
         # Test that OpenTelemetry logs validation recognizes omsAgent (camelCase) as enabled

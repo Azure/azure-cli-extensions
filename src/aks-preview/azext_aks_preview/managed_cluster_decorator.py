@@ -5914,6 +5914,11 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         """
         self._ensure_mc(mc)
 
+        # Call the base class implementation if it exists (CLI >= 2.84.0 added this method to the base).
+        # This ensures any base-class monitoring handling (e.g., enable/disable) is applied first.
+        if hasattr(super(), 'update_monitoring_profile_flow_logs'):
+            mc = super().update_monitoring_profile_flow_logs(mc)
+
         # Trigger validation for high log scale mode when container network logs are enabled.
         # This ensures proper error messages are raised before cluster update if the user
         # explicitly disables high log scale mode while enabling container network logs.
@@ -5950,35 +5955,45 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         # monitoring with MSI auth is already enabled, then trigger the DCR update via postprocessing.
         enable_high_log_scale_mode = self.context.raw_param.get("enable_high_log_scale_mode")
         if enable_high_log_scale_mode is True:
-            addon_consts = self.context.get_addon_consts()
-            CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
-            CONST_MONITORING_USING_AAD_MSI_AUTH = addon_consts.get("CONST_MONITORING_USING_AAD_MSI_AUTH")
-
-            # Resolve the addon profile, handling both "omsagent" and "omsAgent" key variants.
-            monitoring_addon_profile = None
-            if mc.addon_profiles:
-                monitoring_addon_profile = (
-                    mc.addon_profiles.get(CONST_MONITORING_ADDON_NAME) or
-                    mc.addon_profiles.get(CONST_MONITORING_ADDON_NAME_CAMELCASE)
-                )
-
-            if not monitoring_addon_profile or not monitoring_addon_profile.enabled:
-                raise RequiredArgumentMissingError(
-                    "--enable-high-log-scale-mode requires the Azure Monitor logs addon (omsagent) "
-                    "to be enabled on the cluster. Please enable it first with "
-                    "--enable-addons monitoring or --enable-azure-monitor-logs."
-                )
-
-            addon_config = monitoring_addon_profile.config or {}
-            msi_auth_enabled = (
-                CONST_MONITORING_USING_AAD_MSI_AUTH in addon_config and
-                str(addon_config[CONST_MONITORING_USING_AAD_MSI_AUTH]).lower() == "true"
+            # Check if monitoring is being enabled in the same command
+            enable_azure_monitor_logs = self.context.raw_param.get("enable_azure_monitor_logs")
+            enable_addons = self.context.raw_param.get("enable_addons")
+            monitoring_being_enabled = (
+                enable_azure_monitor_logs or
+                (enable_addons and "monitoring" in enable_addons)
             )
-            if not msi_auth_enabled:
-                raise RequiredArgumentMissingError(
-                    "--enable-high-log-scale-mode requires MSI authentication to be enabled "
-                    "for the monitoring addon. Please enable it with --enable-msi-auth-for-monitoring."
+
+            if not monitoring_being_enabled:
+                # Only validate existing addon state when not enabling monitoring simultaneously
+                addon_consts = self.context.get_addon_consts()
+                CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
+                CONST_MONITORING_USING_AAD_MSI_AUTH = addon_consts.get("CONST_MONITORING_USING_AAD_MSI_AUTH")
+
+                # Resolve the addon profile, handling both "omsagent" and "omsAgent" key variants.
+                monitoring_addon_profile = None
+                if mc.addon_profiles:
+                    monitoring_addon_profile = (
+                        mc.addon_profiles.get(CONST_MONITORING_ADDON_NAME) or
+                        mc.addon_profiles.get(CONST_MONITORING_ADDON_NAME_CAMELCASE)
+                    )
+
+                if not monitoring_addon_profile or not monitoring_addon_profile.enabled:
+                    raise RequiredArgumentMissingError(
+                        "--enable-high-log-scale-mode requires the Azure Monitor logs addon (omsagent) "
+                        "to be enabled on the cluster. Please enable it first with "
+                        "--enable-addons monitoring or --enable-azure-monitor-logs."
+                    )
+
+                addon_config = monitoring_addon_profile.config or {}
+                msi_auth_enabled = (
+                    CONST_MONITORING_USING_AAD_MSI_AUTH in addon_config and
+                    str(addon_config[CONST_MONITORING_USING_AAD_MSI_AUTH]).lower() == "true"
                 )
+                if not msi_auth_enabled:
+                    raise RequiredArgumentMissingError(
+                        "--enable-high-log-scale-mode requires MSI authentication to be enabled "
+                        "for the monitoring addon. Please enable it with --enable-msi-auth-for-monitoring."
+                    )
 
             self.context.set_intermediate("monitoring_addon_postprocessing_required", True, overwrite_exists=True)
 
@@ -8012,10 +8027,14 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         # Now disable the addon and clear configuration
         mc.addon_profiles[addon_key].enabled = False
+        mc.addon_profiles[addon_key].config = None
 
-        # Use empty dict instead of None - setting config=None causes the SDK serializer
-        # to omit the config key entirely, which Azure interprets as "keep existing config"
-        mc.addon_profiles[addon_key].config = {}
+        # Also disable azureMonitorProfile.containerInsights (the new API surface)
+        # The RP uses containerInsights.enabled as the source of truth; if it remains
+        # true while the legacy addon is disabled, the RP re-enables the addon.
+        if (mc.azure_monitor_profile and
+                mc.azure_monitor_profile.container_insights):
+            mc.azure_monitor_profile.container_insights.enabled = False
 
         # Also disable OpenTelemetry logs when disabling Azure Monitor logs
         if opentelemetry_logs_enabled:
@@ -8154,7 +8173,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         # update acns in network_profile
         mc = self.update_acns_in_network_profile(mc)
         # update update_monitoring_profile_flow_logs
-        mc = self.update_monitoring_profile_flow_logs(mc)
+        # Only call here if the base class doesn't already call it in update_mc_profile_default
+        # (CLI >= 2.84.0 added this call to the base class)
+        if not hasattr(super(), 'update_monitoring_profile_flow_logs'):
+            mc = self.update_monitoring_profile_flow_logs(mc)
         # update kubernetes support plan
         mc = self.update_k8s_support_plan(mc)
         # update AI toolchain operator
