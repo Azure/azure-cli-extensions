@@ -815,6 +815,9 @@ helps['aks delete'] = """
         - name: --if-none-match
           type: string
           short-summary: Not applicable for delete operations. This option will be ignored if provided.
+        - name: --ignore-pod-disruption-budget
+          type: bool
+          short-summary: Delete those pods on a node without considering Pod Disruption Budget.
     examples:
         - name: Delete a managed Kubernetes cluster.
           text: az aks delete --name MyManagedCluster --resource-group MyResourceGroup
