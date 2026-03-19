@@ -1092,8 +1092,7 @@ def dataprotection_enable_backup_helper(
             datasource_id, backup_strategy, configuration_params)
 
     # Extract configuration values (camelCase keys)
-    config = configuration_params
-    resource_tags = config.get("tags")
+    resource_tags = configuration_params.get("tags")
 
     if resource_tags:
         print(f"Resource Tags: {json.dumps(resource_tags)}")
@@ -1121,21 +1120,21 @@ def dataprotection_enable_backup_helper(
     # Step 2: Setup resource group
     print("\n[2/8] Setting up backup resource group...")
     backup_resource_group, backup_resource_group_name = _setup_resource_group(
-        cmd, resource_client, config.get("backupResourceGroupId"),
+        cmd, resource_client, configuration_params.get("backupResourceGroupId"),
         cluster_location, cluster_name,
         cluster_identity_principal_id, resource_tags)
 
     # Step 3 & 4: Setup storage and extension
     backup_storage_account = _setup_extension_and_storage(
         cmd, cluster_subscription_id, cluster_resource_group_name,
-        cluster_name, config.get("storageAccountResourceId"),
-        config.get("blobContainerName"),
+        cluster_name, configuration_params.get("storageAccountResourceId"),
+        configuration_params.get("blobContainerName"),
         backup_resource_group_name, cluster_location, resource_tags)
 
     # Step 5: Setup backup vault
     print("\n[5/8] Setting up backup vault...")
     backup_vault, backup_vault_name = _setup_backup_vault(
-        cmd, backup_strategy, config.get("backupVaultId"),
+        cmd, backup_strategy, configuration_params.get("backupVaultId"),
         cluster_subscription_id, cluster_location,
         backup_resource_group_name, cluster_resource,
         backup_resource_group, resource_tags)
@@ -1153,7 +1152,8 @@ def dataprotection_enable_backup_helper(
     backup_policy = _setup_backup_policy(
         cmd, backup_vault, backup_vault_name,
         backup_resource_group_name, backup_strategy,
-        config.get("backupVaultId"), config.get("backupPolicyId"),
+        configuration_params.get("backupVaultId"),
+        configuration_params.get("backupPolicyId"),
         cluster_subscription_id)
 
     # Step 7: Setup trusted access
@@ -1177,8 +1177,8 @@ def dataprotection_enable_backup_helper(
         cmd, cluster_name, cluster_resource_group_name,
         datasource_id, cluster_location, backup_vault_name,
         backup_resource_group_name, backup_strategy,
-        config.get("backupVaultId"),
-        backup_policy, config.get("backupPolicyId"),
+        configuration_params.get("backupVaultId"),
+        backup_policy, configuration_params.get("backupPolicyId"),
         backup_resource_group, cluster_subscription_id)
 
     # Print summary
