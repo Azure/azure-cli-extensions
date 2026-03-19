@@ -57,7 +57,6 @@ from azext_aks_preview._consts import (
     CONST_TRANSIT_ENCRYPTION_TYPE_MTLS,
     CONST_ADVANCED_NETWORKPOLICIES_L7,
 )
-from azure.core.exceptions import HttpResponseError, ResourceExistsError
 from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_ACSTOR_EXT_INSTALLATION_NAME,
     CONST_ACSTOR_V1_EXT_INSTALLATION_NAME,
@@ -102,6 +101,7 @@ from azext_aks_preview.azuremonitormetrics.azuremonitorprofile import (
 from azext_aks_preview.custom import (
     ensure_container_insights_for_monitoring_preview,
 )
+from azure.core.exceptions import HttpResponseError, ResourceExistsError
 from azure.cli.command_modules.acs._client_factory import get_graph_client
 from azure.cli.command_modules.acs._consts import (
     CONST_OUTBOUND_TYPE_LOAD_BALANCER,

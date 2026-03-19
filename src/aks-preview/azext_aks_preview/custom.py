@@ -582,7 +582,6 @@ def ensure_container_insights_for_monitoring_preview(
                     error = e
                     # Wait before retry to allow workspace tables to become available
                     if attempt < 2:
-                        import time
                         time.sleep(30)
             else:
                 raise error
