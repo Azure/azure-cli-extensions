@@ -5376,6 +5376,34 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                     resolve_assignee=False,
                 )
 
+    def put_mc(self, mc: ManagedCluster) -> ManagedCluster:
+        if self.check_is_postprocessing_required(mc):
+            # send request
+            poller = self.client.begin_create_or_update(
+                resource_group_name=self.context.get_resource_group_name(),
+                resource_name=self.context.get_name(),
+                parameters=mc,
+                if_match=self.context.get_if_match(),
+                if_none_match=self.context.get_if_none_match(),
+                headers=self.context.get_aks_custom_headers(),
+            )
+            self.immediate_processing_after_request(mc)
+            # poll until the result is returned
+            cluster = LongRunningOperation(self.cmd.cli_ctx)(poller)
+            self.postprocessing_after_mc_created(cluster)
+        else:
+            cluster = sdk_no_wait(
+                self.context.get_no_wait(),
+                self.client.begin_create_or_update,
+                resource_group_name=self.context.get_resource_group_name(),
+                resource_name=self.context.get_name(),
+                parameters=mc,
+                if_match=self.context.get_if_match(),
+                if_none_match=self.context.get_if_none_match(),
+                headers=self.context.get_aks_custom_headers(),
+            )
+        return cluster
+
 
 class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
     def __init__(
