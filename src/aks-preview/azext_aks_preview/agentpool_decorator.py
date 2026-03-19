@@ -46,6 +46,7 @@ from azext_aks_preview._consts import (
     CONST_SSH_ACCESS_LOCALUSER,
     CONST_GPU_DRIVER_NONE,
     CONST_GPU_MANAGEMENT_MODE_MANAGED,
+    CONST_GPU_MANAGEMENT_MODE_UNMANAGED,
     CONST_NODEPOOL_MODE_MANAGEDSYSTEM,
     CONST_NODEPOOL_MODE_MACHINES,
 )
@@ -1752,12 +1753,16 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
 
         enable_managed_gpu = self.context.get_enable_managed_gpu()
 
+        if agentpool.gpu_profile is None:
+            agentpool.gpu_profile = self.models.GPUProfile()  # pylint: disable=no-member
+        if agentpool.gpu_profile.nvidia is None:
+            agentpool.gpu_profile.nvidia = self.models.NvidiaGPUProfile()  # pylint: disable=no-member
+
         if enable_managed_gpu:
-            if agentpool.gpu_profile is None:
-                agentpool.gpu_profile = self.models.GPUProfile()  # pylint: disable=no-member
-            if agentpool.gpu_profile.nvidia is None:
-                agentpool.gpu_profile.nvidia = self.models.NvidiaGPUProfile()  # pylint: disable=no-member
             agentpool.gpu_profile.nvidia.management_mode = CONST_GPU_MANAGEMENT_MODE_MANAGED
+        else:
+            agentpool.gpu_profile.nvidia.management_mode = CONST_GPU_MANAGEMENT_MODE_UNMANAGED
+
         return agentpool
 
     def update_os_sku(self, agentpool: AgentPool) -> AgentPool:
