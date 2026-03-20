@@ -24,6 +24,9 @@ class OracleDatabaseAdbsScenario(ScenarioTest):
         self.cmd('az oracle-database database-system-shape list --location eastus ')
         self.cmd('az oracle-database dns-private-zone list --location eastus ')
         self.cmd('az oracle-database dns-private-view list --location eastus ')
+        # Regression coverage for INDIGO-26148: list commands must not fail on dataBaseType discriminator.
+        self.cmd('az oracle-database autonomous-database list ')
+        self.cmd('az oracle-database autonomous-database list --resource-group PowerShellTestRg ')
         self.cmd('az oracle-database autonomous-database create --location eastus '
                 '--autonomousdatabasename ADBScliTest '
                 '--resource-group PowerShellTestRg '
