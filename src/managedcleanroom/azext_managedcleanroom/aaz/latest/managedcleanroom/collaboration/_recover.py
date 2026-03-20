@@ -236,10 +236,6 @@ class Recover(AAZCommand):
                 serialized_name="consortiumArmId",
                 flags={"read_only": True},
             )
-            properties.consortium_type = AAZStrType(
-                serialized_name="consortiumType",
-                flags={"required": True},
-            )
             properties.health = AAZObjectType(
                 flags={"read_only": True},
             )
@@ -259,10 +255,6 @@ class Recover(AAZCommand):
             collaborators.Element = AAZObjectType()
 
             _element = cls._schema_on_200.properties.collaborators.Element
-            _element.email = AAZStrType()
-            _element.identity_type = AAZStrType(
-                serialized_name="identityType",
-            )
             _element.is_collaboration_owner = AAZBoolType(
                 serialized_name="isCollaborationOwner",
                 flags={"read_only": True},
@@ -272,6 +264,9 @@ class Recover(AAZCommand):
             )
             _element.tenant_id = AAZStrType(
                 serialized_name="tenantId",
+            )
+            _element.user_identifier = AAZStrType(
+                serialized_name="userIdentifier",
             )
 
             health = cls._schema_on_200.properties.health

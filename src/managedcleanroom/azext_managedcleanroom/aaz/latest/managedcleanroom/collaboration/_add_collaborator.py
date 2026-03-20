@@ -19,7 +19,7 @@ class AddCollaborator(AAZCommand):
     """Adds a collaborator to a collaboration.
 
     :example: Add Collaborator
-        az managedcleanroom collaboration add-collaborator --resource-group testrg --collaboration-name ContosoCollaboration --collaborator "{email:alice@contoso.com,tenant-id:72f988bf-86f1-41af-91ab-2d7cd011db47,object-id:0f8fad5b-d9cb-469f-a165-70867728950e,identity-type:User}"
+        az managedcleanroom collaboration add-collaborator --resource-group testrg --collaboration-name ContosoCollaboration --collaborator "{user-identifier:alice@contoso.com,tenant-id:72f988bf-86f1-41af-91ab-2d7cd011db47,object-id:0f8fad5b-d9cb-469f-a165-70867728950e}"
     """
 
     _aaz_info = {
@@ -70,15 +70,6 @@ class AddCollaborator(AAZCommand):
         )
 
         collaborator = cls._args_schema.collaborator
-        collaborator.email = AAZStrArg(
-            options=["email"],
-            help="Email of the collaborator.",
-        )
-        collaborator.identity_type = AAZStrArg(
-            options=["identity-type"],
-            help="Identity type of the collaborator.",
-            enum={"ServicePrincipal": "ServicePrincipal", "User": "User"},
-        )
         collaborator.object_id = AAZStrArg(
             options=["object-id"],
             help="Object ID of the collaborator.",
@@ -86,6 +77,10 @@ class AddCollaborator(AAZCommand):
         collaborator.tenant_id = AAZStrArg(
             options=["tenant-id"],
             help="Tenant ID of the collaborator.",
+        )
+        collaborator.user_identifier = AAZStrArg(
+            options=["user-identifier"],
+            help="User identifier of the collaborator. This can be specified as an email (no OID/TID should be specified) or an SPN (OID/TID required).",
         )
         return cls._args_schema
 
@@ -199,10 +194,9 @@ class AddCollaborator(AAZCommand):
 
             collaborator = _builder.get(".collaborator")
             if collaborator is not None:
-                collaborator.set_prop("email", AAZStrType, ".email")
-                collaborator.set_prop("identityType", AAZStrType, ".identity_type")
                 collaborator.set_prop("objectId", AAZStrType, ".object_id")
                 collaborator.set_prop("tenantId", AAZStrType, ".tenant_id")
+                collaborator.set_prop("userIdentifier", AAZStrType, ".user_identifier")
 
             return self.serialize_content(_content_value)
 
@@ -262,10 +256,6 @@ class AddCollaborator(AAZCommand):
                 serialized_name="consortiumArmId",
                 flags={"read_only": True},
             )
-            properties.consortium_type = AAZStrType(
-                serialized_name="consortiumType",
-                flags={"required": True},
-            )
             properties.health = AAZObjectType(
                 flags={"read_only": True},
             )
@@ -285,10 +275,6 @@ class AddCollaborator(AAZCommand):
             collaborators.Element = AAZObjectType()
 
             _element = cls._schema_on_200.properties.collaborators.Element
-            _element.email = AAZStrType()
-            _element.identity_type = AAZStrType(
-                serialized_name="identityType",
-            )
             _element.is_collaboration_owner = AAZBoolType(
                 serialized_name="isCollaborationOwner",
                 flags={"read_only": True},
@@ -298,6 +284,9 @@ class AddCollaborator(AAZCommand):
             )
             _element.tenant_id = AAZStrType(
                 serialized_name="tenantId",
+            )
+            _element.user_identifier = AAZStrType(
+                serialized_name="userIdentifier",
             )
 
             health = cls._schema_on_200.properties.health

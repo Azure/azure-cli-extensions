@@ -61,16 +61,6 @@ class Update(AAZCommand):
             required=True,
         )
 
-        # define Arg Group "Properties"
-
-        _args_schema = cls._args_schema
-        _args_schema.consortium_type = AAZStrArg(
-            options=["--consortium-type"],
-            arg_group="Properties",
-            help="Gets or sets the consortium type.",
-            enum={"ConfidentialACI": "ConfidentialACI"},
-        )
-
         # define Arg Group "Resource"
 
         _args_schema = cls._args_schema
@@ -322,12 +312,7 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
-
-            properties = _builder.get(".properties")
-            if properties is not None:
-                properties.set_prop("consortiumType", AAZStrType, ".consortium_type", typ_kwargs={"flags": {"required": True}})
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -403,10 +388,6 @@ class _UpdateHelper:
             serialized_name="consortiumArmId",
             flags={"read_only": True},
         )
-        properties.consortium_type = AAZStrType(
-            serialized_name="consortiumType",
-            flags={"required": True},
-        )
         properties.health = AAZObjectType(
             flags={"read_only": True},
         )
@@ -426,10 +407,6 @@ class _UpdateHelper:
         collaborators.Element = AAZObjectType()
 
         _element = _schema_collaboration_read.properties.collaborators.Element
-        _element.email = AAZStrType()
-        _element.identity_type = AAZStrType(
-            serialized_name="identityType",
-        )
         _element.is_collaboration_owner = AAZBoolType(
             serialized_name="isCollaborationOwner",
             flags={"read_only": True},
@@ -439,6 +416,9 @@ class _UpdateHelper:
         )
         _element.tenant_id = AAZStrType(
             serialized_name="tenantId",
+        )
+        _element.user_identifier = AAZStrType(
+            serialized_name="userIdentifier",
         )
 
         health = _schema_collaboration_read.properties.health
