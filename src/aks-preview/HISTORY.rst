@@ -50,6 +50,11 @@ Pending
 * `az aks namespace update`: Fix location should use existing namespace location.
 * `az aks nodepool update`: Add `--disable-artifact-streaming` to disable artifact streaming.
 
+19.0.0b28
++++++++
+* `az aks create/update`: Fix DCR not being created or updated when `--enable-container-network-logs`, `--enable-retina-flow-logs`, or `--enable-high-log-scale-mode` flags are used, ensuring the Data Collection Rule streams (e.g. `Microsoft-ContainerLogV2-HighScale`) are kept in sync.
+* `az aks update`: Add validation for `--enable-high-log-scale-mode` on the update path requiring the monitoring addon with MSI authentication to be enabled.
+
 19.0.0b27
 +++++++
 * `az aks nodepool add`: Fix `InvalidParameter` error when `mode` is `Machines`.
@@ -59,11 +64,6 @@ Pending
 * `az aks create/update`: Add `--enable-app-routing-istio` / `--disable-app-routing-istio` (short: `--enable-ari` / `--disable-ari`) flags to enable or disable Istio as a Gateway API implementation for App Routing.
 * `az aks approuting gateway istio enable/disable`: Add new subcommands to enable or disable the Istio Gateway API implementation for App Routing on an existing cluster.
 * Add 'mTLS' as a transit encryption type option for `--acns-transit-encryption-type` in `az aks create/update`
-
-19.0.0b26
-+++++++
-* `az aks create/update`: Fix DCR not being created or updated when `--enable-container-network-logs`, `--enable-retina-flow-logs`, or `--enable-high-log-scale-mode` flags are used, ensuring the Data Collection Rule streams (e.g. `Microsoft-ContainerLogV2-HighScale`) are kept in sync.
-* `az aks update`: Add validation for `--enable-high-log-scale-mode` on the update path requiring the monitoring addon with MSI authentication to be enabled.
 
 19.0.0b25
 +++++++
