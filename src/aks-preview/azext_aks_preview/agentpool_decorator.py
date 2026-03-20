@@ -1753,15 +1753,15 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
         if enable_managed_gpu is None:
             return agentpool
 
-        if agentpool.gpu_profile is None:
-            agentpool.gpu_profile = self.models.GPUProfile()  # pylint: disable=no-member
-        if agentpool.gpu_profile.nvidia is None:
-            agentpool.gpu_profile.nvidia = self.models.NvidiaGPUProfile()  # pylint: disable=no-member
-
         if enable_managed_gpu:
+            if agentpool.gpu_profile is None:
+                agentpool.gpu_profile = self.models.GPUProfile()  # pylint: disable=no-member
+            if agentpool.gpu_profile.nvidia is None:
+                agentpool.gpu_profile.nvidia = self.models.NvidiaGPUProfile()  # pylint: disable=no-member
             agentpool.gpu_profile.nvidia.management_mode = CONST_GPU_MANAGEMENT_MODE_MANAGED
         else:
-            agentpool.gpu_profile.nvidia.management_mode = CONST_GPU_MANAGEMENT_MODE_UNMANAGED
+            if agentpool.gpu_profile and agentpool.gpu_profile.nvidia:
+                agentpool.gpu_profile.nvidia.management_mode = CONST_GPU_MANAGEMENT_MODE_UNMANAGED
 
         return agentpool
 
