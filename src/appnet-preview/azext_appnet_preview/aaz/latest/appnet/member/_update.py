@@ -81,6 +81,8 @@ class Update(AAZCommand):
             enum={"External": "External", "Internal": "Internal"},
         )
 
+        # define Arg Group "ConnectivityProfile"
+
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
@@ -236,15 +238,10 @@ class Update(AAZCommand):
             connectivity_profile = _builder.get(".properties.connectivityProfile")
             if connectivity_profile is not None:
                 connectivity_profile.set_prop("eastWestGateway", AAZObjectType)
-                connectivity_profile.set_prop("privateConnect", AAZDictType)
 
             east_west_gateway = _builder.get(".properties.connectivityProfile.eastWestGateway")
             if east_west_gateway is not None:
                 east_west_gateway.set_prop("visibility", AAZStrType, ".east_west_gateway_visibility")
-
-            private_connect = _builder.get(".properties.connectivityProfile.privateConnect")
-            if private_connect is not None:
-                private_connect.set_elements(AAZAnyType, ".")
 
             upgrade_profile = _builder.get(".properties.upgradeProfile")
             if upgrade_profile is not None:
