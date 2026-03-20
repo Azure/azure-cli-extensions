@@ -226,6 +226,7 @@ def frontend_collaboration_dataset_show(
         collaboration_id, document_id)
 
 
+# pylint: disable=too-many-locals
 def frontend_collaboration_dataset_publish(
         cmd, collaboration_id, document_id,
         body=None,
@@ -284,7 +285,9 @@ def frontend_collaboration_dataset_publish(
     ])
 
     if body and has_params:
-        raise CLIError('Cannot use --body together with individual parameters. Use either --body or the parameter flags.')
+        raise CLIError(
+            'Cannot use --body together with individual parameters. '
+            'Use either --body or the parameter flags.')
 
     # Legacy mode: use body directly
     if body:
@@ -296,7 +299,9 @@ def frontend_collaboration_dataset_publish(
 
     # Parameter mode: construct body from parameters
     if not has_params:
-        raise CLIError('Either --body or individual parameters (--storage-account-url, --container-name, etc.) must be provided.')
+        raise CLIError(
+            'Either --body or individual parameters (--storage-account-url, '
+            '--container-name, etc.) must be provided.')
 
     # Validate required parameters
     required_params = {
@@ -314,7 +319,8 @@ def frontend_collaboration_dataset_publish(
 
     missing = [k for k, v in required_params.items() if v is None]
     if missing:
-        raise CLIError(f'Missing required parameters: {", ".join(f"--{k.replace("_", "-")}" for k in missing)}')
+        missing_params = ", ".join(f"--{k.replace('_', '-')}" for k in missing)
+        raise CLIError(f'Missing required parameters: {missing_params}')
 
     # Validate CPK parameters if encryption_mode is CPK
     if encryption_mode and encryption_mode.upper() == 'CPK':
@@ -327,7 +333,10 @@ def frontend_collaboration_dataset_publish(
         }
         missing_cpk = [k for k, v in cpk_params.items() if v is None]
         if missing_cpk:
-            raise CLIError(f'CPK encryption mode requires: {", ".join(f"--{k.replace("_", "-")}" for k in missing_cpk)}')
+            missing_cpk_params = ", ".join(
+                f"--{k.replace('_', '-')}" for k in missing_cpk)
+            raise CLIError(
+                f'CPK encryption mode requires: {missing_cpk_params}')
 
     # Load schema from file
     schema_content = None
@@ -487,6 +496,7 @@ def frontend_collaboration_query_show(
         collaboration_id, document_id)
 
 
+# pylint: disable=too-many-locals
 def frontend_collaboration_query_publish(
         cmd, collaboration_id, document_id,
         body=None,
@@ -512,10 +522,13 @@ def frontend_collaboration_query_publish(
     from azure.cli.core.util import CLIError
 
     # Check for mutual exclusion: body vs parameters
-    has_params = any([query_segment, execution_sequence, input_datasets, output_dataset])
+    has_params = any([
+        query_segment, execution_sequence, input_datasets, output_dataset])
 
     if body and has_params:
-        raise CLIError('Cannot use --body together with individual parameters. Use either --body or the parameter flags.')
+        raise CLIError(
+            'Cannot use --body together with individual parameters. '
+            'Use either --body or the parameter flags.')
 
     # Legacy mode: use body directly
     if body:
@@ -527,11 +540,14 @@ def frontend_collaboration_query_publish(
 
     # Parameter mode: construct body from parameters
     if not has_params:
-        raise CLIError('Either --body or individual parameters (--query-segment, --execution-sequence, etc.) must be provided.')
+        raise CLIError(
+            'Either --body or individual parameters (--query-segment, '
+            '--execution-sequence, etc.) must be provided.')
 
     # Validate required parameters
     if not query_segment:
-        raise CLIError('--query-segment is required (can be specified multiple times)')
+        raise CLIError(
+            '--query-segment is required (can be specified multiple times)')
     if not execution_sequence:
         raise CLIError('--execution-sequence is required')
     if not input_datasets:
@@ -558,11 +574,15 @@ def frontend_collaboration_query_publish(
     try:
         exec_seq = [int(x.strip()) for x in execution_sequence.split(',')]
     except ValueError:
-        raise CLIError('--execution-sequence must be comma-separated integers (e.g., "1,1,2")')
+        raise CLIError(
+            '--execution-sequence must be comma-separated integers '
+            '(e.g., "1,1,2")')
 
     # Validate segment count matches execution sequence count
     if len(segments) != len(exec_seq):
-        raise CLIError(f'Number of query segments ({len(segments)}) must match execution sequence count ({len(exec_seq)})')
+        raise CLIError(
+            f'Number of query segments ({len(segments)}) must match '
+            f'execution sequence count ({len(exec_seq)})')
 
     # Build queryData array
     query_data = []
@@ -579,15 +599,19 @@ def frontend_collaboration_query_publish(
     for ds in input_datasets.split(','):
         ds = ds.strip()
         if ':' not in ds:
-            raise CLIError(f'Invalid input dataset format: {ds}. Expected format: datasetId:viewName')
+            raise CLIError(
+                f'Invalid input dataset format: {ds}. '
+                f'Expected format: datasetId:viewName')
         dataset_id, view_name = ds.split(':', 1)
         input_ds_list.append(f'{dataset_id.strip()}:{view_name.strip()}')
     input_ds_str = ','.join(input_ds_list)
 
     # Parse output dataset
     if ':' not in output_dataset:
-        raise CLIError(f'Invalid output dataset format: {output_dataset}. Expected format: datasetId:viewName')
-    
+        raise CLIError(
+            f'Invalid output dataset format: {output_dataset}. '
+            f'Expected format: datasetId:viewName')
+
     # Construct body
     body = {
         'inputDatasets': input_ds_str,
@@ -598,7 +622,6 @@ def frontend_collaboration_query_publish(
     client = get_frontend_client(cmd, api_version=api_version)
     return client.collaboration.analytics_queries_document_id_publish_post(
         collaboration_id, document_id, body)
-
 
 
 def frontend_collaboration_query_run(
@@ -633,7 +656,9 @@ def frontend_collaboration_query_run(
     has_params = any([dry_run, start_date, end_date, use_optimizer])
 
     if body and has_params:
-        raise CLIError('Cannot use --body together with individual parameters. Use either --body or the parameter flags.')
+        raise CLIError(
+            'Cannot use --body together with individual parameters. '
+            'Use either --body or the parameter flags.')
 
     # Handle body parameter - convert string to dict if needed
     if body and isinstance(body, str):
