@@ -589,15 +589,13 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
                 enable_artifact_streaming = self.agentpool.artifact_streaming_profile.enabled
         return enable_artifact_streaming
 
-    def get_enable_managed_gpu(self) -> bool:
+    def get_enable_managed_gpu(self) -> Union[bool, None]:
         """Obtain the value of enable_managed_gpu.
         :return: bool
         """
 
         # read the original value passed by the command
         enable_managed_gpu = self.raw_param.get("enable_managed_gpu")
-        if enable_managed_gpu is None:
-            enable_managed_gpu = False
 
         # In create mode, try to read the property value corresponding to the parameter from the `agentpool` object
         if self.decorator_mode == DecoratorMode.CREATE:
@@ -1752,6 +1750,8 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
         self._ensure_agentpool(agentpool)
 
         enable_managed_gpu = self.context.get_enable_managed_gpu()
+        if enable_managed_gpu is None:
+            return agentpool
 
         if agentpool.gpu_profile is None:
             agentpool.gpu_profile = self.models.GPUProfile()  # pylint: disable=no-member
