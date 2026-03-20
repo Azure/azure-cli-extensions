@@ -74,14 +74,15 @@ class Join(AAZCommand):
         # define Arg Group "Connectivity"
 
         _args_schema = cls._args_schema
-        _args_schema.east_west_gateway_visibility = AAZStrArg(
-            options=["--east-west-gateway-visibility"],
+        _args_schema.east_west_gateway = AAZStrArg(
+            options=["--east-west-gateway"],
             arg_group="Connectivity",
             help="East-West gateway visibility.",
+            default="Internal",
             enum={"External": "External", "Internal": "Internal"},
         )
-        _args_schema.private_connect_subnet_id = AAZResourceIdArg(
-            options=["--private-connect-subnet-id"],
+        _args_schema.private_connect_subnet = AAZResourceIdArg(
+            options=["--private-connect-subnet"],
             arg_group="Connectivity",
             help="Delegated Subnet to AppLink.",
         )
@@ -140,6 +141,7 @@ class Join(AAZCommand):
             options=["--upgrade-mode"],
             arg_group="Upgrade",
             help="Upgrade mode.",
+            default="SelfManaged",
             enum={"FullyManaged": "FullyManaged", "SelfManaged": "SelfManaged"},
         )
         _args_schema.version = AAZStrArg(
@@ -277,11 +279,11 @@ class Join(AAZCommand):
 
             east_west_gateway = _builder.get(".properties.connectivityProfile.eastWestGateway")
             if east_west_gateway is not None:
-                east_west_gateway.set_prop("visibility", AAZStrType, ".east_west_gateway_visibility", typ_kwargs={"flags": {"required": True}})
+                east_west_gateway.set_prop("visibility", AAZStrType, ".east_west_gateway", typ_kwargs={"flags": {"required": True}})
 
             private_connect = _builder.get(".properties.connectivityProfile.privateConnect")
             if private_connect is not None:
-                private_connect.set_prop("subnetResourceId", AAZStrType, ".private_connect_subnet_id", typ_kwargs={"flags": {"required": True}})
+                private_connect.set_prop("subnetResourceId", AAZStrType, ".private_connect_subnet", typ_kwargs={"flags": {"required": True}})
 
             metadata = _builder.get(".properties.metadata")
             if metadata is not None:
