@@ -168,7 +168,7 @@ def load_command_table(self, _):
         )
         g.custom_command("upgrade", "aks_upgrade", supports_no_wait=True)
         g.custom_command("scale", "aks_scale", supports_no_wait=True)
-        g.command("delete", "begin_delete", supports_no_wait=True, confirmation=True)
+        g.custom_command("delete", "aks_delete", supports_no_wait=True, confirmation=True)
         g.custom_show_command(
             "show", "aks_show", table_transformer=aks_show_table_format
         )
