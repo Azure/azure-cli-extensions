@@ -227,21 +227,169 @@ def frontend_collaboration_dataset_show(
 
 
 def frontend_collaboration_dataset_publish(
-        cmd, collaboration_id, document_id, body, api_version=None):
+        cmd, collaboration_id, document_id,
+        body=None,
+        storage_account_url=None,
+        container_name=None,
+        storage_account_type=None,
+        encryption_mode=None,
+        schema_file=None,
+        schema_format=None,
+        access_mode=None,
+        allowed_fields=None,
+        identity_name=None,
+        identity_client_id=None,
+        identity_tenant_id=None,
+        identity_issuer_url=None,
+        dek_keyvault_url=None,
+        dek_secret_id=None,
+        kek_keyvault_url=None,
+        kek_secret_id=None,
+        kek_maa_url=None,
+        api_version=None):
     """Publish a dataset
 
     :param cmd: CLI command context
     :param collaboration_id: Collaboration identifier
     :param document_id: Dataset document identifier
-    :param body: Publish configuration JSON (string, dict, or @file)
+    :param body: Publish configuration JSON (string, dict, or @file) - legacy mode
+    :param storage_account_url: Azure Storage account URL
+    :param container_name: Blob container name
+    :param storage_account_type: Storage account type
+    :param encryption_mode: Encryption mode (SSE or CPK)
+    :param schema_file: Path to schema file (@path/to/schema.json)
+    :param schema_format: Schema format (default: Delta)
+    :param access_mode: Access mode
+    :param allowed_fields: Comma-separated allowed field names
+    :param identity_name: Managed identity name
+    :param identity_client_id: Client ID
+    :param identity_tenant_id: Tenant ID
+    :param identity_issuer_url: OIDC issuer URL
+    :param dek_keyvault_url: DEK Key Vault URL (CPK mode)
+    :param dek_secret_id: DEK secret ID (CPK mode)
+    :param kek_keyvault_url: KEK Key Vault URL (CPK mode)
+    :param kek_secret_id: KEK secret ID (CPK mode)
+    :param kek_maa_url: KEK MAA URL (CPK mode)
     :param api_version: API version to use for this request
     :return: Publish result
     """
     import json
+    from azure.cli.core.util import CLIError
 
-    # Handle body parameter - convert string to dict if needed
-    if isinstance(body, str):
-        body = json.loads(body)
+    # Check for mutual exclusion: body vs parameters
+    has_params = any([
+        storage_account_url, container_name, storage_account_type, encryption_mode,
+        schema_file, access_mode, identity_name, identity_client_id,
+        identity_tenant_id, identity_issuer_url
+    ])
+
+    if body and has_params:
+        raise CLIError('Cannot use --body together with individual parameters. Use either --body or the parameter flags.')
+
+    # Legacy mode: use body directly
+    if body:
+        if isinstance(body, str):
+            body = json.loads(body)
+        client = get_frontend_client(cmd, api_version=api_version)
+        return client.collaboration.analytics_datasets_document_id_publish_post(
+            collaboration_id, document_id, body)
+
+    # Parameter mode: construct body from parameters
+    if not has_params:
+        raise CLIError('Either --body or individual parameters (--storage-account-url, --container-name, etc.) must be provided.')
+
+    # Validate required parameters
+    required_params = {
+        'storage_account_url': storage_account_url,
+        'container_name': container_name,
+        'storage_account_type': storage_account_type,
+        'encryption_mode': encryption_mode,
+        'schema_file': schema_file,
+        'access_mode': access_mode,
+        'identity_name': identity_name,
+        'identity_client_id': identity_client_id,
+        'identity_tenant_id': identity_tenant_id,
+        'identity_issuer_url': identity_issuer_url
+    }
+
+    missing = [k for k, v in required_params.items() if v is None]
+    if missing:
+        raise CLIError(f'Missing required parameters: {", ".join(f"--{k.replace("_", "-")}" for k in missing)}')
+
+    # Validate CPK parameters if encryption_mode is CPK
+    if encryption_mode and encryption_mode.upper() == 'CPK':
+        cpk_params = {
+            'dek_keyvault_url': dek_keyvault_url,
+            'dek_secret_id': dek_secret_id,
+            'kek_keyvault_url': kek_keyvault_url,
+            'kek_secret_id': kek_secret_id,
+            'kek_maa_url': kek_maa_url
+        }
+        missing_cpk = [k for k, v in cpk_params.items() if v is None]
+        if missing_cpk:
+            raise CLIError(f'CPK encryption mode requires: {", ".join(f"--{k.replace("_", "-")}" for k in missing_cpk)}')
+
+    # Load schema from file
+    schema_content = None
+    if schema_file.startswith('@'):
+        schema_path = schema_file[1:]
+        try:
+            with open(schema_path, 'r') as f:
+                schema_content = json.load(f)
+        except FileNotFoundError:
+            raise CLIError(f'Schema file not found: {schema_path}')
+        except json.JSONDecodeError as e:
+            raise CLIError(f'Invalid JSON in schema file: {str(e)}')
+    else:
+        raise CLIError('--schema-file must be a file path prefixed with @ (e.g., @schema.json)')
+
+    # Override format if provided
+    if schema_format:
+        schema_content['format'] = schema_format
+
+    # Build datasetAccessPolicy
+    dataset_access_policy = {
+        'accessMode': access_mode
+    }
+    if allowed_fields:
+        dataset_access_policy['allowedFields'] = [f.strip() for f in allowed_fields.split(',')]
+
+    # Build store configuration
+    store = {
+        'storageAccountUrl': storage_account_url,
+        'containerName': container_name,
+        'storageAccountType': storage_account_type,
+        'encryptionMode': encryption_mode
+    }
+
+    # Build identity
+    identity = {
+        'name': identity_name,
+        'clientId': identity_client_id,
+        'tenantId': identity_tenant_id,
+        'issuerUrl': identity_issuer_url
+    }
+
+    # Construct final body
+    body = {
+        'name': document_id,
+        'datasetSchema': schema_content,
+        'datasetAccessPolicy': dataset_access_policy,
+        'store': store,
+        'identity': identity
+    }
+
+    # Add DEK/KEK for CPK mode
+    if encryption_mode and encryption_mode.upper() == 'CPK':
+        body['dek'] = {
+            'keyVaultUrl': dek_keyvault_url,
+            'secretId': dek_secret_id
+        }
+        body['kek'] = {
+            'keyVaultUrl': kek_keyvault_url,
+            'secretId': kek_secret_id,
+            'maaUrl': kek_maa_url
+        }
 
     client = get_frontend_client(cmd, api_version=api_version)
     return client.collaboration.analytics_datasets_document_id_publish_post(
@@ -340,25 +488,117 @@ def frontend_collaboration_query_show(
 
 
 def frontend_collaboration_query_publish(
-        cmd, collaboration_id, document_id, body, api_version=None):
+        cmd, collaboration_id, document_id,
+        body=None,
+        query_segment=None,
+        execution_sequence=None,
+        input_datasets=None,
+        output_dataset=None,
+        api_version=None):
     """Publish a query
 
     :param cmd: CLI command context
     :param collaboration_id: Collaboration identifier
     :param document_id: Query document identifier
-    :param body: Publish configuration JSON (string, dict, or @file)
+    :param body: Publish configuration JSON (string, dict, or @file) - legacy mode
+    :param query_segment: List of query segments (repeatable, @file.sql or inline SQL)
+    :param execution_sequence: Comma-separated execution sequence numbers
+    :param input_datasets: Comma-separated input datasets (datasetId:viewName pairs)
+    :param output_dataset: Output dataset (datasetId:viewName)
     :param api_version: API version to use for this request
     :return: Publish result
     """
     import json
+    from azure.cli.core.util import CLIError
 
-    # Handle body parameter - convert string to dict if needed
-    if isinstance(body, str):
-        body = json.loads(body)
+    # Check for mutual exclusion: body vs parameters
+    has_params = any([query_segment, execution_sequence, input_datasets, output_dataset])
+
+    if body and has_params:
+        raise CLIError('Cannot use --body together with individual parameters. Use either --body or the parameter flags.')
+
+    # Legacy mode: use body directly
+    if body:
+        if isinstance(body, str):
+            body = json.loads(body)
+        client = get_frontend_client(cmd, api_version=api_version)
+        return client.collaboration.analytics_queries_document_id_publish_post(
+            collaboration_id, document_id, body)
+
+    # Parameter mode: construct body from parameters
+    if not has_params:
+        raise CLIError('Either --body or individual parameters (--query-segment, --execution-sequence, etc.) must be provided.')
+
+    # Validate required parameters
+    if not query_segment:
+        raise CLIError('--query-segment is required (can be specified multiple times)')
+    if not execution_sequence:
+        raise CLIError('--execution-sequence is required')
+    if not input_datasets:
+        raise CLIError('--input-datasets is required')
+    if not output_dataset:
+        raise CLIError('--output-dataset is required')
+
+    # Parse query segments
+    segments = []
+    for seg in query_segment:
+        if seg.startswith('@'):
+            # Load from file
+            file_path = seg[1:]
+            try:
+                with open(file_path, 'r') as f:
+                    segments.append(f.read())
+            except FileNotFoundError:
+                raise CLIError(f'Query segment file not found: {file_path}')
+        else:
+            # Inline SQL
+            segments.append(seg)
+
+    # Parse execution sequence
+    try:
+        exec_seq = [int(x.strip()) for x in execution_sequence.split(',')]
+    except ValueError:
+        raise CLIError('--execution-sequence must be comma-separated integers (e.g., "1,1,2")')
+
+    # Validate segment count matches execution sequence count
+    if len(segments) != len(exec_seq):
+        raise CLIError(f'Number of query segments ({len(segments)}) must match execution sequence count ({len(exec_seq)})')
+
+    # Build queryData array
+    query_data = []
+    for sql, seq in zip(segments, exec_seq):
+        query_data.append({
+            'data': sql,
+            'executionSequence': seq,
+            'preConditions': '',
+            'postFilters': ''
+        })
+
+    # Parse input datasets (comma-separated datasetId:viewName pairs)
+    input_ds_list = []
+    for ds in input_datasets.split(','):
+        ds = ds.strip()
+        if ':' not in ds:
+            raise CLIError(f'Invalid input dataset format: {ds}. Expected format: datasetId:viewName')
+        dataset_id, view_name = ds.split(':', 1)
+        input_ds_list.append(f'{dataset_id.strip()}:{view_name.strip()}')
+    input_ds_str = ','.join(input_ds_list)
+
+    # Parse output dataset
+    if ':' not in output_dataset:
+        raise CLIError(f'Invalid output dataset format: {output_dataset}. Expected format: datasetId:viewName')
+    
+    # Construct body
+    body = {
+        'inputDatasets': input_ds_str,
+        'outputDataset': output_dataset,
+        'queryData': query_data
+    }
 
     client = get_frontend_client(cmd, api_version=api_version)
     return client.collaboration.analytics_queries_document_id_publish_post(
         collaboration_id, document_id, body)
+
 
 
 def frontend_collaboration_query_run(
@@ -366,6 +606,10 @@ def frontend_collaboration_query_run(
         collaboration_id,
         document_id,
         body=None,
+        dry_run=False,
+        start_date=None,
+        end_date=None,
+        use_optimizer=False,
         api_version=None):
     """Run a query
 
@@ -374,11 +618,22 @@ def frontend_collaboration_query_run(
     :param document_id: Query document identifier
     :param body: Run configuration JSON (string, dict, or @file). Optional fields:
                  runId (auto-generated if not provided), dryRun, startDate, endDate, useOptimizer
+    :param dry_run: Perform a dry run without executing the query
+    :param start_date: Start date for query execution
+    :param end_date: End date for query execution
+    :param use_optimizer: Use query optimizer
     :param api_version: API version to use for this request
     :return: Run result
     """
     import json
     import uuid
+    from azure.cli.core.util import CLIError
+
+    # Check for mutual exclusion: body vs parameters
+    has_params = any([dry_run, start_date, end_date, use_optimizer])
+
+    if body and has_params:
+        raise CLIError('Cannot use --body together with individual parameters. Use either --body or the parameter flags.')
 
     # Handle body parameter - convert string to dict if needed
     if body and isinstance(body, str):
@@ -387,6 +642,17 @@ def frontend_collaboration_query_run(
     # Initialize body if not provided
     if not body:
         body = {}
+
+    # Add parameter values to body if in parameter mode
+    if has_params:
+        if dry_run:
+            body['dryRun'] = True
+        if start_date:
+            body['startDate'] = start_date
+        if end_date:
+            body['endDate'] = end_date
+        if use_optimizer:
+            body['useOptimizer'] = True
 
     # Auto-generate runId if not provided
     if 'runId' not in body:

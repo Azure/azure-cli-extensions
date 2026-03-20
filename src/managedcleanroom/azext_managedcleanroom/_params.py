@@ -117,6 +117,35 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
             type=str,
             help='JSON string or @file path containing publish configuration. '
             'Must include datasetAccessPoint with name, path, and protection details.')
+        
+        # Storage parameters
+        c.argument('storage_account_url', options_list=['--storage-account-url'], help='Azure Storage account URL')
+        c.argument('container_name', options_list=['--container-name'], help='Blob container name')
+        c.argument('storage_account_type', options_list=['--storage-account-type'], help='Storage account type (e.g., AzureStorageAccount)')
+        c.argument('encryption_mode', options_list=['--encryption-mode'], help='Encryption mode: SSE or CPK')
+
+        # Schema parameters
+        c.argument('schema_file', options_list=['--schema-file'], help='Path to schema file (@path/to/schema.json) containing field definitions')
+        c.argument('schema_format', options_list=['--schema-format'], help='Schema format (default: Delta)')
+
+        # Access policy parameters
+        c.argument('access_mode', options_list=['--access-mode'], help='Access mode (e.g., ReadWrite)')
+        c.argument('allowed_fields', options_list=['--allowed-fields'], help='Comma-separated list of allowed field names')
+
+        # Identity parameters
+        c.argument('identity_name', options_list=['--identity-name'], help='Managed identity name')
+        c.argument('identity_client_id', options_list=['--identity-client-id'], help='Managed identity client ID (GUID)')
+        c.argument('identity_tenant_id', options_list=['--identity-tenant-id'], help='Tenant ID (GUID)')
+        c.argument('identity_issuer_url', options_list=['--identity-issuer-url'], help='OIDC issuer URL (HTTPS)')
+
+        # CPK DEK parameters
+        c.argument('dek_keyvault_url', options_list=['--dek-keyvault-url'], help='Key Vault URL for DEK (CPK mode only)')
+        c.argument('dek_secret_id', options_list=['--dek-secret-id'], help='DEK secret ID (CPK mode only)')
+
+        # CPK KEK parameters
+        c.argument('kek_keyvault_url', options_list=['--kek-keyvault-url'], help='Key Vault URL for KEK (CPK mode only)')
+        c.argument('kek_secret_id', options_list=['--kek-secret-id'], help='KEK secret ID (CPK mode only)')
+        c.argument('kek_maa_url', options_list=['--kek-maa-url'], help='MAA URL for KEK (CPK mode only)')
 
     # Dataset queries context
     with self.argument_context('managedcleanroom frontend analytics dataset queries') as c:
@@ -144,12 +173,22 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
             type=str,
             help='JSON string or @file path containing publish configuration. '
             'Must include inputDatasets, outputDataset, and queryData.')
+        
+        c.argument('query_segment', options_list=['--query-segment'], action='append', help='Query segment SQL (@file.sql or inline). Repeatable. Order matters.')
+        c.argument('execution_sequence', options_list=['--execution-sequence'], help='Comma-separated execution sequence numbers (e.g., "1,1,2"). Must match segment count.')
+        c.argument('input_datasets', options_list=['--input-datasets'], help='Comma-separated input datasets as datasetId:viewName pairs')
+        c.argument('output_dataset', options_list=['--output-dataset'], help='Output dataset as datasetId:viewName')
 
     with self.argument_context('managedcleanroom frontend analytics query run') as c:
         c.argument('document_id', document_id_type)
         c.argument(
             'body', type=str, help='JSON string or @file path containing run configuration. '
             'Optional fields: runId (auto-generated if not provided), dryRun, startDate, endDate, useOptimizer.')
+        
+        c.argument('dry_run', options_list=['--dry-run'], action='store_true', help='Perform a dry run without executing the query')
+        c.argument('start_date', options_list=['--start-date'], help='Start date for query execution')
+        c.argument('end_date', options_list=['--end-date'], help='End date for query execution')
+        c.argument('use_optimizer', options_list=['--use-optimizer'], action='store_true', help='Use query optimizer')
 
     # Query vote context (unified)
     with self.argument_context('managedcleanroom frontend analytics query vote') as c:
