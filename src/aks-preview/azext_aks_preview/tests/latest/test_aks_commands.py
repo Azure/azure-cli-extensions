@@ -19661,12 +19661,14 @@ spec:
         ])
 
         # Disable Azure Monitor Logs
+        # Note: provisioningState may be "Updating" here due to a race between
+        # DCRA deletion (fire-and-forget LRO) and the subsequent PUT request.
+        # The aks show below verifies the final Succeeded state.
         disable_cmd = (
             "aks update --resource-group={resource_group} --name={name} --yes "
             "--disable-azure-monitor-logs --output=json"
         )
         self.cmd(disable_cmd, checks=[
-            self.check("provisioningState", "Succeeded"),
             self.check("addonProfiles.omsagent.enabled", False),
         ])
 
