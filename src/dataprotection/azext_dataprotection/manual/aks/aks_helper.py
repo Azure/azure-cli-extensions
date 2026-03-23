@@ -2,6 +2,9 @@ import json
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.mgmt.core.tools import parse_resource_id
+from knack.log import get_logger
+
+logger = get_logger(__name__)
 
 
 # Tag used to identify storage accounts created for AKS backup
@@ -31,24 +34,24 @@ def _check_and_assign_role(cmd, role, assignee, scope, identity_name="identity",
     # Check if role assignment already exists
     try:
         if list_role_assignments(cmd, assignee=assignee, role=role, scope=scope, include_inherited=True):
-            print(f"\tRole '{role}' already assigned to {identity_name}")
+            logger.warning("\tRole '%s' already assigned to %s", role, identity_name)
             return True
     except Exception as e:  # pylint: disable=broad-exception-caught
-        print(f"\tWarning: Could not list role assignments for {identity_name}: {str(e)[:100]}")
+        logger.warning("\tWarning: Could not list role assignments for %s: %s", identity_name, str(e)[:100])
         # Continue to try creating the assignment
 
     # Try to create with retries for identity propagation delay
     for attempt in range(max_retries):
         try:
             create_role_assignment(cmd, role=role, assignee=assignee, scope=scope)
-            print(f"\tRole '{role}' assigned to {identity_name}")
+            logger.warning("\tRole '%s' assigned to %s", role, identity_name)
             return True
         except Exception as e:  # pylint: disable=broad-exception-caught
             error_str = str(e).lower()
 
             # Already exists — treat as success
             if "conflict" in error_str or "already exists" in error_str:
-                print(f"\tRole '{role}' already assigned to {identity_name}")
+                logger.warning("\tRole '%s' already assigned to %s", role, identity_name)
                 return True
 
             # Principal not found — retryable (identity propagation)
@@ -58,7 +61,7 @@ def _check_and_assign_role(cmd, role, assignee, scope, identity_name="identity",
                 or "cannot find" in error_str
             )
             if is_propagation_error and attempt < max_retries - 1:
-                print(f"\tWaiting for identity to propagate... (attempt {attempt + 1}/{max_retries})")
+                logger.warning("\tWaiting for identity to propagate... (attempt %d/%d)", attempt + 1, max_retries)
                 time.sleep(retry_delay)
                 continue
 
@@ -162,7 +165,7 @@ def _check_existing_backup_instance(resource_client, datasource_id, cluster_name
     Returns:
         None if no backup instance exists, raises error with details if one exists
     """
-    print("\tChecking for existing backup configuration...")
+    logger.warning("Checking for existing backup configuration...")
 
     try:
         # Use extension routing to query backup instances on the cluster
@@ -183,7 +186,7 @@ def _check_existing_backup_instance(resource_client, datasource_id, cluster_name
 
         # If list is empty, no backup instance exists
         if not bi_list:
-            print("\tNo existing backup instance found")
+            logger.warning("No existing backup instance found")
             return None
 
         # Get details of the first backup instance
@@ -210,11 +213,11 @@ def _check_existing_backup_instance(resource_client, datasource_id, cluster_name
             vault_name = bi_parts.get('name', 'Unknown')
             vault_rg = bi_parts.get('resource_group', 'Unknown')
 
-        print("\tFound existing backup instance!")
-        print(f"\t\t- Backup Instance: {bi_name}")
-        print(f"\t\t- Backup Vault:    {vault_name}")
-        print(f"\t\t- Resource Group:  {vault_rg}")
-        print(f"\t\t- Protection State: {protection_status}")
+        logger.warning("Found existing backup instance!")
+        logger.warning("  - Backup Instance: %s", bi_name)
+        logger.warning("  - Backup Vault:    %s", vault_name)
+        logger.warning("  - Resource Group:  %s", vault_rg)
+        logger.warning("  - Protection State: %s", protection_status)
 
         error_info = ""
         if protection_error:
@@ -223,9 +226,9 @@ def _check_existing_backup_instance(resource_client, datasource_id, cluster_name
             else:
                 error_msg = str(protection_error)
             if len(str(error_msg)) > 100:
-                print(f"\t\t- Error Details:   {error_msg[:100]}...")
+                logger.warning("  - Error Details:   %s...", error_msg[:100])
             else:
-                print(f"\t\t- Error Details:   {error_msg}")
+                logger.warning("  - Error Details:   %s", error_msg)
             error_info = f"\n  Protection Error: {error_msg}\n"
 
         raise InvalidArgumentValueError(
@@ -250,13 +253,13 @@ def _check_existing_backup_instance(resource_client, datasource_id, cluster_name
         # 404 or other errors mean no backup instance exists
         error_str = str(e).lower()
         if "not found" in error_str or "404" in error_str or "does not exist" in error_str:
-            print("\tNo existing backup instance found")
+            logger.warning("No existing backup instance found")
             return None
         # For other errors, log and continue (don't block on extension routing failures)
-        print(f"\tCould not check for existing backup (will proceed): {str(e)[:100]}")
+        logger.warning("Could not check for existing backup (will proceed): %s", str(e)[:100])
         return None
 
-    print("\tNo existing backup instance found")
+    logger.warning("No existing backup instance found")
     return None
 
 
@@ -284,7 +287,7 @@ def _get_cluster_msi_principal_id(cluster_resource, cluster_name):
 
     # System-assigned identity
     if identity.principal_id:
-        print(f"\tIdentity type: {identity_type} (system-assigned)")
+        logger.warning("Identity type: %s (system-assigned)", identity_type)
         return identity.principal_id
 
     # User-assigned identity — get the first UAMI's principal ID
@@ -301,7 +304,7 @@ def _get_cluster_msi_principal_id(cluster_resource, cluster_name):
 
                 if principal_id:
                     uami_name = uami_id.split('/')[-1] if '/' in uami_id else uami_id
-                    print(f"\tIdentity type: {identity_type} (user-assigned: {uami_name})")
+                    logger.warning("Identity type: %s (user-assigned: %s)", identity_type, uami_name)
                     return principal_id
 
     raise InvalidArgumentValueError(
@@ -315,10 +318,10 @@ def _validate_cluster(resource_client, datasource_id, cluster_name):
     """Validate the AKS cluster exists and get its details."""
     cluster_resource = resource_client.resources.get_by_id(datasource_id, api_version="2024-08-01")
     cluster_location = cluster_resource.location
-    print(f"\tCluster: {cluster_name}")
-    print(f"\tLocation: {cluster_location}")
+    logger.warning("Cluster: %s", cluster_name)
+    logger.warning("Location: %s", cluster_location)
     cluster_identity_principal_id = _get_cluster_msi_principal_id(cluster_resource, cluster_name)
-    print("\t[OK] Cluster validated")
+    logger.warning("[OK] Cluster validated")
     return cluster_resource, cluster_location, cluster_identity_principal_id
 
 
@@ -351,7 +354,7 @@ def _setup_resource_group(cmd, resource_client, backup_resource_group_id,
     """Create or use backup resource group."""
     if backup_resource_group_id:
         backup_resource_group_name = parse_resource_id(backup_resource_group_id)['resource_group']
-        print(f"\tUsing provided resource group: {backup_resource_group_name}")
+        logger.warning("Using provided resource group: %s", backup_resource_group_name)
         try:
             backup_resource_group = resource_client.resource_groups.get(backup_resource_group_name)
         except Exception:  # pylint: disable=broad-exception-caught
@@ -363,17 +366,17 @@ def _setup_resource_group(cmd, resource_client, backup_resource_group_id,
             )
     else:
         # Search for existing backup resource group with matching tag
-        print(f"\tSearching for existing AKS backup resource group in region {cluster_location}...")
+        logger.warning("Searching for existing AKS backup resource group in region %s...", cluster_location)
         backup_resource_group = _find_existing_backup_resource_group(resource_client, cluster_location)
 
         if backup_resource_group:
             # Found existing resource group - reuse it
             backup_resource_group_name = backup_resource_group.name
-            print(f"\tFound existing backup resource group: {backup_resource_group_name}")
+            logger.warning("Found existing backup resource group: %s", backup_resource_group_name)
         else:
             # Create new resource group with AKS backup tag
             backup_resource_group_name = _generate_backup_resource_group_name(cluster_location)
-            print(f"\tCreating resource group: {backup_resource_group_name}")
+            logger.warning("Creating resource group: %s", backup_resource_group_name)
 
             # Build tags - include AKS backup tag plus any user-provided tags
             rg_tags = {AKS_BACKUP_TAG_KEY: cluster_location}
@@ -384,14 +387,14 @@ def _setup_resource_group(cmd, resource_client, backup_resource_group_id,
             backup_resource_group = resource_client.resource_groups.create_or_update(
                 backup_resource_group_name, rg_params)
 
-    print(f"\tResource Group: {backup_resource_group.id}")
+    logger.warning("Resource Group: %s", backup_resource_group.id)
     _check_and_assign_role(
         cmd,
         role="Contributor",
         assignee=cluster_identity_principal_id,
         scope=backup_resource_group.id,
         identity_name="cluster identity")
-    print("\t[OK] Resource group ready")
+    logger.warning("[OK] Resource group ready")
 
     return backup_resource_group, backup_resource_group_name
 
@@ -438,7 +441,7 @@ def _setup_storage_account(cmd, cluster_subscription_id, storage_account_id,
         sa_parts = parse_resource_id(storage_account_id)
         backup_storage_account_name = sa_parts['name']
         storage_account_rg = sa_parts['resource_group']
-        print(f"\tUsing provided storage account: {backup_storage_account_name}")
+        logger.warning("Using provided storage account: %s", backup_storage_account_name)
         backup_storage_account = storage_client.storage_accounts.get_properties(
             storage_account_rg, backup_storage_account_name)
         if blob_container_name:
@@ -448,18 +451,18 @@ def _setup_storage_account(cmd, cluster_subscription_id, storage_account_id,
                 cluster_name, cluster_resource_group_name)
     else:
         # Search for existing backup storage account with matching tag
-        print(f"\tSearching for existing AKS backup storage account in region {cluster_location}...")
+        logger.warning("Searching for existing AKS backup storage account in region %s...", cluster_location)
         backup_storage_account, existing_rg = _find_existing_backup_storage_account(storage_client, cluster_location)
 
         if backup_storage_account:
             # Found existing storage account - reuse it
             backup_storage_account_name = backup_storage_account.name
             storage_account_rg = existing_rg
-            print(f"\tFound existing backup storage account: {backup_storage_account_name}")
+            logger.warning("Found existing backup storage account: %s", backup_storage_account_name)
         else:
             # Create new storage account with AKS backup tag
             backup_storage_account_name = _generate_backup_storage_account_name(cluster_location)
-            print(f"\tCreating storage account: {backup_storage_account_name}")
+            logger.warning("Creating storage account: %s", backup_storage_account_name)
 
             # Build tags - include AKS backup tag plus any user-provided tags
             sa_tags = {AKS_BACKUP_TAG_KEY: cluster_location}
@@ -482,12 +485,12 @@ def _setup_storage_account(cmd, cluster_subscription_id, storage_account_id,
         backup_storage_account_container_name = _generate_backup_storage_account_container_name(
             cluster_name, cluster_resource_group_name)
 
-    print(f"\tStorage Account: {backup_storage_account.id}")
-    print(f"\tCreating blob container: {backup_storage_account_container_name}")
+    logger.warning("Storage Account: %s", backup_storage_account.id)
+    logger.warning("Creating blob container: %s", backup_storage_account_container_name)
     storage_client.blob_containers.create(
         storage_account_rg, backup_storage_account_name,
         backup_storage_account_container_name, {})
-    print("\t[OK] Storage account ready")
+    logger.warning("[OK] Storage account ready")
 
     return backup_storage_account, backup_storage_account_name, backup_storage_account_container_name
 
@@ -515,7 +518,7 @@ def _install_backup_extension(cmd, cluster_subscription_id,
         assignee=backup_extension.aks_assigned_identity.principal_id,
         scope=backup_storage_account.id,
         identity_name="backup extension identity")
-    print("\t[OK] Backup extension ready")
+    logger.warning("[OK] Backup extension ready")
 
     return backup_extension
 
@@ -600,9 +603,9 @@ def _get_storage_account_from_extension(cmd, extension, cluster_subscription_id)
     if not sa_name or not sa_rg:
         return None, None, None, None
 
-    print(
-        f"\tExtension is configured with storage account: "
-        f"{sa_name} (RG: {sa_rg}, container: {container})")
+    logger.warning(
+        "Extension is configured with storage account: "
+        "%s (RG: %s, container: %s)", sa_name, sa_rg, container)
 
     storage_client = get_mgmt_service_client(
         cmd.cli_ctx, StorageManagementClient,
@@ -611,9 +614,9 @@ def _get_storage_account_from_extension(cmd, extension, cluster_subscription_id)
         sa = storage_client.storage_accounts.get_properties(sa_rg, sa_name)
         return sa, sa_name, container, sa_rg
     except Exception as e:  # pylint: disable=broad-exception-caught
-        print(
-            f"\tWarning: Could not fetch storage account '{sa_name}' "
-            f"from extension config: {str(e)[:100]}")
+        logger.warning(
+            "Warning: Could not fetch storage account '%s' "
+            "from extension config: %s", sa_name, str(e)[:100])
         return None, None, None, None
 
 
@@ -680,7 +683,7 @@ def _try_create_vault_with_storage_type(
         backup_vault = vault_create_cls(cli_ctx=cmd.cli_ctx)(command_args=backup_vault_args).result()
         return backup_vault
     except Exception as e:  # pylint: disable=broad-exception-caught
-        print(f"\tVault creation with {storage_type} failed: {str(e)[:120]}")
+        logger.warning("Vault creation with %s failed: %s", storage_type, str(e)[:120])
         return None
 
 
@@ -696,7 +699,7 @@ def _setup_backup_vault(
         vault_parts = parse_resource_id(backup_vault_id)
         backup_vault_name = vault_parts['name']
         vault_rg = vault_parts['resource_group']
-        print(f"\tUsing provided backup vault: {backup_vault_name}")
+        logger.warning("Using provided backup vault: %s", backup_vault_name)
         from azext_dataprotection.aaz.latest.dataprotection.backup_vault import Show as _BackupVaultShow
         backup_vault = _BackupVaultShow(cli_ctx=cmd.cli_ctx)(command_args={
             "vault_name": backup_vault_name,
@@ -705,17 +708,17 @@ def _setup_backup_vault(
         })
     else:
         # Search for existing backup vault with matching tag
-        print(f"\tSearching for existing AKS backup vault in region {cluster_location}...")
+        logger.warning("Searching for existing AKS backup vault in region %s...", cluster_location)
         backup_vault = _find_existing_backup_vault(cmd, cluster_subscription_id, cluster_location)
 
         if backup_vault:
             # Found existing vault - reuse it
             backup_vault_name = backup_vault['name']
-            print(f"\tFound existing backup vault: {backup_vault_name}")
+            logger.warning("Found existing backup vault: %s", backup_vault_name)
         else:
             # Create new backup vault with AKS backup tag
             backup_vault_name = _generate_backup_vault_name(cluster_location)
-            print(f"\tCreating backup vault: {backup_vault_name}")
+            logger.warning("Creating backup vault: %s", backup_vault_name)
 
             # Build tags - include AKS backup tag plus any user-provided tags
             vault_tags = {AKS_BACKUP_TAG_KEY: cluster_location}
@@ -728,13 +731,13 @@ def _setup_backup_vault(
             storage_type = None
 
             for try_type in ['GeoRedundant', 'ZoneRedundant', 'LocallyRedundant']:
-                print(f"\tTrying storage type: {try_type}...")
+                logger.warning("Trying storage type: %s...", try_type)
                 backup_vault = _try_create_vault_with_storage_type(
                     cmd, _BackupVaultCreate, backup_vault_name, backup_resource_group_name,
                     cluster_location, vault_tags, try_type, cluster_subscription_id)
                 if backup_vault:
                     storage_type = try_type
-                    print(f"\tVault created with storage type: {storage_type}")
+                    logger.warning("Vault created with storage type: %s", storage_type)
                     break
 
             if not backup_vault:
@@ -744,7 +747,7 @@ def _setup_backup_vault(
                     f"Please check region availability and try again."
                 )
 
-    print(f"\tBackup Vault: {backup_vault['id']}")
+    logger.warning("Backup Vault: %s", backup_vault['id'])
     _check_and_assign_role(
         cmd,
         role="Reader",
@@ -765,7 +768,7 @@ def _setup_backup_vault(
         assignee=backup_vault["identity"]["principalId"],
         scope=backup_resource_group.id,
         identity_name="backup vault identity (snapshot contributor on resource group)")
-    print("\t[OK] Backup vault ready")
+    logger.warning("[OK] Backup vault ready")
 
     return backup_vault, backup_vault_name
 
@@ -782,7 +785,7 @@ def _setup_backup_policy(cmd, _backup_vault, backup_vault_name,
     if backup_strategy == 'Custom' and backup_policy_id:
         # Use provided policy for Custom strategy
         backup_policy_name = parse_resource_id(backup_policy_id)['name']
-        print(f"\tUsing provided backup policy: {backup_policy_name}")
+        logger.warning("Using provided backup policy: %s", backup_policy_name)
         backup_policy = {"id": backup_policy_id}
     else:
         # Get vault RG - for custom with provided vault, use vault's RG
@@ -807,12 +810,12 @@ def _setup_backup_policy(cmd, _backup_vault, backup_vault_name,
             pass
 
         if existing_policy:
-            print(f"\tFound existing backup policy: {backup_policy_name}")
+            logger.warning("Found existing backup policy: %s", backup_policy_name)
             backup_policy = existing_policy
         else:
             # Create policy based on strategy
             policy_config = _get_policy_config_for_strategy(backup_strategy)
-            print(f"\tCreating backup policy: {backup_policy_name}")
+            logger.warning("Creating backup policy: %s", backup_policy_name)
 
             backup_policy = _BackupPolicyCreate(cli_ctx=cmd.cli_ctx)(command_args={
                 "backup_policy_name": backup_policy_name,
@@ -822,8 +825,10 @@ def _setup_backup_policy(cmd, _backup_vault, backup_vault_name,
                 "subscription": cluster_subscription_id
             })
 
-    print(f"\tBackup Policy: {backup_policy.get('id', backup_policy_id or 'N/A')}")
-    print("\t[OK] Backup policy ready")
+    logger.warning(
+        "Backup Policy: %s",
+        backup_policy.get('id', backup_policy_id or 'N/A'))
+    logger.warning("[OK] Backup policy ready")
 
     return backup_policy
 
@@ -841,12 +846,12 @@ def _setup_trusted_access(cmd, cluster_subscription_id,
     vault_id = backup_vault["id"]
     vault_name = backup_vault["name"]
 
-    print("\tConfiguring trusted access between:")
-    print(f"\t\t- Backup Vault: {vault_name}")
-    print(f"\t\t- AKS Cluster:  {cluster_name}")
+    logger.warning("Configuring trusted access between:")
+    logger.warning("  - Backup Vault: %s", vault_name)
+    logger.warning("  - AKS Cluster:  %s", cluster_name)
 
     # Check if trusted access binding already exists for this vault-cluster pair
-    print("\tChecking for existing trusted access binding...")
+    logger.warning("Checking for existing trusted access binding...")
     try:
         existing_bindings = cluster_client.trusted_access_role_bindings.list(
             resource_group_name=cluster_resource_group_name,
@@ -854,8 +859,8 @@ def _setup_trusted_access(cmd, cluster_subscription_id,
         )
         for binding in existing_bindings:
             if binding.source_resource_id.lower() == vault_id.lower():
-                print(f"\tFound existing binding: {binding.name}")
-                print("\t[OK] Trusted access already configured")
+                logger.warning("Found existing binding: %s", binding.name)
+                logger.warning("[OK] Trusted access already configured")
                 return
     except Exception:  # pylint: disable=broad-exception-caught
         # If we can't list, we'll try to create
@@ -863,8 +868,8 @@ def _setup_trusted_access(cmd, cluster_subscription_id,
 
     # Create new trusted access role binding with GUID-based name
     binding_name = _generate_trusted_access_role_binding_name()
-    print(f"\tCreating trusted access role binding: {binding_name}")
-    print("\t\tRole: Microsoft.DataProtection/backupVaults/backup-operator")
+    logger.warning("Creating trusted access role binding: %s", binding_name)
+    logger.warning("  Role: Microsoft.DataProtection/backupVaults/backup-operator")
 
     _trusted_access_role_binding = TrustedAccessRoleBinding(
         source_resource_id=vault_id,
@@ -875,7 +880,7 @@ def _setup_trusted_access(cmd, cluster_subscription_id,
         resource_name=cluster_name,
         trusted_access_role_binding_name=binding_name,
         trusted_access_role_binding=_trusted_access_role_binding).result()
-    print("\t[OK] Trusted access configured - vault can now access cluster for backup operations")
+    logger.warning("[OK] Trusted access configured - vault can now access cluster for backup operations")
 
 
 def _create_backup_instance(
@@ -898,7 +903,7 @@ def _create_backup_instance(
     # Get policy ID
     policy_id_for_bi = backup_policy.get("id") if isinstance(backup_policy, dict) else backup_policy_id
 
-    print(f"\tCreating backup instance: {backup_instance_name}")
+    logger.warning("Creating backup instance: %s", backup_instance_name)
     backup_instance_payload = _get_backup_instance_payload(
         backup_instance_name=backup_instance_name,
         cluster_name=cluster_name,
@@ -918,12 +923,12 @@ def _create_backup_instance(
 
     # Check and report the protection state
     protection_state = backup_instance.get('properties', {}).get('currentProtectionState', 'Unknown')
-    print(f"\tProtection State: {protection_state}")
+    logger.warning("Protection State: %s", protection_state)
 
     if protection_state == "ProtectionConfigured":
-        print("\t[OK] Backup instance created and protection configured")
+        logger.warning("[OK] Backup instance created and protection configured")
     elif protection_state == "ConfiguringProtection":
-        print("\t[OK] Backup instance created - protection configuration in progress")
+        logger.warning("[OK] Backup instance created - protection configuration in progress")
     elif protection_state == "ProtectionError":
         error_details = backup_instance.get('properties', {}).get(
             'protectionErrorDetails', {})
@@ -931,11 +936,11 @@ def _create_backup_instance(
             error_msg = error_details.get('message', 'Unknown error')
         else:
             error_msg = str(error_details)
-        print(
-            f"\t[WARNING] Backup instance created but "
-            f"protection has errors: {error_msg}")
+        logger.warning(
+            "[WARNING] Backup instance created but "
+            "protection has errors: %s", error_msg)
     else:
-        print("\t[OK] Backup instance created")
+        logger.warning("[OK] Backup instance created")
 
     return backup_instance, policy_id_for_bi
 
@@ -970,33 +975,33 @@ def _show_plan_and_confirm(cluster_subscription_id, cluster_name,
     Returns:
         True if user confirmed, False otherwise
     """
-    print("\nThis command will perform the following steps:")
-    print("  [1] Validate the AKS cluster")
-    print("  [2] Create or reuse a backup resource group")
-    print("  [3] Create or reuse a storage account for backup data")
-    print("  [4] Install the data protection extension on the cluster")
-    print("  [5] Create or reuse a backup vault")
-    print("  [6] Create or reuse a backup policy")
-    print("  [7] Configure trusted access between vault and cluster")
-    print("  [8] Create a backup instance to start protection")
-    print("")
-    print("The following RBAC role assignments will be created:")
-    print("  - Cluster MSI   -> Contributor on Backup Resource Group")
-    print("  - Extension MSI -> Storage Blob Data Contributor on SA")
-    print("  - Vault MSI     -> Reader on AKS Cluster")
-    print("  - Vault MSI     -> Reader on Backup Resource Group")
-    print("  - Vault MSI     -> Disk Snapshot Contributor on Backup RG")
-    print("  - Vault MSI     -> Storage Blob Data Reader on SA")
-    print("")
-    print(f"  Subscription: {cluster_subscription_id}")
-    print(f"  Cluster:      {cluster_name}")
-    print("  Region:       (will be determined from cluster)")
-    print(f"  Strategy:     {backup_strategy}")
-    print("")
-    print("NOTE: This command requires elevated privileges (Owner or")
-    print("  User Access Administrator) on the subscription to create")
-    print("  RBAC role assignments listed above.")
-    print("")
+    logger.warning("This command will perform the following steps:")
+    logger.warning("  [1] Validate the AKS cluster")
+    logger.warning("  [2] Create or reuse a backup resource group")
+    logger.warning("  [3] Create or reuse a storage account for backup data")
+    logger.warning("  [4] Install the data protection extension on the cluster")
+    logger.warning("  [5] Create or reuse a backup vault")
+    logger.warning("  [6] Create or reuse a backup policy")
+    logger.warning("  [7] Configure trusted access between vault and cluster")
+    logger.warning("  [8] Create a backup instance to start protection")
+    logger.warning("")
+    logger.warning("The following RBAC role assignments will be created:")
+    logger.warning("  - Cluster MSI   -> Contributor on Backup Resource Group")
+    logger.warning("  - Extension MSI -> Storage Blob Data Contributor on SA")
+    logger.warning("  - Vault MSI     -> Reader on AKS Cluster")
+    logger.warning("  - Vault MSI     -> Reader on Backup Resource Group")
+    logger.warning("  - Vault MSI     -> Disk Snapshot Contributor on Backup RG")
+    logger.warning("  - Vault MSI     -> Storage Blob Data Reader on SA")
+    logger.warning("")
+    logger.warning("  Subscription: %s", cluster_subscription_id)
+    logger.warning("  Cluster:      %s", cluster_name)
+    logger.warning("  Region:       (will be determined from cluster)")
+    logger.warning("  Strategy:     %s", backup_strategy)
+    logger.warning("")
+    logger.warning("NOTE: This command requires elevated privileges (Owner or")
+    logger.warning("  User Access Administrator) on the subscription to create")
+    logger.warning("  RBAC role assignments listed above.")
+    logger.warning("")
 
     from knack.prompting import prompt_y_n
     return prompt_y_n("Do you want to proceed?", default='y')
@@ -1014,24 +1019,25 @@ def _setup_extension_and_storage(
     Returns:
         storage account object
     """
-    print("\n[3/8] Checking for existing backup extension...")
+    logger.warning("[3/8] Checking for existing backup extension...")
     existing_extension = _get_existing_backup_extension(
         cmd, cluster_subscription_id,
         cluster_resource_group_name, cluster_name)
 
     if existing_extension:
-        print(f"\tBackup extension already installed: "
-              f"{existing_extension.name}")
+        logger.warning("Backup extension already installed: %s",
+                       existing_extension.name)
         ext_sa, ext_sa_name, _, _ = \
             _get_storage_account_from_extension(
                 cmd, existing_extension, cluster_subscription_id)
 
         if ext_sa:
             backup_storage_account = ext_sa
-            print(f"\tUsing extension's storage account: {ext_sa_name}")
+            logger.warning("Using extension's storage account: %s",
+                           ext_sa_name)
         else:
-            print("\tWarning: Could not read extension storage "
-                  "config, setting up storage account...")
+            logger.warning("Warning: Could not read extension storage "
+                           "config, setting up storage account...")
             backup_storage_account = _setup_storage_account(
                 cmd, cluster_subscription_id, storage_account_id,
                 blob_container_name, backup_resource_group_name,
@@ -1044,12 +1050,12 @@ def _setup_extension_and_storage(
             assignee=existing_extension.aks_assigned_identity.principal_id,
             scope=backup_storage_account.id,
             identity_name="backup extension identity")
-        print("\t[OK] Storage account ready")
+        logger.warning("[OK] Storage account ready")
 
-        print("\n[4/8] Backup extension already installed...")
-        print("\t[OK] Backup extension ready")
+        logger.warning("[4/8] Backup extension already installed...")
+        logger.warning("[OK] Backup extension ready")
     else:
-        print("\tNo existing extension found, setting up storage...")
+        logger.warning("No existing extension found, setting up storage...")
         sa_result = _setup_storage_account(
             cmd, cluster_subscription_id, storage_account_id,
             blob_container_name, backup_resource_group_name,
@@ -1057,7 +1063,7 @@ def _setup_extension_and_storage(
             cluster_resource_group_name, resource_tags)
         backup_storage_account = sa_result[0]
 
-        print("\n[4/8] Installing backup extension...")
+        logger.warning("[4/8] Installing backup extension...")
         _install_backup_extension(
             cmd, cluster_subscription_id,
             cluster_resource_group_name, cluster_name,
@@ -1079,11 +1085,11 @@ def dataprotection_enable_backup_helper(
         backup_strategy: Backup strategy
         configuration_params: Dict with configuration settings
     """
-    print("=" * 60)
-    print("Enabling backup for AKS cluster")
-    print("=" * 60)
-    print(f"Datasource ID: {datasource_id}")
-    print(f"Backup Strategy: {backup_strategy}")
+    logger.warning("=" * 60)
+    logger.warning("Enabling backup for AKS cluster")
+    logger.warning("=" * 60)
+    logger.warning("Datasource ID: %s", datasource_id)
+    logger.warning("Backup Strategy: %s", backup_strategy)
 
     # Parse and validate configuration
     configuration_params, cluster_subscription_id, \
@@ -1095,12 +1101,12 @@ def dataprotection_enable_backup_helper(
     resource_tags = configuration_params.get("tags")
 
     if resource_tags:
-        print(f"Resource Tags: {json.dumps(resource_tags)}")
+        logger.warning("Resource Tags: %s", json.dumps(resource_tags))
 
     # Show execution plan and get user confirmation
     if not yes and not _show_plan_and_confirm(
             cluster_subscription_id, cluster_name, backup_strategy):
-        print("Operation cancelled by user.")
+        logger.warning("Operation cancelled by user.")
         return
 
     from azure.mgmt.resource import ResourceManagementClient
@@ -1109,16 +1115,16 @@ def dataprotection_enable_backup_helper(
         subscription_id=cluster_subscription_id)
 
     # Pre-check: Verify no existing backup instance for this cluster
-    print("\n[Pre-check] Checking for existing backup...")
+    logger.warning("[Pre-check] Checking for existing backup...")
     _check_existing_backup_instance(resource_client, datasource_id, cluster_name)
 
     # Step 1: Validate cluster
-    print("\n[1/8] Validating cluster...")
+    logger.warning("[1/8] Validating cluster...")
     cluster_resource, cluster_location, cluster_identity_principal_id = \
         _validate_cluster(resource_client, datasource_id, cluster_name)
 
     # Step 2: Setup resource group
-    print("\n[2/8] Setting up backup resource group...")
+    logger.warning("[2/8] Setting up backup resource group...")
     backup_resource_group, backup_resource_group_name = _setup_resource_group(
         cmd, resource_client, configuration_params.get("backupResourceGroupId"),
         cluster_location, cluster_name,
@@ -1132,7 +1138,7 @@ def dataprotection_enable_backup_helper(
         backup_resource_group_name, cluster_location, resource_tags)
 
     # Step 5: Setup backup vault
-    print("\n[5/8] Setting up backup vault...")
+    logger.warning("[5/8] Setting up backup vault...")
     backup_vault, backup_vault_name = _setup_backup_vault(
         cmd, backup_strategy, configuration_params.get("backupVaultId"),
         cluster_subscription_id, cluster_location,
@@ -1148,7 +1154,7 @@ def dataprotection_enable_backup_helper(
         identity_name="backup vault identity (on storage account)")
 
     # Step 6: Setup backup policy
-    print("\n[6/8] Setting up backup policy...")
+    logger.warning("[6/8] Setting up backup policy...")
     backup_policy = _setup_backup_policy(
         cmd, backup_vault, backup_vault_name,
         backup_resource_group_name, backup_strategy,
@@ -1157,7 +1163,7 @@ def dataprotection_enable_backup_helper(
         cluster_subscription_id)
 
     # Step 7: Setup trusted access
-    print("\n[7/8] Setting up trusted access...")
+    logger.warning("[7/8] Setting up trusted access...")
     _setup_trusted_access(
         cmd, cluster_subscription_id, cluster_resource_group_name,
         cluster_name, backup_vault)
@@ -1165,14 +1171,16 @@ def dataprotection_enable_backup_helper(
     # Wait for role assignment propagation before creating backup instance
     import time
     wait_seconds = 120
-    print(f"\n\tWaiting {wait_seconds} seconds for permission propagation across Azure AD...")
+    logger.warning(
+        "Waiting %d seconds for permission propagation "
+        "across Azure AD...", wait_seconds)
     for remaining in range(wait_seconds, 0, -10):
-        print(f"\t  {remaining} seconds remaining...", end='\r')
+        logger.warning("  %d seconds remaining...", remaining)
         time.sleep(min(10, remaining))
-    print("\t  Permission propagation wait complete.      ")
+    logger.warning("Permission propagation wait complete.")
 
     # Step 8: Create backup instance
-    print("\n[8/8] Configuring backup instance...")
+    logger.warning("[8/8] Configuring backup instance...")
     backup_instance, policy_id_for_bi = _create_backup_instance(
         cmd, cluster_name, cluster_resource_group_name,
         datasource_id, cluster_location, backup_vault_name,
@@ -1182,16 +1190,17 @@ def dataprotection_enable_backup_helper(
         backup_resource_group, cluster_subscription_id)
 
     # Print summary
-    print("\n" + "=" * 60)
-    print("Backup enabled successfully!")
-    print("=" * 60)
-    print("\nBackup Configuration:")
-    print(f"  * Resource Group:   {backup_resource_group.id}")
-    print(f"  * Storage Account:  {backup_storage_account.id}")
-    print(f"  * Backup Vault:     {backup_vault['id']}")
-    print(f"  * Backup Policy:    {policy_id_for_bi}")
-    print(f"  * Backup Instance:  {backup_instance.get('id', 'N/A')}")
-    print("=" * 60)
+    logger.warning("=" * 60)
+    logger.warning("Backup enabled successfully!")
+    logger.warning("=" * 60)
+    logger.warning("Backup Configuration:")
+    logger.warning("  * Resource Group:   %s", backup_resource_group.id)
+    logger.warning("  * Storage Account:  %s", backup_storage_account.id)
+    logger.warning("  * Backup Vault:     %s", backup_vault['id'])
+    logger.warning("  * Backup Policy:    %s", policy_id_for_bi)
+    logger.warning("  * Backup Instance:  %s",
+                   backup_instance.get('id', 'N/A'))
+    logger.warning("=" * 60)
 
 
 def _get_policy_config_for_strategy(backup_strategy):
@@ -1506,9 +1515,10 @@ def _create_backup_extension(
             if extension.extension_type.lower() == 'microsoft.dataprotection.kubernetes':
                 provisioning_state = extension.provisioning_state
                 if provisioning_state == "Succeeded":
-                    print(
-                        f"\tData protection extension ({extension.name}) "
-                        "is already installed and healthy.")
+                    logger.warning(
+                        "Data protection extension (%s) "
+                        "is already installed and healthy.",
+                        extension.name)
                     return extension
                 if provisioning_state == "Failed":
                     raise InvalidArgumentValueError(
@@ -1537,7 +1547,7 @@ def _create_backup_extension(
                     f"and try again."
                 )
 
-    print("\tInstalling data protection extension (azure-aks-backup)...")
+    logger.warning("Installing data protection extension (azure-aks-backup)...")
 
     from azure.cli.core.extension.operations import add_extension_to_path
     from importlib import import_module
@@ -1574,8 +1584,10 @@ def _create_backup_extension(
 
     # Verify extension is in healthy state after installation
     if extension.provisioning_state == "Succeeded":
-        print("\tExtension installed and healthy (Provisioning State: Succeeded)")
+        logger.warning("Extension installed and healthy "
+                       "(Provisioning State: Succeeded)")
     else:
-        print(f"\tWarning: Extension provisioning state is '{extension.provisioning_state}'")
+        logger.warning("Warning: Extension provisioning state is '%s'",
+                       extension.provisioning_state)
 
     return extension

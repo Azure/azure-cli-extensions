@@ -1190,8 +1190,7 @@ def dataprotection_enable_backup(cmd, datasource_type, datasource_id,
             f"Allowed values: {', '.join(valid_strategies)}"
         )
 
-    # Parse configuration from file or dict
-    config = _parse_backup_configuration(backup_configuration_file)
+    config = backup_configuration_file if backup_configuration_file is not None else {}
 
     # Route to datasource-specific handler
     if datasource_type == "AzureKubernetesService":
@@ -1203,34 +1202,3 @@ def dataprotection_enable_backup(cmd, datasource_type, datasource_id,
         from azext_dataprotection.manual.aks.aks_helper import dataprotection_enable_backup_helper
         dataprotection_enable_backup_helper(
             cmd, datasource_id, backup_strategy, config, yes=yes)
-
-
-def _parse_backup_configuration(backup_configuration_file):
-    """Parse backup configuration from file or dict into a dictionary.
-
-    Args:
-        backup_configuration_file: Can be:
-            - None: Returns empty dict
-            - dict: Returns as-is (already parsed by validate_file_or_dict)
-            - str: JSON string to parse
-
-    Returns:
-        dict: Parsed configuration
-    """
-    if backup_configuration_file is None:
-        return {}
-
-    # If it's already a dict, return as-is (validate_file_or_dict already parsed the file)
-    if isinstance(backup_configuration_file, dict):
-        return backup_configuration_file
-
-    # If it's a string, try to parse as JSON
-    if isinstance(backup_configuration_file, str):
-        try:
-            return json.loads(backup_configuration_file)
-        except json.JSONDecodeError:
-            raise InvalidArgumentValueError(
-                f"Invalid JSON in backup-configuration-file: '{backup_configuration_file}'"
-            )
-
-    return {}
