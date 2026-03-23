@@ -7,6 +7,7 @@
 import copy
 import datetime
 import os
+import random
 import time
 from types import SimpleNamespace
 from typing import Any, Dict, List, Optional, Tuple, TypeVar, Union
@@ -4684,9 +4685,12 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         if not workspace_resource_id:
             ensure_workspace_func = (
                 self.context.external_functions.ensure_default_log_analytics_workspace_for_monitoring)
-            # Retry with backoff to handle 409 Conflict when workspace is still provisioning
-            # (common when parallel tests or commands target the same default workspace)
-            for attempt in range(3):
+            # Retry with exponential backoff + jitter to handle 409 Conflict when
+            # workspace is still provisioning (common when parallel commands target
+            # the same default workspace).  Delays: ~5 s, ~10 s, ~20 s (worst-case
+            # total ~52 s; fast path ~7 s if the first retry succeeds).
+            max_attempts = 4
+            for attempt in range(max_attempts):
                 try:
                     workspace_resource_id = ensure_workspace_func(
                         self.cmd,
@@ -4695,8 +4699,10 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                     )
                     break
                 except (HttpResponseError, ResourceExistsError):
-                    if attempt < 2:
-                        time.sleep(30)
+                    if attempt < max_attempts - 1:
+                        base_delay = 5 * (2 ** attempt)  # 5 s, 10 s, 20 s
+                        jitter = random.uniform(0, base_delay * 0.5)
+                        time.sleep(base_delay + jitter)
                     else:
                         raise
 
@@ -4723,26 +4729,9 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         }
         mc.addon_profiles[CONST_MONITORING_ADDON_NAME] = addon_profile
 
-        # Create DCR before the cluster is created (matching base class build_monitoring_addon_profile pattern).
-        # The DCRA will be created later in postprocessing_after_mc_created.
-        self.context.external_functions.ensure_container_insights_for_monitoring(
-            self.cmd,
-            addon_profile,
-            self.context.get_subscription_id(),
-            self.context.get_resource_group_name(),
-            self.context.get_name(),
-            self.context.get_location(),
-            remove_monitoring=False,
-            aad_route=self.context.get_enable_msi_auth_for_monitoring(),
-            create_dcr=True,
-            create_dcra=False,
-            enable_syslog=self.context.get_enable_syslog(),
-            data_collection_settings=self.context.get_data_collection_settings(),
-            is_private_cluster=self.context.get_enable_private_cluster(),
-            ampls_resource_id=self.context.get_ampls_resource_id(),
-            enable_high_log_scale_mode=self.context.get_enable_high_log_scale_mode(),
-        )
-
+        # DCR and DCRA creation is deferred to postprocessing_after_mc_created
+        # (_postprocess_monitoring_enable) so that all flags are finalized and
+        # the cluster exists.  Only MSI clusters need a DCR.
         self.context.set_intermediate("monitoring_addon_enabled", True, overwrite_exists=True)
 
     def _setup_opentelemetry_metrics(self, mc: ManagedCluster) -> None:
@@ -5612,7 +5601,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 self.context.get_location(),
                 remove_monitoring=False,
                 aad_route=self.context.get_enable_msi_auth_for_monitoring(),
-                create_dcr=self._is_cnl_or_hlsm_changing(),
+                create_dcr=True,
                 create_dcra=True,
                 enable_syslog=self.context.get_enable_syslog(),
                 data_collection_settings=self.context.get_data_collection_settings(),
@@ -5942,17 +5931,9 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         if container_network_logs_enabled is not None:
             if mc.addon_profiles:
                 addon_consts = self.context.get_addon_consts()
-                CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
-                # Handle both "omsagent" and "omsAgent" key variants
-                monitoring_addon_profile = (
-                    mc.addon_profiles.get(CONST_MONITORING_ADDON_NAME) or
-                    mc.addon_profiles.get(CONST_MONITORING_ADDON_NAME_CAMELCASE)
-                )
+                monitoring_addon_key = _get_monitoring_addon_key(mc, addon_consts)
+                monitoring_addon_profile = mc.addon_profiles.get(monitoring_addon_key)
                 if monitoring_addon_profile:
-                    monitoring_addon_key = (
-                        CONST_MONITORING_ADDON_NAME if CONST_MONITORING_ADDON_NAME in mc.addon_profiles
-                        else CONST_MONITORING_ADDON_NAME_CAMELCASE
-                    )
                     config = monitoring_addon_profile.config or {}
                     config["enableRetinaNetworkFlags"] = str(container_network_logs_enabled)
                     mc.addon_profiles[monitoring_addon_key].config = config
@@ -7913,9 +7894,12 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         if not workspace_resource_id:
             ensure_workspace_func = (
                 self.context.external_functions.ensure_default_log_analytics_workspace_for_monitoring)
-            # Retry with backoff to handle 409 Conflict when workspace is still provisioning
-            # (common when parallel tests or commands target the same default workspace)
-            for attempt in range(3):
+            # Retry with exponential backoff + jitter to handle 409 Conflict when
+            # workspace is still provisioning (common when parallel commands target
+            # the same default workspace).  Delays: ~5 s, ~10 s, ~20 s (worst-case
+            # total ~52 s; fast path ~7 s if the first retry succeeds).
+            max_attempts = 4
+            for attempt in range(max_attempts):
                 try:
                     workspace_resource_id = ensure_workspace_func(
                         self.cmd,
@@ -7924,8 +7908,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     )
                     break
                 except (HttpResponseError, ResourceExistsError):
-                    if attempt < 2:
-                        time.sleep(30)
+                    if attempt < max_attempts - 1:
+                        base_delay = 5 * (2 ** attempt)  # 5 s, 10 s, 20 s
+                        jitter = random.uniform(0, base_delay * 0.5)
+                        time.sleep(base_delay + jitter)
                     else:
                         raise
 

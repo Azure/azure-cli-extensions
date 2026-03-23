@@ -73,6 +73,7 @@ from azext_aks_preview.managed_cluster_decorator import (
     AKSPreviewManagedClusterCreateDecorator,
     AKSPreviewManagedClusterModels,
     AKSPreviewManagedClusterUpdateDecorator,
+    _get_monitoring_addon_key,
 )
 from azext_aks_preview.tests.latest.utils import get_test_data_file_path
 from azure.cli.command_modules.acs._consts import (
@@ -132,6 +133,65 @@ class AKSPreviewManagedClusterModelsTestCase(unittest.TestCase):
             models.pod_identity_models.ManagedClusterPodIdentityException,
             getattr(module, "ManagedClusterPodIdentityException"),
         )
+
+
+class AKSPreviewGetMonitoringAddonKeyTestCase(unittest.TestCase):
+    """Tests for the standalone _get_monitoring_addon_key helper function."""
+
+    def setUp(self):
+        register_aks_preview_resource_type()
+        self.cli_ctx = MockCLI()
+        self.cmd = MockCmd(self.cli_ctx)
+        self.models = AKSPreviewManagedClusterModels(self.cmd, CUSTOM_MGMT_AKS_PREVIEW)
+        self.addon_consts = {
+            "CONST_MONITORING_ADDON_NAME": CONST_MONITORING_ADDON_NAME,
+        }
+
+    def test_returns_lowercase_key_when_present(self):
+        cluster = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                CONST_MONITORING_ADDON_NAME: self.models.ManagedClusterAddonProfile(enabled=True),
+            },
+        )
+        result = _get_monitoring_addon_key(cluster, self.addon_consts)
+        self.assertEqual(result, CONST_MONITORING_ADDON_NAME)
+
+    def test_returns_camelcase_key_when_present(self):
+        cluster = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                CONST_MONITORING_ADDON_NAME_CAMELCASE: self.models.ManagedClusterAddonProfile(enabled=True),
+            },
+        )
+        result = _get_monitoring_addon_key(cluster, self.addon_consts)
+        self.assertEqual(result, CONST_MONITORING_ADDON_NAME_CAMELCASE)
+
+    def test_prefers_lowercase_when_both_present(self):
+        cluster = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                CONST_MONITORING_ADDON_NAME: self.models.ManagedClusterAddonProfile(enabled=True),
+                CONST_MONITORING_ADDON_NAME_CAMELCASE: self.models.ManagedClusterAddonProfile(enabled=True),
+            },
+        )
+        result = _get_monitoring_addon_key(cluster, self.addon_consts)
+        self.assertEqual(result, CONST_MONITORING_ADDON_NAME)
+
+    def test_returns_default_when_no_addon_profiles(self):
+        cluster = self.models.ManagedCluster(location="test_location")
+        result = _get_monitoring_addon_key(cluster, self.addon_consts)
+        self.assertEqual(result, CONST_MONITORING_ADDON_NAME)
+
+    def test_returns_default_when_neither_key_present(self):
+        cluster = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                "some_other_addon": self.models.ManagedClusterAddonProfile(enabled=True),
+            },
+        )
+        result = _get_monitoring_addon_key(cluster, self.addon_consts)
+        self.assertEqual(result, CONST_MONITORING_ADDON_NAME)
 
 
 class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
@@ -8282,11 +8342,11 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             },
         )
 
-    def test_postprocessing_create_dcr_false_when_only_enable_addons(self):
-        """create_dcr=False when only enable_addons triggers ensure_container_insights_for_monitoring.
+    def test_postprocessing_create_dcr_true_when_only_enable_addons(self):
+        """create_dcr=True when enable_addons triggers ensure_container_insights_for_monitoring.
 
-        enable_addons is in the outer condition but NOT in cnl_or_hlsm_changing,
-        so create_dcr must be False.
+        DCR creation is now always requested during postprocessing so the
+        DCR is created alongside the DCRA after the cluster exists.
         """
         dec = self._make_postprocessing_decorator({"enable_addons": "monitoring"})
         cluster = self._make_cluster_with_monitoring()
@@ -8297,7 +8357,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             dec.postprocessing_after_mc_created(cluster)
         mock_ecifm.assert_called_once()
         _, kwargs = mock_ecifm.call_args
-        self.assertFalse(kwargs["create_dcr"])
+        self.assertTrue(kwargs["create_dcr"])
 
     def test_postprocessing_ensure_container_insights_not_called_without_relevant_flags(self):
         """ensure_container_insights_for_monitoring is NOT called when no relevant flags are set.
@@ -8464,11 +8524,11 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         _, kwargs = mock_ecifm.call_args
         self.assertTrue(kwargs["create_dcr"])
 
-    def test_postprocessing_create_dcr_false_when_enable_azure_monitor_logs(self):
-        """create_dcr=False when enable_azure_monitor_logs triggers ensure_container_insights_for_monitoring.
+    def test_postprocessing_create_dcr_true_when_enable_azure_monitor_logs(self):
+        """create_dcr=True when enable_azure_monitor_logs triggers ensure_container_insights_for_monitoring.
 
-        enable_azure_monitor_logs is in the outer _should_create_dcra condition but NOT in
-        _is_cnl_or_hlsm_changing, so create_dcr must be False.
+        DCR creation is now always requested during postprocessing so the
+        DCR is created alongside the DCRA after the cluster exists.
         """
         dec = self._make_postprocessing_decorator({"enable_azure_monitor_logs": True})
         cluster = self._make_cluster_with_monitoring()
@@ -8479,8 +8539,156 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             dec.postprocessing_after_mc_created(cluster)
         mock_ecifm.assert_called_once()
         _, kwargs = mock_ecifm.call_args
-        self.assertFalse(kwargs["create_dcr"])
+        self.assertTrue(kwargs["create_dcr"])
 
+    # ------------------------------------------------------------------
+    # Tests for _should_create_dcra and _is_cnl_or_hlsm_changing helpers
+    # ------------------------------------------------------------------
+    def test_is_cnl_or_hlsm_changing_true_for_cnl_flags(self):
+        """_is_cnl_or_hlsm_changing returns True when any CNL/HLSM flag is set."""
+        for param_name in [
+            "enable_container_network_logs",
+            "enable_retina_flow_logs",
+            "disable_container_network_logs",
+            "disable_retina_flow_logs",
+        ]:
+            dec = self._make_postprocessing_decorator({param_name: True})
+            self.assertTrue(dec._is_cnl_or_hlsm_changing(), f"Expected True for {param_name}")
+
+    def test_is_cnl_or_hlsm_changing_true_for_hlsm_flag(self):
+        dec = self._make_postprocessing_decorator({"enable_high_log_scale_mode": True})
+        self.assertTrue(dec._is_cnl_or_hlsm_changing())
+
+    def test_is_cnl_or_hlsm_changing_false_when_no_flags(self):
+        dec = self._make_postprocessing_decorator({})
+        self.assertFalse(dec._is_cnl_or_hlsm_changing())
+
+    def test_should_create_dcra_true_for_enable_addons(self):
+        dec = self._make_postprocessing_decorator({"enable_addons": "monitoring"})
+        self.assertTrue(dec._should_create_dcra())
+
+    def test_should_create_dcra_true_for_enable_azure_monitor_logs(self):
+        dec = self._make_postprocessing_decorator({"enable_azure_monitor_logs": True})
+        self.assertTrue(dec._should_create_dcra())
+
+    def test_should_create_dcra_true_for_cnl_flag(self):
+        dec = self._make_postprocessing_decorator({"enable_container_network_logs": True})
+        self.assertTrue(dec._should_create_dcra())
+
+    def test_should_create_dcra_false_when_no_relevant_flags(self):
+        dec = self._make_postprocessing_decorator({})
+        self.assertFalse(dec._should_create_dcra())
+
+    # ------------------------------------------------------------------
+    # Tests for _postprocess_monitoring_disable
+    # ------------------------------------------------------------------
+    def test_postprocess_monitoring_disable_calls_ensure_container_insights(self):
+        """_postprocess_monitoring_disable calls ensure_container_insights with remove_monitoring=True."""
+        dec = self._make_postprocessing_decorator({})
+        # Mock client.get to return cluster with monitoring addon
+        cluster_with_monitoring = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                CONST_MONITORING_ADDON_NAME: self.models.ManagedClusterAddonProfile(enabled=True)
+            },
+        )
+        dec.client = Mock()
+        dec.client.get = Mock(return_value=cluster_with_monitoring)
+        external_functions = dec.context.external_functions
+        with patch.object(
+            external_functions, "ensure_container_insights_for_monitoring", return_value=None
+        ) as mock_ecifm:
+            dec._postprocess_monitoring_disable()
+        mock_ecifm.assert_called_once()
+        _, kwargs = mock_ecifm.call_args
+        self.assertTrue(kwargs["remove_monitoring"])
+
+    def test_postprocess_monitoring_disable_no_addon_is_noop(self):
+        """_postprocess_monitoring_disable is a no-op when no monitoring addon on current cluster."""
+        dec = self._make_postprocessing_decorator({})
+        cluster_without_monitoring = self.models.ManagedCluster(location="test_location")
+        dec.client = Mock()
+        dec.client.get = Mock(return_value=cluster_without_monitoring)
+        external_functions = dec.context.external_functions
+        with patch.object(
+            external_functions, "ensure_container_insights_for_monitoring", return_value=None
+        ) as mock_ecifm:
+            dec._postprocess_monitoring_disable()
+        mock_ecifm.assert_not_called()
+
+    def test_postprocess_monitoring_disable_swallows_type_error(self):
+        """_postprocess_monitoring_disable should not raise on TypeError from ensure_container_insights."""
+        dec = self._make_postprocessing_decorator({})
+        cluster_with_monitoring = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                CONST_MONITORING_ADDON_NAME: self.models.ManagedClusterAddonProfile(enabled=True)
+            },
+        )
+        dec.client = Mock()
+        dec.client.get = Mock(return_value=cluster_with_monitoring)
+        external_functions = dec.context.external_functions
+        with patch.object(
+            external_functions, "ensure_container_insights_for_monitoring", side_effect=TypeError("test")
+        ):
+            # Should not raise
+            dec._postprocess_monitoring_disable()
+
+    # ------------------------------------------------------------------
+    # Tests for put_mc conditional postprocessing
+    # ------------------------------------------------------------------
+    def test_put_mc_with_postprocessing(self):
+        """put_mc waits for the operation and calls postprocessing when needed."""
+        dec = self._make_postprocessing_decorator({"enable_addons": "monitoring"})
+        mc = dec.context.mc
+        dec.client = Mock()
+        mock_poller = Mock()
+        dec.client.begin_create_or_update = Mock(return_value=mock_poller)
+        returned_cluster = self._make_cluster_with_monitoring()
+        with patch(
+            "azext_aks_preview.managed_cluster_decorator.LongRunningOperation",
+            return_value=Mock(return_value=returned_cluster),
+        ), patch.object(dec, "postprocessing_after_mc_created") as mock_post, \
+           patch.object(dec, "immediate_processing_after_request"):
+            result = dec.put_mc(mc)
+        mock_post.assert_called_once_with(returned_cluster)
+        self.assertEqual(result, returned_cluster)
+
+    def test_put_mc_without_postprocessing_uses_sdk_no_wait(self):
+        """put_mc uses sdk_no_wait when no postprocessing is required."""
+        dec = self._make_postprocessing_decorator({})
+        mc = dec.context.mc
+        dec.client = Mock()
+        expected_result = Mock()
+        with patch.object(dec, "check_is_postprocessing_required", return_value=False), \
+             patch(
+                 "azext_aks_preview.managed_cluster_decorator.sdk_no_wait",
+                 return_value=expected_result,
+             ) as mock_sdk_no_wait:
+            result = dec.put_mc(mc)
+        mock_sdk_no_wait.assert_called_once()
+        self.assertEqual(result, expected_result)
+
+    # ------------------------------------------------------------------
+    # Test for postprocessing_after_mc_created with monitoring_being_enabled bypass
+    # ------------------------------------------------------------------
+    def test_postprocessing_enable_hlsm_with_monitoring_being_enabled_simultaneously(self):
+        """When enable_high_log_scale_mode=True and monitoring is being enabled in same command,
+        the standalone HLSM validation should be skipped (monitoring_being_enabled=True path)."""
+        dec = self._make_postprocessing_decorator({
+            "enable_addons": "monitoring",
+            "enable_high_log_scale_mode": True,
+        })
+        cluster = self._make_cluster_with_monitoring()
+        external_functions = dec.context.external_functions
+        with patch.object(
+            external_functions, "ensure_container_insights_for_monitoring", return_value=None
+        ) as mock_ecifm:
+            dec.postprocessing_after_mc_created(cluster)
+        mock_ecifm.assert_called_once()
+        _, kwargs = mock_ecifm.call_args
+        self.assertTrue(kwargs["create_dcr"])
+        self.assertTrue(kwargs["enable_high_log_scale_mode"])
 
     def test_set_up_health_monitor_profile(self):
         # no flag - no change
@@ -11629,6 +11837,124 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         self.assertIn("omsagent", mc_1.addon_profiles)
         self.assertFalse(mc_1.addon_profiles["omsagent"].enabled)
         self.assertIsNone(mc_1.addon_profiles["omsagent"].config)
+
+    def test_disable_azure_monitor_logs_disables_container_insights(self):
+        # Test that _disable_azure_monitor_logs disables both addon profile AND
+        # azureMonitorProfile.containerInsights (the new API surface)
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_azure_monitor_logs": True,
+                "yes": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={
+                        "logAnalyticsWorkspaceResourceID": "/subscriptions/test/workspace",
+                        "useAADAuth": "false"
+                    }
+                )
+            },
+            azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
+                container_insights=self.models.ManagedClusterAzureMonitorProfileContainerInsights(
+                    enabled=True,
+                    log_analytics_workspace_resource_id="/subscriptions/test/workspace"
+                )
+            ),
+        )
+        dec_1.context.attach_mc(mc_1)
+
+        dec_1._disable_azure_monitor_logs(mc_1)
+
+        # Verify addon profile is disabled
+        self.assertFalse(mc_1.addon_profiles["omsagent"].enabled)
+        self.assertIsNone(mc_1.addon_profiles["omsagent"].config)
+
+        # Verify container_insights is also disabled
+        self.assertFalse(mc_1.azure_monitor_profile.container_insights.enabled)
+
+    def test_disable_azure_monitor_logs_disables_container_insights_camelcase(self):
+        # Same test but with omsAgent (camelCase) key
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_azure_monitor_logs": True,
+                "yes": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                "omsAgent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={
+                        "logAnalyticsWorkspaceResourceID": "/subscriptions/test/workspace",
+                        "useAADAuth": "false"
+                    }
+                )
+            },
+            azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
+                container_insights=self.models.ManagedClusterAzureMonitorProfileContainerInsights(
+                    enabled=True,
+                    log_analytics_workspace_resource_id="/subscriptions/test/workspace"
+                )
+            ),
+        )
+        dec_1.context.attach_mc(mc_1)
+
+        dec_1._disable_azure_monitor_logs(mc_1)
+
+        # Verify addon profile is disabled
+        self.assertFalse(mc_1.addon_profiles["omsAgent"].enabled)
+        self.assertIsNone(mc_1.addon_profiles["omsAgent"].config)
+
+        # Verify container_insights is also disabled
+        self.assertFalse(mc_1.azure_monitor_profile.container_insights.enabled)
+
+    def test_disable_azure_monitor_logs_without_container_insights(self):
+        # Test that disable works when container_insights is not set (addon-only cluster)
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_azure_monitor_logs": True,
+                "yes": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                "omsagent": self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={
+                        "logAnalyticsWorkspaceResourceID": "/subscriptions/test/workspace",
+                        "useAADAuth": "false"
+                    }
+                )
+            },
+        )
+        dec_1.context.attach_mc(mc_1)
+
+        dec_1._disable_azure_monitor_logs(mc_1)
+
+        # Verify addon profile is disabled
+        self.assertFalse(mc_1.addon_profiles["omsagent"].enabled)
+        self.assertIsNone(mc_1.addon_profiles["omsagent"].config)
+
+        # container_insights was never set, should not error
+        self.assertIsNone(mc_1.azure_monitor_profile)
 
     def test_get_enable_opentelemetry_logs_validation_with_omsagent_camelcase(self):
         # Test that OpenTelemetry logs validation recognizes omsAgent (camelCase) as enabled
@@ -15917,6 +16243,238 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             ),
         )
         self.assertEqual(dec_mc_3, ground_truth_mc_3)
+
+    # ------------------------------------------------------------------
+    # Tests for _setup_azure_monitor_logs setting enableRetinaNetworkFlags
+    # ------------------------------------------------------------------
+    def test_setup_azure_monitor_logs_sets_retina_flags_when_cnl_enabled(self):
+        """_setup_azure_monitor_logs sets enableRetinaNetworkFlags in config when CNL is being enabled."""
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_azure_monitor_logs": True,
+                "enable_container_network_logs": True,
+                "workspace_resource_id": "/subscriptions/test/resourceGroups/test/providers/Microsoft.OperationalInsights/workspaces/test",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                advanced_networking=self.models.AdvancedNetworking(enabled=True),
+            ),
+            addon_profiles={},
+        )
+        dec.context.attach_mc(mc)
+
+        with patch.object(
+            dec.context.external_functions,
+            "sanitize_loganalytics_ws_resource_id",
+            side_effect=lambda x: x,
+        ):
+            dec._setup_azure_monitor_logs(mc)
+
+        addon_profile = mc.addon_profiles.get(CONST_MONITORING_ADDON_NAME)
+        self.assertIsNotNone(addon_profile)
+        self.assertEqual(addon_profile.config.get("enableRetinaNetworkFlags"), "True")
+
+    def test_setup_azure_monitor_logs_no_retina_flags_without_cnl(self):
+        """_setup_azure_monitor_logs does NOT set enableRetinaNetworkFlags when CNL is not specified."""
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_azure_monitor_logs": True,
+                "workspace_resource_id": "/subscriptions/test/resourceGroups/test/providers/Microsoft.OperationalInsights/workspaces/test",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={},
+        )
+        dec.context.attach_mc(mc)
+
+        with patch.object(
+            dec.context.external_functions,
+            "sanitize_loganalytics_ws_resource_id",
+            side_effect=lambda x: x,
+        ):
+            dec._setup_azure_monitor_logs(mc)
+
+        addon_profile = mc.addon_profiles.get(CONST_MONITORING_ADDON_NAME)
+        self.assertIsNotNone(addon_profile)
+        self.assertNotIn("enableRetinaNetworkFlags", addon_profile.config)
+
+    # ------------------------------------------------------------------
+    # Tests for _disable_azure_monitor_logs disabling containerInsights
+    # ------------------------------------------------------------------
+    def test_disable_azure_monitor_logs_disables_container_insights_with_msi_auth(self):
+        """_disable_azure_monitor_logs sets containerInsights.enabled=False when MSI auth is enabled,
+        triggering DCR/DCRA cleanup path."""
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_azure_monitor_logs": True,
+                "yes": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                CONST_MONITORING_ADDON_NAME: self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={
+                        CONST_MONITORING_USING_AAD_MSI_AUTH: "true",
+                        CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: "/subscriptions/test/rg/ws",
+                    },
+                ),
+            },
+            azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
+                container_insights=self.models.ManagedClusterAzureMonitorProfileContainerInsights(
+                    enabled=True,
+                ),
+            ),
+        )
+        dec.context.attach_mc(mc)
+        dec.client = Mock()
+        dec.client.get = Mock(return_value=mc)
+        with patch.object(dec.context, "get_subscription_id", return_value="test-sub"), \
+             patch.object(dec.context, "get_resource_group_name", return_value="test-rg"), \
+             patch.object(dec.context, "get_name", return_value="test-cluster"), \
+             patch.object(
+                 dec.context.external_functions, "ensure_container_insights_for_monitoring", return_value=None,
+             ):
+            dec._disable_azure_monitor_logs(mc)
+        self.assertFalse(mc.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled)
+        self.assertFalse(mc.azure_monitor_profile.container_insights.enabled)
+
+    def test_disable_azure_monitor_logs_no_container_insights_skips(self):
+        """_disable_azure_monitor_logs works fine when azureMonitorProfile has no containerInsights."""
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_azure_monitor_logs": True,
+                "yes": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                CONST_MONITORING_ADDON_NAME: self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={
+                        CONST_MONITORING_USING_AAD_MSI_AUTH: "false",
+                    },
+                ),
+            },
+        )
+        dec.context.attach_mc(mc)
+        dec.client = Mock()
+        dec.client.get = Mock(return_value=mc)
+        dec._disable_azure_monitor_logs(mc)
+        self.assertFalse(mc.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled)
+
+    # ------------------------------------------------------------------
+    # Tests for update_monitoring_profile_flow_logs: monitoring_being_enabled bypass
+    # ------------------------------------------------------------------
+    def test_update_hlsm_standalone_skips_validation_when_monitoring_being_enabled(self):
+        """When enable_high_log_scale_mode=True and monitoring is being enabled simultaneously,
+        the validation of existing addon state is skipped."""
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_high_log_scale_mode": True,
+                "enable_azure_monitor_logs": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        # No monitoring addon present yet — would raise RequiredArgumentMissingError
+        # if validation wasn't bypassed.
+        mc = self.models.ManagedCluster(location="test_location")
+        dec.context.attach_mc(mc)
+        # Should NOT raise because monitoring is being enabled in the same command
+        dec.update_monitoring_profile_flow_logs(mc)
+        self.assertTrue(
+            dec.context.get_intermediate("monitoring_addon_postprocessing_required", default_value=False)
+        )
+
+    def test_update_hlsm_standalone_skips_validation_when_enable_addons_monitoring(self):
+        """When enable_high_log_scale_mode=True and --enable-addons monitoring in same command,
+        the validation of existing addon state is skipped."""
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_high_log_scale_mode": True,
+                "enable_addons": "monitoring",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(location="test_location")
+        dec.context.attach_mc(mc)
+        dec.update_monitoring_profile_flow_logs(mc)
+        self.assertTrue(
+            dec.context.get_intermediate("monitoring_addon_postprocessing_required", default_value=False)
+        )
+
+    def test_update_enable_cnl_sets_postprocessing_flag(self):
+        """Enabling CNL via enable_container_network_logs sets the postprocessing flag."""
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_container_network_logs": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                advanced_networking=self.models.AdvancedNetworking(enabled=True),
+            ),
+            addon_profiles={
+                CONST_MONITORING_ADDON_NAME: self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={CONST_MONITORING_USING_AAD_MSI_AUTH: "true"},
+                )
+            },
+        )
+        dec.context.attach_mc(mc)
+        dec.update_monitoring_profile_flow_logs(mc)
+        self.assertTrue(
+            dec.context.get_intermediate("monitoring_addon_postprocessing_required", default_value=False)
+        )
+
+    def test_update_enable_retina_flow_logs_sets_postprocessing_flag(self):
+        """Enabling CNL via legacy enable_retina_flow_logs sets the postprocessing flag."""
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_retina_flow_logs": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                advanced_networking=self.models.AdvancedNetworking(enabled=True),
+            ),
+            addon_profiles={
+                CONST_MONITORING_ADDON_NAME: self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={CONST_MONITORING_USING_AAD_MSI_AUTH: "true"},
+                )
+            },
+        )
+        dec.context.attach_mc(mc)
+        dec.update_monitoring_profile_flow_logs(mc)
+        self.assertTrue(
+            dec.context.get_intermediate("monitoring_addon_postprocessing_required", default_value=False)
+        )
 
 
 if __name__ == "__main__":

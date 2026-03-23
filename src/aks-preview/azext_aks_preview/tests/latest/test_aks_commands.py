@@ -19765,6 +19765,53 @@ spec:
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
+        location="westus2",
+    )
+    def test_aks_update_disable_hlsm_error_when_cnl_enabled(
+        self, resource_group, resource_group_location
+    ):
+        """Test that disabling --enable-high-log-scale-mode raises an error
+        when container network logs are already enabled on the cluster."""
+        self.test_resources_count = 0
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "location": resource_group_location,
+            }
+        )
+
+        # Create cluster with monitoring + CNL + HLSM
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--ssh-key-value={ssh_key_value} --node-count=1 "
+            "--enable-azure-monitor-logs --enable-managed-identity "
+            "--enable-acns --enable-container-network-logs --output=json"
+        )
+        self.cmd(create_cmd, checks=[
+            self.check("provisioningState", "Succeeded"),
+        ])
+
+        # Attempt to disable HLSM while CNL is still enabled — should fail
+        disable_cmd = (
+            "aks update --resource-group={resource_group} --name={name} --yes "
+            "--enable-high-log-scale-mode false --output=json"
+        )
+        with self.assertRaisesRegex(Exception, "container network logs"):
+            self.cmd(disable_cmd)
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17,
+        name_prefix="clitest",
         location="westcentralus",
     )
     def test_aks_create_with_enable_cost_analysis(
