@@ -31,8 +31,8 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = [
-    "kubernetes==24.2.0",
-    "oras==0.2.25",
+    "kubernetes>=24.2.0",
+    "oras>=0.2.25",
 ]
 
 VERSION = "1.7.0"
