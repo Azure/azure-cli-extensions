@@ -2569,164 +2569,116 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="westus2"
     )
-    def test_aks_machine_add_cmds(self, resource_group, resource_group_location):
+    def test_aks_machines_nodepool(self, resource_group, resource_group_location):
         aks_name = self.create_random_name("cliakstest", 16)
+        nodepool_name = self.create_random_name("c", 6)
         self.kwargs.update(
             {
                 "resource_group": resource_group,
                 "location": resource_group_location,
                 "name": aks_name,
                 "ssh_key_value": self.generate_ssh_keys(),
+                "nodepool_name": nodepool_name,
+                "machine_name1": "machinetest1",
+                "machine_name2": "machinetest2",
+                "vm_size": "Standard_D4s_v3",
+                "new_tag": "tag1=value1",
+                "new_node_taint": "key1=value1:NoSchedule",
+                "new_label": "label1=value1",
             }
         )
+
         # create aks cluster
-        create_cmd = "aks create --resource-group={resource_group} --name={name} --ssh-key-value={ssh_key_value}"
         self.cmd(
-            create_cmd,
+            "aks create "
+            "--resource-group={resource_group} "
+            "--name={name} "
+            "--ssh-key-value={ssh_key_value}",
             checks=[
                 self.check("provisioningState", "Succeeded"),
             ],
         )
 
-        node_pool_name = self.create_random_name("c", 6)
-        self.kwargs.update(
-            {
-                "resource_group": resource_group,
-                "name": aks_name,
-                "node_pool_name": node_pool_name,
-                "ssh_key_value": self.generate_ssh_keys(),
-                "machine_name": "machinetest",
-                "vm_size": "Standard_D4s_v4",
-            }
-        )
-
         # add machines nodepool
         self.cmd(
-            "aks nodepool add --resource-group={resource_group} --cluster-name={name} --name={node_pool_name} --mode=Machines",
-            checks=[self.check("provisioningState", "Succeeded"), self.check("mode", "Machines")],
-        )
-
-        # add machine
-        self.cmd(
-            "aks machine add "
-            " --resource-group={resource_group} "
+            "aks nodepool add "
+            "--resource-group={resource_group}"
             " --cluster-name={name} "
-            " --nodepool-name={node_pool_name} "
-            " --machine-name={machine_name} "
-            " --vm-size={vm_size}"
-        )
-
-        list_cmd = (
-            "aks machine list "
-            " --resource-group={resource_group} "
-            " --cluster-name={name} --nodepool-name={node_pool_name} -o json"
-        )
-        machine_list = self.cmd(list_cmd).get_output_in_json()
-        assert len(machine_list) == 1
-
-        # delete AKS cluster
-        self.cmd(
-            "aks delete -g {resource_group} -n {name} --yes --no-wait",
-            checks=[self.is_empty()],
-        )
-
-    @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="westus2"
-    )
-    def test_aks_machine_update_cmds(self, resource_group, resource_group_location):
-        aks_name = self.create_random_name("cliakstest", 16)
-        self.kwargs.update(
-            {
-                "resource_group": resource_group,
-                "location": resource_group_location,
-                "name": aks_name,
-                "ssh_key_value": self.generate_ssh_keys(),
-            }
-        )
-        # create aks cluster
-        create_cmd = "aks create --resource-group={resource_group} --name={name} --ssh-key-value={ssh_key_value}"
-        self.cmd(
-            create_cmd,
+            "--name={nodepool_name} "
+            "--mode=Machines",
             checks=[
                 self.check("provisioningState", "Succeeded"),
+                self.check("mode", "Machines"),
             ],
         )
 
-        node_pool_name = self.create_random_name("c", 6)
-        self.kwargs.update(
-            {
-                "resource_group": resource_group,
-                "name": aks_name,
-                "node_pool_name": node_pool_name,
-                "ssh_key_value": self.generate_ssh_keys(),
-                "machine_name": "machinetest",
-                "vm_size": "Standard_D4s_v4",
-            }
-        )
-
-        # add machines nodepool
-        self.cmd(
-            "aks nodepool add --resource-group={resource_group} --cluster-name={name} --name={node_pool_name} --mode=Machines",
-            checks=[self.check("provisioningState", "Succeeded"), self.check("mode", "Machines")],
-        )
-
         # add machine
         self.cmd(
             "aks machine add "
-            " --resource-group={resource_group} "
-            " --cluster-name={name} "
-            " --nodepool-name={node_pool_name} "
-            " --machine-name={machine_name} "
-            " --vm-size={vm_size}"
+            "--resource-group={resource_group} "
+            "--cluster-name={name} "
+            "--nodepool-name={nodepool_name} "
+            "--machine-name={machine_name1} "
+            "--vm-size={vm_size}"
+        )
+        self.cmd(
+            "aks machine add "
+            "--resource-group={resource_group} "
+            "--cluster-name={name} "
+            "--nodepool-name={nodepool_name} "
+            "--machine-name={machine_name2} "
+            "--vm-size={vm_size}"
         )
 
+        # list machines
         list_cmd = (
             "aks machine list "
-            " --resource-group={resource_group} "
-            " --cluster-name={name} --nodepool-name={node_pool_name} -o json"
+            "--resource-group={resource_group} "
+            "--cluster-name={name} "
+            "--nodepool-name={nodepool_name}"
         )
         machine_list = self.cmd(list_cmd).get_output_in_json()
-        assert len(machine_list) == 1
+        assert len(machine_list) == 2
 
-        tagVar = "test"
-        tagVal = "value"
-        tags = tagVar + "=" + tagVal
-        self.kwargs.update(
-            {
-                "resource_group": resource_group,
-                "name": aks_name,
-                "node_pool_name": node_pool_name,
-                "ssh_key_value": self.generate_ssh_keys(),
-                "machine_name": "machinetest",
-                "vm_size": "Standard_D4s_v4",
-                "node_taints": "key1=value1:NoSchedule",
-                "tags": tags,
-                "labels": "label1=value1",
-            }
-        )
         # update machine
         self.cmd(
             "aks machine update "
-            " --resource-group={resource_group} "
-            " --cluster-name={name} "
-            " --nodepool-name={node_pool_name} "
-            " --machine-name={machine_name} "
-            " --tags {tags} "
-            " --node-taints {node_taints}"
-            " --labels {labels}"
+            "--resource-group={resource_group} "
+            "--cluster-name={name} "
+            "--nodepool-name={nodepool_name} "
+            "--machine-name={machine_name1} "
+            "--tags {new_tag} "
+            "--node-taints {new_node_taint} "
+            "--labels {new_label}"
         )
 
-        # machine list
+        # get machine
         self.cmd(
-            "aks machine list --resource-group={resource_group} --cluster-name={name} --nodepool-name={node_pool_name} -o json",
+            "aks machine show "
+            "--resource-group={resource_group} "
+            "--cluster-name={name} "
+            "--nodepool-name={nodepool_name} "
+            "--machine-name={machine_name1}",
             checks=[
-                self.check("[0].properties.tags", {tagVar: tagVal}),
-                self.check("[0].properties.kubernetes.nodeTaints[0]", "key1=value1:NoSchedule"),
-                self.check("[0].properties.kubernetes.nodeLabels.label1", "value1"),
+                self.check("properties.tags", {"tag1": "value1"}),
+                self.check("properties.kubernetes.nodeTaints[0]", "key1=value1:NoSchedule"),
+                self.check("properties.kubernetes.nodeLabels.label1", "value1"),
             ],
         )
 
+        # delete machines
+        self.cmd(
+            "aks nodepool delete-machines "
+            "--resource-group={resource_group} "
+            "--cluster-name={name} "
+            "--nodepool-name={nodepool_name} "
+            "--machine-names {machine_name1} {machine_name2}"
+        )
+
+        # list machines
+        machine_list = self.cmd(list_cmd).get_output_in_json()
+        assert len(machine_list) == 0
+            
         # delete AKS cluster
         self.cmd(
             "aks delete -g {resource_group} -n {name} --yes --no-wait",
@@ -6068,41 +6020,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # list machines after deletion
         machine_list_after = self.cmd(list_cmd).get_output_in_json()
         assert len(machine_list_after) == 2
-        # delete AKS cluster
-        self.cmd(
-            "aks delete -g {resource_group} -n {name} --yes --no-wait",
-            checks=[self.is_empty()],
-        )
-
-    @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="westus2"
-    )
-    def test_aks_nodepool_create_machines_pool(self, resource_group, resource_group_location):
-        aks_name = self.create_random_name("cliakstest", 16)
-        nodepool_name = self.create_random_name("c", 6)
-        self.kwargs.update(
-            {
-                "resource_group": resource_group,
-                "location": resource_group_location,
-                "name": aks_name,
-                "nodepool_name": nodepool_name,
-                "ssh_key_value": self.generate_ssh_keys(),
-            }
-        )
-        # create aks cluster
-        create_cmd = "aks create --resource-group={resource_group} --name={name} --ssh-key-value={ssh_key_value}"
-        self.cmd(
-            create_cmd,
-            checks=[
-                self.check("provisioningState", "Succeeded"),
-            ],
-        )
-        # add machines nodepool
-        self.cmd(
-            "aks nodepool add --resource-group={resource_group} --cluster-name={name} --name={nodepool_name} --mode=Machines",
-            checks=[self.check("provisioningState", "Succeeded"), self.check("mode", "Machines")],
-        )
         # delete AKS cluster
         self.cmd(
             "aks delete -g {resource_group} -n {name} --yes --no-wait",

@@ -12,6 +12,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+1.0.0b21
+++++++++
+* Bump aks-agent to v0.6.0
+  * Bump aks-mcp to v0.0.16 to accept AKS managed webhook token path for workload identity
+
 1.0.0b20
 ++++++++
 * Bump aks-agent to v0.5.0

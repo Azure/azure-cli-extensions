@@ -11,6 +11,12 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Fix `match_condition` kwarg leaking to HTTP transport by overriding `put_mc` and `add_agentpool` to pass `if_match` / `if_none_match` directly to the vendored SDK. This change fixes the compatibility issue as azure-cli/acs module adopts TypeSpec emitted SDKs while azure-cli-extensions/aks-preview still uses the autorest emitted SDK.
+
+19.0.0b27
++++++++
+* `az aks nodepool add`: Fix `InvalidParameter` error when `mode` is `Machines`.
+
 19.0.0b26
 +++++++
 * `az aks create/update`: Add `--enable-app-routing-istio` / `--disable-app-routing-istio` (short: `--enable-ari` / `--disable-ari`) flags to enable or disable Istio as a Gateway API implementation for App Routing.

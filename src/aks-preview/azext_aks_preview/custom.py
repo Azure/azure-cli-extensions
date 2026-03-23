@@ -1445,6 +1445,22 @@ def aks_show(cmd, client, resource_group_name, name, aks_custom_headers=None):
     return _remove_nulls([mc])[0]
 
 
+def aks_delete(cmd, client, resource_group_name, name, no_wait=False,
+               if_match=None, if_none_match=None, ignore_pod_disruption_budget=None):
+    if if_none_match is not None:
+        logger.warning(
+            "The '--if-none-match' option is not applicable to delete operations and will be ignored."
+        )
+    return sdk_no_wait(
+        no_wait,
+        client.begin_delete,
+        resource_group_name,
+        name,
+        if_match=if_match,
+        ignore_pod_disruption_budget=ignore_pod_disruption_budget,
+    )
+
+
 # pylint: disable=unused-argument
 def aks_stop(cmd, client, resource_group_name, name, no_wait=False):
     instance = client.get(resource_group_name, name)

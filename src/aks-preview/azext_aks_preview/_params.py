@@ -1821,6 +1821,11 @@ def load_arguments(self, _):
             help="Disable continuous control plane and addon monitor for the cluster.",
         )
 
+    with self.argument_context("aks delete") as c:
+        c.argument("if_match")
+        c.argument("if_none_match")
+        c.argument("ignore_pod_disruption_budget", action="store_true")
+
     with self.argument_context("aks upgrade") as c:
         c.argument("kubernetes_version", completer=get_k8s_upgrades_completion_list)
         c.argument(
