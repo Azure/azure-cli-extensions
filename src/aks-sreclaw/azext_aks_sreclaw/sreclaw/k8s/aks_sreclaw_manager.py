@@ -16,9 +16,9 @@ from azext_aks_sreclaw._consts import (
     AKS_SRECLAW_LABEL_SELECTOR,
     AKS_SRECLAW_VERSION,
 )
-from azext_aks_sreclaw.agent.k8s.helm_manager import HelmManager
-from azext_aks_sreclaw.agent.llm_config_manager import LLMConfigManager
-from azext_aks_sreclaw.agent.llm_providers import LLMProvider
+from azext_aks_sreclaw.sreclaw.k8s.helm_manager import HelmManager
+from azext_aks_sreclaw.sreclaw.llm_config_manager import LLMConfigManager
+from azext_aks_sreclaw.sreclaw.llm_providers import LLMProvider
 from azure.cli.core.azclierror import AzCLIError
 from knack.log import get_logger
 from kubernetes import client, config

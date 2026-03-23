@@ -6,7 +6,7 @@
 from typing import Dict
 
 import yaml
-from azext_aks_sreclaw.agent.llm_providers import LLMProvider
+from azext_aks_sreclaw.sreclaw.llm_providers import LLMProvider
 from knack.log import get_logger
 
 logger = get_logger(__name__)

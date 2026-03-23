@@ -7,8 +7,8 @@
 
 import subprocess
 
-from azext_aks_sreclaw.agent.aks import get_aks_credentials
-from azext_aks_sreclaw.agent.console import (
+from azext_aks_sreclaw.sreclaw.aks import get_aks_credentials
+from azext_aks_sreclaw.sreclaw.console import (
     ERROR_COLOR,
     HELP_COLOR,
     INFO_COLOR,
@@ -16,12 +16,12 @@ from azext_aks_sreclaw.agent.console import (
     WARNING_COLOR,
     get_console,
 )
-from azext_aks_sreclaw.agent.k8s import AKSSREClawManager
-from azext_aks_sreclaw.agent.k8s.aks_sreclaw_manager import (
+from azext_aks_sreclaw.sreclaw.k8s import AKSSREClawManager
+from azext_aks_sreclaw.sreclaw.k8s.aks_sreclaw_manager import (
     AKSSREClawManagerLLMConfigBase,
 )
-from azext_aks_sreclaw.agent.llm_providers import prompt_provider_choice
-from azext_aks_sreclaw.agent.telemetry import CLITelemetryClient
+from azext_aks_sreclaw.sreclaw.llm_providers import prompt_provider_choice
+from azext_aks_sreclaw.sreclaw.telemetry import CLITelemetryClient
 from azure.cli.core.azclierror import AzCLIError
 from azure.cli.core.commands.client_factory import get_subscription_id
 from knack.log import get_logger

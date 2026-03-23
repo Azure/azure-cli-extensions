@@ -9,7 +9,7 @@ from abc import ABC, abstractmethod
 from typing import Any, Callable, Dict, Tuple
 from urllib.parse import urlparse
 
-from azext_aks_sreclaw.agent.console import (
+from azext_aks_sreclaw.sreclaw.console import (
     DEFAULT_VALUE_COLOR,
     ERROR_COLOR,
     HELP_COLOR,
