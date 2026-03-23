@@ -520,8 +520,10 @@ helps['managedcleanroom frontend analytics query publish'] = """
     short-summary: Publish a query to the collaboration
     long-summary: |
         Publish a query configuration with SQL segments, execution sequence, and dataset mappings.
-        Query segments can be loaded from files or provided inline. The execution sequence defines
-        which segments run in parallel (same number) or sequentially (different numbers).
+        Query segments can be provided as @file.json (full segment object including executionSequence)
+        or as inline SQL strings (requires --execution-sequence parameter). The execution sequence
+        defines which segments run in parallel (same number) or sequentially (different numbers).
+        Cannot mix @file.json and inline SQL segments in the same command.
     parameters:
         - name: --collaboration-id -c
           type: string
@@ -545,26 +547,28 @@ helps['managedcleanroom frontend analytics query publish'] = """
           type: string
           short-summary: Output dataset as datasetId:viewName
     examples:
-        - name: Publish a query with SQL segments from files
+        - name: Publish a query with segments from JSON files (segment files include executionSequence)
           text: |
-            az managedcleanroom frontend analytics query publish \
-              --collaboration-id my-collab-123 \
-              --document-id my-query \
-              --query-segment @segment1.sql \
-              --query-segment @segment2.sql \
-              --query-segment @segment3.sql \
-              --execution-sequence "1,1,2" \
-              --input-datasets "dataset1:view1,dataset2:view2" \
+            az managedcleanroom frontend analytics query publish \\
+              --collaboration-id my-collab-123 \\
+              --document-id my-query \\
+              --query-segment @segment1.json \\
+              --query-segment @segment2.json \\
+              --query-segment @segment3.json \\
+              --input-datasets "dataset1:view1,dataset2:view2" \\
               --output-dataset "output-dataset:results"
-        - name: Publish a query with inline SQL
+
+            Note: Each segment JSON file should contain:
+            data, executionSequence, preConditions, postFilters fields
+        - name: Publish a query with inline SQL segments (requires --execution-sequence)
           text: |
-            az managedcleanroom frontend analytics query publish \
-              --collaboration-id my-collab-123 \
-              --document-id my-query \
-              --query-segment "SELECT * FROM table1" \
-              --query-segment "SELECT * FROM table2" \
-              --execution-sequence "1,2" \
-              --input-datasets "dataset1:view1" \
+            az managedcleanroom frontend analytics query publish \\
+              --collaboration-id my-collab-123 \\
+              --document-id my-query \\
+              --query-segment "SELECT * FROM table1" \\
+              --query-segment "SELECT * FROM table2" \\
+              --execution-sequence "1,2" \\
+              --input-datasets "dataset1:view1" \\
               --output-dataset "output-dataset:results"
         - name: Publish a query using a JSON body file (legacy mode)
           text: |

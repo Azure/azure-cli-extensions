@@ -496,7 +496,7 @@ def frontend_collaboration_query_show(
         collaboration_id, document_id)
 
 
-# pylint: disable=too-many-locals
+# pylint: disable=too-many-locals,too-many-branches
 def frontend_collaboration_query_publish(
         cmd, collaboration_id, document_id,
         body=None,
@@ -548,51 +548,89 @@ def frontend_collaboration_query_publish(
     if not query_segment:
         raise CLIError(
             '--query-segment is required (can be specified multiple times)')
-    if not execution_sequence:
-        raise CLIError('--execution-sequence is required')
     if not input_datasets:
         raise CLIError('--input-datasets is required')
     if not output_dataset:
         raise CLIError('--output-dataset is required')
 
-    # Parse query segments
-    segments = []
-    for seg in query_segment:
-        if seg.startswith('@'):
-            # Load from file
+    # Parse query segments - detect mode (FILE vs INLINE)
+    file_segments = [s for s in query_segment if s.startswith('@')]
+    inline_segments = [s for s in query_segment if not s.startswith('@')]
+
+    # Cannot mix file and inline segments
+    if file_segments and inline_segments:
+        raise CLIError(
+            'Cannot mix @file.json and inline SQL segments. '
+            'Either use all @file.json segments or all inline SQL strings.')
+
+    query_data = []
+
+    if file_segments:
+        # FILE mode: segments are JSON files with full object structure
+        if execution_sequence:
+            raise CLIError(
+                '--execution-sequence must not be provided when using '
+                '@file.json segments. Include executionSequence inside '
+                'each JSON file.')
+
+        for seg in file_segments:
             file_path = seg[1:]
             try:
                 with open(file_path, 'r') as f:
-                    segments.append(f.read())
+                    segment_obj = json.load(f)
             except FileNotFoundError:
                 raise CLIError(f'Query segment file not found: {file_path}')
-        else:
-            # Inline SQL
-            segments.append(seg)
+            except json.JSONDecodeError as e:
+                raise CLIError(
+                    f'Invalid JSON in segment file {file_path}: {str(e)}')
 
-    # Parse execution sequence
-    try:
-        exec_seq = [int(x.strip()) for x in execution_sequence.split(',')]
-    except ValueError:
-        raise CLIError(
-            '--execution-sequence must be comma-separated integers '
-            '(e.g., "1,1,2")')
+            # Validate required fields
+            if 'data' not in segment_obj:
+                raise CLIError(
+                    f'Segment file {file_path} must contain "data" field')
+            if 'executionSequence' not in segment_obj:
+                raise CLIError(
+                    f'Segment file {file_path} must contain '
+                    f'"executionSequence" field')
 
-    # Validate segment count matches execution sequence count
-    if len(segments) != len(exec_seq):
-        raise CLIError(
-            f'Number of query segments ({len(segments)}) must match '
-            f'execution sequence count ({len(exec_seq)})')
+            # Build segment with defaults for optional fields
+            query_data.append({
+                'data': segment_obj['data'],
+                'executionSequence': segment_obj['executionSequence'],
+                'preConditions': segment_obj.get('preConditions', ''),
+                'postFilters': segment_obj.get('postFilters', '')
+            })
 
-    # Build queryData array
-    query_data = []
-    for sql, seq in zip(segments, exec_seq):
-        query_data.append({
-            'data': sql,
-            'executionSequence': seq,
-            'preConditions': '',
-            'postFilters': ''
-        })
+    else:
+        # INLINE mode: segments are raw SQL strings
+        if not execution_sequence:
+            raise CLIError(
+                '--execution-sequence is required when using inline SQL '
+                'segments.')
+
+        # Parse execution sequence
+        try:
+            exec_seq = [int(x.strip())
+                        for x in execution_sequence.split(',')]
+        except ValueError:
+            raise CLIError(
+                '--execution-sequence must be comma-separated integers '
+                '(e.g., "1,1,2")')
+
+        # Validate segment count matches execution sequence count
+        if len(inline_segments) != len(exec_seq):
+            raise CLIError(
+                f'Number of query segments ({len(inline_segments)}) must '
+                f'match execution sequence count ({len(exec_seq)})')
+
+        # Build queryData array from inline SQL
+        for sql, seq in zip(inline_segments, exec_seq):
+            query_data.append({
+                'data': sql,
+                'executionSequence': seq,
+                'preConditions': '',
+                'postFilters': ''
+            })
 
     # Parse input datasets (comma-separated datasetId:viewName pairs)
     input_ds_list = []

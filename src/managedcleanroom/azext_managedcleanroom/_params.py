@@ -231,13 +231,15 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
             'query_segment',
             options_list=['--query-segment'],
             action='append',
-            help='Query segment SQL (@file.sql or inline). '
-            'Repeatable. Order matters.')
+            help='Query segment: @file.json (full segment object with data, '
+            'executionSequence, preConditions, postFilters) or inline SQL string. '
+            'Repeatable. Order matters. Cannot mix @file.json and inline segments.')
         c.argument(
             'execution_sequence',
             options_list=['--execution-sequence'],
             help='Comma-separated execution sequence numbers (e.g., "1,1,2"). '
-            'Must match segment count.')
+            'Required for inline SQL segments. Not used with @file.json segments '
+            '(include executionSequence in each JSON file instead).')
         c.argument(
             'input_datasets',
             options_list=['--input-datasets'],

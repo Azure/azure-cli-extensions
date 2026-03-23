@@ -8,6 +8,7 @@ Unit tests for query commands.
 Tests query CRUD, execution, voting, and run history commands from _frontend_custom.py.
 """
 
+import json
 import unittest
 from unittest.mock import Mock, patch
 from azext_managedcleanroom._frontend_custom import (
@@ -261,7 +262,7 @@ class TestFrontendQuery(unittest.TestCase):
 
     @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
     def test_publish_query_with_parameters_from_files(self, mock_get_client):
-        """Test publishing a query with SQL segments from files"""
+        """Test publishing a query with SQL segments from JSON files"""
         # Mock the client
         mock_client = Mock()
         mock_client.collaboration.analytics_queries_document_id_publish_post.return_value = {
@@ -270,16 +271,31 @@ class TestFrontendQuery(unittest.TestCase):
         }
         mock_get_client.return_value = mock_client
 
-        # Mock file reading for SQL segments
-        sql_segment_1 = "SELECT * FROM table1"
-        sql_segment_2 = "SELECT * FROM table2"
-        sql_segment_3 = "SELECT * FROM table3"
+        # Mock file reading for JSON segment files
+        segment_1 = {
+            "data": "SELECT * FROM table1",
+            "executionSequence": 1,
+            "preConditions": "",
+            "postFilters": ""
+        }
+        segment_2 = {
+            "data": "SELECT * FROM table2",
+            "executionSequence": 1,
+            "preConditions": "",
+            "postFilters": ""
+        }
+        segment_3 = {
+            "data": "SELECT * FROM table3",
+            "executionSequence": 2,
+            "preConditions": "",
+            "postFilters": ""
+        }
         
         def mock_open_handler(filename, mode='r'):
             content = {
-                'segment1.sql': sql_segment_1,
-                'segment2.sql': sql_segment_2,
-                'segment3.sql': sql_segment_3
+                'segment1.json': json.dumps(segment_1),
+                'segment2.json': json.dumps(segment_2),
+                'segment3.json': json.dumps(segment_3)
             }
             file_content = content.get(filename, "")
             return unittest.mock.mock_open(read_data=file_content)()
@@ -291,8 +307,8 @@ class TestFrontendQuery(unittest.TestCase):
                 collaboration_id="test-collab-123",
                 document_id="test-query-123",
                 body=None,
-                query_segment=["@segment1.sql", "@segment2.sql", "@segment3.sql"],
-                execution_sequence="1,1,2",
+                query_segment=["@segment1.json", "@segment2.json", "@segment3.json"],
+                execution_sequence=None,
                 input_datasets="dataset1:view1,dataset2:view2",
                 output_dataset="output-dataset:results"
             )
@@ -301,13 +317,13 @@ class TestFrontendQuery(unittest.TestCase):
         self.assertEqual(result["queryId"], "test-query-123")
         self.assertEqual(result["status"], "published")
         
-        # Verify body construction
+        # Verify body construction - segments were parsed from JSON
         call_args = mock_client.collaboration.analytics_queries_document_id_publish_post.call_args
         body = call_args[0][2]
         self.assertEqual(body["inputDatasets"], "dataset1:view1,dataset2:view2")
         self.assertEqual(body["outputDataset"], "output-dataset:results")
         self.assertEqual(len(body["queryData"]), 3)
-        self.assertEqual(body["queryData"][0]["data"], sql_segment_1)
+        self.assertEqual(body["queryData"][0]["data"], "SELECT * FROM table1")
         self.assertEqual(body["queryData"][0]["executionSequence"], 1)
         self.assertEqual(body["queryData"][2]["executionSequence"], 2)
 
@@ -386,6 +402,110 @@ class TestFrontendQuery(unittest.TestCase):
             )
 
         self.assertIn("must match execution sequence count", str(context.exception))
+
+    @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
+    def test_publish_query_file_mode_rejects_exec_seq(self, mock_get_client):
+        """Test that FILE mode raises error if --execution-sequence is provided"""
+        from azure.cli.core.util import CLIError
+        
+        mock_client = Mock()
+        mock_get_client.return_value = mock_client
+
+        segment_json = json.dumps({
+            "data": "SELECT * FROM table1",
+            "executionSequence": 1,
+            "preConditions": "",
+            "postFilters": ""
+        })
+        
+        with patch('builtins.open', unittest.mock.mock_open(read_data=segment_json)):
+            with self.assertRaises(CLIError) as context:
+                frontend_collaboration_query_publish(
+                    cmd=Mock(),
+                    collaboration_id="test-collab-123",
+                    document_id="test-query-123",
+                    body=None,
+                    query_segment=["@segment1.json"],
+                    execution_sequence="1",  # Should raise error
+                    input_datasets="dataset1:view1",
+                    output_dataset="output-dataset:results"
+                )
+
+            self.assertIn("must not be provided when using @file.json", str(context.exception))
+
+    @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
+    def test_publish_query_inline_mode_requires_exec_seq(self, mock_get_client):
+        """Test that INLINE mode requires --execution-sequence"""
+        from azure.cli.core.util import CLIError
+        
+        mock_client = Mock()
+        mock_get_client.return_value = mock_client
+
+        with self.assertRaises(CLIError) as context:
+            frontend_collaboration_query_publish(
+                cmd=Mock(),
+                collaboration_id="test-collab-123",
+                document_id="test-query-123",
+                body=None,
+                query_segment=["SELECT * FROM table1"],
+                execution_sequence=None,  # Should raise error
+                input_datasets="dataset1:view1",
+                output_dataset="output-dataset:results"
+            )
+
+        self.assertIn("required when using inline SQL", str(context.exception))
+
+    @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
+    def test_publish_query_disallows_mixed_segments(self, mock_get_client):
+        """Test that mixing @file.json and inline segments raises error"""
+        from azure.cli.core.util import CLIError
+        
+        mock_client = Mock()
+        mock_get_client.return_value = mock_client
+
+        with self.assertRaises(CLIError) as context:
+            frontend_collaboration_query_publish(
+                cmd=Mock(),
+                collaboration_id="test-collab-123",
+                document_id="test-query-123",
+                body=None,
+                query_segment=["@segment1.json", "SELECT * FROM table2"],  # Mixed
+                execution_sequence="1,2",
+                input_datasets="dataset1:view1",
+                output_dataset="output-dataset:results"
+            )
+
+        self.assertIn("Cannot mix @file.json and inline SQL", str(context.exception))
+
+    @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
+    def test_publish_query_file_missing_execution_sequence(self, mock_get_client):
+        """Test that segment JSON file must contain executionSequence"""
+        from azure.cli.core.util import CLIError
+        
+        mock_client = Mock()
+        mock_get_client.return_value = mock_client
+
+        # Segment JSON missing executionSequence field
+        segment_json = json.dumps({
+            "data": "SELECT * FROM table1",
+            "preConditions": "",
+            "postFilters": ""
+        })
+        
+        with patch('builtins.open', unittest.mock.mock_open(read_data=segment_json)):
+            with self.assertRaises(CLIError) as context:
+                frontend_collaboration_query_publish(
+                    cmd=Mock(),
+                    collaboration_id="test-collab-123",
+                    document_id="test-query-123",
+                    body=None,
+                    query_segment=["@segment1.json"],
+                    execution_sequence=None,
+                    input_datasets="dataset1:view1",
+                    output_dataset="output-dataset:results"
+                )
+
+            self.assertIn('must contain "executionSequence"', str(context.exception))
 
     @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
     def test_publish_query_invalid_dataset_format(self, mock_get_client):
