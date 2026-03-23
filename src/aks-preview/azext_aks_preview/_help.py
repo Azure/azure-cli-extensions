@@ -805,6 +805,25 @@ helps['aks create'] = f"""
 
 """
 
+helps['aks delete'] = """
+    type: command
+    short-summary: Delete a managed Kubernetes cluster.
+    parameters:
+        - name: --if-match
+          type: string
+          short-summary: The value provided will be compared to the ETag of the managed cluster, if it matches the operation will proceed. If it does not match, the request will be rejected to prevent accidental overwrites.
+        - name: --if-none-match
+          type: string
+          short-summary: Not applicable for delete operations. This option will be ignored if provided.
+        - name: --ignore-pod-disruption-budget
+          type: bool
+          short-summary: Delete those pods on a node without considering Pod Disruption Budget.
+    examples:
+        - name: Delete a managed Kubernetes cluster.
+          text: az aks delete --name MyManagedCluster --resource-group MyResourceGroup
+          crafted: true
+"""
+
 helps['aks scale'] = """
     type: command
     short-summary: Scale the node pool in a managed Kubernetes cluster.

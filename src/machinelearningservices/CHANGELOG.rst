@@ -1,3 +1,7 @@
+## 2026-02-24
+
+### Azure Machine Learning CLI (v2) v 2.42.0
+
 ## 2026-02-11
 
 ### Azure Machine Learning CLI (v2) v 2.41.1
