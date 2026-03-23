@@ -5,7 +5,7 @@
 
 from typing import List, Tuple
 
-from azext_aks_sreclaw.agent.console import ERROR_COLOR, HELP_COLOR
+from azext_aks_sreclaw.sreclaw.console import ERROR_COLOR, HELP_COLOR
 from rich.console import Console
 
 from .anthropic_provider import AnthropicProvider
