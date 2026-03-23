@@ -22,7 +22,7 @@ class AddCollaborator(AAZCommand):
         az managedcleanroom collaboration add-collaborator --resource-group testrg --collaboration-name ContosoCollaboration --user-identifier "alice@contoso.com"
 
     :example: Add Collaborator(Service Principal)
-        az managedcleanroom collaboration add-collaborator --resource-group testrg --collaboration-name ContosoCollaboration --user-identifier "contoso-spn" --tenant-id "72f988bf-86f1-41af-91ab-2d7cd011db47" --object-id "0f8fad5b-d9cb-469f-a165-70867728950e"
+        az managedcleanroom collaboration add-collaborator --resource-group testrg --collaboration-name ContosoCollaboration --user-identifier "0d6b305c-85ee-419f-9c87-d3405c24aab6" --tenant-id "72f988bf-86f1-41af-91ab-2d7cd011db47" --object-id "0f8fad5b-d9cb-469f-a165-70867728950e"
     """
 
     _aaz_info = {
