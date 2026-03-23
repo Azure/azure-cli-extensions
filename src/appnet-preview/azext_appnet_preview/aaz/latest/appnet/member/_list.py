@@ -192,13 +192,12 @@ class List(AAZCommand):
             properties.cluster_type = AAZStrType(
                 serialized_name="clusterType",
             )
-            properties.fully_managed_upgrade_profile = AAZObjectType(
-                serialized_name="fullyManagedUpgradeProfile",
+            properties.connectivity_profile = AAZObjectType(
+                serialized_name="connectivityProfile",
             )
             properties.metadata = AAZObjectType(
                 flags={"required": True},
             )
-            properties.mode = AAZStrType()
             properties.observability_profile = AAZObjectType(
                 serialized_name="observabilityProfile",
             )
@@ -206,13 +205,26 @@ class List(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.self_managed_upgrade_profile = AAZObjectType(
-                serialized_name="selfManagedUpgradeProfile",
+            properties.upgrade_profile = AAZObjectType(
+                serialized_name="upgradeProfile",
             )
 
-            fully_managed_upgrade_profile = cls._schema_on_200.value.Element.properties.fully_managed_upgrade_profile
-            fully_managed_upgrade_profile.release_channel = AAZStrType(
-                serialized_name="releaseChannel",
+            connectivity_profile = cls._schema_on_200.value.Element.properties.connectivity_profile
+            connectivity_profile.east_west_gateway = AAZObjectType(
+                serialized_name="eastWestGateway",
+            )
+            connectivity_profile.private_connect = AAZObjectType(
+                serialized_name="privateConnect",
+            )
+
+            east_west_gateway = cls._schema_on_200.value.Element.properties.connectivity_profile.east_west_gateway
+            east_west_gateway.visibility = AAZStrType(
+                flags={"required": True},
+            )
+
+            private_connect = cls._schema_on_200.value.Element.properties.connectivity_profile.private_connect
+            private_connect.subnet_resource_id = AAZStrType(
+                serialized_name="subnetResourceId",
                 flags={"required": True},
             )
 
@@ -231,7 +243,24 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
 
-            self_managed_upgrade_profile = cls._schema_on_200.value.Element.properties.self_managed_upgrade_profile
+            upgrade_profile = cls._schema_on_200.value.Element.properties.upgrade_profile
+            upgrade_profile.fully_managed_upgrade_profile = AAZObjectType(
+                serialized_name="fullyManagedUpgradeProfile",
+            )
+            upgrade_profile.mode = AAZStrType(
+                flags={"required": True},
+            )
+            upgrade_profile.self_managed_upgrade_profile = AAZObjectType(
+                serialized_name="selfManagedUpgradeProfile",
+            )
+
+            fully_managed_upgrade_profile = cls._schema_on_200.value.Element.properties.upgrade_profile.fully_managed_upgrade_profile
+            fully_managed_upgrade_profile.release_channel = AAZStrType(
+                serialized_name="releaseChannel",
+                flags={"required": True},
+            )
+
+            self_managed_upgrade_profile = cls._schema_on_200.value.Element.properties.upgrade_profile.self_managed_upgrade_profile
             self_managed_upgrade_profile.version = AAZStrType(
                 flags={"required": True},
             )

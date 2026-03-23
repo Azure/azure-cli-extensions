@@ -71,14 +71,14 @@ class Update(AAZCommand):
             required=True,
         )
 
-        # define Arg Group "FullyManagedUpgradeProfile"
+        # define Arg Group "Connectivity"
 
         _args_schema = cls._args_schema
-        _args_schema.release_channel = AAZStrArg(
-            options=["--release-channel"],
-            arg_group="FullyManagedUpgradeProfile",
-            help="Release channel",
-            enum={"Rapid": "Rapid", "Stable": "Stable"},
+        _args_schema.east_west_gateway = AAZStrArg(
+            options=["--east-west-gateway"],
+            arg_group="Connectivity",
+            help="East-West gateway visibility.",
+            enum={"External": "External", "Internal": "Internal"},
         )
 
         # define Arg Group "Properties"
@@ -93,13 +93,19 @@ class Update(AAZCommand):
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg()
 
-        # define Arg Group "SelfManagedUpgradeProfile"
+        # define Arg Group "Upgrade"
 
         _args_schema = cls._args_schema
+        _args_schema.release_channel = AAZStrArg(
+            options=["--release-channel"],
+            arg_group="Upgrade",
+            help="Release channel",
+            enum={"Rapid": "Rapid", "Stable": "Stable"},
+        )
         _args_schema.version = AAZStrArg(
             options=["--version"],
-            arg_group="SelfManagedUpgradeProfile",
-            help="Application Network version",
+            arg_group="Upgrade",
+            help="Istio version",
         )
         return cls._args_schema
 
@@ -218,14 +224,27 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("fullyManagedUpgradeProfile", AAZObjectType)
-                properties.set_prop("selfManagedUpgradeProfile", AAZObjectType)
+                properties.set_prop("connectivityProfile", AAZObjectType)
+                properties.set_prop("upgradeProfile", AAZObjectType)
 
-            fully_managed_upgrade_profile = _builder.get(".properties.fullyManagedUpgradeProfile")
+            connectivity_profile = _builder.get(".properties.connectivityProfile")
+            if connectivity_profile is not None:
+                connectivity_profile.set_prop("eastWestGateway", AAZObjectType)
+
+            east_west_gateway = _builder.get(".properties.connectivityProfile.eastWestGateway")
+            if east_west_gateway is not None:
+                east_west_gateway.set_prop("visibility", AAZStrType, ".east_west_gateway")
+
+            upgrade_profile = _builder.get(".properties.upgradeProfile")
+            if upgrade_profile is not None:
+                upgrade_profile.set_prop("fullyManagedUpgradeProfile", AAZObjectType)
+                upgrade_profile.set_prop("selfManagedUpgradeProfile", AAZObjectType)
+
+            fully_managed_upgrade_profile = _builder.get(".properties.upgradeProfile.fullyManagedUpgradeProfile")
             if fully_managed_upgrade_profile is not None:
                 fully_managed_upgrade_profile.set_prop("releaseChannel", AAZStrType, ".release_channel")
 
-            self_managed_upgrade_profile = _builder.get(".properties.selfManagedUpgradeProfile")
+            self_managed_upgrade_profile = _builder.get(".properties.upgradeProfile.selfManagedUpgradeProfile")
             if self_managed_upgrade_profile is not None:
                 self_managed_upgrade_profile.set_prop("version", AAZStrType, ".version")
 
@@ -276,13 +295,12 @@ class Update(AAZCommand):
             properties.cluster_type = AAZStrType(
                 serialized_name="clusterType",
             )
-            properties.fully_managed_upgrade_profile = AAZObjectType(
-                serialized_name="fullyManagedUpgradeProfile",
+            properties.connectivity_profile = AAZObjectType(
+                serialized_name="connectivityProfile",
             )
             properties.metadata = AAZObjectType(
                 flags={"required": True},
             )
-            properties.mode = AAZStrType()
             properties.observability_profile = AAZObjectType(
                 serialized_name="observabilityProfile",
             )
@@ -290,13 +308,26 @@ class Update(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.self_managed_upgrade_profile = AAZObjectType(
-                serialized_name="selfManagedUpgradeProfile",
+            properties.upgrade_profile = AAZObjectType(
+                serialized_name="upgradeProfile",
             )
 
-            fully_managed_upgrade_profile = cls._schema_on_200.properties.fully_managed_upgrade_profile
-            fully_managed_upgrade_profile.release_channel = AAZStrType(
-                serialized_name="releaseChannel",
+            connectivity_profile = cls._schema_on_200.properties.connectivity_profile
+            connectivity_profile.east_west_gateway = AAZObjectType(
+                serialized_name="eastWestGateway",
+            )
+            connectivity_profile.private_connect = AAZObjectType(
+                serialized_name="privateConnect",
+            )
+
+            east_west_gateway = cls._schema_on_200.properties.connectivity_profile.east_west_gateway
+            east_west_gateway.visibility = AAZStrType(
+                flags={"required": True},
+            )
+
+            private_connect = cls._schema_on_200.properties.connectivity_profile.private_connect
+            private_connect.subnet_resource_id = AAZStrType(
+                serialized_name="subnetResourceId",
                 flags={"required": True},
             )
 
@@ -315,7 +346,24 @@ class Update(AAZCommand):
                 flags={"read_only": True},
             )
 
-            self_managed_upgrade_profile = cls._schema_on_200.properties.self_managed_upgrade_profile
+            upgrade_profile = cls._schema_on_200.properties.upgrade_profile
+            upgrade_profile.fully_managed_upgrade_profile = AAZObjectType(
+                serialized_name="fullyManagedUpgradeProfile",
+            )
+            upgrade_profile.mode = AAZStrType(
+                flags={"required": True},
+            )
+            upgrade_profile.self_managed_upgrade_profile = AAZObjectType(
+                serialized_name="selfManagedUpgradeProfile",
+            )
+
+            fully_managed_upgrade_profile = cls._schema_on_200.properties.upgrade_profile.fully_managed_upgrade_profile
+            fully_managed_upgrade_profile.release_channel = AAZStrType(
+                serialized_name="releaseChannel",
+                flags={"required": True},
+            )
+
+            self_managed_upgrade_profile = cls._schema_on_200.properties.upgrade_profile.self_managed_upgrade_profile
             self_managed_upgrade_profile.version = AAZStrType(
                 flags={"required": True},
             )
