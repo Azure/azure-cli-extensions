@@ -123,6 +123,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         # Mock all the update methods to return the agentpool unchanged
         decorator.update_network_profile = Mock(return_value=agentpool)
         decorator.update_artifact_streaming = Mock(return_value=agentpool)
+        decorator.update_managed_gpu = Mock(return_value=agentpool)
         decorator.update_secure_boot = Mock(return_value=agentpool)
         decorator.update_vtpm = Mock(return_value=agentpool)
         decorator.update_os_sku = Mock(return_value=agentpool)
@@ -146,6 +147,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         # Verify that all update methods were called
         decorator.update_network_profile.assert_called_once_with(agentpool)
         decorator.update_artifact_streaming.assert_called_once_with(agentpool)
+        decorator.update_managed_gpu.assert_called_once_with(agentpool)
         decorator.update_secure_boot.assert_called_once_with(agentpool)
         decorator.update_vtpm.assert_called_once_with(agentpool)
         decorator.update_os_sku.assert_called_once_with(agentpool)
@@ -187,6 +189,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         # Mock all the update methods to return the agentpool unchanged
         decorator.update_network_profile = Mock(return_value=agentpool)
         decorator.update_artifact_streaming = Mock(return_value=agentpool)
+        decorator.update_managed_gpu = Mock(return_value=agentpool)
         decorator.update_secure_boot = Mock(return_value=agentpool)
         decorator.update_vtpm = Mock(return_value=agentpool)
         decorator.update_os_sku = Mock(return_value=agentpool)
@@ -238,6 +241,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         # Mock all the update methods (they should not be called for ManagedSystem mode)
         decorator.update_network_profile = Mock()
         decorator.update_artifact_streaming = Mock()
+        decorator.update_managed_gpu = Mock()
         decorator.update_secure_boot = Mock()
         decorator.update_vtpm = Mock()
         decorator.update_os_sku = Mock()
@@ -267,6 +271,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         # Verify that none of the update methods were called for ManagedSystem mode
         decorator.update_network_profile.assert_not_called()
         decorator.update_artifact_streaming.assert_not_called()
+        decorator.update_managed_gpu.assert_not_called()
         decorator.update_secure_boot.assert_not_called()
         decorator.update_vtpm.assert_not_called()
         decorator.update_os_sku.assert_not_called()
@@ -345,6 +350,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         # Mock all the update methods to return the agentpool unchanged
         decorator.update_network_profile = Mock(return_value=agentpool)
         decorator.update_artifact_streaming = Mock(return_value=agentpool)
+        decorator.update_managed_gpu = Mock(return_value=agentpool)
         decorator.update_secure_boot = Mock(return_value=agentpool)
         decorator.update_vtpm = Mock(return_value=agentpool)
         decorator.update_os_sku = Mock(return_value=agentpool)
@@ -366,6 +372,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         # Verify that all update methods were called for System mode
         decorator.update_network_profile.assert_called_once_with(agentpool)
         decorator.update_artifact_streaming.assert_called_once_with(agentpool)
+        decorator.update_managed_gpu.assert_called_once_with(agentpool)
         decorator.update_secure_boot.assert_called_once_with(agentpool)
         decorator.update_vtpm.assert_called_once_with(agentpool)
         decorator.update_os_sku.assert_called_once_with(agentpool)
@@ -412,6 +419,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
 
         decorator.update_network_profile = create_mock_update_method("update_network_profile")
         decorator.update_artifact_streaming = create_mock_update_method("update_artifact_streaming")
+        decorator.update_managed_gpu = create_mock_update_method("update_managed_gpu")
         decorator.update_secure_boot = create_mock_update_method("update_secure_boot")
         decorator.update_vtpm = create_mock_update_method("update_vtpm")
         decorator.update_os_sku = create_mock_update_method("update_os_sku")
@@ -430,6 +438,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         expected_order = [
             "update_network_profile",
             "update_artifact_streaming",
+            "update_managed_gpu",
             "update_secure_boot",
             "update_vtpm",
             "update_os_sku",
@@ -478,6 +487,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
 
         decorator.update_network_profile = create_tracking_mock("update_network_profile")
         decorator.update_artifact_streaming = create_tracking_mock("update_artifact_streaming")
+        decorator.update_managed_gpu = create_tracking_mock("update_managed_gpu")
         decorator.update_secure_boot = create_tracking_mock("update_secure_boot")
         decorator.update_vtpm = create_tracking_mock("update_vtpm")
         decorator.update_os_sku = create_tracking_mock("update_os_sku")
@@ -547,7 +557,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
 
                 # Mock all update methods
                 update_methods = [
-                    'update_network_profile', 'update_artifact_streaming',
+                    'update_network_profile', 'update_artifact_streaming', 'update_managed_gpu',
                     'update_secure_boot', 'update_vtpm', 'update_os_sku', 'update_fips_image',
                     'update_ssh_access', 'update_localdns_profile', 'update_auto_scaler_properties_vms', 
                     'update_upgrade_strategy', 'update_blue_green_upgrade_settings', 'update_gpu_profile'
@@ -613,6 +623,7 @@ class TestUpdateAgentPoolProfilePreviewManagedClusterMode(TestUpdateAgentPoolPro
         # Mock all the update methods
         decorator.update_network_profile = Mock(return_value=agentpool)
         decorator.update_artifact_streaming = Mock(return_value=agentpool)
+        decorator.update_managed_gpu = Mock(return_value=agentpool)
         decorator.update_secure_boot = Mock(return_value=agentpool)
         decorator.update_vtpm = Mock(return_value=agentpool)
         decorator.update_os_sku = Mock(return_value=agentpool)
