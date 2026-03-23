@@ -20,6 +20,9 @@ class List(AAZCommand):
 
     :example: List consortiums in subscription
         az managedcleanroom consortium list
+
+    :example: List consortiums in subscription
+        az managedcleanroom consortium list --resource-group testrg
     """
 
     _aaz_info = {

@@ -62,27 +62,22 @@ class AddCollaborator(AAZCommand):
             required=True,
         )
 
-        # define Arg Group "Body"
+        # define Arg Group "Collaborator"
 
         _args_schema = cls._args_schema
-        _args_schema.collaborator = AAZObjectArg(
-            options=["--collaborator"],
-            arg_group="Body",
-            help="Collaborator to be added.",
-            required=True,
-        )
-
-        collaborator = cls._args_schema.collaborator
-        collaborator.object_id = AAZStrArg(
-            options=["object-id"],
+        _args_schema.object_id = AAZStrArg(
+            options=["--object-id"],
+            arg_group="Collaborator",
             help="Object ID of the collaborator.",
         )
-        collaborator.tenant_id = AAZStrArg(
-            options=["tenant-id"],
+        _args_schema.tenant_id = AAZStrArg(
+            options=["--tenant-id"],
+            arg_group="Collaborator",
             help="Tenant ID of the collaborator.",
         )
-        collaborator.user_identifier = AAZStrArg(
-            options=["user-identifier"],
+        _args_schema.user_identifier = AAZStrArg(
+            options=["--user-identifier"],
+            arg_group="Collaborator",
             help="User identifier of the collaborator. This can be specified as an email (no OID/TID should be specified) or an SPN (OID/TID required).",
         )
         return cls._args_schema
@@ -193,7 +188,7 @@ class AddCollaborator(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("collaborator", AAZObjectType, ".collaborator", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
+            _builder.set_prop("collaborator", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
 
             collaborator = _builder.get(".collaborator")
             if collaborator is not None:
