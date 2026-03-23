@@ -331,6 +331,14 @@ class Quickstart(AAZCommand):
             help="Optional configName override. Default in template: 'siteName-configuration'.",
         )
 
+        _args_schema.config_type = AAZStrArg(
+            options=["--config-type"],
+            help=(
+                "Configuration type controlling which resources are provisioned. "
+                "ZTP (default): creates MRG and network config. "
+            ),
+        )
+
         return cls._args_schema
 
     def _handler(self, command_args):
@@ -352,6 +360,16 @@ class Quickstart(AAZCommand):
         if configuration.lower() != "defaults":
             az_error = InvalidArgumentValueError("Invalid value for --configuration. Only 'defaults' is supported.")
             az_error.set_recommendation("Use --configuration defaults, or omit --configuration to use the default.")
+            raise az_error
+
+        config_type = "ZTP"
+        if has_value(self.ctx.args.config_type):
+            config_type = (self.ctx.args.config_type.to_serialized_data() or "").strip().upper() or "ZTP"
+        if config_type not in ("ZTP",):
+            az_error = InvalidArgumentValueError(
+                f"Invalid value '{config_type}' for --config-type. Allowed values: ZTP"
+            )
+            az_error.set_recommendation("Use --config-type ZTP, or omit to default to ZTP.")
             raise az_error
 
         site_name = self.ctx.args.name.to_serialized_data()
@@ -385,6 +403,8 @@ class Quickstart(AAZCommand):
                 config_name = self.ctx.args.config_name.to_serialized_data()
                 invoke_args.extend(["--parameters", f"configName={config_name}"])
 
+            invoke_args.extend(["--parameters", f"configType={config_type}"])
+
             if additional_identities:
                 invoke_args.extend([
                     "--parameters",
@@ -400,6 +420,7 @@ class Quickstart(AAZCommand):
                         {
                             "siteName": site_name,
                             "location": rg_location,
+                            "configType": config_type,
                             **({"configName": config_name} if config_name else {}),
                         },
                         indent=2,
