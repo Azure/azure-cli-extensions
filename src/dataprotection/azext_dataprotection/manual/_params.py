@@ -188,14 +188,19 @@ def load_arguments(self, _):
         c.argument('datasource_type', type=str, help="The type of datasource to be backed up. Supported values: AzureKubernetesService.")
         c.argument('datasource_id', type=str, help="The full ARM resource ID of the datasource to be backed up.")
         c.argument('backup_strategy', arg_type=get_enum_type(get_all_backup_strategies()),
-                   help="Backup strategy preset. For AzureKubernetesService: Week (7-day retention), Month (30-day retention), "
-                        "Immutable (7-day Op + 90-day Vault Tier), DisasterRecovery (GRS+CRR), Custom (bring your own vault/policy). "
-                        "Default: Week.")
+                   help="Backup strategy preset (daily incremental backups). "
+                        "For AzureKubernetesService: "
+                        "Week (7-day operational store retention), "
+                        "Month (30-day operational store retention), "
+                        "DisasterRecovery (7-day operational + 90-day vault store retention), "
+                        "Custom (bring your own vault/policy). Default: Week.")
         c.argument('backup_configuration_file', type=validate_file_or_dict,
                    options_list=['--backup-configuration-file', '-f'],
-                   help="Path to backup configuration file (JSON) or inline JSON string. "
-                        "Available settings: storageAccountResourceId, blobContainerName, backupResourceGroupId, "
-                        "backupVaultId (required for Custom), backupPolicyId (required for Custom), tags.")
+                   help="Path to a JSON backup configuration file. "
+                        "Supports backupVaultId and backupPolicyId "
+                        "(required for Custom strategy). "
+                        "For workload-specific settings, "
+                        "refer to the documentation.")
         c.argument('yes', options_list=['--yes', '-y'], action='store_true',
                    help='Do not prompt for confirmation.')
 

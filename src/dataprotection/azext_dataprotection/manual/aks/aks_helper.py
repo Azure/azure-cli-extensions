@@ -95,7 +95,7 @@ def _validate_request(datasource_id, backup_strategy, configuration_params):
 
     Args:
         datasource_id: Full ARM resource ID of the AKS cluster
-        backup_strategy: Backup strategy (Week, Month, Immutable, DisasterRecovery, Custom)
+        backup_strategy: Backup strategy (Week, Month, DisasterRecovery, Custom)
         configuration_params: Dict with configuration settings (camelCase keys)
             - storageAccountResourceId: Storage account resource ID
             - blobContainerName: Blob container name
