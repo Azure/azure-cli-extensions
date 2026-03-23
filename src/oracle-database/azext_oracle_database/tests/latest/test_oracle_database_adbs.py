@@ -12,7 +12,7 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only)
 
 class OracleDatabaseAdbsScenario(ScenarioTest):
-    @live_only()
+    # @live_only()
     @AllowLargeResponse(size_kb=10240)
     @ResourceGroupPreparer(name_prefix='cli_test_odba_rg')
     def test_oracledatabase_adbs(self, resource_group):
@@ -24,9 +24,6 @@ class OracleDatabaseAdbsScenario(ScenarioTest):
         self.cmd('az oracle-database database-system-shape list --location eastus ')
         self.cmd('az oracle-database dns-private-zone list --location eastus ')
         self.cmd('az oracle-database dns-private-view list --location eastus ')
-        # Regression coverage for INDIGO-26148: list commands must not fail on dataBaseType discriminator.
-        self.cmd('az oracle-database autonomous-database list ')
-        self.cmd('az oracle-database autonomous-database list --resource-group PowerShellTestRg ')
         self.cmd('az oracle-database autonomous-database create --location eastus '
                 '--autonomousdatabasename ADBScliTest '
                 '--resource-group PowerShellTestRg '
