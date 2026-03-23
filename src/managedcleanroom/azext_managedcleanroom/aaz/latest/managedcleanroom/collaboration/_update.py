@@ -61,6 +61,38 @@ class Update(AAZCommand):
             required=True,
         )
 
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.collaborators = AAZListArg(
+            options=["--collaborators"],
+            arg_group="Properties",
+            help="Gets or sets the collaborators.",
+            nullable=True,
+        )
+
+        collaborators = cls._args_schema.collaborators
+        collaborators.Element = AAZObjectArg(
+            nullable=True,
+        )
+
+        _element = cls._args_schema.collaborators.Element
+        _element.object_id = AAZStrArg(
+            options=["object-id"],
+            help="Object ID of the collaborator.",
+            nullable=True,
+        )
+        _element.tenant_id = AAZStrArg(
+            options=["tenant-id"],
+            help="Tenant ID of the collaborator.",
+            nullable=True,
+        )
+        _element.user_identifier = AAZStrArg(
+            options=["user-identifier"],
+            help="User identifier of the collaborator. This can be specified as an email (no OID/TID should be specified) or an SPN (OID/TID required).",
+            nullable=True,
+        )
+
         # define Arg Group "Resource"
 
         _args_schema = cls._args_schema
@@ -312,7 +344,22 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
+            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("collaborators", AAZListType, ".collaborators")
+
+            collaborators = _builder.get(".properties.collaborators")
+            if collaborators is not None:
+                collaborators.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.collaborators[]")
+            if _elements is not None:
+                _elements.set_prop("objectId", AAZStrType, ".object_id")
+                _elements.set_prop("tenantId", AAZStrType, ".tenant_id")
+                _elements.set_prop("userIdentifier", AAZStrType, ".user_identifier")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -381,9 +428,7 @@ class _UpdateHelper:
             serialized_name="collaborationState",
             flags={"read_only": True},
         )
-        properties.collaborators = AAZListType(
-            flags={"read_only": True},
-        )
+        properties.collaborators = AAZListType()
         properties.consortium_arm_id = AAZStrType(
             serialized_name="consortiumArmId",
             flags={"read_only": True},

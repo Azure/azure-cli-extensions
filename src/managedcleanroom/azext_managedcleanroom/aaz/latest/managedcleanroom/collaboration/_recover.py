@@ -229,9 +229,7 @@ class Recover(AAZCommand):
                 serialized_name="collaborationState",
                 flags={"read_only": True},
             )
-            properties.collaborators = AAZListType(
-                flags={"read_only": True},
-            )
+            properties.collaborators = AAZListType()
             properties.consortium_arm_id = AAZStrType(
                 serialized_name="consortiumArmId",
                 flags={"read_only": True},

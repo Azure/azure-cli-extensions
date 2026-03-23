@@ -19,7 +19,10 @@ class AddCollaborator(AAZCommand):
     """Adds a collaborator to a collaboration.
 
     :example: Add Collaborator
-        az managedcleanroom collaboration add-collaborator --resource-group testrg --collaboration-name ContosoCollaboration --collaborator "{user-identifier:alice@contoso.com,tenant-id:72f988bf-86f1-41af-91ab-2d7cd011db47,object-id:0f8fad5b-d9cb-469f-a165-70867728950e}"
+        az managedcleanroom collaboration add-collaborator --resource-group testrg --collaboration-name ContosoCollaboration --user-identifier "alice@contoso.com"
+
+    :example: Add Collaborator
+        az managedcleanroom collaboration add-collaborator --resource-group testrg --collaboration-name ContosoCollaboration --user-identifier "contoso-spn" --tenant-id "72f988bf-86f1-41af-91ab-2d7cd011db47" --object-id "0f8fad5b-d9cb-469f-a165-70867728950e"
     """
 
     _aaz_info = {
@@ -190,7 +193,7 @@ class AddCollaborator(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("collaborator", AAZObjectType, ".collaborator", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("collaborator", AAZObjectType, ".collaborator", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
 
             collaborator = _builder.get(".collaborator")
             if collaborator is not None:
@@ -249,9 +252,7 @@ class AddCollaborator(AAZCommand):
                 serialized_name="collaborationState",
                 flags={"read_only": True},
             )
-            properties.collaborators = AAZListType(
-                flags={"read_only": True},
-            )
+            properties.collaborators = AAZListType()
             properties.consortium_arm_id = AAZStrType(
                 serialized_name="consortiumArmId",
                 flags={"read_only": True},

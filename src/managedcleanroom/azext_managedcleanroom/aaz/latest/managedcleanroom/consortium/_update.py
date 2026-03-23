@@ -64,13 +64,6 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.consortium_type = AAZStrArg(
-            options=["--consortium-type"],
-            arg_group="Properties",
-            help="Gets or sets the consortium type.",
-            nullable=True,
-            enum={"ConfidentialACI": "ConfidentialACI"},
-        )
         _args_schema.members = AAZListArg(
             options=["--members"],
             arg_group="Properties",
@@ -362,7 +355,6 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("consortiumType", AAZStrType, ".consortium_type")
                 properties.set_prop("members", AAZListType, ".members")
 
             members = _builder.get(".properties.members")
@@ -439,9 +431,6 @@ class _UpdateHelper:
         properties.consortium_state = AAZStrType(
             serialized_name="consortiumState",
             flags={"read_only": True},
-        )
-        properties.consortium_type = AAZStrType(
-            serialized_name="consortiumType",
         )
         properties.endpoint = AAZStrType(
             flags={"read_only": True},

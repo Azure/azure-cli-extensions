@@ -19,7 +19,7 @@ class Create(AAZCommand):
     """Create a collaboration.
 
     :example: Create Collaboration
-        az managedcleanroom collaboration create --resource-group testrg --collaboration-name ContosoCollaboration --location northeurope --consortium-type ConfidentialACI
+        az managedcleanroom collaboration create --resource-group testrg --collaboration-name ContosoCollaboration --location northeurope
     """
 
     _aaz_info = {
@@ -56,6 +56,32 @@ class Create(AAZCommand):
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
+        )
+
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.collaborators = AAZListArg(
+            options=["--collaborators"],
+            arg_group="Properties",
+            help="Gets or sets the collaborators.",
+        )
+
+        collaborators = cls._args_schema.collaborators
+        collaborators.Element = AAZObjectArg()
+
+        _element = cls._args_schema.collaborators.Element
+        _element.object_id = AAZStrArg(
+            options=["object-id"],
+            help="Object ID of the collaborator.",
+        )
+        _element.tenant_id = AAZStrArg(
+            options=["tenant-id"],
+            help="Tenant ID of the collaborator.",
+        )
+        _element.user_identifier = AAZStrArg(
+            options=["user-identifier"],
+            help="User identifier of the collaborator. This can be specified as an email (no OID/TID should be specified) or an SPN (OID/TID required).",
         )
 
         # define Arg Group "Resource"
@@ -198,6 +224,20 @@ class Create(AAZCommand):
             _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("collaborators", AAZListType, ".collaborators")
+
+            collaborators = _builder.get(".properties.collaborators")
+            if collaborators is not None:
+                collaborators.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.collaborators[]")
+            if _elements is not None:
+                _elements.set_prop("objectId", AAZStrType, ".object_id")
+                _elements.set_prop("tenantId", AAZStrType, ".tenant_id")
+                _elements.set_prop("userIdentifier", AAZStrType, ".user_identifier")
+
             tags = _builder.get(".tags")
             if tags is not None:
                 tags.set_elements(AAZStrType, ".")
@@ -253,9 +293,7 @@ class Create(AAZCommand):
                 serialized_name="collaborationState",
                 flags={"read_only": True},
             )
-            properties.collaborators = AAZListType(
-                flags={"read_only": True},
-            )
+            properties.collaborators = AAZListType()
             properties.consortium_arm_id = AAZStrType(
                 serialized_name="consortiumArmId",
                 flags={"read_only": True},

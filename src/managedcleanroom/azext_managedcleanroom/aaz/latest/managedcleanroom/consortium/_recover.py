@@ -225,9 +225,6 @@ class Recover(AAZCommand):
                 serialized_name="consortiumState",
                 flags={"read_only": True},
             )
-            properties.consortium_type = AAZStrType(
-                serialized_name="consortiumType",
-            )
             properties.endpoint = AAZStrType(
                 flags={"read_only": True},
             )

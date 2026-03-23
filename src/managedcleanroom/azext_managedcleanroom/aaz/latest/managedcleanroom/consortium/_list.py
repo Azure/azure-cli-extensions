@@ -184,9 +184,6 @@ class List(AAZCommand):
                 serialized_name="consortiumState",
                 flags={"read_only": True},
             )
-            properties.consortium_type = AAZStrType(
-                serialized_name="consortiumType",
-            )
             properties.endpoint = AAZStrType(
                 flags={"read_only": True},
             )
@@ -404,9 +401,6 @@ class List(AAZCommand):
             properties.consortium_state = AAZStrType(
                 serialized_name="consortiumState",
                 flags={"read_only": True},
-            )
-            properties.consortium_type = AAZStrType(
-                serialized_name="consortiumType",
             )
             properties.endpoint = AAZStrType(
                 flags={"read_only": True},
