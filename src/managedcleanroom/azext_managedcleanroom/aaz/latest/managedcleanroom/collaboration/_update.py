@@ -18,8 +18,8 @@ from ..private_endpoint_util import PrivateEndpointUtil
 class Update(AAZCommand):
     """Update a collaboration.
 
-    :example: Create Collaboration
-        az managedcleanroom collaboration update --resource-group testrg --collaboration-name ContosoCollaboration
+    :example: Update Collaboration
+        az managedcleanroom collaboration update --resource-group testrg --collaboration-name ContosoCollaboration --tags "env=testing"
     """
 
     _aaz_info = {

@@ -18,8 +18,8 @@ from ..private_endpoint_util import PrivateEndpointUtil
 class Update(AAZCommand):
     """Update a consortium view.
 
-    :example: Create Consortium View
-        az managedcleanroom consortium-view update --resource-group testrg --consortium-view-name ContosoConsortiumView --consortium-endpoint https://ContosoEndpoint/ --consortium-service-certificate-pem Contoso certificate pem --member "{certificate-pem:membercertificate,signed-payload:membersignedpayload}"
+    :example: Update Consortium View
+        az managedcleanroom consortium-view update --resource-group testrg --consortium-view-name ContosoConsortiumView --consortium-endpoint https://ContosoEndpoint/ --consortium-service-certificate-pem Contoso certificate pem --member "{certificate-pem:membercertificate,signed-payload:membersignedpayload}" --tags "env=testing"
     """
 
     _aaz_info = {

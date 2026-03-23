@@ -18,8 +18,8 @@ from ..private_endpoint_util import PrivateEndpointUtil
 class Update(AAZCommand):
     """Update a consortium.
 
-    :example: Create Consortium
-        az managedcleanroom consortium update --resource-group testrg --consortium-name ContosoConsortium
+    :example: Update Consortium
+        az managedcleanroom consortium update --resource-group testrg --consortium-name ContosoConsortium --tags "env=testing"
     """
 
     _aaz_info = {
