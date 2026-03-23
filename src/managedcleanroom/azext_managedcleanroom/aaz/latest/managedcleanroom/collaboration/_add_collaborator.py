@@ -18,10 +18,10 @@ from ..private_endpoint_util import PrivateEndpointUtil
 class AddCollaborator(AAZCommand):
     """Adds a collaborator to a collaboration.
 
-    :example: Add Collaborator
+    :example: Add Collaborator(User)
         az managedcleanroom collaboration add-collaborator --resource-group testrg --collaboration-name ContosoCollaboration --user-identifier "alice@contoso.com"
 
-    :example: Add Collaborator
+    :example: Add Collaborator(Service Principal)
         az managedcleanroom collaboration add-collaborator --resource-group testrg --collaboration-name ContosoCollaboration --user-identifier "contoso-spn" --tenant-id "72f988bf-86f1-41af-91ab-2d7cd011db47" --object-id "0f8fad5b-d9cb-469f-a165-70867728950e"
     """
 
