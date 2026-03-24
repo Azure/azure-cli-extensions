@@ -8,13 +8,11 @@ import json
 import os
 import tempfile
 from abc import ABC, abstractmethod
-from pathlib import Path
 from typing import Dict, List, Optional, Tuple, Union
 
 from azext_aks_sreclaw._consts import (
     AGENT_NAMESPACE,
     AKS_SRECLAW_LABEL_SELECTOR,
-    AKS_SRECLAW_VERSION,
 )
 from azext_aks_sreclaw.sreclaw.k8s.helm_manager import HelmManager
 from azext_aks_sreclaw.sreclaw.llm_config_manager import LLMConfigManager
@@ -480,7 +478,6 @@ class AKSSREClawManager(AKSSREClawManagerLLMConfigBase):  # pylint: disable=too-
 
         while time.time() - start_time < timeout:
             try:
-                # Check for pods with label selector
                 pod_list = self.core_v1.list_namespaced_pod(
                     namespace=self.namespace,
                     label_selector=AKS_SRECLAW_LABEL_SELECTOR
@@ -491,30 +488,7 @@ class AKSSREClawManager(AKSSREClawManagerLLMConfigBase):  # pylint: disable=too-
                     time.sleep(interval)
                     continue
 
-                # Check if all pods are ready
-                all_ready = True
-                for pod in pod_list.items:
-                    pod_name = pod.metadata.name
-                    pod_phase = pod.status.phase
-
-                    if pod_phase != "Running":
-                        logger.debug("Pod %s is in phase %s, waiting...", pod_name, pod_phase)
-                        all_ready = False
-                        break
-
-                    # Check pod readiness condition
-                    pod_ready = False
-                    if pod.status.conditions:
-                        for condition in pod.status.conditions:
-                            if condition.type == "Ready" and condition.status == "True":
-                                pod_ready = True
-                                break
-
-                    if not pod_ready:
-                        logger.debug("Pod %s is not ready yet, waiting...", pod_name)
-                        all_ready = False
-                        break
-
+                all_ready = self._check_all_pods_ready(pod_list.items)
                 if all_ready:
                     logger.info("All SREClaw pods are ready")
                     return True
@@ -529,6 +503,30 @@ class AKSSREClawManager(AKSSREClawManagerLLMConfigBase):  # pylint: disable=too-
                 time.sleep(interval)
 
         logger.warning("Timeout waiting for SREClaw pods to be ready")
+        return False
+
+    def _check_all_pods_ready(self, pods) -> bool:
+        """Check if all pods are ready."""
+        for pod in pods:
+            pod_name = pod.metadata.name
+            pod_phase = pod.status.phase
+
+            if pod_phase != "Running":
+                logger.debug("Pod %s is in phase %s, waiting...", pod_name, pod_phase)
+                return False
+
+            if not self._is_pod_ready(pod):
+                logger.debug("Pod %s is not ready yet, waiting...", pod_name)
+                return False
+
+        return True
+
+    def _is_pod_ready(self, pod) -> bool:
+        """Check if a pod is ready."""
+        if pod.status.conditions:
+            for condition in pod.status.conditions:
+                if condition.type == "Ready" and condition.status == "True":
+                    return True
         return False
 
     def deploy_sreclaw(self, chart_version: Optional[str] = None, no_wait: bool = False) -> Tuple[bool, str]:
@@ -1042,7 +1040,7 @@ class AKSSREClawManager(AKSSREClawManagerLLMConfigBase):  # pylint: disable=too-
                 )
             raise AzCLIError(f"Failed to retrieve gateway token: {e}")
 
-    def port_forward_to_service(self, local_port: int = 18789) -> str:
+    def port_forward_to_service(self, local_port: int = 18789) -> str:  # pylint: disable=unused-argument
         """Port-forward to aks-sreclaw service.
 
         Args:
@@ -1054,12 +1052,6 @@ class AKSSREClawManager(AKSSREClawManagerLLMConfigBase):  # pylint: disable=too-
         Raises:
             AzCLIError: If service or pod is not found, or port-forwarding fails
         """
-        import select
-        import socket
-        import threading
-
-        from kubernetes.stream import portforward
-
         # Get gateway token first before starting port-forward
         gateway_token = self.get_gateway_token()
 
@@ -1092,7 +1084,7 @@ class AKSSREClawManager(AKSSREClawManagerLLMConfigBase):  # pylint: disable=too-
         pod_name = pod.metadata.name
         target_port = 18789
 
-        logger.info(f"Found running pod: {pod_name}")
+        logger.info("Found running pod: %s", pod_name)
 
         # Return token to caller before starting blocking port-forward
         return gateway_token, pod_name, target_port
@@ -1114,7 +1106,7 @@ class AKSSREClawManager(AKSSREClawManagerLLMConfigBase):  # pylint: disable=too-
 
         from kubernetes.stream import portforward
 
-        logger.info(f"Port-forwarding localhost:{local_port} -> {pod_name}:{target_port}")
+        logger.info("Port-forwarding localhost:%d -> %s:%d", local_port, pod_name, target_port)
 
         # Start a local TCP server and forward each connection through the k8s portforward API
         server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -1146,7 +1138,7 @@ class AKSSREClawManager(AKSSREClawManagerLLMConfigBase):  # pylint: disable=too-
                         if not data:
                             break
                         local_conn.sendall(data)
-            except Exception:
+            except Exception:  # pylint: disable=broad-exception-caught
                 pass
             finally:
                 local_conn.close()

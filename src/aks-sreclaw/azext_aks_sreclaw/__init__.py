@@ -3,9 +3,9 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azext_aks_sreclaw._client_factory import CUSTOM_MGMT_AKS
-
 # pylint: disable=unused-import
+import azext_aks_sreclaw._help
+from azext_aks_sreclaw._client_factory import CUSTOM_MGMT_AKS
 from azure.cli.core import AzCommandsLoader
 from azure.cli.core.profiles import register_resource_type
 

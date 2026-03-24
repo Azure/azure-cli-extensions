@@ -5,8 +5,6 @@
 
 # pylint: disable=too-many-lines, disable=broad-except, disable=line-too-long
 
-import subprocess
-
 from azext_aks_sreclaw.sreclaw.aks import get_aks_credentials
 from azext_aks_sreclaw.sreclaw.console import (
     ERROR_COLOR,
@@ -25,7 +23,6 @@ from azext_aks_sreclaw.sreclaw.telemetry import CLITelemetryClient
 from azure.cli.core.azclierror import AzCLIError
 from azure.cli.core.commands.client_factory import get_subscription_id
 from knack.log import get_logger
-from knack.util import CLIError
 
 logger = get_logger(__name__)
 
@@ -259,7 +256,6 @@ def aks_sreclaw_status(
         namespace,
 ):
     """Display the status of the SREClaw deployment."""
-    console = get_console()
 
     kubeconfig_path = get_aks_credentials(
         client,
@@ -453,7 +449,7 @@ def aks_sreclaw_connect(
             console.print(
                 f"🚀 Port-forwarding: localhost:{local_port} -> {aks_sreclaw_manager.chart_name}:{target_port}", style=INFO_COLOR)
             console.print(f"🌐 Open your browser and navigate to: http://localhost:{local_port}", style=INFO_COLOR)
-            console.print(f"Press Ctrl+C to stop\n", style="dim")
+            console.print("Press Ctrl+C to stop\n", style="dim")
 
             # Start blocking port-forward
             aks_sreclaw_manager.start_port_forward(pod_name, target_port, local_port)

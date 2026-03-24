@@ -5,17 +5,13 @@
 
 
 from typing import Tuple
-from urllib.parse import urlencode, urljoin
 
-import requests
+from openai import AzureOpenAI
 
 from .base import LLMProvider, is_valid_url, non_empty
 
 
 def is_valid_api_base(v: str) -> bool:
-    # A valid api_base should be a URL and starts with https://, and ends with either .openai.azure.com/ or
-    # .cognitiveservices.azure.com/. Until there's a convergence on the endpoint format for Azure OpenAI service,
-    # we will accept both formats without validation.
     if not v.startswith("https://"):
         return False
     return is_valid_url(v)
@@ -36,7 +32,7 @@ class AzureProvider(LLMProvider):
             "models": {
                 "secret": False,
                 "default": None,
-                "hint": "comma-separated model names, e.g., gpt-5.4,gpt-5.1",
+                "hint": "comma-separated deployment names, e.g., gpt-5.4,gpt-5.1",
                 "validator": non_empty,
                 "alias": "models"
             },
@@ -55,4 +51,32 @@ class AzureProvider(LLMProvider):
         }
 
     def validate_connection(self, params: dict) -> Tuple[str, str]:
-        return None, "save"  # None error means success
+        api_key = params.get("api_key")
+        api_base = params.get("api_base")
+        models_str = params.get("models")
+
+        if not all([api_key, api_base, models_str]):
+            return "Missing required Azure OpenAI parameters.", "retry_input"
+
+        models = [m.strip() for m in models_str.split(",")]
+        client = AzureOpenAI(
+            api_key=api_key,
+            azure_endpoint=api_base
+        )
+
+        for model_name in models:
+            try:
+                client.responses.create(
+                    model=model_name,
+                    instructions="You are a helpful assistant.",
+                    input="ping",
+                    timeout=10
+                )
+            except Exception as e:  # pylint: disable=broad-exception-caught
+                error_str = str(e).lower()
+                if any(x in error_str for x in ["api key", "authentication", "unauthorized",
+                                                "invalid", "bad request", "deployment"]):
+                    return f"Model '{model_name}' validation failed: {e}", "retry_input"
+                return f"Model '{model_name}' connection error: {e}", "connection_error"
+
+        return None, "save"

@@ -6,7 +6,7 @@
 
 from typing import Tuple
 
-import requests
+from openai import OpenAI
 
 from .base import LLMProvider, non_empty
 
@@ -15,10 +15,6 @@ class AnthropicProvider(LLMProvider):
     @property
     def readable_name(self) -> str:
         return "Anthropic"
-
-    @property
-    def provider(self) -> str:
-        return "anthropic"
 
     @property
     def name(self) -> str:
@@ -48,28 +44,24 @@ class AnthropicProvider(LLMProvider):
             return "Missing required Anthropic parameters.", "retry_input"
 
         models = [m.strip() for m in models_str.split(",")]
-        model_name = models[0]
+        client = OpenAI(
+            api_key=api_key,
+            base_url="https://api.anthropic.com/v1"
+        )
 
-        url = "https://api.anthropic.com/v1/messages"
-        headers = {
-            "x-api-key": api_key,
-            "anthropic-version": "2023-06-01",
-            "Content-Type": "application/json"
-        }
-        payload = {
-            "model": model_name,
-            "max_tokens": 16,
-            "messages": [{"role": "user", "content": "ping"}]
-        }
+        for model_name in models:
+            try:
+                client.chat.completions.create(
+                    model=model_name,
+                    messages=[{"role": "user", "content": "ping"}],
+                    max_tokens=16,
+                    timeout=10
+                )
+            except Exception as e:  # pylint: disable=broad-exception-caught
+                error_str = str(e).lower()
+                if any(x in error_str for x in ["api key", "authentication", "unauthorized",
+                                                "invalid", "bad request"]):
+                    return f"Model '{model_name}' validation failed: {e}", "retry_input"
+                return f"Model '{model_name}' connection error: {e}", "connection_error"
 
-        try:
-            resp = requests.post(url, headers=headers,
-                                 json=payload, timeout=10)
-            resp.raise_for_status()
-            return None, "save"
-        except requests.exceptions.HTTPError as e:
-            if 400 <= resp.status_code < 500:
-                return f"Client error: {e} - {resp.text}", "retry_input"
-            return f"Server error: {e} - {resp.text}", "connection_error"
-        except requests.exceptions.RequestException as e:
-            return f"Request error: {e}", "connection_error"
+        return None, "save"

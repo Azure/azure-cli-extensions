@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 
-import base64
+import base64  # pylint: disable=unused-import
 from abc import ABC, abstractmethod
 from typing import Any, Callable, Dict, Tuple
 from urllib.parse import urlparse
@@ -45,18 +45,11 @@ class LLMProvider(ABC):
     @property
     def name(self) -> str:
         """Return the provider name for this provider.
-        provider name is the key to identity a llmprovider.
-        https://docs.litellm.ai/docs/providers
+        This name is used as the OpenClaw LLM provider identifier and must match
+        the provider name expected by the OpenClaw configuration.
+        Examples: "azure-openai", "openai", "anthropic"
         """
-        return self.provider
-
-    def model_name(self, model_name) -> str:
-        """Return the model name for this provider.
-        The models name combines the model route and model name, e.g., "azure/gpt-5"
-        https://docs.litellm.ai/docs/providers
-        """
-
-        return model_name
+        return ""
 
     @property
     @abstractmethod
@@ -145,7 +138,6 @@ class LLMProvider(ABC):
                 raise ValueError(f"Invalid value for parameter: {param}")
         return True
 
-    # pylint: disable=unused-argument
     @abstractmethod
     def validate_connection(self, params: dict) -> Tuple[str, str]:
         """
@@ -154,6 +146,4 @@ class LLMProvider(ABC):
         where error is None if validation is successful, otherwise contains the error message.
         Action can be "retry_input", "connection_error", or "save".
         """
-        # TODO(mainred): leverage 3rd party libraries like litellm instead of
-        # calling http request in each provider to complete the connection check.
         raise NotImplementedError()
