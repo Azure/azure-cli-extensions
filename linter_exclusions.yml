@@ -401,6 +401,75 @@ codespace plan create:
 confidentialledger managedccfs update:
   rule_exclusions:
   - missing_command_test_coverage
+confluent organization environment:
+  rule_exclusions:
+  - require_wait_command_if_no_wait
+confluent organization environment cluster:
+  rule_exclusions:
+  - require_wait_command_if_no_wait
+confluent organization environment cluster connector:
+  rule_exclusions:
+  - require_wait_command_if_no_wait
+confluent organization environment cluster topic:
+  rule_exclusions:
+  - require_wait_command_if_no_wait
+confluent agreement default create:
+  rule_exclusions:
+  - missing_command_example
+confluent organization environment create:
+  rule_exclusions:
+  - missing_command_example
+  parameters:
+    stream_governance_config:
+      rule_exclusions:
+      - option_length_too_long
+confluent organization environment update:
+  rule_exclusions:
+  - missing_command_example
+  parameters:
+    stream_governance_config:
+      rule_exclusions:
+      - option_length_too_long
+confluent organization environment cluster create:
+  rule_exclusions:
+  - missing_command_example
+confluent organization environment cluster update:
+  rule_exclusions:
+  - missing_command_example
+confluent organization environment cluster connector create:
+  rule_exclusions:
+  - missing_command_example
+  parameters:
+    connector_service_type_info:
+      rule_exclusions:
+      - option_length_too_long
+confluent organization environment cluster connector update:
+  rule_exclusions:
+  - missing_command_example
+  parameters:
+    connector_service_type_info:
+      rule_exclusions:
+      - option_length_too_long
+confluent organization environment cluster topic create:
+  rule_exclusions:
+  - missing_command_example
+  parameters:
+    partitions_reassignments:
+      rule_exclusions:
+      - option_length_too_long
+confluent organization environment cluster topic update:
+  rule_exclusions:
+  - missing_command_example
+  parameters:
+    partitions_reassignments:
+      rule_exclusions:
+      - option_length_too_long
+confluent validation orgvalidate:
+  rule_exclusions:
+  - missing_command_example
+confluent validation orgvalidate-v2:
+  rule_exclusions:
+  - missing_command_example
 containerapp env create:
   parameters:
     infrastructure_subnet_resource_id:

@@ -115,8 +115,19 @@ class ConfigurationHelper:
 
         
         # If we reach here, no configuration was found
-        raise CLIInternalError(f"No configuration linked to this hierarchy: {hierarchy_id_str}")
-    
+        if "microsoft.edge/targets" in hierarchy_id_str.lower():
+            raise CLIInternalError(
+                f"Missing target configuration and configuration reference for Target: {hierarchy_id_str}"
+            )
+        elif "microsoft.edge/sites" in hierarchy_id_str.lower():
+            raise CLIInternalError(
+                f"Missing site configuration and configuration reference for Site: {hierarchy_id_str}"
+            )
+        else:
+            raise CLIInternalError(
+                f"Hierarchy Id can either be of Target or Site Resource. Invalid Id: {hierarchy_id_str}"
+            )
+       
     @staticmethod
     def getTemplateUniqueIdentifier(subscription_id, template_resource_group_name, template_name, solution_flag, client):
         """
