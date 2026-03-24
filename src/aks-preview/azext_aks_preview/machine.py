@@ -123,7 +123,7 @@ def set_machine_hardware_profile(cmd, raw_parameters):
     )
     machine_hardware_profile = MachineHardwareProfile(
         vm_size=vm_size,
-        enable_ultra_ssd=enable_ultra_ssd
+        ultra_ssd_enabled=enable_ultra_ssd
     )
     return machine_hardware_profile
 
