@@ -17,14 +17,14 @@ from azure.cli.core.aaz import *
 class Status(AAZCommand):
     """Get a StandbyVirtualMachinePoolRuntimeViewResource
 
-    :example: StandbyVirtualMachinePoolRuntimeViews_Status
-        az standby-vm-pool status --resource-group rgstandbypool --name pool --version latest --subscription 00000000-0000-0000-0000-000000000009
+    :example: StandbyVirtualMachinePoolRuntimeViews_Get
+        az standby-vm-pool status --resource-group rgstandbypool --name pool --version latest
     """
 
     _aaz_info = {
-        "version": "2025-03-01",
+        "version": "2025-10-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.standbypool/standbyvirtualmachinepools/{}/runtimeviews/{}", "2025-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.standbypool/standbyvirtualmachinepools/{}/runtimeviews/{}", "2025-10-01"],
         ]
     }
 
@@ -45,7 +45,6 @@ class Status(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="The resource group",
             required=True,
         )
         _args_schema.version = AAZStrArg(
@@ -138,7 +137,7 @@ class Status(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-03-01",
+                    "api-version", "2025-10-01",
                     required=True,
                 ),
             }

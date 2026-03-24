@@ -9,3 +9,40 @@
 # pylint: disable=too-many-lines
 
 from knack.help_files import helps  # pylint: disable=unused-import
+
+
+helps['workload-orchestration support'] = """
+type: group
+short-summary: Commands for troubleshooting and diagnostics of workload orchestration deployments.
+"""
+
+helps['workload-orchestration support create-bundle'] = """
+type: command
+short-summary: Create a support bundle for troubleshooting workload orchestration issues.
+long-summary: |
+    Collects cluster information, resource descriptions, container logs, and runs
+    prerequisite validation checks. The output is a zip file that can be shared with
+    Microsoft support for troubleshooting Day 0 (installation) and Day N (runtime) issues.
+
+    Collected data includes:
+    - Cluster info (version, nodes, namespaces)
+    - Pod/Deployment/Service/DaemonSet/Event descriptions per namespace
+    - Container logs (tailed by default)
+    - Network configuration (kube-proxy, external services, pod CIDRs)
+    - StorageClass, PV, webhook, CRD inventory
+    - WO component health (Symphony, cert-manager)
+    - Prerequisite checks (K8s version, node capacity, DNS, storage, RBAC)
+examples:
+  - name: Create a support bundle with defaults
+    text: az workload-orchestration support create-bundle
+  - name: Create a named bundle
+    text: az workload-orchestration support create-bundle --bundle-name my-cluster-debug
+  - name: Create a bundle in a specific directory
+    text: az workload-orchestration support create-bundle --output-dir /tmp/bundles
+  - name: Collect full logs (no tail) for WO namespace only
+    text: az workload-orchestration support create-bundle --full-logs --namespaces workloadorchestration
+  - name: Run checks only, skip log collection
+    text: az workload-orchestration support create-bundle --skip-logs
+  - name: Use a specific kubeconfig and context
+    text: az workload-orchestration support create-bundle --kube-config ~/.kube/prod-config --kube-context my-cluster
+"""
