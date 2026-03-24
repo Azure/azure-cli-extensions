@@ -6910,6 +6910,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             " --enable-managed-gpu",
             checks=[
                 self.check("provisioningState", "Succeeded"),
+                self.check("gpuProfile.driver", "Install"),
                 self.check(
                     "gpuProfile.nvidia.managementMode", "Managed"
                 ),
@@ -16541,6 +16542,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--enable-managed-gpu",
             checks=[
                 self.check("provisioningState", "Succeeded"),
+                self.check("gpuProfile.driver", "Install"),
                 self.check(
                     "gpuProfile.nvidia.managementMode", "Managed"
                 ),

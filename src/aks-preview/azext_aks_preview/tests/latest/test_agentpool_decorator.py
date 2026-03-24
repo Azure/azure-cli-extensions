@@ -1513,6 +1513,7 @@ class AKSPreviewAgentPoolAddDecoratorCommonTestCase(unittest.TestCase):
         dec_agentpool_1 = self._restore_defaults_in_agentpool(dec_agentpool_1)
         ground_truth_agentpool_1 = self.create_initialized_agentpool_instance(
             gpu_profile=self.models.GPUProfile(
+                driver=CONST_GPU_DRIVER_INSTALL,
                 nvidia=self.models.NvidiaGPUProfile(
                     management_mode=CONST_GPU_MANAGEMENT_MODE_MANAGED
                 )
@@ -2469,6 +2470,7 @@ class AKSPreviewAgentPoolUpdateDecoratorCommonTestCase(unittest.TestCase):
         dec_agentpool_2 = dec_2.update_managed_gpu(agentpool_2)
         grond_truth_agentpool_2 = self.create_initialized_agentpool_instance(
             gpu_profile=self.models.GPUProfile(
+                driver=CONST_GPU_DRIVER_INSTALL,
                 nvidia=self.models.NvidiaGPUProfile(
                     management_mode=CONST_GPU_MANAGEMENT_MODE_MANAGED
                 )
