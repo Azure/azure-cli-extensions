@@ -19748,6 +19748,10 @@ spec:
             self.check("contains(properties.dataFlows[0].streams, 'Microsoft-ContainerLogV2-HighScale')", True),
         ])
 
+        # Wait for any in-progress addon operations to complete before next update
+        wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800'
+        self.cmd(wait_cmd, checks=[self.is_empty()])
+
         # Now disable high log scale mode
         disable_cmd = (
             "aks update --resource-group={resource_group} --name={name} --yes "
