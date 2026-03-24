@@ -1,3 +1,12 @@
+## Unreleased
+
+### Azure Machine Learning CLI (v2) v 2.43.0
+
+- `az ml deployment-template update`
+  - Fix KeyError crash when updating a deployment template that has no tags or description.
+- `az ml deployment-template list`
+  - Fix table output (`-o table`) not rendering any data rows.
+
 ## 2026-02-24
 
 ### Azure Machine Learning CLI (v2) v 2.42.0

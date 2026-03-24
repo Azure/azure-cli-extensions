@@ -18,13 +18,13 @@ class Create(AAZCommand):
     """Create a StandbyVirtualMachinePoolResource
 
     :example: StandbyVirtualMachinePools_CreateOrUpdate
-        az standby-vm-pool create --resource-group rgstandbypool --name pool --max-ready-capacity 304 --min-ready-capacity 300 --vm-state Running --vmss-id /subscriptions/00000000-0000-0000-0000-000000000009/resourceGroups/rgstandbypool/providers/Microsoft.Compute/virtualMachineScaleSets/myVmss --tags "{}" --location West US --subscription 00000000-0000-0000-0000-000000000009
+        az standby-vm-pool create --resource-group rgstandbypool --name pool --max-ready-capacity 304 --min-ready-capacity 300 --post-provisioning-delay PT2S --dynamic-sizing-enabled True --vm-state Running --vmss-id /subscriptions/00000000-0000-0000-0000-000000000009/resourceGroups/rgstandbypool/providers/Microsoft.Compute/virtualMachineScaleSets/myVmss --tags "{}" --location West US
     """
 
     _aaz_info = {
-        "version": "2025-03-01",
+        "version": "2025-10-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.standbypool/standbyvirtualmachinepools/{}", "2025-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.standbypool/standbyvirtualmachinepools/{}", "2025-10-01"],
         ]
     }
 
@@ -46,7 +46,6 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="The resource group",
             required=True,
         )
         _args_schema.name = AAZStrArg(
@@ -58,6 +57,15 @@ class Create(AAZCommand):
             ),
         )
 
+        # define Arg Group "DynamicSizing"
+
+        _args_schema = cls._args_schema
+        _args_schema.dynamic_sizing_enabled = AAZBoolArg(
+            options=["--dynamic-sizing-enabled"],
+            arg_group="DynamicSizing",
+            help="Indicates whether dynamic sizing is enabled for the standby pool.",
+        )
+
         # define Arg Group "ElasticityProfile"
 
         _args_schema = cls._args_schema
@@ -66,7 +74,6 @@ class Create(AAZCommand):
             arg_group="ElasticityProfile",
             help="Specifies the maximum number of virtual machines in the standby virtual machine pool.",
             fmt=AAZIntArgFormat(
-                maximum=2000,
                 minimum=0,
             ),
         )
@@ -75,9 +82,13 @@ class Create(AAZCommand):
             arg_group="ElasticityProfile",
             help="Specifies the desired minimum number of virtual machines in the standby virtual machine pool. MinReadyCapacity cannot exceed MaxReadyCapacity.",
             fmt=AAZIntArgFormat(
-                maximum=2000,
                 minimum=0,
             ),
+        )
+        _args_schema.post_provisioning_delay = AAZStrArg(
+            options=["--post-provisioning-delay", "--provision-delay"],
+            arg_group="ElasticityProfile",
+            help="Specifies the duration to wait after virtual machine provisioning before the virtual machine becomes available for use. The duration should be specified in ISO 8601 format (e.g., PT2S for 2 seconds).",
         )
 
         # define Arg Group "Properties"
@@ -197,7 +208,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-03-01",
+                    "api-version", "2025-10-01",
                     required=True,
                 ),
             }
@@ -234,8 +245,14 @@ class Create(AAZCommand):
 
             elasticity_profile = _builder.get(".properties.elasticityProfile")
             if elasticity_profile is not None:
+                elasticity_profile.set_prop("dynamicSizing", AAZObjectType)
                 elasticity_profile.set_prop("maxReadyCapacity", AAZIntType, ".max_ready_capacity", typ_kwargs={"flags": {"required": True}})
                 elasticity_profile.set_prop("minReadyCapacity", AAZIntType, ".min_ready_capacity")
+                elasticity_profile.set_prop("postProvisioningDelay", AAZStrType, ".post_provisioning_delay")
+
+            dynamic_sizing = _builder.get(".properties.elasticityProfile.dynamicSizing")
+            if dynamic_sizing is not None:
+                dynamic_sizing.set_prop("enabled", AAZBoolType, ".dynamic_sizing_enabled")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -299,6 +316,9 @@ class Create(AAZCommand):
             )
 
             elasticity_profile = cls._schema_on_200_201.properties.elasticity_profile
+            elasticity_profile.dynamic_sizing = AAZObjectType(
+                serialized_name="dynamicSizing",
+            )
             elasticity_profile.max_ready_capacity = AAZIntType(
                 serialized_name="maxReadyCapacity",
                 flags={"required": True},
@@ -306,6 +326,12 @@ class Create(AAZCommand):
             elasticity_profile.min_ready_capacity = AAZIntType(
                 serialized_name="minReadyCapacity",
             )
+            elasticity_profile.post_provisioning_delay = AAZStrType(
+                serialized_name="postProvisioningDelay",
+            )
+
+            dynamic_sizing = cls._schema_on_200_201.properties.elasticity_profile.dynamic_sizing
+            dynamic_sizing.enabled = AAZBoolType()
 
             system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(

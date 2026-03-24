@@ -92,7 +92,7 @@ class Create(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.AppLinksCreateOrReplace(ctx=self.ctx)()
+        yield self.AppLinksCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -107,7 +107,7 @@ class Create(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class AppLinksCreateOrReplace(AAZHttpOperation):
+    class AppLinksCreateOrUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
