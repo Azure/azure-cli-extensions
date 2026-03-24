@@ -2721,6 +2721,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--resource-group={resource_group}"
             " --cluster-name={name} "
             "--name={nodepool_name} "
+            " --zones=1 "
             "--mode=Machines",
             checks=[
                 self.check("provisioningState", "Succeeded"),
