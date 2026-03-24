@@ -8,9 +8,12 @@
 # --------------------------------------------------------------------------
 
 import datetime
+from collections.abc import MutableMapping
 from typing import Any, Dict, List, Optional, TYPE_CHECKING, Union
 
 from .. import _serialization
+
+JSON = MutableMapping[str, Any]  # pylint: disable=unsubscriptable-object
 
 if TYPE_CHECKING:
     from .. import models as _models
