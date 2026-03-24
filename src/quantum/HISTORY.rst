@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.0.0b13
++++++++++++++++
+* Updated workspace create command to support creation of user delegation SAS for linked storage account with disabled access keys
+* Fixed bug where getting linked storage account from the service was used when storage connection string was provided in job submission related commands
+
 1.0.0b12
 +++++++++++++++
 * Added support for Data Plane v2 including specifying priority parameter as part of job params when submitting a job
