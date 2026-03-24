@@ -5,7 +5,7 @@ This is an extension to Azure CLI to manage Computelimit resources.
 Install the Computelimit extension using the CLI command below
 
 ```
-az extension add --name az computelimit
+az extension add --name computelimit
 ```
 
 ### Included features ###

@@ -12,11 +12,11 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "computelimit",
+    "computelimit guest-subscription",
     is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage compute shared limit resources
+    """Manage Guest Subscription
     """
     pass
 

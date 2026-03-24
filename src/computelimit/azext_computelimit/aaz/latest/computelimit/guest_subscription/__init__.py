@@ -8,17 +8,8 @@
 # pylint: skip-file
 # flake8: noqa
 
-from azure.cli.core.aaz import *
-
-
-@register_command_group(
-    "computelimit",
-    is_preview=True,
-)
-class __CMDGroup(AAZCommandGroup):
-    """Manage compute shared limit resources
-    """
-    pass
-
-
-__all__ = ["__CMDGroup"]
+from .__cmd_group import *
+from ._add import *
+from ._list import *
+from ._remove import *
+from ._show import *
