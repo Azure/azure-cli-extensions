@@ -19433,6 +19433,10 @@ spec:
             self.check("provisioningState", "Succeeded"),
         ])
 
+        # Wait for any in-progress addon operations to complete before next update
+        wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800'
+        self.cmd(wait_cmd, checks=[self.is_empty()])
+
         # Update: enable monitoring with high log scale mode
         update_cmd = (
             "aks update --resource-group={resource_group} --name={name} --yes "
@@ -19529,6 +19533,10 @@ spec:
             self.check('properties.dataFlows[0].streams[-1]', 'Microsoft-ContainerNetworkLogs'),
         ])
 
+        # Wait for any in-progress addon operations to complete before next update
+        wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800'
+        self.cmd(wait_cmd, checks=[self.is_empty()])
+
         # Disable via the alias — run twice like test_aks_create_acns_with_flow_logs
         # (first run applies the change, second run verifies the result)
         disable_cmd = "aks update --resource-group={resource_group} --name={name} --disable-retina-flow-logs -o json"
@@ -19586,6 +19594,10 @@ spec:
             self.check("networkProfile.advancedNetworking.enabled", True),
         ])
 
+        # Wait for any in-progress addon operations to complete before next update
+        wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800'
+        self.cmd(wait_cmd, checks=[self.is_empty()])
+
         # Update: enable monitoring + CNL together
         update_cmd = (
             "aks update --resource-group={resource_group} --name={name} --yes "
@@ -19593,14 +19605,18 @@ spec:
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingFlowLogsPreview "
             "--output=json"
         )
-        self.cmd(update_cmd, checks=[
+        self.cmd(update_cmd)
+
+        # Wait for the update to fully complete, then verify via aks show
+        self.cmd(wait_cmd, checks=[self.is_empty()])
+        show_cmd = "aks show --resource-group={resource_group} --name={name} --output=json"
+        self.cmd(show_cmd, checks=[
             self.check("provisioningState", "Succeeded"),
             self.check("addonProfiles.omsagent.enabled", True),
             self.check("addonProfiles.omsagent.config.enableRetinaNetworkFlags", "True"),
         ])
 
         # Verify DCR was created with ContainerNetworkLogs stream
-        show_cmd = "aks show --resource-group={resource_group} --name={name} --output=json"
         response = self.cmd(show_cmd).get_output_in_json()
 
         cluster_resource_id = response["id"]
