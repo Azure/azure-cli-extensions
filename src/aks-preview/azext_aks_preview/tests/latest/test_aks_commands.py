@@ -2736,7 +2736,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             " --nodepool-name={nodepool_name} "
             " --machine-name={machine_name} "
             " --vm-size={vm_size} "
-            " --zones= 1 "
+            " --zones=1 "
             " --priority Spot "
             " --eviction-policy Delete "
             " --spot-max-price 0.5 "
