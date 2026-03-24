@@ -62,6 +62,13 @@
             "metadata": {
                 "description": "Deployment name for role assignment operation"
             }
+        },
+        "storageAccountAllowSharedKeyAccess": {
+            "type": "bool",
+            "defaultValue": false,
+            "metadata": {
+                "description": "Whether to allow shared key access on the storage account. Defaults to false (secure) for new accounts; existing accounts should pass their current value to avoid breaking changes."
+            }
         }
     },
     "functions": [],
@@ -108,7 +115,7 @@
                             "kind": "[parameters('storageAccountKind')]",
                             "properties": {
                                 "allowBlobPublicAccess": false,
-                                "allowSharedKeyAccess": false,
+                                "allowSharedKeyAccess": "[parameters('storageAccountAllowSharedKeyAccess')]",
                                 "minimumTlsVersion": "TLS1_2"
                             },
                             "resources": [
