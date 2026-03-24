@@ -1,0 +1,58 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - oracle-database autonomous-database list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.14.0 (macOS-26.2-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://www-proxy-adcq7-new.us.oracle.com:80/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Oracle.Database/autonomousDatabases?api-version=2025-09-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PowerShellTestRg/providers/Oracle.Database/autonomousDatabases/adbscliTest","name":"adbscliTest","type":"oracle.database/autonomousdatabases","location":"eastus","tags":{},"systemData":{"createdBy":"mihret.kidane@oracle.com","createdByType":"User","createdAt":"2026-03-20T18:13:58.1666315Z","lastModifiedBy":"a50e6610-5416-4c2a-88b6-172c7f376f7d","lastModifiedByType":"Application","lastModifiedAt":"2026-03-23T11:34:22.5780968Z"},"properties":{"dataBaseType":"Regular","actualUsedDataStorageSizeInTbs":0.0072023272514343262,"allocatedStorageSizeInTbs":0.0185546875,"autonomousMaintenanceScheduleType":"Regular","characterSet":"AL32UTF8","computeCount":2,"computeModel":"ECPU","connectionStrings":{"allConnectionStrings":{},"high":"adb.us-ashburn-1.oraclecloud.com:1522/gb9a8851d81be03_adbsclitest_high.adb.oraclecloud.com","low":"adb.us-ashburn-1.oraclecloud.com:1522/gb9a8851d81be03_adbsclitest_low.adb.oraclecloud.com","medium":"adb.us-ashburn-1.oraclecloud.com:1522/gb9a8851d81be03_adbsclitest_medium.adb.oraclecloud.com","profiles":[{"consumerGroup":"High","displayName":"adbsclitest_high","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Mutual","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=gb9a8851d81be03_adbsclitest_high.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"},{"consumerGroup":"Medium","displayName":"adbsclitest_medium","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Mutual","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=gb9a8851d81be03_adbsclitest_medium.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"},{"consumerGroup":"Low","displayName":"adbsclitest_low","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Mutual","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=gb9a8851d81be03_adbsclitest_low.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"},{"consumerGroup":"Tp","displayName":"adbsclitest_tp","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Mutual","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=gb9a8851d81be03_adbsclitest_tp.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"},{"consumerGroup":"Tpurgent","displayName":"adbsclitest_tpurgent","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Mutual","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=gb9a8851d81be03_adbsclitest_tpurgent.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"}]},"connectionUrls":{"apexUrl":"https://GB9A8851D81BE03-ADBSCLITEST.adb.us-ashburn-1.oraclecloudapps.com/ords/apex","databaseTransformsUrl":"https://GB9A8851D81BE03-ADBSCLITEST.adb.us-ashburn-1.oraclecloudapps.com/odi/?sso=true","graphStudioUrl":"https://GB9A8851D81BE03-ADBSCLITEST.adb.us-ashburn-1.oraclecloudapps.com/graphstudio/?sso=true","machineLearningNotebookUrl":"https://GB9A8851D81BE03-ADBSCLITEST.adb.us-ashburn-1.oraclecloudapps.com/oml/?sso=true","ordsUrl":"https://GB9A8851D81BE03-ADBSCLITEST.adb.us-ashburn-1.oraclecloudapps.com/ords/","sqlDevWebUrl":"https://GB9A8851D81BE03-ADBSCLITEST.adb.us-ashburn-1.oraclecloudapps.com/ords/sql-developer"},"dataStorageSizeInGbs":1024,"dataStorageSizeInTbs":1,"dbVersion":"19c","dbWorkload":"LH","displayName":"adbscliTest","isAutoScalingEnabled":true,"isAutoScalingForStorageEnabled":false,"peerDbIds":[],"isLocalDataGuardEnabled":false,"isRemoteDataGuardEnabled":false,"localDisasterRecoveryType":"BackupBased","localStandbyDb":{"lifecycleState":"Standby"},"isMtlsConnectionRequired":true,"licenseModel":"LicenseIncluded","provisioningState":"Succeeded","ncharacterSet":"AL16UTF16","ociUrl":"https://cloud.oracle.com/db/adbs/ocid1.autonomousdatabase.oc1.iad.anuwcljs2edokzyabrsmy2dkqinwfsatyvkbscdjztjvzbgrax2ograpiodq?region=us-ashburn-1&tenant=orpsandbox7&compartmentId=ocid1.compartment.oc1..aaaaaaaadep52emiauprgkax4zmj4jycppdafs2tg7pnttdyhfldg2v3i5ea","openMode":"ReadWrite","permissionLevel":"Restricted","lifecycleState":"Available","supportedRegionsToCloneTo":["westus","canadacentral","brazilsouth","centralus","northcentralus","westeurope","southeastasia","francecentral"],"timeCreated":"2026-03-20T18:14:08.217Z","timeLocalDataGuardEnabled":"Fri
+        Mar 20 18:14:20 UTC 2026","timeMaintenanceBegin":"2026-03-29T12:00:00Z","timeMaintenanceEnd":"2026-03-29T14:00:00Z","ocid":"ocid1.autonomousdatabase.oc1.iad.anuwcljs2edokzyabrsmy2dkqinwfsatyvkbscdjztjvzbgrax2ograpiodq","backupRetentionPeriodInDays":60}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '5199'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 Mar 2026 15:43:43 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - 966e4fd7-b803-4f31-8afa-7b29488a8ed7
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 221D6E736257456B8735CDB56F06C4C2 Ref B: SJC211051201009 Ref C: 2026-03-23T15:43:42Z'
+    status:
+      code: 200
+      message: OK
+version: 1
