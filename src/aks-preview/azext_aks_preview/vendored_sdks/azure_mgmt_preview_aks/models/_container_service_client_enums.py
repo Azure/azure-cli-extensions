@@ -95,8 +95,7 @@ class AgentPoolSSHAccess(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     LOCAL_USER = "LocalUser"
     """Can SSH onto the node as a local user using private key."""
     DISABLED = "Disabled"
-    """SSH service will be turned off on the node. More information can be found under
-    https://aka.ms/aks/ssh/disable"""
+    """SSH service will be turned off on the node."""
     ENTRA_ID = "EntraId"
     """SSH to node with EntraId integration. More information can be found under
     https://aka.ms/aks/ssh/aad"""
@@ -157,9 +156,27 @@ class ConnectionStatus(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """The private link service connection status."""
 
     PENDING = "Pending"
+    """Connection is pending approval."""
     APPROVED = "Approved"
+    """Connection is approved."""
     REJECTED = "Rejected"
+    """Connection is rejected."""
     DISCONNECTED = "Disconnected"
+    """Connection is disconnected."""
+
+
+class ContainerNetworkLogs(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Configures container network logs ingestion with Azure Monitor. Which network logs to ingest is
+    controlled by the CRD found in the following links. No network logs are ingested by default.
+    More information on container network logs can be found at
+    https://aka.ms/ContainerNetworkLogsDoc. More information on configuring container network log
+    can be found at https://aka.ms/acns/howtoenablecnl. If not specified, the default is Disabled.
+    """
+
+    DISABLED = "Disabled"
+    """Azure monitor ingestion of container network logs is disabled"""
+    ENABLED = "Enabled"
+    """Azure monitor ingestion of container network logs is enabled"""
 
 
 class CreatedByType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -235,6 +252,7 @@ class ExtendedLocationTypes(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """The type of extendedLocation."""
 
     EDGE_ZONE = "EdgeZone"
+    """Azure Edge Zone extended location type."""
 
 
 class Format(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -247,6 +265,15 @@ class Format(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Return exec format kubeconfig. This format requires kubelogin binary in the path."""
     EXEC_ENUM = "exec"
     """Return exec format kubeconfig. This format requires kubelogin binary in the path."""
+
+
+class GatewayAPIIstioEnabled(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Whether to enable Istio as a Gateway API implementation for managed ingress with App Routing."""
+
+    ENABLED = "Enabled"
+    """Enables managed ingress via the Gateway API using a sidecar-less Istio controlplane."""
+    DISABLED = "Disabled"
+    """Disables the sidecar-less istio control plane for managed ingress via the Gateway API."""
 
 
 class GPUDriver(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -262,10 +289,15 @@ class GPUInstanceProfile(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """GPUInstanceProfile to be used to specify GPU MIG instance profile for supported GPU VM SKU."""
 
     MIG1_G = "MIG1g"
+    """MIG 1g GPU instance profile."""
     MIG2_G = "MIG2g"
+    """MIG 2g GPU instance profile."""
     MIG3_G = "MIG3g"
+    """MIG 3g GPU instance profile."""
     MIG4_G = "MIG4g"
+    """MIG 4g GPU instance profile."""
     MIG7_G = "MIG7g"
+    """MIG 7g GPU instance profile."""
 
 
 class GuardrailsSupport(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -363,7 +395,9 @@ class KeyVaultNetworkAccessTypes(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """
 
     PUBLIC = "Public"
+    """Key vault allows public access from all networks."""
     PRIVATE = "Private"
+    """Key vault disables public access and enables private link."""
 
 
 class KubeletDiskType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -500,11 +534,17 @@ class ManagedClusterPodIdentityProvisioningState(str, Enum, metaclass=CaseInsens
     """The current provisioning state of the pod identity."""
 
     ASSIGNED = "Assigned"
+    """Pod identity is assigned."""
     CANCELED = "Canceled"
+    """Pod identity assignment was canceled."""
     DELETING = "Deleting"
+    """Pod identity is being deleted."""
     FAILED = "Failed"
+    """Pod identity assignment failed."""
     SUCCEEDED = "Succeeded"
+    """Pod identity assignment succeeded."""
     UPDATING = "Updating"
+    """Pod identity is being updated."""
 
 
 class ManagedClusterSKUName(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -550,6 +590,18 @@ class ManagedGatewayType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     https://gateway-api.sigs.k8s.io/concepts/versioning/ for more details."""
 
 
+class ManagementMode(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The Managed GPU experience installs additional components, such as the Data Center GPU Manager
+    (DCGM) metrics for monitoring, on top of the GPU driver for you. For more details of what is
+    installed, check out aka.ms/aks/managed-gpu.
+    """
+
+    UNMANAGED = "Unmanaged"
+    """Managed GPU experience is disabled for NVIDIA GPUs."""
+    MANAGED = "Managed"
+    """Managed GPU experience is enabled for NVIDIA GPUs."""
+
+
 class MeshMembershipProvisioningState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """The provisioning state of the last accepted operation."""
 
@@ -567,6 +619,21 @@ class MeshMembershipProvisioningState(str, Enum, metaclass=CaseInsensitiveEnumMe
     """The Mesh Membership is being updated."""
 
 
+class MigStrategy(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Sets the MIG (Multi-Instance GPU) strategy that will be used for managed MIG support. For more
+    information about the different strategies, visit aka.ms/aks/managed-gpu. When not specified,
+    the default is None.
+    """
+
+    NONE = "None"
+    """Don't set a MIG strategy. If you previously had one set, this will override it and set remove
+    the set MIG strategy."""
+    SINGLE = "Single"
+    """Set the MIG strategy for managed MIG as single."""
+    MIXED = "Mixed"
+    """Set the MIG strategy for managed MIG as mixed."""
+
+
 class Mode(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Specify which proxy mode to use ('IPTABLES', 'IPVS' or 'NFTABLES')."""
 
@@ -582,11 +649,17 @@ class NamespaceProvisioningState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """The current provisioning state of the namespace."""
 
     UPDATING = "Updating"
+    """The namespace is being updated."""
     DELETING = "Deleting"
+    """The namespace is being deleted."""
     CREATING = "Creating"
+    """The namespace is being created."""
     SUCCEEDED = "Succeeded"
+    """The namespace provisioning succeeded."""
     FAILED = "Failed"
+    """The namespace provisioning failed."""
     CANCELED = "Canceled"
+    """The namespace provisioning was canceled."""
 
 
 class NetworkDataplane(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -624,16 +697,17 @@ class NetworkPlugin(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     <https://docs.microsoft.com/azure/aks/concepts-network#kubenet-basic-networking>`_ for more
     information."""
     NONE = "none"
-    """Do not use a network plugin. A custom CNI will need to be installed after cluster creation for
-    networking functionality."""
+    """No CNI plugin is pre-installed. See `BYO CNI
+    <https://docs.microsoft.com/en-us/azure/aks/use-byo-cni>`_ for more information."""
 
 
 class NetworkPluginMode(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """The mode the network plugin should use."""
 
     OVERLAY = "overlay"
-    """Pods are given IPs from the PodCIDR address space but use Azure Routing Domains rather than
-    Kubenet reference plugins host-local and bridge."""
+    """Used with networkPlugin=azure, pods are given IPs from the PodCIDR address space but use Azure
+    Routing Domains rather than Kubenet's method of route tables. For more information visit
+    https://aka.ms/aks/azure-cni-overlay."""
 
 
 class NetworkPolicy(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -675,8 +749,8 @@ class NginxIngressControllerType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
 
 
 class NodeOSUpgradeChannel(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """Manner in which the OS on your nodes is updated. The default is Unmanaged, but may change to
-    either NodeImage or SecurityPatch at GA.
+    """Node OS Upgrade Channel. Manner in which the OS on your nodes is updated. The default is
+    NodeImage.
     """
 
     NONE = "None"
@@ -684,11 +758,16 @@ class NodeOSUpgradeChannel(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     you are responsible for your security updates"""
     UNMANAGED = "Unmanaged"
     """OS updates will be applied automatically through the OS built-in patching infrastructure. Newly
-    scaled in machines will be unpatched initially, and will be patched at some later time by the
-    OS's infrastructure. Behavior of this option depends on the OS in question. Ubuntu and Mariner
-    apply security patches through unattended upgrade roughly once a day around 06:00 UTC. Windows
-    does not apply security patches automatically and so for them this option is equivalent to None
-    till further notice"""
+    scaled in machines will be unpatched initially and will be patched at some point by the OS's
+    infrastructure. Behavior of this option depends on the OS in question. Ubuntu and Mariner apply
+    security patches through unattended upgrade roughly once a day around 06:00 UTC. Windows does
+    not apply security patches automatically and so for them this option is equivalent to None till
+    further notice"""
+    NODE_IMAGE = "NodeImage"
+    """AKS will update the nodes with a newly patched VHD containing security fixes and bugfixes on a
+    weekly cadence. With the VHD update machines will be rolling reimaged to that VHD following
+    maintenance windows and surge settings. No extra VHD cost is incurred when choosing this option
+    as AKS hosts the images."""
     SECURITY_PATCH = "SecurityPatch"
     """AKS downloads and updates the nodes with tested security updates. These updates honor the
     maintenance window settings and produce a new VHD that is used on new nodes. On some occasions
@@ -696,11 +775,6 @@ class NodeOSUpgradeChannel(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     re-imaged to the newly produced VHD in order to apply the changes. This option incurs an extra
     cost of hosting the new Security Patch VHDs in your resource group for just in time
     consumption."""
-    NODE_IMAGE = "NodeImage"
-    """AKS will update the nodes with a newly patched VHD containing security fixes and bugfixes on a
-    weekly cadence. With the VHD update machines will be rolling reimaged to that VHD following
-    maintenance windows and surge settings. No extra VHD cost is incurred when choosing this option
-    as AKS hosts the images."""
 
 
 class NodeProvisioningDefaultNodePools(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -763,15 +837,13 @@ class OSDiskType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
 
 
 class OSSKU(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """Specifies the OS SKU used by the agent pool. If not specified, the default is Ubuntu if
-    OSType=Linux or Windows2019 if OSType=Windows. And the default Windows OSSKU will be changed to
-    Windows2022 after Windows2019 is deprecated.
+    """Specifies the OS SKU used by the agent pool. The default is Ubuntu if OSType is Linux. The
+    default is Windows2019 when Kubernetes <= 1.24 or Windows2022 when Kubernetes >= 1.25 if OSType
+    is Windows.
     """
 
     UBUNTU = "Ubuntu"
     """Use Ubuntu as the OS for node images."""
-    MARINER = "Mariner"
-    """Deprecated OSSKU. Microsoft recommends that new deployments choose 'AzureLinux' instead."""
     AZURE_LINUX = "AzureLinux"
     """Use AzureLinux as the OS for node images. Azure Linux is a container-optimized Linux distro
     built by Microsoft, visit https://aka.ms/azurelinux for more information."""
@@ -780,6 +852,8 @@ class OSSKU(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     built by Microsoft, visit https://aka.ms/azurelinux for more information. For limitations,
     visit https://aka.ms/aks/node-images. For OS migration guidance, see
     https://aka.ms/aks/upgrade-os-version."""
+    MARINER = "Mariner"
+    """Deprecated OSSKU. Microsoft recommends that new deployments choose 'AzureLinux' instead."""
     FLATCAR = "Flatcar"
     """Use Flatcar Container Linux as the OS for node images. Flatcar is a container-optimized,
     security-focused Linux OS, with an immutable filesystem and part of the Cloud Native Computing
@@ -793,6 +867,10 @@ class OSSKU(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     WINDOWS2022 = "Windows2022"
     """Use Windows2022 as the OS for node images. Unsupported for system node pools. Windows2022 only
     supports Windows2022 containers; it cannot run Windows2019 containers and vice versa."""
+    UBUNTU2204 = "Ubuntu2204"
+    """Use Ubuntu2204 as the OS for node images, however, Ubuntu 22.04 may not be supported for all
+    nodepools. For limitations and supported kubernetes versions, see
+    https://aka.ms/aks/supported-ubuntu-versions"""
     WINDOWS2025 = "Windows2025"
     """Use Windows2025 as the OS for node images. Unsupported for system node pools. Windows2025
     supports Windows2022 and Windows 2025 containers; it cannot run Windows2019 containers and vice
@@ -801,10 +879,6 @@ class OSSKU(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Use Windows Annual Channel version as the OS for node images. Unsupported for system node
     pools. Details about supported container images and kubernetes versions under different AKS
     Annual Channel versions could be seen in https://aka.ms/aks/windows-annual-channel-details."""
-    UBUNTU2204 = "Ubuntu2204"
-    """Use Ubuntu2204 as the OS for node images, however, Ubuntu 22.04 may not be supported for all
-    nodepools. For limitations and supported kubernetes versions, see see
-    https://aka.ms/aks/supported-ubuntu-versions"""
     UBUNTU2404 = "Ubuntu2404"
     """Use Ubuntu2404 as the OS for node images, however, Ubuntu 24.04 may not be supported for all
     nodepools. For limitations and supported kubernetes versions, see see
@@ -837,6 +911,8 @@ class OutboundType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     <https://docs.microsoft.com/azure/aks/egress-outboundtype#outbound-type-of-userdefinedrouting>`_."""
     MANAGED_NAT_GATEWAY = "managedNATGateway"
     """The AKS-managed NAT gateway is used for egress."""
+    MANAGED_NAT_GATEWAY_V2 = "managedNATGatewayV2"
+    """The AKS-managed NAT gateway V2 is used for egress."""
     USER_ASSIGNED_NAT_GATEWAY = "userAssignedNATGateway"
     """The user-assigned NAT gateway associated to the cluster subnet is used for egress. This is an
     advanced scenario and requires proper network configuration."""
@@ -891,10 +967,15 @@ class PrivateEndpointConnectionProvisioningState(str, Enum, metaclass=CaseInsens
     """The current provisioning state."""
 
     CANCELED = "Canceled"
+    """Private endpoint connection provisioning was canceled."""
     CREATING = "Creating"
+    """Private endpoint connection is being created."""
     DELETING = "Deleting"
+    """Private endpoint connection is being deleted."""
     FAILED = "Failed"
+    """Private endpoint connection provisioning failed."""
     SUCCEEDED = "Succeeded"
+    """Private endpoint connection provisioning succeeded."""
 
 
 class Protocol(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -944,13 +1025,44 @@ class ResourceIdentityType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Do not use a managed identity for the Managed Cluster, service principal will be used instead."""
 
 
+class ResourceSkuCapacityScaleType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The scale type applicable to the sku."""
+
+    AUTOMATIC = "Automatic"
+    """Automatic scaling"""
+    MANUAL = "Manual"
+    """Manual scaling"""
+    NONE = "None"
+    """No scaling"""
+
+
+class ResourceSkuRestrictionsReasonCode(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The reason for restriction."""
+
+    QUOTA_ID = "QuotaId"
+    """Quota ID restriction"""
+    NOT_AVAILABLE_FOR_SUBSCRIPTION = "NotAvailableForSubscription"
+    """Not available for subscription"""
+
+
+class ResourceSkuRestrictionsType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The type of restrictions."""
+
+    LOCATION = "Location"
+    """Location restriction"""
+    ZONE = "Zone"
+    """Zone restriction"""
+
+
 class RestrictionLevel(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """The restriction level applied to the cluster's node resource group."""
+    """The restriction level applied to the cluster's node resource group. If not specified, the
+    default is 'Unrestricted'.
+    """
 
     UNRESTRICTED = "Unrestricted"
     """All RBAC permissions are allowed on the managed node resource group"""
     READ_ONLY = "ReadOnly"
-    """Only */read RBAC permissions allowed on the managed node resource group"""
+    """Only *\\/read RBAC permissions allowed on the managed node resource group"""
 
 
 class SafeguardsSupport(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -976,9 +1088,8 @@ class ScaleDownMode(str, Enum, metaclass=CaseInsensitiveEnumMeta):
 
 
 class ScaleSetEvictionPolicy(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """The Virtual Machine Scale Set eviction policy. The eviction policy specifies what to do with
-    the VM when it is evicted. The default is Delete. For more information about eviction see `spot
-    VMs <https://docs.microsoft.com/azure/virtual-machines/spot-vms>`_.
+    """The eviction policy for machine. This cannot be specified unless the priority is 'Spot'. If not
+    specified, the default is 'Delete'.
     """
 
     DELETE = "Delete"
@@ -990,7 +1101,7 @@ class ScaleSetEvictionPolicy(str, Enum, metaclass=CaseInsensitiveEnumMeta):
 
 
 class ScaleSetPriority(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """The Virtual Machine Scale Set priority."""
+    """The priority for the machine. If not specified, the default is 'Regular'."""
 
     SPOT = "Spot"
     """Spot priority VMs will be used. There is no SLA for spot nodes. See `spot on AKS
@@ -1048,6 +1159,9 @@ class TransitEncryptionType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Enable WireGuard encryption. Refer to
     https://docs.cilium.io/en/latest/security/network/encryption-wireguard/ on use cases and
     implementation details"""
+    M_TLS = "mTLS"
+    """Enables mTLS authentication and encryption for pod-to-pod traffic within the cluster. Refer to
+    https://aka.ms/acnsciliummtls for relevant documentation."""
     NONE = "None"
     """Disable Transit encryption"""
 
@@ -1056,27 +1170,30 @@ class TrustedAccessRoleBindingProvisioningState(str, Enum, metaclass=CaseInsensi
     """The current provisioning state of trusted access role binding."""
 
     CANCELED = "Canceled"
+    """Trusted access role binding provisioning was canceled."""
     DELETING = "Deleting"
+    """Trusted access role binding is being deleted."""
     FAILED = "Failed"
+    """Trusted access role binding provisioning failed."""
     SUCCEEDED = "Succeeded"
+    """Trusted access role binding provisioning succeeded."""
     UPDATING = "Updating"
+    """Trusted access role binding is being updated."""
 
 
 class Type(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """The week index. Specifies on which instance of the allowed days specified in daysOfWeek the
-    maintenance occurs.
-    """
+    """The week index. Specifies on which week of the month the dayOfWeek applies."""
 
     FIRST = "First"
-    """First."""
+    """First week of the month."""
     SECOND = "Second"
-    """Second."""
+    """Second week of the month."""
     THIRD = "Third"
-    """Third."""
+    """Third week of the month."""
     FOURTH = "Fourth"
-    """Fourth."""
+    """Fourth week of the month."""
     LAST = "Last"
-    """Last."""
+    """Last week of the month."""
 
 
 class UndrainableNodeBehavior(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -1154,12 +1271,19 @@ class WeekDay(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """The weekday enum."""
 
     SUNDAY = "Sunday"
+    """Represents Sunday."""
     MONDAY = "Monday"
+    """Represents Monday."""
     TUESDAY = "Tuesday"
+    """Represents Tuesday."""
     WEDNESDAY = "Wednesday"
+    """Represents Wednesday."""
     THURSDAY = "Thursday"
+    """Represents Thursday."""
     FRIDAY = "Friday"
+    """Represents Friday."""
     SATURDAY = "Saturday"
+    """Represents Saturday."""
 
 
 class WorkloadRuntime(str, Enum, metaclass=CaseInsensitiveEnumMeta):

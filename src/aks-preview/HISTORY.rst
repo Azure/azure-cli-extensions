@@ -11,9 +11,38 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Fix `match_condition` kwarg leaking to HTTP transport by overriding `put_mc` and `add_agentpool` to pass `if_match` / `if_none_match` directly to the vendored SDK. This change fixes the compatibility issue as azure-cli/acs module adopts TypeSpec emitted SDKs while azure-cli-extensions/aks-preview still uses the autorest emitted SDK.
++ `az aks list-vm-skus`: New command to list available VM SKUs for AKS clusters in a given region.
+* `az aks create/update`: Add `--enable-service-account-image-pull`, `--disable-service-account-image-pull`, and `--service-account-image-pull-default-managed-identity-id` parameters to manage service account based image pull settings.
+* `az aks list-vm-skus`: New command to list available VM SKUs for AKS clusters in a given region.
+* Add managed GPU enablement option to node pool property in `az aks nodepool add` and `az aks nodepool update`.
+
+19.0.0b27
++++++++
+* `az aks nodepool add`: Fix `InvalidParameter` error when `mode` is `Machines`.
+
+19.0.0b26
++++++++
+* `az aks create/update`: Add `--enable-app-routing-istio` / `--disable-app-routing-istio` (short: `--enable-ari` / `--disable-ari`) flags to enable or disable Istio as a Gateway API implementation for App Routing.
+* `az aks approuting gateway istio enable/disable`: Add new subcommands to enable or disable the Istio Gateway API implementation for App Routing on an existing cluster.
+* Add 'mTLS' as a transit encryption type option for `--acns-transit-encryption-type` in `az aks create/update`
+
+19.0.0b25
++++++++
+* `az aks create`: Add `--enable-continuous-control-plane-and-addon-monitor` to enable continuous control plane and addon monitor.
+* `az aks update`: Add `--enable-continuous-control-plane-and-addon-monitor` and `--disable-continuous-control-plane-and-addon-monitor` to manage continuous control plane and addon monitor.
+
+19.0.0b24
++++++++
+* Vendor new SDK and bump API version to 2026-01-02-preview.
+
+19.0.0b23
++++++++
 * `az aks update`: Fix `--enable-secret-rotation`, `--disable-secret-rotation`, and `--rotation-poll-interval` flags being silently ignored when updating Azure Key Vault Secrets Provider addon configuration.
 * `az aks create/update`: Add `--enable-azure-monitor-logs` support to container network logs validation.
 * `az aks create/update`: Add `--enable-default-domain` and `--disable-default-domain` parameters to manage the default domain feature for web app routing.
+* `az aks create`: Add ephemeralDisk and elasticSan storage options to `--enable-azure-container-storage` for the latest version of Azure Container Storage.
+* `az aks update`: Add ephemeralDisk and elasticSan storage options to `--enable-azure-container-storage` and `--disable-azure-container-storage` for the latest version of Azure Container Storage.
 
 19.0.0b22
 +++++++

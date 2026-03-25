@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.0.0b12
++++++++++++++++
+* Added support for Data Plane v2 including specifying priority parameter as part of job params when submitting a job
+* Removed container creation logic when retrieving linked storage account from the service
+
 1.0.0b11
 +++++++++++++++
 * Remove `__import__('pkg_resources').declare_namespace(__name__)` to fix the namespace package issue.

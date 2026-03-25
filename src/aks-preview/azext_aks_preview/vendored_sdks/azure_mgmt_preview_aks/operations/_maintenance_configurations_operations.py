@@ -44,7 +44,7 @@ def build_list_by_managed_cluster_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-10-02-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-01-02-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -84,7 +84,7 @@ def build_get_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-10-02-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-01-02-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -125,7 +125,7 @@ def build_create_or_update_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-10-02-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-01-02-preview"))
     content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
     accept = _headers.pop("Accept", "application/json")
 
@@ -169,7 +169,7 @@ def build_delete_request(
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2025-10-02-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2026-01-02-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -228,8 +228,6 @@ class MaintenanceConfigurationsOperations:
         self, resource_group_name: str, resource_name: str, **kwargs: Any
     ) -> Iterable["_models.MaintenanceConfiguration"]:
         """Gets a list of maintenance configurations in the specified managed cluster.
-
-        Gets a list of maintenance configurations in the specified managed cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -317,8 +315,6 @@ class MaintenanceConfigurationsOperations:
     ) -> _models.MaintenanceConfiguration:
         """Gets the specified maintenance configuration of a managed cluster.
 
-        Gets the specified maintenance configuration of a managed cluster.
-
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
@@ -388,8 +384,6 @@ class MaintenanceConfigurationsOperations:
     ) -> _models.MaintenanceConfiguration:
         """Creates or updates a maintenance configuration in the specified managed cluster.
 
-        Creates or updates a maintenance configuration in the specified managed cluster.
-
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
@@ -421,8 +415,6 @@ class MaintenanceConfigurationsOperations:
     ) -> _models.MaintenanceConfiguration:
         """Creates or updates a maintenance configuration in the specified managed cluster.
 
-        Creates or updates a maintenance configuration in the specified managed cluster.
-
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
@@ -451,8 +443,6 @@ class MaintenanceConfigurationsOperations:
         **kwargs: Any
     ) -> _models.MaintenanceConfiguration:
         """Creates or updates a maintenance configuration in the specified managed cluster.
-
-        Creates or updates a maintenance configuration in the specified managed cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -530,8 +520,6 @@ class MaintenanceConfigurationsOperations:
         self, resource_group_name: str, resource_name: str, config_name: str, **kwargs: Any
     ) -> None:
         """Deletes a maintenance configuration.
-
-        Deletes a maintenance configuration.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.

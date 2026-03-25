@@ -322,7 +322,7 @@ class Update(AAZCommand):
             help="IDPS mode.",
             is_preview=True,
             nullable=True,
-            enum={"Basic": "Basic", "Standard": "Standard", "Advanced": "Advanced"},
+            enum={"Off": "Off", "Emerging": "Emerging", "Core": "Core", "Extended": "Extended"},
         )
         # define Arg Group "Parameters"
 

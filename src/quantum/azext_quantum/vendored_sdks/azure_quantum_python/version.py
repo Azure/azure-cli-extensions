@@ -5,4 +5,4 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License.
 ##
-__version__ = "2.2.0"
+__version__ = "3.6.0"

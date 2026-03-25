@@ -15,17 +15,17 @@ from azure.cli.core.aaz import *
     "standby-container-group-pool list",
 )
 class List(AAZCommand):
-    """List StandbyContainerGroupPoolResource resources by subscription ID by resource group
+    """List StandbyContainerGroupPoolResource resources by subscription ID
 
     :example: StandbyContainerGroupPools_ListBySubscription
-        az standby-container-group-pool list --subscription 00000000-0000-0000-0000-000000000009 --resource-group resourceGroup
+        az standby-container-group-pool list
     """
 
     _aaz_info = {
-        "version": "2025-03-01",
+        "version": "2025-10-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.standbypool/standbycontainergrouppools", "2025-03-01"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.standbypool/standbycontainergrouppools", "2025-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.standbypool/standbycontainergrouppools", "2025-10-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.standbypool/standbycontainergrouppools", "2025-10-01"],
         ]
     }
 
@@ -46,9 +46,7 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="The resource group",
-        )
+        _args_schema.resource_group = AAZResourceGroupNameArg()
         return cls._args_schema
 
     def _execute_operations(self):
@@ -114,7 +112,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-03-01",
+                    "api-version", "2025-10-01",
                     required=True,
                 ),
             }
@@ -218,6 +216,9 @@ class List(AAZCommand):
             )
 
             elasticity_profile = cls._schema_on_200.value.Element.properties.elasticity_profile
+            elasticity_profile.dynamic_sizing = AAZObjectType(
+                serialized_name="dynamicSizing",
+            )
             elasticity_profile.max_ready_capacity = AAZIntType(
                 serialized_name="maxReadyCapacity",
                 flags={"required": True},
@@ -225,6 +226,9 @@ class List(AAZCommand):
             elasticity_profile.refill_policy = AAZStrType(
                 serialized_name="refillPolicy",
             )
+
+            dynamic_sizing = cls._schema_on_200.value.Element.properties.elasticity_profile.dynamic_sizing
+            dynamic_sizing.enabled = AAZBoolType()
 
             zones = cls._schema_on_200.value.Element.properties.zones
             zones.Element = AAZStrType()
@@ -298,7 +302,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-03-01",
+                    "api-version", "2025-10-01",
                     required=True,
                 ),
             }
@@ -402,6 +406,9 @@ class List(AAZCommand):
             )
 
             elasticity_profile = cls._schema_on_200.value.Element.properties.elasticity_profile
+            elasticity_profile.dynamic_sizing = AAZObjectType(
+                serialized_name="dynamicSizing",
+            )
             elasticity_profile.max_ready_capacity = AAZIntType(
                 serialized_name="maxReadyCapacity",
                 flags={"required": True},
@@ -409,6 +416,9 @@ class List(AAZCommand):
             elasticity_profile.refill_policy = AAZStrType(
                 serialized_name="refillPolicy",
             )
+
+            dynamic_sizing = cls._schema_on_200.value.Element.properties.elasticity_profile.dynamic_sizing
+            dynamic_sizing.enabled = AAZBoolType()
 
             zones = cls._schema_on_200.value.Element.properties.zones
             zones.Element = AAZStrType()

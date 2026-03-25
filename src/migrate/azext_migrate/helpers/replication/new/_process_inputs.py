@@ -228,7 +228,7 @@ def process_amh_solution(cmd,
             f"'{resource_group_name}' and project '{project_name}'. "
             "Please verify your appliance setup."
         )
-    return amh_solution, migrate_project, machine_props
+    return amh_solution, migrate_project, machine_props, project_name
 
 
 def process_replication_vault(cmd,
@@ -482,15 +482,23 @@ def _process_source_fabrics(all_fabrics,
             })
 
         if is_succeeded and is_correct_instance and name_matches:
-            # If solution doesn't match, log warning but still consider it
-            if not is_correct_solution:
-                logger.warning(
-                    "Fabric '%s' matches name and type but has different "
-                    "solution ID",
-                    fabric_name
-                )
-            source_fabric = fabric
-            break
+            if is_correct_solution:
+                source_fabric = fabric
+                break
+            if not source_fabric:
+                source_fabric = fabric
+
+    if source_fabric:
+        sf_props = source_fabric.get('properties', {}).get(
+            'customProperties', {})
+        sf_sol_id = sf_props.get('migrationSolutionId', '').rstrip('/')
+        exp_sol_id = amh_solution.get('id', '').rstrip('/')
+        if sf_sol_id.lower() != exp_sol_id.lower():
+            logger.warning(
+                "Fabric '%s' matches name and type but has different "
+                "solution ID",
+                source_fabric.get('name'))
+
     return source_fabric, source_fabric_candidates
 
 
@@ -679,12 +687,22 @@ def _process_target_fabrics(all_fabrics,
             })
 
         if is_succeeded and is_correct_instance and name_matches:
-            if not is_correct_solution:
-                logger.warning(
-                    "Fabric '%s' matches name and type but has different "
-                    "solution ID", fabric_name)
-            target_fabric = fabric
-            break
+            if is_correct_solution:
+                target_fabric = fabric
+                break
+            if not target_fabric:
+                target_fabric = fabric
+
+    if target_fabric:
+        tf_props = target_fabric.get('properties', {}).get(
+            'customProperties', {})
+        tf_sol_id = tf_props.get('migrationSolutionId', '').rstrip('/')
+        exp_sol_id = amh_solution.get('id', '').rstrip('/')
+        if tf_sol_id.lower() != exp_sol_id.lower():
+            logger.warning(
+                "Fabric '%s' matches name and type but has different "
+                "solution ID", target_fabric.get('name'))
+
     return target_fabric, target_fabric_candidates, \
         target_fabric_instance_type
 
@@ -731,28 +749,48 @@ def process_target_fabric(cmd,
                           amh_solution):
     # Get source fabric agent (DRA)
     source_fabric_name = source_fabric.get('name')
-    dras_uri = (
+    source_dras = send_get_request(
+        cmd,
         f"{rg_uri}/providers/Microsoft.DataReplication"
         f"/replicationFabrics/{source_fabric_name}/fabricAgents"
         f"?api-version={APIVersion.Microsoft_DataReplication.value}"
-    )
-    source_dras_response = send_get_request(cmd, dras_uri)
-    source_dras = source_dras_response.json().get('value', [])
+    ).json().get('value', [])
 
     source_dra = None
+    source_found_not_responsive = None
     for dra in source_dras:
         props = dra.get('properties', {})
         custom_props = props.get('customProperties', {})
-        if (props.get('machineName') == source_appliance_name and
-                custom_props.get('instanceType') == fabric_instance_type and
-                bool(props.get('isResponsive'))):
-            source_dra = dra
-            break
+        machine_name = props.get('machineName', '')
+        if (machine_name.lower() == source_appliance_name.lower() and
+                custom_props.get('instanceType') == fabric_instance_type):
+            if bool(props.get('isResponsive')):
+                source_dra = dra
+                break
+            source_found_not_responsive = dra
+
+    if not source_dra and source_found_not_responsive:
+        nr_props = source_found_not_responsive.get('properties', {})
+        last_hb = nr_props.get('lastHeartbeat', 'unknown')
+        if (nr_props.get('provisioningState') ==
+                ProvisioningState.Succeeded.value):
+            logger.warning(
+                "The source appliance '%s' DRA is not responsive "
+                "(last heartbeat: %s). Proceeding since provisioning "
+                "state is 'Succeeded'.",
+                source_appliance_name, last_hb)
+            source_dra = source_found_not_responsive
+        else:
+            raise CLIError(
+                f"The source appliance '{source_appliance_name}' is in a "
+                f"disconnected state (last heartbeat: {last_hb}).")
 
     if not source_dra:
         raise CLIError(
-            f"The source appliance '{source_appliance_name}' is in a "
-            f"disconnected state.")
+            f"No fabric agent found for source appliance "
+            f"'{source_appliance_name}' on fabric "
+            f"'{source_fabric_name}'. Verify that the appliance is "
+            f"properly registered and connected.")
 
     target_fabric, target_fabric_candidates, \
         target_fabric_instance_type = _process_target_fabrics(
@@ -769,28 +807,48 @@ def process_target_fabric(cmd,
 
     # Get target fabric agent (DRA)
     target_fabric_name = target_fabric.get('name')
-    target_dras_uri = (
+    target_dras = send_get_request(
+        cmd,
         f"{rg_uri}/providers/Microsoft.DataReplication"
         f"/replicationFabrics/{target_fabric_name}/fabricAgents"
         f"?api-version={APIVersion.Microsoft_DataReplication.value}"
-    )
-    target_dras_response = send_get_request(cmd, target_dras_uri)
-    target_dras = target_dras_response.json().get('value', [])
+    ).json().get('value', [])
 
     target_dra = None
+    target_found_not_responsive = None
     for dra in target_dras:
         props = dra.get('properties', {})
         custom_props = props.get('customProperties', {})
-        if (props.get('machineName') == target_appliance_name and
+        machine_name = props.get('machineName', '')
+        if (machine_name.lower() == target_appliance_name.lower() and
                 custom_props.get('instanceType') ==
-                target_fabric_instance_type and
-                bool(props.get('isResponsive'))):
-            target_dra = dra
-            break
+                target_fabric_instance_type):
+            if bool(props.get('isResponsive')):
+                target_dra = dra
+                break
+            target_found_not_responsive = dra
+
+    if not target_dra and target_found_not_responsive:
+        nr_props = target_found_not_responsive.get('properties', {})
+        last_hb = nr_props.get('lastHeartbeat', 'unknown')
+        if (nr_props.get('provisioningState') ==
+                ProvisioningState.Succeeded.value):
+            logger.warning(
+                "The target appliance '%s' DRA is not responsive "
+                "(last heartbeat: %s). Proceeding since provisioning "
+                "state is 'Succeeded'.",
+                target_appliance_name, last_hb)
+            target_dra = target_found_not_responsive
+        else:
+            raise CLIError(
+                f"The target appliance '{target_appliance_name}' is in a "
+                f"disconnected state (last heartbeat: {last_hb}).")
 
     if not target_dra:
         raise CLIError(
-            f"The target appliance '{target_appliance_name}' is in a "
-            f"disconnected state.")
+            f"No fabric agent found for target appliance "
+            f"'{target_appliance_name}' on fabric "
+            f"'{target_fabric_name}'. Verify that the appliance is "
+            f"properly registered and connected.")
 
     return target_fabric, source_dra, target_dra

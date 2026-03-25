@@ -519,6 +519,12 @@ helps['aks create'] = f"""
         - name: --enable-image-integrity
           type: bool
           short-summary: Enable ImageIntegrity Service.
+        - name: --enable-service-account-image-pull
+          type: bool
+          short-summary: Enable service account based image pull. For more information, see https://aka.ms/aks/identity-binding/acr-image-pull/docs.
+        - name: --service-account-image-pull-default-managed-identity-id
+          type: string
+          short-summary: The default managed identity resource ID used for image pulls at the cluster level.
         - name: --dns-zone-resource-id
           type: string
           short-summary: The resource ID of the DNS zone resource to use with the App Routing addon.
@@ -699,6 +705,13 @@ helps['aks create'] = f"""
         - name: --enable-gateway-api
           type: bool
           short-summary: Enable managed installation of Gateway API CRDs from the standard release channel.
+        - name: --enable-app-routing-istio --enable-ari
+          type: bool
+          short-summary: Enable Gateway API based ingress on App Routing via Istio without service mesh functionality.
+          long-summary: |
+              This enables an ingress-only version of Istio that reconciles Gateway API resources for App Routing.
+              It does not provide service mesh functionality (e.g. mTLS, traffic management between services).
+              Cannot be used simultaneously with the Istio service mesh add-on (--enable-azure-service-mesh).
         - name: --enable-hosted-system
           type: bool
           short-summary: Create a cluster with fully hosted system components. This applies only when creating a new automatic cluster.
@@ -796,6 +809,25 @@ helps['aks create'] = f"""
         - name: Create an automatic cluster with hosted system components enabled.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --sku automatic --enable-hosted-system
 
+"""
+
+helps['aks delete'] = """
+    type: command
+    short-summary: Delete a managed Kubernetes cluster.
+    parameters:
+        - name: --if-match
+          type: string
+          short-summary: The value provided will be compared to the ETag of the managed cluster, if it matches the operation will proceed. If it does not match, the request will be rejected to prevent accidental overwrites.
+        - name: --if-none-match
+          type: string
+          short-summary: Not applicable for delete operations. This option will be ignored if provided.
+        - name: --ignore-pod-disruption-budget
+          type: bool
+          short-summary: Delete those pods on a node without considering Pod Disruption Budget.
+    examples:
+        - name: Delete a managed Kubernetes cluster.
+          text: az aks delete --name MyManagedCluster --resource-group MyResourceGroup
+          crafted: true
 """
 
 helps['aks scale'] = """
@@ -1202,6 +1234,15 @@ helps['aks update'] = """
         - name: --disable-image-integrity
           type: bool
           short-summary: Disable ImageIntegrity Service.
+        - name: --enable-service-account-image-pull
+          type: bool
+          short-summary: Enable service account based image pull. For more information, see https://aka.ms/aks/identity-binding/acr-image-pull/docs.
+        - name: --disable-service-account-image-pull
+          type: bool
+          short-summary: Disable service account based image pull.
+        - name: --service-account-image-pull-default-managed-identity-id
+          type: string
+          short-summary: The default managed identity resource ID used for image pulls at the cluster level.
         - name: --enable-apiserver-vnet-integration
           type: bool
           short-summary: Enable integration of user vnet with control plane apiserver pods.
@@ -1424,6 +1465,16 @@ helps['aks update'] = """
         - name: --disable-gateway-api
           type: bool
           short-summary: Disable managed installation of Gateway API CRDs.
+        - name: --enable-app-routing-istio --enable-ari
+          type: bool
+          short-summary: Enable Gateway API based ingress on App Routing via Istio without service mesh functionality.
+          long-summary: |
+              This enables an ingress-only version of Istio that reconciles Gateway API resources for App Routing.
+              It does not provide service mesh functionality (e.g. mTLS, traffic management between services).
+              Cannot be used simultaneously with the Istio service mesh add-on (--enable-azure-service-mesh).
+        - name: --disable-app-routing-istio --disable-ari
+          type: bool
+          short-summary: Disable Gateway API based ingress on App Routing via Istio.
         - name: --enable-application-load-balancer
           type: bool
           short-summary: Enable Application Load Balancer (Application Gateway for Containers) addon.
@@ -2167,6 +2218,9 @@ helps['aks nodepool add'] = """
         - name: --enable-artifact-streaming
           type: bool
           short-summary: Enable artifact streaming for VirtualMachineScaleSets managed by a node pool, to speed up the cold-start of containers on a node through on-demand image loading. To use this feature, container images must also enable artifact streaming on ACR. If not specified, the default is false.
+        - name: --enable-managed-gpu
+          type: bool
+          short-summary: Enable the Managed GPU experience, which installs additional components like DCGM metrics for monitoring on top of the GPU driver. For more details, visit aka.ms/aks/managed-gpu.
         - name: --skip-gpu-driver-install
           type: bool
           short-summary: To skip GPU driver auto installation by AKS on a nodepool using GPU vm size if customers want to manage GPU driver installation by their own. If not specified, the default is false.
@@ -2383,6 +2437,9 @@ helps['aks nodepool update'] = """
         - name: --enable-artifact-streaming
           type: bool
           short-summary: Enable artifact streaming for VirtualMachineScaleSets managed by a node pool, to speed up the cold-start of containers on a node through on-demand image loading. To use this feature, container images must also enable artifact streaming on ACR. If not specified, the default is false.
+        - name: --enable-managed-gpu
+          type: bool
+          short-summary: Enable the Managed GPU experience, which installs additional components like DCGM metrics for monitoring on top of the GPU driver. For more details, visit aka.ms/aks/managed-gpu.
         - name: --os-sku
           type: string
           short-summary: The os-sku of the agent node pool.
@@ -3811,6 +3868,49 @@ helps['aks approuting defaultdomain show'] = """
     examples:
       - name: Show the default domain for a cluster.
         text: az aks approuting defaultdomain show --resource-group MyResourceGroup --name MyManagedCluster
+"""
+
+helps['aks approuting gateway'] = """
+    type: group
+    short-summary: Commands to manage App Routing Gateway API implementations.
+    long-summary: A group of commands to manage Gateway API implementations for App Routing in a given cluster.
+"""
+
+helps['aks approuting gateway istio'] = """
+    type: group
+    short-summary: Commands to manage the Istio Gateway API implementation for App Routing.
+    long-summary: A group of commands to manage the Istio-based Gateway API implementation for App Routing in a given cluster.
+"""
+
+helps['aks approuting gateway istio enable'] = """
+    type: command
+    short-summary: Enable Gateway API based ingress on App Routing via Istio without service mesh functionality.
+    long-summary: |
+        This command enables an ingress-only version of Istio as a Gateway API implementation for App Routing
+        in the given cluster. This Istio instance only reconciles Gateway API resources and does not provide
+        service mesh functionality (e.g. mTLS, traffic management between services). Cannot be used
+        simultaneously with Azure Service Mesh (az aks mesh enable).
+    parameters:
+      - name: --aks-custom-headers
+        type: string
+        short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2. Use AKSHTTPCustomFeatures=Microsoft.ContainerService/AppRoutingIstioGatewayAPIPreview to enable the preview feature flag after registering your subscription to use it.
+    examples:
+      - name: Enable Istio Gateway API implementation for App Routing.
+        text: az aks approuting gateway istio enable --resource-group MyResourceGroup --name MyManagedCluster
+"""
+
+helps['aks approuting gateway istio disable'] = """
+    type: command
+    short-summary: Disable Gateway API based ingress on App Routing via Istio.
+    long-summary: |
+        This command disables the ingress-only Istio Gateway API implementation for App Routing in the given cluster.
+    parameters:
+      - name: --aks-custom-headers
+        type: string
+        short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2. Use AKSHTTPCustomFeatures=Microsoft.ContainerService/AppRoutingIstioGatewayAPIPreview to enable the preview feature flag after registering your subscription to use it.
+    examples:
+      - name: Disable Istio Gateway API implementation for App Routing.
+        text: az aks approuting gateway istio disable --resource-group MyResourceGroup --name MyManagedCluster
 """
 
 helps['aks check-network'] = """

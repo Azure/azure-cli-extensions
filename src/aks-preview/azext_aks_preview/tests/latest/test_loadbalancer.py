@@ -74,7 +74,7 @@ class TestLoadBalancer(unittest.TestCase):
         )
 
         self.assertEqual(p.managed_outbound_i_ps.count, 5)
-        self.assertEqual(p.managed_outbound_i_ps.count_ipv6, 3)
+        self.assertEqual(p.managed_outbound_i_ps.count_i_pv6, 3)
         self.assertEqual(p.outbound_i_ps, None)
         self.assertEqual(p.outbound_ip_prefixes, None)
         self.assertEqual(p.allocated_outbound_ports, 80)
@@ -95,7 +95,7 @@ class TestLoadBalancer(unittest.TestCase):
         )
 
         self.assertEqual(p.managed_outbound_i_ps.count, 0)
-        self.assertEqual(p.managed_outbound_i_ps.count_ipv6, 3)
+        self.assertEqual(p.managed_outbound_i_ps.count_i_pv6, 3)
         self.assertEqual(p.outbound_i_ps, None)
         self.assertEqual(p.outbound_ip_prefixes, None)
         self.assertEqual(p.allocated_outbound_ports, 80)
@@ -152,7 +152,7 @@ class TestLoadBalancer(unittest.TestCase):
             self.load_balancer_models,
         )
         self.assertEqual(p.managed_outbound_i_ps.count, 5)
-        self.assertEqual(p.managed_outbound_i_ps.count_ipv6, 3)
+        self.assertEqual(p.managed_outbound_i_ps.count_i_pv6, 3)
         self.assertEqual(
             p.outbound_i_ps.public_i_ps,
             [

@@ -158,6 +158,7 @@ from azext_aks_preview._consts import (
     CONST_ADVANCED_NETWORKPOLICIES_L7,
     CONST_TRANSIT_ENCRYPTION_TYPE_NONE,
     CONST_TRANSIT_ENCRYPTION_TYPE_WIREGUARD,
+    CONST_TRANSIT_ENCRYPTION_TYPE_MTLS,
     CONST_ACNS_DATAPATH_ACCELERATION_MODE_BPFVETH,
     CONST_ACNS_DATAPATH_ACCELERATION_MODE_NONE,
     CONST_UPGRADE_STRATEGY_ROLLING,
@@ -360,6 +361,7 @@ advanced_networkpolicies = [
 transit_encryption_types = [
     CONST_TRANSIT_ENCRYPTION_TYPE_NONE,
     CONST_TRANSIT_ENCRYPTION_TYPE_WIREGUARD,
+    CONST_TRANSIT_ENCRYPTION_TYPE_MTLS,
 ]
 acns_datapath_acceleration_modes = [
     CONST_ACNS_DATAPATH_ACCELERATION_MODE_NONE,
@@ -897,6 +899,8 @@ def load_arguments(self, _):
         )
         c.argument("revision", validator=validate_azure_service_mesh_revision)
         c.argument("image_cleaner_interval_hours", type=int)
+        c.argument("enable_service_account_image_pull", action="store_true", is_preview=True)
+        c.argument("service_account_image_pull_default_managed_identity_id", is_preview=True)
         c.argument(
             "cluster_snapshot_id",
             validator=validate_cluster_snapshot_id,
@@ -970,7 +974,7 @@ def load_arguments(self, _):
             "acns_transit_encryption_type",
             is_preview=True,
             arg_type=get_enum_type(transit_encryption_types),
-            help="Specify the transit encryption type for ACNS. Available values are 'None' and 'WireGuard'.",
+            help="Specify the transit encryption type for ACNS. Available values are 'None', 'WireGuard', and 'mTLS'.",
         )
         c.argument(
             "enable_retina_flow_logs",
@@ -1100,7 +1104,7 @@ def load_arguments(self, _):
         # azure container storage
         c.argument(
             "enable_azure_container_storage",
-            arg_type=_get_enable_azure_container_storage_type(),
+            arg_type=_get_container_storage_enum_type(storage_pool_types),
             help="enable azure container storage. Can be used as a flag (defaults to True) or with a"
             " storage pool type value: (azureDisk, ephemeralDisk, elasticSan)",
         )
@@ -1200,7 +1204,20 @@ def load_arguments(self, _):
             action="store_true",
             help="Enable managed installation of Gateway API CRDs from the standard release channel."
         )
+        c.argument(
+            "enable_app_routing_istio",
+            options_list=["--enable-app-routing-istio", "--enable-ari"],
+            action="store_true",
+            is_preview=True,
+            help="Enable Gateway API based ingress on App Routing via Istio"
+        )
         c.argument("enable_hosted_system", action="store_true", is_preview=True)
+        c.argument(
+            "enable_continuous_control_plane_and_addon_monitor",
+            action="store_true",
+            is_preview=True,
+            help="Enable continuous control plane and addon monitor for the cluster.",
+        )
 
     with self.argument_context("aks update") as c:
         # managed cluster paramerters
@@ -1439,6 +1456,9 @@ def load_arguments(self, _):
         )
         c.argument("image_cleaner_interval_hours", type=int)
         c.argument("disable_image_integrity", action="store_true", is_preview=True)
+        c.argument("enable_service_account_image_pull", action="store_true", is_preview=True)
+        c.argument("disable_service_account_image_pull", action="store_true", is_preview=True)
+        c.argument("service_account_image_pull_default_managed_identity_id", is_preview=True)
         c.argument(
             "enable_apiserver_vnet_integration", action="store_true", is_preview=True
         )
@@ -1635,7 +1655,7 @@ def load_arguments(self, _):
             "acns_transit_encryption_type",
             is_preview=True,
             arg_type=get_enum_type(transit_encryption_types),
-            help="Specify the transit encryption type for ACNS. Available values are 'None' and 'WireGuard'.",
+            help="Specify the transit encryption type for ACNS. Available values are 'None', 'WireGuard', and 'mTLS'.",
         )
         c.argument(
             "enable_retina_flow_logs",
@@ -1670,13 +1690,13 @@ def load_arguments(self, _):
         # azure container storage
         c.argument(
             "enable_azure_container_storage",
-            arg_type=_get_enable_azure_container_storage_type(),
+            arg_type=_get_container_storage_enum_type(storage_pool_types),
             help="enable azure container storage. Can be used as a flag (defaults to True) or with a"
             " storage pool type value: (azureDisk, ephemeralDisk, elasticSan)",
         )
         c.argument(
             "disable_azure_container_storage",
-            arg_type=_get_disable_azure_container_storage_type(),
+            arg_type=_get_container_storage_enum_type(disable_storage_pool_types),
             help="disable azure container storage or any one of the storage pool types."
             " Can be used as a flag (defaults to True) or with a storagepool type value:"
             " azureDisk, ephemeralDisk, elasticSan, all (to disable all storage pools).",
@@ -1768,6 +1788,20 @@ def load_arguments(self, _):
             help="Disable managed installation of Gateway API CRDs."
         )
         c.argument(
+            "enable_app_routing_istio",
+            options_list=["--enable-app-routing-istio", "--enable-ari"],
+            action="store_true",
+            is_preview=True,
+            help="Enable Gateway API based ingress on App Routing via Istio."
+        )
+        c.argument(
+            "disable_app_routing_istio",
+            options_list=["--disable-app-routing-istio", "--disable-ari"],
+            action="store_true",
+            is_preview=True,
+            help="Disable Gateway API based ingress on App Routing via Istio."
+        )
+        c.argument(
             "enable_application_load_balancer",
             action="store_true",
             is_preview=True,
@@ -1779,6 +1813,23 @@ def load_arguments(self, _):
             is_preview=True,
             help="Disable Application Load Balancer (Application Gateway for Containers)."
         )
+        c.argument(
+            "enable_continuous_control_plane_and_addon_monitor",
+            action="store_true",
+            is_preview=True,
+            help="Enable continuous control plane and addon monitor for the cluster.",
+        )
+        c.argument(
+            "disable_continuous_control_plane_and_addon_monitor",
+            action="store_true",
+            is_preview=True,
+            help="Disable continuous control plane and addon monitor for the cluster.",
+        )
+
+    with self.argument_context("aks delete") as c:
+        c.argument("if_match")
+        c.argument("if_none_match")
+        c.argument("ignore_pod_disruption_budget", action="store_true")
 
     with self.argument_context("aks upgrade") as c:
         c.argument("kubernetes_version", completer=get_k8s_upgrades_completion_list)
@@ -1986,6 +2037,12 @@ def load_arguments(self, _):
             is_preview=True,
         )
         c.argument(
+            "enable_managed_gpu",
+            action="store_true",
+            is_preview=True,
+            help="Enable the Managed GPU experience.",
+        )
+        c.argument(
             "node_public_ip_tags",
             arg_type=tags_type,
             validator=validate_node_public_ip_tags,
@@ -2093,6 +2150,12 @@ def load_arguments(self, _):
             action="store_true",
             validator=validate_artifact_streaming,
             is_preview=True,
+        )
+        c.argument(
+            "enable_managed_gpu",
+            action="store_true",
+            is_preview=True,
+            help="Enable the Managed GPU experience.",
         )
         c.argument(
             "os_sku",
@@ -2857,6 +2920,12 @@ def load_arguments(self, _):
         c.argument("dns_zone_resource_ids", options_list=["--ids"], required=True)
         c.argument("attach_zones")
 
+    with self.argument_context("aks approuting gateway istio enable") as c:
+        c.argument("aks_custom_headers")
+
+    with self.argument_context("aks approuting gateway istio disable") as c:
+        c.argument("aks_custom_headers")
+
     with self.argument_context('aks check-network outbound') as c:
         c.argument('cluster_name', options_list=['--name', '-n'],
                    required=True, help='Name of the managed cluster.')
@@ -3149,6 +3218,35 @@ def load_arguments(self, _):
             c.argument('config_file', options_list=['--config-file'], type=file_type, completer=FilesCompleter(),
                        help='Path to the JSON configuration file containing JWT authenticator properties.')
 
+    # aks list-vm-skus command
+    with self.argument_context("aks list-vm-skus") as c:
+        c.argument(
+            "location",
+            options_list=["--location", "-l"],
+            help="Location. Values from: 'az account list-locations'.",
+            required=True,
+        )
+        c.argument(
+            "size",
+            options_list=["--size", "-s"],
+            help="VM size name filter, partial name is accepted.",
+        )
+        c.argument(
+            "zone",
+            options_list=["--zone", "-z"],
+            action="store_true",
+            help="Show only VM SKUs that support availability zones.",
+        )
+        # TODO: Eventually deprecate the -all param.
+        # The List VM SKUs API already performs regional filtering so once AZ filtering is also implemented
+        # within the API, this param will no longer be required.
+        c.argument(
+            "show_all",
+            options_list=["--all"],
+            action="store_true",
+            help="Show all VM SKU information including those not available for the current subscription.",
+        )
+
 
 def _get_default_install_location(exe_name):
     system = platform.system()
@@ -3166,63 +3264,33 @@ def _get_default_install_location(exe_name):
     return install_location
 
 
-def _get_enable_azure_container_storage_type():
+def _get_container_storage_enum_type(choices):
     """Custom argument type that accepts both None and enum values"""
     import argparse
     from azure.cli.core.azclierror import InvalidArgumentValueError
 
     class AzureContainerStorageAction(argparse.Action):
         def __call__(self, parser, namespace, values, option_string=None):
-            if values is None:
+            if values in [[], None]:
                 # When used as a flag without value, set as True
                 setattr(namespace, self.dest, True)
                 return
 
-            if isinstance(values, str):
-                # Handle enum values (case insensitive)
-                for storage_type in storage_pool_types:
-                    if values.lower() == storage_type.lower():
-                        setattr(namespace, self.dest, storage_type)
-                        return
-
-            # Invalid value
-            valid_values = storage_pool_types
-            raise InvalidArgumentValueError(
-                f"Invalid value '{values}'. Valid values are: {', '.join(valid_values)}"
-            )
-
-    return CLIArgumentType(
-        nargs='?',  # Optional argument
-        action=AzureContainerStorageAction,
-    )
-
-
-def _get_disable_azure_container_storage_type():
-    """Custom argument type that accepts both None and enum values"""
-    import argparse
-    from azure.cli.core.azclierror import InvalidArgumentValueError
-
-    class AzureContainerStorageAction(argparse.Action):
-        def __call__(self, parser, namespace, values, option_string=None):
-            if values is None:
-                # When used as a flag without value, set as True
-                setattr(namespace, self.dest, True)
+            # Allow multiple enum values in a case insensitive manner
+            normalized_value_arr = values if isinstance(values, list) else str(values).split(',')
+            normalized_value_arr = [str(v).lower().strip() for v in normalized_value_arr]
+            valid_value_arr = [v for v in choices if v.lower() in normalized_value_arr]
+            if len(valid_value_arr) == len(normalized_value_arr):
+                normalized_values = valid_value_arr[0] if len(valid_value_arr) == 1 else valid_value_arr
+                setattr(namespace, self.dest, normalized_values)
                 return
 
-            if isinstance(values, str):
-                # Handle enum values (case insensitive)
-                for storage_type in disable_storage_pool_types:
-                    if values.lower() == storage_type.lower():
-                        setattr(namespace, self.dest, storage_type)
-                        return
-
             # Invalid value
-            valid_values = disable_storage_pool_types
             raise InvalidArgumentValueError(
-                f"Invalid value '{values}'. Valid values are: {', '.join(valid_values)}"
+                f"Invalid value '{values}'. Valid values are: {', '.join(choices)}"
             )
 
     return CLIArgumentType(
-        nargs='?',  # Optional argument
+        nargs='*',  # Allow multiple values
         action=AzureContainerStorageAction,
     )

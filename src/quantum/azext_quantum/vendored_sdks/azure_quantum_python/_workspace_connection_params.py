@@ -14,14 +14,17 @@ from typing import (
 )
 from azure.core.credentials import AzureKeyCredential
 from azure.core.pipeline.policies import AzureKeyCredentialPolicy
-# from azure.quantum._authentication import _DefaultAzureCredential
-from ._authentication import _DefaultAzureCredential
+# from azure.identity import DefaultAzureCredential
+from ..azure_identity import DefaultAzureCredential
 # from azure.quantum._constants import (
 from ._constants import (
     EnvironmentKind,
+    WorkspaceKind,
     EnvironmentVariables,
     ConnectionConstants,
     GUID_REGEX_PATTERN,
+    VALID_WORKSPACE_NAME_PATTERN,
+    VALID_AZURE_REGIONS,
 )
 
 class WorkspaceConnectionParams:
@@ -48,9 +51,19 @@ class WorkspaceConnectionParams:
             ResourceGroupName=(?P<resource_group>[^\s;]+);
             WorkspaceName=(?P<workspace_name>[^\s;]+);
             ApiKey=(?P<api_key>[^\s;]+);
-            QuantumEndpoint=(?P<quantum_endpoint>https://(?P<location>[^\s\.]+).quantum(?:-test)?.azure.com/);
+            QuantumEndpoint=(?P<quantum_endpoint>https://(?P<location>[a-zA-Z0-9]+)(?:-(?P<workspace_kind>v2))?.quantum(?:-test)?.azure.com/);
         """,
         re.VERBOSE | re.IGNORECASE)
+    
+    WORKSPACE_NOT_FULLY_SPECIFIED_MSG = """
+        Azure Quantum workspace not fully specified.
+        Please specify one of the following:
+        1) A valid resource ID.
+        2) A valid combination of subscription ID,
+        resource group name, and workspace name.
+        3) A valid connection string (via Workspace.from_connection_string()).
+        4) A valid workspace name.
+    """
 
     def __init__(
         self,
@@ -70,6 +83,7 @@ class WorkspaceConnectionParams:
         api_version: Optional[str] = None,
         connection_string: Optional[str] = None,
         on_new_client_request: Optional[Callable] = None,
+        workspace_kind: Optional[str] = None,
     ):
         # fields are used for these properties since
         # they have special getters/setters
@@ -77,6 +91,7 @@ class WorkspaceConnectionParams:
         self._environment = None
         self._quantum_endpoint = None
         self._arm_endpoint = None
+        self._workspace_kind = None
         # regular connection properties
         self.subscription_id = None
         self.resource_group = None
@@ -87,6 +102,8 @@ class WorkspaceConnectionParams:
         self.client_id = None
         self.tenant_id = None
         self.api_version = None
+        # Track if connection string was used
+        self._used_connection_string = False
         # callback to create a new client if needed
         # for example, when changing the user agent
         self.on_new_client_request = on_new_client_request
@@ -108,8 +125,84 @@ class WorkspaceConnectionParams:
             user_agent=user_agent,
             user_agent_app_id=user_agent_app_id,
             workspace_name=workspace_name,
+            workspace_kind=workspace_kind,
         )
         self.apply_resource_id(resource_id=resource_id)
+        # Validate connection parameters if they are set
+        self._validate_connection_params()
+
+    def _validate_connection_params(self):
+        self._validate_subscription_id()
+        self._validate_resource_group()
+        self._validate_workspace_name()
+        self._validate_location()
+    
+    def _validate_subscription_id(self):
+        # Validate that subscription id is a valid GUID
+        if self.subscription_id is not None:
+            if not isinstance(self.subscription_id, str):
+                raise ValueError("Subscription ID must be a string.")
+            if not re.match(f"^{GUID_REGEX_PATTERN}$", self.subscription_id, re.IGNORECASE):
+                raise ValueError("Subscription ID must be a valid GUID.")
+    
+    def _validate_resource_group(self):
+        # Validate resource group, see https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/resource-name-rules#microsoftresources
+        # Length 1-90, valid characters: alphanumeric, underscore, parentheses, hyphen, period (except at end), and Unicode characters:
+        # Uppercase Letter - Signified by the Unicode designation "Lu" (letter, uppercase);
+        # Lowercase Letter - Signified by the Unicode designation "Ll" (letter, lowercase);
+        # Titlecase Letter - Signified by the Unicode designation "Lt" (letter, titlecase);
+        # Modifier Letter - Signified by the Unicode designation "Lm" (letter, modifier);
+        # Other Letter - Signified by the Unicode designation "Lo" (letter, other);
+        # Decimal Digit Number - Signified by the Unicode designation "Nd" (number, decimal digit).
+        if self.resource_group is not None:
+            if not isinstance(self.resource_group, str):
+                raise ValueError("Resource group name must be a string.")
+            
+            if len(self.resource_group) < 1 or len(self.resource_group) > 90:
+                raise ValueError(
+                    "Resource group name must be between 1 and 90 characters long."
+                )
+            
+            err_msg =  "Resource group name can only include alphanumeric, underscore, parentheses, hyphen, period (except at end), and Unicode characters that match the allowed characters."
+            if self.resource_group.endswith('.'):
+                raise ValueError(err_msg)
+            
+            import unicodedata
+            for i, char in enumerate(self.resource_group):
+                category = unicodedata.category(char)
+                if not (
+                    char in ('_', '(', ')', '-', '.') or
+                    category in ('Lu', 'Ll', 'Lt', 'Lm', 'Lo', 'Nd')
+                ):
+                    raise ValueError(err_msg)
+    
+    def _validate_workspace_name(self):
+        # Validate workspace name, see https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/resource-name-rules#microsoftquantum
+        # Length 2-54, valid characters: alphanumerics (a-zA-Z0-9) and hyphens, can't start or end with hyphen
+        if self.workspace_name is not None:
+            if not isinstance(self.workspace_name, str):
+                raise ValueError("Workspace name must be a string.")
+            
+            if len(self.workspace_name) < 2 or len(self.workspace_name) > 54:
+                raise ValueError(
+                    "Workspace name must be between 2 and 54 characters long."
+                )
+            
+            err_msg = "Workspace name can only include alphanumerics (a-zA-Z0-9) and hyphens, and cannot start or end with hyphen."
+
+            if self.workspace_name.startswith('-') or self.workspace_name.endswith('-'):
+                raise ValueError(err_msg)
+            
+            if not re.match(VALID_WORKSPACE_NAME_PATTERN, self.workspace_name):
+                raise ValueError(err_msg)
+    
+    def _validate_location(self):
+        # Validate that location is one of the Azure regions https://learn.microsoft.com/en-us/azure/reliability/regions-list
+        if self.location is not None:
+            if not isinstance(self.location, str):
+                raise ValueError("Location must be a string.")
+            if self.location not in VALID_AZURE_REGIONS:
+                raise ValueError(f"Location must be one of the Azure regions listed in https://learn.microsoft.com/en-us/azure/reliability/regions-list.")
 
     @property
     def location(self):
@@ -144,19 +237,8 @@ class WorkspaceConnectionParams:
     def quantum_endpoint(self):
         """
         The Azure Quantum data plane endpoint.
-        Defaults to well-known endpoint based on the environment.
         """
-        if self._quantum_endpoint:
-            return self._quantum_endpoint
-        if not self.location:
-            raise ValueError("Location not specified")
-        if self.environment is EnvironmentKind.PRODUCTION:
-            return ConnectionConstants.GET_QUANTUM_PRODUCTION_ENDPOINT(self.location)
-        if self.environment is EnvironmentKind.CANARY:
-            return ConnectionConstants.GET_QUANTUM_CANARY_ENDPOINT(self.location)
-        if self.environment is EnvironmentKind.DOGFOOD:
-            return ConnectionConstants.GET_QUANTUM_DOGFOOD_ENDPOINT(self.location)
-        raise ValueError(f"Unknown environment `{self.environment}`.")
+        return self._quantum_endpoint
 
     @quantum_endpoint.setter
     def quantum_endpoint(self, value: str):
@@ -195,6 +277,19 @@ class WorkspaceConnectionParams:
         if value:
             self.credential = AzureKeyCredential(value)
         self._api_key = value
+
+    @property
+    def workspace_kind(self) -> WorkspaceKind:
+        """
+        The workspace kind, such as V1 or V2.
+        Defaults to WorkspaceKind.V1
+        """
+        return self._workspace_kind or WorkspaceKind.V1
+
+    @workspace_kind.setter
+    def workspace_kind(self, value: str):
+        if isinstance(value, str):
+            self._workspace_kind = WorkspaceKind[value.upper()]
 
     def __repr__(self):
         """
@@ -237,6 +332,7 @@ class WorkspaceConnectionParams:
             if not match:
                 raise ValueError("Invalid connection string")
             self._merge_re_match(match)
+            self._used_connection_string = True
 
     def merge(
         self,
@@ -254,6 +350,7 @@ class WorkspaceConnectionParams:
         client_id: Optional[str] = None,
         api_version: Optional[str] = None,
         api_key: Optional[str] = None,
+        workspace_kind: Optional[str] = None,
     ):
         """
         Set all fields/properties with `not None` values
@@ -275,6 +372,7 @@ class WorkspaceConnectionParams:
             user_agent_app_id=user_agent_app_id,
             workspace_name=workspace_name,
             api_key=api_key,
+            workspace_kind=workspace_kind,
             merge_default_mode=False,
         )
         return self
@@ -295,6 +393,7 @@ class WorkspaceConnectionParams:
         client_id: Optional[str] = None,
         api_version: Optional[str] = None,
         api_key: Optional[str] = None,
+        workspace_kind: Optional[str] = None,
     ) -> WorkspaceConnectionParams:
         """
         Set all fields/properties with `not None` values
@@ -317,6 +416,7 @@ class WorkspaceConnectionParams:
             user_agent_app_id=user_agent_app_id,
             workspace_name=workspace_name,
             api_key=api_key,
+            workspace_kind=workspace_kind,
             merge_default_mode=True,
         )
         return self
@@ -338,6 +438,7 @@ class WorkspaceConnectionParams:
         client_id: Optional[str] = None,
         api_version: Optional[str] = None,
         api_key: Optional[str] = None,
+        workspace_kind: Optional[str] = None,
     ):
         """
         Set all fields/properties with `not None` values
@@ -370,6 +471,7 @@ class WorkspaceConnectionParams:
         # the private field as the old_value
         self.quantum_endpoint = _get_value_or_default(self._quantum_endpoint, quantum_endpoint)
         self.arm_endpoint = _get_value_or_default(self._arm_endpoint, arm_endpoint)
+        self.workspace_kind = _get_value_or_default(self._workspace_kind, workspace_kind)
         return self
 
     def _merge_connection_params(
@@ -399,19 +501,17 @@ class WorkspaceConnectionParams:
             # pylint: disable=protected-access
             arm_endpoint=connection_params._arm_endpoint,
             quantum_endpoint=connection_params._quantum_endpoint,
+            workspace_kind=connection_params._workspace_kind,
         )
         return self
 
     def get_credential_or_default(self) -> Any:
         """
         Get the credential if one was set,
-        or defaults to a new _DefaultAzureCredential.
+        or defaults to a new DefaultAzureCredential.
         """
         return (self.credential
-                or _DefaultAzureCredential(
-                    subscription_id=self.subscription_id,
-                    arm_endpoint=self.arm_endpoint,
-                    tenant_id=self.tenant_id))
+                or DefaultAzureCredential(exclude_interactive_browser_credential=False))
 
     def get_auth_policy(self) -> Any:
         """
@@ -426,7 +526,7 @@ class WorkspaceConnectionParams:
     def append_user_agent(self, value: str):
         """
         Append a new value to the Workspace's UserAgent and re-initialize the
-        QuantumClient. The values are appended using a dash.
+        WorkspaceClient. The values are appended using a dash.
 
         :param value: UserAgent value to add, e.g. "azure-quantum-<plugin>"
         """
@@ -455,6 +555,32 @@ class WorkspaceConnectionParams:
             full_user_agent = (f"{app_id} {full_user_agent}"
                                if full_user_agent else app_id)
         return full_user_agent
+    
+    def have_enough_for_discovery(self) -> bool:
+        """
+        Returns true if we have enough parameters
+        to try to find the Azure Quantum Workspace.
+        """
+        return (self.workspace_name
+                and self.get_credential_or_default())
+
+    def assert_have_enough_for_discovery(self):
+        """
+        Raises ValueError if we don't have enough parameters
+        to try to find the Azure Quantum Workspace.
+        """
+        if not self.have_enough_for_discovery():
+            raise ValueError(self.WORKSPACE_NOT_FULLY_SPECIFIED_MSG)
+    
+    def can_build_resource_id(self) -> bool:
+        """
+        Returns true if we have all necessary parameters
+        to identify the Azure Quantum Workspace resource.
+        """
+        return (self.subscription_id
+                and self.resource_group
+                and self.workspace_name
+                and self.get_credential_or_default())
 
     def is_complete(self) -> bool:
         """
@@ -465,6 +591,7 @@ class WorkspaceConnectionParams:
                 and self.subscription_id
                 and self.resource_group
                 and self.workspace_name
+                and self.quantum_endpoint
                 and self.get_credential_or_default())
 
     def assert_complete(self):
@@ -473,15 +600,7 @@ class WorkspaceConnectionParams:
         to connect to the Azure Quantum Workspace.
         """
         if not self.is_complete():
-            raise ValueError(
-                """
-                    Azure Quantum workspace not fully specified.
-                    Please specify one of the following:
-                    1) A valid combination of location and resource ID.
-                    2) A valid combination of location, subscription ID,
-                    resource group name, and workspace name.
-                    3) A valid connection string (via Workspace.from_connection_string()).
-                """)
+            raise ValueError(self.WORKSPACE_NOT_FULLY_SPECIFIED_MSG)
 
     def default_from_env_vars(self) -> WorkspaceConnectionParams:
         """
@@ -517,10 +636,13 @@ class WorkspaceConnectionParams:
             or not self.workspace_name
             or not self.credential
         ):
-            self._merge_connection_params(
-                connection_params=WorkspaceConnectionParams(
-                    connection_string=os.environ.get(EnvironmentVariables.CONNECTION_STRING)),
-                merge_default_mode=True)
+            env_connection_string = os.environ.get(EnvironmentVariables.CONNECTION_STRING)
+            if env_connection_string:
+                self._merge_connection_params(
+                    connection_params=WorkspaceConnectionParams(
+                        connection_string=env_connection_string),
+                    merge_default_mode=True)
+                self._used_connection_string = True
         return self
 
     @classmethod
@@ -544,4 +666,5 @@ class WorkspaceConnectionParams:
             quantum_endpoint=get_value('quantum_endpoint'),
             api_key=get_value('api_key'),
             arm_endpoint=get_value('arm_endpoint'),
+            workspace_kind=get_value('workspace_kind'),
         )

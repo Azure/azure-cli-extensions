@@ -331,14 +331,14 @@ helps['containerapp env create'] = """
               --logs-workspace-id myLogsWorkspaceID \\
               --logs-workspace-key myLogsWorkspaceKey \\
               --location eastus2
-    - name: Create an environment with workload profiles enabled.
+    - name: Create an environment with workload profiles enabled (default mode).
       text: |
           az containerapp env create -n MyContainerappEnvironment -g MyResourceGroup \\
-              --location eastus2 --enable-workload-profiles
-    - name: Create an environment without workload profiles enabled.
+              --location eastus2 --environment-mode WorkloadProfiles
+    - name: Create an environment in consumption-only mode (no workload profiles).
       text: |
           az containerapp env create -n MyContainerappEnvironment -g MyResourceGroup \\
-              --location eastus2 --enable-workload-profiles false
+              --location eastus2 --environment-mode ConsumptionOnly
     - name: Create an environment with system assigned and user assigned identity.
       text: |
           az containerapp env create -n MyContainerappEnvironment -g MyResourceGroup \\

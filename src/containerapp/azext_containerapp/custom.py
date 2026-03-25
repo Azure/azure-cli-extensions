@@ -144,6 +144,7 @@ from ._ssh_utils import (SSH_DEFAULT_ENCODING, DebugWebSocketConnection, read_de
 
 from ._utils import (connected_env_check_cert_name_availability, get_oryx_run_image_tags, patchable_check,
                      get_pack_exec_path, is_docker_running, parse_build_env_vars, env_has_managed_identity)
+from ._utils_validation import validate_image_name
 
 from ._arc_utils import (extract_domain_from_configmap, get_core_dns_deployment, get_core_dns_configmap, backup_custom_core_dns_configmap,
                          replace_configmap, replace_deployment, delete_configmap, patch_coredns,
@@ -763,7 +764,8 @@ def create_managed_environment(cmd,
                                logs_dynamic_json_columns=False,
                                system_assigned=False,
                                user_assigned=None,
-                               public_network_access=None):
+                               public_network_access=None,
+                               environment_mode=None):
     return create_managed_environment_logic(
         cmd=cmd,
         name=name,
@@ -797,7 +799,8 @@ def create_managed_environment(cmd,
         logs_dynamic_json_columns=logs_dynamic_json_columns,
         system_assigned=system_assigned,
         user_assigned=user_assigned,
-        public_network_access=public_network_access
+        public_network_access=public_network_access,
+        environment_mode=environment_mode
     )
 
 
@@ -836,7 +839,8 @@ def create_managed_environment_logic(cmd,
                                      public_network_access=None,
                                      workload_profile_type=None,
                                      workload_profile_name=None,
-                                     is_env_for_azml_app=False):
+                                     is_env_for_azml_app=False,
+                                     environment_mode=None):
     raw_parameters = locals()
     containerapp_env_create_decorator = ContainerappEnvPreviewCreateDecorator(
         cmd=cmd,
@@ -875,7 +879,8 @@ def update_managed_environment(cmd,
                                p2p_encryption_enabled=None,
                                no_wait=False,
                                logs_dynamic_json_columns=None,
-                               public_network_access=None):
+                               public_network_access=None,
+                               environment_mode=None):
     raw_parameters = locals()
     containerapp_env_update_decorator = ContainerappEnvPreviewUpdateDecorator(
         cmd=cmd,
@@ -1780,7 +1785,9 @@ def _get_patchable_check_result(inspect_result, oryx_run_images):
 
 def patch_get_image_inspection(pack_exec_path, img, info_list):
     # Execute the 'pack inspect' command on an image and return the result (with additional Container App metadata)
-    with subprocess.Popen(pack_exec_path + " inspect-image " + img["imageName"] + " --output json", shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE) as img_info:
+    validate_image_name(img["imageName"])
+    command = [pack_exec_path, "inspect-image", img["imageName"], "--output", "json"]
+    with subprocess.Popen(command, stderr=subprocess.PIPE, stdout=subprocess.PIPE) as img_info:
         img_info_out, img_info_err = img_info.communicate()
         if img_info_err.find(b"status code 401 Unauthorized") != -1 or img_info_err.find(b"unable to find image") != -1:
             inspect_result = dict(remote_info=401, image_name=img["imageName"])
@@ -1887,11 +1894,14 @@ def patch_apply_handle_input(cmd, patch_check_list, method, pack_exec_path):
 def patch_cli_call(cmd, resource_group, container_app_name, container_name, target_image_name, new_run_image, pack_exec_path):
     try:
         logger.warning("Applying patch for container app: " + container_app_name + " container: " + container_name)
-        subprocess.run(f"{pack_exec_path} rebase -q {target_image_name} --run-image {new_run_image} --force", shell=True, check=True)
+        validate_image_name(target_image_name)
+        validate_image_name(new_run_image)
+        subprocess.run([pack_exec_path, "rebase", "-q", target_image_name, "--run-image", new_run_image, "--force"], check=True)
         new_target_image_name = target_image_name.split(":")[0] + ":" + new_run_image.split(":")[1]
-        subprocess.run(f"docker tag {target_image_name} {new_target_image_name}", shell=True, check=True)
+        validate_image_name(new_target_image_name)
+        subprocess.run(["docker", "tag", target_image_name, new_target_image_name], check=True)
         logger.debug(f"Publishing {new_target_image_name} to registry...")
-        subprocess.run(f"docker push -q {new_target_image_name}", shell=True, check=True)
+        subprocess.run(["docker", "push", "-q", new_target_image_name], check=True)
         logger.warning("Patch applied and published successfully.\nNew image: " + new_target_image_name)
     except Exception:
         logger.error("Error: Failed to apply patch and publish. Check if registry is logged in and has write access.")
