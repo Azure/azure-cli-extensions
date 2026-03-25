@@ -2078,6 +2078,7 @@ def load_arguments(self, _):
             "gpu_mig_strategy",
             arg_type=get_enum_type(gpu_mig_strategies),
             is_preview=True,
+            help="Specify the GPU Multi-Instance GPU (MIG) strategy. Allowed values: Single, Mixed.",
         )
         # in creation scenario, use "localuser" as default
         c.argument(
@@ -2226,6 +2227,7 @@ def load_arguments(self, _):
             "gpu_mig_strategy",
             arg_type=get_enum_type(gpu_mig_strategies),
             is_preview=True,
+            help="Specify the GPU Multi-Instance GPU (MIG) strategy. Allowed values: Single, Mixed.",
         )
 
     with self.argument_context("aks nodepool upgrade") as c:
