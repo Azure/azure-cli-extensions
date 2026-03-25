@@ -16,6 +16,7 @@ Pending
 * `az aks create/update`: Add `--enable-service-account-image-pull`, `--disable-service-account-image-pull`, and `--service-account-image-pull-default-managed-identity-id` parameters to manage service account based image pull settings.
 * `az aks list-vm-skus`: New command to list available VM SKUs for AKS clusters in a given region.
 * Add managed GPU enablement option to node pool property in `az aks nodepool add` and `az aks nodepool update`.
+* Add MIG (Multi-Instance GPU) strategy option to node pool property in `az aks nodepool add` and `az aks nodepool update`.
 
 19.0.0b27
 +++++++
