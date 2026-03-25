@@ -1817,7 +1817,7 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
                 # Check if already set to the desired value to avoid API error
                 if agentpool.gpu_profile.nvidia.management_mode == CONST_GPU_MANAGEMENT_MODE_UNMANAGED:
                     return agentpool
-                agentpool.gpu_profile.nvidia.management_mode = CONST_GPU_MANAGEMENT_MODE_UNMANAGED             
+                agentpool.gpu_profile.nvidia.management_mode = CONST_GPU_MANAGEMENT_MODE_UNMANAGED
 
         return agentpool
 
