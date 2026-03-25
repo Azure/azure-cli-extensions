@@ -17,6 +17,10 @@ Pending
 * `az aks list-vm-skus`: New command to list available VM SKUs for AKS clusters in a given region.
 * Add managed GPU enablement option to node pool property in `az aks nodepool add` and `az aks nodepool update`.
 
+19.0.0b28
++++++++
+* `az aks namespace update`: Fix location should use existing namespace location.
+
 19.0.0b27
 +++++++
 * `az aks nodepool add`: Fix `InvalidParameter` error when `mode` is `Machines`.
