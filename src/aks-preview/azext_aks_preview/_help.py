@@ -2203,6 +2203,9 @@ helps['aks nodepool add'] = """
         - name: --enable-artifact-streaming
           type: bool
           short-summary: Enable artifact streaming for VirtualMachineScaleSets managed by a node pool, to speed up the cold-start of containers on a node through on-demand image loading. To use this feature, container images must also enable artifact streaming on ACR. If not specified, the default is false.
+        - name: --enable-managed-gpu
+          type: bool
+          short-summary: Enable the Managed GPU experience, which installs additional components like DCGM metrics for monitoring on top of the GPU driver. For more details, visit aka.ms/aks/managed-gpu.
         - name: --skip-gpu-driver-install
           type: bool
           short-summary: To skip GPU driver auto installation by AKS on a nodepool using GPU vm size if customers want to manage GPU driver installation by their own. If not specified, the default is false.
@@ -2419,6 +2422,9 @@ helps['aks nodepool update'] = """
         - name: --enable-artifact-streaming
           type: bool
           short-summary: Enable artifact streaming for VirtualMachineScaleSets managed by a node pool, to speed up the cold-start of containers on a node through on-demand image loading. To use this feature, container images must also enable artifact streaming on ACR. If not specified, the default is false.
+        - name: --enable-managed-gpu
+          type: bool
+          short-summary: Enable the Managed GPU experience, which installs additional components like DCGM metrics for monitoring on top of the GPU driver. For more details, visit aka.ms/aks/managed-gpu.
         - name: --os-sku
           type: string
           short-summary: The os-sku of the agent node pool.

@@ -10,4 +10,58 @@
 
 
 def load_arguments(self, _):  # pylint: disable=unused-argument
-    pass
+    with self.argument_context('workload-orchestration support create-bundle') as c:
+        c.argument(
+            'bundle_name',
+            options_list=['--bundle-name', '-n'],
+            help='Optional name for the support bundle. '
+                 'Defaults to wo-support-bundle-YYYYMMDD-HHMMSS.',
+        )
+        c.argument(
+            'output_dir',
+            options_list=['--output-dir', '-d'],
+            help='Directory where the support bundle zip will be saved. Defaults to current directory.',
+        )
+        c.argument(
+            'namespaces',
+            options_list=['--namespaces'],
+            nargs='+',
+            help='Kubernetes namespaces to collect logs and resources from. '
+                 'Defaults to kube-system, workloadorchestration, cert-manager.',
+        )
+        c.argument(
+            'tail_lines',
+            options_list=['--tail-lines'],
+            type=int,
+            help='Number of log lines to collect per container (default: 1000). '
+                 'Use --full-logs to collect all lines.',
+        )
+        c.argument(
+            'full_logs',
+            options_list=['--full-logs'],
+            action='store_true',
+            help='Collect full container logs instead of tailing. '
+                 'Warning: may produce very large bundles.',
+        )
+        c.argument(
+            'skip_checks',
+            options_list=['--skip-checks'],
+            action='store_true',
+            help='Skip prerequisite validation checks and only collect logs/resources.',
+        )
+        c.argument(
+            'skip_logs',
+            options_list=['--skip-logs'],
+            action='store_true',
+            help='Skip container log collection and only run checks/collect resources.',
+        )
+        c.argument(
+            'kube_config',
+            options_list=['--kube-config'],
+            help='Path to kubeconfig file. Defaults to ~/.kube/config.',
+        )
+        c.argument(
+            'kube_context',
+            options_list=['--kube-context'],
+            help='Kubernetes context to use. Defaults to current context.',
+        )
