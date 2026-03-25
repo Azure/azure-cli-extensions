@@ -2045,6 +2045,7 @@ def load_arguments(self, _):
         )
         c.argument(
             "enable_managed_gpu",
+            arg_type=get_three_state_flag(),
             is_preview=True,
             help="Enable the Managed GPU experience.",
         )
