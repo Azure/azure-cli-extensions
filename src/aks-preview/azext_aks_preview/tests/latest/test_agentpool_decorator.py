@@ -434,6 +434,66 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
         ctx_0.attach_agentpool(agentpool_0)
         self.assertEqual(ctx_0.get_driver_type(), "CUDA")
 
+    def common_get_gpu_mig_strategy(self):
+        # default
+        ctx_1 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"gpu_mig_strategy": None}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_1.get_gpu_mig_strategy(), None)
+        agentpool_1 = self.create_initialized_agentpool_instance(
+            gpu_profile=self.models.GPUProfile(
+                nvidia=self.models.NvidiaGPUProfile(
+                    mig_strategy="Single"
+                )
+            )
+        )
+
+        ctx_1.attach_agentpool(agentpool_1)
+        self.assertEqual(ctx_1.get_gpu_mig_strategy(), "Single")
+
+        # default
+        ctx_2 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"gpu_mig_strategy": None}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_2.get_gpu_mig_strategy(), None)
+        agentpool_2 = self.create_initialized_agentpool_instance(
+            gpu_profile=self.models.GPUProfile(
+                nvidia=self.models.NvidiaGPUProfile(
+                    mig_strategy="Mixed"
+                )
+            )
+        )
+        ctx_2.attach_agentpool(agentpool_2)
+        self.assertEqual(ctx_2.get_gpu_mig_strategy(), "Mixed")
+
+        # custom
+        ctx_0 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"gpu_mig_strategy": "Single"}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_0.get_gpu_mig_strategy(), "Single")
+        agentpool_0 = self.create_initialized_agentpool_instance(
+            gpu_profile=self.models.GPUProfile(
+                nvidia=self.models.NvidiaGPUProfile(
+                    mig_strategy=None
+                )
+            )
+        )
+
+        ctx_0.attach_agentpool(agentpool_0)
+        self.assertEqual(ctx_0.get_gpu_mig_strategy(), "Single")
+
     def common_get_os_sku(self):
         # default
         ctx_1 = AKSPreviewAgentPoolContext(
@@ -1094,6 +1154,9 @@ class AKSPreviewAgentPoolContextStandaloneModeTestCase(
 
     def test_get_driver_type(self):
         self.common_get_driver_type()
+
+    def test_get_gpu_mig_strategy(self):
+        self.common_get_gpu_mig_strategy()
 
     def test_get_enable_secure_boot(self):
         self.common_get_enable_secure_boot()

@@ -2230,6 +2230,9 @@ helps['aks nodepool add'] = """
         - name: --driver-type
           type: string
           short-summary: Specify the type of GPU driver to install when creating Windows agent pools. Valid values are "GRID" and "CUDA". If not provided, AKS selects the driver based on system compatibility. This option cannot be changed once the AgentPool has been created. The default is system selected.
+        - name: --gpu-mig-strategy
+          type: string
+          short-summary: Specify the MIG (Multi-Instance GPU) strategy for managed MIG support. Valid values are "Single", "Mixed", and "None". When not specified, the default is None.
         - name: --ssh-access
           type: string
           short-summary: Configure SSH setting for the node pool. Use "disabled" to disable SSH access, "localuser" to enable SSH access using private key.

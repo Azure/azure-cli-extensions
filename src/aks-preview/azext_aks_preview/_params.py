@@ -153,6 +153,9 @@ from azext_aks_preview._consts import (
     CONST_APP_ROUTING_NONE_NGINX,
     CONST_GPU_DRIVER_TYPE_CUDA,
     CONST_GPU_DRIVER_TYPE_GRID,
+    CONST_GPU_MIG_STRATEGY_SINGLE,
+    CONST_GPU_MIG_STRATEGY_MIXED,
+    CONST_GPU_MIG_STRATEGY_NONE,
     CONST_ADVANCED_NETWORKPOLICIES_NONE,
     CONST_ADVANCED_NETWORKPOLICIES_FQDN,
     CONST_ADVANCED_NETWORKPOLICIES_L7,
@@ -540,6 +543,11 @@ app_routing_nginx_configs = [
 gpu_driver_types = [
     CONST_GPU_DRIVER_TYPE_CUDA,
     CONST_GPU_DRIVER_TYPE_GRID,
+]
+
+gpu_mig_strategies = [
+    CONST_GPU_MIG_STRATEGY_SINGLE,
+    CONST_GPU_MIG_STRATEGY_MIXED,
 ]
 
 upgrade_strategies = [
@@ -2038,7 +2046,6 @@ def load_arguments(self, _):
         )
         c.argument(
             "enable_managed_gpu",
-            action="store_true",
             is_preview=True,
             help="Enable the Managed GPU experience.",
         )
@@ -2065,6 +2072,11 @@ def load_arguments(self, _):
         c.argument(
             "driver_type",
             arg_type=get_enum_type(gpu_driver_types),
+            is_preview=True,
+        )
+        c.argument(
+            "gpu_mig_strategy",
+            arg_type=get_enum_type(gpu_mig_strategies),
             is_preview=True,
         )
         # in creation scenario, use "localuser" as default
@@ -2153,7 +2165,6 @@ def load_arguments(self, _):
         )
         c.argument(
             "enable_managed_gpu",
-            action="store_true",
             is_preview=True,
             help="Enable the Managed GPU experience.",
         )
@@ -2209,6 +2220,11 @@ def load_arguments(self, _):
         c.argument(
             "gpu_driver",
             arg_type=get_enum_type(gpu_driver_install_modes)
+        )
+        c.argument(
+            "gpu_mig_strategy",
+            arg_type=get_enum_type(gpu_mig_strategies),
+            is_preview=True,
         )
 
     with self.argument_context("aks nodepool upgrade") as c:
