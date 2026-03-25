@@ -519,6 +519,12 @@ helps['aks create'] = f"""
         - name: --enable-image-integrity
           type: bool
           short-summary: Enable ImageIntegrity Service.
+        - name: --enable-service-account-image-pull
+          type: bool
+          short-summary: Enable service account based image pull. For more information, see https://aka.ms/aks/identity-binding/acr-image-pull/docs.
+        - name: --service-account-image-pull-default-managed-identity-id
+          type: string
+          short-summary: The default managed identity resource ID used for image pulls at the cluster level.
         - name: --dns-zone-resource-id
           type: string
           short-summary: The resource ID of the DNS zone resource to use with the App Routing addon.
@@ -1228,6 +1234,15 @@ helps['aks update'] = """
         - name: --disable-image-integrity
           type: bool
           short-summary: Disable ImageIntegrity Service.
+        - name: --enable-service-account-image-pull
+          type: bool
+          short-summary: Enable service account based image pull. For more information, see https://aka.ms/aks/identity-binding/acr-image-pull/docs.
+        - name: --disable-service-account-image-pull
+          type: bool
+          short-summary: Disable service account based image pull.
+        - name: --service-account-image-pull-default-managed-identity-id
+          type: string
+          short-summary: The default managed identity resource ID used for image pulls at the cluster level.
         - name: --enable-apiserver-vnet-integration
           type: bool
           short-summary: Enable integration of user vnet with control plane apiserver pods.
