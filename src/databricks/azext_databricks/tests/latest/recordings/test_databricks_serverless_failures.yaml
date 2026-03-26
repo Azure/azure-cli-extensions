@@ -23,18 +23,24 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_expected_failures000001/providers/Microsoft.Databricks/workspaces/failed-workspace?api-version=2026-01-01
   response:
     body:
-      string: "{\r\n  \"error\": {\r\n    \"code\": \"InvalidDatabricksSku\",\r\n
-        \   \"message\": \"The SKU is invalid. The allowed SKUs are: ''Standard',
-        'Premium', 'Trial''.\"\r\n  }\r\n}"
+      string: '{"error":{"code":"RequestDisallowedByPolicy","target":"failed-workspace","message":"Resource
+        ''failed-workspace'' was disallowed by policy. Reasons: ''In order to comply
+        with SFI ID4.7.1, internal Azure Databricks workspaces are required to have
+        a premium SKU.''. See error details for policy resource IDs.","additionalInfo":[{"type":"PolicyViolation","info":{"evaluationDetails":{"evaluatedExpressions":[{"result":"True","expressionKind":"Field","expression":"type","path":"type","expressionValue":"Microsoft.Databricks/workspaces","targetValue":"Microsoft.Databricks/workspaces","operator":"Equals"},{"result":"True","expressionKind":"Field","expression":"Microsoft.Databricks/workspaces/sku.name","path":"sku.name","expressionValue":"Pxlekmx","targetValue":"Premium","operator":"NotEquals"},{"result":"True","expressionKind":"Value","expression":"[empty(field(''Microsoft.Databricks/workspaces/sku.name''))]","expressionValue":false,"targetValue":"true","operator":"NotEquals"}],"reason":"In
+        order to comply with SFI ID4.7.1, internal Azure Databricks workspaces are
+        required to have a premium SKU."},"policyDefinitionId":"/providers/Microsoft.Authorization/policyDefinitions/2cc2c3b5-c2f8-45aa-a9e6-f90d85ae8352","policyDefinitionName":"2cc2c3b5-c2f8-45aa-a9e6-f90d85ae8352","policyDefinitionDisplayName":"Azure
+        Databricks workspaces should be Premium SKU that supports features like private
+        link, customer-managed key for encryption","policyDefinitionVersion":"1.0.1","policyDefinitionEffect":"Deny","policyAssignmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/policyAssignments/b237d3c86a0947dd8ad15766","policyAssignmentName":"b237d3c86a0947dd8ad15766","policyAssignmentDisplayName":"Azure
+        Databricks workspaces should be Premium SKU","policyAssignmentScope":"/subscriptions/00000000-0000-0000-0000-000000000000","policyAssignmentParameters":{"effect":"Deny"},"policyExemptionIds":[],"policyEnrollmentIds":[]}}]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '154'
+      - '1961'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 09 Feb 2026 23:02:04 GMT
+      - Thu, 26 Mar 2026 22:33:23 GMT
       expires:
       - '-1'
       pragma:
@@ -45,15 +51,13 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
-      x-ms-operation-identifier:
-      - tenantId=b2ad95e6-8830-4405-a60e-12944d7ac939,objectId=444fc911-d78c-459a-a60c-b91f4398edb8/eastus/a4bbb0fc-f80e-42ed-90ed-2c0b753e6672
-      x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '99'
+      x-ms-failure-cause:
+      - gateway
       x-msedge-ref:
-      - 'Ref A: 3F299B68ECB04EB3A3AA6B16EA5A7935 Ref B: MWH011020807029 Ref C: 2026-02-09T23:02:04Z'
+      - 'Ref A: 5426A3EC452F41AE94A0C997807A95AF Ref B: CO6AA3150219053 Ref C: 2026-03-26T22:33:22Z'
     status:
-      code: 400
-      message: Bad Request
+      code: 403
+      message: Forbidden
 - request:
     body: '{"location": "eastus", "properties": {"computeMode": "Serverless", "parameters":
       {"enableNoPublicIp": {"value": true}}}, "sku": {"name": "premium"}}'
@@ -89,7 +93,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 09 Feb 2026 23:02:06 GMT
+      - Thu, 26 Mar 2026 22:33:23 GMT
       expires:
       - '-1'
       pragma:
@@ -101,11 +105,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=b2ad95e6-8830-4405-a60e-12944d7ac939,objectId=444fc911-d78c-459a-a60c-b91f4398edb8/westus2/6ebca65a-7014-41f1-b1ce-179f0b131ff4
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=a70a66b6-f372-4fcc-9f09-6c5e1e64c3dd/eastus/19620b79-a92d-4b33-970b-def15eb7d321
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '99'
       x-msedge-ref:
-      - 'Ref A: B48DEF4C34E6488E9A61D2F82AA19F38 Ref B: CO6AA3150219047 Ref C: 2026-02-09T23:02:05Z'
+      - 'Ref A: 9549EB2B05C047CDB7C0407DA2C22F40 Ref B: CO6AA3150218053 Ref C: 2026-03-26T22:33:23Z'
     status:
       code: 400
       message: Bad Request
@@ -144,7 +148,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 09 Feb 2026 23:02:08 GMT
+      - Thu, 26 Mar 2026 22:33:25 GMT
       expires:
       - '-1'
       pragma:
@@ -156,11 +160,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=b2ad95e6-8830-4405-a60e-12944d7ac939,objectId=444fc911-d78c-459a-a60c-b91f4398edb8/westus2/7bd129bf-7187-46f9-8670-23b10a3ce6f9
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=a70a66b6-f372-4fcc-9f09-6c5e1e64c3dd/westus/623a83b8-155a-4070-9346-c3c46c21edad
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '99'
       x-msedge-ref:
-      - 'Ref A: 62C16C881BB1446AB9C0E3A72623C892 Ref B: MWH011020809060 Ref C: 2026-02-09T23:02:07Z'
+      - 'Ref A: 24B5153F7B6E4299A2BB8CF6064D8B50 Ref B: MWH011020809054 Ref C: 2026-03-26T22:33:24Z'
     status:
       code: 400
       message: Bad Request
