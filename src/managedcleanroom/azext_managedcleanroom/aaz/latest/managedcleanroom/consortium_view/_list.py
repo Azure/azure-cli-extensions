@@ -21,7 +21,7 @@ class List(AAZCommand):
     :example: List consortium views in subscription
         az managedcleanroom consortium-view list
 
-    :example: List consortium views in subscription
+    :example: List consortium views in a resource group
         az managedcleanroom consortium-view list --resource-group testrg
     """
 

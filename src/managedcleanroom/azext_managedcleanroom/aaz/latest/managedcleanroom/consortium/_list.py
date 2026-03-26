@@ -21,7 +21,7 @@ class List(AAZCommand):
     :example: List consortiums in subscription
         az managedcleanroom consortium list
 
-    :example: List consortiums in subscription
+    :example: List consortiums in a resource group
         az managedcleanroom consortium list --resource-group testrg
     """
 

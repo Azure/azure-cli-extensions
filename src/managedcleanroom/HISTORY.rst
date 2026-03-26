@@ -14,4 +14,4 @@ Release History
 
 1.0.0b3
 ++++++
-* Update commands to reflect new API verson 2026-03-31-preview
+* Update commands to reflect new API version 2026-03-31-preview

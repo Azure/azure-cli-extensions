@@ -21,7 +21,7 @@ class List(AAZCommand):
     :example: List collaborations in subscription
         az managedcleanroom collaboration list
 
-    :example: List collaborations in subscription
+    :example: List collaborations in a resource group
         az managedcleanroom collaboration list --resource-group testrg
     """
 
