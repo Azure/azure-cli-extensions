@@ -19,7 +19,7 @@ class Create(AAZCommand):
     """Create a consortium view.
 
     :example: Create Consortium View
-        az managedcleanroom consortium-view create --resource-group testrg --consortium-view-name ContosoConsortiumView --location northeurope --consortium-endpoint https://ContosoEndpoint/ --consortium-service-certificate-pem Contoso certificate pem --member "{certificate-pem:membercertificate,signed-payload:membersignedpayload}"
+        az managedcleanroom consortium-view create --resource-group testrg --consortium-view-name ContosoConsortiumView --location northeurope --consortium-endpoint https://ContosoEndpoint/ --certificate-pem Contoso certificate pem --member "{certificate-pem:membercertificate,signed-payload:membersignedpayload}"
     """
 
     _aaz_info = {
@@ -67,8 +67,8 @@ class Create(AAZCommand):
             help="Gets or sets the CCF endpoint.",
             required=True,
         )
-        _args_schema.consortium_service_certificate_pem = AAZStrArg(
-            options=["--consortium-service-certificate-pem"],
+        _args_schema.certificate_pem = AAZStrArg(
+            options=["--certificate-pem"],
             arg_group="Properties",
             help="Gets or sets the CCF public service certificate in PEM format.",
             required=True,
@@ -238,7 +238,7 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("consortiumEndpoint", AAZStrType, ".consortium_endpoint", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("consortiumServiceCertificatePem", AAZStrType, ".consortium_service_certificate_pem", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("consortiumServiceCertificatePem", AAZStrType, ".certificate_pem", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("member", AAZObjectType, ".member", typ_kwargs={"flags": {"required": True}})
 
             member = _builder.get(".properties.member")
