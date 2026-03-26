@@ -14,9 +14,9 @@ class VirtualWanCommandsLoader(AzCommandsLoader):
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
         from .profiles import CUSTOM_VWAN
-        register_resource_type('latest', CUSTOM_VWAN, '2021-08-01')
+        register_resource_type('latest', CUSTOM_VWAN, '2022-07-01')
 
-        super(VirtualWanCommandsLoader, self).__init__(
+        super().__init__(
             cli_ctx=cli_ctx,
             custom_command_type=CliCommandType(operations_tmpl='azext_vwan.custom#{}'),
             resource_type=CUSTOM_VWAN

@@ -1,0 +1,1696 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.6.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/datastores/workspaceblobstore?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/datastores/workspaceblobstore",
+        "name": "workspaceblobstore", "type": "Microsoft.MachineLearningServices/workspaces/datastores",
+        "properties": {"description": null, "tags": null, "properties": null, "isDefault":
+        true, "credentials": {"credentialsType": "AccountKey"}, "datastoreType": "AzureBlob",
+        "accountName": "saclie2etest2", "containerName": "azureml-blobstore-e31fc4a9-1d2c-49eb-9f7d-e5e32e8a77c7",
+        "endpoint": "core.windows.net", "protocol": "https", "serviceDataAccessAuthIdentity":
+        "WorkspaceSystemAssignedIdentity"}, "systemData": {"createdAt": "2023-04-21T19:38:46.004297+00:00",
+        "createdBy": "779301c0-18b2-4cdc-801b-a0a3368fee0a", "createdByType": "Application",
+        "lastModifiedAt": "2023-04-21T19:38:46.8241901+00:00", "lastModifiedBy": "779301c0-18b2-4cdc-801b-a0a3368fee0a",
+        "lastModifiedByType": "Application"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '986'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Apr 2023 19:40:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-e7110e0be5dd70c328bd8c60fb335b02-a67b88c9b0c59dae-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.141'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.6.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/datastores/workspaceblobstore/listSecrets?api-version=0000-00-00
+  response:
+    body:
+      string: '{"secretsType": "AccountKey", "key": "9c80e38adb18b4f870e12943d277d26abfecd6f92118a9fd6c0b567f50650fca"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '104'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Apr 2023 19:40:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-67c47cdda88e538076b759673d4e40e8-1c853f288fa4699e-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus-01
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.116'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/xml
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-storage-blob/12.14.1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      x-ms-date:
+      - Fri, 21 Apr 2023 19:40:18 GMT
+      x-ms-version:
+      - '2021-08-06'
+    method: HEAD
+    uri: https://xxxxxxxxxxxxxxxxxxxxxx.blob.core.windows.net/azureml-blobstore-00000000-0000-0000-0000-000000000000/xxxxx/00000000-0000-0000-0000-00000000000/data/sample1.csv
+  response:
+    body:
+      string: ''
+    headers:
+      date:
+      - Fri, 21 Apr 2023 19:40:18 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      transfer-encoding:
+      - chunked
+      vary:
+      - Origin
+      x-ms-error-code:
+      - BlobNotFound
+      x-ms-version:
+      - '2021-08-06'
+    status:
+      code: 404
+      message: The specified blob does not exist.
+- request:
+    body: "\"Month\", \"Average\", \"2005\", \"2006\", \"2007\", \"2008\", \"2009\",
+      \"2010\", \"2011\", \"2012\", \"2013\", \"2014\", \"2015\"\r\n\"May\",  0.1,
+      \ 0,  0, 1, 1, 0, 0, 0, 2, 0,  0,  0\r\n\"Jun\",  0.5,  2,  1, 1, 0, 0, 1, 1,
+      2, 2,  0,  1\r\n\"Jul\",  0.7,  5,  1, 1, 2, 0, 1, 3, 0, 2,  2,  1\r\n\"Aug\",
+      \ 2.3,  6,  3, 2, 4, 4, 4, 7, 8, 2,  2,  3\r\n\"Sep\",  3.5,  6,  4, 7, 4, 2,
+      8, 5, 2, 5,  2,  5\r\n\"Oct\",  2.0,  8,  0, 1, 3, 2, 5, 1, 5, 2,  3,  0\r\n\"Nov\",
+      \ 0.5,  3,  0, 0, 1, 1, 0, 1, 0, 1,  0,  1\r\n\"Dec\",  0.0,  1,  0, 1, 0, 0,
+      0, 0, 0, 0,  0,  1\r\n"
+    headers:
+      Accept:
+      - application/xml
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '508'
+      Content-Type:
+      - application/octet-stream
+      If-None-Match:
+      - '*'
+      User-Agent:
+      - azsdk-python-storage-blob/12.14.1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      x-ms-blob-type:
+      - BlockBlob
+      x-ms-date:
+      - Fri, 21 Apr 2023 19:40:18 GMT
+      x-ms-version:
+      - '2021-08-06'
+    method: PUT
+    uri: https://xxxxxxxxxxxxxxxxxxxxxx.blob.core.windows.net/azureml-blobstore-00000000-0000-0000-0000-000000000000/xxxxx/00000000-0000-0000-0000-00000000000/data/sample1.csv
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      date:
+      - Fri, 21 Apr 2023 19:40:18 GMT
+      etag:
+      - '"0x8DB42A03D1A5F4A"'
+      last-modified:
+      - Fri, 21 Apr 2023 19:40:19 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-content-crc64:
+      - LmKBlnkUM08=
+      x-ms-request-server-encrypted:
+      - 'true'
+      x-ms-version:
+      - '2021-08-06'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/xml
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - azsdk-python-storage-blob/12.14.1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      x-ms-date:
+      - Fri, 21 Apr 2023 19:40:18 GMT
+      x-ms-meta-name:
+      - d8d6a0ee-7511-4866-a86e-c33fea392092
+      x-ms-meta-upload_status:
+      - completed
+      x-ms-meta-version:
+      - 9f7595f7-af9f-4f73-989f-b00e86ab6685
+      x-ms-version:
+      - '2021-08-06'
+    method: PUT
+    uri: https://xxxxxxxxxxxxxxxxxxxxxx.blob.core.windows.net/azureml-blobstore-00000000-0000-0000-0000-000000000000/xxxxx/00000000-0000-0000-0000-00000000000/data/sample1.csv?se=0000-00-00T00&sp=rt&sv=0000-00-00&sr=b&sig=000000000000000
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      date:
+      - Fri, 21 Apr 2023 19:40:18 GMT
+      etag:
+      - '"0x8DB42A03D2C25A4"'
+      last-modified:
+      - Fri, 21 Apr 2023 19:40:19 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-request-server-encrypted:
+      - 'true'
+      x-ms-version:
+      - '2021-08-06'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"properties": {"empty_property": null, "mlflow.source.git.repoURL":
+      "https://msdata@dev.azure.com/msdata/Vienna/_git/sdk-cli-v2", "mlflow.source.git.branch":
+      "user/zhili/soft_delete", "mlflow.source.git.commit": "3fac15395c993542830b2393a7ef6a8d06084de4",
+      "azureml.git.dirty": "True"}, "tags": {"empty_tag": null}, "computeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/static_resources_cli_v2_e2e_tests_resources/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/computes/cpu-cluster",
+      "displayName": "test_display_name", "experimentName": "mfe-test1", "identity":
+      {"identityType": "AMLToken"}, "isArchived": false, "jobType": "Command", "command":
+      "pip freeze", "environmentId": "azureml:AzureML-sklearn-0.24-ubuntu18.04-py37-cpu:1",
+      "environmentVariables": {}, "inputs": {"hello_input": {"uri": "azureml://datastores/workspaceblobstore/paths/LocalUpload/e0fedf745d43d4d261ab0674bd3eb90a/data/",
+      "jobInputType": "uri_folder"}}, "outputs": {}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1006'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.6.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/jobs/jobnamenumber_0?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/jobs/jobnamenumber_0",
+        "name": "jobnamenumber_0", "type": "Microsoft.MachineLearningServices/workspaces/jobs",
+        "properties": {"description": null, "tags": {"empty_tag": null}, "properties":
+        {"empty_property": null, "mlflow.source.git.repoURL": "https://msdata@dev.azure.com/msdata/Vienna/_git/sdk-cli-v2",
+        "mlflow.source.git.branch": "user/zhili/soft_delete", "mlflow.source.git.commit":
+        "3fac15395c993542830b2393a7ef6a8d06084de4", "azureml.git.dirty": "True", "_azureml.ComputeTargetType":
+        "amlctrain"}, "displayName": "test_display_name", "status": "Starting", "experimentName":
+        "mfe-test1", "services": {"Tracking": {"jobServiceType": "Tracking", "port":
+        null, "endpoint": "azureml://eastus.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli?",
+        "status": null, "errorMessage": null, "properties": null, "nodes": null},
+        "Studio": {"jobServiceType": "Studio", "port": null, "endpoint": "https://ml.azure.com/runs/jobnamenumber_0?wsid=/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/static_resources_cli_v2_e2e_tests_resources/workspaces/sdk_vnext_cli",
+        "status": null, "errorMessage": null, "properties": null, "nodes": null}},
+        "computeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/computes/cpu-cluster",
+        "isArchived": false, "identity": {"identityType": "AMLToken"}, "componentId":
+        null, "notificationSetting": null, "secretsConfiguration": null, "jobType":
+        "Command", "resources": {"instanceCount": 1, "maxInstanceCount": null, "instanceType":
+        null, "locations": null, "properties": null, "shmSize": "2g", "dockerArgs":
+        null}, "codeId": null, "command": "pip freeze", "environmentId": "azureml:AzureML-sklearn-0.24-ubuntu18.04-py37-cpu:1",
+        "inputs": {"hello_input": {"description": null, "uri": "azureml://datastores/workspaceblobstore/paths/LocalUpload/e0fedf745d43d4d261ab0674bd3eb90a/data/",
+        "mode": "ReadOnlyMount", "jobInputType": "uri_folder"}}, "outputs": {"default":
+        {"description": null, "uri": "azureml://datastores/workspaceartifactstore/ExperimentRun/dcid.jobnamenumber_0",
+        "assetName": null, "assetVersion": null, "mode": "ReadWriteMount", "autoDeleteSetting":
+        null, "jobOutputType": "uri_folder"}}, "distribution": null, "autologgerSettings":
+        null, "limits": null, "environmentVariables": {}, "parameters": {}, "queueSettings":
+        null}, "systemData": {"createdAt": "2023-04-21T19:40:21.1659267+00:00", "createdBy":
+        "Josh Harrington", "createdByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2792'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Apr 2023 19:40:21 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/static_resources_cli_v2_e2e_tests_resources/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/jobs/jobnamenumber_0?api-version=2023-04-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-3b1b6294d8575c6f85453033cf04afce-3f13a190bffd716e-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-eastus-01
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '1.252'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.6.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/datastores/workspaceblobstore?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/datastores/workspaceblobstore",
+        "name": "workspaceblobstore", "type": "Microsoft.MachineLearningServices/workspaces/datastores",
+        "properties": {"description": null, "tags": null, "properties": null, "isDefault":
+        true, "credentials": {"credentialsType": "AccountKey"}, "datastoreType": "AzureBlob",
+        "accountName": "saclie2etest2", "containerName": "azureml-blobstore-e31fc4a9-1d2c-49eb-9f7d-e5e32e8a77c7",
+        "endpoint": "core.windows.net", "protocol": "https", "serviceDataAccessAuthIdentity":
+        "WorkspaceSystemAssignedIdentity"}, "systemData": {"createdAt": "2023-04-21T19:38:46.004297+00:00",
+        "createdBy": "779301c0-18b2-4cdc-801b-a0a3368fee0a", "createdByType": "Application",
+        "lastModifiedAt": "2023-04-21T19:38:46.8241901+00:00", "lastModifiedBy": "779301c0-18b2-4cdc-801b-a0a3368fee0a",
+        "lastModifiedByType": "Application"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '986'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Apr 2023 19:40:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-2cb3c07cb7a7097305e73bf0f35ff6d0-e0a0d8eadb7f482b-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.132'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.6.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/datastores/workspaceblobstore/listSecrets?api-version=0000-00-00
+  response:
+    body:
+      string: '{"secretsType": "AccountKey", "key": "9c80e38adb18b4f870e12943d277d26abfecd6f92118a9fd6c0b567f50650fca"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '104'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Apr 2023 19:40:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-c02e16183a4e51ad53bb89146158c843-9e29837d21d0b2de-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus-02
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.168'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/xml
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-storage-blob/12.14.1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      x-ms-date:
+      - Fri, 21 Apr 2023 19:40:22 GMT
+      x-ms-version:
+      - '2021-08-06'
+    method: HEAD
+    uri: https://xxxxxxxxxxxxxxxxxxxxxx.blob.core.windows.net/azureml-blobstore-00000000-0000-0000-0000-000000000000/xxxxx/00000000-0000-0000-0000-00000000000/data/sample1.csv
+  response:
+    body:
+      string: ''
+    headers:
+      accept-ranges:
+      - bytes
+      content-length:
+      - '508'
+      content-type:
+      - application/octet-stream
+      date:
+      - Fri, 21 Apr 2023 19:40:23 GMT
+      etag:
+      - '"0x8DB42A03D2C25A4"'
+      last-modified:
+      - Fri, 21 Apr 2023 19:40:19 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      vary:
+      - Origin
+      x-ms-access-tier:
+      - Hot
+      x-ms-access-tier-inferred:
+      - 'true'
+      x-ms-blob-type:
+      - BlockBlob
+      x-ms-creation-time:
+      - Fri, 21 Apr 2023 19:40:19 GMT
+      x-ms-lease-state:
+      - available
+      x-ms-lease-status:
+      - unlocked
+      x-ms-meta-name:
+      - d8d6a0ee-7511-4866-a86e-c33fea392092
+      x-ms-meta-upload_status:
+      - completed
+      x-ms-meta-version:
+      - 9f7595f7-af9f-4f73-989f-b00e86ab6685
+      x-ms-server-encrypted:
+      - 'true'
+      x-ms-version:
+      - '2021-08-06'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/xml
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-storage-blob/12.14.1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      x-ms-date:
+      - Fri, 21 Apr 2023 19:40:23 GMT
+      x-ms-version:
+      - '2021-08-06'
+    method: HEAD
+    uri: https://xxxxxxxxxxxxxxxxxxxxxx.blob.core.windows.net/azureml-blobstore-00000000-0000-0000-0000-000000000000/xxxxx/00000000-0000-0000-0000-00000000000/data/sample1.csv
+  response:
+    body:
+      string: ''
+    headers:
+      date:
+      - Fri, 21 Apr 2023 19:40:23 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      transfer-encoding:
+      - chunked
+      vary:
+      - Origin
+      x-ms-error-code:
+      - BlobNotFound
+      x-ms-version:
+      - '2021-08-06'
+    status:
+      code: 404
+      message: The specified blob does not exist.
+- request:
+    body: '{"properties": {"properties": {"empty_property": null, "mlflow.source.git.repoURL":
+      "https://msdata@dev.azure.com/msdata/Vienna/_git/sdk-cli-v2", "mlflow.source.git.branch":
+      "user/zhili/soft_delete", "mlflow.source.git.commit": "3fac15395c993542830b2393a7ef6a8d06084de4",
+      "azureml.git.dirty": "True"}, "tags": {"empty_tag": null}, "computeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/static_resources_cli_v2_e2e_tests_resources/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/computes/cpu-cluster",
+      "displayName": "test_display_name", "experimentName": "mfe-test1", "identity":
+      {"identityType": "AMLToken"}, "isArchived": false, "jobType": "Command", "command":
+      "pip freeze", "environmentId": "azureml:AzureML-sklearn-0.24-ubuntu18.04-py37-cpu:1",
+      "environmentVariables": {}, "inputs": {"hello_input": {"uri": "azureml://datastores/workspaceblobstore/paths/LocalUpload/e0fedf745d43d4d261ab0674bd3eb90a/data/",
+      "jobInputType": "uri_folder"}}, "outputs": {}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1006'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.6.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/jobs/jobnamenumber_1?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/jobs/jobnamenumber_1",
+        "name": "jobnamenumber_1", "type": "Microsoft.MachineLearningServices/workspaces/jobs",
+        "properties": {"description": null, "tags": {"empty_tag": null}, "properties":
+        {"empty_property": null, "mlflow.source.git.repoURL": "https://msdata@dev.azure.com/msdata/Vienna/_git/sdk-cli-v2",
+        "mlflow.source.git.branch": "user/zhili/soft_delete", "mlflow.source.git.commit":
+        "3fac15395c993542830b2393a7ef6a8d06084de4", "azureml.git.dirty": "True", "_azureml.ComputeTargetType":
+        "amlctrain"}, "displayName": "test_display_name", "status": "Starting", "experimentName":
+        "mfe-test1", "services": {"Tracking": {"jobServiceType": "Tracking", "port":
+        null, "endpoint": "azureml://eastus.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli?",
+        "status": null, "errorMessage": null, "properties": null, "nodes": null},
+        "Studio": {"jobServiceType": "Studio", "port": null, "endpoint": "https://ml.azure.com/runs/jobnamenumber_1?wsid=/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/static_resources_cli_v2_e2e_tests_resources/workspaces/sdk_vnext_cli",
+        "status": null, "errorMessage": null, "properties": null, "nodes": null}},
+        "computeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/computes/cpu-cluster",
+        "isArchived": false, "identity": {"identityType": "AMLToken"}, "componentId":
+        null, "notificationSetting": null, "secretsConfiguration": null, "jobType":
+        "Command", "resources": {"instanceCount": 1, "maxInstanceCount": null, "instanceType":
+        null, "locations": null, "properties": null, "shmSize": "2g", "dockerArgs":
+        null}, "codeId": null, "command": "pip freeze", "environmentId": "azureml:AzureML-sklearn-0.24-ubuntu18.04-py37-cpu:1",
+        "inputs": {"hello_input": {"description": null, "uri": "azureml://datastores/workspaceblobstore/paths/LocalUpload/e0fedf745d43d4d261ab0674bd3eb90a/data/",
+        "mode": "ReadOnlyMount", "jobInputType": "uri_folder"}}, "outputs": {"default":
+        {"description": null, "uri": "azureml://datastores/workspaceartifactstore/ExperimentRun/dcid.jobnamenumber_1",
+        "assetName": null, "assetVersion": null, "mode": "ReadWriteMount", "autoDeleteSetting":
+        null, "jobOutputType": "uri_folder"}}, "distribution": null, "autologgerSettings":
+        null, "limits": null, "environmentVariables": {}, "parameters": {}, "queueSettings":
+        null}, "systemData": {"createdAt": "2023-04-21T19:40:24.8945934+00:00", "createdBy":
+        "Josh Harrington", "createdByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2792'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Apr 2023 19:40:25 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/static_resources_cli_v2_e2e_tests_resources/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/jobs/jobnamenumber_1?api-version=2023-04-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-f6609c9c09e3feb68e5e7e15d31505ae-c15a7b8ef8abdf4c-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-eastus-02
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.597'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.6.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/datastores/workspaceblobstore?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/datastores/workspaceblobstore",
+        "name": "workspaceblobstore", "type": "Microsoft.MachineLearningServices/workspaces/datastores",
+        "properties": {"description": null, "tags": null, "properties": null, "isDefault":
+        true, "credentials": {"credentialsType": "AccountKey"}, "datastoreType": "AzureBlob",
+        "accountName": "saclie2etest2", "containerName": "azureml-blobstore-e31fc4a9-1d2c-49eb-9f7d-e5e32e8a77c7",
+        "endpoint": "core.windows.net", "protocol": "https", "serviceDataAccessAuthIdentity":
+        "WorkspaceSystemAssignedIdentity"}, "systemData": {"createdAt": "2023-04-21T19:38:46.004297+00:00",
+        "createdBy": "779301c0-18b2-4cdc-801b-a0a3368fee0a", "createdByType": "Application",
+        "lastModifiedAt": "2023-04-21T19:38:46.8241901+00:00", "lastModifiedBy": "779301c0-18b2-4cdc-801b-a0a3368fee0a",
+        "lastModifiedByType": "Application"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '986'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Apr 2023 19:40:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-74e08fb12c3922ef2902c073fd3b5d05-d7df6ee8d7f37d18-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.135'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.6.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/datastores/workspaceblobstore/listSecrets?api-version=0000-00-00
+  response:
+    body:
+      string: '{"secretsType": "AccountKey", "key": "9c80e38adb18b4f870e12943d277d26abfecd6f92118a9fd6c0b567f50650fca"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '104'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Apr 2023 19:40:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-11c33892fcb49e97e446857700b6a210-ead2db7435695e00-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus-01
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.122'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/xml
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-storage-blob/12.14.1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      x-ms-date:
+      - Fri, 21 Apr 2023 19:40:26 GMT
+      x-ms-version:
+      - '2021-08-06'
+    method: HEAD
+    uri: https://xxxxxxxxxxxxxxxxxxxxxx.blob.core.windows.net/azureml-blobstore-00000000-0000-0000-0000-000000000000/xxxxx/00000000-0000-0000-0000-00000000000/data/sample1.csv
+  response:
+    body:
+      string: ''
+    headers:
+      accept-ranges:
+      - bytes
+      content-length:
+      - '508'
+      content-type:
+      - application/octet-stream
+      date:
+      - Fri, 21 Apr 2023 19:40:26 GMT
+      etag:
+      - '"0x8DB42A03D2C25A4"'
+      last-modified:
+      - Fri, 21 Apr 2023 19:40:19 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      vary:
+      - Origin
+      x-ms-access-tier:
+      - Hot
+      x-ms-access-tier-inferred:
+      - 'true'
+      x-ms-blob-type:
+      - BlockBlob
+      x-ms-creation-time:
+      - Fri, 21 Apr 2023 19:40:19 GMT
+      x-ms-lease-state:
+      - available
+      x-ms-lease-status:
+      - unlocked
+      x-ms-meta-name:
+      - d8d6a0ee-7511-4866-a86e-c33fea392092
+      x-ms-meta-upload_status:
+      - completed
+      x-ms-meta-version:
+      - 9f7595f7-af9f-4f73-989f-b00e86ab6685
+      x-ms-server-encrypted:
+      - 'true'
+      x-ms-version:
+      - '2021-08-06'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/xml
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-storage-blob/12.14.1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      x-ms-date:
+      - Fri, 21 Apr 2023 19:40:26 GMT
+      x-ms-version:
+      - '2021-08-06'
+    method: HEAD
+    uri: https://xxxxxxxxxxxxxxxxxxxxxx.blob.core.windows.net/azureml-blobstore-00000000-0000-0000-0000-000000000000/xxxxx/00000000-0000-0000-0000-00000000000/data/sample1.csv
+  response:
+    body:
+      string: ''
+    headers:
+      date:
+      - Fri, 21 Apr 2023 19:40:26 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      transfer-encoding:
+      - chunked
+      vary:
+      - Origin
+      x-ms-error-code:
+      - BlobNotFound
+      x-ms-version:
+      - '2021-08-06'
+    status:
+      code: 404
+      message: The specified blob does not exist.
+- request:
+    body: '{"properties": {"properties": {"empty_property": null, "mlflow.source.git.repoURL":
+      "https://msdata@dev.azure.com/msdata/Vienna/_git/sdk-cli-v2", "mlflow.source.git.branch":
+      "user/zhili/soft_delete", "mlflow.source.git.commit": "3fac15395c993542830b2393a7ef6a8d06084de4",
+      "azureml.git.dirty": "True"}, "tags": {"empty_tag": null}, "computeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/static_resources_cli_v2_e2e_tests_resources/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/computes/cpu-cluster",
+      "displayName": "test_display_name", "experimentName": "mfe-test1", "identity":
+      {"identityType": "AMLToken"}, "isArchived": false, "jobType": "Command", "command":
+      "pip freeze", "environmentId": "azureml:AzureML-sklearn-0.24-ubuntu18.04-py37-cpu:1",
+      "environmentVariables": {}, "inputs": {"hello_input": {"uri": "azureml://datastores/workspaceblobstore/paths/LocalUpload/e0fedf745d43d4d261ab0674bd3eb90a/data/",
+      "jobInputType": "uri_folder"}}, "outputs": {}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1006'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.6.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/jobs/jobnamenumber_2?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/jobs/jobnamenumber_2",
+        "name": "jobnamenumber_2", "type": "Microsoft.MachineLearningServices/workspaces/jobs",
+        "properties": {"description": null, "tags": {"empty_tag": null}, "properties":
+        {"empty_property": null, "mlflow.source.git.repoURL": "https://msdata@dev.azure.com/msdata/Vienna/_git/sdk-cli-v2",
+        "mlflow.source.git.branch": "user/zhili/soft_delete", "mlflow.source.git.commit":
+        "3fac15395c993542830b2393a7ef6a8d06084de4", "azureml.git.dirty": "True", "_azureml.ComputeTargetType":
+        "amlctrain"}, "displayName": "test_display_name", "status": "Starting", "experimentName":
+        "mfe-test1", "services": {"Tracking": {"jobServiceType": "Tracking", "port":
+        null, "endpoint": "azureml://eastus.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli?",
+        "status": null, "errorMessage": null, "properties": null, "nodes": null},
+        "Studio": {"jobServiceType": "Studio", "port": null, "endpoint": "https://ml.azure.com/runs/jobnamenumber_2?wsid=/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/static_resources_cli_v2_e2e_tests_resources/workspaces/sdk_vnext_cli",
+        "status": null, "errorMessage": null, "properties": null, "nodes": null}},
+        "computeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/computes/cpu-cluster",
+        "isArchived": false, "identity": {"identityType": "AMLToken"}, "componentId":
+        null, "notificationSetting": null, "secretsConfiguration": null, "jobType":
+        "Command", "resources": {"instanceCount": 1, "maxInstanceCount": null, "instanceType":
+        null, "locations": null, "properties": null, "shmSize": "2g", "dockerArgs":
+        null}, "codeId": null, "command": "pip freeze", "environmentId": "azureml:AzureML-sklearn-0.24-ubuntu18.04-py37-cpu:1",
+        "inputs": {"hello_input": {"description": null, "uri": "azureml://datastores/workspaceblobstore/paths/LocalUpload/e0fedf745d43d4d261ab0674bd3eb90a/data/",
+        "mode": "ReadOnlyMount", "jobInputType": "uri_folder"}}, "outputs": {"default":
+        {"description": null, "uri": "azureml://datastores/workspaceartifactstore/ExperimentRun/dcid.jobnamenumber_2",
+        "assetName": null, "assetVersion": null, "mode": "ReadWriteMount", "autoDeleteSetting":
+        null, "jobOutputType": "uri_folder"}}, "distribution": null, "autologgerSettings":
+        null, "limits": null, "environmentVariables": {}, "parameters": {}, "queueSettings":
+        null}, "systemData": {"createdAt": "2023-04-21T19:40:28.4687551+00:00", "createdBy":
+        "Josh Harrington", "createdByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2792'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Apr 2023 19:40:28 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/static_resources_cli_v2_e2e_tests_resources/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/jobs/jobnamenumber_2?api-version=2023-04-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-a225a55793fa1b993096e640a5cc4578-f2359bbe66ab66b1-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-eastus-01
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.498'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.6.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/datastores/workspaceblobstore?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/datastores/workspaceblobstore",
+        "name": "workspaceblobstore", "type": "Microsoft.MachineLearningServices/workspaces/datastores",
+        "properties": {"description": null, "tags": null, "properties": null, "isDefault":
+        true, "credentials": {"credentialsType": "AccountKey"}, "datastoreType": "AzureBlob",
+        "accountName": "saclie2etest2", "containerName": "azureml-blobstore-e31fc4a9-1d2c-49eb-9f7d-e5e32e8a77c7",
+        "endpoint": "core.windows.net", "protocol": "https", "serviceDataAccessAuthIdentity":
+        "WorkspaceSystemAssignedIdentity"}, "systemData": {"createdAt": "2023-04-21T19:38:46.004297+00:00",
+        "createdBy": "779301c0-18b2-4cdc-801b-a0a3368fee0a", "createdByType": "Application",
+        "lastModifiedAt": "2023-04-21T19:38:46.8241901+00:00", "lastModifiedBy": "779301c0-18b2-4cdc-801b-a0a3368fee0a",
+        "lastModifiedByType": "Application"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '986'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Apr 2023 19:40:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-2795f9c90f94392ec4ca2e55a95f212b-5fc7493f5b2da3cf-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.099'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.6.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/datastores/workspaceblobstore/listSecrets?api-version=0000-00-00
+  response:
+    body:
+      string: '{"secretsType": "AccountKey", "key": "9c80e38adb18b4f870e12943d277d26abfecd6f92118a9fd6c0b567f50650fca"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '104'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Apr 2023 19:40:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-47dba758e89a39f3181c25b74f3efcd3-25864dd41b175083-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus-01
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.103'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/xml
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-storage-blob/12.14.1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      x-ms-date:
+      - Fri, 21 Apr 2023 19:40:29 GMT
+      x-ms-version:
+      - '2021-08-06'
+    method: HEAD
+    uri: https://xxxxxxxxxxxxxxxxxxxxxx.blob.core.windows.net/azureml-blobstore-00000000-0000-0000-0000-000000000000/xxxxx/00000000-0000-0000-0000-00000000000/data/sample1.csv
+  response:
+    body:
+      string: ''
+    headers:
+      accept-ranges:
+      - bytes
+      content-length:
+      - '508'
+      content-type:
+      - application/octet-stream
+      date:
+      - Fri, 21 Apr 2023 19:40:29 GMT
+      etag:
+      - '"0x8DB42A03D2C25A4"'
+      last-modified:
+      - Fri, 21 Apr 2023 19:40:19 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      vary:
+      - Origin
+      x-ms-access-tier:
+      - Hot
+      x-ms-access-tier-inferred:
+      - 'true'
+      x-ms-blob-type:
+      - BlockBlob
+      x-ms-creation-time:
+      - Fri, 21 Apr 2023 19:40:19 GMT
+      x-ms-lease-state:
+      - available
+      x-ms-lease-status:
+      - unlocked
+      x-ms-meta-name:
+      - d8d6a0ee-7511-4866-a86e-c33fea392092
+      x-ms-meta-upload_status:
+      - completed
+      x-ms-meta-version:
+      - 9f7595f7-af9f-4f73-989f-b00e86ab6685
+      x-ms-server-encrypted:
+      - 'true'
+      x-ms-version:
+      - '2021-08-06'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/xml
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-storage-blob/12.14.1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      x-ms-date:
+      - Fri, 21 Apr 2023 19:40:30 GMT
+      x-ms-version:
+      - '2021-08-06'
+    method: HEAD
+    uri: https://xxxxxxxxxxxxxxxxxxxxxx.blob.core.windows.net/azureml-blobstore-00000000-0000-0000-0000-000000000000/xxxxx/00000000-0000-0000-0000-00000000000/data/sample1.csv
+  response:
+    body:
+      string: ''
+    headers:
+      date:
+      - Fri, 21 Apr 2023 19:40:29 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      transfer-encoding:
+      - chunked
+      vary:
+      - Origin
+      x-ms-error-code:
+      - BlobNotFound
+      x-ms-version:
+      - '2021-08-06'
+    status:
+      code: 404
+      message: The specified blob does not exist.
+- request:
+    body: '{"properties": {"properties": {"empty_property": null, "mlflow.source.git.repoURL":
+      "https://msdata@dev.azure.com/msdata/Vienna/_git/sdk-cli-v2", "mlflow.source.git.branch":
+      "user/zhili/soft_delete", "mlflow.source.git.commit": "3fac15395c993542830b2393a7ef6a8d06084de4",
+      "azureml.git.dirty": "True"}, "tags": {"empty_tag": null}, "computeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/static_resources_cli_v2_e2e_tests_resources/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/computes/cpu-cluster",
+      "displayName": "test_display_name", "experimentName": "mfe-test1", "identity":
+      {"identityType": "AMLToken"}, "isArchived": false, "jobType": "Command", "command":
+      "pip freeze", "environmentId": "azureml:AzureML-sklearn-0.24-ubuntu18.04-py37-cpu:1",
+      "environmentVariables": {}, "inputs": {"hello_input": {"uri": "azureml://datastores/workspaceblobstore/paths/LocalUpload/e0fedf745d43d4d261ab0674bd3eb90a/data/",
+      "jobInputType": "uri_folder"}}, "outputs": {}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1006'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.6.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/jobs/jobnamenumber_3?api-version=0000-00-00
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/jobs/jobnamenumber_3",
+        "name": "jobnamenumber_3", "type": "Microsoft.MachineLearningServices/workspaces/jobs",
+        "properties": {"description": null, "tags": {"empty_tag": null}, "properties":
+        {"empty_property": null, "mlflow.source.git.repoURL": "https://msdata@dev.azure.com/msdata/Vienna/_git/sdk-cli-v2",
+        "mlflow.source.git.branch": "user/zhili/soft_delete", "mlflow.source.git.commit":
+        "3fac15395c993542830b2393a7ef6a8d06084de4", "azureml.git.dirty": "True", "_azureml.ComputeTargetType":
+        "amlctrain"}, "displayName": "test_display_name", "status": "Starting", "experimentName":
+        "mfe-test1", "services": {"Tracking": {"jobServiceType": "Tracking", "port":
+        null, "endpoint": "azureml://eastus.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli?",
+        "status": null, "errorMessage": null, "properties": null, "nodes": null},
+        "Studio": {"jobServiceType": "Studio", "port": null, "endpoint": "https://ml.azure.com/runs/jobnamenumber_3?wsid=/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/static_resources_cli_v2_e2e_tests_resources/workspaces/sdk_vnext_cli",
+        "status": null, "errorMessage": null, "properties": null, "nodes": null}},
+        "computeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/computes/cpu-cluster",
+        "isArchived": false, "identity": {"identityType": "AMLToken"}, "componentId":
+        null, "notificationSetting": null, "secretsConfiguration": null, "jobType":
+        "Command", "resources": {"instanceCount": 1, "maxInstanceCount": null, "instanceType":
+        null, "locations": null, "properties": null, "shmSize": "2g", "dockerArgs":
+        null}, "codeId": null, "command": "pip freeze", "environmentId": "azureml:AzureML-sklearn-0.24-ubuntu18.04-py37-cpu:1",
+        "inputs": {"hello_input": {"description": null, "uri": "azureml://datastores/workspaceblobstore/paths/LocalUpload/e0fedf745d43d4d261ab0674bd3eb90a/data/",
+        "mode": "ReadOnlyMount", "jobInputType": "uri_folder"}}, "outputs": {"default":
+        {"description": null, "uri": "azureml://datastores/workspaceartifactstore/ExperimentRun/dcid.jobnamenumber_3",
+        "assetName": null, "assetVersion": null, "mode": "ReadWriteMount", "autoDeleteSetting":
+        null, "jobOutputType": "uri_folder"}}, "distribution": null, "autologgerSettings":
+        null, "limits": null, "environmentVariables": {}, "parameters": {}, "queueSettings":
+        null}, "systemData": {"createdAt": "2023-04-21T19:40:31.3459276+00:00", "createdBy":
+        "Josh Harrington", "createdByType": "User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2792'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Apr 2023 19:40:30 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/static_resources_cli_v2_e2e_tests_resources/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/jobs/jobnamenumber_3?api-version=2023-04-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-b1e09cd790a4ab613df0f99b30c33851-65b2c6986b5c5284-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aml-cluster:
+      - vienna-eastus-01
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.559'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.6.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/jobs?api-version=0000-00-00&listViewType=ActiveOnly
+  response:
+    body:
+      string: '{"value": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/jobs/jobnamenumber_3",
+        "name": "jobnamenumber_3", "type": "Microsoft.MachineLearningServices/workspaces/jobs",
+        "properties": {"description": null, "tags": {"empty_tag": null}, "properties":
+        {"empty_property": null, "mlflow.source.git.repoURL": "https://msdata@dev.azure.com/msdata/Vienna/_git/sdk-cli-v2",
+        "mlflow.source.git.branch": "user/zhili/soft_delete", "mlflow.source.git.commit":
+        "3fac15395c993542830b2393a7ef6a8d06084de4", "azureml.git.dirty": "True", "_azureml.ComputeTargetType":
+        "amlctrain"}, "displayName": "test_display_name", "status": "Canceled", "experimentName":
+        "mfe-test1", "services": {"Tracking": {"jobServiceType": "Tracking", "port":
+        null, "endpoint": "azureml://eastus.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli?",
+        "status": null, "errorMessage": null, "properties": null, "nodes": null},
+        "Studio": {"jobServiceType": "Studio", "port": null, "endpoint": "https://ml.azure.com/runs/jobnamenumber_3?wsid=/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/static_resources_cli_v2_e2e_tests_resources/workspaces/sdk_vnext_cli",
+        "status": null, "errorMessage": null, "properties": null, "nodes": null}},
+        "computeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/computes/cpu-cluster",
+        "isArchived": false, "identity": {"identityType": "AMLToken"}, "componentId":
+        null, "notificationSetting": null, "secretsConfiguration": null, "jobType":
+        "Command", "resources": {"instanceCount": 1, "maxInstanceCount": null, "instanceType":
+        null, "locations": null, "properties": null, "shmSize": "2g", "dockerArgs":
+        null}, "codeId": null, "command": "pip freeze", "environmentId": "azureml:AzureML-sklearn-0.24-ubuntu18.04-py37-cpu:1",
+        "inputs": {"hello_input": {"description": null, "uri": "azureml://datastores/workspaceblobstore/paths/LocalUpload/e0fedf745d43d4d261ab0674bd3eb90a/data/",
+        "mode": "ReadOnlyMount", "jobInputType": "uri_folder"}}, "outputs": {"default":
+        {"description": null, "uri": "azureml://datastores/workspaceartifactstore/ExperimentRun/dcid.jobnamenumber_3",
+        "assetName": null, "assetVersion": null, "mode": "ReadWriteMount", "autoDeleteSetting":
+        null, "jobOutputType": "uri_folder"}}, "distribution": null, "autologgerSettings":
+        null, "limits": null, "environmentVariables": {}, "parameters": {}, "queueSettings":
+        null}, "systemData": {"createdAt": "2023-04-21T19:40:31.3459276+00:00", "createdBy":
+        "Josh Harrington", "createdByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/jobs/jobnamenumber_2",
+        "name": "jobnamenumber_2", "type": "Microsoft.MachineLearningServices/workspaces/jobs",
+        "properties": {"description": null, "tags": {"empty_tag": null}, "properties":
+        {"empty_property": null, "mlflow.source.git.repoURL": "https://msdata@dev.azure.com/msdata/Vienna/_git/sdk-cli-v2",
+        "mlflow.source.git.branch": "user/zhili/soft_delete", "mlflow.source.git.commit":
+        "3fac15395c993542830b2393a7ef6a8d06084de4", "azureml.git.dirty": "True", "_azureml.ComputeTargetType":
+        "amlctrain"}, "displayName": "test_display_name", "status": "Canceled", "experimentName":
+        "mfe-test1", "services": {"Tracking": {"jobServiceType": "Tracking", "port":
+        null, "endpoint": "azureml://eastus.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli?",
+        "status": null, "errorMessage": null, "properties": null, "nodes": null},
+        "Studio": {"jobServiceType": "Studio", "port": null, "endpoint": "https://ml.azure.com/runs/jobnamenumber_2?wsid=/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/static_resources_cli_v2_e2e_tests_resources/workspaces/sdk_vnext_cli",
+        "status": null, "errorMessage": null, "properties": null, "nodes": null}},
+        "computeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/computes/cpu-cluster",
+        "isArchived": false, "identity": {"identityType": "AMLToken"}, "componentId":
+        null, "notificationSetting": null, "secretsConfiguration": null, "jobType":
+        "Command", "resources": {"instanceCount": 1, "maxInstanceCount": null, "instanceType":
+        null, "locations": null, "properties": null, "shmSize": "2g", "dockerArgs":
+        null}, "codeId": null, "command": "pip freeze", "environmentId": "azureml:AzureML-sklearn-0.24-ubuntu18.04-py37-cpu:1",
+        "inputs": {"hello_input": {"description": null, "uri": "azureml://datastores/workspaceblobstore/paths/LocalUpload/e0fedf745d43d4d261ab0674bd3eb90a/data/",
+        "mode": "ReadOnlyMount", "jobInputType": "uri_folder"}}, "outputs": {"default":
+        {"description": null, "uri": "azureml://datastores/workspaceartifactstore/ExperimentRun/dcid.jobnamenumber_2",
+        "assetName": null, "assetVersion": null, "mode": "ReadWriteMount", "autoDeleteSetting":
+        null, "jobOutputType": "uri_folder"}}, "distribution": null, "autologgerSettings":
+        null, "limits": null, "environmentVariables": {}, "parameters": {}, "queueSettings":
+        null}, "systemData": {"createdAt": "2023-04-21T19:40:28.4687551+00:00", "createdBy":
+        "Josh Harrington", "createdByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/jobs/jobnamenumber_1",
+        "name": "jobnamenumber_1", "type": "Microsoft.MachineLearningServices/workspaces/jobs",
+        "properties": {"description": null, "tags": {"empty_tag": null}, "properties":
+        {"empty_property": null, "mlflow.source.git.repoURL": "https://msdata@dev.azure.com/msdata/Vienna/_git/sdk-cli-v2",
+        "mlflow.source.git.branch": "user/zhili/soft_delete", "mlflow.source.git.commit":
+        "3fac15395c993542830b2393a7ef6a8d06084de4", "azureml.git.dirty": "True", "_azureml.ComputeTargetType":
+        "amlctrain"}, "displayName": "test_display_name", "status": "Canceled", "experimentName":
+        "mfe-test1", "services": {"Tracking": {"jobServiceType": "Tracking", "port":
+        null, "endpoint": "azureml://eastus.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli?",
+        "status": null, "errorMessage": null, "properties": null, "nodes": null},
+        "Studio": {"jobServiceType": "Studio", "port": null, "endpoint": "https://ml.azure.com/runs/jobnamenumber_1?wsid=/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/static_resources_cli_v2_e2e_tests_resources/workspaces/sdk_vnext_cli",
+        "status": null, "errorMessage": null, "properties": null, "nodes": null}},
+        "computeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/computes/cpu-cluster",
+        "isArchived": false, "identity": {"identityType": "AMLToken"}, "componentId":
+        null, "notificationSetting": null, "secretsConfiguration": null, "jobType":
+        "Command", "resources": {"instanceCount": 1, "maxInstanceCount": null, "instanceType":
+        null, "locations": null, "properties": null, "shmSize": "2g", "dockerArgs":
+        null}, "codeId": null, "command": "pip freeze", "environmentId": "azureml:AzureML-sklearn-0.24-ubuntu18.04-py37-cpu:1",
+        "inputs": {"hello_input": {"description": null, "uri": "azureml://datastores/workspaceblobstore/paths/LocalUpload/e0fedf745d43d4d261ab0674bd3eb90a/data/",
+        "mode": "ReadOnlyMount", "jobInputType": "uri_folder"}}, "outputs": {"default":
+        {"description": null, "uri": "azureml://datastores/workspaceartifactstore/ExperimentRun/dcid.jobnamenumber_1",
+        "assetName": null, "assetVersion": null, "mode": "ReadWriteMount", "autoDeleteSetting":
+        null, "jobOutputType": "uri_folder"}}, "distribution": null, "autologgerSettings":
+        null, "limits": null, "environmentVariables": {}, "parameters": {}, "queueSettings":
+        null}, "systemData": {"createdAt": "2023-04-21T19:40:24.8945934+00:00", "createdBy":
+        "Josh Harrington", "createdByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/jobs/jobnamenumber_0",
+        "name": "jobnamenumber_0", "type": "Microsoft.MachineLearningServices/workspaces/jobs",
+        "properties": {"description": null, "tags": {"empty_tag": null}, "properties":
+        {"empty_property": null, "mlflow.source.git.repoURL": "https://msdata@dev.azure.com/msdata/Vienna/_git/sdk-cli-v2",
+        "mlflow.source.git.branch": "user/zhili/soft_delete", "mlflow.source.git.commit":
+        "3fac15395c993542830b2393a7ef6a8d06084de4", "azureml.git.dirty": "True", "_azureml.ComputeTargetType":
+        "amlctrain"}, "displayName": "test_display_name", "status": "Canceled", "experimentName":
+        "mfe-test1", "services": {"Tracking": {"jobServiceType": "Tracking", "port":
+        null, "endpoint": "azureml://eastus.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli?",
+        "status": null, "errorMessage": null, "properties": null, "nodes": null},
+        "Studio": {"jobServiceType": "Studio", "port": null, "endpoint": "https://ml.azure.com/runs/jobnamenumber_0?wsid=/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/static_resources_cli_v2_e2e_tests_resources/workspaces/sdk_vnext_cli",
+        "status": null, "errorMessage": null, "properties": null, "nodes": null}},
+        "computeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/computes/cpu-cluster",
+        "isArchived": false, "identity": {"identityType": "AMLToken"}, "componentId":
+        null, "notificationSetting": null, "secretsConfiguration": null, "jobType":
+        "Command", "resources": {"instanceCount": 1, "maxInstanceCount": null, "instanceType":
+        null, "locations": null, "properties": null, "shmSize": "2g", "dockerArgs":
+        null}, "codeId": null, "command": "pip freeze", "environmentId": "azureml:AzureML-sklearn-0.24-ubuntu18.04-py37-cpu:1",
+        "inputs": {"hello_input": {"description": null, "uri": "azureml://datastores/workspaceblobstore/paths/LocalUpload/e0fedf745d43d4d261ab0674bd3eb90a/data/",
+        "mode": "ReadOnlyMount", "jobInputType": "uri_folder"}}, "outputs": {"default":
+        {"description": null, "uri": "azureml://datastores/workspaceartifactstore/ExperimentRun/dcid.jobnamenumber_0",
+        "assetName": null, "assetVersion": null, "mode": "ReadWriteMount", "autoDeleteSetting":
+        null, "jobOutputType": "uri_folder"}}, "distribution": null, "autologgerSettings":
+        null, "limits": null, "environmentVariables": {}, "parameters": {}, "queueSettings":
+        null}, "systemData": {"createdAt": "2023-04-21T19:40:21.1659267+00:00", "createdBy":
+        "Josh Harrington", "createdByType": "User"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '11187'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Apr 2023 19:42:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-0d3deec40074e7e84827fb6890e6877f-efe396f9569d9c22-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.238'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.6.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/jobs?api-version=0000-00-00&listViewType=ActiveOnly
+  response:
+    body:
+      string: '{"value": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/jobs/jobnamenumber_3",
+        "name": "jobnamenumber_3", "type": "Microsoft.MachineLearningServices/workspaces/jobs",
+        "properties": {"description": null, "tags": {"empty_tag": null}, "properties":
+        {"empty_property": null, "mlflow.source.git.repoURL": "https://msdata@dev.azure.com/msdata/Vienna/_git/sdk-cli-v2",
+        "mlflow.source.git.branch": "user/zhili/soft_delete", "mlflow.source.git.commit":
+        "3fac15395c993542830b2393a7ef6a8d06084de4", "azureml.git.dirty": "True", "_azureml.ComputeTargetType":
+        "amlctrain"}, "displayName": "test_display_name", "status": "Canceled", "experimentName":
+        "mfe-test1", "services": {"Tracking": {"jobServiceType": "Tracking", "port":
+        null, "endpoint": "azureml://eastus.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli?",
+        "status": null, "errorMessage": null, "properties": null, "nodes": null},
+        "Studio": {"jobServiceType": "Studio", "port": null, "endpoint": "https://ml.azure.com/runs/jobnamenumber_3?wsid=/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/static_resources_cli_v2_e2e_tests_resources/workspaces/sdk_vnext_cli",
+        "status": null, "errorMessage": null, "properties": null, "nodes": null}},
+        "computeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/computes/cpu-cluster",
+        "isArchived": false, "identity": {"identityType": "AMLToken"}, "componentId":
+        null, "notificationSetting": null, "secretsConfiguration": null, "jobType":
+        "Command", "resources": {"instanceCount": 1, "maxInstanceCount": null, "instanceType":
+        null, "locations": null, "properties": null, "shmSize": "2g", "dockerArgs":
+        null}, "codeId": null, "command": "pip freeze", "environmentId": "azureml:AzureML-sklearn-0.24-ubuntu18.04-py37-cpu:1",
+        "inputs": {"hello_input": {"description": null, "uri": "azureml://datastores/workspaceblobstore/paths/LocalUpload/e0fedf745d43d4d261ab0674bd3eb90a/data/",
+        "mode": "ReadOnlyMount", "jobInputType": "uri_folder"}}, "outputs": {"default":
+        {"description": null, "uri": "azureml://datastores/workspaceartifactstore/ExperimentRun/dcid.jobnamenumber_3",
+        "assetName": null, "assetVersion": null, "mode": "ReadWriteMount", "autoDeleteSetting":
+        null, "jobOutputType": "uri_folder"}}, "distribution": null, "autologgerSettings":
+        null, "limits": null, "environmentVariables": {}, "parameters": {}, "queueSettings":
+        null}, "systemData": {"createdAt": "2023-04-21T19:40:31.3459276+00:00", "createdBy":
+        "Josh Harrington", "createdByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/jobs/jobnamenumber_2",
+        "name": "jobnamenumber_2", "type": "Microsoft.MachineLearningServices/workspaces/jobs",
+        "properties": {"description": null, "tags": {"empty_tag": null}, "properties":
+        {"empty_property": null, "mlflow.source.git.repoURL": "https://msdata@dev.azure.com/msdata/Vienna/_git/sdk-cli-v2",
+        "mlflow.source.git.branch": "user/zhili/soft_delete", "mlflow.source.git.commit":
+        "3fac15395c993542830b2393a7ef6a8d06084de4", "azureml.git.dirty": "True", "_azureml.ComputeTargetType":
+        "amlctrain"}, "displayName": "test_display_name", "status": "Canceled", "experimentName":
+        "mfe-test1", "services": {"Tracking": {"jobServiceType": "Tracking", "port":
+        null, "endpoint": "azureml://eastus.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli?",
+        "status": null, "errorMessage": null, "properties": null, "nodes": null},
+        "Studio": {"jobServiceType": "Studio", "port": null, "endpoint": "https://ml.azure.com/runs/jobnamenumber_2?wsid=/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/static_resources_cli_v2_e2e_tests_resources/workspaces/sdk_vnext_cli",
+        "status": null, "errorMessage": null, "properties": null, "nodes": null}},
+        "computeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/computes/cpu-cluster",
+        "isArchived": false, "identity": {"identityType": "AMLToken"}, "componentId":
+        null, "notificationSetting": null, "secretsConfiguration": null, "jobType":
+        "Command", "resources": {"instanceCount": 1, "maxInstanceCount": null, "instanceType":
+        null, "locations": null, "properties": null, "shmSize": "2g", "dockerArgs":
+        null}, "codeId": null, "command": "pip freeze", "environmentId": "azureml:AzureML-sklearn-0.24-ubuntu18.04-py37-cpu:1",
+        "inputs": {"hello_input": {"description": null, "uri": "azureml://datastores/workspaceblobstore/paths/LocalUpload/e0fedf745d43d4d261ab0674bd3eb90a/data/",
+        "mode": "ReadOnlyMount", "jobInputType": "uri_folder"}}, "outputs": {"default":
+        {"description": null, "uri": "azureml://datastores/workspaceartifactstore/ExperimentRun/dcid.jobnamenumber_2",
+        "assetName": null, "assetVersion": null, "mode": "ReadWriteMount", "autoDeleteSetting":
+        null, "jobOutputType": "uri_folder"}}, "distribution": null, "autologgerSettings":
+        null, "limits": null, "environmentVariables": {}, "parameters": {}, "queueSettings":
+        null}, "systemData": {"createdAt": "2023-04-21T19:40:28.4687551+00:00", "createdBy":
+        "Josh Harrington", "createdByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/jobs/jobnamenumber_1",
+        "name": "jobnamenumber_1", "type": "Microsoft.MachineLearningServices/workspaces/jobs",
+        "properties": {"description": null, "tags": {"empty_tag": null}, "properties":
+        {"empty_property": null, "mlflow.source.git.repoURL": "https://msdata@dev.azure.com/msdata/Vienna/_git/sdk-cli-v2",
+        "mlflow.source.git.branch": "user/zhili/soft_delete", "mlflow.source.git.commit":
+        "3fac15395c993542830b2393a7ef6a8d06084de4", "azureml.git.dirty": "True", "_azureml.ComputeTargetType":
+        "amlctrain"}, "displayName": "test_display_name", "status": "Canceled", "experimentName":
+        "mfe-test1", "services": {"Tracking": {"jobServiceType": "Tracking", "port":
+        null, "endpoint": "azureml://eastus.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli?",
+        "status": null, "errorMessage": null, "properties": null, "nodes": null},
+        "Studio": {"jobServiceType": "Studio", "port": null, "endpoint": "https://ml.azure.com/runs/jobnamenumber_1?wsid=/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/static_resources_cli_v2_e2e_tests_resources/workspaces/sdk_vnext_cli",
+        "status": null, "errorMessage": null, "properties": null, "nodes": null}},
+        "computeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/computes/cpu-cluster",
+        "isArchived": false, "identity": {"identityType": "AMLToken"}, "componentId":
+        null, "notificationSetting": null, "secretsConfiguration": null, "jobType":
+        "Command", "resources": {"instanceCount": 1, "maxInstanceCount": null, "instanceType":
+        null, "locations": null, "properties": null, "shmSize": "2g", "dockerArgs":
+        null}, "codeId": null, "command": "pip freeze", "environmentId": "azureml:AzureML-sklearn-0.24-ubuntu18.04-py37-cpu:1",
+        "inputs": {"hello_input": {"description": null, "uri": "azureml://datastores/workspaceblobstore/paths/LocalUpload/e0fedf745d43d4d261ab0674bd3eb90a/data/",
+        "mode": "ReadOnlyMount", "jobInputType": "uri_folder"}}, "outputs": {"default":
+        {"description": null, "uri": "azureml://datastores/workspaceartifactstore/ExperimentRun/dcid.jobnamenumber_1",
+        "assetName": null, "assetVersion": null, "mode": "ReadWriteMount", "autoDeleteSetting":
+        null, "jobOutputType": "uri_folder"}}, "distribution": null, "autologgerSettings":
+        null, "limits": null, "environmentVariables": {}, "parameters": {}, "queueSettings":
+        null}, "systemData": {"createdAt": "2023-04-21T19:40:24.8945934+00:00", "createdBy":
+        "Josh Harrington", "createdByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/jobs/jobnamenumber_0",
+        "name": "jobnamenumber_0", "type": "Microsoft.MachineLearningServices/workspaces/jobs",
+        "properties": {"description": null, "tags": {"empty_tag": null}, "properties":
+        {"empty_property": null, "mlflow.source.git.repoURL": "https://msdata@dev.azure.com/msdata/Vienna/_git/sdk-cli-v2",
+        "mlflow.source.git.branch": "user/zhili/soft_delete", "mlflow.source.git.commit":
+        "3fac15395c993542830b2393a7ef6a8d06084de4", "azureml.git.dirty": "True", "_azureml.ComputeTargetType":
+        "amlctrain"}, "displayName": "test_display_name", "status": "Canceled", "experimentName":
+        "mfe-test1", "services": {"Tracking": {"jobServiceType": "Tracking", "port":
+        null, "endpoint": "azureml://eastus.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli?",
+        "status": null, "errorMessage": null, "properties": null, "nodes": null},
+        "Studio": {"jobServiceType": "Studio", "port": null, "endpoint": "https://ml.azure.com/runs/jobnamenumber_0?wsid=/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/static_resources_cli_v2_e2e_tests_resources/workspaces/sdk_vnext_cli",
+        "status": null, "errorMessage": null, "properties": null, "nodes": null}},
+        "computeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/computes/cpu-cluster",
+        "isArchived": false, "identity": {"identityType": "AMLToken"}, "componentId":
+        null, "notificationSetting": null, "secretsConfiguration": null, "jobType":
+        "Command", "resources": {"instanceCount": 1, "maxInstanceCount": null, "instanceType":
+        null, "locations": null, "properties": null, "shmSize": "2g", "dockerArgs":
+        null}, "codeId": null, "command": "pip freeze", "environmentId": "azureml:AzureML-sklearn-0.24-ubuntu18.04-py37-cpu:1",
+        "inputs": {"hello_input": {"description": null, "uri": "azureml://datastores/workspaceblobstore/paths/LocalUpload/e0fedf745d43d4d261ab0674bd3eb90a/data/",
+        "mode": "ReadOnlyMount", "jobInputType": "uri_folder"}}, "outputs": {"default":
+        {"description": null, "uri": "azureml://datastores/workspaceartifactstore/ExperimentRun/dcid.jobnamenumber_0",
+        "assetName": null, "assetVersion": null, "mode": "ReadWriteMount", "autoDeleteSetting":
+        null, "jobOutputType": "uri_folder"}}, "distribution": null, "autologgerSettings":
+        null, "limits": null, "environmentVariables": {}, "parameters": {}, "queueSettings":
+        null}, "systemData": {"createdAt": "2023-04-21T19:40:21.1659267+00:00", "createdBy":
+        "Josh Harrington", "createdByType": "User"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '11187'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Apr 2023 19:42:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-1e62fe80bb90530d38e7dc128a4f2e72-38c687c08a9abf44-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus-01
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.163'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ai-ml/1.6.0 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/jobs?api-version=0000-00-00&listViewType=ActiveOnly
+  response:
+    body:
+      string: '{"value": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/jobs/jobnamenumber_3",
+        "name": "jobnamenumber_3", "type": "Microsoft.MachineLearningServices/workspaces/jobs",
+        "properties": {"description": null, "tags": {"empty_tag": null}, "properties":
+        {"empty_property": null, "mlflow.source.git.repoURL": "https://msdata@dev.azure.com/msdata/Vienna/_git/sdk-cli-v2",
+        "mlflow.source.git.branch": "user/zhili/soft_delete", "mlflow.source.git.commit":
+        "3fac15395c993542830b2393a7ef6a8d06084de4", "azureml.git.dirty": "True", "_azureml.ComputeTargetType":
+        "amlctrain"}, "displayName": "test_display_name", "status": "Canceled", "experimentName":
+        "mfe-test1", "services": {"Tracking": {"jobServiceType": "Tracking", "port":
+        null, "endpoint": "azureml://eastus.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli?",
+        "status": null, "errorMessage": null, "properties": null, "nodes": null},
+        "Studio": {"jobServiceType": "Studio", "port": null, "endpoint": "https://ml.azure.com/runs/jobnamenumber_3?wsid=/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/static_resources_cli_v2_e2e_tests_resources/workspaces/sdk_vnext_cli",
+        "status": null, "errorMessage": null, "properties": null, "nodes": null}},
+        "computeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/computes/cpu-cluster",
+        "isArchived": false, "identity": {"identityType": "AMLToken"}, "componentId":
+        null, "notificationSetting": null, "secretsConfiguration": null, "jobType":
+        "Command", "resources": {"instanceCount": 1, "maxInstanceCount": null, "instanceType":
+        null, "locations": null, "properties": null, "shmSize": "2g", "dockerArgs":
+        null}, "codeId": null, "command": "pip freeze", "environmentId": "azureml:AzureML-sklearn-0.24-ubuntu18.04-py37-cpu:1",
+        "inputs": {"hello_input": {"description": null, "uri": "azureml://datastores/workspaceblobstore/paths/LocalUpload/e0fedf745d43d4d261ab0674bd3eb90a/data/",
+        "mode": "ReadOnlyMount", "jobInputType": "uri_folder"}}, "outputs": {"default":
+        {"description": null, "uri": "azureml://datastores/workspaceartifactstore/ExperimentRun/dcid.jobnamenumber_3",
+        "assetName": null, "assetVersion": null, "mode": "ReadWriteMount", "autoDeleteSetting":
+        null, "jobOutputType": "uri_folder"}}, "distribution": null, "autologgerSettings":
+        null, "limits": null, "environmentVariables": {}, "parameters": {}, "queueSettings":
+        null}, "systemData": {"createdAt": "2023-04-21T19:40:31.3459276+00:00", "createdBy":
+        "Josh Harrington", "createdByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/jobs/jobnamenumber_2",
+        "name": "jobnamenumber_2", "type": "Microsoft.MachineLearningServices/workspaces/jobs",
+        "properties": {"description": null, "tags": {"empty_tag": null}, "properties":
+        {"empty_property": null, "mlflow.source.git.repoURL": "https://msdata@dev.azure.com/msdata/Vienna/_git/sdk-cli-v2",
+        "mlflow.source.git.branch": "user/zhili/soft_delete", "mlflow.source.git.commit":
+        "3fac15395c993542830b2393a7ef6a8d06084de4", "azureml.git.dirty": "True", "_azureml.ComputeTargetType":
+        "amlctrain"}, "displayName": "test_display_name", "status": "Canceled", "experimentName":
+        "mfe-test1", "services": {"Tracking": {"jobServiceType": "Tracking", "port":
+        null, "endpoint": "azureml://eastus.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli?",
+        "status": null, "errorMessage": null, "properties": null, "nodes": null},
+        "Studio": {"jobServiceType": "Studio", "port": null, "endpoint": "https://ml.azure.com/runs/jobnamenumber_2?wsid=/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/static_resources_cli_v2_e2e_tests_resources/workspaces/sdk_vnext_cli",
+        "status": null, "errorMessage": null, "properties": null, "nodes": null}},
+        "computeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/computes/cpu-cluster",
+        "isArchived": false, "identity": {"identityType": "AMLToken"}, "componentId":
+        null, "notificationSetting": null, "secretsConfiguration": null, "jobType":
+        "Command", "resources": {"instanceCount": 1, "maxInstanceCount": null, "instanceType":
+        null, "locations": null, "properties": null, "shmSize": "2g", "dockerArgs":
+        null}, "codeId": null, "command": "pip freeze", "environmentId": "azureml:AzureML-sklearn-0.24-ubuntu18.04-py37-cpu:1",
+        "inputs": {"hello_input": {"description": null, "uri": "azureml://datastores/workspaceblobstore/paths/LocalUpload/e0fedf745d43d4d261ab0674bd3eb90a/data/",
+        "mode": "ReadOnlyMount", "jobInputType": "uri_folder"}}, "outputs": {"default":
+        {"description": null, "uri": "azureml://datastores/workspaceartifactstore/ExperimentRun/dcid.jobnamenumber_2",
+        "assetName": null, "assetVersion": null, "mode": "ReadWriteMount", "autoDeleteSetting":
+        null, "jobOutputType": "uri_folder"}}, "distribution": null, "autologgerSettings":
+        null, "limits": null, "environmentVariables": {}, "parameters": {}, "queueSettings":
+        null}, "systemData": {"createdAt": "2023-04-21T19:40:28.4687551+00:00", "createdBy":
+        "Josh Harrington", "createdByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/jobs/jobnamenumber_1",
+        "name": "jobnamenumber_1", "type": "Microsoft.MachineLearningServices/workspaces/jobs",
+        "properties": {"description": null, "tags": {"empty_tag": null}, "properties":
+        {"empty_property": null, "mlflow.source.git.repoURL": "https://msdata@dev.azure.com/msdata/Vienna/_git/sdk-cli-v2",
+        "mlflow.source.git.branch": "user/zhili/soft_delete", "mlflow.source.git.commit":
+        "3fac15395c993542830b2393a7ef6a8d06084de4", "azureml.git.dirty": "True", "_azureml.ComputeTargetType":
+        "amlctrain"}, "displayName": "test_display_name", "status": "Canceled", "experimentName":
+        "mfe-test1", "services": {"Tracking": {"jobServiceType": "Tracking", "port":
+        null, "endpoint": "azureml://eastus.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli?",
+        "status": null, "errorMessage": null, "properties": null, "nodes": null},
+        "Studio": {"jobServiceType": "Studio", "port": null, "endpoint": "https://ml.azure.com/runs/jobnamenumber_1?wsid=/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/static_resources_cli_v2_e2e_tests_resources/workspaces/sdk_vnext_cli",
+        "status": null, "errorMessage": null, "properties": null, "nodes": null}},
+        "computeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/computes/cpu-cluster",
+        "isArchived": false, "identity": {"identityType": "AMLToken"}, "componentId":
+        null, "notificationSetting": null, "secretsConfiguration": null, "jobType":
+        "Command", "resources": {"instanceCount": 1, "maxInstanceCount": null, "instanceType":
+        null, "locations": null, "properties": null, "shmSize": "2g", "dockerArgs":
+        null}, "codeId": null, "command": "pip freeze", "environmentId": "azureml:AzureML-sklearn-0.24-ubuntu18.04-py37-cpu:1",
+        "inputs": {"hello_input": {"description": null, "uri": "azureml://datastores/workspaceblobstore/paths/LocalUpload/e0fedf745d43d4d261ab0674bd3eb90a/data/",
+        "mode": "ReadOnlyMount", "jobInputType": "uri_folder"}}, "outputs": {"default":
+        {"description": null, "uri": "azureml://datastores/workspaceartifactstore/ExperimentRun/dcid.jobnamenumber_1",
+        "assetName": null, "assetVersion": null, "mode": "ReadWriteMount", "autoDeleteSetting":
+        null, "jobOutputType": "uri_folder"}}, "distribution": null, "autologgerSettings":
+        null, "limits": null, "environmentVariables": {}, "parameters": {}, "queueSettings":
+        null}, "systemData": {"createdAt": "2023-04-21T19:40:24.8945934+00:00", "createdBy":
+        "Josh Harrington", "createdByType": "User"}}, {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/jobs/jobnamenumber_0",
+        "name": "jobnamenumber_0", "type": "Microsoft.MachineLearningServices/workspaces/jobs",
+        "properties": {"description": null, "tags": {"empty_tag": null}, "properties":
+        {"empty_property": null, "mlflow.source.git.repoURL": "https://msdata@dev.azure.com/msdata/Vienna/_git/sdk-cli-v2",
+        "mlflow.source.git.branch": "user/zhili/soft_delete", "mlflow.source.git.commit":
+        "3fac15395c993542830b2393a7ef6a8d06084de4", "azureml.git.dirty": "True", "_azureml.ComputeTargetType":
+        "amlctrain"}, "displayName": "test_display_name", "status": "Canceled", "experimentName":
+        "mfe-test1", "services": {"Tracking": {"jobServiceType": "Tracking", "port":
+        null, "endpoint": "azureml://eastus.api.azureml.ms/mlflow/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli?",
+        "status": null, "errorMessage": null, "properties": null, "nodes": null},
+        "Studio": {"jobServiceType": "Studio", "port": null, "endpoint": "https://ml.azure.com/runs/jobnamenumber_0?wsid=/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/static_resources_cli_v2_e2e_tests_resources/workspaces/sdk_vnext_cli",
+        "status": null, "errorMessage": null, "properties": null, "nodes": null}},
+        "computeId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/sdk_vnext_cli/computes/cpu-cluster",
+        "isArchived": false, "identity": {"identityType": "AMLToken"}, "componentId":
+        null, "notificationSetting": null, "secretsConfiguration": null, "jobType":
+        "Command", "resources": {"instanceCount": 1, "maxInstanceCount": null, "instanceType":
+        null, "locations": null, "properties": null, "shmSize": "2g", "dockerArgs":
+        null}, "codeId": null, "command": "pip freeze", "environmentId": "azureml:AzureML-sklearn-0.24-ubuntu18.04-py37-cpu:1",
+        "inputs": {"hello_input": {"description": null, "uri": "azureml://datastores/workspaceblobstore/paths/LocalUpload/e0fedf745d43d4d261ab0674bd3eb90a/data/",
+        "mode": "ReadOnlyMount", "jobInputType": "uri_folder"}}, "outputs": {"default":
+        {"description": null, "uri": "azureml://datastores/workspaceartifactstore/ExperimentRun/dcid.jobnamenumber_0",
+        "assetName": null, "assetVersion": null, "mode": "ReadWriteMount", "autoDeleteSetting":
+        null, "jobOutputType": "uri_folder"}}, "distribution": null, "autologgerSettings":
+        null, "limits": null, "environmentVariables": {}, "parameters": {}, "queueSettings":
+        null}, "systemData": {"createdAt": "2023-04-21T19:40:21.1659267+00:00", "createdBy":
+        "Josh Harrington", "createdByType": "User"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '11187'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Apr 2023 19:42:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
+      server-timing:
+      - traceparent;desc="00-e799e4dd213a4f4c7364de8b38bfe8d4-c88490d3433d4d08-01"
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aml-cluster:
+      - vienna-eastus-02
+      x-content-type-options:
+      - nosniff
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '0.167'
+    status:
+      code: 200
+      message: OK
+version: 1

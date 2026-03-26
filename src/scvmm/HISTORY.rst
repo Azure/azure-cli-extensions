@@ -2,6 +2,50 @@
 
 Release History
 ===============
+1.2.1
+++++++
+* [HotFix] Fixed `az scvmm vm create-from-machines` command for VM Instance creation.
+
+1.2.0
+++++++
+* Add command `az scvmm vm create-from-machines`.
+
+1.1.2
+++++++
+* Security upgrades and fixes - Drop `msrestazure` dependency.
+
+1.1.1
+++++++
+* [Hotfix] Fixed VMMServer connect command parameter error.
+
+1.1.0
+++++++
+* Security upgrades and fixes.
+
+1.0.0
+++++++
+* First Stable version release.
+* Vendor new SDK and bump API version to stable/2023-10-07.
+
+0.2.0
+++++++
+* Using New Resource Model for all VM operations:
+    * `vm` command : Create, Update, Delete, Show, VirtualMachineInstance and Perform Operations on VM Instance
+    * `vm guest-agent` command : Enable, Show VMInstanceGuestAgent
+    * `vm extension` command : Create, Update, Delete, Show, List MachineExtensions
+* If underlying machine is not present, it gets created during vm create
+* Added delete-from-host flag for `vm delete`
+* Deprecated VM List option as VM Instance is a child resource of Machines.
+* Updated tests and helps accordingly.
+
+0.1.8
+++++++
+* Added support for checkpoint operations to create, delete and restore checkpoints
+* Added deleteFromHost flag to delete VM from on-prem
+
+0.1.7
+++++++
+* [Hotfix] Disabling pwinput till the issue here gets fixed: https://github.com/Azure/azure-cli/issues/24781 
 
 0.1.6
 ++++++

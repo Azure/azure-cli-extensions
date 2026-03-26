@@ -1,0 +1,24 @@
+.. :changelog:
+
+Release History
+===============
+
+1.1.0
+++++++
+* Updated default value of identity argument in monitor create command.
+
+1.0.2
+++++++
+* Updated CLI command descriptions.
+
+1.0.1
+++++++
+* Update module documentation.
+
+1.0.0b1
+++++++
+* Initial release.
+
+1.0.0
+++++++
+* Updating capabilities as per https://github.com/Azure/azure-rest-api-specs/blob/main/specification/newrelic/resource-manager/NewRelic.Observability/stable/2024-01-01/NewRelic.json.

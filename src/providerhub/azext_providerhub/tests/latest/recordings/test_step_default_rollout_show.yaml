@@ -1,0 +1,48 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - providerhub default-rollout show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --provider-namespace --rollout-name
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/defaultRollouts/cliDefaultRollout?api-version=2024-04-01-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","specification":{"canary":{"regions":["BRAZILUS","CENTRALUSEUAP","EASTUS2EUAP"]},"lowTraffic":{"waitDuration":"P1D","regions":["EASTUSSTG","WESTCENTRALUS"]},"mediumTraffic":{"waitDuration":"P1D","regions":["CENTRALINDIA","NORTHCENTRALUS","SOUTHCENTRALUSSTG"]},"highTraffic":{"waitDuration":"P1D","regions":["WESTUS2"]},"restOfTheWorldGroupOne":{"waitDuration":"P1D","regions":["AUSTRALIACENTRAL","AUSTRALIASOUTHEAST","BRAZILSOUTHEAST","CANADACENTRAL","EASTASIA","EASTUS","FRANCECENTRAL","GERMANYWESTCENTRAL","ITALYNORTH","JAPANWEST","JIOINDIACENTRAL","KOREACENTRAL","MALAYSIASOUTH","NORWAYWEST","SOUTHAFRICAWEST","SOUTHCENTRALUS","SWEDENCENTRAL","SWEDENSOUTH","SWITZERLANDWEST","TAIWANNORTH","UAECENTRAL","UKSOUTH","WESTEUROPE","WESTINDIA","WESTUS","MALAYSIAWEST","NEWZEALANDNORTH","SOUTHCENTRALUS2"]},"restOfTheWorldGroupTwo":{"waitDuration":"P1D","regions":["AUSTRALIACENTRAL2","AUSTRALIAEAST","BRAZILSOUTH","CANADAEAST","CENTRALUS","CENTRALUSFOUNDATIONAL","EASTUS2","FRANCESOUTH","GERMANYNORTH","ISRAELCENTRAL","JAPANEAST","JIOINDIAWEST","KOREASOUTH","MEXICOCENTRAL","NORTHEUROPE","NORTHEUROPEFOUNDATIONAL","NORWAYEAST","POLANDCENTRAL","QATARCENTRAL","SOUTHAFRICANORTH","SOUTHEASTASIA","SOUTHEASTASIAFOUNDATIONAL","SOUTHINDIA","SPAINCENTRAL","SWITZERLANDNORTH","TAIWANNORTHWEST","UAENORTH","UKWEST","WESTEUROPEFOUNDATIONAL","WESTUS3","AUSTRALIAEASTFOUNDATIONAL","AUSTRIAEAST","CHILECENTRAL","EASTUSFOUNDATIONAL","EASTUSSLV","INDONESIACENTRAL","ISRAELNORTHWEST","SOUTHEASTUS","SOUTHWESTUS","UKSOUTHFOUNDATIONAL"]},"autoProvisionConfig":{"storage":true,"resourceGraph":true},"manifestCheckinSpecification":{"manifestCheckinOption":"DoNotAttemptAutomaticManifestCheckin","manifestCheckinSync":false,"manifestGeneratedMatchesRepo":true}},"status":{"nextTrafficRegion":"None","subscriptionReregistrationResult":"NotApplicable","completedRegions":["BRAZILUS","EASTUS2EUAP","CENTRALUSEUAP"],"failedOrSkippedRegions":{}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/defaultRollouts/cliDefaultRollout","type":"Microsoft.ProviderHub/providerRegistrations/defaultRollouts","name":"cliDefaultRollout","systemData":{"createdBy":"gaurimadhok@microsoft.com","createdByType":"User","createdAt":"2024-06-04T16:34:14.8005518Z","lastModifiedBy":"gaurimadhok@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-04T16:34:14.8005518Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2464'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Jun 2024 17:10:23 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=9506e7c0-c569-479f-9940-1f63cb8ce817/centraluseuap/0af169b0-0276-4f15-a637-8a7a403847ea
+      x-msedge-ref:
+      - 'Ref A: 1852FAAEBB2648C08B61110A24007D58 Ref B: CH1AA2020615049 Ref C: 2024-06-04T17:10:20Z'
+    status:
+      code: 200
+      message: OK
+version: 1

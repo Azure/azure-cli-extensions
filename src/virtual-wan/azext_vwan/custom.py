@@ -2,26 +2,29 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-
+# pylint: disable=line-too-long, too-many-lines, unused-argument, protected-access
 
 import os
 import re
 import hashlib
 
 from OpenSSL import crypto
-from knack.util import CLIError
 from knack.log import get_logger
 
 from azure.cli.core.util import sdk_no_wait
-
-from ._client_factory import network_client_factory, cf_virtual_hub_bgpconnections, cf_virtual_hub_connection
-
+from azure.cli.core.aaz import has_value
+from azure.cli.core.aaz.utils import assign_aaz_list_arg
+from azure.cli.core.azclierror import ArgumentUsageError, InvalidArgumentValueError
+from .aaz.latest.network.vhub.connection import Create as _VHubConnectionCreate, Update as _VHubConnectionUpdate
+from .aaz.latest.network.vpn_gateway.nat_rule import Create as _VPNGatewayNatRuleCreate, \
+    Show as _VPNGatewayNatRuleShow, List as _VPNGatewayNatRuleList, Update as _VPNGatewayNatRuleUpdate
+from ._client_factory import network_client_factory, cf_virtual_hub_bgpconnections
 from ._util import _get_property
 
 logger = get_logger(__name__)
 
 
-class UpdateContext(object):
+class UpdateContext:
 
     def __init__(self, instance):
         self.instance = instance
@@ -61,7 +64,7 @@ def _generic_list(cli_ctx, operation_name, resource_group_name):
 def _get_property(items, name):
     result = next((x for x in items if x.name.lower() == name.lower()), None)
     if not result:
-        raise CLIError("Property '{}' does not exist".format(name))
+        raise InvalidArgumentValueError(f"Property '{name}' does not exist")
     return result
 
 
@@ -72,8 +75,8 @@ def _upsert(parent, collection_name, obj_to_add, key_name, warn=True):
 
     value = getattr(obj_to_add, key_name)
     if value is None:
-        raise CLIError(
-            "Unable to resolve a value for key '{}' with which to match.".format(key_name))
+        raise InvalidArgumentValueError(
+            f"Unable to resolve a value for key '{key_name}' with which to match.")
     match = next((x for x in collection if getattr(x, key_name, None) == value), None)
     if match:
         if warn:
@@ -95,7 +98,7 @@ def _find_item_at_path(instance, path):
             # property
             curr_item = getattr(curr_item, comp, None)
         if not curr_item:
-            raise CLIError("not found: '{}' not found at path '{}'".format(comp, '.'.join(path_comps[:i])))
+            raise InvalidArgumentValueError(f"not found: '{comp}' not found at path '{'.'.join(path_comps[:i])}'")
     return curr_item
 
 
@@ -163,69 +166,118 @@ def get_effective_virtual_hub_routes(cmd, resource_group_name, virtual_hub_name,
     )
 
 
-def update_hub_vnet_connection(instance, cmd, associated_route_table=None, propagated_route_tables=None, labels=None):
+def update_hub_vnet_connection(instance, cmd, associated_route_table=None, propagated_route_tables=None, labels=None,
+                               associated_inbound_routemap=None, associated_outbound_routemap=None):
     SubResource = cmd.get_models('SubResource')
 
     ids = [SubResource(id=propagated_route_table) for propagated_route_table in
            propagated_route_tables] if propagated_route_tables else None  # pylint: disable=line-too-long
     associated_route_table = SubResource(id=associated_route_table) if associated_route_table else None
+    associated_inbound_routemap = SubResource(id=associated_inbound_routemap) if associated_inbound_routemap else None
+    associated_outbound_routemap = SubResource(id=associated_outbound_routemap) if associated_outbound_routemap else None
     with UpdateContext(instance) as c:
         c.set_param('routing_configuration.associated_route_table', associated_route_table, False)
         c.set_param('routing_configuration.propagated_route_tables.labels', labels, False)
         c.set_param('routing_configuration.propagated_route_tables.ids', ids, False)
+        c.set_param('routing_configuration.inbound_route_map', associated_inbound_routemap, False)
+        c.set_param('routing_configuration.outbound_route_map', associated_outbound_routemap, False)
 
     return instance
 
 
 # pylint: disable=too-many-locals
-def create_hub_vnet_connection(cmd, resource_group_name, virtual_hub_name, connection_name,
-                               remote_virtual_network, allow_hub_to_remote_vnet_transit=None,
-                               allow_remote_vnet_to_use_hub_vnet_gateways=None, enable_internet_security=None,
-                               associated_route_table=None, propagated_route_tables=None, labels=None,
-                               route_name=None, address_prefixes=None, next_hop_ip_address=None, no_wait=False):
-    (HubVirtualNetworkConnection,
-     SubResource,
-     RoutingConfiguration,
-     PropagatedRouteTable,
-     VnetRoute,
-     StaticRoute) = cmd.get_models('HubVirtualNetworkConnection',
-                                   'SubResource',
-                                   'RoutingConfiguration',
-                                   'PropagatedRouteTable',
-                                   'VnetRoute',
-                                   'StaticRoute')
-
-    propagated_route_tables = PropagatedRouteTable(
-        labels=labels,
-        ids=[SubResource(id=propagated_route_table) for propagated_route_table in propagated_route_tables] if propagated_route_tables else None  # pylint: disable=line-too-long
-    )
-
-    routing_configuration = RoutingConfiguration(
-        associated_route_table=SubResource(id=associated_route_table) if associated_route_table else None,
-        propagated_route_tables=propagated_route_tables
-    )
-
-    if route_name is not None:
-        static_route = StaticRoute(
-            name=route_name,
-            address_prefixes=address_prefixes,
-            next_hop_ip_address=next_hop_ip_address
+class VHubConnectionCreate(_VHubConnectionCreate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZListArg, AAZStrArg, AAZResourceIdArg, AAZResourceIdArgFormat
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.propagated_route_tables = AAZListArg(
+            options=["--propagated-route-tables", "--propagated"],
+            arg_group="Routing Configuration",
+            help="Space-separated list of resource ID of propagated route tables.",
+            is_preview=True
         )
-        vnet_routes = VnetRoute(static_routes=[static_route])
-        routing_configuration.vnet_routes = vnet_routes
+        args_schema.propagated_route_tables.Element = AAZResourceIdArg(
+            fmt=AAZResourceIdArgFormat(
+                template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network"
+                         "/virtualHubs/{vhub_name}/hubRouteTables/{}"
+            )
+        )
+        args_schema.address_prefixes = AAZListArg(
+            options=["--address-prefixes"],
+            arg_group="Routing Configuration",
+            help="Space-separated list of all address prefixes.",
+            is_preview=True
+        )
+        args_schema.address_prefixes.Element = AAZStrArg()
+        args_schema.remote_vnet._fmt = AAZResourceIdArgFormat(
+            template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network"
+                     "/virtualNetworks/{}"
+        )
+        args_schema.next_hop = AAZStrArg(
+            options=["--next-hop"],
+            arg_group="Routing Configuration",
+            help="IP address of the next hop.",
+            is_preview=True
+        )
+        args_schema.route_name = AAZStrArg(
+            options=["--route-name"],
+            arg_group="Routing Configuration",
+            help="Name of the static route that is unique within a VNet route.",
+            is_preview=True
+        )
+        args_schema.route_tables._registered = False
+        args_schema.static_routes._registered = False
+        args_schema.remote_vnet._required = True
 
-    connection = HubVirtualNetworkConnection(
-        name=connection_name,
-        remote_virtual_network=SubResource(id=remote_virtual_network),
-        allow_hub_to_remote_vnet_transit=allow_hub_to_remote_vnet_transit,
-        allow_remote_vnet_to_use_hub_vnet_gateway=allow_remote_vnet_to_use_hub_vnet_gateways,
-        enable_internet_security=enable_internet_security,
-        routing_configuration=routing_configuration
-    )
+        return args_schema
 
-    client = network_client_factory(cmd.cli_ctx).hub_virtual_network_connections
-    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name,
-                       virtual_hub_name, connection_name, connection)
+    def pre_operations(self):
+        args = self.ctx.args
+        args.route_tables = assign_aaz_list_arg(
+            args.route_tables,
+            args.propagated_route_tables,
+            element_transformer=lambda _, route_table_id: {"id": route_table_id}
+        )
+        if has_value(args.route_name):
+            static_route = {
+                "route_name": args.route_name,
+                "address_prefixes": args.address_prefixes if has_value(args.address_prefixes) else None,
+                "next_hop": args.next_hop if has_value(args.next_hop) else None
+            }
+            args.static_routes = [static_route]
+
+
+class VHubConnectionUpdate(_VHubConnectionUpdate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZListArg, AAZResourceIdArg, AAZResourceIdArgFormat
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.propagated_route_tables = AAZListArg(
+            options=["--propagated-route-tables", "--propagated"],
+            arg_group="Routing Configuration",
+            help="Space-separated list of resource ID of propagated route tables.",
+            nullable=True,
+            is_preview=True
+        )
+        args_schema.propagated_route_tables.Element = AAZResourceIdArg(
+            fmt=AAZResourceIdArgFormat(
+                template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network"
+                         "/virtualHubs/{vhub_name}/hubRouteTables/{}"
+            ),
+            nullable=True
+        )
+        args_schema.route_tables._registered = False
+
+        return args_schema
+
+    def pre_operations(self):
+        args = self.ctx.args
+        args.route_tables = assign_aaz_list_arg(
+            args.route_tables,
+            args.propagated_route_tables,
+            element_transformer=lambda _, route_table_id: {"id": route_table_id}
+        )
 
 
 def _bgp_connections_client(cli_ctx):
@@ -304,8 +356,8 @@ def remove_hub_route(cmd, resource_group_name, virtual_hub_name, index, no_wait=
     hub = client.get(resource_group_name, virtual_hub_name)
     try:
         hub.route_table.routes.pop(index - 1)
-    except IndexError:
-        raise CLIError('invalid index: {}. Index can range from 1 to {}'.format(index, len(hub.route_table.routes)))
+    except IndexError as exc:
+        raise InvalidArgumentValueError(f"invalid index: {index}. Index can range from 1 to {len(hub.route_table.routes)}") from exc
     poller = sdk_no_wait(no_wait, client.begin_create_or_update,
                          resource_group_name, virtual_hub_name, hub)
     try:
@@ -316,57 +368,29 @@ def remove_hub_route(cmd, resource_group_name, virtual_hub_name, index, no_wait=
 
 # pylint: disable=inconsistent-return-statements
 def create_vhub_route_table(cmd, resource_group_name, virtual_hub_name, route_table_name, destination_type=None,
-                            destinations=None, next_hop_type=None, next_hops=None, attached_connections=None,
-                            next_hop=None, route_name=None, labels=None, no_wait=False):
-    if attached_connections:  # route table v2
-        if next_hops is None:
-            raise CLIError('Usage error: --next-hops must be provided when --connections is provided.')
-        if labels is not None or route_name is not None or next_hop is not None:
-            raise CLIError(
-                'Usage error: None of [--labels, --route-name, --next-hop] is supported when --connections is provided.'
-            )
+                            destinations=None, next_hop_type=None, next_hop=None, route_name=None, labels=None,
+                            no_wait=False):
+    HubRouteTable, HubRoute = cmd.get_models('HubRouteTable', 'HubRoute')
+    route_table = HubRouteTable(labels=labels)
 
-        VirtualHubRouteTableV2, VirtualHubRouteV2 = cmd.get_models('VirtualHubRouteTableV2', 'VirtualHubRouteV2')
-        route = VirtualHubRouteV2(destination_type=destination_type,
-                                  destinations=destinations,
-                                  next_hop_type=next_hop_type,
-                                  next_hops=next_hops)
-        route_table = VirtualHubRouteTableV2(attached_connections=attached_connections, routes=[route])
-        client = _v2_route_table_client(cmd.cli_ctx)
-    else:  # route table v3
-        if next_hops is not None:
-            raise CLIError('Usage error: --next-hops is not supported when --connections is not provided.')
+    if route_name is not None:
+        route = HubRoute(name=route_name,
+                         destination_type=destination_type,
+                         destinations=destinations,
+                         next_hop_type=next_hop_type,
+                         next_hop=next_hop)
+        route_table.routes = [route]
 
-        HubRouteTable, HubRoute = cmd.get_models('HubRouteTable', 'HubRoute')
-        route_table = HubRouteTable(labels=labels)
-
-        if route_name is not None:
-            route = HubRoute(name=route_name,
-                             destination_type=destination_type,
-                             destinations=destinations,
-                             next_hop_type=next_hop_type,
-                             next_hop=next_hop)
-            route_table.routes = [route]
-
-        client = _v3_route_table_client(cmd.cli_ctx)
+    client = _v3_route_table_client(cmd.cli_ctx)
 
     return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name,
                        virtual_hub_name, route_table_name, route_table)
 
 
-def update_vhub_route_table(cmd, resource_group_name, virtual_hub_name, route_table_name,
-                            attached_connections=None, labels=None, no_wait=False):
+def update_vhub_route_table(cmd, resource_group_name, virtual_hub_name, route_table_name, labels=None, no_wait=False):
     route_table = get_vhub_route_table(cmd, resource_group_name, virtual_hub_name, route_table_name)
-    if _is_v2_route_table(route_table):
-        if labels is not None:
-            raise CLIError('Usage error: --labels is not supported for this v2 route table.')
-        client = _v2_route_table_client(cmd.cli_ctx)
-        route_table.attached_connections = attached_connections
-    else:
-        if attached_connections is not None:
-            raise CLIError('Usage error: --connections is not supported for this v3 route table.')
-        client = _v3_route_table_client(cmd.cli_ctx)
-        route_table.labels = labels
+    client = _v3_route_table_client(cmd.cli_ctx)
+    route_table.labels = labels
 
     return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name,
                        virtual_hub_name, route_table_name, route_table)
@@ -398,39 +422,21 @@ def list_vhub_route_tables(cmd, resource_group_name, virtual_hub_name):
 
 
 # pylint: disable=inconsistent-return-statements
-def add_hub_routetable_route(cmd, resource_group_name, virtual_hub_name, route_table_name,
-                             destination_type, destinations, next_hop_type,
-                             next_hops=None, next_hop=None, route_name=None, no_wait=False):
+def add_hub_routetable_route(cmd, resource_group_name, virtual_hub_name, route_table_name, destination_type,
+                             destinations, next_hop_type, next_hop=None, route_name=None, no_wait=False):
     route_table = get_vhub_route_table(cmd, resource_group_name, virtual_hub_name, route_table_name)
-    if _is_v2_route_table(route_table):
-        if next_hops is None:
-            raise CLIError('Usage error: --next-hops must be provided as you are adding route to v2 route table.')
-        if route_name is not None or next_hop is not None:
-            raise CLIError(
-                'Usage error: Neither --route-name nore --next-hop is not supported for this v2 route table.')
+    if next_hop is None or route_name is None:
+        raise ArgumentUsageError(
+            'Usage error: --next-hop and --route-name must be provided as you are adding route to v3 route table.')
 
-        client = _v2_route_table_client(cmd.cli_ctx)
-        VirtualHubRouteV2 = cmd.get_models('VirtualHubRouteV2')
-        route = VirtualHubRouteV2(destination_type=destination_type,
-                                  destinations=destinations,
-                                  next_hop_type=next_hop_type,
-                                  next_hops=next_hops)
-        route_table.routes.append(route)
-    else:
-        if next_hop is None or route_name is None:
-            raise CLIError(
-                'Usage error: --next-hop and --route-name must be provided as you are adding route to v3 route table.')
-        if next_hops is not None:
-            raise CLIError('Usage error: --next-hops is not supported for this v3 route table.')
-
-        client = _v3_route_table_client(cmd.cli_ctx)
-        HubRoute = cmd.get_models('HubRoute')
-        route = HubRoute(name=route_name,
-                         destination_type=destination_type,
-                         destinations=destinations,
-                         next_hop_type=next_hop_type,
-                         next_hop=next_hop)
-        route_table.routes.append(route)
+    client = _v3_route_table_client(cmd.cli_ctx)
+    HubRoute = cmd.get_models('HubRoute')
+    route = HubRoute(name=route_name,
+                     destination_type=destination_type,
+                     destinations=destinations,
+                     next_hop_type=next_hop_type,
+                     next_hop=next_hop)
+    route_table.routes.append(route)
 
     poller = sdk_no_wait(no_wait, client.begin_create_or_update,
                          resource_group_name, virtual_hub_name, route_table_name, route_table)
@@ -450,8 +456,8 @@ def remove_hub_routetable_route(cmd, resource_group_name, virtual_hub_name, rout
     route_table = get_vhub_route_table(cmd, resource_group_name, virtual_hub_name, route_table_name)
     try:
         route_table.routes.pop(index - 1)
-    except IndexError:
-        raise CLIError('invalid index: {}. Index can range from 1 to {}'.format(index, len(route_table.routes)))
+    except IndexError as exc:
+        raise InvalidArgumentValueError(f"invalid index: {index}. Index can range from 1 to {len(route_table.routes)}") from exc
 
     client = _route_table_client(cmd.cli_ctx, route_table)
     poller = sdk_no_wait(no_wait, client.begin_create_or_update,
@@ -484,16 +490,20 @@ def _v3_route_table_client(cli_ctx):
 
 # region VpnGateways
 def update_vpn_gateway_connection(instance, cmd, associated_route_table=None, propagated_route_tables=None,
-                                  labels=None):
+                                  labels=None, associated_inbound_routemap=None, associated_outbound_routemap=None):
     SubResource = cmd.get_models('SubResource')
 
     ids = [SubResource(id=propagated_route_table) for propagated_route_table in
            propagated_route_tables] if propagated_route_tables else None
     associated_route_table = SubResource(id=associated_route_table) if associated_route_table else None
+    associated_inbound_routemap = SubResource(id=associated_inbound_routemap) if associated_inbound_routemap else None
+    associated_outbound_routemap = SubResource(id=associated_outbound_routemap) if associated_outbound_routemap else None
     with UpdateContext(instance) as c:
         c.set_param('routing_configuration.associated_route_table', associated_route_table, False)
         c.set_param('routing_configuration.propagated_route_tables.labels', labels, False)
         c.set_param('routing_configuration.propagated_route_tables.ids', ids, False)
+        c.set_param('routing_configuration.inbound_route_map', associated_inbound_routemap, False)
+        c.set_param('routing_configuration.outbound_route_map', associated_outbound_routemap, False)
 
     return instance
 
@@ -502,7 +512,8 @@ def create_vpn_gateway_connection(cmd, resource_group_name, gateway_name, connec
                                   remote_vpn_site, vpn_site_link=None, routing_weight=None, protocol_type=None,
                                   connection_bandwidth=None, shared_key=None, enable_bgp=None,
                                   enable_rate_limiting=None, enable_internet_security=None, no_wait=False,
-                                  associated_route_table=None, propagated_route_tables=None, with_link=None, labels=None):
+                                  associated_route_table=None, propagated_route_tables=None, with_link=None, labels=None,
+                                  associated_inbound_routemap=None, associated_outbound_routemap=None):
     client = network_client_factory(cmd.cli_ctx).vpn_connections
     (VpnConnection,
      SubResource,
@@ -520,7 +531,9 @@ def create_vpn_gateway_connection(cmd, resource_group_name, gateway_name, connec
     )
     routing_configuration = RoutingConfiguration(
         associated_route_table=SubResource(id=associated_route_table) if associated_route_table else None,
-        propagated_route_tables=propagated_route_tables
+        propagated_route_tables=propagated_route_tables,
+        inbound_route_map=SubResource(id=associated_inbound_routemap) if associated_inbound_routemap else None,
+        outbound_route_map=SubResource(id=associated_outbound_routemap) if associated_outbound_routemap else None
     )
 
     conn = VpnConnection(
@@ -560,7 +573,7 @@ def add_vpn_gateway_connection_ipsec_policy(cmd, resource_group_name, gateway_na
     IpsecPolicy = cmd.get_models('IpsecPolicy')
     client = network_client_factory(cmd.cli_ctx).vpn_gateways
     gateway = client.get(resource_group_name, gateway_name)
-    conn = _find_item_at_path(gateway, 'connections.{}'.format(connection_name))
+    conn = _find_item_at_path(gateway, f"connections.{connection_name}")
 
     if conn.ipsec_policies is None:
         conn.ipsec_policies = []
@@ -589,7 +602,7 @@ def add_vpn_gateway_connection_ipsec_policy(cmd, resource_group_name, gateway_na
 def list_vpn_conn_ipsec_policies(cmd, resource_group_name, gateway_name, connection_name):
     client = network_client_factory(cmd.cli_ctx).vpn_gateways
     gateway = client.get(resource_group_name, gateway_name)
-    conn = _find_item_at_path(gateway, 'connections.{}'.format(connection_name))
+    conn = _find_item_at_path(gateway, f"connections.{connection_name}")
     return conn.ipsec_policies
 
 
@@ -597,11 +610,11 @@ def list_vpn_conn_ipsec_policies(cmd, resource_group_name, gateway_name, connect
 def remove_vpn_conn_ipsec_policy(cmd, resource_group_name, gateway_name, connection_name, index, no_wait=False):
     client = network_client_factory(cmd.cli_ctx).vpn_gateways
     gateway = client.get(resource_group_name, gateway_name)
-    conn = _find_item_at_path(gateway, 'connections.{}'.format(connection_name))
+    conn = _find_item_at_path(gateway, f"connections.{connection_name}")
     try:
         conn.ipsec_policies.pop(index - 1)
-    except IndexError:
-        raise CLIError('invalid index: {}. Index can range from 1 to {}'.format(index, len(conn.ipsec_policies)))
+    except IndexError as exc:
+        raise InvalidArgumentValueError(f"invalid index: {index}. Index can range from 1 to {len(conn.ipsec_policies)}") from exc
     _upsert(gateway, 'connections', conn, 'name', warn=False)
     poller = sdk_no_wait(no_wait, client.begin_create_or_update,
                          resource_group_name, gateway_name, gateway)
@@ -652,8 +665,8 @@ def remove_vpn_gateway_connection_vpn_site_link_conn(cmd, resource_group_name, g
     conn = client.get(resource_group_name, gateway_name, connection_name)
     try:
         conn.vpn_link_connections.pop(index - 1)
-    except IndexError:
-        raise CLIError('invalid index: {}. Index can range from 1 to {}'.format(index, len(conn.vpn_link_connections)))
+    except IndexError as exc:
+        raise InvalidArgumentValueError(f"invalid index: {index}. Index can range from 1 to {len(conn.vpn_link_connections)}") from exc
     return sdk_no_wait(no_wait, client.begin_create_or_update,
                        resource_group_name, gateway_name, connection_name, conn)
 
@@ -666,7 +679,7 @@ def add_vpn_gateway_connection_link_ipsec_policy(cmd, resource_group_name, gatew
     IpsecPolicy = cmd.get_models('IpsecPolicy')
     client = network_client_factory(cmd.cli_ctx).vpn_connections
     vpn_conn = client.get(resource_group_name, gateway_name, connection_name)
-    conn = _find_item_at_path(vpn_conn, 'vpn_link_connections.{}'.format(vpn_site_link_conn_name))
+    conn = _find_item_at_path(vpn_conn, f"vpn_link_connections.{vpn_site_link_conn_name}")
 
     if conn.ipsec_policies is None:
         conn.ipsec_policies = []
@@ -695,7 +708,7 @@ def add_vpn_gateway_connection_link_ipsec_policy(cmd, resource_group_name, gatew
 def list_vpn_conn_link_ipsec_policies(cmd, resource_group_name, gateway_name, connection_name, vpn_site_link_conn_name):
     client = network_client_factory(cmd.cli_ctx).vpn_connections
     vpn_conn = client.get(resource_group_name, gateway_name, connection_name)
-    conn = _find_item_at_path(vpn_conn, 'vpn_link_connections.{}'.format(vpn_site_link_conn_name))
+    conn = _find_item_at_path(vpn_conn, f"vpn_link_connections.{vpn_site_link_conn_name}")
     return conn.ipsec_policies
 
 
@@ -703,12 +716,12 @@ def list_vpn_conn_link_ipsec_policies(cmd, resource_group_name, gateway_name, co
 def remove_vpn_conn_link_ipsec_policy(cmd, resource_group_name, gateway_name, connection_name, vpn_site_link_conn_name, index, no_wait=False):
     client = network_client_factory(cmd.cli_ctx).vpn_connections
     vpn_conn = client.get(resource_group_name, gateway_name, connection_name)
-    conn = _find_item_at_path(vpn_conn, 'vpn_link_connections.{}'.format(vpn_site_link_conn_name))
+    conn = _find_item_at_path(vpn_conn, f"vpn_link_connections.{vpn_site_link_conn_name}")
 
     try:
         conn.ipsec_policies.pop(index - 1)
-    except IndexError:
-        raise CLIError('invalid index: {}. Index can range from 1 to {}'.format(index, len(conn.ipsec_policies)))
+    except IndexError as exc:
+        raise InvalidArgumentValueError(f"invalid index: {index}. Index can range from 1 to {len(conn.ipsec_policies)}") from exc
     _upsert(vpn_conn, 'vpn_link_connections', conn, 'name', warn=False)
     poller = sdk_no_wait(no_wait, client.begin_create_or_update,
                          resource_group_name, gateway_name, connection_name, vpn_conn)
@@ -841,8 +854,8 @@ def remove_vpn_site_link(cmd, resource_group_name, vpn_site_name, index, no_wait
     vpn_site = client.get(resource_group_name, vpn_site_name)
     try:
         vpn_site.vpn_site_links.pop(index - 1)
-    except IndexError:
-        raise CLIError('invalid index: {}. Index can range from 1 to {}'.format(index, len(vpn_site.vpn_site_links)))
+    except IndexError as exc:
+        raise InvalidArgumentValueError(f"invalid index: {index}. Index can range from 1 to {len(vpn_site.vpn_site_links)}") from exc
     return sdk_no_wait(no_wait, client.begin_create_or_update,
                        resource_group_name, vpn_site_name, vpn_site)
 
@@ -975,8 +988,8 @@ def remove_vpn_server_config_ipsec_policy(cmd, resource_group_name, vpn_server_c
     vpn_server_config = client.get(resource_group_name, vpn_server_configuration_name)
     try:
         vpn_server_config.vpn_client_ipsec_policies.pop(index)
-    except IndexError:
-        raise CLIError('invalid index: {}. Index can range from 0 to {}'.format(index, len(vpn_server_config.vpn_client_ipsec_policies) - 1))
+    except IndexError as exc:
+        raise InvalidArgumentValueError(f"invalid index: {index}. Index can range from 0 to {len(vpn_server_config.vpn_client_ipsec_policies)}") from exc
     poller = sdk_no_wait(no_wait, client.begin_create_or_update,
                          resource_group_name, vpn_server_configuration_name, vpn_server_config)
     if no_wait:
@@ -988,7 +1001,8 @@ def remove_vpn_server_config_ipsec_policy(cmd, resource_group_name, vpn_server_c
 def create_p2s_vpn_gateway(cmd, resource_group_name, gateway_name, virtual_hub,
                            scale_unit, location=None, tags=None, p2s_conn_config_name='P2SConnectionConfigDefault',
                            vpn_server_config=None, address_space=None, associated_route_table=None,
-                           propagated_route_tables=None, labels=None, no_wait=False):
+                           propagated_route_tables=None, labels=None, associated_inbound_routemap=None,
+                           associated_outbound_routemap=None, no_wait=False):
     client = network_client_factory(cmd.cli_ctx).p2_svpn_gateways
     (P2SVpnGateway,
      SubResource,
@@ -1008,7 +1022,9 @@ def create_p2s_vpn_gateway(cmd, resource_group_name, gateway_name, virtual_hub,
     )
     routing_configuration = RoutingConfiguration(
         associated_route_table=SubResource(id=associated_route_table) if associated_route_table else None,
-        propagated_route_tables=propagated_route_tables
+        propagated_route_tables=propagated_route_tables,
+        inbound_route_map=SubResource(id=associated_inbound_routemap) if associated_inbound_routemap else None,
+        outbound_route_map=SubResource(id=associated_outbound_routemap) if associated_outbound_routemap else None
     )
     gateway = P2SVpnGateway(
         location=location,
@@ -1032,8 +1048,11 @@ def create_p2s_vpn_gateway(cmd, resource_group_name, gateway_name, virtual_hub,
 
 def update_p2s_vpn_gateway(instance, cmd, tags=None, scale_unit=None,
                            vpn_server_config=None, address_space=None, p2s_conn_config_name=None,
-                           associated_route_table=None, propagated_route_tables=None, labels=None):
+                           associated_route_table=None, propagated_route_tables=None, labels=None,
+                           associated_inbound_routemap=None, associated_outbound_routemap=None):
     SubResource = cmd.get_models('SubResource')
+    associated_inbound_routemap = SubResource(id=associated_inbound_routemap) if associated_inbound_routemap else None
+    associated_outbound_routemap = SubResource(id=associated_outbound_routemap) if associated_outbound_routemap else None
     with UpdateContext(instance) as c:
         c.set_param('tags', tags, True)
         c.set_param('vpn_gateway_scale_unit', scale_unit, False)
@@ -1049,6 +1068,8 @@ def update_p2s_vpn_gateway(instance, cmd, tags=None, scale_unit=None,
             c.set_param('routing_configuration.propagated_route_tables.ids',
                         [SubResource(id=propagated_route_table) for propagated_route_table in
                          propagated_route_tables] if propagated_route_tables else None, False)
+            c.set_param('routing_configuration.inbound_route_map', associated_inbound_routemap, False)
+            c.set_param('routing_configuration.outbound_route_map', associated_outbound_routemap, False)
 
     return instance
 
@@ -1115,4 +1136,54 @@ def _load_certificates_and_build_name_and_public_cert_data(model, file_paths_lis
         kwargs['public_cert_data'] = match.group('public').strip()
         certificates.append(model(**kwargs))
     return certificates
+
+
+class VPNGatewayNatRuleCreate(_VPNGatewayNatRuleCreate):
+    def _output(self, *args, **kwargs):
+        from azure.cli.core.aaz import AAZUndefined
+        if has_value(self.ctx.vars.instance):
+            nat_rule = self.ctx.vars.instance.to_serialized_data()
+            if 'type' in nat_rule:
+                nat_rule['type'] = AAZUndefined
+            self.ctx.vars.instance = nat_rule
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        return result
+
+
+class VPNGatewayNatRuleShow(_VPNGatewayNatRuleShow):
+    def _output(self, *args, **kwargs):
+        from azure.cli.core.aaz import AAZUndefined
+        if has_value(self.ctx.vars.instance):
+            nat_rule = self.ctx.vars.instance.to_serialized_data()
+            if 'type' in nat_rule:
+                nat_rule['type'] = AAZUndefined
+            self.ctx.vars.instance = nat_rule
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        return result
+
+
+class VPNGatewayNatRuleList(_VPNGatewayNatRuleList):
+    def _output(self, *args, **kwargs):
+        from azure.cli.core.aaz import AAZUndefined
+        if has_value(self.ctx.vars.instance):
+            nat_rules = self.ctx.vars.instance.value.to_serialized_data()
+            for nat_rule in nat_rules:
+                if 'type' in nat_rule:
+                    nat_rule['type'] = AAZUndefined
+            self.ctx.vars.instance.value = nat_rules
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
+        return result, next_link
+
+
+class VPNGatewayNatRuleUpdate(_VPNGatewayNatRuleUpdate):
+    def _output(self, *args, **kwargs):
+        from azure.cli.core.aaz import AAZUndefined
+        if has_value(self.ctx.vars.instance):
+            nat_rule = self.ctx.vars.instance.to_serialized_data()
+            if 'type' in nat_rule:
+                nat_rule['type'] = AAZUndefined
+            self.ctx.vars.instance = nat_rule
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        return result
 # endregion

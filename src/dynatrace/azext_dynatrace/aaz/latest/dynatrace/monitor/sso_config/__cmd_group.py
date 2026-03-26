@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "dynatrace monitor sso-config",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage monitor sso-config
+    """Manage Single Sign-On (SSO) configuration between Azure and Dynatrace. This enables unified authentication for users accessing Dynatrace through Azure.
     """
     pass
 

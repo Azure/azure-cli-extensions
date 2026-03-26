@@ -1,0 +1,70 @@
+interactions:
+- request:
+    body: '{"carbonScopeList": ["Scope1", "Scope2", "Scope3"], "dateRange": {"end":
+      "2025-03-01", "start": "2025-03-01"}, "reportType": "TopItemsSummaryReport",
+      "subscriptionList": ["1fcfa925-ad8b-443e-afc9-73038125cc86"], "categoryType":
+      "ResourceType", "topItems": 5}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - carbon get-emission-report
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '258'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --subscription-list --date-range --carbon-scope-list --top-items-summary
+      User-Agent:
+      - AZURECLI/2.72.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.Carbon/carbonEmissionReports?api-version=2025-04-01
+  response:
+    body:
+      string: '{"value":[{"dataType":"TopItemsSummaryData","itemName":"microsoft.fabric/capacities","categoryType":"ResourceType","latestMonthEmissions":170.364957551656,"previousMonthEmissions":199.860710018915,"monthOverMonthEmissionsChangeRatio":-0.147581545489696,"monthlyEmissionsChangeValue":-29.4957524672594},{"dataType":"TopItemsSummaryData","itemName":"microsoft.kusto/clusters","categoryType":"ResourceType","latestMonthEmissions":11.0909111385652,"previousMonthEmissions":9.4563412289584,"monthOverMonthEmissionsChangeRatio":0.172854370419842,"monthlyEmissionsChangeValue":1.6345699096068},{"dataType":"TopItemsSummaryData","itemName":"microsoft.synapse/workspaces/bigdatapools","categoryType":"ResourceType","latestMonthEmissions":10.2741922887871,"previousMonthEmissions":10.4031346841103,"monthOverMonthEmissionsChangeRatio":-0.0123945713708978,"monthlyEmissionsChangeValue":-0.128942395323268},{"dataType":"TopItemsSummaryData","itemName":"microsoft.storage/storageaccounts","categoryType":"ResourceType","latestMonthEmissions":5.73549901502806,"previousMonthEmissions":6.60325276568956,"monthOverMonthEmissionsChangeRatio":-0.131413074957594,"monthlyEmissionsChangeValue":-0.867753750661506},{"dataType":"TopItemsSummaryData","itemName":"microsoft.sql/servers/databases","categoryType":"ResourceType","latestMonthEmissions":3.63518373774172,"previousMonthEmissions":3.69563555963608,"monthOverMonthEmissionsChangeRatio":-0.0163576253445068,"monthlyEmissionsChangeValue":-0.0604518218943637},{"dataType":"TopItemsSummaryData","itemName":"Others-Exclude-Top-Items-From-Overall-Summary","categoryType":"ResourceType","latestMonthEmissions":4.33814596621092,"previousMonthEmissions":4.03434676039166,"monthOverMonthEmissionsChangeRatio":0.07530319624527436,"monthlyEmissionsChangeValue":0.30379920581926}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1804'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 May 2025 18:29:52 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 12d92def-bbee-40b4-a909-30f76f5b3f55
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:1b30ee95-d108-4b28-8df6-b780a66c5364
+      set-cookie:
+      - ARRAffinity=92cff1672181f3de1ff12b696639b5c8fe7f87b1484ca72975ce446af3251683;Path=/;HttpOnly;Secure;Domain=sustcarbon-webapp-prod-wus.azurewebsites.net
+      - ARRAffinitySameSite=92cff1672181f3de1ff12b696639b5c8fe7f87b1484ca72975ce446af3251683;Path=/;HttpOnly;SameSite=None;Secure;Domain=sustcarbon-webapp-prod-wus.azurewebsites.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-azure-ref:
+      - 20250516T182952Z-1794cd57cdb4wj2khC1CO1v0hs00000002r000000000arqu
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - ''
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: 039EDD5C288C4C86BAB149FEE13ED77F Ref B: MWH011020809031 Ref C: 2025-05-16T18:29:52Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+version: 1

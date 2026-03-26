@@ -1,10 +1,9 @@
 interactions:
 - request:
-    body: '{"sku": {"name": "standard_b1ls"}, "location": "westus", "properties":
-      {"reservedResourceType": "VirtualMachines", "billingScopeId": "d3ae48e5-dbb2-4618-afd4-fb1b8559cb80",
-      "term": "P1Y", "billingPlan": "Monthly", "quantity": 2, "displayName": "test",
-      "appliedScopeType": "Shared", "renew": false, "reservedResourceProperties":
-      {}}}'
+    body: '{"location": "westus", "properties": {"appliedScopeType": "Shared", "billingPlan":
+      "Monthly", "billingScopeId": "b0f278e1-1f18-4378-84d7-b44dfa708665", "displayName":
+      "clitest", "quantity": 2, "renew": false, "reservedResourceType": "VirtualMachines",
+      "term": "P1Y"}, "sku": {"name": "standard_b1ls"}}'
     headers:
       Accept:
       - application/json
@@ -15,32 +14,29 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '332'
+      - '301'
       Content-Type:
-      - application/json; charset=utf-8
+      - application/json
       ParameterSetName:
-      - --sku --location --reserved-resource-type --scope --term --billing-plan --display-name
-        --quantity --applied-scope-type
+      - --sku --location --reserved-resource-type --billing-scope --term --billing-plan
+        --display-name --quantity --applied-scope-type
       User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-reservations/0.6.0 Azure-SDK-For-Python AZURECLI/2.0.76
-      accept-language:
-      - en-US
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
     method: POST
-    uri: https://management.azure.com/providers/Microsoft.Capacity/calculatePrice?api-version=2022-03-01
+    uri: https://management.azure.com/providers/Microsoft.Capacity/calculatePrice?api-version=2022-11-01
   response:
     body:
-      string: '{"properties":{"billingCurrencyTotal":{"currencyCode":"USD","amount":63.84},"netTotal":0.0,"taxTotal":0.0,"grandTotal":0.0,"paymentSchedule":[{"dueDate":"2019-11-15","pricingCurrencyTotal":{"currencyCode":"USD","amount":5.32},"billingCurrencyTotal":{"currencyCode":"USD","amount":5.32},"status":"Scheduled"},{"dueDate":"2019-12-15","pricingCurrencyTotal":{"currencyCode":"USD","amount":5.32},"status":"Scheduled"},{"dueDate":"2020-01-15","pricingCurrencyTotal":{"currencyCode":"USD","amount":5.32},"status":"Scheduled"},{"dueDate":"2020-02-15","pricingCurrencyTotal":{"currencyCode":"USD","amount":5.32},"status":"Scheduled"},{"dueDate":"2020-03-15","pricingCurrencyTotal":{"currencyCode":"USD","amount":5.32},"status":"Scheduled"},{"dueDate":"2020-04-15","pricingCurrencyTotal":{"currencyCode":"USD","amount":5.32},"status":"Scheduled"},{"dueDate":"2020-05-15","pricingCurrencyTotal":{"currencyCode":"USD","amount":5.32},"status":"Scheduled"},{"dueDate":"2020-06-15","pricingCurrencyTotal":{"currencyCode":"USD","amount":5.32},"status":"Scheduled"},{"dueDate":"2020-07-15","pricingCurrencyTotal":{"currencyCode":"USD","amount":5.32},"status":"Scheduled"},{"dueDate":"2020-08-15","pricingCurrencyTotal":{"currencyCode":"USD","amount":5.32},"status":"Scheduled"},{"dueDate":"2020-09-15","pricingCurrencyTotal":{"currencyCode":"USD","amount":5.32},"status":"Scheduled"},{"dueDate":"2020-10-15","pricingCurrencyTotal":{"currencyCode":"USD","amount":5.32},"status":"Scheduled"}],"reservationOrderId":"d4ef7ec2-941c-4da7-8ec9-2f148255a0dc","skuTitle":"Reserved
-        VM Instance, Standard_B1ls, US West, 1 Year","skuDescription":"standard_b1ls","pricingCurrencyTotal":{"currencyCode":"USD","amount":63.84}}}'
+      string: '{"properties":{"billingCurrencyTotal":{"currencyCode":"GBP","amount":48.0},"netTotal":0.0,"taxTotal":0.0,"grandTotal":0.0,"paymentSchedule":[{"dueDate":"2023-03-06","pricingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"billingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"status":"Scheduled"},{"dueDate":"2023-04-06","pricingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"status":"Scheduled"},{"dueDate":"2023-05-06","pricingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"status":"Scheduled"},{"dueDate":"2023-06-06","pricingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"status":"Scheduled"},{"dueDate":"2023-07-06","pricingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"status":"Scheduled"},{"dueDate":"2023-08-06","pricingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"status":"Scheduled"},{"dueDate":"2023-09-06","pricingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"status":"Scheduled"},{"dueDate":"2023-10-06","pricingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"status":"Scheduled"},{"dueDate":"2023-11-06","pricingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"status":"Scheduled"},{"dueDate":"2023-12-06","pricingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"status":"Scheduled"},{"dueDate":"2024-01-06","pricingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"status":"Scheduled"},{"dueDate":"2024-02-06","pricingCurrencyTotal":{"currencyCode":"GBP","amount":4.0},"status":"Scheduled"}],"reservationOrderId":"b9b72b1b-28d1-4ddb-99a1-8d8ec6db3aa7","skuTitle":"Reserved
+        VM Instance, Standard_B1ls, US West, 1 Year","skuDescription":"standard_b1ls","pricingCurrencyTotal":{"currencyCode":"GBP","amount":48.0}}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1696'
+      - '1681'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 15 Nov 2019 05:04:31 GMT
+      - Mon, 06 Mar 2023 23:06:25 GMT
       expires:
       - '-1'
       pragma:
@@ -53,13 +49,15 @@ interactions:
       - chunked
       vary:
       - Accept-Encoding,Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-tenant-writes:
       - '1199'
       x-ms-test:
-      - '{"contact":"kgautam","scenarios":"v6-recurrence-test,time-scale:35040,AcceleratedPayment","retention":"2/13/2020
-        5:04:30 AM"}'
+      - '{"contact":"sornaks","scenarios":"MultiCurrencyTesting","retention":"6/4/2023
+        11:06:18 PM"}'
     status:
       code: 200
       message: OK

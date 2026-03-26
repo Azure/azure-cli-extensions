@@ -9,7 +9,7 @@ import struct
 import platform
 
 from knack.log import get_logger
-
+from azure.cli.core.style import print_styled_text, Style
 
 logger = get_logger(__name__)
 
@@ -74,3 +74,41 @@ def get_os_clear_screen_word():
     if platform.system() == 'Windows':
         return 'cls'
     return 'clear'
+
+
+# funtion to get yes/no option, same as az next
+def get_yes_or_no_option(option_msg):
+    print_styled_text(option_msg, end='')
+    option = input()
+    yes_options = ["y", "yes", "Y", "Yes", "YES"]
+    no_options = ["n", "no", "N", "No", "NO"]
+    while (option not in yes_options) and (option not in no_options):
+        option = input("This option can only be Yes or No, please input again: ")
+    return option in yes_options
+
+
+# same with scenario guide
+def input_int(default_value=0):
+    """Read an int from `stdin`. Retry if input is not a number"""
+    ret = input()
+    if ret == '' or ret is None:
+        return default_value
+    while not ret.isnumeric():
+        ret = input("Please input a valid number: ")
+        if ret == '' or ret is None:
+            return default_value
+    return int(ret)
+
+
+# same with scenario guide
+def select_option(option_msg, min_option, max_option, default_option):
+    """Read an option from `stdin` ranging from `min_option` to `max_option`.
+    Retry if input is out of range.
+    """
+    print_styled_text(option_msg, end='')
+    option = input_int(default_option)
+    while option < min_option or option > max_option:
+        print_styled_text([(Style.PRIMARY, f"Please enter a valid option ({min_option}-{max_option}): ")],
+                          end='')
+        option = input_int(default_option)
+    return option

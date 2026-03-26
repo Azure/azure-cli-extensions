@@ -1,0 +1,60 @@
+interactions:
+- request:
+    body: '{"validFrom": null, "validUntil": null, "pstnDialOutEnabled": false, "participants":
+      {"acs:8-invalidMRI": {"role": "Presenter"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '129'
+      Content-Type:
+      - application/json
+      Repeatability-First-Sent:
+      - Thu, 27 Mar 2025 09:18:31 GMT
+      Repeatability-Request-Id:
+      - 73817187-0aec-11f0-be08-00155d7b1001
+      User-Agent:
+      - AzureCli/1.13.0 azsdk-python-communication-rooms/1.2.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+      x-ms-content-sha256:
+      - StjPbZ+anErZes8IJRa2STDgsBYIizhcGHmw6U39sio=
+      x-ms-date:
+      - Thu, 27 Mar 2025 09:18:31 GMT
+      x-ms-return-client-request-id:
+      - 'true'
+    method: POST
+    uri: https://sanitized.communication.azure.com/rooms?api-version=2025-03-13
+  response:
+    body:
+      string: '{"error": {"code": "BadRequest", "message": "Invalid format for communication
+        identifier."}}'
+    headers:
+      api-supported-versions:
+      - 2023-06-14, 2023-10-30-preview, 2024-04-15, 2025-03-13
+      connection:
+      - keep-alive
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 27 Mar 2025 09:18:31 GMT
+      ms-cv:
+      - BpSVNn7GR0qz3BsYCVKP8A.0
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=31536000;includeSubDomains
+      transfer-encoding:
+      - chunked
+      x-azure-ref:
+      - 20250327T091830Z-16c89bd967ftkq6khC1MAA4y6n000000114000000000ga0b
+      x-cache:
+      - CONFIG_NOCACHE
+      x-ms-error-code:
+      - BadRequest
+    status:
+      code: 400
+      message: Bad Request
+version: 1

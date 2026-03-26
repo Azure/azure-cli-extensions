@@ -4,12 +4,14 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
+from azure.mgmt.msi import ManagedServiceIdentityClient
+from azure.mgmt.authorization import AuthorizationManagementClient
 from azure.cli.core.profiles import (
     CustomResourceType,
     ResourceType
 )
 
-CUSTOM_MGMT_FLEET = CustomResourceType('azext_fleet.vendored_sdks', 'ContainerServiceClient')
+CUSTOM_MGMT_FLEET = CustomResourceType('azext_fleet.vendored_sdks', 'ContainerServiceFleetMgmtClient')
 
 
 # container service clients
@@ -25,6 +27,43 @@ def cf_fleet_members(cli_ctx, *_):
     return get_container_service_client(cli_ctx).fleet_members
 
 
+def cf_gates(cli_ctx, *_):
+    return get_container_service_client(cli_ctx).gates
+
+
+def cf_fleet_managed_namespaces(cli_ctx, *_):
+    return get_container_service_client(cli_ctx).fleet_managed_namespaces
+
+
+def cf_update_runs(cli_ctx, *_):
+    return get_container_service_client(cli_ctx).update_runs
+
+
+def cf_fleet_update_strategies(cli_ctx, *_):
+    return get_container_service_client(cli_ctx).fleet_update_strategies
+
+
 def get_resource_groups_client(cli_ctx, subscription_id=None):
     return get_mgmt_service_client(
         cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES, subscription_id=subscription_id).resource_groups
+
+
+def cf_auto_upgrade_profiles(cli_ctx, *_):
+    return get_container_service_client(cli_ctx).auto_upgrade_profiles
+
+
+def cf_auto_upgrade_profile_operations(cli_ctx, *_):
+    return get_container_service_client(cli_ctx).auto_upgrade_profile_operations
+
+
+def get_provider_client(cli_ctx):
+    return get_mgmt_service_client(
+        cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES)
+
+
+def get_role_assignments_client(cli_ctx):
+    return get_mgmt_service_client(cli_ctx, AuthorizationManagementClient).role_assignments
+
+
+def get_msi_client(cli_ctx, subscription_id=None):
+    return get_mgmt_service_client(cli_ctx, ManagedServiceIdentityClient, subscription_id=subscription_id)

@@ -2,6 +2,85 @@
 
 Release History
 ===============
+
+2.1.1
+++++++
+* Update AzureFirewall model to support extended location.
+
+2.1.0
+++++++
+* `az network firewall policy intrusion-detection add`: Update IDPS profile handling to use the latest supported profile values (`Off`, `Emerging`, `Core`, `Extended`).
+* `az network firewall policy draft intrusion-detection add`: Update IDPS profile handling to use the latest supported profile values (`Off`, `Emerging`, `Core`, `Extended`).
+
+2.0.1
+++++++
+* Remove `__import__('pkg_resources').declare_namespace(__name__)` to fix the namespace package issue.
+
+2.0.0
+++++++
+* `az network firewall packet-capture-operation`: Add packet capture operation support for the azure firewall
+
+1.5.0
+++++++
+* `az network firewall create`: Add parameter `--enable-dnstap-logging`
+
+1.4.0
+++++++
+* `az network firewall create`: Add parameters `--min-capacity` and `--max-capacity` to support autoscale configuration
+
+1.3.0
+++++++
+* `az network firewall create`: Add parameter `--edge-zone` to support extended location
+
+1.2.3
+++++++
+* `az network firewall policy draft create`: Consume Policy Properies while creating draft
+* `az network firewall policy rule collection group draft create`: Consume RCG Properies while creating RCG draft
+
+1.2.2
+++++++
+* `az network firewall create`: add support public-ip for vhub sku firewall
+
+1.2.1
+++++++
+* Remove ADAL dependencies
+
+1.2.0
+++++++
+* `network firewall policy rule-collection-group collection rule add/update"`: Add parameter `--http-headers-to-insert`
+* new intrusion-detection parameter: IDPS Profile
+
+1.1.0
+++++++
+* `az network firewall policy draft create/update/show`: support policy draft commands
+* `az network firewall policy rule collection group draft create/update/show`: support rule collection group draft commands
+
+1.0.1
+++++++
+* `az network firewall policy create/update`: Add parameter `--explicit-proxy`
+
+1.0.0
+++++++
+* [Fix] `az network firewall threat-intel-allowlist create/update/delete`: Remove the argument `--ids` as sub command should not support it.
+* Make extension from preview to stable.
+
+0.14.8
+++++++
+* `az network firewall policy`: Fix unhashable `--identity`
+
+0.14.7
+++++++
+* `az network firewall policy create/update`: Add parameters `--private-ranges` and `--learn-ranges`
+
+0.14.6
+++++++
+* `az network firewall create/update`: Add parameter `--route-server-id`
+* Add command `az network firewall learned-ip-prefix`
+
+0.14.5
+++++++
+* Fix `az network firewall create`: Creation fails with AZFW_Hub SKU
+
 0.14.4
 ++++++
 * `az network firewall create/update`: Add parameter `--udp-log-optimization`

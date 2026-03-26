@@ -1,0 +1,145 @@
+---
+# Source: nf-agent-cnf/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: nf-agent-cnf
+  labels:
+    helm.sh/chart: nf-agent-cnf-0.1.0
+    app.kubernetes.io/name: nf-agent-cnf
+    app.kubernetes.io/instance: nf-agent-cnf
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+---
+# Source: nf-agent-cnf/templates/nf-agent-config-map.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nfagent-config
+data:
+  config.yaml: |
+    # Example NF Agent config file.
+    # Config is read from /etc/nf-agent/config.yaml.
+    log_level: debug
+    service_bus:
+      # Using a namespace and Managed Identity (specified by client ID) for auth.
+      namespace: sb-uowvjfivpyuow
+      # Helm uses sprig for templating, so we can use sprig functions to find just the UID from the full Managed Identity ID path.
+      identity: 041db2eb-36e0-42cd-ac13-03ae8e997cd1
+      # Alternatively can use a connstring instead of namespace + managed identity:
+      # connstring: "Endpoint=sb://contoso.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=TopSecretSASTokenGoesHere="
+      subscriptions:
+        - topic: simpl
+          subscription: simpl-subscription
+    # Handler-specific config
+    handler_config:
+      simpl:
+        # The endpoint is constructed from the namespace and service name of the receiving thing. 
+        # We couldn't get AOSM to install the service to listen on anything but port 80
+        # Doh - that was because we changed values.yaml in the chart but didn't change values.mappings.yaml in the NFDV
+        # Changing values.mappings.yaml should make this work on port 5222 as expected.
+        endpoint: http://nfconfigchart.nfconfigchart.svc.cluster.local:80 # DevSkim: ignore DS162092
+---
+# Source: nf-agent-cnf/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: nf-agent-cnf
+  labels:
+    helm.sh/chart: nf-agent-cnf-0.1.0
+    app.kubernetes.io/name: nf-agent-cnf
+    app.kubernetes.io/instance: nf-agent-cnf
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8123
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: nf-agent-cnf
+    app.kubernetes.io/instance: nf-agent-cnf
+---
+# Source: nf-agent-cnf/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nf-agent-cnf
+  labels:
+    helm.sh/chart: nf-agent-cnf-0.1.0
+    app.kubernetes.io/name: nf-agent-cnf
+    app.kubernetes.io/instance: nf-agent-cnf
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: nf-agent-cnf
+      app.kubernetes.io/instance: nf-agent-cnf
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: nf-agent-cnf
+        app.kubernetes.io/instance: nf-agent-cnf
+        #aadpodidbinding:  - not using podidentity any more
+    spec:
+      # Copied imagePullSecrets from how afosas-aosm repo does it
+      imagePullSecrets: []
+      serviceAccountName: nf-agent-cnf
+      securityContext:
+        {}
+      containers:
+        - name: nf-agent-cnf
+          securityContext:
+            {}
+          # Edited the image to point to the nf-agent image in the Artifact Store ACR
+          image: "sunnyclipubsunnynfagentacr2dd56aed266.azurecr.io/pez-nfagent:879624"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8123
+              protocol: TCP
+          # Commented out otherwise kubernetes keeps restarting the pod thinking the probes have failed
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          resources:
+            {}
+          # Gets the NF Agent config from the configMap - see nf-agent-config-map.yaml
+          volumeMounts:
+            - name: nfagent-config-volume
+              mountPath: /etc/nf-agent/config.yaml
+              subPath: config.yaml
+      volumes:
+        - name: nfagent-config-volume
+          configMap:
+            name: nfagent-config
+---
+# Source: nf-agent-cnf/templates/tests/test-connection.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "nf-agent-cnf-test-connection"
+  labels:
+    helm.sh/chart: nf-agent-cnf-0.1.0
+    app.kubernetes.io/name: nf-agent-cnf
+    app.kubernetes.io/instance: nf-agent-cnf
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['nf-agent-cnf:8123']
+  restartPolicy: Never

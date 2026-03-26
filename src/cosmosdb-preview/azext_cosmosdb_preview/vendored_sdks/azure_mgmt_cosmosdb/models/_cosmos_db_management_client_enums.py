@@ -10,6 +10,25 @@ from enum import Enum
 from azure.core import CaseInsensitiveEnumMeta
 
 
+class AccessRuleDirection(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Direction of Access Rule."""
+
+    INBOUND = "Inbound"
+    """Applies to inbound network traffic to the secured resources."""
+    OUTBOUND = "Outbound"
+    """Applies to outbound network traffic from the secured resources"""
+
+
+class AllocationState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Allocation state of the cluster and data center resources. Active implies the virtual machines
+    of the cluster are allocated, deallocated implies virtual machines and resources are
+    deallocated.
+    """
+
+    ACTIVE = "Active"
+    DEALLOCATED = "Deallocated"
+
+
 class AnalyticalStorageSchemaType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Describes the types of schema for analytical storage."""
 
@@ -31,12 +50,27 @@ class ApiType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
 class AuthenticationMethod(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Which authentication method Cassandra should use to authenticate clients. 'None' turns off
     authentication, so should not be used except in emergencies. 'Cassandra' is the default
-    password based authentication. The default is 'Cassandra'. 'Ldap' is in preview.
+    password based authentication. The default is 'Cassandra'.
     """
 
     NONE = "None"
     CASSANDRA = "Cassandra"
     LDAP = "Ldap"
+
+
+class AutoReplicate(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The form of AutoReplicate that is being used by this cluster."""
+
+    NONE = "None"
+    SYSTEM_KEYSPACES = "SystemKeyspaces"
+    ALL_KEYSPACES = "AllKeyspaces"
+
+
+class AzureConnectionType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """How to connect to the azure services needed for running the cluster."""
+
+    NONE = "None"
+    VPN = "VPN"
 
 
 class BackupPolicyMigrationStatus(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -55,12 +89,57 @@ class BackupPolicyType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     CONTINUOUS = "Continuous"
 
 
+class BackupState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The current state of the backup."""
+
+    INITIATED = "Initiated"
+    IN_PROGRESS = "InProgress"
+    SUCCEEDED = "Succeeded"
+    FAILED = "Failed"
+
+
 class BackupStorageRedundancy(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Enum to indicate type of backup storage redundancy."""
 
     GEO = "Geo"
     LOCAL = "Local"
     ZONE = "Zone"
+
+
+class CapacityMode(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Indicates the capacity mode of the account."""
+
+    NONE = "None"
+    PROVISIONED = "Provisioned"
+    SERVERLESS = "Serverless"
+
+
+class CapacityModeTransitionStatus(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The transition status of capacity mode."""
+
+    INVALID = "Invalid"
+    INITIALIZED = "Initialized"
+    IN_PROGRESS = "InProgress"
+    COMPLETED = "Completed"
+    FAILED = "Failed"
+
+
+class ClusterType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Type of the cluster. If set to Production, some operations might not be permitted on cluster."""
+
+    PRODUCTION = "Production"
+    NON_PRODUCTION = "NonProduction"
+
+
+class CommandStatus(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Status of the command."""
+
+    DONE = "Done"
+    RUNNING = "Running"
+    ENQUEUE = "Enqueue"
+    PROCESSING = "Processing"
+    FINISHED = "Finished"
+    FAILED = "Failed"
 
 
 class CompositePathSortOrder(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -101,6 +180,36 @@ class ContinuousTier(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     CONTINUOUS30_DAYS = "Continuous30Days"
 
 
+class CopyJobMode(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Mode of job execution."""
+
+    OFFLINE = "Offline"
+    ONLINE = "Online"
+
+
+class CopyJobStatus(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Job Status."""
+
+    PENDING = "Pending"
+    PARTITIONING = "Partitioning"
+    RUNNING = "Running"
+    PAUSED = "Paused"
+    COMPLETED = "Completed"
+    FAULTED = "Faulted"
+    CANCELLED = "Cancelled"
+
+
+class CopyJobType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Copy Job Type."""
+
+    CASSANDRA_RU_TO_CASSANDRA_RU = "CassandraRUToCassandraRU"
+    CASSANDRA_RU_TO_AZURE_BLOB_STORAGE = "CassandraRUToAzureBlobStorage"
+    AZURE_BLOB_STORAGE_TO_CASSANDRA_RU = "AzureBlobStorageToCassandraRU"
+    MONGO_RU_TO_MONGO_RU = "MongoRUToMongoRU"
+    MONGO_RU_TO_MONGO_V_CORE = "MongoRUToMongoVCore"
+    NO_SQL_RU_TO_NO_SQL_RU = "NoSqlRUToNoSqlRU"
+
+
 class CreatedByType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """The type of identity that created the resource."""
 
@@ -130,8 +239,16 @@ class DataTransferComponent(str, Enum, metaclass=CaseInsensitiveEnumMeta):
 
     COSMOS_DB_CASSANDRA = "CosmosDBCassandra"
     COSMOS_DB_MONGO = "CosmosDBMongo"
+    COSMOS_DB_MONGO_V_CORE = "CosmosDBMongoVCore"
     COSMOS_DB_SQL = "CosmosDBSql"
     AZURE_BLOB_STORAGE = "AzureBlobStorage"
+
+
+class DataTransferJobMode(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Mode of job execution."""
+
+    OFFLINE = "Offline"
+    ONLINE = "Online"
 
 
 class DataType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -145,6 +262,13 @@ class DataType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     MULTI_POLYGON = "MultiPolygon"
 
 
+class DedicatedGatewayType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """DedicatedGatewayType for the service."""
+
+    INTEGRATED_CACHE = "IntegratedCache"
+    DISTRIBUTED_QUERY = "DistributedQuery"
+
+
 class DefaultConsistencyLevel(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """The default consistency level and configuration settings of the Cosmos DB account."""
 
@@ -155,12 +279,60 @@ class DefaultConsistencyLevel(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     CONSISTENT_PREFIX = "ConsistentPrefix"
 
 
+class DefaultPriorityLevel(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Enum to indicate default priorityLevel of requests."""
+
+    HIGH = "High"
+    LOW = "Low"
+
+
+class DistanceFunction(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The distance function to use for distance calculation in between vectors."""
+
+    EUCLIDEAN = "euclidean"
+    COSINE = "cosine"
+    DOTPRODUCT = "dotproduct"
+
+
 class EnableFullTextQuery(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Describe the level of detail with which queries are to be logged."""
 
     NONE = "None"
     TRUE = "True"
     FALSE = "False"
+
+
+class FleetAnalyticsPropertiesStorageLocationType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The type of the fleet analytics resource."""
+
+    STORAGE_ACCOUNT = "StorageAccount"
+    FABRIC_LAKEHOUSE = "FabricLakehouse"
+
+
+class FleetspacePropertiesFleetspaceApiKind(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The kind of API this fleetspace belongs to. Acceptable values: 'NoSQL'."""
+
+    NO_SQL = "NoSQL"
+
+
+class FleetspacePropertiesServiceTier(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Service Tier for the fleetspace. GeneralPurpose types refers to single write region accounts
+    that can be added to this fleetspace, whereas BusinessCritical refers to multi write region.
+    """
+
+    GENERAL_PURPOSE = "GeneralPurpose"
+    BUSINESS_CRITICAL = "BusinessCritical"
+
+
+class GarnetCacheProvisioningState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The status of the resource at the time the operation was called."""
+
+    CREATING = "Creating"
+    UPDATING = "Updating"
+    DELETING = "Deleting"
+    SUCCEEDED = "Succeeded"
+    FAILED = "Failed"
+    CANCELED = "Canceled"
 
 
 class IndexingMode(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -179,6 +351,22 @@ class IndexKind(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     SPATIAL = "Spatial"
 
 
+class IssueType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Type of issue."""
+
+    UNKNOWN = "Unknown"
+    """Unknown issue type"""
+    CONFIGURATION_PROPAGATION_FAILURE = "ConfigurationPropagationFailure"
+    """An error occurred while applying the network security perimeter (NSP) configuration."""
+    MISSING_PERIMETER_CONFIGURATION = "MissingPerimeterConfiguration"
+    """A network connectivity issue is happening on the resource which could be addressed either by
+    adding new resources to the network security perimeter (NSP) or by modifying access rules."""
+    MISSING_IDENTITY_CONFIGURATION = "MissingIdentityConfiguration"
+    """An managed identity hasn't been associated with the resource. The resource will still be able
+    to validate inbound traffic from the network security perimeter (NSP) or matching inbound
+    access rules, but it won't be able to perform outbound access as a member of the NSP."""
+
+
 class KeyKind(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """The access key to regenerate."""
 
@@ -186,6 +374,15 @@ class KeyKind(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     SECONDARY = "secondary"
     PRIMARY_READONLY = "primaryReadonly"
     SECONDARY_READONLY = "secondaryReadonly"
+
+
+class Kind(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Kind of the connection string key."""
+
+    PRIMARY = "Primary"
+    SECONDARY = "Secondary"
+    PRIMARY_READONLY = "PrimaryReadonly"
+    SECONDARY_READONLY = "SecondaryReadonly"
 
 
 class ManagedCassandraProvisioningState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -206,6 +403,16 @@ class ManagedCassandraResourceIdentityType(str, Enum, metaclass=CaseInsensitiveE
     NONE = "None"
 
 
+class MinimalTlsVersion(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Indicates the minimum allowed Tls version. The default is Tls 1.0, except for Cassandra and
+    Mongo API's, which only work with Tls 1.2.
+    """
+
+    TLS = "Tls"
+    TLS11 = "Tls11"
+    TLS12 = "Tls12"
+
+
 class MongoRoleDefinitionType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Indicates whether the Role Definition was built-in or user created."""
 
@@ -218,6 +425,20 @@ class NetworkAclBypass(str, Enum, metaclass=CaseInsensitiveEnumMeta):
 
     NONE = "None"
     AZURE_SERVICES = "AzureServices"
+
+
+class NetworkSecurityPerimeterConfigurationProvisioningState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Provisioning state of a network security perimeter configuration that is being created or
+    updated.
+    """
+
+    SUCCEEDED = "Succeeded"
+    CREATING = "Creating"
+    UPDATING = "Updating"
+    DELETING = "Deleting"
+    ACCEPTED = "Accepted"
+    FAILED = "Failed"
+    CANCELED = "Canceled"
 
 
 class NodeState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -279,6 +500,18 @@ class PublicNetworkAccess(str, Enum, metaclass=CaseInsensitiveEnumMeta):
 
     ENABLED = "Enabled"
     DISABLED = "Disabled"
+    SECURED_BY_PERIMETER = "SecuredByPerimeter"
+
+
+class ResourceAssociationAccessMode(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Access mode of the resource association."""
+
+    ENFORCED = "Enforced"
+    """Enforced access mode - traffic to the resource that failed access checks is blocked"""
+    LEARNING = "Learning"
+    """Learning access mode - traffic to the resource is enabled for analysis but not blocked"""
+    AUDIT = "Audit"
+    """Audit access mode - traffic to the resource that fails access checks is logged but not blocked"""
 
 
 class ResourceIdentityType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -306,13 +539,24 @@ class RoleDefinitionType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     CUSTOM_ROLE = "CustomRole"
 
 
+class ScheduledEventStrategy(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """How the nodes in the cluster react to scheduled events."""
+
+    IGNORE = "Ignore"
+    STOP_ANY = "StopAny"
+    STOP_BY_RACK = "StopByRack"
+
+
 class ServerVersion(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """Describes the ServerVersion of an a MongoDB account."""
+    """Describes the version of the MongoDB account."""
 
     THREE2 = "3.2"
     THREE6 = "3.6"
     FOUR0 = "4.0"
     FOUR2 = "4.2"
+    FIVE0 = "5.0"
+    SIX0 = "6.0"
+    SEVEN0 = "7.0"
 
 
 class ServiceSize(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -343,6 +587,13 @@ class ServiceType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     MATERIALIZED_VIEWS_BUILDER = "MaterializedViewsBuilder"
 
 
+class Severity(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Severity of the issue."""
+
+    WARNING = "Warning"
+    ERROR = "Error"
+
+
 class SpatialType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Indicates the spatial type of index."""
 
@@ -350,6 +601,28 @@ class SpatialType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     LINE_STRING = "LineString"
     POLYGON = "Polygon"
     MULTI_POLYGON = "MultiPolygon"
+
+
+class Status(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Enum to indicate current buildout status of the region."""
+
+    UNINITIALIZED = "Uninitialized"
+    INITIALIZING = "Initializing"
+    INTERNALLY_READY = "InternallyReady"
+    ONLINE = "Online"
+    DELETING = "Deleting"
+    CREATING = "Creating"
+    SUCCEEDED = "Succeeded"
+    FAILED = "Failed"
+    CANCELED = "Canceled"
+    UPDATING = "Updating"
+
+
+class SupportedActions(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Indicates whether what action to take for the Chaos Fault."""
+
+    ENABLE = "Enable"
+    DISABLE = "Disable"
 
 
 class ThroughputPolicyType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -377,6 +650,20 @@ class TriggerType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     POST = "Post"
 
 
+class Type(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Type of the connection string."""
+
+    SQL = "Sql"
+    TABLE = "Table"
+    MONGO_DB = "MongoDB"
+    CASSANDRA = "Cassandra"
+    CASSANDRA_CONNECTOR_METADATA = "CassandraConnectorMetadata"
+    GREMLIN = "Gremlin"
+    SQL_DEDICATED_GATEWAY = "SqlDedicatedGateway"
+    GREMLIN_V2 = "GremlinV2"
+    UNDEFINED = "Undefined"
+
+
 class UnitType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """The unit of the metric."""
 
@@ -387,3 +674,20 @@ class UnitType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     COUNT_PER_SECOND = "CountPerSecond"
     BYTES_PER_SECOND = "BytesPerSecond"
     MILLISECONDS = "Milliseconds"
+
+
+class VectorDataType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Indicates the data type of vector."""
+
+    FLOAT32 = "float32"
+    UINT8 = "uint8"
+    INT8 = "int8"
+    FLOAT16 = "float16"
+
+
+class VectorIndexType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The index type of the vector. Currently, flat, diskANN, and quantizedFlat are supported."""
+
+    FLAT = "flat"
+    DISK_ANN = "diskANN"
+    QUANTIZED_FLAT = "quantizedFlat"

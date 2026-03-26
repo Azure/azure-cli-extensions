@@ -9,3 +9,4 @@
 # flake8: noqa
 
 from .__cmd_group import *
+from ._get_marketplace_saas_resource_detail import *

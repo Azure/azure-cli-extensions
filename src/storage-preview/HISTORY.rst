@@ -2,6 +2,48 @@
 
 Release History
 ===============
+
+1.0.0b7
+++++++
+* Remove DATA_COSMOS_TABLE and DATA_STORAGE references
+* `az storage account migration start/show`: Remove since it has been GA in main repo
+
+1.0.0b6
++++++++
+* `az storage account task-assignment`: Task-Assignment GA for Storage Action
+
+1.0.0b5
++++++++
+* `az storage blob access/directory/move`: Remove deprecated command groups since `az storage fs` command group has been GA since 2021
+* `az storage account local-user` only mark some params in `create/update` as preview as the rest have been GA in main rep
+
+1.0.0b4
++++++++
+* `az storage account create/update`: Support `--enable-extended-groups`
+* `az storage account local-user create/update`: Support `--extended-group`
+* `az storage account local-user create`: Support `--is-nfsv3-enabled`
+
+1.0.0b3
++++++++
+* Remove ADAL dependencies
+
+1.0.0b2(2024-07-15)
+++++++++++++++++++
+* `az storage account local-user`: Support `--group-id` and `--allow-acl-authorization`. Support list paging and filtering
+* `az storage account task-assignment`: Support task-assignment
+
+1.0.0b1(2023-08-11)
+++++++++++++++++++
+* `az storage account migration start/show`: Support start and show storage account migration
+
+0.9.0(2023-07-19)
+++++++++++++++++++
+* [BREAKING CHANGE] `az storage file/directory`: Default action changes from trimming trailing dot in file/directory names to not trimming, support `--disallow-trailing-dot` and `--disallow-source-trailing-dot`
+
+0.8.4(2023-04-27)
+++++++++++++++++++
+* Bump azure_mgmt_storage to 2022_09_01 and remove commands supported in azure cli
+
 0.8.3(2022-05-24)
 ++++++++++++++++++
 * `az storage account create/update`: Rename `--key-vault-federated-identity-client-id` to `--key-vault-federated-client-id`

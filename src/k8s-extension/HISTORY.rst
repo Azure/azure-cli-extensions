@@ -3,6 +3,115 @@
 Release History
 ===============
 
+1.7.0
++++++++++++++++++++
+* Added the `az k8s-extension troubleshoot` command to simplify log collection and diagnostics for extensions.
+
+1.6.7
++++++++++++++++++++
+* microsoft.azuremonitor.containers: Extend ContainerInsights Extension for high log scale mode support.
+
+1.6.6
+++++++++++++++++++
+* microsoft.entraworkloadiam: Remove code that is no longer in use.
+
+1.6.5
+++++++++++++++++++
+* microsoft.dataprotection.kubernetes: Add support for 'DisableInformerCache' configuration.
+* microsoft.azuremonitor.containers.metrics: Simplify logic and enable correct recording rule groups for managed prom extension
+
+1.6.4
+++++++++++++++++++
+* microsoft.azuremonitor.containers.metrics: Update default region for azure monitor metrics extension in mooncake.
+* microsoft.dataprotection.kubernetes: Strip user input, add provision for updating resource requests.
+
+1.6.3
+++++++++++++++++++
+* Do not attempt to register Microsoft.Monitor and Microsoft.Dashboard resource providers if they are already registered.
+
+1.6.2
+++++++++++++++++++
+* microsoft.workloadiam: Enhanced security by utilizing protected configuration settings for the join token instead of regular configuration settings.
+* microsoft.azuremonitor.containers.metrics: Expanded support to all clouds, excluding air-gapped environments, for microsoft.azuremonitor.containers.metrics in ARC clusters.
+* Removed dependency on the msrestazure library.
+
+1.6.1
+++++++++++++++++++
+* minor fixes to dataprotection aks ext CLI
+* Rename WorkloadIAM to EntraWorkloadIAM
+
+1.6.0
+++++++++++++++++++
+* AAD related changes in dataprotection aks ext CLI
+* microsoft.azuremonitor.containers: Make containerlogv2 as default as true and remove region dependency for ARC
+* microsoft.workloadiam: Refactor subcommand invocation
+
+1.5.3
+++++++++++++++++++
+* Add WorkloadIAM extension support and tests.
+
+1.5.2
+++++++++++++++++++
+* Update help text on configuration-settings and configuration-protected-settings properties.
+
+1.5.1
+++++++++++++++++++
+* microsoft.kubernetes.azuredefender: Fixed installation bug where LogAnalytics Workspace details were not being fetched correctly.
+
+1.5.0
+++++++++++++++++++
+* add support for extensionsType api
+* Breaking change introduced with API version 2023-05-01 adds validation will begin rejecting calls (PUT and PATCH) that provide a version for the extension and also set autoUpgradeMinorVersion to true
+* microsoft.openservicemesh: Update OSM-Arc version check for beta and CI tags
+
+1.4.5
+++++++++++++++++++
+* fix bugs while dropping 'azure-mgmt-relay'
+
+1.4.4
+++++++++++++++++++
+* drop 'azure-mgmt-relay' sdk dependency
+
+1.4.3
+++++++++++++++++++
+* microsoft.azuremonitor.containers: Extend ContainerInsights Extension dataCollectionSettings with streams and containerlogv2 field. Also, add a kind tag in DCR creation for the ContainerInsights extension.
+* microsoft.dapr: Use semver instead of packaging
+* microsoft.azuremonitor.containers.metrics: update logic to sanitize cluster name for dc* objects
+* microsoft.openservicemesh: Fix osm-arc version check for CI tags
+* add support to skip provisioning of prerequisites for Azure Monitor K8s extensions
+
+1.4.2
+++++++++++++++++++
+* microsoft.azuremonitor.containers: ContainerInsights Extension Managed Identity Auth Enabled by default
+
+1.4.1
+++++++++++++++++++
+* microsoft.azureml.kubernetes: Fix sslSecret parameter in update operation
+* microsoft.azuremonitor.containers.metrics : public preview support for managed prometheus in ARC clusters
+
+1.4.0
+++++++++++++++++++
+* microsoft.dapr: Update version comparison logic to use semver based comparison
+* microsoft.azuremonitor.containers: Make ContainerInsights DataCollectionRuleName consistent with portal and other onboarding clients
+
+1.3.9
+++++++++++++++++++
+* Deprecating  --config-settings alias for --configuration-settings
+* Deprecating  --configuration-protected-settings alias for --config-protected-settings
+* Deprecating  --configuration-settings-file alias for --config-settings-file
+* Deprecating  --configuration-protected-settings-file alias for --config-protected-file
+
+1.3.8
+++++++++++++++++++
+* Fixes to address the bug with msi auth mode for azuremonitor-containers extension version >= 3.0.0
+* microsoft.dapr: disable apply-CRDs hook if auto-upgrade is disabled
+* microsoft.azuremonitor.containers: ContainerInsights Extension add dataCollectionSettings to configuration settings
+* k8s-extension Adding GA api version 2022-11-01 exposing isSystemExtension and support
+
+1.3.7
+++++++++++++++++++
+* microsoft.dapr: prompt user for existing dapr installation during extension create
+
 1.3.6
 ++++++++++++++++++
 * Update the api version and add tests for extension type calls
@@ -16,7 +125,7 @@ Release History
 
 1.3.4
 ++++++++++++++++++
-* Fix to address the error TypeError: cf_k8s_extension() takes 1 positional argument but 2 were given while running command az k8s-extension extension-types list 
+* Fix to address the error TypeError: cf_k8s_extension() takes 1 positional argument but 2 were given while running command az k8s-extension extension-types list
 
 1.3.3
 ++++++++++++++++++
@@ -70,9 +179,9 @@ Release History
 1.2.0
 ++++++++++++++++++
 * microsoft.azureml.kubernetes: Update AzureMLKubernetes install parameters on inferenceRouterServiceType and internalLoadBalancerProvider
-* microsoft.openservicemesh: Change extension validation logic osm-arc 
-* microsoft.azuremonitor.containers: Add Managed Identity Auth support for ContainerInsights Extension 
-* microsoft.azuremonitor.containers: Bring back containerInsights solution addition in MSI mode 
+* microsoft.openservicemesh: Change extension validation logic osm-arc
+* microsoft.azuremonitor.containers: Add Managed Identity Auth support for ContainerInsights Extension
+* microsoft.azuremonitor.containers: Bring back containerInsights solution addition in MSI mode
 
 1.1.0
 ++++++++++++++++++
@@ -135,7 +244,7 @@ Release History
 0.5.0
 ++++++++++++++++++
 * Add microsoft.openservicemesh customization to check distros
-* Delete customization for partners 
+* Delete customization for partners
 
 0.4.3
 ++++++++++++++++++
@@ -172,7 +281,7 @@ Release History
 ++++++++++++++++++
 
 * Remove `k8s-extension update` until PATCH is supported
-* Improved logging for overwriting extension name with default 
+* Improved logging for overwriting extension name with default
 
 0.2.0
 ++++++++++++++++++

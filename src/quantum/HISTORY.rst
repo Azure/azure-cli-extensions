@@ -3,6 +3,97 @@
 Release History
 ===============
 
+1.0.0b12
++++++++++++++++
+* Added support for Data Plane v2 including specifying priority parameter as part of job params when submitting a job
+* Removed container creation logic when retrieving linked storage account from the service
+
+1.0.0b11
++++++++++++++++
+* Remove `__import__('pkg_resources').declare_namespace(__name__)` to fix the namespace package issue.
+
+1.0.0b10
+++++++
+* Fixed broken dependency on blob_data_service_factory and replaced with vendored_sdk for azure_storage_blob
+* Fixed bug where workspace params were being ignored during job submission if workspace was not set as default
+* Fixed bug where job submission asked for interactive authentication instead of using azure cli credentials
+* Removed QIO and ADFT features, since those are no longer supported for Azure Quantum service and have both been deprecated
+* During job submit, updated default shots to 100
+* During job submit, updated default format to microsoft.quantum-results.v2
+* During job submit, removed requirement for entrypoint, since most modern providers no longer require the entrypoint field
+* During job submit, simplify logic for content_type and default to qir.v1 for QIR jobs and text/plain for others
+* During job output -o table, added support for fields from new microsoft.quantum-results.v2 format
+* During workspace create, added check for duplicate provider ids to fail fast before sending to service
+
+1.0.0b9
+++++++
+* Update minCliCoreVersion
+
+1.0.0b8
+++++++
+* Fix advertisement of newer version breaking -o output.
+
+1.0.0b7
+++++++
+* Fix import resource SDK error
+
+1.0.0b6
+++++++
+* [2025-03-19] Version intended to work with QDK version 1.14.0
+* `az quantum job list` has several new parameters to filter, sort, and paginate the job list, see https://learn.microsoft.com/cli/azure/quantum/job?view=azure-cli-latest#az-quantum-job-list
+* The `az quantum run`, `az quantum execute`, and `az quantum job submit` commands can access workspace storage accounts using the workspace managed identity.
+* Storage blob anonymous access is disabled when new workspace storage accounts are created.
+* Service-based Resource Estimation is now fully deprecated. Please use the local Resource Estimator tool, see https://learn.microsoft.com/azure/quantum/intro-to-resource-estimation
+* GitHub Issue 30947 has been fixed, https://github.com/Azure/azure-cli/issues/30947
+
+1.0.0b5
+++++++
+* Retracted due to missing file.
+
+1.0.0b4
+++++++
+* [2024-10-16] Version intended to work with QDK version 1.9.0
+* The Classic QDK is now fully deprecated.  Jobs must be prepared using the Modern QDK or other QIR tools.
+* See https://github.com/Azure/azure-cli-extensions/pull/7987
+
+1.0.0b3
+++++++
+* [2024-04-11] Version intended to work with QDK version 0.29.0
+* Change role assignment for new Workspaces to linked Storage Accounts from Contributor to Storage Account Contributor.
+
+1.0.0b2
+++++++
+* [2024-02-14] Version intended to work with QDK version 0.29.0
+* Add azure quantum connection string/ api key functionalities.
+
+1.0.0b1
+++++++
+* [2024-02-08] Version intended to work with QDK version 0.29.0
+* Updated documentations and messages.
+
+0.21.0
+++++++
+* [2024-01-10] Version intended to work with QDK version 0.29.0
+* Updated documentation to support the Modern QDK. Users can now utilize the Modern QDK to generate QIR in human-readable LLVM code and submit it using CLI. For detailed instructions, please refer to: https://github.com/microsoft/qsharp/wiki/Differences-from-the-previous-QDK#qir-generation.
+* Added a message to warn users that the Classic QDK is on its way to deprecation.
+
+0.20.0
+++++++
+* [2023-12-13] Version intended to work with QDK version 0.29.0
+* Adding an ability to get a job output (for certain targets) even if the job is in `Failed` state.
+
+0.19.0
+++++++
+* [2023-02-27] Version intended to work with QDK version 0.27.253010
+* You can specify --skip-autoadd when creating a workspace to only add the providers listed after the -r parameter, so provider plans in the "Credits for All" program will not be automatically added.
+* Adding resource estimator batching job support to az quantum.
+
+0.18.0
+++++++
+* [2023-02-08] Version intended to work with QDK version 0.27.253010 and Azure CLI 2.41.0 or greater.
+* You can now submit QIR and pass-through jobs using the CLI.
+* Fixed Azure/azure-cli-extensions Issue #5831 to eliminate some workspace creation errors.
+
 0.17.0
 ++++++
 * [2022-11-02] Update default QDK version to latest 0.27.238334 - See https://learn.microsoft.com/azure/quantum/release-notes.

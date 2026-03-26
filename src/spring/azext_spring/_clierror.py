@@ -13,3 +13,11 @@ class ConflictRequestError(UserFault):
 
 class NotSupportedPricingTierError(UserFault):
     pass
+
+
+class PermissionDenyError(UserFault):
+    pass
+
+
+class JobExecutionInstanceNotFoundError(UserFault):
+    pass

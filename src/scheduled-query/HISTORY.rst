@@ -3,6 +3,23 @@
 Release History
 ===============
 
+1.0.0b2
+++++++
+* Remove `__import__('pkg_resources').declare_namespace(__name__)` to fix the namespace package issue.
+
+1.0.0b1
+++++++
+* Fix update action group failure with empty actions
+* Fix action group parameter help message
+
+0.5.3
+++++++
+* Upgrade antlr to 4.13.1
+
+0.5.2
+++++++
+* Fix scheduled query condition operator mapping
+
 0.5.1
 ++++++
 * Supress warning message from antlr 4.9.3

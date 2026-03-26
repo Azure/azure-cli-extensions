@@ -35,6 +35,22 @@ def cf_agent_pools(cli_ctx, *_):
     return get_container_service_client(cli_ctx).agent_pools
 
 
+def cf_managed_namespaces(cli_ctx, *_):
+    return get_container_service_client(cli_ctx).managed_namespaces
+
+
+def cf_machines(cli_ctx, *_):
+    return get_container_service_client(cli_ctx).machines
+
+
+def cf_identity_bindings(cli_ctx, *_):
+    return get_container_service_client(cli_ctx).identity_bindings
+
+
+def cf_operations(cli_ctx, *_):
+    return get_container_service_client(cli_ctx).operation_status_result
+
+
 def cf_maintenance_configurations(cli_ctx, *_):
     return get_container_service_client(cli_ctx).maintenance_configurations
 
@@ -53,14 +69,6 @@ def cf_mc_snapshots(cli_ctx, *_):
 
 def get_mc_snapshots_client(cli_ctx, subscription_id=None):
     return get_container_service_client(cli_ctx, subscription_id=subscription_id).managed_cluster_snapshots
-
-
-def cf_trustedaccess_role(cli_ctx, *_):
-    return get_container_service_client(cli_ctx).trusted_access_roles
-
-
-def cf_trustedaccess_role_binding(cli_ctx, *_):
-    return get_container_service_client(cli_ctx).trusted_access_role_bindings
 
 
 def get_compute_client(cli_ctx, *_):
@@ -95,23 +103,8 @@ def get_auth_management_client(cli_ctx, scope=None, **_):
         if matched:
             subscription_id = matched.groupdict()['subscription']
         else:
-            raise CLIError("{} does not contain subscription Id.".format(scope))
+            raise CLIError(f"{scope} does not contain subscription Id.")
     return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_AUTHORIZATION, subscription_id=subscription_id)
-
-
-def get_graph_rbac_management_client(cli_ctx, **_):
-    from azure.cli.core.commands.client_factory import configure_common_settings
-    from azure.cli.core._profile import Profile
-    from azure.graphrbac import GraphRbacManagementClient
-
-    profile = Profile(cli_ctx=cli_ctx)
-    cred, _, tenant_id = profile.get_login_credentials(
-        resource=cli_ctx.cloud.endpoints.active_directory_graph_resource_id)
-    client = GraphRbacManagementClient(
-        cred, tenant_id,
-        base_url=cli_ctx.cloud.endpoints.active_directory_graph_resource_id)
-    configure_common_settings(cli_ctx, client)
-    return client
 
 
 def get_resource_by_name(cli_ctx, resource_name, resource_type):
@@ -125,25 +118,48 @@ def get_resource_by_name(cli_ctx, resource_name, resource_type):
     if not elements:
         from azure.cli.core._profile import Profile
         profile = Profile(cli_ctx=cli_ctx)
-        message = "The resource with name '{}' and type '{}' could not be found".format(
-            resource_name, resource_type)
+        message = f"The resource with name '{resource_name}' and type '{resource_type}' could not be found"
         try:
             subscription = profile.get_subscription(
                 cli_ctx.data['subscription_id'])
             raise CLIError(
-                "{} in subscription '{} ({})'.".format(message, subscription['name'], subscription['id']))
-        except (KeyError, TypeError):
-            raise CLIError(
-                "{} in the current subscription.".format(message))
+                f"{message} in subscription '{subscription['name']} ({subscription['id']})'."
+            )
+        except (KeyError, TypeError) as exc:
+            raise CLIError(f"{message} in the current subscription.") from exc
 
     elif len(elements) == 1:
         return elements[0]
     else:
         raise CLIError(
-            "More than one resources with type '{}' are found with name '{}'.".format(
-                resource_type, resource_name))
+            f"More than one resources with type '{resource_type}' are found with name '{resource_name}'."
+        )
 
 
 def get_msi_client(cli_ctx, subscription_id=None):
     return get_mgmt_service_client(cli_ctx, ManagedServiceIdentityClient,
                                    subscription_id=subscription_id)
+
+
+def get_providers_client_factory(cli_ctx, subscription_id=None):
+    return get_mgmt_service_client(
+        cli_ctx,
+        ResourceType.MGMT_RESOURCE_RESOURCES,
+        subscription_id=subscription_id
+    ).providers
+
+
+def get_keyvault_client(cli_ctx, subscription_id=None):
+    return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_KEYVAULT, subscription_id=subscription_id).vaults
+
+
+def cf_load_balancers(cli_ctx, *_):
+    return get_container_service_client(cli_ctx).load_balancers
+
+
+def cf_jwt_authenticators(cli_ctx, *_):
+    return get_container_service_client(cli_ctx).jwt_authenticators
+
+
+def cf_vm_skus(cli_ctx, *_):
+    return get_container_service_client(cli_ctx).vm_skus

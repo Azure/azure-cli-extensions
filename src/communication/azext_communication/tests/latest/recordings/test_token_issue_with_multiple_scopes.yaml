@@ -13,41 +13,43 @@ interactions:
       Content-Type:
       - application/json
       User-Agent:
-      - AzureCli/1.2.2 azsdk-python-communication-identity/1.2.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AzureCli/1.13.0 azsdk-python-communication-identity/1.5.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
       x-ms-content-sha256:
       - hlYiA5kT1yt3LwEdaupQDHzQEfodx+8svsStB5uolgw=
       x-ms-date:
-      - Wed, 21 Sep 2022 22:52:35 GMT
+      - Thu, 27 Mar 2025 08:48:33 GMT
       x-ms-return-client-request-id:
       - 'true'
     method: POST
-    uri: https://sanitized.communication.azure.com/identities?api-version=2022-06-01
+    uri: https://sanitized.communication.azure.com/identities?api-version=2023-10-01
   response:
     body:
       string: '{"identity": {"id": "sanitized"}, "accessToken": {"token": "sanitized",
-        "expiresOn": "2022-09-22T22:52:36.8583716+00:00"}}'
+        "expiresOn": "2025-03-28T08:48:34.5186543+00:00"}}'
     headers:
       api-supported-versions:
-      - 2020-07-20-preview2, 2021-02-22-preview1, 2021-03-07, 2021-10-31-preview,
-        2021-11-01, 2022-06-01
+      - 2020-07-20-preview2, 2021-03-07, 2021-10-31-preview, 2021-11-01, 2022-06-01,
+        2022-10-01, 2023-10-01, 2025-03-02-preview
+      connection:
+      - keep-alive
       content-length:
       - '122'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 21 Sep 2022 22:52:36 GMT
+      - Thu, 27 Mar 2025 08:48:34 GMT
       ms-cv:
-      - j5b5ONhi0EmOgDSTlymkTQ.0
+      - 0nNcMOxlIE2fl5qZ2OnIJg.2.0
       request-context:
       - appId=
       strict-transport-security:
-      - max-age=2592000
+      - max-age=31536000;includeSubDomains
       x-azure-ref:
-      - 0tJUrYwAAAADONME1++UiRJXTblZV01yyWVZSMzExMDAwMTE2MDE5ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
+      - 20250327T084833Z-16c89bd967fbzwghhC1MAA5ffs0000000mxg00000000np94
       x-cache:
       - CONFIG_NOCACHE
       x-processing-time:
-      - 117ms
+      - 24ms
     status:
       code: 201
       message: Created

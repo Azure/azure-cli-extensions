@@ -1,0 +1,23 @@
+{
+    "issuer": {
+        "url": "https://accounts.google.com",
+        "audiences": [
+            "client id here"
+        ]
+    },
+    "claimMappings": {
+        "username": {
+            "expression": "'aks:jwt:google:' + claims.sub"
+        }
+    },
+    "claimValidationRules": [
+        {
+            "expression": "claims.iss == 'https://accounts.google.com'",
+            "message": "issuer must be Google"
+        },
+        {
+            "expression": "claims.exp - claims.nbf <= 7200",
+            "message": "total token lifetime must not exceed 2 hours"
+        }
+    ]
+}

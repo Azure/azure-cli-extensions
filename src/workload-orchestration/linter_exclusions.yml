@@ -1,0 +1,35 @@
+workload-orchestration solution-template create:
+  parameters:
+    configuration-template-file:
+      rule_exclusions:
+      - option_length_too_long
+    enable-external-validation:
+      rule_exclusions:
+      - option_length_too_long
+      
+workload-orchestration solution-template version show:
+  parameters:
+    solution-template-version-name:
+      rule_exclusions:
+      - option_length_too_long
+
+workload-orchestration target resolve:
+  parameters:
+    solution-template-name:
+      rule_exclusions:
+      - option_length_too_long
+    solution-template-version:
+      rule_exclusions:
+      - option_length_too_long
+
+workload-orchestration target review:
+  parameters:
+    solution-template-name:
+      rule_exclusions:
+      - option_length_too_long
+    solution-template-version:
+      rule_exclusions:
+      - option_length_too_long
+    solution_template_version_id:
+      rule_exclusions:
+      - option_length_too_long

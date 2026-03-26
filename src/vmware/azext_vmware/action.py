@@ -9,7 +9,6 @@ import argparse
 from typing import Dict, List
 from azure.cli.core.azclierror import InvalidArgumentValueError, RequiredArgumentMissingError
 from knack.util import CLIError
-from azext_vmware.vendored_sdks.avs_client.models import ScriptExecutionParameter, ScriptExecutionParameterType, ScriptStringExecutionParameter, ScriptSecureStringExecutionParameter, PSCredentialExecutionParameter
 
 
 class ScriptExecutionNamedOutputAction(argparse._AppendAction):
@@ -35,29 +34,43 @@ class ScriptExecutionParameterAction(argparse._AppendAction):
             namespace.parameters = [parameter]
 
 
-def script_execution_parameters(values: List[str]) -> ScriptExecutionParameter:
+def script_execution_parameters(values: List[str]):
     values = dict(map(lambda x: x.split('=', 1), values))
     tp = require(values, "type")
     type_lower = tp.lower()
-
-    if type_lower == ScriptExecutionParameterType.VALUE.lower():
+    if type_lower == "Value".lower():
         try:
-            return ScriptStringExecutionParameter(name=require(values, "name"), value=values.get("value"))
+            return {
+                "name": require(values, "name"),
+                "value": {
+                    "value": values.get("value")
+                }
+            }
         except CLIError as error:
-            raise InvalidArgumentValueError('parsing {} script execution parameter'.format(ScriptExecutionParameterType.VALUE)) from error
+            raise InvalidArgumentValueError('parsing {} script execution parameter'.format('Value')) from error
 
-    elif type_lower == ScriptExecutionParameterType.SECURE_VALUE.lower():
+    elif type_lower == "SecureValue".lower():
         try:
-            return ScriptSecureStringExecutionParameter(name=require(values, "name"), secure_value=values.get("secureValue"))
+            return {
+                "name": require(values, "name"),
+                "secure_value": {
+                    "secure_value": values.get("secureValue")
+                }
+            }
         except CLIError as error:
-            raise InvalidArgumentValueError('parsing {} script execution parameter'.format(ScriptExecutionParameterType.SECURE_VALUE)) from error
+            raise InvalidArgumentValueError('parsing {} script execution parameter'.format('SecureValue')) from error
 
-    elif type_lower == ScriptExecutionParameterType.CREDENTIAL.lower():
+    elif type_lower == "Credential".lower():
         try:
-            return PSCredentialExecutionParameter(name=require(values, "name"), username=values.get("username"), password=values.get("password"))
+            return {
+                "name": require(values, "name"),
+                "credential": {
+                    "username": values.get("username"),
+                    "password": values.get("password"),
+                }
+            }
         except CLIError as error:
-            raise InvalidArgumentValueError('parsing {} script execution parameter'.format(ScriptExecutionParameterType.CREDENTIAL)) from error
-
+            raise InvalidArgumentValueError('parsing {} script execution parameter'.format('Credential')) from error
     else:
         raise InvalidArgumentValueError('script execution paramater type \'{}\' not matched'.format(tp))
 

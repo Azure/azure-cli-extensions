@@ -14,6 +14,7 @@ from azure.cli.testsdk.exceptions import CliTestError
 from azure.cli.testsdk.reverse_dependency import get_dummy_cli
 import os
 
+
 # Communication resource Preparer and its shorthand decorator
 # pylint: disable=too-many-instance-attributes
 class CommunicationResourcePreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
@@ -51,11 +52,9 @@ class CommunicationResourcePreparer(NoTrafficRecordingPreparer, SingleValueRepla
             endpoint = None
 
         self.test_class_instance.kwargs[self.key] = name
-
-
         return {self.parameter_name: name,
-                self.parameter_name + '_info': 
-                    (name, 
+                self.parameter_name + '_info':
+                    (name,
                      account_key or 'endpoint=https://sanitized.communication.azure.com/;accesskey=fake===',
                      endpoint or 'https://sanitized.communication.azure.com/', )}
 

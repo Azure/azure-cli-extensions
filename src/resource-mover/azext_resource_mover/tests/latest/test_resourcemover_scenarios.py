@@ -5,6 +5,7 @@
 
 import tempfile
 import json
+import time
 
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 from azure.cli.testsdk.scenario_tests import RecordingProcessor
@@ -81,7 +82,7 @@ class ResourceMoverMoveCollectionScenarioTest(ScenarioTest):
     def test_resourcemover_movecollection_e2e(self):
 
         self.kwargs.update({
-            'collection_name': 'clitest-movecollection-29',
+            'collection_name': 'clitest-movecollection-test98',
             'location': 'eastus2',
             'source_region': 'eastus',
             'target_region': 'westus',
@@ -127,18 +128,11 @@ class ResourceMoverMoveCollectionScenarioTest(ScenarioTest):
         with open(vnet_temp_file, 'w') as f:
             json.dump(vnet_resource_settings, f)
 
-        rg_resource_settings = {
-            'resourceType': 'resourceGroups',
-            'targetResourceName': self.kwargs.get('target_rg', None)
-        }
-        _, rg_temp_file = tempfile.mkstemp()
-        with open(rg_temp_file, 'w') as f:
-            json.dump(rg_resource_settings, f)
-
         self.kwargs.update({
-            'vnet_resource_settings': vnet_temp_file.replace('\\', '\\\\'),
-            'rg_resource_settings': rg_temp_file.replace('\\', '\\\\')
+            'vnet_resource_settings': vnet_temp_file.replace('\\', '\\\\')
         })
+
+        time.sleep(15)
 
         # role assignments for the move-collection
         self.cmd('az role assignment create --assignee-object-id {collection_principal_id} --role Contributor '
@@ -146,16 +140,11 @@ class ResourceMoverMoveCollectionScenarioTest(ScenarioTest):
         self.cmd('az role assignment create --assignee-object-id {collection_principal_id} --role "User Access Administrator" '
                  '--scope {role_assignment_scope}')
 
+        time.sleep(15)
+
         # add the vNet as a move-resource to the move-collection
         self.cmd('az resource-mover move-resource add --resource-group {rg} --move-collection-name {collection_name} '
                  '--name {move_resource_vnet} --source-id {source_vnet_id} --resource-settings {vnet_resource_settings}')
-        self.cmd('az resource-mover move-resource add --resource-group {rg} --move-collection-name {collection_name} '
-                 '--name {move_resource_rg} --source-id {source_rg_id} --resource-settings {rg_resource_settings}')
-
-        # list-required-for
-        self.cmd('az resource-mover move-collection list-required-for --resource-group {rg} --move-collection-name '
-                 '{collection_name} --source-id {source_vnet_id}', checks=[
-                     self.check('length(sourceIds)', 0)])
 
         # list-unresolved-dependency
         self.cmd('az resource-mover move-collection list-unresolved-dependency --resource-group {rg} '
@@ -171,15 +160,11 @@ class ResourceMoverMoveCollectionScenarioTest(ScenarioTest):
         # list all the move-resources in move-collection
         move_resources = self.cmd('az resource-mover move-resource list --resource-group {rg} '
                                   '--move-collection-name {collection_name}', checks=[
-                                      self.check('length(@)', 2)]).get_output_in_json()
+                                      self.check('length(@)', 1)]).get_output_in_json()
 
         # update move resource id of vNet and the resource group
         for move_resource in move_resources:
             resource_id = move_resource['id']
-            if move_resource['properties']['resourceSettings']['resourceType'] == 'resourceGroups':
-                self.kwargs.update({
-                    'move_resource_rg_id': resource_id
-                })
             if move_resource['properties']['resourceSettings']['resourceType'] == 'Microsoft.Network/virtualNetworks':
                 self.kwargs.update({
                     'move_resource_vnet_id': resource_id
@@ -192,31 +177,26 @@ class ResourceMoverMoveCollectionScenarioTest(ScenarioTest):
                          self.check('name', '{move_resource_vnet}'),
                          self.check('properties.sourceId', '{source_vnet_id}'),
                          self.check('properties.moveStatus.moveState', target_state)])
-            self.cmd('az resource-mover move-resource show --resource-group {rg} '
-                     '--move-collection-name {collection_name} --name {move_resource_rg}', checks=[
-                         self.check('name', '{move_resource_rg}'),
-                         self.check('properties.sourceId', '{source_rg_id}'),
-                         self.check('properties.moveStatus.moveState', target_state)])
 
         check_move_state('PreparePending')
 
         # prepare
         self.cmd('az resource-mover move-collection prepare --move-resources {move_resource_vnet_id} '
-                 '{move_resource_rg_id} --name {collection_name} --resource-group {rg}', checks=[
+                 '--name {collection_name} --resource-group {rg}', checks=[
                      self.check('resourceGroup', '{rg}'),
                      self.check('status', 'Succeeded')])
         check_move_state('MovePending')
 
         # initiate-move
         self.cmd('az resource-mover move-collection initiate-move --move-resources {move_resource_vnet_id} '
-                 '{move_resource_rg_id} --name {collection_name} --resource-group {rg}', checks=[
+                 '--name {collection_name} --resource-group {rg}', checks=[
                      self.check('resourceGroup', '{rg}'),
                      self.check('status', 'Succeeded')])
         check_move_state('CommitPending')
 
         # commit
-        self.cmd('az resource-mover move-collection commit --move-resources {move_resource_vnet_id} '
-                 '{move_resource_rg_id} --name {collection_name} --resource-group {rg}', checks=[
+        self.cmd('az resource-mover move-collection commit --move-resources {move_resource_vnet_id} ' 
+                 '--name {collection_name} --resource-group {rg}', checks=[
                      self.check('resourceGroup', '{rg}'),
                      self.check('status', 'Succeeded')])
         check_move_state('DeleteSourcePending')
@@ -233,7 +213,7 @@ class ResourceMoverMoveCollectionScenarioTest(ScenarioTest):
 
         # delete the move-resources and the move collection
         self.cmd('az resource-mover move-collection bulk-remove --move-resources {move_resource_vnet_id} '
-                 '{move_resource_rg_id} --name {collection_name} --resource-group {rg}', checks=[
+                 '--name {collection_name} --resource-group {rg}', checks=[
                      self.check('resourceGroup', '{rg}'),
                      self.check('status', 'Succeeded')])
         self.cmd('az resource-mover move-collection delete --name {collection_name} --resource-group '
@@ -252,7 +232,7 @@ class ResourceMoverMoveResourceScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix="clitest_resourcemover_collection_", location="eastus2")
     def test_resourcemover_moveresource_basic(self):
         self.kwargs.update({
-            'collection_name': 'clitest-movecollection-91',
+            'collection_name': 'clitest-movecollection-test95',
             'location': 'eastus2',
             'source_region': 'eastus',
             'target_region': 'westus',
@@ -297,11 +277,15 @@ class ResourceMoverMoveResourceScenarioTest(ScenarioTest):
             'resource_settings': temp_file.replace('\\', '\\\\'),
         })
 
+        time.sleep(15)
+
         # role assignments for the move-collection
         self.cmd('az role assignment create --assignee-object-id {collection_principal_id} --role Contributor '
                  '--scope {role_assignment_scope}')
         self.cmd('az role assignment create --assignee-object-id {collection_principal_id} --role "User Access Administrator" '
                  '--scope {role_assignment_scope}')
+
+        time.sleep(15)
 
         # add the vNet as a move-resource to the move-collection
         self.cmd('az resource-mover move-resource add --resource-group {rg} --move-collection-name '

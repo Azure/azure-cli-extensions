@@ -11,11 +11,11 @@ class GatherTest(unittest.TestCase):
     def test_add_new_lines(self):
         phrase1 = "Hello World"
         phrase2 = "HEllO"
-        self.assertEqual("Hello \nWorld\n", nl(phrase1, 5, 1))
-        self.assertEqual("Hello World\n", nl(phrase1, 7, 4))
-        self.assertEqual("HE\nll\nO\n", nl(phrase2, 2, 0))
-        self.assertEqual("HEllO\n", nl(phrase2, 20, 0))
-        self.assertEqual("\n", nl("", 20, 0))
+        self.assertEqual("Hello \nWorld", nl(phrase1, 5, 1))
+        self.assertEqual("Hello World", nl(phrase1, 7, 4))
+        self.assertEqual("HE\nll\nO", nl(phrase2, 2, 0))
+        self.assertEqual("HEllO", nl(phrase2, 20, 0))
+        self.assertEqual("", nl("", 20, 0))
 
         phrase4 = "To be, or not to be--that is the question:\
             Whether 'tis nobler in the mind to suffer\
@@ -39,19 +39,19 @@ class GatherTest(unittest.TestCase):
 
         phrase3 = "This is his face, his face: his face is gone."
         self.assertEqual(
-            "This \nis hi\ns fac\ne, hi\ns fac\ne: hi\ns fac\ne is \ngone.\n",
+            "This \nis hi\ns fac\ne, hi\ns fac\ne: hi\ns fac\ne is \ngone.",
             nl(phrase3, 3, 2)
         )
         self.assertEqual(
-            "This is \nhis fac\ne, his \nface: h\nis face \nis gone\n.\n",
+            "This is \nhis fac\ne, his \nface: h\nis face \nis gone\n.",
             nl(phrase3, 5, 2)
         )
         self.assertEqual(
-            "This \nis hi\ns fa\nce, \nhis \nface\n: hi\ns fa\nce i\ns go\nne.\n",
+            "This \nis hi\ns fa\nce, \nhis \nface\n: hi\ns fa\nce i\ns go\nne.",
             nl(phrase3, 4, 0)
         )
         self.assertEqual(
-            "This \nis \nhis \nface, \nhis \nface: \nhis \nface \nis \ngone.\n",
+            "This \nis \nhis \nface, \nhis \nface: \nhis \nface \nis \ngone.",
             nl(phrase3, 1, tolerance=6)
         )
 

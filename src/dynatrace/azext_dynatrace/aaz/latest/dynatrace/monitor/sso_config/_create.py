@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dynatrace monitor sso-config create"
+    "dynatrace monitor sso-config create",
 )
 class Create(AAZCommand):
-    """Create a dynatrace sso-config resource
+    """Create a new SSO configuration for seamless authentication between Azure and the Dynatrace platform.
 
     :example: Create a sso-config
         az dynatrace monitor sso-config create -g rg --monitor-name monitor -n default --aad-domains "['mpliftrdt20210811outlook.onmicrosoft.com']" --single-sign-on-url "https://www.dynatrace.io"
     """
 
     _aaz_info = {
-        "version": "2021-09-01",
+        "version": "2024-04-24",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}/singlesignonconfigurations/{}", "2021-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}/singlesignonconfigurations/{}", "2024-04-24"],
         ]
     }
 
@@ -49,13 +49,17 @@ class Create(AAZCommand):
             options=["-n", "--name", "--configuration-name"],
             help="Single Sign On Configuration Name",
             required=True,
-            id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z]*$",
+            ),
         )
         _args_schema.monitor_name = AAZStrArg(
             options=["--monitor-name"],
             help="Monitor resource name",
             required=True,
-            id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9_-]*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -175,7 +179,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2021-09-01",
+                    "api-version", "2024-04-24",
                     required=True,
                 ),
             }
@@ -259,6 +263,7 @@ class Create(AAZCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
             )
             properties.single_sign_on_state = AAZStrType(
                 serialized_name="singleSignOnState",
@@ -291,6 +296,10 @@ class Create(AAZCommand):
             )
 
             return cls._schema_on_200_201
+
+
+class _CreateHelper:
+    """Helper class for Create"""
 
 
 __all__ = ["Create"]

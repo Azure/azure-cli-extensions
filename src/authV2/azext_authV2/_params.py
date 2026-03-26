@@ -12,7 +12,7 @@ from azure.cli.command_modules.appservice._params import AUTH_TYPES
 from azure.cli.core.local_context import LocalContextAttribute, LocalContextAction
 from azure.cli.core.cloud import AZURE_PUBLIC_CLOUD, AZURE_CHINA_CLOUD, AZURE_US_GOV_CLOUD, AZURE_GERMAN_CLOUD
 
-UNAUTHENTICATED_CLIENT_ACTION = ['RedirectToLoginPage', 'AllowAnonymous', 'RejectWith401', 'RejectWith404']
+UNAUTHENTICATED_CLIENT_ACTION = ['RedirectToLoginPage', 'AllowAnonymous', 'Return401', 'Return404', 'Return403']
 FORWARD_PROXY_CONVENTION = ['NoProxy', 'Standard', 'Custom']
 CLOUD_NAMES = [AZURE_PUBLIC_CLOUD.name, AZURE_CHINA_CLOUD.name, AZURE_US_GOV_CLOUD.name, AZURE_GERMAN_CLOUD.name]
 
@@ -209,7 +209,7 @@ def load_arguments(self, _):
                    arg_group='Azure Active Directory', help="One or more token audiences (space-delimited).")
         c.argument('issuer', options_list=['--aad-token-issuer-url'],
                    help='This url can be found in the JSON output returned from your active directory endpoint using your tenantID. The endpoint can be queried from `az cloud show` at \"endpoints.activeDirectory\". '
-                        'The tenantID can be found using `az account show`. Get the \"issuer\" from the JSON at <active directory endpoint>/<tenantId>/.well-known/openid-configuration.',
+                        'The tenantID can be found using `az account show`. Get the \"issuer\" from the JSON at `<active directory endpoint>/<tenantId>/.well-known/openid-configuration`.',
                    arg_group='Azure Active Directory')
         c.argument('facebook_app_id', arg_group='Facebook',
                    help="Application ID to integrate Facebook Sign-in into your web app")

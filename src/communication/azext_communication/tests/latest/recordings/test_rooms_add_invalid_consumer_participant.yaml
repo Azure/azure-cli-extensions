@@ -1,0 +1,115 @@
+interactions:
+- request:
+    body: '{"validFrom": null, "validUntil": null, "pstnDialOutEnabled": false}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '68'
+      Content-Type:
+      - application/json
+      Repeatability-First-Sent:
+      - Thu, 27 Mar 2025 06:40:16 GMT
+      Repeatability-Request-Id:
+      - 57e79ef6-0ad6-11f0-8b51-00155d7b1001
+      User-Agent:
+      - AzureCli/1.13.0 azsdk-python-communication-rooms/1.2.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+      x-ms-content-sha256:
+      - 2xVVJJKx5brgL5bSWgeu9hhccJP/PkHHEzXUfUClsMI=
+      x-ms-date:
+      - Thu, 27 Mar 2025 06:40:16 GMT
+      x-ms-return-client-request-id:
+      - 'true'
+    method: POST
+    uri: https://sanitized.communication.azure.com/rooms?api-version=2025-03-13
+  response:
+    body:
+      string: '{"id": "sanitized", "createdAt": "2025-03-27T06:40:16.304667+00:00",
+        "validFrom": "2025-03-27T06:40:16.1316878+00:00", "validUntil": "2025-09-23T06:40:16.1316878+00:00",
+        "pstnDialOutEnabled": false}'
+    headers:
+      api-supported-versions:
+      - 2023-06-14, 2023-10-30-preview, 2024-04-15, 2025-03-13
+      connection:
+      - keep-alive
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 27 Mar 2025 06:40:16 GMT
+      location:
+      - '99434310447632004'
+      ms-cv:
+      - 9xvaO6v2UEOGeDSxqjCqEA.0
+      repeatability-result:
+      - accepted
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=31536000;includeSubDomains
+      transfer-encoding:
+      - chunked
+      x-azure-ref:
+      - 20250327T064015Z-16c89bd967f9zhkshC1MAAnndn0000000yb0000000000bdy
+      x-cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 201
+      message: Created
+- request:
+    body: '{"participants": {"8:acs:123456c": {"role": "Consumer"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '57'
+      Content-Type:
+      - application/merge-patch+json
+      User-Agent:
+      - AzureCli/1.13.0 azsdk-python-communication-rooms/1.2.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+      x-ms-content-sha256:
+      - GGeywqkmwEbmvIr+M7fYvPtgLYHCAoJWqoApBN7ZlcA=
+      x-ms-date:
+      - Thu, 27 Mar 2025 06:40:17 GMT
+      x-ms-return-client-request-id:
+      - 'true'
+    method: PATCH
+    uri: https://sanitized.communication.azure.com/rooms/sanitized/participants?api-version=2025-03-13
+  response:
+    body:
+      string: '{"error": {"code": "BadRequest", "message": "Communication identifier
+        8:acs:123456c is not supported."}}'
+    headers:
+      api-supported-versions:
+      - 2023-06-14, 2023-10-30-preview, 2024-04-15, 2025-03-13
+      connection:
+      - keep-alive
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 27 Mar 2025 06:40:17 GMT
+      ms-cv:
+      - EZErT12EOEee6tiri3IQyQ.0
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=31536000;includeSubDomains
+      transfer-encoding:
+      - chunked
+      x-azure-ref:
+      - 20250327T064016Z-16c89bd967fzhg8vhC1MAAkxd40000000eg000000000pyhw
+      x-cache:
+      - CONFIG_NOCACHE
+      x-ms-error-code:
+      - BadRequest
+    status:
+      code: 400
+      message: Bad Request
+version: 1

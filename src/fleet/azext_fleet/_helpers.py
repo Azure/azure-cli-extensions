@@ -9,12 +9,25 @@ import platform
 import stat
 import tempfile
 import yaml
+import time
 
 from knack.log import get_logger
 from knack.prompting import NoTTYException, prompt_y_n
 from knack.util import CLIError
+from azure.cli.command_modules.acs._roleassignments import add_role_assignment
+from azure.mgmt.core.tools import parse_resource_id
+from azext_fleet.constants import NETWORK_CONTRIBUTOR_ROLE_ID
+
+from azext_fleet._client_factory import get_provider_client
+from azext_fleet._client_factory import get_msi_client
+from azext_fleet._client_factory import get_role_assignments_client
 
 logger = get_logger(__name__)
+
+
+def is_stdout_path(path):
+    """Check if the path represents stdout."""
+    return path == "-"
 
 
 def print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_name):
@@ -22,7 +35,7 @@ def print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_nam
     stdout if the path is "-".
     """
     # Special case for printing to stdout
-    if path == "-":
+    if is_stdout_path(path):
         print(kubeconfig)
         return
 
@@ -88,7 +101,7 @@ def _merge_kubernetes_configurations(existing_file, addition_file, replace, cont
 
     # check that ~/.kube/config is only read- and writable by its owner
     if platform.system() != "Windows" and not os.path.islink(existing_file):
-        existing_file_perms = "{:o}".format(stat.S_IMODE(os.lstat(existing_file).st_mode))
+        existing_file_perms = f"{stat.S_IMODE(os.lstat(existing_file).st_mode):o}"
         if not existing_file_perms.endswith("600"):
             logger.warning(
                 '%s has permissions "%s".\nIt should be readable and writable only by its owner.',
@@ -96,7 +109,7 @@ def _merge_kubernetes_configurations(existing_file, addition_file, replace, cont
                 existing_file_perms,
             )
 
-    with open(existing_file, 'w+') as stream:
+    with open(existing_file, 'w+', encoding='utf-8') as stream:
         yaml.safe_dump(existing, stream, default_flow_style=False)
 
     current_context = addition.get('current-context', 'UNKNOWN')
@@ -107,7 +120,14 @@ def _merge_kubernetes_configurations(existing_file, addition_file, replace, cont
 def _handle_merge(existing, addition, key, replace):
     if not addition[key]:
         return
-    if existing[key] is None:
+    if key not in existing:
+        raise CLIError(
+            "No such key '{}' in existing config, please confirm whether it is a valid config file. "
+            "Consider backing up the existing config file, delete it, and retry the command.".format(
+                key
+            )
+        )
+    if not existing[key]:
         existing[key] = addition[key]
         return
 
@@ -133,10 +153,61 @@ def _handle_merge(existing, addition, key, replace):
 
 def _load_kubernetes_configuration(filename):
     try:
-        with open(filename) as stream:
+        with open(filename, encoding='utf-8') as stream:
             return yaml.safe_load(stream)
     except (IOError, OSError) as ex:
         if getattr(ex, 'errno', 0) == errno.ENOENT:
-            raise CLIError(f'{filename} does not exist')
+            raise CLIError(f'{filename} does not exist') from ex
+        raise
     except (yaml.parser.ParserError, UnicodeDecodeError) as ex:
-        raise CLIError(f'Error parsing {filename} ({str(ex)})')
+        raise CLIError(f'Error parsing {filename} ({str(ex)})') from ex
+
+
+def assign_network_contributor_role_to_subnet(cmd, object_id, subnet_id):
+    if not add_role_assignment(cmd, 'Network Contributor', object_id, scope=subnet_id):
+        logger.warning(
+            "Failed to create Network Contributor role assignment on the subnet %s.\n"
+            "This role assignment is required for the managed identity to access the subnet.\n"
+            "Please ensure you have sufficient permissions, or ask an administrator to run:\n"
+            "az role assignment create --assignee-principal-type ServicePrincipal --assignee-object-id %s "
+            "--role 'Network Contributor' --scope %s",
+            subnet_id, object_id, subnet_id)
+        return
+
+    auth_client = get_role_assignments_client(cmd.cli_ctx)
+    max_attempts = 3
+    interval = 3
+    for _ in range(max_attempts):
+        if _is_assignment_present(auth_client, subnet_id, object_id):
+            return
+        time.sleep(interval)
+    logger.warning(
+        "Role assignment for Network Contributor on subnet %s was not detected after %s seconds. "
+        "There may be a delay in propagation.",
+        subnet_id, max_attempts * interval)
+
+
+def _is_assignment_present(auth_client, subnet_id, object_id):
+    filter_query = f"assignedTo('{object_id}') and atScope()"
+    for assignment in auth_client.list_for_scope(subnet_id, filter=filter_query):
+        if assignment.role_definition_id.lower().endswith(NETWORK_CONTRIBUTOR_ROLE_ID) and \
+           assignment.scope.lower() == subnet_id.lower():
+            return True
+    return False
+
+
+def get_msi_object_id(cmd, msi_resource_id):
+    parsed = parse_resource_id(msi_resource_id)
+    subscription_id = parsed['subscription']
+    resource_group_name = parsed['resource_group']
+    msi_name = parsed['resource_name']
+    msi_client = get_msi_client(cmd.cli_ctx, subscription_id=subscription_id)
+    msi = msi_client.user_assigned_identities.get(resource_name=msi_name,
+                                                  resource_group_name=resource_group_name)
+    return msi.principal_id
+
+
+def is_rp_registered(cmd):
+    resource_client = get_provider_client(cmd.cli_ctx)
+    provider = resource_client.providers.get("Microsoft.ContainerService")
+    return provider.registration_state == 'Registered'

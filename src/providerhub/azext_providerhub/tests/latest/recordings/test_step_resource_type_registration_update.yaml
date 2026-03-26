@@ -1,0 +1,109 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - providerhub resource-type-registration update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --endpoints --regionality --provider-namespace --resource-type --routing-type
+      User-Agent:
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.0 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/resourcetypeRegistrations/extensionresourcetype?api-version=2024-04-01-preview
+  response:
+    body:
+      string: '{"properties":{"name":"extensionresourcetype","routingType":"ProxyOnly","regionality":"Regional","endpoints":[{"kind":"Managed","apiVersions":["2019-01-01"],"locations":["WestUS"]}],"defaultApiVersion":"2019-01-01","throttlingRules":[{"action":"Private.VPTest/extensionresourcetype/write","metrics":[{"type":"NumberOfRequests","limit":400,"interval":"PT1H"}]},{"action":"Private.VPTest/extensionresourcetype/read","metrics":[{"type":"NumberOfRequests","limit":4000,"interval":"PT1H"}]},{"action":"Private.VPTest/extensionresourcetype/delete","metrics":[{"type":"NumberOfRequests","limit":5000,"interval":"PT1H"}]}],"enableAsyncOperation":false,"provisioningState":"Succeeded","enableThirdPartyS2S":false,"templateDeploymentOptions":{"preflightSupported":true,"preflightOptions":["DefaultValidationOnly"]}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/resourceTypeRegistrations/extensionresourcetype","type":"Microsoft.ProviderHub/providerRegistrations/resourceTypeRegistrations","name":"extensionresourcetype","kind":"Managed","systemData":{"createdBy":"nataliezoz@microsoft.com","createdByType":"User","createdAt":"2025-02-07T22:56:55.0029838Z","lastModifiedBy":"nataliezoz@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-02-25T00:05:20.3650161Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1349'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 25 Feb 2025 00:13:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: F8FF3C3B774C48FBA3184003F9E57CB2 Ref B: CO6AA3150219045 Ref C: 2025-02-25T00:13:23Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"kind": "Managed", "properties": {"defaultApiVersion": "2019-01-01", "enableAsyncOperation":
+      false, "enableThirdPartyS2S": false, "endpoints": [{"apiVersions": ["2019-01-01"],
+      "locations": ["WestUS"]}], "regionality": "Regional", "routingType": "ProxyOnly,
+      Extension", "templateDeploymentOptions": {"preflightOptions": ["DefaultValidationOnly"],
+      "preflightSupported": true}, "throttlingRules": [{"action": "Private.VPTest/extensionresourcetype/write",
+      "metrics": [{"interval": "PT1H", "limit": 400, "type": "NumberOfRequests"}]},
+      {"action": "Private.VPTest/extensionresourcetype/read", "metrics": [{"interval":
+      "PT1H", "limit": 4000, "type": "NumberOfRequests"}]}, {"action": "Private.VPTest/extensionresourcetype/delete",
+      "metrics": [{"interval": "PT1H", "limit": 5000, "type": "NumberOfRequests"}]}]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - providerhub resource-type-registration update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '804'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --endpoints --regionality --provider-namespace --resource-type --routing-type
+      User-Agent:
+      - AZURECLI/2.67.0 azsdk-python-core/1.31.0 Python/3.12.0 (Windows-11-10.0.26100-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/resourcetypeRegistrations/extensionresourcetype?api-version=2024-04-01-preview
+  response:
+    body:
+      string: '{"properties":{"name":"extensionresourcetype","routingType":"ProxyOnly,
+        Extension","regionality":"Regional","endpoints":[{"kind":"Managed","apiVersions":["2019-01-01"],"locations":["WestUS"]}],"defaultApiVersion":"2019-01-01","throttlingRules":[{"action":"Private.VPTest/extensionresourcetype/write","metrics":[{"type":"NumberOfRequests","limit":400,"interval":"PT1H"}]},{"action":"Private.VPTest/extensionresourcetype/read","metrics":[{"type":"NumberOfRequests","limit":4000,"interval":"PT1H"}]},{"action":"Private.VPTest/extensionresourcetype/delete","metrics":[{"type":"NumberOfRequests","limit":5000,"interval":"PT1H"}]}],"enableAsyncOperation":false,"provisioningState":"Succeeded","enableThirdPartyS2S":false,"templateDeploymentOptions":{"preflightSupported":true,"preflightOptions":["DefaultValidationOnly"]}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/resourceTypeRegistrations/extensionresourcetype","type":"Microsoft.ProviderHub/providerRegistrations/resourceTypeRegistrations","name":"extensionresourcetype","kind":"Managed","systemData":{"createdBy":"nataliezoz@microsoft.com","createdByType":"User","createdAt":"2025-02-07T22:56:55.0029838Z","lastModifiedBy":"nataliezoz@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-02-25T00:13:23.6032808Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1360'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 25 Feb 2025 00:13:24 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: B466A1FB0E3B409CB20470CD796A220E Ref B: CO6AA3150219045 Ref C: 2025-02-25T00:13:23Z'
+    status:
+      code: 200
+      message: OK
+version: 1

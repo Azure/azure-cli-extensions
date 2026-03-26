@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=protected-access
-# pylint: disable=no-self-use
 # pylint: disable=raise-missing-from
 # pylint: disable=line-too-long
 import argparse

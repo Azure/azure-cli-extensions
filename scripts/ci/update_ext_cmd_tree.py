@@ -4,16 +4,16 @@
 # --------------------------------------------------------------------------------------------
 
 import filecmp
+import json
 import os
+import subprocess
 import sys
 from azure.cli.core import get_default_cli
 from azure.cli.core._session import Session
 from azure.cli.core.commands import _load_extension_command_loader
 from azure.cli.core.extension import get_extension_modname, get_extension_path
-from azure.storage.blob import BlockBlobService
 from sync_extensions import download_file
 
-STORAGE_ACCOUNT_KEY = os.getenv('AZURE_EXTENSION_CMD_TREE_STORAGE_ACCOUNT_KEY')
 STORAGE_ACCOUNT = os.getenv('AZURE_EXTENSION_CMD_TREE_STORAGE_ACCOUNT')
 STORAGE_CONTAINER = os.getenv('AZURE_EXTENSION_CMD_TREE_STORAGE_CONTAINER')
 BLOB_PREFIX = os.getenv('AZURE_EXTENSION_CMD_TREE_BLOB_PREFIX')
@@ -46,7 +46,7 @@ def update_cmd_tree(ext_name):
     sys.path.append(ext_dir)
     extension_command_table, _ = _load_extension_command_loader(invoker.commands_loader, None, ext_mod)
 
-    EXT_CMD_TREE_TO_UPLOAD = Session()
+    EXT_CMD_TREE_TO_UPLOAD = Session(encoding='utf-8')
     EXT_CMD_TREE_TO_UPLOAD.load(os.path.expanduser(os.path.join('~', '.azure', file_name)))
     root = {}
     for cmd_name, ext_cmd in extension_command_table.items():
@@ -80,11 +80,22 @@ def upload_cmd_tree():
     downloaded_file_name = 'extCmdTreeDownloaded.json'
     file_path = os.path.expanduser(os.path.join('~', '.azure', file_name))
 
-    client = BlockBlobService(account_name=STORAGE_ACCOUNT, account_key=STORAGE_ACCOUNT_KEY)
-    client.create_blob_from_path(container_name=STORAGE_CONTAINER, blob_name=blob_file_name,
-                                 file_path=file_path)
+    cmd = ['az', 'storage', 'blob', 'upload', '--container-name', f'{STORAGE_CONTAINER}', '--account-name',
+           f'{STORAGE_ACCOUNT}', '--name', f'{blob_file_name}', '--file', f'{file_path}', '--auth-mode', 'login',
+           '--overwrite']
+    result = subprocess.run(cmd, capture_output=True)
+    if result.returncode != 0:
+        print(f"Failed to upload '{blob_file_name}' to the storage account")
+        print(result)
 
-    url = client.make_blob_url(container_name=STORAGE_CONTAINER, blob_name=blob_file_name)
+    cmd = ['az', 'storage', 'blob', 'url', '--container-name', f'{STORAGE_CONTAINER}', '--account-name',
+           f'{STORAGE_ACCOUNT}', '--name', f'{blob_file_name}', '--auth-mode', 'login']
+    result = subprocess.run(cmd, capture_output=True)
+    if result.stdout and result.returncode == 0:
+        url = json.loads(result.stdout)
+    else:
+        print(f"Failed to get the URL for '{blob_file_name}'")
+        raise
 
     download_file_path = os.path.expanduser(os.path.join('~', '.azure', downloaded_file_name))
     download_file(url, download_file_path)

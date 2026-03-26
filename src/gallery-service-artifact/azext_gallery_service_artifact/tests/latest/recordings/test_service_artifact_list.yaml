@@ -1,0 +1,466 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - gallery service-artifact list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --gallery-name --resource-group
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.30.1 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_extension_test_rg/providers/Microsoft.Compute/galleries/cli_extension_test_gallery/serviceArtifacts?api-version=2023-07-03
+  response:
+    body:
+      string: "{\r\n  \"value\": [\r\n    {\r\n      \"name\": \"ArcoAzExt_ccejofajpn35y5\"\
+        ,\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_extension_test_rg/providers/Microsoft.Compute/galleries/cli_extension_test_gallery/serviceArtifacts/ArcoAzExt_ccejofajpn35y5\"\
+        ,\r\n      \"type\": \"Microsoft.Compute/galleries/serviceArtifacts\",\r\n\
+        \      \"location\": \"EastUS2EUAP\",\r\n      \"properties\": {\r\n     \
+        \   \"description\": \"Test Arco created using cli\",\r\n        \"targetLocations\"\
+        : [\r\n          {\r\n            \"name\": \"eastus2euap\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"centraluseuap\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"westcentralus\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"westus\"\r\n          }\r\n     \
+        \   ],\r\n        \"vmArtifactsProfiles\": [\r\n          {\r\n          \
+        \  \"name\": \"vmArtifactsProfile\",\r\n            \"description\": \"VM\
+        \ Artifact profile with default upgrade window\",\r\n            \"artifactProfiles\"\
+        : [\r\n              {\r\n                \"description\": \"Using a SIG Image\
+        \ for testing\",\r\n                \"imageReference\": {\r\n            \
+        \      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/robhoopa_validate_arco_changes/providers/Microsoft.Compute/galleries/ArcoBugBashGallery1/images/Windows2022Gen2ImageGeneralized1\"\
+        ,\r\n                  \"initialVersion\": \"0.0.1\"\r\n                }\r\
+        \n              }\r\n            ],\r\n            \"upgradeSdpPolicy\": {\r\
+        \n              \"type\": \"PlatformOrchestratedForNewAndExistingResources\"\
+        ,\r\n              \"schedulingPolicy\": {\r\n                \"disableRegularUpgrades\"\
+        : false,\r\n                \"upgradeWindow\": \"Default\",\r\n          \
+        \      \"maxConcurrentResourceCountPerRegion\": 5\r\n              }\r\n \
+        \           }\r\n          }\r\n        ],\r\n        \"provisioningState\"\
+        : \"Succeeded\"\r\n      }\r\n    },\r\n    {\r\n      \"name\": \"ArcoAzExt_dqnuxohsbp7aiq\"\
+        ,\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_extension_test_rg/providers/Microsoft.Compute/galleries/cli_extension_test_gallery/serviceArtifacts/ArcoAzExt_dqnuxohsbp7aiq\"\
+        ,\r\n      \"type\": \"Microsoft.Compute/galleries/serviceArtifacts\",\r\n\
+        \      \"location\": \"EastUS2EUAP\",\r\n      \"properties\": {\r\n     \
+        \   \"description\": \"Test Arco created using cli\",\r\n        \"targetLocations\"\
+        : [\r\n          {\r\n            \"name\": \"eastus2euap\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"centraluseuap\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"westcentralus\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"westus\"\r\n          }\r\n     \
+        \   ],\r\n        \"vmArtifactsProfiles\": [\r\n          {\r\n          \
+        \  \"name\": \"vmArtifactsProfile\",\r\n            \"description\": \"VM\
+        \ Artifact profile with default upgrade window\",\r\n            \"artifactProfiles\"\
+        : [\r\n              {\r\n                \"description\": \"Using a SIG Image\
+        \ for testing\",\r\n                \"imageReference\": {\r\n            \
+        \      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/robhoopa_validate_arco_changes/providers/Microsoft.Compute/galleries/ArcoBugBashGallery1/images/Windows2022Gen2ImageGeneralized1\"\
+        ,\r\n                  \"initialVersion\": \"0.0.1\"\r\n                }\r\
+        \n              }\r\n            ],\r\n            \"upgradeSdpPolicy\": {\r\
+        \n              \"type\": \"PlatformOrchestratedForNewAndExistingResources\"\
+        ,\r\n              \"schedulingPolicy\": {\r\n                \"disableRegularUpgrades\"\
+        : false,\r\n                \"upgradeWindow\": \"Default\",\r\n          \
+        \      \"maxConcurrentResourceCountPerRegion\": 5\r\n              }\r\n \
+        \           }\r\n          }\r\n        ],\r\n        \"provisioningState\"\
+        : \"Succeeded\"\r\n      }\r\n    },\r\n    {\r\n      \"name\": \"ArcoAzExt_h6mabiggbv\"\
+        ,\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_extension_test_rg/providers/Microsoft.Compute/galleries/cli_extension_test_gallery/serviceArtifacts/ArcoAzExt_h6mabiggbv\"\
+        ,\r\n      \"type\": \"Microsoft.Compute/galleries/serviceArtifacts\",\r\n\
+        \      \"location\": \"EastUS2EUAP\",\r\n      \"properties\": {\r\n     \
+        \   \"description\": \"Test Arco created using cli\",\r\n        \"targetLocations\"\
+        : [\r\n          {\r\n            \"name\": \"eastus2euap\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"centraluseuap\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"westcentralus\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"westus\"\r\n          }\r\n     \
+        \   ],\r\n        \"vmArtifactsProfiles\": [\r\n          {\r\n          \
+        \  \"name\": \"vmArtifactsProfile\",\r\n            \"description\": \"VM\
+        \ Artifact profile with default upgrade window\",\r\n            \"artifactProfiles\"\
+        : [\r\n              {\r\n                \"description\": \"Using a SIG Image\
+        \ for testing\",\r\n                \"imageReference\": {\r\n            \
+        \      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/robhoopa_validate_arco_changes/providers/Microsoft.Compute/galleries/ArcoBugBashGallery1/images/Windows2022Gen2ImageGeneralized1\"\
+        ,\r\n                  \"initialVersion\": \"0.0.1\"\r\n                }\r\
+        \n              }\r\n            ],\r\n            \"upgradeSdpPolicy\": {\r\
+        \n              \"type\": \"PlatformOrchestratedForNewAndExistingResources\"\
+        ,\r\n              \"schedulingPolicy\": {\r\n                \"disableRegularUpgrades\"\
+        : false,\r\n                \"upgradeWindow\": \"Default\",\r\n          \
+        \      \"maxConcurrentResourceCountPerRegion\": 5\r\n              }\r\n \
+        \           }\r\n          }\r\n        ],\r\n        \"provisioningState\"\
+        : \"Succeeded\"\r\n      }\r\n    },\r\n    {\r\n      \"name\": \"ArcoAzExt_hybb3scj6weicd\"\
+        ,\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_extension_test_rg/providers/Microsoft.Compute/galleries/cli_extension_test_gallery/serviceArtifacts/ArcoAzExt_hybb3scj6weicd\"\
+        ,\r\n      \"type\": \"Microsoft.Compute/galleries/serviceArtifacts\",\r\n\
+        \      \"location\": \"EastUS2EUAP\",\r\n      \"properties\": {\r\n     \
+        \   \"description\": \"Test Arco created using cli\",\r\n        \"targetLocations\"\
+        : [\r\n          {\r\n            \"name\": \"eastus2euap\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"centraluseuap\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"westcentralus\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"westus\"\r\n          }\r\n     \
+        \   ],\r\n        \"vmArtifactsProfiles\": [\r\n          {\r\n          \
+        \  \"name\": \"vmArtifactsProfile\",\r\n            \"description\": \"VM\
+        \ Artifact profile with default upgrade window\",\r\n            \"artifactProfiles\"\
+        : [\r\n              {\r\n                \"description\": \"Using a SIG Image\
+        \ for testing\",\r\n                \"imageReference\": {\r\n            \
+        \      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/robhoopa_validate_arco_changes/providers/Microsoft.Compute/galleries/ArcoBugBashGallery1/images/Windows2022Gen2ImageGeneralized1\"\
+        ,\r\n                  \"initialVersion\": \"0.0.1\"\r\n                }\r\
+        \n              }\r\n            ],\r\n            \"upgradeSdpPolicy\": {\r\
+        \n              \"type\": \"PlatformOrchestratedForNewAndExistingResources\"\
+        ,\r\n              \"schedulingPolicy\": {\r\n                \"disableRegularUpgrades\"\
+        : false,\r\n                \"upgradeWindow\": \"Default\",\r\n          \
+        \      \"maxConcurrentResourceCountPerRegion\": 5\r\n              }\r\n \
+        \           }\r\n          }\r\n        ],\r\n        \"provisioningState\"\
+        : \"Succeeded\"\r\n      }\r\n    },\r\n    {\r\n      \"name\": \"ArcoAzExt_iemmdkwqi36ark\"\
+        ,\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_extension_test_rg/providers/Microsoft.Compute/galleries/cli_extension_test_gallery/serviceArtifacts/ArcoAzExt_iemmdkwqi36ark\"\
+        ,\r\n      \"type\": \"Microsoft.Compute/galleries/serviceArtifacts\",\r\n\
+        \      \"location\": \"EastUS2EUAP\",\r\n      \"properties\": {\r\n     \
+        \   \"description\": \"Test Arco created using cli\",\r\n        \"targetLocations\"\
+        : [\r\n          {\r\n            \"name\": \"eastus2euap\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"centraluseuap\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"westcentralus\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"westus\"\r\n          }\r\n     \
+        \   ],\r\n        \"vmArtifactsProfiles\": [\r\n          {\r\n          \
+        \  \"name\": \"vmArtifactsProfile\",\r\n            \"description\": \"VM\
+        \ Artifact profile with default upgrade window\",\r\n            \"artifactProfiles\"\
+        : [\r\n              {\r\n                \"description\": \"Using a SIG Image\
+        \ for testing\",\r\n                \"imageReference\": {\r\n            \
+        \      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/robhoopa_validate_arco_changes/providers/Microsoft.Compute/galleries/ArcoBugBashGallery1/images/Windows2022Gen2ImageGeneralized1\"\
+        ,\r\n                  \"initialVersion\": \"0.0.1\"\r\n                }\r\
+        \n              }\r\n            ],\r\n            \"upgradeSdpPolicy\": {\r\
+        \n              \"type\": \"PlatformOrchestratedForNewAndExistingResources\"\
+        ,\r\n              \"schedulingPolicy\": {\r\n                \"disableRegularUpgrades\"\
+        : false,\r\n                \"upgradeWindow\": \"Default\",\r\n          \
+        \      \"maxConcurrentResourceCountPerRegion\": 5\r\n              }\r\n \
+        \           }\r\n          }\r\n        ],\r\n        \"provisioningState\"\
+        : \"Succeeded\"\r\n      }\r\n    },\r\n    {\r\n      \"name\": \"ArcoAzExt_mcdl4xavbvvtl3\"\
+        ,\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_extension_test_rg/providers/Microsoft.Compute/galleries/cli_extension_test_gallery/serviceArtifacts/ArcoAzExt_mcdl4xavbvvtl3\"\
+        ,\r\n      \"type\": \"Microsoft.Compute/galleries/serviceArtifacts\",\r\n\
+        \      \"location\": \"EastUS2EUAP\",\r\n      \"properties\": {\r\n     \
+        \   \"description\": \"Test Arco created using cli\",\r\n        \"targetLocations\"\
+        : [\r\n          {\r\n            \"name\": \"eastus2euap\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"centraluseuap\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"westcentralus\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"westus\"\r\n          }\r\n     \
+        \   ],\r\n        \"vmArtifactsProfiles\": [\r\n          {\r\n          \
+        \  \"name\": \"vmArtifactsProfile\",\r\n            \"description\": \"VM\
+        \ Artifact profile with default upgrade window\",\r\n            \"artifactProfiles\"\
+        : [\r\n              {\r\n                \"description\": \"Using a SIG Image\
+        \ for testing\",\r\n                \"imageReference\": {\r\n            \
+        \      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/robhoopa_validate_arco_changes/providers/Microsoft.Compute/galleries/ArcoBugBashGallery1/images/Windows2022Gen2ImageGeneralized1\"\
+        ,\r\n                  \"initialVersion\": \"0.0.1\"\r\n                }\r\
+        \n              }\r\n            ],\r\n            \"upgradeSdpPolicy\": {\r\
+        \n              \"type\": \"PlatformOrchestratedForNewAndExistingResources\"\
+        ,\r\n              \"schedulingPolicy\": {\r\n                \"disableRegularUpgrades\"\
+        : false,\r\n                \"upgradeWindow\": \"Default\",\r\n          \
+        \      \"maxConcurrentResourceCountPerRegion\": 5\r\n              }\r\n \
+        \           }\r\n          }\r\n        ],\r\n        \"provisioningState\"\
+        : \"Succeeded\"\r\n      }\r\n    },\r\n    {\r\n      \"name\": \"ArcoAzExt_mo5kv7kn2eg4ww\"\
+        ,\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_extension_test_rg/providers/Microsoft.Compute/galleries/cli_extension_test_gallery/serviceArtifacts/ArcoAzExt_mo5kv7kn2eg4ww\"\
+        ,\r\n      \"type\": \"Microsoft.Compute/galleries/serviceArtifacts\",\r\n\
+        \      \"location\": \"EastUS2EUAP\",\r\n      \"properties\": {\r\n     \
+        \   \"description\": \"Test Arco created using cli\",\r\n        \"targetLocations\"\
+        : [\r\n          {\r\n            \"name\": \"eastus2euap\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"centraluseuap\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"westcentralus\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"westus\"\r\n          }\r\n     \
+        \   ],\r\n        \"vmArtifactsProfiles\": [\r\n          {\r\n          \
+        \  \"name\": \"vmArtifactsProfile\",\r\n            \"description\": \"VM\
+        \ Artifact profile with default upgrade window\",\r\n            \"artifactProfiles\"\
+        : [\r\n              {\r\n                \"description\": \"Using a SIG Image\
+        \ for testing\",\r\n                \"imageReference\": {\r\n            \
+        \      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/robhoopa_validate_arco_changes/providers/Microsoft.Compute/galleries/ArcoBugBashGallery1/images/Windows2022Gen2ImageGeneralized1\"\
+        ,\r\n                  \"initialVersion\": \"0.0.1\"\r\n                }\r\
+        \n              }\r\n            ],\r\n            \"upgradeSdpPolicy\": {\r\
+        \n              \"type\": \"PlatformOrchestratedForNewAndExistingResources\"\
+        ,\r\n              \"schedulingPolicy\": {\r\n                \"disableRegularUpgrades\"\
+        : false,\r\n                \"upgradeWindow\": \"Default\",\r\n          \
+        \      \"maxConcurrentResourceCountPerRegion\": 5\r\n              }\r\n \
+        \           }\r\n          }\r\n        ],\r\n        \"provisioningState\"\
+        : \"Succeeded\"\r\n      }\r\n    },\r\n    {\r\n      \"name\": \"ArcoAzExt_ncfy2bcswtrb55\"\
+        ,\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_extension_test_rg/providers/Microsoft.Compute/galleries/cli_extension_test_gallery/serviceArtifacts/ArcoAzExt_ncfy2bcswtrb55\"\
+        ,\r\n      \"type\": \"Microsoft.Compute/galleries/serviceArtifacts\",\r\n\
+        \      \"location\": \"EastUS2EUAP\",\r\n      \"properties\": {\r\n     \
+        \   \"description\": \"Test Arco created using cli\",\r\n        \"targetLocations\"\
+        : [\r\n          {\r\n            \"name\": \"eastus2euap\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"centraluseuap\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"westcentralus\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"westus\"\r\n          }\r\n     \
+        \   ],\r\n        \"vmArtifactsProfiles\": [\r\n          {\r\n          \
+        \  \"name\": \"vmArtifactsProfile\",\r\n            \"description\": \"VM\
+        \ Artifact profile with default upgrade window\",\r\n            \"artifactProfiles\"\
+        : [\r\n              {\r\n                \"description\": \"Using a SIG Image\
+        \ for testing\",\r\n                \"imageReference\": {\r\n            \
+        \      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/robhoopa_validate_arco_changes/providers/Microsoft.Compute/galleries/ArcoBugBashGallery1/images/Windows2022Gen2ImageGeneralized1\"\
+        ,\r\n                  \"initialVersion\": \"0.0.1\"\r\n                }\r\
+        \n              }\r\n            ],\r\n            \"upgradeSdpPolicy\": {\r\
+        \n              \"type\": \"PlatformOrchestratedForNewAndExistingResources\"\
+        ,\r\n              \"schedulingPolicy\": {\r\n                \"disableRegularUpgrades\"\
+        : false,\r\n                \"upgradeWindow\": \"Default\",\r\n          \
+        \      \"maxConcurrentResourceCountPerRegion\": 5\r\n              }\r\n \
+        \           }\r\n          }\r\n        ],\r\n        \"provisioningState\"\
+        : \"Succeeded\"\r\n      }\r\n    },\r\n    {\r\n      \"name\": \"ArcoAzExt_ok6dwrkg6s\"\
+        ,\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_extension_test_rg/providers/Microsoft.Compute/galleries/cli_extension_test_gallery/serviceArtifacts/ArcoAzExt_ok6dwrkg6s\"\
+        ,\r\n      \"type\": \"Microsoft.Compute/galleries/serviceArtifacts\",\r\n\
+        \      \"location\": \"EastUS2EUAP\",\r\n      \"properties\": {\r\n     \
+        \   \"description\": \"Test Arco created using cli\",\r\n        \"targetLocations\"\
+        : [\r\n          {\r\n            \"name\": \"eastus2euap\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"centraluseuap\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"westcentralus\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"westus\"\r\n          }\r\n     \
+        \   ],\r\n        \"vmArtifactsProfiles\": [\r\n          {\r\n          \
+        \  \"name\": \"vmArtifactsProfile\",\r\n            \"description\": \"VM\
+        \ Artifact profile with default upgrade window\",\r\n            \"artifactProfiles\"\
+        : [\r\n              {\r\n                \"description\": \"Using a SIG Image\
+        \ for testing\",\r\n                \"imageReference\": {\r\n            \
+        \      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/robhoopa_validate_arco_changes/providers/Microsoft.Compute/galleries/ArcoBugBashGallery1/images/Windows2022Gen2ImageGeneralized1\"\
+        ,\r\n                  \"initialVersion\": \"0.0.1\"\r\n                }\r\
+        \n              }\r\n            ],\r\n            \"upgradeSdpPolicy\": {\r\
+        \n              \"type\": \"PlatformOrchestratedForNewAndExistingResources\"\
+        ,\r\n              \"schedulingPolicy\": {\r\n                \"disableRegularUpgrades\"\
+        : false,\r\n                \"upgradeWindow\": \"Default\",\r\n          \
+        \      \"maxConcurrentResourceCountPerRegion\": 5\r\n              }\r\n \
+        \           }\r\n          }\r\n        ],\r\n        \"provisioningState\"\
+        : \"Succeeded\"\r\n      }\r\n    },\r\n    {\r\n      \"name\": \"ArcoAzExt_qqtwkuxj7daapa\"\
+        ,\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_extension_test_rg/providers/Microsoft.Compute/galleries/cli_extension_test_gallery/serviceArtifacts/ArcoAzExt_qqtwkuxj7daapa\"\
+        ,\r\n      \"type\": \"Microsoft.Compute/galleries/serviceArtifacts\",\r\n\
+        \      \"location\": \"EastUS2EUAP\",\r\n      \"properties\": {\r\n     \
+        \   \"description\": \"Test Arco created using cli\",\r\n        \"targetLocations\"\
+        : [\r\n          {\r\n            \"name\": \"eastus2euap\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"centraluseuap\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"westcentralus\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"westus\"\r\n          }\r\n     \
+        \   ],\r\n        \"vmArtifactsProfiles\": [\r\n          {\r\n          \
+        \  \"name\": \"vmArtifactsProfile\",\r\n            \"description\": \"VM\
+        \ Artifact profile with default upgrade window\",\r\n            \"artifactProfiles\"\
+        : [\r\n              {\r\n                \"description\": \"Using a SIG Image\
+        \ for testing\",\r\n                \"imageReference\": {\r\n            \
+        \      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/robhoopa_validate_arco_changes/providers/Microsoft.Compute/galleries/ArcoBugBashGallery1/images/Windows2022Gen2ImageGeneralized1\"\
+        ,\r\n                  \"initialVersion\": \"0.0.1\"\r\n                }\r\
+        \n              }\r\n            ],\r\n            \"upgradeSdpPolicy\": {\r\
+        \n              \"type\": \"PlatformOrchestratedForNewAndExistingResources\"\
+        ,\r\n              \"schedulingPolicy\": {\r\n                \"disableRegularUpgrades\"\
+        : false,\r\n                \"upgradeWindow\": \"Default\",\r\n          \
+        \      \"maxConcurrentResourceCountPerRegion\": 5\r\n              }\r\n \
+        \           }\r\n          }\r\n        ],\r\n        \"provisioningState\"\
+        : \"Succeeded\"\r\n      }\r\n    },\r\n    {\r\n      \"name\": \"ArcoAzExt_rxqqh2p7gjwjml\"\
+        ,\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_extension_test_rg/providers/Microsoft.Compute/galleries/cli_extension_test_gallery/serviceArtifacts/ArcoAzExt_rxqqh2p7gjwjml\"\
+        ,\r\n      \"type\": \"Microsoft.Compute/galleries/serviceArtifacts\",\r\n\
+        \      \"location\": \"EastUS2EUAP\",\r\n      \"properties\": {\r\n     \
+        \   \"description\": \"Test Arco created using cli\",\r\n        \"targetLocations\"\
+        : [\r\n          {\r\n            \"name\": \"eastus2euap\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"centraluseuap\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"westcentralus\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"westus\"\r\n          }\r\n     \
+        \   ],\r\n        \"vmArtifactsProfiles\": [\r\n          {\r\n          \
+        \  \"name\": \"vmArtifactsProfile\",\r\n            \"description\": \"VM\
+        \ Artifact profile with default upgrade window\",\r\n            \"artifactProfiles\"\
+        : [\r\n              {\r\n                \"description\": \"Using a SIG Image\
+        \ for testing\",\r\n                \"imageReference\": {\r\n            \
+        \      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/robhoopa_validate_arco_changes/providers/Microsoft.Compute/galleries/ArcoBugBashGallery1/images/Windows2022Gen2ImageGeneralized1\"\
+        ,\r\n                  \"initialVersion\": \"0.0.1\"\r\n                }\r\
+        \n              }\r\n            ],\r\n            \"upgradeSdpPolicy\": {\r\
+        \n              \"type\": \"PlatformOrchestratedForNewAndExistingResources\"\
+        ,\r\n              \"schedulingPolicy\": {\r\n                \"disableRegularUpgrades\"\
+        : false,\r\n                \"upgradeWindow\": \"Default\",\r\n          \
+        \      \"maxConcurrentResourceCountPerRegion\": 5\r\n              }\r\n \
+        \           }\r\n          }\r\n        ],\r\n        \"provisioningState\"\
+        : \"Succeeded\"\r\n      }\r\n    },\r\n    {\r\n      \"name\": \"ArcoAzExt_wiu6kbfjj7ryxh\"\
+        ,\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_extension_test_rg/providers/Microsoft.Compute/galleries/cli_extension_test_gallery/serviceArtifacts/ArcoAzExt_wiu6kbfjj7ryxh\"\
+        ,\r\n      \"type\": \"Microsoft.Compute/galleries/serviceArtifacts\",\r\n\
+        \      \"location\": \"EastUS2EUAP\",\r\n      \"properties\": {\r\n     \
+        \   \"description\": \"Test Arco created using cli\",\r\n        \"targetLocations\"\
+        : [\r\n          {\r\n            \"name\": \"eastus2euap\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"centraluseuap\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"westcentralus\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"westus\"\r\n          }\r\n     \
+        \   ],\r\n        \"vmArtifactsProfiles\": [\r\n          {\r\n          \
+        \  \"name\": \"vmArtifactsProfile\",\r\n            \"description\": \"VM\
+        \ Artifact profile with default upgrade window\",\r\n            \"artifactProfiles\"\
+        : [\r\n              {\r\n                \"description\": \"Using a SIG Image\
+        \ for testing\",\r\n                \"imageReference\": {\r\n            \
+        \      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/robhoopa_validate_arco_changes/providers/Microsoft.Compute/galleries/ArcoBugBashGallery1/images/Windows2022Gen2ImageGeneralized1\"\
+        ,\r\n                  \"initialVersion\": \"0.0.1\"\r\n                }\r\
+        \n              }\r\n            ],\r\n            \"upgradeSdpPolicy\": {\r\
+        \n              \"type\": \"PlatformOrchestratedForNewAndExistingResources\"\
+        ,\r\n              \"schedulingPolicy\": {\r\n                \"disableRegularUpgrades\"\
+        : false,\r\n                \"upgradeWindow\": \"Default\",\r\n          \
+        \      \"maxConcurrentResourceCountPerRegion\": 5\r\n              }\r\n \
+        \           }\r\n          }\r\n        ],\r\n        \"provisioningState\"\
+        : \"Succeeded\"\r\n      }\r\n    },\r\n    {\r\n      \"name\": \"ArcoAzExt_xj5pzjvjaa\"\
+        ,\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_extension_test_rg/providers/Microsoft.Compute/galleries/cli_extension_test_gallery/serviceArtifacts/ArcoAzExt_xj5pzjvjaa\"\
+        ,\r\n      \"type\": \"Microsoft.Compute/galleries/serviceArtifacts\",\r\n\
+        \      \"location\": \"EastUS2EUAP\",\r\n      \"properties\": {\r\n     \
+        \   \"description\": \"Test Arco created using cli\",\r\n        \"targetLocations\"\
+        : [\r\n          {\r\n            \"name\": \"eastus2euap\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"centraluseuap\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"westcentralus\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"westus\"\r\n          }\r\n     \
+        \   ],\r\n        \"vmArtifactsProfiles\": [\r\n          {\r\n          \
+        \  \"name\": \"vmArtifactsProfile\",\r\n            \"description\": \"VM\
+        \ Artifact profile with default upgrade window\",\r\n            \"artifactProfiles\"\
+        : [\r\n              {\r\n                \"description\": \"Using a SIG Image\
+        \ for testing\",\r\n                \"imageReference\": {\r\n            \
+        \      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/robhoopa_validate_arco_changes/providers/Microsoft.Compute/galleries/ArcoBugBashGallery1/images/Windows2022Gen2ImageGeneralized1\"\
+        ,\r\n                  \"initialVersion\": \"0.0.1\"\r\n                }\r\
+        \n              }\r\n            ],\r\n            \"upgradeSdpPolicy\": {\r\
+        \n              \"type\": \"PlatformOrchestratedForNewAndExistingResources\"\
+        ,\r\n              \"schedulingPolicy\": {\r\n                \"disableRegularUpgrades\"\
+        : false,\r\n                \"upgradeWindow\": \"Default\",\r\n          \
+        \      \"maxConcurrentResourceCountPerRegion\": 5\r\n              }\r\n \
+        \           }\r\n          }\r\n        ],\r\n        \"provisioningState\"\
+        : \"Succeeded\"\r\n      }\r\n    },\r\n    {\r\n      \"name\": \"ArcoCreatedUsingUnitTest1\"\
+        ,\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_extension_test_rg/providers/Microsoft.Compute/galleries/cli_extension_test_gallery/serviceArtifacts/ArcoCreatedUsingUnitTest1\"\
+        ,\r\n      \"type\": \"Microsoft.Compute/galleries/serviceArtifacts\",\r\n\
+        \      \"location\": \"EastUS2EUAP\",\r\n      \"properties\": {\r\n     \
+        \   \"description\": \"Test Arco created using cli 2\",\r\n        \"targetLocations\"\
+        : [\r\n          {\r\n            \"name\": \"eastus2euap\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"centraluseuap\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"westcentralus\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"westus\"\r\n          }\r\n     \
+        \   ],\r\n        \"vmArtifactsProfiles\": [\r\n          {\r\n          \
+        \  \"name\": \"vmArtifactsProfile\",\r\n            \"description\": \"VM\
+        \ Artifact profile with default upgrade window\",\r\n            \"artifactProfiles\"\
+        : [\r\n              {\r\n                \"description\": \"Using a SIG Image\
+        \ for testing\",\r\n                \"imageReference\": {\r\n            \
+        \      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/robhoopa_validate_arco_changes/providers/Microsoft.Compute/galleries/ArcoBugBashGallery1/images/Windows2022Gen2ImageGeneralized1\"\
+        ,\r\n                  \"initialVersion\": \"0.0.1\"\r\n                }\r\
+        \n              }\r\n            ],\r\n            \"upgradeSdpPolicy\": {\r\
+        \n              \"type\": \"PlatformOrchestratedForNewAndExistingResources\"\
+        ,\r\n              \"schedulingPolicy\": {\r\n                \"disableRegularUpgrades\"\
+        : false,\r\n                \"upgradeWindow\": \"Default\",\r\n          \
+        \      \"maxConcurrentResourceCountPerRegion\": 5\r\n              }\r\n \
+        \           }\r\n          }\r\n        ],\r\n        \"provisioningState\"\
+        : \"Succeeded\"\r\n      }\r\n    },\r\n    {\r\n      \"name\": \"ArcoCreatedUsingUnitTest2\"\
+        ,\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_extension_test_rg/providers/Microsoft.Compute/galleries/cli_extension_test_gallery/serviceArtifacts/ArcoCreatedUsingUnitTest2\"\
+        ,\r\n      \"type\": \"Microsoft.Compute/galleries/serviceArtifacts\",\r\n\
+        \      \"location\": \"EastUS2EUAP\",\r\n      \"properties\": {\r\n     \
+        \   \"description\": \"Test Arco created using cli\",\r\n        \"targetLocations\"\
+        : [\r\n          {\r\n            \"name\": \"eastus2euap\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"centraluseuap\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"westcentralus\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"westus\"\r\n          }\r\n     \
+        \   ],\r\n        \"vmArtifactsProfiles\": [\r\n          {\r\n          \
+        \  \"name\": \"vmArtifactsProfile\",\r\n            \"description\": \"VM\
+        \ Artifact profile with default upgrade window\",\r\n            \"artifactProfiles\"\
+        : [\r\n              {\r\n                \"description\": \"Using a SIG Image\
+        \ for testing\",\r\n                \"imageReference\": {\r\n            \
+        \      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/robhoopa_validate_arco_changes/providers/Microsoft.Compute/galleries/ArcoBugBashGallery1/images/Windows2022Gen2ImageGeneralized1\"\
+        ,\r\n                  \"initialVersion\": \"0.0.1\"\r\n                }\r\
+        \n              }\r\n            ],\r\n            \"upgradeSdpPolicy\": {\r\
+        \n              \"type\": \"PlatformOrchestratedForNewAndExistingResources\"\
+        ,\r\n              \"schedulingPolicy\": {\r\n                \"disableRegularUpgrades\"\
+        : false,\r\n                \"upgradeWindow\": \"Default\",\r\n          \
+        \      \"maxConcurrentResourceCountPerRegion\": 5\r\n              }\r\n \
+        \           }\r\n          }\r\n        ],\r\n        \"provisioningState\"\
+        : \"Succeeded\"\r\n      }\r\n    },\r\n    {\r\n      \"name\": \"ArcoCreatedWithCLIExtensionTest\"\
+        ,\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_extension_test_rg/providers/Microsoft.Compute/galleries/cli_extension_test_gallery/serviceArtifacts/ArcoCreatedWithCLIExtensionTest\"\
+        ,\r\n      \"type\": \"Microsoft.Compute/galleries/serviceArtifacts\",\r\n\
+        \      \"location\": \"EastUS2EUAP\",\r\n      \"properties\": {\r\n     \
+        \   \"description\": \"Test Arco created using cli extension test\",\r\n \
+        \       \"targetLocations\": [\r\n          {\r\n            \"name\": \"\
+        eastus2euap\"\r\n          },\r\n          {\r\n            \"name\": \"centraluseuap\"\
+        \r\n          },\r\n          {\r\n            \"name\": \"westcentralus\"\
+        \r\n          },\r\n          {\r\n            \"name\": \"westus\"\r\n  \
+        \        }\r\n        ],\r\n        \"vmArtifactsProfiles\": [\r\n       \
+        \   {\r\n            \"name\": \"vmArtifactsProfile\",\r\n            \"description\"\
+        : \"VM Artifact profile with default upgrade window\",\r\n            \"artifactProfiles\"\
+        : [\r\n              {\r\n                \"description\": \"Using a SIG Image\
+        \ for testing\",\r\n                \"imageReference\": {\r\n            \
+        \      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/robhoopa_validate_arco_changes/providers/Microsoft.Compute/galleries/ArcoBugBashGallery1/images/Windows2022Gen2ImageGeneralized1\"\
+        ,\r\n                  \"initialVersion\": \"0.0.1\"\r\n                }\r\
+        \n              }\r\n            ],\r\n            \"upgradeSdpPolicy\": {\r\
+        \n              \"type\": \"PlatformOrchestratedForNewAndExistingResources\"\
+        ,\r\n              \"schedulingPolicy\": {\r\n                \"disableRegularUpgrades\"\
+        : false,\r\n                \"upgradeWindow\": \"Default\",\r\n          \
+        \      \"maxConcurrentResourceCountPerRegion\": 5\r\n              }\r\n \
+        \           }\r\n          }\r\n        ],\r\n        \"provisioningState\"\
+        : \"Updating\"\r\n      }\r\n    },\r\n    {\r\n      \"name\": \"ArcoCreatedWithCLIExtensionTest1\"\
+        ,\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_extension_test_rg/providers/Microsoft.Compute/galleries/cli_extension_test_gallery/serviceArtifacts/ArcoCreatedWithCLIExtensionTest1\"\
+        ,\r\n      \"type\": \"Microsoft.Compute/galleries/serviceArtifacts\",\r\n\
+        \      \"location\": \"EastUS2EUAP\",\r\n      \"properties\": {\r\n     \
+        \   \"description\": \"Test Arco created using cli\",\r\n        \"targetLocations\"\
+        : [\r\n          {\r\n            \"name\": \"eastus2euap\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"centraluseuap\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"westcentralus\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"westus\"\r\n          }\r\n     \
+        \   ],\r\n        \"vmArtifactsProfiles\": [\r\n          {\r\n          \
+        \  \"name\": \"vmArtifactsProfile\",\r\n            \"description\": \"VM\
+        \ Artifact profile with default upgrade window\",\r\n            \"artifactProfiles\"\
+        : [\r\n              {\r\n                \"description\": \"Using a SIG Image\
+        \ for testing\",\r\n                \"imageReference\": {\r\n            \
+        \      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/robhoopa_validate_arco_changes/providers/Microsoft.Compute/galleries/ArcoBugBashGallery1/images/Windows2022Gen2ImageGeneralized1\"\
+        ,\r\n                  \"initialVersion\": \"0.0.1\"\r\n                }\r\
+        \n              }\r\n            ],\r\n            \"upgradeSdpPolicy\": {\r\
+        \n              \"type\": \"PlatformOrchestratedForNewAndExistingResources\"\
+        ,\r\n              \"schedulingPolicy\": {\r\n                \"disableRegularUpgrades\"\
+        : false,\r\n                \"upgradeWindow\": \"Default\",\r\n          \
+        \      \"maxConcurrentResourceCountPerRegion\": 5\r\n              }\r\n \
+        \           }\r\n          }\r\n        ],\r\n        \"provisioningState\"\
+        : \"Succeeded\"\r\n      }\r\n    },\r\n    {\r\n      \"name\": \"AzExt_ddgbecl5p5fz3s\"\
+        ,\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_extension_test_rg/providers/Microsoft.Compute/galleries/cli_extension_test_gallery/serviceArtifacts/AzExt_ddgbecl5p5fz3s\"\
+        ,\r\n      \"type\": \"Microsoft.Compute/galleries/serviceArtifacts\",\r\n\
+        \      \"location\": \"EastUS2EUAP\",\r\n      \"properties\": {\r\n     \
+        \   \"description\": \"Test Arco created using cli\",\r\n        \"targetLocations\"\
+        : [\r\n          {\r\n            \"name\": \"eastus2euap\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"centraluseuap\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"westcentralus\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"westus\"\r\n          }\r\n     \
+        \   ],\r\n        \"vmArtifactsProfiles\": [\r\n          {\r\n          \
+        \  \"name\": \"vmArtifactsProfile\",\r\n            \"description\": \"VM\
+        \ Artifact profile with default upgrade window\",\r\n            \"artifactProfiles\"\
+        : [\r\n              {\r\n                \"description\": \"Using a SIG Image\
+        \ for testing\",\r\n                \"imageReference\": {\r\n            \
+        \      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/robhoopa_validate_arco_changes/providers/Microsoft.Compute/galleries/ArcoBugBashGallery1/images/Windows2022Gen2ImageGeneralized1\"\
+        ,\r\n                  \"initialVersion\": \"0.0.1\"\r\n                }\r\
+        \n              }\r\n            ],\r\n            \"upgradeSdpPolicy\": {\r\
+        \n              \"type\": \"PlatformOrchestratedForNewAndExistingResources\"\
+        ,\r\n              \"schedulingPolicy\": {\r\n                \"disableRegularUpgrades\"\
+        : false,\r\n                \"upgradeWindow\": \"Default\",\r\n          \
+        \      \"maxConcurrentResourceCountPerRegion\": 5\r\n              }\r\n \
+        \           }\r\n          }\r\n        ],\r\n        \"provisioningState\"\
+        : \"Succeeded\"\r\n      }\r\n    },\r\n    {\r\n      \"name\": \"AzExt_ossrowdl7zjroj\"\
+        ,\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_extension_test_rg/providers/Microsoft.Compute/galleries/cli_extension_test_gallery/serviceArtifacts/AzExt_ossrowdl7zjroj\"\
+        ,\r\n      \"type\": \"Microsoft.Compute/galleries/serviceArtifacts\",\r\n\
+        \      \"location\": \"EastUS2EUAP\",\r\n      \"properties\": {\r\n     \
+        \   \"description\": \"Test Arco created using cli\",\r\n        \"targetLocations\"\
+        : [\r\n          {\r\n            \"name\": \"eastus2euap\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"centraluseuap\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"westcentralus\"\r\n          },\r\
+        \n          {\r\n            \"name\": \"westus\"\r\n          }\r\n     \
+        \   ],\r\n        \"vmArtifactsProfiles\": [\r\n          {\r\n          \
+        \  \"name\": \"vmArtifactsProfile\",\r\n            \"description\": \"VM\
+        \ Artifact profile with default upgrade window\",\r\n            \"artifactProfiles\"\
+        : [\r\n              {\r\n                \"description\": \"Using a SIG Image\
+        \ for testing\",\r\n                \"imageReference\": {\r\n            \
+        \      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/robhoopa_validate_arco_changes/providers/Microsoft.Compute/galleries/ArcoBugBashGallery1/images/Windows2022Gen2ImageGeneralized1\"\
+        ,\r\n                  \"initialVersion\": \"0.0.1\"\r\n                }\r\
+        \n              }\r\n            ],\r\n            \"upgradeSdpPolicy\": {\r\
+        \n              \"type\": \"PlatformOrchestratedForNewAndExistingResources\"\
+        ,\r\n              \"schedulingPolicy\": {\r\n                \"disableRegularUpgrades\"\
+        : false,\r\n                \"upgradeWindow\": \"Default\",\r\n          \
+        \      \"maxConcurrentResourceCountPerRegion\": 5\r\n              }\r\n \
+        \           }\r\n          }\r\n        ],\r\n        \"provisioningState\"\
+        : \"Succeeded\"\r\n      }\r\n    }\r\n  ]\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '33909'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 03 Apr 2024 05:21:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/ListServiceArtifactsInGallery3Min;1499,Microsoft.Compute/ListServiceArtifactsInGallery30Min;9999
+      x-msedge-ref:
+      - 'Ref A: 4D656CACA7CA498A95B1FE0688EE4D52 Ref B: SN4AA2022305027 Ref C: 2024-04-03T05:21:36Z'
+    status:
+      code: 200
+      message: OK
+version: 1

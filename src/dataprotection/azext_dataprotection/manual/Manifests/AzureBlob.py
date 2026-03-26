@@ -6,12 +6,17 @@
 manifest = '''
 {
   "isProxyResource": false,
+  "enableDataSourceSetInfo": true,
   "resourceType": "Microsoft.Storage/storageAccounts",
   "parentResourceType": "Microsoft.Storage/storageAccounts",
   "datasourceType": "Microsoft.Storage/storageAccounts/blobServices",
-  "allowedRestoreModes": [ "PointInTimeBased" ],
-  "allowedRestoreTargetTypes": [ "OriginalLocation" ],
-  "itemLevelRecoveyEnabled": true,
+  "allowedRestoreModes": [ "PointInTimeBased", "RecoveryPointBased" ],
+  "allowedRestoreTargetTypes": [ "OriginalLocation", "AlternateLocation" ],
+  "itemLevelRecoveryEnabled": true,
+  "addBackupDatasourceParametersList": true,
+  "backupConfigurationRequired":  false,
+  "addDataStoreParametersList": false,
+  "friendlyNameRequired": false,
   "supportSecretStoreAuthentication": false,
   "backupVaultPermissions": [
     {
@@ -20,30 +25,80 @@ manifest = '''
     }
   ],
   "policySettings": {
-    "supportedRetentionTags": [],
-    "supportedDatastoreTypes": [ "OperationalStore" ],
-    "disableAddRetentionRule": true,
-    "disableCustomRetentionTag": true,
-    "backupScheduleSupported": false,
-    "supportedBackupFrequency": [],
+    "supportedRetentionTags": [ "Weekly", "Monthly", "Yearly" ],
+    "supportedDatastoreTypes": [ "OperationalStore", "VaultStore" ],
+    "disableAddRetentionRule": false,
+    "disableCustomRetentionTag": false,
+    "backupScheduleSupported": true,
+    "supportedBackupFrequency": [ "Daily", "Weekly" ],
     "defaultPolicy": {
       "policyRules": [
         {
+          "isDefault": true,
           "lifecycles": [
             {
               "deleteAfter": {
-                "objectType": "AbsoluteDeleteOption",
-                "duration": "P30D"
+                "duration": "P30D",
+                "objectType": "AbsoluteDeleteOption"
               },
               "sourceDataStore": {
                 "dataStoreType": "OperationalStore",
                 "objectType": "DataStoreInfoBase"
-              }
+              },
+              "targetDataStoreCopySettings": []
             }
           ],
+          "name": "Default_OperationalStore",
+          "objectType": "AzureRetentionRule"
+        },
+        {
           "isDefault": true,
+          "lifecycles": [
+            {
+              "deleteAfter": {
+                "duration": "P7D",
+                "objectType": "AbsoluteDeleteOption"
+              },
+              "sourceDataStore": {
+                "dataStoreType": "VaultStore",
+                "objectType": "DataStoreInfoBase"
+              },
+              "targetDataStoreCopySettings": []
+            }
+          ],
           "name": "Default",
           "objectType": "AzureRetentionRule"
+        },
+        {
+          "backupParameters": {
+            "backupType": "Discrete",
+            "objectType": "AzureBackupParams"
+          },
+          "dataStore": {
+            "dataStoreType": "VaultStore",
+            "objectType": "DataStoreInfoBase"
+          },
+          "name": "BackupDaily",
+          "objectType": "AzureBackupRule",
+          "trigger": {
+            "objectType": "ScheduleBasedTriggerContext",
+            "schedule": {
+              "repeatingTimeIntervals": [
+                "R/2023-06-28T07:30:00+00:00/P1D"
+              ],
+              "timeZone": "UTC"
+            },
+            "taggingCriteria": [
+              {
+                "isDefault": true,
+                "tagInfo": {
+                  "id": "Default_",
+                  "tagName": "Default"
+                },
+                "taggingPriority": 99
+              }
+            ]
+          }
         }
       ],
       "name": "BlobPolicy1",

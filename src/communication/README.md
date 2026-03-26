@@ -82,6 +82,11 @@ az communication identity token get-for-teams-user --aad-token "MyAzureADToken" 
 az communication sms send --sender "+1833xxxxxxx" \
     --recipient "+1425xxxxxxx" "+1426xxxxxxx" "+1427xxxxxxx" --message "Hello there!!"
 ```
+##### Send-SMS with delivery report and custom tag #####
+```
+az communication sms send --sender "+1833xxxxxxx" --recipient "+1425xxxxxxx" 
+--message "Hello there!!" --deliveryReport --tag "custom-tag"
+```
 ##### List-Phonenumbers #####
 ```
 az communication phonenumber list
@@ -102,7 +107,7 @@ az communication chat thread create --topic "New Topic for Chat!" --idempotency-
 ```
 az communication chat thread delete --thread "19:xxxxxx"
 ```
-##### Update Topic #####
+##### Update-Topic #####
 ```
 az communication chat thread update-topic --thread "19:xxxxxx" --topic "New topic!"
 ```
@@ -145,4 +150,40 @@ az communication chat message receipt list --thread "19:xxxxxx" --skip "5"
 ##### Send-Read-Receipt #####
 ```
 az communication chat message receipt send --thread "19:xxxxxx" --message-id "1xxxxxxxxxxxx"
+```
+##### Get-Room #####
+```
+az communication rooms get --room "roomId"
+```
+##### Create-Room #####
+```
+ az communication rooms create --valid-from "2023-05-31T10:20:30" --valid-to "2025-06-31T10:20:30" --pstn-dial-out-enabled "True" --presenter-participants "8:acs:xxxxxx" "8:acs:xxxxxx" --attendee-participants "8:acs:xxxxxx" "8:acs:xxxxxx" --consumer-participants "8:acs:xxxxxx" "8:acs:xxxxxx" --collaborator-participants "8:acs:xxxxxx" "8:acs:xxxxxx"
+```
+##### Update-Room #####
+```
+az communication rooms update --room "roomId" --valid-from "2023-03-31T10:20:30" --valid-to "2023-06-31T10:20:30" --pstn-dial-out-enabled "True"
+```
+##### Delete-Room #####
+```
+az communication rooms delete --room "roomId"
+```
+##### List-Rooms #####
+```
+az communication rooms list
+```
+##### Get-Room-Participants #####
+```
+az communication rooms participant get --room "roomId"
+```
+##### Add-Or-Update-Room-Participants #####
+```
+az communication rooms participant add-or-update --room "roomId" --presenter-participants "8:acs:xxxxxx" "8:acs:xxxxxx" --attendee-participants "8:acs:xxxxxx" "8:acs:xxxxxx" --consumer-participants "8:acs:xxxxxx" "8:acs:xxxxxx"
+```
+##### Remove-Room-Participants #####
+```
+az communication rooms participant remove --room "roomId" --participants "8:acs:xxxxxx" "8:acs:xxxxxx" "8:acs:xxxxxx" "8:acs:xxxxxx"
+```
+##### Send-Email #####
+```
+az communication email send --sender "NoReply@contoso.com" --subject "Contoso Update" --to "user1@user1-domain.com" "user2@user2-domain.com" --text "Hello valued client. There is an update."
 ```

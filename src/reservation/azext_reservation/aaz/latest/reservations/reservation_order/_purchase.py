@@ -18,16 +18,16 @@ class Purchase(AAZCommand):
     """Create `ReservationOrder` and create resource under the specified URI.
 
     :example: Purchase a single scope reservation
-        az reservations reservation-order purchase --reservation-order-id 40000000-aaaa-bbbb-cccc-200000000005 --applied-scope-type Single --billing-scope 50000000-aaaa-bbbb-cccc-200000000005 --reserved-resource-type VirtualMachines --display-name name1 --quantity 1 --sku Standard_B1s --term P1Y --billing-plan Monthly --location eastus --applied-scope 50000000-aaaa-bbbb-cccc-200000000005
+        az reservations reservation-order purchase --reservation-order-id 40000000-aaaa-bbbb-cccc-200000000005 --applied-scope-type Single --billing-scope 50000000-aaaa-bbbb-cccc-200000000005 --reserved-resource-type VirtualMachines --display-name name1 --quantity 1 --sku Standard_B1s --term P1Y --billing-plan Monthly --location eastus --applied-scope 50000000-aaaa-bbbb-cccc-200000000010
 
     :example: Purchase a Single scope with resource group reservation
         az reservations reservation-order purchase --reservation-order-id 40000000-aaaa-bbbb-cccc-200000000005 --applied-scope-type Single --billing-scope 50000000-aaaa-bbbb-cccc-200000000005 --reserved-resource-type VirtualMachines --display-name testername1 --quantity 1 --sku Standard_B1s --term P1Y --billing-plan Monthly --location eastus --applied-scope '/subscriptions/50000000-aaaa-bbbb-cccc-200000000005/resourceGroups/rg1' --instance-flexibility Off
     """
 
     _aaz_info = {
-        "version": "2022-03-01",
+        "version": "2022-11-01",
         "resources": [
-            ["mgmt-plane", "/providers/microsoft.capacity/reservationorders/{}", "2022-03-01"],
+            ["mgmt-plane", "/providers/microsoft.capacity/reservationorders/{}", "2022-11-01"],
         ]
     }
 
@@ -66,11 +66,16 @@ class Purchase(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
+        _args_schema.applied_scope_property = AAZObjectArg(
+            options=["--applied-scope-property"],
+            arg_group="Properties",
+            help="Properties specific to applied scope type. Not required if not applicable. Required and need to provide tenantId and managementGroupId if AppliedScopeType is ManagementGroup",
+        )
         _args_schema.applied_scope_type = AAZStrArg(
             options=["--applied-scope-type"],
             arg_group="Properties",
             help="Type of the Applied Scope.",
-            enum={"Shared": "Shared", "Single": "Single"},
+            enum={"ManagementGroup": "ManagementGroup", "Shared": "Shared", "Single": "Single"},
         )
         _args_schema.applied_scope = AAZListArg(
             options=["--applied-scope"],
@@ -110,11 +115,38 @@ class Purchase(AAZCommand):
             help="The type of the resource that is being reserved.",
             enum={"AVS": "AVS", "AppService": "AppService", "AzureDataExplorer": "AzureDataExplorer", "AzureFiles": "AzureFiles", "BlockBlob": "BlockBlob", "CosmosDb": "CosmosDb", "DataFactory": "DataFactory", "Databricks": "Databricks", "DedicatedHost": "DedicatedHost", "ManagedDisk": "ManagedDisk", "MariaDb": "MariaDb", "MySql": "MySql", "NetAppStorage": "NetAppStorage", "PostgreSql": "PostgreSql", "RedHat": "RedHat", "RedHatOsa": "RedHatOsa", "RedisCache": "RedisCache", "SapHana": "SapHana", "SqlAzureHybridBenefit": "SqlAzureHybridBenefit", "SqlDataWarehouse": "SqlDataWarehouse", "SqlDatabases": "SqlDatabases", "SqlEdge": "SqlEdge", "SuseLinux": "SuseLinux", "VMwareCloudSimple": "VMwareCloudSimple", "VirtualMachineSoftware": "VirtualMachineSoftware", "VirtualMachines": "VirtualMachines"},
         )
+        _args_schema.review_date_time = AAZDateTimeArg(
+            options=["--review-date-time"],
+            arg_group="Properties",
+            help="This is the date-time when the Azure hybrid benefit needs to be reviewed.",
+        )
         _args_schema.term = AAZStrArg(
             options=["--term"],
             arg_group="Properties",
             help="Represent the term of Reservation.",
             enum={"P1Y": "P1Y", "P3Y": "P3Y", "P5Y": "P5Y"},
+        )
+
+        applied_scope_property = cls._args_schema.applied_scope_property
+        applied_scope_property.display_name = AAZStrArg(
+            options=["display-name"],
+            help="Display name",
+        )
+        applied_scope_property.management_group_id = AAZStrArg(
+            options=["management-group-id"],
+            help="Fully-qualified identifier of the management group where the benefit must be applied.",
+        )
+        applied_scope_property.resource_group_id = AAZStrArg(
+            options=["resource-group-id"],
+            help="Fully-qualified identifier of the resource group.",
+        )
+        applied_scope_property.subscription_id = AAZStrArg(
+            options=["subscription-id"],
+            help="Fully-qualified identifier of the subscription.",
+        )
+        applied_scope_property.tenant_id = AAZStrArg(
+            options=["tenant-id"],
+            help="Tenant ID where the savings plan should apply benefit.",
         )
 
         applied_scope = cls._args_schema.applied_scope
@@ -145,11 +177,11 @@ class Purchase(AAZCommand):
         yield self.ReservationOrderPurchase(ctx=self.ctx)()
         self.post_operations()
 
-    # @register_callback
+    @register_callback
     def pre_operations(self):
         pass
 
-    # @register_callback
+    @register_callback
     def post_operations(self):
         pass
 
@@ -213,7 +245,7 @@ class Purchase(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-03-01",
+                    "api-version", "2022-11-01",
                     required=True,
                 ),
             }
@@ -244,6 +276,7 @@ class Purchase(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_prop("appliedScopeProperties", AAZObjectType, ".applied_scope_property")
                 properties.set_prop("appliedScopeType", AAZStrType, ".applied_scope_type")
                 properties.set_prop("appliedScopes", AAZListType, ".applied_scope")
                 properties.set_prop("billingPlan", AAZStrType, ".billing_plan")
@@ -253,7 +286,16 @@ class Purchase(AAZCommand):
                 properties.set_prop("renew", AAZBoolType, ".renew")
                 properties.set_prop("reservedResourceProperties", AAZObjectType)
                 properties.set_prop("reservedResourceType", AAZStrType, ".reserved_resource_type")
+                properties.set_prop("reviewDateTime", AAZStrType, ".review_date_time")
                 properties.set_prop("term", AAZStrType, ".term")
+
+            applied_scope_properties = _builder.get(".properties.appliedScopeProperties")
+            if applied_scope_properties is not None:
+                applied_scope_properties.set_prop("displayName", AAZStrType, ".display_name")
+                applied_scope_properties.set_prop("managementGroupId", AAZStrType, ".management_group_id")
+                applied_scope_properties.set_prop("resourceGroupId", AAZStrType, ".resource_group_id")
+                applied_scope_properties.set_prop("subscriptionId", AAZStrType, ".subscription_id")
+                applied_scope_properties.set_prop("tenantId", AAZStrType, ".tenant_id")
 
             applied_scopes = _builder.get(".properties.appliedScopes")
             if applied_scopes is not None:
@@ -285,507 +327,538 @@ class Purchase(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _build_schema_reservation_order_response_read(cls._schema_on_200)
+            _PurchaseHelper._build_schema_reservation_order_response_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
 
-_schema_applied_scopes_read = None
+class _PurchaseHelper:
+    """Helper class for Purchase"""
 
+    _schema_applied_scope_properties_read = None
 
-def _build_schema_applied_scopes_read(_schema):
-    global _schema_applied_scopes_read
-    if _schema_applied_scopes_read is not None:
-        _schema.Element = _schema_applied_scopes_read.Element
-        return
+    @classmethod
+    def _build_schema_applied_scope_properties_read(cls, _schema):
+        if cls._schema_applied_scope_properties_read is not None:
+            _schema.display_name = cls._schema_applied_scope_properties_read.display_name
+            _schema.management_group_id = cls._schema_applied_scope_properties_read.management_group_id
+            _schema.resource_group_id = cls._schema_applied_scope_properties_read.resource_group_id
+            _schema.subscription_id = cls._schema_applied_scope_properties_read.subscription_id
+            _schema.tenant_id = cls._schema_applied_scope_properties_read.tenant_id
+            return
 
-    _schema_applied_scopes_read = AAZListType()
+        cls._schema_applied_scope_properties_read = _schema_applied_scope_properties_read = AAZObjectType()
 
-    applied_scopes_read = _schema_applied_scopes_read
-    applied_scopes_read.Element = AAZStrType()
+        applied_scope_properties_read = _schema_applied_scope_properties_read
+        applied_scope_properties_read.display_name = AAZStrType(
+            serialized_name="displayName",
+        )
+        applied_scope_properties_read.management_group_id = AAZStrType(
+            serialized_name="managementGroupId",
+        )
+        applied_scope_properties_read.resource_group_id = AAZStrType(
+            serialized_name="resourceGroupId",
+        )
+        applied_scope_properties_read.subscription_id = AAZStrType(
+            serialized_name="subscriptionId",
+        )
+        applied_scope_properties_read.tenant_id = AAZStrType(
+            serialized_name="tenantId",
+        )
 
-    _schema.Element = _schema_applied_scopes_read.Element
+        _schema.display_name = cls._schema_applied_scope_properties_read.display_name
+        _schema.management_group_id = cls._schema_applied_scope_properties_read.management_group_id
+        _schema.resource_group_id = cls._schema_applied_scope_properties_read.resource_group_id
+        _schema.subscription_id = cls._schema_applied_scope_properties_read.subscription_id
+        _schema.tenant_id = cls._schema_applied_scope_properties_read.tenant_id
 
+    _schema_applied_scopes_read = None
 
-_schema_extended_status_info_read = None
+    @classmethod
+    def _build_schema_applied_scopes_read(cls, _schema):
+        if cls._schema_applied_scopes_read is not None:
+            _schema.Element = cls._schema_applied_scopes_read.Element
+            return
 
+        cls._schema_applied_scopes_read = _schema_applied_scopes_read = AAZListType()
 
-def _build_schema_extended_status_info_read(_schema):
-    global _schema_extended_status_info_read
-    if _schema_extended_status_info_read is not None:
-        _schema.message = _schema_extended_status_info_read.message
-        _schema.status_code = _schema_extended_status_info_read.status_code
-        return
+        applied_scopes_read = _schema_applied_scopes_read
+        applied_scopes_read.Element = AAZStrType()
 
-    _schema_extended_status_info_read = AAZObjectType()
+        _schema.Element = cls._schema_applied_scopes_read.Element
 
-    extended_status_info_read = _schema_extended_status_info_read
-    extended_status_info_read.message = AAZStrType()
-    extended_status_info_read.status_code = AAZStrType(
-        serialized_name="statusCode",
-    )
+    _schema_extended_status_info_read = None
 
-    _schema.message = _schema_extended_status_info_read.message
-    _schema.status_code = _schema_extended_status_info_read.status_code
+    @classmethod
+    def _build_schema_extended_status_info_read(cls, _schema):
+        if cls._schema_extended_status_info_read is not None:
+            _schema.message = cls._schema_extended_status_info_read.message
+            _schema.status_code = cls._schema_extended_status_info_read.status_code
+            return
 
+        cls._schema_extended_status_info_read = _schema_extended_status_info_read = AAZObjectType()
 
-_schema_price_read = None
+        extended_status_info_read = _schema_extended_status_info_read
+        extended_status_info_read.message = AAZStrType()
+        extended_status_info_read.status_code = AAZStrType(
+            serialized_name="statusCode",
+        )
 
+        _schema.message = cls._schema_extended_status_info_read.message
+        _schema.status_code = cls._schema_extended_status_info_read.status_code
 
-def _build_schema_price_read(_schema):
-    global _schema_price_read
-    if _schema_price_read is not None:
-        _schema.amount = _schema_price_read.amount
-        _schema.currency_code = _schema_price_read.currency_code
-        return
+    _schema_price_read = None
 
-    _schema_price_read = AAZObjectType()
+    @classmethod
+    def _build_schema_price_read(cls, _schema):
+        if cls._schema_price_read is not None:
+            _schema.amount = cls._schema_price_read.amount
+            _schema.currency_code = cls._schema_price_read.currency_code
+            return
 
-    price_read = _schema_price_read
-    price_read.amount = AAZFloatType()
-    price_read.currency_code = AAZStrType(
-        serialized_name="currencyCode",
-    )
+        cls._schema_price_read = _schema_price_read = AAZObjectType()
 
-    _schema.amount = _schema_price_read.amount
-    _schema.currency_code = _schema_price_read.currency_code
+        price_read = _schema_price_read
+        price_read.amount = AAZFloatType()
+        price_read.currency_code = AAZStrType(
+            serialized_name="currencyCode",
+        )
 
+        _schema.amount = cls._schema_price_read.amount
+        _schema.currency_code = cls._schema_price_read.currency_code
 
-_schema_reservation_order_response_read = None
+    _schema_reservation_order_response_read = None
 
+    @classmethod
+    def _build_schema_reservation_order_response_read(cls, _schema):
+        if cls._schema_reservation_order_response_read is not None:
+            _schema.etag = cls._schema_reservation_order_response_read.etag
+            _schema.id = cls._schema_reservation_order_response_read.id
+            _schema.name = cls._schema_reservation_order_response_read.name
+            _schema.properties = cls._schema_reservation_order_response_read.properties
+            _schema.system_data = cls._schema_reservation_order_response_read.system_data
+            _schema.type = cls._schema_reservation_order_response_read.type
+            return
 
-def _build_schema_reservation_order_response_read(_schema):
-    global _schema_reservation_order_response_read
-    if _schema_reservation_order_response_read is not None:
-        _schema.etag = _schema_reservation_order_response_read.etag
-        _schema.id = _schema_reservation_order_response_read.id
-        _schema.name = _schema_reservation_order_response_read.name
-        _schema.properties = _schema_reservation_order_response_read.properties
-        _schema.system_data = _schema_reservation_order_response_read.system_data
-        _schema.type = _schema_reservation_order_response_read.type
-        return
+        cls._schema_reservation_order_response_read = _schema_reservation_order_response_read = AAZObjectType()
 
-    _schema_reservation_order_response_read = AAZObjectType()
+        reservation_order_response_read = _schema_reservation_order_response_read
+        reservation_order_response_read.etag = AAZIntType()
+        reservation_order_response_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        reservation_order_response_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        reservation_order_response_read.properties = AAZObjectType(
+            flags={"client_flatten": True},
+        )
+        reservation_order_response_read.system_data = AAZObjectType(
+            serialized_name="systemData",
+            flags={"read_only": True},
+        )
+        cls._build_schema_system_data_read(reservation_order_response_read.system_data)
+        reservation_order_response_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
 
-    reservation_order_response_read = _schema_reservation_order_response_read
-    reservation_order_response_read.etag = AAZIntType()
-    reservation_order_response_read.id = AAZStrType(
-        flags={"read_only": True},
-    )
-    reservation_order_response_read.name = AAZStrType(
-        flags={"read_only": True},
-    )
-    reservation_order_response_read.properties = AAZObjectType(
-        flags={"client_flatten": True},
-    )
-    reservation_order_response_read.system_data = AAZObjectType(
-        serialized_name="systemData",
-        flags={"read_only": True},
-    )
-    _build_schema_system_data_read(reservation_order_response_read.system_data)
-    reservation_order_response_read.type = AAZStrType(
-        flags={"read_only": True},
-    )
+        properties = _schema_reservation_order_response_read.properties
+        properties.benefit_start_time = AAZStrType(
+            serialized_name="benefitStartTime",
+        )
+        properties.billing_plan = AAZStrType(
+            serialized_name="billingPlan",
+        )
+        properties.created_date_time = AAZStrType(
+            serialized_name="createdDateTime",
+        )
+        properties.display_name = AAZStrType(
+            serialized_name="displayName",
+        )
+        properties.expiry_date = AAZStrType(
+            serialized_name="expiryDate",
+        )
+        properties.expiry_date_time = AAZStrType(
+            serialized_name="expiryDateTime",
+        )
+        properties.original_quantity = AAZIntType(
+            serialized_name="originalQuantity",
+        )
+        properties.plan_information = AAZObjectType(
+            serialized_name="planInformation",
+        )
+        properties.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+        )
+        properties.request_date_time = AAZStrType(
+            serialized_name="requestDateTime",
+        )
+        properties.reservations = AAZListType()
+        properties.review_date_time = AAZStrType(
+            serialized_name="reviewDateTime",
+        )
+        properties.term = AAZStrType()
 
-    properties = _schema_reservation_order_response_read.properties
-    properties.benefit_start_time = AAZStrType(
-        serialized_name="benefitStartTime",
-    )
-    properties.billing_plan = AAZStrType(
-        serialized_name="billingPlan",
-    )
-    properties.created_date_time = AAZStrType(
-        serialized_name="createdDateTime",
-    )
-    properties.display_name = AAZStrType(
-        serialized_name="displayName",
-    )
-    properties.expiry_date = AAZStrType(
-        serialized_name="expiryDate",
-    )
-    properties.original_quantity = AAZIntType(
-        serialized_name="originalQuantity",
-    )
-    properties.plan_information = AAZObjectType(
-        serialized_name="planInformation",
-    )
-    properties.provisioning_state = AAZStrType(
-        serialized_name="provisioningState",
-    )
-    properties.request_date_time = AAZStrType(
-        serialized_name="requestDateTime",
-    )
-    properties.reservations = AAZListType()
-    properties.term = AAZStrType()
+        plan_information = _schema_reservation_order_response_read.properties.plan_information
+        plan_information.next_payment_due_date = AAZStrType(
+            serialized_name="nextPaymentDueDate",
+        )
+        plan_information.pricing_currency_total = AAZObjectType(
+            serialized_name="pricingCurrencyTotal",
+        )
+        cls._build_schema_price_read(plan_information.pricing_currency_total)
+        plan_information.start_date = AAZStrType(
+            serialized_name="startDate",
+        )
+        plan_information.transactions = AAZListType()
 
-    plan_information = _schema_reservation_order_response_read.properties.plan_information
-    plan_information.next_payment_due_date = AAZStrType(
-        serialized_name="nextPaymentDueDate",
-    )
-    plan_information.pricing_currency_total = AAZObjectType(
-        serialized_name="pricingCurrencyTotal",
-    )
-    _build_schema_price_read(plan_information.pricing_currency_total)
-    plan_information.start_date = AAZStrType(
-        serialized_name="startDate",
-    )
-    plan_information.transactions = AAZListType()
+        transactions = _schema_reservation_order_response_read.properties.plan_information.transactions
+        transactions.Element = AAZObjectType()
 
-    transactions = _schema_reservation_order_response_read.properties.plan_information.transactions
-    transactions.Element = AAZObjectType()
+        _element = _schema_reservation_order_response_read.properties.plan_information.transactions.Element
+        _element.billing_account = AAZStrType(
+            serialized_name="billingAccount",
+        )
+        _element.billing_currency_total = AAZObjectType(
+            serialized_name="billingCurrencyTotal",
+        )
+        cls._build_schema_price_read(_element.billing_currency_total)
+        _element.due_date = AAZStrType(
+            serialized_name="dueDate",
+        )
+        _element.extended_status_info = AAZObjectType(
+            serialized_name="extendedStatusInfo",
+        )
+        cls._build_schema_extended_status_info_read(_element.extended_status_info)
+        _element.payment_date = AAZStrType(
+            serialized_name="paymentDate",
+        )
+        _element.pricing_currency_total = AAZObjectType(
+            serialized_name="pricingCurrencyTotal",
+        )
+        cls._build_schema_price_read(_element.pricing_currency_total)
+        _element.status = AAZStrType()
 
-    _element = _schema_reservation_order_response_read.properties.plan_information.transactions.Element
-    _element.billing_account = AAZStrType(
-        serialized_name="billingAccount",
-    )
-    _element.billing_currency_total = AAZObjectType(
-        serialized_name="billingCurrencyTotal",
-    )
-    _build_schema_price_read(_element.billing_currency_total)
-    _element.due_date = AAZStrType(
-        serialized_name="dueDate",
-    )
-    _element.extended_status_info = AAZObjectType(
-        serialized_name="extendedStatusInfo",
-    )
-    _build_schema_extended_status_info_read(_element.extended_status_info)
-    _element.payment_date = AAZStrType(
-        serialized_name="paymentDate",
-    )
-    _element.pricing_currency_total = AAZObjectType(
-        serialized_name="pricingCurrencyTotal",
-    )
-    _build_schema_price_read(_element.pricing_currency_total)
-    _element.status = AAZStrType()
+        reservations = _schema_reservation_order_response_read.properties.reservations
+        reservations.Element = AAZObjectType()
 
-    reservations = _schema_reservation_order_response_read.properties.reservations
-    reservations.Element = AAZObjectType()
+        _element = _schema_reservation_order_response_read.properties.reservations.Element
+        _element.etag = AAZIntType()
+        _element.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        _element.kind = AAZStrType()
+        _element.location = AAZStrType()
+        _element.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        _element.properties = AAZObjectType()
+        _element.sku = AAZObjectType()
+        cls._build_schema_sku_name_read(_element.sku)
+        _element.system_data = AAZObjectType(
+            serialized_name="systemData",
+            flags={"read_only": True},
+        )
+        cls._build_schema_system_data_read(_element.system_data)
+        _element.type = AAZStrType(
+            flags={"read_only": True},
+        )
 
-    _element = _schema_reservation_order_response_read.properties.reservations.Element
-    _element.etag = AAZIntType()
-    _element.id = AAZStrType(
-        flags={"read_only": True},
-    )
-    _element.kind = AAZStrType()
-    _element.location = AAZStrType()
-    _element.name = AAZStrType(
-        flags={"read_only": True},
-    )
-    _element.properties = AAZObjectType()
-    _element.sku = AAZObjectType()
-    _build_schema_sku_name_read(_element.sku)
-    _element.system_data = AAZObjectType(
-        serialized_name="systemData",
-        flags={"read_only": True},
-    )
-    _build_schema_system_data_read(_element.system_data)
-    _element.type = AAZStrType(
-        flags={"read_only": True},
-    )
+        properties = _schema_reservation_order_response_read.properties.reservations.Element.properties
+        properties.applied_scope_properties = AAZObjectType(
+            serialized_name="appliedScopeProperties",
+        )
+        cls._build_schema_applied_scope_properties_read(properties.applied_scope_properties)
+        properties.applied_scope_type = AAZStrType(
+            serialized_name="appliedScopeType",
+        )
+        properties.applied_scopes = AAZListType(
+            serialized_name="appliedScopes",
+        )
+        cls._build_schema_applied_scopes_read(properties.applied_scopes)
+        properties.archived = AAZBoolType()
+        properties.benefit_start_time = AAZStrType(
+            serialized_name="benefitStartTime",
+        )
+        properties.billing_plan = AAZStrType(
+            serialized_name="billingPlan",
+        )
+        properties.billing_scope_id = AAZStrType(
+            serialized_name="billingScopeId",
+        )
+        properties.capabilities = AAZStrType()
+        properties.display_name = AAZStrType(
+            serialized_name="displayName",
+        )
+        properties.display_provisioning_state = AAZStrType(
+            serialized_name="displayProvisioningState",
+            flags={"read_only": True},
+        )
+        properties.effective_date_time = AAZStrType(
+            serialized_name="effectiveDateTime",
+        )
+        properties.expiry_date = AAZStrType(
+            serialized_name="expiryDate",
+        )
+        properties.expiry_date_time = AAZStrType(
+            serialized_name="expiryDateTime",
+        )
+        properties.extended_status_info = AAZObjectType(
+            serialized_name="extendedStatusInfo",
+        )
+        cls._build_schema_extended_status_info_read(properties.extended_status_info)
+        properties.instance_flexibility = AAZStrType(
+            serialized_name="instanceFlexibility",
+        )
+        properties.last_updated_date_time = AAZStrType(
+            serialized_name="lastUpdatedDateTime",
+            flags={"read_only": True},
+        )
+        properties.merge_properties = AAZObjectType(
+            serialized_name="mergeProperties",
+        )
+        properties.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+        )
+        properties.provisioning_sub_state = AAZStrType(
+            serialized_name="provisioningSubState",
+            flags={"read_only": True},
+        )
+        properties.purchase_date = AAZStrType(
+            serialized_name="purchaseDate",
+        )
+        properties.purchase_date_time = AAZStrType(
+            serialized_name="purchaseDateTime",
+        )
+        properties.quantity = AAZIntType()
+        properties.renew = AAZBoolType()
+        properties.renew_destination = AAZStrType(
+            serialized_name="renewDestination",
+        )
+        properties.renew_properties = AAZObjectType(
+            serialized_name="renewProperties",
+        )
+        properties.renew_source = AAZStrType(
+            serialized_name="renewSource",
+        )
+        properties.reserved_resource_type = AAZStrType(
+            serialized_name="reservedResourceType",
+        )
+        properties.review_date_time = AAZStrType(
+            serialized_name="reviewDateTime",
+        )
+        properties.sku_description = AAZStrType(
+            serialized_name="skuDescription",
+        )
+        properties.split_properties = AAZObjectType(
+            serialized_name="splitProperties",
+        )
+        properties.swap_properties = AAZObjectType(
+            serialized_name="swapProperties",
+        )
+        properties.term = AAZStrType()
+        properties.user_friendly_applied_scope_type = AAZStrType(
+            serialized_name="userFriendlyAppliedScopeType",
+            flags={"read_only": True},
+        )
+        properties.user_friendly_renew_state = AAZStrType(
+            serialized_name="userFriendlyRenewState",
+            flags={"read_only": True},
+        )
+        properties.utilization = AAZObjectType(
+            flags={"read_only": True},
+        )
 
-    properties = _schema_reservation_order_response_read.properties.reservations.Element.properties
-    properties.applied_scope_properties = AAZObjectType(
-        serialized_name="appliedScopeProperties",
-    )
-    properties.applied_scope_type = AAZStrType(
-        serialized_name="appliedScopeType",
-    )
-    properties.applied_scopes = AAZListType(
-        serialized_name="appliedScopes",
-    )
-    _build_schema_applied_scopes_read(properties.applied_scopes)
-    properties.archived = AAZBoolType()
-    properties.benefit_start_time = AAZStrType(
-        serialized_name="benefitStartTime",
-    )
-    properties.billing_plan = AAZStrType(
-        serialized_name="billingPlan",
-    )
-    properties.billing_scope_id = AAZStrType(
-        serialized_name="billingScopeId",
-    )
-    properties.capabilities = AAZStrType()
-    properties.display_name = AAZStrType(
-        serialized_name="displayName",
-    )
-    properties.display_provisioning_state = AAZStrType(
-        serialized_name="displayProvisioningState",
-        flags={"read_only": True},
-    )
-    properties.effective_date_time = AAZStrType(
-        serialized_name="effectiveDateTime",
-    )
-    properties.expiry_date = AAZStrType(
-        serialized_name="expiryDate",
-    )
-    properties.extended_status_info = AAZObjectType(
-        serialized_name="extendedStatusInfo",
-    )
-    _build_schema_extended_status_info_read(properties.extended_status_info)
-    properties.instance_flexibility = AAZStrType(
-        serialized_name="instanceFlexibility",
-    )
-    properties.last_updated_date_time = AAZStrType(
-        serialized_name="lastUpdatedDateTime",
-        flags={"read_only": True},
-    )
-    properties.merge_properties = AAZObjectType(
-        serialized_name="mergeProperties",
-    )
-    properties.provisioning_state = AAZStrType(
-        serialized_name="provisioningState",
-    )
-    properties.provisioning_sub_state = AAZStrType(
-        serialized_name="provisioningSubState",
-        flags={"read_only": True},
-    )
-    properties.purchase_date = AAZStrType(
-        serialized_name="purchaseDate",
-    )
-    properties.quantity = AAZIntType()
-    properties.renew = AAZBoolType()
-    properties.renew_destination = AAZStrType(
-        serialized_name="renewDestination",
-    )
-    properties.renew_properties = AAZObjectType(
-        serialized_name="renewProperties",
-    )
-    properties.renew_source = AAZStrType(
-        serialized_name="renewSource",
-    )
-    properties.reserved_resource_type = AAZStrType(
-        serialized_name="reservedResourceType",
-    )
-    properties.sku_description = AAZStrType(
-        serialized_name="skuDescription",
-    )
-    properties.split_properties = AAZObjectType(
-        serialized_name="splitProperties",
-    )
-    properties.swap_properties = AAZObjectType(
-        serialized_name="swapProperties",
-    )
-    properties.term = AAZStrType()
-    properties.user_friendly_applied_scope_type = AAZStrType(
-        serialized_name="userFriendlyAppliedScopeType",
-        flags={"read_only": True},
-    )
-    properties.user_friendly_renew_state = AAZStrType(
-        serialized_name="userFriendlyRenewState",
-        flags={"read_only": True},
-    )
-    properties.utilization = AAZObjectType(
-        flags={"read_only": True},
-    )
+        merge_properties = _schema_reservation_order_response_read.properties.reservations.Element.properties.merge_properties
+        merge_properties.merge_destination = AAZStrType(
+            serialized_name="mergeDestination",
+        )
+        merge_properties.merge_sources = AAZListType(
+            serialized_name="mergeSources",
+        )
 
-    applied_scope_properties = _schema_reservation_order_response_read.properties.reservations.Element.properties.applied_scope_properties
-    applied_scope_properties.display_name = AAZStrType(
-        serialized_name="displayName",
-    )
-    applied_scope_properties.management_group_id = AAZStrType(
-        serialized_name="managementGroupId",
-    )
-    applied_scope_properties.tenant_id = AAZStrType(
-        serialized_name="tenantId",
-    )
+        merge_sources = _schema_reservation_order_response_read.properties.reservations.Element.properties.merge_properties.merge_sources
+        merge_sources.Element = AAZStrType()
 
-    merge_properties = _schema_reservation_order_response_read.properties.reservations.Element.properties.merge_properties
-    merge_properties.merge_destination = AAZStrType(
-        serialized_name="mergeDestination",
-    )
-    merge_properties.merge_sources = AAZListType(
-        serialized_name="mergeSources",
-    )
+        renew_properties = _schema_reservation_order_response_read.properties.reservations.Element.properties.renew_properties
+        renew_properties.billing_currency_total = AAZObjectType(
+            serialized_name="billingCurrencyTotal",
+        )
+        renew_properties.pricing_currency_total = AAZObjectType(
+            serialized_name="pricingCurrencyTotal",
+        )
+        renew_properties.purchase_properties = AAZObjectType(
+            serialized_name="purchaseProperties",
+        )
 
-    merge_sources = _schema_reservation_order_response_read.properties.reservations.Element.properties.merge_properties.merge_sources
-    merge_sources.Element = AAZStrType()
+        billing_currency_total = _schema_reservation_order_response_read.properties.reservations.Element.properties.renew_properties.billing_currency_total
+        billing_currency_total.amount = AAZFloatType()
+        billing_currency_total.currency_code = AAZStrType(
+            serialized_name="currencyCode",
+        )
 
-    renew_properties = _schema_reservation_order_response_read.properties.reservations.Element.properties.renew_properties
-    renew_properties.billing_currency_total = AAZObjectType(
-        serialized_name="billingCurrencyTotal",
-    )
-    renew_properties.pricing_currency_total = AAZObjectType(
-        serialized_name="pricingCurrencyTotal",
-    )
-    renew_properties.purchase_properties = AAZObjectType(
-        serialized_name="purchaseProperties",
-    )
+        pricing_currency_total = _schema_reservation_order_response_read.properties.reservations.Element.properties.renew_properties.pricing_currency_total
+        pricing_currency_total.amount = AAZFloatType()
+        pricing_currency_total.currency_code = AAZStrType(
+            serialized_name="currencyCode",
+        )
 
-    billing_currency_total = _schema_reservation_order_response_read.properties.reservations.Element.properties.renew_properties.billing_currency_total
-    billing_currency_total.amount = AAZFloatType()
-    billing_currency_total.currency_code = AAZStrType(
-        serialized_name="currencyCode",
-    )
+        purchase_properties = _schema_reservation_order_response_read.properties.reservations.Element.properties.renew_properties.purchase_properties
+        purchase_properties.location = AAZStrType()
+        purchase_properties.properties = AAZObjectType(
+            flags={"client_flatten": True},
+        )
+        purchase_properties.sku = AAZObjectType()
+        cls._build_schema_sku_name_read(purchase_properties.sku)
 
-    pricing_currency_total = _schema_reservation_order_response_read.properties.reservations.Element.properties.renew_properties.pricing_currency_total
-    pricing_currency_total.amount = AAZFloatType()
-    pricing_currency_total.currency_code = AAZStrType(
-        serialized_name="currencyCode",
-    )
+        properties = _schema_reservation_order_response_read.properties.reservations.Element.properties.renew_properties.purchase_properties.properties
+        properties.applied_scope_properties = AAZObjectType(
+            serialized_name="appliedScopeProperties",
+        )
+        cls._build_schema_applied_scope_properties_read(properties.applied_scope_properties)
+        properties.applied_scope_type = AAZStrType(
+            serialized_name="appliedScopeType",
+        )
+        properties.applied_scopes = AAZListType(
+            serialized_name="appliedScopes",
+        )
+        cls._build_schema_applied_scopes_read(properties.applied_scopes)
+        properties.billing_plan = AAZStrType(
+            serialized_name="billingPlan",
+        )
+        properties.billing_scope_id = AAZStrType(
+            serialized_name="billingScopeId",
+        )
+        properties.display_name = AAZStrType(
+            serialized_name="displayName",
+        )
+        properties.quantity = AAZIntType()
+        properties.renew = AAZBoolType()
+        properties.reserved_resource_properties = AAZObjectType(
+            serialized_name="reservedResourceProperties",
+        )
+        properties.reserved_resource_type = AAZStrType(
+            serialized_name="reservedResourceType",
+        )
+        properties.review_date_time = AAZStrType(
+            serialized_name="reviewDateTime",
+        )
+        properties.term = AAZStrType()
 
-    purchase_properties = _schema_reservation_order_response_read.properties.reservations.Element.properties.renew_properties.purchase_properties
-    purchase_properties.location = AAZStrType()
-    purchase_properties.properties = AAZObjectType(
-        flags={"client_flatten": True},
-    )
-    purchase_properties.sku = AAZObjectType()
-    _build_schema_sku_name_read(purchase_properties.sku)
+        reserved_resource_properties = _schema_reservation_order_response_read.properties.reservations.Element.properties.renew_properties.purchase_properties.properties.reserved_resource_properties
+        reserved_resource_properties.instance_flexibility = AAZStrType(
+            serialized_name="instanceFlexibility",
+        )
 
-    properties = _schema_reservation_order_response_read.properties.reservations.Element.properties.renew_properties.purchase_properties.properties
-    properties.applied_scope_type = AAZStrType(
-        serialized_name="appliedScopeType",
-    )
-    properties.applied_scopes = AAZListType(
-        serialized_name="appliedScopes",
-    )
-    _build_schema_applied_scopes_read(properties.applied_scopes)
-    properties.billing_plan = AAZStrType(
-        serialized_name="billingPlan",
-    )
-    properties.billing_scope_id = AAZStrType(
-        serialized_name="billingScopeId",
-    )
-    properties.display_name = AAZStrType(
-        serialized_name="displayName",
-    )
-    properties.quantity = AAZIntType()
-    properties.renew = AAZBoolType()
-    properties.reserved_resource_properties = AAZObjectType(
-        serialized_name="reservedResourceProperties",
-    )
-    properties.reserved_resource_type = AAZStrType(
-        serialized_name="reservedResourceType",
-    )
-    properties.term = AAZStrType()
+        split_properties = _schema_reservation_order_response_read.properties.reservations.Element.properties.split_properties
+        split_properties.split_destinations = AAZListType(
+            serialized_name="splitDestinations",
+        )
+        split_properties.split_source = AAZStrType(
+            serialized_name="splitSource",
+        )
 
-    reserved_resource_properties = _schema_reservation_order_response_read.properties.reservations.Element.properties.renew_properties.purchase_properties.properties.reserved_resource_properties
-    reserved_resource_properties.instance_flexibility = AAZStrType(
-        serialized_name="instanceFlexibility",
-    )
+        split_destinations = _schema_reservation_order_response_read.properties.reservations.Element.properties.split_properties.split_destinations
+        split_destinations.Element = AAZStrType()
 
-    split_properties = _schema_reservation_order_response_read.properties.reservations.Element.properties.split_properties
-    split_properties.split_destinations = AAZListType(
-        serialized_name="splitDestinations",
-    )
-    split_properties.split_source = AAZStrType(
-        serialized_name="splitSource",
-    )
+        swap_properties = _schema_reservation_order_response_read.properties.reservations.Element.properties.swap_properties
+        swap_properties.swap_destination = AAZStrType(
+            serialized_name="swapDestination",
+        )
+        swap_properties.swap_source = AAZStrType(
+            serialized_name="swapSource",
+        )
 
-    split_destinations = _schema_reservation_order_response_read.properties.reservations.Element.properties.split_properties.split_destinations
-    split_destinations.Element = AAZStrType()
+        utilization = _schema_reservation_order_response_read.properties.reservations.Element.properties.utilization
+        utilization.aggregates = AAZListType()
+        utilization.trend = AAZStrType(
+            flags={"read_only": True},
+        )
 
-    swap_properties = _schema_reservation_order_response_read.properties.reservations.Element.properties.swap_properties
-    swap_properties.swap_destination = AAZStrType(
-        serialized_name="swapDestination",
-    )
-    swap_properties.swap_source = AAZStrType(
-        serialized_name="swapSource",
-    )
+        aggregates = _schema_reservation_order_response_read.properties.reservations.Element.properties.utilization.aggregates
+        aggregates.Element = AAZObjectType()
 
-    utilization = _schema_reservation_order_response_read.properties.reservations.Element.properties.utilization
-    utilization.aggregates = AAZListType(
-        flags={"read_only": True},
-    )
-    utilization.trend = AAZStrType(
-        flags={"read_only": True},
-    )
+        _element = _schema_reservation_order_response_read.properties.reservations.Element.properties.utilization.aggregates.Element
+        _element.grain = AAZFloatType(
+            flags={"read_only": True},
+        )
+        _element.grain_unit = AAZStrType(
+            serialized_name="grainUnit",
+            flags={"read_only": True},
+        )
+        _element.value = AAZFloatType(
+            flags={"read_only": True},
+        )
+        _element.value_unit = AAZStrType(
+            serialized_name="valueUnit",
+            flags={"read_only": True},
+        )
 
-    aggregates = _schema_reservation_order_response_read.properties.reservations.Element.properties.utilization.aggregates
-    aggregates.Element = AAZObjectType(
-        flags={"read_only": True},
-    )
+        _schema.etag = cls._schema_reservation_order_response_read.etag
+        _schema.id = cls._schema_reservation_order_response_read.id
+        _schema.name = cls._schema_reservation_order_response_read.name
+        _schema.properties = cls._schema_reservation_order_response_read.properties
+        _schema.system_data = cls._schema_reservation_order_response_read.system_data
+        _schema.type = cls._schema_reservation_order_response_read.type
 
-    _element = _schema_reservation_order_response_read.properties.reservations.Element.properties.utilization.aggregates.Element
-    _element.grain = AAZFloatType(
-        flags={"read_only": True},
-    )
-    _element.grain_unit = AAZStrType(
-        serialized_name="grainUnit",
-        flags={"read_only": True},
-    )
-    _element.value = AAZFloatType(
-        flags={"read_only": True},
-    )
-    _element.value_unit = AAZStrType(
-        serialized_name="valueUnit",
-        flags={"read_only": True},
-    )
+    _schema_sku_name_read = None
 
-    _schema.etag = _schema_reservation_order_response_read.etag
-    _schema.id = _schema_reservation_order_response_read.id
-    _schema.name = _schema_reservation_order_response_read.name
-    _schema.properties = _schema_reservation_order_response_read.properties
-    _schema.system_data = _schema_reservation_order_response_read.system_data
-    _schema.type = _schema_reservation_order_response_read.type
+    @classmethod
+    def _build_schema_sku_name_read(cls, _schema):
+        if cls._schema_sku_name_read is not None:
+            _schema.name = cls._schema_sku_name_read.name
+            return
 
+        cls._schema_sku_name_read = _schema_sku_name_read = AAZObjectType()
 
-_schema_sku_name_read = None
+        sku_name_read = _schema_sku_name_read
+        sku_name_read.name = AAZStrType()
 
+        _schema.name = cls._schema_sku_name_read.name
 
-def _build_schema_sku_name_read(_schema):
-    global _schema_sku_name_read
-    if _schema_sku_name_read is not None:
-        _schema.name = _schema_sku_name_read.name
-        return
+    _schema_system_data_read = None
 
-    _schema_sku_name_read = AAZObjectType()
+    @classmethod
+    def _build_schema_system_data_read(cls, _schema):
+        if cls._schema_system_data_read is not None:
+            _schema.created_at = cls._schema_system_data_read.created_at
+            _schema.created_by = cls._schema_system_data_read.created_by
+            _schema.created_by_type = cls._schema_system_data_read.created_by_type
+            _schema.last_modified_at = cls._schema_system_data_read.last_modified_at
+            _schema.last_modified_by = cls._schema_system_data_read.last_modified_by
+            _schema.last_modified_by_type = cls._schema_system_data_read.last_modified_by_type
+            return
 
-    sku_name_read = _schema_sku_name_read
-    sku_name_read.name = AAZStrType()
+        cls._schema_system_data_read = _schema_system_data_read = AAZObjectType(
+            flags={"read_only": True}
+        )
 
-    _schema.name = _schema_sku_name_read.name
+        system_data_read = _schema_system_data_read
+        system_data_read.created_at = AAZStrType(
+            serialized_name="createdAt",
+        )
+        system_data_read.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        system_data_read.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+        )
+        system_data_read.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+        )
+        system_data_read.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+        )
+        system_data_read.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+        )
 
-
-_schema_system_data_read = None
-
-
-def _build_schema_system_data_read(_schema):
-    global _schema_system_data_read
-    if _schema_system_data_read is not None:
-        _schema.created_at = _schema_system_data_read.created_at
-        _schema.created_by = _schema_system_data_read.created_by
-        _schema.created_by_type = _schema_system_data_read.created_by_type
-        _schema.last_modified_at = _schema_system_data_read.last_modified_at
-        _schema.last_modified_by = _schema_system_data_read.last_modified_by
-        _schema.last_modified_by_type = _schema_system_data_read.last_modified_by_type
-        return
-
-    _schema_system_data_read = AAZObjectType(
-        flags={"read_only": True}
-    )
-
-    system_data_read = _schema_system_data_read
-    system_data_read.created_at = AAZStrType(
-        serialized_name="createdAt",
-        flags={"read_only": True},
-    )
-    system_data_read.created_by = AAZStrType(
-        serialized_name="createdBy",
-        flags={"read_only": True},
-    )
-    system_data_read.created_by_type = AAZStrType(
-        serialized_name="createdByType",
-        flags={"read_only": True},
-    )
-    system_data_read.last_modified_at = AAZStrType(
-        serialized_name="lastModifiedAt",
-        flags={"read_only": True},
-    )
-    system_data_read.last_modified_by = AAZStrType(
-        serialized_name="lastModifiedBy",
-        flags={"read_only": True},
-    )
-    system_data_read.last_modified_by_type = AAZStrType(
-        serialized_name="lastModifiedByType",
-        flags={"read_only": True},
-    )
-
-    _schema.created_at = _schema_system_data_read.created_at
-    _schema.created_by = _schema_system_data_read.created_by
-    _schema.created_by_type = _schema_system_data_read.created_by_type
-    _schema.last_modified_at = _schema_system_data_read.last_modified_at
-    _schema.last_modified_by = _schema_system_data_read.last_modified_by
-    _schema.last_modified_by_type = _schema_system_data_read.last_modified_by_type
+        _schema.created_at = cls._schema_system_data_read.created_at
+        _schema.created_by = cls._schema_system_data_read.created_by
+        _schema.created_by_type = cls._schema_system_data_read.created_by_type
+        _schema.last_modified_at = cls._schema_system_data_read.last_modified_at
+        _schema.last_modified_by = cls._schema_system_data_read.last_modified_by
+        _schema.last_modified_by_type = cls._schema_system_data_read.last_modified_by_type
 
 
 __all__ = ["Purchase"]

@@ -9,19 +9,17 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from typing import TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING
 
 from azure.mgmt.core import ARMPipelineClient
 from azure.profiles import KnownProfiles, ProfileDefinition
 from azure.profiles.multiapiclient import MultiApiClientMixin
-from msrest import Deserializer, Serializer
 
 from ._configuration import SourceControlConfigurationClientConfiguration
+from ._serialization import Deserializer, Serializer
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
-    from typing import Any, Optional
-
     from azure.core.credentials import TokenCredential
 
 class _SDKClient(object):
@@ -42,9 +40,9 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
     The api-version parameter sets the default API version if the operation
     group is not described in the profile.
 
-    :param credential: Credential needed for the client to connect to Azure.
+    :param credential: Credential needed for the client to connect to Azure. Required.
     :type credential: ~azure.core.credentials.TokenCredential
-    :param subscription_id: The ID of the target subscription.
+    :param subscription_id: The ID of the target subscription. Required.
     :type subscription_id: str
     :param api_version: API version to use if no profile is provided, or if missing in profile.
     :type api_version: str
@@ -55,7 +53,7 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
     :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
     """
 
-    DEFAULT_API_VERSION = '2022-03-01'
+    DEFAULT_API_VERSION = '2023-05-01'
     _PROFILE_TAG = "azure.mgmt.kubernetesconfiguration.SourceControlConfigurationClient"
     LATEST_PROFILE = ProfileDefinition({
         _PROFILE_TAG: {
@@ -64,18 +62,21 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
             'cluster_extension_types': '2022-01-15-preview',
             'extension_type_versions': '2022-01-15-preview',
             'location_extension_types': '2022-01-15-preview',
+            'private_endpoint_connections': '2022-04-02-preview',
+            'private_link_resources': '2022-04-02-preview',
+            'private_link_scopes': '2022-04-02-preview',
         }},
         _PROFILE_TAG + " latest"
     )
 
     def __init__(
         self,
-        credential,  # type: "TokenCredential"
-        subscription_id,  # type: str
-        api_version=None, # type: Optional[str]
-        base_url="https://management.azure.com",  # type: str
-        profile=KnownProfiles.default, # type: KnownProfiles
-        **kwargs  # type: Any
+        credential: "TokenCredential",
+        subscription_id: str,
+        api_version: Optional[str]=None,
+        base_url: str = "https://management.azure.com",
+        profile: KnownProfiles=KnownProfiles.default,
+        **kwargs: Any
     ):
         self._config = SourceControlConfigurationClientConfiguration(credential, subscription_id, **kwargs)
         self._client = ARMPipelineClient(base_url=base_url, config=self._config, **kwargs)
@@ -102,6 +103,10 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
            * 2022-01-15-preview: :mod:`v2022_01_15_preview.models<azure.mgmt.kubernetesconfiguration.v2022_01_15_preview.models>`
            * 2022-03-01: :mod:`v2022_03_01.models<azure.mgmt.kubernetesconfiguration.v2022_03_01.models>`
            * 2022-04-02-preview: :mod:`v2022_04_02_preview.models<azure.mgmt.kubernetesconfiguration.v2022_04_02_preview.models>`
+           * 2022-07-01: :mod:`v2022_07_01.models<azure.mgmt.kubernetesconfiguration.v2022_07_01.models>`
+           * 2022-11-01: :mod:`v2022_11_01.models<azure.mgmt.kubernetesconfiguration.v2022_11_01.models>`
+           * 2023-05-01: :mod:`v2023_05_01.models<azure.mgmt.kubernetesconfiguration.v2023_05_01.models>`
+           * 2023-05-01-preview: :mod:`v2023_05_01_preview.models<azure.mgmt.kubernetesconfiguration.v2023_05_01_preview.models>`
         """
         if api_version == '2020-07-01-preview':
             from .v2020_07_01_preview import models
@@ -133,6 +138,18 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
         elif api_version == '2022-04-02-preview':
             from .v2022_04_02_preview import models
             return models
+        elif api_version == '2022-07-01':
+            from .v2022_07_01 import models
+            return models
+        elif api_version == '2022-11-01':
+            from .v2022_11_01 import models
+            return models
+        elif api_version == '2023-05-01':
+            from .v2023_05_01 import models
+            return models
+        elif api_version == '2023-05-01-preview':
+            from .v2023_05_01_preview import models
+            return models
         raise ValueError("API version {} is not available".format(api_version))
 
     @property
@@ -155,6 +172,7 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
             from .v2022_01_15_preview.operations import ClusterExtensionTypeOperations as OperationClass
         else:
             raise ValueError("API version {} does not have operation group 'cluster_extension_type'".format(api_version))
+        self._config.api_version = api_version
         return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
 
     @property
@@ -177,6 +195,7 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
             from .v2022_01_15_preview.operations import ClusterExtensionTypesOperations as OperationClass
         else:
             raise ValueError("API version {} does not have operation group 'cluster_extension_types'".format(api_version))
+        self._config.api_version = api_version
         return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
 
     @property
@@ -199,6 +218,23 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
             from .v2022_01_15_preview.operations import ExtensionTypeVersionsOperations as OperationClass
         else:
             raise ValueError("API version {} does not have operation group 'extension_type_versions'".format(api_version))
+        self._config.api_version = api_version
+        return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def extension_types(self):
+        """Instance depends on the API version:
+
+           * 2023-05-01-preview: :class:`ExtensionTypesOperations<azure.mgmt.kubernetesconfiguration.v2023_05_01_preview.operations.ExtensionTypesOperations>`
+        """
+        api_version = self._get_api_version('extension_types')
+        if api_version == '2023-05-01-preview':
+            from .v2023_05_01_preview.operations import ExtensionTypesOperations as OperationClass
+        else:
+            raise ValueError("API version {} does not have operation group 'extension_types'".format(api_version))
+        self._config.api_version = api_version
+        # Remove this after testing is done for 2023-05-01-preview
+        self._client._base_url = "https://management.azure.com"
         return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
 
     @property
@@ -213,6 +249,9 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
            * 2022-01-15-preview: :class:`ExtensionsOperations<azure.mgmt.kubernetesconfiguration.v2022_01_15_preview.operations.ExtensionsOperations>`
            * 2022-03-01: :class:`ExtensionsOperations<azure.mgmt.kubernetesconfiguration.v2022_03_01.operations.ExtensionsOperations>`
            * 2022-04-02-preview: :class:`ExtensionsOperations<azure.mgmt.kubernetesconfiguration.v2022_04_02_preview.operations.ExtensionsOperations>`
+           * 2022-07-01: :class:`ExtensionsOperations<azure.mgmt.kubernetesconfiguration.v2022_07_01.operations.ExtensionsOperations>`
+           * 2022-11-01: :class:`ExtensionsOperations<azure.mgmt.kubernetesconfiguration.v2022_11_01.operations.ExtensionsOperations>`
+           * 2023-05-01: :class:`ExtensionsOperations<azure.mgmt.kubernetesconfiguration.v2023_05_01.operations.ExtensionsOperations>`
         """
         api_version = self._get_api_version('extensions')
         if api_version == '2020-07-01-preview':
@@ -231,8 +270,15 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
             from .v2022_03_01.operations import ExtensionsOperations as OperationClass
         elif api_version == '2022-04-02-preview':
             from .v2022_04_02_preview.operations import ExtensionsOperations as OperationClass
+        elif api_version == '2022-07-01':
+            from .v2022_07_01.operations import ExtensionsOperations as OperationClass
+        elif api_version == '2022-11-01':
+            from .v2022_11_01.operations import ExtensionsOperations as OperationClass
+        elif api_version == '2023-05-01':
+            from .v2023_05_01.operations import ExtensionsOperations as OperationClass
         else:
             raise ValueError("API version {} does not have operation group 'extensions'".format(api_version))
+        self._config.api_version = api_version
         return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
 
     @property
@@ -243,6 +289,9 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
            * 2022-01-01-preview: :class:`FluxConfigOperationStatusOperations<azure.mgmt.kubernetesconfiguration.v2022_01_01_preview.operations.FluxConfigOperationStatusOperations>`
            * 2022-01-15-preview: :class:`FluxConfigOperationStatusOperations<azure.mgmt.kubernetesconfiguration.v2022_01_15_preview.operations.FluxConfigOperationStatusOperations>`
            * 2022-03-01: :class:`FluxConfigOperationStatusOperations<azure.mgmt.kubernetesconfiguration.v2022_03_01.operations.FluxConfigOperationStatusOperations>`
+           * 2022-07-01: :class:`FluxConfigOperationStatusOperations<azure.mgmt.kubernetesconfiguration.v2022_07_01.operations.FluxConfigOperationStatusOperations>`
+           * 2022-11-01: :class:`FluxConfigOperationStatusOperations<azure.mgmt.kubernetesconfiguration.v2022_11_01.operations.FluxConfigOperationStatusOperations>`
+           * 2023-05-01: :class:`FluxConfigOperationStatusOperations<azure.mgmt.kubernetesconfiguration.v2023_05_01.operations.FluxConfigOperationStatusOperations>`
         """
         api_version = self._get_api_version('flux_config_operation_status')
         if api_version == '2021-11-01-preview':
@@ -253,8 +302,15 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
             from .v2022_01_15_preview.operations import FluxConfigOperationStatusOperations as OperationClass
         elif api_version == '2022-03-01':
             from .v2022_03_01.operations import FluxConfigOperationStatusOperations as OperationClass
+        elif api_version == '2022-07-01':
+            from .v2022_07_01.operations import FluxConfigOperationStatusOperations as OperationClass
+        elif api_version == '2022-11-01':
+            from .v2022_11_01.operations import FluxConfigOperationStatusOperations as OperationClass
+        elif api_version == '2023-05-01':
+            from .v2023_05_01.operations import FluxConfigOperationStatusOperations as OperationClass
         else:
             raise ValueError("API version {} does not have operation group 'flux_config_operation_status'".format(api_version))
+        self._config.api_version = api_version
         return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
 
     @property
@@ -265,6 +321,9 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
            * 2022-01-01-preview: :class:`FluxConfigurationsOperations<azure.mgmt.kubernetesconfiguration.v2022_01_01_preview.operations.FluxConfigurationsOperations>`
            * 2022-01-15-preview: :class:`FluxConfigurationsOperations<azure.mgmt.kubernetesconfiguration.v2022_01_15_preview.operations.FluxConfigurationsOperations>`
            * 2022-03-01: :class:`FluxConfigurationsOperations<azure.mgmt.kubernetesconfiguration.v2022_03_01.operations.FluxConfigurationsOperations>`
+           * 2022-07-01: :class:`FluxConfigurationsOperations<azure.mgmt.kubernetesconfiguration.v2022_07_01.operations.FluxConfigurationsOperations>`
+           * 2022-11-01: :class:`FluxConfigurationsOperations<azure.mgmt.kubernetesconfiguration.v2022_11_01.operations.FluxConfigurationsOperations>`
+           * 2023-05-01: :class:`FluxConfigurationsOperations<azure.mgmt.kubernetesconfiguration.v2023_05_01.operations.FluxConfigurationsOperations>`
         """
         api_version = self._get_api_version('flux_configurations')
         if api_version == '2021-11-01-preview':
@@ -275,8 +334,15 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
             from .v2022_01_15_preview.operations import FluxConfigurationsOperations as OperationClass
         elif api_version == '2022-03-01':
             from .v2022_03_01.operations import FluxConfigurationsOperations as OperationClass
+        elif api_version == '2022-07-01':
+            from .v2022_07_01.operations import FluxConfigurationsOperations as OperationClass
+        elif api_version == '2022-11-01':
+            from .v2022_11_01.operations import FluxConfigurationsOperations as OperationClass
+        elif api_version == '2023-05-01':
+            from .v2023_05_01.operations import FluxConfigurationsOperations as OperationClass
         else:
             raise ValueError("API version {} does not have operation group 'flux_configurations'".format(api_version))
+        self._config.api_version = api_version
         return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
 
     @property
@@ -299,6 +365,7 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
             from .v2022_01_15_preview.operations import LocationExtensionTypesOperations as OperationClass
         else:
             raise ValueError("API version {} does not have operation group 'location_extension_types'".format(api_version))
+        self._config.api_version = api_version
         return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
 
     @property
@@ -312,6 +379,10 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
            * 2022-01-15-preview: :class:`OperationStatusOperations<azure.mgmt.kubernetesconfiguration.v2022_01_15_preview.operations.OperationStatusOperations>`
            * 2022-03-01: :class:`OperationStatusOperations<azure.mgmt.kubernetesconfiguration.v2022_03_01.operations.OperationStatusOperations>`
            * 2022-04-02-preview: :class:`OperationStatusOperations<azure.mgmt.kubernetesconfiguration.v2022_04_02_preview.operations.OperationStatusOperations>`
+           * 2022-07-01: :class:`OperationStatusOperations<azure.mgmt.kubernetesconfiguration.v2022_07_01.operations.OperationStatusOperations>`
+           * 2022-11-01: :class:`OperationStatusOperations<azure.mgmt.kubernetesconfiguration.v2022_11_01.operations.OperationStatusOperations>`
+           * 2023-05-01: :class:`OperationStatusOperations<azure.mgmt.kubernetesconfiguration.v2023_05_01.operations.OperationStatusOperations>`
+           * 2023-05-01-preview: :class:`OperationStatusOperations<azure.mgmt.kubernetesconfiguration.v2023_05_01_preview.operations.OperationStatusOperations>`
         """
         api_version = self._get_api_version('operation_status')
         if api_version == '2021-05-01-preview':
@@ -328,8 +399,17 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
             from .v2022_03_01.operations import OperationStatusOperations as OperationClass
         elif api_version == '2022-04-02-preview':
             from .v2022_04_02_preview.operations import OperationStatusOperations as OperationClass
+        elif api_version == '2022-07-01':
+            from .v2022_07_01.operations import OperationStatusOperations as OperationClass
+        elif api_version == '2022-11-01':
+            from .v2022_11_01.operations import OperationStatusOperations as OperationClass
+        elif api_version == '2023-05-01':
+            from .v2023_05_01.operations import OperationStatusOperations as OperationClass
+        elif api_version == '2023-05-01-preview':
+            from .v2023_05_01_preview.operations import OperationStatusOperations as OperationClass
         else:
             raise ValueError("API version {} does not have operation group 'operation_status'".format(api_version))
+        self._config.api_version = api_version
         return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
 
     @property
@@ -345,6 +425,10 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
            * 2022-01-01-preview: :class:`Operations<azure.mgmt.kubernetesconfiguration.v2022_01_01_preview.operations.Operations>`
            * 2022-01-15-preview: :class:`Operations<azure.mgmt.kubernetesconfiguration.v2022_01_15_preview.operations.Operations>`
            * 2022-03-01: :class:`Operations<azure.mgmt.kubernetesconfiguration.v2022_03_01.operations.Operations>`
+           * 2022-07-01: :class:`Operations<azure.mgmt.kubernetesconfiguration.v2022_07_01.operations.Operations>`
+           * 2022-11-01: :class:`Operations<azure.mgmt.kubernetesconfiguration.v2022_11_01.operations.Operations>`
+           * 2023-05-01: :class:`Operations<azure.mgmt.kubernetesconfiguration.v2023_05_01.operations.Operations>`
+           * 2023-05-01-preview: :class:`Operations<azure.mgmt.kubernetesconfiguration.v2023_05_01_preview.operations.Operations>`
         """
         api_version = self._get_api_version('operations')
         if api_version == '2020-07-01-preview':
@@ -365,8 +449,17 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
             from .v2022_01_15_preview.operations import Operations as OperationClass
         elif api_version == '2022-03-01':
             from .v2022_03_01.operations import Operations as OperationClass
+        elif api_version == '2022-07-01':
+            from .v2022_07_01.operations import Operations as OperationClass
+        elif api_version == '2022-11-01':
+            from .v2022_11_01.operations import Operations as OperationClass
+        elif api_version == '2023-05-01':
+            from .v2023_05_01.operations import Operations as OperationClass
+        elif api_version == '2023-05-01-preview':
+            from .v2023_05_01_preview.operations import Operations as OperationClass
         else:
             raise ValueError("API version {} does not have operation group 'operations'".format(api_version))
+        self._config.api_version = api_version
         return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
 
     @property
@@ -380,6 +473,7 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
             from .v2022_04_02_preview.operations import PrivateEndpointConnectionsOperations as OperationClass
         else:
             raise ValueError("API version {} does not have operation group 'private_endpoint_connections'".format(api_version))
+        self._config.api_version = api_version
         return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
 
     @property
@@ -393,6 +487,7 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
             from .v2022_04_02_preview.operations import PrivateLinkResourcesOperations as OperationClass
         else:
             raise ValueError("API version {} does not have operation group 'private_link_resources'".format(api_version))
+        self._config.api_version = api_version
         return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
 
     @property
@@ -406,6 +501,7 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
             from .v2022_04_02_preview.operations import PrivateLinkScopesOperations as OperationClass
         else:
             raise ValueError("API version {} does not have operation group 'private_link_scopes'".format(api_version))
+        self._config.api_version = api_version
         return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
 
     @property
@@ -420,6 +516,9 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
            * 2022-01-01-preview: :class:`SourceControlConfigurationsOperations<azure.mgmt.kubernetesconfiguration.v2022_01_01_preview.operations.SourceControlConfigurationsOperations>`
            * 2022-01-15-preview: :class:`SourceControlConfigurationsOperations<azure.mgmt.kubernetesconfiguration.v2022_01_15_preview.operations.SourceControlConfigurationsOperations>`
            * 2022-03-01: :class:`SourceControlConfigurationsOperations<azure.mgmt.kubernetesconfiguration.v2022_03_01.operations.SourceControlConfigurationsOperations>`
+           * 2022-07-01: :class:`SourceControlConfigurationsOperations<azure.mgmt.kubernetesconfiguration.v2022_07_01.operations.SourceControlConfigurationsOperations>`
+           * 2022-11-01: :class:`SourceControlConfigurationsOperations<azure.mgmt.kubernetesconfiguration.v2022_11_01.operations.SourceControlConfigurationsOperations>`
+           * 2023-05-01: :class:`SourceControlConfigurationsOperations<azure.mgmt.kubernetesconfiguration.v2023_05_01.operations.SourceControlConfigurationsOperations>`
         """
         api_version = self._get_api_version('source_control_configurations')
         if api_version == '2020-07-01-preview':
@@ -438,8 +537,15 @@ class SourceControlConfigurationClient(MultiApiClientMixin, _SDKClient):
             from .v2022_01_15_preview.operations import SourceControlConfigurationsOperations as OperationClass
         elif api_version == '2022-03-01':
             from .v2022_03_01.operations import SourceControlConfigurationsOperations as OperationClass
+        elif api_version == '2022-07-01':
+            from .v2022_07_01.operations import SourceControlConfigurationsOperations as OperationClass
+        elif api_version == '2022-11-01':
+            from .v2022_11_01.operations import SourceControlConfigurationsOperations as OperationClass
+        elif api_version == '2023-05-01':
+            from .v2023_05_01.operations import SourceControlConfigurationsOperations as OperationClass
         else:
             raise ValueError("API version {} does not have operation group 'source_control_configurations'".format(api_version))
+        self._config.api_version = api_version
         return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
 
     def close(self):

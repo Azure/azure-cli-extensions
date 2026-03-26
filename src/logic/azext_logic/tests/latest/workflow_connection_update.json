@@ -1,0 +1,53 @@
+{
+  "definition": {
+    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+    "actions": {
+      "Get_blob_content_(V2)": {
+        "inputs": {
+          "host": {
+            "connection": {
+              "name": "@parameters('$connections')['azureblob_2']['connectionId']"
+            }
+          },
+          "method": "get",
+          "path": "/v2/datasets/@{encodeURIComponent(encodeURIComponent('AccountNameFromSettings'))}/files/@{encodeURIComponent(encodeURIComponent('JTJmdGVzdCUyZmFhYS50eHQ='))}/content",
+          "queries": {
+            "inferContentType": true
+          }
+        },
+        "metadata": {
+          "JTJmdGVzdCUyZmFhYS50eHQ=": "/test/aaa.txt"
+        },
+        "runAfter": {},
+        "type": "ApiConnection"
+      }
+    },
+    "contentVersion": "1.0.0.0",
+    "outputs": {},
+    "parameters": {
+      "$connections": {
+        "defaultValue": {},
+        "type": "Object"
+      }
+    },
+    "triggers": {
+      "Recurrence": {
+        "evaluatedRecurrence": {
+          "frequency": "Month",
+          "interval": 4
+        },
+        "recurrence": {
+          "frequency": "Month",
+          "interval": 4
+        },
+        "type": "Recurrence"
+      }
+    }
+  },
+  "parameters": {
+    "$connections": {
+      "value": {
+      }
+    }
+  }
+}

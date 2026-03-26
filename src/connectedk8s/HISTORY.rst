@@ -2,101 +2,344 @@
 
 Release History
 ===============
+1.11.0
++++++
+* [Breaking Change] Removed deprecated '--app-id' and '--app-secret' RBAC parameters from the extension.
+* Update cluster diagnostics image to comply with Pod Security Standards-Restricted level( Updated image version:1.31.2).
+* Add endpoint overrides for Azure Government cloud environments
+* Update Proxy Image to 1.3.032281
+
+1.10.11
++++++++
+* Removed hardcoded public ARM endpoint URL for Government clouds.
+* Fixed incorrect MCR endpoint URLs for Government cloud environments.
+
+1.10.10
++++++
+* Deprecated '--app-id' and '--app-secret' RBAC parameters from the extension by adding them to _breaking_change.py.
+* Bug fix for https://github.com/Azure/azure-cli-extensions/issues/8498.
+* Update warning to use the latest kubelogin version which has support for generating PoP token.
+
+1.10.9
+++++++
+* Added support for associating and disassociating gateways in CLI and updated SDK version to '2025-08-01-preview'.
+* Updated cluster diagnostics image to 1.29.3
+
+1.10.8
+++++++
+* Force delete parameter updated to `connectedk8s delete` command to allow force deletion of connectedk8s ARM resource.
+* Parameterize the MCR url for Airgapped clouds.
+* Update error strings for config and connectivity errors in connect command.
+
+1.10.7
+++++++
+* Added support for discovering additional k8s distributions and Infrastructure.
+* Updated Connect command help to indicate the kubeconfig prerequisite.
+* Fixed the issue where the 'connectedk8s proxy' command would fail with newer versions of the Azure CLI.
+
+1.10.6
+++++++
+* Added support for downloading helm binaries from MCR.
+* Added warnings for custom location feature based on Service Principal Name or User permissions to retrieve OID.
+
+1.10.5
+++++++
+* Fixed bug impacting long-running operations of the az connectedk8s proxy command.
+* Refactored code to reduce proxy command startup time.
+* Added support for downloading proxy binaries from MCR, including more architecture-specific versions.
+* Enhanced telemetry to capture detailed error information during Helm installation failures.
+
+1.10.4
+++++++
+* Fixed the issue where the 'connectedk8s proxy' command would fail if the kubeconfig file was empty.
+
+1.10.3
+++++++
+* Fixed linting and styling issues, and added type annotations.
+* Fixed the issue where the 'connectedk8s troubleshoot' command did not work when workload identity was not enabled on the cluster.
+* Fixed an issue where ArcAgentryConfigurations were unintentionally altered during updates that did not modify proxy settings
+
+1.10.2
+++++++
+* Update for disconnected environment scenario.
+
+1.10.1
+++++++
+* Fixed an issue where the proxy settings were not disabled when the 'disable_proxy' parameter was provided in the update command.
+
+1.10.0
+++++++
+* Add support for Arc Gateway feature using '--gateway-resource-id' and '--disable-gateway' parameters.
+* Bug fix for Workload Identity poll or agent state.
+* Bug fix for connectedk8s update with workload identity enabled.
+* Update pycryptodome to 3.20.0.
+
+1.9.3
+++++++
+* Removed a workaround that is no longer needed after updating to MSAL 1.30.0+
+
+1.9.2
+++++++
+* Fixed the issue where pre-onboarding diagnostic checks failed for clusters running Kubernetes v1.31.0.
+
+1.9.1
+++++++
+* Fixed the issue where executing a second `connectedk8s connect` command would inadvertently delete the "azure-arc-release" namespace.
+
+1.9.0
+++++++
+* Upgrading to v0.2.2 of ArcK8sDiagnoser
+* Fix Style and Linter issues.
+* Increase Max Timeout for Onboarding Helm Install to 20 mins (from 10).
+
+1.8.0
+++++++
+* New api version 2024-07-1-preview added
+* Adding functionality for workload identity feature.
+* Cluster create and update waits for agent state
+
+1.7.3
+++++++
+* Skip helm archive download if helm is already installed.
+
+1.7.2
+++++++
+* Fixed Broken Import for Service Principal
+
+1.7.1
+++++++
+* Fixed PoP token for proxy command using service principal.
+
+1.7.0
+++++++
+* Update helm binary download source.
+* Introduce "--skip-ssl-verification" flag.
+
+1.6.8
+++++++
+* Add support for running multiple proxy instances on the same machine using different ports.
+
+1.6.7
+++++++
+* Improve Error logs during Arc Onboarding scenarios, Style fixes.
+
+1.6.6
+++++++
+* Fix proxy live test.
+* Fix unused variable and parameter.
+* Use makedirs instead of mkdir for installing kubectl.
+
+1.6.5
+++++++
+* Fix tenant ID retrieval for proxy command.
+
+1.6.4
+++++++
+* Replace AAD Graph with Microsoft Graph for getting Custom Locations RP service principal application object ID.
+* Will require Application.Read.All permission for Microsoft Graph to activate Custom Locations automatically. See below for work-around:
+https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/custom-locations#enable-custom-locations-on-your-cluster
+
+1.6.3
+++++++
+* Skip checking operation version support for non-stable release trains.
+
+1.6.2
+++++++
+* Additional bugfixes.
+
+1.6.1
+++++++
+* Added support for reading ARM metadata 2023-11-01.
+* Enable connectedk8s CLI extension to be used for new cluster kind of provisioned clusters.
+
+1.6.0
+++++++
+* Updated Helm from 3.6.3 to 3.12.2
+
+1.5.6
+++++++
+* Deprecate '--app-id' and '--app-secret' RBAC params.
+* Use 1P apps for authN/authZ when RBAC is enabled.
+* Add warning to use kubelogin version v0.0.32 or higher which has support for generating PoP token.
+
+1.5.5
+++++++
+* Lookup Custom Locations objectId using appId instead of displayName
+
+1.5.4
+++++++
+* Log debug if 'arcConfigEndpoint' doesn't exist in 'dataplaneEndpoints' ARM metadata.
+
+1.5.3
+++++++
+* Add support to get AKS-EE kubernetes distro
+
+1.5.2
+++++++
+* Skip onboarding pre-checks for AKS-HCI with additional distros : [aks_management, aks_edge_k8s, aks_edge_k3s]
+
+1.4.2
+++++++
+* Fix reference error.
+
+1.4.1
+++++++
+* Skip Onboarding prechecks for AKS-HCI.
+
+1.4.0
+++++++
+* Added support for reading ARM metadata 2022-09-01.
+
+1.3.20
+++++++
+* Bug fix in parsing logs for outbound connectivity check for troubleshoot command
+
+1.3.19
+++++++
+* Adding outbound network connectivity check for Cluster Connect (OBO endpoint)
+
+1.3.18
+++++++
+* Cleaning up stale CRDs if present during onboarding (even in absence of azure-arc release)
+* Adding retries in Helm client download
+* Added some failures to be classified as userfaults
+
+1.3.17
+++++++
+* Added a spinner which runs while ARM resource is being provisioned
+* Added additional logging to indicate which step is running
+
+1.3.16
+++++++
+* Adding force delete in connect command in case of stale resources present during onboarding
+* Bug fixes in diagnoser
+* Pushing armd id and location to telemetry
+* Adding test for connectedk8s proxy command
+
+1.3.15
+++++++
+* Diagnoser Enhancements - storing metadata and KAP CR snapshots , azure-arc helm values , azure-arc ns secret list
+* Removing circular imports of 1. custom from precheckutils and 2.(precheckutils and troubleshootutils) from utils
+* Adding back heuristics detection in connect command
+
+1.3.14
+++++++
+* Changing telemetry push interval to 1 hr
+* Adding two new supported infra values - Windows 10 IoT Enterprise, LTSCWindows 10 Enterprise LTSC
+* Saving cluster diagnostic checks pod and job logs
+
+1.3.13
+++++++
+* Bumping up the cluster diagnostic checks helm chart version - Nodeselector addition
+
+1.3.12
+++++++
+* Added retries for helm chart pull and config DP POST call
+* Fix parameterizing for kid in csp method
+* Bug fix in delete_arc_agents for arm64 parameter
+* Added specific exception messages for pre-checks
+
+1.3.11
+++++++
+* Added support for custom AAD token
+* Removed ARM64 unsupported warning
+* Increased helm delete timeout for ARM64 clusters
+* Added multi-architectural images for troubleshoot* Delete azure-arc-release NS if exists as part of delete command
+
+1.3.10
+++++++
+* Added CLI heuristics change
+* Added AKS IOT infra support
+* Bug Fix in precheckutils
+
+1.3.9
+++++++
+* Added DNS and outbound connectivity prechecks in connect command
+
+1.3.8
+++++++
+* Added connectedk8s proxy support for fairfax
+
+1.3.7
+++++++
+* Install new helm release in azure-arc-release NS
+
 1.3.6
 ++++++
-
 * Updated patch behaviour for Azure Hybrid Benefit property
 
 1.3.5
 ++++++
-
 * Added software assurance related changes for AKS HCI
 * Added parameter for overriding container log path
 * Updated kubernetes package dependency to 24.2.0
 
 1.3.4
 ++++++
-
 * Fixed a proxy related bug in connectedk8s upgrade
 
 1.3.3
 ++++++
-
 * Added a timeout in force delete's CRD deletion command
 
 1.3.2
 ++++++
-
 * Added force delete command which is an added functionality in connectedk8s delete function
 
 1.3.1
 ++++++
-
 * Updated min cli core version to 2.30.0
 
 1.3.0
 ++++++
-
 * Added private link support
 
 1.2.11
 ++++++
-
 * Increased the timeout of diagnoser job completion to 180 seconds
 
 1.2.10
 ++++++
-
 * Added troubleshoot command which can be used to diagnose Arc enabled K8s clusters
 
 1.2.9
 ++++++
-
 * Add correlation-id parameter to internally track onboarding sources
 
 1.2.8
 ++++++
-
 * Bump up CSP version to 1.3.019103, bump up `pycryptodome` to 3.14.1 to support Python 3.10
 
 1.2.7
 ++++++
-
 * Avoid using packaging module and revert minCliCoreVersion to 2.16.0
 
 1.2.6
 ++++++
-
 * Update minCliCoreVersion to 2.23.0
 
 1.2.5
 ++++++
-
 * Using MSAL based auth for CLI version >= 2.30.0
 
 1.2.4
 ++++++
-
 * Custom cert changes, using "userValues.txt" for existing values in update command instead of --reuse-values, fix to wait for LRO to complete before starting agent installation/deletion
 
 1.2.3
 ++++++
-
 * Fetching the tenantID from subscription object instead of graphclient
 
 1.2.2
 ++++++
-
 * Updated connectedk8s proxy to support mooncake
 
 1.2.1
 ++++++
-
 * Add maxCliCoreVersion as 2.29.0
 
 1.2.0
 ++++++
-
 * Updated CSP version to 1.3.017131
 * Updated GA SDK to 2021-10-01
 * Updated CSP endpoint to CDN
@@ -104,17 +347,14 @@ Release History
 
 1.1.11
 ++++++
-
 * Installing helm binary as part of CLI commands
 
 1.1.10
 ++++++
-
 * Fixed ARM exception telemetry
 
 1.1.9
 ++++++
-
 * Increase onboarding and upgrade timeout
 
 1.1.8

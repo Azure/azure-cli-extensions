@@ -8,11 +8,6 @@ from knack.util import CLIError
 from azure.mgmt.core.tools import parse_resource_id, is_valid_resource_id
 
 
-def validate_app_service(namespace):
-    if namespace.app_service and is_valid_resource_id(namespace.app_service):
-        namespace.app_service = parse_resource_id(namespace.app_service)['name']
-
-
 def validate_dest_account(namespace):
     if is_valid_resource_id(namespace.dest_account):
         parsed_storage = parse_resource_id(namespace.dest_account)
@@ -32,7 +27,7 @@ def validate_applications(namespace):
 
 def validate_storage_account_name_or_id(cmd, namespace):
     if namespace.storage_account_id:
-        from msrestazure.tools import resource_id
+        from azure.mgmt.core.tools import resource_id
         from azure.cli.core.commands.client_factory import get_subscription_id
         if not is_valid_resource_id(namespace.storage_account_id):
             namespace.storage_account_id = resource_id(
@@ -46,7 +41,7 @@ def validate_storage_account_name_or_id(cmd, namespace):
 
 def validate_log_analytic_workspace_name_or_id(cmd, namespace):
     if namespace.workspace_resource_id:
-        from msrestazure.tools import resource_id
+        from azure.mgmt.core.tools import resource_id
         from azure.cli.core.commands.client_factory import get_subscription_id
         if not is_valid_resource_id(namespace.workspace_resource_id):
             namespace.workspace_resource_id = resource_id(

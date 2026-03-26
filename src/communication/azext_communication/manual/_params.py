@@ -3,27 +3,54 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from azure.cli.core.commands.parameters import get_enum_type, get_three_state_flag
+
 
 def load_arguments(self, _):
     with self.argument_context('communication update') as c:
         c.argument('location', validator=None)
 
-    _load_identity_arguments(self)
+    _load_user_identity_arguments(self)
+    _load_legacy_identity_arguments(self)
     _load_sms_arguments(self)
     _load_phonenumber_arguments(self)
     _load_chat_arguments(self)
+    _load_rooms_arguments(self)
+    _load_email_arguments(self)
 
 
-def _load_identity_arguments(self):
+def _load_user_identity_arguments(self):
+    self.argument_context('communication user-identity user create')
+
+    with self.argument_context('communication user-identity user delete') as c:
+        c.argument('user_id', options_list=['--user'], type=str, help='ACS identifier')
+
+    with self.argument_context('communication user-identity issue-access-token') as c:
+        c.argument('user_id', options_list=['--userid', '-u'], type=str, help='ACS identifier')
+        c.argument('scopes', options_list=['--scope', '-s'],
+                   nargs='+', help='list of scopes for an access token ex: chat/voip')
+
+    with self.argument_context('communication user-identity token issue') as c:
+        c.argument('user_id', options_list=['--user'], type=str, help='ACS identifier')
+        c.argument('scopes', options_list=['--scope'], nargs='+',
+                   help='list of scopes for an access token ex: chat/voip')
+
+    with self.argument_context('communication user-identity token revoke') as c:
+        c.argument('user_id', options_list=['--user'], type=str, help='ACS identifier')
+
+    with self.argument_context('communication user-identity token get-for-teams-user') as c:
+        c.argument('aad_token', options_list=['--aad-token'], type=str, help='Azure AD access token of a Teams User')
+        c.argument('client_id', options_list=['--client'], type=str, help='Client ID of an Azure AD application'
+                   'to be verified against the appId claim in the Azure AD access token')
+        c.argument('user_object_id', options_list=['--aad-user'], type=str, help='Object ID of an Azure AD user'
+                   '(Teams User) to be verified against the OID claim in the Azure AD access token')
+
+
+def _load_legacy_identity_arguments(self):
     self.argument_context('communication identity user create')
 
     with self.argument_context('communication identity user delete') as c:
         c.argument('user_id', options_list=['--user'], type=str, help='ACS identifier')
-
-    with self.argument_context('communication identity issue-access-token') as c:
-        c.argument('user_id', options_list=['--userid', '-u'], type=str, help='ACS identifier')
-        c.argument('scopes', options_list=['--scope', '-s'],
-                   nargs='+', help='list of scopes for an access token ex: chat/voip')
 
     with self.argument_context('communication identity token issue') as c:
         c.argument('user_id', options_list=['--user'], type=str, help='ACS identifier')
@@ -42,13 +69,6 @@ def _load_identity_arguments(self):
 
 
 def _load_sms_arguments(self):
-    with self.argument_context('communication sms send-sms') as c:
-        c.argument('sender', options_list=['--sender', '-s'],
-                   type=str, help='The sender of the SMS')
-        c.argument('recipients', options_list=['--recipient', '-r'],
-                   nargs='+', help='The recipient(s) of the SMS')
-        c.argument('message', options_list=['--message', '-m'],
-                   type=str, help='The message in the SMS')
     with self.argument_context('communication sms send') as c:
         c.argument('sender', options_list=['--sender'],
                    type=str, help='The sender of the SMS')
@@ -56,6 +76,22 @@ def _load_sms_arguments(self):
                    nargs='+', help='The recipient(s) of the SMS')
         c.argument('message', options_list=['--message'],
                    type=str, help='The message in the SMS')
+        c.argument('delivery_report', options_list=['--deliveryReport'],
+                   action='store_true', help='Enable delivery report for the SMS')
+        c.argument('tag', options_list=['--tag'],
+                   type=str, help='Custom tag for the SMS message')
+
+    with self.argument_context('communication sms send-sms') as c:
+        c.argument('sender', options_list=['--sender', '-s'],
+                   type=str, help='The sender of the SMS')
+        c.argument('recipients', options_list=['--recipient', '-r'],
+                   nargs='+', help='The recipient(s) of the SMS')
+        c.argument('message', options_list=['--message', '-m'],
+                   type=str, help='The message in the SMS')
+        c.argument('delivery_report', options_list=['--deliveryReport'],
+                   action='store_true', help='Enable delivery report for the SMS')
+        c.argument('tag', options_list=['--tag'],
+                   type=str, help='Custom tag for the SMS message')
 
 
 def _load_phonenumber_arguments(self):
@@ -167,3 +203,111 @@ def _load_chat_message_management(self):
                    type=str, help='Thread id')
         c.argument('message_id', options_list=['--message-id'],
                    type=str, help='Message id')
+
+
+def _load_rooms_arguments(self):
+    with self.argument_context('communication rooms get') as c:
+        c.argument('room_id', options_list=['--room'],
+                   type=str, help='Room Id')
+
+    with self.argument_context('communication rooms create') as c:
+        c.argument('valid_from',
+                   help='The timestamp from when the room is open for joining, '
+                   'in in ISO8601 format, ex: 2023-03-31T10:21. Optional.')
+        c.argument('valid_until',
+                   help='The timestamp from when the room can no longer be joined,'
+                   ' in ISO8601 format, ex: 2023-06-31T10:21. Optional.')
+        c.argument('pstn_dial_out_enabled',
+                   help='Set this flag to true if, at the time of the call, '
+                   'dial out to a PSTN number is enabled in a particular room. '
+                   'By default, this flag is set to false. Optional.')
+        c.argument('presenters', options_list=['--presenter-participants', '--presenters'],
+                   nargs='+', help='Collection of identities to be invited to the room as presenter. Optional.')
+        c.argument('attendees', options_list=['--attendee-participants', '--attendees'],
+                   nargs='+', help='Collection of identities to be invited to the room as attendee. Optional.')
+        c.argument('consumers', options_list=['--consumer-participants', '--consumers'],
+                   nargs='+', help='Collection of identities to be invited to the room as consumer. Optional.')
+        c.argument('collaborators', options_list=['--collaborator-participants', '--collaborators'],
+                   nargs='+', help='Collection of identities to be invited to the room as collaborator. Optional.')
+
+    with self.argument_context('communication rooms delete') as c:
+        c.argument('room_id', options_list=['--room'],
+                   type=str, help='Room Id')
+
+    with self.argument_context('communication rooms update') as c:
+        c.argument('room_id', options_list=['--room'], type=str, help='Room Id')
+        c.argument('valid_from',
+                   help='The timestamp from when the room is open for joining, in in ISO8601 format, '
+                   'ex: 2023-03-31T10:21. Should be used together with --valid-until. Optional.')
+        c.argument('valid_until',
+                   help='The timestamp from when the room can no longer be joined, in ISO8601 format, '
+                   'ex: 2023-06-31T10:21. Should be used together with --valid-from. Optional.')
+        c.argument('pstn_dial_out_enabled',
+                   help='Set this flag to true if, at the time of the call, '
+                   'dial out to a PSTN number is enabled in a particular room. '
+                   'By default, this flag is set to false. Optional.')
+
+    with self.argument_context('communication rooms participant get') as c:
+        c.argument('room_id', options_list=['--room'],
+                   type=str, help='Room Id')
+
+    with self.argument_context('communication rooms participant add-or-update') as c:
+        c.argument('room_id', options_list=['--room'],
+                   type=str, help='Room Id')
+        c.argument('presenters', options_list=['--presenter-participants', '--presenters'],
+                   nargs='+', help='Collection of identities to be added to the room as presenter.')
+        c.argument('attendees', options_list=['--attendee-participants', '--attendees'],
+                   nargs='+', help='Collection of identities to be added to the room as attendee.')
+        c.argument('consumers', options_list=['--consumer-participants', '--consumers'],
+                   nargs='+', help='Collection of identities to be added to the room as consumer.')
+        c.argument('collaborators', options_list=['--collaborator-participants', '--collaborators'],
+                   nargs='+', help='Collection of identities to be added to the room as collaborator.')
+
+    with self.argument_context('communication rooms participant remove') as c:
+        c.argument('room_id', options_list=['--room'],
+                   type=str, help='Room Id')
+        c.argument('participants', options_list=['--participants'],
+                   nargs='+', help='Collection of identities that will be removed from the room.')
+
+
+def _load_email_arguments(self):
+    with self.argument_context('communication email send') as c:
+        c.argument('sender', options_list=['--sender'], type=str, help='Sender email address from a verified domain.')
+        c.argument('subject', options_list=['--subject'], type=str, help='Subject of the email message.')
+        c.argument('text', options_list=['--text'], type=str, help='Plain text version of the email message. Optional.')
+        c.argument('html', options_list=['--html'], type=str,
+                   help='Html version of the email message. Optional.')
+        c.argument('recipients_to', options_list=['--to'], nargs='+',
+                   help='Recepients email addresses comma seperated if more than one.')
+        c.argument('importance', options_list=['--importance'], arg_type=get_enum_type(['normal', 'low', 'high']),
+                   help='The importance type for the email. Known values are: high,'
+                   ' normal, and low. Default is normal. Optional')
+        c.argument('recipients_cc', options_list=['--cc'], nargs='+', help='Carbon copy email addresses.')
+        c.argument('recipients_bcc', options_list=['--bcc'], nargs='+', help='Blind carbon copy email addresses.')
+        c.argument('reply_to', options_list=['--reply-to'], type=str, help='Reply-to email address. Optional.')
+        c.argument('disable_tracking', options_list=['--disable-tracking'],
+                   arg_type=get_three_state_flag(),
+                   help='Indicates whether user engagement tracking should be disabled for this specific request. '
+                   'This is only applicable if the resource-level user engagement '
+                   'tracking setting was already enabled in control plane. Optional.')
+        c.argument('attachments', options_list=['--attachments'], nargs='+',
+                   help='List of email attachments. Optional.')
+        c.argument('attachment_types', options_list=['--attachment-types'], nargs='+',
+                   help='List of email attachment types and inline attachment types, '
+                   'in the same order of attachments followed by inline attachments.'
+                   ' Required for each attachment. Known values for attachments are: avi, bmp, doc, docm,'
+                   ' docx, gif, jpeg, mp3, one, pdf, png, ppsm, ppsx, ppt, pptm, pptx,'
+                   ' pub, rpmsg, rtf, tif, txt, vsd, wav, wma, xls, xlsb, xlsm, and xlsx')
+        c.argument('inline_attachments', options_list=['--inline-attachments'], nargs='+',
+                   help='List of inline attachments. Optional. Format: FileLocation/ContentId'
+                   ' example: "ImageName.png/image"')
+        c.argument('waitUntil', options_list=['--wait-until'],
+                   arg_type=get_enum_type(['started', 'completed', '1', '0']),
+                   help='Indicates whether to wait until the server operation is started or completed. '
+                   'Accepted values are: started, completed, 1, 0.')
+
+    with self.argument_context('communication email status get') as c:
+        c.argument('operation_id', options_list=['--operation-id'], type=str,
+                   help='System generated message id (GUID) returned from a previous call to send email')
+        c.argument('connection_string', options_list=['--connection-string'], type=str,
+                   help='Connection string for Azure Communication Service. Must be provided.')

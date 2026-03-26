@@ -15,7 +15,7 @@ class AddPropertiesParameters(argparse.Action):
         action = self.get_action(values, option_string)
         namespace.properties_parameters = action
 
-    def get_action(self, values, option_string):  # pylint: disable=no-self-use
+    def get_action(self, values, option_string):
         try:
             properties = defaultdict(list)
             for (k, v) in (x.split('=', 1) for x in values):

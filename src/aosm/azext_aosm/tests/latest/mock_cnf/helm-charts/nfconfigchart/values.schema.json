@@ -1,0 +1,134 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "additionalProperties": true,
+    "properties": {
+        "affinity": {
+            "additionalProperties": false,
+            "properties": {},
+            "type": "object"
+        },
+        "fullnameOverride": {
+            "type": "string"
+        },
+        "image": {
+            "additionalProperties": false,
+            "properties": {
+                "pullPolicy": {
+                    "type": "string"
+                },
+                "repository": {
+                    "type": "string"
+                },
+                "tag": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "imagePullSecrets": {
+            "items": {
+                "anyOf": []
+            },
+            "type": "array"
+        },
+        "ingress": {
+            "additionalProperties": false,
+            "properties": {
+                "annotations": {
+                    "additionalProperties": false,
+                    "properties": {},
+                    "type": "object"
+                },
+                "enabled": {
+                    "type": "boolean"
+                },
+                "hosts": {
+                    "items": {
+                        "anyOf": [
+                            {
+                                "additionalProperties": false,
+                                "properties": {
+                                    "host": {
+                                        "type": "string"
+                                    },
+                                    "paths": {
+                                        "items": {
+                                            "anyOf": []
+                                        },
+                                        "type": "array"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        ]
+                    },
+                    "type": "array"
+                },
+                "tls": {
+                    "items": {
+                        "anyOf": []
+                    },
+                    "type": "array"
+                }
+            },
+            "type": "object"
+        },
+        "nameOverride": {
+            "type": "string"
+        },
+        "nodeSelector": {
+            "additionalProperties": false,
+            "properties": {},
+            "type": "object"
+        },
+        "podSecurityContext": {
+            "additionalProperties": false,
+            "properties": {},
+            "type": "object"
+        },
+        "replicaCount": {
+            "type": "integer"
+        },
+        "resources": {
+            "additionalProperties": false,
+            "properties": {},
+            "type": "object"
+        },
+        "securityContext": {
+            "additionalProperties": false,
+            "properties": {},
+            "type": "object"
+        },
+        "service": {
+            "additionalProperties": false,
+            "properties": {
+                "port": {
+                    "type": "integer"
+                },
+                "type": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "serviceAccount": {
+            "additionalProperties": false,
+            "properties": {
+                "create": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "null"
+                }
+            },
+            "type": "object"
+        },
+        "tolerations": {
+            "items": {
+                "anyOf": []
+            },
+            "type": "array"
+        }
+    },
+    "type": "object"
+}

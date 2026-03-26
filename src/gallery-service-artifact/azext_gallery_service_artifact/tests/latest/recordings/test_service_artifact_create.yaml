@@ -1,0 +1,201 @@
+interactions:
+- request:
+    body: '{"location": "eastus2euap", "name": "ArcoCreatedWithCLIExtensionTest",
+      "properties": {"description": "Test Arco created using cli extension test",
+      "targetLocations": [{"name": "eastus2euap"}, {"name": "centraluseuap"}, {"name":
+      "westcentralus"}, {"name": "westus"}], "vmArtifactsProfiles": [{"artifactProfiles":
+      [{"description": "Using a SIG Image for testing", "imageReference": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/robhoopa_validate_arco_changes/providers/Microsoft.Compute/galleries/ArcoBugBashGallery1/images/Windows2022Gen2ImageGeneralized1",
+      "initialVersion": "0.0.1"}}], "description": "VM Artifact profile with default
+      upgrade window", "name": "vmArtifactsProfile", "upgradeSdpPolicy": {"schedulingPolicy":
+      {"disableRegularUpgrades": false, "maxConcurrentResourceCountPerRegion": 5,
+      "upgradeWindow": "Default"}, "type": "PlatformOrchestratedForNewAndExistingResources"}}]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - gallery service-artifact create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '919'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --gallery-name --resource-group --service-artifact-name --location --target-locations
+        --vm-artifacts-profiles --description
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.30.1 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_extension_test_rg/providers/Microsoft.Compute/galleries/cli_extension_test_gallery/serviceArtifacts/ArcoCreatedWithCLIExtensionTest?api-version=2023-07-03
+  response:
+    body:
+      string: "{\r\n  \"name\": \"ArcoCreatedWithCLIExtensionTest\",\r\n  \"id\":\
+        \ \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_extension_test_rg/providers/Microsoft.Compute/galleries/cli_extension_test_gallery/serviceArtifacts/ArcoCreatedWithCLIExtensionTest\"\
+        ,\r\n  \"type\": \"Microsoft.Compute/galleries/serviceArtifacts\",\r\n  \"\
+        location\": \"EastUS2EUAP\",\r\n  \"properties\": {\r\n    \"description\"\
+        : \"Test Arco created using cli extension test\",\r\n    \"targetLocations\"\
+        : [\r\n      {\r\n        \"name\": \"eastus2euap\"\r\n      },\r\n      {\r\
+        \n        \"name\": \"centraluseuap\"\r\n      },\r\n      {\r\n        \"\
+        name\": \"westcentralus\"\r\n      },\r\n      {\r\n        \"name\": \"westus\"\
+        \r\n      }\r\n    ],\r\n    \"vmArtifactsProfiles\": [\r\n      {\r\n   \
+        \     \"name\": \"vmArtifactsProfile\",\r\n        \"description\": \"VM Artifact\
+        \ profile with default upgrade window\",\r\n        \"artifactProfiles\":\
+        \ [\r\n          {\r\n            \"description\": \"Using a SIG Image for\
+        \ testing\",\r\n            \"imageReference\": {\r\n              \"id\"\
+        : \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/robhoopa_validate_arco_changes/providers/Microsoft.Compute/galleries/ArcoBugBashGallery1/images/Windows2022Gen2ImageGeneralized1\"\
+        ,\r\n              \"initialVersion\": \"0.0.1\"\r\n            }\r\n    \
+        \      }\r\n        ],\r\n        \"upgradeSdpPolicy\": {\r\n          \"\
+        type\": \"PlatformOrchestratedForNewAndExistingResources\",\r\n          \"\
+        schedulingPolicy\": {\r\n            \"disableRegularUpgrades\": false,\r\n\
+        \            \"upgradeWindow\": \"Default\",\r\n            \"maxConcurrentResourceCountPerRegion\"\
+        : 5\r\n          }\r\n        }\r\n      }\r\n    ],\r\n    \"provisioningState\"\
+        : \"Updating\"\r\n  }\r\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/EastUS2EUAP/capsOperations/138ea388-cca0-4293-b0eb-2256737bfbdd?api-version=2023-07-03&t=638477184969112956&c=MIIHHjCCBgagAwIBAgITOgKYXReW2dAHAh_AzAAEAphdFzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSU5GUkEgQ0EgMDEwHhcNMjQwMjAxMTYzMjI4WhcNMjUwMTI2MTYzMjI4WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALxCd9mAWkUFYvDgRhlaZ__1d5Z0P_eK9_UHwszPIcU7ocL507dzk_tOy_L_CVr3OTNdxFUQ8FwoMy3BqVfGHV23qCNssOnO4-gT0_s5gQX0rKhfNtGpagHObwHJ0QiSUYLxZ98dBp0rnxGOIveGBNZo-e01jjTRqekxMsaSDKMHrmcLJpSeP1YXF3938x-7i7B4GYvoUT7W9XM89-BsuIHu9Z2ZC3mPBGd80tQZ5WKAfOdphmMwN5kMsCw22G9_6ZwE93DZpbhN-yw8sY69aS6cs5YxuD9DnfhnbAKf5FEq8oMEPZRzcJ2TzpgYGne9qiATXfPNRoMOU1YbIl6OuEUCAwEAAaOCBAswggQHMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CWTJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSU5GUkElMjBDQSUyMDAxKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MB0GA1UdDgQWBBSt-JfSXW5wb2_qpmLU-68nLYOrOjAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTl2Ztn_PjsurvwwKidileIud8-YzAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAEB0ymwhkqgUbny6xvgypRZwgeXpl1H6QB3nqpDIfL7RnMMtFgVsEdx--4bDU-Hfw80XlwQHc3qNxrDh8qzb1EiKSYWFrt1Spq5YKiO9cxZgCIWk8whcLo7oaF5vRGFLkpDI1yDQpz8OY5poChStZNxUsNlvEj39unrppSjzj4lQX2J88O_jvLoTyklXKkuBvs-M6RvmJGxpTwaDh_F-JzxNEjd4aHp1HDyMks7X1HuFTjQPre-g5QoU-JeA0WmGVAGYL-ARA6AMNt4Fq9jDY378eBKOmj4f72-6_xZCqDTVb9q3s17H3huo_Z_ysyUNANggE6g6uYbn1x8glPh6sbk&s=IEwzWlr7JTyXAdXOp1WmhhirixM6sT2BrOyjN8EH1MNUrehvv7Kv3HvcLKzRlDeqk1kxSHKFy7IDf-gTvsINHKlhXprUXE1WEhKUzwi4mm-IhRpRYAsuozKMMfiGD_c5EMH5VAuPCzoqEvQpN3AKiV9Sd9DfB2hjHVfyaCRJNoPUv8OlNjo2eZ4R_gBsrJmHPE7CKXmAZy5GRuFEt6duDxA2_dMb3prHt6E2IJ88bhzfBfyJV6P6b5ST9gQXKFzwPbMMET_n4F-73awv1CSF_gEJMksMI74Sl8RMHOQ_Wwk9NowTX2LuB3jdLc4hNfLNemO7Zxo4DpWs6TqCafH8sg&h=_-DhT2xYGlZTdUQQwbSqTTQ_4Q7hqAVn19z-_TwP9kU
+      cache-control:
+      - no-cache
+      content-length:
+      - '1620'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 03 Apr 2024 05:21:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/CreateUpdateServiceArtifact3Min;49,Microsoft.Compute/CreateUpdateServiceArtifact30Min;299
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: D34BC3A60CD94AFF82E08D5FE0DAF9A7 Ref B: SN4AA2022303035 Ref C: 2024-04-03T05:21:36Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - gallery service-artifact create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --gallery-name --resource-group --service-artifact-name --location --target-locations
+        --vm-artifacts-profiles --description
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.30.1 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/EastUS2EUAP/capsOperations/138ea388-cca0-4293-b0eb-2256737bfbdd?api-version=2023-07-03&t=638477184969112956&c=MIIHHjCCBgagAwIBAgITOgKYXReW2dAHAh_AzAAEAphdFzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSU5GUkEgQ0EgMDEwHhcNMjQwMjAxMTYzMjI4WhcNMjUwMTI2MTYzMjI4WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALxCd9mAWkUFYvDgRhlaZ__1d5Z0P_eK9_UHwszPIcU7ocL507dzk_tOy_L_CVr3OTNdxFUQ8FwoMy3BqVfGHV23qCNssOnO4-gT0_s5gQX0rKhfNtGpagHObwHJ0QiSUYLxZ98dBp0rnxGOIveGBNZo-e01jjTRqekxMsaSDKMHrmcLJpSeP1YXF3938x-7i7B4GYvoUT7W9XM89-BsuIHu9Z2ZC3mPBGd80tQZ5WKAfOdphmMwN5kMsCw22G9_6ZwE93DZpbhN-yw8sY69aS6cs5YxuD9DnfhnbAKf5FEq8oMEPZRzcJ2TzpgYGne9qiATXfPNRoMOU1YbIl6OuEUCAwEAAaOCBAswggQHMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CWTJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSU5GUkElMjBDQSUyMDAxKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MB0GA1UdDgQWBBSt-JfSXW5wb2_qpmLU-68nLYOrOjAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTl2Ztn_PjsurvwwKidileIud8-YzAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAEB0ymwhkqgUbny6xvgypRZwgeXpl1H6QB3nqpDIfL7RnMMtFgVsEdx--4bDU-Hfw80XlwQHc3qNxrDh8qzb1EiKSYWFrt1Spq5YKiO9cxZgCIWk8whcLo7oaF5vRGFLkpDI1yDQpz8OY5poChStZNxUsNlvEj39unrppSjzj4lQX2J88O_jvLoTyklXKkuBvs-M6RvmJGxpTwaDh_F-JzxNEjd4aHp1HDyMks7X1HuFTjQPre-g5QoU-JeA0WmGVAGYL-ARA6AMNt4Fq9jDY378eBKOmj4f72-6_xZCqDTVb9q3s17H3huo_Z_ysyUNANggE6g6uYbn1x8glPh6sbk&s=IEwzWlr7JTyXAdXOp1WmhhirixM6sT2BrOyjN8EH1MNUrehvv7Kv3HvcLKzRlDeqk1kxSHKFy7IDf-gTvsINHKlhXprUXE1WEhKUzwi4mm-IhRpRYAsuozKMMfiGD_c5EMH5VAuPCzoqEvQpN3AKiV9Sd9DfB2hjHVfyaCRJNoPUv8OlNjo2eZ4R_gBsrJmHPE7CKXmAZy5GRuFEt6duDxA2_dMb3prHt6E2IJ88bhzfBfyJV6P6b5ST9gQXKFzwPbMMET_n4F-73awv1CSF_gEJMksMI74Sl8RMHOQ_Wwk9NowTX2LuB3jdLc4hNfLNemO7Zxo4DpWs6TqCafH8sg&h=_-DhT2xYGlZTdUQQwbSqTTQ_4Q7hqAVn19z-_TwP9kU
+  response:
+    body:
+      string: "{\r\n  \"startTime\": \"2024-04-03T05:21:36.8440421+00:00\",\r\n  \"\
+        endTime\": \"2024-04-03T05:21:37.1877985+00:00\",\r\n  \"status\": \"Succeeded\"\
+        ,\r\n  \"name\": \"138ea388-cca0-4293-b0eb-2256737bfbdd\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '184'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 03 Apr 2024 05:21:37 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/GetOperationStatus3Min;4999,Microsoft.Compute/GetOperationStatus30Min;14999
+      x-msedge-ref:
+      - 'Ref A: 915513C6D96D431088E27D95F7279895 Ref B: SN4AA2022303029 Ref C: 2024-04-03T05:21:37Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - gallery service-artifact create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --gallery-name --resource-group --service-artifact-name --location --target-locations
+        --vm-artifacts-profiles --description
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.30.1 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_extension_test_rg/providers/Microsoft.Compute/galleries/cli_extension_test_gallery/serviceArtifacts/ArcoCreatedWithCLIExtensionTest?api-version=2023-07-03
+  response:
+    body:
+      string: "{\r\n  \"name\": \"ArcoCreatedWithCLIExtensionTest\",\r\n  \"id\":\
+        \ \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_extension_test_rg/providers/Microsoft.Compute/galleries/cli_extension_test_gallery/serviceArtifacts/ArcoCreatedWithCLIExtensionTest\"\
+        ,\r\n  \"type\": \"Microsoft.Compute/galleries/serviceArtifacts\",\r\n  \"\
+        location\": \"EastUS2EUAP\",\r\n  \"properties\": {\r\n    \"description\"\
+        : \"Test Arco updated using cli extension test\",\r\n    \"targetLocations\"\
+        : [\r\n      {\r\n        \"name\": \"eastus2euap\"\r\n      },\r\n      {\r\
+        \n        \"name\": \"centraluseuap\"\r\n      },\r\n      {\r\n        \"\
+        name\": \"westcentralus\"\r\n      },\r\n      {\r\n        \"name\": \"westus\"\
+        \r\n      }\r\n    ],\r\n    \"vmArtifactsProfiles\": [\r\n      {\r\n   \
+        \     \"name\": \"vmArtifactsProfile\",\r\n        \"description\": \"VM Artifact\
+        \ profile with default upgrade window\",\r\n        \"artifactProfiles\":\
+        \ [\r\n          {\r\n            \"description\": \"Using a SIG Image for\
+        \ testing\",\r\n            \"imageReference\": {\r\n              \"id\"\
+        : \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/robhoopa_validate_arco_changes/providers/Microsoft.Compute/galleries/ArcoBugBashGallery1/images/Windows2022Gen2ImageGeneralized1\"\
+        ,\r\n              \"initialVersion\": \"0.0.1\"\r\n            }\r\n    \
+        \      }\r\n        ],\r\n        \"upgradeSdpPolicy\": {\r\n          \"\
+        type\": \"PlatformOrchestratedForNewAndExistingResources\",\r\n          \"\
+        schedulingPolicy\": {\r\n            \"disableRegularUpgrades\": false,\r\n\
+        \            \"upgradeWindow\": \"Default\",\r\n            \"maxConcurrentResourceCountPerRegion\"\
+        : 5\r\n          }\r\n        }\r\n      }\r\n    ],\r\n    \"provisioningState\"\
+        : \"Succeeded\"\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1621'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 03 Apr 2024 05:21:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/GetServiceArtifact3Min;345,Microsoft.Compute/GetServiceArtifact30Min;2491
+      x-msedge-ref:
+      - 'Ref A: 053A28E2662144F0912F65E5301E2B1B Ref B: SN4AA2022304049 Ref C: 2024-04-03T05:21:37Z'
+    status:
+      code: 200
+      message: OK
+version: 1

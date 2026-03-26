@@ -1,0 +1,1908 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - ad signed-in-user show
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python/3.12.10 (Windows-10-10.0.19045-SP0) AZURECLI/2.83.0
+    method: GET
+    uri: https://graph.microsoft.com/v1.0/me
+  response:
+    body:
+      string: '{"@odata.context":"https://graph.microsoft.com/v1.0/$metadata#users/$entity","businessPhones":[],"displayName":"Zhiyi
+        Huang","givenName":null,"jobTitle":null,"mail":"test@example.com","mobilePhone":null,"officeLocation":null,"preferredLanguage":null,"surname":null,"userPrincipalName":"test@example.com#EXT#@azclitools20251114.onmicrosoft.com","id":"2146abed-b993-4a81-a6af-eda7b4524c5e"}'
+    headers:
+      cache-control:
+      - no-cache
+      connection:
+      - keep-alive
+      content-length:
+      - '388'
+      content-type:
+      - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
+      date:
+      - Wed, 11 Feb 2026 09:43:34 GMT
+      odata-version:
+      - '4.0'
+      request-id:
+      - 39bab58c-6e24-4f96-b6b2-45d8e69735a4
+      strict-transport-security:
+      - max-age=31536000
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-ms-ags-diagnostic:
+      - '{"ServerInfo":{"DataCenter":"Southeast Asia","Slice":"E","Ring":"5","ScaleUnit":"004","RoleInstance":"SI2PEPF0000D2F2"}}'
+      x-ms-resource-unit:
+      - '1'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2", "properties": {"availabilityZones": ["1"], "baseSizeTiB":
+      23, "extendedCapacitySizeTiB": 14, "sku": {"name": "Premium_LRS", "tier": "Premium"}},
+      "tags": {"key1810": "aaaa"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - elastic-san create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '197'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --tags -l --base-size-tib --extended-capacity-size-tib --sku --availability-zones
+      User-Agent:
+      - AZURECLI/2.83.0 azsdk-python-core/1.38.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002?api-version=2025-09-01
+  response:
+    body:
+      string: '{"location":"eastus2","properties":{"sku":{"name":"Premium_LRS","tier":"Premium"},"availabilityZones":["1"],"provisioningState":"Creating","baseSizeTiB":23,"extendedCapacitySizeTiB":14,"totalIops":115000,"totalMBps":4600,"totalSizeTiB":37,"volumeGroupCount":0,"totalVolumeSizeGiB":0},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002","name":"elastic-san000002","type":"Microsoft.ElasticSan/ElasticSans","tags":{"key1810":"aaaa"},"systemData":{"createdAt":"2026-02-11T09:43:36.043736Z","createdBy":"test@example.com","createdByType":"User","lastModifiedAt":"2026-02-11T09:43:36.043736Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '777'
+      content-type:
+      - application/json
+      date:
+      - Wed, 11 Feb 2026 09:43:35 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/eastus2/asyncoperations/3f9150de-1b6b-4015-b2dd-6ca9cad7e9dd?monitor=true&api-version=2025-09-01&t=639063998163406343&c=MIIH9DCCBtygAwIBAgIQd2vLy0C5gJhlCaq7yELV_jANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVTJDIENBIDAxMB4XDTI2MDEyMTIwMzQ0MloXDTI2MDQxNzAyMzQ0MlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDGvPwNFXQ_7CQ0v6LxRgcjnXvDaVnmXp8Of5dpImOuJxVIUVFzRrPD1GustYagS7JXzQ2zt2c8x8d9vULXoSKCWIHrrNaJefbIUXz2zJVNXWWdWMGbu-zz2w7SFriN2sa67rkm0yq9P2xKORxrhk7bQmsayApQ4zXJWjBNnyHLenBdss5BJvOzWqNTSRUTTvliAxcyCVw6PdUGsn4_THaqaL9Yjg7KiX_1mnsXvyxjSDzZTfxHtBX3uwpEQfBN8lNbCNvtNMnKTcqmIWjkHA59Q_ae7zvVhqXsoa_cNYexj7Ohv7m2BjXhD_mEDEh6-koEosZ6_OQVHTnk9ryuoom9AgMBAAGjggTyMIIE7jCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBQ-TXwk2F_7F5vUZ-HLuRMchUnaYjAfBgNVHSMEGDAWgBTPUQGq6UMsZHYbSvCqwPKS-E_DuzCCAeIGA1UdHwSCAdkwggHVMHWgc6Bxhm9odHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvMjYvY3VycmVudC5jcmwwd6B1oHOGcWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzI2L2N1cnJlbnQuY3JsMGagZKBihmBodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvMjYvY3VycmVudC5jcmwwe6B5oHeGdWh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMS8yNi9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAdQMCEYP37QTttmIwSsPTdjX3PxfVfvNHPEKB7gq8n9gFUP_HV5x4oY5acRsdCEtkpXYavRWrHryLowx02jcNq2tNp9DeCmZm20Enn7hrAMlD5NqyHqHQBxwS2aLRlGF4ydpoBxzeXGivHHvOEtQ9hwLNU5SSa_9LSMHrMKNFSUzJyZOjFXQC3xQ15x9GuDqTEv83FAkmuPdDSPxBULs0T0j6376oU8EF5-RmW2nR8ed7ss_6KRXdOmNH6R_yU55aQK420AZZMasc6LyS4UvMlC-a54CmmowoS3LfTg1XiRsKeK7Y7CBr8iNRE4NwRf_5q9Ro11EawHTpGl-TEOti2&s=ClWefPYd2K-MGNkgmi9fDK7HwsUU9PcEtSs3AKwddmb-6DU-IHimn1jbYdjznY0yw2wLtL6SQAE8sbMbuTDjDyggmt3AyyWh1MgWcdV067G3fkSMgB5YcSyVtD-eeVuwZibisJPV48qlP1KAP41Q290EIvv56Lt_mwu3DvZycE36QxP8VIBal42S93Eq1q6FE4NXMvy3RlrHLsyDqfkG7rOEoKKCNSdk_QF3Gibrf5ql9uCgCaMePoRkW5OfuDnyvSdJ0cC_-gGJQi04O0gWenbUjP_g8xOCkH1TTgGziptyCKTWRTggriq7hk9wi0xT-Naagpfzc10iVHlJXb_MPg&h=V04eKeBte3Dk8ODE70zNZJMkLuK4jnW7ZE4aMhO6xYA
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=4b71fe15-44c6-47b7-94ac-5a6b2cc290e9,objectId=2146abed-b993-4a81-a6af-eda7b4524c5e/eastus2euap/b7747eac-3362-4142-8c3b-34be42547742
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-ms-throttling-version:
+      - v2
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - elastic-san create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --tags -l --base-size-tib --extended-capacity-size-tib --sku --availability-zones
+      User-Agent:
+      - AZURECLI/2.83.0 azsdk-python-core/1.38.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/eastus2/asyncoperations/3f9150de-1b6b-4015-b2dd-6ca9cad7e9dd?monitor=true&api-version=2025-09-01&t=639063998163406343&c=MIIH9DCCBtygAwIBAgIQd2vLy0C5gJhlCaq7yELV_jANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVTJDIENBIDAxMB4XDTI2MDEyMTIwMzQ0MloXDTI2MDQxNzAyMzQ0MlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDGvPwNFXQ_7CQ0v6LxRgcjnXvDaVnmXp8Of5dpImOuJxVIUVFzRrPD1GustYagS7JXzQ2zt2c8x8d9vULXoSKCWIHrrNaJefbIUXz2zJVNXWWdWMGbu-zz2w7SFriN2sa67rkm0yq9P2xKORxrhk7bQmsayApQ4zXJWjBNnyHLenBdss5BJvOzWqNTSRUTTvliAxcyCVw6PdUGsn4_THaqaL9Yjg7KiX_1mnsXvyxjSDzZTfxHtBX3uwpEQfBN8lNbCNvtNMnKTcqmIWjkHA59Q_ae7zvVhqXsoa_cNYexj7Ohv7m2BjXhD_mEDEh6-koEosZ6_OQVHTnk9ryuoom9AgMBAAGjggTyMIIE7jCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBQ-TXwk2F_7F5vUZ-HLuRMchUnaYjAfBgNVHSMEGDAWgBTPUQGq6UMsZHYbSvCqwPKS-E_DuzCCAeIGA1UdHwSCAdkwggHVMHWgc6Bxhm9odHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvMjYvY3VycmVudC5jcmwwd6B1oHOGcWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzI2L2N1cnJlbnQuY3JsMGagZKBihmBodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvMjYvY3VycmVudC5jcmwwe6B5oHeGdWh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMS8yNi9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAdQMCEYP37QTttmIwSsPTdjX3PxfVfvNHPEKB7gq8n9gFUP_HV5x4oY5acRsdCEtkpXYavRWrHryLowx02jcNq2tNp9DeCmZm20Enn7hrAMlD5NqyHqHQBxwS2aLRlGF4ydpoBxzeXGivHHvOEtQ9hwLNU5SSa_9LSMHrMKNFSUzJyZOjFXQC3xQ15x9GuDqTEv83FAkmuPdDSPxBULs0T0j6376oU8EF5-RmW2nR8ed7ss_6KRXdOmNH6R_yU55aQK420AZZMasc6LyS4UvMlC-a54CmmowoS3LfTg1XiRsKeK7Y7CBr8iNRE4NwRf_5q9Ro11EawHTpGl-TEOti2&s=ClWefPYd2K-MGNkgmi9fDK7HwsUU9PcEtSs3AKwddmb-6DU-IHimn1jbYdjznY0yw2wLtL6SQAE8sbMbuTDjDyggmt3AyyWh1MgWcdV067G3fkSMgB5YcSyVtD-eeVuwZibisJPV48qlP1KAP41Q290EIvv56Lt_mwu3DvZycE36QxP8VIBal42S93Eq1q6FE4NXMvy3RlrHLsyDqfkG7rOEoKKCNSdk_QF3Gibrf5ql9uCgCaMePoRkW5OfuDnyvSdJ0cC_-gGJQi04O0gWenbUjP_g8xOCkH1TTgGziptyCKTWRTggriq7hk9wi0xT-Naagpfzc10iVHlJXb_MPg&h=V04eKeBte3Dk8ODE70zNZJMkLuK4jnW7ZE4aMhO6xYA
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      content-type:
+      - text/plain; charset=utf-8
+      date:
+      - Wed, 11 Feb 2026 09:43:39 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/eastus2/asyncoperations/3f9150de-1b6b-4015-b2dd-6ca9cad7e9dd?monitor=true&api-version=2025-09-01&t=639063998201912171&c=MIIH9DCCBtygAwIBAgIQd2vLy0C5gJhlCaq7yELV_jANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVTJDIENBIDAxMB4XDTI2MDEyMTIwMzQ0MloXDTI2MDQxNzAyMzQ0MlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDGvPwNFXQ_7CQ0v6LxRgcjnXvDaVnmXp8Of5dpImOuJxVIUVFzRrPD1GustYagS7JXzQ2zt2c8x8d9vULXoSKCWIHrrNaJefbIUXz2zJVNXWWdWMGbu-zz2w7SFriN2sa67rkm0yq9P2xKORxrhk7bQmsayApQ4zXJWjBNnyHLenBdss5BJvOzWqNTSRUTTvliAxcyCVw6PdUGsn4_THaqaL9Yjg7KiX_1mnsXvyxjSDzZTfxHtBX3uwpEQfBN8lNbCNvtNMnKTcqmIWjkHA59Q_ae7zvVhqXsoa_cNYexj7Ohv7m2BjXhD_mEDEh6-koEosZ6_OQVHTnk9ryuoom9AgMBAAGjggTyMIIE7jCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBQ-TXwk2F_7F5vUZ-HLuRMchUnaYjAfBgNVHSMEGDAWgBTPUQGq6UMsZHYbSvCqwPKS-E_DuzCCAeIGA1UdHwSCAdkwggHVMHWgc6Bxhm9odHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvMjYvY3VycmVudC5jcmwwd6B1oHOGcWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzI2L2N1cnJlbnQuY3JsMGagZKBihmBodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvMjYvY3VycmVudC5jcmwwe6B5oHeGdWh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMS8yNi9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAdQMCEYP37QTttmIwSsPTdjX3PxfVfvNHPEKB7gq8n9gFUP_HV5x4oY5acRsdCEtkpXYavRWrHryLowx02jcNq2tNp9DeCmZm20Enn7hrAMlD5NqyHqHQBxwS2aLRlGF4ydpoBxzeXGivHHvOEtQ9hwLNU5SSa_9LSMHrMKNFSUzJyZOjFXQC3xQ15x9GuDqTEv83FAkmuPdDSPxBULs0T0j6376oU8EF5-RmW2nR8ed7ss_6KRXdOmNH6R_yU55aQK420AZZMasc6LyS4UvMlC-a54CmmowoS3LfTg1XiRsKeK7Y7CBr8iNRE4NwRf_5q9Ro11EawHTpGl-TEOti2&s=dfsAm0U778XeYzcxw-2nJw0JJgKopIXwhvTtt1E48AmB160mUOCk7Df6_PKmMLSeFlHEZK25L_cA-suADaogEiBcpNj-AryKOlcs8lZ_kK2_7VdrdQWc0HNqU9Vi4ePXOpNdMTXRWdXx4ajNvzs6b9hVub58An2MEq5TB5auBbnzRgbfhaU_wvpa58FsXRNb-b7hRG2_tmvXS-1ExfzCFc0Pa_V2mjPoKtT41WXrfBBvly049gEG6febw6CZ-rk4XC_O6psOv-lVmQnW4i8PhAZPGEeijnxRl8mNfLJ9QvoDeZmpYYmdiYmnX3KuWm2D6QC-_RR7LRKPYyrossLJkw&h=rpVzAHmgTRgcN5JbnsyyqYGPwuHPSKhukZBu-vsc1mU
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=4b71fe15-44c6-47b7-94ac-5a6b2cc290e9,objectId=2146abed-b993-4a81-a6af-eda7b4524c5e/eastus2euap/d2fcdd71-d6d3-47de-8831-d369d9c14993
+      x-ms-throttling-version:
+      - v2
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - elastic-san create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --tags -l --base-size-tib --extended-capacity-size-tib --sku --availability-zones
+      User-Agent:
+      - AZURECLI/2.83.0 azsdk-python-core/1.38.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/eastus2/asyncoperations/3f9150de-1b6b-4015-b2dd-6ca9cad7e9dd?monitor=true&api-version=2025-09-01&t=639063998201912171&c=MIIH9DCCBtygAwIBAgIQd2vLy0C5gJhlCaq7yELV_jANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVTJDIENBIDAxMB4XDTI2MDEyMTIwMzQ0MloXDTI2MDQxNzAyMzQ0MlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDGvPwNFXQ_7CQ0v6LxRgcjnXvDaVnmXp8Of5dpImOuJxVIUVFzRrPD1GustYagS7JXzQ2zt2c8x8d9vULXoSKCWIHrrNaJefbIUXz2zJVNXWWdWMGbu-zz2w7SFriN2sa67rkm0yq9P2xKORxrhk7bQmsayApQ4zXJWjBNnyHLenBdss5BJvOzWqNTSRUTTvliAxcyCVw6PdUGsn4_THaqaL9Yjg7KiX_1mnsXvyxjSDzZTfxHtBX3uwpEQfBN8lNbCNvtNMnKTcqmIWjkHA59Q_ae7zvVhqXsoa_cNYexj7Ohv7m2BjXhD_mEDEh6-koEosZ6_OQVHTnk9ryuoom9AgMBAAGjggTyMIIE7jCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBQ-TXwk2F_7F5vUZ-HLuRMchUnaYjAfBgNVHSMEGDAWgBTPUQGq6UMsZHYbSvCqwPKS-E_DuzCCAeIGA1UdHwSCAdkwggHVMHWgc6Bxhm9odHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvMjYvY3VycmVudC5jcmwwd6B1oHOGcWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzI2L2N1cnJlbnQuY3JsMGagZKBihmBodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvMjYvY3VycmVudC5jcmwwe6B5oHeGdWh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMS8yNi9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAdQMCEYP37QTttmIwSsPTdjX3PxfVfvNHPEKB7gq8n9gFUP_HV5x4oY5acRsdCEtkpXYavRWrHryLowx02jcNq2tNp9DeCmZm20Enn7hrAMlD5NqyHqHQBxwS2aLRlGF4ydpoBxzeXGivHHvOEtQ9hwLNU5SSa_9LSMHrMKNFSUzJyZOjFXQC3xQ15x9GuDqTEv83FAkmuPdDSPxBULs0T0j6376oU8EF5-RmW2nR8ed7ss_6KRXdOmNH6R_yU55aQK420AZZMasc6LyS4UvMlC-a54CmmowoS3LfTg1XiRsKeK7Y7CBr8iNRE4NwRf_5q9Ro11EawHTpGl-TEOti2&s=dfsAm0U778XeYzcxw-2nJw0JJgKopIXwhvTtt1E48AmB160mUOCk7Df6_PKmMLSeFlHEZK25L_cA-suADaogEiBcpNj-AryKOlcs8lZ_kK2_7VdrdQWc0HNqU9Vi4ePXOpNdMTXRWdXx4ajNvzs6b9hVub58An2MEq5TB5auBbnzRgbfhaU_wvpa58FsXRNb-b7hRG2_tmvXS-1ExfzCFc0Pa_V2mjPoKtT41WXrfBBvly049gEG6febw6CZ-rk4XC_O6psOv-lVmQnW4i8PhAZPGEeijnxRl8mNfLJ9QvoDeZmpYYmdiYmnX3KuWm2D6QC-_RR7LRKPYyrossLJkw&h=rpVzAHmgTRgcN5JbnsyyqYGPwuHPSKhukZBu-vsc1mU
+  response:
+    body:
+      string: '{"location":"eastus2","properties":{"sku":{"name":"Premium_LRS","tier":"Premium"},"availabilityZones":["1"],"provisioningState":"Succeeded","baseSizeTiB":23,"extendedCapacitySizeTiB":14,"totalIops":115000,"totalMBps":4600,"totalSizeTiB":37,"volumeGroupCount":0,"totalVolumeSizeGiB":0},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002","name":"elastic-san000002","type":"Microsoft.ElasticSan/ElasticSans","tags":{"key1810":"aaaa"},"systemData":{"createdAt":"2026-02-11T09:43:36.043736Z","createdBy":"test@example.com","createdByType":"User","lastModifiedAt":"2026-02-11T09:43:36.043736Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '778'
+      content-type:
+      - application/json
+      date:
+      - Wed, 11 Feb 2026 09:43:58 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=4b71fe15-44c6-47b7-94ac-5a6b2cc290e9,objectId=2146abed-b993-4a81-a6af-eda7b4524c5e/eastus2euap/4cc9fb78-577c-4f09-836f-b44c6cb09c24
+      x-ms-throttling-version:
+      - v2
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - identity create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.83.0 azsdk-python-core/1.38.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg.testelasticsan.cmk.uai.000001?api-version=2024-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.cmk.uai.000001","name":"clitest.rg.testelasticsan.cmk.uai.000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2","tags":{"product":"azurecli","cause":"automation","test":"test_elastic_san_customer_managed_key_user_assigned_identity_scenarios","date":"2026-02-11T09:43:29Z","module":"elastic-san"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '462'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Feb 2026 09:44:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-throttling-version:
+      - v2
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - identity create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '23'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.83.0 azsdk-python-core/1.38.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uai000005?api-version=2024-11-30
+  response:
+    body:
+      string: '{"location":"eastus2","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uai000005","name":"uai000005","type":"Microsoft.ManagedIdentity/userAssignedIdentities","properties":{"isolationScope":"None","tenantId":"4b71fe15-44c6-47b7-94ac-5a6b2cc290e9","principalId":"e28d9a1a-d690-433e-a605-d745f23478d6","clientId":"4d2b6032-5eff-4105-937c-024ecc09db9b"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '485'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Feb 2026 09:44:03 GMT
+      expires:
+      - '-1'
+      location:
+      - /subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uai000005
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=4b71fe15-44c6-47b7-94ac-5a6b2cc290e9,objectId=2146abed-b993-4a81-a6af-eda7b4524c5e/eastus2euap/04ef38a1-472a-4264-b02c-526d6ec72bbf
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-ms-throttling-version:
+      - v2
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - keyvault create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --location --enable-purge-protection --retention-days
+        --enable-rbac-authorization
+      User-Agent:
+      - AZURECLI/2.83.0 azsdk-python-core/1.38.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.KeyVault/vaults/keyvault000003?api-version=2025-05-01
+  response:
+    body:
+      string: '{"error":{"code":"ResourceNotFound","message":"The Resource ''Microsoft.KeyVault/vaults/keyvault000003''
+        under resource group ''clitest.rg.testelasticsan.cmk.uai.000001'' was not
+        found. For more details please go to https://aka.ms/ARMResourceNotFoundFix"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '252'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Feb 2026 09:44:04 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - keyvault create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --location --enable-purge-protection --retention-days
+        --enable-rbac-authorization
+      User-Agent:
+      - python/3.12.10 (Windows-10-10.0.19045-SP0) AZURECLI/2.83.0
+    method: GET
+    uri: https://graph.microsoft.com/v1.0/me
+  response:
+    body:
+      string: '{"@odata.context":"https://graph.microsoft.com/v1.0/$metadata#users/$entity","businessPhones":[],"displayName":"Zhiyi
+        Huang","givenName":null,"jobTitle":null,"mail":"test@example.com","mobilePhone":null,"officeLocation":null,"preferredLanguage":null,"surname":null,"userPrincipalName":"test@example.com#EXT#@azclitools20251114.onmicrosoft.com","id":"2146abed-b993-4a81-a6af-eda7b4524c5e"}'
+    headers:
+      cache-control:
+      - no-cache
+      connection:
+      - keep-alive
+      content-length:
+      - '388'
+      content-type:
+      - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
+      date:
+      - Wed, 11 Feb 2026 09:44:05 GMT
+      odata-version:
+      - '4.0'
+      request-id:
+      - 56a6c6fd-62df-4b6f-8782-0b3c71ebd572
+      strict-transport-security:
+      - max-age=31536000
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-ms-ags-diagnostic:
+      - '{"ServerInfo":{"DataCenter":"Southeast Asia","Slice":"E","Ring":"5","ScaleUnit":"004","RoleInstance":"SI2PEPF0000FBE0"}}'
+      x-ms-resource-unit:
+      - '1'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2", "properties": {"tenantId": "4b71fe15-44c6-47b7-94ac-5a6b2cc290e9",
+      "sku": {"name": "standard", "family": "A"}, "accessPolicies": [{"tenantId":
+      "4b71fe15-44c6-47b7-94ac-5a6b2cc290e9", "objectId": "2146abed-b993-4a81-a6af-eda7b4524c5e",
+      "permissions": {"keys": ["all"], "secrets": ["all"], "certificates": ["all"],
+      "storage": ["all"]}}], "enableRbacAuthorization": false, "enablePurgeProtection":
+      true, "softDeleteRetentionInDays": 7, "networkAcls": {"bypass": "AzureServices",
+      "defaultAction": "Allow"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - keyvault create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '527'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --resource-group --location --enable-purge-protection --retention-days
+        --enable-rbac-authorization
+      User-Agent:
+      - AZURECLI/2.83.0 azsdk-python-core/1.38.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.KeyVault/vaults/keyvault000003?api-version=2025-05-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.KeyVault/vaults/keyvault000003","name":"keyvault000003","type":"Microsoft.KeyVault/vaults","location":"eastus2","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-02-11T09:44:07.613Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-02-11T09:44:07.613Z"},"properties":{"sku":{"family":"A","name":"standard"},"tenantId":"4b71fe15-44c6-47b7-94ac-5a6b2cc290e9","accessPolicies":[{"tenantId":"4b71fe15-44c6-47b7-94ac-5a6b2cc290e9","objectId":"2146abed-b993-4a81-a6af-eda7b4524c5e","permissions":{"keys":["all"],"secrets":["all"],"certificates":["all"],"storage":["all"]}}],"enabledForDeployment":false,"enabledForDiskEncryption":false,"enabledForTemplateDeployment":false,"enableSoftDelete":true,"softDeleteRetentionInDays":7,"enableRbacAuthorization":false,"enablePurgeProtection":true,"vaultUri":"https://keyvault000003.vault.azure.net","provisioningState":"RegisteringDns","publicNetworkAccess":"Enabled"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1123'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Feb 2026 09:44:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-keyvault-service-version:
+      - 2.2.606.0
+      x-ms-operation-identifier:
+      - tenantId=4b71fe15-44c6-47b7-94ac-5a6b2cc290e9,objectId=2146abed-b993-4a81-a6af-eda7b4524c5e/eastus2euap/aabc9861-ecd2-4378-b4c0-ab17c7d65ef0
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-ms-throttling-version:
+      - v2
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - keyvault create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --location --enable-purge-protection --retention-days
+        --enable-rbac-authorization
+      User-Agent:
+      - AZURECLI/2.83.0 azsdk-python-core/1.38.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.KeyVault/vaults/keyvault000003?api-version=2025-05-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.KeyVault/vaults/keyvault000003","name":"keyvault000003","type":"Microsoft.KeyVault/vaults","location":"eastus2","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-02-11T09:44:07.613Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-02-11T09:44:07.613Z"},"properties":{"sku":{"family":"A","name":"standard"},"tenantId":"4b71fe15-44c6-47b7-94ac-5a6b2cc290e9","accessPolicies":[{"tenantId":"4b71fe15-44c6-47b7-94ac-5a6b2cc290e9","objectId":"2146abed-b993-4a81-a6af-eda7b4524c5e","permissions":{"keys":["all"],"secrets":["all"],"certificates":["all"],"storage":["all"]}}],"enabledForDeployment":false,"enabledForDiskEncryption":false,"enabledForTemplateDeployment":false,"enableSoftDelete":true,"softDeleteRetentionInDays":7,"enableRbacAuthorization":false,"enablePurgeProtection":true,"vaultUri":"https://keyvault000003.vault.azure.net/","provisioningState":"RegisteringDns","publicNetworkAccess":"Enabled"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1124'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Feb 2026 09:44:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-keyvault-service-version:
+      - 2.2.606.0
+      x-ms-throttling-version:
+      - v2
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - keyvault create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --location --enable-purge-protection --retention-days
+        --enable-rbac-authorization
+      User-Agent:
+      - AZURECLI/2.83.0 azsdk-python-core/1.38.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.KeyVault/vaults/keyvault000003?api-version=2025-05-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.KeyVault/vaults/keyvault000003","name":"keyvault000003","type":"Microsoft.KeyVault/vaults","location":"eastus2","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-02-11T09:44:07.613Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-02-11T09:44:07.613Z"},"properties":{"sku":{"family":"A","name":"standard"},"tenantId":"4b71fe15-44c6-47b7-94ac-5a6b2cc290e9","accessPolicies":[{"tenantId":"4b71fe15-44c6-47b7-94ac-5a6b2cc290e9","objectId":"2146abed-b993-4a81-a6af-eda7b4524c5e","permissions":{"keys":["all"],"secrets":["all"],"certificates":["all"],"storage":["all"]}}],"enabledForDeployment":false,"enabledForDiskEncryption":false,"enabledForTemplateDeployment":false,"enableSoftDelete":true,"softDeleteRetentionInDays":7,"enableRbacAuthorization":false,"enablePurgeProtection":true,"vaultUri":"https://keyvault000003.vault.azure.net/","provisioningState":"Succeeded","publicNetworkAccess":"Enabled"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1119'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Feb 2026 09:44:41 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-keyvault-service-version:
+      - 2.2.606.0
+      x-ms-throttling-version:
+      - v2
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - keyvault show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group
+      User-Agent:
+      - AZURECLI/2.83.0 azsdk-python-core/1.38.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.KeyVault/vaults/keyvault000003?api-version=2025-05-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.KeyVault/vaults/keyvault000003","name":"keyvault000003","type":"Microsoft.KeyVault/vaults","location":"eastus2","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-02-11T09:44:07.613Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-02-11T09:44:07.613Z"},"properties":{"sku":{"family":"A","name":"standard"},"tenantId":"4b71fe15-44c6-47b7-94ac-5a6b2cc290e9","accessPolicies":[{"tenantId":"4b71fe15-44c6-47b7-94ac-5a6b2cc290e9","objectId":"2146abed-b993-4a81-a6af-eda7b4524c5e","permissions":{"keys":["all"],"secrets":["all"],"certificates":["all"],"storage":["all"]}}],"enabledForDeployment":false,"enabledForDiskEncryption":false,"enabledForTemplateDeployment":false,"enableSoftDelete":true,"softDeleteRetentionInDays":7,"enableRbacAuthorization":false,"enablePurgeProtection":true,"vaultUri":"https://keyvault000003.vault.azure.net/","provisioningState":"Succeeded","publicNetworkAccess":"Enabled"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1119'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Feb 2026 09:44:43 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-keyvault-service-version:
+      - 2.2.606.0
+      x-ms-throttling-version:
+      - v2
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - keyvault set-policy
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n --object-id --key-permissions
+      User-Agent:
+      - AZURECLI/2.83.0 azsdk-python-core/1.38.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resources?$filter=resourceType%20eq%20%27Microsoft.KeyVault%2Fvaults%27%20and%20name%20eq%20%27keyvault000003%27&api-version=2015-11-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.KeyVault/vaults/keyvault000003","name":"keyvault000003","type":"Microsoft.KeyVault/vaults","location":"eastus2","tags":{}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '269'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Feb 2026 09:44:45 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-throttling-version:
+      - v2
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - keyvault set-policy
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n --object-id --key-permissions
+      User-Agent:
+      - AZURECLI/2.83.0 azsdk-python-core/1.38.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.KeyVault/vaults/keyvault000003?api-version=2025-05-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.KeyVault/vaults/keyvault000003","name":"keyvault000003","type":"Microsoft.KeyVault/vaults","location":"eastus2","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-02-11T09:44:07.613Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-02-11T09:44:07.613Z"},"properties":{"sku":{"family":"A","name":"standard"},"tenantId":"4b71fe15-44c6-47b7-94ac-5a6b2cc290e9","accessPolicies":[{"tenantId":"4b71fe15-44c6-47b7-94ac-5a6b2cc290e9","objectId":"2146abed-b993-4a81-a6af-eda7b4524c5e","permissions":{"keys":["all"],"secrets":["all"],"certificates":["all"],"storage":["all"]}}],"enabledForDeployment":false,"enabledForDiskEncryption":false,"enabledForTemplateDeployment":false,"enableSoftDelete":true,"softDeleteRetentionInDays":7,"enableRbacAuthorization":false,"enablePurgeProtection":true,"vaultUri":"https://keyvault000003.vault.azure.net/","provisioningState":"Succeeded","publicNetworkAccess":"Enabled"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1119'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Feb 2026 09:44:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-keyvault-service-version:
+      - 2.2.606.0
+      x-ms-throttling-version:
+      - v2
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2", "tags": {}, "properties": {"sku": {"family": "A",
+      "name": "standard"}, "tenantId": "4b71fe15-44c6-47b7-94ac-5a6b2cc290e9", "accessPolicies":
+      [{"tenantId": "4b71fe15-44c6-47b7-94ac-5a6b2cc290e9", "objectId": "2146abed-b993-4a81-a6af-eda7b4524c5e",
+      "permissions": {"keys": ["all"], "secrets": ["all"], "certificates": ["all"],
+      "storage": ["all"]}}, {"tenantId": "4b71fe15-44c6-47b7-94ac-5a6b2cc290e9", "objectId":
+      "e28d9a1a-d690-433e-a605-d745f23478d6", "permissions": {"keys": ["get", "unwrapKey",
+      "wrapKey"]}}], "enabledForDeployment": false, "enabledForDiskEncryption": false,
+      "enabledForTemplateDeployment": false, "enableSoftDelete": true, "softDeleteRetentionInDays":
+      7, "enableRbacAuthorization": false, "enablePurgeProtection": true, "vaultUri":
+      "https://keyvault000003.vault.azure.net/", "provisioningState": "Succeeded",
+      "publicNetworkAccess": "Enabled"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - keyvault set-policy
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '887'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n --object-id --key-permissions
+      User-Agent:
+      - AZURECLI/2.83.0 azsdk-python-core/1.38.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.KeyVault/vaults/keyvault000003?api-version=2025-05-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.KeyVault/vaults/keyvault000003","name":"keyvault000003","type":"Microsoft.KeyVault/vaults","location":"eastus2","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-02-11T09:44:07.613Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-02-11T09:44:49.602Z"},"properties":{"sku":{"family":"A","name":"standard"},"tenantId":"4b71fe15-44c6-47b7-94ac-5a6b2cc290e9","accessPolicies":[{"tenantId":"4b71fe15-44c6-47b7-94ac-5a6b2cc290e9","objectId":"2146abed-b993-4a81-a6af-eda7b4524c5e","permissions":{"keys":["all"],"secrets":["all"],"certificates":["all"],"storage":["all"]}},{"tenantId":"4b71fe15-44c6-47b7-94ac-5a6b2cc290e9","objectId":"e28d9a1a-d690-433e-a605-d745f23478d6","permissions":{"keys":["get","unwrapKey","wrapKey"]}}],"enabledForDeployment":false,"enabledForDiskEncryption":false,"enabledForTemplateDeployment":false,"enableSoftDelete":true,"softDeleteRetentionInDays":7,"enableRbacAuthorization":false,"enablePurgeProtection":true,"vaultUri":"https://keyvault000003.vault.azure.net/","provisioningState":"Succeeded","publicNetworkAccess":"Enabled"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1274'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Feb 2026 09:44:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-keyvault-service-version:
+      - 2.2.606.0
+      x-ms-operation-identifier:
+      - tenantId=4b71fe15-44c6-47b7-94ac-5a6b2cc290e9,objectId=2146abed-b993-4a81-a6af-eda7b4524c5e/eastus2euap/57c9bd55-a771-4d68-8c4d-6eea1317172a
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-ms-throttling-version:
+      - v2
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - keyvault key create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --vault-name -n --protection
+      User-Agent:
+      - AZURECLI/2.83.0 azsdk-python-core/1.38.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+    method: POST
+    uri: https://keyvault000003.vault.azure.net/keys/key000004/create?api-version=7.6-preview.2
+  response:
+    body:
+      string: '{"error":{"code":"Unauthorized","message":"AKV10000: Request is missing
+        a Bearer or PoP token."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '97'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Feb 2026 09:44:50 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000;includeSubDomains
+      www-authenticate:
+      - Bearer authorization="https://login.microsoftonline.com/4b71fe15-44c6-47b7-94ac-5a6b2cc290e9",
+        resource="https://vault.azure.net"
+      x-content-type-options:
+      - nosniff
+      x-ms-keyvault-network-info:
+      - conn_type=Ipv4;addr=167.220.255.90;act_addr_fam=InterNetwork;
+      x-ms-keyvault-region:
+      - eastus2
+      x-ms-keyvault-service-version:
+      - 1.9.3019.1
+    status:
+      code: 401
+      message: Unauthorized
+- request:
+    body: '{"kty": "RSA", "attributes": {"enabled": true}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - keyvault key create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '47'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --vault-name -n --protection
+      User-Agent:
+      - AZURECLI/2.83.0 azsdk-python-core/1.38.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+    method: POST
+    uri: https://keyvault000003.vault.azure.net/keys/key000004/create?api-version=7.6-preview.2
+  response:
+    body:
+      string: '{"key":{"kid":"https://keyvault000003.vault.azure.net/keys/key000004/cd15b083cce24dc79a5eb0f532802295","kty":"RSA","key_ops":["encrypt","decrypt","sign","verify","wrapKey","unwrapKey"],"n":"zLOxlAIbn5FUulvwNllJLPs1yAsTLV9Bk9f4ilCSn05Vh0BFtY-7a-OPKPaoz442CQwoxRl_RMF4d-xIzaoUpSYYjBByit-YLdkmE6S0HolYilKQFxm-GdNCtDPTfGG5kp4KC9YJLVNrDPi-n2WFBj-FL07erpZRMV_HVj5EIsMF7lvrtcyi-tFZQPdlE0Lj0_cLZ7FyOyhulvWFsEU5-a-3-NizIs15VDfTe6f6aHZ0mBCK72d_Py9JCd5N5juXWqFmN-wkFuh3LfJXp1_dVqFG542lYSkYnlSEph-pLwKidwQcakFc1uOaRxT9i9Ki5Go6OWgZ1xCL9EU1VprYAQ","e":"AQAB"},"attributes":{"enabled":true,"key_size":2048,"created":1770803092,"updated":1770803092,"recoveryLevel":"CustomizedRecoverable","recoverableDays":7,"exportable":false,"hsmPlatform":"0"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '731'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Feb 2026 09:44:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000;includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-keyvault-network-info:
+      - conn_type=Ipv4;addr=167.220.255.90;act_addr_fam=InterNetwork;
+      x-ms-keyvault-region:
+      - eastus2
+      x-ms-keyvault-service-version:
+      - 1.9.3019.1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "UserAssigned", "userAssignedIdentities": {"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uai000005":
+      {}}}, "properties": {"encryption": "EncryptionAtRestWithCustomerManagedKey",
+      "encryptionProperties": {"identity": {"userAssignedIdentity": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uai000005"},
+      "keyVaultProperties": {"keyName": "key000004", "keyVaultUri": "https://keyvault000003.vault.azure.net/"}},
+      "protocolType": "Iscsi"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - elastic-san volume-group create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '697'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -e -n -g --encryption --protocol-type --identity --encryption-properties
+      User-Agent:
+      - AZURECLI/2.83.0 azsdk-python-core/1.38.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000009?api-version=2025-09-01
+  response:
+    body:
+      string: '{"identity":{"userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uai000005":{"principalId":"e28d9a1a-d690-433e-a605-d745f23478d6","tenantId":"4b71fe15-44c6-47b7-94ac-5a6b2cc290e9","clientId":"4d2b6032-5eff-4105-937c-024ecc09db9b"}},"type":"UserAssigned"},"properties":{"deleteRetentionPolicy":{"policyState":"Disabled","retentionPeriodDays":0},"enforceDataIntegrityCheckForIscsi":false,"encryptionProperties":{"keyVaultProperties":{"keyVaultUri":"https://keyvault000003.vault.azure.net/","keyName":"key000004","currentVersionedKeyIdentifier":"https://keyvault000003.vault.azure.net/keys/key000004/cd15b083cce24dc79a5eb0f532802295","lastKeyRotationTimestamp":"2026-02-11T09:44:56.1963927Z","currentVersionedKeyExpirationTimestamp":"1970-01-01T00:00:00.0000000Z"},"identity":{"userAssignedIdentity":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uai000005"}},"provisioningState":"Creating","protocolType":"iSCSI","encryption":"EncryptionAtRestWithCustomerManagedKey"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumeGroups/volume-group000009","name":"volume-group000009","type":"Microsoft.ElasticSan/elasticSans/volumeGroups","systemData":{"createdAt":"2026-02-11T09:44:54.9580271Z","createdBy":"test@example.com","createdByType":"User","lastModifiedAt":"2026-02-11T09:44:54.9580271Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1744'
+      content-type:
+      - application/json
+      date:
+      - Wed, 11 Feb 2026 09:44:56 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/eastus2/asyncoperations/4ddf675d-8fcb-4969-b536-de86be33d50c?monitor=true&api-version=2025-09-01&t=639063998962707025&c=MIIH9DCCBtygAwIBAgIQd2vLy0C5gJhlCaq7yELV_jANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVTJDIENBIDAxMB4XDTI2MDEyMTIwMzQ0MloXDTI2MDQxNzAyMzQ0MlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDGvPwNFXQ_7CQ0v6LxRgcjnXvDaVnmXp8Of5dpImOuJxVIUVFzRrPD1GustYagS7JXzQ2zt2c8x8d9vULXoSKCWIHrrNaJefbIUXz2zJVNXWWdWMGbu-zz2w7SFriN2sa67rkm0yq9P2xKORxrhk7bQmsayApQ4zXJWjBNnyHLenBdss5BJvOzWqNTSRUTTvliAxcyCVw6PdUGsn4_THaqaL9Yjg7KiX_1mnsXvyxjSDzZTfxHtBX3uwpEQfBN8lNbCNvtNMnKTcqmIWjkHA59Q_ae7zvVhqXsoa_cNYexj7Ohv7m2BjXhD_mEDEh6-koEosZ6_OQVHTnk9ryuoom9AgMBAAGjggTyMIIE7jCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBQ-TXwk2F_7F5vUZ-HLuRMchUnaYjAfBgNVHSMEGDAWgBTPUQGq6UMsZHYbSvCqwPKS-E_DuzCCAeIGA1UdHwSCAdkwggHVMHWgc6Bxhm9odHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvMjYvY3VycmVudC5jcmwwd6B1oHOGcWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzI2L2N1cnJlbnQuY3JsMGagZKBihmBodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvMjYvY3VycmVudC5jcmwwe6B5oHeGdWh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMS8yNi9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAdQMCEYP37QTttmIwSsPTdjX3PxfVfvNHPEKB7gq8n9gFUP_HV5x4oY5acRsdCEtkpXYavRWrHryLowx02jcNq2tNp9DeCmZm20Enn7hrAMlD5NqyHqHQBxwS2aLRlGF4ydpoBxzeXGivHHvOEtQ9hwLNU5SSa_9LSMHrMKNFSUzJyZOjFXQC3xQ15x9GuDqTEv83FAkmuPdDSPxBULs0T0j6376oU8EF5-RmW2nR8ed7ss_6KRXdOmNH6R_yU55aQK420AZZMasc6LyS4UvMlC-a54CmmowoS3LfTg1XiRsKeK7Y7CBr8iNRE4NwRf_5q9Ro11EawHTpGl-TEOti2&s=EYIth9fjIR1uqwj_EjyiqyAfIIdK8UwK5hcqQjmxDpXbw2Y5-9m804ejmW_5IKO_YMQRAVpBo-aZaVNcVPzcIuB4PAVIY_p3a3zQz-txqnNGoc541RfkhJsYtmYgQrzeErpEjX6l9xXIEpXUCPSyM5YB-rloygrGf044KazTZWTxSKZRbLPwgkg_9-TgEFO0oJFA0QLA7x6u4NXhJuazs30WxyxB5yPToreP5OM78xEFSXB7Jotb7fSGl6Lc-Dx4OXU-Ju4UHwN9F2J-75ytIW_gtk-e3Q-yAJ-8Q2XqItEX5fPxwx9ztcKfG11Lypo4E7hyValV4Nr0h5Bo2uYZkg&h=IQT79vHyd7rsqDMGTQeBvu3IqPMmrzALtmw8RgmpGNc
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=4b71fe15-44c6-47b7-94ac-5a6b2cc290e9,objectId=2146abed-b993-4a81-a6af-eda7b4524c5e/eastus2euap/23a0c551-2076-4b29-b341-42e337752080
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-ms-throttling-version:
+      - v2
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - elastic-san volume-group create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -e -n -g --encryption --protocol-type --identity --encryption-properties
+      User-Agent:
+      - AZURECLI/2.83.0 azsdk-python-core/1.38.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/eastus2/asyncoperations/4ddf675d-8fcb-4969-b536-de86be33d50c?monitor=true&api-version=2025-09-01&t=639063998962707025&c=MIIH9DCCBtygAwIBAgIQd2vLy0C5gJhlCaq7yELV_jANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVTJDIENBIDAxMB4XDTI2MDEyMTIwMzQ0MloXDTI2MDQxNzAyMzQ0MlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDGvPwNFXQ_7CQ0v6LxRgcjnXvDaVnmXp8Of5dpImOuJxVIUVFzRrPD1GustYagS7JXzQ2zt2c8x8d9vULXoSKCWIHrrNaJefbIUXz2zJVNXWWdWMGbu-zz2w7SFriN2sa67rkm0yq9P2xKORxrhk7bQmsayApQ4zXJWjBNnyHLenBdss5BJvOzWqNTSRUTTvliAxcyCVw6PdUGsn4_THaqaL9Yjg7KiX_1mnsXvyxjSDzZTfxHtBX3uwpEQfBN8lNbCNvtNMnKTcqmIWjkHA59Q_ae7zvVhqXsoa_cNYexj7Ohv7m2BjXhD_mEDEh6-koEosZ6_OQVHTnk9ryuoom9AgMBAAGjggTyMIIE7jCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBQ-TXwk2F_7F5vUZ-HLuRMchUnaYjAfBgNVHSMEGDAWgBTPUQGq6UMsZHYbSvCqwPKS-E_DuzCCAeIGA1UdHwSCAdkwggHVMHWgc6Bxhm9odHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvMjYvY3VycmVudC5jcmwwd6B1oHOGcWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzI2L2N1cnJlbnQuY3JsMGagZKBihmBodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvMjYvY3VycmVudC5jcmwwe6B5oHeGdWh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMS8yNi9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAdQMCEYP37QTttmIwSsPTdjX3PxfVfvNHPEKB7gq8n9gFUP_HV5x4oY5acRsdCEtkpXYavRWrHryLowx02jcNq2tNp9DeCmZm20Enn7hrAMlD5NqyHqHQBxwS2aLRlGF4ydpoBxzeXGivHHvOEtQ9hwLNU5SSa_9LSMHrMKNFSUzJyZOjFXQC3xQ15x9GuDqTEv83FAkmuPdDSPxBULs0T0j6376oU8EF5-RmW2nR8ed7ss_6KRXdOmNH6R_yU55aQK420AZZMasc6LyS4UvMlC-a54CmmowoS3LfTg1XiRsKeK7Y7CBr8iNRE4NwRf_5q9Ro11EawHTpGl-TEOti2&s=EYIth9fjIR1uqwj_EjyiqyAfIIdK8UwK5hcqQjmxDpXbw2Y5-9m804ejmW_5IKO_YMQRAVpBo-aZaVNcVPzcIuB4PAVIY_p3a3zQz-txqnNGoc541RfkhJsYtmYgQrzeErpEjX6l9xXIEpXUCPSyM5YB-rloygrGf044KazTZWTxSKZRbLPwgkg_9-TgEFO0oJFA0QLA7x6u4NXhJuazs30WxyxB5yPToreP5OM78xEFSXB7Jotb7fSGl6Lc-Dx4OXU-Ju4UHwN9F2J-75ytIW_gtk-e3Q-yAJ-8Q2XqItEX5fPxwx9ztcKfG11Lypo4E7hyValV4Nr0h5Bo2uYZkg&h=IQT79vHyd7rsqDMGTQeBvu3IqPMmrzALtmw8RgmpGNc
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      content-type:
+      - text/plain; charset=utf-8
+      date:
+      - Wed, 11 Feb 2026 09:44:57 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/eastus2/asyncoperations/4ddf675d-8fcb-4969-b536-de86be33d50c?monitor=true&api-version=2025-09-01&t=639063998977848769&c=MIIH9DCCBtygAwIBAgIQd2vLy0C5gJhlCaq7yELV_jANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVTJDIENBIDAxMB4XDTI2MDEyMTIwMzQ0MloXDTI2MDQxNzAyMzQ0MlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDGvPwNFXQ_7CQ0v6LxRgcjnXvDaVnmXp8Of5dpImOuJxVIUVFzRrPD1GustYagS7JXzQ2zt2c8x8d9vULXoSKCWIHrrNaJefbIUXz2zJVNXWWdWMGbu-zz2w7SFriN2sa67rkm0yq9P2xKORxrhk7bQmsayApQ4zXJWjBNnyHLenBdss5BJvOzWqNTSRUTTvliAxcyCVw6PdUGsn4_THaqaL9Yjg7KiX_1mnsXvyxjSDzZTfxHtBX3uwpEQfBN8lNbCNvtNMnKTcqmIWjkHA59Q_ae7zvVhqXsoa_cNYexj7Ohv7m2BjXhD_mEDEh6-koEosZ6_OQVHTnk9ryuoom9AgMBAAGjggTyMIIE7jCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBQ-TXwk2F_7F5vUZ-HLuRMchUnaYjAfBgNVHSMEGDAWgBTPUQGq6UMsZHYbSvCqwPKS-E_DuzCCAeIGA1UdHwSCAdkwggHVMHWgc6Bxhm9odHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvMjYvY3VycmVudC5jcmwwd6B1oHOGcWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzI2L2N1cnJlbnQuY3JsMGagZKBihmBodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvMjYvY3VycmVudC5jcmwwe6B5oHeGdWh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMS8yNi9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAdQMCEYP37QTttmIwSsPTdjX3PxfVfvNHPEKB7gq8n9gFUP_HV5x4oY5acRsdCEtkpXYavRWrHryLowx02jcNq2tNp9DeCmZm20Enn7hrAMlD5NqyHqHQBxwS2aLRlGF4ydpoBxzeXGivHHvOEtQ9hwLNU5SSa_9LSMHrMKNFSUzJyZOjFXQC3xQ15x9GuDqTEv83FAkmuPdDSPxBULs0T0j6376oU8EF5-RmW2nR8ed7ss_6KRXdOmNH6R_yU55aQK420AZZMasc6LyS4UvMlC-a54CmmowoS3LfTg1XiRsKeK7Y7CBr8iNRE4NwRf_5q9Ro11EawHTpGl-TEOti2&s=cLCb8OhuwN-TcOGJewbaE0goSQW9ctt77Y2yUzc6vEcT68a0HVGe_Y7WqzWPp9AV6bbbFwy5D6o5EPle-h4FTyG50btsdYdMJD2JthpJ8hEv02CNZlCIs7gW_s7qZV5coemxSusjOxAh5jWNsAKMuywLU6XE52MwqPcY6-hwDqxb3vAqMut_w1DHsyY37UXHpNEGBnXZa6eB4CpYkhEbtQseGX_UK-wWyUXldipgS0VBh1OB7nw44uaFDvljvoP8BkSeIPZmfrhg8uL9ptpToqKmaMEd1oRwkiWGTyfyI2NbRyCBVtqOX_Z_u13JmocXakw1RCDCGMmuOcibJawBDQ&h=rGglBHvOa5_nj7u0TBLewovy0WAZbTz7VK2YPLzgM_o
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=4b71fe15-44c6-47b7-94ac-5a6b2cc290e9,objectId=2146abed-b993-4a81-a6af-eda7b4524c5e/eastus2euap/bfc51a74-7784-48c4-8e7b-c507cc2010f0
+      x-ms-throttling-version:
+      - v2
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - elastic-san volume-group create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -e -n -g --encryption --protocol-type --identity --encryption-properties
+      User-Agent:
+      - AZURECLI/2.83.0 azsdk-python-core/1.38.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/eastus2/asyncoperations/4ddf675d-8fcb-4969-b536-de86be33d50c?monitor=true&api-version=2025-09-01&t=639063998977848769&c=MIIH9DCCBtygAwIBAgIQd2vLy0C5gJhlCaq7yELV_jANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVTJDIENBIDAxMB4XDTI2MDEyMTIwMzQ0MloXDTI2MDQxNzAyMzQ0MlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDGvPwNFXQ_7CQ0v6LxRgcjnXvDaVnmXp8Of5dpImOuJxVIUVFzRrPD1GustYagS7JXzQ2zt2c8x8d9vULXoSKCWIHrrNaJefbIUXz2zJVNXWWdWMGbu-zz2w7SFriN2sa67rkm0yq9P2xKORxrhk7bQmsayApQ4zXJWjBNnyHLenBdss5BJvOzWqNTSRUTTvliAxcyCVw6PdUGsn4_THaqaL9Yjg7KiX_1mnsXvyxjSDzZTfxHtBX3uwpEQfBN8lNbCNvtNMnKTcqmIWjkHA59Q_ae7zvVhqXsoa_cNYexj7Ohv7m2BjXhD_mEDEh6-koEosZ6_OQVHTnk9ryuoom9AgMBAAGjggTyMIIE7jCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBQ-TXwk2F_7F5vUZ-HLuRMchUnaYjAfBgNVHSMEGDAWgBTPUQGq6UMsZHYbSvCqwPKS-E_DuzCCAeIGA1UdHwSCAdkwggHVMHWgc6Bxhm9odHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvMjYvY3VycmVudC5jcmwwd6B1oHOGcWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzI2L2N1cnJlbnQuY3JsMGagZKBihmBodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvMjYvY3VycmVudC5jcmwwe6B5oHeGdWh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMS8yNi9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAdQMCEYP37QTttmIwSsPTdjX3PxfVfvNHPEKB7gq8n9gFUP_HV5x4oY5acRsdCEtkpXYavRWrHryLowx02jcNq2tNp9DeCmZm20Enn7hrAMlD5NqyHqHQBxwS2aLRlGF4ydpoBxzeXGivHHvOEtQ9hwLNU5SSa_9LSMHrMKNFSUzJyZOjFXQC3xQ15x9GuDqTEv83FAkmuPdDSPxBULs0T0j6376oU8EF5-RmW2nR8ed7ss_6KRXdOmNH6R_yU55aQK420AZZMasc6LyS4UvMlC-a54CmmowoS3LfTg1XiRsKeK7Y7CBr8iNRE4NwRf_5q9Ro11EawHTpGl-TEOti2&s=cLCb8OhuwN-TcOGJewbaE0goSQW9ctt77Y2yUzc6vEcT68a0HVGe_Y7WqzWPp9AV6bbbFwy5D6o5EPle-h4FTyG50btsdYdMJD2JthpJ8hEv02CNZlCIs7gW_s7qZV5coemxSusjOxAh5jWNsAKMuywLU6XE52MwqPcY6-hwDqxb3vAqMut_w1DHsyY37UXHpNEGBnXZa6eB4CpYkhEbtQseGX_UK-wWyUXldipgS0VBh1OB7nw44uaFDvljvoP8BkSeIPZmfrhg8uL9ptpToqKmaMEd1oRwkiWGTyfyI2NbRyCBVtqOX_Z_u13JmocXakw1RCDCGMmuOcibJawBDQ&h=rGglBHvOa5_nj7u0TBLewovy0WAZbTz7VK2YPLzgM_o
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      content-type:
+      - text/plain; charset=utf-8
+      date:
+      - Wed, 11 Feb 2026 09:45:16 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/eastus2/asyncoperations/4ddf675d-8fcb-4969-b536-de86be33d50c?monitor=true&api-version=2025-09-01&t=639063999163445381&c=MIIH9DCCBtygAwIBAgIQd2vLy0C5gJhlCaq7yELV_jANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVTJDIENBIDAxMB4XDTI2MDEyMTIwMzQ0MloXDTI2MDQxNzAyMzQ0MlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDGvPwNFXQ_7CQ0v6LxRgcjnXvDaVnmXp8Of5dpImOuJxVIUVFzRrPD1GustYagS7JXzQ2zt2c8x8d9vULXoSKCWIHrrNaJefbIUXz2zJVNXWWdWMGbu-zz2w7SFriN2sa67rkm0yq9P2xKORxrhk7bQmsayApQ4zXJWjBNnyHLenBdss5BJvOzWqNTSRUTTvliAxcyCVw6PdUGsn4_THaqaL9Yjg7KiX_1mnsXvyxjSDzZTfxHtBX3uwpEQfBN8lNbCNvtNMnKTcqmIWjkHA59Q_ae7zvVhqXsoa_cNYexj7Ohv7m2BjXhD_mEDEh6-koEosZ6_OQVHTnk9ryuoom9AgMBAAGjggTyMIIE7jCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBQ-TXwk2F_7F5vUZ-HLuRMchUnaYjAfBgNVHSMEGDAWgBTPUQGq6UMsZHYbSvCqwPKS-E_DuzCCAeIGA1UdHwSCAdkwggHVMHWgc6Bxhm9odHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvMjYvY3VycmVudC5jcmwwd6B1oHOGcWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzI2L2N1cnJlbnQuY3JsMGagZKBihmBodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvMjYvY3VycmVudC5jcmwwe6B5oHeGdWh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMS8yNi9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAdQMCEYP37QTttmIwSsPTdjX3PxfVfvNHPEKB7gq8n9gFUP_HV5x4oY5acRsdCEtkpXYavRWrHryLowx02jcNq2tNp9DeCmZm20Enn7hrAMlD5NqyHqHQBxwS2aLRlGF4ydpoBxzeXGivHHvOEtQ9hwLNU5SSa_9LSMHrMKNFSUzJyZOjFXQC3xQ15x9GuDqTEv83FAkmuPdDSPxBULs0T0j6376oU8EF5-RmW2nR8ed7ss_6KRXdOmNH6R_yU55aQK420AZZMasc6LyS4UvMlC-a54CmmowoS3LfTg1XiRsKeK7Y7CBr8iNRE4NwRf_5q9Ro11EawHTpGl-TEOti2&s=takAVExKml0X3GQOUev-z8Z0GHveo1DCjJg7Gh-9a5UYAZt5wdGaFLwWfOS7dZZ0I5ZuSsRQULjzwNXkdFmJmca3y08vJL_5LSxG4OwUdvytgEKcKG3TFqHGdfLaQ8hKMXiEopqTC7xgwuil-AmI2l1kvm1XSc-VSz1Zd9JwrvaS4Ha2NdtF9uY1tgsbu--aIrnFGbdmLk14UPj4xl1Ag1YH3oJ2iF03yo6jg74g3MHOOmfnk2mSTlmIqtAhxaSYFJFAPye3Q5VzeGMmRNMzMnhNN-S3MtwIIh2nJ77WlWeov2NPe2_KvIKnmE7CrtMH3j275jhqP_4fXAUK2_oHEA&h=bUQKBF7ze93Xoa6AH42i1zw0mobSqDyvtNyy6KO3otI
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=4b71fe15-44c6-47b7-94ac-5a6b2cc290e9,objectId=2146abed-b993-4a81-a6af-eda7b4524c5e/eastus2euap/9a2124de-0a38-4891-aa82-880585bda178
+      x-ms-throttling-version:
+      - v2
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - elastic-san volume-group create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -e -n -g --encryption --protocol-type --identity --encryption-properties
+      User-Agent:
+      - AZURECLI/2.83.0 azsdk-python-core/1.38.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/eastus2/asyncoperations/4ddf675d-8fcb-4969-b536-de86be33d50c?monitor=true&api-version=2025-09-01&t=639063999163445381&c=MIIH9DCCBtygAwIBAgIQd2vLy0C5gJhlCaq7yELV_jANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVTJDIENBIDAxMB4XDTI2MDEyMTIwMzQ0MloXDTI2MDQxNzAyMzQ0MlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDGvPwNFXQ_7CQ0v6LxRgcjnXvDaVnmXp8Of5dpImOuJxVIUVFzRrPD1GustYagS7JXzQ2zt2c8x8d9vULXoSKCWIHrrNaJefbIUXz2zJVNXWWdWMGbu-zz2w7SFriN2sa67rkm0yq9P2xKORxrhk7bQmsayApQ4zXJWjBNnyHLenBdss5BJvOzWqNTSRUTTvliAxcyCVw6PdUGsn4_THaqaL9Yjg7KiX_1mnsXvyxjSDzZTfxHtBX3uwpEQfBN8lNbCNvtNMnKTcqmIWjkHA59Q_ae7zvVhqXsoa_cNYexj7Ohv7m2BjXhD_mEDEh6-koEosZ6_OQVHTnk9ryuoom9AgMBAAGjggTyMIIE7jCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBQ-TXwk2F_7F5vUZ-HLuRMchUnaYjAfBgNVHSMEGDAWgBTPUQGq6UMsZHYbSvCqwPKS-E_DuzCCAeIGA1UdHwSCAdkwggHVMHWgc6Bxhm9odHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvMjYvY3VycmVudC5jcmwwd6B1oHOGcWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzI2L2N1cnJlbnQuY3JsMGagZKBihmBodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvMjYvY3VycmVudC5jcmwwe6B5oHeGdWh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMS8yNi9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAdQMCEYP37QTttmIwSsPTdjX3PxfVfvNHPEKB7gq8n9gFUP_HV5x4oY5acRsdCEtkpXYavRWrHryLowx02jcNq2tNp9DeCmZm20Enn7hrAMlD5NqyHqHQBxwS2aLRlGF4ydpoBxzeXGivHHvOEtQ9hwLNU5SSa_9LSMHrMKNFSUzJyZOjFXQC3xQ15x9GuDqTEv83FAkmuPdDSPxBULs0T0j6376oU8EF5-RmW2nR8ed7ss_6KRXdOmNH6R_yU55aQK420AZZMasc6LyS4UvMlC-a54CmmowoS3LfTg1XiRsKeK7Y7CBr8iNRE4NwRf_5q9Ro11EawHTpGl-TEOti2&s=takAVExKml0X3GQOUev-z8Z0GHveo1DCjJg7Gh-9a5UYAZt5wdGaFLwWfOS7dZZ0I5ZuSsRQULjzwNXkdFmJmca3y08vJL_5LSxG4OwUdvytgEKcKG3TFqHGdfLaQ8hKMXiEopqTC7xgwuil-AmI2l1kvm1XSc-VSz1Zd9JwrvaS4Ha2NdtF9uY1tgsbu--aIrnFGbdmLk14UPj4xl1Ag1YH3oJ2iF03yo6jg74g3MHOOmfnk2mSTlmIqtAhxaSYFJFAPye3Q5VzeGMmRNMzMnhNN-S3MtwIIh2nJ77WlWeov2NPe2_KvIKnmE7CrtMH3j275jhqP_4fXAUK2_oHEA&h=bUQKBF7ze93Xoa6AH42i1zw0mobSqDyvtNyy6KO3otI
+  response:
+    body:
+      string: '{"identity":{"userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uai000005":{"principalId":"e28d9a1a-d690-433e-a605-d745f23478d6","tenantId":"4b71fe15-44c6-47b7-94ac-5a6b2cc290e9","clientId":"4d2b6032-5eff-4105-937c-024ecc09db9b"}},"type":"UserAssigned"},"properties":{"deleteRetentionPolicy":{"policyState":"Disabled","retentionPeriodDays":0},"enforceDataIntegrityCheckForIscsi":false,"encryptionProperties":{"keyVaultProperties":{"keyVaultUri":"https://keyvault000003.vault.azure.net/","keyName":"key000004","currentVersionedKeyIdentifier":"https://keyvault000003.vault.azure.net/keys/key000004/cd15b083cce24dc79a5eb0f532802295","lastKeyRotationTimestamp":"2026-02-11T09:44:56.1963927Z","currentVersionedKeyExpirationTimestamp":"1970-01-01T00:00:00.0000000Z"},"identity":{"userAssignedIdentity":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uai000005"}},"provisioningState":"Succeeded","protocolType":"iSCSI","encryption":"EncryptionAtRestWithCustomerManagedKey"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumeGroups/volume-group000009","name":"volume-group000009","type":"Microsoft.ElasticSan/elasticSans/volumeGroups","systemData":{"createdAt":"2026-02-11T09:44:54.9580271Z","createdBy":"test@example.com","createdByType":"User","lastModifiedAt":"2026-02-11T09:44:54.9580271Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1745'
+      content-type:
+      - application/json
+      date:
+      - Wed, 11 Feb 2026 09:45:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=4b71fe15-44c6-47b7-94ac-5a6b2cc290e9,objectId=2146abed-b993-4a81-a6af-eda7b4524c5e/eastus2euap/0428e5f0-dc19-4fc5-b7ac-9d78868beffa
+      x-ms-throttling-version:
+      - v2
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"sizeGiB": 2}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - elastic-san volume create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '30'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -e -v -n --size-gib
+      User-Agent:
+      - AZURECLI/2.83.0 azsdk-python-core/1.38.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000009/volumes/volume000010?api-version=2025-09-01
+  response:
+    body:
+      string: '{"properties":{"managedBy":{"resourceId":"None"},"provisioningState":"Creating","creationData":{"createSource":"None"},"sizeGiB":2,"storageTarget":{"provisioningState":"Creating","status":"Pending"},"volumeId":"821cfb08-56f7-4cc5-a54f-eb5dff1d39d3"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumeGroups/volume-group000009/volumes/volume000010","name":"volume000010","type":"Microsoft.ElasticSan/elasticSans/volumeGroups/volumes","systemData":{"createdAt":"2026-02-11T09:45:37.3550117Z","createdBy":"test@example.com","createdByType":"User","lastModifiedAt":"2026-02-11T09:45:37.3550117Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '788'
+      content-type:
+      - application/json
+      date:
+      - Wed, 11 Feb 2026 09:45:37 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/eastus2/asyncoperations/0b8366ce-78d4-4fba-abcc-380f6ec8817a?monitor=true&api-version=2025-09-01&t=639063999374643944&c=MIIH9DCCBtygAwIBAgIQd2vLy0C5gJhlCaq7yELV_jANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVTJDIENBIDAxMB4XDTI2MDEyMTIwMzQ0MloXDTI2MDQxNzAyMzQ0MlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDGvPwNFXQ_7CQ0v6LxRgcjnXvDaVnmXp8Of5dpImOuJxVIUVFzRrPD1GustYagS7JXzQ2zt2c8x8d9vULXoSKCWIHrrNaJefbIUXz2zJVNXWWdWMGbu-zz2w7SFriN2sa67rkm0yq9P2xKORxrhk7bQmsayApQ4zXJWjBNnyHLenBdss5BJvOzWqNTSRUTTvliAxcyCVw6PdUGsn4_THaqaL9Yjg7KiX_1mnsXvyxjSDzZTfxHtBX3uwpEQfBN8lNbCNvtNMnKTcqmIWjkHA59Q_ae7zvVhqXsoa_cNYexj7Ohv7m2BjXhD_mEDEh6-koEosZ6_OQVHTnk9ryuoom9AgMBAAGjggTyMIIE7jCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBQ-TXwk2F_7F5vUZ-HLuRMchUnaYjAfBgNVHSMEGDAWgBTPUQGq6UMsZHYbSvCqwPKS-E_DuzCCAeIGA1UdHwSCAdkwggHVMHWgc6Bxhm9odHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvMjYvY3VycmVudC5jcmwwd6B1oHOGcWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzI2L2N1cnJlbnQuY3JsMGagZKBihmBodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvMjYvY3VycmVudC5jcmwwe6B5oHeGdWh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMS8yNi9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAdQMCEYP37QTttmIwSsPTdjX3PxfVfvNHPEKB7gq8n9gFUP_HV5x4oY5acRsdCEtkpXYavRWrHryLowx02jcNq2tNp9DeCmZm20Enn7hrAMlD5NqyHqHQBxwS2aLRlGF4ydpoBxzeXGivHHvOEtQ9hwLNU5SSa_9LSMHrMKNFSUzJyZOjFXQC3xQ15x9GuDqTEv83FAkmuPdDSPxBULs0T0j6376oU8EF5-RmW2nR8ed7ss_6KRXdOmNH6R_yU55aQK420AZZMasc6LyS4UvMlC-a54CmmowoS3LfTg1XiRsKeK7Y7CBr8iNRE4NwRf_5q9Ro11EawHTpGl-TEOti2&s=LNfsdn2Gi3vTGWwg8mbvAV71-LjNEsHQEuf55l0xPh5l0EXPWirp3VDHoJ-WXh4C1GhY79N3gcdGEw1CP0icgoYFwefY7q5Nj5SRIsBv_F_VOvxns4V1Hrc3UjSc8AgYqcEvu_3Iyf9Coh0gBiaEpak4w4QLGYwekPMMtw0XX-XeuCrDF0lhLjKSXs0cVbP0Fm7BT3rIrATGtn2hgbBn-N8bhwfZ3GnHjR7aOmnz5FxsAz1XTi30SF2GIw5fufJDnVioQ5pcT0zJWt8FxQhK51Y-Kf8WkBQ1rf9zS93MOzFsgFE7WDQ9a1PlYSCgvT9mgs1pIx26UjoXtkzt8tNg0w&h=Zx2GxaaIGHyom6zZvFKPR46MUWAAx6uC3LihDakEv3Q
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=4b71fe15-44c6-47b7-94ac-5a6b2cc290e9,objectId=2146abed-b993-4a81-a6af-eda7b4524c5e/eastus2euap/dc557e6e-8757-4d03-8c99-e3bd913f78d5
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-ms-throttling-version:
+      - v2
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - elastic-san volume create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -e -v -n --size-gib
+      User-Agent:
+      - AZURECLI/2.83.0 azsdk-python-core/1.38.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/eastus2/asyncoperations/0b8366ce-78d4-4fba-abcc-380f6ec8817a?monitor=true&api-version=2025-09-01&t=639063999374643944&c=MIIH9DCCBtygAwIBAgIQd2vLy0C5gJhlCaq7yELV_jANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVTJDIENBIDAxMB4XDTI2MDEyMTIwMzQ0MloXDTI2MDQxNzAyMzQ0MlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDGvPwNFXQ_7CQ0v6LxRgcjnXvDaVnmXp8Of5dpImOuJxVIUVFzRrPD1GustYagS7JXzQ2zt2c8x8d9vULXoSKCWIHrrNaJefbIUXz2zJVNXWWdWMGbu-zz2w7SFriN2sa67rkm0yq9P2xKORxrhk7bQmsayApQ4zXJWjBNnyHLenBdss5BJvOzWqNTSRUTTvliAxcyCVw6PdUGsn4_THaqaL9Yjg7KiX_1mnsXvyxjSDzZTfxHtBX3uwpEQfBN8lNbCNvtNMnKTcqmIWjkHA59Q_ae7zvVhqXsoa_cNYexj7Ohv7m2BjXhD_mEDEh6-koEosZ6_OQVHTnk9ryuoom9AgMBAAGjggTyMIIE7jCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBQ-TXwk2F_7F5vUZ-HLuRMchUnaYjAfBgNVHSMEGDAWgBTPUQGq6UMsZHYbSvCqwPKS-E_DuzCCAeIGA1UdHwSCAdkwggHVMHWgc6Bxhm9odHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvMjYvY3VycmVudC5jcmwwd6B1oHOGcWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzI2L2N1cnJlbnQuY3JsMGagZKBihmBodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvMjYvY3VycmVudC5jcmwwe6B5oHeGdWh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMS8yNi9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAdQMCEYP37QTttmIwSsPTdjX3PxfVfvNHPEKB7gq8n9gFUP_HV5x4oY5acRsdCEtkpXYavRWrHryLowx02jcNq2tNp9DeCmZm20Enn7hrAMlD5NqyHqHQBxwS2aLRlGF4ydpoBxzeXGivHHvOEtQ9hwLNU5SSa_9LSMHrMKNFSUzJyZOjFXQC3xQ15x9GuDqTEv83FAkmuPdDSPxBULs0T0j6376oU8EF5-RmW2nR8ed7ss_6KRXdOmNH6R_yU55aQK420AZZMasc6LyS4UvMlC-a54CmmowoS3LfTg1XiRsKeK7Y7CBr8iNRE4NwRf_5q9Ro11EawHTpGl-TEOti2&s=LNfsdn2Gi3vTGWwg8mbvAV71-LjNEsHQEuf55l0xPh5l0EXPWirp3VDHoJ-WXh4C1GhY79N3gcdGEw1CP0icgoYFwefY7q5Nj5SRIsBv_F_VOvxns4V1Hrc3UjSc8AgYqcEvu_3Iyf9Coh0gBiaEpak4w4QLGYwekPMMtw0XX-XeuCrDF0lhLjKSXs0cVbP0Fm7BT3rIrATGtn2hgbBn-N8bhwfZ3GnHjR7aOmnz5FxsAz1XTi30SF2GIw5fufJDnVioQ5pcT0zJWt8FxQhK51Y-Kf8WkBQ1rf9zS93MOzFsgFE7WDQ9a1PlYSCgvT9mgs1pIx26UjoXtkzt8tNg0w&h=Zx2GxaaIGHyom6zZvFKPR46MUWAAx6uC3LihDakEv3Q
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      content-type:
+      - text/plain; charset=utf-8
+      date:
+      - Wed, 11 Feb 2026 09:45:39 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/eastus2/asyncoperations/0b8366ce-78d4-4fba-abcc-380f6ec8817a?monitor=true&api-version=2025-09-01&t=639063999399734899&c=MIIH9DCCBtygAwIBAgIQd2vLy0C5gJhlCaq7yELV_jANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVTJDIENBIDAxMB4XDTI2MDEyMTIwMzQ0MloXDTI2MDQxNzAyMzQ0MlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDGvPwNFXQ_7CQ0v6LxRgcjnXvDaVnmXp8Of5dpImOuJxVIUVFzRrPD1GustYagS7JXzQ2zt2c8x8d9vULXoSKCWIHrrNaJefbIUXz2zJVNXWWdWMGbu-zz2w7SFriN2sa67rkm0yq9P2xKORxrhk7bQmsayApQ4zXJWjBNnyHLenBdss5BJvOzWqNTSRUTTvliAxcyCVw6PdUGsn4_THaqaL9Yjg7KiX_1mnsXvyxjSDzZTfxHtBX3uwpEQfBN8lNbCNvtNMnKTcqmIWjkHA59Q_ae7zvVhqXsoa_cNYexj7Ohv7m2BjXhD_mEDEh6-koEosZ6_OQVHTnk9ryuoom9AgMBAAGjggTyMIIE7jCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBQ-TXwk2F_7F5vUZ-HLuRMchUnaYjAfBgNVHSMEGDAWgBTPUQGq6UMsZHYbSvCqwPKS-E_DuzCCAeIGA1UdHwSCAdkwggHVMHWgc6Bxhm9odHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvMjYvY3VycmVudC5jcmwwd6B1oHOGcWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzI2L2N1cnJlbnQuY3JsMGagZKBihmBodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvMjYvY3VycmVudC5jcmwwe6B5oHeGdWh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMS8yNi9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAdQMCEYP37QTttmIwSsPTdjX3PxfVfvNHPEKB7gq8n9gFUP_HV5x4oY5acRsdCEtkpXYavRWrHryLowx02jcNq2tNp9DeCmZm20Enn7hrAMlD5NqyHqHQBxwS2aLRlGF4ydpoBxzeXGivHHvOEtQ9hwLNU5SSa_9LSMHrMKNFSUzJyZOjFXQC3xQ15x9GuDqTEv83FAkmuPdDSPxBULs0T0j6376oU8EF5-RmW2nR8ed7ss_6KRXdOmNH6R_yU55aQK420AZZMasc6LyS4UvMlC-a54CmmowoS3LfTg1XiRsKeK7Y7CBr8iNRE4NwRf_5q9Ro11EawHTpGl-TEOti2&s=WYasmY2ZP5PvhiRVJ6huqgM9HDshZsaC2O2RxG8fOXSCJsEqP2o0-nH9Y7GnNC8IbIYoRfGLpmnXgjRfhD4Vez-vjrcbjWtmhRWf9TbAQ1geyFufFZ7CRO3EG6dOQP84Buhc4rQhu3TDJI6CHGmTPMsx95LJTkqaaI0Lbyan2G3vLJ2ZKBzwdXY01qvU4Bem2fBPv8EXN-B6KMdCrWrlIv-TytfAhRMCCCgJXKIoakb5dJdXcZcv7_7yf-TJX79dqAr9eV4ThEMeHUUwdEAnI7vG5Wk04wYM0q7kWmp299t73Wz7hXUqPkNWzJ6yN8EnxQC70Dsd_yuMheNw4lWAPg&h=hspHG5eLS4IKU0SPPJaUpBM_pITC8AV5zlvo64Uf-oU
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=4b71fe15-44c6-47b7-94ac-5a6b2cc290e9,objectId=2146abed-b993-4a81-a6af-eda7b4524c5e/eastus2euap/51af49ef-a727-44e0-9512-4a6ad7de15e1
+      x-ms-throttling-version:
+      - v2
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - elastic-san volume create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -e -v -n --size-gib
+      User-Agent:
+      - AZURECLI/2.83.0 azsdk-python-core/1.38.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/eastus2/asyncoperations/0b8366ce-78d4-4fba-abcc-380f6ec8817a?monitor=true&api-version=2025-09-01&t=639063999399734899&c=MIIH9DCCBtygAwIBAgIQd2vLy0C5gJhlCaq7yELV_jANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVTJDIENBIDAxMB4XDTI2MDEyMTIwMzQ0MloXDTI2MDQxNzAyMzQ0MlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDGvPwNFXQ_7CQ0v6LxRgcjnXvDaVnmXp8Of5dpImOuJxVIUVFzRrPD1GustYagS7JXzQ2zt2c8x8d9vULXoSKCWIHrrNaJefbIUXz2zJVNXWWdWMGbu-zz2w7SFriN2sa67rkm0yq9P2xKORxrhk7bQmsayApQ4zXJWjBNnyHLenBdss5BJvOzWqNTSRUTTvliAxcyCVw6PdUGsn4_THaqaL9Yjg7KiX_1mnsXvyxjSDzZTfxHtBX3uwpEQfBN8lNbCNvtNMnKTcqmIWjkHA59Q_ae7zvVhqXsoa_cNYexj7Ohv7m2BjXhD_mEDEh6-koEosZ6_OQVHTnk9ryuoom9AgMBAAGjggTyMIIE7jCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBQ-TXwk2F_7F5vUZ-HLuRMchUnaYjAfBgNVHSMEGDAWgBTPUQGq6UMsZHYbSvCqwPKS-E_DuzCCAeIGA1UdHwSCAdkwggHVMHWgc6Bxhm9odHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvMjYvY3VycmVudC5jcmwwd6B1oHOGcWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzI2L2N1cnJlbnQuY3JsMGagZKBihmBodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvMjYvY3VycmVudC5jcmwwe6B5oHeGdWh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMS8yNi9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAdQMCEYP37QTttmIwSsPTdjX3PxfVfvNHPEKB7gq8n9gFUP_HV5x4oY5acRsdCEtkpXYavRWrHryLowx02jcNq2tNp9DeCmZm20Enn7hrAMlD5NqyHqHQBxwS2aLRlGF4ydpoBxzeXGivHHvOEtQ9hwLNU5SSa_9LSMHrMKNFSUzJyZOjFXQC3xQ15x9GuDqTEv83FAkmuPdDSPxBULs0T0j6376oU8EF5-RmW2nR8ed7ss_6KRXdOmNH6R_yU55aQK420AZZMasc6LyS4UvMlC-a54CmmowoS3LfTg1XiRsKeK7Y7CBr8iNRE4NwRf_5q9Ro11EawHTpGl-TEOti2&s=WYasmY2ZP5PvhiRVJ6huqgM9HDshZsaC2O2RxG8fOXSCJsEqP2o0-nH9Y7GnNC8IbIYoRfGLpmnXgjRfhD4Vez-vjrcbjWtmhRWf9TbAQ1geyFufFZ7CRO3EG6dOQP84Buhc4rQhu3TDJI6CHGmTPMsx95LJTkqaaI0Lbyan2G3vLJ2ZKBzwdXY01qvU4Bem2fBPv8EXN-B6KMdCrWrlIv-TytfAhRMCCCgJXKIoakb5dJdXcZcv7_7yf-TJX79dqAr9eV4ThEMeHUUwdEAnI7vG5Wk04wYM0q7kWmp299t73Wz7hXUqPkNWzJ6yN8EnxQC70Dsd_yuMheNw4lWAPg&h=hspHG5eLS4IKU0SPPJaUpBM_pITC8AV5zlvo64Uf-oU
+  response:
+    body:
+      string: '{"properties":{"managedBy":{"resourceId":"None"},"provisioningState":"Succeeded","creationData":{"createSource":"None"},"sizeGiB":2,"storageTarget":{"targetIqn":"iqn.2026-02.net.azure.storage.blob.z45.es-krxedddedwh1:es-f41hdjwcgcf0:volume000010","provisioningState":"Succeeded","status":"Running","targetPortalHostname":"es-f41hdjwcgcf0.z3.blob.storage.azure.net","targetPortalPort":3260},"volumeId":"821cfb08-56f7-4cc5-a54f-eb5dff1d39d3"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumeGroups/volume-group000009/volumes/volume000010","name":"volume000010","type":"Microsoft.ElasticSan/elasticSans/volumeGroups/volumes","systemData":{"createdAt":"2026-02-11T09:45:37.3550117Z","createdBy":"test@example.com","createdByType":"User","lastModifiedAt":"2026-02-11T09:45:37.3550117Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '979'
+      content-type:
+      - application/json
+      date:
+      - Wed, 11 Feb 2026 09:45:57 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=4b71fe15-44c6-47b7-94ac-5a6b2cc290e9,objectId=2146abed-b993-4a81-a6af-eda7b4524c5e/eastus2euap/16d64dbd-1621-43e4-b68a-df9a84ffdec3
+      x-ms-throttling-version:
+      - v2
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - identity create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.83.0 azsdk-python-core/1.38.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg.testelasticsan.cmk.uai.000001?api-version=2024-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.cmk.uai.000001","name":"clitest.rg.testelasticsan.cmk.uai.000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2","tags":{"product":"azurecli","cause":"automation","test":"test_elastic_san_customer_managed_key_user_assigned_identity_scenarios","date":"2026-02-11T09:43:29Z","module":"elastic-san"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '462'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Feb 2026 09:45:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-throttling-version:
+      - v2
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - identity create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '23'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.83.0 azsdk-python-core/1.38.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uai000006?api-version=2024-11-30
+  response:
+    body:
+      string: '{"location":"eastus2","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uai000006","name":"uai000006","type":"Microsoft.ManagedIdentity/userAssignedIdentities","properties":{"isolationScope":"None","tenantId":"4b71fe15-44c6-47b7-94ac-5a6b2cc290e9","principalId":"ceee5f63-967e-44d7-a121-0b8993d74b24","clientId":"dc90232b-7537-478f-98b5-233335227826"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '485'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Feb 2026 09:46:02 GMT
+      expires:
+      - '-1'
+      location:
+      - /subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uai000006
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=4b71fe15-44c6-47b7-94ac-5a6b2cc290e9,objectId=2146abed-b993-4a81-a6af-eda7b4524c5e/eastus2euap/9227bf12-fd9e-473d-92ad-c575cc6f3784
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-ms-throttling-version:
+      - v2
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - keyvault set-policy
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n --object-id --key-permissions
+      User-Agent:
+      - AZURECLI/2.83.0 azsdk-python-core/1.38.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resources?$filter=resourceType%20eq%20%27Microsoft.KeyVault%2Fvaults%27%20and%20name%20eq%20%27keyvault000003%27&api-version=2015-11-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.KeyVault/vaults/keyvault000003","name":"keyvault000003","type":"Microsoft.KeyVault/vaults","location":"eastus2","tags":{}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '269'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Feb 2026 09:46:05 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-throttling-version:
+      - v2
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - keyvault set-policy
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n --object-id --key-permissions
+      User-Agent:
+      - AZURECLI/2.83.0 azsdk-python-core/1.38.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.KeyVault/vaults/keyvault000003?api-version=2025-05-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.KeyVault/vaults/keyvault000003","name":"keyvault000003","type":"Microsoft.KeyVault/vaults","location":"eastus2","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-02-11T09:44:07.613Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-02-11T09:44:49.602Z"},"properties":{"sku":{"family":"A","name":"standard"},"tenantId":"4b71fe15-44c6-47b7-94ac-5a6b2cc290e9","accessPolicies":[{"tenantId":"4b71fe15-44c6-47b7-94ac-5a6b2cc290e9","objectId":"2146abed-b993-4a81-a6af-eda7b4524c5e","permissions":{"keys":["all"],"secrets":["all"],"certificates":["all"],"storage":["all"]}},{"tenantId":"4b71fe15-44c6-47b7-94ac-5a6b2cc290e9","objectId":"e28d9a1a-d690-433e-a605-d745f23478d6","permissions":{"keys":["get","unwrapKey","wrapKey"]}}],"enabledForDeployment":false,"enabledForDiskEncryption":false,"enabledForTemplateDeployment":false,"enableSoftDelete":true,"softDeleteRetentionInDays":7,"enableRbacAuthorization":false,"enablePurgeProtection":true,"vaultUri":"https://keyvault000003.vault.azure.net/","provisioningState":"Succeeded","publicNetworkAccess":"Enabled"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1274'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Feb 2026 09:46:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-keyvault-service-version:
+      - 2.2.606.0
+      x-ms-throttling-version:
+      - v2
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2", "tags": {}, "properties": {"sku": {"family": "A",
+      "name": "standard"}, "tenantId": "4b71fe15-44c6-47b7-94ac-5a6b2cc290e9", "accessPolicies":
+      [{"tenantId": "4b71fe15-44c6-47b7-94ac-5a6b2cc290e9", "objectId": "2146abed-b993-4a81-a6af-eda7b4524c5e",
+      "permissions": {"keys": ["all"], "secrets": ["all"], "certificates": ["all"],
+      "storage": ["all"]}}, {"tenantId": "4b71fe15-44c6-47b7-94ac-5a6b2cc290e9", "objectId":
+      "e28d9a1a-d690-433e-a605-d745f23478d6", "permissions": {"keys": ["get", "unwrapKey",
+      "wrapKey"]}}, {"tenantId": "4b71fe15-44c6-47b7-94ac-5a6b2cc290e9", "objectId":
+      "ceee5f63-967e-44d7-a121-0b8993d74b24", "permissions": {"keys": ["get", "unwrapKey",
+      "wrapKey"]}}], "enabledForDeployment": false, "enabledForDiskEncryption": false,
+      "enabledForTemplateDeployment": false, "enableSoftDelete": true, "softDeleteRetentionInDays":
+      7, "enableRbacAuthorization": false, "enablePurgeProtection": true, "vaultUri":
+      "https://keyvault000003.vault.azure.net/", "provisioningState": "Succeeded",
+      "publicNetworkAccess": "Enabled"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - keyvault set-policy
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1051'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n --object-id --key-permissions
+      User-Agent:
+      - AZURECLI/2.83.0 azsdk-python-core/1.38.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.KeyVault/vaults/keyvault000003?api-version=2025-05-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.KeyVault/vaults/keyvault000003","name":"keyvault000003","type":"Microsoft.KeyVault/vaults","location":"eastus2","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-02-11T09:44:07.613Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-02-11T09:46:09.369Z"},"properties":{"sku":{"family":"A","name":"standard"},"tenantId":"4b71fe15-44c6-47b7-94ac-5a6b2cc290e9","accessPolicies":[{"tenantId":"4b71fe15-44c6-47b7-94ac-5a6b2cc290e9","objectId":"2146abed-b993-4a81-a6af-eda7b4524c5e","permissions":{"keys":["all"],"secrets":["all"],"certificates":["all"],"storage":["all"]}},{"tenantId":"4b71fe15-44c6-47b7-94ac-5a6b2cc290e9","objectId":"e28d9a1a-d690-433e-a605-d745f23478d6","permissions":{"keys":["get","unwrapKey","wrapKey"]}},{"tenantId":"4b71fe15-44c6-47b7-94ac-5a6b2cc290e9","objectId":"ceee5f63-967e-44d7-a121-0b8993d74b24","permissions":{"keys":["get","unwrapKey","wrapKey"]}}],"enabledForDeployment":false,"enabledForDiskEncryption":false,"enabledForTemplateDeployment":false,"enableSoftDelete":true,"softDeleteRetentionInDays":7,"enableRbacAuthorization":false,"enablePurgeProtection":true,"vaultUri":"https://keyvault000003.vault.azure.net/","provisioningState":"Succeeded","publicNetworkAccess":"Enabled"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1429'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 11 Feb 2026 09:46:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-keyvault-service-version:
+      - 2.2.606.0
+      x-ms-operation-identifier:
+      - tenantId=4b71fe15-44c6-47b7-94ac-5a6b2cc290e9,objectId=2146abed-b993-4a81-a6af-eda7b4524c5e/eastus2euap/93436517-8375-4e95-9e27-0edb5bc477a2
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-ms-throttling-version:
+      - v2
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - elastic-san volume-group update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -e -n -g --identity --encryption-properties
+      User-Agent:
+      - AZURECLI/2.83.0 azsdk-python-core/1.38.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000009?api-version=2025-09-01
+  response:
+    body:
+      string: '{"identity":{"userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uai000005":{"principalId":"e28d9a1a-d690-433e-a605-d745f23478d6","tenantId":"4b71fe15-44c6-47b7-94ac-5a6b2cc290e9","clientId":"4d2b6032-5eff-4105-937c-024ecc09db9b"}},"type":"UserAssigned"},"properties":{"deleteRetentionPolicy":{"policyState":"Disabled","retentionPeriodDays":0},"enforceDataIntegrityCheckForIscsi":false,"encryptionProperties":{"keyVaultProperties":{"keyVaultUri":"https://keyvault000003.vault.azure.net/","keyName":"key000004","currentVersionedKeyIdentifier":"https://keyvault000003.vault.azure.net/keys/key000004/cd15b083cce24dc79a5eb0f532802295","lastKeyRotationTimestamp":"2026-02-11T09:44:56.1963927Z","currentVersionedKeyExpirationTimestamp":"1970-01-01T00:00:00.0000000Z"},"identity":{"userAssignedIdentity":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uai000005"}},"provisioningState":"Succeeded","protocolType":"iSCSI","encryption":"EncryptionAtRestWithCustomerManagedKey"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumeGroups/volume-group000009","name":"volume-group000009","type":"Microsoft.ElasticSan/elasticSans/volumeGroups","systemData":{"createdAt":"2026-02-11T09:44:54.9580271Z","createdBy":"test@example.com","createdByType":"User","lastModifiedAt":"2026-02-11T09:44:54.9580271Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1745'
+      content-type:
+      - application/json
+      date:
+      - Wed, 11 Feb 2026 09:46:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=4b71fe15-44c6-47b7-94ac-5a6b2cc290e9,objectId=2146abed-b993-4a81-a6af-eda7b4524c5e/eastus2euap/8edac1d4-a758-4aa4-8a9d-3bf2e8f7f574
+      x-ms-throttling-version:
+      - v2
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "UserAssigned", "userAssignedIdentities": {"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uai000006":
+      {}}}, "properties": {"encryption": "EncryptionAtRestWithCustomerManagedKey",
+      "encryptionProperties": {"identity": {"userAssignedIdentity": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uai000006"},
+      "keyVaultProperties": {"keyName": "key000004", "keyVaultUri": "https://keyvault000003.vault.azure.net/"}},
+      "enforceDataIntegrityCheckForIscsi": false, "protocolType": "iSCSI"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - elastic-san volume-group update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '741'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -e -n -g --identity --encryption-properties
+      User-Agent:
+      - AZURECLI/2.83.0 azsdk-python-core/1.38.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000009?api-version=2025-09-01
+  response:
+    body:
+      string: '{"identity":{"userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uai000006":{"principalId":"ceee5f63-967e-44d7-a121-0b8993d74b24","tenantId":"4b71fe15-44c6-47b7-94ac-5a6b2cc290e9","clientId":"dc90232b-7537-478f-98b5-233335227826"}},"type":"UserAssigned"},"properties":{"deleteRetentionPolicy":{"policyState":"Disabled","retentionPeriodDays":0},"enforceDataIntegrityCheckForIscsi":false,"encryptionProperties":{"keyVaultProperties":{"keyVaultUri":"https://keyvault000003.vault.azure.net/","keyName":"key000004","currentVersionedKeyIdentifier":"https://keyvault000003.vault.azure.net/keys/key000004/cd15b083cce24dc79a5eb0f532802295","lastKeyRotationTimestamp":"2026-02-11T09:46:13.8701896Z","currentVersionedKeyExpirationTimestamp":"1970-01-01T00:00:00.0000000Z"},"identity":{"userAssignedIdentity":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uai000006"}},"provisioningState":"Updating","protocolType":"iSCSI","encryption":"EncryptionAtRestWithCustomerManagedKey"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumeGroups/volume-group000009","name":"volume-group000009","type":"Microsoft.ElasticSan/elasticSans/volumeGroups","systemData":{"createdAt":"2026-02-11T09:44:54.9580271Z","createdBy":"test@example.com","createdByType":"User","lastModifiedAt":"2026-02-11T09:46:13.307673Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1743'
+      content-type:
+      - application/json
+      date:
+      - Wed, 11 Feb 2026 09:46:13 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/eastus2/asyncoperations/430bbf30-62db-42ba-a7b3-06f622d09acf?monitor=true&api-version=2025-09-01&t=639063999738769157&c=MIIH9DCCBtygAwIBAgIQd2vLy0C5gJhlCaq7yELV_jANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVTJDIENBIDAxMB4XDTI2MDEyMTIwMzQ0MloXDTI2MDQxNzAyMzQ0MlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDGvPwNFXQ_7CQ0v6LxRgcjnXvDaVnmXp8Of5dpImOuJxVIUVFzRrPD1GustYagS7JXzQ2zt2c8x8d9vULXoSKCWIHrrNaJefbIUXz2zJVNXWWdWMGbu-zz2w7SFriN2sa67rkm0yq9P2xKORxrhk7bQmsayApQ4zXJWjBNnyHLenBdss5BJvOzWqNTSRUTTvliAxcyCVw6PdUGsn4_THaqaL9Yjg7KiX_1mnsXvyxjSDzZTfxHtBX3uwpEQfBN8lNbCNvtNMnKTcqmIWjkHA59Q_ae7zvVhqXsoa_cNYexj7Ohv7m2BjXhD_mEDEh6-koEosZ6_OQVHTnk9ryuoom9AgMBAAGjggTyMIIE7jCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBQ-TXwk2F_7F5vUZ-HLuRMchUnaYjAfBgNVHSMEGDAWgBTPUQGq6UMsZHYbSvCqwPKS-E_DuzCCAeIGA1UdHwSCAdkwggHVMHWgc6Bxhm9odHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvMjYvY3VycmVudC5jcmwwd6B1oHOGcWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzI2L2N1cnJlbnQuY3JsMGagZKBihmBodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvMjYvY3VycmVudC5jcmwwe6B5oHeGdWh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMS8yNi9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAdQMCEYP37QTttmIwSsPTdjX3PxfVfvNHPEKB7gq8n9gFUP_HV5x4oY5acRsdCEtkpXYavRWrHryLowx02jcNq2tNp9DeCmZm20Enn7hrAMlD5NqyHqHQBxwS2aLRlGF4ydpoBxzeXGivHHvOEtQ9hwLNU5SSa_9LSMHrMKNFSUzJyZOjFXQC3xQ15x9GuDqTEv83FAkmuPdDSPxBULs0T0j6376oU8EF5-RmW2nR8ed7ss_6KRXdOmNH6R_yU55aQK420AZZMasc6LyS4UvMlC-a54CmmowoS3LfTg1XiRsKeK7Y7CBr8iNRE4NwRf_5q9Ro11EawHTpGl-TEOti2&s=ZpxvK7oGZRW3unEWwAPogDEZF1lD4WlzsXFb4lCF7V6N91PGqQ1jt5uoJDvKxCf8dghyIB7WHwfLOPICjZm_Rm59eU2q50RtvCAvRXayKEWWQnkiWCmLAhRbg_zZ0ekDfZL3FkNCLYeaJatjmi1fg6anS-85itz0gy75JN1C5wWJZoJ2uEgnGUMKSO_2ShNw0_AetbiwFSsgsuKSPhnHh58jNjwO6D9bLwfXKJFgu8GVTT6VIKzWO3NbyYBeNl8S9ZffePLUmMugplILHxKJkbHTLWMC5hVVvp7caRbXGqIqwQ4yi7MenaQncviP1JjFlk6zI5NLL9tRERt5o5laOQ&h=D3I-AKH98yY-FsjSitkb0SBA1gY07kCQs8lLcNwqygA
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=4b71fe15-44c6-47b7-94ac-5a6b2cc290e9,objectId=2146abed-b993-4a81-a6af-eda7b4524c5e/eastus2euap/02e44f6f-db0e-4ddb-a643-f28feb50134a
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-ms-throttling-version:
+      - v2
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - elastic-san volume-group update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -e -n -g --identity --encryption-properties
+      User-Agent:
+      - AZURECLI/2.83.0 azsdk-python-core/1.38.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/eastus2/asyncoperations/430bbf30-62db-42ba-a7b3-06f622d09acf?monitor=true&api-version=2025-09-01&t=639063999738769157&c=MIIH9DCCBtygAwIBAgIQd2vLy0C5gJhlCaq7yELV_jANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVTJDIENBIDAxMB4XDTI2MDEyMTIwMzQ0MloXDTI2MDQxNzAyMzQ0MlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDGvPwNFXQ_7CQ0v6LxRgcjnXvDaVnmXp8Of5dpImOuJxVIUVFzRrPD1GustYagS7JXzQ2zt2c8x8d9vULXoSKCWIHrrNaJefbIUXz2zJVNXWWdWMGbu-zz2w7SFriN2sa67rkm0yq9P2xKORxrhk7bQmsayApQ4zXJWjBNnyHLenBdss5BJvOzWqNTSRUTTvliAxcyCVw6PdUGsn4_THaqaL9Yjg7KiX_1mnsXvyxjSDzZTfxHtBX3uwpEQfBN8lNbCNvtNMnKTcqmIWjkHA59Q_ae7zvVhqXsoa_cNYexj7Ohv7m2BjXhD_mEDEh6-koEosZ6_OQVHTnk9ryuoom9AgMBAAGjggTyMIIE7jCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBQ-TXwk2F_7F5vUZ-HLuRMchUnaYjAfBgNVHSMEGDAWgBTPUQGq6UMsZHYbSvCqwPKS-E_DuzCCAeIGA1UdHwSCAdkwggHVMHWgc6Bxhm9odHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvMjYvY3VycmVudC5jcmwwd6B1oHOGcWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzI2L2N1cnJlbnQuY3JsMGagZKBihmBodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvMjYvY3VycmVudC5jcmwwe6B5oHeGdWh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMS8yNi9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAdQMCEYP37QTttmIwSsPTdjX3PxfVfvNHPEKB7gq8n9gFUP_HV5x4oY5acRsdCEtkpXYavRWrHryLowx02jcNq2tNp9DeCmZm20Enn7hrAMlD5NqyHqHQBxwS2aLRlGF4ydpoBxzeXGivHHvOEtQ9hwLNU5SSa_9LSMHrMKNFSUzJyZOjFXQC3xQ15x9GuDqTEv83FAkmuPdDSPxBULs0T0j6376oU8EF5-RmW2nR8ed7ss_6KRXdOmNH6R_yU55aQK420AZZMasc6LyS4UvMlC-a54CmmowoS3LfTg1XiRsKeK7Y7CBr8iNRE4NwRf_5q9Ro11EawHTpGl-TEOti2&s=ZpxvK7oGZRW3unEWwAPogDEZF1lD4WlzsXFb4lCF7V6N91PGqQ1jt5uoJDvKxCf8dghyIB7WHwfLOPICjZm_Rm59eU2q50RtvCAvRXayKEWWQnkiWCmLAhRbg_zZ0ekDfZL3FkNCLYeaJatjmi1fg6anS-85itz0gy75JN1C5wWJZoJ2uEgnGUMKSO_2ShNw0_AetbiwFSsgsuKSPhnHh58jNjwO6D9bLwfXKJFgu8GVTT6VIKzWO3NbyYBeNl8S9ZffePLUmMugplILHxKJkbHTLWMC5hVVvp7caRbXGqIqwQ4yi7MenaQncviP1JjFlk6zI5NLL9tRERt5o5laOQ&h=D3I-AKH98yY-FsjSitkb0SBA1gY07kCQs8lLcNwqygA
+  response:
+    body:
+      string: '{"identity":{"userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uai000006":{"principalId":"ceee5f63-967e-44d7-a121-0b8993d74b24","tenantId":"4b71fe15-44c6-47b7-94ac-5a6b2cc290e9","clientId":"dc90232b-7537-478f-98b5-233335227826"}},"type":"UserAssigned"},"properties":{"deleteRetentionPolicy":{"policyState":"Disabled","retentionPeriodDays":0},"enforceDataIntegrityCheckForIscsi":false,"encryptionProperties":{"keyVaultProperties":{"keyVaultUri":"https://keyvault000003.vault.azure.net/","keyName":"key000004","currentVersionedKeyIdentifier":"https://keyvault000003.vault.azure.net/keys/key000004/cd15b083cce24dc79a5eb0f532802295","lastKeyRotationTimestamp":"2026-02-11T09:46:13.8701896Z","currentVersionedKeyExpirationTimestamp":"1970-01-01T00:00:00.0000000Z"},"identity":{"userAssignedIdentity":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uai000006"}},"provisioningState":"Succeeded","protocolType":"iSCSI","encryption":"EncryptionAtRestWithCustomerManagedKey"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumeGroups/volume-group000009","name":"volume-group000009","type":"Microsoft.ElasticSan/elasticSans/volumeGroups","systemData":{"createdAt":"2026-02-11T09:44:54.9580271Z","createdBy":"test@example.com","createdByType":"User","lastModifiedAt":"2026-02-11T09:46:13.307673Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1744'
+      content-type:
+      - application/json
+      date:
+      - Wed, 11 Feb 2026 09:46:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=4b71fe15-44c6-47b7-94ac-5a6b2cc290e9,objectId=2146abed-b993-4a81-a6af-eda7b4524c5e/eastus2euap/8d4e6753-4f1c-417a-ac50-91b45cff2dd8
+      x-ms-throttling-version:
+      - v2
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - elastic-san volume-group update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -e -n -g --encryption
+      User-Agent:
+      - AZURECLI/2.83.0 azsdk-python-core/1.38.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000009?api-version=2025-09-01
+  response:
+    body:
+      string: '{"identity":{"userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uai000006":{"principalId":"ceee5f63-967e-44d7-a121-0b8993d74b24","tenantId":"4b71fe15-44c6-47b7-94ac-5a6b2cc290e9","clientId":"dc90232b-7537-478f-98b5-233335227826"}},"type":"UserAssigned"},"properties":{"deleteRetentionPolicy":{"policyState":"Disabled","retentionPeriodDays":0},"enforceDataIntegrityCheckForIscsi":false,"encryptionProperties":{"keyVaultProperties":{"keyVaultUri":"https://keyvault000003.vault.azure.net/","keyName":"key000004","currentVersionedKeyIdentifier":"https://keyvault000003.vault.azure.net/keys/key000004/cd15b083cce24dc79a5eb0f532802295","lastKeyRotationTimestamp":"2026-02-11T09:46:13.8701896Z","currentVersionedKeyExpirationTimestamp":"1970-01-01T00:00:00.0000000Z"},"identity":{"userAssignedIdentity":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uai000006"}},"provisioningState":"Succeeded","protocolType":"iSCSI","encryption":"EncryptionAtRestWithCustomerManagedKey"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumeGroups/volume-group000009","name":"volume-group000009","type":"Microsoft.ElasticSan/elasticSans/volumeGroups","systemData":{"createdAt":"2026-02-11T09:44:54.9580271Z","createdBy":"test@example.com","createdByType":"User","lastModifiedAt":"2026-02-11T09:46:13.307673Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1744'
+      content-type:
+      - application/json
+      date:
+      - Wed, 11 Feb 2026 09:46:16 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=4b71fe15-44c6-47b7-94ac-5a6b2cc290e9,objectId=2146abed-b993-4a81-a6af-eda7b4524c5e/eastus2euap/f41e3c5e-cb82-4cbd-a0d9-7e9988c1d748
+      x-ms-throttling-version:
+      - v2
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "UserAssigned", "userAssignedIdentities": {"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uai000006":
+      {}}}, "properties": {"encryption": "EncryptionAtRestWithPlatformKey", "encryptionProperties":
+      {"identity": {"userAssignedIdentity": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uai000006"},
+      "keyVaultProperties": {"keyName": "key000004", "keyVaultUri": "https://keyvault000003.vault.azure.net/"}},
+      "enforceDataIntegrityCheckForIscsi": false, "protocolType": "iSCSI"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - elastic-san volume-group update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '734'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -e -n -g --encryption
+      User-Agent:
+      - AZURECLI/2.83.0 azsdk-python-core/1.38.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000009?api-version=2025-09-01
+  response:
+    body:
+      string: '{"identity":{"userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uai000006":{"principalId":"ceee5f63-967e-44d7-a121-0b8993d74b24","tenantId":"4b71fe15-44c6-47b7-94ac-5a6b2cc290e9","clientId":"dc90232b-7537-478f-98b5-233335227826"}},"type":"UserAssigned"},"properties":{"deleteRetentionPolicy":{"policyState":"Disabled","retentionPeriodDays":0},"enforceDataIntegrityCheckForIscsi":false,"provisioningState":"Updating","protocolType":"iSCSI","encryption":"EncryptionAtRestWithPlatformKey"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumeGroups/volume-group000009","name":"volume-group000009","type":"Microsoft.ElasticSan/elasticSans/volumeGroups","systemData":{"createdAt":"2026-02-11T09:44:54.9580271Z","createdBy":"test@example.com","createdByType":"User","lastModifiedAt":"2026-02-11T09:46:19.4328499Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1145'
+      content-type:
+      - application/json
+      date:
+      - Wed, 11 Feb 2026 09:46:18 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/eastus2/asyncoperations/e718d040-f7a2-4cb7-81d9-ad30f373be08?monitor=true&api-version=2025-09-01&t=639063999796757610&c=MIIH9DCCBtygAwIBAgIQd2vLy0C5gJhlCaq7yELV_jANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVTJDIENBIDAxMB4XDTI2MDEyMTIwMzQ0MloXDTI2MDQxNzAyMzQ0MlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDGvPwNFXQ_7CQ0v6LxRgcjnXvDaVnmXp8Of5dpImOuJxVIUVFzRrPD1GustYagS7JXzQ2zt2c8x8d9vULXoSKCWIHrrNaJefbIUXz2zJVNXWWdWMGbu-zz2w7SFriN2sa67rkm0yq9P2xKORxrhk7bQmsayApQ4zXJWjBNnyHLenBdss5BJvOzWqNTSRUTTvliAxcyCVw6PdUGsn4_THaqaL9Yjg7KiX_1mnsXvyxjSDzZTfxHtBX3uwpEQfBN8lNbCNvtNMnKTcqmIWjkHA59Q_ae7zvVhqXsoa_cNYexj7Ohv7m2BjXhD_mEDEh6-koEosZ6_OQVHTnk9ryuoom9AgMBAAGjggTyMIIE7jCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBQ-TXwk2F_7F5vUZ-HLuRMchUnaYjAfBgNVHSMEGDAWgBTPUQGq6UMsZHYbSvCqwPKS-E_DuzCCAeIGA1UdHwSCAdkwggHVMHWgc6Bxhm9odHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvMjYvY3VycmVudC5jcmwwd6B1oHOGcWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzI2L2N1cnJlbnQuY3JsMGagZKBihmBodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvMjYvY3VycmVudC5jcmwwe6B5oHeGdWh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMS8yNi9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAdQMCEYP37QTttmIwSsPTdjX3PxfVfvNHPEKB7gq8n9gFUP_HV5x4oY5acRsdCEtkpXYavRWrHryLowx02jcNq2tNp9DeCmZm20Enn7hrAMlD5NqyHqHQBxwS2aLRlGF4ydpoBxzeXGivHHvOEtQ9hwLNU5SSa_9LSMHrMKNFSUzJyZOjFXQC3xQ15x9GuDqTEv83FAkmuPdDSPxBULs0T0j6376oU8EF5-RmW2nR8ed7ss_6KRXdOmNH6R_yU55aQK420AZZMasc6LyS4UvMlC-a54CmmowoS3LfTg1XiRsKeK7Y7CBr8iNRE4NwRf_5q9Ro11EawHTpGl-TEOti2&s=Wr0hPQxIyoE2jMwbZox1f38Io9GpZ6Av0jQHj0qS6xTcmOjLq4aUG-EziWPgiTGpYbb3MfUyU7tCu_36SIEH7R0hkd4N0yiqJonAOci8-S7YE-Ep1uRL_CHW5Ei0YbXDFbVlWD8iDwLYzeTyfcxXIhP07znrBgK5qZn5_E1nr-T8gDN9D50XG-zDfUKJFYz0xFfa_Sm7FexNh7y25P-fdtN4Fr5O6m8OWmBc1monx7Oc7AB7955YUQ2QOXRHmNKjZ-tzxzcyFfM_ICtPN4RhYw_q8huBkeUDdtL38Tw0fd3bw7w99kpaXeY5u4BSh2csg07ILVim0hSpFWLqK-cbXQ&h=rnV6CjWJ_NglDZYr8Vexng4QPWplELOVe6pe0HbDIpQ
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=4b71fe15-44c6-47b7-94ac-5a6b2cc290e9,objectId=2146abed-b993-4a81-a6af-eda7b4524c5e/eastus2euap/793a5680-3c7a-4c17-b01e-28fceb179bcf
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-ms-throttling-version:
+      - v2
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - elastic-san volume-group update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -e -n -g --encryption
+      User-Agent:
+      - AZURECLI/2.83.0 azsdk-python-core/1.38.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/eastus2/asyncoperations/e718d040-f7a2-4cb7-81d9-ad30f373be08?monitor=true&api-version=2025-09-01&t=639063999796757610&c=MIIH9DCCBtygAwIBAgIQd2vLy0C5gJhlCaq7yELV_jANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVTJDIENBIDAxMB4XDTI2MDEyMTIwMzQ0MloXDTI2MDQxNzAyMzQ0MlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDGvPwNFXQ_7CQ0v6LxRgcjnXvDaVnmXp8Of5dpImOuJxVIUVFzRrPD1GustYagS7JXzQ2zt2c8x8d9vULXoSKCWIHrrNaJefbIUXz2zJVNXWWdWMGbu-zz2w7SFriN2sa67rkm0yq9P2xKORxrhk7bQmsayApQ4zXJWjBNnyHLenBdss5BJvOzWqNTSRUTTvliAxcyCVw6PdUGsn4_THaqaL9Yjg7KiX_1mnsXvyxjSDzZTfxHtBX3uwpEQfBN8lNbCNvtNMnKTcqmIWjkHA59Q_ae7zvVhqXsoa_cNYexj7Ohv7m2BjXhD_mEDEh6-koEosZ6_OQVHTnk9ryuoom9AgMBAAGjggTyMIIE7jCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBQ-TXwk2F_7F5vUZ-HLuRMchUnaYjAfBgNVHSMEGDAWgBTPUQGq6UMsZHYbSvCqwPKS-E_DuzCCAeIGA1UdHwSCAdkwggHVMHWgc6Bxhm9odHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvMjYvY3VycmVudC5jcmwwd6B1oHOGcWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzI2L2N1cnJlbnQuY3JsMGagZKBihmBodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvMjYvY3VycmVudC5jcmwwe6B5oHeGdWh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMS8yNi9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAdQMCEYP37QTttmIwSsPTdjX3PxfVfvNHPEKB7gq8n9gFUP_HV5x4oY5acRsdCEtkpXYavRWrHryLowx02jcNq2tNp9DeCmZm20Enn7hrAMlD5NqyHqHQBxwS2aLRlGF4ydpoBxzeXGivHHvOEtQ9hwLNU5SSa_9LSMHrMKNFSUzJyZOjFXQC3xQ15x9GuDqTEv83FAkmuPdDSPxBULs0T0j6376oU8EF5-RmW2nR8ed7ss_6KRXdOmNH6R_yU55aQK420AZZMasc6LyS4UvMlC-a54CmmowoS3LfTg1XiRsKeK7Y7CBr8iNRE4NwRf_5q9Ro11EawHTpGl-TEOti2&s=Wr0hPQxIyoE2jMwbZox1f38Io9GpZ6Av0jQHj0qS6xTcmOjLq4aUG-EziWPgiTGpYbb3MfUyU7tCu_36SIEH7R0hkd4N0yiqJonAOci8-S7YE-Ep1uRL_CHW5Ei0YbXDFbVlWD8iDwLYzeTyfcxXIhP07znrBgK5qZn5_E1nr-T8gDN9D50XG-zDfUKJFYz0xFfa_Sm7FexNh7y25P-fdtN4Fr5O6m8OWmBc1monx7Oc7AB7955YUQ2QOXRHmNKjZ-tzxzcyFfM_ICtPN4RhYw_q8huBkeUDdtL38Tw0fd3bw7w99kpaXeY5u4BSh2csg07ILVim0hSpFWLqK-cbXQ&h=rnV6CjWJ_NglDZYr8Vexng4QPWplELOVe6pe0HbDIpQ
+  response:
+    body:
+      string: '{"identity":{"userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uai000006":{"principalId":"ceee5f63-967e-44d7-a121-0b8993d74b24","tenantId":"4b71fe15-44c6-47b7-94ac-5a6b2cc290e9","clientId":"dc90232b-7537-478f-98b5-233335227826"}},"type":"UserAssigned"},"properties":{"deleteRetentionPolicy":{"policyState":"Disabled","retentionPeriodDays":0},"enforceDataIntegrityCheckForIscsi":false,"provisioningState":"Succeeded","protocolType":"iSCSI","encryption":"EncryptionAtRestWithPlatformKey"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumeGroups/volume-group000009","name":"volume-group000009","type":"Microsoft.ElasticSan/elasticSans/volumeGroups","systemData":{"createdAt":"2026-02-11T09:44:54.9580271Z","createdBy":"test@example.com","createdByType":"User","lastModifiedAt":"2026-02-11T09:46:19.4328499Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1146'
+      content-type:
+      - application/json
+      date:
+      - Wed, 11 Feb 2026 09:46:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=4b71fe15-44c6-47b7-94ac-5a6b2cc290e9,objectId=2146abed-b993-4a81-a6af-eda7b4524c5e/eastus2euap/efef3500-e4b1-4815-9204-82c07222eace
+      x-ms-throttling-version:
+      - v2
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - elastic-san volume-group update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -e -n -g --identity
+      User-Agent:
+      - AZURECLI/2.83.0 azsdk-python-core/1.38.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000009?api-version=2025-09-01
+  response:
+    body:
+      string: '{"identity":{"userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/uai000006":{"principalId":"ceee5f63-967e-44d7-a121-0b8993d74b24","tenantId":"4b71fe15-44c6-47b7-94ac-5a6b2cc290e9","clientId":"dc90232b-7537-478f-98b5-233335227826"}},"type":"UserAssigned"},"properties":{"deleteRetentionPolicy":{"policyState":"Disabled","retentionPeriodDays":0},"enforceDataIntegrityCheckForIscsi":false,"provisioningState":"Succeeded","protocolType":"iSCSI","encryption":"EncryptionAtRestWithPlatformKey"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumeGroups/volume-group000009","name":"volume-group000009","type":"Microsoft.ElasticSan/elasticSans/volumeGroups","systemData":{"createdAt":"2026-02-11T09:44:54.9580271Z","createdBy":"test@example.com","createdByType":"User","lastModifiedAt":"2026-02-11T09:46:19.4328499Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1146'
+      content-type:
+      - application/json
+      date:
+      - Wed, 11 Feb 2026 09:46:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=4b71fe15-44c6-47b7-94ac-5a6b2cc290e9,objectId=2146abed-b993-4a81-a6af-eda7b4524c5e/eastus2euap/975e60d8-7c2b-4f59-a671-527044477f9b
+      x-ms-throttling-version:
+      - v2
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "SystemAssigned"}, "properties": {"encryption": "EncryptionAtRestWithPlatformKey",
+      "enforceDataIntegrityCheckForIscsi": false, "protocolType": "iSCSI"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - elastic-san volume-group update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '174'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -e -n -g --identity
+      User-Agent:
+      - AZURECLI/2.83.0 azsdk-python-core/1.38.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000009?api-version=2025-09-01
+  response:
+    body:
+      string: '{"identity":{"principalId":"7e89ac41-2b94-45de-a143-96c602b14f93","tenantId":"4b71fe15-44c6-47b7-94ac-5a6b2cc290e9","type":"SystemAssigned"},"properties":{"deleteRetentionPolicy":{"policyState":"Disabled","retentionPeriodDays":0},"enforceDataIntegrityCheckForIscsi":false,"provisioningState":"Updating","protocolType":"iSCSI","encryption":"EncryptionAtRestWithPlatformKey"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumeGroups/volume-group000009","name":"volume-group000009","type":"Microsoft.ElasticSan/elasticSans/volumeGroups","systemData":{"createdAt":"2026-02-11T09:44:54.9580271Z","createdBy":"test@example.com","createdByType":"User","lastModifiedAt":"2026-02-11T09:46:25.5735798Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '889'
+      content-type:
+      - application/json
+      date:
+      - Wed, 11 Feb 2026 09:46:25 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/eastus2/asyncoperations/8aead54c-4dc5-4738-9955-696a73fe133d?monitor=true&api-version=2025-09-01&t=639063999858760153&c=MIIH9DCCBtygAwIBAgIQd2vLy0C5gJhlCaq7yELV_jANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVTJDIENBIDAxMB4XDTI2MDEyMTIwMzQ0MloXDTI2MDQxNzAyMzQ0MlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDGvPwNFXQ_7CQ0v6LxRgcjnXvDaVnmXp8Of5dpImOuJxVIUVFzRrPD1GustYagS7JXzQ2zt2c8x8d9vULXoSKCWIHrrNaJefbIUXz2zJVNXWWdWMGbu-zz2w7SFriN2sa67rkm0yq9P2xKORxrhk7bQmsayApQ4zXJWjBNnyHLenBdss5BJvOzWqNTSRUTTvliAxcyCVw6PdUGsn4_THaqaL9Yjg7KiX_1mnsXvyxjSDzZTfxHtBX3uwpEQfBN8lNbCNvtNMnKTcqmIWjkHA59Q_ae7zvVhqXsoa_cNYexj7Ohv7m2BjXhD_mEDEh6-koEosZ6_OQVHTnk9ryuoom9AgMBAAGjggTyMIIE7jCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBQ-TXwk2F_7F5vUZ-HLuRMchUnaYjAfBgNVHSMEGDAWgBTPUQGq6UMsZHYbSvCqwPKS-E_DuzCCAeIGA1UdHwSCAdkwggHVMHWgc6Bxhm9odHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvMjYvY3VycmVudC5jcmwwd6B1oHOGcWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzI2L2N1cnJlbnQuY3JsMGagZKBihmBodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvMjYvY3VycmVudC5jcmwwe6B5oHeGdWh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMS8yNi9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAdQMCEYP37QTttmIwSsPTdjX3PxfVfvNHPEKB7gq8n9gFUP_HV5x4oY5acRsdCEtkpXYavRWrHryLowx02jcNq2tNp9DeCmZm20Enn7hrAMlD5NqyHqHQBxwS2aLRlGF4ydpoBxzeXGivHHvOEtQ9hwLNU5SSa_9LSMHrMKNFSUzJyZOjFXQC3xQ15x9GuDqTEv83FAkmuPdDSPxBULs0T0j6376oU8EF5-RmW2nR8ed7ss_6KRXdOmNH6R_yU55aQK420AZZMasc6LyS4UvMlC-a54CmmowoS3LfTg1XiRsKeK7Y7CBr8iNRE4NwRf_5q9Ro11EawHTpGl-TEOti2&s=gGXZaOrIZeWtAWBK6oZwYvFSnV40nPPeZskYj619WBFZ92s2cePGjk84b2HoZsD9MGccGDm76fsIUlK7gL8F8QxCXpotSZutbjIiionCVWoavIWCufZh-og2TiGaOyWhTW2K3YQJFSeztPLVdjUfAfBfMV_QcsZLLnwbi0O8HIAl5Ey8-e0UvKHkg8yGbE5-XRsfli00imSZ2iNVpz-UidR7FFg50dtqzwjhvowm3jCtbYTd98Gv0BTIroekG2ZA6YP6WDobpiEhDd2MOP06hpl-HQYY0vkUNXcXjJiZIVWE_AuaXM3JICG3j1bnbiBUwMZoygze6kAkgFTMbCwtng&h=Wdo27dFQXfwbWzhbQuH47PHLhs6S_t8ViO43sVbfP5A
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=4b71fe15-44c6-47b7-94ac-5a6b2cc290e9,objectId=2146abed-b993-4a81-a6af-eda7b4524c5e/eastus2euap/dbbbbb9e-98e3-4cf7-b128-4d1d651b9e8e
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-ms-throttling-version:
+      - v2
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - elastic-san volume-group update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -e -n -g --identity
+      User-Agent:
+      - AZURECLI/2.83.0 azsdk-python-core/1.38.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/eastus2/asyncoperations/8aead54c-4dc5-4738-9955-696a73fe133d?monitor=true&api-version=2025-09-01&t=639063999858760153&c=MIIH9DCCBtygAwIBAgIQd2vLy0C5gJhlCaq7yELV_jANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBFVTJDIENBIDAxMB4XDTI2MDEyMTIwMzQ0MloXDTI2MDQxNzAyMzQ0MlowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDGvPwNFXQ_7CQ0v6LxRgcjnXvDaVnmXp8Of5dpImOuJxVIUVFzRrPD1GustYagS7JXzQ2zt2c8x8d9vULXoSKCWIHrrNaJefbIUXz2zJVNXWWdWMGbu-zz2w7SFriN2sa67rkm0yq9P2xKORxrhk7bQmsayApQ4zXJWjBNnyHLenBdss5BJvOzWqNTSRUTTvliAxcyCVw6PdUGsn4_THaqaL9Yjg7KiX_1mnsXvyxjSDzZTfxHtBX3uwpEQfBN8lNbCNvtNMnKTcqmIWjkHA59Q_ae7zvVhqXsoa_cNYexj7Ohv7m2BjXhD_mEDEh6-koEosZ6_OQVHTnk9ryuoom9AgMBAAGjggTyMIIE7jCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBQ-TXwk2F_7F5vUZ-HLuRMchUnaYjAfBgNVHSMEGDAWgBTPUQGq6UMsZHYbSvCqwPKS-E_DuzCCAeIGA1UdHwSCAdkwggHVMHWgc6Bxhm9odHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvMjYvY3VycmVudC5jcmwwd6B1oHOGcWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2Vhc3R1czJldWFwL2NybHMvY2NtZWVhc3R1czJldWFwcGtpL2NjbWVlYXN0dXMyZXVhcGljYTAxLzI2L2N1cnJlbnQuY3JsMGagZKBihmBodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vZWFzdHVzMmV1YXAvY3Jscy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvMjYvY3VycmVudC5jcmwwe6B5oHeGdWh0dHA6Ly9jY21lZWFzdHVzMmV1YXBwa2kuZWFzdHVzMmV1YXAucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lZWFzdHVzMmV1YXBpY2EwMS8yNi9jdXJyZW50LmNybDCCAecGCCsGAQUFBwEBBIIB2TCCAdUweAYIKwYBBQUHMAKGbGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjB6BggrBgEFBQcwAoZuaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvZWFzdHVzMmV1YXAvY2FjZXJ0cy9jY21lZWFzdHVzMmV1YXBwa2kvY2NtZWVhc3R1czJldWFwaWNhMDEvY2VydC5jZXIwaQYIKwYBBQUHMAKGXWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9lYXN0dXMyZXVhcC9jYWNlcnRzL2NjbWVlYXN0dXMyZXVhcHBraS9jY21lZWFzdHVzMmV1YXBpY2EwMS9jZXJ0LmNlcjByBggrBgEFBQcwAoZmaHR0cDovL2NjbWVlYXN0dXMyZXVhcHBraS5lYXN0dXMyZXVhcC5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVlYXN0dXMyZXVhcGljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQAdQMCEYP37QTttmIwSsPTdjX3PxfVfvNHPEKB7gq8n9gFUP_HV5x4oY5acRsdCEtkpXYavRWrHryLowx02jcNq2tNp9DeCmZm20Enn7hrAMlD5NqyHqHQBxwS2aLRlGF4ydpoBxzeXGivHHvOEtQ9hwLNU5SSa_9LSMHrMKNFSUzJyZOjFXQC3xQ15x9GuDqTEv83FAkmuPdDSPxBULs0T0j6376oU8EF5-RmW2nR8ed7ss_6KRXdOmNH6R_yU55aQK420AZZMasc6LyS4UvMlC-a54CmmowoS3LfTg1XiRsKeK7Y7CBr8iNRE4NwRf_5q9Ro11EawHTpGl-TEOti2&s=gGXZaOrIZeWtAWBK6oZwYvFSnV40nPPeZskYj619WBFZ92s2cePGjk84b2HoZsD9MGccGDm76fsIUlK7gL8F8QxCXpotSZutbjIiionCVWoavIWCufZh-og2TiGaOyWhTW2K3YQJFSeztPLVdjUfAfBfMV_QcsZLLnwbi0O8HIAl5Ey8-e0UvKHkg8yGbE5-XRsfli00imSZ2iNVpz-UidR7FFg50dtqzwjhvowm3jCtbYTd98Gv0BTIroekG2ZA6YP6WDobpiEhDd2MOP06hpl-HQYY0vkUNXcXjJiZIVWE_AuaXM3JICG3j1bnbiBUwMZoygze6kAkgFTMbCwtng&h=Wdo27dFQXfwbWzhbQuH47PHLhs6S_t8ViO43sVbfP5A
+  response:
+    body:
+      string: '{"identity":{"principalId":"7e89ac41-2b94-45de-a143-96c602b14f93","tenantId":"4b71fe15-44c6-47b7-94ac-5a6b2cc290e9","type":"SystemAssigned"},"properties":{"deleteRetentionPolicy":{"policyState":"Disabled","retentionPeriodDays":0},"enforceDataIntegrityCheckForIscsi":false,"provisioningState":"Succeeded","protocolType":"iSCSI","encryption":"EncryptionAtRestWithPlatformKey"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.cmk.uai.000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumeGroups/volume-group000009","name":"volume-group000009","type":"Microsoft.ElasticSan/elasticSans/volumeGroups","systemData":{"createdAt":"2026-02-11T09:44:54.9580271Z","createdBy":"test@example.com","createdByType":"User","lastModifiedAt":"2026-02-11T09:46:25.5735798Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '890'
+      content-type:
+      - application/json
+      date:
+      - Wed, 11 Feb 2026 09:46:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=4b71fe15-44c6-47b7-94ac-5a6b2cc290e9,objectId=2146abed-b993-4a81-a6af-eda7b4524c5e/eastus2euap/f8733ebd-19a4-492b-a0b5-7b71dc984732
+      x-ms-throttling-version:
+      - v2
+    status:
+      code: 200
+      message: OK
+version: 1

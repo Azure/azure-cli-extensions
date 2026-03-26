@@ -5,8 +5,8 @@
 
 
 def exception_handler(ex):
-    from msrestazure.azure_exceptions import CloudError
-    if isinstance(ex, CloudError):
+    from azure.core.exceptions import HttpResponseError
+    if isinstance(ex, HttpResponseError):
         text = getattr(ex.response, 'text', '')
         if len(ex.args) == 1 and isinstance(ex.args[0], str):
             ex.args = tuple([ex.args[0] + text])

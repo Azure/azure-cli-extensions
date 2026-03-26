@@ -12,21 +12,23 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dynatrace monitor list-monitored-resource"
+    "dynatrace monitor list-monitored-resource",
 )
 class ListMonitoredResource(AAZCommand):
-    """List the resources currently being monitored by the dynatrace monitor resource
+    """List of all Azure resources currently being monitored by a Dynatrace resource.
 
     :example: List-monitored-resource
         az dynatrace monitor list-monitored-resource -g rg --monitor-name monitor
     """
 
     _aaz_info = {
-        "version": "2021-09-01",
+        "version": "2024-04-24",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}/listmonitoredresources", "2021-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}/listmonitoredresources", "2024-04-24"],
         ]
     }
+
+    AZ_SUPPORT_PAGINATION = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -47,10 +49,25 @@ class ListMonitoredResource(AAZCommand):
             options=["--monitor-name"],
             help="Monitor resource name",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9_-]*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
+
+        # define Arg Group "Request"
+
+        _args_schema = cls._args_schema
+        _args_schema.monitored_resource_ids = AAZListArg(
+            options=["--monitored-resource-ids"],
+            arg_group="Request",
+            help="List of azure resource Id of monitored resources for which we get the log status",
+        )
+
+        monitored_resource_ids = cls._args_schema.monitored_resource_ids
+        monitored_resource_ids.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
@@ -119,7 +136,7 @@ class ListMonitoredResource(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2021-09-01",
+                    "api-version", "2024-04-24",
                     required=True,
                 ),
             }
@@ -129,10 +146,28 @@ class ListMonitoredResource(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"client_flatten": True}}
+            )
+            _builder.set_prop("monitoredResourceIds", AAZListType, ".monitored_resource_ids")
+
+            monitored_resource_ids = _builder.get(".monitoredResourceIds")
+            if monitored_resource_ids is not None:
+                monitored_resource_ids.set_elements(AAZStrType, ".")
+
+            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -176,6 +211,10 @@ class ListMonitoredResource(AAZCommand):
             )
 
             return cls._schema_on_200
+
+
+class _ListMonitoredResourceHelper:
+    """Helper class for ListMonitoredResource"""
 
 
 __all__ = ["ListMonitoredResource"]

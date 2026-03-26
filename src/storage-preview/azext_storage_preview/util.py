@@ -5,6 +5,8 @@
 
 
 import os
+from datetime import datetime, timedelta
+from .profiles import CUSTOM_DATA_STORAGE_FILESHARE, CUSTOM_DATA_STORAGE_BLOB
 
 
 def collect_blobs(blob_service, container, pattern=None):
@@ -99,65 +101,6 @@ def glob_files_remotely(cmd, client, share_name, pattern):
                 queue.appendleft(os.path.join(current_dir, f.name))
 
 
-def create_short_lived_blob_sas(cmd, account_name, account_key, container, blob):
-    from datetime import datetime, timedelta
-    if cmd.supported_api_version(min_api='2017-04-17'):
-        t_sas = cmd.get_models(
-            'blob.sharedaccesssignature#BlobSharedAccessSignature')
-    else:
-        t_sas = cmd.get_models('shareaccesssignature#SharedAccessSignature')
-
-    t_blob_permissions = cmd.get_models('blob.models#BlobPermissions')
-    expiry = (datetime.utcnow() + timedelta(days=1)).strftime('%Y-%m-%dT%H:%M:%SZ')
-    sas = t_sas(account_name, account_key)
-    return sas.generate_blob(container, blob, permission=t_blob_permissions(read=True), expiry=expiry, protocol='https')
-
-
-def create_short_lived_file_sas(cmd, account_name, account_key, share, directory_name, file_name):
-    from datetime import datetime, timedelta
-    if cmd.supported_api_version(min_api='2017-04-17'):
-        t_sas = cmd.get_models(
-            'file.sharedaccesssignature#FileSharedAccessSignature')
-    else:
-        t_sas = cmd.get_models('sharedaccesssignature#SharedAccessSignature')
-
-    t_file_permissions = cmd.get_models('file.models#FilePermissions')
-    # if dir is empty string change it to None
-    directory_name = directory_name if directory_name else None
-    expiry = (datetime.utcnow() + timedelta(days=1)).strftime('%Y-%m-%dT%H:%M:%SZ')
-    sas = t_sas(account_name, account_key)
-    return sas.generate_file(share, directory_name=directory_name, file_name=file_name,
-                             permission=t_file_permissions(read=True), expiry=expiry, protocol='https')
-
-
-def create_short_lived_container_sas(cmd, account_name, account_key, container):
-    from datetime import datetime, timedelta
-    if cmd.supported_api_version(min_api='2017-04-17'):
-        t_sas = cmd.get_models(
-            'blob.sharedaccesssignature#BlobSharedAccessSignature')
-    else:
-        t_sas = cmd.get_models('sharedaccesssignature#SharedAccessSignature')
-    t_blob_permissions = cmd.get_models('blob.models#BlobPermissions')
-
-    expiry = (datetime.utcnow() + timedelta(days=1)).strftime('%Y-%m-%dT%H:%M:%SZ')
-    sas = t_sas(account_name, account_key)
-    return sas.generate_container(container, permission=t_blob_permissions(read=True), expiry=expiry, protocol='https')
-
-
-def create_short_lived_share_sas(cmd, account_name, account_key, share):
-    from datetime import datetime, timedelta
-    if cmd.supported_api_version(min_api='2017-04-17'):
-        t_sas = cmd.get_models(
-            'file.sharedaccesssignature#FileSharedAccessSignature')
-    else:
-        t_sas = cmd.get_models('sharedaccesssignature#SharedAccessSignature')
-
-    t_file_permissions = cmd.get_models('file.models#FilePermissions')
-    expiry = (datetime.utcnow() + timedelta(days=1)).strftime('%Y-%m-%dT%H:%M:%SZ')
-    sas = t_sas(account_name, account_key)
-    return sas.generate_share(share, permission=t_file_permissions(read=True), expiry=expiry, protocol='https')
-
-
 def mkdir_p(path):
     import errno
     try:
@@ -239,3 +182,41 @@ def check_precondition_success(func):
             logger.warning('Failed precondition')
             return False, None
     return wrapper
+
+
+def create_short_lived_blob_sas_v2(cmd, account_name, account_key, container, blob):
+
+    t_sas = cmd.get_models('_shared_access_signature#BlobSharedAccessSignature',
+                           resource_type=CUSTOM_DATA_STORAGE_BLOB)
+
+    t_blob_permissions = cmd.get_models('_models#BlobSasPermissions', resource_type=CUSTOM_DATA_STORAGE_BLOB)
+    expiry = (datetime.utcnow() + timedelta(days=1)).strftime('%Y-%m-%dT%H:%M:%SZ')
+    sas = t_sas(account_name, account_key)
+    return sas.generate_blob(container, blob, permission=t_blob_permissions(read=True), expiry=expiry, protocol='https')
+
+
+def create_short_lived_file_sas_v2(cmd, account_name, account_key, share, directory_name, file_name):
+
+    t_sas = cmd.get_models('_shared_access_signature#FileSharedAccessSignature',
+                           resource_type=CUSTOM_DATA_STORAGE_FILESHARE)
+
+    t_file_permissions = cmd.get_models('_models#FileSasPermissions', resource_type=CUSTOM_DATA_STORAGE_FILESHARE)
+    expiry = (datetime.utcnow() + timedelta(days=1)).strftime('%Y-%m-%dT%H:%M:%SZ')
+    sas = t_sas(account_name, account_key)
+    return sas.generate_file(share, directory_name=directory_name, file_name=file_name,
+                             permission=t_file_permissions(read=True), expiry=expiry, protocol='https')
+
+
+def create_short_lived_container_sas_track2(cmd, account_name, account_key, container):
+    t_generate_container_sas = cmd.get_models('_shared_access_signature#generate_container_sas',
+                                              resource_type=CUSTOM_DATA_STORAGE_BLOB)
+    expiry = (datetime.utcnow() + timedelta(days=1)).strftime('%Y-%m-%dT%H:%M:%SZ')
+    return t_generate_container_sas(account_name, container, account_key, permission='r', expiry=expiry,
+                                    protocol='https')
+
+
+def create_short_lived_share_sas_track2(cmd, account_name, account_key, share):
+    t_generate_share_sas = cmd.get_models('#generate_share_sas', resource_type=CUSTOM_DATA_STORAGE_FILESHARE)
+    expiry = (datetime.utcnow() + timedelta(days=1)).strftime('%Y-%m-%dT%H:%M:%SZ')
+    return t_generate_share_sas(account_name, share, account_key, permission='r', expiry=expiry,
+                                protocol='https')

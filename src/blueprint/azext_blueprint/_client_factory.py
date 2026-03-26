@@ -18,17 +18,5 @@ def cf_artifacts(cli_ctx, *_):
     return cf_blueprint(cli_ctx).artifacts
 
 
-def cf_published_blueprints(cli_ctx, *_):
-    return cf_blueprint(cli_ctx).published_blueprints
-
-
-def cf_published_artifacts(cli_ctx, *_):
-    return cf_blueprint(cli_ctx).published_artifacts
-
-
 def cf_assignments(cli_ctx, *_):
     return cf_blueprint(cli_ctx).assignments
-
-
-def cf_assignment_operations(cli_ctx, *_):
-    return cf_blueprint(cli_ctx).assignment_operations

@@ -14,6 +14,7 @@ import unittest
 from azext_cloudservice.tests import try_manual
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -72,3 +73,19 @@ class CloudServiceScenarioTest(ScenarioTest):
         self.cmd('cloud-service update-domain list-update-domain')
         self.cmd('cloud-service update-domain show-update-domain')
         self.cmd('cloud-service update-domain walk-update-domain')
+
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix='cli_test_cloud_service_os_version_and_os_family')
+    def test_cloud_service_os_version_and_os_family(self):
+        self.cmd('cloud-service os-version list -l eastus', checks=[
+            self.check('[0].type', 'Microsoft.Compute/locations/cloudServiceOSVersions')
+        ])
+        self.cmd('cloud-service os-version show -n WA-GUEST-OS-5.78_202302-01 -l eastus', checks=[
+            self.check('type', 'Microsoft.Compute/locations/cloudServiceOSVersions')
+        ])
+        self.cmd('cloud-service os-family list -l eastus', checks=[
+            self.check('[0].type', 'Microsoft.Compute/locations/cloudServiceOSFamilies')
+        ])
+        self.cmd('cloud-service os-family show -n 5 -l eastus', checks=[
+            self.check('type', 'Microsoft.Compute/locations/cloudServiceOSFamilies')
+        ])

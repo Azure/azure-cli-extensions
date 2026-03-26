@@ -1,0 +1,66 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware provisioned-network list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --private-cloud-name
+      User-Agent:
+      - AZURECLI/2.82.0 azsdk-python-core/1.37.0 Python/3.10.11 (Windows-10-10.0.26200-SP0)
+    method: GET
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.AVS/privateClouds/cloud1/provisionedNetworks?api-version=2025-09-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/provisionedNetworks/vsan","name":"vsan","type":"Microsoft.AVS/privateClouds/provisionedNetworks","properties":{"addressPrefix":"10.0.2.128/25","networkType":"vsan"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/provisionedNetworks/esxvmot","name":"esxvmot","type":"Microsoft.AVS/privateClouds/provisionedNetworks","properties":{"addressPrefix":"10.0.1.128/25","networkType":"esxvmot"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/provisionedNetworks/mgmtvnet","name":"mgmtvnet","type":"Microsoft.AVS/privateClouds/provisionedNetworks","properties":{"addressPrefix":"10.0.3.128/26","networkType":"mgmtvnet"}}]}'
+    headers:
+      content-length:
+      - '908'
+      content-type:
+      - application/json
+      date:
+      - Fri, 16 Jan 2026 17:40:53 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware provisioned-network show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --private-cloud-name --n
+      User-Agent:
+      - AZURECLI/2.82.0 azsdk-python-core/1.37.0 Python/3.10.11 (Windows-10-10.0.26200-SP0)
+    method: GET
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.AVS/privateClouds/cloud1/provisionedNetworks/esx03-r52.1111111111111111111.westcentralus.prod.azure.com?api-version=2025-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/provisionedNetworks/vsan","name":"vsan","type":"Microsoft.AVS/privateClouds/provisionedNetworks","properties":{"addressPrefix":"10.0.2.128/25","networkType":"vsan"}}'
+    headers:
+      content-length:
+      - '291'
+      content-type:
+      - application/json
+      date:
+      - Fri, 16 Jan 2026 17:40:55 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -1,0 +1,29 @@
+target_environment_name: diabetes-online-custom
+base_environment_source: 
+    type: environment_asset
+    resource_id: azureml:bani-test-env:1
+inferencing_server: 
+    type: azureml_online
+    code_configuration:
+        code: ../deployments/model-1/onlinescoring/
+        scoring_script: score.py
+model_configuration:
+    mode: download
+    mount_path: .
+
+inputs:
+  - path:
+        input_path_type: path_id
+        resource_id: azureml:labels-data1:1
+    type: uri_folder
+    mode: readonly_mount
+    mount_path: .
+  - path:
+        input_path_type: path_id
+        resource_id: azureml:labels-data2:1
+    type: uri_file
+    mode: readonly_mount
+    mount_path: .
+
+
+

@@ -2,6 +2,72 @@
 
 Release History
 ===============
+3.0.1
++++++
+* Add NG of type Subnet support for routing config
+
+3.0.0
++++++
+* Add new parameter connect-capabilities to cmd `az network manager connect-config`
+
+2.0.1
++++++
+* Fix the post commit commands for AVNM configuration (All config types)
+
+2.0.0
++++++
+* Modify cmd `az network manager routing-config`
+* Modify cmd `az network manager routing-config rule-collection`
+* Modify cmd `az network manager routing-config rule-collection rule`
+* Add new types `Routing` and `SecurityUser`  for commitType param for Network Manager post-commit operation
+
+1.3.1
++++++
+* Fix argument regex requirement (fix: https://github.com/Azure/azure-rest-api-specs/pull/31130)
+* Stable version
+
+1.3.0
++++++
+* Add new cmd `az network manager ipam-pool`
+* Add new cmd `az network manager ipam-pool static-cidr`
+* Add new cmd `az network manager verifier-workspace`
+* Add new cmd `az network manager verifier-workspace reachability-analysis-intent`
+* Add new cmd `az network manager verifier-workspace reachability-analysis-run`
+* `az network manager security-admin-config create`: add parameter `network-group-address-space-aggregation-option`
+* `az network manager security-admin-config update`: add parameter `network-group-address-space-aggregation-option`
+* `az network manager security-admin-config rule-collection rule create`: add `NetworkGroup` as option of parameter `address-prefix-type`
+* `az network manager security-admin-config rule-collection rule update`: add `NetworkGroup` as option of parameter `address-prefix-type`
+
+1.2.0
++++++
+* Add new cmd `az network manager routing-config`
+* Add new cmd `az network manager routing-config rule-collection`
+* Add new cmd `az network manager routing-config rule-collection rule`
+
+1.0.1
++++++
+* `az network manager connect-config`: Fix cross-tenant resource id for `--hubs`
+
+1.0.0
++++++
+* Fix example and help info (Fix #6788)
+* BREAKING CHANGE: Make params required and remove non-updatable params (Fix #6786)
+* Fix `az network manager security-admin-config rule-collection rule update`: Fix to respect params provided. (Fix #6787)
+
+1.0.0b2
++++++
+* `az network manager group static-member create`: Fix cross-tenant --resource-id
+* `az network manager post-commit`: Fix when no response body is returned
+
+1.0.0b1
++++++
+* Migrate to CodeGen V2
+
+0.6.0
++++++
+* `az network manager security-admin-config`: Upgrade API version from 2022-01-01 to 2022-05-01.
+* Deprecate parameter `--display-name`.
+
 0.5.3
 +++++
 * Fix force delete behavior.

@@ -10,6 +10,12 @@ def cf_cosmosdb_preview(cli_ctx, *_):
     return get_mgmt_service_client(cli_ctx, CosmosDBManagementClient)
 
 
+def cf_mongocluster_preview(cli_ctx, *_):
+    from azure.cli.core.commands.client_factory import get_mgmt_service_client
+    from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_mongocluster import MongoClusterMgmtClient
+    return get_mgmt_service_client(cli_ctx, MongoClusterMgmtClient)
+
+
 def cf_service(cli_ctx, _):
     return cf_cosmosdb_preview(cli_ctx).service
 
@@ -32,6 +38,14 @@ def cf_sql_resources(cli_ctx, _):
 
 def cf_gremlin_resources(cli_ctx, _):
     return cf_cosmosdb_preview(cli_ctx).gremlin_resources
+
+
+def cf_cassandra_resources(cli_ctx, _):
+    return cf_cosmosdb_preview(cli_ctx).cassandra_resources
+
+
+def cf_mongo_mi_resources(cli_ctx, _):
+    return cf_cosmosdb_preview(cli_ctx).mongo_mi_resources
 
 
 def cf_table_resources(cli_ctx, _):
@@ -80,3 +94,28 @@ def cf_restorable_database_accounts(cli_ctx, _):
 
 def cf_data_transfer_job(cli_ctx, _):
     return cf_cosmosdb_preview(cli_ctx).data_transfer_jobs
+
+
+def cf_mongo_clusters(cli_ctx, _):
+    return cf_mongocluster_preview(cli_ctx).mongo_clusters
+
+
+def cf_mongo_cluster_firewall_rules(cli_ctx, _):
+    return cf_mongocluster_preview(cli_ctx).firewall_rules
+
+
+# fleet
+def cf_fleet(cli_ctx, _):
+    return cf_cosmosdb_preview(cli_ctx).fleet
+
+
+def cf_fleetspace(cli_ctx, _):
+    return cf_cosmosdb_preview(cli_ctx).fleetspace
+
+
+def cf_fleetspace_account(cli_ctx, _):
+    return cf_cosmosdb_preview(cli_ctx).fleetspace_account
+
+
+def cf_fleet_analytics(cli_ctx, _):
+    return cf_cosmosdb_preview(cli_ctx).fleet_analytics

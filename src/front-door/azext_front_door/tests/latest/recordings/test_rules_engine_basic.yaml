@@ -29,43 +29,47 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '2313'
+      - '2065'
       Content-Type:
       - application/json
       ParameterSetName:
       - -g -n --backend-address
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002?api-version=2021-06-01
   response:
     body:
-      string: '{"name":"clifrontdoor000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002","type":"Microsoft.Network/frontdoors","location":"Global","tags":{},"properties":{"provisioningState":"Creating","resourceState":"Creating","enabledState":"Enabled","cName":"clifrontdoor000002.azurefd.net","frontdoorId":"eb92264d-33c2-48f0-9e6a-b126fd31115f","friendlyName":"clifrontdoor000002","backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"resourceState":"Creating","backends":[{"address":"202.120.2.3","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"202.120.2.3","enabledState":"Enabled","privateLinkAlias":null,"privateLinkApprovalMessage":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null}],"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/healthProbeSettings/DefaultProbeSettings"},"loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/loadBalancingSettings/DefaultLoadBalancingSettings"}}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"intervalInSeconds":30,"path":"/","protocol":"Https","resourceState":"Creating","enabledState":"Enabled","healthProbeMethod":"Head"}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"hostName":"clifrontdoor000002.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"resourceState":"Creating","webApplicationFirewallPolicyLink":null,"customHttpsConfiguration":null}}],"loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"additionalLatencyMilliseconds":0,"sampleSize":4,"successfulSamplesRequired":2,"resourceState":"Creating"}}],"rulesEngines":[],"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","resourceState":"Creating","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/frontendEndpoints/DefaultFrontendEndpoint"}],"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"}},"rulesEngine":null,"webApplicationFirewallPolicyLink":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30}}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002","type":"Microsoft.Network/frontdoors","name":"clifrontdoor000002","location":"Global","tags":{},"properties":{"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"},"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration"},"rulesEngine":null,"resourceState":"Creating","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/frontendEndpoints/DefaultFrontendEndpoint"}],"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","webApplicationFirewallPolicyLink":null}}],"rulesEngines":[],"frontdoorId":"ddc8ea0b-17dd-42f8-9124-6ba13f40966a","extendedProperties":{},"resourceState":"Creating","loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"resourceState":"Creating","sampleSize":4,"successfulSamplesRequired":2,"additionalLatencyMilliseconds":0}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"resourceState":"Creating","path":"/","protocol":"Https","intervalInSeconds":30,"enabledState":"Enabled","healthProbeMethod":"Head"}}],"backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"backends":[{"address":"202.120.2.3","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"202.120.2.3","enabledState":"Enabled","privateLinkAlias":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null,"privateLinkApprovalMessage":null}],"resourceState":"Creating","loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/loadBalancingSettings/DefaultLoadBalancingSettings"},"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/healthProbeSettings/DefaultProbeSettings"}}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"resourceState":"Creating","hostName":"clifrontdoor000002.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"webApplicationFirewallPolicyLink":null,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"customHttpsConfiguration":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30},"enabledState":"Enabled","cName":"clifrontdoor000002.azurefd.net","friendlyName":"clifrontdoor000002","provisioningState":"Creating"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/105b88b6-94ae-45ef-bb64-34aeeb5d47e3?api-version=2020-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/e96ebf7c-c193-4c55-aed2-20f2af132133?api-version=2021-06-01&t=638978423225439646&c=MIIHhzCCBm-gAwIBAgITfAla5jyv8QRP_5ow7AAACVrmPDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUxMDIwMDQzNjIzWhcNMjYwNDE4MDQzNjIzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMddVfpiBdDmUhIBJwKZ3KQON7oBNDWmOOmY4g1ElyXgEkjon3Gv6o2iUWBTlxPP_EZQJhupEuO2DlNcI72qn4SyWwWct2tCEYRZJerV4rv1id9sCDj3fEamCo4QEH3xMKcGXqtPe3f3eb4VUSK8a2gJFqPiH-B-2oetOTm_-t1_J9TkLUFEUdYIHsylTl0OH2FEQVYAAgRXhe4lJ-WGzZ1ffooW6zFScKcbHC-ij1AA2xiuPbLogZIDjkgpOYoQbn9dJCcXDjro2GtBWEIEIaRIheA5TONmvBvNjwgvM95OihgVouEt3T1X5Jz2jgZVe8XVf5WuHz-a-o1TsKrZzcECAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSklsMGrs_eAsv_RTi_q4qgDc9qNDAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAJ51PdAaul136rrBMSwKBqaPsalRACK88HnU3-MuFwPY3EKcBNfr_DcyIemG6qcdAt6oBTDGXSVm8qGYJ2eHSVBH91yTQvJd5-a7_b9xta0wy4EJYoK-Olj6bE5ygF6klhRzpEyjfq2vFjpc2SF6xPxtXMaj4I7ACMq2QHy3CO_thX0U9_MhBYBb-v3ICmOFIZIBb4wOpeX0BsfrYbqwos0TpMW5k0T0RtCs4mpGUt-7YgEXCPIwlt7JN4fLqGTiEElAPaYcSl4-0aYA_RVN98y83vlGlM0kIjglh8_t1QOAUw0jy8LA4CNtMdgL_ncOt66gFr9ocwuFusQMx11WpTM&s=pTqmuUz3__XXOE1WmTHVTCnxeTIpRh1rErDQj7iD8Zd_ukCnsF0VkpyHMSuJv4MJXQwuw1aJjEKWrhPwJbMWZno_SFZTLLwaDBVAwOB2lpSrQ5dITz9A7IHCwIYzCZz3ZTWqajuX07x4iWfs4XnNvchY237NjoNDkZIkCXdXsycC-w_EAtCG8YDBGoLrXQ4uxts5Rdgh8JUQei10tZ6gqQCD5alMDFgYZQWsSli2vJCnSY_YwiRj1LzJTR5Y3VF-DZAGrg3i6Hwvt31F2mZpjV2VqdzIg1P2kCBzXjZTSMNEzmFe_PuvvCDKEERb5Rc0eGmxeCHb-RQoTUS1J--p5A&h=2yCZKzi7Iua7mufPj1dy_9Za1-Fhv5DAzGea_hA-7Rk
       cache-control:
       - no-cache
       content-length:
-      - '4833'
+      - '4239'
       content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
+      - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:36:56 GMT
+      - Tue, 04 Nov 2025 08:38:42 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/d5eb8320-b5fa-4ee9-870b-bb1ce7d572ce
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: C403083CF36B463386E497316C4877AB Ref B: SYD03EDGE0816 Ref C: 2025-11-04T08:38:39Z'
     status:
       code: 201
       message: Created
@@ -83,9 +87,9 @@ interactions:
       ParameterSetName:
       - -g -n --backend-address
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/105b88b6-94ae-45ef-bb64-34aeeb5d47e3?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/e96ebf7c-c193-4c55-aed2-20f2af132133?api-version=2021-06-01&t=638978423225439646&c=MIIHhzCCBm-gAwIBAgITfAla5jyv8QRP_5ow7AAACVrmPDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUxMDIwMDQzNjIzWhcNMjYwNDE4MDQzNjIzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMddVfpiBdDmUhIBJwKZ3KQON7oBNDWmOOmY4g1ElyXgEkjon3Gv6o2iUWBTlxPP_EZQJhupEuO2DlNcI72qn4SyWwWct2tCEYRZJerV4rv1id9sCDj3fEamCo4QEH3xMKcGXqtPe3f3eb4VUSK8a2gJFqPiH-B-2oetOTm_-t1_J9TkLUFEUdYIHsylTl0OH2FEQVYAAgRXhe4lJ-WGzZ1ffooW6zFScKcbHC-ij1AA2xiuPbLogZIDjkgpOYoQbn9dJCcXDjro2GtBWEIEIaRIheA5TONmvBvNjwgvM95OihgVouEt3T1X5Jz2jgZVe8XVf5WuHz-a-o1TsKrZzcECAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSklsMGrs_eAsv_RTi_q4qgDc9qNDAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAJ51PdAaul136rrBMSwKBqaPsalRACK88HnU3-MuFwPY3EKcBNfr_DcyIemG6qcdAt6oBTDGXSVm8qGYJ2eHSVBH91yTQvJd5-a7_b9xta0wy4EJYoK-Olj6bE5ygF6klhRzpEyjfq2vFjpc2SF6xPxtXMaj4I7ACMq2QHy3CO_thX0U9_MhBYBb-v3ICmOFIZIBb4wOpeX0BsfrYbqwos0TpMW5k0T0RtCs4mpGUt-7YgEXCPIwlt7JN4fLqGTiEElAPaYcSl4-0aYA_RVN98y83vlGlM0kIjglh8_t1QOAUw0jy8LA4CNtMdgL_ncOt66gFr9ocwuFusQMx11WpTM&s=pTqmuUz3__XXOE1WmTHVTCnxeTIpRh1rErDQj7iD8Zd_ukCnsF0VkpyHMSuJv4MJXQwuw1aJjEKWrhPwJbMWZno_SFZTLLwaDBVAwOB2lpSrQ5dITz9A7IHCwIYzCZz3ZTWqajuX07x4iWfs4XnNvchY237NjoNDkZIkCXdXsycC-w_EAtCG8YDBGoLrXQ4uxts5Rdgh8JUQei10tZ6gqQCD5alMDFgYZQWsSli2vJCnSY_YwiRj1LzJTR5Y3VF-DZAGrg3i6Hwvt31F2mZpjV2VqdzIg1P2kCBzXjZTSMNEzmFe_PuvvCDKEERb5Rc0eGmxeCHb-RQoTUS1J--p5A&h=2yCZKzi7Iua7mufPj1dy_9Za1-Fhv5DAzGea_hA-7Rk
   response:
     body:
       string: '{"status":"InProgress","error":{"code":"None","message":null}}'
@@ -95,25 +99,25 @@ interactions:
       content-length:
       - '62'
       content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
+      - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:37:06 GMT
+      - Tue, 04 Nov 2025 08:38:42 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/25bb255a-e7e4-43ed-a4a0-804790bbac68
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 342DFEC042784BFE913946CF65F88940 Ref B: SYD03EDGE1710 Ref C: 2025-11-04T08:38:42Z'
     status:
       code: 200
       message: OK
@@ -131,9 +135,9 @@ interactions:
       ParameterSetName:
       - -g -n --backend-address
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/105b88b6-94ae-45ef-bb64-34aeeb5d47e3?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/e96ebf7c-c193-4c55-aed2-20f2af132133?api-version=2021-06-01&t=638978423225439646&c=MIIHhzCCBm-gAwIBAgITfAla5jyv8QRP_5ow7AAACVrmPDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjUxMDIwMDQzNjIzWhcNMjYwNDE4MDQzNjIzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMddVfpiBdDmUhIBJwKZ3KQON7oBNDWmOOmY4g1ElyXgEkjon3Gv6o2iUWBTlxPP_EZQJhupEuO2DlNcI72qn4SyWwWct2tCEYRZJerV4rv1id9sCDj3fEamCo4QEH3xMKcGXqtPe3f3eb4VUSK8a2gJFqPiH-B-2oetOTm_-t1_J9TkLUFEUdYIHsylTl0OH2FEQVYAAgRXhe4lJ-WGzZ1ffooW6zFScKcbHC-ij1AA2xiuPbLogZIDjkgpOYoQbn9dJCcXDjro2GtBWEIEIaRIheA5TONmvBvNjwgvM95OihgVouEt3T1X5Jz2jgZVe8XVf5WuHz-a-o1TsKrZzcECAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBSklsMGrs_eAsv_RTi_q4qgDc9qNDAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAJ51PdAaul136rrBMSwKBqaPsalRACK88HnU3-MuFwPY3EKcBNfr_DcyIemG6qcdAt6oBTDGXSVm8qGYJ2eHSVBH91yTQvJd5-a7_b9xta0wy4EJYoK-Olj6bE5ygF6klhRzpEyjfq2vFjpc2SF6xPxtXMaj4I7ACMq2QHy3CO_thX0U9_MhBYBb-v3ICmOFIZIBb4wOpeX0BsfrYbqwos0TpMW5k0T0RtCs4mpGUt-7YgEXCPIwlt7JN4fLqGTiEElAPaYcSl4-0aYA_RVN98y83vlGlM0kIjglh8_t1QOAUw0jy8LA4CNtMdgL_ncOt66gFr9ocwuFusQMx11WpTM&s=pTqmuUz3__XXOE1WmTHVTCnxeTIpRh1rErDQj7iD8Zd_ukCnsF0VkpyHMSuJv4MJXQwuw1aJjEKWrhPwJbMWZno_SFZTLLwaDBVAwOB2lpSrQ5dITz9A7IHCwIYzCZz3ZTWqajuX07x4iWfs4XnNvchY237NjoNDkZIkCXdXsycC-w_EAtCG8YDBGoLrXQ4uxts5Rdgh8JUQei10tZ6gqQCD5alMDFgYZQWsSli2vJCnSY_YwiRj1LzJTR5Y3VF-DZAGrg3i6Hwvt31F2mZpjV2VqdzIg1P2kCBzXjZTSMNEzmFe_PuvvCDKEERb5Rc0eGmxeCHb-RQoTUS1J--p5A&h=2yCZKzi7Iua7mufPj1dy_9Za1-Fhv5DAzGea_hA-7Rk
   response:
     body:
       string: '{"status":"Succeeded","error":{"code":"None","message":null}}'
@@ -143,25 +147,25 @@ interactions:
       content-length:
       - '61'
       content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
+      - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:37:37 GMT
+      - Tue, 04 Nov 2025 08:39:13 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/6e0471de-cf61-4f67-9ebc-0865f7c5c507
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 5A9526B0A7B644BD9650F5AE130664F4 Ref B: SYD03EDGE1714 Ref C: 2025-11-04T08:39:13Z'
     status:
       code: 200
       message: OK
@@ -179,37 +183,35 @@ interactions:
       ParameterSetName:
       - -g -n --backend-address
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002?api-version=2021-06-01
   response:
     body:
-      string: '{"name":"clifrontdoor000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002","type":"Microsoft.Network/frontdoors","location":"Global","tags":{},"properties":{"provisioningState":"Succeeded","resourceState":"Enabled","enabledState":"Enabled","cName":"clifrontdoor000002.azurefd.net","frontdoorId":"eb92264d-33c2-48f0-9e6a-b126fd31115f","friendlyName":"clifrontdoor000002","backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"resourceState":"Enabled","backends":[{"address":"202.120.2.3","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"202.120.2.3","enabledState":"Enabled","privateLinkAlias":null,"privateLinkApprovalMessage":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null}],"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/healthProbeSettings/DefaultProbeSettings"},"loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/loadBalancingSettings/DefaultLoadBalancingSettings"}}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"intervalInSeconds":30,"path":"/","protocol":"Https","resourceState":"Enabled","enabledState":"Enabled","healthProbeMethod":"Head"}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"hostName":"clifrontdoor000002.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"resourceState":"Enabled","webApplicationFirewallPolicyLink":null,"customHttpsConfiguration":null}}],"loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"additionalLatencyMilliseconds":0,"sampleSize":4,"successfulSamplesRequired":2,"resourceState":"Enabled"}}],"rulesEngines":[],"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","resourceState":"Enabled","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/frontendEndpoints/DefaultFrontendEndpoint"}],"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"}},"rulesEngine":null,"webApplicationFirewallPolicyLink":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30}}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002","type":"Microsoft.Network/frontdoors","name":"clifrontdoor000002","location":"Global","tags":{},"properties":{"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"},"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration"},"rulesEngine":null,"resourceState":"Enabled","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/frontendEndpoints/DefaultFrontendEndpoint"}],"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","webApplicationFirewallPolicyLink":null}}],"rulesEngines":[],"frontdoorId":"ddc8ea0b-17dd-42f8-9124-6ba13f40966a","extendedProperties":{},"resourceState":"Enabled","loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"resourceState":"Enabled","sampleSize":4,"successfulSamplesRequired":2,"additionalLatencyMilliseconds":0}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"resourceState":"Enabled","path":"/","protocol":"Https","intervalInSeconds":30,"enabledState":"Enabled","healthProbeMethod":"Head"}}],"backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"backends":[{"address":"202.120.2.3","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"202.120.2.3","enabledState":"Enabled","privateLinkAlias":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null,"privateLinkApprovalMessage":null}],"resourceState":"Enabled","loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/loadBalancingSettings/DefaultLoadBalancingSettings"},"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/healthProbeSettings/DefaultProbeSettings"}}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"resourceState":"Enabled","hostName":"clifrontdoor000002.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"webApplicationFirewallPolicyLink":null,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"customHttpsConfiguration":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30},"enabledState":"Enabled","cName":"clifrontdoor000002.azurefd.net","friendlyName":"clifrontdoor000002","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '4828'
+      - '4234'
       content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
+      - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:37:37 GMT
+      - Tue, 04 Nov 2025 08:39:14 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: E7380FC524E74041BE3C2D711E779C37 Ref B: SYD03EDGE1114 Ref C: 2025-11-04T08:39:14Z'
     status:
       code: 200
       message: OK
@@ -228,9 +230,9 @@ interactions:
       - -f -g --rules-engine-name --name --priority --action-type --header-action
         --header-name --header-value --match-variable --operator --match-values --transforms
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2021-06-01
   response:
     body:
       string: '{"error":{"code":"NotFound","message":"The requested resource was not
@@ -243,17 +245,23 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:37:39 GMT
+      - Tue, 04 Nov 2025 08:39:16 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/53d08ca9-eb6c-4f8c-86de-c44a829324b1
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: B567A211A1814B77B14B7E6AEBFD3B9C Ref B: SYD03EDGE1011 Ref C: 2025-11-04T08:39:16Z'
     status:
       code: 404
       message: Not Found
@@ -280,39 +288,39 @@ interactions:
       - -f -g --rules-engine-name --name --priority --action-type --header-action
         --header-name --header-value --match-variable --operator --match-values --transforms
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2021-06-01
   response:
     body:
-      string: '{"name":"clirulesengine000003","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","properties":{"name":"clirulesengine000003","resourceGroup":"clitest.rg000001","resourceState":"Enabled","rules":[{"priority":1,"name":"rule1","matchProcessingBehavior":null,"action":{"name":null,"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[],"routeConfigurationOverride":null},"matchConditions":[{"rulesEngineMatchValue":["jpg","png"],"rulesEngineMatchVariable":"RequestFilenameExtension","rulesEngineOperator":"Contains","transforms":["Lowercase"],"negateCondition":false,"selector":null}]}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","name":"clirulesengine000003","properties":{"resourceState":"Enabled","rules":[{"name":"rule1","priority":1,"action":{"name":null,"routeConfigurationOverride":null,"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[]},"matchConditions":[{"selector":null,"rulesEngineMatchValue":["jpg","png"],"negateCondition":false,"rulesEngineMatchVariable":"RequestFilenameExtension","rulesEngineOperator":"Contains","transforms":["Lowercase"]}],"matchProcessingBehavior":null}]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '956'
+      - '771'
       content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
+      - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:37:40 GMT
+      - Tue, 04 Nov 2025 08:39:17 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/bd95abde-e8be-4e59-9789-5563e31963a0
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 972CE37CF1A942E6B21ADE0A828A1346 Ref B: SYD03EDGE1115 Ref C: 2025-11-04T08:39:17Z'
     status:
       code: 200
       message: OK
@@ -331,37 +339,37 @@ interactions:
       - -f -g --rules-engine-name --name --priority --action-type --header-action
         --header-name --header-value --match-variable --operator --match-values
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2021-06-01
   response:
     body:
-      string: '{"name":"clirulesengine000003","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","properties":{"name":"clirulesengine000003","resourceGroup":"clitest.rg000001","resourceState":"Enabled","rules":[{"priority":1,"name":"rule1","matchProcessingBehavior":null,"action":{"name":null,"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[],"routeConfigurationOverride":null},"matchConditions":[{"rulesEngineMatchValue":["jpg","png"],"rulesEngineMatchVariable":"RequestFilenameExtension","rulesEngineOperator":"Contains","transforms":["Lowercase"],"negateCondition":false,"selector":null}]}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","name":"clirulesengine000003","properties":{"resourceState":"Enabled","rules":[{"name":"rule1","priority":1,"action":{"name":null,"routeConfigurationOverride":null,"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[]},"matchConditions":[{"selector":null,"rulesEngineMatchValue":["jpg","png"],"negateCondition":false,"rulesEngineMatchVariable":"RequestFilenameExtension","rulesEngineOperator":"Contains","transforms":["Lowercase"]}],"matchProcessingBehavior":null}]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '956'
+      - '771'
       content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
+      - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:37:41 GMT
+      - Tue, 04 Nov 2025 08:39:18 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/8524f4e3-4369-4665-b1c8-fafda86c2a14
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 7EC7AB741B1D4B30943373E97538D243 Ref B: SYD03EDGE1012 Ref C: 2025-11-04T08:39:18Z'
     status:
       code: 200
       message: OK
@@ -392,39 +400,39 @@ interactions:
       - -f -g --rules-engine-name --name --priority --action-type --header-action
         --header-name --header-value --match-variable --operator --match-values
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2021-06-01
   response:
     body:
-      string: '{"name":"clirulesengine000003","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","properties":{"name":"clirulesengine000003","resourceGroup":"clitest.rg000001","resourceState":"Enabled","rules":[{"priority":1,"name":"rule1","matchProcessingBehavior":null,"action":{"name":null,"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[],"routeConfigurationOverride":null},"matchConditions":[{"rulesEngineMatchValue":["jpg","png"],"rulesEngineMatchVariable":"RequestFilenameExtension","rulesEngineOperator":"Contains","transforms":["Lowercase"],"negateCondition":false,"selector":null}]},{"priority":2,"name":"rule2","matchProcessingBehavior":null,"action":{"name":null,"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"}],"routeConfigurationOverride":null},"matchConditions":[{"rulesEngineMatchValue":["private"],"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[],"negateCondition":false,"selector":null}]}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","name":"clirulesengine000003","properties":{"resourceState":"Enabled","rules":[{"name":"rule1","priority":1,"action":{"name":null,"routeConfigurationOverride":null,"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[]},"matchConditions":[{"selector":null,"rulesEngineMatchValue":["jpg","png"],"negateCondition":false,"rulesEngineMatchVariable":"RequestFilenameExtension","rulesEngineOperator":"Contains","transforms":["Lowercase"]}],"matchProcessingBehavior":null},{"name":"rule2","priority":2,"action":{"name":null,"routeConfigurationOverride":null,"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"}]},"matchConditions":[{"selector":null,"rulesEngineMatchValue":["private"],"negateCondition":false,"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[]}],"matchProcessingBehavior":null}]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1385'
+      - '1200'
       content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
+      - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:37:42 GMT
+      - Tue, 04 Nov 2025 08:39:19 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/c4457eff-12fb-45c9-a135-1562938050fb
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1195'
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 8D1A27F2D2BB4FAC8F10AC1875C069A1 Ref B: SYD03EDGE2019 Ref C: 2025-11-04T08:39:19Z'
     status:
       code: 200
       message: OK
@@ -442,37 +450,37 @@ interactions:
       ParameterSetName:
       - -f -g --rules-engine-name --name --match-processing-behavior
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2021-06-01
   response:
     body:
-      string: '{"name":"clirulesengine000003","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","properties":{"name":"clirulesengine000003","resourceGroup":"clitest.rg000001","resourceState":"Enabled","rules":[{"priority":1,"name":"rule1","matchProcessingBehavior":null,"action":{"name":null,"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[],"routeConfigurationOverride":null},"matchConditions":[{"rulesEngineMatchValue":["jpg","png"],"rulesEngineMatchVariable":"RequestFilenameExtension","rulesEngineOperator":"Contains","transforms":["Lowercase"],"negateCondition":false,"selector":null}]},{"priority":2,"name":"rule2","matchProcessingBehavior":null,"action":{"name":null,"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"}],"routeConfigurationOverride":null},"matchConditions":[{"rulesEngineMatchValue":["private"],"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[],"negateCondition":false,"selector":null}]}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","name":"clirulesengine000003","properties":{"resourceState":"Enabled","rules":[{"name":"rule1","priority":1,"action":{"name":null,"routeConfigurationOverride":null,"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[]},"matchConditions":[{"selector":null,"rulesEngineMatchValue":["jpg","png"],"negateCondition":false,"rulesEngineMatchVariable":"RequestFilenameExtension","rulesEngineOperator":"Contains","transforms":["Lowercase"]}],"matchProcessingBehavior":null},{"name":"rule2","priority":2,"action":{"name":null,"routeConfigurationOverride":null,"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"}]},"matchConditions":[{"selector":null,"rulesEngineMatchValue":["private"],"negateCondition":false,"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[]}],"matchProcessingBehavior":null}]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1385'
+      - '1200'
       content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
+      - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:37:43 GMT
+      - Tue, 04 Nov 2025 08:39:20 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/e84c13fa-8916-4110-8f0e-a5821da5eb4e
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: E9428DF5AA6F494DA7DB5F0E2CCF4186 Ref B: SYD03EDGE1315 Ref C: 2025-11-04T08:39:20Z'
     status:
       code: 200
       message: OK
@@ -504,39 +512,39 @@ interactions:
       ParameterSetName:
       - -f -g --rules-engine-name --name --match-processing-behavior
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2021-06-01
   response:
     body:
-      string: '{"name":"clirulesengine000003","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","properties":{"name":"clirulesengine000003","resourceGroup":"clitest.rg000001","resourceState":"Enabled","rules":[{"priority":1,"name":"rule1","matchProcessingBehavior":"Stop","action":{"name":null,"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[],"routeConfigurationOverride":null},"matchConditions":[{"rulesEngineMatchValue":["jpg","png"],"rulesEngineMatchVariable":"RequestFilenameExtension","rulesEngineOperator":"Contains","transforms":["Lowercase"],"negateCondition":false,"selector":null}]},{"priority":2,"name":"rule2","matchProcessingBehavior":null,"action":{"name":null,"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"}],"routeConfigurationOverride":null},"matchConditions":[{"rulesEngineMatchValue":["private"],"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[],"negateCondition":false,"selector":null}]}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","name":"clirulesengine000003","properties":{"resourceState":"Enabled","rules":[{"name":"rule1","priority":1,"action":{"name":null,"routeConfigurationOverride":null,"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[]},"matchConditions":[{"selector":null,"rulesEngineMatchValue":["jpg","png"],"negateCondition":false,"rulesEngineMatchVariable":"RequestFilenameExtension","rulesEngineOperator":"Contains","transforms":["Lowercase"]}],"matchProcessingBehavior":"Stop"},{"name":"rule2","priority":2,"action":{"name":null,"routeConfigurationOverride":null,"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"}]},"matchConditions":[{"selector":null,"rulesEngineMatchValue":["private"],"negateCondition":false,"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[]}],"matchProcessingBehavior":null}]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1387'
+      - '1202'
       content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
+      - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:37:45 GMT
+      - Tue, 04 Nov 2025 08:39:22 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/4719c1de-4427-466c-ad63-1796a9533e00
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 3291EB4F41274E5895F2CC0D4F66C62A Ref B: SYD03EDGE1109 Ref C: 2025-11-04T08:39:21Z'
     status:
       code: 200
       message: OK
@@ -554,37 +562,37 @@ interactions:
       ParameterSetName:
       - -f -g --rules-engine-name -n
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2021-06-01
   response:
     body:
-      string: '{"name":"clirulesengine000003","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","properties":{"name":"clirulesengine000003","resourceGroup":"clitest.rg000001","resourceState":"Enabled","rules":[{"priority":1,"name":"rule1","matchProcessingBehavior":"Stop","action":{"name":null,"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[],"routeConfigurationOverride":null},"matchConditions":[{"rulesEngineMatchValue":["jpg","png"],"rulesEngineMatchVariable":"RequestFilenameExtension","rulesEngineOperator":"Contains","transforms":["Lowercase"],"negateCondition":false,"selector":null}]},{"priority":2,"name":"rule2","matchProcessingBehavior":null,"action":{"name":null,"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"}],"routeConfigurationOverride":null},"matchConditions":[{"rulesEngineMatchValue":["private"],"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[],"negateCondition":false,"selector":null}]}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","name":"clirulesengine000003","properties":{"resourceState":"Enabled","rules":[{"name":"rule1","priority":1,"action":{"name":null,"routeConfigurationOverride":null,"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[]},"matchConditions":[{"selector":null,"rulesEngineMatchValue":["jpg","png"],"negateCondition":false,"rulesEngineMatchVariable":"RequestFilenameExtension","rulesEngineOperator":"Contains","transforms":["Lowercase"]}],"matchProcessingBehavior":"Stop"},{"name":"rule2","priority":2,"action":{"name":null,"routeConfigurationOverride":null,"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"}]},"matchConditions":[{"selector":null,"rulesEngineMatchValue":["private"],"negateCondition":false,"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[]}],"matchProcessingBehavior":null}]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1387'
+      - '1202'
       content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
+      - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:37:47 GMT
+      - Tue, 04 Nov 2025 08:39:23 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/6abf8870-d025-4ebc-904a-210ef9495a5d
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 9487247223134694882F0D5BE2D43D90 Ref B: SYD03EDGE1922 Ref C: 2025-11-04T08:39:23Z'
     status:
       code: 200
       message: OK
@@ -602,37 +610,37 @@ interactions:
       ParameterSetName:
       - -f -g --name
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2021-06-01
   response:
     body:
-      string: '{"name":"clirulesengine000003","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","properties":{"name":"clirulesengine000003","resourceGroup":"clitest.rg000001","resourceState":"Enabled","rules":[{"priority":1,"name":"rule1","matchProcessingBehavior":"Stop","action":{"name":null,"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[],"routeConfigurationOverride":null},"matchConditions":[{"rulesEngineMatchValue":["jpg","png"],"rulesEngineMatchVariable":"RequestFilenameExtension","rulesEngineOperator":"Contains","transforms":["Lowercase"],"negateCondition":false,"selector":null}]},{"priority":2,"name":"rule2","matchProcessingBehavior":null,"action":{"name":null,"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"}],"routeConfigurationOverride":null},"matchConditions":[{"rulesEngineMatchValue":["private"],"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[],"negateCondition":false,"selector":null}]}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","name":"clirulesengine000003","properties":{"resourceState":"Enabled","rules":[{"name":"rule1","priority":1,"action":{"name":null,"routeConfigurationOverride":null,"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[]},"matchConditions":[{"selector":null,"rulesEngineMatchValue":["jpg","png"],"negateCondition":false,"rulesEngineMatchVariable":"RequestFilenameExtension","rulesEngineOperator":"Contains","transforms":["Lowercase"]}],"matchProcessingBehavior":"Stop"},{"name":"rule2","priority":2,"action":{"name":null,"routeConfigurationOverride":null,"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"}]},"matchConditions":[{"selector":null,"rulesEngineMatchValue":["private"],"negateCondition":false,"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[]}],"matchProcessingBehavior":null}]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1387'
+      - '1202'
       content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
+      - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:37:47 GMT
+      - Tue, 04 Nov 2025 08:39:24 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/151d175d-fe3c-4697-8169-042eb7e2bade
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 3FCD5E070ABB4EE4888C9B916DE75B66 Ref B: SYD03EDGE1018 Ref C: 2025-11-04T08:39:24Z'
     status:
       code: 200
       message: OK
@@ -650,37 +658,37 @@ interactions:
       ParameterSetName:
       - -f -g --name
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2021-06-01
   response:
     body:
-      string: '{"name":"clirulesengine000003","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","properties":{"name":"clirulesengine000003","resourceGroup":"clitest.rg000001","resourceState":"Enabled","rules":[{"priority":1,"name":"rule1","matchProcessingBehavior":"Stop","action":{"name":null,"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[],"routeConfigurationOverride":null},"matchConditions":[{"rulesEngineMatchValue":["jpg","png"],"rulesEngineMatchVariable":"RequestFilenameExtension","rulesEngineOperator":"Contains","transforms":["Lowercase"],"negateCondition":false,"selector":null}]},{"priority":2,"name":"rule2","matchProcessingBehavior":null,"action":{"name":null,"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"}],"routeConfigurationOverride":null},"matchConditions":[{"rulesEngineMatchValue":["private"],"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[],"negateCondition":false,"selector":null}]}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","name":"clirulesengine000003","properties":{"resourceState":"Enabled","rules":[{"name":"rule1","priority":1,"action":{"name":null,"routeConfigurationOverride":null,"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[]},"matchConditions":[{"selector":null,"rulesEngineMatchValue":["jpg","png"],"negateCondition":false,"rulesEngineMatchVariable":"RequestFilenameExtension","rulesEngineOperator":"Contains","transforms":["Lowercase"]}],"matchProcessingBehavior":"Stop"},{"name":"rule2","priority":2,"action":{"name":null,"routeConfigurationOverride":null,"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"}]},"matchConditions":[{"selector":null,"rulesEngineMatchValue":["private"],"negateCondition":false,"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[]}],"matchProcessingBehavior":null}]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1387'
+      - '1202'
       content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
+      - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:37:48 GMT
+      - Tue, 04 Nov 2025 08:39:25 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/512f8baf-a1cb-4466-a666-626b25030188
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 67768C4ECB054F59AFBC91C65BFFBA31 Ref B: SYD03EDGE1418 Ref C: 2025-11-04T08:39:25Z'
     status:
       code: 200
       message: OK
@@ -698,37 +706,37 @@ interactions:
       ParameterSetName:
       - -f -g --rules-engine-name --name --action-type --header-action --header-name
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2021-06-01
   response:
     body:
-      string: '{"name":"clirulesengine000003","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","properties":{"name":"clirulesengine000003","resourceGroup":"clitest.rg000001","resourceState":"Enabled","rules":[{"priority":1,"name":"rule1","matchProcessingBehavior":"Stop","action":{"name":null,"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[],"routeConfigurationOverride":null},"matchConditions":[{"rulesEngineMatchValue":["jpg","png"],"rulesEngineMatchVariable":"RequestFilenameExtension","rulesEngineOperator":"Contains","transforms":["Lowercase"],"negateCondition":false,"selector":null}]},{"priority":2,"name":"rule2","matchProcessingBehavior":null,"action":{"name":null,"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"}],"routeConfigurationOverride":null},"matchConditions":[{"rulesEngineMatchValue":["private"],"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[],"negateCondition":false,"selector":null}]}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","name":"clirulesengine000003","properties":{"resourceState":"Enabled","rules":[{"name":"rule1","priority":1,"action":{"name":null,"routeConfigurationOverride":null,"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[]},"matchConditions":[{"selector":null,"rulesEngineMatchValue":["jpg","png"],"negateCondition":false,"rulesEngineMatchVariable":"RequestFilenameExtension","rulesEngineOperator":"Contains","transforms":["Lowercase"]}],"matchProcessingBehavior":"Stop"},{"name":"rule2","priority":2,"action":{"name":null,"routeConfigurationOverride":null,"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"}]},"matchConditions":[{"selector":null,"rulesEngineMatchValue":["private"],"negateCondition":false,"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[]}],"matchProcessingBehavior":null}]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1387'
+      - '1202'
       content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
+      - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:37:49 GMT
+      - Tue, 04 Nov 2025 08:39:28 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/4eeff7fb-41cf-4838-a8ef-328f5852997c
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: CD06CC3B60B34A7A9A4B2C356FF24742 Ref B: SYD03EDGE0805 Ref C: 2025-11-04T08:39:26Z'
     status:
       code: 200
       message: OK
@@ -760,39 +768,39 @@ interactions:
       ParameterSetName:
       - -f -g --rules-engine-name --name --action-type --header-action --header-name
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2021-06-01
   response:
     body:
-      string: '{"name":"clirulesengine000003","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","properties":{"name":"clirulesengine000003","resourceGroup":"clitest.rg000001","resourceState":"Enabled","rules":[{"priority":1,"name":"rule1","matchProcessingBehavior":"Stop","action":{"name":null,"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[],"routeConfigurationOverride":null},"matchConditions":[{"rulesEngineMatchValue":["jpg","png"],"rulesEngineMatchVariable":"RequestFilenameExtension","rulesEngineOperator":"Contains","transforms":["Lowercase"],"negateCondition":false,"selector":null}]},{"priority":2,"name":"rule2","matchProcessingBehavior":null,"action":{"name":null,"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"},{"headerActionType":"Delete","headerName":"Location","value":null}],"routeConfigurationOverride":null},"matchConditions":[{"rulesEngineMatchValue":["private"],"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[],"negateCondition":false,"selector":null}]}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","name":"clirulesengine000003","properties":{"resourceState":"Enabled","rules":[{"name":"rule1","priority":1,"action":{"name":null,"routeConfigurationOverride":null,"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[]},"matchConditions":[{"selector":null,"rulesEngineMatchValue":["jpg","png"],"negateCondition":false,"rulesEngineMatchVariable":"RequestFilenameExtension","rulesEngineOperator":"Contains","transforms":["Lowercase"]}],"matchProcessingBehavior":"Stop"},{"name":"rule2","priority":2,"action":{"name":null,"routeConfigurationOverride":null,"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"},{"headerActionType":"Delete","headerName":"Location","value":null}]},"matchConditions":[{"selector":null,"rulesEngineMatchValue":["private"],"negateCondition":false,"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[]}],"matchProcessingBehavior":null}]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1454'
+      - '1269'
       content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
+      - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:37:51 GMT
+      - Tue, 04 Nov 2025 08:39:28 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/0d0a0894-31c0-4a8c-858f-fa6b2d3a251b
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 082FF58644BB4AC1A6B9A5297ED395DF Ref B: SYD03EDGE2114 Ref C: 2025-11-04T08:39:28Z'
     status:
       code: 200
       message: OK
@@ -811,37 +819,37 @@ interactions:
       - -f -g --rules-engine-name --name --action-type --backend-pool --caching --query-parameter-strip-directive
         --query-parameters --cache-duration
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2021-06-01
   response:
     body:
-      string: '{"name":"clirulesengine000003","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","properties":{"name":"clirulesengine000003","resourceGroup":"clitest.rg000001","resourceState":"Enabled","rules":[{"priority":1,"name":"rule1","matchProcessingBehavior":"Stop","action":{"name":null,"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[],"routeConfigurationOverride":null},"matchConditions":[{"rulesEngineMatchValue":["jpg","png"],"rulesEngineMatchVariable":"RequestFilenameExtension","rulesEngineOperator":"Contains","transforms":["Lowercase"],"negateCondition":false,"selector":null}]},{"priority":2,"name":"rule2","matchProcessingBehavior":null,"action":{"name":null,"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"},{"headerActionType":"Delete","headerName":"Location","value":null}],"routeConfigurationOverride":null},"matchConditions":[{"rulesEngineMatchValue":["private"],"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[],"negateCondition":false,"selector":null}]}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","name":"clirulesengine000003","properties":{"resourceState":"Enabled","rules":[{"name":"rule1","priority":1,"action":{"name":null,"routeConfigurationOverride":null,"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[]},"matchConditions":[{"selector":null,"rulesEngineMatchValue":["jpg","png"],"negateCondition":false,"rulesEngineMatchVariable":"RequestFilenameExtension","rulesEngineOperator":"Contains","transforms":["Lowercase"]}],"matchProcessingBehavior":"Stop"},{"name":"rule2","priority":2,"action":{"name":null,"routeConfigurationOverride":null,"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"},{"headerActionType":"Delete","headerName":"Location","value":null}]},"matchConditions":[{"selector":null,"rulesEngineMatchValue":["private"],"negateCondition":false,"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[]}],"matchProcessingBehavior":null}]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1454'
+      - '1269'
       content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
+      - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:37:52 GMT
+      - Tue, 04 Nov 2025 08:39:30 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/2b952ac5-eecc-4205-8250-07c5e9173dd9
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 88ECCFDC8F1D4166A4BB17AB388D0631 Ref B: SYD03EDGE1920 Ref C: 2025-11-04T08:39:29Z'
     status:
       code: 200
       message: OK
@@ -870,46 +878,46 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '1383'
+      - '1322'
       Content-Type:
       - application/json
       ParameterSetName:
       - -f -g --rules-engine-name --name --action-type --backend-pool --caching --query-parameter-strip-directive
         --query-parameters --cache-duration
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2021-06-01
   response:
     body:
-      string: '{"name":"clirulesengine000003","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","properties":{"name":"clirulesengine000003","resourceGroup":"clitest.rg000001","resourceState":"Enabled","rules":[{"priority":1,"name":"rule1","matchProcessingBehavior":"Stop","action":{"name":null,"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[],"routeConfigurationOverride":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration","cacheConfiguration":{"queryParameterStripDirective":"StripOnly","queryParameters":"a=b,x=y&p=q","dynamicCompression":"Enabled","cacheDuration":"P5DT1H30M30S"},"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"}}},"matchConditions":[{"rulesEngineMatchValue":["jpg","png"],"rulesEngineMatchVariable":"RequestFilenameExtension","rulesEngineOperator":"Contains","transforms":["Lowercase"],"negateCondition":false,"selector":null}]},{"priority":2,"name":"rule2","matchProcessingBehavior":null,"action":{"name":null,"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"},{"headerActionType":"Delete","headerName":"Location","value":null}],"routeConfigurationOverride":null},"matchConditions":[{"rulesEngineMatchValue":["private"],"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[],"negateCondition":false,"selector":null}]}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","name":"clirulesengine000003","properties":{"resourceState":"Enabled","rules":[{"name":"rule1","priority":1,"action":{"name":null,"routeConfigurationOverride":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","cacheConfiguration":{"queryParameterStripDirective":"StripOnly","queryParameters":"a=b,x=y&p=q","dynamicCompression":"Enabled","cacheDuration":"P5DT1H30M30S"},"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"},"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration"},"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[]},"matchConditions":[{"selector":null,"rulesEngineMatchValue":["jpg","png"],"negateCondition":false,"rulesEngineMatchVariable":"RequestFilenameExtension","rulesEngineOperator":"Contains","transforms":["Lowercase"]}],"matchProcessingBehavior":"Stop"},{"name":"rule2","priority":2,"action":{"name":null,"routeConfigurationOverride":null,"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"},{"headerActionType":"Delete","headerName":"Location","value":null}]},"matchConditions":[{"selector":null,"rulesEngineMatchValue":["private"],"negateCondition":false,"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[]}],"matchProcessingBehavior":null}]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '2016'
+      - '1770'
       content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
+      - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:37:54 GMT
+      - Tue, 04 Nov 2025 08:39:31 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/d993f509-7ed9-4270-8ae0-5078a5fbd316
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 7387DBA9E10542AD9ED8598B0FD84258 Ref B: SYD03EDGE0714 Ref C: 2025-11-04T08:39:30Z'
     status:
       code: 200
       message: OK
@@ -927,37 +935,37 @@ interactions:
       ParameterSetName:
       - -f -g -r --name --action-type --custom-path
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2021-06-01
   response:
     body:
-      string: '{"name":"clirulesengine000003","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","properties":{"name":"clirulesengine000003","resourceGroup":"clitest.rg000001","resourceState":"Enabled","rules":[{"priority":1,"name":"rule1","matchProcessingBehavior":"Stop","action":{"name":null,"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[],"routeConfigurationOverride":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration","cacheConfiguration":{"queryParameterStripDirective":"StripOnly","queryParameters":"a=b,x=y&p=q","dynamicCompression":"Enabled","cacheDuration":"P5DT1H30M30S"},"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"}}},"matchConditions":[{"rulesEngineMatchValue":["jpg","png"],"rulesEngineMatchVariable":"RequestFilenameExtension","rulesEngineOperator":"Contains","transforms":["Lowercase"],"negateCondition":false,"selector":null}]},{"priority":2,"name":"rule2","matchProcessingBehavior":null,"action":{"name":null,"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"},{"headerActionType":"Delete","headerName":"Location","value":null}],"routeConfigurationOverride":null},"matchConditions":[{"rulesEngineMatchValue":["private"],"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[],"negateCondition":false,"selector":null}]}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","name":"clirulesengine000003","properties":{"resourceState":"Enabled","rules":[{"name":"rule1","priority":1,"action":{"name":null,"routeConfigurationOverride":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","cacheConfiguration":{"queryParameterStripDirective":"StripOnly","queryParameters":"a=b,x=y&p=q","dynamicCompression":"Enabled","cacheDuration":"P5DT1H30M30S"},"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"},"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration"},"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[]},"matchConditions":[{"selector":null,"rulesEngineMatchValue":["jpg","png"],"negateCondition":false,"rulesEngineMatchVariable":"RequestFilenameExtension","rulesEngineOperator":"Contains","transforms":["Lowercase"]}],"matchProcessingBehavior":"Stop"},{"name":"rule2","priority":2,"action":{"name":null,"routeConfigurationOverride":null,"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"},{"headerActionType":"Delete","headerName":"Location","value":null}]},"matchConditions":[{"selector":null,"rulesEngineMatchValue":["private"],"negateCondition":false,"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[]}],"matchProcessingBehavior":null}]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '2016'
+      - '1770'
       content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
+      - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:37:55 GMT
+      - Tue, 04 Nov 2025 08:39:32 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/2237d088-b43c-4af9-bfd9-de4e892b7179
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 55FF7C157DCA46F2B79D25EB7FCEFD91 Ref B: SYD03EDGE1410 Ref C: 2025-11-04T08:39:32Z'
     status:
       code: 200
       message: OK
@@ -989,45 +997,45 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '1657'
+      - '1596'
       Content-Type:
       - application/json
       ParameterSetName:
       - -f -g -r --name --action-type --custom-path
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2021-06-01
   response:
     body:
-      string: '{"name":"clirulesengine000003","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","properties":{"name":"clirulesengine000003","resourceGroup":"clitest.rg000001","resourceState":"Enabled","rules":[{"priority":1,"name":"rule1","matchProcessingBehavior":"Stop","action":{"name":null,"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[],"routeConfigurationOverride":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration","cacheConfiguration":{"queryParameterStripDirective":"StripOnly","queryParameters":"a=b,x=y&p=q","dynamicCompression":"Enabled","cacheDuration":"P5DT1H30M30S"},"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"}}},"matchConditions":[{"rulesEngineMatchValue":["jpg","png"],"rulesEngineMatchVariable":"RequestFilenameExtension","rulesEngineOperator":"Contains","transforms":["Lowercase"],"negateCondition":false,"selector":null}]},{"priority":2,"name":"rule2","matchProcessingBehavior":null,"action":{"name":null,"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"},{"headerActionType":"Delete","headerName":"Location","value":null}],"routeConfigurationOverride":{"customFragment":null,"customHost":"","customPath":"/redirect","redirectProtocol":"MatchRequest","customQueryString":null,"redirectType":"Moved","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorRedirectConfiguration"}},"matchConditions":[{"rulesEngineMatchValue":["private"],"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[],"negateCondition":false,"selector":null}]}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","name":"clirulesengine000003","properties":{"resourceState":"Enabled","rules":[{"name":"rule1","priority":1,"action":{"name":null,"routeConfigurationOverride":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","cacheConfiguration":{"queryParameterStripDirective":"StripOnly","queryParameters":"a=b,x=y&p=q","dynamicCompression":"Enabled","cacheDuration":"P5DT1H30M30S"},"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"},"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration"},"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[]},"matchConditions":[{"selector":null,"rulesEngineMatchValue":["jpg","png"],"negateCondition":false,"rulesEngineMatchVariable":"RequestFilenameExtension","rulesEngineOperator":"Contains","transforms":["Lowercase"]}],"matchProcessingBehavior":"Stop"},{"name":"rule2","priority":2,"action":{"name":null,"routeConfigurationOverride":{"redirectType":"Moved","redirectProtocol":"MatchRequest","customHost":"","customPath":"/redirect","customFragment":null,"customQueryString":null,"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorRedirectConfiguration"},"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"},{"headerActionType":"Delete","headerName":"Location","value":null}]},"matchConditions":[{"selector":null,"rulesEngineMatchValue":["private"],"negateCondition":false,"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[]}],"matchProcessingBehavior":null}]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '2239'
+      - '1993'
       content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
+      - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:37:57 GMT
+      - Tue, 04 Nov 2025 08:39:33 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/8355a3ba-7e44-410c-b34f-7b3230028c3d
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11998'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '798'
+      x-msedge-ref:
+      - 'Ref A: B6A8F908842D46DD96962D5B231AF064 Ref B: SYD03EDGE1320 Ref C: 2025-11-04T08:39:33Z'
     status:
       code: 200
       message: OK
@@ -1045,37 +1053,37 @@ interactions:
       ParameterSetName:
       - -f -g -r --name
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2021-06-01
   response:
     body:
-      string: '{"name":"clirulesengine000003","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","properties":{"name":"clirulesengine000003","resourceGroup":"clitest.rg000001","resourceState":"Enabled","rules":[{"priority":1,"name":"rule1","matchProcessingBehavior":"Stop","action":{"name":null,"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[],"routeConfigurationOverride":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration","cacheConfiguration":{"queryParameterStripDirective":"StripOnly","queryParameters":"a=b,x=y&p=q","dynamicCompression":"Enabled","cacheDuration":"P5DT1H30M30S"},"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"}}},"matchConditions":[{"rulesEngineMatchValue":["jpg","png"],"rulesEngineMatchVariable":"RequestFilenameExtension","rulesEngineOperator":"Contains","transforms":["Lowercase"],"negateCondition":false,"selector":null}]},{"priority":2,"name":"rule2","matchProcessingBehavior":null,"action":{"name":null,"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"},{"headerActionType":"Delete","headerName":"Location","value":null}],"routeConfigurationOverride":{"customFragment":null,"customHost":"","customPath":"/redirect","redirectProtocol":"MatchRequest","customQueryString":null,"redirectType":"Moved","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorRedirectConfiguration"}},"matchConditions":[{"rulesEngineMatchValue":["private"],"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[],"negateCondition":false,"selector":null}]}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","name":"clirulesengine000003","properties":{"resourceState":"Enabled","rules":[{"name":"rule1","priority":1,"action":{"name":null,"routeConfigurationOverride":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","cacheConfiguration":{"queryParameterStripDirective":"StripOnly","queryParameters":"a=b,x=y&p=q","dynamicCompression":"Enabled","cacheDuration":"P5DT1H30M30S"},"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"},"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration"},"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[]},"matchConditions":[{"selector":null,"rulesEngineMatchValue":["jpg","png"],"negateCondition":false,"rulesEngineMatchVariable":"RequestFilenameExtension","rulesEngineOperator":"Contains","transforms":["Lowercase"]}],"matchProcessingBehavior":"Stop"},{"name":"rule2","priority":2,"action":{"name":null,"routeConfigurationOverride":{"redirectType":"Moved","redirectProtocol":"MatchRequest","customHost":"","customPath":"/redirect","customFragment":null,"customQueryString":null,"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorRedirectConfiguration"},"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"},{"headerActionType":"Delete","headerName":"Location","value":null}]},"matchConditions":[{"selector":null,"rulesEngineMatchValue":["private"],"negateCondition":false,"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[]}],"matchProcessingBehavior":null}]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '2239'
+      - '1993'
       content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
+      - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:37:57 GMT
+      - Tue, 04 Nov 2025 08:39:34 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/e9ddad75-05b9-4c2d-bf0b-b40fefa52a59
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: DB3516A942344C5287989C08D44808D5 Ref B: SYD03EDGE1315 Ref C: 2025-11-04T08:39:34Z'
     status:
       code: 200
       message: OK
@@ -1093,37 +1101,37 @@ interactions:
       ParameterSetName:
       - -f -g -r --name
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2021-06-01
   response:
     body:
-      string: '{"name":"clirulesengine000003","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","properties":{"name":"clirulesengine000003","resourceGroup":"clitest.rg000001","resourceState":"Enabled","rules":[{"priority":1,"name":"rule1","matchProcessingBehavior":"Stop","action":{"name":null,"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[],"routeConfigurationOverride":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration","cacheConfiguration":{"queryParameterStripDirective":"StripOnly","queryParameters":"a=b,x=y&p=q","dynamicCompression":"Enabled","cacheDuration":"P5DT1H30M30S"},"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"}}},"matchConditions":[{"rulesEngineMatchValue":["jpg","png"],"rulesEngineMatchVariable":"RequestFilenameExtension","rulesEngineOperator":"Contains","transforms":["Lowercase"],"negateCondition":false,"selector":null}]},{"priority":2,"name":"rule2","matchProcessingBehavior":null,"action":{"name":null,"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"},{"headerActionType":"Delete","headerName":"Location","value":null}],"routeConfigurationOverride":{"customFragment":null,"customHost":"","customPath":"/redirect","redirectProtocol":"MatchRequest","customQueryString":null,"redirectType":"Moved","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorRedirectConfiguration"}},"matchConditions":[{"rulesEngineMatchValue":["private"],"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[],"negateCondition":false,"selector":null}]}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","name":"clirulesengine000003","properties":{"resourceState":"Enabled","rules":[{"name":"rule1","priority":1,"action":{"name":null,"routeConfigurationOverride":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","cacheConfiguration":{"queryParameterStripDirective":"StripOnly","queryParameters":"a=b,x=y&p=q","dynamicCompression":"Enabled","cacheDuration":"P5DT1H30M30S"},"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"},"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration"},"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[]},"matchConditions":[{"selector":null,"rulesEngineMatchValue":["jpg","png"],"negateCondition":false,"rulesEngineMatchVariable":"RequestFilenameExtension","rulesEngineOperator":"Contains","transforms":["Lowercase"]}],"matchProcessingBehavior":"Stop"},{"name":"rule2","priority":2,"action":{"name":null,"routeConfigurationOverride":{"redirectType":"Moved","redirectProtocol":"MatchRequest","customHost":"","customPath":"/redirect","customFragment":null,"customQueryString":null,"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorRedirectConfiguration"},"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"},{"headerActionType":"Delete","headerName":"Location","value":null}]},"matchConditions":[{"selector":null,"rulesEngineMatchValue":["private"],"negateCondition":false,"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[]}],"matchProcessingBehavior":null}]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '2239'
+      - '1993'
       content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
+      - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:37:58 GMT
+      - Tue, 04 Nov 2025 08:39:35 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/d7f17e7a-fa3d-4710-95fc-b3fcf7b8d45f
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 6EF9887CB0C04E018C08BE21771FCEB2 Ref B: SYD03EDGE1117 Ref C: 2025-11-04T08:39:35Z'
     status:
       code: 200
       message: OK
@@ -1141,37 +1149,37 @@ interactions:
       ParameterSetName:
       - -f -g -r --name --match-variable --selector --operator --match-values --transforms
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2021-06-01
   response:
     body:
-      string: '{"name":"clirulesengine000003","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","properties":{"name":"clirulesengine000003","resourceGroup":"clitest.rg000001","resourceState":"Enabled","rules":[{"priority":1,"name":"rule1","matchProcessingBehavior":"Stop","action":{"name":null,"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[],"routeConfigurationOverride":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration","cacheConfiguration":{"queryParameterStripDirective":"StripOnly","queryParameters":"a=b,x=y&p=q","dynamicCompression":"Enabled","cacheDuration":"P5DT1H30M30S"},"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"}}},"matchConditions":[{"rulesEngineMatchValue":["jpg","png"],"rulesEngineMatchVariable":"RequestFilenameExtension","rulesEngineOperator":"Contains","transforms":["Lowercase"],"negateCondition":false,"selector":null}]},{"priority":2,"name":"rule2","matchProcessingBehavior":null,"action":{"name":null,"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"},{"headerActionType":"Delete","headerName":"Location","value":null}],"routeConfigurationOverride":{"customFragment":null,"customHost":"","customPath":"/redirect","redirectProtocol":"MatchRequest","customQueryString":null,"redirectType":"Moved","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorRedirectConfiguration"}},"matchConditions":[{"rulesEngineMatchValue":["private"],"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[],"negateCondition":false,"selector":null}]}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","name":"clirulesengine000003","properties":{"resourceState":"Enabled","rules":[{"name":"rule1","priority":1,"action":{"name":null,"routeConfigurationOverride":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","cacheConfiguration":{"queryParameterStripDirective":"StripOnly","queryParameters":"a=b,x=y&p=q","dynamicCompression":"Enabled","cacheDuration":"P5DT1H30M30S"},"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"},"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration"},"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[]},"matchConditions":[{"selector":null,"rulesEngineMatchValue":["jpg","png"],"negateCondition":false,"rulesEngineMatchVariable":"RequestFilenameExtension","rulesEngineOperator":"Contains","transforms":["Lowercase"]}],"matchProcessingBehavior":"Stop"},{"name":"rule2","priority":2,"action":{"name":null,"routeConfigurationOverride":{"redirectType":"Moved","redirectProtocol":"MatchRequest","customHost":"","customPath":"/redirect","customFragment":null,"customQueryString":null,"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorRedirectConfiguration"},"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"},{"headerActionType":"Delete","headerName":"Location","value":null}]},"matchConditions":[{"selector":null,"rulesEngineMatchValue":["private"],"negateCondition":false,"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[]}],"matchProcessingBehavior":null}]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '2239'
+      - '1993'
       content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
+      - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:38:00 GMT
+      - Tue, 04 Nov 2025 08:39:36 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/cdb2f284-4148-4760-bc51-0cbb64e06565
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: F5840E955AA6441B9F79EB63A75CCF99 Ref B: SYD03EDGE0716 Ref C: 2025-11-04T08:39:36Z'
     status:
       code: 200
       message: OK
@@ -1205,45 +1213,45 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '1854'
+      - '1793'
       Content-Type:
       - application/json
       ParameterSetName:
       - -f -g -r --name --match-variable --selector --operator --match-values --transforms
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2021-06-01
   response:
     body:
-      string: '{"name":"clirulesengine000003","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","properties":{"name":"clirulesengine000003","resourceGroup":"clitest.rg000001","resourceState":"Enabled","rules":[{"priority":1,"name":"rule1","matchProcessingBehavior":"Stop","action":{"name":null,"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[],"routeConfigurationOverride":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration","cacheConfiguration":{"queryParameterStripDirective":"StripOnly","queryParameters":"a=b,x=y&p=q","dynamicCompression":"Enabled","cacheDuration":"P5DT1H30M30S"},"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"}}},"matchConditions":[{"rulesEngineMatchValue":["jpg","png"],"rulesEngineMatchVariable":"RequestFilenameExtension","rulesEngineOperator":"Contains","transforms":["Lowercase"],"negateCondition":false,"selector":null},{"rulesEngineMatchValue":["en-gb","en-th"],"rulesEngineMatchVariable":"RequestHeader","rulesEngineOperator":"Equal","transforms":["Lowercase"],"negateCondition":false,"selector":"x-language"}]},{"priority":2,"name":"rule2","matchProcessingBehavior":null,"action":{"name":null,"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"},{"headerActionType":"Delete","headerName":"Location","value":null}],"routeConfigurationOverride":{"customFragment":null,"customHost":"","customPath":"/redirect","redirectProtocol":"MatchRequest","customQueryString":null,"redirectType":"Moved","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorRedirectConfiguration"}},"matchConditions":[{"rulesEngineMatchValue":["private"],"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[],"negateCondition":false,"selector":null}]}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","name":"clirulesengine000003","properties":{"resourceState":"Enabled","rules":[{"name":"rule1","priority":1,"action":{"name":null,"routeConfigurationOverride":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","cacheConfiguration":{"queryParameterStripDirective":"StripOnly","queryParameters":"a=b,x=y&p=q","dynamicCompression":"Enabled","cacheDuration":"P5DT1H30M30S"},"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"},"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration"},"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[]},"matchConditions":[{"selector":null,"rulesEngineMatchValue":["jpg","png"],"negateCondition":false,"rulesEngineMatchVariable":"RequestFilenameExtension","rulesEngineOperator":"Contains","transforms":["Lowercase"]},{"selector":"x-language","rulesEngineMatchValue":["en-gb","en-th"],"negateCondition":false,"rulesEngineMatchVariable":"RequestHeader","rulesEngineOperator":"Equal","transforms":["Lowercase"]}],"matchProcessingBehavior":"Stop"},{"name":"rule2","priority":2,"action":{"name":null,"routeConfigurationOverride":{"redirectType":"Moved","redirectProtocol":"MatchRequest","customHost":"","customPath":"/redirect","customFragment":null,"customQueryString":null,"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorRedirectConfiguration"},"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"},{"headerActionType":"Delete","headerName":"Location","value":null}]},"matchConditions":[{"selector":null,"rulesEngineMatchValue":["private"],"negateCondition":false,"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[]}],"matchProcessingBehavior":null}]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '2431'
+      - '2185'
       content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
+      - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:38:02 GMT
+      - Tue, 04 Nov 2025 08:39:38 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/ee4f95fb-9594-444f-bf2f-834750ce5a86
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: A0D760D696664FD0A171DBFE11205771 Ref B: SYD03EDGE0817 Ref C: 2025-11-04T08:39:37Z'
     status:
       code: 200
       message: OK
@@ -1261,37 +1269,37 @@ interactions:
       ParameterSetName:
       - -f -g -r --name --match-variable --operator
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2021-06-01
   response:
     body:
-      string: '{"name":"clirulesengine000003","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","properties":{"name":"clirulesengine000003","resourceGroup":"clitest.rg000001","resourceState":"Enabled","rules":[{"priority":1,"name":"rule1","matchProcessingBehavior":"Stop","action":{"name":null,"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[],"routeConfigurationOverride":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration","cacheConfiguration":{"queryParameterStripDirective":"StripOnly","queryParameters":"a=b,x=y&p=q","dynamicCompression":"Enabled","cacheDuration":"P5DT1H30M30S"},"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"}}},"matchConditions":[{"rulesEngineMatchValue":["jpg","png"],"rulesEngineMatchVariable":"RequestFilenameExtension","rulesEngineOperator":"Contains","transforms":["Lowercase"],"negateCondition":false,"selector":null},{"rulesEngineMatchValue":["en-gb","en-th"],"rulesEngineMatchVariable":"RequestHeader","rulesEngineOperator":"Equal","transforms":["Lowercase"],"negateCondition":false,"selector":"x-language"}]},{"priority":2,"name":"rule2","matchProcessingBehavior":null,"action":{"name":null,"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"},{"headerActionType":"Delete","headerName":"Location","value":null}],"routeConfigurationOverride":{"customFragment":null,"customHost":"","customPath":"/redirect","redirectProtocol":"MatchRequest","customQueryString":null,"redirectType":"Moved","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorRedirectConfiguration"}},"matchConditions":[{"rulesEngineMatchValue":["private"],"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[],"negateCondition":false,"selector":null}]}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","name":"clirulesengine000003","properties":{"resourceState":"Enabled","rules":[{"name":"rule1","priority":1,"action":{"name":null,"routeConfigurationOverride":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","cacheConfiguration":{"queryParameterStripDirective":"StripOnly","queryParameters":"a=b,x=y&p=q","dynamicCompression":"Enabled","cacheDuration":"P5DT1H30M30S"},"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"},"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration"},"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[]},"matchConditions":[{"selector":null,"rulesEngineMatchValue":["jpg","png"],"negateCondition":false,"rulesEngineMatchVariable":"RequestFilenameExtension","rulesEngineOperator":"Contains","transforms":["Lowercase"]},{"selector":"x-language","rulesEngineMatchValue":["en-gb","en-th"],"negateCondition":false,"rulesEngineMatchVariable":"RequestHeader","rulesEngineOperator":"Equal","transforms":["Lowercase"]}],"matchProcessingBehavior":"Stop"},{"name":"rule2","priority":2,"action":{"name":null,"routeConfigurationOverride":{"redirectType":"Moved","redirectProtocol":"MatchRequest","customHost":"","customPath":"/redirect","customFragment":null,"customQueryString":null,"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorRedirectConfiguration"},"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"},{"headerActionType":"Delete","headerName":"Location","value":null}]},"matchConditions":[{"selector":null,"rulesEngineMatchValue":["private"],"negateCondition":false,"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[]}],"matchProcessingBehavior":null}]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '2431'
+      - '2185'
       content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
+      - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:38:02 GMT
+      - Tue, 04 Nov 2025 08:39:40 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/australiaeast/fc3d0809-1bdf-46a6-8a35-2ec09422df8e
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 92498A8608F64AD09C6BA482A12F4943 Ref B: SYD03EDGE1415 Ref C: 2025-11-04T08:39:39Z'
     status:
       code: 200
       message: OK
@@ -1327,45 +1335,45 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '1984'
+      - '1923'
       Content-Type:
       - application/json
       ParameterSetName:
       - -f -g -r --name --match-variable --operator
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2021-06-01
   response:
     body:
-      string: '{"name":"clirulesengine000003","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","properties":{"name":"clirulesengine000003","resourceGroup":"clitest.rg000001","resourceState":"Enabled","rules":[{"priority":1,"name":"rule1","matchProcessingBehavior":"Stop","action":{"name":null,"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[],"routeConfigurationOverride":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration","cacheConfiguration":{"queryParameterStripDirective":"StripOnly","queryParameters":"a=b,x=y&p=q","dynamicCompression":"Enabled","cacheDuration":"P5DT1H30M30S"},"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"}}},"matchConditions":[{"rulesEngineMatchValue":["jpg","png"],"rulesEngineMatchVariable":"RequestFilenameExtension","rulesEngineOperator":"Contains","transforms":["Lowercase"],"negateCondition":false,"selector":null},{"rulesEngineMatchValue":["en-gb","en-th"],"rulesEngineMatchVariable":"RequestHeader","rulesEngineOperator":"Equal","transforms":["Lowercase"],"negateCondition":false,"selector":"x-language"},{"rulesEngineMatchValue":[],"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Any","transforms":[],"negateCondition":false,"selector":null}]},{"priority":2,"name":"rule2","matchProcessingBehavior":null,"action":{"name":null,"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"},{"headerActionType":"Delete","headerName":"Location","value":null}],"routeConfigurationOverride":{"customFragment":null,"customHost":"","customPath":"/redirect","redirectProtocol":"MatchRequest","customQueryString":null,"redirectType":"Moved","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorRedirectConfiguration"}},"matchConditions":[{"rulesEngineMatchValue":["private"],"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[],"negateCondition":false,"selector":null}]}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","name":"clirulesengine000003","properties":{"resourceState":"Enabled","rules":[{"name":"rule1","priority":1,"action":{"name":null,"routeConfigurationOverride":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","cacheConfiguration":{"queryParameterStripDirective":"StripOnly","queryParameters":"a=b,x=y&p=q","dynamicCompression":"Enabled","cacheDuration":"P5DT1H30M30S"},"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"},"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration"},"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[]},"matchConditions":[{"selector":null,"rulesEngineMatchValue":["jpg","png"],"negateCondition":false,"rulesEngineMatchVariable":"RequestFilenameExtension","rulesEngineOperator":"Contains","transforms":["Lowercase"]},{"selector":"x-language","rulesEngineMatchValue":["en-gb","en-th"],"negateCondition":false,"rulesEngineMatchVariable":"RequestHeader","rulesEngineOperator":"Equal","transforms":["Lowercase"]},{"selector":null,"rulesEngineMatchValue":[],"negateCondition":false,"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Any","transforms":[]}],"matchProcessingBehavior":"Stop"},{"name":"rule2","priority":2,"action":{"name":null,"routeConfigurationOverride":{"redirectType":"Moved","redirectProtocol":"MatchRequest","customHost":"","customPath":"/redirect","customFragment":null,"customQueryString":null,"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorRedirectConfiguration"},"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"},{"headerActionType":"Delete","headerName":"Location","value":null}]},"matchConditions":[{"selector":null,"rulesEngineMatchValue":["private"],"negateCondition":false,"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[]}],"matchProcessingBehavior":null}]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '2585'
+      - '2339'
       content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
+      - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:38:04 GMT
+      - Tue, 04 Nov 2025 08:39:40 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/7bb5a6a3-45a9-4337-86ac-9074c94ddc7c
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 385D6AFB345E4ABC9168830B572CEE62 Ref B: SYD03EDGE1920 Ref C: 2025-11-04T08:39:40Z'
     status:
       code: 200
       message: OK
@@ -1383,37 +1391,37 @@ interactions:
       ParameterSetName:
       - -f -g --rules-engine-name --name
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2021-06-01
   response:
     body:
-      string: '{"name":"clirulesengine000003","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","properties":{"name":"clirulesengine000003","resourceGroup":"clitest.rg000001","resourceState":"Enabled","rules":[{"priority":1,"name":"rule1","matchProcessingBehavior":"Stop","action":{"name":null,"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[],"routeConfigurationOverride":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration","cacheConfiguration":{"queryParameterStripDirective":"StripOnly","queryParameters":"a=b,x=y&p=q","dynamicCompression":"Enabled","cacheDuration":"P5DT1H30M30S"},"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"}}},"matchConditions":[{"rulesEngineMatchValue":["jpg","png"],"rulesEngineMatchVariable":"RequestFilenameExtension","rulesEngineOperator":"Contains","transforms":["Lowercase"],"negateCondition":false,"selector":null},{"rulesEngineMatchValue":["en-gb","en-th"],"rulesEngineMatchVariable":"RequestHeader","rulesEngineOperator":"Equal","transforms":["Lowercase"],"negateCondition":false,"selector":"x-language"},{"rulesEngineMatchValue":[],"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Any","transforms":[],"negateCondition":false,"selector":null}]},{"priority":2,"name":"rule2","matchProcessingBehavior":null,"action":{"name":null,"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"},{"headerActionType":"Delete","headerName":"Location","value":null}],"routeConfigurationOverride":{"customFragment":null,"customHost":"","customPath":"/redirect","redirectProtocol":"MatchRequest","customQueryString":null,"redirectType":"Moved","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorRedirectConfiguration"}},"matchConditions":[{"rulesEngineMatchValue":["private"],"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[],"negateCondition":false,"selector":null}]}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","name":"clirulesengine000003","properties":{"resourceState":"Enabled","rules":[{"name":"rule1","priority":1,"action":{"name":null,"routeConfigurationOverride":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","cacheConfiguration":{"queryParameterStripDirective":"StripOnly","queryParameters":"a=b,x=y&p=q","dynamicCompression":"Enabled","cacheDuration":"P5DT1H30M30S"},"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"},"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration"},"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[]},"matchConditions":[{"selector":null,"rulesEngineMatchValue":["jpg","png"],"negateCondition":false,"rulesEngineMatchVariable":"RequestFilenameExtension","rulesEngineOperator":"Contains","transforms":["Lowercase"]},{"selector":"x-language","rulesEngineMatchValue":["en-gb","en-th"],"negateCondition":false,"rulesEngineMatchVariable":"RequestHeader","rulesEngineOperator":"Equal","transforms":["Lowercase"]},{"selector":null,"rulesEngineMatchValue":[],"negateCondition":false,"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Any","transforms":[]}],"matchProcessingBehavior":"Stop"},{"name":"rule2","priority":2,"action":{"name":null,"routeConfigurationOverride":{"redirectType":"Moved","redirectProtocol":"MatchRequest","customHost":"","customPath":"/redirect","customFragment":null,"customQueryString":null,"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorRedirectConfiguration"},"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"},{"headerActionType":"Delete","headerName":"Location","value":null}]},"matchConditions":[{"selector":null,"rulesEngineMatchValue":["private"],"negateCondition":false,"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[]}],"matchProcessingBehavior":null}]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '2585'
+      - '2339'
       content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
+      - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:38:05 GMT
+      - Tue, 04 Nov 2025 08:39:42 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/9b303a6e-8816-474b-ab8d-6105fa760ed4
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: A03C0486471746AFBFB3F6F1F1F8608E Ref B: SYD03EDGE2107 Ref C: 2025-11-04T08:39:41Z'
     status:
       code: 200
       message: OK
@@ -1431,37 +1439,37 @@ interactions:
       ParameterSetName:
       - -f -g --rules-engine-name --name --index
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2021-06-01
   response:
     body:
-      string: '{"name":"clirulesengine000003","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","properties":{"name":"clirulesengine000003","resourceGroup":"clitest.rg000001","resourceState":"Enabled","rules":[{"priority":1,"name":"rule1","matchProcessingBehavior":"Stop","action":{"name":null,"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[],"routeConfigurationOverride":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration","cacheConfiguration":{"queryParameterStripDirective":"StripOnly","queryParameters":"a=b,x=y&p=q","dynamicCompression":"Enabled","cacheDuration":"P5DT1H30M30S"},"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"}}},"matchConditions":[{"rulesEngineMatchValue":["jpg","png"],"rulesEngineMatchVariable":"RequestFilenameExtension","rulesEngineOperator":"Contains","transforms":["Lowercase"],"negateCondition":false,"selector":null},{"rulesEngineMatchValue":["en-gb","en-th"],"rulesEngineMatchVariable":"RequestHeader","rulesEngineOperator":"Equal","transforms":["Lowercase"],"negateCondition":false,"selector":"x-language"},{"rulesEngineMatchValue":[],"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Any","transforms":[],"negateCondition":false,"selector":null}]},{"priority":2,"name":"rule2","matchProcessingBehavior":null,"action":{"name":null,"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"},{"headerActionType":"Delete","headerName":"Location","value":null}],"routeConfigurationOverride":{"customFragment":null,"customHost":"","customPath":"/redirect","redirectProtocol":"MatchRequest","customQueryString":null,"redirectType":"Moved","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorRedirectConfiguration"}},"matchConditions":[{"rulesEngineMatchValue":["private"],"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[],"negateCondition":false,"selector":null}]}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","name":"clirulesengine000003","properties":{"resourceState":"Enabled","rules":[{"name":"rule1","priority":1,"action":{"name":null,"routeConfigurationOverride":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","cacheConfiguration":{"queryParameterStripDirective":"StripOnly","queryParameters":"a=b,x=y&p=q","dynamicCompression":"Enabled","cacheDuration":"P5DT1H30M30S"},"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"},"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration"},"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[]},"matchConditions":[{"selector":null,"rulesEngineMatchValue":["jpg","png"],"negateCondition":false,"rulesEngineMatchVariable":"RequestFilenameExtension","rulesEngineOperator":"Contains","transforms":["Lowercase"]},{"selector":"x-language","rulesEngineMatchValue":["en-gb","en-th"],"negateCondition":false,"rulesEngineMatchVariable":"RequestHeader","rulesEngineOperator":"Equal","transforms":["Lowercase"]},{"selector":null,"rulesEngineMatchValue":[],"negateCondition":false,"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Any","transforms":[]}],"matchProcessingBehavior":"Stop"},{"name":"rule2","priority":2,"action":{"name":null,"routeConfigurationOverride":{"redirectType":"Moved","redirectProtocol":"MatchRequest","customHost":"","customPath":"/redirect","customFragment":null,"customQueryString":null,"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorRedirectConfiguration"},"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"},{"headerActionType":"Delete","headerName":"Location","value":null}]},"matchConditions":[{"selector":null,"rulesEngineMatchValue":["private"],"negateCondition":false,"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[]}],"matchProcessingBehavior":null}]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '2585'
+      - '2339'
       content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
+      - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:38:06 GMT
+      - Tue, 04 Nov 2025 08:39:43 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/0a003501-6542-4e2d-8600-f39dc51c430e
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: D5304630BE0A4870970B67D0AD0A7B93 Ref B: SYD03EDGE1712 Ref C: 2025-11-04T08:39:43Z'
     status:
       code: 200
       message: OK
@@ -1495,45 +1503,45 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '1839'
+      - '1778'
       Content-Type:
       - application/json
       ParameterSetName:
       - -f -g --rules-engine-name --name --index
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2021-06-01
   response:
     body:
-      string: '{"name":"clirulesengine000003","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","properties":{"name":"clirulesengine000003","resourceGroup":"clitest.rg000001","resourceState":"Enabled","rules":[{"priority":1,"name":"rule1","matchProcessingBehavior":"Stop","action":{"name":null,"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[],"routeConfigurationOverride":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration","cacheConfiguration":{"queryParameterStripDirective":"StripOnly","queryParameters":"a=b,x=y&p=q","dynamicCompression":"Enabled","cacheDuration":"P5DT1H30M30S"},"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"}}},"matchConditions":[{"rulesEngineMatchValue":["en-gb","en-th"],"rulesEngineMatchVariable":"RequestHeader","rulesEngineOperator":"Equal","transforms":["Lowercase"],"negateCondition":false,"selector":"x-language"},{"rulesEngineMatchValue":[],"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Any","transforms":[],"negateCondition":false,"selector":null}]},{"priority":2,"name":"rule2","matchProcessingBehavior":null,"action":{"name":null,"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"},{"headerActionType":"Delete","headerName":"Location","value":null}],"routeConfigurationOverride":{"customFragment":null,"customHost":"","customPath":"/redirect","redirectProtocol":"MatchRequest","customQueryString":null,"redirectType":"Moved","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorRedirectConfiguration"}},"matchConditions":[{"rulesEngineMatchValue":["private"],"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[],"negateCondition":false,"selector":null}]}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","name":"clirulesengine000003","properties":{"resourceState":"Enabled","rules":[{"name":"rule1","priority":1,"action":{"name":null,"routeConfigurationOverride":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","cacheConfiguration":{"queryParameterStripDirective":"StripOnly","queryParameters":"a=b,x=y&p=q","dynamicCompression":"Enabled","cacheDuration":"P5DT1H30M30S"},"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"},"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration"},"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[]},"matchConditions":[{"selector":"x-language","rulesEngineMatchValue":["en-gb","en-th"],"negateCondition":false,"rulesEngineMatchVariable":"RequestHeader","rulesEngineOperator":"Equal","transforms":["Lowercase"]},{"selector":null,"rulesEngineMatchValue":[],"negateCondition":false,"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Any","transforms":[]}],"matchProcessingBehavior":"Stop"},{"name":"rule2","priority":2,"action":{"name":null,"routeConfigurationOverride":{"redirectType":"Moved","redirectProtocol":"MatchRequest","customHost":"","customPath":"/redirect","customFragment":null,"customQueryString":null,"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorRedirectConfiguration"},"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"},{"headerActionType":"Delete","headerName":"Location","value":null}]},"matchConditions":[{"selector":null,"rulesEngineMatchValue":["private"],"negateCondition":false,"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[]}],"matchProcessingBehavior":null}]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '2391'
+      - '2145'
       content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
+      - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:38:08 GMT
+      - Tue, 04 Nov 2025 08:39:45 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/3e903a3c-fa51-4e2f-a701-ec0a5e6c001e
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 8AF5AA33A1174CE79A33A06C28A6D2C7 Ref B: SYD03EDGE1110 Ref C: 2025-11-04T08:39:44Z'
     status:
       code: 200
       message: OK
@@ -1551,37 +1559,37 @@ interactions:
       ParameterSetName:
       - -f -g --rules-engine-name --name --action-type
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2021-06-01
   response:
     body:
-      string: '{"name":"clirulesengine000003","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","properties":{"name":"clirulesengine000003","resourceGroup":"clitest.rg000001","resourceState":"Enabled","rules":[{"priority":1,"name":"rule1","matchProcessingBehavior":"Stop","action":{"name":null,"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[],"routeConfigurationOverride":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration","cacheConfiguration":{"queryParameterStripDirective":"StripOnly","queryParameters":"a=b,x=y&p=q","dynamicCompression":"Enabled","cacheDuration":"P5DT1H30M30S"},"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"}}},"matchConditions":[{"rulesEngineMatchValue":["en-gb","en-th"],"rulesEngineMatchVariable":"RequestHeader","rulesEngineOperator":"Equal","transforms":["Lowercase"],"negateCondition":false,"selector":"x-language"},{"rulesEngineMatchValue":[],"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Any","transforms":[],"negateCondition":false,"selector":null}]},{"priority":2,"name":"rule2","matchProcessingBehavior":null,"action":{"name":null,"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"},{"headerActionType":"Delete","headerName":"Location","value":null}],"routeConfigurationOverride":{"customFragment":null,"customHost":"","customPath":"/redirect","redirectProtocol":"MatchRequest","customQueryString":null,"redirectType":"Moved","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorRedirectConfiguration"}},"matchConditions":[{"rulesEngineMatchValue":["private"],"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[],"negateCondition":false,"selector":null}]}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","name":"clirulesengine000003","properties":{"resourceState":"Enabled","rules":[{"name":"rule1","priority":1,"action":{"name":null,"routeConfigurationOverride":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","cacheConfiguration":{"queryParameterStripDirective":"StripOnly","queryParameters":"a=b,x=y&p=q","dynamicCompression":"Enabled","cacheDuration":"P5DT1H30M30S"},"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/clifrontdoor000002/backendPools/DefaultBackendPool"},"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration"},"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[]},"matchConditions":[{"selector":"x-language","rulesEngineMatchValue":["en-gb","en-th"],"negateCondition":false,"rulesEngineMatchVariable":"RequestHeader","rulesEngineOperator":"Equal","transforms":["Lowercase"]},{"selector":null,"rulesEngineMatchValue":[],"negateCondition":false,"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Any","transforms":[]}],"matchProcessingBehavior":"Stop"},{"name":"rule2","priority":2,"action":{"name":null,"routeConfigurationOverride":{"redirectType":"Moved","redirectProtocol":"MatchRequest","customHost":"","customPath":"/redirect","customFragment":null,"customQueryString":null,"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorRedirectConfiguration"},"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"},{"headerActionType":"Delete","headerName":"Location","value":null}]},"matchConditions":[{"selector":null,"rulesEngineMatchValue":["private"],"negateCondition":false,"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[]}],"matchProcessingBehavior":null}]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '2391'
+      - '2145'
       content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
+      - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:38:08 GMT
+      - Tue, 04 Nov 2025 08:39:46 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/c5db9d3b-b6dc-44e6-828a-398b0cb5433c
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 066A024D18F4451EA88A3F0FFABCAA17 Ref B: SYD03EDGE0805 Ref C: 2025-11-04T08:39:45Z'
     status:
       code: 200
       message: OK
@@ -1617,39 +1625,39 @@ interactions:
       ParameterSetName:
       - -f -g --rules-engine-name --name --action-type
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2021-06-01
   response:
     body:
-      string: '{"name":"clirulesengine000003","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","properties":{"name":"clirulesengine000003","resourceGroup":"clitest.rg000001","resourceState":"Enabled","rules":[{"priority":1,"name":"rule1","matchProcessingBehavior":"Stop","action":{"name":null,"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[],"routeConfigurationOverride":null},"matchConditions":[{"rulesEngineMatchValue":["en-gb","en-th"],"rulesEngineMatchVariable":"RequestHeader","rulesEngineOperator":"Equal","transforms":["Lowercase"],"negateCondition":false,"selector":"x-language"},{"rulesEngineMatchValue":[],"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Any","transforms":[],"negateCondition":false,"selector":null}]},{"priority":2,"name":"rule2","matchProcessingBehavior":null,"action":{"name":null,"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"},{"headerActionType":"Delete","headerName":"Location","value":null}],"routeConfigurationOverride":{"customFragment":null,"customHost":"","customPath":"/redirect","redirectProtocol":"MatchRequest","customQueryString":null,"redirectType":"Moved","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorRedirectConfiguration"}},"matchConditions":[{"rulesEngineMatchValue":["private"],"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[],"negateCondition":false,"selector":null}]}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","name":"clirulesengine000003","properties":{"resourceState":"Enabled","rules":[{"name":"rule1","priority":1,"action":{"name":null,"routeConfigurationOverride":null,"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[]},"matchConditions":[{"selector":"x-language","rulesEngineMatchValue":["en-gb","en-th"],"negateCondition":false,"rulesEngineMatchVariable":"RequestHeader","rulesEngineOperator":"Equal","transforms":["Lowercase"]},{"selector":null,"rulesEngineMatchValue":[],"negateCondition":false,"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Any","transforms":[]}],"matchProcessingBehavior":"Stop"},{"name":"rule2","priority":2,"action":{"name":null,"routeConfigurationOverride":{"redirectType":"Moved","redirectProtocol":"MatchRequest","customHost":"","customPath":"/redirect","customFragment":null,"customQueryString":null,"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorRedirectConfiguration"},"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"},{"headerActionType":"Delete","headerName":"Location","value":null}]},"matchConditions":[{"selector":null,"rulesEngineMatchValue":["private"],"negateCondition":false,"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[]}],"matchProcessingBehavior":null}]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1829'
+      - '1644'
       content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
+      - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:38:10 GMT
+      - Tue, 04 Nov 2025 08:39:48 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/36745ad6-d183-4e8a-ab84-cfd4e326be99
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 731D265EEB6B462A830950C20A5BD76A Ref B: SYD03EDGE1417 Ref C: 2025-11-04T08:39:47Z'
     status:
       code: 200
       message: OK
@@ -1667,37 +1675,37 @@ interactions:
       ParameterSetName:
       - -f -g --rules-engine-name --name --action-type --index
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2021-06-01
   response:
     body:
-      string: '{"name":"clirulesengine000003","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","properties":{"name":"clirulesengine000003","resourceGroup":"clitest.rg000001","resourceState":"Enabled","rules":[{"priority":1,"name":"rule1","matchProcessingBehavior":"Stop","action":{"name":null,"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[],"routeConfigurationOverride":null},"matchConditions":[{"rulesEngineMatchValue":["en-gb","en-th"],"rulesEngineMatchVariable":"RequestHeader","rulesEngineOperator":"Equal","transforms":["Lowercase"],"negateCondition":false,"selector":"x-language"},{"rulesEngineMatchValue":[],"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Any","transforms":[],"negateCondition":false,"selector":null}]},{"priority":2,"name":"rule2","matchProcessingBehavior":null,"action":{"name":null,"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"},{"headerActionType":"Delete","headerName":"Location","value":null}],"routeConfigurationOverride":{"customFragment":null,"customHost":"","customPath":"/redirect","redirectProtocol":"MatchRequest","customQueryString":null,"redirectType":"Moved","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorRedirectConfiguration"}},"matchConditions":[{"rulesEngineMatchValue":["private"],"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[],"negateCondition":false,"selector":null}]}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","name":"clirulesengine000003","properties":{"resourceState":"Enabled","rules":[{"name":"rule1","priority":1,"action":{"name":null,"routeConfigurationOverride":null,"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[]},"matchConditions":[{"selector":"x-language","rulesEngineMatchValue":["en-gb","en-th"],"negateCondition":false,"rulesEngineMatchVariable":"RequestHeader","rulesEngineOperator":"Equal","transforms":["Lowercase"]},{"selector":null,"rulesEngineMatchValue":[],"negateCondition":false,"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Any","transforms":[]}],"matchProcessingBehavior":"Stop"},{"name":"rule2","priority":2,"action":{"name":null,"routeConfigurationOverride":{"redirectType":"Moved","redirectProtocol":"MatchRequest","customHost":"","customPath":"/redirect","customFragment":null,"customQueryString":null,"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorRedirectConfiguration"},"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"},{"headerActionType":"Delete","headerName":"Location","value":null}]},"matchConditions":[{"selector":null,"rulesEngineMatchValue":["private"],"negateCondition":false,"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[]}],"matchProcessingBehavior":null}]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1829'
+      - '1644'
       content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
+      - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:38:10 GMT
+      - Tue, 04 Nov 2025 08:39:48 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/ca7a3dc0-ef96-4181-bdf7-98dc6999880f
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 59DEB6389E544366A2FD9D545B3829B1 Ref B: SYD03EDGE1913 Ref C: 2025-11-04T08:39:48Z'
     status:
       code: 200
       message: OK
@@ -1732,39 +1740,39 @@ interactions:
       ParameterSetName:
       - -f -g --rules-engine-name --name --action-type --index
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2021-06-01
   response:
     body:
-      string: '{"name":"clirulesengine000003","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","properties":{"name":"clirulesengine000003","resourceGroup":"clitest.rg000001","resourceState":"Enabled","rules":[{"priority":1,"name":"rule1","matchProcessingBehavior":"Stop","action":{"name":null,"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[],"routeConfigurationOverride":null},"matchConditions":[{"rulesEngineMatchValue":["en-gb","en-th"],"rulesEngineMatchVariable":"RequestHeader","rulesEngineOperator":"Equal","transforms":["Lowercase"],"negateCondition":false,"selector":"x-language"},{"rulesEngineMatchValue":[],"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Any","transforms":[],"negateCondition":false,"selector":null}]},{"priority":2,"name":"rule2","matchProcessingBehavior":null,"action":{"name":null,"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"}],"routeConfigurationOverride":{"customFragment":null,"customHost":"","customPath":"/redirect","redirectProtocol":"MatchRequest","customQueryString":null,"redirectType":"Moved","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorRedirectConfiguration"}},"matchConditions":[{"rulesEngineMatchValue":["private"],"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[],"negateCondition":false,"selector":null}]}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","name":"clirulesengine000003","properties":{"resourceState":"Enabled","rules":[{"name":"rule1","priority":1,"action":{"name":null,"routeConfigurationOverride":null,"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[]},"matchConditions":[{"selector":"x-language","rulesEngineMatchValue":["en-gb","en-th"],"negateCondition":false,"rulesEngineMatchVariable":"RequestHeader","rulesEngineOperator":"Equal","transforms":["Lowercase"]},{"selector":null,"rulesEngineMatchValue":[],"negateCondition":false,"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Any","transforms":[]}],"matchProcessingBehavior":"Stop"},{"name":"rule2","priority":2,"action":{"name":null,"routeConfigurationOverride":{"redirectType":"Moved","redirectProtocol":"MatchRequest","customHost":"","customPath":"/redirect","customFragment":null,"customQueryString":null,"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorRedirectConfiguration"},"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"}]},"matchConditions":[{"selector":null,"rulesEngineMatchValue":["private"],"negateCondition":false,"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[]}],"matchProcessingBehavior":null}]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1762'
+      - '1577'
       content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
+      - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:38:12 GMT
+      - Tue, 04 Nov 2025 08:39:50 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/796009c9-c042-40f0-8a1f-d445d5626466
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 18FDDE44905644DE8A1FD584A6B6A200 Ref B: SYD03EDGE1119 Ref C: 2025-11-04T08:39:49Z'
     status:
       code: 200
       message: OK
@@ -1782,37 +1790,37 @@ interactions:
       ParameterSetName:
       - -f -g --rules-engine-name --name
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2021-06-01
   response:
     body:
-      string: '{"name":"clirulesengine000003","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","properties":{"name":"clirulesengine000003","resourceGroup":"clitest.rg000001","resourceState":"Enabled","rules":[{"priority":1,"name":"rule1","matchProcessingBehavior":"Stop","action":{"name":null,"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[],"routeConfigurationOverride":null},"matchConditions":[{"rulesEngineMatchValue":["en-gb","en-th"],"rulesEngineMatchVariable":"RequestHeader","rulesEngineOperator":"Equal","transforms":["Lowercase"],"negateCondition":false,"selector":"x-language"},{"rulesEngineMatchValue":[],"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Any","transforms":[],"negateCondition":false,"selector":null}]},{"priority":2,"name":"rule2","matchProcessingBehavior":null,"action":{"name":null,"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"}],"routeConfigurationOverride":{"customFragment":null,"customHost":"","customPath":"/redirect","redirectProtocol":"MatchRequest","customQueryString":null,"redirectType":"Moved","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorRedirectConfiguration"}},"matchConditions":[{"rulesEngineMatchValue":["private"],"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[],"negateCondition":false,"selector":null}]}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","name":"clirulesengine000003","properties":{"resourceState":"Enabled","rules":[{"name":"rule1","priority":1,"action":{"name":null,"routeConfigurationOverride":null,"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[]},"matchConditions":[{"selector":"x-language","rulesEngineMatchValue":["en-gb","en-th"],"negateCondition":false,"rulesEngineMatchVariable":"RequestHeader","rulesEngineOperator":"Equal","transforms":["Lowercase"]},{"selector":null,"rulesEngineMatchValue":[],"negateCondition":false,"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Any","transforms":[]}],"matchProcessingBehavior":"Stop"},{"name":"rule2","priority":2,"action":{"name":null,"routeConfigurationOverride":{"redirectType":"Moved","redirectProtocol":"MatchRequest","customHost":"","customPath":"/redirect","customFragment":null,"customQueryString":null,"@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorRedirectConfiguration"},"requestHeaderActions":[],"responseHeaderActions":[{"headerActionType":"Append","headerName":"Security","value":"Strict"}]},"matchConditions":[{"selector":null,"rulesEngineMatchValue":["private"],"negateCondition":false,"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Contains","transforms":[]}],"matchProcessingBehavior":null}]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1762'
+      - '1577'
       content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
+      - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:38:13 GMT
+      - Tue, 04 Nov 2025 08:39:50 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/981531fe-230d-4a0a-a569-5375ea094996
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: A777CE95B76B440583A42CA752C9134E Ref B: SYD03EDGE2107 Ref C: 2025-11-04T08:39:50Z'
     status:
       code: 200
       message: OK
@@ -1841,39 +1849,39 @@ interactions:
       ParameterSetName:
       - -f -g --rules-engine-name --name
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines/clirulesengine000003?api-version=2021-06-01
   response:
     body:
-      string: '{"name":"clirulesengine000003","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","properties":{"name":"clirulesengine000003","resourceGroup":"clitest.rg000001","resourceState":"Enabled","rules":[{"priority":1,"name":"rule1","matchProcessingBehavior":"Stop","action":{"name":null,"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[],"routeConfigurationOverride":null},"matchConditions":[{"rulesEngineMatchValue":["en-gb","en-th"],"rulesEngineMatchVariable":"RequestHeader","rulesEngineOperator":"Equal","transforms":["Lowercase"],"negateCondition":false,"selector":"x-language"},{"rulesEngineMatchValue":[],"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Any","transforms":[],"negateCondition":false,"selector":null}]}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","name":"clirulesengine000003","properties":{"resourceState":"Enabled","rules":[{"name":"rule1","priority":1,"action":{"name":null,"routeConfigurationOverride":null,"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[]},"matchConditions":[{"selector":"x-language","rulesEngineMatchValue":["en-gb","en-th"],"negateCondition":false,"rulesEngineMatchVariable":"RequestHeader","rulesEngineOperator":"Equal","transforms":["Lowercase"]},{"selector":null,"rulesEngineMatchValue":[],"negateCondition":false,"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Any","transforms":[]}],"matchProcessingBehavior":"Stop"}]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1110'
+      - '925'
       content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
+      - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:38:15 GMT
+      - Tue, 04 Nov 2025 08:39:52 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/1be48c1d-214f-4ade-97e7-635d66d69922
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 7832149872184F6ABC2B58DADDC0A3FE Ref B: SYD03EDGE2009 Ref C: 2025-11-04T08:39:51Z'
     status:
       code: 200
       message: OK
@@ -1891,37 +1899,37 @@ interactions:
       ParameterSetName:
       - -f -g
       User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.79.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/clifrontdoor000002/rulesEngines?api-version=2021-06-01
   response:
     body:
-      string: '{"value":[{"name":"clirulesengine000003","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","properties":{"name":"clirulesengine000003","resourceGroup":"clitest.rg000001","resourceState":"Enabled","rules":[{"priority":1,"name":"rule1","matchProcessingBehavior":"Stop","action":{"name":null,"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[],"routeConfigurationOverride":null},"matchConditions":[{"rulesEngineMatchValue":["en-gb","en-th"],"rulesEngineMatchVariable":"RequestHeader","rulesEngineOperator":"Equal","transforms":["Lowercase"],"negateCondition":false,"selector":"x-language"},{"rulesEngineMatchValue":[],"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Any","transforms":[],"negateCondition":false,"selector":null}]}]}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/clifrontdoor000002/rulesengines/clirulesengine000003","type":"Microsoft.Network/frontdoors/rulesengines","name":"clirulesengine000003","properties":{"resourceState":"Enabled","rules":[{"name":"rule1","priority":1,"action":{"name":null,"routeConfigurationOverride":null,"requestHeaderActions":[{"headerActionType":"Overwrite","headerName":"Rewrite","value":"True"}],"responseHeaderActions":[]},"matchConditions":[{"selector":"x-language","rulesEngineMatchValue":["en-gb","en-th"],"negateCondition":false,"rulesEngineMatchVariable":"RequestHeader","rulesEngineOperator":"Equal","transforms":["Lowercase"]},{"selector":null,"rulesEngineMatchValue":[],"negateCondition":false,"rulesEngineMatchVariable":"RequestPath","rulesEngineOperator":"Any","transforms":[]}],"matchProcessingBehavior":"Stop"}]}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1122'
+      - '937'
       content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
+      - application/json; charset=utf-8
       date:
-      - Wed, 14 Apr 2021 05:38:17 GMT
+      - Tue, 04 Nov 2025 08:39:53 GMT
       expires:
       - '-1'
-      odata-version:
-      - '4.0'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/d7ff3b96-9817-4156-a881-7dcde110d585
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: DF87D7CC2A9C4115A14F3557B2F258AF Ref B: SYD03EDGE1420 Ref C: 2025-11-04T08:39:53Z'
     status:
       code: 200
       message: OK

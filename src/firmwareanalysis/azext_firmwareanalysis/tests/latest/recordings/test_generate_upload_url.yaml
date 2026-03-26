@@ -1,0 +1,60 @@
+interactions:
+- request:
+    body: '{"firmwareId": "cd4e9671-72cf-4f78-9c9e-8e8bb2c5eaa4"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - firmwareanalysis workspace generate-upload-url
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '54'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --workspace-name --firmware-id
+      User-Agent:
+      - AZURECLI/2.77.0 (MSI) azsdk-python-core/1.35.0 Python/3.13.7 (Windows-11-10.0.26100-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/FirmwareAnalysisRG/providers/Microsoft.IoTFirmwareDefense/workspaces/default/generateUploadUrl?api-version=2025-08-02
+  response:
+    body:
+      string: '{"url":"REDACTED"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '472'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 12 Sep 2025 18:49:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '104'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=42f4bb21-fc6c-4605-89c8-7092ecdecb50/eastus/056af858-3356-4641-9364-2dba8cc33ab0
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 988FBBD4482D473C8CD0066972614CF6 Ref B: BL2AA2010204033 Ref C: 2025-09-12T18:49:20Z'
+    status:
+      code: 200
+      message: OK
+version: 1

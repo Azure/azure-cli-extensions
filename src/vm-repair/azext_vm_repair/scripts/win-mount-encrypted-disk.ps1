@@ -9,6 +9,9 @@ else {
     Exit 1
 }
 
+Write-Output "Bringing disks online if they are already offline"
+Get-Disk | where {$_.OperationalStatus -ne 'Online'} | Set-Disk -IsOffline $false
+
 $bekPartitionDriveLetter = 'K'
 Write-Output "Setting BEK partition drive letter to $bekPartitionDriveLetter"
 $bekVolume | Get-Partition | Set-Partition -NewDriveLetter $bekPartitionDriveLetter

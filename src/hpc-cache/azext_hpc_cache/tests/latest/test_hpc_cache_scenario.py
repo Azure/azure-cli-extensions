@@ -7,7 +7,7 @@ import os
 from unittest import mock
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer, StorageAccountPreparer
+from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer, StorageAccountPreparer, live_only
 
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
@@ -15,6 +15,7 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class StorageCacheScenarioTest(ScenarioTest):
 
+    @live_only()
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_hpc_cache')
     def test_hpc_cache(self, resource_group):
@@ -58,7 +59,7 @@ class StorageCacheScenarioTest(ScenarioTest):
         self.cmd('az hpc-cache upgrade-firmware --resource-group {rg} --name {cache_name}', checks=[])
 
         from azure.core.exceptions import ResourceNotFoundError
-        with self.assertRaisesRegexp(ResourceNotFoundError, 'ResourceNotFound'):
+        with self.assertRaisesRegex(ResourceNotFoundError, 'ResourceNotFound'):
             self.cmd('az hpc-cache update '
                      '--resource-group {rg} '
                      '--name "{cache_name}123" '
@@ -104,6 +105,7 @@ class StorageCacheScenarioTest(ScenarioTest):
         self.cmd('az hpc-cache list --query "[?name==\'{cache_name}\']" ',
                  checks=[self.check('length(@)', 0)])
 
+    @live_only()
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_hpc_storage_target')
     def test_hpc_storage_target(self, resource_group):

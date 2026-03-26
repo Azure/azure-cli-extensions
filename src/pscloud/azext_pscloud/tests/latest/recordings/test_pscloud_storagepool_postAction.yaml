@@ -1,0 +1,114 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - pscloud pool get-health-status
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-group -n
+      User-Agent:
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.12.12 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.41)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/abc/providers/PureStorage.Block/storagePools/dhritijindal/getHealthStatus?api-version=2024-11-01
+  response:
+    body:
+      string: '{"health":{"usedCapacityPercentage":0.0,"bandwidthUsage":{"current":0.0,"provisioned":1040187392.0,"max":2147483648.0},"iopsUsage":{"current":0.0,"provisioned":65384.0,"max":150000.0},"space":{"totalUsed":0,"unique":0,"snapshots":0,"shared":0},"dataReductionRatio":1.0,"estimatedMaxCapacity":0},"alerts":[]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '307'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 Dec 2025 07:53:15 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - feaacef2-ce40-4759-8af5-f4ffde4f946e
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - appId=91a99062-ab22-4fd2-a3b2-766d55d6f5c5,tenantId=888d76fa-54b2-4ced-8ee5-aac1585adee7,objectId=d72e9d00-2ae6-4216-9c0f-ef425c71a2bc/centraluseuap/bccf2175-7f8e-4c43-93a1-a3049deb8af0
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 7C8A9928972F405688AD84C687619427 Ref B: PNQ231110909052 Ref C: 2025-12-22T07:53:12Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - pscloud pool get-avs-status
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-group -n
+      User-Agent:
+      - AZURECLI/2.81.0 azsdk-python-core/1.35.0 Python/3.12.12 (Linux-6.8.0-1030-azure-x86_64-with-glibc2.41)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/abc/providers/PureStorage.Block/storagePools/dhritijindal/getAvsStatus?api-version=2024-11-01
+  response:
+    body:
+      string: '{"avsEnabled":false,"currentConnectionStatus":"NoAVS","sddcResourceId":""}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '74'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 Dec 2025 07:53:18 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 7877c089-8492-4531-ac5f-2105d66df64e
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - appId=91a99062-ab22-4fd2-a3b2-766d55d6f5c5,tenantId=888d76fa-54b2-4ced-8ee5-aac1585adee7,objectId=d72e9d00-2ae6-4216-9c0f-ef425c71a2bc/centraluseuap/c4945a41-2f91-44d2-9060-574c1cde22d7
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: F2747DB4591F40ED892B83877786C973 Ref B: PNQ231110909031 Ref C: 2025-12-22T07:53:15Z'
+    status:
+      code: 200
+      message: OK
+version: 1

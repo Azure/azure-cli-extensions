@@ -110,12 +110,6 @@ helps['communication wait'] = """
         text: |-
                az communication wait --name "MyCommunicationResource" --resource-group "MyResourceGroup" --deleted
 """
-
-helps['communication identity'] = """
-    type: group
-    short-summary: Commands to manage user identities and their tokens for a Communication Service resource.
-"""
-
 helps['communication identity user'] = """
     type: group
     short-summary: Commands to manage user identities for a Communication Service resource.
@@ -137,18 +131,6 @@ helps['communication identity user delete'] = """
       - name: Delete ACS user
         text: |-
                az communication identity user delete --user "8:acs:xxxxxx"
-"""
-
-helps['communication identity issue-access-token'] = """
-    type: command
-    short-summary: "Issues a new access token with the specified scopes for a given User Identity. If no User Identity is specified, creates a new User Identity as well."
-    examples:
-      - name: Issue access token
-        text: |-
-               az communication identity issue-access-token --scope chat
-      - name: Issue access token with multiple scopes and user
-        text: |-
-               az communication identity issue-access-token --scope chat voip --userid "8:acs:xxxxxx"
 """
 
 helps['communication identity token'] = """
@@ -186,6 +168,81 @@ helps['communication identity token get-for-teams-user'] = """
                az communication identity token get-for-teams-user --aad-token "aad-123-xyz" --client "app-id-123-xyz" --aad-user "uid"
 """
 
+helps['communication user-identity'] = """
+    type: group
+    short-summary: Commands to manage user identities and their tokens for a Communication Service resource.
+"""
+
+helps['communication user-identity user'] = """
+    type: group
+    short-summary: Commands to manage user identities for a Communication Service resource.
+"""
+
+helps['communication user-identity user create'] = """
+    type: command
+    short-summary: "Creates a new ACS Identity."
+    examples:
+      - name: Create ACS user
+        text: |-
+               az communication user-identity user create
+"""
+
+helps['communication user-identity user delete'] = """
+    type: command
+    short-summary: "Deletes an existing ACS Identity, revokes all tokens for that ACS Identity and deletes all associated data."
+    examples:
+      - name: Delete ACS user
+        text: |-
+               az communication user-identity user delete --user "8:acs:xxxxxx"
+"""
+
+helps['communication user-identity issue-access-token'] = """
+    type: command
+    short-summary: "Issues a new access token with the specified scopes for a given User Identity. If no User Identity is specified, creates a new User Identity as well."
+    examples:
+      - name: Issue access token
+        text: |-
+               az communication user-identity issue-access-token --scope chat
+      - name: Issue access token with multiple scopes and user
+        text: |-
+               az communication user-identity issue-access-token --scope chat voip --userid "8:acs:xxxxxx"
+"""
+
+helps['communication user-identity token'] = """
+    type: group
+    short-summary: Commands to manage user tokens for a Communication Service resource.
+"""
+
+helps['communication user-identity token issue'] = """
+    type: command
+    short-summary: "Issues a new access token with the specified scopes for a given User Identity. If no User Identity is specified, creates a new User Identity as well."
+    examples:
+      - name: Issue access token
+        text: |-
+               az communication user-identity token issue --scope chat
+      - name: Issue access token with multiple scopes and user
+        text: |-
+               az communication user-identity token issue --scope chat voip --user "8:acs:xxxxxx"
+"""
+
+helps['communication user-identity token revoke'] = """
+    type: command
+    short-summary: "Revokes all access tokens for the specific ACS Identity."
+    examples:
+      - name: Revoke access tokens
+        text: |-
+               az communication user-identity token revoke --user "8:acs:xxxxxx"
+"""
+
+helps['communication user-identity token get-for-teams-user'] = """
+    type: command
+    short-summary: "Exchanges an Azure Active Directory (Azure AD) access token of a Teams user for a new ACS Identity access token with a matching expiration time."
+    examples:
+      - name: Get token for teams user
+        text: |-
+               az communication user-identity token get-for-teams-user --aad-token "aad-123-xyz" --client "app-id-123-xyz" --aad-user "uid"
+"""
+
 helps['communication sms'] = """
     type: group
     short-summary: Commands to manage SMS for a Communication Service resource.
@@ -199,6 +256,10 @@ helps['communication sms send'] = """
         text: |-
                az communication sms send --sender "+1833xxxxxxx" \
 --recipient "+1425xxxxxxx" "+1426xxxxxxx" "+1427xxxxxxx" --message "Hello there!!"
+      - name: Send sms with delivery report and custom tag
+        text: |-
+               az communication sms send --sender "+1833xxxxxxx" --recipient "+1425xxxxxxx" \
+--message "Hello there!!" --deliveryReport --tag "custom-tag"
 """
 
 helps['communication sms send-sms'] = """
@@ -209,6 +270,10 @@ helps['communication sms send-sms'] = """
         text: |-
                az communication sms send-sms --sender "+1833xxxxxxx" \
 --recipient "+1425xxxxxxx" "+1426xxxxxxx" "+1427xxxxxxx" --message "Hello there!!"
+      - name: Send sms with delivery report and custom tag
+        text: |-
+               az communication sms send-sms --sender "+1833xxxxxxx" --recipient "+1425xxxxxxx" \
+--message "Hello there!!" --deliveryReport --tag "custom-tag"
 """
 
 helps['communication phonenumbers'] = """
@@ -406,4 +471,132 @@ helps['communication chat message receipt send'] = """
       - name: Send read receipt
         text: |-
                az communication chat message receipt send --thread "19:a-bcd=xyz" --message-id "12345678"
+"""
+
+helps['communication rooms'] = """
+    type: group
+    short-summary: Commands to interact with Azure Communication Services Rooms gateway.
+"""
+
+helps['communication rooms create'] = """
+    type: command
+    short-summary: "Create a new room."
+    examples:
+      - name: Create a room with default parameters
+        text: |-
+               az communication rooms create
+      - name: Create a room with valid-from and valid-until date/times
+        text: |-
+               az communication rooms create --valid-from "2022-07-14T10:21" --valid-until "2022-08-14T10:21"
+      - name: Create a room with valid-from, valid-until date/times and pstn-dial-out-enabled
+        text: |-
+               az communication rooms create --valid-from "2022-07-14T10:21" --valid-until "2022-08-14T10:21" --pstn-dial-out-enabled "True"
+      - name: Create a room with a list of participants with presenter role
+        text: |-
+               az communication rooms create --presenter-participants "8:acs:xxxxxx" "8:acs:xxxxxx"
+      - name: Create a room with a list of participants with attendee role
+        text: |-
+               az communication rooms create --attendee-participants "8:acs:xxxxxx" "8:acs:xxxxxx"
+      - name: Create a room with a list of participants with presenter and consumer roles
+        text: |-
+               az communication rooms create --presenter-participants "8:acs:xxxxxx" "8:acs:xxxxxx" --consumer-participants "8:acs:xxxxxx" "8:acs:xxxxxx"
+      - name: Create a room with a list of participants with attendee and collaborator roles
+        text: |-
+               az communication rooms create --attendee-participants "8:acs:xxxxxx" "8:acs:xxxxxx" --collaborator-participants "8:acs:xxxxxx" "8:acs:xxxxxx"
+"""
+
+helps['communication rooms get'] = """
+    type: command
+    short-summary: "Return attributes of an existing room."
+    examples:
+      - name: Get room
+        text: |-
+               az communication rooms get --room "12345678901234567"
+"""
+
+helps['communication rooms update'] = """
+    type: command
+    short-summary: "Update attributes of an existing room."
+    examples:
+      - name: Update a room's valid-from and valid-until properties
+        text: |-
+               az communication rooms update --room "12345678901234567" --valid-from "2022-07-14T10:21" --valid-until "2022-08-14T10:21"
+"""
+
+helps['communication rooms delete'] = """
+    type: command
+    short-summary: "Delete an existing room."
+    examples:
+      - name: Delete an existing room
+        text: |-
+               az communication rooms delete --room "12345678901234567"
+"""
+
+helps['communication rooms list'] = """
+    type: command
+    short-summary: "List all active rooms belonging to a current Communication Service resource."
+    examples:
+      - name: List all active rooms
+        text: |-
+               az communication rooms list
+"""
+
+helps['communication rooms participant'] = """
+    type: group
+    short-summary: Commands to manage participants of an existing room.
+"""
+
+helps['communication rooms participant get'] = """
+    type: command
+    short-summary: "Get participants of a room."
+    examples:
+      - name: Get room's participants
+        text: |-
+               az communication rooms participant get --room "12345678901234567"
+"""
+
+helps['communication rooms participant add-or-update'] = """
+    type: command
+    short-summary: "Add or update participants in a room"
+    examples:
+      - name: Add a presenter participant to a room and update an attendee participant in a room
+        text: |-
+               az communication rooms participant add-or-update --room "12345678901234567" --presenter-participants "8:acs:xxxxxx" "8:acs:xxxxxx" --attendee-participants "8:acs:xxxxxx" "8:acs:xxxxxx"
+"""
+
+helps['communication rooms participant remove'] = """
+    type: command
+    short-summary: "Remove participants from a room."
+    examples:
+      - name: Remove room participants
+        text: |-
+               az communication rooms participant remove --room "12345678901234567" --participants "8:acs:xxxxxx" "8:acs:xxxxxx" "8:acs:xxxxxx"
+"""
+
+helps['communication email'] = """
+    type: group
+    short-summary: Commands to send emails and get the status of emails previously sent using Azure Communication Services Email service.
+"""
+
+helps['communication email send'] = """
+    type: command
+    short-summary: "Send an email and get final status."
+    examples:
+      - name: Send an email from an existing domain
+        text: |-
+               az communication email send --sender "NoReply@contoso.com" --subject "Contoso Update" --to "user1@user1-domain.com" "user2@user2-domain.com" --text "Hello valued client. There is an update."
+"""
+
+helps['communication email status'] = """
+    type: group
+    short-summary: Commands to get the status of emails previously sent using Azure Communication Services Email service.
+"""
+
+helps['communication email status get'] = """
+    type: command
+    short-summary: "Get status of an email previously sent."
+    examples:
+      - name: Get status of an email
+        text: |-
+              az communication email status get --operation-id "01234567-89ab-cdef-0123-012345678901" --connection-string "endpoint=XXXXXXXXXXXXXXXX;accesskey=XXXXXXXXXXXXXXXXXXXXXX"
 """

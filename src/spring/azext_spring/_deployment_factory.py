@@ -6,13 +6,17 @@
 # pylint: disable=wrong-import-order
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.cli.core.util import get_file_json
-from .vendored_sdks.appplatform.v2022_01_01_preview import models
-from .vendored_sdks.appplatform.v2022_05_01_preview import models as models_20220501preview
+from .vendored_sdks.appplatform.v2024_05_01_preview import models
 from ._deployment_source_factory import source_selector
+from .custom import format_scale
+from ._utils import _get_value_from_dict
 
 
 APPLICATION_CONFIGURATION_SERVICE_NAME = "applicationConfigurationService"
 APPLICATION_CONFIGURATION_SERVICE_PROPERTY_PATTERN = "configFilePatterns"
+APP_LIVE_VIEW = "appLiveView"
+ACTUATOR_PORT = "actuatorPort"
+ACTUATOR_PATH = "actuatorPath"
 
 
 class DefaultDeployment:
@@ -25,8 +29,8 @@ class DefaultDeployment:
 
     def format_resource(self, sku=None, instance_count=None, active=None, **kwargs):
         sku.capacity = instance_count
-        return models_20220501preview.DeploymentResource(
-            properties=models_20220501preview.DeploymentResourceProperties(
+        return models.DeploymentResource(
+            properties=models.DeploymentResourceProperties(
                 active=active,
                 source=self.format_source(**kwargs),
                 deployment_settings=self.format_settings(**kwargs)
@@ -35,15 +39,17 @@ class DefaultDeployment:
         )
 
     def format_settings(self, **kwargs):
-        return models_20220501preview.DeploymentSettings(
+        return models.DeploymentSettings(
             resource_requests=self._format_resource_request(**kwargs),
             container_probe_settings=self._format_container_probe(**kwargs),
             environment_variables=self._get_env(**kwargs),
+            apms=self._get_apms(**kwargs),
             addon_configs=self._get_addon_configs(**kwargs),
             termination_grace_period_seconds=self._get_termination_grace_period_seconds(**kwargs),
             startup_probe=self._format_startup_probe(**kwargs),
             liveness_probe=self._format_liveness_probe(**kwargs),
-            readiness_probe=self._format_readiness_probe(**kwargs)
+            readiness_probe=self._format_readiness_probe(**kwargs),
+            scale=format_scale(**kwargs),
         )
 
     def _get_termination_grace_period_seconds(self, termination_grace_period_seconds=None, **_):
@@ -56,7 +62,7 @@ class DefaultDeployment:
             return None
 
         if not enable_startup_probe:
-            return models_20220501preview.Probe(disable_probe=True)
+            return models.Probe(disable_probe=True)
 
         probe = self._load_probe_config(startup_probe_config_file_path)
         return probe
@@ -66,7 +72,7 @@ class DefaultDeployment:
             return None
 
         if not enable_liveness_probe:
-            return models_20220501preview.Probe(disable_probe=True)
+            return models.Probe(disable_probe=True)
 
         probe = self._load_probe_config(liveness_probe_config_file_path)
         return probe
@@ -76,7 +82,7 @@ class DefaultDeployment:
             return None
 
         if not enable_readiness_probe:
-            return models_20220501preview.Probe(disable_probe=True)
+            return models.Probe(disable_probe=True)
 
         probe = self._load_probe_config(readiness_probe_config_file_path)
         return probe
@@ -99,15 +105,23 @@ class DefaultDeployment:
     def _get_env(self, env=None, **_):
         return env
 
-    def _get_addon_configs(self, config_file_patterns=None, **_):
+    def _get_apms(self, apms=None, **_):
+        return apms
+
+    def _get_addon_configs(self, config_file_patterns=None, custom_actuator_port=None, custom_actuator_path=None, **_):
+        if config_file_patterns is None and custom_actuator_port is None and custom_actuator_path is None:
+            return None
+        addon_configs = {}
         if config_file_patterns is not None:
-            addon_configs = {
-                APPLICATION_CONFIGURATION_SERVICE_NAME: {
-                    APPLICATION_CONFIGURATION_SERVICE_PROPERTY_PATTERN: config_file_patterns
-                }
+            addon_configs[APPLICATION_CONFIGURATION_SERVICE_NAME] = {
+                APPLICATION_CONFIGURATION_SERVICE_PROPERTY_PATTERN: config_file_patterns
             }
-            return addon_configs
-        return None
+        if any([custom_actuator_port, custom_actuator_path]):
+            addon_configs[APP_LIVE_VIEW] = {
+                ACTUATOR_PORT: custom_actuator_port,
+                ACTUATOR_PATH: custom_actuator_path
+            }
+        return addon_configs
 
     def format_source(self, **kwargs):
         return self.source_factory.format_source(**kwargs)
@@ -158,23 +172,23 @@ class DefaultDeployment:
             raise InvalidArgumentValueError("probeAction, Type mast be provided in the json file")
         probe_action = None
         if data['probe']['probeAction']['type'].casefold() == "HTTPGetAction".casefold():
-            probe_action = models_20220501preview.HTTPGetAction(
+            probe_action = models.HTTPGetAction(
                 type="HTTPGetAction",
                 path=data['probe']['probeAction']['path'] if 'path' in data['probe']['probeAction'] else None,
                 scheme=data['probe']['probeAction']['scheme'] if 'scheme' in data['probe']['probeAction'] else None,
             )
         elif data['probe']['probeAction']['type'].casefold() == "TCPSocketAction".casefold():
-            probe_action = models_20220501preview.TCPSocketAction(
+            probe_action = models.TCPSocketAction(
                 type="TCPSocketAction",
             )
         elif data['probe']['probeAction']['type'].casefold() == "ExecAction".casefold():
-            probe_action = models_20220501preview.ExecAction(
+            probe_action = models.ExecAction(
                 type="ExecAction",
                 command=data['probe']['probeAction']['command'] if 'command' in data['probe']['probeAction'] else None,
             )
         else:
             raise InvalidArgumentValueError("ProbeAction.Type is invalid")
-        probe_settings = models_20220501preview.Probe(
+        probe_settings = models.Probe(
             probe_action=probe_action,
             disable_probe=False,
             initial_delay_seconds=data['probe']['initialDelaySeconds'] if 'initialDelaySeconds' in data['probe'] else None,
@@ -203,6 +217,10 @@ class EnterpriseDeployment(DefaultDeployment):
             return {}
         return {'env': deployment_resource.properties.deployment_settings.environment_variables}
 
+    def validate_instance_count(self, instance_count):
+        if instance_count < 1 or instance_count > 1000:
+            raise InvalidArgumentValueError('Invalid --instance-count, should be in range [1, 1000]')
+
 
 class BasicTierDeployment(DefaultDeployment):
     def validate_instance_count(self, instance_count):
@@ -229,18 +247,17 @@ def deployment_settings_options_from_resource(original):
         'instance_count': original.sku.capacity,
         'sku': original.sku,
         'env': original.properties.deployment_settings.environment_variables,
-        'config_file_patterns': _get_origin_config_file_patterns(original.properties.deployment_settings.addon_configs)
+        'config_file_patterns': _get_value_from_dict(
+            original.properties.deployment_settings.addon_configs,
+            APPLICATION_CONFIGURATION_SERVICE_NAME, APPLICATION_CONFIGURATION_SERVICE_PROPERTY_PATTERN),
+        'custom_actuator_port': _get_value_from_dict(
+            original.properties.deployment_settings.addon_configs, APP_LIVE_VIEW, ACTUATOR_PORT),
+        'custom_actuator_path': _get_value_from_dict(
+            original.properties.deployment_settings.addon_configs, APP_LIVE_VIEW, ACTUATOR_PATH)
     }
     if original.properties.deployment_settings.container_probe_settings is not None:
         options['disable_probe'] = original.properties.deployment_settings.container_probe_settings.disable_probe
     return options
-
-
-def _get_origin_config_file_patterns(origin_addon_configs):
-    if origin_addon_configs:
-        acs_addon = origin_addon_configs.get(APPLICATION_CONFIGURATION_SERVICE_NAME)
-        return acs_addon.get(APPLICATION_CONFIGURATION_SERVICE_PROPERTY_PATTERN) if acs_addon is not None else None
-    return None
 
 
 def deployment_source_options_from_resource(original):
@@ -252,6 +269,8 @@ def deployment_source_options_from_resource(original):
         options['jvm_options'] = original.properties.source.jvm_options
     if hasattr(original.properties.source, 'runtime_version'):
         options['runtime_version'] = original.properties.source.runtime_version
+    if hasattr(original.properties.source, 'server_version'):
+        options['server_version'] = original.properties.source.server_version
     return options
 
 
@@ -264,7 +283,7 @@ def default_deployment_create_options():
     return {
         'cpu': '1',
         'memory': '1Gi',
-        'runtime_version': 'Java_8',
+        'runtime_version': 'Java_11',
         'instance_count': 1,
         'env': {},
         'sku': None,

@@ -32,10 +32,10 @@ class VmwarePlacementPolicyScenarioTest(ScenarioTest):
         placementPolicyShow = self.cmd('az vmware placement-policy show --resource-group {rg} --private-cloud {privatecloud} --cluster-name {cluster_name} --placement-policy-name {placement_policy_name}').get_output_in_json()
         self.assertEqual(placementPolicyShow['name'], 'policy1')
 
-        placementPolicyVmHostCreate = self.cmd('az vmware placement-policy vm-host create --resource-group {rg} --private-cloud {privatecloud} --cluster-name {cluster_name} --placement-policy-name {placement_policy_name} --state {state} --display-name {display_name} --vm-members {vm_members} --host-members {host_members} --affinity-type {affinity_type}').get_output_in_json()
+        placementPolicyVmHostCreate = self.cmd('az vmware placement-policy vm-host create --resource-group {rg} --private-cloud {privatecloud} --cluster-name {cluster_name} --placement-policy-name {placement_policy_name} --state {state} --display-name {display_name} --vm-members {vm_members} --host-members {host_members} --affinity-type {affinity_type} --affinity-strength Must --azure-hybrid-benefit SqlHost').get_output_in_json()
         self.assertEqual(placementPolicyVmHostCreate['name'], 'policy1')
 
-        placementPolicyVmHostUpdate = self.cmd('az vmware placement-policy vm-host update --resource-group {rg} --private-cloud {privatecloud} --cluster-name {cluster_name} --placement-policy-name {placement_policy_name} --state {state} --vm-members {vm_members} --host-members {host_members}').get_output_in_json()
+        placementPolicyVmHostUpdate = self.cmd('az vmware placement-policy vm-host update --resource-group {rg} --private-cloud {privatecloud} --cluster-name {cluster_name} --placement-policy-name {placement_policy_name} --state {state} --vm-members {vm_members} --host-members {host_members}  --affinity-strength Must --azure-hybrid-benefit SqlHost').get_output_in_json()
         self.assertEqual(placementPolicyVmHostUpdate['name'], 'policy1')
 
         placementPolicyVmHostDelete = self.cmd('az vmware placement-policy vm-host delete --resource-group {rg} --private-cloud {privatecloud} --cluster-name {cluster_name} --placement-policy-name {placement_policy_name} --yes').output

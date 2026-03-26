@@ -2,6 +2,38 @@
 
 Release History
 ===============
+1.0.4
+* Support Oracle V2 in Azure Data Factory
+
+1.0.3
+* Enhanced Swagger to support Vertica V2 integration in Azure Data Factory
+* Added Managed Identity (MI) authentication support for Azure Files
+* Introduced versioning property for better version control
+* Implemented Service Principal Certificate Authentication in RestService and SharePointOnlineList Linked 
+* Fix PostgreSqlV2 missing authenticationType property
+
+1.0.2
+* Support new features in ADF
+
+1.0.1
+* Fix broken dataflow update command
+
+1.0.0
++++++
+* Support --enable-self-contained-interactive-authoring in integration-runtime self-hosted create
+
+0.10.0
++++++
+* Support new features in ADF
+
+0.9.0
++++++
+* Change publicnetworkaccess to public-network-access word
+
+0.8.0
++++++
+* Support publicnetworkaccess in datafactory_create and datafactory_update
+
 0.7.0
 +++++
 * az datafactory data-flow: Support create/update/list/show/delete data flows.

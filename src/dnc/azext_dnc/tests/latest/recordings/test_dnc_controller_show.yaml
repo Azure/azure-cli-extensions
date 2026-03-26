@@ -1,0 +1,100 @@
+interactions:
+- request:
+    body: '{"location": "centraluseuap", "properties": {"purpose": "prod"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dnc controller create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '64'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --location --resource-name --resource-group
+      User-Agent:
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dnc000001/providers/Microsoft.DelegatedNetwork/controller/clitestcontroller?api-version=2023-05-18-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dnc000001/providers/Microsoft.DelegatedNetwork/controller/clitestcontroller","location":"centraluseuap","name":"clitestcontroller","type":"Microsoft.DelegatedNetwork/controller","properties":{"dncAppId":"a91b1853-4403-4f54-b5cb-d1ea19d90c37","dncEndpoint":"https://openai-centraluseuap.dnc.azure.com","controllerProperties":{"dncAppId":"a91b1853-4403-4f54-b5cb-d1ea19d90c37","dncEndpoint":"https://openai-centraluseuap.dnc.azure.com","dncTenantId":null},"resourceGuid":"5c7e26be-7ff9-4aaf-9e16-0bc759605aea","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '624'
+      content-type:
+      - application/json
+      date:
+      - Tue, 22 Aug 2023 22:35:16 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:82487bea-6925-46b8-a5c9-0bcae97f8f27
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: 58CBD570784B42759F5F242AE3FDA24C Ref B: CO6AA3150220031 Ref C: 2023-08-22T22:35:16Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dnc controller show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-name --resource-group
+      User-Agent:
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dnc000001/providers/Microsoft.DelegatedNetwork/controller/clitestcontroller?api-version=2023-05-18-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dnc000001/providers/Microsoft.DelegatedNetwork/controller/clitestcontroller","location":"centraluseuap","name":"clitestcontroller","type":"Microsoft.DelegatedNetwork/controller","properties":{"dncAppId":"a91b1853-4403-4f54-b5cb-d1ea19d90c37","dncEndpoint":"https://openai-centraluseuap.dnc.azure.com","controllerProperties":{"dncAppId":"a91b1853-4403-4f54-b5cb-d1ea19d90c37","dncEndpoint":"https://openai-centraluseuap.dnc.azure.com","dncTenantId":null},"resourceGuid":"5c7e26be-7ff9-4aaf-9e16-0bc759605aea","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '624'
+      content-type:
+      - application/json
+      date:
+      - Tue, 22 Aug 2023 22:35:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:82487bea-6925-46b8-a5c9-0bcae97f8f27
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: A46A4AFF49DF42DA9FB3A5BCFDEE8DAD Ref B: CO6AA3150220039 Ref C: 2023-08-22T22:35:17Z'
+    status:
+      code: 200
+      message: OK
+version: 1

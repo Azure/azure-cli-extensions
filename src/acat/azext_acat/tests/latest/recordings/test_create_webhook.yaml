@@ -1,0 +1,258 @@
+interactions:
+- request:
+    body: '{"properties": {"contentType": "application/json", "enableSslVerification":
+      "true", "events": [], "payloadUrl": "https://CLI-test", "sendAllEvents": "true",
+      "status": "Enalbed", "updateWebhookKey": "false", "webhookKey": ""}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - acat report webhook create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '225'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --report-name --webhook-name --payload-url
+      User-Agent:
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      x-ms-aad-user-token:
+      - Bearer xxx
+    method: PUT
+    uri: https://management.azure.com/providers/Microsoft.AppComplianceAutomation/reports/DoNotDelete-ExistingReportTesting-PROD/webhooks/CLI_test_webhook_create?api-version=2024-06-27
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.AppComplianceAutomation/reports/DoNotDelete-ExistingReportTesting-PROD/webhooks/CLI_test_webhook_create","name":"CLI_test_webhook_create","type":"microsoft.appcomplianceautomation/reports/webhooks","systemData":{"createdBy":"huiquanjiang@microsoft.com","createdByType":"User","createdAt":"2024-07-12T08:29:26.1838709Z","lastModifiedBy":"huiquanjiang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-07-12T08:29:26.1838709Z"},"properties":{"webhookId":"a61eca94-64ec-4e39-9a17-ca575edbeb80","status":"Enalbed","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","sendAllEvents":"true","events":[],"payloadUrl":"https://CLI-test","contentType":"application/json","webhookKeyEnabled":"false","enableSslVerification":"true","deliveryStatus":"NotStarted","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '826'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 12 Jul 2024 08:29:25 GMT
+      mise-correlation-id:
+      - dd7557df-ef4e-4dd3-b621-92cf7120b86c
+      request-context:
+      - appId=cid-v1:7ecf4129-cb5b-4aab-a086-b332c76641c8
+      set-cookie:
+      - ASLBSA=00032a3a487bec8bb078db3d72d31662bbcdefdaa2746f6d34f700f695e763a204f0;
+        Path=/; Secure; HttpOnly;
+      - ASLBSACORS=00032a3a487bec8bb078db3d72d31662bbcdefdaa2746f6d34f700f695e763a204f0;
+        SameSite=none; Path=/; Secure; HttpOnly;
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-azure-ref:
+      - 20240712T082926Z-er1b698d8dfm6x884vzr7v792n00000000p000000000hf2v
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-id:
+      - 6671cee16616ec23db9b101017e9214c
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: 7277368B86E14F8F80CBD4E780E82705 Ref B: MAA201060514045 Ref C: 2024-07-12T08:29:26Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - acat report webhook list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --report-name
+      User-Agent:
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      x-ms-aad-user-token:
+      - Bearer xxx
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.AppComplianceAutomation/reports/DoNotDelete-ExistingReportTesting-PROD/webhooks?api-version=2024-06-27
+  response:
+    body:
+      string: '{"value":[{"id":"/providers/Microsoft.AppComplianceAutomation/reports/DoNotDelete-ExistingReportTesting-PROD/webhooks/CLI_test_webhook_create","name":"CLI_test_webhook_create","type":"Microsoft.AppComplianceAutomation/reports/webhooks","systemData":{"createdBy":"","createdByType":"User","createdAt":"2024-07-12T08:29:26.1838709Z","lastModifiedBy":"","lastModifiedByType":"User","lastModifiedAt":"2024-07-12T08:29:26.1838709Z"},"properties":{"webhookId":"a61eca94-64ec-4e39-9a17-ca575edbeb80","status":"Enalbed","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","sendAllEvents":"true","events":[],"payloadUrl":"https://CLI-test","contentType":"application/json","webhookKeyEnabled":"false","enableSslVerification":"true","deliveryStatus":"NotStarted","provisioningState":"Succeeded"}}]}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '786'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 12 Jul 2024 08:29:27 GMT
+      mise-correlation-id:
+      - 6d4a331d-a807-45ec-ad58-a11d0aba0a07
+      request-context:
+      - appId=cid-v1:7ecf4129-cb5b-4aab-a086-b332c76641c8
+      set-cookie:
+      - ASLBSA=0003e0d631e50fe5b18de31041272bd4dfc695db36017a24e6b4ca20c2747ec31390;
+        Path=/; Secure; HttpOnly;
+      - ASLBSACORS=0003e0d631e50fe5b18de31041272bd4dfc695db36017a24e6b4ca20c2747ec31390;
+        SameSite=none; Path=/; Secure; HttpOnly;
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-azure-ref:
+      - 20240712T082927Z-17f86d6d9f4m7x7bu5b94y9zss00000002xg000000005dh3
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-id:
+      - d063afaa3d48b5314b3f0be15858a61a
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: 6930C2AFBD294B76B6EB8BFFB5246986 Ref B: MAA201060513037 Ref C: 2024-07-12T08:29:27Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - acat report webhook show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --report-name --webhook-name
+      User-Agent:
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      x-ms-aad-user-token:
+      - Bearer xxx
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.AppComplianceAutomation/reports/DoNotDelete-ExistingReportTesting-PROD/webhooks/CLI_test_webhook_create?api-version=2024-06-27
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.AppComplianceAutomation/reports/DoNotDelete-ExistingReportTesting-PROD/webhooks/CLI_test_webhook_create","name":"CLI_test_webhook_create","type":"Microsoft.AppComplianceAutomation/reports/webhooks","systemData":{"createdBy":"","createdByType":"User","createdAt":"2024-07-12T08:29:26.1838709Z","lastModifiedBy":"","lastModifiedByType":"User","lastModifiedAt":"2024-07-12T08:29:26.1838709Z"},"properties":{"webhookId":"a61eca94-64ec-4e39-9a17-ca575edbeb80","status":"Enalbed","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","sendAllEvents":"true","events":[],"payloadUrl":"https://CLI-test","contentType":"application/json","webhookKeyEnabled":"false","enableSslVerification":"true","deliveryStatus":"NotStarted","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '774'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 12 Jul 2024 08:29:29 GMT
+      mise-correlation-id:
+      - 81e4d724-8de2-40b4-a929-0184fa244329
+      request-context:
+      - appId=cid-v1:7ecf4129-cb5b-4aab-a086-b332c76641c8
+      set-cookie:
+      - ASLBSA=00032a3a487bec8bb078db3d72d31662bbcdefdaa2746f6d34f700f695e763a204f0;
+        Path=/; Secure; HttpOnly;
+      - ASLBSACORS=00032a3a487bec8bb078db3d72d31662bbcdefdaa2746f6d34f700f695e763a204f0;
+        SameSite=none; Path=/; Secure; HttpOnly;
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-azure-ref:
+      - 20240712T082929Z-175f799bd97j98xwatp145q99400000000mg0000000079mv
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-id:
+      - 3a533bd3ae9b5ef2a55ed886028b8385
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: 3609EA79C8B842A1A170F628115FB265 Ref B: MAA201060514037 Ref C: 2024-07-12T08:29:29Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - acat report webhook delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --report-name --webhook-name --yes
+      User-Agent:
+      - AZURECLI/2.62.0 azsdk-python-core/1.30.2 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      x-ms-aad-user-token:
+      - Bearer xxx
+    method: DELETE
+    uri: https://management.azure.com/providers/Microsoft.AppComplianceAutomation/reports/DoNotDelete-ExistingReportTesting-PROD/webhooks/CLI_test_webhook_create?api-version=2024-06-27
+  response:
+    body:
+      string: 'null'
+    headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 12 Jul 2024 08:29:30 GMT
+      mise-correlation-id:
+      - 93b90719-5fea-4445-908a-07483c59b490
+      request-context:
+      - appId=cid-v1:7ecf4129-cb5b-4aab-a086-b332c76641c8
+      set-cookie:
+      - ASLBSA=00032a3a487bec8bb078db3d72d31662bbcdefdaa2746f6d34f700f695e763a204f0;
+        Path=/; Secure; HttpOnly;
+      - ASLBSACORS=00032a3a487bec8bb078db3d72d31662bbcdefdaa2746f6d34f700f695e763a204f0;
+        SameSite=none; Path=/; Secure; HttpOnly;
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-azure-ref:
+      - 20240712T082930Z-er1b698d8dfv5pbjkvedqzsz1000000000mg00000000x4ed
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-id:
+      - a64792b3ddd551dc451952933689dbd2
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-tenant-deletes:
+      - '14999'
+      x-msedge-ref:
+      - 'Ref A: B854FCE60E28401BA67D0118882498AA Ref B: MAA201060513025 Ref C: 2024-07-12T08:29:30Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+version: 1

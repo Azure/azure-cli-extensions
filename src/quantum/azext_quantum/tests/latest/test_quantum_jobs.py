@@ -10,20 +10,24 @@ import unittest
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import ScenarioTest
-from azure.cli.core.azclierror import InvalidArgumentValueError, AzureInternalError
+from azure.cli.core.azclierror import InvalidArgumentValueError, RequiredArgumentMissingError, AzureInternalError
 
-from .utils import get_test_subscription_id, get_test_resource_group, get_test_workspace, get_test_workspace_location, issue_cmd_with_param_missing
-from ..._client_factory import _get_data_credentials
+from .utils import get_test_resource_group, get_test_workspace, get_test_workspace_location, issue_cmd_with_param_missing, get_test_workspace_storage, get_test_workspace_random_name
 from ...commands import transform_output
-from ...operations.workspace import WorkspaceInfo
-from ...operations.target import TargetInfo
-from ...operations.job import _generate_submit_args, _parse_blob_url, _validate_max_poll_wait_secs, build
+from ...operations.job import (
+    _validate_max_poll_wait_secs,
+    _convert_numeric_params,
+    _construct_filter_query,
+    _construct_orderby_expression,
+    ERROR_MSG_INVALID_ORDER_ARGUMENT,
+    ERROR_MSG_MISSING_ORDERBY_ARGUMENT)
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 class QuantumJobsScenarioTest(ScenarioTest):
 
+    @live_only()
     def test_jobs(self):
         # set current workspace:
         self.cmd(f'az quantum workspace set -g {get_test_resource_group()} -w {get_test_workspace()} -l {get_test_workspace_location()}')
@@ -43,82 +47,6 @@ class QuantumJobsScenarioTest(ScenarioTest):
         issue_cmd_with_param_missing(self, "az quantum job show", "az quantum job show -g MyResourceGroup -w MyWorkspace -l MyLocation -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy --query status\nGet the status of an Azure Quantum job.")
         issue_cmd_with_param_missing(self, "az quantum job wait", "az quantum job wait -g MyResourceGroup -w MyWorkspace -l MyLocation -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy --max-poll-wait-secs 60 -o table\nWait for completion of a job, check at 60 second intervals.")
 
-    def test_build(self):
-        result = build(self, target_id='ionq.simulator', project='src\\quantum\\azext_quantum\\tests\\latest\\source_for_build_test\\QuantumRNG.csproj', target_capability='BasicQuantumFunctionality')
-        assert result == {'result': 'ok'}
-
-        self.testfile = open(os.path.join(os.path.dirname(__file__), 'source_for_build_test/obj/qsharp/config/qsc.rsp'))
-        self.testdata = self.testfile.read()
-        self.assertIn('TargetCapability:BasicQuantumFunctionality', self.testdata)
-        self.testfile.close()
-
-        try:
-            build(self, target_id='ionq.simulator', project='src\\quantum\\azext_quantum\\tests\\latest\\source_for_build_test\\QuantumRNG.csproj', target_capability='BogusQuantumFunctionality')
-            assert False
-        except AzureInternalError as e:
-            assert str(e) == "Failed to compile program."
-
-    @live_only()
-    def test_submit_args(self):
-        test_location = get_test_workspace_location()
-        test_workspace = get_test_workspace()
-        test_resource_group = get_test_resource_group()
-        ws = WorkspaceInfo(self, test_resource_group, test_workspace, test_location)
-        target = TargetInfo(self, 'ionq.simulator')
-
-        token = _get_data_credentials(self.cli_ctx, get_test_subscription_id()).get_token().token
-        assert len(token) > 0
-
-        job_parameters = {}
-        job_parameters["key1"] = "value1"
-        job_parameters["key2"] = "value2"
-
-        args = _generate_submit_args(["--foo", "--bar"], ws, target, token, project=None,
-                                     job_name=None, storage=None, shots=None, job_params=None)
-        self.assertEquals(args[0], "dotnet")
-        self.assertEquals(args[1], "run")
-        self.assertEquals(args[2], "--no-build")
-        self.assertIn("--", args)
-        self.assertIn("submit", args)
-        self.assertIn(test_workspace, args)
-        self.assertIn(test_resource_group, args)
-        self.assertIn("ionq.simulator", args)
-        self.assertIn("--aad-token", args)
-        self.assertIn(token, args)
-        self.assertIn("--foo", args)
-        self.assertIn("--bar", args)
-        self.assertNotIn("--project", args)
-        self.assertNotIn("--job-name", args)
-        self.assertNotIn("--storage", args)
-        self.assertNotIn("--shots", args)
-
-        args = _generate_submit_args(["--foo", "--bar"], ws, target, token, "../other/path",
-                                     "job-name", 1234, "az-stor", job_parameters)
-        self.assertEquals(args[0], "dotnet")
-        self.assertEquals(args[1], "run")
-        self.assertEquals(args[2], "--no-build")
-        self.assertIn("../other/path", args)
-        self.assertIn("job-name", args)
-        self.assertIn("az-stor", args)
-        self.assertIn(1234, args)
-        self.assertIn("--project", args)
-        self.assertIn("--job-name", args)
-        self.assertIn("--storage", args)
-        self.assertIn("--shots", args)
-        self.assertIn("--job-params", args)
-        self.assertIn("key1=value1", args)
-        self.assertIn("key2=value2", args)
-
-    def test_parse_blob_url(self):
-        sas = "sv=2018-03-28&sr=c&sig=some-sig&sp=racwl"
-        url = f"https://getest2.blob.core.windows.net/qio/rawOutputData?{sas}"
-        args = _parse_blob_url(url)
-
-        self.assertEquals(args['account_name'], "getest2")
-        self.assertEquals(args['container'], "qio")
-        self.assertEquals(args['blob'], "rawOutputData")
-        self.assertEquals(args['sas_token'], sas)
-
     def test_transform_output(self):
         # Call with a good histogram
         test_job_results = '{"Histogram":["[0,0,0]",0.125,"[1,0,0]",0.125,"[0,1,0]",0.125,"[1,1,0]",0.125]}'
@@ -126,98 +54,98 @@ class QuantumJobsScenarioTest(ScenarioTest):
         table_row = table[0]
         hist_row = table_row['']
         second_char = hist_row[1]
-        self.assertEquals(second_char, "\u2588")    # Expecting a "Full Block" character here 
+        self.assertEqual(second_char, "\u2588")    # Expecting a "Full Block" character here
 
         # Give it a malformed histogram
         test_job_results = '{"Histogram":["[0,0,0]",0.125,"[1,0,0]",0.125,"[0,1,0]",0.125,"[1,1,0]"]}'
         table = transform_output(json.loads(test_job_results))
-        self.assertEquals(table, json.loads(test_job_results))    # No transform should be done if input param is bad
+        self.assertEqual(table, json.loads(test_job_results))    # No transform should be done if input param is bad
 
         # Call with output from a failed job
         test_job_results = \
-        '{\
-            "beginExecutionTime": "2022-02-25T18:57:26.093000+00:00",\
-            "cancellationTime": null,\
-            "containerUri": "https://foo...",\
-            "costEstimate": null,\
-            "creationTime": "2022-02-25T18:56:53.275035+00:00",\
-            "endExecutionTime": "2022-02-25T18:57:26.093000+00:00",\
-            "errorData": {\
-                "code": "InsufficientResources",\
-                "message": "Too many qubits requested"\
-            },\
-            "id": "11111111-2222-3333-4444-555555555555",\
-            "inputDataFormat": "microsoft.ionq-ir.v2",\
-            "inputDataUri": "https://bar...",\
-            "inputParams": {\
-                "shots": "500"\
-            },\
-            "isCancelling": false,\
-            "metadata": {\
-                "entryPointInput": {\"Qubits\":null},\
-                "outputMappingBlobUri": "https://baz..."\
-            },\
-            "name": "",\
-            "outputDataFormat": "microsoft.quantum-results.v1",\
-            "outputDataUri": "https://quux...",\
-            "providerId": "ionq",\
-            "status": "Failed",\
-            "tags": [],\
-            "target": "ionq.simulator"\
-        }'
+            '{\
+                "beginExecutionTime": "2022-02-25T18:57:26.093000+00:00",\
+                "cancellationTime": null,\
+                "containerUri": "https://foo...",\
+                "costEstimate": null,\
+                "creationTime": "2022-02-25T18:56:53.275035+00:00",\
+                "endExecutionTime": "2022-02-25T18:57:26.093000+00:00",\
+                "errorData": {\
+                    "code": "InsufficientResources",\
+                    "message": "Too many qubits requested"\
+                },\
+                "id": "11111111-2222-3333-4444-555555555555",\
+                "inputDataFormat": "microsoft.ionq-ir.v2",\
+                "inputDataUri": "https://bar...",\
+                "inputParams": {\
+                    "shots": "500"\
+                },\
+                "isCancelling": false,\
+                "metadata": {\
+                    "entryPointInput": {\"Qubits\":null},\
+                    "outputMappingBlobUri": "https://baz..."\
+                },\
+                "name": "",\
+                "outputDataFormat": "microsoft.quantum-results.v1",\
+                "outputDataUri": "https://quux...",\
+                "providerId": "ionq",\
+                "status": "Failed",\
+                "tags": [],\
+                "target": "ionq.simulator"\
+            }'
 
         table = transform_output(json.loads(test_job_results))
-        self.assertEquals(table['Status'], "Failed")
-        self.assertEquals(table['Error Code'], "InsufficientResources")
-        self.assertEquals(table['Error Message'], "Too many qubits requested")
-        self.assertEquals(table['Target'], "ionq.simulator")
-        self.assertEquals(table['Job ID'], "11111111-2222-3333-4444-555555555555")
-        self.assertEquals(table['Submission Time'], "2022-02-25T18:56:53.275035+00:00")
+        self.assertEqual(table['Status'], "Failed")
+        self.assertEqual(table['Error Code'], "InsufficientResources")
+        self.assertEqual(table['Error Message'], "Too many qubits requested")
+        self.assertEqual(table['Target'], "ionq.simulator")
+        self.assertEqual(table['Job ID'], "11111111-2222-3333-4444-555555555555")
+        self.assertEqual(table['Submission Time'], "2022-02-25T18:56:53.275035+00:00")
 
         # Call with missing "status", "code", "message", "target", "id", and "creationTime"
         test_job_results = \
-        '{\
-            "beginExecutionTime": "2022-02-25T18:57:26.093000+00:00",\
-            "cancellationTime": null,\
-            "containerUri": "https://foo...",\
-            "costEstimate": null,\
-            "endExecutionTime": "2022-02-25T18:57:26.093000+00:00",\
-            "errorData": {\
-            },\
-            "inputDataFormat": "microsoft.ionq-ir.v2",\
-            "inputDataUri": "https://bar...",\
-            "inputParams": {\
-                "shots": "500"\
-            },\
-            "isCancelling": false,\
-            "metadata": {\
-                "entryPointInput": {\"Qubits\":null},\
-                "outputMappingBlobUri": "https://baz..."\
-            },\
-            "name": "",\
-            "outputDataFormat": "microsoft.quantum-results.v1",\
-            "outputDataUri": "https://quux...",\
-            "providerId": "ionq",\
-            "tags": []\
-        }'
+            '{\
+                "beginExecutionTime": "2022-02-25T18:57:26.093000+00:00",\
+                "cancellationTime": null,\
+                "containerUri": "https://foo...",\
+                "costEstimate": null,\
+                "endExecutionTime": "2022-02-25T18:57:26.093000+00:00",\
+                "errorData": {\
+                },\
+                "inputDataFormat": "microsoft.ionq-ir.v2",\
+                "inputDataUri": "https://bar...",\
+                "inputParams": {\
+                    "shots": "500"\
+                },\
+                "isCancelling": false,\
+                "metadata": {\
+                    "entryPointInput": {\"Qubits\":null},\
+                    "outputMappingBlobUri": "https://baz..."\
+                },\
+                "name": "",\
+                "outputDataFormat": "microsoft.quantum-results.v1",\
+                "outputDataUri": "https://quux...",\
+                "providerId": "ionq",\
+                "tags": []\
+            }'
 
         table = transform_output(json.loads(test_job_results))
         notFound = "Not found"
-        self.assertEquals(table['Status'], notFound)
-        self.assertEquals(table['Error Code'], notFound)
-        self.assertEquals(table['Error Message'], notFound)
-        self.assertEquals(table['Target'], notFound)
-        self.assertEquals(table['Job ID'], notFound)
-        self.assertEquals(table['Submission Time'], notFound)
+        self.assertEqual(table['Status'], notFound)
+        self.assertEqual(table['Error Code'], notFound)
+        self.assertEqual(table['Error Message'], notFound)
+        self.assertEqual(table['Target'], notFound)
+        self.assertEqual(table['Job ID'], notFound)
+        self.assertEqual(table['Submission Time'], notFound)
 
     def test_validate_max_poll_wait_secs(self):
         wait_secs = _validate_max_poll_wait_secs(1)
-        self.assertEquals(type(wait_secs), float)
-        self.assertEquals(wait_secs, 1.0)
+        self.assertEqual(type(wait_secs), float)
+        self.assertEqual(wait_secs, 1.0)
 
         wait_secs = _validate_max_poll_wait_secs("60")
-        self.assertEquals(type(wait_secs), float)
-        self.assertEquals(wait_secs, 60.0)
+        self.assertEqual(type(wait_secs), float)
+        self.assertEqual(wait_secs, 60.0)
 
         # Invalid values should raise errors
         try:
@@ -237,3 +165,195 @@ class QuantumJobsScenarioTest(ScenarioTest):
             assert False
         except InvalidArgumentValueError as e:
             assert str(e) == "--max-poll-wait-secs parameter is not valid: foobar"
+
+    def test_convert_numeric_params(self):
+        # Show that it converts numeric strings, but doesn't modify params that are already numeric
+        test_job_params = {"integer1": "1", "float1.5": "1.5", "integer2": 2, "float2.5": 2.5, "integer3": "3", "float3.5": "3.5"}
+        _convert_numeric_params(test_job_params)
+        assert test_job_params == {"integer1": 1, "float1.5": 1.5, "integer2": 2, "float2.5": 2.5, "integer3": 3, "float3.5": 3.5}
+
+        # Make sure it doesn't modify non-numeric strings
+        test_job_params = {"string1": "string_value1", "string2": "string_value2", "string3": "string_value3"}
+        _convert_numeric_params(test_job_params)
+        assert test_job_params == {"string1": "string_value1", "string2": "string_value2", "string3": "string_value3"}
+
+        # Make sure it doesn't modify the "tags" list
+        test_job_params = {"string1": "string_value1", "tags": ["tag1", "tag2", "3", "4"], "integer1": "1"}
+        _convert_numeric_params(test_job_params)
+        assert test_job_params == {"string1": "string_value1", "tags": ["tag1", "tag2", "3", "4"], "integer1": 1}
+
+        # Make sure it doesn't modify nested dict like metadata uses
+        test_job_params = {"string1": "string_value1", "metadata": {"meta1": "meta_value1", "meta2": "2"}, "integer1": "1"}
+        _convert_numeric_params(test_job_params)
+        assert test_job_params == {"string1": "string_value1", "metadata": {"meta1": "meta_value1", "meta2": "2"}, "integer1": 1}
+
+    @live_only()
+    def test_submit(self):
+        test_location = get_test_workspace_location()
+        test_resource_group = get_test_resource_group()
+        test_workspace_temp = get_test_workspace_random_name()
+        test_provider_sku_list = "rigetti/azure-basic-qvm-only-unlimited,ionq/aq-internal-testing"
+        test_storage = get_test_workspace_storage()
+
+        self.cmd(f"az quantum workspace create --auto-accept -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage} -r {test_provider_sku_list} --skip-autoadd")
+        self.cmd(f"az quantum workspace set -g {test_resource_group} -w {test_workspace_temp} -l {test_location}")
+
+        # Submit a job to Rigetti and look for SAS tokens in URIs in the output
+        results = self.cmd("az quantum job submit -t rigetti.sim.qvm --job-input-format rigetti.quil.v1 -t rigetti.sim.qvm --job-input-file src/quantum/azext_quantum/tests/latest/input_data/bell-state.quil --job-output-format rigetti.quil-results.v1 -o json").get_output_in_json()
+        self.assertNotIn("?sv=", results["containerUri"])
+        self.assertNotIn("&sig=", results["containerUri"])
+
+        self.assertNotIn("?sv=", results["inputDataUri"])
+        self.assertNotIn("&sig=", results["inputDataUri"])
+
+        self.assertNotIn("?sv=", results["outputDataUri"])
+        self.assertNotIn("&sig=", results["outputDataUri"])
+
+        job = self.cmd(f"az quantum job show -j {results['id']} -o json").get_output_in_json()
+
+        self.assertIn("?sv=", job["containerUri"])
+        self.assertIn("&st=", job["containerUri"])
+        self.assertIn("&se=", job["containerUri"])
+        self.assertIn("&sp=", job["containerUri"])
+        self.assertIn("&sig=", job["containerUri"])
+
+        self.assertIn("?sv=", job["inputDataUri"])
+        self.assertIn("&st=", job["inputDataUri"])
+        self.assertIn("&se=", job["inputDataUri"])
+        self.assertIn("&sp=", job["inputDataUri"])
+        self.assertIn("&sig=", job["inputDataUri"])
+
+        self.assertIn("?sv=", job["outputDataUri"])
+        self.assertIn("&st=", job["outputDataUri"])
+        self.assertIn("&se=", job["outputDataUri"])
+        self.assertIn("&sp=", job["outputDataUri"])
+        self.assertIn("&sig=", job["outputDataUri"])
+
+        # Run a Quil pass-through job on Rigetti
+        results = self.cmd("az quantum run -t rigetti.sim.qvm --job-input-format rigetti.quil.v1 -t rigetti.sim.qvm --job-input-file src/quantum/azext_quantum/tests/latest/input_data/bell-state.quil --job-output-format rigetti.quil-results.v1 -o json").get_output_in_json()
+        self.assertIn("ro", results)
+
+        # Run an IonQ Circuit pass-through job on IonQ
+        results = self.cmd("az quantum run -t ionq.simulator --shots 100 --job-input-format ionq.circuit.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/Qiskit-3-qubit-GHZ-circuit.json --job-output-format ionq.quantum-results.v1 --job-params shots=100 content-type=application/json -o json").get_output_in_json()
+        self.assertIn("histogram", results)
+
+        # Test "az quantum job list" output, for filter-params, --skip, --top, and --orderby
+        results = self.cmd("az quantum job list --provider-id rigetti -o json").get_output_in_json()
+        self.assertIn("rigetti", str(results))
+
+        results = self.cmd("az quantum job list --target-id ionq.simulator -o json").get_output_in_json()
+        self.assertIn("ionq.simulator", str(results))
+
+        jobs_list = self.cmd("az quantum job list --top 1 -o json").get_output_in_json()
+        self.assertEqual(len(jobs_list), 1)
+    
+        jobs_list = self.cmd("az quantum job list --skip 1 -o json").get_output_in_json()
+        self.assertEqual(len(jobs_list), 2)
+
+        jobs_list = self.cmd("az quantum job list --orderby Target --top 1 -o json").get_output_in_json()
+        self.assertEqual(len(jobs_list), 1)
+        results = str(jobs_list)
+        self.assertIn("ionq", results)
+        self.assertTrue("rigetti" not in results)
+
+        jobs_list = self.cmd("az quantum job list --orderby Target --skip 1 -o json").get_output_in_json()
+        self.assertEqual(len(jobs_list), 2)
+        results = str(jobs_list)
+        self.assertIn("rigetti", results)
+        self.assertTrue("ionq" not in results)
+
+        self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp}')
+
+
+    def test_job_list_param_formating(self):
+        # Validate filter query formatting for each param
+        #
+        # Should return None if params are set to None
+        job_type = None
+        item_type = None
+        provider_id = None
+        target_id = None
+        job_status = None
+        created_after = None
+        created_before = None
+        job_name = None
+        query = _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name)
+        assert query is None
+
+        job_type = "QuantumComputing"
+        query = _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name)
+        assert query == "JobType eq 'QuantumComputing'"
+        job_type = None
+
+        item_type = "job"
+        query = _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name)
+        assert query == "ItemType eq 'job'"
+        item_type = None
+
+        provider_id = "Microsoft"
+        query = _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name)
+        assert query == "ProviderId eq 'Microsoft'"
+        provider_id = None
+
+        target_id = "Awesome.Quantum.SuperComputer"
+        query = _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name)
+        assert query == "Target eq 'Awesome.Quantum.SuperComputer'"
+        target_id = None
+
+        job_status = "Succeeded"        
+        query = _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name)
+        assert query == "State eq 'Succeeded'"
+        job_status = None        
+
+        created_after = "2025-01-27"
+        query = _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name)
+        assert query == "CreationTime ge 2025-01-27"
+        created_after = None
+
+        created_before = "2025-01-27"
+        query = _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name)
+        assert query == "CreationTime le 2025-01-27"
+        created_before = None
+
+        job_name = "TestJob"
+        query = _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name)
+        assert query == "startswith(Name, 'TestJob')"
+        job_name = None
+
+
+        # Validate orderby expression formatting
+        # Should return None if params are set to None
+        orderby = None
+        order = None
+        orderby_expression = _construct_orderby_expression(orderby, order)
+        assert orderby_expression is None
+
+        # Test valid params
+        orderby = "Target"
+        orderby_expression = _construct_orderby_expression(orderby, order)
+        assert orderby_expression == "Target"
+
+        order = "asc"
+        orderby_expression = _construct_orderby_expression(orderby, order)
+        assert orderby_expression == "Target asc"
+
+        order = "desc"
+        orderby_expression = _construct_orderby_expression(orderby, order)
+        assert orderby_expression == "Target desc"
+
+        # Test orderby/order errors
+        orderby = "Target"
+        order = "foo"
+        try:
+            orderby_expression = _construct_orderby_expression(orderby, order)
+            assert False
+        except InvalidArgumentValueError as e:
+            assert str(e) == ERROR_MSG_INVALID_ORDER_ARGUMENT
+
+        orderby = ""
+        order = "desc"
+        try:
+            orderby_expression = _construct_orderby_expression(orderby, order)
+            assert False
+        except RequiredArgumentMissingError as e:
+            assert str(e) == ERROR_MSG_MISSING_ORDERBY_ARGUMENT

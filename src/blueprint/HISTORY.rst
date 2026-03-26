@@ -3,6 +3,18 @@
 Release History
 ===============
 
+1.0.0b2
++++++
+* Remove `__import__('pkg_resources').declare_namespace(__name__)` to fix the namespace package issue.
+
+1.0.0b1
++++++
+* Deprecate blueprint commands
+
+0.3.2
++++++
+* Migrate to atomic commands
+
 0.3.1
 +++++
 * Migrate blueprint to track2 SDK

@@ -21,7 +21,8 @@ class AzureDefender(DefaultExtension):
     def Create(self, cmd, client, resource_group_name, cluster_name, name, cluster_type, cluster_rp,
                extension_type, scope, auto_upgrade_minor_version, release_train, version, target_namespace,
                release_namespace, configuration_settings, configuration_protected_settings,
-               configuration_settings_file, configuration_protected_settings_file):
+               configuration_settings_file, configuration_protected_settings_file, plan_name,
+               plan_publisher, plan_product):
 
         """ExtensionType 'microsoft.azuredefender.kubernetes' specific validations & defaults for Create
            Must create and return a valid 'Extension' object.
@@ -42,6 +43,11 @@ class AzureDefender(DefaultExtension):
         logger.warning('Ignoring name, release-namespace and scope parameters since %s '
                        'only supports cluster scope and single instance of this extension.', extension_type)
         logger.warning("Defaulting to extension name '%s' and release-namespace '%s'", name, release_namespace)
+
+        # Since our extension doesn't ask for AMA (oms) key settings, we must extract it from the LogAnalytics Workspace
+        # We use this configuration setting flag to explicitly tell the _get_container_insights_settings() function
+        # To extract it for the given LA workspace (or the default one, if not provided)
+        configuration_settings['amalogs.useAADAuth'] = False
 
         _get_container_insights_settings(cmd, resource_group_name, cluster_rp, cluster_type, cluster_name, configuration_settings,
                                          configuration_protected_settings, is_ci_extension_type)

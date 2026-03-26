@@ -1,0 +1,54 @@
+interactions:
+- request:
+    body: '{"properties": {"skuSettings": [{"name": "freeSku"}]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - providerhub sku create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '54'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --sku-settings --provider-namespace --resource-type --sku
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/resourcetypeRegistrations/employees/skus/default?api-version=2024-04-01-preview
+  response:
+    body:
+      string: '{"properties":{"skuSettings":[{"name":"freeSku"}]},"type":"Microsoft.ProviderHub/providerRegistrations/skus","name":"default","systemData":{"createdBy":"gaurimadhok@microsoft.com","createdByType":"User","createdAt":"2024-06-05T21:18:02.9997287Z","lastModifiedBy":"gaurimadhok@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-05T21:18:02.9997287Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '368'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 05 Jun 2024 21:18:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=9506e7c0-c569-479f-9940-1f63cb8ce817/centraluseuap/b3bf9969-6e37-46b5-aed0-15909ec15734
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1196'
+      x-msedge-ref:
+      - 'Ref A: 473223A27DB445A28A2D3BD198193F50 Ref B: DM2AA1091214049 Ref C: 2024-06-05T21:18:02Z'
+    status:
+      code: 200
+      message: OK
+version: 1

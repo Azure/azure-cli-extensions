@@ -113,3 +113,11 @@ def track_toggle_symbol_bindings():
 
 def track_cli_commands_used():
     _session.tracked_data['cli_commands_used'] += 1
+
+
+def get_error_info():
+    return {
+        'result': telemetry_core._session.result,
+        'result_summary': telemetry_core._session.result_summary,
+        'error_type': telemetry_core._session.error_type,
+    }

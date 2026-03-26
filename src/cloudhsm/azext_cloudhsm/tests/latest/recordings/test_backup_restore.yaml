@@ -1,0 +1,400 @@
+interactions:
+- request:
+    body: '{"azureStorageBlobContainerUri": "https://clitestbackup.blob.core.windows.net/testbackup"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cloudhsm backup start
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '90'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --cluster-name --resource-group --blob-container-uri
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.12.10 (Linux-6.8.0-1027-azure-x86_64-with-glibc2.36)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test/providers/Microsoft.HardwareSecurityModules/cloudHsmClusters/myhsm/backup?api-version=2025-03-31
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 13 Jun 2025 14:36:45 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test/providers/Microsoft.HardwareSecurityModules/cloudHsmClusters/myhsm/backupOperationStatus/08d796457ad74ac6ab5e6cd5f174c5e3?api-version=2025-03-31&t=638854222059573337&c=MIIHhzCCBm-gAwIBAgITHgbGQ8iUUHaIEuL0_AAABsZDyDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjUwNDE2MDYzMDI5WhcNMjUxMDEzMDYzMDI5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALopjeABPIHVlbmyblq81grbzeudZmsoIRLfRTuwzpTkJxJawSpyHm_mPoZYvcbSUrkDKmrugxJjL_csgjpVCQyBuvwW1_IPiOq7BO-sz7JA3guM6GF_QasdShJtZS72qSq5X6yOyEF_Pd7OWpeExPPIQ0IJyerd0Z85589w1w9yS8mbsjcs_PDjtqSKr8uTrHX_FmwV5eKNckBpE_SPng9vxBzIqaFE5GyrLJPbMNrXtxo7sdZUNsWFYKWfbLNwUeeiZ_kYc22U-ELyPKA3NyS5ix8yS1l4gf3lJcVpZlv45oeONu2k-K9B9zXK1xUb595R9qKeWxyy6LFC_f2li_ECAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBSNrIXhp-22YSh2t6R5ZI2lOzW7gjAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBACG4sIuYS__ZcEIxL7lGI4gWbCUox1lZgK7Irz_ISerpyasLIKA0keyfO12BHBGBgspW8EkNy_eUMIC3LL_gj2e35FcS3xSZQarNX4O0MfXYT9ewpbBiBN7N2O5UCVetzSkf_ufmZIwg0xFmAJWE2CRP7-nT4Cu_gvFaWN_jOU1ZNI6J6Ij4ex_QduewzlZK1KgGIuQEvvt8EAoR8dBHjwD9e8wWmXlllBAMDF9Fn-7CCcO9LFViByq7e3TiD-xGSeMvTO5glydvGtkUdMezHbLnK75xthbEARHNV0li-D6YSyKHcGumxOBvCy2gUPdWscyU2Ct5FDqy2rgSeB4luwo&s=YG7Zx4Svy-ZVMgblPfkhMHRG4S4j6x1G-k0klP9IflenmxD8YRBanG4QI2zQxZkZOGnHZ3CH6NthlAXmhMWps7g4Hgbx4bS8ypZNeLcdzJLq9_guGFubL7sNGx-mr3Deby1sXq5lhBNADfbecyWZr_raQI8qi7qk0uviq4fA67KskguESJLIIT2SJp7Xfv3Fp2bMYwGgovZJUsKsZ-VEpGqT9-wsuoAdnjDx9zEKEQ_d5CGo6bTUJENyC1vq5nSyFGOGynpYtgRJzyqm0bNkDnKygTyzSeY5bg5ux6RHycfqA3rervze_5eFBkixY7i9w5LaJySG3CnhR8WrpgLt_g&h=xThTjuyF804V00dXsLBkf2is6YdtikuRIA88T25z1EU
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8a7348a2-6b25-4382-8b23-151e1a3ae586/uksouth/33ffb55c-ff44-4408-86e2-6bf602d7795f
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 98230AE5261D4779897EE052D6FB3A69 Ref B: AMS231032608053 Ref C: 2025-06-13T14:36:45Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cloudhsm backup start
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --resource-group --blob-container-uri
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.12.10 (Linux-6.8.0-1027-azure-x86_64-with-glibc2.36)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test/providers/Microsoft.HardwareSecurityModules/cloudHsmClusters/myhsm/backupOperationStatus/08d796457ad74ac6ab5e6cd5f174c5e3?api-version=2025-03-31&t=638854222059573337&c=MIIHhzCCBm-gAwIBAgITHgbGQ8iUUHaIEuL0_AAABsZDyDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjUwNDE2MDYzMDI5WhcNMjUxMDEzMDYzMDI5WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALopjeABPIHVlbmyblq81grbzeudZmsoIRLfRTuwzpTkJxJawSpyHm_mPoZYvcbSUrkDKmrugxJjL_csgjpVCQyBuvwW1_IPiOq7BO-sz7JA3guM6GF_QasdShJtZS72qSq5X6yOyEF_Pd7OWpeExPPIQ0IJyerd0Z85589w1w9yS8mbsjcs_PDjtqSKr8uTrHX_FmwV5eKNckBpE_SPng9vxBzIqaFE5GyrLJPbMNrXtxo7sdZUNsWFYKWfbLNwUeeiZ_kYc22U-ELyPKA3NyS5ix8yS1l4gf3lJcVpZlv45oeONu2k-K9B9zXK1xUb595R9qKeWxyy6LFC_f2li_ECAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBSNrIXhp-22YSh2t6R5ZI2lOzW7gjAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBACG4sIuYS__ZcEIxL7lGI4gWbCUox1lZgK7Irz_ISerpyasLIKA0keyfO12BHBGBgspW8EkNy_eUMIC3LL_gj2e35FcS3xSZQarNX4O0MfXYT9ewpbBiBN7N2O5UCVetzSkf_ufmZIwg0xFmAJWE2CRP7-nT4Cu_gvFaWN_jOU1ZNI6J6Ij4ex_QduewzlZK1KgGIuQEvvt8EAoR8dBHjwD9e8wWmXlllBAMDF9Fn-7CCcO9LFViByq7e3TiD-xGSeMvTO5glydvGtkUdMezHbLnK75xthbEARHNV0li-D6YSyKHcGumxOBvCy2gUPdWscyU2Ct5FDqy2rgSeB4luwo&s=YG7Zx4Svy-ZVMgblPfkhMHRG4S4j6x1G-k0klP9IflenmxD8YRBanG4QI2zQxZkZOGnHZ3CH6NthlAXmhMWps7g4Hgbx4bS8ypZNeLcdzJLq9_guGFubL7sNGx-mr3Deby1sXq5lhBNADfbecyWZr_raQI8qi7qk0uviq4fA67KskguESJLIIT2SJp7Xfv3Fp2bMYwGgovZJUsKsZ-VEpGqT9-wsuoAdnjDx9zEKEQ_d5CGo6bTUJENyC1vq5nSyFGOGynpYtgRJzyqm0bNkDnKygTyzSeY5bg5ux6RHycfqA3rervze_5eFBkixY7i9w5LaJySG3CnhR8WrpgLt_g&h=xThTjuyF804V00dXsLBkf2is6YdtikuRIA88T25z1EU
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 13 Jun 2025 14:36:45 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test/providers/Microsoft.HardwareSecurityModules/cloudHsmClusters/myhsm/backupOperationStatus/08d796457ad74ac6ab5e6cd5f174c5e3?api-version=2025-03-31
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8a7348a2-6b25-4382-8b23-151e1a3ae586/uksouth/f78df277-78b0-4b1b-ad80-cf74339f9fff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 755BA9B7C17E4BFA96E828F1C5BD073B Ref B: AMS231032608053 Ref C: 2025-06-13T14:36:46Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cloudhsm backup start
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --resource-group --blob-container-uri
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.12.10 (Linux-6.8.0-1027-azure-x86_64-with-glibc2.36)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test/providers/Microsoft.HardwareSecurityModules/cloudHsmClusters/myhsm/backupOperationStatus/08d796457ad74ac6ab5e6cd5f174c5e3?api-version=2025-03-31
+  response:
+    body:
+      string: '{"properties":{"backupId":"cloudhsm-0e35c989-c582-4b3c-958d-596e4c4fe133-2025061314364592","azureStorageBlobContainerUri":"https://clitestbackup.blob.core.windows.net/testbackup","status":"Succeeded","statusDetails":"HSM
+        Backup Time: 6/13/2025 1:40:04 PM +00:00 UTC.","startTime":"2025-06-13T14:36:45Z","endTime":"2025-06-13T14:36:53Z","jobId":"08d796457ad74ac6ab5e6cd5f174c5e3"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '380'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Jun 2025 14:37:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8a7348a2-6b25-4382-8b23-151e1a3ae586/uksouth/c29a8f0d-84bc-4de5-995d-822b313d58df
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: B4651FCA8B2D4308B0C97564B2AC620B Ref B: AMS231032608053 Ref C: 2025-06-13T14:37:16Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"azureStorageBlobContainerUri": "https://clitestbackup.blob.core.windows.net/testbackup",
+      "backupId": "cloudhsm-0e35c989-c582-4b3c-958d-596e4c4fe133-2025061314364592"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cloudhsm restore start
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '168'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --cluster-name --resource-group --backup-id --blob-container-uri
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.12.10 (Linux-6.8.0-1027-azure-x86_64-with-glibc2.36)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test/providers/Microsoft.HardwareSecurityModules/cloudHsmClusters/myrestoredhsm/restore?api-version=2025-03-31
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 13 Jun 2025 14:37:16 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test/providers/Microsoft.HardwareSecurityModules/cloudHsmClusters/myrestoredhsm/restoreOperationStatus/42262de4b9274eaba4f4caffca53a76c?api-version=2025-03-31&t=638854222372780323&c=MIIHhzCCBm-gAwIBAgITHgbJ9Ua_A-lev7JKtgAABsn1RjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjUwNDE4MDkyMDA4WhcNMjUxMDE1MDkyMDA4WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALkPaRzIM3wnlKPfixU4eDyLogL7ScK2nE0HcIj4EKMfVuYIdAcW6DLDMre-kKdC0PwaZsiJJ019xWw7cbzXHA_a_en4vGtDXOP6OTuIfN4GGwT2yVFehPnZ--1h1xCZY93rqHgcETDjwK14IocOdx7qxlURe9ou6ZJJUmS830n10a6342qQlcJHWpYQiZMvA-pawAwOrThsQWUDZz48IgcERJ0zwUi3RQ9QGzxj4GMeQ1LWWqFsIhCjAVAaykUcPRR8VGrEvhS9RA_FpH2RXIzjsK4BTgIstHEAWT64wsvWJGTgju31BHBw2hYbAssz7sFDekthcsBbhcIOYAvKM7UCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBQJRqAaoeMfNAfqv1anLO8qFB0AkjAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAIfqCntufZ0Jde3JzWkbc55XDCKhfzsiG0Vh7jBfSOufX__EHQyeuaGqwQ-Oh54is5fUNjtjE6kbAm9DPE-iKDm1p-sw2nE69t7JccENX0P8E86VWjLrHB82EQccPnLm_iV1RnXDxsRapWPS5r5KnZdAyBVtSzmuxDq7fTd_ltc9ZMLL_FBoD-Acz-tqfkq9R8CJTLmW0IuVgtj1tHvKDpdCYpRxZf2ghI92CqSMYgWEQYohLjKzYFTHi9ap5TDkIkc5j0Pl1gX8nmEzBX2fVtUnXSasjykHA0a42jpKOVQ7g5sWXVWwmePbx8wxnFd7tfjbDbBRgRiQPye9sg4atPU&s=lU7Ki1EvmcLjGjTwn6Ry67T1ucUlyqdsczgzbmfVR4ALGC36Cn2KYIonrOqgSuQmimz5GZA-bLJ9ea37AMfRpDv8h4sXBNPQFzqmUPc2sH8znUIwuXCbSdre2Pp_ZH00yiV-x9E5BWZvFdNSrL5jVDks5qQlB5N8RlzuVYzO9rSvbjHj0NIaHM3XvUiZ2tGV8Or13GvxUWiM-uP_aAA3hQiiPhPGP3UDC3rRD5jxVuZkw6Syub7TT2G9i80UMRvRWcnXNexrD7EB0yB5suupqLi7tydIztoznKk9D8ddkjekkKNq3WYOllPQB4YsLfWjyL72AZQpnsk7RCh3DVxQog&h=2I5MC694L915mxcXQYNXkpQtPNZ-nfHTxp3nyFVGHvw
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8a7348a2-6b25-4382-8b23-151e1a3ae586/ukwest/eea4d0e3-704f-4d99-8a6e-6b350adfbfae
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: AD7C2BB49C5C4B699975D6D23BA19946 Ref B: AMS231020512017 Ref C: 2025-06-13T14:37:16Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cloudhsm restore start
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --resource-group --backup-id --blob-container-uri
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.12.10 (Linux-6.8.0-1027-azure-x86_64-with-glibc2.36)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test/providers/Microsoft.HardwareSecurityModules/cloudHsmClusters/myrestoredhsm/restoreOperationStatus/42262de4b9274eaba4f4caffca53a76c?api-version=2025-03-31&t=638854222372780323&c=MIIHhzCCBm-gAwIBAgITHgbJ9Ua_A-lev7JKtgAABsn1RjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjUwNDE4MDkyMDA4WhcNMjUxMDE1MDkyMDA4WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALkPaRzIM3wnlKPfixU4eDyLogL7ScK2nE0HcIj4EKMfVuYIdAcW6DLDMre-kKdC0PwaZsiJJ019xWw7cbzXHA_a_en4vGtDXOP6OTuIfN4GGwT2yVFehPnZ--1h1xCZY93rqHgcETDjwK14IocOdx7qxlURe9ou6ZJJUmS830n10a6342qQlcJHWpYQiZMvA-pawAwOrThsQWUDZz48IgcERJ0zwUi3RQ9QGzxj4GMeQ1LWWqFsIhCjAVAaykUcPRR8VGrEvhS9RA_FpH2RXIzjsK4BTgIstHEAWT64wsvWJGTgju31BHBw2hYbAssz7sFDekthcsBbhcIOYAvKM7UCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBQJRqAaoeMfNAfqv1anLO8qFB0AkjAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAIfqCntufZ0Jde3JzWkbc55XDCKhfzsiG0Vh7jBfSOufX__EHQyeuaGqwQ-Oh54is5fUNjtjE6kbAm9DPE-iKDm1p-sw2nE69t7JccENX0P8E86VWjLrHB82EQccPnLm_iV1RnXDxsRapWPS5r5KnZdAyBVtSzmuxDq7fTd_ltc9ZMLL_FBoD-Acz-tqfkq9R8CJTLmW0IuVgtj1tHvKDpdCYpRxZf2ghI92CqSMYgWEQYohLjKzYFTHi9ap5TDkIkc5j0Pl1gX8nmEzBX2fVtUnXSasjykHA0a42jpKOVQ7g5sWXVWwmePbx8wxnFd7tfjbDbBRgRiQPye9sg4atPU&s=lU7Ki1EvmcLjGjTwn6Ry67T1ucUlyqdsczgzbmfVR4ALGC36Cn2KYIonrOqgSuQmimz5GZA-bLJ9ea37AMfRpDv8h4sXBNPQFzqmUPc2sH8znUIwuXCbSdre2Pp_ZH00yiV-x9E5BWZvFdNSrL5jVDks5qQlB5N8RlzuVYzO9rSvbjHj0NIaHM3XvUiZ2tGV8Or13GvxUWiM-uP_aAA3hQiiPhPGP3UDC3rRD5jxVuZkw6Syub7TT2G9i80UMRvRWcnXNexrD7EB0yB5suupqLi7tydIztoznKk9D8ddkjekkKNq3WYOllPQB4YsLfWjyL72AZQpnsk7RCh3DVxQog&h=2I5MC694L915mxcXQYNXkpQtPNZ-nfHTxp3nyFVGHvw
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 13 Jun 2025 14:37:16 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test/providers/Microsoft.HardwareSecurityModules/cloudHsmClusters/myrestoredhsm/restoreOperationStatus/42262de4b9274eaba4f4caffca53a76c?api-version=2025-03-31
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8a7348a2-6b25-4382-8b23-151e1a3ae586/ukwest/41d3a875-c2b2-4422-a117-cb0628a1b0ff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 1A8079ED71AC411387AB93A4420980F3 Ref B: AMS231020512017 Ref C: 2025-06-13T14:37:17Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cloudhsm restore start
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --resource-group --backup-id --blob-container-uri
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.12.10 (Linux-6.8.0-1027-azure-x86_64-with-glibc2.36)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test/providers/Microsoft.HardwareSecurityModules/cloudHsmClusters/myrestoredhsm/restoreOperationStatus/42262de4b9274eaba4f4caffca53a76c?api-version=2025-03-31
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 13 Jun 2025 14:37:46 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test/providers/Microsoft.HardwareSecurityModules/cloudHsmClusters/myrestoredhsm/restoreOperationStatus/42262de4b9274eaba4f4caffca53a76c?api-version=2025-03-31
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8a7348a2-6b25-4382-8b23-151e1a3ae586/ukwest/c1f1a42a-635f-44a2-a240-cbcef0916251
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: D8A59E5CD80344A79C876AA73C125757 Ref B: AMS231020512017 Ref C: 2025-06-13T14:37:47Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cloudhsm restore start
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --resource-group --backup-id --blob-container-uri
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.12.10 (Linux-6.8.0-1027-azure-x86_64-with-glibc2.36)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test/providers/Microsoft.HardwareSecurityModules/cloudHsmClusters/myrestoredhsm/restoreOperationStatus/42262de4b9274eaba4f4caffca53a76c?api-version=2025-03-31
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 13 Jun 2025 14:38:16 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test/providers/Microsoft.HardwareSecurityModules/cloudHsmClusters/myrestoredhsm/restoreOperationStatus/42262de4b9274eaba4f4caffca53a76c?api-version=2025-03-31
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8a7348a2-6b25-4382-8b23-151e1a3ae586/ukwest/341a7bc2-0500-445f-8752-70bac7776007
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 3D59072B5F8648059E8040AF8D11DDD6 Ref B: AMS231020512017 Ref C: 2025-06-13T14:38:17Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cloudhsm restore start
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --resource-group --backup-id --blob-container-uri
+      User-Agent:
+      - AZURECLI/2.74.0 azsdk-python-core/1.31.0 Python/3.12.10 (Linux-6.8.0-1027-azure-x86_64-with-glibc2.36)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test/providers/Microsoft.HardwareSecurityModules/cloudHsmClusters/myrestoredhsm/restoreOperationStatus/42262de4b9274eaba4f4caffca53a76c?api-version=2025-03-31
+  response:
+    body:
+      string: '{"properties":{"status":"Succeeded","startTime":"2025-06-13T14:37:17Z","endTime":"2025-06-13T14:38:47.4153878Z","jobId":"42262de4b9274eaba4f4caffca53a76c"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '156'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 13 Jun 2025 14:38:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=8a7348a2-6b25-4382-8b23-151e1a3ae586/ukwest/65564eba-00fb-4051-a5cc-36984fbbba54
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: BEF046EFAAD24139AC23B917A7B731B1 Ref B: AMS231020512017 Ref C: 2025-06-13T14:38:47Z'
+    status:
+      code: 200
+      message: OK
+version: 1

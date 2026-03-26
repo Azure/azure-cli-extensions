@@ -5,35 +5,12 @@
 # --------------------------------------------------------------------------
 # pylint: disable=too-many-lines
 
-from azure.cli.core.util import sdk_no_wait
 from azure.cli.core.azclierror import InvalidArgumentValueError
+from .aaz.latest.tsi.environment import List as _EnvironmentList
+from .aaz.latest.tsi.reference_data_set import List as _ReferenceDataSetList
 
 
-def timeseriesinsights_environment_list(client,
-                                        resource_group_name=None):
-    if resource_group_name:
-        return client.list_by_resource_group(resource_group_name=resource_group_name).value
-    return client.list_by_subscription().value
-
-
-def timeseriesinsights_environment_show(client,
-                                        resource_group_name,
-                                        environment_name,
-                                        expand=None):
-    return client.get(resource_group_name=resource_group_name,
-                      environment_name=environment_name,
-                      expand=expand)
-
-
-def timeseriesinsights_environment_delete(client,
-                                          resource_group_name,
-                                          environment_name):
-    return client.delete(resource_group_name=resource_group_name,
-                         environment_name=environment_name)
-
-
-def timeseriesinsights_environment_gen1_create(client,
-                                               resource_group_name,
+def timeseriesinsights_environment_gen1_create(cmd, resource_group_name,
                                                environment_name,
                                                location,
                                                sku,
@@ -42,22 +19,24 @@ def timeseriesinsights_environment_gen1_create(client,
                                                storage_limit_exceeded_behavior=None,
                                                partition_key_properties=None,
                                                no_wait=False):
+    from .aaz.latest.tsi.environment import Create as _EnvironmentCreate
+    Create = _EnvironmentCreate(cmd.loader)
     parameters = {}
+    parameters['resource_group'] = resource_group_name
+    parameters['environment_name'] = environment_name
     parameters['location'] = location
     parameters['tags'] = tags
-    parameters['kind'] = 'Gen1'
     parameters['sku'] = sku
-    parameters['data_retention_time'] = data_retention_time
-    parameters['storage_limit_exceeded_behavior'] = storage_limit_exceeded_behavior
-    parameters['partition_key_properties'] = partition_key_properties
-    return sdk_no_wait(no_wait,
-                       client.begin_create_or_update,
-                       resource_group_name=resource_group_name,
-                       environment_name=environment_name,
-                       parameters=parameters)
+    parameters['gen1'] = {}
+    parameters['gen1']['data_retention_time'] = data_retention_time
+    parameters['gen1']['storage_limit_exceeded_behavior'] = storage_limit_exceeded_behavior
+    parameters['gen1']['partition_key_properties'] = partition_key_properties
+    parameters['no_wait'] = no_wait
+
+    return Create(parameters)
 
 
-def timeseriesinsights_environment_gen1_update(client,
+def timeseriesinsights_environment_gen1_update(cmd,
                                                resource_group_name,
                                                environment_name,
                                                sku=None,
@@ -65,38 +44,26 @@ def timeseriesinsights_environment_gen1_update(client,
                                                tags=None,
                                                storage_limit_exceeded_behavior=None,
                                                no_wait=False):
-    instance = timeseriesinsights_environment_show(client, resource_group_name, environment_name)
-    body = instance.as_dict(keep_readonly=False)
-    if body['kind'] != 'Gen1':
-        raise InvalidArgumentValueError('Instance kind value is "{}", not match "{}"'.format(body['kind'], 'Gen1'))
-
-    patch_parameters = {
-        'kind': 'Gen1'
-    }
+    from .aaz.latest.tsi.environment import Update as _EnvironmentUpdate
+    Update = _EnvironmentUpdate(cmd.loader)
+    parameters = {}
+    parameters['resource_group'] = resource_group_name
+    parameters['environment_name'] = environment_name
+    parameters['gen1'] = {}
     if sku is not None:
-        patch_parameters['sku'] = sku
+        parameters['sku'] = sku
     if data_retention_time is not None:
-        patch_parameters['data_retention_time'] = data_retention_time
+        parameters['gen1']['data_retention_time'] = data_retention_time
     if storage_limit_exceeded_behavior is not None:
-        patch_parameters['storage_limit_exceeded_behavior'] = storage_limit_exceeded_behavior
+        parameters['gen1']['storage_limit_exceeded_behavior'] = storage_limit_exceeded_behavior
     if tags is not None:
-        patch_parameters['tags'] = tags
+        parameters['tags'] = tags
+    parameters['no_wait'] = no_wait
 
-    if len(patch_parameters) > 2:  # Only a single event source property can be updated per PATCH request
-        body.update(patch_parameters)
-        return sdk_no_wait(no_wait,
-                           client.begin_create_or_update,
-                           resource_group_name=resource_group_name,
-                           environment_name=environment_name,
-                           parameters=body)
-    return sdk_no_wait(no_wait,
-                       client.begin_update,
-                       resource_group_name=resource_group_name,
-                       environment_name=environment_name,
-                       environment_update_parameters=patch_parameters)
+    return Update(parameters)
 
 
-def timeseriesinsights_environment_gen2_create(client,
+def timeseriesinsights_environment_gen2_create(cmd,
                                                resource_group_name,
                                                environment_name,
                                                location,
@@ -106,58 +73,46 @@ def timeseriesinsights_environment_gen2_create(client,
                                                tags=None,
                                                warm_store_configuration=None,
                                                no_wait=False):
+    from .aaz.latest.tsi.environment import Create as _EnvironmentCreate
+    Create = _EnvironmentCreate(cmd.loader)
     parameters = {}
+    parameters['resource_group'] = resource_group_name
+    parameters['environment_name'] = environment_name
     parameters['location'] = location
     parameters['tags'] = tags
-    parameters['kind'] = 'Gen2'
     parameters['sku'] = sku
-    parameters['time_series_id_properties'] = time_series_id_properties
-    parameters['storage_configuration'] = storage_configuration
-    parameters['warm_store_configuration'] = warm_store_configuration
-    return sdk_no_wait(no_wait,
-                       client.begin_create_or_update,
-                       resource_group_name=resource_group_name,
-                       environment_name=environment_name,
-                       parameters=parameters)
+    parameters['gen2'] = {}
+    parameters['gen2']['time_series_id_properties'] = time_series_id_properties
+    parameters['gen2']['storage_configuration'] = storage_configuration
+    if warm_store_configuration is not None:
+        parameters['gen2']['warm_store_configuration'] = warm_store_configuration
+    parameters['no_wait'] = no_wait
+
+    return Create(parameters)
 
 
-def timeseriesinsights_environment_gen2_update(client,
+def timeseriesinsights_environment_gen2_update(cmd,
                                                resource_group_name,
                                                environment_name,
                                                storage_configuration=None,
                                                tags=None,
                                                warm_store_configuration=None,
                                                no_wait=False):
-    instance = timeseriesinsights_environment_show(client, resource_group_name, environment_name)
-    body = instance.as_dict(keep_readonly=False)
-    if body['kind'] != 'Gen2':
-        raise InvalidArgumentValueError('Instance kind value is "{}", not match "{}"'.format(body['kind'], 'Gen2'))
-
-    patch_parameters = {
-        'kind': 'Gen2'
-    }
+    from .aaz.latest.tsi.environment import Update as _EnvironmentUpdate
+    Update = _EnvironmentUpdate(cmd.loader)
+    parameters = {}
+    parameters['resource_group'] = resource_group_name
+    parameters['environment_name'] = environment_name
+    parameters['gen2'] = {}
     if storage_configuration is not None:
-        patch_parameters['storage_configuration'] = storage_configuration
+        parameters['gen2']['storage_configuration'] = storage_configuration
     if warm_store_configuration is not None:
-        patch_parameters['warm_store_configuration'] = warm_store_configuration
-
+        parameters['gen2']['warm_store_configuration'] = warm_store_configuration
     if tags is not None:
-        patch_parameters['tags'] = tags
+        parameters['tags'] = tags
+    parameters['no_wait'] = no_wait
 
-    if len(patch_parameters) > 2:  # Only a single event source property can be updated per PATCH request
-        if 'storage_configuration' not in patch_parameters:
-            raise InvalidArgumentValueError('--storage-configuration is required for multi properties update')
-        body.update(patch_parameters)
-        return sdk_no_wait(no_wait,
-                           client.begin_create_or_update,
-                           resource_group_name=resource_group_name,
-                           environment_name=environment_name,
-                           parameters=body)
-    return sdk_no_wait(no_wait,
-                       client.begin_update,
-                       resource_group_name=resource_group_name,
-                       environment_name=environment_name,
-                       environment_update_parameters=patch_parameters)
+    return Update(parameters)
 
 
 def timeseriesinsights_event_source_list(client,
@@ -327,23 +282,7 @@ def timeseriesinsights_event_source_iot_hub_update(client,
                          event_source_update_parameters=patch_parameters)
 
 
-def timeseriesinsights_reference_data_set_list(client,
-                                               resource_group_name,
-                                               environment_name):
-    return client.list_by_environment(resource_group_name=resource_group_name,
-                                      environment_name=environment_name).value
-
-
-def timeseriesinsights_reference_data_set_show(client,
-                                               resource_group_name,
-                                               environment_name,
-                                               reference_data_set_name):
-    return client.get(resource_group_name=resource_group_name,
-                      environment_name=environment_name,
-                      reference_data_set_name=reference_data_set_name)
-
-
-def timeseriesinsights_reference_data_set_create(client,
+def timeseriesinsights_reference_data_set_create(cmd,
                                                  resource_group_name,
                                                  environment_name,
                                                  reference_data_set_name,
@@ -351,97 +290,26 @@ def timeseriesinsights_reference_data_set_create(client,
                                                  key_properties,
                                                  tags=None,
                                                  data_string_comparison_behavior=None):
+    from .aaz.latest.tsi.reference_data_set import Create as _ReferenceDataSetCreate
+    Create = _ReferenceDataSetCreate(cmd.loader)
     parameters = {}
+    parameters['resource_group'] = resource_group_name
+    parameters['environment_name'] = environment_name
+    parameters['reference_data_set_name'] = reference_data_set_name
     parameters['location'] = location
     parameters['tags'] = tags
     parameters['key_properties'] = key_properties
     parameters['data_string_comparison_behavior'] = data_string_comparison_behavior
-    return client.create_or_update(resource_group_name=resource_group_name,
-                                   environment_name=environment_name,
-                                   reference_data_set_name=reference_data_set_name,
-                                   parameters=parameters)
+    return Create(parameters)
 
 
-def timeseriesinsights_reference_data_set_update(client,
-                                                 resource_group_name,
-                                                 environment_name,
-                                                 reference_data_set_name,
-                                                 tags=None):
-    patch_parameters = {}
-    if tags is not None:
-        patch_parameters['tags'] = tags
-
-    return client.update(resource_group_name=resource_group_name,
-                         environment_name=environment_name,
-                         reference_data_set_name=reference_data_set_name,
-                         reference_data_set_update_parameters=patch_parameters)
+class EnvironmentList(_EnvironmentList):
+    def _output(self):
+        result = super()._output(self)
+        return result["value"]
 
 
-def timeseriesinsights_reference_data_set_delete(client,
-                                                 resource_group_name,
-                                                 environment_name,
-                                                 reference_data_set_name):
-    return client.delete(resource_group_name=resource_group_name,
-                         environment_name=environment_name,
-                         reference_data_set_name=reference_data_set_name)
-
-
-def timeseriesinsights_access_policy_list(client,
-                                          resource_group_name,
-                                          environment_name):
-    return client.list_by_environment(resource_group_name=resource_group_name,
-                                      environment_name=environment_name).value
-
-
-def timeseriesinsights_access_policy_show(client,
-                                          resource_group_name,
-                                          environment_name,
-                                          access_policy_name):
-    return client.get(resource_group_name=resource_group_name,
-                      environment_name=environment_name,
-                      access_policy_name=access_policy_name)
-
-
-def timeseriesinsights_access_policy_create(client,
-                                            resource_group_name,
-                                            environment_name,
-                                            access_policy_name,
-                                            principal_object_id=None,
-                                            description=None,
-                                            roles=None):
-    parameters = {}
-    parameters['principal_object_id'] = principal_object_id
-    parameters['description'] = description
-    parameters['roles'] = roles
-    return client.create_or_update(resource_group_name=resource_group_name,
-                                   environment_name=environment_name,
-                                   access_policy_name=access_policy_name,
-                                   parameters=parameters)
-
-
-def timeseriesinsights_access_policy_update(client,
-                                            resource_group_name,
-                                            environment_name,
-                                            access_policy_name,
-                                            description=None,
-                                            roles=None):
-    patch_parameters = {}
-    if description is not None:
-        patch_parameters['description'] = description
-
-    if roles is not None:
-        patch_parameters['roles'] = roles
-
-    return client.update(resource_group_name=resource_group_name,
-                         environment_name=environment_name,
-                         access_policy_name=access_policy_name,
-                         access_policy_update_parameters=patch_parameters)
-
-
-def timeseriesinsights_access_policy_delete(client,
-                                            resource_group_name,
-                                            environment_name,
-                                            access_policy_name):
-    return client.delete(resource_group_name=resource_group_name,
-                         environment_name=environment_name,
-                         access_policy_name=access_policy_name)
+class ReferenceDataSetList(_ReferenceDataSetList):
+    def _output(self):
+        result = super()._output(self)
+        return result["value"]

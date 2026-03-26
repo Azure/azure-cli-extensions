@@ -13,7 +13,7 @@ from azure.cli.testsdk import (
 
 
 class DnsResolverClientTest(ScenarioTest):
-    @ResourceGroupPreparer(name_prefix='cli_test_dns_resolver_', location='eastus')
+    @ResourceGroupPreparer(name_prefix='cli_test_dns_resolver_', location='westus2')
     def test_dns_resolver_crud(self):
         self.kwargs.update({
             'dns_resolver_name': self.create_random_name('dns-resolver-', 20),
@@ -47,7 +47,7 @@ class DnsResolverClientTest(ScenarioTest):
         )
         self.cmd('dns-resolver delete -n {dns_resolver_name} -g {rg} --no-wait --yes')
 
-    @ResourceGroupPreparer(name_prefix='cli_test_dns_resolver_', location='eastus')
+    @ResourceGroupPreparer(name_prefix='cli_test_dns_resolver_', location='westus2')
     def test_dns_resolver_inbound_crud(self):
         self.kwargs.update({
             'endpoint_name': self.create_random_name('endpoint-', 16),
@@ -88,7 +88,7 @@ class DnsResolverClientTest(ScenarioTest):
         )
         self.cmd('dns-resolver inbound-endpoint delete -n {endpoint_name} -g {rg} --dns-resolver-name {dns_resolver_name} --no-wait --yes')
 
-    @ResourceGroupPreparer(name_prefix='cli_test_dns_resolver_', location='eastus')
+    @ResourceGroupPreparer(name_prefix='cli_test_dns_resolver_', location='westus2')
     def test_dns_resolver_outbound_crud(self):
         self.kwargs.update({
             'endpoint_name': self.create_random_name('endpoint-', 16),
@@ -128,7 +128,7 @@ class DnsResolverClientTest(ScenarioTest):
         )
         self.cmd('dns-resolver outbound-endpoint delete -n {endpoint_name} -g {rg} --dns-resolver-name {dns_resolver_name} --no-wait --yes')
 
-    @ResourceGroupPreparer(name_prefix='cli_test_dns_resolver_', location='eastus')
+    @ResourceGroupPreparer(name_prefix='cli_test_dns_resolver_', location='westus2')
     def test_dns_resolver_ruleset_crud(self):
         self.kwargs.update({
             'ruleset_name': self.create_random_name('ruleset-', 12),
@@ -170,7 +170,7 @@ class DnsResolverClientTest(ScenarioTest):
         )
         self.cmd('dns-resolver forwarding-ruleset delete -n {ruleset_name} -g {rg} --no-wait --yes')
 
-    @ResourceGroupPreparer(name_prefix='cli_test_dns_resolver_', location='eastus')
+    @ResourceGroupPreparer(name_prefix='cli_test_dns_resolver_', location='westus2')
     def test_dns_resolver_rule_crud(self):
         self.kwargs.update({
             'rule_name': self.create_random_name('rule-', 12),
@@ -215,7 +215,7 @@ class DnsResolverClientTest(ScenarioTest):
         )
         self.cmd('dns-resolver forwarding-rule delete -n {rule_name} -g {rg} --ruleset-name {ruleset_name} --yes')
 
-    @ResourceGroupPreparer(name_prefix='cli_test_dns_resolver_', location='eastus')
+    @ResourceGroupPreparer(name_prefix='cli_test_dns_resolver_', location='westus2')
     def test_dns_resolver_vnet_crud(self):
         self.kwargs.update({
             'link_name': self.create_random_name('link-', 12),

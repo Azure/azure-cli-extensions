@@ -1,0 +1,130 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --aad-based-security-principals
+      User-Agent:
+      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.12.9 (Linux-6.8.0-1021-azure-x86_64-with-glibc2.36)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzCliExtensionRg/providers/Microsoft.ConfidentialLedger/ledgers/azclitest?api-version=2024-09-19-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzCliExtensionRg/providers/Microsoft.ConfidentialLedger/Ledgers/azclitest","name":"azclitest","type":"Microsoft.ConfidentialLedger/Ledgers","location":"eastus","tags":{"scope":"acl"},"properties":{"ledgerName":"azclitest","ledgerUri":"https://azclitest.confidential-ledger.azure.com","identityServiceUri":"https://identity.confidential-ledger.core.azure.com/ledgerIdentity/azclitest","runningState":"Active","ledgerType":"Public","aadBasedSecurityPrincipals":[{"principalId":"78945818-3e7d-4708-bd84-3a480f1fbeb5","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","ledgerRoleName":"Administrator"}],"ledgerInternalNamespace":"00000000-0000-0000-0000-d0b9bbc1765f","ledgerSku":"Standard","enclavePlatform":"IntelSgx","applicationType":"ConfidentialLedger","nodeCount":3,"hostLevel":"Info","maxBodySizeInMb":1,"subjectName":"CN=CCF
+        Node","workerThreads":0}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '929'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 21 Apr 2025 18:31:04 GMT
+      etag:
+      - '"b30007a9-0000-0100-0000-68068d380000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 58057242-1ed9-49e6-b264-094763bb2646
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-image-tag:
+      - 1.0.03020.245-cd77d0d5c8109fe7bf9e3ea1e1bb58b23d8a69d4
+      x-ms-machinename:
+      - controlplane-6d79b784b6-bhqhx
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: CE673EF78200404EA7978AA3A24BCC34 Ref B: SJC211051205023 Ref C: 2025-04-21T18:31:04Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus", "properties": {"aadBasedSecurityPrincipals": [{"ledgerRoleName":
+      "Administrator", "principalId": "78945818-3e7d-4708-bd84-3a480f1fbeb5", "tenantId":
+      "72f988bf-86f1-41af-91ab-2d7cd011db47"}], "applicationType": "ConfidentialLedger",
+      "enclavePlatform": "IntelSgx", "hostLevel": "Info", "ledgerSku": "Standard",
+      "ledgerType": "Public", "maxBodySizeInMb": 1, "nodeCount": 3, "runningState":
+      "Active", "subjectName": "CN=CCF Node", "workerThreads": 0}, "tags": {"scope":
+      "acl"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '496'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --resource-group --aad-based-security-principals
+      User-Agent:
+      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.12.9 (Linux-6.8.0-1021-azure-x86_64-with-glibc2.36)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzCliExtensionRg/providers/Microsoft.ConfidentialLedger/ledgers/azclitest?api-version=2024-09-19-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzCliExtensionRg/providers/Microsoft.ConfidentialLedger/ledgers/azclitest","name":"azclitest","type":"microsoft.confidentialledger/ledgers","location":"eastus","tags":{"scope":"acl"},"systemData":{"createdBy":"pratikrathod@microsoft.com","createdByType":"User","createdAt":"2025-04-21T17:36:53.2060778Z","lastModifiedBy":"pratikrathod@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2025-04-21T18:31:04.9240806Z"},"properties":{"ledgerName":"azclitest","ledgerUri":"https://azclitest.confidential-ledger.azure.com","identityServiceUri":"https://identity.confidential-ledger.core.azure.com/ledgerIdentity/azclitest","runningState":"Active","ledgerType":"Public","aadBasedSecurityPrincipals":[{"principalId":"78945818-3e7d-4708-bd84-3a480f1fbeb5","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","ledgerRoleName":"Administrator"}],"ledgerInternalNamespace":"00000000-0000-0000-0000-d0b9bbc1765f","ledgerSku":"Standard","enclavePlatform":"IntelSgx","applicationType":"ConfidentialLedger","nodeCount":3,"hostLevel":"Info","maxBodySizeInMb":1,"subjectName":"CN=CCF
+        Node","workerThreads":0,"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1205'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 21 Apr 2025 18:31:05 GMT
+      etag:
+      - '"b30073b2-0000-0100-0000-68068ee90000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 4266dfc3-73a9-4103-8ba7-384037b752dd
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-image-tag:
+      - 1.0.03020.245-cd77d0d5c8109fe7bf9e3ea1e1bb58b23d8a69d4
+      x-ms-machinename:
+      - controlplane-6d79b784b6-tvfw2
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=78945818-3e7d-4708-bd84-3a480f1fbeb5/westus/877e825b-3934-4f8a-8acf-798e2844e2bc
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '19999'
+      x-msedge-ref:
+      - 'Ref A: 6CA4E8272F2B4956867C2584790D4A02 Ref B: SJC211051205023 Ref C: 2025-04-21T18:31:04Z'
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -2,6 +2,42 @@
 
 Release History
 ===============
+1.2.0
++++++
+* Updated to API version 2025-08-18-preview.
+* Added `az confluent agreement list` and `az confluent agreement default create` commands for managing Confluent marketplace agreements.
+* Added `az confluent organization environment create/delete/update` commands for managing environments within a Confluent organization.
+* Added `az confluent organization environment cluster create/delete/update` commands for managing clusters within an environment.
+* Added `az confluent organization environment cluster connector create/delete/list/show/update` commands for managing connectors within a cluster.
+* Added `az confluent organization environment cluster topic create/delete/list/show/update` commands for managing topics within a cluster.
+* Added `az confluent validation orgvalidate` and `az confluent validation orgvalidate-v2` commands for validating Confluent organization configurations.
+
+1.1.0
++++++
+* Updated az confluent organization create command to accept term_id as an optional parameter.
+
+1.0.0
++++++
+* Updated CLI command descriptions to be more user and support az mcp commands.
+
+0.6.0
++++++
+* Added more commands for user access management
+* `az confluent organization environment list --organization-name upntestorg01 --subscription ff9490e3-e714-4d26-b33b-4deefb0d5ffa --resource-group  deepika-test` : List of environments in the organization
+* `az confluent organization environment cluster list --organization-name upntestorg01 --environment-id env-stgc25p5xq --subscription ff9490e3-e714-4d26-b33b-4deefb0d5ffa --resource-group  deepika-test` : List of clusters in the environment 
+* `az confluent organization environment schema-registry-cluster list --organization-name upntestorg01 --environment-id env-stgcjzd58q --subscription ff9490e3-e714-4d26-b33b-4deefb0d5ffa --resource-group  deepika-test` : List of schema-registry-cluster in the environment 
+* `az confluent organization environment cluster create-api-key --organization-name upntestorg01 --environment-id env-stgc25p5xq --subscription ff9490e3-e714-4d26-b33b-4deefb0d5ffa --resource-group  deepika-test --cluster-id lsrc-stgcp6kvzk --description cmd-line-apikey-test --name api-key-cmd-0403` : Creates API key in the given cluster
+* `az confluent organization api-key delete --api-key-id PQGS27PBBW4LNBRT --organization-name upntestorg01 --subscription ff9490e3-e714-4d26-b33b-4deefb0d5ffa --resource-group  deepika-test` : Deletes api key of a cluster
+* `az confluent organization create-role-binding --organization-name upntestorg01 --subscription ff9490e3-e714-4d26-b33b-4deefb0d5ffa --resource-group  deepika-test --principal User:u-vw7yzn --role-name FlinkAdmin --crn-pattern  /environment=env-jv3wv8` : Creates role binding for a user under a resource (environment, organization, cluster as specified in the crn pattern)
+* `az confluent organization role-binding delete --organization-name upntestorg01 --subscription ff9490e3-e714-4d26-b33b-4deefb0d5ffa --resource-group  deepika-test --role-binding-id rb-0ePzyz`: Deletes confluent role for the user
+* `az confluent organization list-role-binding --organization-name upntestorg01 --subscription ff9490e3-e714-4d26-b33b-4deefb0d5ffa --resource-group  deepika-test --search-filters {CRNPattern:/environment=env-jv3wv8}` : List the rolebindings based on the filter params ( filtering can be done at confluent resource level & principal)
+* `az confluent organization list-service-accounts --organization-name upntestorg01 --subscription ff9490e3-e714-4d26-b33b-4deefb0d5ffa --resource-group  deepika-test` : List of service accounts in the organization
+* `az confluent organization list-users --organization-name upntestorg01 --subscription ff9490e3-e714-4d26-b33b-4deefb0d5ffa --resource-group  deepika-test --search-filters {pageSize:100}` : List of users in the organization
+* `az confluent organization create-user --organization-name upntestorg01 --subscription ff9490e3-e714-4d26-b33b-4deefb0d5ffa --resource-group  deepika-test --invited-email ajaykumar@microsoft.com --auth-type AUTH_TYPE_SSO`: Create a user in the confluent organization
+
+0.5.0
++++++
+* Change to GA from experiment
 
 0.4.0
 +++++

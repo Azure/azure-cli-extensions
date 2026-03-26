@@ -14,6 +14,7 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     GremlinDatabaseRestoreResource,
     CosmosCassandraDataTransferDataSourceSink,
     CosmosMongoDataTransferDataSourceSink,
+    CosmosMongoVCoreDataTransferDataSourceSink,
     CosmosSqlDataTransferDataSourceSink,
     PhysicalPartitionThroughputInfoResource,
     PhysicalPartitionId
@@ -135,6 +136,10 @@ class AddCassandraTableAction(argparse._AppendAction):
             namespace.source_cassandra_table = cassandra_table
         elif option_string == "--dest-cassandra-table":
             namespace.dest_cassandra_table = cassandra_table
+        elif option_string == "--src-cassandra":
+            namespace.src_cassandra = cassandra_table
+        elif option_string == "--dest-cassandra":
+            namespace.dest_cassandra = cassandra_table
         else:
             namespace.cassandra_table = cassandra_table
 
@@ -174,8 +179,58 @@ class AddMongoCollectionAction(argparse._AppendAction):
             namespace.source_mongo = mongo_collection
         elif option_string == "--dest-mongo":
             namespace.dest_mongo = mongo_collection
+        elif option_string == "--src-mongo":
+            namespace.src_mongo = mongo_collection
         else:
             namespace.mongo_collection = mongo_collection
+
+
+class AddMongoVCoreCollectionAction(argparse._AppendAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        if not values:
+            # pylint: disable=line-too-long
+            raise CLIError(f'usage error: {option_string} [KEY=VALUE ...]')
+
+        database_name = None
+        collection_name = None
+        host_name = None
+        connection_string_key_vault_uri = None
+
+        for (k, v) in (x.split('=', 1) for x in values):
+            kl = k.lower()
+            if kl == 'database':
+                database_name = v
+
+            elif kl == 'collection':
+                collection_name = v
+
+            elif kl == 'hostname':
+                host_name = v
+
+            elif kl == 'connectionstringkeyvaulturi':
+                connection_string_key_vault_uri = v
+
+            else:
+                raise CLIError(
+                    f'Unsupported Key {k} is provided for {option_string} component. All'
+                    ' possible keys are: database, collection, hostname, connectionstringkeyvaulturi'
+                )
+
+        if database_name is None:
+            raise CLIError(f'usage error: missing key database in {option_string} component')
+
+        if collection_name is None:
+            raise CLIError(f'usage error: missing key collection in {option_string} component')
+
+        if host_name is None and connection_string_key_vault_uri is None:
+            raise CLIError(f'usage error: missing keys hostName and connectionStringKeyVaultUri in {option_string} component')
+
+        mongo_vcore_collection = CosmosMongoVCoreDataTransferDataSourceSink(database_name=database_name, collection_name=collection_name, host_name=host_name, connection_string_key_vault_uri=connection_string_key_vault_uri)
+
+        if option_string == "--dest-mongo-vcore":
+            namespace.dest_mongo_vcore = mongo_vcore_collection
+        else:
+            namespace.mongo_vcore_collection = mongo_vcore_collection
 
 
 class AddSqlContainerAction(argparse._AppendAction):
@@ -207,14 +262,18 @@ class AddSqlContainerAction(argparse._AppendAction):
         if container_name is None:
             raise CLIError(f'usage error: missing key container in {option_string} component')
 
-        sql_container = CosmosSqlDataTransferDataSourceSink(database_name=database_name, container_name=container_name)
+        nosql_container = CosmosSqlDataTransferDataSourceSink(database_name=database_name, container_name=container_name)
 
         if option_string == "--source-sql-container":
-            namespace.source_sql_container = sql_container
+            namespace.source_sql_container = nosql_container
         elif option_string == "--dest-sql-container":
-            namespace.dest_sql_container = sql_container
+            namespace.dest_sql_container = nosql_container
+        elif option_string == "--src-nosql":
+            namespace.src_nosql = nosql_container
+        elif option_string == "--dest-nosql":
+            namespace.dest_nosql = nosql_container
         else:
-            namespace.sql_container = sql_container
+            namespace.sql_container = nosql_container
 
 
 # pylint: disable=protected-access, too-few-public-methods

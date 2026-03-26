@@ -1,0 +1,110 @@
+// Params
+param workloadProfileName string
+param workloadProfileType string
+param minNodes int
+param maxNodes int
+
+{%- if data.isVnet == true %}
+param vnetSubnetId string
+{%- endif %}
+{%- for app in data.apps %}
+{%- if app.isByoc %}
+{%- if app.isPrivateImage %}
+@secure()
+param {{app.paramContainerAppImagePassword}} string
+{%- endif %}
+{%- else %}
+param {{app.paramContainerAppImageName}} string
+{%- endif %}
+param {{app.paramTargetPort}} int
+{%- endfor %}
+{%- for storage in data.storages %}
+@secure()
+param {{storage.paramContainerAppEnvStorageAccountKey}} string
+{%- endfor %}
+
+module containerAppEnv 'environment.bicep' = { 
+  name: 'container-app-environment-Deployment'
+  params: {
+    workloadProfileName: workloadProfileName
+    workloadProfileType: workloadProfileType
+    minNodes: minNodes
+    maxNodes: maxNodes
+    {%- if data.isVnet == true %}
+    vnetSubnetId: vnetSubnetId
+    {%- endif %}
+    {%- for storage in data.storages %}
+    {{storage.paramContainerAppEnvStorageAccountKey}}: {{storage.paramContainerAppEnvStorageAccountKey}}
+    {%- endfor %}
+  }
+}
+
+{%- for cert in data.certs %}
+module {{ cert.moduleName }} '{{ cert.templateName }}' = {
+  name: 'cert-{{ cert.certName }}-Deployment'
+  params: {
+    managedEnvironments_aca_env_name: containerAppEnv.outputs.containerAppEnvName
+  }
+}
+{%- endfor %}
+
+{%- for app in data.apps %}
+module {{ app.moduleName }} '{{ app.templateName }}' = {
+  name: '{{ app.appName }}-Deployment'
+  {%- if app.dependsOns %}
+  dependsOn: [
+    {%- for dependsOn in app.dependsOns %}
+    {{ dependsOn }}
+    {%- endfor %}
+  ]
+  {%- endif %}
+  params: {
+    containerAppEnvId: containerAppEnv.outputs.containerAppEnvId
+    workloadProfileName: workloadProfileName
+    {%- if app.isByoc %}
+    {%- if app.isPrivateImage %}
+    {{app.paramContainerAppImagePassword}}: {{app.paramContainerAppImagePassword}}
+    {%- endif %}    
+    {%- else %}
+    {{app.paramContainerAppImageName}}: {{app.paramContainerAppImageName}}
+    {%- endif %}
+    {{app.paramTargetPort}}: {{app.paramTargetPort}}
+  }
+}
+{%- endfor %}
+
+{%- if data.gateway == true %}
+module managedGateway 'gateway.bicep' = {
+  name: 'gateway-Deployment'
+  params: {
+    managedEnvironments_aca_env_name: containerAppEnv.outputs.containerAppEnvName
+  }
+}
+{%- endif %}
+
+{%- if data.config == true %}
+module managedConfig 'config_server.bicep' = {
+  name: 'config-server-Deployment'
+  params: {
+    managedEnvironments_aca_env_name: containerAppEnv.outputs.containerAppEnvName
+  }
+}
+{%- endif %}
+
+{%- if data.eureka == true %}
+module managedEureka 'eureka.bicep' = {
+  name: 'eureka-Deployment'
+  params: {
+    managedEnvironments_aca_env_name: containerAppEnv.outputs.containerAppEnvName
+  }
+}
+{%- endif %}
+
+{%- if data.sba == true %}
+module managedSpringBootAdmin 'spring_boot_admin.bicep' = {
+  name: 'spring-boot-admin-Deployment'
+  params: {
+    managedEnvironments_aca_env_name: containerAppEnv.outputs.containerAppEnvName
+  }
+}
+{%- endif %}

@@ -1,0 +1,48 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - providerhub sku nested-resource-type-first show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --nested-resource-type-first --provider-namespace --resource-type --sku
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/resourcetypeRegistrations/employees/resourcetypeRegistrations/nestedResourceTypeFirst/skus/default?api-version=2024-04-01-preview
+  response:
+    body:
+      string: '{"properties":{"skuSettings":[{"name":"freeSku","tier":"Tier1","kind":"Standard"},{"name":"premiumSku","tier":"Tier2","kind":"Premium","costs":[{"meterId":"xxx","quantity":0}]}]},"type":"Microsoft.ProviderHub/providerRegistrations/skus","name":"default","systemData":{"createdBy":"gaurimadhok@microsoft.com","createdByType":"User","createdAt":"2024-06-05T21:59:04.8075964Z","lastModifiedBy":"gaurimadhok@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-05T21:59:04.8075964Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '496'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 05 Jun 2024 22:18:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=9506e7c0-c569-479f-9940-1f63cb8ce817/centraluseuap/3f6f9e94-523a-467e-9798-0cdebf132406
+      x-msedge-ref:
+      - 'Ref A: 57F97B0C98604F67B3A5F990CF967730 Ref B: DM2AA1091212049 Ref C: 2024-06-05T22:18:36Z'
+    status:
+      code: 200
+      message: OK
+version: 1

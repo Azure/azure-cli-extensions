@@ -12,3 +12,4 @@ from .v2019_10_17_preview.models import *
 from .v2020_02_02_preview.models import *
 from .v2020_03_01_preview.models import *
 from .v2020_06_02_preview.models import *
+from .v2022_06_15.models import *

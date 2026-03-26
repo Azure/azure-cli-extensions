@@ -19,7 +19,7 @@ EXTENSION_TAG_STRING = 'created_by=image-copy-extension'
 def run_cli_command(cmd, return_as_json=False):
     try:
         cmd_output = check_output(cmd, stderr=STDOUT, universal_newlines=True)
-        logger.debug('command: %s ended with output: %s', cmd, cmd_output)
+        logger.debug('command: %s ended with output: %s', _mask_output_token(cmd), cmd_output)
 
         if return_as_json:
             if cmd_output:
@@ -40,15 +40,26 @@ def run_cli_command(cmd, return_as_json=False):
             raise CLIError("Command returned an unexpected empty string.")
         return cmd_output
     except CalledProcessError as ex:
-        logger.error('command failed: %s', cmd)
+        logger.error('command failed: %s', _mask_output_token(cmd))
         logger.error('output: %s', ex.output)
         raise ex
-    except:
-        logger.error('command ended with an error: %s', cmd)
-        raise
+    except Exception as ex:
+        logger.error('command ended with an error: %s', _mask_output_token(cmd))
+        logger.error('args: %s', ex.args)
+        raise ex
 
 
-def prepare_cli_command(cmd, output_as_json=True, tags=None, subscription=None):
+def _mask_output_token(cmd):
+    output = cmd[:]
+    token_param_name = "--sas-token"
+    if token_param_name in output:
+        idx = output.index(token_param_name)
+        output[idx + 1] = "******"
+
+    return output
+
+
+def prepare_cli_command(cmd, output_as_json=True, tags=None, subscription=None, only_show_errors=None):
     full_cmd = [sys.executable, '-m', 'azure.cli'] + cmd
 
     if output_as_json:
@@ -71,20 +82,19 @@ def prepare_cli_command(cmd, output_as_json=True, tags=None, subscription=None):
                 else:
                     full_cmd.append(k + '=' + v)
 
+    # use --only-show-errors to run CLI commands if user specified
+    if only_show_errors:
+        full_cmd += ['--only-show-errors']
+
     return full_cmd
 
 
-def get_storage_account_id_from_blob_path(cmd, blob_path, resource_group, subscription_id=None):
-    from msrestazure.tools import resource_id
-    from azure.cli.core.commands.client_factory import get_subscription_id
+def get_storage_account_id_from_blob_path(blob_path, resource_group, subscription_id):
+    from azure.mgmt.core.tools import resource_id
 
     logger.debug('Getting storage account id for blob: %s', blob_path)
 
     storage_account_name = blob_path.split('.')[0].split('/')[-1]
-
-    if not subscription_id:
-        subscription_id = get_subscription_id(cmd.cli_ctx)
-
     storage_account_id = resource_id(
         subscription=subscription_id, resource_group=resource_group,
         namespace='Microsoft.Storage', type='storageAccounts', name=storage_account_name)

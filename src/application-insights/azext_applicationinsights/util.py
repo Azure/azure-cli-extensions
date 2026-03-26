@@ -3,10 +3,25 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from enum import Enum
 from datetime import datetime
 import dateutil.parser  # pylint: disable=import-error
-from msrestazure.tools import is_valid_resource_id, parse_resource_id
+from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id
 from azext_applicationinsights._client_factory import applicationinsights_mgmt_plane_client
+
+
+class EventType(str, Enum):
+    all = "$all"
+    traces = "traces"
+    custom_events = "customEvents"
+    page_views = "pageViews"
+    browser_timings = "browserTimings"
+    requests = "requests"
+    dependencies = "dependencies"
+    exceptions = "exceptions"
+    availability_results = "availabilityResults"
+    performance_counters = "performanceCounters"
+    custom_metrics = "customMetrics"
 
 
 def get_id_from_azure_resource(cli_ctx, app, resource_group=None):
@@ -55,7 +70,7 @@ def get_linked_properties(cli_ctx, app, resource_group, read_properties=None, wr
         "AuthenticateSDKControlChannel": "agentconfig"
     }
 
-    sub_id = get_subscription_id(cli_ctx)
+    sub_id = cli_ctx.subscription_id
     tmpl = f'/subscriptions/{sub_id}/resourceGroups/{resource_group}/providers/microsoft.insights/components/{app}'
     linked_read_properties, linked_write_properties = [], []
 
@@ -70,9 +85,3 @@ def get_linked_properties(cli_ctx, app, resource_group, read_properties=None, wr
     else:
         linked_write_properties = [f'{tmpl}/{roles[write_properties]}']
     return linked_read_properties, linked_write_properties
-
-
-def get_subscription_id(cli_ctx):
-    from azure.cli.core._profile import Profile
-    _, sub_id, _ = Profile(cli_ctx=cli_ctx).get_login_credentials(subscription_id=None)
-    return sub_id

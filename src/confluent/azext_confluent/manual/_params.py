@@ -17,6 +17,7 @@ def load_arguments(self, _):
         c.argument('plan_id', type=str, help='Offer Plan Id', arg_group='Offer Detail')
         c.argument('plan_name', type=str, help='Offer Plan Name', arg_group='Offer Detail')
         c.argument('term_unit', type=str, help='Offer Plan Term unit', arg_group='Offer Detail')
+        c.argument('term_id', type=str, help='Offer Plan Term ID', arg_group='Offer Detail')
 
     with self.argument_context('confluent organization delete') as c:
         c.argument('yes', options_list=['--yes', '-y'], action='store_true', help='Do not prompt for confirmation.')

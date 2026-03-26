@@ -1,0 +1,76 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - providerhub manifest generate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --provider-namespace
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/generateManifest?api-version=2024-04-01-preview
+  response:
+    body:
+      string: '{"providerAuthorizations":[{"applicationId":"3cfadeba-63f1-46f4-8086-786a3f24045f"}],"namespace":"Private.VPTest","providerVersion":"2.0","providerType":"Internal,
+        Hidden","requiredFeatures":["Private.VPTest/EnableProvider"],"resourceTypes":[{"name":"testBridge","routingType":"BypassEndpointSelectionOptimization","resourceValidation":"ReservedWords,
+        ProfaneWords","endpoints":[{"apiVersions":["2021-10-01-privatepreview"],"endpointUri":"https://westcentralus.metarp.azure.com/rolelocation/westcentralus/","locations":["West
+        Central US"],"timeout":"PT20S","endpointType":"NotSpecified"}],"metadata":{"providerHubMetadata":{"providerExtendsPreflight":false}},"templateDeploymentPolicy":{"capabilities":"Preflight","preflightOptions":"ValidationRequests,
+        DeploymentRequests, RegisteredOnly","preflightNotifications":"None"},"linkedOperationRules":[{"linkedOperation":"CrossResourceGroupResourceMove","linkedAction":"Blocked"},{"linkedOperation":"CrossSubscriptionResourceMove","linkedAction":"Blocked"}]},{"name":"Ingredients","routingType":"BypassEndpointSelectionOptimization","resourceValidation":"ReservedWords,
+        ProfaneWords","endpoints":[{"apiVersions":["2022-09-23-preview"],"endpointUri":"https://westus.metarp.azure.com/rolelocation/westus/","locations":["West
+        US"],"timeout":"PT20S","endpointType":"NotSpecified"},{"apiVersions":["2022-09-23-preview"],"endpointUri":"https://eastus.metarp.azure.com/rolelocation/eastus/","locations":["East
+        US"],"timeout":"PT20S","endpointType":"NotSpecified"},{"apiVersions":["2021-10-01-privatepreview","2022-09-23-preview"],"endpointUri":"https://westcentralus.metarp.azure.com/rolelocation/westcentralus/","locations":["West
+        Central US"],"timeout":"PT20S","endpointType":"NotSpecified"}],"metadata":{"providerHubMetadata":{"providerExtendsPreflight":true}},"templateDeploymentPolicy":{"capabilities":"Preflight","preflightOptions":"ValidationRequests,
+        DeploymentRequests, RegisteredOnly","preflightNotifications":"None"},"linkedOperationRules":[{"linkedOperation":"CrossResourceGroupResourceMove","linkedAction":"Blocked"},{"linkedOperation":"CrossSubscriptionResourceMove","linkedAction":"Blocked"}]},{"name":"Employees","routingType":"BypassEndpointSelectionOptimization","resourceValidation":"ReservedWords,
+        ProfaneWords","endpoints":[{"apiVersions":["2021-09-01"],"endpointUri":"https://global.metarp.azure.com/","locations":["global"],"timeout":"PT20S","endpointType":"NotSpecified"}],"metadata":{"providerHubMetadata":{"providerExtendsPreflight":true}},"disallowedActionVerbs":["write"],"templateDeploymentPolicy":{"capabilities":"Preflight","preflightOptions":"ValidationRequests,
+        DeploymentRequests, RegisteredOnly","preflightNotifications":"None"},"linkedOperationRules":[{"linkedOperation":"CrossResourceGroupResourceMove","linkedAction":"Blocked"},{"linkedOperation":"CrossSubscriptionResourceMove","linkedAction":"Blocked"}]},{"name":"Tables","routingType":"BypassEndpointSelectionOptimization","resourceValidation":"ReservedWords,
+        ProfaneWords","endpoints":[{"apiVersions":["2021-09-01"],"endpointUri":"https://global.metarp.azure.com/","locations":["global"],"timeout":"PT20S","endpointType":"NotSpecified"}],"metadata":{"providerHubMetadata":{"providerExtendsPreflight":true}},"disallowedActionVerbs":["write"],"templateDeploymentPolicy":{"capabilities":"Preflight","preflightOptions":"ValidationRequests,
+        DeploymentRequests, RegisteredOnly","preflightNotifications":"None"},"linkedOperationRules":[{"linkedOperation":"CrossResourceGroupResourceMove","linkedAction":"Blocked"},{"linkedOperation":"CrossSubscriptionResourceMove","linkedAction":"Blocked"}]},{"name":"Chairs","routingType":"BypassEndpointSelectionOptimization","resourceValidation":"ReservedWords,
+        ProfaneWords","endpoints":[{"apiVersions":["2021-09-01"],"endpointUri":"https://global.metarp.azure.com/","locations":["global"],"timeout":"PT20S","endpointType":"NotSpecified"}],"metadata":{"providerHubMetadata":{"providerExtendsPreflight":true}},"disallowedActionVerbs":["write"],"templateDeploymentPolicy":{"capabilities":"Preflight","preflightOptions":"ValidationRequests,
+        DeploymentRequests, RegisteredOnly","preflightNotifications":"None"},"linkedOperationRules":[{"linkedOperation":"CrossResourceGroupResourceMove","linkedAction":"Blocked"},{"linkedOperation":"CrossSubscriptionResourceMove","linkedAction":"Blocked"}]},{"name":"Ingredients2","routingType":"BypassEndpointSelectionOptimization","resourceValidation":"ReservedWords,
+        ProfaneWords","endpoints":[{"apiVersions":["2022-09-23-preview"],"endpointUri":"https://westus.metarp.azure.com/rolelocation/westus/","locations":["West
+        US"],"timeout":"PT20S","endpointType":"NotSpecified"},{"apiVersions":["2022-09-23-preview"],"endpointUri":"https://eastus.metarp.azure.com/rolelocation/eastus/","locations":["East
+        US"],"timeout":"PT20S","endpointType":"NotSpecified"}],"metadata":{"providerHubMetadata":{"providerExtendsPreflight":true}},"templateDeploymentPolicy":{"capabilities":"Preflight","preflightOptions":"ValidationRequests,
+        DeploymentRequests, RegisteredOnly","preflightNotifications":"None"},"linkedOperationRules":[{"linkedOperation":"CrossResourceGroupResourceMove","linkedAction":"Blocked"},{"linkedOperation":"CrossSubscriptionResourceMove","linkedAction":"Blocked"}]},{"name":"testCLI","routingType":"BypassEndpointSelectionOptimization","resourceValidation":"ReservedWords,
+        ProfaneWords","defaultApiVersion":"2019-01-01","endpoints":[{"apiVersions":["2019-01-01"],"endpointUri":"https://global.metarp.azure.com/","locations":["global"],"timeout":"PT20S","endpointType":"NotSpecified"}],"metadata":{"providerHubMetadata":{"providerExtendsPreflight":true}},"templateDeploymentPolicy":{"capabilities":"Preflight","preflightOptions":"ValidationRequests,
+        DeploymentRequests, RegisteredOnly","preflightNotifications":"None"},"linkedOperationRules":[{"linkedOperation":"CrossResourceGroupResourceMove","linkedAction":"Blocked"},{"linkedOperation":"CrossSubscriptionResourceMove","linkedAction":"Blocked"}]},{"name":"extensionresourcetype","routingType":"BypassEndpointSelectionOptimization","resourceValidation":"ReservedWords,
+        ProfaneWords","defaultApiVersion":"2019-01-01","endpoints":[{"apiVersions":["2019-01-01"],"endpointUri":"https://global.metarp.azure.com/","locations":["global"],"timeout":"PT20S","endpointType":"NotSpecified"}],"metadata":{"providerHubMetadata":{"providerExtendsPreflight":true}},"templateDeploymentPolicy":{"capabilities":"Preflight","preflightOptions":"ValidationRequests,
+        DeploymentRequests, RegisteredOnly","preflightNotifications":"None"},"linkedOperationRules":[{"linkedOperation":"CrossResourceGroupResourceMove","linkedAction":"Blocked"},{"linkedOperation":"CrossSubscriptionResourceMove","linkedAction":"Blocked"}]}],"management":{"manifestOwners":["SPARTA-PlatformServiceAdministrator"],"incidentRoutingService":"Resource
+        Provider Service as a Service","incidentRoutingTeam":"RPaaS","incidentContactEmail":"rpaascore@microsoft.com","serviceTreeInfos":[{"serviceId":"d1b7d8ba-05e2-48e6-90d6-d781b99c6e69","componentId":"d1b7d8ba-05e2-48e6-90d6-d781b99c6e69"}],"resourceAccessPolicy":"NotSpecified"},"capabilities":[{"quotaId":"CSP_2015-05-01","effect":"Allow"},{"quotaId":"CSP_MG_2017-12-01","effect":"Allow"}],"metadata":{"BypassManifestValidation":true,"onboardedVia":"ProviderHub"},"globalNotificationEndpoints":[{"enabled":true,"endpointUri":"https://global.metarp.azure.com"}],"reRegisterSubscriptionMetadata":{"enabled":true,"concurrencyLimit":100},"tokenAuthConfiguration":{"authenticationScheme":"PoP","signedRequestScope":"ResourceUri","disableCertificateAuthenticationFallback":true}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '7621'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 03 Jun 2024 18:23:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=9506e7c0-c569-479f-9940-1f63cb8ce817/centraluseuap/b7965431-5c10-496c-9728-82401dfc75c1
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: 46F00D580FB946D38F3527188EE26FAE Ref B: DM2AA1091211025 Ref C: 2024-06-03T18:23:33Z'
+    status:
+      code: 200
+      message: OK
+version: 1

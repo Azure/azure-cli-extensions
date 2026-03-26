@@ -6,24 +6,38 @@
 # --------------------------------------------------------------------------------------------
 import time
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+from azure.cli.core.azclierror import InvalidArgumentValueError
 
 
 class TrafficCollectorScenario(ScenarioTest):
-
+    ERR_BANDWIDTH_LESSTHAN1G = """CollectorPolicy can not be created because circuit has bandwidth less than 1G.
+    Circuit size with a bandwidth of 1G or more is supported."""
     @ResourceGroupPreparer(name_prefix='cli_test_azure_traffic_collector', location='westus')
     def test_azure_traffic_scenario(self, resource_group):
         subs_id = self.get_subscription_id()
         atc_name = self.create_random_name(prefix='cli_test_atc-', length=30)
         cp_name = self.create_random_name(prefix='cli_test_cp-', length=20)
+        er_name = self.create_random_name(prefix='cli_test_er-', length=20)
         self.kwargs.update({
             'subs_id': subs_id,
             'rg': resource_group,
             'name': atc_name,
             'cp_name': cp_name,
+            'er_name': er_name,
             'location': 'westus',
-            'ip': '{ingestion-sources:[{resource-id:/subscriptions/' + subs_id + '/resourceGroups/' + resource_group + '/providers/Microsoft.Network/expressRouteCircuits/' + cp_name + ',source-type:Resource}],ingestion-type:IPFIX}',
+            'ip1G': '{ingestion-sources:[{resource-id:/subscriptions/' + subs_id + '/resourceGroups/' + resource_group + '/providers/Microsoft.Network/expressRouteCircuits/' + er_name + '_1G,source-type:Resource}],ingestion-type:IPFIX}',
+            'ip': '{ingestion-sources:[{resource-id:/subscriptions/' + subs_id + '/resourceGroups/' + resource_group + '/providers/Microsoft.Network/expressRouteCircuits/' + er_name + ',source-type:Resource}],ingestion-type:IPFIX}',
             'ep': '{emission-destinations:[{destination-type:AzureMonitor}],emission-type:IPFIX}'
         })
+
+        self.cmd('az network express-route create '
+                 '--bandwidth 1000 --name {er_name}_1G --peering-location SpaceNeedle --resource-group {rg} '
+                 '--provider "bvtazureixpregionalization" --sku-tier Standard'
+        )
+        self.cmd('az network express-route create '
+                 '--bandwidth 50 --name {er_name} --peering-location SpaceNeedle --resource-group {rg} '
+                 '--provider "bvtazureixpregionalization" --sku-tier Standard'
+        )
         self.cmd('az network-function traffic-collector create '
                  '--resource-group {rg} '
                  '--name {name} --location {location} --tags foo=doo',
@@ -56,7 +70,7 @@ class TrafficCollectorScenario(ScenarioTest):
 
         # Collector Policy Tests
         self.cmd('az network-function traffic-collector collector-policy create --resource-group {rg} '
-                 '--traffic-collector-name {name} -n {cp_name} -l {location} --ingestion-policy {ip}',
+                 '--traffic-collector-name {name} -n {cp_name} -l {location} --ingestion-policy {ip1G}',
                  checks=[
                      self.check('name', self.kwargs['cp_name'])
                  ])
@@ -76,6 +90,11 @@ class TrafficCollectorScenario(ScenarioTest):
                      self.check('name', self.kwargs['cp_name'])
                  ])
 
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            self.cmd('az network-function traffic-collector collector-policy update --resource-group {rg} '
+                 '--traffic-collector-name {name} -n {cp_name} --ingestion-policy {ip}')
+        self.assertIn("CollectorPolicy can not be created because circuit has bandwidth less than 1G", str(cm.exception))
+
         self.cmd('az network-function traffic-collector collector-policy show --resource-group {rg} '
                  '--traffic-collector-name {name} -n {cp_name}',
                  checks=[
@@ -89,5 +108,12 @@ class TrafficCollectorScenario(ScenarioTest):
             'az network-function traffic-collector collector-policy delete --resource-group {rg} '
             '--traffic-collector-name {name} --name {cp_name} --yes')
 
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            self.cmd('az network-function traffic-collector collector-policy create --resource-group {rg} '
+                 '--traffic-collector-name {name} -n {cp_name} -l {location} --ingestion-policy {ip}')
+        self.assertIn("CollectorPolicy can not be created because circuit has bandwidth less than 1G", str(cm.exception))
+
         time.sleep(120)
         self.cmd('az network-function traffic-collector delete --resource-group {rg} --name {name} --yes')
+        self.cmd('az network express-route delete --name {er_name}_1G --resource-group {rg}')
+        self.cmd('az network express-route delete --name {er_name} --resource-group {rg}')

@@ -4,13 +4,15 @@
 # --------------------------------------------------------------------------------------------
 
 import re
-
-from azure.cli.core._profile import Profile
-from azure.cli.core.azclierror import UnauthorizedError
-from knack.util import CLIError
+import os
+import math
+import base64
 from knack.log import get_logger
 
 logger = get_logger(__name__)
+
+# costants for file upload
+max_chunk_size = 1024 * 1024 * 2.5  # 2.5MB
 
 
 def is_billing_ticket(service_name):
@@ -43,15 +45,70 @@ def parse_support_area_path(problem_classification_id):
     return None
 
 
-def get_bearer_token(cmd, tenant_id):
-    client = Profile(cli_ctx=cmd.cli_ctx)
+def encode_string_content(chunk_content):
+    return str(base64.b64encode(chunk_content).decode("utf-8"))
 
-    try:
-        logger.debug("Retrieving access token for tenant %s", tenant_id)
-        creds, _, _ = client.get_raw_token(tenant=tenant_id)
-    except CLIError as unauthorized_error:
-        raise UnauthorizedError("Can't find authorization for {0}. ".format(tenant_id) +
-                                "Run \'az login -t <tenant_name> --allow-no-subscriptions\' and try again.") from \
-            unauthorized_error
 
-    return "Bearer " + creds[1]
+def get_file_content(file_path):
+    with open(file_path, "rb") as file:
+        content_bytes = file.read()
+    return content_bytes
+
+
+def get_file_name_info(file_path):
+    full_file_name = os.path.split(file_path)[1]
+    file_name_without_extension, file_extension = os.path.splitext(full_file_name)
+    return full_file_name, file_name_without_extension, file_extension
+
+
+def upload_file(
+    cmd,
+    file_path,
+    file_workspace_name,
+    Create,
+    Upload,
+):
+    from azext_support._validators import _validate_file_path, _validate_file_size
+    from azext_support._validators import _validate_file_extension, _validate_file_name
+
+    _validate_file_path(file_path)
+
+    full_file_name, file_name_without_extension, file_extension = get_file_name_info(
+        file_path
+    )
+    _validate_file_extension(file_extension)
+    _validate_file_name(file_name_without_extension)
+
+    content = get_file_content(file_path)
+
+    file_size = int(len(content))
+    _validate_file_size(file_size)
+
+    chunk_size = int(min(max_chunk_size, file_size))
+    number_of_chunks = int(math.ceil(file_size / chunk_size))
+
+    create_input = {
+        "file_name": full_file_name,
+        "file_workspace_name": file_workspace_name,
+        "file_size": file_size,
+        "chunk_size": chunk_size,
+        "number_of_chunks": number_of_chunks,
+    }
+
+    Create(cli_ctx=cmd.cli_ctx)(command_args=create_input)
+
+    for chunk_index in range(number_of_chunks):
+        chunk_content = content[
+            chunk_index * chunk_size: (chunk_index + 1) * chunk_size
+        ]
+        string_encoded_content = encode_string_content(chunk_content)
+
+        upload_input = {
+            "file_name": full_file_name,
+            "file_workspace_name": file_workspace_name,
+            "chunk_index": chunk_index,
+            "content": string_encoded_content,
+        }
+
+        Upload(cli_ctx=cmd.cli_ctx)(command_args=upload_input)
+    print("File '{}' has been successfully uploaded.".format(full_file_name))

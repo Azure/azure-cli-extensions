@@ -31,11 +31,11 @@ def load_arguments(self, _):
     from azext_front_door.vendored_sdks.models import (
         PolicyMode, FrontDoorProtocol, FrontDoorHealthProbeMethod, FrontDoorCertificateSource, FrontDoorQuery, ActionType, RuleType, TransformType,
         FrontDoorRedirectType, FrontDoorRedirectProtocol, MinimumTLSVersion, Transform, HeaderActionType, RulesEngineOperator, RulesEngineMatchVariable,
-        FrontDoorForwardingProtocol, MatchProcessingBehavior, PolicyRequestBodyCheck, SkuName, ResourceType, ManagedRuleSetActionType
+        FrontDoorForwardingProtocol, MatchProcessingBehavior, PolicyRequestBodyCheck, SkuName, ResourceType, ManagedRuleSetActionType,
     )
 
     frontdoor_name_type = CLIArgumentType(options_list=['--front-door-name', '-f'], help='Name of the Front Door.', completer=get_resource_name_completion_list('Microsoft.Network/frontdoors'), id_part='name')
-    waf_policy_name_type = CLIArgumentType(options_list='--policy-name', help='Name of the WAF policy.', completer=get_resource_name_completion_list('Microsoft.Network/frontDoorWebApplicationFirewallPolicies'), id_part='name')
+    waf_policy_name_type = CLIArgumentType(options_list='--policy-name', help='Name of the WAF policy. Name must begin with a letter and contain only letters and numbers.', completer=get_resource_name_completion_list('Microsoft.Network/frontDoorWebApplicationFirewallPolicies'), id_part='name')
     rules_engine_name_type = CLIArgumentType(options_list=['--rules-engine-name', '-r'], help='Name of the Rules Engine.', completer=get_fd_subresource_completion_list('rules_engines'), id_part='child_name_1')
 
     # region FrontDoors
@@ -156,7 +156,7 @@ def load_arguments(self, _):
         c.argument('custom_host', help='Host to redirect. Leave empty to use use the incoming host as the destination host.')
         c.argument('custom_path', help='The full path to redirect. Path cannot be empty and must start with /. Leave empty to use the incoming path as destination path.')
         c.argument('custom_fragment', help='Fragment to add to the redirect URL. Fragment is the part of the URL that comes after #. Do not include the #.')
-        c.argument('custom_query_string', help='The set of query strings to be placed in the redirect URL. Setting this value would replace any existing query string; leave empty to preserve the incoming query string. Query string must be in <key>=<value> format. The first ? and & will be added automatically so do not include them in the front, but do separate multiple query strings with &.')
+        c.argument('custom_query_string', help='The set of query strings to be placed in the redirect URL. Setting this value would replace any existing query string; leave empty to preserve the incoming query string. Query string must be in `<key>=<value>` format. The first ? and & will be added automatically so do not include them in the front, but do separate multiple query strings with &.')
     # endregion
 
     # region WafPolicy
@@ -321,7 +321,7 @@ def load_arguments(self, _):
         c.argument('custom_host', help='Host to redirect. Leave empty to use use the incoming host as the destination host.')
         c.argument('custom_path', help='The full path to redirect. Path cannot be empty and must start with /. Leave empty to use the incoming path as destination path.')
         c.argument('custom_fragment', help='Fragment to add to the redirect URL. Fragment is the part of the URL that comes after #. Do not include the #.')
-        c.argument('custom_query_string', help='The set of query strings to be placed in the redirect URL. Setting this value would replace any existing query string; leave empty to preserve the incoming query string. Query string must be in <key>=<value> format. The first ? and & will be added automatically so do not include them in the front, but do separate multiple query strings with &.')
+        c.argument('custom_query_string', help='The set of query strings to be placed in the redirect URL. Setting this value would replace any existing query string; leave empty to preserve the incoming query string. Query string must be in `<key>=<value>` format. The first ? and & will be added automatically so do not include them in the front, but do separate multiple query strings with &.')
 
     with self.argument_context('network front-door rules-engine rule condition remove') as c:
         c.argument('index', type=int, help='0-based index of the match condition to remove')

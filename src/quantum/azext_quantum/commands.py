@@ -9,7 +9,7 @@ import logging
 
 from collections import OrderedDict
 from azure.cli.core.commands import CliCommandType
-from ._validators import validate_workspace_info, validate_target_info, validate_workspace_and_target_info, validate_workspace_info_no_location, validate_provider_and_sku_info
+from ._validators import validate_workspace_info, validate_target_info, validate_workspace_and_target_info, validate_provider_and_sku_info
 
 logger = logging.getLogger(__name__)
 
@@ -53,10 +53,7 @@ def transform_job(result):
 
 
 def transform_jobs(results):
-    def creation(job):
-        return job['creationTime']
-
-    return [transform_job(job) for job in sorted(results, key=creation, reverse=True)]
+    return [transform_job(job) for job in results]
 
 
 def transform_offerings(offerings):
@@ -81,6 +78,12 @@ def transform_output(results):
             ('', f"\u007C{barra:<20}\u007C")
         ])
 
+    # Handle Quantum Results v2 format
+    if 'DataFormat' in results and results['DataFormat'] == 'microsoft.quantum-results.v2':
+        total_shots = sum(results['Results'][0]['Histogram'][i]['Count'] for i in range(len(results['Results'][0]['Histogram'])))
+        return [one(results['Results'][0]['Histogram'][i]['Display'], results['Results'][0]['Histogram'][i]['Count'] / total_shots) for i in range(len(results['Results'][0]['Histogram']))]
+
+    # Handle Quantum Results v1 format
     if 'Histogram' in results:
         histogram = results['Histogram']
         # The Histogram serialization is odd entries are key and even entries values
@@ -97,25 +100,6 @@ def transform_output(results):
     elif 'histogram' in results:
         histogram = results['histogram']
         return [one(key, histogram[key]) for key in histogram]
-
-    elif 'reportData' in results:
-        table = []
-        for group in results['reportData']['groups']:
-            table.append(OrderedDict([
-                ("Label", (f"---{group['title']}---")),
-                ('Value', '---'),
-                ('Description', '---')
-            ]))
-            for entry in group['entries']:
-                val = results
-                for key in entry['path'].split("/"):
-                    val = val[key]
-                table.append(OrderedDict([
-                    ("Label", entry['label']),
-                    ('Value', val),
-                    ('Description', entry['description'])
-                ]))
-        return table
 
     elif 'errorData' in results:
         notFound = 'Not found'
@@ -142,12 +126,15 @@ def load_command_table(self, _):
 
     with self.command_group('quantum workspace', workspace_ops) as w:
         w.command('create', 'create')
-        w.command('delete', 'delete', validator=validate_workspace_info_no_location)
+        w.command('delete', 'delete', validator=validate_workspace_info)
         w.command('list', 'list')
-        w.show_command('show', validator=validate_workspace_info_no_location)
+        w.show_command('show', validator=validate_workspace_info)
         w.command('set', 'set', validator=validate_workspace_info)
         w.command('clear', 'clear')
         w.command('quotas', 'quotas', validator=validate_workspace_info)
+        w.command('keys list', 'list_keys')
+        w.command('keys regenerate', 'regenerate_keys')
+        w.command('update', 'enable_keys')
 
     with self.command_group('quantum target', target_ops) as t:
         t.command('list', 'list', validator=validate_workspace_info, table_transformer=transform_targets)

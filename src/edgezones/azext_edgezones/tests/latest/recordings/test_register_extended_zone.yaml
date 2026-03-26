@@ -1,0 +1,62 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edge-zones extended-zone register
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --extended-zone-name
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.22631-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeZones/extendedZones/losangeles/register?api-version=2024-04-01-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","registrationState":"Registered","displayName":"Los
+        Angeles","regionalDisplayName":"(US) Los Angeles","regionType":"Physical","regionCategory":"Other","geography":"usa","geographyGroup":"US","longitude":"-118.23537","latitude":"34.058414","homeLocation":"westus"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeZones/extendedZones/losangeles","name":"losangeles","type":"Microsoft.EdgeZones/extendedZones"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '488'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 03 Apr 2024 22:30:33 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - d18e11a7-b481-4720-9521-14e703dd3b6f
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=b0ecac23e3c2d5bd3667a73f0c8a5b9f187e20d5f05d121b5ac8921c62e4b4c9;Path=/;HttpOnly;Secure;Domain=edgezonerp-canary.trafficmanager.net
+      - ARRAffinitySameSite=b0ecac23e3c2d5bd3667a73f0c8a5b9f187e20d5f05d121b5ac8921c62e4b4c9;Path=/;HttpOnly;SameSite=None;Secure;Domain=edgezonerp-canary.trafficmanager.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: 5F11CC228BB348F6A1ED8CC536982177 Ref B: CO6AA3150217021 Ref C: 2024-04-03T22:30:30Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -1,8 +1,12 @@
 #!/usr/bin/env bash
 
 # check var
-# specify the version of python3, e.g. 3.6
+# specify the version of python3, this environment variable should be set in the image
 [[ -z "${PYTHON_VERSION}" ]] && (echo "PYTHON_VERSION is empty"; exit 1)
+# trim the version to major.minor
+if [[ $(echo $PYTHON_VERSION | grep "\." -o | wc -l) == 2 ]]; then
+  PYTHON_VERSION=${PYTHON_VERSION%.*}
+fi
 [[ -z "${ACS_BASE_DIR}" ]] && (echo "ACS_BASE_DIR is empty"; exit 1)
 
 setupVenv(){
@@ -13,7 +17,7 @@ setupVenv(){
     # create new venv
     python"${PYTHON_VERSION}" -m venv azEnv
     source azEnv/bin/activate
-    python -m pip install -U pip
+    python -m pip install pip==25.2  # fix to 25.2 to avoid the "No module named 'azure.cli.__main__'" issue with pip 25.3+
 }
 
 # need to be executed in a venv
@@ -28,8 +32,10 @@ setupAZ(){
     ext_repo=${2:-""}
 
     # install azdev, used later to install azcli and extension
-    # TODO: update to a new version with dependency version fixed
-    pip install azdev==0.1.36
+    pip install azdev==0.2.8
+
+    # fix setuptools to 77.0.3 as a workaround for "No module named azure.cli.__main__; 'azure.cli' is a package and cannot be directly executed"
+    pip install setuptools==77.0.3
 
     # pre-install-az: check existing az
     which az || az version || az extension list || true
@@ -41,6 +47,12 @@ setupAZ(){
         azdev setup -c "${cli_repo}" -r "${ext_repo}"
     fi
 
+    # bump to 7.0.0 to fix the issue missing request.version_string attribute with urllib3 == 2.3.0, see https://github.com/kevin1024/vcrpy/issues/888
+    pip install vcrpy==7.0.0
+
+    # fix the issue "Cannot import name 'AccessTokenInfo' from 'azure.core.credentials'"
+    pip install azure-identity==1.17.1
+
     # post-install-az: check installation result
     which az && az version
 }
@@ -48,7 +60,7 @@ setupAZ(){
 # need to be executed in a venv
 installTestPackages(){
     # install pytest plugins
-    pip install pytest-json-report pytest-rerunfailures pytest-cov pytest-forked --upgrade
+    pip install pytest-json-report==1.5.0 pytest-rerunfailures==11.0 pytest-cov==4.0.0 pytest-forked==1.6.0
 
     # install coverage for measuring code coverage
     pip install coverage
@@ -59,14 +71,6 @@ installAZAKSTOOLFromLocal(){
     wheel_file=${1}
     pip install "${wheel_file}"
     pip show az-aks-tool
-}
-
-# need to be executed in a venv
-installAZAKSTOOL(){
-    wheel_file="az_aks_tool-latest-py3-none-any.whl"
-    wheel_url="https://akspreview.blob.core.windows.net/azakstool/${wheel_file}"
-    curl -sLO "${wheel_url}"
-    installAZAKSTOOLFromLocal "${wheel_file}"
 }
 
 # need to be executed in a venv with kusto related modules installed
@@ -143,13 +147,8 @@ if [[ -n ${setup_option} ]]; then
         installBuildTools
     elif [[ ${setup_option} == "setup-tool" ]]; then
         echo "Start to setup az-aks-tool!"
-        local_setup=${3:-"n"}
-        if [[ ${local_setup} == "y" ]]; then
-            wheel_file=${4:-"/az_aks_tool-latest-py3-none-any.whl"}
-            installAZAKSTOOLFromLocal "${wheel_file}"
-        else
-            installAZAKSTOOL
-        fi
+        wheel_file=${3:-$(find / -type f -name "az_aks_tool*" | head -n 1)}
+        installAZAKSTOOLFromLocal "${wheel_file}"
         removeKustoPTHFile
     elif [[ ${setup_option} == "setup-az" ]]; then
         echo "Start to setup azure-cli!"

@@ -1,0 +1,248 @@
+interactions:
+- request:
+    body: '{"location": "westus", "kind": "web", "properties": {"Application_Type":
+      "web", "Flow_Type": "Bluefield", "Request_Source": "rest", "RetentionInDays":
+      120, "IngestionMode": "ApplicationInsights"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - monitor app-insights component create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '196'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --app --location --kind -g --application-type --retention-time
+      User-Agent:
+      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Insights/components/testApp1?api-version=2018-05-01-preview
+  response:
+    body:
+      string: "{\r\n  \"kind\": \"web\",\r\n  \"etag\": \"\\\"f100214d-0000-0200-0000-67fe24e20000\\\"\",\r\n
+        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/testApp1\",\r\n
+        \ \"name\": \"testApp1\",\r\n  \"type\": \"microsoft.insights/components\",\r\n
+        \ \"location\": \"westus\",\r\n  \"tags\": {},\r\n  \"properties\": {\r\n
+        \   \"ApplicationId\": \"testApp1\",\r\n    \"AppId\": \"70241276-2104-4a9a-bdd2-e1d35d4b6a0b\",\r\n
+        \   \"Application_Type\": \"web\",\r\n    \"Flow_Type\": \"Bluefield\",\r\n
+        \   \"Request_Source\": \"rest\",\r\n    \"InstrumentationKey\": \"6d4048d4-ee0b-4e85-9bdf-d6415e0ce81b\",\r\n
+        \   \"ConnectionString\": \"InstrumentationKey=6d4048d4-ee0b-4e85-9bdf-d6415e0ce81b;IngestionEndpoint=https://westus-0.in.applicationinsights.azure.com/;LiveEndpoint=https://westus.livediagnostics.monitor.azure.com/;ApplicationId=70241276-2104-4a9a-bdd2-e1d35d4b6a0b\",\r\n
+        \   \"Name\": \"testApp1\",\r\n    \"CreationDate\": \"2025-04-15T09:20:23.0494469+00:00\",\r\n
+        \   \"TenantId\": \"0b1f6471-1bf0-4dda-aec3-cb9272f09590\",\r\n    \"provisioningState\":
+        \"Succeeded\",\r\n    \"SamplingPercentage\": null,\r\n    \"RetentionInDays\":
+        120,\r\n    \"Retention\": \"P120D\",\r\n    \"WorkspaceResourceId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ai_testapp1_70241276-2104-4a9a-bdd2-e1d35d4b6a0b_managed/providers/Microsoft.OperationalInsights/workspaces/managed-testApp1-ws\",\r\n
+        \   \"IngestionMode\": \"LogAnalytics\",\r\n    \"publicNetworkAccessForIngestion\":
+        \"Enabled\",\r\n    \"publicNetworkAccessForQuery\": \"Enabled\",\r\n    \"Ver\":
+        \"v2\"\r\n  }\r\n}"
+    headers:
+      access-control-expose-headers:
+      - Request-Context
+      cache-control:
+      - no-cache
+      content-length:
+      - '1516'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 15 Apr 2025 09:20:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:0dd6a9c3-b728-41ca-aa78-7e1962e22331
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=cded80ac-7840-4070-a783-db73a7c3ee4c/japanwest/f06a69ba-24a6-4294-b847-d5f90846b452
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 074E71073A33412E9C06D5ADE57D6B72 Ref B: TYO201100114031 Ref C: 2025-04-15T09:20:20Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - monitor app-insights component show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --app -g
+      User-Agent:
+      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Insights/components/testApp1?api-version=2020-02-02-preview
+  response:
+    body:
+      string: "{\r\n  \"kind\": \"web\",\r\n  \"etag\": \"\\\"f100214d-0000-0200-0000-67fe24e20000\\\"\",\r\n
+        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/testApp1\",\r\n
+        \ \"name\": \"testApp1\",\r\n  \"type\": \"microsoft.insights/components\",\r\n
+        \ \"location\": \"westus\",\r\n  \"tags\": {},\r\n  \"properties\": {\r\n
+        \   \"ApplicationId\": \"testApp1\",\r\n    \"AppId\": \"70241276-2104-4a9a-bdd2-e1d35d4b6a0b\",\r\n
+        \   \"Application_Type\": \"web\",\r\n    \"Flow_Type\": \"Bluefield\",\r\n
+        \   \"Request_Source\": \"rest\",\r\n    \"InstrumentationKey\": \"6d4048d4-ee0b-4e85-9bdf-d6415e0ce81b\",\r\n
+        \   \"ConnectionString\": \"InstrumentationKey=6d4048d4-ee0b-4e85-9bdf-d6415e0ce81b;IngestionEndpoint=https://westus-0.in.applicationinsights.azure.com/;LiveEndpoint=https://westus.livediagnostics.monitor.azure.com/;ApplicationId=70241276-2104-4a9a-bdd2-e1d35d4b6a0b\",\r\n
+        \   \"Name\": \"testApp1\",\r\n    \"CreationDate\": \"2025-04-15T09:20:23.0494469+00:00\",\r\n
+        \   \"TenantId\": \"0b1f6471-1bf0-4dda-aec3-cb9272f09590\",\r\n    \"provisioningState\":
+        \"Succeeded\",\r\n    \"SamplingPercentage\": null,\r\n    \"RetentionInDays\":
+        120,\r\n    \"Retention\": \"P120D\",\r\n    \"WorkspaceResourceId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ai_testapp1_70241276-2104-4a9a-bdd2-e1d35d4b6a0b_managed/providers/Microsoft.OperationalInsights/workspaces/managed-testApp1-ws\",\r\n
+        \   \"IngestionMode\": \"LogAnalytics\",\r\n    \"publicNetworkAccessForIngestion\":
+        \"Enabled\",\r\n    \"publicNetworkAccessForQuery\": \"Enabled\",\r\n    \"Ver\":
+        \"v2\"\r\n  }\r\n}"
+    headers:
+      access-control-expose-headers:
+      - Request-Context
+      cache-control:
+      - no-cache
+      content-length:
+      - '1516'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 15 Apr 2025 09:20:35 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:0dd6a9c3-b728-41ca-aa78-7e1962e22331
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 4BE7DD5002EE40FE85B485155A89862A Ref B: TYO201100116031 Ref C: 2025-04-15T09:20:35Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - monitor app-insights events show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --app --type --start-time --end-time
+      User-Agent:
+      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://api.applicationinsights.io/v1/apps/70241276-2104-4a9a-bdd2-e1d35d4b6a0b/events/availabilityResults?timespan=2025-04-06T00%3A31%3A00%2B00%3A00%2F2025-04-16T01%3A31%3A00%2B00%3A00
+  response:
+    body:
+      string: '{"@odata.context":"https://api.applicationinsights.io/v1/apps/70241276-2104-4a9a-bdd2-e1d35d4b6a0b/events/$metadata#availabilityResults","@ai.messages":[{"code":"AddedLimitToQuery","message":"The
+        query was limited to 500 rows"}],"value":[]}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      access-control-expose-headers:
+      - Retry-After,Age,WWW-Authenticate,x-resource-identities,x-ms-status-location
+      connection:
+      - keep-alive
+      content-length:
+      - '240'
+      content-type:
+      - application/json; charset=utf-8; ieee754compatible=false; odata.metadata=none;
+        odata.streaming=false
+      date:
+      - Tue, 15 Apr 2025 09:20:37 GMT
+      odata-version:
+      - 4.0;
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept, Accept-Encoding
+      via:
+      - 1.1 draft-oms-58f6f7cd6b-sngw2
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - monitor app-insights component delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --app -g
+      User-Agent:
+      - AZURECLI/2.71.0 azsdk-python-core/1.31.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Insights/components/testApp1?api-version=2018-05-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      access-control-expose-headers:
+      - Request-Context
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 15 Apr 2025 09:20:42 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:0dd6a9c3-b728-41ca-aa78-7e1962e22331
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=cded80ac-7840-4070-a783-db73a7c3ee4c/japanwest/9b062ad0-d063-48a3-b676-532ddeb22d53
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '199'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '2999'
+      x-msedge-ref:
+      - 'Ref A: 6CB3997B4B6746BCB670C9C98DE7F069 Ref B: TYO201151002042 Ref C: 2025-04-15T09:20:38Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+version: 1

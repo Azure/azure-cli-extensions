@@ -1,0 +1,22 @@
+displayName: High-Scale-CLI-Test
+testPlan: sample-JMX-file.jmx
+description: 'Test created from az load test command'
+engineInstances: 50
+configurationFiles:
+  - additional-data.csv
+zipArtifacts:
+   - sample-ZIP-artifact.zip
+failureCriteria:
+  - avg(requests_per_sec) > 78
+  - percentage(error) > 50
+  - p75(response_time_ms) > 380
+  - p99(response_time_ms) > 520
+  - p99.9(response_time_ms) > 540
+  - GetCustomerDetails: avg(latency) > 200
+env:
+  - name: 'rps'
+    value: 1
+splitAllCSVs: false
+autoStop:
+  errorPercentage: 85
+  timeWindow: 120

@@ -1,0 +1,60 @@
+interactions:
+- request:
+    body: '{"properties": {"specification": {"canary": {"regions": ["EastUS2EUAP",
+      "centraluseuap"]}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - providerhub custom-rollout create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '92'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --provider-namespace --rollout-name --canary
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/customRollouts/canaryTesting01?api-version=2024-04-01-preview
+  response:
+    body:
+      string: '{"error":{"code":"StorageNotProvisioned","message":"Storage provisioning
+        not done for locations: ''WESTUS:extensionresourcetype,WESTUS:testCLI''. Please
+        perform default rollout job first for ensuring that storage is provisioned.
+        Prerequisites can be found: https://aka.ms/CustomRolloutPreReq"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '292'
+      content-type:
+      - application/json
+      date:
+      - Mon, 03 Jun 2024 16:50:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=9506e7c0-c569-479f-9940-1f63cb8ce817/centraluseuap/2f75d913-995a-4779-93a9-4f2faf494b89
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: EF3B972848E64E92ADBE056C965E277F Ref B: DM2EDGE0606 Ref C: 2024-06-03T16:50:05Z'
+    status:
+      code: 412
+      message: Precondition Failed
+version: 1

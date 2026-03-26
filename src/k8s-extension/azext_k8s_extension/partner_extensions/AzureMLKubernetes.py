@@ -10,10 +10,13 @@
 import copy
 from hashlib import md5
 from typing import Any, Dict, List, Tuple
+
+from ..aaz.latest.relay.hyco import Create as HycoCreate, Show as HycoShow
+from ..aaz.latest.relay.hyco.authorization_rule import Create as HycoAuthoCreate
+from ..aaz.latest.relay.hyco.authorization_rule.keys import List as HycoAuthoKeysList
+from ..aaz.latest.relay.namespace import Create as NamespaceCreate
 from ..utils import get_cluster_rp_api_version
 
-import azure.mgmt.relay
-import azure.mgmt.relay.models
 import azure.mgmt.resource.locks
 import azure.mgmt.servicebus
 import azure.mgmt.servicebus.models
@@ -25,9 +28,7 @@ from azure.cli.core.azclierror import AzureResponseError, InvalidArgumentValueEr
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
 from azure.mgmt.resource.locks.models import ManagementLockObject
 from knack.log import get_logger
-from msrestazure.azure_exceptions import CloudError
-from msrest.exceptions import HttpOperationError
-import azure.core.exceptions
+from azure.core.exceptions import HttpResponseError
 
 from .._client_factory import cf_resources
 from .DefaultExtension import DefaultExtension, user_confirmation_factory
@@ -114,7 +115,8 @@ class AzureMLKubernetes(DefaultExtension):
     def Create(self, cmd, client, resource_group_name, cluster_name, name, cluster_type, cluster_rp,
                extension_type, scope, auto_upgrade_minor_version, release_train, version, target_namespace,
                release_namespace, configuration_settings, configuration_protected_settings,
-               configuration_settings_file, configuration_protected_settings_file):
+               configuration_settings_file, configuration_protected_settings_file, plan_name,
+               plan_publisher, plan_product):
 
         logger.warning("Troubleshooting: {}".format(self.TSG_LINK))
 
@@ -168,7 +170,7 @@ class AzureMLKubernetes(DefaultExtension):
                     configuration_settings[self.OPEN_SHIFT] = 'true'
             except:
                 pass
-        except CloudError as ex:
+        except HttpResponseError as ex:
             raise ex
 
         # generate values for the extension if none is set.
@@ -329,7 +331,7 @@ class AzureMLKubernetes(DefaultExtension):
                         cmd, subscription_id, resource_group_name, cluster_name, '', True)
                     configuration_protected_settings[self.AZURE_LOG_ANALYTICS_CONNECTION_STRING] = shared_key
                     logger.info("Get log analytics connection string succeeded.")
-                except azure.core.exceptions.HttpResponseError:
+                except HttpResponseError:
                     logger.info("Failed to get log analytics connection string.")
 
             original_extension_config_settings = original_extension.configuration_settings
@@ -342,7 +344,7 @@ class AzureMLKubernetes(DefaultExtension):
                         cmd, subscription_id, resource_group_name, cluster_name, '', self.RELAY_HC_AUTH_NAME, True)
                     configuration_protected_settings[self.RELAY_SERVER_CONNECTION_STRING] = relay_connection_string
                     logger.info("Get relay connection string succeeded.")
-                except azure.mgmt.relay.models.ErrorResponseException as ex:
+                except HttpResponseError as ex:
                     if ex.response.status_code == 404:
                         raise ResourceNotFoundError("Relay server not found. "
                                                     "Check {} for more information.".format(self.TSG_LINK)) from ex
@@ -356,7 +358,7 @@ class AzureMLKubernetes(DefaultExtension):
                         cmd, subscription_id, resource_group_name, cluster_name, '', {}, True)
                     configuration_protected_settings[self.SERVICE_BUS_CONNECTION_STRING] = service_bus_connection_string
                     logger.info("Get service bus connection string succeeded.")
-                except azure.core.exceptions.HttpResponseError as ex:
+                except HttpResponseError as ex:
                     if ex.response.status_code == 404:
                         raise ResourceNotFoundError("Service bus not found."
                                                     "Check {} for more information.".format(self.TSG_LINK)) from ex
@@ -365,14 +367,17 @@ class AzureMLKubernetes(DefaultExtension):
 
             configuration_protected_settings = _dereference(self.reference_mapping, configuration_protected_settings)
 
-            if self.sslKeyPemFile in configuration_protected_settings and \
-                    self.sslCertPemFile in configuration_protected_settings:
-                logger.info(f"Both {self.sslKeyPemFile} and {self.sslCertPemFile} are set, update ssl key.")
-                fe_ssl_cert_file = configuration_protected_settings.get(self.sslCertPemFile)
-                fe_ssl_key_file = configuration_protected_settings.get(self.sslKeyPemFile)
-
-                if fe_ssl_cert_file and fe_ssl_key_file:
-                    self.__set_inference_ssl_from_file(configuration_protected_settings, fe_ssl_cert_file, fe_ssl_key_file)
+        fe_ssl_secret = _get_value_from_config_protected_config(
+            self.SSL_SECRET, configuration_settings, configuration_protected_settings)
+        fe_ssl_cert_file = configuration_protected_settings.get(self.sslCertPemFile)
+        fe_ssl_key_file = configuration_protected_settings.get(self.sslKeyPemFile)
+        # always take ssl key/cert first, then secret if key/cert file is not provided
+        if fe_ssl_cert_file and fe_ssl_key_file:
+            logger.info(f"Both {self.sslKeyPemFile} and {self.sslCertPemFile} are set, updating ssl key.")
+            self.__set_inference_ssl_from_file(configuration_protected_settings, fe_ssl_cert_file, fe_ssl_key_file)
+        elif fe_ssl_secret:
+            logger.info(f"{self.SSL_SECRET} is set, updating ssl secret.")
+            self.__set_inference_ssl_from_secret(configuration_settings, fe_ssl_secret)
 
         # if no entries are existed in configuration_protected_settings, configuration_settings, return whatever passed
         #  in the Update function(empty dict or None).
@@ -607,8 +612,6 @@ def _lock_resource(cmd, lock_scope, lock_level='CanNotDelete'):
 
 def _get_relay_connection_str(
         cmd, subscription_id, resource_group_name, cluster_name, cluster_location, auth_rule_name, get_key_only=False) -> Tuple[str, str, str]:
-    relay_client: azure.mgmt.relay.RelayManagementClient = get_mgmt_service_client(
-        cmd.cli_ctx, azure.mgmt.relay.RelayManagementClient)
 
     cluster_id = '{}-{}-{}-relay'.format(cluster_name, subscription_id, resource_group_name)
     relay_namespace_name = _get_valid_name(
@@ -619,40 +622,48 @@ def _get_relay_connection_str(
     # only create relay if not found
     try:
         # get connection string
-        hybrid_connection_object = relay_client.hybrid_connections.get(
-            resource_group_name, relay_namespace_name, hybrid_connection_name)
-        hc_resource_id = hybrid_connection_object.id
-        key: azure.mgmt.relay.models.AccessKeys = relay_client.hybrid_connections.list_keys(
-            resource_group_name, relay_namespace_name, hybrid_connection_name, auth_rule_name)
-    except HttpOperationError as e:
+        hybrid_connection_object = HycoShow(cli_ctx=cmd.cli_ctx)(command_args={"resource_group": resource_group_name,
+                                                                               "namespace_name": relay_namespace_name,
+                                                                               "name": hybrid_connection_name})
+        hc_resource_id = hybrid_connection_object['id']
+        key = HycoAuthoKeysList(cli_ctx=cmd.cli_ctx)(command_args={"resource_group": resource_group_name,
+                                                                   "namespace_name": relay_namespace_name,
+                                                                   "hybrid_connection_name": hybrid_connection_name,
+                                                                   "name": auth_rule_name})
+    except HttpResponseError as e:
         if e.response.status_code != 404 or get_key_only:
             raise e
         # create namespace
-        relay_namespace_params = azure.mgmt.relay.models.RelayNamespace(
-            location=cluster_location, tags=resource_tag)
-
-        async_poller = relay_client.namespaces.create_or_update(
-            resource_group_name, relay_namespace_name, relay_namespace_params)
+        async_poller = NamespaceCreate(cli_ctx=cmd.cli_ctx)(command_args={"resource_group": resource_group_name,
+                                                                          "name": relay_namespace_name,
+                                                                          "location": cluster_location,
+                                                                          "tags": resource_tag})
         while True:
             async_poller.result(15)
             if async_poller.done():
                 break
 
         # create hybrid connection
-        hybrid_connection_object = relay_client.hybrid_connections.create_or_update(
-            resource_group_name, relay_namespace_name, hybrid_connection_name, requires_client_authorization=True)
-        hc_resource_id = hybrid_connection_object.id
+        hybrid_connection_object = HycoCreate(cli_ctx=cmd.cli_ctx)(command_args={"resource_group": resource_group_name,
+                                                                                 "namespace_name": relay_namespace_name,
+                                                                                 "name": hybrid_connection_name,
+                                                                                 "requires_client_authorization": True})
+        hc_resource_id = hybrid_connection_object['id']
 
         # create authorization rule
-        auth_rule_rights = [azure.mgmt.relay.models.AccessRights.manage,
-                            azure.mgmt.relay.models.AccessRights.send, azure.mgmt.relay.models.AccessRights.listen]
-        relay_client.hybrid_connections.create_or_update_authorization_rule(
-            resource_group_name, relay_namespace_name, hybrid_connection_name, auth_rule_name, rights=auth_rule_rights)
+        auth_rule_rights = ["Manage", "Send", "Listen"]
+        HycoAuthoCreate(cli_ctx=cmd.cli_ctx)(command_args={"resource_group": resource_group_name,
+                                                           "namespace_name": relay_namespace_name,
+                                                           "hybrid_connection_name": hybrid_connection_name,
+                                                           "name": auth_rule_name,
+                                                           "rights": auth_rule_rights})
 
         # get connection string
-        key: azure.mgmt.relay.models.AccessKeys = relay_client.hybrid_connections.list_keys(
-            resource_group_name, relay_namespace_name, hybrid_connection_name, auth_rule_name)
-    return f'{key.primary_connection_string}', hc_resource_id, hybrid_connection_name
+        key = HycoAuthoKeysList(cli_ctx=cmd.cli_ctx)(command_args={"resource_group": resource_group_name,
+                                                                   "namespace_name": relay_namespace_name,
+                                                                   "hybrid_connection_name": hybrid_connection_name,
+                                                                   "name": auth_rule_name})
+    return f'{key["primaryConnectionString"]}', hc_resource_id, hybrid_connection_name
 
 
 def _get_service_bus_connection_string(cmd, subscription_id, resource_group_name, cluster_name, cluster_location,
@@ -674,7 +685,7 @@ def _get_service_bus_connection_string(cmd, subscription_id, resource_group_name
             key: azure.mgmt.servicebus.models.AccessKeys = service_bus_client.namespaces.list_keys(
                 resource_group_name, service_bus_namespace_name, rule.name)
             return key.primary_connection_string, service_bus_resource_id
-    except azure.core.exceptions.HttpResponseError as e:
+    except HttpResponseError as e:
         if e.response.status_code != 404 or get_key_only:
             raise e
         # create namespace
@@ -728,7 +739,7 @@ def _get_log_analytics_ws_connection_string(
         customer_id = log_analytics_ws_object.customer_id
         shared_key = log_analytics_ws_client.shared_keys.get_shared_keys(
             resource_group_name, log_analytics_ws_name).primary_shared_key
-    except azure.core.exceptions.HttpResponseError as e:
+    except HttpResponseError as e:
         if e.response.status_code != 404 or get_key_only:
             raise e
         log_analytics_ws = azure.mgmt.loganalytics.models.Workspace(location=cluster_location, tags=resource_tag)

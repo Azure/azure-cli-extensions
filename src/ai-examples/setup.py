@@ -15,7 +15,7 @@ except ImportError:
     logger.warn("Wheel is not available, disabling bdist_wheel hook")
 
 # HISTORY.rst entry.
-VERSION = '0.2.5'
+VERSION = '0.2.6'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -42,7 +42,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='ai_examples',
+    name='ai-examples',
     version=VERSION,
     description='Add AI powered examples to help content.',
     author='Matthew Booe',

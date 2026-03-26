@@ -2,6 +2,31 @@
 
 Release History
 ===============
+
+1.0.0b3
+++++++
+* Bump main cli version requirement to 2.75.0
+
+1.0.0b2
+++++++
+* Remove DATA_COSMOS_TABLE and DATA_STORAGE references
+
+1.0.0b1
+++++++
+* Remove ADAL dependencies
+
+0.7.2
+++++++
+* Remove commands supported in azure cli
+
+0.7.1
+++++++
+* `az storage blob copy start`: Fix auth issue
+
+0.7.0
+++++++
+* `az storage blob upload/set-tier/copy start`: Support `Cold` for `--tier`
+
 0.6.2
 ++++++
 * `az storage blob filter`: Add `--container-name` to support filter blobs in specific container

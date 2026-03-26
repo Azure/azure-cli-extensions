@@ -5,8 +5,6 @@
 
 # pylint: disable=unused-argument
 
-from azure.cli.core.decorators import Completer
-
 languages = ["en-us", "es-es", "fr-fr", "de-de", "it-it", "ja-jp", "ko-kr", "ru-ru", "pt-br", "zh-tw", "zh-hans"]
 timezones = ["Afghanistan Standard Time", "Alaskan Standard Time", "Arab Standard Time", "Arabian Standard Time",
              "Arabic Standard Time", "Argentina Standard Time", "Atlantic Standard Time", "AUS Central Standard Time",
@@ -39,28 +37,8 @@ timezones = ["Afghanistan Standard Time", "Alaskan Standard Time", "Arab Standar
              "Yakutsk Standard Time"]
 
 
-@Completer
-def get_supported_languages_for_create(cmd, prefix, namespace, **kwargs):
-    return _get_supported_languages()
-
-
-@Completer
-def get_supported_languages_for_update(cmd, prefix, namespace, **kwargs):
-    return _get_supported_languages()
-
-
 def _get_supported_languages():
     return languages
-
-
-@Completer
-def get_supported_timezones_for_create(cmd, prefix, namespace, **kwargs):
-    return _get_supported_timezones()
-
-
-@Completer
-def get_supported_timezones_for_update(cmd, prefix, namespace, **kwargs):
-    return _get_supported_timezones()
 
 
 def _get_supported_timezones():

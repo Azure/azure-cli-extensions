@@ -1,5 +1,5 @@
-# Azure CLI redisenterprise Extension #
-This is the extension for redisenterprise
+# Azure CLI RedisEnterprise Extension #
+This is an extension to Azure CLI to manage redisenterprise resources.
 
 ### How to use ###
 Install this extension using the below CLI command

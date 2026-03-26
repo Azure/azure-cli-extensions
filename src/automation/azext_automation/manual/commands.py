@@ -11,7 +11,7 @@ from azure.cli.core.commands import CliCommandType
 
 def load_command_table(self, _):
 
-    from azext_automation.manual._client_factory import cf_runbook_draft, cf_job, cf_automation_account,\
+    from azext_automation.manual._client_factory import cf_runbook_draft, cf_job, cf_automation_account, \
         cf_schedule, cf_software_update_configuration, cf_software_update_configuration_runs, \
         cf_software_update_configuration_machine_runs
     from azext_automation.generated._client_factory import cf_runbook

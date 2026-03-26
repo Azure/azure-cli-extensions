@@ -83,8 +83,8 @@ helps['monitor alert-processing-rule create'] = """
       - name: --filter-alert-context
         short-summary: Filter alerts by alert context (payload).
         long-summary: |
-            Filter format is <operator> <space-delimited values> where
-            Operator: one of <Equals, NotEquals, Contains, DoesNotContain>
+            Filter format is `<operator> <space-delimited values>` where
+            Operator: one of Equals, NotEquals, Contains, DoesNotContain
             Values: List of values to match for a given condition
       - name: --schedule-recurrence
         short-summary: List of recurrence pattern values

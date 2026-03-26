@@ -1,0 +1,71 @@
+interactions:
+- request:
+    body: '{"properties": {"isAnonymous": false, "isArchived": false, "condaFile":
+      "name: sklearn-aks-env\nchannels:\n- conda-forge\ndependencies:\n- python=3.7.10\n-
+      numpy\n- pip\n- scikit-learn==0.19.1\n- scipy\n- pip:\n  - azureml-defaults\n  -
+      inference-schema[numpy-support]\n  - joblib\n  - numpy\n  - scikit-learn==0.19.1\n  -
+      scipy\n", "image": "pytorch.pytorch"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '361'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - azureml-cli-v2/0.0.139 azure-ml/0.0.139 azsdk-python-mgmt-machinelearningservices/0.1.0
+        Python/3.7.11 (Windows-10-10.0.22000-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/000000000000000/environments/test-environment-000004/versions/1?api-version=0000-00-00
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/test-environment-000004/versions/1\",\n
+        \ \"name\": \"1\",\n  \"type\": \"Microsoft.MachineLearningServices/workspaces/environments/versions\",\n
+        \ \"properties\": {\n    \"description\": null,\n    \"tags\": {},\n    \"properties\":
+        {},\n    \"isArchived\": false,\n    \"isAnonymous\": false,\n    \"environmentType\":
+        \"UserCreated\",\n    \"image\": \"pytorch.pytorch\",\n    \"condaFile\":
+        \"{\\n  \\\"channels\\\": [\\n    \\\"conda-forge\\\"\\n  ],\\n  \\\"dependencies\\\":
+        [\\n    \\\"python=3.7.10\\\",\\n    \\\"numpy\\\",\\n    \\\"pip\\\",\\n
+        \   \\\"scikit-learn==0.19.1\\\",\\n    \\\"scipy\\\",\\n    {\\n      \\\"pip\\\":
+        [\\n        \\\"azureml-defaults\\\",\\n        \\\"inference-schema[numpy-support]\\\",\\n
+        \       \\\"joblib\\\",\\n        \\\"numpy\\\",\\n        \\\"scikit-learn==0.19.1\\\",\\n
+        \       \\\"scipy\\\"\\n      ]\\n    }\\n  ],\\n  \\\"name\\\": \\\"azureml_11bf6c0579bd75dce02cc52c25613e26\\\"\\n}\",\n
+        \   \"osType\": \"Linux\"\n  },\n  \"systemData\": {\n    \"createdAt\": \"2022-03-17T20:32:37.8550675Z\",\n
+        \   \"createdBy\": \"Harneet Virk\",\n    \"createdByType\": \"User\",\n    \"lastModifiedAt\":
+        \"2022-03-17T20:32:37.8550675Z\",\n    \"lastModifiedBy\": \"Harneet Virk\",\n
+        \   \"lastModifiedByType\": \"User\"\n  }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1281'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 17 Mar 2022 20:32:48 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/v2testharnvir-rg/providers/Microsoft.MachineLearningServices/workspaces/v2scoringurl-testharnvirws/environments/test-environment-000004/versions/1?api-version=2022-02-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:512cc15a-13b5-415b-bfd0-dce7accb6bb1
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-response-type:
+      - standard
+      x-request-time:
+      - '11.563'
+    status:
+      code: 201
+      message: Created
+version: 1

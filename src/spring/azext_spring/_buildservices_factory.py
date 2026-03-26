@@ -6,18 +6,16 @@
 # pylint: disable=too-few-public-methods, unused-argument, redefined-builtin
 import sys
 import requests
-import json
 from time import sleep
 from requests.auth import HTTPBasicAuth
 from knack.log import get_logger
 from azure.cli.core.azclierror import InvalidArgumentValueError, AzureInternalError, DeploymentError
-from msrestazure.tools import parse_resource_id
+from azure.mgmt.core.tools import parse_resource_id
 from azure.cli.core.commands.client_factory import get_subscription_id
-from msrestazure.azure_exceptions import CloudError
-from .vendored_sdks.appplatform.v2022_05_01_preview import models
+from azure.core.exceptions import HttpResponseError
+from .vendored_sdks.appplatform.v2024_05_01_preview import models
 from ._deployment_uploadable_factory import uploader_selector
 from ._log_stream import LogStream
-from .vendored_sdks.appplatform.v2022_01_01_preview.models._app_platform_management_client_enums import SupportedRuntimeValue
 
 logger = get_logger(__name__)
 
@@ -40,10 +38,16 @@ class BuildService:
         logger.warning("[1/{}] Requesting for upload URL.".format(total_steps))
         upload_info = self._get_upload_info()
         logger.warning("[2/{}] Uploading package to blob.".format(total_steps))
-        uploader_selector(upload_url=upload_info.upload_url, **kwargs).upload_and_build(**kwargs)
-        logger.warning("[3/{}] Creating or Updating build '{}'.".format(total_steps, kwargs['app']))
+        uploader_selector(cli_ctx=self.cmd.cli_ctx, upload_url=upload_info.upload_url, **kwargs).upload_and_build(**kwargs)
+        if 'app' in kwargs:
+            build_name = kwargs['app']
+        elif 'job' in kwargs:
+            build_name = kwargs['job']
+        else:
+            build_name = kwargs['build_name']
+        logger.warning("[3/{}] Creating or Updating build '{}'.".format(total_steps, build_name))
         build_result_id = self._queue_build(upload_info.relative_path, **kwargs)
-        logger.warning("[4/{}] Waiting for building docker image to finish. This may take a few minutes.".format(total_steps))
+        logger.warning("[4/{}] Waiting for building container image to finish. This may take a few minutes.".format(total_steps))
         self._wait_build_finished(build_result_id)
         return build_result_id
 
@@ -53,12 +57,14 @@ class BuildService:
             if not response.upload_url:
                 raise AzureInternalError("Failed to get a SAS URL to upload context.")
             return response
-        except CloudError as e:
+        except HttpResponseError as e:
             raise AzureInternalError("Failed to get a SAS URL to upload context. Error: {}".format(e.message))
         except AttributeError as e:
             raise AzureInternalError("Failed to get a SAS URL to upload context. Error: {}".format(e))
 
-    def _queue_build(self, relative_path=None, builder=None, build_env=None, build_cpu=None, build_memory=None, app=None, deployment=None, **_):
+    def _queue_build(self, relative_path=None, builder=None, build_env=None, build_cpu=None,
+                     build_memory=None, app=None, deployment=None, job=None, build_name=None,
+                     apms=None, certificates=None, build_certificates=None, **_):
         subscription = get_subscription_id(self.cmd.cli_ctx)
         service_resource_id = '/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}'.format(subscription, self.resource_group, self.service)
         build_resource_requests = models.BuildResourceRequests(
@@ -69,15 +75,24 @@ class BuildService:
             agent_pool='{}/buildservices/default/agentPools/default'.format(service_resource_id),
             relative_path=relative_path,
             env=build_env if build_env else None,
+            apms=apms,
+            certificates=build_certificates if build_certificates is not None else certificates,
             resource_requests=build_resource_requests)
         build = models.Build(properties=properties)
+        if build_name is None:
+            if job is not None:
+                build_name = job
+            elif app is not None and deployment is not None:
+                build_name = app + '-' + deployment
+            else:
+                raise InvalidArgumentValueError("Failed to get build name.")
         try:
             return self.client.build_service.create_or_update_build(self.resource_group,
                                                                     self.service,
                                                                     self.name,
-                                                                    app + '-' + deployment,
+                                                                    build_name,
                                                                     build).properties.triggered_build_result.id
-        except (AttributeError, CloudError) as e:
+        except (AttributeError, HttpResponseError) as e:
             raise DeploymentError("Failed to create or update a build. Error: {}".format(e.message))
 
     def _wait_build_finished(self, build_result_id):
@@ -105,7 +120,12 @@ class BuildService:
 
         if result.properties.provisioning_state != "Succeeded":
             log_url = self._try_get_build_log_url(build_result_id)
-            raise DeploymentError("Failed to build docker image, please check the build logs {} and retry.".format(log_url))
+            if hasattr(result.properties, "error") and result.properties.error:
+                build_error = result.properties.error
+                error_msg = "Failed to build container image, error code: {}, message: {}, check the build logs {} for more details and retry.".format(build_error.code, build_error.message, log_url)
+            else:
+                error_msg = "Failed to build container image, please check the build logs {} and retry.".format(log_url)
+            raise DeploymentError(error_msg)
 
     def _get_build_result(self, id):
         resource_id = parse_resource_id(id)

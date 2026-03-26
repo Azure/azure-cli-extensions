@@ -5,9 +5,11 @@
 
 from azure.cli.core import AzCommandsLoader
 from . import consts
+from typing import Union
 
 from ._help import helps  # pylint: disable=unused-import
 
+from knack.commands import CLICommand
 
 class K8sExtensionCommandsLoader(AzCommandsLoader):
 
@@ -20,12 +22,24 @@ class K8sExtensionCommandsLoader(AzCommandsLoader):
         super().__init__(cli_ctx=cli_ctx,
                          custom_command_type=k8s_extension_custom)
 
-    def load_command_table(self, args):
+    def load_command_table(self, args: Union[list[str], None]) -> dict[str, CLICommand]:
         from .commands import load_command_table
+        from azure.cli.core.aaz import load_aaz_command_table
+        try:
+            from . import aaz
+        except ImportError:
+            aaz = None
+        if aaz:
+            load_aaz_command_table(
+                loader=self,
+                aaz_pkg_name=aaz.__name__,
+                args=args
+            )
         load_command_table(self, args)
-        return self.command_table
+        command_table: dict[str, CLICommand] = self.command_table
+        return command_table
 
-    def load_arguments(self, command):
+    def load_arguments(self, command: CLICommand):
         from ._params import load_arguments
         load_arguments(self, command)
 

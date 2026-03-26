@@ -1,0 +1,60 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - edge-zones extended-zone list
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeZones/extendedZones?api-version=2024-04-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeZones/extendedZones/microsoftrrezm1","name":"microsoftrrezm1","type":"Microsoft.EdgeZones/extendedZones","properties":{"provisioningState":"Succeeded","registrationState":"NotRegistered","displayName":"Los
+        Angeles Test","regionalDisplayName":"(US) Los Angeles Test","regionType":"Physical","regionCategory":"Other","geography":"usa","geographyGroup":"US","longitude":"-118.235374","latitude":"34.058414","homeLocation":"westus"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeZones/extendedZones/losangeles","name":"losangeles","type":"Microsoft.EdgeZones/extendedZones","properties":{"provisioningState":"Succeeded","registrationState":"Registered","displayName":"Los
+        Angeles","regionalDisplayName":"(US) Los Angeles","regionType":"Physical","regionCategory":"Other","geography":"usa","geographyGroup":"US","longitude":"-118.23537","latitude":"34.058414","homeLocation":"westus"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeZones/extendedZones/microsoftb25lab1","name":"microsoftb25lab1","type":"Microsoft.EdgeZones/extendedZones","properties":{"provisioningState":"Succeeded","registrationState":"Registered","displayName":"Microsoft
+        B25 Lab 1","regionalDisplayName":"","regionType":"","regionCategory":"","geography":"","geographyGroup":"","longitude":"","latitude":"","homeLocation":""}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeZones/extendedZones/AzureEdgeZoneLosAngelesA","name":"AzureEdgeZoneLosAngelesA","type":"Microsoft.EdgeZones/extendedZones","properties":{"provisioningState":"Succeeded","registrationState":"Registered","displayName":"Los
+        Angeles Test","regionalDisplayName":"(US) Los Angeles Test","regionType":"Physical","regionCategory":"Other","geography":"usa","geographyGroup":"US","longitude":"-118.235374","latitude":"34.058414","homeLocation":"westus"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EdgeZones/extendedZones/microsoftdclabs1","name":"microsoftdclabs1","type":"Microsoft.EdgeZones/extendedZones","properties":{"provisioningState":"Succeeded","registrationState":"Registered","displayName":"Microsoft
+        DC Labs 1","regionalDisplayName":"","regionType":"","regionCategory":"","geography":"","geographyGroup":"","longitude":"","latitude":"","homeLocation":""}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2441'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 03 Apr 2024 22:15:15 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 15014071-03a5-4623-8618-f032ef42f533
+      pragma:
+      - no-cache
+      set-cookie:
+      - ARRAffinity=6a16463fe82ba379c27ce5f818612272558756da6e9aa463ae0528a89e03d02d;Path=/;HttpOnly;Secure;Domain=edgezonerp-canary.trafficmanager.net
+      - ARRAffinitySameSite=6a16463fe82ba379c27ce5f818612272558756da6e9aa463ae0528a89e03d02d;Path=/;HttpOnly;SameSite=None;Secure;Domain=edgezonerp-canary.trafficmanager.net
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: A0D7DF7D6B9B46608329459BADCCE683 Ref B: CO6AA3150219045 Ref C: 2024-04-03T22:15:10Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+version: 1

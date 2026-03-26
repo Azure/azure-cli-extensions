@@ -2,6 +2,22 @@
 
 Release History
 ===============
+2.3.0
+++++++++++++++++++
+* Added support for using OCIRepository as a source type in Flux configurations.
+
+2.2.0
+++++++++++++++++++
+* Introduce a new feature to add provider authentication for git repositories.
+
+2.1.0
+++++++++++++++++++
+* Introduce a new feature to disable health checks for kustomizations applied to the cluster.
+* Bump pycryptodome to 3.21.0
+
+2.0.0
+++++++++++++++++++
+* Remove the deprecated flux v1 `create` cmd
 
 1.7.0
 ++++++++++++++++++

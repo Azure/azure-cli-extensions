@@ -10,11 +10,7 @@ from codecs import open
 from setuptools import setup, find_packages
 
 # HISTORY.rst entry.
-VERSION = '0.2.0'
-try:
-    from azext_cloudservice.manual.version import VERSION
-except ImportError:
-    pass
+VERSION = '1.0.1'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -31,7 +27,7 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = [
-    'azure-mgmt-compute~=20.0.0'
+    'azure-mgmt-compute~=33.0.0'
 ]
 
 try:
@@ -45,7 +41,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='cloud_service',
+    name='cloud-service',
     version=VERSION,
     description='Microsoft Azure Command-Line Tools ComputeManagementClient Extension',
     author='Microsoft Corporation',

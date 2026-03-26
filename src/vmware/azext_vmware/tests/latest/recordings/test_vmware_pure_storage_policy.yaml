@@ -1,0 +1,135 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware pure-storage-policy list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --private-cloud-name
+      User-Agent:
+      - AZURECLI/2.82.0 azsdk-python-core/1.37.0 Python/3.10.11 (Windows-10-10.0.26200-SP0)
+    method: GET
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.AVS/privateClouds/a/pureStoragePolicies?api-version=2025-09-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/pureStoragePolicies/storagePolicy1","name":"storagePolicy1","type":"Microsoft.AVS/privateClouds/pureStoragePolicies","properties":{"storagePolicyDefinition":"storagePolicyDefinition1","storagePoolId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/PureStorage.Block/storagePools/storagePool1","provisioningState":"Succeeded"}}]}'
+    headers:
+      content-length:
+      - '501'
+      content-type:
+      - application/json
+      date:
+      - Fri, 16 Jan 2026 17:40:53 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware pure-storage-policy show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --private-cloud-name -n
+      User-Agent:
+      - AZURECLI/2.82.0 azsdk-python-core/1.37.0 Python/3.10.11 (Windows-10-10.0.26200-SP0)
+    method: GET
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.AVS/privateClouds/a/pureStoragePolicies/storagePolicyName?api-version=2025-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/pureStoragePolicies/storagePolicy1","name":"storagePolicy1","type":"Microsoft.AVS/privateClouds/pureStoragePolicies","properties":{"storagePolicyDefinition":"storagePolicyDefinition1","storagePoolId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/PureStorage.Block/storagePools/storagePool1","provisioningState":"Succeeded"}}'
+    headers:
+      content-length:
+      - '489'
+      content-type:
+      - application/json
+      date:
+      - Fri, 16 Jan 2026 17:40:55 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"storagePolicyDefinition": "storagePolicyDefinition", "storagePoolId":
+      "storagePoolId"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware pure-storage-policy create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '104'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --private-cloud-name -n --storage-policy-definition --storage-pool-id
+      User-Agent:
+      - AZURECLI/2.82.0 azsdk-python-core/1.37.0 Python/3.10.11 (Windows-10-10.0.26200-SP0)
+    method: PUT
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.AVS/privateClouds/a/pureStoragePolicies/storagePolicyName?api-version=2025-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/pureStoragePolicies/storagePolicy1","name":"storagePolicy1","type":"Microsoft.AVS/privateClouds/pureStoragePolicies","properties":{"storagePolicyDefinition":"storagePolicyDefinition1","storagePoolId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/PureStorage.Block/storagePools/storagePool1","provisioningState":"Succeeded"}}'
+    headers:
+      content-length:
+      - '489'
+      content-type:
+      - application/json
+      date:
+      - Fri, 16 Jan 2026 17:40:58 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware pure-storage-policy delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --private-cloud-name -n --yes
+      User-Agent:
+      - AZURECLI/2.82.0 azsdk-python-core/1.37.0 Python/3.10.11 (Windows-10-10.0.26200-SP0)
+    method: DELETE
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.AVS/privateClouds/a/pureStoragePolicies/storagePolicyName?api-version=2025-09-01
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      date:
+      - Fri, 16 Jan 2026 17:41:00 GMT
+      server:
+      - Rocket
+    status:
+      code: 204
+      message: No Content
+version: 1

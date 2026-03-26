@@ -1,0 +1,38 @@
+{
+  "location": "uksouth",
+  "publisher_name": "automated-cli-test-ubuntu-publisher",
+  "publisher_resource_group_name": "{{publisher_resource_group_name}}",
+  "acr_artifact_store_name": "ubuntu-acr",
+  // Disable public network access on the ACR.
+  // Default is false. Set to true to disable.
+  "disable_public_network_access": false,
+  // List of Resource id of Private End Points to access ACR that needs to be approved.
+  "vnet_private_end_points": [
+  ],
+  // List of Resource id of NNF to access ACR that needs to be approved.
+  "network_fabric_controller_ids": [
+  ],  
+  "resource_element_templates": [
+    {
+      "resource_element_type": "NF",
+      "properties": {
+        // The name of the existing publisher for the NSD.
+        "publisher": "automated-cli-test-ubuntu-publisher",
+        // The resource group that the publisher is hosted in.
+        "publisher_resource_group": "{{publisher_resource_group_name}}",
+        // The name of the existing Network Function Definition Group to deploy using this NSD.
+        "name": "ubuntu-vm",
+        // The version of the existing Network Function Definition to base this NSD on.
+        // This NSD will be able to deploy any NFDV with deployment parameters compatible with this version.
+        "version": "1.0.0",
+        // The region that the NFDV is published to.
+        "publisher_offering_location": "uksouth",
+        // Type of Network Function. Valid values are 'cnf' or 'vnf'.
+        "type": "vnf"
+      }
+    }
+  ],
+  "nsd_name": "ubuntu",
+  "nsd_version": "1.0.0",
+  "nsdv_description": "Plain ubuntu VM"
+}

@@ -16,7 +16,9 @@ from knack.log import get_logger
 from knack.prompting import prompt_y_n, NoTTYException
 
 from .encryption_types import Encryption
-from .exceptions import (AzCommandError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError, SkuDoesNotSupportHyperV, SuseNotAvailableError)
+from .exceptions import (AzCommandError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError, SkuDoesNotSupportHyperV, SkuNotAvailableError)
+
+from azure.cli.core.azclierror import CLIError
 
 REPAIR_MAP_URL = 'https://raw.githubusercontent.com/Azure/repair-script-library/master/map.json'
 
@@ -200,6 +202,20 @@ def _clean_up_resources(resource_group_name, confirm):
         logger.error("Clean up failed.")
 
 
+def _check_existing_rg(rg_name):
+    # Check for existing dup name
+    try:
+        exists_rg_command = 'az group exists -n {resource_group_name} -o json'.format(resource_group_name=rg_name)
+        logger.info('Checking for existing resource groups with identical name within subscription...')
+        group_exists = loads(_call_az_command(exists_rg_command))
+    except AzCommandError as azCommandError:
+        logger.error(azCommandError)
+        raise CLIError('Unexpected error occured while fetching existing resource groups.')
+
+    logger.info('Pre-existing repair resource group with the same name is \'%s\'', group_exists)
+    return group_exists
+
+
 def _check_n_start_vm(vm_name, resource_group_name, confirm, vm_off_message, vm_instance_view):
     """
     Checks if the VM is running and prompts to auto-start it.
@@ -247,38 +263,27 @@ def _check_n_start_vm(vm_name, resource_group_name, confirm, vm_off_message, vm_
         return True
 
 
-def _fetch_compatible_sku(source_vm, hyperv):
-
+def _fetch_compatible_sku(source_vm, hyperv, requested_sku=None):
     location = source_vm.location
     source_vm_sku = source_vm.hardware_profile.vm_size
 
-    # First get the source_vm sku, if its available go with it
-    if not (not source_vm_sku.endswith('v3') and hyperv):
-        check_sku_command = 'az vm list-skus -s {sku} -l {loc} --query [].name -o tsv'.format(sku=source_vm_sku, loc=location)
-
-        logger.info('Checking if source VM size is available...')
-        sku_check = _call_az_command(check_sku_command).strip('\n')
-
-        if sku_check:
-            logger.info('Source VM size \'%s\' is available. Using it to create repair VM.\n', source_vm_sku)
-            return source_vm_sku
-
-        logger.info('Source VM size: \'%s\' is NOT available.\n', source_vm_sku)
-
-    # List available standard SKUs
-    # TODO, premium IO only when needed
-    if not hyperv:
-        list_sku_command = 'az vm list-skus -s standard_d -l {loc} --query ' \
-            '"[?capabilities[?name==\'vCPUs\' && to_number(value)>= to_number(\'2\')] && ' \
-            'capabilities[?name==\'vCPUs\' && to_number(value)<= to_number(\'16\')] && ' \
-            'capabilities[?name==\'MemoryGB\' && to_number(value)>=to_number(\'8\')] && ' \
-            'capabilities[?name==\'MemoryGB\' && to_number(value)<=to_number(\'32\')] && ' \
-            'capabilities[?name==\'MaxDataDiskCount\' && to_number(value)>to_number(\'0\')] && ' \
-            'capabilities[?name==\'PremiumIO\' && value==\'True\'] && ' \
-            'capabilities[?name==\'HyperVGenerations\']].name" -o json ' \
-            .format(loc=location)
-
+    if requested_sku:
+        # override the auto-selection with a provided sku
+        logger.info('Repair VM size provided on commandline is %s, overriding selection', requested_sku)
+        determined_sku = requested_sku
     else:
+        # No requested sku provided, proceed with mirroring the source
+        logger.info('Using source VM size %s for repair VM', source_vm_sku)
+        determined_sku = source_vm_sku
+
+    # We could check a variety of other things for compatibility, like disk types, etc., potential for future improvement
+    # hyperv would have special requirements, so lets exit if the source VM SKU does not support it
+    if hyperv and not _supports_nested_virtualization(determined_sku):
+        if requested_sku:
+            # user made a bad choice, exit
+            raise SkuDoesNotSupportHyperV('Selected VM size \'{}\' does not support nested virtualization. Cannot create repair VM with nested virtualization enabled.'.format(determined_sku))
+        # auto-determined VM sku, try to find another sku for nested
+        logger.info('Source VM size \'%s\' does not support the needed nested virtualization. Searching for alternative sizes', determined_sku)
         list_sku_command = 'az vm list-skus -s _v3 -l {loc} --query ' \
             '"[?capabilities[?name==\'vCPUs\' && to_number(value)>= to_number(\'2\')] && ' \
             'capabilities[?name==\'vCPUs\' && to_number(value)<= to_number(\'16\')] && ' \
@@ -286,26 +291,35 @@ def _fetch_compatible_sku(source_vm, hyperv):
             'capabilities[?name==\'MemoryGB\' && to_number(value)<=to_number(\'32\')] && ' \
             'capabilities[?name==\'MaxDataDiskCount\' && to_number(value)>to_number(\'0\')] && ' \
             'capabilities[?name==\'PremiumIO\' && value==\'True\'] && ' \
+            'capabilities[?name==\'CpuArchitectureType\' && value==\'x64\'] && ' \
             'capabilities[?name==\'HyperVGenerations\']].name" -o json ' \
             .format(loc=location)
+        logger.info('Fetching available VM sizes for repair VM candidate ...')
+        sku_list = loads(_call_az_command(list_sku_command).strip('\n'))
 
-    logger.info('Fetching available VM sizes for repair VM...')
-    sku_list = loads(_call_az_command(list_sku_command).strip('\n'))
+        if sku_list:
+            logger.info('VM size \'%s\' is available. Using it to create repair VM.\n', sku_list[0])
+            return sku_list[0]
+        raise SkuNotAvailableError('Failed to find compatible VM size for source VM\'s OS disk within given region and subscription that supports nested virtualization.')
 
-    if sku_list:
-        logger.info('VM size \'%s\' is available. Using it to create repair VM.\n', sku_list[0])
-        return sku_list[0]
+    # could also check "permissions" and/or availability, but for now, check if the sku is available in the region
+    check_sku_command = 'az vm list-skus -s {sku} -l {loc} --query [].name -o tsv'.format(sku=determined_sku, loc=location)
+    logger.info('Checking if provided VM size is available...')
+    sku_check = _call_az_command(check_sku_command).strip()
 
-    return None
+    if sku_check:
+        logger.info('Selected VM size \'%s\' is available. Selecting it to create repair VM.\n', determined_sku)
+        return determined_sku
+    raise CLIError('Selected VM size: \'{}\' is NOT available in location: \'{}\'.'.format(determined_sku, location))
 
 
 def _fetch_disk_info(resource_group_name, disk_name):
-    """ Returns sku, location, os_type, hyperVgeneration as tuples """
-    show_disk_command = 'az disk show -g {g} -n {name} --query [sku.name,location,osType,hyperVGeneration] -o json'.format(g=resource_group_name, name=disk_name)
+    """ Returns sku, location, os_type, hyperVgeneration, and disk_id as a tuple """
+    show_disk_command = 'az disk show -g {g} -n {name} --query [sku.name,location,osType,hyperVGeneration,id] -o json'.format(g=resource_group_name, name=disk_name)
     disk_info = loads(_call_az_command(show_disk_command))
-    # Note that disk_info will always have 4 elements if the command succeeded, if it fails it will cause an exception
-    sku, location, os_type, hyper_v_version = disk_info[0], disk_info[1], disk_info[2], disk_info[3]
-    return (sku, location, os_type, hyper_v_version)
+    # Note that disk_info will always have 5 elements if the command succeeded, if it fails it will cause an exception
+    sku, location, os_type, hyper_v_version, disk_id = disk_info[0], disk_info[1], disk_info[2], disk_info[3], disk_info[4]
+    return (sku, location, os_type, hyper_v_version, disk_id)
 
 
 def _get_repair_resource_tag(resource_group_name, source_vm_name):
@@ -331,10 +345,12 @@ def _fetch_encryption_settings(source_vm):
         return Encryption.NONE, key_vault, kekurl, secreturl
 
     disk_id = source_vm.storage_profile.os_disk.managed_disk.id
-    show_disk_command = 'az disk show --id {i} --query [encryptionSettingsCollection,encryptionSettingsCollection.encryptionSettings[].diskEncryptionKey.sourceVault.id,encryptionSettingsCollection.encryptionSettings[].keyEncryptionKey.keyUrl,encryptionSettingsCollection.encryptionSettings[].diskEncryptionKey.secretUrl] -o json' \
+    show_disk_command = 'az disk show --id {i} --query [encryptionSettingsCollection,encryptionSettingsCollection.enabled,encryptionSettingsCollection.encryptionSettings[].diskEncryptionKey.sourceVault.id,encryptionSettingsCollection.encryptionSettings[].keyEncryptionKey.keyUrl,encryptionSettingsCollection.encryptionSettings[].diskEncryptionKey.secretUrl] -o json' \
                         .format(i=disk_id)
-    encryption_type, key_vault, kekurl, secreturl = loads(_call_az_command(show_disk_command))
+    encryption_type, enabled, key_vault, kekurl, secreturl = loads(_call_az_command(show_disk_command))
     if [encryption_type, key_vault, kekurl] == [None, None, None]:
+        return Encryption.NONE, key_vault, kekurl, secreturl
+    if not enabled:
         return Encryption.NONE, key_vault, kekurl, secreturl
     if kekurl == []:
         key_vault, secreturl = key_vault[0], secreturl[0]
@@ -352,21 +368,26 @@ def _check_hyperV_gen(source_vm):
         raise SkuDoesNotSupportHyperV('Cannot support V2 HyperV generation. Please run command without --enabled-nested')
 
 
+# this function seems redundant
+# TODO: test if this can be merged with _check_hyperV_gen, the test mid-function seems to be a relic
 def _check_linux_hyperV_gen(source_vm):
     disk_id = source_vm.storage_profile.os_disk.managed_disk.id
     show_disk_command = 'az disk show --id {i} --query [hyperVgeneration] -o json' \
                         .format(i=disk_id)
-    hyperVGen = loads(_call_az_command(show_disk_command))
-    if hyperVGen != 'V2':
+    disk_hyperVGen = loads(_call_az_command(show_disk_command))
+
+    if disk_hyperVGen != 'V2':
         logger.info('Checking if source VM is gen2')
         # if image is created from Marketplace gen2 image , the disk will not have the mark for gen2
         fetch_hypervgen_command = 'az vm get-instance-view --ids {id} --query "[instanceView.hyperVGeneration]" -o json'.format(id=source_vm.id)
         hyperVGen_list = loads(_call_az_command(fetch_hypervgen_command))
-        hyperVGen = hyperVGen_list[0]
-        if hyperVGen != 'V2':
-            hyperVGen = 'V1'
+        vm_hyperVGen = hyperVGen_list[0]
+        if vm_hyperVGen != 'V2':
+            vm_hyperVGen = 'V1'
 
-    return hyperVGen
+        return vm_hyperVGen
+
+    return disk_hyperVGen
 
 
 def _secret_tag_check(resource_group_name, copy_disk_name, secreturl):
@@ -386,15 +407,16 @@ def _secret_tag_check(resource_group_name, copy_disk_name, secreturl):
         _call_az_command(set_tag_command)
 
 
-def _unlock_singlepass_encrypted_disk(repair_vm_name, repair_group_name, is_linux):
+def _unlock_singlepass_encrypted_disk(repair_vm_name, repair_group_name, is_linux, encrypt_recovery_key):
     logger.info('Unlocking attached copied disk...')
     if is_linux:
         return _unlock_mount_linux_encrypted_disk(repair_vm_name, repair_group_name)
-    return _unlock_mount_windows_encrypted_disk(repair_vm_name, repair_group_name)
+    return _unlock_mount_windows_encrypted_disk(repair_vm_name, repair_group_name, encrypt_recovery_key)
 
 
 def _unlock_singlepass_encrypted_disk_fallback(source_vm, resource_group_name, repair_vm_name, repair_group_name, copy_disk_name, is_linux):
     """
+    This method is not actually invoked.
     Fallback for unlocking disk when script fails. This will install the ADE extension to unlock the Data disk.
     """
 
@@ -412,6 +434,11 @@ def _unlock_singlepass_encrypted_disk_fallback(source_vm, resource_group_name, r
         elif encryption_type is Encryption.SINGLE_WITHOUT_KEK:
             install_ade_extension_command = 'az vm encryption enable --disk-encryption-keyvault {vault} --name {repair} --resource-group {g} --volume-type {volume}' \
                                             .format(g=repair_group_name, repair=repair_vm_name, vault=key_vault, volume=volume_type)
+        else:
+            # catch-all for unexpected encryption type, mainly a linter issue but bad logic by original author
+            install_ade_extension_command = None
+            raise CLIError('Unexpected encryption type for single pass encrypted disk.')
+
         # Add format-all flag for linux vms
         if is_linux:
             install_ade_extension_command += " --encrypt-format-all"
@@ -441,15 +468,30 @@ def _unlock_mount_linux_encrypted_disk(repair_vm_name, repair_group_name):
     return _invoke_run_command(LINUX_RUN_SCRIPT_NAME, repair_vm_name, repair_group_name, True)
 
 
-def _unlock_mount_windows_encrypted_disk(repair_vm_name, repair_group_name):
+def _unlock_mount_windows_encrypted_disk(repair_vm_name, repair_group_name, encrypt_recovery_key):
     # Unlocks the disk using the phasephrase and mounts it on the repair VM.
+    if encrypt_recovery_key:
+        logger.info('Using bitlocker password to unlock...')
+        WINDOWS_RUN_SCRIPT_NAME = 'win-mount-encrypted-disk-bitlockerV.ps1'
+        BITLOCKER_RECOVERY_PARAMS = []
+        BITLOCKER_RECOVERY_PARAMS.append('bitlockerkey="{}"'.format(encrypt_recovery_key))
+        return _invoke_run_command(WINDOWS_RUN_SCRIPT_NAME, repair_vm_name, repair_group_name, False, parameters=BITLOCKER_RECOVERY_PARAMS)
+
     WINDOWS_RUN_SCRIPT_NAME = 'win-mount-encrypted-disk.ps1'
     return _invoke_run_command(WINDOWS_RUN_SCRIPT_NAME, repair_vm_name, repair_group_name, False)
 
 
-def _fetch_compatible_windows_os_urn(source_vm):
+def _fetch_compatible_windows_os_urn(source_vm, source_vm_instance_view):
     location = source_vm.location
-    fetch_urn_command = 'az vm image list -s "2016-Datacenter" -f WindowsServer -p MicrosoftWindowsServer -l {loc} --verbose --all --query "[?sku==\'2016-Datacenter\'].urn | reverse(sort(@))" -o json'.format(loc=location)
+    publisher = "MicrosoftWindowsServer"
+    offer = "WindowsServer"
+    sku = "2022-datacenter-smalldisk"
+    vmgen = _is_gen2(source_vm_instance_view)
+    # added to cover VM families running on Gen2-only hardware, like _v6, these two windows functions need to be rewritten entirely, but this will work for now
+    if vmgen == 2:
+        sku = "2022-datacenter-smalldisk-g2"
+
+    fetch_urn_command = 'az vm image list -s {sku} -f {offer} -p {publisher} -l {loc} --verbose --all --query "[?sku==\'{sku}\'].urn | reverse(sort(@))" -o json'.format(loc=location, publisher=publisher, offer=offer, sku=sku)
     logger.info('Fetching compatible Windows OS images from gallery...')
     urns = loads(_call_az_command(fetch_urn_command))
 
@@ -462,7 +504,7 @@ def _fetch_compatible_windows_os_urn(source_vm):
     os_image_ref = source_vm.storage_profile.image_reference
     if os_image_ref and isinstance(os_image_ref.version, str) and os_image_ref.version in urns[0]:
         if len(urns) < 2:
-            logger.debug('Avoiding Win2016 latest image due to expected disk collision. But no other image available.')
+            logger.debug('Avoiding Win2022-datacenter-smalldisk latest image due to expected disk collision. But no other image available.')
             raise WindowsOsNotAvailableError()
         logger.debug('Returning Urn 1 to avoid disk collision error: %s', urns[1])
         return urns[1]
@@ -470,51 +512,51 @@ def _fetch_compatible_windows_os_urn(source_vm):
     return urns[0]
 
 
-def _suse_image_selector(distro):
-    fetch_urn_command = 'az vm image list --publisher SUSE --offer {offer} --sku gen1 --verbose --all --query "[].urn | reverse(sort(@))" -o json'.format(offer=distro)
-    logger.info('Fetching compatible SUSE OS images from gallery...')
-    urns = loads(_call_az_command(fetch_urn_command))
+def _fetch_matching_windows_os_urn(source_vm):
+    location = source_vm.location
 
-    # Raise exception when not finding SUSE image
+    # We will prefer to fetch image using source vm sku, that we match the CVM requirements.
+    if source_vm.storage_profile is not None and source_vm.storage_profile.image_reference is not None:
+        sku = source_vm.storage_profile.image_reference.sku
+        offer = source_vm.storage_profile.image_reference.offer
+        publisher = source_vm.storage_profile.image_reference.publisher
+        fetch_urn_command = 'az vm image list -s {sku} -f {offer} -p {publisher} -l {loc} --verbose --all --query "[?sku==\'{sku}\'].urn | reverse(sort(@))" -o json'.format(loc=location, sku=sku, offer=offer, publisher=publisher)
+        logger.info('Fetching compatible Windows OS images from gallery V2...')
+        urns = loads(_call_az_command(fetch_urn_command))
+
+    if not urns or len(urns) == 0:
+        # If source SKU not available then defaulting 2022 datacenter image.
+        fetch_urn_command = 'az vm image list -s "2022-Datacenter" -f WindowsServer -p MicrosoftWindowsServer -l {loc} --verbose --all --query "[?sku==\'2022-datacenter\'].urn | reverse(sort(@))" -o json'.format(loc=location)
+        logger.info('Fetching compatible Windows OS images from gallery for 2022 Datacenter V2...')
+        urns = loads(_call_az_command(fetch_urn_command))
+
+    # No OS images available for Windows2016
     if not urns:
-        raise SuseNotAvailableError()
-
-    logger.debug('Fetched urns: \n%s', urns)
-    # Returning the first URN as it is the latest image with no special use like HPC or SAP
-    logger.debug('Return the first URN : %s', urns[0])
-    return urns[0]
-
-
-def _suse_image_selector_gen2(distro):
-    fetch_urn_command = 'az vm image list --publisher SUSE --offer {offer} --sku gen2 --verbose --all --query "[].urn | reverse(sort(@))" -o json'.format(offer=distro)
-    logger.info('Fetching compatible SUSE OS images from gallery...')
-    urns = loads(_call_az_command(fetch_urn_command))
-
-    # Raise exception when not finding SUSE image
-    if not urns:
-        raise SuseNotAvailableError()
-
-    logger.debug('Fetched urns: \n%s', urns)
-    # Returning the first URN as it is the latest image with no special use like HPC or SAP
-    logger.debug('Return the first URN : %s', urns[0])
+        raise WindowsOsNotAvailableError()
+    logger.debug('Fetched Urns:\n%s', urns)
+    logger.debug('Defaulting to first image available. Returning Urn 0: %s', urns[0])
     return urns[0]
 
 
 def _select_distro_linux(distro):
+    # list of images needs to be added to before the docs reflect, and the docs need to remove the keywords long before we remove the reference from the extension
+    # https://learn.microsoft.com/cli/azure/vm/repair?view=azure-cli-latest#az-vm-repair-create-optional-parameters
     image_lookup = {
-        'rhel6': 'RedHat:RHEL:6.10:latest',
         'rhel7': 'RedHat:rhel-raw:7-raw:latest',
         'rhel8': 'RedHat:rhel-raw:8-raw:latest',
-        'ubuntu18': 'Canonical:UbuntuServer:18.04-LTS:latest',
+        'rhel9': 'RedHat:rhel-raw:9-raw:latest',
+        'rhel10': 'RedHat:rhel-raw:10-raw:latest',
         'ubuntu20': 'Canonical:0001-com-ubuntu-server-focal:20_04-lts:latest',
+        'ubuntu22': 'Canonical:0001-com-ubuntu-server-jammy:22_04-lts:latest',
+        'ubuntu24': 'Canonical:ubuntu-24_04-lts:server-gen1:latest',
         'centos6': 'OpenLogic:CentOS:6.10:latest',
         'centos7': 'OpenLogic:CentOS:7_9:latest',
         'centos8': 'OpenLogic:CentOS:8_4:latest',
-        'oracle6': 'Oracle:Oracle-Linux:6.10:latest',
-        'oracle7': 'Oracle:Oracle-Linux:ol79:latest',
-        'oracle8': 'Oracle:Oracle-Linux:ol82:latest',
-        'sles12': _suse_image_selector('sles-12'),
-        'sles15': _suse_image_selector('sles-15')
+        'oracle8': 'Oracle:Oracle-Linux:ol810-lvm:latest',
+        'oracle9': 'Oracle:Oracle-Linux:ol96-lvm:latest',
+        'oracle10': 'Oracle:Oracle-Linux:ol10-lvm:latest',
+        'sles12': 'SUSE:sles-12-sp5:gen1:latest',
+        'sles15': 'SUSE:sles-15-sp6:gen1:latest',
     }
     if distro in image_lookup:
         os_image_urn = image_lookup[distro]
@@ -524,27 +566,53 @@ def _select_distro_linux(distro):
             os_image_urn = distro
         else:
             logger.info('No specific distro was provided , using the default Ubuntu distro')
-            os_image_urn = "UbuntuLTS"
+            os_image_urn = "Canonical:ubuntu-24_04-lts:server-gen1:latest"
+    return os_image_urn
+
+
+def _select_distro_linux_Arm64(distro):
+    # list of images needs to be added to before the docs reflect, and the docs need to remove the keywords long before we remove the reference from the extension
+    # https://learn.microsoft.com/cli/azure/vm/repair?view=azure-cli-latest#az-vm-repair-create-optional-parameters
+    image_lookup = {
+        'rhel8': 'RedHat:rhel-arm64:8_8-arm64-gen2:latest',
+        'rhel9': 'RedHat:rhel-arm64:9_3-arm64:latest',
+        'rhel10': 'RedHat:rh-rhel:rh-rhel10-arm64:latest',
+        'ubuntu20': 'Canonical:0001-com-ubuntu-server-focal:20_04-lts-arm64:latest',
+        'ubuntu22': 'Canonical:0001-com-ubuntu-server-jammy:22_04-lts-arm64:latest',
+        'ubuntu24': 'Canonical:ubuntu-24_04-lts:server-arm64:latest',
+        'centos7': 'OpenLogic:CentOS:7_9-arm64:latest',
+    }
+    if distro in image_lookup:
+        os_image_urn = image_lookup[distro]
+    else:
+        if distro.count(":") == 3:
+            logger.info('A custom URN was provided , will be used as distro for the recovery VM')
+            os_image_urn = distro
+        else:
+            logger.info('No specific distro was provided , using the default ARM64 Ubuntu distro')
+            os_image_urn = "Canonical:ubuntu-24_04-lts:server-arm64:latest"
     return os_image_urn
 
 
 def _select_distro_linux_gen2(distro):
-    # base on the document : https://docs.microsoft.com/en-us/azure/virtual-machines/generation-2#generation-2-vm-images-in-azure-marketplace
-    # RHEL/Centos/Oracle 6 are not supported for Gen 2
+    # list of images needs to be added to before the docs reflect, and the docs need to remove the keywords long before we remove the reference from the extension
+    # https://learn.microsoft.com/cli/azure/vm/repair?view=azure-cli-latest#az-vm-repair-create-optional-parameters
     image_lookup = {
-        'rhel6': 'RedHat:rhel-raw:7-raw-gen2:latest',
         'rhel7': 'RedHat:rhel-raw:7-raw-gen2:latest',
         'rhel8': 'RedHat:rhel-raw:8-raw-gen2:latest',
-        'ubuntu18': 'Canonical:UbuntuServer:18_04-lts-gen2:latest',
+        'rhel9': 'RedHat:rhel-raw:9-raw-gen2:latest',
+        'rhel10': 'RedHat:rhel-raw:10-raw-gen2:latest',
         'ubuntu20': 'Canonical:0001-com-ubuntu-server-focal:20_04-lts-gen2:latest',
-        'centos6': 'OpenLogic:CentOS:7_9-gen2:latest',
+        'ubuntu22': 'Canonical:0001-com-ubuntu-server-jammy:22_04-lts-gen2:latest',
+        'ubuntu24': 'Canonical:ubuntu-24_04-lts:server:latest',
         'centos7': 'OpenLogic:CentOS:7_9-gen2:latest',
         'centos8': 'OpenLogic:CentOS:8_4-gen2:latest',
-        'oracle6': 'Oracle:Oracle-Linux:ol79-gen2:latest',
         'oracle7': 'Oracle:Oracle-Linux:ol79-gen2:latest',
-        'oracle8': 'Oracle:Oracle-Linux:ol82-gen2:latest',
-        'sles12': _suse_image_selector_gen2('sles-12'),
-        'sles15': _suse_image_selector_gen2('sles-15')
+        'oracle8': 'Oracle:Oracle-Linux:ol810-lvm-gen2:latest',
+        'oracle9': 'Oracle:Oracle-Linux:ol96-lvm-gen2:latest',
+        'oracle10': 'Oracle:Oracle-Linux:ol10-lvm-gen2:latest',
+        'sles12': 'SUSE:sles-12-sp5:gen2:latest',
+        'sles15': 'SUSE:sles-15-sp6:gen2:latest',
     }
     if distro in image_lookup:
         os_image_urn = image_lookup[distro]
@@ -555,10 +623,10 @@ def _select_distro_linux_gen2(distro):
                 os_image_urn = distro
             else:
                 logger.info('The provided URN does not contain Gen2 in it and this VM is a gen2 , dropping to default image')
-                os_image_urn = "Canonical:UbuntuServer:18_04-lts-gen2:latest"
+                os_image_urn = "Canonical:ubuntu-24_04-lts:server:latest"
         else:
             logger.info('No specific distro was provided , using the default Ubuntu distro')
-            os_image_urn = "Canonical:UbuntuServer:18_04-lts-gen2:latest"
+            os_image_urn = "Canonical:ubuntu-24_04-lts:server:latest"
     return os_image_urn
 
 
@@ -570,11 +638,11 @@ def _resolve_api_version(rcf, resource_provider_namespace, parent_resource_path,
     resource_type_str = (parent_resource_path.split('/')[0] if parent_resource_path else resource_type)
     rt = [t for t in provider.resource_types if t.resource_type.lower() == resource_type_str.lower()]
     if not rt:
-        raise Exception('Resource type {} not found.'.format(resource_type_str))
+        raise CLIError('Resource type {} not found.'.format(resource_type_str))
     if len(rt) == 1 and rt[0].api_versions:
         npv = [v for v in rt[0].api_versions if 'preview' not in v.lower()]
         return npv[0] if npv else rt[0].api_versions[0]
-    raise Exception(
+    raise CLIError(
         'API version is required and could not be resolved for resource {}'
         .format(resource_type))
 
@@ -621,9 +689,15 @@ def _process_bash_parameters(parameters):
     Example: [param1=1, param2=2] => 1 2
     """
     param_string = ''
+
     for param in parameters:
-        if '=' in param:
+        if param.startswith("++"):
+            # Retain the entire string after the `++` prefix
+            param = param[2:]
+        elif '=' in param:
+            # Split and keep only the value after `=`
             param = param.split('=', 1)[1]
+        # Ensure safe output for bash scripts
         param_string += '{p} '.format(p=param)
 
     return param_string.strip(' ')
@@ -673,28 +747,157 @@ def _check_script_succeeded(log_string):
 
 def _get_function_param_dict(frame):
     import inspect
-    # getargvalues inadvertently marked as deprecated in Python 3.5
-    _, _, _, values = inspect.getargvalues(frame)
+    args = inspect.getargvalues(frame)
+    # Explicitly materialize a real dict (works for dict + FrameLocalsProxy)
+    values = dict(args.locals)
+    # old way that doesn't return a valid dict but a FrameLocalsProxy instead (python 3.13+), kept for reference
+    # _, _, _, values = inspect.getargvalues(frame)
     if 'cmd' in values:
         del values['cmd']
-    secure_params = ['repair_password', 'repair_username']
+    secure_params = ['repair_password', 'repair_username', 'encrypt_recovery_key']
     for param in secure_params:
         if param in values:
             values[param] = '********'
     return values
 
 
-def _unlock_encrypted_vm_run(repair_vm_name, repair_group_name, is_linux):
-    stdout, stderr = _unlock_singlepass_encrypted_disk(repair_vm_name, repair_group_name, is_linux)
+def _unlock_encrypted_vm_run(repair_vm_name, repair_group_name, is_linux, encrypt_recovery_key=""):
+    stdout, stderr = _unlock_singlepass_encrypted_disk(repair_vm_name, repair_group_name, is_linux, encrypt_recovery_key)
     logger.debug('Unlock script STDOUT:\n%s', stdout)
     if stderr:
         logger.warning('Encryption unlock script error was generated:\n%s', stderr)
+        raise CLIError('Unexpected error occured while unlocking encrypted disk.')
 
 
 def _create_repair_vm(copy_disk_id, create_repair_vm_command, repair_password, repair_username, fix_uuid=False):
+
+    # logging parameters of the function individually
+    logger.info(
+        'Creating repair VM with command: %s',
+        create_repair_vm_command.replace(repair_password, '********').replace(repair_username, '********')
+    )
+    logger.info('copy_disk_id: %s', copy_disk_id)
+    logger.info('fix_uuid: %s', fix_uuid)
+
     if not fix_uuid:
         create_repair_vm_command += ' --attach-data-disks {id}'.format(id=copy_disk_id)
+
     logger.info('Validating VM template before continuing...')
     _call_az_command(create_repair_vm_command + ' --validate', secure_params=[repair_password, repair_username])
     logger.info('Creating repair VM...')
     _call_az_command(create_repair_vm_command, secure_params=[repair_password, repair_username])
+
+
+def _fetch_architecture(source_vm):
+    """
+    Returns the architecture of the source VM.
+    """
+    location = source_vm.location
+    vm_size = source_vm.hardware_profile.vm_size
+    architecture_type_cmd = 'az vm list-skus -l {loc} --size {vm_size} --query "[].capabilities[?name==\'CpuArchitectureType\'].value" -o json' \
+                            .format(loc=location, vm_size=vm_size)
+
+    logger.info('Fetching architecture type of the source VM...')
+    architecture = loads(_call_az_command(architecture_type_cmd).strip('\n'))
+
+    return architecture[0][0]
+
+
+def _fetch_non_standard_security_type(source_vm):
+    """
+    Returns security type if security type is not standard and needs to be set.
+    """
+    if source_vm.security_profile is None or source_vm.security_profile.security_type is None:
+        return
+    if source_vm.security_profile.security_type.lower() == "standard":
+        return
+    return source_vm.security_profile.security_type
+
+
+def _fetch_vm_security_profile_parameters(source_vm):
+    create_repair_vm_command = ''
+    non_standard_security_type = _fetch_non_standard_security_type(source_vm)
+    if non_standard_security_type is None:
+        return create_repair_vm_command
+    create_repair_vm_command += ' --security-type {securityType}'.format(securityType=non_standard_security_type)
+    if source_vm.security_profile.uefi_settings is not None:
+        if source_vm.security_profile.uefi_settings.secure_boot_enabled is not None:
+            create_repair_vm_command += ' --enable-secure-boot {enableSecureBoot}'.format(enableSecureBoot=source_vm.security_profile.uefi_settings.secure_boot_enabled)
+
+        if source_vm.security_profile.uefi_settings.v_tpm_enabled is not None:
+            create_repair_vm_command += ' --enable-vtpm {enableVTpm}'.format(enableVTpm=source_vm.security_profile.uefi_settings.v_tpm_enabled)
+    return create_repair_vm_command
+
+
+def _fetch_osdisk_security_profile_parameters(source_vm):
+    create_repair_vm_command = ''
+    if source_vm.storage_profile.os_disk.managed_disk is not None and source_vm.storage_profile.os_disk.managed_disk.security_profile is not None:
+        create_repair_vm_command += ' --os-disk-security-encryption-type {val}'.format(val=source_vm.storage_profile.os_disk.managed_disk.security_profile.security_encryption_type)
+
+        if source_vm.storage_profile.os_disk.managed_disk.security_profile.disk_encryption_set is not None:
+            create_repair_vm_command += ' --os-disk-secure-vm-disk-encryption-set {val}'.format(val=source_vm.storage_profile.os_disk.managed_disk.security_profile.disk_encryption_set.id)
+
+    return create_repair_vm_command
+
+
+def _make_public_ip_name(repair_vm_name, associate_public_ip):
+    public_ip_name = '""'
+    if associate_public_ip:
+        public_ip_name = repair_vm_name + "PublicIP"
+    return public_ip_name
+
+
+def _supports_nested_virtualization(vm_size: str) -> bool:
+    """
+    Determine whether an Azure VM size supports nested virtualization, by simple text matching, not arm calls, for performance as api calls are slow!
+    Accepts the exact string format used by 'az vm create --size',
+    e.g., 'Standard_D4s_v3', 'Standard_D2ps_v5', 'Standard_E16ds_v4'.
+
+    Rules implemented:
+      - ARM64 SKUs (Dps_v5, Dplsv5, EAs_v5, etc.) NEVER support nested virtualization
+      - x64 SKUs in D/E/F/M families with v3+ generations DO support nested virtualization
+    """
+
+    if not vm_size:
+        return False
+
+    size = vm_size.lower().replace("standard_", "")
+
+    # Extract family (letters before the first digit)
+    # Examples:
+    #   "d4s_v3"     → "d"
+    #   "d4ds_v4"    → "dds"
+    #   "d2ps_v5"    → "dps"
+    prefix = size.split("_v")[0]   # "d32pds"
+    family = "".join([c for c in prefix if c.isalpha()])  # "dpds"
+
+    # Extract generation marker (_v3, _v4, etc.)
+    gen_match = re.search(r"_v(\d+)", size)
+    generation = f"v{gen_match.group(1)}" if gen_match else ""
+
+    # ARM64 families → nested virtualization unsupported
+    arm64_families = {
+        "dps", "dpls", "dpds",  # D-series ARM
+        "eas", "das",           # E and D AS-series ARM
+        "mps",                  # M-series ARM variants
+    }
+
+    if family in arm64_families:
+        return False
+
+    # Valid x64 VM families
+    x64_families = {
+        "d", "ds", "dd", "dds", "das", "dads", "dals", "dalds",
+        "e", "es", "ed", "eds", "eas", "eads",
+        "f", "fs", "fsv2", "fx",
+        "m"
+    }
+
+    # Valid nested‑virtualization generations
+    supported_gens = {"v3", "v4", "v5", "v6"}
+
+    # Final evaluation
+    if family in x64_families and generation in supported_gens:
+        return True
+
+    return False

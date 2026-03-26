@@ -1,0 +1,66 @@
+interactions:
+- request:
+    body: '{"correlationid": "fd8592a5-73fe-4a2a-8915-fd2fadf8476c", "executionParameters":
+      {"retryPolicy": {"retryCount": 4, "retryWindowInMinutes": 65}}, "resources":
+      {"ids": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/{rg}/providers/Microsoft.Compute/virtualMachines/SA-CLIEXTVM-3"]},
+      "schedule": {"deadline": "2025-02-19T17:03:02.000Z", "deadlineType": "InitiateAt",
+      "timezone": "UTC"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - computeschedule vm-submit-start
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '404'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --location --schedule --execution-parameters --resources --correlationid
+      User-Agent:
+      - AZURECLI/2.69.0 azsdk-python-core/1.31.0 Python/3.12.9 (Windows-11-10.0.22631-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ComputeSchedule/locations/eastus2euap/virtualMachinesSubmitStart?api-version=2024-10-01
+  response:
+    body:
+      string: '{"description":"Start Resource request","type":"VirtualMachines","location":"eastus2euap","results":[{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/{rg}/providers/Microsoft.Compute/virtualMachines/SA-CLIEXTVM-3","errorCode":null,"errorDetails":null,"operation":{"operationId":"b23d5918-1256-4331-a6d7-7e7df7fc1597","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/{rg}/providers/Microsoft.Compute/virtualMachines/SA-CLIEXTVM-3","opType":"Start","subscriptionId":"1d04e8f1-ee04-4056-b0b2-718f5bb45b04","deadline":"2025-02-19T17:03:02+00:00","deadlineType":"InitiateAt","state":"PendingScheduling","timeZone":"UTC","resourceOperationError":null,"completedAt":null,"retryPolicy":{"retryCount":4,"retryWindowInMinutes":65}}}]}'
+    headers:
+      alt-svc:
+      - h3=":30281"
+      api-supported-versions:
+      - 1.0, 2.0, 2024-06-01-preview, 2024-08-15-preview, 2024-10-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '789'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 19 Feb 2025 17:01:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: DE66277058AB4112BF1C380728A1CAA6 Ref B: MNZ221060610035 Ref C: 2025-02-19T17:01:02Z'
+    status:
+      code: 200
+      message: OK
+version: 1

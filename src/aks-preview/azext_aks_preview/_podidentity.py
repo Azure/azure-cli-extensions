@@ -62,7 +62,7 @@ def _fill_defaults_for_pod_identity_exceptions(pod_identity_exceptions):
             # which will be converted to `None` in response. This behavior will break the extension
             # when using 2021-10-01 version. As a workaround, we always back fill the empty dict value
             # before sending to the server side.
-            exc.pod_labels = dict()
+            exc.pod_labels = {}
 
 
 def _fill_defaults_for_pod_identity_profile(pod_identity_profile):
@@ -106,7 +106,7 @@ def _update_addon_pod_identity(
     instance.pod_identity_profile.user_assigned_identity_exceptions = pod_identity_exceptions or []
 
 
-def _ensure_managed_identity_operator_permission(cli_ctx, instance, scope):
+def _ensure_managed_identity_operator_permission(cmd, instance, scope):
     cluster_identity_object_id = None
     if instance.identity.type.lower() == 'userassigned':
         for identity in instance.identity.user_assigned_identities.values():
@@ -115,18 +115,17 @@ def _ensure_managed_identity_operator_permission(cli_ctx, instance, scope):
     elif instance.identity.type.lower() == 'systemassigned':
         cluster_identity_object_id = instance.identity.principal_id
     else:
-        raise CLIError('unsupported identity type: {}'.format(
-            instance.identity.type))
+        raise CLIError(f"unsupported identity type: {instance.identity.type}")
     if cluster_identity_object_id is None:
         raise CLIError('unable to resolve cluster identity')
 
-    factory = get_auth_management_client(cli_ctx, scope)
+    factory = get_auth_management_client(cmd.cli_ctx, scope)
     assignments_client = factory.role_assignments
     cluster_identity_object_id = cluster_identity_object_id.lower()
     scope = scope.lower()
 
     # list all assignments of the target identity (scope) that assigned to the cluster identity
-    filter_query = "atScope() and assignedTo('{}')".format(cluster_identity_object_id)
+    filter_query = f"atScope() and assignedTo('{cluster_identity_object_id}')"
     for i in assignments_client.list_for_scope(scope=scope, filter=filter_query):
         if not i.role_definition_id.lower().endswith(CONST_MANAGED_IDENTITY_OPERATOR_ROLE_ID):
             continue
@@ -140,10 +139,10 @@ def _ensure_managed_identity_operator_permission(cli_ctx, instance, scope):
             continue
 
         # already assigned
-        logger.debug('Managed Identity Opereator role has been assigned to {}'.format(i.scope))
+        logger.debug('Managed Identity Opereator role has been assigned to %s', i.scope)
         return
 
-    if not add_role_assignment(cli_ctx, CONST_MANAGED_IDENTITY_OPERATOR_ROLE, cluster_identity_object_id,
+    if not add_role_assignment(cmd, CONST_MANAGED_IDENTITY_OPERATOR_ROLE, cluster_identity_object_id,
                                is_service_principal=False, scope=scope):
         raise CLIError(
             'Could not grant Managed Identity Operator permission for cluster')

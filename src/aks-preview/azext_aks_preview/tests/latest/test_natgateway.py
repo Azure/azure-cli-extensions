@@ -58,6 +58,19 @@ class TestUpdateNatGatewayProfile(unittest.TestCase):
         self.assertEqual(profile.managed_outbound_ip_profile.count, origin_profile.managed_outbound_ip_profile.count)
         self.assertEqual(profile.idle_timeout_in_minutes, origin_profile.idle_timeout_in_minutes)
 
+    def test_reset_empty_arguments(self):
+        origin_profile = self.nat_gateway_models.ManagedClusterNATGatewayProfile(
+            managed_outbound_ip_profile=self.nat_gateway_models.ManagedClusterManagedOutboundIPProfile(
+                count=1
+            ),
+            idle_timeout_in_minutes=4
+        )
+
+        profile = natgateway.update_nat_gateway_profile(0, None, origin_profile, models=self.nat_gateway_models)
+
+        self.assertEqual(profile.managed_outbound_ip_profile.count, 0)
+        self.assertEqual(profile.idle_timeout_in_minutes, origin_profile.idle_timeout_in_minutes)
+
     def test_nonempty_arguments(self):
         origin_profile = self.nat_gateway_models.ManagedClusterNATGatewayProfile(
             managed_outbound_ip_profile=self.nat_gateway_models.ManagedClusterManagedOutboundIPProfile(

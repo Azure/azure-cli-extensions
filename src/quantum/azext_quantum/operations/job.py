@@ -3,294 +3,492 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=redefined-builtin,bare-except,inconsistent-return-statements
+# pylint: disable=line-too-long,redefined-builtin,bare-except,inconsistent-return-statements,too-many-locals,too-many-branches,too-many-statements,unused-argument
 
-import logging
 import json
+import logging
+import os
+import uuid
 import knack.log
 
+from azure.core.exceptions import HttpResponseError
 from azure.cli.core.azclierror import (FileOperationError, AzureInternalError,
-                                       InvalidArgumentValueError, AzureResponseError)
+                                       InvalidArgumentValueError, AzureResponseError,
+                                       RequiredArgumentMissingError)
 
+from ..vendored_sdks.azure_quantum_python.workspace import Workspace
+from ..vendored_sdks.azure_quantum_python.storage import upload_blob
+from ..vendored_sdks.azure_quantum_python._client.models import Priority
+from ..vendored_sdks.azure_storage_blob import BlobClient, ContainerClient
 from .._client_factory import cf_jobs, _get_data_credentials
+from .._list_helper import repack_response_json
 from .workspace import WorkspaceInfo
-from .target import TargetInfo
+from .target import TargetInfo, get_provider
+
 
 MINIMUM_MAX_POLL_WAIT_SECS = 1
+DEFAULT_SHOTS = 100
+
+ERROR_MSG_MISSING_INPUT_FORMAT = "The following argument is required: --job-input-format"  # NOTE: The Azure CLI core generates a similar error message, but "the" is lowercase and "arguments" is always plural.
+ERROR_MSG_MISSING_OUTPUT_FORMAT = "The following argument is required: --job-output-format"
+ERROR_MSG_MISSING_ENTRY_POINT = "The following argument is required on QIR jobs: --entry-point"
+JOB_SUBMIT_DOC_LINK_MSG = "See https://learn.microsoft.com/cli/azure/quantum/job?view=azure-cli-latest#az-quantum-job-submit"
+ERROR_MSG_INVALID_ORDER_ARGUMENT = "The --order argument is not valid: Specify either asc or desc"
+ERROR_MSG_MISSING_ORDERBY_ARGUMENT = "The --order argument is not valid without an --orderby argument"
+ERROR_MSG_INVALID_PRIORITY_ARGUMENT = f'The "priority" parameter is not valid. Known values are: {", ".join(p.value for p in Priority)}.'
+JOB_LIST_DOC_LINK_MSG = "See https://learn.microsoft.com/cli/azure/quantum/job?view=azure-cli-latest#az-quantum-job-list"
+
+# Job types
+QIR_JOB = 1
+PASS_THROUGH_JOB = 2
 
 logger = logging.getLogger(__name__)
 knack_logger = knack.log.get_logger(__name__)
 
 
-def list(cmd, resource_group_name, workspace_name, location):
+def list(cmd, resource_group_name, workspace_name, location=None, job_type=None, item_type=None, provider_id=None,
+         target_id=None, job_status=None, created_after=None, created_before=None, job_name=None,
+         skip=None, top=None, orderby=None, order=None):
     """
     Get the list of jobs in a Quantum Workspace.
     """
-    info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
-    client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
-    return client.list()
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
+    client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.endpoint)
+
+    query = _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name)
+    orderby_expression = _construct_orderby_expression(orderby, order)
+
+    response = client.list(info.subscription, resource_group_name, workspace_name, filter=query, skip=skip, top=top, orderby=orderby_expression)
+    first_page = next(iter(response.by_page()), [])
+    # Note: --top produces multi-page responses, but we only process the first page. All the other params put everything on the first page.
+    return repack_response_json(first_page)
+
+
+def _construct_filter_query(job_type, item_type, provider_id, target_id, job_status, created_after, created_before, job_name):
+    """
+    Construct a job-list filter query expression
+    """
+    query = ""
+
+    query = _parse_pagination_param_values("JobType", query, job_type)
+    query = _parse_pagination_param_values("ItemType", query, item_type)
+    query = _parse_pagination_param_values("ProviderId", query, provider_id)
+    query = _parse_pagination_param_values("Target", query, target_id)
+    query = _parse_pagination_param_values("State", query, job_status)
+
+    query = _parse_pagination_param_values("CreationTime", query, created_after, "ge")
+    query = _parse_pagination_param_values("CreationTime", query, created_before, "le")
+    query = _parse_pagination_param_values("Name", query, job_name, "startswith")
+
+    if query == "":
+        query = None
+    return query
+
+
+def _parse_pagination_param_values(param_name, query, raw_values, logic_operator=None):
+    """
+    Parse the pagination parameter values for a job-list filter query expression
+    """
+    if raw_values is not None:
+        if len(query) > 0:
+            query += " and "
+
+        # Special handling of --job-name
+        if param_name == "Name":
+            query += logic_operator + "(Name, '" + raw_values + "')"
+            return query
+
+        # Special handling of --created-before and --created-after (No quotes around the date)
+        if param_name == "CreationTime":
+            query += "CreationTime " + logic_operator + " " + raw_values
+            return query
+
+        if logic_operator is None:
+            logic_operator = "eq"
+        padded_logic_operator = " " + logic_operator + " '"
+
+        first_value = True
+        values_list = raw_values.split(",")
+
+        if len(values_list) <= 1:
+            query += param_name + padded_logic_operator + values_list[0] + "'"
+        else:
+            for value in values_list:
+                value = value.strip()
+
+                if first_value:
+                    query += "(" + param_name + padded_logic_operator + value + "'"
+                    first_value = False
+                else:
+                    query += " or " + param_name + padded_logic_operator + value + "'"
+            query += ")"
+    return query
+
+
+def _construct_orderby_expression(orderby, order):
+    """
+    Construct a job-list orderby expression
+    """
+    if (orderby == "" or orderby is None) and not (order == "" or order is None):
+        raise RequiredArgumentMissingError(ERROR_MSG_MISSING_ORDERBY_ARGUMENT, JOB_LIST_DOC_LINK_MSG)
+
+    orderby_expression = orderby
+    if orderby_expression is not None and order is not None:
+        # Validate order, otherwise the error message will be vague
+        if not (order == "asc" or order == "desc"):
+            raise InvalidArgumentValueError(ERROR_MSG_INVALID_ORDER_ARGUMENT, JOB_LIST_DOC_LINK_MSG)
+        orderby_expression += " " + order
+    return orderby_expression
 
 
 def get(cmd, job_id, resource_group_name=None, workspace_name=None, location=None):
     """
     Get the job's status and details.
     """
-    info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
-    client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
+    client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.endpoint)
     return client.get(job_id)
 
 
-def _check_dotnet_available():
-    """
-    Will fail if dotnet cannot be executed on the system.
-    """
-    args = ["dotnet", "--version"]
-
-    try:
-        import subprocess
-        result = subprocess.run(args, stdout=subprocess.PIPE, check=False)
-    except FileNotFoundError as e:
-        raise FileOperationError("Could not find 'dotnet' on the system.") from e
-
-    if result.returncode != 0:
-        raise FileOperationError(f"Failed to run 'dotnet'. (Error {result.returncode})")
-
-
-def build(cmd, target_id=None, project=None, target_capability=None):
-    """
-    Compile a Q# program to run on Azure Quantum.
-    """
-    target = TargetInfo(cmd, target_id)
-
-    # Validate that dotnet is available
-    _check_dotnet_available()
-
-    args = ["dotnet", "build"]
-
-    if project:
-        args.append(project)
-
-    args.append(f"-property:ExecutionTarget={target.target_id}")
-
-    if target_capability:
-        args.append(f"-property:TargetCapability={target_capability}")
-
-    logger.debug("Building project with arguments:")
-    logger.debug(args)
-
-    knack_logger.warning('Building project...')
-
-    import subprocess
-    result = subprocess.run(args, stdout=subprocess.PIPE, check=False)
-
-    if result.returncode == 0:
-        return {'result': 'ok'}
-
-    # If we got here, we might have encountered an error during compilation, so propagate standard output to the user.
-    logger.error("Compilation stage failed with error code %s", result.returncode)
-    print(result.stdout.decode('ascii'))
-    raise AzureInternalError("Failed to compile program.")
-
-
-def _generate_submit_args(program_args, ws, target, token, project, job_name, shots, storage, job_params):
-    """ Generates the list of arguments for calling submit on a Q# project """
-
-    args = ["dotnet", "run", "--no-build"]
-
-    if project:
-        args.append("--project")
-        args.append(project)
-
-    args.append("--")
-    args.append("submit")
-
-    args.append("--subscription")
-    args.append(ws.subscription)
-
-    args.append("--resource-group")
-    args.append(ws.resource_group)
-
-    args.append("--workspace")
-    args.append(ws.name)
-
-    args.append("--target")
-    args.append(target.target_id)
-
-    args.append("--output")
-    args.append("Id")
-
-    if job_name:
-        args.append("--job-name")
-        args.append(job_name)
-
-    if shots:
-        args.append("--shots")
-        args.append(shots)
-
-    if storage:
-        args.append("--storage")
-        args.append(storage)
-
-    args.append("--aad-token")
-    args.append(token)
-
-    args.append("--location")
-    args.append(ws.location)
-
-    args.append("--user-agent")
-    args.append("CLI")
-
-    if job_params:
-        args.append("--job-params")
-        for k, v in job_params.items():
-            if isinstance(v, str):
-                # If value is string type already, do not use json.dumps(), since it will add extra escapes to the string
-                args.append(f"{k}={v}")
-            else:
-                args.append(f"{k}={json.dumps(v)}")
-
-    args.extend(program_args)
-
-    logger.debug("Running project with arguments:")
-    logger.debug(args)
-
-    return args
-
-
-def _set_cli_version():
-    # This is a temporary approach for runtime compatibility between a runtime version
-    # before support for the --user-agent parameter is added. We'll rely on the environment
-    # variable before the stand alone executable submits to the service.
-    try:
-        import os
-        from .._client_factory import get_appid
-        os.environ["USER_AGENT"] = get_appid()
-    except:
-        logger.warning("User Agent environment variable could not be set.")
-
-
 def _has_completed(job):
-    return job.status in ("Succeeded", "Failed", "Cancelled")
+    return job.status in ("Succeeded", "Failed", "Cancelled", "Completed")
 
 
-def submit(cmd, program_args, resource_group_name, workspace_name, location, target_id,
-           project=None, job_name=None, shots=None, storage=None, no_build=False, job_params=None,
-           target_capability=None):
+def _has_succeeded(job):
+    return job.status == "Succeeded" or job.status == "Completed"
+
+
+def _convert_numeric_params(job_params):
+    # The CLI framework passes all --job-params values as strings. This function
+    # attempts to convert numeric string values to their appropriate numeric types.
+    # Non-numeric string values and values that are already integers are unaffected.
+    for param in job_params:
+        if isinstance(job_params[param], str):
+            try:
+                job_params[param] = int(job_params[param])
+            except:
+                try:
+                    job_params[param] = float(job_params[param])
+                except:
+                    pass
+
+
+def submit(cmd, resource_group_name, workspace_name, target_id, job_input_file, job_input_format, location=None,
+           job_name=None, shots=None, storage=None, job_params=None, target_capability=None,
+           job_output_format=None, entry_point=None):
     """
-    Submit a Q# project to run on Azure Quantum.
+    Submit QIR or a pass-through job to run on Azure Quantum.
     """
+    # Get workspace, target, and provider information
+    ws_info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
+    if ws_info is None:
+        raise AzureInternalError("Failed to get workspace information.")
+    target_info = TargetInfo(cmd, target_id)
+    if target_info is None:
+        raise AzureInternalError("Failed to get target information.")
+    provider_id = get_provider(cmd, target_info.target_id, resource_group_name, workspace_name)
+    if provider_id is None:
+        raise AzureInternalError(f"Failed to find a Provider ID for the specified Target ID, {target_info.target_id}")
 
-    # We first build and then call run.
-    # Can't call run directly because it fails to understand the
-    # `ExecutionTarget` property when passed in the command line
-    if not no_build:
-        build(cmd, target_id=target_id, project=project, target_capability=target_capability)
-        logger.info("Project built successfully.")
+    # Identify the type of job being submitted
+    lc_job_input_format = job_input_format.lower()
+    if "qir.v" in lc_job_input_format:
+        job_type = QIR_JOB
     else:
-        _check_dotnet_available()
+        job_type = PASS_THROUGH_JOB
 
-    ws = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
-    target = TargetInfo(cmd, target_id)
-    token = _get_data_credentials(cmd.cli_ctx, ws.subscription).get_token().token
+    # If output format is not specified, supply a default for QIR jobs
+    if job_output_format is None:
+        if job_type == QIR_JOB:
+            job_output_format = "microsoft.quantum-results.v2"
+        else:
+            raise RequiredArgumentMissingError(ERROR_MSG_MISSING_OUTPUT_FORMAT, JOB_SUBMIT_DOC_LINK_MSG)
 
-    args = _generate_submit_args(program_args, ws, target, token, project, job_name, shots, storage, job_params)
-    _set_cli_version()
+    # Extract "metadata" and "tags" from job_params, then remove those parameters from job_params,
+    # since they should not be included in the "inputParams" parameter of job_details. They are
+    # separate parameters of job_details.
+    #
+    #   USAGE NOTE: To specify "metadata", the --job-params value needs to be entered as a JSON string or file.
+    #
+    metadata = None
+    tags = []
+    priority = None
+    if job_params is not None:
+        if "metadata" in job_params.keys():
+            metadata = job_params["metadata"]
+            del job_params["metadata"]
+            if not isinstance(metadata, dict) and metadata is not None:
+                raise InvalidArgumentValueError('The "metadata" parameter is not valid.',
+                                                'To specify "metadata", use a JSON string for the --job-params value.')
+        if "tags" in job_params.keys():
+            tags = job_params["tags"]
+            del job_params["tags"]
+            if isinstance(tags, str):
+                tags = tags.split(',')
+            list_type = type([])    # "list" has been redefined as a function name, so "isinstance(tags, list)" doesn't work here
+            if not isinstance(tags, list_type):
+                raise InvalidArgumentValueError('The "tags" parameter is not valid.')
 
-    knack_logger.warning('Submitting job...')
+        if "priority" in job_params.keys():
+            priority = job_params["priority"]
+            del job_params["priority"]
+            try:
+                if priority is not None:
+                    priority = Priority(priority).value
+            except ValueError:
+                raise InvalidArgumentValueError(ERROR_MSG_INVALID_PRIORITY_ARGUMENT)
 
-    import subprocess
-    result = subprocess.run(args, stdout=subprocess.PIPE, check=False)
+    # Extract content type and content encoding from --job-parameters, then remove those parameters from job_params, since
+    # they should not be included in the "inputParams" parameter of job_details. Content type and content encoding are
+    # parameters of the upload_blob function. These parameters are accepted in three case-formats: kebab-case, snake_case,
+    # and camelCase. (See comments below.)
+    content_type = None
+    content_encoding = None
+    if job_params is not None:
+        if "content-type" in job_params.keys():         # Parameter names in the CLI are commonly in kebab-case (hyphenated)...
+            content_type = job_params["content-type"]
+            del job_params["content-type"]
+        if "content_type" in job_params.keys():         # ...however names are often in in snake_case in our Jupyter notebooks...
+            content_type = job_params["content_type"]
+            del job_params["content_type"]
+        if "contentType" in job_params.keys():          # ...but the params that go into inputParams are generally in camelCase.
+            content_type = job_params["contentType"]
+            del job_params["contentType"]
+        if "content-encoding" in job_params.keys():
+            content_encoding = job_params["content-encoding"]
+            del job_params["content-encoding"]
+        if "content_encoding" in job_params.keys():
+            content_encoding = job_params["content_encoding"]
+            del job_params["content_encoding"]
+        if "contentEncoding" in job_params.keys():
+            content_encoding = job_params["contentEncoding"]
+            del job_params["contentEncoding"]
 
-    if result.returncode == 0:
-        std_output = result.stdout.decode('ascii').strip()
-        # Retrieve the job-id as the last line from standard output.
-        job_id = std_output.split()[-1]
-        # Query for the job and return status to caller.
-        return get(cmd, job_id, resource_group_name, workspace_name, location)
-
-    # The program compiled successfully, but executing the stand-alone .exe failed to run.
-    logger.error("Submission of job failed with error code %s", result.returncode)
-    print(result.stdout.decode('ascii'))
-    raise AzureInternalError("Failed to submit job.")
-
-
-def _parse_blob_url(url):
-    from urllib.parse import urlparse
-    o = urlparse(url)
+    # Prepare for input file upload according to job type
+    if job_type == QIR_JOB:
+        if content_type is None:
+            content_type = "qir.v1"   # Default content type for QIR jobs
+        content_encoding = None
+    elif job_type == PASS_THROUGH_JOB:
+        if content_type is None:
+            content_type = "text/plain"   # Default content type for pass-through jobs
+        content_encoding = None
 
     try:
-        account_name = o.netloc.split('.')[0]
-        container = o.path.split('/')[-2]
-        blob = o.path.split('/')[-1]
-        sas_token = o.query
-    except IndexError as e:
-        raise InvalidArgumentValueError(f"Failed to parse malformed blob URL: {url}") from e
+        with open(job_input_file, "rb") as input_file:
+            blob_data = input_file.read()
+    except (IOError, OSError) as e:
+        raise FileOperationError(f"An error occurred opening the input file: {job_input_file}") from e
 
-    return {
-        "account_name": account_name,
-        "container": container,
-        "blob": blob,
-        "sas_token": sas_token
-    }
+    # Upload the input file to the workspace's storage account
+    if storage is None:
+        from .workspace import get as ws_get
+        ws = ws_get(cmd, resource_group_name, workspace_name)
+        if ws.properties.storage_account is None:
+            raise RequiredArgumentMissingError("No storage account specified or linked with workspace.")
+        storage = ws.properties.storage_account.split('/')[-1]
+    job_id = str(uuid.uuid4())
+    blob_name = "inputData"
+
+    resource_id = "/subscriptions/" + ws_info.subscription + "/resourceGroups/" + ws_info.resource_group + "/providers/Microsoft.Quantum/Workspaces/" + ws_info.name
+    credential = _get_data_credentials(cmd.cli_ctx, ws_info.subscription)
+    workspace = Workspace(resource_id=resource_id, credential=credential)
+
+    container_uri = workspace.get_container_uri(job_id=job_id)
+    container_client = ContainerClient.from_container_url(container_uri)
+
+    knack_logger.warning("Uploading input data...")
+    try:
+        blob_uri = upload_blob(container_client, blob_name, content_type, content_encoding, blob_data, return_sas_token=False)
+        logger.debug("  - blob uri: %s", blob_uri)
+    except Exception as e:
+        # Unexplained behavior:
+        #    QIR input input data get UnicodeDecodeError on jobs run in tests using
+        #    "azdev test --live", but the same commands are successful when run interactively.
+        #    See commented-out tests in test_submit in test_quantum_jobs.py
+        error_msg = f"Input file upload failed.\nError type: {type(e)}"
+        if isinstance(e, UnicodeDecodeError):
+            error_msg += f"\nReason: {e.reason}"
+        raise AzureResponseError(error_msg) from e
+
+    # Combine separate command-line parameters (like shots, target_capability, and entry_point) with job_params
+    if job_params is None:
+        job_params = {}
+    if shots is not None:
+        try:
+            job_params["shots"] = int(shots)
+        except Exception as exc:
+            raise InvalidArgumentValueError("Invalid --shots value.  Shots must be an integer.") from exc
+    if target_capability is not None:
+        job_params["targetCapability"] = target_capability
+    if entry_point is not None:
+        job_params["entryPoint"] = entry_point
+
+    # Convert "count" to an integer
+    if "count" in job_params.keys():
+        try:
+            job_params["count"] = int(job_params["count"])
+        except Exception as exc:
+            raise InvalidArgumentValueError("Invalid count value.  Count must be an integer.") from exc
+
+    # Convert all other numeric parameter values from string to int or float
+    _convert_numeric_params(job_params)
+
+    # Make sure QIR jobs have an "arguments" parameter, even if it's empty
+    if job_type == QIR_JOB:
+        if "arguments" not in job_params:
+            job_params["arguments"] = []
+
+    # ...supply a default "shots" if it's not specified (like Q# does)
+        if "shots" not in job_params:
+            job_params["shots"] = DEFAULT_SHOTS
+
+    # Submit the job
+    client = cf_jobs(cmd.cli_ctx, ws_info.subscription, ws_info.resource_group, ws_info.name, ws_info.endpoint)
+    job_details = {'name': job_name,
+                   'containerUri': container_uri,
+                   'inputDataFormat': job_input_format,
+                   'outputDataFormat': job_output_format,
+                   'inputParams': job_params,
+                   'providerId': provider_id,
+                   'target': target_info.target_id,
+                   'metadata': metadata,
+                   'tags': tags}
+    if priority:
+        job_details['priority'] = priority
+
+    knack_logger.warning("Submitting job...")
+    return client.create(ws_info.subscription, ws_info.resource_group, ws_info.name, job_id, job_details).as_dict()
 
 
-def output(cmd, job_id, resource_group_name, workspace_name, location):
+def output(cmd, job_id, resource_group_name, workspace_name, location=None):
     """
-    Get the results of running a Q# job.
+    Get the results of running a job.
     """
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
+    client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.endpoint)
+    job = client.get(info.subscription, info.resource_group, info.name, job_id)
+
+    if not _has_succeeded(job):
+        return job  # If "-o table" is specified, this allows transform_output() in commands.py
+        #             to format the output, so the error info is shown. If "-o json" or no "-o"
+        #             parameter is specified, then the full JSON job output is displayed, being
+        #             consistent with other commands.
+
+    return _get_job_output(job)
+
+
+def wait(cmd, job_id, resource_group_name, workspace_name, location=None, max_poll_wait_secs=5):
+    """
+    Place the CLI in a waiting state until the job finishes running.
+    """
+    import time
+
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
+    client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.endpoint)
+
+    # TODO: LROPoller...
+    wait_indicators_used = False
+    poll_wait = 0.2
+    max_poll_wait_secs = _validate_max_poll_wait_secs(max_poll_wait_secs)
+    job = client.get(info.subscription, info.resource_group, info.name, job_id)
+
+    while not _has_completed(job):
+        print('.', end='', flush=True)
+        wait_indicators_used = True
+        time.sleep(poll_wait)
+        job = client.get(info.subscription, info.resource_group, info.name, job_id)
+        poll_wait = max_poll_wait_secs if poll_wait >= max_poll_wait_secs else poll_wait * 1.5
+
+    if wait_indicators_used:
+        # Insert a new line if we had to display wait indicators.
+        print()
+
+    return job.as_dict()
+
+
+def job_show(cmd, job_id, resource_group_name, workspace_name, location=None):
+    """
+    Get the job's status and details.
+    """
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
+    client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.endpoint)
+    job = client.get(info.subscription, info.resource_group, info.name, job_id)
+    return job.as_dict()
+
+
+def run(cmd, resource_group_name, workspace_name, target_id, job_input_file, job_input_format, location=None,
+        job_name=None, shots=None, storage=None, job_params=None, target_capability=None,
+        job_output_format=None, entry_point=None):
+    """
+    Submit a job to run on Azure Quantum, and wait for the result.
+    """
+    job = submit(cmd, resource_group_name, workspace_name, target_id, job_input_file, job_input_format, location,
+                 job_name, shots, storage, job_params, target_capability,
+                 job_output_format, entry_point)
+    logger.warning("Job id: %s", job["id"])
+    logger.debug(job)
+
+    job = wait(cmd, job["id"], resource_group_name, workspace_name)
+    logger.debug(job)
+
+    return output(cmd, job["id"], resource_group_name, workspace_name)
+
+
+def cancel(cmd, job_id, resource_group_name, workspace_name, location=None):
+    """
+    Request to cancel a job on Azure Quantum if it hasn't completed.
+    """
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
+    client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.endpoint)
+    job = client.get(info.subscription, info.resource_group, info.name, job_id)
+
+    if _has_completed(job):
+        print(f"Job {job_id} has already completed with status: {job.status}.")
+        return
+
+    try:
+        client.cancel(info.subscription, info.resource_group, info.name, job_id)
+    except HttpResponseError as e:
+        # because of historical behavior of the service, the 204 No Content response is returned when cancellation request is succeeded.
+        # while backend is not updated to return 200 according to a guideline, let's handle that here to align with typespecs
+        if e.status_code != 204:
+            raise
+
+    # Wait for the job status to complete or be reported as cancelled
+    return wait(cmd, job_id, info.resource_group, info.name)
+
+
+def _get_job_output(job):
+
     import tempfile
-    import json
-    import os
-    from azure.cli.command_modules.storage._client_factory import blob_data_service_factory
-
-    path = os.path.join(tempfile.gettempdir(), job_id)
-    info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
-    client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
-    job = client.get(job_id)
+    path = os.path.join(tempfile.gettempdir(), job.id)
 
     if os.path.exists(path):
         logger.debug("Using existing blob from %s", path)
     else:
         logger.debug("Downloading job results blob into %s", path)
 
-        if job.status != "Succeeded":
-            return job  # If "-o table" is specified, this allows transform_output() in commands.py
-            #             to format the output, so the error info is shown. If "-o json" or no "-o"
-            #             parameter is specified, then the full JSON job output is displayed, being
-            #             consistent with other commands.
+        blob_client = BlobClient.from_blob_url(job.output_data_uri)
+        blobProperties = blob_client.get_blob_properties()
 
-        args = _parse_blob_url(job.output_data_uri)
-        blob_service = blob_data_service_factory(cmd.cli_ctx, args)
-        blob_service.get_blob_to_path(args['container'], args['blob'], path)
+        if blobProperties.size == 0:
+            return
 
-    with open(path) as json_file:
+        with open(file=path, mode="wb") as stream:
+            download_stream = blob_client.download_blob()
+            stream.write(download_stream.readall())
+
+    with open(path, encoding="utf-8") as json_file:
         lines = [line.strip() for line in json_file.readlines()]
 
         # Receiving an empty response is valid.
         if len(lines) == 0:
             return
 
-        if job.target.startswith("microsoft.simulator") and job.target != "microsoft.simulator.resources-estimator":
-            result_start_line = len(lines) - 1
-            is_result_string = lines[-1].endswith('"')
-            if is_result_string:
-                while result_start_line >= 0 and not lines[result_start_line].startswith('"'):
-                    result_start_line -= 1
-            if result_start_line < 0:
-                raise AzureResponseError("Job output is malformed, mismatched quote characters.")
+        json_file.seek(0)  # Reset the file pointer before loading
+        data = json.load(json_file)
 
-            # Print the job output and then the result of the operation as a histogram.
-            # If the result is a string, trim the quotation marks.
-            print('\n'.join(lines[:result_start_line]))
-            raw_result = ' '.join(lines[result_start_line:])
-            result = raw_result[1:-1] if is_result_string else raw_result
-            print('_' * len(result) + '\n')
-
-            json_string = '{ "histogram" : { "' + result + '" : 1 } }'
-            data = json.loads(json_string)
-        else:
-            json_file.seek(0)  # Reset the file pointer before loading
-            data = json.load(json_file)
         return data
 
 
@@ -308,80 +506,3 @@ def _validate_max_poll_wait_secs(max_poll_wait_secs):
         raise InvalidArgumentValueError(error_message, error_recommendation)
 
     return valid_max_poll_wait_secs
-
-
-def wait(cmd, job_id, resource_group_name, workspace_name, location, max_poll_wait_secs=5):
-    """
-    Place the CLI in a waiting state until the job finishes running.
-    """
-    import time
-
-    info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
-    client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
-
-    # TODO: LROPoller...
-    wait_indicators_used = False
-    poll_wait = 0.2
-    max_poll_wait_secs = _validate_max_poll_wait_secs(max_poll_wait_secs)
-    job = client.get(job_id)
-
-    while not _has_completed(job):
-        print('.', end='', flush=True)
-        wait_indicators_used = True
-        time.sleep(poll_wait)
-        job = client.get(job_id)
-        poll_wait = max_poll_wait_secs if poll_wait >= max_poll_wait_secs else poll_wait * 1.5
-
-    if wait_indicators_used:
-        # Insert a new line if we had to display wait indicators.
-        print()
-
-    return job
-
-
-def job_show(cmd, job_id, resource_group_name, workspace_name, location):
-    """
-    Get the job's status and details.
-    """
-    info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
-    client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
-    job = client.get(job_id)
-    return job
-
-
-def run(cmd, program_args, resource_group_name, workspace_name, location, target_id,
-        project=None, job_name=None, shots=None, storage=None, no_build=False, job_params=None, target_capability=None):
-    """
-    Submit a job to run on Azure Quantum, and waits for the result.
-    """
-    job = submit(cmd, program_args, resource_group_name, workspace_name, location, target_id,
-                 project, job_name, shots, storage, no_build, job_params, target_capability)
-    logger.warning("Job id: %s", job.id)
-    logger.debug(job)
-
-    job = wait(cmd, job.id, resource_group_name, workspace_name, location)
-    logger.debug(job)
-
-    if not job.status == "Succeeded":
-        return job
-
-    return output(cmd, job.id, resource_group_name, workspace_name, location)
-
-
-def cancel(cmd, job_id, resource_group_name, workspace_name, location):
-    """
-    Request to cancel a job on Azure Quantum if it hasn't completed.
-    """
-    info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
-    client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
-    job = client.get(job_id)
-
-    if _has_completed(job):
-        print(f"Job {job_id} has already completed with status: {job.status}.")
-        return
-
-    # If the job hasn't succeeded or failed, attempt to cancel.
-    client.cancel(job_id)
-
-    # Wait for the job status to complete or be reported as cancelled
-    return wait(cmd, job_id, info.resource_group, info.name, info.location)

@@ -34,17 +34,15 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 def step_offer_detail_show(test, rg, checks=None):
     if checks is None:
         checks = []
-    result = test.cmd('az confluent offer-detail show '
-             '--publisher-id confluentinc '
-             '--offer-id confluent-cloud-azure-stag',
-             checks=checks).get_output_in_json()
-
+    result = test.cmd('az confluent offer-detail '
+                      'show --publisher-id confluentinc --offer-id confluent-cloud-azure-stag',
+                      checks=checks).get_output_in_json()
     # check
     for plan in result:
         assert plan.get('offerId', None) is not None
         assert plan.get('publisherId', None) is not None
         for term_unit in plan['termUnits']:
-            if term_unit.get('termUnits', None): 
+            if term_unit.get('termUnits', None):
                 assert term_unit['termUnits'] in ['P1M', 'P1Y']
             assert term_unit.get('price', None) is not None
             assert term_unit['price'].get('isPIRequired', None) is None
@@ -124,18 +122,18 @@ def call_scenario(test, rg):
     step_organization_create(test, rg, checks=[
         test.check("location", "eastus2euap", case_sensitive=False),
         # change to real values for userDetail in live tests
-        test.check("userDetail.emailAddress", "contoso@microsoft.com", case_sensitive=False),
-        test.check("userDetail.firstName", "contoso", case_sensitive=False),
-        test.check("userDetail.lastName", "zhou", case_sensitive=False),
+        test.check("userDetail.emailAddress", "test@example.com", case_sensitive=False),
+        test.check("userDetail.firstName", "Deepika", case_sensitive=False),
+        test.check("userDetail.lastName", "N", case_sensitive=False),
         test.check("tags.environment", "Dev", case_sensitive=False),
         test.check("name", "{myOrganization}", case_sensitive=False),
     ])
     step_organization_show(test, rg, checks=[
         test.check("location", "eastus2euap", case_sensitive=False),
         # change to real values for userDetail in live tests
-        test.check("userDetail.emailAddress", "contoso@microsoft.com", case_sensitive=False),
-        test.check("userDetail.firstName", "contoso", case_sensitive=False),
-        test.check("userDetail.lastName", "zhou", case_sensitive=False),
+        test.check("userDetail.emailAddress", "test@example.com", case_sensitive=False),
+        test.check("userDetail.firstName", "Deepika", case_sensitive=False),
+        test.check("userDetail.lastName", "N", case_sensitive=False),
         test.check("tags.environment", "Dev", case_sensitive=False),
         test.check("name", "{myOrganization}", case_sensitive=False),
     ])
@@ -147,9 +145,9 @@ def call_scenario(test, rg):
     ])
     step_organization_update(test, rg, checks=[
         test.check("location", "eastus2euap", case_sensitive=False),
-        test.check("userDetail.emailAddress", "contoso@microsoft.com", case_sensitive=False),
-        test.check("userDetail.firstName", "contoso", case_sensitive=False),
-        test.check("userDetail.lastName", "zhou", case_sensitive=False),
+        test.check("userDetail.emailAddress", "test@example.com", case_sensitive=False),
+        test.check("userDetail.firstName", "Deepika", case_sensitive=False),
+        test.check("userDetail.lastName", "N", case_sensitive=False),
         test.check("name", "{myOrganization}", case_sensitive=False),
         test.check("tags.client", "dev-client", case_sensitive=False),
     ])

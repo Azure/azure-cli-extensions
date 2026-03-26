@@ -15,7 +15,7 @@ from azure.cli.testsdk import ResourceGroupPreparer
 from azure.cli.core.azclierror import AzCLIError, CLIInternalError, CLIError
 import unittest
 
-### Steps
+# Steps
 
 
 def step_dataset_update(test, checks=None):
@@ -301,7 +301,7 @@ def step_data_flow_list(self):
     self.assertTrue(len(data_flow_list) == 2)
 
 
-### Scenarios
+# Scenarios
 
 
 def call_managed_integrationruntime_scenario(test):

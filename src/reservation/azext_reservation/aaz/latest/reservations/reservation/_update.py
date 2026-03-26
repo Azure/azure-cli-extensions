@@ -17,14 +17,26 @@ from azure.cli.core.aaz import *
 class Update(AAZCommand):
     """Update the applied scopes, renewal, name, instance-flexibility of the `Reservation`.
 
-    :example: Update applied scope type
+    :example: Set reservation to Shared scope
         az reservations reservation update --applied-scope-type Shared --reservation-id 10000000-aaaa-bbbb-cccc-200000000001 --reservation-order-id 50000000-aaaa-bbbb-cccc-200000000005
+
+    :example: Set reservation renewal
+        az reservations reservation update --reservation-id 10000000-aaaa-bbbb-cccc-200000000001 --reservation-order-id 50000000-aaaa-bbbb-cccc-200000000005 --renew true
+
+    :example: Set reservation to Single scope
+        az reservations reservation update --reservation-id 10000000-aaaa-bbbb-cccc-200000000001 --reservation-order-id 50000000-aaaa-bbbb-cccc-200000000005 --applied-scope-type Single --applied-scopes ['/subscriptions/50000000-aaaa-bbbb-cccc-200000000009']
+
+    :example: Set reservation to Single scope resource group
+        az reservations reservation update --reservation-id 10000000-aaaa-bbbb-cccc-200000000001 --reservation-order-id 50000000-aaaa-bbbb-cccc-200000000005 --applied-scope-type Single --applied-scopes ['/subscriptions/50000000-aaaa-bbbb-cccc-200000000009/resourceGroups/mock_resource_group_name']
+
+    :example: Set reservation to management group scope
+        az reservations reservation update --reservation-id 10000000-aaaa-bbbb-cccc-200000000001 --reservation-order-id 50000000-aaaa-bbbb-cccc-200000000005 --applied-scope-type ManagementGroup --applied-scope-property '{management-group-id:/providers/Microsoft.Management/managementGroups/mock_management_group_name,tenant-id:50000000-aaaa-bbbb-cccc-200000000008}'
     """
 
     _aaz_info = {
-        "version": "2022-03-01",
+        "version": "2022-11-01",
         "resources": [
-            ["mgmt-plane", "/providers/microsoft.capacity/reservationorders/{}/reservations/{}", "2022-03-01"],
+            ["mgmt-plane", "/providers/microsoft.capacity/reservationorders/{}/reservations/{}", "2022-11-01"],
         ]
     }
 
@@ -59,11 +71,17 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
+        _args_schema.applied_scope_property = AAZObjectArg(
+            options=["--applied-scope-property"],
+            arg_group="Properties",
+            help="Properties specific to applied scope type. Not required if not applicable. Required and need to provide tenantId and managementGroupId if AppliedScopeType is ManagementGroup",
+        )
+        cls._build_args_applied_scope_properties_update(_args_schema.applied_scope_property)
         _args_schema.applied_scope_type = AAZStrArg(
             options=["--applied-scope-type"],
             arg_group="Properties",
             help="Type of the Applied Scope.",
-            enum={"Shared": "Shared", "Single": "Single"},
+            enum={"ManagementGroup": "ManagementGroup", "Shared": "Shared", "Single": "Single"},
         )
         _args_schema.applied_scopes = AAZListArg(
             options=["--applied-scopes"],
@@ -90,7 +108,117 @@ class Update(AAZCommand):
         )
 
         # define Arg Group "RenewProperties"
+
+        _args_schema = cls._args_schema
+        _args_schema.renewal_properties = AAZObjectArg(
+            options=["--renewal-properties"],
+            arg_group="RenewProperties",
+            help={"short-summary": "renewal purchase properties", "long-summary": "Renewal purchase properties. Sample input: --renewal-properties {applied-scope-type:Shared,billing-plan:Monthly,billing-scope-id:/subscriptions/00000000-0000-0000-0000-000000000000,display-name:newName,instance-flexibility:On,quantity:5,term:P1Y,reserved-resource-type:VirtualMachines,sku:Standard_B1ls,Location:eastus}"},
+        )
+
+        renewal_properties = cls._args_schema.renewal_properties
+        renewal_properties.location = AAZStrArg(
+            options=["location"],
+            help="The Azure region where the reserved resource lives.",
+        )
+        renewal_properties.applied_scope_properties = AAZObjectArg(
+            options=["applied-scope-properties"],
+        )
+        cls._build_args_applied_scope_properties_update(renewal_properties.applied_scope_properties)
+        renewal_properties.applied_scope_type = AAZStrArg(
+            options=["applied-scope-type"],
+            help="Type of the Applied Scope.",
+            enum={"ManagementGroup": "ManagementGroup", "Shared": "Shared", "Single": "Single"},
+        )
+        renewal_properties.applied_scopes = AAZListArg(
+            options=["applied-scopes"],
+            help="applied-scopes",
+        )
+        cls._build_args_applied_scopes_update(renewal_properties.applied_scopes)
+        renewal_properties.billing_plan = AAZStrArg(
+            options=["billing-plan"],
+            help="Represent the billing plans.",
+            enum={"Monthly": "Monthly", "Upfront": "Upfront"},
+        )
+        renewal_properties.billing_scope_id = AAZStrArg(
+            options=["billing-scope-id"],
+            help="Subscription that will be charged for purchasing Reservation",
+        )
+        renewal_properties.display_name = AAZStrArg(
+            options=["display-name"],
+            help="Friendly name of the Reservation",
+        )
+        renewal_properties.quantity = AAZIntArg(
+            options=["quantity"],
+            help="Quantity of the SKUs that are part of the Reservation.",
+        )
+        renewal_properties.renew = AAZBoolArg(
+            options=["renew"],
+            help="Setting this to true will automatically purchase a new reservation on the expiration date time.",
+            default=False,
+        )
+        renewal_properties.instance_flexibility = AAZStrArg(
+            options=["instance-flexibility"],
+            help="Turning this on will apply the reservation discount to other VMs in the same VM size group. Only specify for VirtualMachines reserved resource type.",
+            enum={"Off": "Off", "On": "On"},
+        )
+        renewal_properties.reserved_resource_type = AAZStrArg(
+            options=["reserved-resource-type"],
+            help="The type of the resource that is being reserved. For reservation renewal, this property should have the same value as the original reservation.",
+            enum={"AVS": "AVS", "AppService": "AppService", "AzureDataExplorer": "AzureDataExplorer", "AzureFiles": "AzureFiles", "BlockBlob": "BlockBlob", "CosmosDb": "CosmosDb", "DataFactory": "DataFactory", "Databricks": "Databricks", "DedicatedHost": "DedicatedHost", "ManagedDisk": "ManagedDisk", "MariaDb": "MariaDb", "MySql": "MySql", "NetAppStorage": "NetAppStorage", "PostgreSql": "PostgreSql", "RedHat": "RedHat", "RedHatOsa": "RedHatOsa", "RedisCache": "RedisCache", "SapHana": "SapHana", "SqlAzureHybridBenefit": "SqlAzureHybridBenefit", "SqlDataWarehouse": "SqlDataWarehouse", "SqlDatabases": "SqlDatabases", "SqlEdge": "SqlEdge", "SuseLinux": "SuseLinux", "VMwareCloudSimple": "VMwareCloudSimple", "VirtualMachineSoftware": "VirtualMachineSoftware", "VirtualMachines": "VirtualMachines"},
+        )
+        renewal_properties.term = AAZStrArg(
+            options=["term"],
+            help="Represent the term of Reservation.",
+            enum={"P1Y": "P1Y", "P3Y": "P3Y", "P5Y": "P5Y"},
+        )
+        renewal_properties.sku = AAZStrArg(
+            options=["sku"],
+            help="sku",
+        )
         return cls._args_schema
+
+    _args_applied_scope_properties_update = None
+
+    @classmethod
+    def _build_args_applied_scope_properties_update(cls, _schema):
+        if cls._args_applied_scope_properties_update is not None:
+            _schema.display_name = cls._args_applied_scope_properties_update.display_name
+            _schema.management_group_id = cls._args_applied_scope_properties_update.management_group_id
+            _schema.resource_group_id = cls._args_applied_scope_properties_update.resource_group_id
+            _schema.subscription_id = cls._args_applied_scope_properties_update.subscription_id
+            _schema.tenant_id = cls._args_applied_scope_properties_update.tenant_id
+            return
+
+        cls._args_applied_scope_properties_update = AAZObjectArg()
+
+        applied_scope_properties_update = cls._args_applied_scope_properties_update
+        applied_scope_properties_update.display_name = AAZStrArg(
+            options=["display-name"],
+            help="Display name",
+        )
+        applied_scope_properties_update.management_group_id = AAZStrArg(
+            options=["management-group-id"],
+            help="Fully-qualified identifier of the management group where the benefit must be applied.",
+        )
+        applied_scope_properties_update.resource_group_id = AAZStrArg(
+            options=["resource-group-id"],
+            help="Fully-qualified identifier of the resource group.",
+        )
+        applied_scope_properties_update.subscription_id = AAZStrArg(
+            options=["subscription-id"],
+            help="Fully-qualified identifier of the subscription.",
+        )
+        applied_scope_properties_update.tenant_id = AAZStrArg(
+            options=["tenant-id"],
+            help="Tenant ID where the savings plan should apply benefit.",
+        )
+
+        _schema.display_name = cls._args_applied_scope_properties_update.display_name
+        _schema.management_group_id = cls._args_applied_scope_properties_update.management_group_id
+        _schema.resource_group_id = cls._args_applied_scope_properties_update.resource_group_id
+        _schema.subscription_id = cls._args_applied_scope_properties_update.subscription_id
+        _schema.tenant_id = cls._args_applied_scope_properties_update.tenant_id
 
     _args_applied_scopes_update = None
 
@@ -112,11 +240,11 @@ class Update(AAZCommand):
         yield self.ReservationUpdate(ctx=self.ctx)()
         self.post_operations()
 
-    # @register_callback
+    @register_callback
     def pre_operations(self):
         pass
 
-    # @register_callback
+    @register_callback
     def post_operations(self):
         pass
 
@@ -184,7 +312,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-03-01",
+                    "api-version", "2022-11-01",
                     required=True,
                 ),
             }
@@ -213,12 +341,45 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
+                _UpdateHelper._build_schema_applied_scope_properties_update(properties.set_prop("appliedScopeProperties", AAZObjectType, ".applied_scope_property"))
                 properties.set_prop("appliedScopeType", AAZStrType, ".applied_scope_type")
-                _build_schema_applied_scopes_update(properties.set_prop("appliedScopes", AAZListType, ".applied_scopes"))
+                _UpdateHelper._build_schema_applied_scopes_update(properties.set_prop("appliedScopes", AAZListType, ".applied_scopes"))
                 properties.set_prop("instanceFlexibility", AAZStrType, ".instance_flexibility")
                 properties.set_prop("name", AAZStrType, ".name")
                 properties.set_prop("renew", AAZBoolType, ".renew")
                 properties.set_prop("renewProperties", AAZObjectType)
+
+            renew_properties = _builder.get(".properties.renewProperties")
+            if renew_properties is not None:
+                renew_properties.set_prop("purchaseProperties", AAZObjectType, ".renewal_properties")
+
+            purchase_properties = _builder.get(".properties.renewProperties.purchaseProperties")
+            if purchase_properties is not None:
+                purchase_properties.set_prop("location", AAZStrType, ".location")
+                purchase_properties.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+                purchase_properties.set_prop("sku", AAZObjectType)
+
+            properties = _builder.get(".properties.renewProperties.purchaseProperties.properties")
+            if properties is not None:
+                _UpdateHelper._build_schema_applied_scope_properties_update(properties.set_prop("appliedScopeProperties", AAZObjectType, ".applied_scope_properties"))
+                properties.set_prop("appliedScopeType", AAZStrType, ".applied_scope_type")
+                _UpdateHelper._build_schema_applied_scopes_update(properties.set_prop("appliedScopes", AAZListType, ".applied_scopes"))
+                properties.set_prop("billingPlan", AAZStrType, ".billing_plan")
+                properties.set_prop("billingScopeId", AAZStrType, ".billing_scope_id")
+                properties.set_prop("displayName", AAZStrType, ".display_name")
+                properties.set_prop("quantity", AAZIntType, ".quantity")
+                properties.set_prop("renew", AAZBoolType, ".renew")
+                properties.set_prop("reservedResourceProperties", AAZObjectType)
+                properties.set_prop("reservedResourceType", AAZStrType, ".reserved_resource_type")
+                properties.set_prop("term", AAZStrType, ".term")
+
+            reserved_resource_properties = _builder.get(".properties.renewProperties.purchaseProperties.properties.reservedResourceProperties")
+            if reserved_resource_properties is not None:
+                reserved_resource_properties.set_prop("instanceFlexibility", AAZStrType, ".instance_flexibility")
+
+            sku = _builder.get(".properties.renewProperties.purchaseProperties.sku")
+            if sku is not None:
+                sku.set_prop("name", AAZStrType, ".sku")
 
             return self.serialize_content(_content_value)
 
@@ -251,7 +412,7 @@ class Update(AAZCommand):
             )
             _schema_on_200.properties = AAZObjectType()
             _schema_on_200.sku = AAZObjectType()
-            _build_schema_sku_name_read(_schema_on_200.sku)
+            _UpdateHelper._build_schema_sku_name_read(_schema_on_200.sku)
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -264,13 +425,14 @@ class Update(AAZCommand):
             properties.applied_scope_properties = AAZObjectType(
                 serialized_name="appliedScopeProperties",
             )
+            _UpdateHelper._build_schema_applied_scope_properties_read(properties.applied_scope_properties)
             properties.applied_scope_type = AAZStrType(
                 serialized_name="appliedScopeType",
             )
             properties.applied_scopes = AAZListType(
                 serialized_name="appliedScopes",
             )
-            _build_schema_applied_scopes_read(properties.applied_scopes)
+            _UpdateHelper._build_schema_applied_scopes_read(properties.applied_scopes)
             properties.archived = AAZBoolType()
             properties.benefit_start_time = AAZStrType(
                 serialized_name="benefitStartTime",
@@ -295,6 +457,9 @@ class Update(AAZCommand):
             properties.expiry_date = AAZStrType(
                 serialized_name="expiryDate",
             )
+            properties.expiry_date_time = AAZStrType(
+                serialized_name="expiryDateTime",
+            )
             properties.extended_status_info = AAZObjectType(
                 serialized_name="extendedStatusInfo",
             )
@@ -318,6 +483,9 @@ class Update(AAZCommand):
             properties.purchase_date = AAZStrType(
                 serialized_name="purchaseDate",
             )
+            properties.purchase_date_time = AAZStrType(
+                serialized_name="purchaseDateTime",
+            )
             properties.quantity = AAZIntType()
             properties.renew = AAZBoolType()
             properties.renew_destination = AAZStrType(
@@ -331,6 +499,9 @@ class Update(AAZCommand):
             )
             properties.reserved_resource_type = AAZStrType(
                 serialized_name="reservedResourceType",
+            )
+            properties.review_date_time = AAZStrType(
+                serialized_name="reviewDateTime",
             )
             properties.sku_description = AAZStrType(
                 serialized_name="skuDescription",
@@ -352,17 +523,6 @@ class Update(AAZCommand):
             )
             properties.utilization = AAZObjectType(
                 flags={"read_only": True},
-            )
-
-            applied_scope_properties = cls._schema_on_200.properties.applied_scope_properties
-            applied_scope_properties.display_name = AAZStrType(
-                serialized_name="displayName",
-            )
-            applied_scope_properties.management_group_id = AAZStrType(
-                serialized_name="managementGroupId",
-            )
-            applied_scope_properties.tenant_id = AAZStrType(
-                serialized_name="tenantId",
             )
 
             extended_status_info = cls._schema_on_200.properties.extended_status_info
@@ -411,16 +571,20 @@ class Update(AAZCommand):
                 flags={"client_flatten": True},
             )
             purchase_properties.sku = AAZObjectType()
-            _build_schema_sku_name_read(purchase_properties.sku)
+            _UpdateHelper._build_schema_sku_name_read(purchase_properties.sku)
 
             properties = cls._schema_on_200.properties.renew_properties.purchase_properties.properties
+            properties.applied_scope_properties = AAZObjectType(
+                serialized_name="appliedScopeProperties",
+            )
+            _UpdateHelper._build_schema_applied_scope_properties_read(properties.applied_scope_properties)
             properties.applied_scope_type = AAZStrType(
                 serialized_name="appliedScopeType",
             )
             properties.applied_scopes = AAZListType(
                 serialized_name="appliedScopes",
             )
-            _build_schema_applied_scopes_read(properties.applied_scopes)
+            _UpdateHelper._build_schema_applied_scopes_read(properties.applied_scopes)
             properties.billing_plan = AAZStrType(
                 serialized_name="billingPlan",
             )
@@ -437,6 +601,9 @@ class Update(AAZCommand):
             )
             properties.reserved_resource_type = AAZStrType(
                 serialized_name="reservedResourceType",
+            )
+            properties.review_date_time = AAZStrType(
+                serialized_name="reviewDateTime",
             )
             properties.term = AAZStrType()
 
@@ -465,17 +632,13 @@ class Update(AAZCommand):
             )
 
             utilization = cls._schema_on_200.properties.utilization
-            utilization.aggregates = AAZListType(
-                flags={"read_only": True},
-            )
+            utilization.aggregates = AAZListType()
             utilization.trend = AAZStrType(
                 flags={"read_only": True},
             )
 
             aggregates = cls._schema_on_200.properties.utilization.aggregates
-            aggregates.Element = AAZObjectType(
-                flags={"read_only": True},
-            )
+            aggregates.Element = AAZObjectType()
 
             _element = cls._schema_on_200.properties.utilization.aggregates.Element
             _element.grain = AAZFloatType(
@@ -496,70 +659,111 @@ class Update(AAZCommand):
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
-                flags={"read_only": True},
             )
             system_data.created_by = AAZStrType(
                 serialized_name="createdBy",
-                flags={"read_only": True},
             )
             system_data.created_by_type = AAZStrType(
                 serialized_name="createdByType",
-                flags={"read_only": True},
             )
             system_data.last_modified_at = AAZStrType(
                 serialized_name="lastModifiedAt",
-                flags={"read_only": True},
             )
             system_data.last_modified_by = AAZStrType(
                 serialized_name="lastModifiedBy",
-                flags={"read_only": True},
             )
             system_data.last_modified_by_type = AAZStrType(
                 serialized_name="lastModifiedByType",
-                flags={"read_only": True},
             )
 
             return cls._schema_on_200
 
 
-def _build_schema_applied_scopes_update(_builder):
-    if _builder is None:
-        return
-    _builder.set_elements(AAZStrType, ".")
+class _UpdateHelper:
+    """Helper class for Update"""
 
+    @classmethod
+    def _build_schema_applied_scope_properties_update(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("displayName", AAZStrType, ".display_name")
+        _builder.set_prop("managementGroupId", AAZStrType, ".management_group_id")
+        _builder.set_prop("resourceGroupId", AAZStrType, ".resource_group_id")
+        _builder.set_prop("subscriptionId", AAZStrType, ".subscription_id")
+        _builder.set_prop("tenantId", AAZStrType, ".tenant_id")
 
-_schema_applied_scopes_read = None
+    @classmethod
+    def _build_schema_applied_scopes_update(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_elements(AAZStrType, ".")
 
+    _schema_applied_scope_properties_read = None
 
-def _build_schema_applied_scopes_read(_schema):
-    global _schema_applied_scopes_read
-    if _schema_applied_scopes_read is not None:
-        _schema.Element = _schema_applied_scopes_read.Element
-        return
+    @classmethod
+    def _build_schema_applied_scope_properties_read(cls, _schema):
+        if cls._schema_applied_scope_properties_read is not None:
+            _schema.display_name = cls._schema_applied_scope_properties_read.display_name
+            _schema.management_group_id = cls._schema_applied_scope_properties_read.management_group_id
+            _schema.resource_group_id = cls._schema_applied_scope_properties_read.resource_group_id
+            _schema.subscription_id = cls._schema_applied_scope_properties_read.subscription_id
+            _schema.tenant_id = cls._schema_applied_scope_properties_read.tenant_id
+            return
 
-    _schema_applied_scopes_read = AAZListType()
+        cls._schema_applied_scope_properties_read = _schema_applied_scope_properties_read = AAZObjectType()
 
-    applied_scopes_read = _schema_applied_scopes_read
-    applied_scopes_read.Element = AAZStrType()
+        applied_scope_properties_read = _schema_applied_scope_properties_read
+        applied_scope_properties_read.display_name = AAZStrType(
+            serialized_name="displayName",
+        )
+        applied_scope_properties_read.management_group_id = AAZStrType(
+            serialized_name="managementGroupId",
+        )
+        applied_scope_properties_read.resource_group_id = AAZStrType(
+            serialized_name="resourceGroupId",
+        )
+        applied_scope_properties_read.subscription_id = AAZStrType(
+            serialized_name="subscriptionId",
+        )
+        applied_scope_properties_read.tenant_id = AAZStrType(
+            serialized_name="tenantId",
+        )
 
-    _schema.Element = _schema_applied_scopes_read.Element
+        _schema.display_name = cls._schema_applied_scope_properties_read.display_name
+        _schema.management_group_id = cls._schema_applied_scope_properties_read.management_group_id
+        _schema.resource_group_id = cls._schema_applied_scope_properties_read.resource_group_id
+        _schema.subscription_id = cls._schema_applied_scope_properties_read.subscription_id
+        _schema.tenant_id = cls._schema_applied_scope_properties_read.tenant_id
 
+    _schema_applied_scopes_read = None
 
-_schema_sku_name_read = None
+    @classmethod
+    def _build_schema_applied_scopes_read(cls, _schema):
+        if cls._schema_applied_scopes_read is not None:
+            _schema.Element = cls._schema_applied_scopes_read.Element
+            return
 
+        cls._schema_applied_scopes_read = _schema_applied_scopes_read = AAZListType()
 
-def _build_schema_sku_name_read(_schema):
-    global _schema_sku_name_read
-    if _schema_sku_name_read is not None:
-        _schema.name = _schema_sku_name_read.name
-        return
+        applied_scopes_read = _schema_applied_scopes_read
+        applied_scopes_read.Element = AAZStrType()
 
-    _schema_sku_name_read = AAZObjectType()
+        _schema.Element = cls._schema_applied_scopes_read.Element
 
-    sku_name_read = _schema_sku_name_read
-    sku_name_read.name = AAZStrType()
+    _schema_sku_name_read = None
 
-    _schema.name = _schema_sku_name_read.name
+    @classmethod
+    def _build_schema_sku_name_read(cls, _schema):
+        if cls._schema_sku_name_read is not None:
+            _schema.name = cls._schema_sku_name_read.name
+            return
+
+        cls._schema_sku_name_read = _schema_sku_name_read = AAZObjectType()
+
+        sku_name_read = _schema_sku_name_read
+        sku_name_read.name = AAZStrType()
+
+        _schema.name = cls._schema_sku_name_read.name
 
 
 __all__ = ["Update"]

@@ -15,7 +15,7 @@ az extension add --name k8s-extension
 
 ### Included Features
 #### Kubernetes Extensions:
-Kubernetes Extensions: [more info](https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/extensions)\
+Kubernetes Extensions: [more info](https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/extensions)\
 *Examples:*
 
 ##### Create a KubernetesExtension
@@ -31,6 +31,10 @@ az k8s-extension create \
     --version versionNumber \
     --auto-upgrade-minor-version autoUpgrade \
     --configuration-settings exampleSetting=exampleValue \
+    --plan-name examplePlanName \
+    --plan-publisher examplePublisher \
+    --plan-product exampleOfferId \
+
 ```
 
 ##### Get a KubernetesExtension

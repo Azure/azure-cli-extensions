@@ -1,0 +1,68 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - self-help solution-self-help show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --solution-id
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.0 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Help/selfhelp/apollo-48996ff7-002f-47c1-85b2-df138843d5d5?api-version=2024-03-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Help/selfhelp/apollo-48996ff7-002f-47c1-85b2-df138843d5d5","name":"apollo-48996ff7-002f-47c1-85b2-df138843d5d5","type":"Microsoft.Help/selfHelp","properties":{"title":"Durable
+        Functions/Creation","content":"<h2>Resolve issues with creating Durable Functions</h2>\n<p>Durable
+        Functions is an extension of Azure Functions that lets you write stateful
+        functions in a serverless environment. The extension manages state, checkpoints,
+        and restarts for you.</p>\n<h3>Recommended steps</h3>\n<ul>\n<li>If you''re
+        using the <a href=\"https://docs.microsoft.com/azure/azure-functions/durable/durable-functions-storage-providers#mssql\">Microsoft
+        SQL Server storage provider</a>, multitenancy mode is enabled by default,
+        in which case the TaskHub name will be the SQL login username (for example,
+        <strong>dbo</strong>). If you want to disable multitenancy mode, run the following
+        T-SQL command:</li>\n</ul>\n<pre class=\"ext-code\"><code> EXECUTE dt.SetGlobalSetting
+        @Name=''TaskHubMode'', @Value=0\n</code></pre>\n<p>When multitenancy mode
+        is disabled, the <code>TaskHub</code> name is the one that you specify in
+        the <a href=\"https://docs.microsoft.com/azure/azure-functions/durable/durable-functions-task-hubs?tabs=csharp#task-hub-names\">host.json
+        or Function binding</a>.</p>\n<p>For more information, see <a href=\"https://microsoft.github.io/durabletask-mssql/#/multitenancy?id=enabling-multitenancy\">Multitenancy</a>.</p>\n<h3>Resources</h3>\n<ul>\n<li><a
+        href=\"https://docs.microsoft.com/azure/azure-functions/durable/durable-functions-create-first-csharp\">Create
+        your first durable function in C#</a></li>\n<li><a href=\"https://docs.microsoft.com/azure/azure-functions/durable/quickstart-js-vscode\">Create
+        your first durable function in JavaScript</a></li>\n<li><a href=\"https://docs.microsoft.com/azure/azure-functions/durable/durable-functions-storage-providers\">Durable
+        Functions storage providers</a></li>\n</ul>\n<h3>Relevant results from the
+        web</h3>\n<!--ecc4cc50-08a2-493c-98d8-4d55e420f0a7-->\n","replacementMaps":{"webResults":[{"replacementKey":"<!--ecc4cc50-08a2-493c-98d8-4d55e420f0a7-->"}]},"sections":[],"solutionId":"apollo-48996ff7-002f-47c1-85b2-df138843d5d5"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2212'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 14 May 2024 16:50:26 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: AC88DF59328E484587867FE148113B93 Ref B: MNZ221060618009 Ref C: 2024-05-14T16:50:26Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+version: 1

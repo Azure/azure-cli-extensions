@@ -4,10 +4,9 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=too-many-lines
+# pylint: disable=too-many-lines line-too-long useless-object-inheritance condition-evals-to-constant too-many-positional-arguments
 
 import sys
-
 from azure.cli.core.commands import cached_get, cached_put
 from azure.cli.core.util import sdk_no_wait
 
@@ -136,7 +135,7 @@ def delete_frontdoor_resource_property_entry(resource, prop):
 # region Frontdoor
 def _front_door_subresource_id(cmd, resource_group, front_door_name, child_type, child_name):
     from azure.cli.core.commands.client_factory import get_subscription_id
-    from msrestazure.tools import resource_id
+    from azure.mgmt.core.tools import resource_id
 
     subscription_id = get_subscription_id(cmd.cli_ctx)
 
@@ -167,6 +166,27 @@ def create_front_door(cmd, resource_group_name, front_door_name, backend_address
     probe_setting_name = 'DefaultProbeSettings'
     load_balancing_settings_name = 'DefaultLoadBalancingSettings'
     routing_rule_name = 'DefaultRoutingRule'
+
+    cloud = cmd.cli_ctx.cloud.name
+    endpoint = cmd.cli_ctx.cloud.endpoints.management
+
+    cloud_url = 'azurefd.net'
+
+    if cloud == 'AzureCloud':
+        cloud_url = 'azurefd.net'
+    elif cloud == 'AzureChinaCloud':
+        cloud_url = 'azurefd.net'
+    elif cloud == 'AzureUSGovernment':
+        cloud_url = 'azurefd.us'
+    elif cloud == 'AzureGermanCloud':
+        cloud_url = 'azurefd.net'
+    else:
+        cloud_url = 'azurefd.net'
+
+    if 'eaglex.ic.gov' in endpoint.lower():
+        cloud_url = 'azurefd.eaglex.ic.gov'
+    if 'microsoft.scloud' in endpoint.lower():
+        cloud_url = 'azurefd.microsoft.scloud'
 
     # get the IDs to fill the references
     backend_pool_id = _front_door_subresource_id(
@@ -214,7 +234,7 @@ def create_front_door(cmd, resource_group_name, front_door_name, backend_address
         frontend_endpoints=[
             FrontendEndpoint(
                 name=frontend_endpoint_name,
-                host_name=frontend_host_name if frontend_host_name else '{}.azurefd.net'.format(front_door_name),
+                host_name=frontend_host_name if frontend_host_name else '{}.{}'.format(front_door_name, cloud_url),
                 session_affinity_enabled_state='Disabled',
                 resource_state='Enabled'
             )
@@ -641,6 +661,7 @@ def create_fd_routing_rules(cmd, resource_group_name, front_door_name, item_name
                               redirect_protocol, custom_host, custom_path,
                               custom_fragment, custom_query_string)
 
+    rule = None
     if route_type == 'Forward':
         rule = RoutingRule(
             name=item_name,
@@ -747,49 +768,51 @@ def update_fd_routing_rule(parent, instance, item_name, frontend_endpoints=None,
 
 
 # region WafPolicy
-def create_waf_policy(cmd, resource_group_name, policy_name,
-                      disabled=False, mode=None, redirect_url=None,
-                      custom_block_response_status_code=None,
-                      custom_block_response_body=None, tags=None,
-                      request_body_check=None, sku=None):
-    client = cf_waf_policies(cmd.cli_ctx, None)
-    from azext_front_door.vendored_sdks.models import (
-        WebApplicationFirewallPolicy, ManagedRuleSetList, PolicySettings, CustomRuleList, Sku, SkuName)
-    policy = WebApplicationFirewallPolicy(
-        location='global',
-        tags=tags,
-        sku=Sku(name=sku if sku is not None else SkuName.classic_azure_front_door),
-        policy_settings=PolicySettings(
-            enabled_state='Enabled' if not disabled else 'Disabled',
-            mode=mode,
-            redirect_url=redirect_url,
-            custom_block_response_status_code=custom_block_response_status_code,
-            custom_block_response_body=custom_block_response_body,
-            request_body_check=request_body_check,
-        ),
-        custom_rules=CustomRuleList(rules=[]),
-        managed_rules=ManagedRuleSetList(rule_sets=[])
-    )
-    return client.begin_create_or_update(resource_group_name, policy_name, policy)
+# def create_waf_policy(cmd, resource_group_name, policy_name,
+#                       disabled=False, mode=None, redirect_url=None,
+#                       custom_block_response_status_code=None,
+#                       custom_block_response_body=None, tags=None,
+#                       request_body_check=None, sku=None):
+#     client = cf_waf_policies(cmd.cli_ctx, None)
+#     from azext_front_door.vendored_sdks.models import (
+#         WebApplicationFirewallPolicy, ManagedRuleSetList, PolicySettings, CustomRuleList, Sku, SkuName)
+
+#     policy = WebApplicationFirewallPolicy(
+#         location='global',
+#         tags=tags,
+#         sku=Sku(name=sku if sku is not None else SkuName.classic_azure_front_door),
+#         policy_settings=PolicySettings(
+#             enabled_state='Enabled' if not disabled else 'Disabled',
+#             mode=mode,
+#             redirect_url=redirect_url,
+#             custom_block_response_status_code=custom_block_response_status_code,
+#             custom_block_response_body=custom_block_response_body,
+#             request_body_check=request_body_check,
+#         ),
+#         custom_rules=CustomRuleList(rules=[]),
+#         managed_rules=ManagedRuleSetList(rule_sets=[])
+#     )
+#     return client.begin_create_or_update(resource_group_name, policy_name, policy)
 
 
-def update_waf_policy(instance, tags=None, mode=None, redirect_url=None,
-                      custom_block_response_status_code=None, custom_block_response_body=None,
-                      disabled=False, request_body_check=None, sku=None):
-    with UpdateContext(instance) as c:
-        c.update_param('tags', tags, True)
+# def update_waf_policy(instance, tags=None, mode=None, redirect_url=None,
+#                       custom_block_response_status_code=None, custom_block_response_body=None,
+#                       disabled=False, request_body_check=None, sku=None):
 
-    with UpdateContext(instance.sku) as c:
-        c.update_param('name', sku, None)
+#     with UpdateContext(instance) as c:
+#         c.update_param('tags', tags, True)
 
-    with UpdateContext(instance.policy_settings) as c:
-        c.update_param('enabled_state', 'Enabled' if not disabled else 'Disabled', None)
-        c.update_param('mode', mode, None)
-        c.update_param('redirect_url', redirect_url, None)
-        c.update_param('custom_block_response_status_code', custom_block_response_status_code, None)
-        c.update_param('custom_block_response_body', custom_block_response_body, None)
-        c.update_param('request_body_check', request_body_check, None)
-    return instance
+#     with UpdateContext(instance.sku) as c:
+#         c.update_param('name', sku, None)
+
+#     with UpdateContext(instance.policy_settings) as c:
+#         c.update_param('enabled_state', 'Enabled' if not disabled else 'Disabled', None)
+#         c.update_param('mode', mode, None)
+#         c.update_param('redirect_url', redirect_url, None)
+#         c.update_param('custom_block_response_status_code', custom_block_response_status_code, None)
+#         c.update_param('custom_block_response_body', custom_block_response_body, None)
+#         c.update_param('request_body_check', request_body_check, None)
+#     return instance
 
 
 def add_azure_managed_rule_set(cmd, resource_group_name, policy_name, rule_set_type, version, rule_set_action=None):

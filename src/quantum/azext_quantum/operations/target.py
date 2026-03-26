@@ -3,9 +3,10 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=line-too-long,redefined-builtin
+# pylint: disable=line-too-long,redefined-builtin,unused-argument
 
 from .._client_factory import cf_providers
+from .._list_helper import repack_response_json
 from .workspace import WorkspaceInfo
 
 
@@ -48,13 +49,14 @@ def set(cmd, target_id):
     return info
 
 
-def list(cmd, resource_group_name, workspace_name, location):
+def list(cmd, resource_group_name, workspace_name, location=None):
     """
     Get the list of providers and their targets in an Azure Quantum workspace.
     """
-    info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
-    client = cf_providers(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
-    return client.get_status()
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
+    client = cf_providers(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.endpoint)
+    response = client.list(info.subscription, info.resource_group, info.name)
+    return repack_response_json(response)
 
 
 def clear(cmd):
@@ -75,3 +77,20 @@ def target_show(cmd, target_id):
     info = TargetInfo(cmd, target_id)
     info.target_id += ""    # Kludge excuse: Without this the only output we ever get is "targetId": {"isDefault": true}
     return info
+
+
+def get_provider(cmd, target_id, resource_group_name, workspace_name):
+    """
+    Get the the Provider ID for a specific target
+    """
+    provider_id = None
+    provider_list = list(cmd, resource_group_name, workspace_name)
+    if provider_list is not None:
+        for item in provider_list:
+            for target_item in item["targets"]:
+                if target_item["id"].lower() == target_id.lower():
+                    provider_id = item["id"]
+                    break
+            if provider_id is not None:
+                break
+    return provider_id

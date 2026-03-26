@@ -5,6 +5,7 @@
 # pylint: disable=line-too-long
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
+# pylint: disable=unused-import
 
 from azure.cli.core.commands.parameters import (
     tags_type,
@@ -36,7 +37,7 @@ def load_arguments(self, _):
         c.argument('scopes', nargs='+', required=True, help='List of resource IDs (space-delimited) for scope. The rule will apply to alerts that fired on resources within that scope.')
         c.argument('enabled', arg_type=get_three_state_flag(), help='Indicate if the given alert processing rule is enabled or disabled (default is enabled).')
         c.argument('tags', tags_type)
-        c.argument('filter_severity', nargs='+', arg_group='Filter', validator=validate_severity, help='Filter alerts by severity <Sev0, Sev1, Sev2, Sev3, Sev4>')
+        c.argument('filter_severity', nargs='+', arg_group='Filter', validator=validate_severity, help='Filter alerts by severity Sev0, Sev1, Sev2, Sev3, Sev4')
         c.argument('filter_monitor_service', nargs='+', arg_group='Filter', validator=validate_monitor_service, help='Filter alerts by monitor service')
         c.argument('filter_monitor_condition', nargs='+', arg_group='Filter', validator=validate_monitor_condition, help='Filter alerts by monitor condition')
         c.argument('filter_alert_rule_name', nargs='+', arg_group='Filter', validator=validate_alert_rule_name, help='Filter alerts by alert rule name')

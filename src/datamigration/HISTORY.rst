@@ -3,6 +3,63 @@
 Release History
 ===============
 
+=======
+1.0.0
+++++++
+* Released the first stable version with three new commands.
+* [NEW COMMAND] `az datamigration sql-db retry` - Retry on going migration for the database.
+* [NEW COMMAND] `az datamigration sql-managed-instance delete` -  Delete SQL MI Database Migration resource.
+* [NEW COMMAND] `az datamigration sql-vm delete` -  Delete SQL VM Database Migration resource.
+
+=======
+1.0.0b6
+++++++
+* Added support for stable version 2025-06-30 of the DMS services.
+
+=======
+1.0.0b5
+++++++
+* [PARAMETER UPDATE] `az datamigration sql-managed-instance create`: `--source-location` now supports Managed Identity for accessing Azure Blob.
+
+=======
+1.0.0b4
+++++++
+* Updated the URL to download the SQL Server schema Zip to `https://aka.ms/sqlschemamigrationpackage`
+
+1.0.0b3
+++++++
+* Updated the URL to download the SQL Assessment Zip to `https://aka.ms/sqlassessmentpackage`
+
+=======
+1.0.0b2
+++++++
+* Minor bug fixes and improvements.
+
+=======
+1.0.0b1
+++++++
+* Added support for version update in command `az datamigration login-migration`.
+
+0.6.1
+++++++
+* Added parameter to help gather telemetry in command `az datamigration tde-migration`.
+
+0.6.0
+++++++
+* [NEW COMMAND] `az datamigration sql-server-schema` : Migrate database schema objects to the target Azure Sql Servers.
+
+0.5.0
+++++++
+* [NEW COMMAND] `az datamigration tde-migration` : Migrate TDE certificate from source SQL Server to the target Azure SQL Server.
+
+0.4.1
+++++++
+* Bug fix for list-logins parameter in command "az datamigration login-migration".
+
+0.4.0
+++++++
+* [NEW COMMAND] `az datamigration login-migration` : Migrate logins from the source Sql Servers to the target Azure Sql Servers.
+
 0.3.1
 ++++++
 * [NEW PARAMETER] `az datamigration register-integration-runtime`: Added parameter `--installed-ir-path` to read the installed location of Microsoft Integration Runtime (SHIR) and use it for registering the Database Migration Service if command is unable to find the installed SHIR path. 

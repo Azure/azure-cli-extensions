@@ -1,0 +1,508 @@
+interactions:
+- request:
+    body: '{"location": "southcentralus", "properties": {"deploymentType": {"appSourceUri":
+      "customImage", "languageRuntime": "JS"}, "memberIdentityCertificates": [{"certificate":
+      "-----BEGIN CERTIFICATE-----\nMIIBvjCCAUSgAwIBAgIUA0YHcPpUCtd3e8wyK9wyAUBUisAwCgYIKoZIzj0EAwMw\nFjEUMBIGA1UEAwwLZGVtb19tZW1iZXIwHhcNMjIwOTI3MTcyNjA1WhcNMjMwOTI3\nMTcyNjA1WjAWMRQwEgYDVQQDDAtkZW1vX21lbWJlcjB2MBAGByqGSM49AgEGBSuB\nBAAiA2IABGoueoYmaNnye59aXQeEo64fXsk+8UyGRUGRyIkNXYcC29JiuPj/1qrK\nK+20YpqI/ythDMhbxwFDHRlThw/7w33dj/hU5MeENeLRZ7Egku3GOtLD1SuHgNp4\n5iLoX8Vrk6NTMFEwHQYDVR0OBBYEFFVucmWHQlh5hu5eUEbmd9qcNeciMB8GA1Ud\nIwQYMBaAFFVucmWHQlh5hu5eUEbmd9qcNeciMA8GA1UdEwEB/wQFMAMBAf8wCgYI\nKoZIzj0EAwMDaAAwZQIxANHQLNvFQtgw0frnSaF88+TV+LXrVC6+q8LeeOfG8GUg\nr1VWKuUgtuMI0rLQ1sA5fQIwTRKWw5uf+xujwmP7iTOpoKsgwQCkVVTtPrm4XaWL\nVMUN0Yet/xU4G0d71ZtULNWo\n-----END
+      CERTIFICATE-----", "tags": {"identifier": "member0", "group": "contoso"}}],
+      "nodeCount": 5}, "tags": {"dept": "finance"}}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger managedccfs create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '949'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -l -g --tags --node-count --members
+      User-Agent:
+      - AZURECLI/2.45.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/synth_azcli_rg_000001/providers/Microsoft.ConfidentialLedger/managedCCFs/synth-azcli-000002?api-version=2023-01-26-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/synth_azcli_rg_000001/providers/Microsoft.ConfidentialLedger/managedCCFs/synth-azcli-000002","name":"synth-azcli-000002","type":"microsoft.confidentialledger/managedccfs","location":"southcentralus","tags":{"dept":"finance"},"systemData":{"createdBy":"settiy@microsoft.com","createdByType":"User","createdAt":"2023-03-22T21:24:24.6605506Z","lastModifiedBy":"settiy@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-22T21:24:24.6605506Z"},"properties":{"appName":"synth-azcli-000002","deploymentType":{"languageRuntime":"JS","appSourceUri":"customImage"},"memberIdentityCertificates":[{"certificate":"-----BEGIN
+        CERTIFICATE-----\nMIIBvjCCAUSgAwIBAgIUA0YHcPpUCtd3e8wyK9wyAUBUisAwCgYIKoZIzj0EAwMw\nFjEUMBIGA1UEAwwLZGVtb19tZW1iZXIwHhcNMjIwOTI3MTcyNjA1WhcNMjMwOTI3\nMTcyNjA1WjAWMRQwEgYDVQQDDAtkZW1vX21lbWJlcjB2MBAGByqGSM49AgEGBSuB\nBAAiA2IABGoueoYmaNnye59aXQeEo64fXsk+8UyGRUGRyIkNXYcC29JiuPj/1qrK\nK+20YpqI/ythDMhbxwFDHRlThw/7w33dj/hU5MeENeLRZ7Egku3GOtLD1SuHgNp4\n5iLoX8Vrk6NTMFEwHQYDVR0OBBYEFFVucmWHQlh5hu5eUEbmd9qcNeciMB8GA1Ud\nIwQYMBaAFFVucmWHQlh5hu5eUEbmd9qcNeciMA8GA1UdEwEB/wQFMAMBAf8wCgYI\nKoZIzj0EAwMDaAAwZQIxANHQLNvFQtgw0frnSaF88+TV+LXrVC6+q8LeeOfG8GUg\nr1VWKuUgtuMI0rLQ1sA5fQIwTRKWw5uf+xujwmP7iTOpoKsgwQCkVVTtPrm4XaWL\nVMUN0Yet/xU4G0d71ZtULNWo\n-----END
+        CERTIFICATE-----","tags":{"identifier":"member0","group":"contoso"}}],"nodeCount":5,"provisioningState":"Accepted"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.ConfidentialLedger/locations/SOUTHCENTRALUS/operationStatuses/ad127c29-e290-48c7-8be6-96f8268bd61e*D0934F2435036F03745ADAFA36EF27016DC7E4A0488391B9E7CE56CC18DFAAFB?api-version=2020-12-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '1467'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 22 Mar 2023 21:24:25 GMT
+      etag:
+      - '"7f04197e-0000-0700-0000-641b72090000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - PT10M
+      x-ms-image-digest:
+      - sha256:be43302cbc588ab40aa6787a99aa09cb23236b99fdbe37c3778a32f62213c4b0
+      x-ms-image-tag:
+      - 1.0.02268.78-ad23013975be98251aa63c507aa2c3835bcab550
+      x-ms-machinename:
+      - controlplane-66f8f54-65t9x
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger managedccfs create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -l -g --tags --node-count --members
+      User-Agent:
+      - AZURECLI/2.45.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ConfidentialLedger/locations/SOUTHCENTRALUS/operationStatuses/ad127c29-e290-48c7-8be6-96f8268bd61e*D0934F2435036F03745ADAFA36EF27016DC7E4A0488391B9E7CE56CC18DFAAFB?api-version=2020-12-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ConfidentialLedger/locations/SOUTHCENTRALUS/operationStatuses/ad127c29-e290-48c7-8be6-96f8268bd61e*D0934F2435036F03745ADAFA36EF27016DC7E4A0488391B9E7CE56CC18DFAAFB","name":"ad127c29-e290-48c7-8be6-96f8268bd61e*D0934F2435036F03745ADAFA36EF27016DC7E4A0488391B9E7CE56CC18DFAAFB","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/synth_azcli_rg_000001/providers/Microsoft.ConfidentialLedger/managedCCFs/synth-azcli-000002","status":"Accepted","startTime":"2023-03-22T21:24:25.459205Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '540'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 22 Mar 2023 21:24:56 GMT
+      etag:
+      - '"28032f0b-0000-0700-0000-641b72090000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger managedccfs create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -l -g --tags --node-count --members
+      User-Agent:
+      - AZURECLI/2.45.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ConfidentialLedger/locations/SOUTHCENTRALUS/operationStatuses/ad127c29-e290-48c7-8be6-96f8268bd61e*D0934F2435036F03745ADAFA36EF27016DC7E4A0488391B9E7CE56CC18DFAAFB?api-version=2020-12-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ConfidentialLedger/locations/SOUTHCENTRALUS/operationStatuses/ad127c29-e290-48c7-8be6-96f8268bd61e*D0934F2435036F03745ADAFA36EF27016DC7E4A0488391B9E7CE56CC18DFAAFB","name":"ad127c29-e290-48c7-8be6-96f8268bd61e*D0934F2435036F03745ADAFA36EF27016DC7E4A0488391B9E7CE56CC18DFAAFB","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/synth_azcli_rg_000001/providers/Microsoft.ConfidentialLedger/managedCCFs/synth-azcli-000002","status":"Accepted","startTime":"2023-03-22T21:24:25.459205Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '540'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 22 Mar 2023 21:25:26 GMT
+      etag:
+      - '"28032f0b-0000-0700-0000-641b72090000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger managedccfs create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -l -g --tags --node-count --members
+      User-Agent:
+      - AZURECLI/2.45.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ConfidentialLedger/locations/SOUTHCENTRALUS/operationStatuses/ad127c29-e290-48c7-8be6-96f8268bd61e*D0934F2435036F03745ADAFA36EF27016DC7E4A0488391B9E7CE56CC18DFAAFB?api-version=2020-12-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ConfidentialLedger/locations/SOUTHCENTRALUS/operationStatuses/ad127c29-e290-48c7-8be6-96f8268bd61e*D0934F2435036F03745ADAFA36EF27016DC7E4A0488391B9E7CE56CC18DFAAFB","name":"ad127c29-e290-48c7-8be6-96f8268bd61e*D0934F2435036F03745ADAFA36EF27016DC7E4A0488391B9E7CE56CC18DFAAFB","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/synth_azcli_rg_000001/providers/Microsoft.ConfidentialLedger/managedCCFs/synth-azcli-000002","status":"Succeeded","startTime":"2023-03-22T21:24:25.459205Z","endTime":"2023-03-22T21:25:41.8278279Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '600'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 22 Mar 2023 21:25:56 GMT
+      etag:
+      - '"28039d29-0000-0700-0000-641b72550000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger managedccfs create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -l -g --tags --node-count --members
+      User-Agent:
+      - AZURECLI/2.45.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/synth_azcli_rg_000001/providers/Microsoft.ConfidentialLedger/managedCCFs/synth-azcli-000002?api-version=2023-01-26-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/synth_azcli_rg_000001/providers/Microsoft.ConfidentialLedger/ManagedCCFs/synth-azcli-000002","name":"synth-azcli-000002","type":"Microsoft.ConfidentialLedger/ManagedCCFs","location":"southcentralus","tags":{"dept":"finance"},"properties":{"appName":"synth-azcli-000002","appUri":"https://synth-azcli-000002.confidential-ledger.azure.com","identityServiceUri":"https://identity.confidential-ledger.core.azure.com/ledgerIdentity/synth-azcli-000002","deploymentType":{"languageRuntime":"JS","appSourceUri":"customImage"},"memberIdentityCertificates":[{"certificate":"-----BEGIN
+        CERTIFICATE-----\nMIIBvjCCAUSgAwIBAgIUA0YHcPpUCtd3e8wyK9wyAUBUisAwCgYIKoZIzj0EAwMw\nFjEUMBIGA1UEAwwLZGVtb19tZW1iZXIwHhcNMjIwOTI3MTcyNjA1WhcNMjMwOTI3\nMTcyNjA1WjAWMRQwEgYDVQQDDAtkZW1vX21lbWJlcjB2MBAGByqGSM49AgEGBSuB\nBAAiA2IABGoueoYmaNnye59aXQeEo64fXsk+8UyGRUGRyIkNXYcC29JiuPj/1qrK\nK+20YpqI/ythDMhbxwFDHRlThw/7w33dj/hU5MeENeLRZ7Egku3GOtLD1SuHgNp4\n5iLoX8Vrk6NTMFEwHQYDVR0OBBYEFFVucmWHQlh5hu5eUEbmd9qcNeciMB8GA1Ud\nIwQYMBaAFFVucmWHQlh5hu5eUEbmd9qcNeciMA8GA1UdEwEB/wQFMAMBAf8wCgYI\nKoZIzj0EAwMDaAAwZQIxANHQLNvFQtgw0frnSaF88+TV+LXrVC6+q8LeeOfG8GUg\nr1VWKuUgtuMI0rLQ1sA5fQIwTRKWw5uf+xujwmP7iTOpoKsgwQCkVVTtPrm4XaWL\nVMUN0Yet/xU4G0d71ZtULNWo\n-----END
+        CERTIFICATE-----","tags":{"identifier":"member0","group":"contoso"}}],"nodeCount":5}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1381'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 22 Mar 2023 21:25:56 GMT
+      etag:
+      - '"7f04ecab-0000-0700-0000-641b72550000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-image-digest:
+      - sha256:be43302cbc588ab40aa6787a99aa09cb23236b99fdbe37c3778a32f62213c4b0
+      x-ms-image-tag:
+      - 1.0.02268.78-ad23013975be98251aa63c507aa2c3835bcab550
+      x-ms-machinename:
+      - controlplane-66f8f54-65t9x
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger managedccfs show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name
+      User-Agent:
+      - AZURECLI/2.45.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/synth_azcli_rg_000001/providers/Microsoft.ConfidentialLedger/managedCCFs/synth-azcli-000002?api-version=2023-01-26-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/synth_azcli_rg_000001/providers/Microsoft.ConfidentialLedger/ManagedCCFs/synth-azcli-000002","name":"synth-azcli-000002","type":"Microsoft.ConfidentialLedger/ManagedCCFs","location":"southcentralus","tags":{"dept":"finance"},"properties":{"appName":"synth-azcli-000002","appUri":"https://synth-azcli-000002.confidential-ledger.azure.com","identityServiceUri":"https://identity.confidential-ledger.core.azure.com/ledgerIdentity/synth-azcli-000002","deploymentType":{"languageRuntime":"JS","appSourceUri":"customImage"},"memberIdentityCertificates":[{"certificate":"-----BEGIN
+        CERTIFICATE-----\nMIIBvjCCAUSgAwIBAgIUA0YHcPpUCtd3e8wyK9wyAUBUisAwCgYIKoZIzj0EAwMw\nFjEUMBIGA1UEAwwLZGVtb19tZW1iZXIwHhcNMjIwOTI3MTcyNjA1WhcNMjMwOTI3\nMTcyNjA1WjAWMRQwEgYDVQQDDAtkZW1vX21lbWJlcjB2MBAGByqGSM49AgEGBSuB\nBAAiA2IABGoueoYmaNnye59aXQeEo64fXsk+8UyGRUGRyIkNXYcC29JiuPj/1qrK\nK+20YpqI/ythDMhbxwFDHRlThw/7w33dj/hU5MeENeLRZ7Egku3GOtLD1SuHgNp4\n5iLoX8Vrk6NTMFEwHQYDVR0OBBYEFFVucmWHQlh5hu5eUEbmd9qcNeciMB8GA1Ud\nIwQYMBaAFFVucmWHQlh5hu5eUEbmd9qcNeciMA8GA1UdEwEB/wQFMAMBAf8wCgYI\nKoZIzj0EAwMDaAAwZQIxANHQLNvFQtgw0frnSaF88+TV+LXrVC6+q8LeeOfG8GUg\nr1VWKuUgtuMI0rLQ1sA5fQIwTRKWw5uf+xujwmP7iTOpoKsgwQCkVVTtPrm4XaWL\nVMUN0Yet/xU4G0d71ZtULNWo\n-----END
+        CERTIFICATE-----","tags":{"identifier":"member0","group":"contoso"}}],"nodeCount":5}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1381'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 22 Mar 2023 21:25:56 GMT
+      etag:
+      - '"7f04ecab-0000-0700-0000-641b72550000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-image-digest:
+      - sha256:be43302cbc588ab40aa6787a99aa09cb23236b99fdbe37c3778a32f62213c4b0
+      x-ms-image-tag:
+      - 1.0.02268.78-ad23013975be98251aa63c507aa2c3835bcab550
+      x-ms-machinename:
+      - controlplane-66f8f54-2npb4
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger managedccfs delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-group --name --yes
+      User-Agent:
+      - AZURECLI/2.45.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/synth_azcli_rg_000001/providers/Microsoft.ConfidentialLedger/managedCCFs/synth-azcli-000002?api-version=2023-01-26-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.ConfidentialLedger/locations/SOUTHCENTRALUS/operationStatuses/fbfb7bc3-2215-4480-909f-55ec4ccf1b71*D0934F2435036F03745ADAFA36EF27016DC7E4A0488391B9E7CE56CC18DFAAFB?api-version=2020-12-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 22 Mar 2023 21:25:58 GMT
+      etag:
+      - '"7f0413bb-0000-0700-0000-641b72660000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.ConfidentialLedger/locations/SOUTHCENTRALUS/operationStatuses/fbfb7bc3-2215-4480-909f-55ec4ccf1b71*D0934F2435036F03745ADAFA36EF27016DC7E4A0488391B9E7CE56CC18DFAAFB?api-version=2020-12-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - PT5M
+      x-ms-image-digest:
+      - sha256:be43302cbc588ab40aa6787a99aa09cb23236b99fdbe37c3778a32f62213c4b0
+      x-ms-image-tag:
+      - 1.0.02268.78-ad23013975be98251aa63c507aa2c3835bcab550
+      x-ms-machinename:
+      - controlplane-66f8f54-2npb4
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger managedccfs delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --yes
+      User-Agent:
+      - AZURECLI/2.45.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ConfidentialLedger/locations/SOUTHCENTRALUS/operationStatuses/fbfb7bc3-2215-4480-909f-55ec4ccf1b71*D0934F2435036F03745ADAFA36EF27016DC7E4A0488391B9E7CE56CC18DFAAFB?api-version=2020-12-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ConfidentialLedger/locations/SOUTHCENTRALUS/operationStatuses/fbfb7bc3-2215-4480-909f-55ec4ccf1b71*D0934F2435036F03745ADAFA36EF27016DC7E4A0488391B9E7CE56CC18DFAAFB","name":"fbfb7bc3-2215-4480-909f-55ec4ccf1b71*D0934F2435036F03745ADAFA36EF27016DC7E4A0488391B9E7CE56CC18DFAAFB","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/synth_azcli_rg_000001/providers/Microsoft.ConfidentialLedger/managedCCFs/synth-azcli-000002","status":"Deleting","startTime":"2023-03-22T21:25:58.272106Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '540'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 22 Mar 2023 21:26:28 GMT
+      etag:
+      - '"28032f30-0000-0700-0000-641b72660000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger managedccfs delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --yes
+      User-Agent:
+      - AZURECLI/2.45.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ConfidentialLedger/locations/SOUTHCENTRALUS/operationStatuses/fbfb7bc3-2215-4480-909f-55ec4ccf1b71*D0934F2435036F03745ADAFA36EF27016DC7E4A0488391B9E7CE56CC18DFAAFB?api-version=2020-12-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ConfidentialLedger/locations/SOUTHCENTRALUS/operationStatuses/fbfb7bc3-2215-4480-909f-55ec4ccf1b71*D0934F2435036F03745ADAFA36EF27016DC7E4A0488391B9E7CE56CC18DFAAFB","name":"fbfb7bc3-2215-4480-909f-55ec4ccf1b71*D0934F2435036F03745ADAFA36EF27016DC7E4A0488391B9E7CE56CC18DFAAFB","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/synth_azcli_rg_000001/providers/Microsoft.ConfidentialLedger/managedCCFs/synth-azcli-000002","status":"Deleting","startTime":"2023-03-22T21:25:58.272106Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '540'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 22 Mar 2023 21:26:58 GMT
+      etag:
+      - '"28032f30-0000-0700-0000-641b72660000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - confidentialledger managedccfs delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --yes
+      User-Agent:
+      - AZURECLI/2.45.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ConfidentialLedger/locations/SOUTHCENTRALUS/operationStatuses/fbfb7bc3-2215-4480-909f-55ec4ccf1b71*D0934F2435036F03745ADAFA36EF27016DC7E4A0488391B9E7CE56CC18DFAAFB?api-version=2020-12-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ConfidentialLedger/locations/SOUTHCENTRALUS/operationStatuses/fbfb7bc3-2215-4480-909f-55ec4ccf1b71*D0934F2435036F03745ADAFA36EF27016DC7E4A0488391B9E7CE56CC18DFAAFB","name":"fbfb7bc3-2215-4480-909f-55ec4ccf1b71*D0934F2435036F03745ADAFA36EF27016DC7E4A0488391B9E7CE56CC18DFAAFB","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/synth_azcli_rg_000001/providers/Microsoft.ConfidentialLedger/managedCCFs/synth-azcli-000002","status":"Succeeded","startTime":"2023-03-22T21:25:58.272106Z","endTime":"2023-03-22T21:27:27.1042665Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '600'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 22 Mar 2023 21:27:27 GMT
+      etag:
+      - '"28030054-0000-0700-0000-641b72bf0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1

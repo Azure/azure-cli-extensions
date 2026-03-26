@@ -76,7 +76,7 @@ class DatabaseMigrationsSqlDbOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-03-30-preview"
+        api_version = "2025-06-30"
         accept = "application/json"
 
         # Construct URL
@@ -130,7 +130,7 @@ class DatabaseMigrationsSqlDbOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-03-30-preview"
+        api_version = "2025-06-30"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -184,7 +184,7 @@ class DatabaseMigrationsSqlDbOperations:
         parameters: "models.DatabaseMigrationSqlDb",
         **kwargs
     ) -> AsyncLROPoller["models.DatabaseMigrationSqlDb"]:
-        """Create a new database migration to a given SQL DB.
+        """Create a new database migration to a given SQL Db. This command can migrate data from the selected source database tables to the target database tables. If the target database have no table existing, please use New-AzDataMigrationSqlServerSchema command to migrate schema objects from source database to target databse. The link of New-AzDataMigrationSqlServerSchema is https://learn.microsoft.com/cli/azure/datamigration?view=azure-cli-latest#az-datamigration-sql-server-schema
 
         :param resource_group_name: Name of the resource group that contains the resource. You can
          obtain this value from the Azure Resource Manager API or the portal.
@@ -266,7 +266,7 @@ class DatabaseMigrationsSqlDbOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-03-30-preview"
+        api_version = "2025-06-30"
 
         # Construct URL
         url = self._delete_initial.metadata['url']  # type: ignore
@@ -388,7 +388,7 @@ class DatabaseMigrationsSqlDbOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-03-30-preview"
+        api_version = "2025-06-30"
         content_type = kwargs.pop("content_type", "application/json")
 
         # Construct URL

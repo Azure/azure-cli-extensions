@@ -47,7 +47,7 @@ def _get_location(cli_ctx, namespace):
             location = _get_location_from_resource_group(cli_ctx, namespace.resource_group_name)
         except HttpResponseError as err:
             from argcomplete import warn
-            warn('Warning: {}'.format(err.message))
+            warn(f'Warning: {err.message}')
     if not location:
         location = get_one_of_subscription_locations(cli_ctx)
     return location

@@ -1,0 +1,136 @@
+{
+    "type": "object",
+    "properties": {
+        "level-1_a_string": {
+            "type": "string"
+        },
+        "level-1_b_integer": {
+            "type": "integer"
+        },
+        "level-1_c_boolean": {
+            "type": "boolean"
+        },
+        "level-1_d_null": {
+            "type": "null"
+        },
+        "level-1_e_object": {
+            "type": "object",
+            "properties": {
+                "level-2_a_object": {
+                    "type": "object",
+                    "properties": {
+                        "level-3_a_string": {
+                            "type": "string"
+                        },
+                        "level-3_b_integer": {
+                            "type": "integer"
+                        },
+                        "level-3_c_boolean": {
+                            "type": "boolean"
+                        },
+                        "level-3_d_null": {
+                            "type": "null"
+                        },
+                        "level-3_e_null_not-required": {
+                            "type": "null"
+                        },
+                        "level-3_f_object_no-properties": {
+                            "type": "object"
+                        },
+                        "level-3_g_array": {
+                            "type": "array"
+                        }
+                    },
+                    "required": [
+                        "level-3_a_string",
+                        "level-3_b_integer",
+                        "level-3_c_boolean",
+                        "level-3_d_null",
+                        "level-3_f_object_no-properties",
+                        "level-3_g_array"
+                    ]
+                },
+                "level-2_b_string": {
+                    "type": "string"
+                },
+                "level-2_c_integer": {
+                    "type": "integer"
+                },
+                "level-2_d_null": {
+                    "type": "null"
+                },
+                "level-2_e_string_not-required": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "level-2_a_object",
+                "level-2_b_string",
+                "level-2_c_integer",
+                "level-2_d_null"
+            ]
+        },
+        "level-1_f_object": {
+            "type": "object",
+            "properties": {
+                "level-2_a_boolean": {
+                    "type": "boolean"
+                },
+                "level-2_a_null": {
+                    "type": "null"
+                }
+            },
+            "required": [
+                "level-2_a_boolean",
+                "level-2_a_null"
+            ]
+        },
+        "level-1_g_object_not-required_nested-required": {
+            "type": "object",
+            "properties": {
+                "level-2_a_boolean": {
+                    "type": "boolean"
+                }
+            },
+            "required": [
+                "level-2_a_boolean"
+            ]
+        },
+        "level-1_h_object_not-required_nested-not-required": {
+            "type": "object",
+            "properties": {
+                "level-2_a_boolean": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "level-1_i_object_no-properties": {
+            "type": "object"
+        },
+        "level-1_j_array": {
+            "type": "array",
+            "items": [
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "integer"
+                },
+                {
+                    "type": "object"
+                }
+            ],
+            "additionalItems": false
+        }
+    },
+    "required": [
+        "level-1_a_string",
+        "level-1_b_integer",
+        "level-1_c_boolean",
+        "level-1_d_null",
+        "level-1_e_object",
+        "level-1_f_object",
+        "level-1_i_object_no-properties",
+        "level-1_j_array"
+    ]
+}

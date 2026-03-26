@@ -1,0 +1,117 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - AzureCli/1.13.0 azsdk-python-communication-identity/1.5.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+      x-ms-content-sha256:
+      - 47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=
+      x-ms-date:
+      - Thu, 27 Mar 2025 07:53:44 GMT
+      x-ms-return-client-request-id:
+      - 'true'
+    method: POST
+    uri: https://sanitized.communication.azure.com/identities?api-version=2023-10-01
+  response:
+    body:
+      string: '{"identity": {"id": "sanitized"}}'
+    headers:
+      api-supported-versions:
+      - 2020-07-20-preview2, 2021-03-07, 2021-10-31-preview, 2021-11-01, 2022-06-01,
+        2022-10-01, 2023-10-01, 2025-03-02-preview
+      connection:
+      - keep-alive
+      content-length:
+      - '33'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 27 Mar 2025 07:53:44 GMT
+      ms-cv:
+      - SUljok5QfUKTv/u53yhbcQ.2.0
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=31536000;includeSubDomains
+      x-azure-ref:
+      - 20250327T075344Z-16c89bd967fcf4nthC1MAAu67w00000000z0000000008c03
+      x-cache:
+      - CONFIG_NOCACHE
+      x-processing-time:
+      - 15ms
+    status:
+      code: 201
+      message: Created
+- request:
+    body: '{"validFrom": "2025-03-27T08:53:44.031167", "validUntil": "2025-03-27T09:53:44.031167",
+      "pstnDialOutEnabled": true, "participants": {"8:acs:e21ff742-ec02-4230-951d-cd12a65a0d2b_00000026-7679-65a1-a8d4-363a0d0017b9":
+      {"role": "Presenter"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '239'
+      Content-Type:
+      - application/json
+      Repeatability-First-Sent:
+      - Thu, 27 Mar 2025 07:53:45 GMT
+      Repeatability-Request-Id:
+      - 9c2eef25-0ae0-11f0-b683-00155d7b1001
+      User-Agent:
+      - AzureCli/1.13.0 azsdk-python-communication-rooms/1.2.0 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+      x-ms-content-sha256:
+      - zaDNl4eQERB8p2+iDYo42EMglHt2Mq638UpncAx+sFk=
+      x-ms-date:
+      - Thu, 27 Mar 2025 07:53:45 GMT
+      x-ms-return-client-request-id:
+      - 'true'
+    method: POST
+    uri: https://sanitized.communication.azure.com/rooms?api-version=2025-03-13
+  response:
+    body:
+      string: '{"id": "sanitized", "createdAt": "2025-03-27T07:53:46.231042+00:00",
+        "validFrom": "2025-03-27T08:53:44.031167+00:00", "validUntil": "2025-03-27T09:53:44.031167+00:00",
+        "pstnDialOutEnabled": true}'
+    headers:
+      api-supported-versions:
+      - 2023-06-14, 2023-10-30-preview, 2024-04-15, 2025-03-13
+      connection:
+      - keep-alive
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 27 Mar 2025 07:53:46 GMT
+      location:
+      - '99455939965732822'
+      ms-cv:
+      - w2dnJ7bzUkC+YyKpVsW6Zg.0
+      repeatability-result:
+      - accepted
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=31536000;includeSubDomains
+      transfer-encoding:
+      - chunked
+      x-azure-ref:
+      - 20250327T075345Z-16c89bd967fzz6nshC1MAAtnbc000000159000000000904p
+      x-cache:
+      - CONFIG_NOCACHE
+    status:
+      code: 201
+      message: Created
+version: 1

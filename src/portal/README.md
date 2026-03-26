@@ -2,7 +2,7 @@ Microsoft Azure CLI 'portal' Extension
 ==========================================
 
 This package is for the 'portal' extension. i.e. 'az portal'
-More info on what is [Azure portal](https://docs.microsoft.com/en-us/azure/azure-portal/azure-portal-overview).
+More info on what is [Azure portal](https://learn.microsoft.com/en-us/azure/azure-portal/azure-portal-overview).
 
 ### How to use ###
 Install this extension using the below CLI command
@@ -11,12 +11,12 @@ az extension add --name portal
 ```
 
 ### Included Features ###
-Manage Azure portal dashboards: [more info](https://docs.microsoft.com/en-us/azure/azure-portal/azure-portal-dashboards-create-programmatically#fetch-the-json-representation-of-the-dashboard)
+Manage Azure portal dashboards: [more info](https://learn.microsoft.com/en-us/azure/azure-portal/azure-portal-dashboards-create-programmatically#fetch-the-json-representation-of-the-dashboard)
 
 
 #### Import a portal dashboard ####
 You should have a dashboard json template ready before using this operation, the file can be downloaded from Azure portal website.
-More info can be found [here](https://docs.microsoft.com/en-us/azure/azure-portal/azure-portal-dashboards-create-programmatically#fetch-the-json-representation-of-the-dashboard)
+More info can be found [here](https://learn.microsoft.com/en-us/azure/azure-portal/azure-portal-dashboards-create-programmatically#fetch-the-json-representation-of-the-dashboard)
 Example:
 ```
 az portal dashboard import \

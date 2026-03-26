@@ -14,23 +14,6 @@ helps[
 """
 
 helps[
-    "k8s-configuration create"
-] = """
-    type: command
-    short-summary: Create a Flux v1 Kubernetes configuration (This command is for Flux v1, to use the newer Flux v2, run "az k8s-configuration flux create").
-    examples:
-      - name: Create a Flux v1 Kubernetes configuration
-        text: |-
-            az k8s-configuration create --resource-group MyResourceGroup --cluster-name MyClusterName \\
-            --cluster-type connectedClusters --name MyGitConfig --operator-instance-name OperatorInst01 \\
-            --operator-namespace OperatorNamespace01 --operator-type flux --operator-params "'--git-readonly'" \\
-            --repository-url git://github.com/fluxHowTo/flux-get-started --enable-helm-operator  \\
-            --helm-operator-chart-version 1.4.0 --scope namespace --helm-operator-params '--set helm.versions=v3' \\
-            --ssh-private-key '' --ssh-private-key-file '' --https-user '' --https-key '' \\
-            --ssh-known-hosts '' --ssh-known-hosts-file ''
-"""
-
-helps[
     "k8s-configuration list"
 ] = """
     type: command
@@ -102,6 +85,13 @@ helps[
           --kind azblob --url https://mystorageaccount.blob.core.windows.net \\
           --container-name my-container --kustomization name=my-kustomization \\
           --account-key my-account-key
+      - name: Create a Kubernetes v2 Flux Configuration with OCI Source Kind
+        text: |-
+          az k8s-configuration flux create --resource-group my-resource-group \\
+          --cluster-name mycluster --cluster-type connectedClusters \\
+          --name myconfig --scope cluster --namespace my-namespace \\
+          --kind oci --url oci://ghcr.io/owner/repo/manifests/podinfo \\
+          --kustomization name=my-kustomization --use-workload-identity
 """
 
 helps[
@@ -126,6 +116,11 @@ helps[
           az k8s-configuration flux update --resource-group my-resource-group \\
           --cluster-name mycluster --cluster-type connectedClusters --name myconfig \\
           --container-name other-container
+      - name: Update a Flux v2 Kubernetes configuration with OCI Source Kind to use connect insecurely
+        text: |-
+          az k8s-configuration flux update --resource-group my-resource-group \\
+          --cluster-name mycluster --cluster-type connectedClusters --name myconfig \\
+          --oci-insecure
 """
 
 helps[
@@ -194,7 +189,7 @@ helps[
         text: |-
           az k8s-configuration flux kustomization update --resource-group my-resource-group \\
           --cluster-name mycluster --cluster-type connectedClusters --name myconfig \\
-          --kustomization-name my-kustomization --path ./my/new-path --prune --force
+          --kustomization-name my-kustomization --path ./my/new-path --prune --force --disable-health-check
 """
 
 helps[

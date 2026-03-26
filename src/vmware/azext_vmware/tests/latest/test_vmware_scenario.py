@@ -3,11 +3,12 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import json
 import os
 import unittest
 
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
-from msrestazure.azure_exceptions import CloudError
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, record_only)
+from azure.cli.core.azclierror import ResourceNotFoundError
 
 
 class VmwareScenarioTest(ScenarioTest):
@@ -22,40 +23,52 @@ class VmwareScenarioTest(ScenarioTest):
             'loc': 'centralus',
             'privatecloud': 'cloud1',
             'cluster': 'pycluster1',
-            'hosts': 'fakehost22.nyc1.kubernetes.center fakehost23.nyc1.kubernetes.center fakehost24.nyc1.kubernetes.center'
+            'hosts': 'fakehost22.nyc1.kubernetes.center fakehost23.nyc1.kubernetes.center fakehost24.nyc1.kubernetes.center',
+            'key_vault_key': 'vmwarekey',
+            'vault_url': 'https://keyvault1-kmip-kvault.vault.azure.net/',
+            'clustername': 'cluster1',
+            'hostname': "name",
+            'vcf_cores': '100',
+            'vcf_end_date': '2027-01-01T00:00:00Z',
+            'vcf_broadcom_site_id': 'site123',
+            'vcf_broadcom_contract_number': '12345',
         })
 
         # check quote availability
-        self.cmd('vmware location checkquotaavailability --location {loc}')
+        self.cmd('vmware location check-quota-availability --location {loc}')
 
         # check trial availability
-        self.cmd('vmware location checktrialavailability --location {loc}')
-
-        # show should throw ResourceNotFound
-        # with self.assertRaisesRegexp(CloudError, 'ResourceNotFound'):
-        #     self.cmd('vmware private-cloud show -g {rg} -n {privatecloud}')
+        self.cmd('vmware location check-trial-availability --location {loc} --sku sku')
 
         count = len(self.cmd('vmware private-cloud list -g {rg}').get_output_in_json())
         self.assertEqual(count, 1, 'private cloud count expected to be 1')
 
         # create a private cloud
-        self.cmd('vmware private-cloud create -g {rg} -n {privatecloud} --location {loc} --sku av20 --cluster-size 3 --network-block 192.168.48.0/22 --nsxt-password 5rqdLj4GF3cePUe6( --vcenter-password UpfBXae9ZquZSDXk( --accept-eula')
+        self.cmd(
+            'vmware private-cloud create -g {rg} -n {privatecloud} --location {loc} --sku av20 --cluster-size 3 --network-block 192.168.48.0/22 --accept-eula')
+        
+        self.cmd(
+            'vmware private-cloud create -g {rg} -n {privatecloud} --location {loc} --sku av20 --cluster-size 3 --network-block 192.168.48.0/22 --zones 1 --accept-eula')
+
+        # create a private cloud with a vcf5 license
+        self.cmd(
+            'vmware private-cloud create -g {rg} -n {privatecloud} --location {loc} --sku av36 --cluster-size 3 --network-block 192.168.48.0/22 --vcf-license vcf5.cores={vcf_cores} vcf5.end-date={vcf_end_date} vcf5.site-id={vcf_broadcom_site_id} vcf5.contract-number={vcf_broadcom_contract_number} --accept-eula')
 
         count = len(self.cmd('vmware private-cloud list -g {rg}').get_output_in_json())
         self.assertEqual(count, 1, 'private cloud count expected to be 1')
 
         # count at the subscription level
-        # test passes, but commented out for privacy
-        # count = len(self.cmd('vmware private-cloud list').get_output_in_json())
-        # self.assertGreaterEqual(count, 1, 'subscription private cloud count expected to be more than 1')
+        count = len(self.cmd('vmware private-cloud list').get_output_in_json())
+        self.assertGreaterEqual(count, 1, 'subscription private cloud count expected to be more than 1')
 
         # get admin credentials
-        # not currently supported in test environment
-        # self.cmd('vmware private-cloud listadmincredentials -g {rg} -c {privatecloud}')
+        creds = self.cmd('vmware private-cloud list-admin-credentials -g {rg} -c {privatecloud}').get_output_in_json()
+        self.assertEqual("nsxtPassword" in creds, True)
+        self.assertEqual("vcenterPassword" in creds, True)
 
         # rotate passwords
-        # self.cmd('vmware private-cloud rotate-vcenter-password -g {rg} -c {privatecloud}')
-        # self.cmd('vmware private-cloud rotate-nsxt-password -g {rg} -c {privatecloud}')
+        self.cmd('vmware private-cloud rotate-vcenter-password -g {rg} -c {privatecloud} --yes')
+        self.cmd('vmware private-cloud rotate-nsxt-password -g {rg} -c {privatecloud} --yes')
 
         # update private cloud to changed default cluster size
         self.cmd('vmware private-cloud update -g {rg} -n {privatecloud} --cluster-size 4')
@@ -63,24 +76,50 @@ class VmwareScenarioTest(ScenarioTest):
         # update private cloud to enable internet
         self.cmd('vmware private-cloud update -g {rg} -n {privatecloud} --internet Enabled')
 
+        # update private cloud to set vsan datastore name
+        self.cmd('vmware private-cloud update -g {rg} -n {privatecloud} --hosts [host1, host2, host3]')
+
+        # update private cloud to set management cluster hosts
+        self.cmd('vmware private-cloud update -g {rg} -n {privatecloud} --vsan-datastore-name test-name')
+
+        # update private cloud to set vcf5 license
+        self.cmd('vmware private-cloud update -g {rg} -n {privatecloud} --vcf-license vcf5.cores={vcf_cores} vcf5.end-date={vcf_end_date} vcf5.site-id={vcf_broadcom_site_id} vcf5.contract-number={vcf_broadcom_contract_number}')
+
+        # get vcf license
+        self.cmd('vmware private-cloud get-vcf-license -g {rg} -n {privatecloud}')
+
+        # delete vcf license
+        self.cmd('vmware private-cloud delete-vcf-license -g {rg} -c {privatecloud} --yes')
+
+        # list authorization
+        self.cmd('vmware authorization list -g {rg} -c {privatecloud}')
+
+        # show authorization
+        self.cmd('vmware authorization show -g {rg} -c {privatecloud} -n myauthname')
+
         # create authorization
-        self.cmd('vmware authorization create -g {rg} -c {privatecloud} -n myauthname')
+        self.cmd('vmware authorization create -g {rg} -c {privatecloud} -n myauthname --express-route-id id')
 
         # delete authorization
         self.cmd('vmware authorization delete -g {rg} -c {privatecloud} -n myauthname --yes')
 
         # add identity source
-        self.cmd('vmware private-cloud add-identity-source -g {rg} -c {privatecloud} -n groupName --alias groupAlias --domain domain --base-user-dn "ou=baseUser" --base-group-dn "ou=baseGroup" --primary-server ldaps://1.1.1.1:636 --username someone --password something')
+        self.cmd(
+            'vmware private-cloud add-identity-source -g {rg} -c {privatecloud} -n group1 --alias groupAlias --domain domain1 --base-user-dn "ou=baseUser" --base-group-dn "ou=baseGroup" --primary-server ldaps://1.1.1.1:636 --username someone --password something')
 
         # delete identity source
-        self.cmd('vmware private-cloud delete-identity-source -g {rg} -c {privatecloud} -n groupName --alias groupAlias --domain domain --yes')
+        self.cmd(
+            'vmware private-cloud delete-identity-source -g {rg} -c {privatecloud} -n group1 --yes')
 
         # cluster list should report 0
         count = len(self.cmd('vmware cluster list -g {rg} -c {privatecloud}').get_output_in_json())
         self.assertEqual(count, 1, 'cluster count expected to be 1')
 
         # cluster create
-        self.cmd('vmware cluster create -g {rg} -c {privatecloud} -n {cluster} --sku av20 --size 3 --hosts {hosts}')
+        self.cmd('vmware cluster create -g {rg} -c {privatecloud} -n {cluster} --sku av20 --size 3 --hosts {hosts} --vsan-datastore-name datastore')
+
+        # cluster create without --hosts and --vsan-datastore-name
+        self.cmd('vmware cluster create -g {rg} -c {privatecloud} -n {cluster} --sku av20 --size 3')
 
         # cluster list should report 1
         count = len(self.cmd('vmware cluster list -g {rg} -c {privatecloud}').get_output_in_json())
@@ -89,26 +128,42 @@ class VmwareScenarioTest(ScenarioTest):
         # cluster update
         self.cmd('vmware cluster update -g {rg} -c {privatecloud} -n {cluster} --size 4')
 
-        # cluster delete
-        self.cmd('vmware cluster delete -g {rg} -c {privatecloud} -n {cluster} --yes')
+        # create extended network blocks
+        self.cmd('vmware private-cloud update -g {rg} -n {privatecloud} --ext-nw-blocks 10.0.8.0/23 10.1.8.0/23 10.2.8.0/23')
 
-        # delete the private cloud
-        self.cmd('vmware private-cloud delete -g {rg} -n {privatecloud} --yes')
-
-        # enable cmk encryption
-        self.cmd('az vmware private-cloud enable-cmk-encryption -c {privatecloud} -g {rg} --enc-kv-key-name test-key-name --enc-kv-key-version 1 --enc-kv-url test-url')
-
-        # disable cmk encyrption
-        self.cmd('az vmware private-cloud disable-cmk-encryption -c {privatecloud} -g {rg} --yes')
+        # delete all extended network blocks
+        self.cmd('vmware private-cloud update -g {rg} -n {privatecloud} --ext-nw-blocks null')
 
         # set managed identity
         self.cmd('vmware private-cloud identity assign -g {rg} -c {privatecloud} --system-assigned')
 
+        # enable cmk encryption
+        self.cmd('vmware private-cloud enable-cmk-encryption -c {privatecloud} -g {rg} --enc-kv-key-name {key_vault_key} --enc-kv-url {vault_url}')
+
+        # disable cmk encyrption
+        self.cmd('vmware private-cloud disable-cmk-encryption -c {privatecloud} -g {rg} --yes')
+
         # remove managed identity
         self.cmd('vmware private-cloud identity remove -g {rg} -c {privatecloud}')
 
-        # show managed identity
-        self.cmd('vmware private-cloud identity show -g {rg} -c {privatecloud}')
+        # delete the private cloud
+        self.cmd('vmware private-cloud delete -g {rg} -n {privatecloud} --yes')
 
-        count = len(self.cmd('vmware private-cloud list -g {rg}').get_output_in_json())
-        self.assertEqual(count, 1, 'private cloud count expected to be 1')
+        # cluster delete
+        self.cmd('vmware cluster delete -g {rg} -c {privatecloud} -n {cluster} --yes')
+
+        # cluster list zone
+        self.cmd('vmware cluster list-zones -g {rg} -c {privatecloud} -n {cluster}')
+        
+        # list hosts
+        count = len(self.cmd('az vmware cluster host list -g rg --cluster-name {clustername} --private-cloud-name {privatecloud}').get_output_in_json())
+        self.assertEqual(count, 3, 'count expected to be 3')
+
+        # get a host
+        self.cmd('az vmware cluster host show -g rg --cluster-name {clustername} --private-cloud-name {privatecloud} --host-id {hostname}')
+
+        # delete the private cloud
+        self.cmd('vmware private-cloud delete -g {rg} -n {privatecloud} --yes')
+        
+        # get sku list
+        self.cmd('vmware skus list')

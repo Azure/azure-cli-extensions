@@ -7,36 +7,37 @@
 from knack.help_files import helps  # pylint: disable=unused-import
 
 
-helps['grafana'] = """
-    type: group
-    short-summary: Commands to manage Azure Grafana instanced.
-    long-summary: For optimized experience, not all data plane Apis, documented at https://grafana.com/docs/grafana/latest/http_api/, are exposed. On coverage gap, please reach out to ad4g@microsoft.com
+helps['grafana backup'] = """
+    type: command
+    short-summary: Backup an Azure Managed Grafana instance's content to an archive.
+    examples:
+        - name: backup dashboards under 2 folders (data sources are included to enable name remapping when restore dashboards to another workspace)
+          text: |
+            az grafana backup -g MyResourceGroup -n MyGrafana -d c:\\temp --folders-to-include "Prod" "Compute Gateway" --components datasources dashboards folders
+        - name: backup dashboards and skip a few folders
+          text: |
+            az grafana backup -g MyResourceGroup -n MyGrafana -d c:\\temp  --folders-to-exclude General "Azure Monitor" --components datasources dashboards folders
+
 """
 
-helps['grafana create'] = """
+helps['grafana restore'] = """
     type: command
-    short-summary: Create a Azure Managed Grafana instance.
+    short-summary: Restore an Azure Managed Grafana instance from an archive.
+    examples:
+       - name: Restore dashboards. If they are under folders, include "folders" in the components list; use "--remap-data-sources" so CLI will update dashboards to point to same data sources at target workspace
+         text: |
+           az grafana restore -g MyResourceGroup -n MyGrafana --archive-file backup\\dashboards\\ServiceHealth-202307051036.tar.gz --components dashboards folders --remap-data-sources
 """
 
-helps['grafana list'] = """
+helps['grafana migrate'] = """
     type: command
-    short-summary: List Azure Managed Grafana instances.
+    short-summary: Migrate an existing Grafana instance to an Azure Managed Grafana instance.
+    examples:
+       - name: Migrate dashboards and folders from a local Grafana instance to an Azure Managed Grafana instance.
+         text: |
+           az grafana migrate -g MyResourceGroup -n MyGrafana -s http://localhost:3000 -t YourServiceTokenOrAPIKey
 """
 
-helps['grafana delete'] = """
-    type: command
-    short-summary: Delete a Azure Managed Grafana instance.
-"""
-
-helps['grafana show'] = """
-    type: command
-    short-summary: Show details of a Azure Managed Grafana instance.
-"""
-
-helps['grafana update'] = """
-    type: command
-    short-summary: Update a Azure Managed Grafana instance.
-"""
 
 helps['grafana data-source'] = """
     type: group
@@ -47,7 +48,92 @@ helps['grafana data-source create'] = """
     type: command
     short-summary: Create a data source.
     examples:
-        - name: create a data source of Azure SQL
+        - name: create an Azure Monitor data source using Managed Identity
+          text: |
+            az grafana data-source create -n MyGrafana --definition '{
+              "access": "proxy",
+              "jsonData": {
+                "azureAuthType": "msi",
+                "subscriptionId": "3a7edf7d-1488-4017-a908-111111111111"
+              },
+              "name": "Azure Monitor-3",
+              "type": "grafana-azure-monitor-datasource"
+            }'
+        - name: create an Azure Monitor data source using App Registration
+          text: |
+            az grafana data-source create -n MyGrafana --definition '{
+              "name": "Azure Monitor-2",
+              "type": "grafana-azure-monitor-datasource",
+              "access": "proxy",
+              "jsonData": {
+                "subscriptionId": "3a7edf7d-1488-4017-a908-111111111111",
+                "azureAuthType": "clientsecret",
+                "cloudName": "azuremonitor",
+                "tenantId": "72f988bf-86f1-41af-91ab-111111111111",
+                "clientId": "fb31a2f5-9122-4be9-9705-111111111111"
+              },
+              "secureJsonData": { "clientSecret": "verySecret" }
+            }'
+        - name: create an Azure Data Explorer data source using Managed Identity
+          text: |
+            az grafana data-source create -n MyGrafana --definition '{
+              "name": "Azure Data Explorer Datasource-2",
+              "type": "grafana-azure-data-explorer-datasource",
+              "access": "proxy",
+              "jsonData": {
+                "dataConsistency": "strongconsistency",
+                "clusterUrl": "https://mykusto.westcentralus.kusto.windows.net"
+              }
+            }'
+        - name: create an Azure Data Explorer data source using App Registration
+          text: |
+            az grafana data-source create -n MyGrafana --definition '{
+              "name": "Azure Data Explorer Datasource-1",
+              "type": "grafana-azure-data-explorer-datasource",
+              "access": "proxy",
+              "jsonData": {
+                "clusterUrl": "https://mykusto.westcentralus.kusto.windows.net",
+                "azureCredentials": {
+                  "authType": "clientsecret",
+                  "azureCloud": "AzureCloud",
+                  "tenantId": "72f988bf-86f1-41af-91ab-111111111111",
+                  "clientId": "fb31a2f5-9122-4be9-9705-111111111111"
+                }
+              },
+              "secureJsonData": { "azureClientSecret": "verySecret" }
+            }'
+        - name: create an Azure Managed Prometheus data source using App Registration
+          text: |
+            az grafana data-source create -n MyGrafana --definition '{
+              "name": "Azure Managed Prometheus-1",
+              "type": "prometheus",
+              "access": "proxy",
+              "url": "https://myprom-abcd.westcentralus.prometheus.monitor.azure.com",
+              "jsonData": {
+                "httpMethod": "POST",
+                "azureCredentials": {
+                  "authType": "clientsecret",
+                  "azureCloud": "AzureCloud",
+                  "tenantId": "72f988bf-86f1-41af-91ab-111111111111",
+                  "clientId": "fb31a2f5-9122-4be9-9705-111111111111"
+                },
+                "timeInterval": "30s"
+              },
+              "secureJsonData": { "azureClientSecret": "verySecret" }
+            }'
+        - name: create an Azure Managed Prometheus data source using managed identity
+          text: |
+            az grafana data-source create -n MyGrafana --definition '{
+              "name": "Azure Managed Prometheus-1",
+              "type": "prometheus",
+              "access": "proxy",
+              "url": "https://myprom-jryu.westcentralus.prometheus.monitor.azure.com",
+              "jsonData": {
+                "httpMethod": "POST",
+                "azureCredentials": { "authType": "msi" }
+              }
+            }'
+        - name: create an Azure SQL data source
           text: |
             az grafana data-source create -n MyGrafana --definition '{
               "access": "proxy",
@@ -73,12 +159,12 @@ helps['grafana data-source update'] = """
 
 helps['grafana data-source show'] = """
     type: command
-    short-summary: get details of a data source
+    short-summary: Get the details of a data source
 """
 
 helps['grafana data-source delete'] = """
     type: command
-    short-summary: delete a data source
+    short-summary: Delete a data source
 """
 
 helps['grafana data-source list'] = """
@@ -88,12 +174,13 @@ helps['grafana data-source list'] = """
 
 helps['grafana data-source query'] = """
     type: command
-    short-summary: query a data source having backend implementation
+    short-summary: Query a data source having backend implementation
 """
 
 helps['grafana notification-channel'] = """
     type: group
     short-summary: Commands to manage notification channels of an instance.
+    long-summary: As part of Grafana legacy alerting, this command group only works with Grafana 10 and below.
 """
 
 helps['grafana notification-channel list'] = """
@@ -103,7 +190,7 @@ helps['grafana notification-channel list'] = """
 
 helps['grafana notification-channel show'] = """
     type: command
-    short-summary: get details of a notification channel
+    short-summary: Get the details of a notification channel
 """
 
 helps['grafana notification-channel create'] = """
@@ -129,12 +216,12 @@ helps['grafana notification-channel update'] = """
 
 helps['grafana notification-channel delete'] = """
     type: command
-    short-summary: delete a notification channel.
+    short-summary: Delete a notification channel.
 """
 
 helps['grafana notification-channel test'] = """
     type: command
-    short-summary: tests a notification channels.
+    short-summary: Test a notification channel.
 """
 
 helps['grafana dashboard'] = """
@@ -173,7 +260,7 @@ helps['grafana dashboard update'] = """
 
 helps['grafana dashboard import'] = """
     type: command
-    short-summary: import a dashboard.
+    short-summary: Import a dashboard.
     long-summary: CLI command will fill in required parameters for data sources if configured
     examples:
         - name: import the dashboard of "AKS Container Insights" from Grafana gallery.
@@ -195,7 +282,7 @@ helps['grafana dashboard list'] = """
 
 helps['grafana dashboard show'] = """
     type: command
-    short-summary: show the detail of a dashboard.
+    short-summary: Get the details of a dashboard.
     examples:
         - name: Get details of a dashboard specified by an unique identifier(use "az grafana dashboard list" command to retrieve the uid)
           text: |
@@ -204,11 +291,26 @@ helps['grafana dashboard show'] = """
 
 helps['grafana dashboard delete'] = """
     type: command
-    short-summary: delete a dashboard
+    short-summary: Delete a dashboard.
     examples:
         - name: Delete a dashboard specified by an unique identifier(use "az grafana dashboard list" command to retrieve the uid)
           text: |
            az grafana dashboard delete -g MyResourceGroup -n MyGrafana --dashboard VdrOA7jGz
+"""
+
+helps['grafana dashboard sync'] = """
+    type: command
+    short-summary: Sync Azure Managed Grafana dashboards from one instance to another instance. Library panels within the dashboards will be automatically included in the sync. Note, dashboards with "Provisioned" state will be skipped due to being read-only
+    examples:
+        - name: Sync only dashboards under a few folders
+          text: |
+            az grafana dashboard sync --source /subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/workspaces/providers/Microsoft.Dashboard/grafana/source --destination /subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/workspaces/providers/Microsoft.Dashboard/grafana/destination --folders-to-include "Azure Monitor Container Insights" "Azure Monitor"
+        - name: Sync a single dashboard
+          text: |
+            az grafana dashboard sync --source /subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/workspaces/providers/Microsoft.Dashboard/grafana/source --destination /subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/workspaces/providers/Microsoft.Dashboard/grafana/destination --folders-to-include "MyFolder" --dashboards-to-include "My Service Health"
+        - name: Preview the sync
+          text: |
+            az grafana dashboard sync --source /subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/workspaces/providers/Microsoft.Dashboard/grafana/source --destination /subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/workspaces/providers/Microsoft.Dashboard/grafana/destination --dry-run
 """
 
 helps['grafana folder'] = """
@@ -218,27 +320,30 @@ helps['grafana folder'] = """
 
 helps['grafana folder create'] = """
     type: command
-    short-summary: create a new folder.
+    short-summary: Create a new folder.
+    examples:
+        - name: Create a folder with title.
+          text: az grafana folder create -g MyResourceGroup -n MyGrafana --title "My Folder"
 """
 
 helps['grafana folder show'] = """
     type: command
-    short-summary: show the details of a folder.
+    short-summary: Get the details of a folder.
 """
 
 helps['grafana folder list'] = """
     type: command
-    short-summary: list all folders of an instance.
+    short-summary: List all folders of an instance.
 """
 
 helps['grafana folder update'] = """
     type: command
-    short-summary: update a folder.
+    short-summary: Update a folder.
 """
 
 helps['grafana folder delete'] = """
     type: command
-    short-summary: delete a folder.
+    short-summary: Delete a folder.
 """
 
 helps['grafana user'] = """
@@ -248,35 +353,129 @@ helps['grafana user'] = """
 
 helps['grafana user actual-user'] = """
     type: command
-    short-summary: show details of current user.
+    short-summary: Get the details of the current user.
 """
 
 helps['grafana user list'] = """
     type: command
-    short-summary: list users.
+    short-summary: List users.
 """
 
 helps['grafana user show'] = """
     type: command
-    short-summary: show detail of a user.
+    short-summary: Get the details of a user.
 """
 
 helps['grafana api-key'] = """
     type: group
-    short-summary: Commands to manage api keys.
+    short-summary: Commands to manage API keys.
+    long-summary: API keys are deprecated by Grafana Labs and will not be supported in Grafana 12 and above. Please use service accounts instead.
 """
 
 helps['grafana api-key create'] = """
     type: command
-    short-summary: create a new api key.
+    short-summary: Create a new API key.
+    examples:
+        - name: Create a new API key.
+          text: az grafana api-key create -g myResourceGroup -n myGrafana --key myKey
 """
 
 helps['grafana api-key list'] = """
     type: command
-    short-summary: list existing api keys.
+    short-summary: List existing API keys.
 """
 
 helps['grafana api-key delete'] = """
     type: command
-    short-summary: delete an api key.
+    short-summary: Delete an API key.
+"""
+
+helps['grafana service-account'] = """
+    type: group
+    short-summary: Commands to manage service accounts.
+"""
+
+helps['grafana service-account create'] = """
+    type: command
+    short-summary: Create a new service account.
+    examples:
+        - name: Create a service account with admin role
+          text: |
+           az grafana service-account create -g myResourceGroup -n myGrafana --service-account myAccount --role admin
+"""
+
+helps['grafana service-account update'] = """
+    type: command
+    short-summary: Update a service account.
+    examples:
+        - name: disable a service account
+          text: |
+           az grafana service-account update -g myResourceGroup -n myGrafana --service-account myAccount --is-disabled true
+"""
+
+helps['grafana service-account show'] = """
+    type: command
+    short-summary: Get the details of a service account.
+"""
+
+helps['grafana service-account list'] = """
+    type: command
+    short-summary: List existing service accounts.
+"""
+
+helps['grafana service-account delete'] = """
+    type: command
+    short-summary: Delete a service account.
+"""
+
+helps['grafana service-account token'] = """
+    type: group
+    short-summary: Commands to manage service account tokens.
+"""
+
+helps['grafana service-account token create'] = """
+    type: command
+    short-summary: Create a new service account token.
+    examples:
+        - name: create a service account token lasting 1 day
+          text: |
+           az grafana service-account token create -g myResourceGroup -n myGrafana --service-account myAccount --token myToken --time-to-live 1d
+"""
+
+helps['grafana service-account token list'] = """
+    type: command
+    short-summary: List existing service account tokens.
+"""
+
+helps['grafana service-account token delete'] = """
+    type: command
+    short-summary: Delete a service account token.
+"""
+
+helps['grafana integrations'] = """
+    type: group
+    short-summary: Commands to manage integrations of a Grafana instance.
+"""
+
+helps['grafana integrations monitor'] = """
+    type: group
+    short-summary: Commands to manage Azure Monitor workspace integrations of a Grafana instance.
+"""
+
+helps['grafana integrations monitor add'] = """
+    type: command
+    short-summary: Link an Azure Monitor workspace to a Grafana instance.
+    examples:
+        - name: Link an Azure Monitor workspace to a Grafana instance.
+          text: az grafana integrations monitor add -g MyResourceGroup -n MyGrafana --monitor-rg-name MyMonitorResourceGroup --monitor-name MyMonitor
+"""
+
+helps['grafana integrations monitor list'] = """
+    type: command
+    short-summary: List all Azure Monitor workspaces linked to a Grafana instance.
+"""
+
+helps['grafana integrations monitor delete'] = """
+    type: command
+    short-summary: Unlink an Azure Monitor workspace from a Grafana instance.
 """

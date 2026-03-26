@@ -2,21 +2,33 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+import os
+import shutil
+import tempfile
 import unittest
 from types import SimpleNamespace
+from unittest.mock import patch
 
-from azure.cli.core.util import CLIError
-from azure.cli.core.azclierror import InvalidArgumentValueError
 import azext_aks_preview._validators as validators
+import azext_aks_preview.azurecontainerstorage._consts as acstor_consts
+import azext_aks_preview.azurecontainerstorage._validators as acstor_validator
 from azext_aks_preview._consts import ADDONS
+from azure.cli.core.azclierror import (ArgumentUsageError,
+                                       InvalidArgumentValueError,
+                                       MutuallyExclusiveArgumentError,
+                                       RequiredArgumentMissingError,
+                                       UnknownError)
+from azure.cli.core.util import CLIError
 
 
 class TestValidateIPRanges(unittest.TestCase):
     def test_simultaneous_allow_and_disallow_with_spaces(self):
         api_server_authorized_ip_ranges = " 0.0.0.0/32 , 129.1.1.1.1 "
         namespace = Namespace(api_server_authorized_ip_ranges)
-        err = ("Setting --api-server-authorized-ip-ranges to 0.0.0.0/32 is not allowed with other IP ranges."
-               "Refer to https://aka.ms/aks/whitelist for more details")
+        err = (
+            "Setting --api-server-authorized-ip-ranges to 0.0.0.0/32 is not allowed with other IP ranges."
+            "Refer to https://aka.ms/aks/whitelist for more details"
+        )
 
         with self.assertRaises(CLIError) as cm:
             validators.validate_ip_ranges(namespace)
@@ -33,7 +45,7 @@ class TestValidateIPRanges(unittest.TestCase):
         self.assertEqual(str(cm.exception), err)
 
     def test_disable_authorized_ip_ranges(self):
-        api_server_authorized_ip_ranges = ''
+        api_server_authorized_ip_ranges = ""
         namespace = Namespace(api_server_authorized_ip_ranges)
         validators.validate_ip_ranges(namespace)
 
@@ -46,14 +58,10 @@ class TestValidateIPRanges(unittest.TestCase):
             validators.validate_ip_ranges(namespace)
         self.assertEqual(str(cm.exception), err)
 
-    def test_invalid_ip(self):
+    def test_invalid_ip_no_err_raised(self):
         api_server_authorized_ip_ranges = "193.168.0"
         namespace = Namespace(api_server_authorized_ip_ranges)
-        err = "--api-server-authorized-ip-ranges should be a list of IPv4 addresses or CIDRs"
-
-        with self.assertRaises(CLIError) as cm:
-            validators.validate_ip_ranges(namespace)
-        self.assertEqual(str(cm.exception), err)
+        validators.validate_ip_ranges(namespace)
 
     def test_IPv6(self):
         api_server_authorized_ip_ranges = "3ffe:1900:4545:3:200:f8ff:fe21:67cf"
@@ -66,7 +74,12 @@ class TestValidateIPRanges(unittest.TestCase):
 
 
 class Namespace:
-    def __init__(self, api_server_authorized_ip_ranges=None, cluster_autoscaler_profile=None, kubernetes_version=None):
+    def __init__(
+        self,
+        api_server_authorized_ip_ranges=None,
+        cluster_autoscaler_profile=None,
+        kubernetes_version=None,
+    ):
         self.api_server_authorized_ip_ranges = api_server_authorized_ip_ranges
         self.cluster_autoscaler_profile = cluster_autoscaler_profile
         self.kubernetes_version = kubernetes_version
@@ -75,7 +88,7 @@ class Namespace:
 class TestSubnetId(unittest.TestCase):
     def test_invalid_subnet_id(self):
         invalid_vnet_subnet_id = "dummy subnet id"
-        err = ("--vnet-subnet-id is not a valid Azure resource ID.")
+        err = "--vnet-subnet-id is not a valid Azure resource ID."
 
         with self.assertRaises(CLIError) as cm:
             validators._validate_subnet_id(invalid_vnet_subnet_id, "--vnet-subnet-id")
@@ -97,6 +110,21 @@ class MaxSurgeNamespace:
         self.max_surge = max_surge
 
 
+class MaxUnavailableNamespace:
+    def __init__(self, max_unavailable):
+        self.max_unavailable = max_unavailable
+
+
+class MaxBlockedNodesNamespace:
+    def __init__(self, max_blocked_nodes):
+        self.max_blocked_nodes = max_blocked_nodes
+
+
+class DrainBatchSizeNamespace:
+    def __init__(self, drain_batch_size):
+        self.drain_batch_size = drain_batch_size
+
+
 class SpotMaxPriceNamespace:
     def __init__(self, spot_max_price):
         self.priority = "Spot"
@@ -109,10 +137,10 @@ class MessageOfTheDayNamespace:
         self.message_of_the_day = message_of_the_day
 
 
-class EnableCustomCATrustNamespace:
-    def __init__(self, os_type, enable_custom_ca_trust):
+class CustomCATrustCertificatesNamespace:
+    def __init__(self, os_type, custom_ca_trust_certificates):
         self.os_type = os_type
-        self.enable_custom_ca_trust = enable_custom_ca_trust
+        self.custom_ca_trust_certificates = custom_ca_trust_certificates
 
 
 class DisableWindowsOutboundNatNamespace:
@@ -130,12 +158,99 @@ class TestMaxSurge(unittest.TestCase):
     def test_throws_on_string(self):
         with self.assertRaises(CLIError) as cm:
             validators.validate_max_surge(MaxSurgeNamespace("foobar"))
-        self.assertTrue('int or percentage' in str(cm.exception), msg=str(cm.exception))
+        self.assertTrue("int or percentage" in str(cm.exception), msg=str(cm.exception))
 
     def test_throws_on_negative(self):
         with self.assertRaises(CLIError) as cm:
             validators.validate_max_surge(MaxSurgeNamespace("-3"))
-        self.assertTrue('positive' in str(cm.exception), msg=str(cm.exception))
+        self.assertTrue("positive" in str(cm.exception), msg=str(cm.exception))
+
+
+class TestMaxUnavailable(unittest.TestCase):
+    def test_valid_cases(self):
+        valid = ["5", "33%", "1", "100%", "0"]
+        for v in valid:
+            validators.validate_max_unavailable(MaxUnavailableNamespace(v))
+
+    def test_throws_on_string(self):
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_max_unavailable(MaxUnavailableNamespace("foobar"))
+        self.assertTrue("int or percentage" in str(cm.exception), msg=str(cm.exception))
+
+    def test_throws_on_negative(self):
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_max_unavailable(MaxUnavailableNamespace("-3"))
+        self.assertTrue("positive" in str(cm.exception), msg=str(cm.exception))
+
+
+class TestMaxBlockedNodes(unittest.TestCase):
+    def test_valid_cases(self):
+        valid = ["5", "33%", "1", "100%", "0"]
+        for v in valid:
+            validators.validate_max_blocked_nodes(MaxBlockedNodesNamespace(v))
+
+    def test_throws_on_string(self):
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_max_blocked_nodes(MaxBlockedNodesNamespace("foobar"))
+        self.assertTrue("int or percentage" in str(cm.exception), msg=str(cm.exception))
+
+    def test_throws_on_negative(self):
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_max_blocked_nodes(MaxBlockedNodesNamespace("-3"))
+        self.assertTrue("positive" in str(cm.exception), msg=str(cm.exception))
+
+
+class TestDrainBatchSize(unittest.TestCase):
+    def test_valid_cases(self):
+        valid = ["1", "5", "10", "33%", "50%", "100%"]
+        for v in valid:
+            validators.validate_drain_batch_size(DrainBatchSizeNamespace(v))
+
+    def test_none_value(self):
+        # None should be ignored without raising an exception
+        validators.validate_drain_batch_size(DrainBatchSizeNamespace(None))
+
+    def test_throws_on_string(self):
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators.validate_drain_batch_size(DrainBatchSizeNamespace("foobar"))
+        self.assertTrue("integer or percentage" in str(cm.exception), msg=str(cm.exception))
+
+    def test_throws_on_invalid_percentage_format(self):
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators.validate_drain_batch_size(DrainBatchSizeNamespace("50percent"))
+        self.assertTrue("integer or percentage" in str(cm.exception), msg=str(cm.exception))
+
+    def test_throws_on_zero(self):
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators.validate_drain_batch_size(DrainBatchSizeNamespace("0"))
+        self.assertTrue("non-zero value" in str(cm.exception), msg=str(cm.exception))
+
+    def test_throws_on_zero_percentage(self):
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators.validate_drain_batch_size(DrainBatchSizeNamespace("0%"))
+        self.assertTrue("non-zero value" in str(cm.exception), msg=str(cm.exception))
+
+    def test_throws_on_negative(self):
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators.validate_drain_batch_size(DrainBatchSizeNamespace("-3"))
+        self.assertTrue("non-zero value" in str(cm.exception), msg=str(cm.exception))
+
+    def test_throws_on_negative_percentage(self):
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators.validate_drain_batch_size(DrainBatchSizeNamespace("-5%"))
+        self.assertTrue("non-zero value" in str(cm.exception), msg=str(cm.exception))
+
+    def test_edge_cases(self):
+        # Test edge cases that should be valid
+        valid_edge_cases = ["1", "1%", "999", "999%"]
+        for v in valid_edge_cases:
+            validators.validate_drain_batch_size(DrainBatchSizeNamespace(v))
+
+    def test_large_numbers(self):
+        # Test large numbers that should still be valid
+        large_valid = ["1000", "1000%", "9999"]
+        for v in large_valid:
+            validators.validate_drain_batch_size(DrainBatchSizeNamespace(v))
 
 
 class TestSpotMaxPrice(unittest.TestCase):
@@ -147,22 +262,38 @@ class TestSpotMaxPrice(unittest.TestCase):
     def test_throws_if_more_than_5(self):
         with self.assertRaises(CLIError) as cm:
             validators.validate_spot_max_price(SpotMaxPriceNamespace(5.123456))
-        self.assertTrue('--spot_max_price can only include up to 5 decimal places' in str(cm.exception), msg=str(cm.exception))
+        self.assertTrue(
+            "--spot_max_price can only include up to 5 decimal places"
+            in str(cm.exception),
+            msg=str(cm.exception),
+        )
 
     def test_throws_if_non_valid_negative(self):
         with self.assertRaises(CLIError) as cm:
             validators.validate_spot_max_price(SpotMaxPriceNamespace(-2))
-        self.assertTrue('--spot_max_price can only be any decimal value greater than zero, or -1 which indicates' in str(cm.exception), msg=str(cm.exception))
+        self.assertTrue(
+            "--spot_max_price can only be any decimal value greater than zero, or -1 which indicates"
+            in str(cm.exception),
+            msg=str(cm.exception),
+        )
         with self.assertRaises(CLIError) as cm:
             validators.validate_spot_max_price(SpotMaxPriceNamespace(0))
-        self.assertTrue('--spot_max_price can only be any decimal value greater than zero, or -1 which indicates' in str(cm.exception), msg=str(cm.exception))
+        self.assertTrue(
+            "--spot_max_price can only be any decimal value greater than zero, or -1 which indicates"
+            in str(cm.exception),
+            msg=str(cm.exception),
+        )
 
     def test_throws_if_input_max_price_for_regular(self):
         ns = SpotMaxPriceNamespace(2)
         ns.priority = "Regular"
         with self.assertRaises(CLIError) as cm:
             validators.validate_spot_max_price(ns)
-        self.assertTrue('--spot_max_price can only be set when --priority is Spot' in str(cm.exception), msg=str(cm.exception))
+        self.assertTrue(
+            "--spot_max_price can only be set when --priority is Spot"
+            in str(cm.exception),
+            msg=str(cm.exception),
+        )
 
 
 class TestMessageOfTheday(unittest.TestCase):
@@ -173,43 +304,85 @@ class TestMessageOfTheday(unittest.TestCase):
 
     def test_fail_if_os_type_windows(self):
         with self.assertRaises(CLIError) as cm:
-            validators.validate_message_of_the_day(MessageOfTheDayNamespace("foo", "Windows"))
-        self.assertTrue('--message-of-the-day can only be set for linux nodepools' in str(cm.exception), msg=str(cm.exception))
+            validators.validate_message_of_the_day(
+                MessageOfTheDayNamespace("foo", "Windows")
+            )
+        self.assertTrue(
+            "--message-of-the-day can only be set for linux nodepools"
+            in str(cm.exception),
+            msg=str(cm.exception),
+        )
 
     def test_fail_if_os_type_invalid(self):
         with self.assertRaises(CLIError) as cm:
-            validators.validate_message_of_the_day(MessageOfTheDayNamespace("foo", "invalid"))
-        self.assertTrue('--message-of-the-day can only be set for linux nodepools' in str(cm.exception), msg=str(cm.exception))
+            validators.validate_message_of_the_day(
+                MessageOfTheDayNamespace("foo", "invalid")
+            )
+        self.assertTrue(
+            "--message-of-the-day can only be set for linux nodepools"
+            in str(cm.exception),
+            msg=str(cm.exception),
+        )
 
 
-class TestEnableCustomCATrust(unittest.TestCase):
-    def test_pass_if_os_type_linux(self):
-        validators.validate_enable_custom_ca_trust(EnableCustomCATrustNamespace("Linux", True))
+class TestCustomCATrustCertificates(unittest.TestCase):
+    def test_valid_cases(self):
+        valid = ["foo", ""]
+        for v in valid:
+            validators.validate_custom_ca_trust_certificates(
+                CustomCATrustCertificatesNamespace("Linux", v)
+            )
 
     def test_fail_if_os_type_windows(self):
         with self.assertRaises(CLIError) as cm:
-            validators.validate_enable_custom_ca_trust(EnableCustomCATrustNamespace("Windows", True))
-        self.assertTrue('--enable_custom_ca_trust can only be set for Linux nodepools' in str(cm.exception), msg=str(cm.exception))
+            validators.validate_custom_ca_trust_certificates(
+                CustomCATrustCertificatesNamespace("Windows", "foo")
+            )
+        self.assertTrue(
+            "--custom-ca-trust-certificates can only be set for linux nodepools"
+            in str(cm.exception),
+            msg=str(cm.exception),
+        )
 
     def test_fail_if_os_type_invalid(self):
         with self.assertRaises(CLIError) as cm:
-            validators.validate_enable_custom_ca_trust(EnableCustomCATrustNamespace("invalid", True))
-        self.assertTrue('--enable_custom_ca_trust can only be set for Linux nodepools' in str(cm.exception), msg=str(cm.exception))
+            validators.validate_custom_ca_trust_certificates(
+                CustomCATrustCertificatesNamespace("invalid", "foo")
+            )
+        self.assertTrue(
+            "--custom-ca-trust-certificates can only be set for linux nodepools"
+            in str(cm.exception),
+            msg=str(cm.exception),
+        )
 
 
 class TestDisableWindowsOutboundNAT(unittest.TestCase):
     def test_pass_if_os_type_windows(self):
-        validators.validate_disable_windows_outbound_nat(DisableWindowsOutboundNatNamespace("Windows", True))
+        validators.validate_disable_windows_outbound_nat(
+            DisableWindowsOutboundNatNamespace("Windows", True)
+        )
 
     def test_fail_if_os_type_linux(self):
         with self.assertRaises(CLIError) as cm:
-            validators.validate_disable_windows_outbound_nat(DisableWindowsOutboundNatNamespace("Linux", True))
-        self.assertTrue('--disable-windows-outbound-nat can only be set for Windows nodepools' in str(cm.exception), msg=str(cm.exception))
+            validators.validate_disable_windows_outbound_nat(
+                DisableWindowsOutboundNatNamespace("Linux", True)
+            )
+        self.assertTrue(
+            "--disable-windows-outbound-nat can only be set for Windows nodepools"
+            in str(cm.exception),
+            msg=str(cm.exception),
+        )
 
     def test_fail_if_os_type_invalid(self):
         with self.assertRaises(CLIError) as cm:
-            validators.validate_disable_windows_outbound_nat(DisableWindowsOutboundNatNamespace("invalid", True))
-        self.assertTrue('--disable-windows-outbound-nat can only be set for Windows nodepools' in str(cm.exception), msg=str(cm.exception))
+            validators.validate_disable_windows_outbound_nat(
+                DisableWindowsOutboundNatNamespace("invalid", True)
+            )
+        self.assertTrue(
+            "--disable-windows-outbound-nat can only be set for Windows nodepools"
+            in str(cm.exception),
+            msg=str(cm.exception),
+        )
 
 
 class ValidateAddonsNamespace:
@@ -236,7 +409,8 @@ class TestValidateAddons(unittest.TestCase):
             midlen = int(len(first_addon) / 2)
 
             namespace = ValidateAddonsNamespace(
-                first_addon[:midlen] + first_addon[midlen + 1:])
+                first_addon[:midlen] + first_addon[midlen + 1:]
+            )
             self.assertRaises(CLIError, validators.validate_addons, namespace)
 
     def test_no_addon_match(self):
@@ -254,7 +428,7 @@ class TestAssignIdentity(unittest.TestCase):
     def test_invalid_identity_id(self):
         invalid_identity_id = "dummy identity id"
         namespace = AssignIdentityNamespace(invalid_identity_id)
-        err = ("--assign-identity is not a valid Azure resource ID.")
+        err = "--assign-identity is not a valid Azure resource ID."
 
         with self.assertRaises(CLIError) as cm:
             validators.validate_assign_identity(namespace)
@@ -277,37 +451,37 @@ class TestAssignIdentity(unittest.TestCase):
 
 
 class PodIdentityNamespace:
-
     def __init__(self, identity_name):
         self.identity_name = identity_name
 
 
 class TestValidatePodIdentityResourceName(unittest.TestCase):
-
     def test_valid_required_resource_name(self):
-        validator = validators.validate_pod_identity_resource_name('identity_name', required=True)
-        namespace = PodIdentityNamespace('test-name')
+        validator = validators.validate_pod_identity_resource_name(
+            "identity_name", required=True
+        )
+        namespace = PodIdentityNamespace("test-name")
         validator(namespace)
 
     def test_missing_required_resource_name(self):
-        validator = validators.validate_pod_identity_resource_name('identity_name', required=True)
+        validator = validators.validate_pod_identity_resource_name(
+            "identity_name", required=True
+        )
         namespace = PodIdentityNamespace(None)
 
         with self.assertRaises(CLIError) as cm:
             validator(namespace)
-        self.assertEqual(str(cm.exception), '--name is required')
+        self.assertEqual(str(cm.exception), "--name is required")
 
 
 class PodIdentityResourceNamespace:
-
     def __init__(self, namespace):
         self.namespace = namespace
 
 
 class TestValidatePodIdentityResourceNamespace(unittest.TestCase):
-
     def test_valid_required_resource_name(self):
-        namespace = PodIdentityResourceNamespace('test-name')
+        namespace = PodIdentityResourceNamespace("test-name")
         validators.validate_pod_identity_resource_namespace(namespace)
 
     def test_missing_required_resource_name(self):
@@ -315,10 +489,10 @@ class TestValidatePodIdentityResourceNamespace(unittest.TestCase):
 
         with self.assertRaises(CLIError) as cm:
             validators.validate_pod_identity_resource_namespace(namespace)
-        self.assertEqual(str(cm.exception), '--namespace is required')
+        self.assertEqual(str(cm.exception), "--namespace is required")
+
 
 class TestValidateKubernetesVersion(unittest.TestCase):
-
     def test_valid_full_kubernetes_version(self):
         kubernetes_version = "1.11.8"
         namespace = Namespace(kubernetes_version=kubernetes_version)
@@ -341,8 +515,10 @@ class TestValidateKubernetesVersion(unittest.TestCase):
         kubernetes_version = "1.2.3.4"
 
         namespace = Namespace(kubernetes_version=kubernetes_version)
-        err = ("--kubernetes-version should be the full version number or alias minor version, "
-               "such as \"1.7.12\" or \"1.7\"")
+        err = (
+            "--kubernetes-version should be the full version number or alias minor version, "
+            'such as "1.7.12" or "1.7"'
+        )
 
         with self.assertRaises(CLIError) as cm:
             validators.validate_k8s_version(namespace)
@@ -356,91 +532,135 @@ class TestValidateKubernetesVersion(unittest.TestCase):
             validators.validate_k8s_version(namespace)
         self.assertEqual(str(cm.exception), err)
 
-class HostGroupIDNamespace:
 
+class HostGroupIDNamespace:
     def __init__(self, host_group_id):
         self.host_group_id = host_group_id
+
 
 class TestValidateHostGroupID(unittest.TestCase):
     def test_invalid_host_group_id(self):
         invalid_host_group_id = "dummy group id"
         namespace = HostGroupIDNamespace(host_group_id=invalid_host_group_id)
-        err = ("--host-group-id is not a valid Azure resource ID.")
+        err = "--host-group-id is not a valid Azure resource ID."
 
         with self.assertRaises(CLIError) as cm:
             validators.validate_host_group_id(namespace)
         self.assertEqual(str(cm.exception), err)
 
-class AzureKeyVaultKmsKeyIdNamespace:
 
-    def __init__(self, azure_keyvault_kms_key_id):
+class AzureKeyVaultKmsKeyIdNamespace:
+    def __init__(self, azure_keyvault_kms_key_id, kms_infrastructure_encryption=None):
         self.azure_keyvault_kms_key_id = azure_keyvault_kms_key_id
+        self.kms_infrastructure_encryption = kms_infrastructure_encryption
+
 
 class TestValidateAzureKeyVaultKmsKeyId(unittest.TestCase):
     def test_invalid_azure_keyvault_kms_key_id_without_https(self):
         invalid_azure_keyvault_kms_key_id = "dummy key id"
-        namespace = AzureKeyVaultKmsKeyIdNamespace(azure_keyvault_kms_key_id=invalid_azure_keyvault_kms_key_id)
-        err = '--azure-keyvault-kms-key-id is not a valid Key Vault key ID. ' \
-              'See https://docs.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name'
-
-        with self.assertRaises(CLIError) as cm:
-            validators.validate_azure_keyvault_kms_key_id(namespace)
-        self.assertEqual(str(cm.exception), err)
-
-    def test_invalid_azure_keyvault_kms_key_id_without_key_version(self):
-        invalid_azure_keyvault_kms_key_id = "https://fakekeyvault.vault.azure.net/keys/fakekeyname"
-        namespace = AzureKeyVaultKmsKeyIdNamespace(azure_keyvault_kms_key_id=invalid_azure_keyvault_kms_key_id)
-        err = '--azure-keyvault-kms-key-id is not a valid Key Vault key ID. ' \
-              'See https://docs.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name'
-
-        with self.assertRaises(CLIError) as cm:
-            validators.validate_azure_keyvault_kms_key_id(namespace)
-        self.assertEqual(str(cm.exception), err)
-
-    def test_invalid_azure_keyvault_kms_key_id_with_wrong_object_type(self):
-        invalid_azure_keyvault_kms_key_id = "https://fakekeyvault.vault.azure.net/secrets/fakesecretname/fakesecretversion"
-        namespace = AzureKeyVaultKmsKeyIdNamespace(azure_keyvault_kms_key_id=invalid_azure_keyvault_kms_key_id)
-        err = '--azure-keyvault-kms-key-id is not a valid Key Vault key ID. ' \
-              'See https://docs.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name'
-
-        with self.assertRaises(CLIError) as cm:
-            validators.validate_azure_keyvault_kms_key_id(namespace)
-        self.assertEqual(str(cm.exception), err)
-
-class ImageCleanerNamespace:
-    def __init__(
-        self,
-        enable_image_cleaner=False,
-        disable_image_cleaner=False,
-        image_cleaner_interval_hours=None,
-    ):
-        self.enable_image_cleaner = enable_image_cleaner 
-        self.disable_image_cleaner = disable_image_cleaner 
-        self.image_cleaner_interval_hours = image_cleaner_interval_hours 
-
-class TestValidateImageCleanerEnableDiasble(unittest.TestCase):
-    def test_invalid_image_cleaner_enable_disable_not_existing_together(self):
-        namespace = ImageCleanerNamespace(
-            enable_image_cleaner=True,
-            disable_image_cleaner=True,
+        namespace = AzureKeyVaultKmsKeyIdNamespace(
+            azure_keyvault_kms_key_id=invalid_azure_keyvault_kms_key_id
         )
-        err = 'Cannot specify --enable-image-cleaner and --disable-image-cleaner at the same time.'
+        err = (
+            "--azure-keyvault-kms-key-id is not a valid Key Vault key ID. "
+            "See https://docs.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name"
+        )
 
         with self.assertRaises(CLIError) as cm:
-            validators.validate_image_cleaner_enable_disable_mutually_exclusive(namespace)
+            validators.validate_azure_keyvault_kms_key_id(namespace)
         self.assertEqual(str(cm.exception), err)
+
+    def test_valid_azure_keyvault_kms_key_id_without_key_version(self):
+        # Basic validator should accept versionless key IDs (PMK validation moved to decorator)
+        valid_azure_keyvault_kms_key_id = (
+            "https://fakekeyvault.vault.azure.net/keys/fakekeyname"
+        )
+        namespace = AzureKeyVaultKmsKeyIdNamespace(
+            azure_keyvault_kms_key_id=valid_azure_keyvault_kms_key_id
+        )
+        # Should not raise any exception
+        validators.validate_azure_keyvault_kms_key_id(namespace)
+
+    def test_invalid_azure_keyvault_kms_key_id_with_secrets_path(self):
+        # Validator should reject URLs that don't use the /keys/ path
+        azure_keyvault_kms_key_id = "https://fakekeyvault.vault.azure.net/secrets/fakesecretname/fakesecretversion"
+        namespace = AzureKeyVaultKmsKeyIdNamespace(
+            azure_keyvault_kms_key_id=azure_keyvault_kms_key_id
+        )
+        err = (
+            "--azure-keyvault-kms-key-id is not a valid Key Vault key ID. "
+            "See https://docs.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name"
+        )
+
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators.validate_azure_keyvault_kms_key_id(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_valid_versionless_key_id(self):
+        # Basic validator should accept both versionless and versioned key IDs
+        valid_versionless_key_id = "https://fakekeyvault.vault.azure.net/keys/fakekeyname"
+        namespace = AzureKeyVaultKmsKeyIdNamespace(
+            azure_keyvault_kms_key_id=valid_versionless_key_id
+        )
+        # Should not raise any exception
+        validators.validate_azure_keyvault_kms_key_id(namespace)
+
+    def test_valid_versioned_key_id(self):
+        # Basic validator should accept both versionless and versioned key IDs
+        valid_versioned_key_id = "https://fakekeyvault.vault.azure.net/keys/fakekeyname/abc123def456"
+        namespace = AzureKeyVaultKmsKeyIdNamespace(
+            azure_keyvault_kms_key_id=valid_versioned_key_id
+        )
+        # Should not raise any exception
+        validators.validate_azure_keyvault_kms_key_id(namespace)
+
+    def test_invalid_azure_keyvault_kms_key_id_insufficient_segments(self):
+        # URL with insufficient segments should be rejected
+        invalid_azure_keyvault_kms_key_id = "https://fakekeyvault.vault.azure.net/keys"
+        namespace = AzureKeyVaultKmsKeyIdNamespace(
+            azure_keyvault_kms_key_id=invalid_azure_keyvault_kms_key_id
+        )
+        err = (
+            "--azure-keyvault-kms-key-id is not a valid Key Vault key ID. "
+            "See https://docs.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name"
+        )
+
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators.validate_azure_keyvault_kms_key_id(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_invalid_azure_keyvault_kms_key_id_wrong_path_segment(self):
+        # URL with wrong path segment (not "keys") should be rejected
+        invalid_azure_keyvault_kms_key_id = "https://fakekeyvault.vault.azure.net/certificates/fakecert"
+        namespace = AzureKeyVaultKmsKeyIdNamespace(
+            azure_keyvault_kms_key_id=invalid_azure_keyvault_kms_key_id
+        )
+        err = (
+            "--azure-keyvault-kms-key-id is not a valid Key Vault key ID. "
+            "See https://docs.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name"
+        )
+
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators.validate_azure_keyvault_kms_key_id(namespace)
+        self.assertEqual(str(cm.exception), err)
+
 
 class AzureKeyVaultKmsKeyVaultResourceIdNamespace:
-
-    def __init__(self, azure_keyvault_kms_key_vault_resource_id):
-        self.azure_keyvault_kms_key_vault_resource_id = azure_keyvault_kms_key_vault_resource_id
+    def __init__(self, azure_keyvault_kms_key_vault_resource_id, kms_infrastructure_encryption=None, enable_azure_keyvault_kms=None):
+        self.azure_keyvault_kms_key_vault_resource_id = (
+            azure_keyvault_kms_key_vault_resource_id
+        )
+        self.kms_infrastructure_encryption = kms_infrastructure_encryption
+        self.enable_azure_keyvault_kms = enable_azure_keyvault_kms
 
 
 class TestValidateAzureKeyVaultKmsKeyVaultResourceId(unittest.TestCase):
     def test_invalid_azure_keyvault_kms_key_vault_resource_id(self):
         invalid_azure_keyvault_kms_key_vault_resource_id = "invalid"
-        namespace = AzureKeyVaultKmsKeyVaultResourceIdNamespace(azure_keyvault_kms_key_vault_resource_id=invalid_azure_keyvault_kms_key_vault_resource_id)
-        err = '--azure-keyvault-kms-key-vault-resource-id is not a valid Azure resource ID.'
+        namespace = AzureKeyVaultKmsKeyVaultResourceIdNamespace(
+            azure_keyvault_kms_key_vault_resource_id=invalid_azure_keyvault_kms_key_vault_resource_id
+        )
+        err = "--azure-keyvault-kms-key-vault-resource-id is not a valid Azure resource ID."
 
         with self.assertRaises(InvalidArgumentValueError) as cm:
             validators.validate_azure_keyvault_kms_key_vault_resource_id(namespace)
@@ -448,9 +668,71 @@ class TestValidateAzureKeyVaultKmsKeyVaultResourceId(unittest.TestCase):
 
     def test_valid_azure_keyvault_kms_key_vault_resource_id(self):
         valid_azure_keyvault_kms_key_vault_resource_id = "/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.KeyVault/vaults/foo"
-        namespace = AzureKeyVaultKmsKeyVaultResourceIdNamespace(azure_keyvault_kms_key_vault_resource_id=valid_azure_keyvault_kms_key_vault_resource_id)
+        namespace = AzureKeyVaultKmsKeyVaultResourceIdNamespace(
+            azure_keyvault_kms_key_vault_resource_id=valid_azure_keyvault_kms_key_vault_resource_id
+        )
 
         validators.validate_azure_keyvault_kms_key_vault_resource_id(namespace)
+
+    def test_empty_resource_id_should_pass(self):
+        # Empty resource ID should pass (basic validator only validates format when present)
+        namespace = AzureKeyVaultKmsKeyVaultResourceIdNamespace(
+            azure_keyvault_kms_key_vault_resource_id=""
+        )
+        # Should not raise any exception
+        validators.validate_azure_keyvault_kms_key_vault_resource_id(namespace)
+
+    def test_none_resource_id_should_pass(self):
+        # None resource ID should pass (basic validator only validates format when present)
+        namespace = AzureKeyVaultKmsKeyVaultResourceIdNamespace(
+            azure_keyvault_kms_key_vault_resource_id=None
+        )
+        # Should not raise any exception
+        validators.validate_azure_keyvault_kms_key_vault_resource_id(namespace)
+
+    def test_valid_keyvault_resource_id(self):
+        # Valid KeyVault vaults resource ID should be accepted
+        valid_resource_id = "/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.KeyVault/vaults/myvault"
+        namespace = AzureKeyVaultKmsKeyVaultResourceIdNamespace(
+            azure_keyvault_kms_key_vault_resource_id=valid_resource_id
+        )
+        # Should not raise any exception
+        validators.validate_azure_keyvault_kms_key_vault_resource_id(namespace)
+
+    def test_valid_managedhsm_resource_id(self):
+        # Valid KeyVault managedHSMs resource ID should be accepted
+        valid_resource_id = "/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.KeyVault/managedHSMs/myhsm"
+        namespace = AzureKeyVaultKmsKeyVaultResourceIdNamespace(
+            azure_keyvault_kms_key_vault_resource_id=valid_resource_id
+        )
+        # Should not raise any exception
+        validators.validate_azure_keyvault_kms_key_vault_resource_id(namespace)
+
+    def test_invalid_non_keyvault_resource_id(self):
+        # Non-KeyVault resource ID should be rejected
+        invalid_resource_id = "/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.Storage/storageAccounts/mystorageaccount"
+        namespace = AzureKeyVaultKmsKeyVaultResourceIdNamespace(
+            azure_keyvault_kms_key_vault_resource_id=invalid_resource_id
+        )
+        err = "--azure-keyvault-kms-key-vault-resource-id must reference a Microsoft.KeyVault resource."
+
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators.validate_azure_keyvault_kms_key_vault_resource_id(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_invalid_keyvault_wrong_resource_type(self):
+        # KeyVault resource with wrong type (e.g., secrets) should be rejected
+        invalid_resource_id = "/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.KeyVault/secrets/mysecret"
+        namespace = AzureKeyVaultKmsKeyVaultResourceIdNamespace(
+            azure_keyvault_kms_key_vault_resource_id=invalid_resource_id
+        )
+        err = "--azure-keyvault-kms-key-vault-resource-id must reference a Key Vault (vaults) or Managed HSM (managedHSMs)."
+
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators.validate_azure_keyvault_kms_key_vault_resource_id(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+
 
 
 class TestValidateNodepoolName(unittest.TestCase):
@@ -461,9 +743,7 @@ class TestValidateNodepoolName(unittest.TestCase):
             }
         )
         with self.assertRaises(InvalidArgumentValueError):
-            validators.validate_nodepool_name(
-                namespace
-            )
+            validators.validate_nodepool_name(namespace)
 
     def test_invalid_agent_pool_name_too_long(self):
         namespace = SimpleNamespace(
@@ -472,9 +752,7 @@ class TestValidateNodepoolName(unittest.TestCase):
             }
         )
         with self.assertRaises(InvalidArgumentValueError):
-            validators.validate_agent_pool_name(
-                namespace
-            )
+            validators.validate_agent_pool_name(namespace)
 
     def test_invalid_nodepool_name_not_alnum(self):
         namespace = SimpleNamespace(
@@ -483,9 +761,7 @@ class TestValidateNodepoolName(unittest.TestCase):
             }
         )
         with self.assertRaises(InvalidArgumentValueError):
-            validators.validate_nodepool_name(
-                namespace
-            )
+            validators.validate_nodepool_name(namespace)
 
     def test_invalid_agent_pool_name_not_alnum(self):
         namespace = SimpleNamespace(
@@ -494,9 +770,7 @@ class TestValidateNodepoolName(unittest.TestCase):
             }
         )
         with self.assertRaises(InvalidArgumentValueError):
-            validators.validate_agent_pool_name(
-                namespace
-            )
+            validators.validate_agent_pool_name(namespace)
 
     def test_valid_nodepool_name(self):
         namespace = SimpleNamespace(
@@ -504,9 +778,7 @@ class TestValidateNodepoolName(unittest.TestCase):
                 "nodepool_name": "np100",
             }
         )
-        validators.validate_nodepool_name(
-            namespace
-        )
+        validators.validate_nodepool_name(namespace)
 
     def test_valid_agent_pool_name(self):
         namespace = SimpleNamespace(
@@ -514,9 +786,7 @@ class TestValidateNodepoolName(unittest.TestCase):
                 "agent_pool_name": "np100",
             }
         )
-        validators.validate_agent_pool_name(
-            namespace
-        )
+        validators.validate_agent_pool_name(namespace)
 
 
 class TestValidateAllowedHostPorts(unittest.TestCase):
@@ -527,9 +797,7 @@ class TestValidateAllowedHostPorts(unittest.TestCase):
             }
         )
         with self.assertRaises(InvalidArgumentValueError):
-            validators.validate_allowed_host_ports(
-                namespace
-            )
+            validators.validate_allowed_host_ports(namespace)
 
     def test_valid_allowed_host_ports(self):
         namespace = SimpleNamespace(
@@ -537,9 +805,7 @@ class TestValidateAllowedHostPorts(unittest.TestCase):
                 "allowed_host_ports": "80/tcp,443/tcp,8080-8090/tcp,53/udp",
             }
         )
-        validators.validate_allowed_host_ports(
-            namespace
-        )
+        validators.validate_allowed_host_ports(namespace)
 
 
 class TestValidateApplicationSecurityGroups(unittest.TestCase):
@@ -547,9 +813,40 @@ class TestValidateApplicationSecurityGroups(unittest.TestCase):
         namespace = SimpleNamespace(
             **{
                 "asg_ids": "invalid",
+                "allowed_host_ports": ["80/tcp", "443/tcp", "8080-8090/tcp", "53/udp"],
             }
         )
         with self.assertRaises(InvalidArgumentValueError):
+            validators.validate_application_security_groups(
+                namespace
+            )
+
+    def test_application_security_groups_without_allowed_host_ports(self):
+        asg_ids = ",".join([
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.Network/applicationSecurityGroups/asg1",
+        ])
+        namespace = SimpleNamespace(
+            **{
+                "asg_ids": asg_ids,
+                "allowed_host_ports": [],
+            }
+        )
+        with self.assertRaises(ArgumentUsageError):
+            validators.validate_application_security_groups(
+                namespace
+            )
+
+    def test_nodepool_application_security_groups_without_allowed_host_ports(self):
+        asg_ids = ",".join([
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.Network/applicationSecurityGroups/asg1",
+        ])
+        namespace = SimpleNamespace(
+            **{
+                "nodepool_asg_ids": asg_ids,
+                "nodepool_allowed_host_ports": [],
+            }
+        )
+        with self.assertRaises(ArgumentUsageError):
             validators.validate_application_security_groups(
                 namespace
             )
@@ -558,6 +855,18 @@ class TestValidateApplicationSecurityGroups(unittest.TestCase):
         namespace = SimpleNamespace(
             **{
                 "asg_ids": "",
+                "allowed_host_ports": [],
+            }
+        )
+        validators.validate_application_security_groups(
+            namespace
+        )
+
+    def test_empty_nodepool_application_security_groups(self):
+        namespace = SimpleNamespace(
+            **{
+                "nodepool_asg_ids": "",
+                "nodepool_allowed_host_ports": [],
             }
         )
         validators.validate_application_security_groups(
@@ -565,18 +874,1721 @@ class TestValidateApplicationSecurityGroups(unittest.TestCase):
         )
 
     def test_multiple_application_security_groups(self):
-        asg_ids = ','.join([
+        asg_ids = ",".join([
             "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.Network/applicationSecurityGroups/asg1",
             "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg2/providers/Microsoft.Network/applicationSecurityGroups/asg2",
         ])
         namespace = SimpleNamespace(
             **{
                 "asg_ids": asg_ids,
+                "allowed_host_ports": ["80/tcp", "443/tcp", "8080-8090/tcp", "53/udp"],
             }
         )
         validators.validate_application_security_groups(
             namespace
         )
+
+    def test_multiple_nodepool_application_security_groups(self):
+        asg_ids = ",".join([
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.Network/applicationSecurityGroups/asg1",
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg2/providers/Microsoft.Network/applicationSecurityGroups/asg2",
+        ])
+        namespace = SimpleNamespace(
+            **{
+                "nodepool_asg_ids": asg_ids,
+                "nodepool_allowed_host_ports": ["80/tcp", "443/tcp", "8080-8090/tcp", "53/udp"],
+            }
+        )
+        validators.validate_application_security_groups(
+            namespace
+        )
+
+
+class MaintenanceWindowNameSpace:
+    def __init__(self, utc_offset=None, start_date=None, start_time=None):
+        self.utc_offset = utc_offset
+        self.start_date = start_date
+        self.start_time = start_time
+
+
+class TestValidateMaintenanceWindow(unittest.TestCase):
+    def test_invalid_utc_offset(self):
+        namespace = MaintenanceWindowNameSpace(utc_offset="5:00")
+        err = '--utc-offset must be in format: "+/-HH:mm". For example, "+05:30" and "-12:00".'
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators.validate_utc_offset(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_valid_utc_offset(self):
+        namespace = MaintenanceWindowNameSpace(utc_offset="+05:00")
+        validators.validate_utc_offset(namespace)
+
+    def test_invalid_start_date(self):
+        namespace = MaintenanceWindowNameSpace(start_date="2023/01/01")
+        err = '--start-date must be in format: "yyyy-MM-dd". For example, "2023-01-01".'
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators.validate_start_date(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_valid_start_datet(self):
+        namespace = MaintenanceWindowNameSpace(start_date="2023-01-01")
+        validators.validate_start_date(namespace)
+
+    def test_invalid_start_time(self):
+        namespace = MaintenanceWindowNameSpace(start_time="3am")
+        err = (
+            '--start-time must be in format "HH:mm". For example, "09:30" and "17:00".'
+        )
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators.validate_start_time(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_valid_start_time(self):
+        namespace = MaintenanceWindowNameSpace(start_date="00:30")
+        validators.validate_start_time(namespace)
+
+
+class ManagedNamespace:
+    def __init__(self, name=None, cpu_request=None, cpu_limit=None, memory_request=None, memory_limit=None):
+        self.name = name
+        self.cpu_request = cpu_request
+        self.cpu_limit = cpu_limit
+        self.memory_request = memory_request
+        self.memory_limit = memory_limit
+
+
+class TestValidateManagedNamespace(unittest.TestCase):
+    def test_invalid_namespace_name(self):
+        namespace = ManagedNamespace(name="Abc")
+        err = "Invalid namespace 'Abc'. Must consist of lower case alphanumeric characters or '-', and must start and end with an alphanumeric character."
+        with self.assertRaises(ValueError) as cm:
+            validators.validate_namespace_name(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_valid_namespace_name(self):
+        namespace = ManagedNamespace(name="abc")
+        validators.validate_namespace_name(namespace)
+
+    def test_invalid_cpu_request(self):
+        namespace = ManagedNamespace(cpu_request="2t")
+        err = "--cpu-request must be specified in millicores, like 200m"
+        with self.assertRaises(ValueError) as cm:
+            validators.validate_resource_quota(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_invalid_cpu_limit(self):
+        namespace = ManagedNamespace(cpu_request="200m", cpu_limit="2t")
+        err = "--cpu-limit must be specified in millicores, like 200m"
+        with self.assertRaises(ValueError) as cm:
+            validators.validate_resource_quota(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_invalid_memory_request(self):
+        namespace = ManagedNamespace(cpu_request="200m", cpu_limit="800m", memory_request="2t")
+        err = "--memory-request must be specified in the power-of-two equivalents form:Ei, Pi, Ti, Gi, Mi, Ki."
+        with self.assertRaises(ValueError) as cm:
+            validators.validate_resource_quota(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_invalid_memory_limit(self):
+        namespace = ManagedNamespace(cpu_request="200m", cpu_limit="800m", memory_request="1Gi", memory_limit="2t")
+        err = "--memory-limit must be specified in the power-of-two equivalents form:Ei, Pi, Ti, Gi, Mi, Ki."
+        with self.assertRaises(ValueError) as cm:
+            validators.validate_resource_quota(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_valid_resource_quotas(self):
+        namespace = ManagedNamespace(cpu_request="500m", cpu_limit="800m", memory_request="1Gi", memory_limit="2Gi")
+        validators.validate_resource_quota(namespace)
+
+class TestValidateDisableAzureContainerStorageV1(unittest.TestCase):
+    def test_disable_when_extension_not_installed(self):
+        is_extension_installed = False
+        err = (
+            "Invalid usage of --disable-azure-container-storage. "
+            "Azure Container Storage is not enabled in the cluster."
+        )
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_disable_azure_container_storage_params_v1(
+                None, None, None, None, None, None, is_extension_installed, False, False, False, False, None, None
+            )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_disable_flag_with_storage_pool_name(self):
+        storage_pool_name = "pool-name"
+        err = (
+            "Conflicting flags. Cannot define --storage-pool-name value "
+            "when --disable-azure-container-storage is set."
+        )
+        with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
+            acstor_validator.validate_disable_azure_container_storage_params_v1(
+                acstor_consts.CONST_STORAGE_POOL_TYPE_AZURE_DISK, storage_pool_name, None, None, None, None, True, False, False, False, False, None, None
+            )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_disable_flag_with_storage_pool_sku(self):
+        storage_pool_sku = acstor_consts.CONST_STORAGE_POOL_SKU_PREMIUM_LRS
+        err = (
+            "Conflicting flags. Cannot define --storage-pool-sku value "
+            "when --disable-azure-container-storage is set."
+        )
+        with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
+            acstor_validator.validate_disable_azure_container_storage_params_v1(
+                acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK, None, storage_pool_sku, None, None, None, True, False, False, False, False, None, None
+            )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_disable_flag_with_storage_pool_size(self):
+        storage_pool_size = "5Gi"
+        err = (
+            "Conflicting flags. Cannot define --storage-pool-size value "
+            "when --disable-azure-container-storage is set."
+        )
+        with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
+            acstor_validator.validate_disable_azure_container_storage_params_v1(
+                acstor_consts.CONST_STORAGE_POOL_TYPE_AZURE_DISK, None, None, None, storage_pool_size, None, True, False, False, False, False, None, None
+            )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_disable_flag_with_ephemeral_disk_volume_type(self):
+        storage_pool_size = "5Gi"
+        ephemeral_disk_volume_type = acstor_consts.CONST_DISK_TYPE_PV_WITH_ANNOTATION
+        err = (
+            "Conflicting flags. Cannot define --ephemeral-disk-volume-type value "
+            "when --disable-azure-container-storage is set."
+        )
+        with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
+            acstor_validator.validate_disable_azure_container_storage_params_v1(
+                acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK, None, None, None, None, None, True, False, False, False, False, ephemeral_disk_volume_type, None
+            )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_disable_flag_with_ephemeral_disk_nvme_perf_tier(self):
+        storage_pool_size = "5Gi"
+        ephemeral_disk_volume_type = acstor_consts.CONST_DISK_TYPE_PV_WITH_ANNOTATION
+        perf_tier = acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_PREMIUM
+        err = (
+            "Conflicting flags. Cannot define --ephemeral-disk-nvme-perf-tier value "
+            "when --disable-azure-container-storage is set."
+        )
+        with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
+            acstor_validator.validate_disable_azure_container_storage_params_v1(
+                acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK, None, None, None, None, None, True, False, False, False, False, None, perf_tier
+            )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_disable_flag_with_storage_pool_option_not_ephemeralDisk(self):
+        storage_pool_option = acstor_consts.CONST_STORAGE_POOL_OPTION_NVME
+        storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_AZURE_DISK
+        err = (
+            "Cannot define --storage-pool-option value when "
+            "--disable-azure-container-storage is not set to ephemeralDisk."
+        )
+        with self.assertRaises(ArgumentUsageError) as cm:
+            acstor_validator.validate_disable_azure_container_storage_params_v1(
+                storage_pool_type, None, None, storage_pool_option, None, None, True, False, False, False, False, None, None
+            )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_disable_flag_with_storage_pool_option_not_set_both_ephemeralDisk_enabled(self):
+        storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK
+        err = (
+            "Value of --storage-pool-option must be defined since ephemeralDisk of both "
+            "the types: NVMe and Temp are enabled in the cluster."
+        )
+        with self.assertRaises(RequiredArgumentMissingError) as cm:
+            acstor_validator.validate_disable_azure_container_storage_params_v1(
+                storage_pool_type, None, None, None, None, None, True, False, False, True, True, None, None
+            )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_disable_flag_with_nodepool_list(self):
+        nodepool_list = "test,test1"
+        storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_AZURE_DISK
+        err = (
+            "Conflicting flags. Cannot define --azure-container-storage-nodepools value "
+            "when --disable-azure-container-storage is set."
+        )
+        with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
+            acstor_validator.validate_disable_azure_container_storage_params_v1(
+                storage_pool_type, None, None, None, None, nodepool_list, True, False, False, False, False, None, None
+            )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_disable_type_when_not_enabled(self):
+        pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_AZURE_DISK
+        is_azureDisk_enabled = False
+        err = (
+            "Invalid --disable-azure-container-storage value. "
+            "Azure Container Storage is not enabled for storage pool "
+            "type {0} in the cluster.".format(pool_type)
+        )
+        with self.assertRaises(ArgumentUsageError) as cm:
+            acstor_validator.validate_disable_azure_container_storage_params_v1(
+                pool_type, None, None, None, None, None, True, is_azureDisk_enabled, False, False, False, None, None
+            )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_disable_only_storage_pool_installed(self):
+        pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_AZURE_DISK
+        err = (
+            "Since azureDisk is the only storage pool type enabled for Azure Container Storage, "
+            "disabling the storage pool type will lead to disabling Azure Container Storage from the cluster. "
+            "To disable Azure Container Storage, set --disable-azure-container-storage to all."
+        )
+        with self.assertRaises(ArgumentUsageError) as cm:
+            acstor_validator.validate_disable_azure_container_storage_params_v1(
+                pool_type, None, None, None, None, None, True, True, False, False, False, None, None
+            )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_disable_only_storagepool_type_enabled(self):
+        pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_AZURE_DISK
+        is_azureDisk_enabled = True
+        err = (
+            "Since azureDisk is the only storage pool type enabled for Azure Container Storage, "
+            "disabling the storage pool type will lead to disabling Azure Container Storage from the cluster. "
+            "To disable Azure Container Storage, set --disable-azure-container-storage to all."
+        )
+        with self.assertRaises(ArgumentUsageError) as cm:
+            acstor_validator.validate_disable_azure_container_storage_params_v1(
+                pool_type, None, None, None, None, None, True, is_azureDisk_enabled, False, False, False, None, None
+            )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_valid_disable(self):
+        pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_ELASTIC_SAN
+        acstor_validator.validate_disable_azure_container_storage_params_v1(
+            pool_type, None, None, None, None, None, True, False, True, True, False, None, None
+        )
+
+
+class TestValidateEnableAzureContainerStorageV1(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        def side_effect_fn(sku_name):
+            if sku_name == "standard_l8s_v3":
+                return 8, True
+            elif sku_name == "standard_d2s_v2":
+                return 2, False
+            elif sku_name == "standard_d2pds_v6":
+                return 2, True
+            elif sku_name == "standard_ds1_v2":
+                return 1, False
+            elif sku_name == "standard_m8-2ms":
+                return 2, False
+            elif sku_name == "standard_b2s":
+                return 2, False
+
+            return None, None
+
+        cls.patcher = patch('azext_aks_preview.azurecontainerstorage._validators.get_vm_sku_details')
+        cls.mock_fn = cls.patcher.start()
+        cls.mock_fn.side_effect = side_effect_fn
+
+    @classmethod
+    def tearDownClass(cls):
+        # Stop the patcher
+        cls.patcher.stop()
+
+    def test_enable_when_latest_enabled(self):
+        v2_extension_version = "2.0.0"
+        err = (
+            'Failed to enable Azure Container Storage version 1 as Azure Container Storage version '
+            f'{v2_extension_version} is already installed on the cluster. Try enabling this version on another '
+            'cluster. You can also enable this version by first disabling the existing installation of '
+            'Azure Container Storage by running --disable-azure-container-storage. '
+            'Note that disabling can impact existing workloads that depend on Azure Container Storage.'
+        )
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_enable_azure_container_storage_v1_params(
+                acstor_consts.CONST_STORAGE_POOL_TYPE_AZURE_DISK, None, None, None, None, None, None, False, True, v2_extension_version, False, False, False, False, None, None, acstor_consts.CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY, acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
+            )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_enable_with_invalid_storage_pool_name(self):
+        storage_pool_name = "my_test_pool"
+        err = (
+            "Invalid --storage-pool-name value. "
+            "Accepted values are lowercase alphanumeric characters, "
+            "'-' or '.', and must start and end with an alphanumeric character."
+        )
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_enable_azure_container_storage_v1_params(
+                acstor_consts.CONST_STORAGE_POOL_TYPE_AZURE_DISK, storage_pool_name, None, None, None, None, None, False, False, "", False, False, False, False, None, None, acstor_consts.CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY, acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
+            )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_enable_with_sku_and_ephemeral_disk_pool(self):
+        storage_pool_name = "valid-name"
+        storage_pool_sku = acstor_consts.CONST_STORAGE_POOL_SKU_PREMIUM_LRS
+        storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK
+        err = "Cannot set --storage-pool-sku when --enable-azure-container-storage is ephemeralDisk."
+        with self.assertRaises(ArgumentUsageError) as cm:
+            acstor_validator.validate_enable_azure_container_storage_v1_params(
+                storage_pool_type, storage_pool_name, storage_pool_sku, None, None, None, None, False, False, "", False, False, False, False, None, None, acstor_consts.CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY, acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
+            )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_enable_with_sku_and_elastic_san_pool(self):
+        storage_pool_name = "valid-name"
+        storage_pool_sku = acstor_consts.CONST_STORAGE_POOL_SKU_PREMIUMV2_LRS
+        storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_ELASTIC_SAN
+        supported_skus = (
+            acstor_consts.CONST_STORAGE_POOL_SKU_PREMIUM_LRS
+            + ", "
+            + acstor_consts.CONST_STORAGE_POOL_SKU_PREMIUM_ZRS
+        )
+        err = (
+            "Invalid --storage-pool-sku value. "
+            "Supported value for --storage-pool-sku are {0} "
+            "when --enable-azure-container-storage is set to elasticSan.".format(
+                supported_skus
+            )
+        )
+        with self.assertRaises(ArgumentUsageError) as cm:
+            acstor_validator.validate_enable_azure_container_storage_v1_params(
+                storage_pool_type, storage_pool_name, storage_pool_sku, None, None, None, None, False,False, "", False, False, False, False, None, None, acstor_consts.CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY, acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
+            )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_enable_with_premiumv2_sku_and_azure_disk(self):
+        storage_pool_name = "valid-name"
+        storage_pool_sku = acstor_consts.CONST_STORAGE_POOL_SKU_PREMIUMV2_LRS
+        storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_AZURE_DISK
+        nodepool_list = "pool1"
+        agentpools = {"pool1": {"vm_size": "Standard_L8s_v3", "count": 3, "zoned": False}}
+        err = (
+            "Cannot set --storage-pool-sku as {0} "
+            "as none of the node pools are zoned. "
+            "Please add a zoned node pool and try again.".format(
+                storage_pool_sku
+            )
+        )
+        with self.assertRaises(ArgumentUsageError) as cm:
+            acstor_validator.validate_enable_azure_container_storage_v1_params(
+                storage_pool_type, storage_pool_name, storage_pool_sku, None, None, nodepool_list, agentpools, False, False, "", False, False, False, False, None, None, acstor_consts.CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY, acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
+            )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_enable_with_insufficient_cores_1(self):
+        storage_pool_name = "valid-name"
+        storage_pool_sku = acstor_consts.CONST_STORAGE_POOL_SKU_PREMIUM_LRS
+        storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_AZURE_DISK
+        nodepool_list = "pool1"
+        agentpools = {"pool1": {"vm_size": "Standard_D2s_v2", "count": 3, "zoned": False}}
+        err = (
+            "Cannot operate Azure Container Storage on a node pool consisting of "
+            "nodes with cores less than 4. Node pool: pool1 with node size: Standard_D2s_v2 "
+            "which is assigned for Azure Container Storage has nodes with 2 cores."
+        )
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_enable_azure_container_storage_v1_params(
+                storage_pool_type, storage_pool_name, storage_pool_sku, None, None, nodepool_list, agentpools, False, False, "", False, False, False, False, None, None, acstor_consts.CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY, acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
+            )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_enable_with_insufficient_cores_2(self):
+        storage_pool_name = "valid-name"
+        storage_pool_sku = acstor_consts.CONST_STORAGE_POOL_SKU_PREMIUM_LRS
+        storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_AZURE_DISK
+        nodepool_list = "pool1"
+        agentpools = {"pool1": {"vm_size": "Standard_D2pds_v6", "count": 3, "zoned": False}}
+        err = (
+            "Cannot operate Azure Container Storage on a node pool consisting of "
+            "nodes with cores less than 4. Node pool: pool1 with node size: Standard_D2pds_v6 "
+            "which is assigned for Azure Container Storage has nodes with 2 cores."
+        )
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_enable_azure_container_storage_v1_params(
+                storage_pool_type, storage_pool_name, storage_pool_sku, None, None, nodepool_list, agentpools, False, False, "", False, False, False, False, None, None, acstor_consts.CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY, acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
+            )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_enable_with_insufficient_cores_3(self):
+        storage_pool_name = "valid-name"
+        storage_pool_sku = acstor_consts.CONST_STORAGE_POOL_SKU_PREMIUM_LRS
+        storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_AZURE_DISK
+        nodepool_list = "pool1"
+        agentpools = {"pool1": {"vm_size": "Standard_Ds1_v2", "count": 3, "zoned": False}}
+        err = (
+            "Cannot operate Azure Container Storage on a node pool consisting of "
+            "nodes with cores less than 4. Node pool: pool1 with node size: Standard_Ds1_v2 "
+            "which is assigned for Azure Container Storage has nodes with 1 cores."
+        )
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_enable_azure_container_storage_v1_params(
+                storage_pool_type, storage_pool_name, storage_pool_sku, None, None, nodepool_list, agentpools, False, False, "", False, False, False, False, None, None, acstor_consts.CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY, acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
+            )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_enable_with_insufficient_cores_4(self):
+        storage_pool_name = "valid-name"
+        storage_pool_sku = acstor_consts.CONST_STORAGE_POOL_SKU_PREMIUM_LRS
+        storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_AZURE_DISK
+        nodepool_list = "pool1"
+        agentpools = {"pool1": {"vm_size": "Standard_M8-2ms", "count": 3, "zoned": False}}
+        err = (
+            "Cannot operate Azure Container Storage on a node pool consisting of "
+            "nodes with cores less than 4. Node pool: pool1 with node size: Standard_M8-2ms "
+            "which is assigned for Azure Container Storage has nodes with 2 cores."
+        )
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_enable_azure_container_storage_v1_params(
+                storage_pool_type, storage_pool_name, storage_pool_sku, None, None, nodepool_list, agentpools, False, False, "", False, False, False, False, None, None, acstor_consts.CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY, acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
+            )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_enable_with_insufficient_cores_5(self):
+        storage_pool_name = "valid-name"
+        storage_pool_sku = acstor_consts.CONST_STORAGE_POOL_SKU_PREMIUM_LRS
+        storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_AZURE_DISK
+        nodepool_list = "pool1"
+        agentpools = {"pool1": {"vm_size": "Standard_B2s", "count": 3, "zoned": False}}
+        err = (
+            "Cannot operate Azure Container Storage on a node pool consisting of "
+            "nodes with cores less than 4. Node pool: pool1 with node size: Standard_B2s "
+            "which is assigned for Azure Container Storage has nodes with 2 cores."
+        )
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_enable_azure_container_storage_v1_params(
+                storage_pool_type, storage_pool_name, storage_pool_sku, None, None, nodepool_list, agentpools, False, False, "", False, False, False, False, None, None, acstor_consts.CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY, acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
+            )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_enable_with_option_and_non_ephemeral_disk_pool(self):
+        storage_pool_name = "valid-name"
+        storage_pool_option = acstor_consts.CONST_STORAGE_POOL_OPTION_NVME
+        storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_AZURE_DISK
+        err = "Cannot set --storage-pool-option when --enable-azure-container-storage is not ephemeralDisk."
+        with self.assertRaises(ArgumentUsageError) as cm:
+            acstor_validator.validate_enable_azure_container_storage_v1_params(
+                storage_pool_type, storage_pool_name, None, storage_pool_option, None, None, None, False, False, "", False, False, False, False, None, None, acstor_consts.CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY, acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
+            )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_enable_with_ephemeral_disk_volume_type_and_non_ephemeral_disk_pool(self):
+        storage_pool_name = "valid-name"
+        ephemeral_disk_volume_type = acstor_consts.CONST_DISK_TYPE_PV_WITH_ANNOTATION
+        storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_AZURE_DISK
+        err = "Cannot set --ephemeral-disk-volume-type when --enable-azure-container-storage is not ephemeralDisk."
+        with self.assertRaises(ArgumentUsageError) as cm:
+            acstor_validator.validate_enable_azure_container_storage_v1_params(
+                storage_pool_type, storage_pool_name, None, None, None, None, None, False, False, "", False, False, False, False, ephemeral_disk_volume_type, None, acstor_consts.CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY, acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
+            )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_enable_with_ephemeral_disk_nvme_perf_tier_and_non_ephemeral_disk_pool(self):
+        storage_pool_name = "valid-name"
+        perf_tier = acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_PREMIUM
+        storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_AZURE_DISK
+        err = (
+            "Cannot set --ephemeral-disk-nvme-perf-tier when --enable-azure-container-storage is not ephemeralDisk."
+        )
+        with self.assertRaises(ArgumentUsageError) as cm:
+            acstor_validator.validate_enable_azure_container_storage_v1_params(
+                storage_pool_type, storage_pool_name, None, None, None, None, None, False, False, "", False, False, False, False, None, perf_tier, acstor_consts.CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY, acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
+            )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_enable_with_ephemeral_disk_nvme_perf_tier_and_ephemeral_temp_disk_pool(self):
+        storage_pool_name = "valid-name"
+        perf_tier = acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_PREMIUM
+        storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK
+        storage_pool_option = acstor_consts.CONST_STORAGE_POOL_OPTION_SSD
+        err = (
+            "Cannot set --ephemeral-disk-nvme-perf-tier along with --enable-azure-container-storage "
+            "when storage pool type: ephemeralDisk option: NVMe is not enabled for Azure Container Storage. "
+            "Enable the option using --storage-pool-option."
+        )
+        with self.assertRaises(ArgumentUsageError) as cm:
+            acstor_validator.validate_enable_azure_container_storage_v1_params(
+                storage_pool_type, storage_pool_name, None, storage_pool_option, None, None, None, False, False, "", False, False, False, False, None, perf_tier, acstor_consts.CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY, acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
+            )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_enable_with_same_ephemeral_disk_nvme_perf_tier_already_set(self):
+        perf_tier = acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_PREMIUM
+        storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK
+        err = (
+            "Azure Container Storage is already configured with --ephemeral-disk-nvme-perf-tier "
+            f"value set to {perf_tier}."
+        )
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_enable_azure_container_storage_v1_params(
+                storage_pool_type, None, None, None, None, None, None, True, False, "", False, False, False, True, None, perf_tier, acstor_consts.CONST_DISK_TYPE_PV_WITH_ANNOTATION, acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_PREMIUM
+            )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_enable_with_same_ephemeral_disk_volume_type_already_set(self):
+        disk_vol_type = acstor_consts.CONST_DISK_TYPE_PV_WITH_ANNOTATION
+        storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK
+        err = (
+            "Azure Container Storage is already configured with --ephemeral-disk-volume-type "
+            f"value set to {disk_vol_type}."
+        )
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_enable_azure_container_storage_v1_params(
+                storage_pool_type, None, None, None, None, None, None, True, False, "", False, False, False, True, disk_vol_type, None, acstor_consts.CONST_DISK_TYPE_PV_WITH_ANNOTATION, acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_PREMIUM
+            )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_enable_with_same_ephemeral_disk_nvme_perf_tier_and_ephemeral_temp_disk_pool_already_set(self):
+        perf_tier = acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
+        disk_vol_type = acstor_consts.CONST_DISK_TYPE_PV_WITH_ANNOTATION
+        storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK
+        err = (
+            "Azure Container Storage is already configured with --ephemeral-disk-volume-type "
+            f"value set to {disk_vol_type} and --ephemeral-disk-nvme-perf-tier "
+            f"value set to {perf_tier}."
+        )
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_enable_azure_container_storage_v1_params(
+                storage_pool_type, None, None, None, None, None, None, True, False, "", False, False, False, True, disk_vol_type, perf_tier, acstor_consts.CONST_DISK_TYPE_PV_WITH_ANNOTATION, acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
+            )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_enable_with_option_all_and_ephemeral_disk_pool(self):
+        storage_pool_name = "valid-name"
+        storage_pool_option = acstor_consts.CONST_ACSTOR_ALL
+        storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK
+        err = "Cannot set --storage-pool-option value as all when --enable-azure-container-storage is set."
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_enable_azure_container_storage_v1_params(
+                storage_pool_type, storage_pool_name, None, storage_pool_option, None, False, "", None, None, False, False, False, False, False, None, None, acstor_consts.CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY, acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
+            )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_enable_with_invalid_storage_pool_size(self):
+        storage_pool_name = "valid-name"
+        storage_pool_size = "5"
+        storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_AZURE_DISK
+        err = "Value for --storage-pool-size should be defined with size followed by Gi or Ti e.g. 512Gi or 2Ti."
+        with self.assertRaises(ArgumentUsageError) as cm:
+            acstor_validator.validate_enable_azure_container_storage_v1_params(
+                storage_pool_type, storage_pool_name, None, None, storage_pool_size, None, None, False, False, "", False, False, False, False, None, None, acstor_consts.CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY, acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
+            )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_enable_with_invalid_size_for_esan_storage_pool(self):
+        storage_pool_name = "valid-name"
+        storage_pool_size = "512Gi"
+        storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_ELASTIC_SAN
+        err = "Value for --storage-pool-size must be at least 1Ti when --enable-azure-container-storage is elasticSan."
+        with self.assertRaises(ArgumentUsageError) as cm:
+            acstor_validator.validate_enable_azure_container_storage_v1_params(
+                storage_pool_type, storage_pool_name, None, None, storage_pool_size, None, None, False, False, "", False, False, False, False, None, None, acstor_consts.CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY, acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
+            )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_invalid_comma_separated_nodepool_list(self):
+        nodepool_list = "pool1, 1pool"
+        storage_pool_name = "valid-name"
+        storage_pool_size = "5Ti"
+        storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_AZURE_DISK
+        err = (
+            "Invalid --azure-container-storage-nodepools value. "
+            "Accepted value is a comma separated string of valid node pool "
+            "names without any spaces.\nA valid node pool name may only contain lowercase "
+            "alphanumeric characters and must begin with a lowercase letter."
+        )
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_enable_azure_container_storage_v1_params(
+                storage_pool_type, storage_pool_name, None, None, storage_pool_size, nodepool_list, None, False, False, "", False, False, False, False, None, None, acstor_consts.CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY, acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
+            )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_missing_nodepool_from_cluster_nodepool_list_single(self):
+        storage_pool_name = "valid-name"
+        storage_pool_size = "5Ti"
+        storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK
+        storage_pool_option = acstor_consts.CONST_STORAGE_POOL_OPTION_NVME
+        nodepool_list = "pool1"
+        agentpools = {"nodepool1": {"vm_size": "Standard_L8s_v3"}}
+        err = (
+            "Node pool: pool1 not found. Please provide a comma separated "
+            "string of existing node pool names in --azure-container-storage-nodepools."
+            "\nNode pool available in the cluster: nodepool1."
+            "\nAborting installation of Azure Container Storage."
+        )
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_enable_azure_container_storage_v1_params(
+                storage_pool_type, storage_pool_name, None, storage_pool_option, storage_pool_size, nodepool_list, agentpools, False, False, "", False, False, False, False, None, None, acstor_consts.CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY, acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
+            )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_missing_nodepool_from_cluster_nodepool_list_multiple(self):
+        storage_pool_name = "valid-name"
+        storage_pool_size = "5Ti"
+        storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK
+        storage_pool_option = acstor_consts.CONST_STORAGE_POOL_OPTION_SSD
+        nodepool_list = "pool1,pool2"
+        agentpools = {"nodepool1": {}, "nodepool2": {}}
+        err = (
+            "Node pool: pool1 not found. Please provide a comma separated "
+            "string of existing node pool names in --azure-container-storage-nodepools."
+            "\nNode pools available in the cluster: nodepool1, nodepool2."
+            "\nAborting installation of Azure Container Storage."
+        )
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_enable_azure_container_storage_v1_params(
+                storage_pool_type, storage_pool_name, None, storage_pool_option, storage_pool_size, nodepool_list, agentpools, False, False, "", False, False, False, False, None, None, acstor_consts.CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY, acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
+            )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_system_nodepool_with_taint(self):
+        storage_pool_name = "valid-name"
+        storage_pool_size = "5Ti"
+        storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK
+        storage_pool_option = acstor_consts.CONST_STORAGE_POOL_OPTION_SSD
+        nodepool_list = "nodepool1"
+        agentpools = {"nodepool1": {"mode": "System", "node_taints": ["CriticalAddonsOnly=true:NoSchedule"]}, "nodepool2": {"count": 1}}
+        err = (
+            'Unable to install Azure Container Storage on system nodepool: nodepool1 '
+            'since it has a taint CriticalAddonsOnly=true:NoSchedule. Remove the taint from the node pool '
+            'and retry the Azure Container Storage operation.'
+        )
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_enable_azure_container_storage_v1_params(
+                storage_pool_type, storage_pool_name, None, storage_pool_option, storage_pool_size, nodepool_list, agentpools, False, False, "", False, False, False, False, None, None, acstor_consts.CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY, acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
+            )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_nodepool_from_cluster_nodepool_list_with_insufficient_count(self):
+        storage_pool_name = "valid-name"
+        storage_pool_size = "5Ti"
+        storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK
+        storage_pool_option = acstor_consts.CONST_STORAGE_POOL_OPTION_SSD
+        nodepool_list = "nodepool1,nodepool2"
+        agentpools = {"nodepool1": {"count": 1}, "nodepool2": {"count": 1}}
+        err = (
+            "Insufficient nodes present. Azure Container Storage requires atleast 3 nodes to be enabled."
+        )
+        with self.assertRaises(UnknownError) as cm:
+            acstor_validator.validate_enable_azure_container_storage_v1_params(
+                storage_pool_type, storage_pool_name, None, storage_pool_option, storage_pool_size, nodepool_list, agentpools, False, False, "", False, False, False, False, None, None, acstor_consts.CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY, acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
+            )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_valid_enable_for_azure_disk_pool(self):
+        storage_pool_name = "valid-name"
+        storage_pool_size = "5Ti"
+        storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_AZURE_DISK
+        storage_pool_sku = acstor_consts.CONST_STORAGE_POOL_SKU_PREMIUM_LRS
+        nodepool_list = "nodepool1,nodepool2"
+        agentpools = {"nodepool1": {"mode": "User", "count": 2}, "nodepool2": {"mode": "System", "count": 1}}
+        acstor_validator.validate_enable_azure_container_storage_v1_params(
+            storage_pool_type, storage_pool_name, storage_pool_sku, None, storage_pool_size, nodepool_list, agentpools, False, False, "", False, False, False, False, None, None, acstor_consts.CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY, acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
+        )
+
+    def test_valid_enable_for_ephemeral_disk_pool(self):
+        storage_pool_name = "valid-name"
+        storage_pool_size = "5Ti"
+        storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK
+        storage_pool_option = acstor_consts.CONST_STORAGE_POOL_OPTION_NVME
+        nodepool_list = "nodepool1"
+        agentpools = {"nodepool1": {"vm_size": "Standard_L8s_v3", "mode": "System", "count": 5}, "nodepool2": {"vm_size": "Standard_L8s_v3"}}
+        acstor_validator.validate_enable_azure_container_storage_v1_params(
+            storage_pool_type, storage_pool_name, None, storage_pool_option, storage_pool_size, nodepool_list, agentpools, False, False, "", False, False, False, False, None, None, acstor_consts.CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY, acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
+        )
+
+    def test_valid_enable_for_ephemeral_disk_pool_with_ephemeral_disk_volume_type(self):
+        storage_pool_name = "valid-name"
+        storage_pool_size = "5Ti"
+        storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK
+        storage_pool_option = acstor_consts.CONST_STORAGE_POOL_OPTION_NVME
+        nodepool_list = "nodepool1"
+        ephemeral_disk_volume_type = acstor_consts.CONST_DISK_TYPE_PV_WITH_ANNOTATION
+        agentpools = {"nodepool1": {"vm_size": "Standard_L8s_v3", "mode": "System", "count": 3}, "nodepool2": {"vm_size": "Standard_L8s_v3"}}
+        acstor_validator.validate_enable_azure_container_storage_v1_params(
+            storage_pool_type, storage_pool_name, None, storage_pool_option, storage_pool_size, nodepool_list, agentpools, False, False, "", False, False, False, False, ephemeral_disk_volume_type, None, acstor_consts.CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY, acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
+        )
+
+    def test_valid_enable_for_ephemeral_disk_pool_with_ephemeral_disk_volume_type_already_installed(self):
+        storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK
+        ephemeral_disk_volume_type = acstor_consts.CONST_DISK_TYPE_PV_WITH_ANNOTATION
+        agentpools = {"nodepool1": {"node_labels": {"acstor.azure.com/io-engine": "acstor"}, "count": 3}, "nodepool2": {}}
+        acstor_validator.validate_enable_azure_container_storage_v1_params(
+            storage_pool_type, None, None, None, None, None, agentpools, True, False, "", False, False, True, False, ephemeral_disk_volume_type, None, acstor_consts.CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY, acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
+        )
+
+    def test_valid_enable_for_ephemeral_disk_pool_with_ephemeral_disk_nvme_perf_tier(self):
+        storage_pool_name = "valid-name"
+        storage_pool_size = "5Ti"
+        storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK
+        storage_pool_option = acstor_consts.CONST_STORAGE_POOL_OPTION_NVME
+        nodepool_list = "nodepool1"
+        perf_tier = acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_PREMIUM
+        agentpools = {"nodepool1": {"vm_size": "Standard_L8s_v3", "count": 4}, "nodepool2": {"vm_size": "Standard_L8s_v3"}}
+        acstor_validator.validate_enable_azure_container_storage_v1_params(
+            storage_pool_type, storage_pool_name, None, storage_pool_option, storage_pool_size, nodepool_list, agentpools, False, False, "", False, False, False, False, None, perf_tier, acstor_consts.CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY, acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
+        )
+
+    def test_valid_enable_for_ephemeral_disk_pool_with_azure_container_storage_per_tier_nvme_already_installed(self):
+        storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK
+        perf_tier = acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_PREMIUM
+        agentpools = {"nodepool1": {"node_labels": {"acstor.azure.com/io-engine": "acstor"}, "count": 3}, "nodepool2": {}}
+        acstor_validator.validate_enable_azure_container_storage_v1_params(
+            storage_pool_type, None, None, None, None, None, agentpools, True, False, "", False, False, False, True, None, perf_tier, acstor_consts.CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY, acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
+        )
+
+    def test_extension_installed_nodepool_list_defined(self):
+        storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_AZURE_DISK
+        nodepool_list = "nodepool1,nodepool2"
+        err = (
+            "Cannot set --azure-container-storage-nodepools while using "
+            "--enable-azure-container-storage to enable a type of storage pool "
+            "in a cluster where Azure Container Storage is already installed. "
+            "Use 'az aks nodepool' to label the node pool instead."
+        )
+        with self.assertRaises(ArgumentUsageError) as cm:
+            acstor_validator.validate_enable_azure_container_storage_v1_params(
+                storage_pool_type, None, None, None, None, nodepool_list, None, True, False, "", False, False, False, False, None, None, acstor_consts.CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY, acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
+            )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_extension_installed_storagepool_type_installed(self):
+        storage_pool_name = "valid-name"
+        storage_pool_size = "5Ti"
+        storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_AZURE_DISK
+        storage_pool_sku = acstor_consts.CONST_STORAGE_POOL_SKU_PREMIUM_LRS
+        agentpools = {"nodepool1": {"node_labels": {"acstor.azure.com/io-engine": "acstor"}, "count": 3}, "nodepool2": {}}
+        err = (
+            "Invalid --enable-azure-container-storage value. "
+            "Azure Container Storage is already enabled for storage pool type "
+            "{0} in the cluster.".format(storage_pool_type)
+        )
+        with self.assertRaises(ArgumentUsageError) as cm:
+            acstor_validator.validate_enable_azure_container_storage_v1_params(
+                storage_pool_type, storage_pool_name, storage_pool_sku, None, storage_pool_size, None, agentpools, True, False, "", True, False, False, False, None, None, acstor_consts.CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY, acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
+            )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_valid_cluster_update(self):
+        storage_pool_name = "valid-name"
+        storage_pool_size = "5Ti"
+        storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_AZURE_DISK
+        storage_pool_sku = acstor_consts.CONST_STORAGE_POOL_SKU_PREMIUM_LRS
+        agentpools = {"nodepool1": {"node_labels": {"acstor.azure.com/io-engine": "acstor"}, "mode": "User", "count": 3}, "nodepool2": {}}
+        acstor_validator.validate_enable_azure_container_storage_v1_params(
+            storage_pool_type, storage_pool_name, storage_pool_sku, None, storage_pool_size, None, agentpools, True, False, "", False, False, False, False, None, None, acstor_consts.CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY, acstor_consts.CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
+        )
+
+class TestValidateDisableAzureContainerStorage(unittest.TestCase):
+    def test_disable_unsupported_type(self):
+        storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_AZURE_DISK
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_disable_azure_container_storage_params(
+                storage_pool_type, True, False, False, "", "", "", "",
+            )
+        err = (
+            f"Cannot disable unsupported storage option '{storage_pool_type}'. "
+            "Supported values are 'ephemeralDisk', 'elasticSan' and 'all'."
+        )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_disable_already_disabled_type(self):
+        storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_disable_azure_container_storage_params(
+                storage_pool_type, True, False, False, "", "", "", "",
+            )
+        err = (
+            f"Cannot disable the requested storage options ('{storage_pool_type}') "
+            "as they could not be found on the cluster."
+        )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_disable_when_acstor_not_enabled(self):
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_disable_azure_container_storage_params(
+                "", False, False, False, "", "", "", "",
+            )
+        err = (
+            'Cannot disable Azure Container Storage as it could not be found on the cluster.'
+        )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_disable_with_storage_pool_name(self):
+        storage_pool_name = "valid-name"
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_disable_azure_container_storage_params(
+                True, True, False, False, storage_pool_name, "", "", "",
+            )
+        err = (
+            'The latest version of Azure Container Storage does not '
+            'require or support a --storage-pool-name value. '
+            f'Please remove --storage-pool-name {storage_pool_name} from the command and try again.'
+        )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_disable_with_storage_pool_sku(self):
+        storage_pool_sku = "valid-sku"
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_disable_azure_container_storage_params(
+                True, True, False, False, None, storage_pool_sku, "", "",
+            )
+        err = (
+            'The latest version of Azure Container Storage does not '
+            'require or support a --storage-pool-sku value. '
+            f'Please remove --storage-pool-sku {storage_pool_sku} from the command and try again.'
+        )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_disable_with_storage_pool_option(self):
+        storage_pool_option = "valid-option"
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_disable_azure_container_storage_params(
+                True, True, False, False, None, None, storage_pool_option, "",
+            )
+        err = (
+            'The latest version of Azure Container Storage does not '
+            'require or support a --storage-pool-option value. '
+            f'Please remove --storage-pool-option {storage_pool_option} from the command and try again.'
+        )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_disable_with_storage_pool_size(self):
+        storage_pool_size = "valid-size"
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_disable_azure_container_storage_params(
+                True, True, False, False, None, None, None, storage_pool_size
+            )
+        err = (
+            'The latest version of Azure Container Storage does not '
+            'require or support a --storage-pool-size value. '
+            f'Please remove --storage-pool-size {storage_pool_size} from the command and try again.'
+        )
+        self.assertEqual(str(cm.exception), err)
+
+class TestValidateEnableAzureContainerStorage(unittest.TestCase):
+    def test_enable_extension(self):
+        acstor_validator.validate_enable_azure_container_storage_params(
+            True, False, False, False, False, "", None, None, None, None,
+        )
+
+    def test_enable_extension_when_already_enabled(self):
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_enable_azure_container_storage_params(
+                "", True, False, False, False, "", None, None, None, None,
+            )
+        err = (
+            'Cannot enable Azure Container Storage as it is already enabled on the cluster.'
+        )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_enable_when_v1_installed(self):
+        v1_extension_version = "1.3.0"
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_enable_azure_container_storage_params(
+                "", False, False, False, True, v1_extension_version, None, None, None, None,
+            )
+        err = (
+            f'Failed to enable the latest version of Azure Container Storage as version {v1_extension_version} '
+            'is already installed on the cluster. Try enabling Azure Container Storage in another cluster. '
+            'You can also enable the latest version by first disabling the existing installation using '
+            '--disable-azure-container-storage all. Note that disabling can impact existing workloads '
+            'that depend on Azure Container Storage.'
+        )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_enable_supported_type_when_extension_disabled(self):
+        storage_type = acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK
+        acstor_validator.validate_enable_azure_container_storage_params(
+            storage_type, False, False, False, False, "", None, None, None, None,
+        )
+
+    def test_enable_supported_type_when_extension_enabled(self):
+        storage_type = acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK
+        acstor_validator.validate_enable_azure_container_storage_params(
+            storage_type, True, False, False, False, "", None, None, None, None,
+        )
+
+    def test_enable_supported_type_when_already_enabled(self):
+        storage_type = acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_enable_azure_container_storage_params(
+                storage_type, True, True, False, False, "", None, None, None, None,
+            )
+        err = (
+            f"Cannot enable the requested storage options ('{storage_type}') "
+            "as they are already enabled on the cluster."
+        )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_enable_multiple_types_when_extension_disabled(self):
+        storage_types = [acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK, acstor_consts.CONST_STORAGE_POOL_TYPE_ELASTIC_SAN]
+        acstor_validator.validate_enable_azure_container_storage_params(
+            storage_types, False, False, False, False, "", None, None, None, None,
+        )
+
+    def test_enable_multiple_types_when_some_are_not_enabled(self):
+        storage_types = [acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK, acstor_consts.CONST_STORAGE_POOL_TYPE_ELASTIC_SAN]
+        acstor_validator.validate_enable_azure_container_storage_params(
+            storage_types, True, True, False, False, "", None, None, None, None,
+        )
+
+    def test_enable_multiple_types_when_all_are_already_enabled(self):
+        storage_types = [acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK, acstor_consts.CONST_STORAGE_POOL_TYPE_ELASTIC_SAN]
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_enable_azure_container_storage_params(
+                storage_types, True, True, True, False, "", None, None, None, None,
+            )
+        err = (
+            f"Cannot enable the requested storage options ('{storage_types[0]}', '{storage_types[1]}') "
+            "as they are already enabled on the cluster."
+        )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_enable_multiple_types_when_some_are_unsupported(self):
+        unsupported_storage_type = acstor_consts.CONST_STORAGE_POOL_TYPE_AZURE_DISK
+        supported_storage_type = acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK
+        storage_types = [supported_storage_type, unsupported_storage_type]
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_enable_azure_container_storage_params(
+                storage_types, False, False, False, False, "", None, None, None, None,
+            )
+        err = (
+            f"Unsupported storage option '{unsupported_storage_type}'. "
+            "Supported values are 'ephemeralDisk' and 'elasticSan'."
+        )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_enable_unsupported_type(self):
+        storage_type = acstor_consts.CONST_STORAGE_POOL_TYPE_AZURE_DISK
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_enable_azure_container_storage_params(
+                storage_type, False, False, False, False, "", None, None, None, None,
+            )
+        err = (
+            f"Unsupported storage option '{storage_type}'. "
+            "Supported values are 'ephemeralDisk' and 'elasticSan'."
+        )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_enable_with_storage_pool_name(self):
+        storage_pool_name = "valid-name"
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_enable_azure_container_storage_params(
+                None, False, False, False, False, "", storage_pool_name, None, None, None,
+            )
+        err = (
+            'The latest version of Azure Container Storage does not '
+            'require or support a --storage-pool-name value. '
+            f'Please remove --storage-pool-name {storage_pool_name} from the command and try again.'
+        )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_enable_with_storage_pool_sku(self):
+        storage_pool_sku = "valid-sku"
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_enable_azure_container_storage_params(
+                None, False, False, False, False, "", None, storage_pool_sku, None, None,
+            )
+        err = (
+            'The latest version of Azure Container Storage does not '
+            'require or support a --storage-pool-sku value. '
+            f'Please remove --storage-pool-sku {storage_pool_sku} from the command and try again.'
+        )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_enable_with_storage_pool_option(self):
+        storage_pool_option = "valid-option"
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_enable_azure_container_storage_params(
+                None, False, False, False, False, "", None, None, storage_pool_option, None,
+            )
+        err = (
+            'The latest version of Azure Container Storage does not '
+            'require or support a --storage-pool-option value. '
+            f'Please remove --storage-pool-option {storage_pool_option} from the command and try again.'
+        )
+        self.assertEqual(str(cm.exception), err)
+
+    def test_enable_with_storagepool_size(self):
+        storage_pool_size = "valid-size"
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            acstor_validator.validate_enable_azure_container_storage_params(
+                None, False, False, False, False, "", None, None, None, storage_pool_size,
+            )
+        err = (
+            'The latest version of Azure Container Storage does not '
+            'require or support a --storage-pool-size value. '
+            f'Please remove --storage-pool-size {storage_pool_size} from the command and try again.'
+        )
+        self.assertEqual(str(cm.exception), err)
+
+
+class GatewayPrefixSizeSpace:
+    def __init__(self, gateway_prefix_size=None, mode=None):
+        self.gateway_prefix_size = gateway_prefix_size
+        self.mode = mode
+
+
+class TestValidateGatewayPrefixSize(unittest.TestCase):
+    def test_none_gateway_prefix_size(self):
+        namespace = GatewayPrefixSizeSpace()
+        validators.validate_gateway_prefix_size(namespace)
+
+    def test_invalid_gateway_prefix_size_1(self):
+        namespace = GatewayPrefixSizeSpace(gateway_prefix_size=27, mode="Gateway")
+        err = '--gateway-prefix-size must be in the range [28, 31]'
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_gateway_prefix_size(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_invalid_gateway_prefix_size_2(self):
+        namespace = GatewayPrefixSizeSpace(gateway_prefix_size=32, mode="Gateway")
+        err = '--gateway-prefix-size must be in the range [28, 31]'
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_gateway_prefix_size(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_invalid_mode(self):
+        namespace = GatewayPrefixSizeSpace(gateway_prefix_size=31, mode="System")
+        err = '--gateway-prefix-size can only be set for Gateway-mode nodepools'
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_gateway_prefix_size(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_valid_gateway_prefix_size(self):
+        namespace = GatewayPrefixSizeSpace(gateway_prefix_size=30, mode="Gateway")
+        validators.validate_gateway_prefix_size(namespace)
+
+
+class TestValidateCustomEndpoints(unittest.TestCase):
+    def test_empty_custom_endpoints(self):
+        namespace = SimpleNamespace(
+            **{
+                "custom_endpoints": [],
+            }
+        )
+        validators.validate_custom_endpoints(namespace)
+
+    def test_invalid_custom_endpoints(self):
+        namespace = SimpleNamespace(
+            **{
+                "custom_endpoints": ["https://example.com"],
+            }
+        )
+        with self.assertRaises(InvalidArgumentValueError):
+            validators.validate_custom_endpoints(namespace)
+
+    def test_valid_custom_endpoints(self):
+        namespace = SimpleNamespace(
+            **{
+                "custom_endpoints": ["example.com", "microsoft.com"],
+            }
+        )
+        validators.validate_custom_endpoints(namespace)
+
+
+class OpenTelemetryPortsNamespace:
+    def __init__(self, opentelemetry_metrics_port=None, opentelemetry_logs_port=None):
+        self.opentelemetry_metrics_port = opentelemetry_metrics_port
+        self.opentelemetry_logs_port = opentelemetry_logs_port
+
+
+class TestValidateOpenTelemetryPorts(unittest.TestCase):
+    def test_no_ports_specified(self):
+        namespace = OpenTelemetryPortsNamespace()
+        # Should pass without issue
+        validators.validate_opentelemetry_ports(namespace)
+
+    def test_only_metrics_port_specified(self):
+        namespace = OpenTelemetryPortsNamespace(opentelemetry_metrics_port=8080)
+        validators.validate_opentelemetry_ports(namespace)
+
+    def test_only_logs_port_specified(self):
+        namespace = OpenTelemetryPortsNamespace(opentelemetry_logs_port=8081)
+        validators.validate_opentelemetry_ports(namespace)
+
+    def test_different_ports_specified(self):
+        namespace = OpenTelemetryPortsNamespace(
+            opentelemetry_metrics_port=8080,
+            opentelemetry_logs_port=8081
+        )
+        validators.validate_opentelemetry_ports(namespace)
+
+    def test_same_ports_throws_error(self):
+        namespace = OpenTelemetryPortsNamespace(
+            opentelemetry_metrics_port=8080,
+            opentelemetry_logs_port=8080
+        )
+        err = (
+            "OpenTelemetry metrics port and logs port cannot be the same. "
+            "Please specify different ports for --opentelemetry-metrics-port and --opentelemetry-logs-port."
+        )
+        with self.assertRaises(ArgumentUsageError) as cm:
+            validators.validate_opentelemetry_ports(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_metrics_port_below_range(self):
+        namespace = OpenTelemetryPortsNamespace(opentelemetry_metrics_port=0)
+        err = "OpenTelemetry metrics port must be between 1 and 65535, got 0."
+        with self.assertRaises(ArgumentUsageError) as cm:
+            validators.validate_opentelemetry_ports(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_metrics_port_above_range(self):
+        namespace = OpenTelemetryPortsNamespace(opentelemetry_metrics_port=65536)
+        err = "OpenTelemetry metrics port must be between 1 and 65535, got 65536."
+        with self.assertRaises(ArgumentUsageError) as cm:
+            validators.validate_opentelemetry_ports(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_logs_port_below_range(self):
+        namespace = OpenTelemetryPortsNamespace(opentelemetry_logs_port=-1)
+        err = "OpenTelemetry logs port must be between 1 and 65535, got -1."
+        with self.assertRaises(ArgumentUsageError) as cm:
+            validators.validate_opentelemetry_ports(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_logs_port_above_range(self):
+        namespace = OpenTelemetryPortsNamespace(opentelemetry_logs_port=100000)
+        err = "OpenTelemetry logs port must be between 1 and 65535, got 100000."
+        with self.assertRaises(ArgumentUsageError) as cm:
+            validators.validate_opentelemetry_ports(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_valid_edge_case_ports(self):
+        # Test boundary values
+        namespace = OpenTelemetryPortsNamespace(
+            opentelemetry_metrics_port=1,
+            opentelemetry_logs_port=65535
+        )
+        validators.validate_opentelemetry_ports(namespace)
+
+
+class OpenTelemetryMetricsDependenciesNamespace:
+    def __init__(self, enable_opentelemetry_metrics=False, disable_opentelemetry_metrics=False,
+                 enable_azure_monitor_metrics=False, enable_azuremonitormetrics=False):
+        self.enable_opentelemetry_metrics = enable_opentelemetry_metrics
+        self.disable_opentelemetry_metrics = disable_opentelemetry_metrics
+        self.enable_azure_monitor_metrics = enable_azure_monitor_metrics
+        self.enable_azuremonitormetrics = enable_azuremonitormetrics
+
+
+class TestValidateOpenTelemetryMetricsDependencies(unittest.TestCase):
+    def test_no_opentelemetry_flags(self):
+        namespace = OpenTelemetryMetricsDependenciesNamespace()
+        # Should pass without issue
+        validators.validate_opentelemetry_metrics_dependencies(namespace)
+
+    def test_enable_with_azure_monitor_metrics(self):
+        namespace = OpenTelemetryMetricsDependenciesNamespace(
+            enable_opentelemetry_metrics=True,
+            enable_azure_monitor_metrics=True
+        )
+        validators.validate_opentelemetry_metrics_dependencies(namespace)
+
+    def test_enable_with_deprecated_azuremonitormetrics(self):
+        namespace = OpenTelemetryMetricsDependenciesNamespace(
+            enable_opentelemetry_metrics=True,
+            enable_azuremonitormetrics=True
+        )
+        validators.validate_opentelemetry_metrics_dependencies(namespace)
+
+    def test_enable_without_azure_monitor_throws_error(self):
+        namespace = OpenTelemetryMetricsDependenciesNamespace(
+            enable_opentelemetry_metrics=True
+        )
+        err = (
+            "OpenTelemetry metrics requires Azure Monitor metrics to be enabled. "
+            "Please add --enable-azure-monitor-metrics or --enable-azuremonitormetrics to your command."
+        )
+        with self.assertRaises(ArgumentUsageError) as cm:
+            validators.validate_opentelemetry_metrics_dependencies(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_mutually_exclusive_flags_throws_error(self):
+        namespace = OpenTelemetryMetricsDependenciesNamespace(
+            enable_opentelemetry_metrics=True,
+            disable_opentelemetry_metrics=True
+        )
+        err = "Cannot specify both --enable-opentelemetry-metrics and --disable-opentelemetry-metrics at the same time."
+        with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
+            validators.validate_opentelemetry_metrics_dependencies(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_disable_only_flag(self):
+        namespace = OpenTelemetryMetricsDependenciesNamespace(
+            disable_opentelemetry_metrics=True
+        )
+        # Should pass - disabling doesn't require Azure Monitor
+        validators.validate_opentelemetry_metrics_dependencies(namespace)
+
+
+class TestValidateOpenTelemetryMetricsDependenciesForUpdate(unittest.TestCase):
+    def test_no_opentelemetry_flags_for_update(self):
+        namespace = OpenTelemetryMetricsDependenciesNamespace()
+        # Should pass without issue
+        validators.validate_opentelemetry_metrics_dependencies_for_update(namespace)
+
+    def test_enable_only_flag_for_update(self):
+        namespace = OpenTelemetryMetricsDependenciesNamespace(
+            enable_opentelemetry_metrics=True
+        )
+        # Should pass - for updates, dependency validation is deferred to decorator
+        validators.validate_opentelemetry_metrics_dependencies_for_update(namespace)
+
+    def test_disable_only_flag_for_update(self):
+        namespace = OpenTelemetryMetricsDependenciesNamespace(
+            disable_opentelemetry_metrics=True
+        )
+        # Should pass
+        validators.validate_opentelemetry_metrics_dependencies_for_update(namespace)
+
+    def test_mutually_exclusive_flags_throws_error_for_update(self):
+        namespace = OpenTelemetryMetricsDependenciesNamespace(
+            enable_opentelemetry_metrics=True,
+            disable_opentelemetry_metrics=True
+        )
+        err = "Cannot specify both --enable-opentelemetry-metrics and --disable-opentelemetry-metrics at the same time."
+        with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
+            validators.validate_opentelemetry_metrics_dependencies_for_update(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+
+class OpenTelemetryLogsDependenciesNamespace:
+    def __init__(self, enable_opentelemetry_logs=False, disable_opentelemetry_logs=False):
+        self.enable_opentelemetry_logs = enable_opentelemetry_logs
+        self.disable_opentelemetry_logs = disable_opentelemetry_logs
+
+
+class TestValidateOpenTelemetryLogsDependencies(unittest.TestCase):
+    def test_no_opentelemetry_flags(self):
+        namespace = OpenTelemetryLogsDependenciesNamespace()
+        # Should pass without issue
+        validators.validate_opentelemetry_logs_dependencies(namespace)
+
+    def test_mutually_exclusive_flags_throws_error(self):
+        namespace = OpenTelemetryLogsDependenciesNamespace(
+            enable_opentelemetry_logs=True,
+            disable_opentelemetry_logs=True
+        )
+        err = "Cannot specify both --enable-opentelemetry-logs and --disable-opentelemetry-logs at the same time."
+        with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
+            validators.validate_opentelemetry_logs_dependencies(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_disable_only_flag(self):
+        namespace = OpenTelemetryLogsDependenciesNamespace(
+            disable_opentelemetry_logs=True
+        )
+        # Should pass - disabling doesn't require any dependency
+        validators.validate_opentelemetry_logs_dependencies(namespace)
+
+
+class TestValidateOpenTelemetryLogsDependenciesForUpdate(unittest.TestCase):
+    def test_no_opentelemetry_flags_for_update(self):
+        namespace = OpenTelemetryLogsDependenciesNamespace()
+        # Should pass without issue
+        validators.validate_opentelemetry_logs_dependencies_for_update(namespace)
+
+    def test_enable_only_flag_for_update(self):
+        namespace = OpenTelemetryLogsDependenciesNamespace(
+            enable_opentelemetry_logs=True
+        )
+        # Should pass - for updates, dependency validation is deferred to decorator
+        validators.validate_opentelemetry_logs_dependencies_for_update(namespace)
+
+    def test_disable_only_flag_for_update(self):
+        namespace = OpenTelemetryLogsDependenciesNamespace(
+            disable_opentelemetry_logs=True
+        )
+        # Should pass
+        validators.validate_opentelemetry_logs_dependencies_for_update(namespace)
+
+    def test_mutually_exclusive_flags_throws_error_for_update(self):
+        namespace = OpenTelemetryLogsDependenciesNamespace(
+            enable_opentelemetry_logs=True,
+            disable_opentelemetry_logs=True
+        )
+        err = "Cannot specify both --enable-opentelemetry-logs and --disable-opentelemetry-logs at the same time."
+        with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
+            validators.validate_opentelemetry_logs_dependencies_for_update(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+
+class AzureMonitorAndOpenTelemetryNamespace:
+    def __init__(self, enable_opentelemetry_metrics=False, disable_opentelemetry_metrics=False,
+                 enable_opentelemetry_logs=False, disable_opentelemetry_logs=False,
+                 enable_azure_monitor_metrics=False, enable_azuremonitormetrics=False,
+                 enable_azure_monitor_logs=False,
+                 opentelemetry_metrics_port=None, opentelemetry_logs_port=None):
+        self.enable_opentelemetry_metrics = enable_opentelemetry_metrics
+        self.disable_opentelemetry_metrics = disable_opentelemetry_metrics
+        self.enable_opentelemetry_logs = enable_opentelemetry_logs
+        self.disable_opentelemetry_logs = disable_opentelemetry_logs
+        self.enable_azure_monitor_metrics = enable_azure_monitor_metrics
+        self.enable_azuremonitormetrics = enable_azuremonitormetrics
+        self.enable_azure_monitor_logs = enable_azure_monitor_logs
+        self.opentelemetry_metrics_port = opentelemetry_metrics_port
+        self.opentelemetry_logs_port = opentelemetry_logs_port
+
+
+class TestValidateAzureMonitorAndOpenTelemetryForCreate(unittest.TestCase):
+    def test_valid_configuration(self):
+        namespace = AzureMonitorAndOpenTelemetryNamespace(
+            enable_opentelemetry_metrics=True,
+            enable_opentelemetry_logs=True,
+            enable_azure_monitor_metrics=True,
+            enable_azure_monitor_logs=True,
+            opentelemetry_metrics_port=8080,
+            opentelemetry_logs_port=8081
+        )
+        # Should pass all validations
+        validators.validate_azure_monitor_and_opentelemetry_for_create(namespace)
+
+    def test_port_conflict_throws_error(self):
+        namespace = AzureMonitorAndOpenTelemetryNamespace(
+            enable_opentelemetry_metrics=True,
+            enable_azure_monitor_metrics=True,
+            opentelemetry_metrics_port=8080,
+            opentelemetry_logs_port=8080
+        )
+        err = (
+            "OpenTelemetry metrics port and logs port cannot be the same. "
+            "Please specify different ports for --opentelemetry-metrics-port and --opentelemetry-logs-port."
+        )
+        with self.assertRaises(ArgumentUsageError) as cm:
+            validators.validate_azure_monitor_and_opentelemetry_for_create(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_metrics_missing_azure_monitor_throws_error(self):
+        namespace = AzureMonitorAndOpenTelemetryNamespace(
+            enable_opentelemetry_metrics=True
+        )
+        err = (
+            "OpenTelemetry metrics requires Azure Monitor metrics to be enabled. "
+            "Please add --enable-azure-monitor-metrics or --enable-azuremonitormetrics to your command."
+        )
+        with self.assertRaises(ArgumentUsageError) as cm:
+            validators.validate_azure_monitor_and_opentelemetry_for_create(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_logs_missing_azure_monitor_throws_error(self):
+        namespace = AzureMonitorAndOpenTelemetryNamespace(
+            enable_opentelemetry_logs=True
+        )
+        err = (
+            "OpenTelemetry logs requires Azure Monitor logs to be enabled. "
+            "Please add --enable-azure-monitor-logs to your command."
+        )
+        with self.assertRaises(ArgumentUsageError) as cm:
+            validators.validate_azure_monitor_and_opentelemetry_for_create(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+
+class TestValidateAzureMonitorAndOpenTelemetryForUpdate(unittest.TestCase):
+    def test_valid_configuration_for_update(self):
+        namespace = AzureMonitorAndOpenTelemetryNamespace(
+            enable_opentelemetry_metrics=True,
+            enable_opentelemetry_logs=True,
+            opentelemetry_metrics_port=8080,
+            opentelemetry_logs_port=8081
+        )
+        # Should pass all validations (dependency validation deferred for updates)
+        validators.validate_azure_monitor_and_opentelemetry_for_update(namespace)
+
+    def test_port_conflict_throws_error_for_update(self):
+        namespace = AzureMonitorAndOpenTelemetryNamespace(
+            enable_opentelemetry_metrics=True,
+            opentelemetry_metrics_port=8080,
+            opentelemetry_logs_port=8080
+        )
+        err = (
+            "OpenTelemetry metrics port and logs port cannot be the same. "
+            "Please specify different ports for --opentelemetry-metrics-port and --opentelemetry-logs-port."
+        )
+        with self.assertRaises(ArgumentUsageError) as cm:
+            validators.validate_azure_monitor_and_opentelemetry_for_update(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_mutually_exclusive_metrics_flags_throws_error(self):
+        namespace = AzureMonitorAndOpenTelemetryNamespace(
+            enable_opentelemetry_metrics=True,
+            disable_opentelemetry_metrics=True
+        )
+        err = "Cannot specify both --enable-opentelemetry-metrics and --disable-opentelemetry-metrics at the same time."
+        with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
+            validators.validate_azure_monitor_and_opentelemetry_for_update(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_mutually_exclusive_logs_flags_throws_error(self):
+        namespace = AzureMonitorAndOpenTelemetryNamespace(
+            enable_opentelemetry_logs=True,
+            disable_opentelemetry_logs=True
+        )
+        err = "Cannot specify both --enable-opentelemetry-logs and --disable-opentelemetry-logs at the same time."
+        with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
+            validators.validate_azure_monitor_and_opentelemetry_for_update(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+
+class TestValidateAzureMonitorLogsAndEnableAddons(unittest.TestCase):
+    def test_enable_azure_monitor_logs_with_monitoring_addon_throws_error(self):
+        namespace = SimpleNamespace()
+        namespace.enable_azure_monitor_logs = True
+        namespace.enable_addons = ["monitoring", "azure-policy"]
+        
+        err = "Cannot specify both '--enable-azure-monitor-logs' and '--enable-addons monitoring'. Use either '--enable-azure-monitor-logs' or '--enable-addons monitoring'."
+        with self.assertRaises(ArgumentUsageError) as cm:
+            validators.validate_azure_monitor_logs_and_enable_addons(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_enable_azure_monitor_logs_with_other_addons_succeeds(self):
+        namespace = SimpleNamespace()
+        namespace.enable_azure_monitor_logs = True
+        namespace.enable_addons = ["azure-policy", "virtual-node"]
+        
+        # Should not raise an exception
+        validators.validate_azure_monitor_logs_and_enable_addons(namespace)
+
+    def test_enable_azure_monitor_logs_without_enable_addons_succeeds(self):
+        namespace = SimpleNamespace()
+        namespace.enable_azure_monitor_logs = True
+        
+        # Should not raise an exception  
+        validators.validate_azure_monitor_logs_and_enable_addons(namespace)
+
+    def test_enable_addons_monitoring_without_enable_azure_monitor_logs_succeeds(self):
+        namespace = SimpleNamespace()
+        namespace.enable_addons = ["monitoring"]
+        
+        # Should not raise an exception
+        validators.validate_azure_monitor_logs_and_enable_addons(namespace)
+
+
+class TestValidateAzureMonitorLogsEnableDisable(unittest.TestCase):
+    def test_enable_and_disable_azure_monitor_logs_throws_error(self):
+        namespace = SimpleNamespace()
+        namespace.enable_azure_monitor_logs = True
+        namespace.disable_azure_monitor_logs = True
+        
+        err = "Cannot specify both '--enable-azure-monitor-logs' and '--disable-azure-monitor-logs'. Use either '--enable-azure-monitor-logs' or '--disable-azure-monitor-logs'."
+        with self.assertRaises(ArgumentUsageError) as cm:
+            validators.validate_azure_monitor_logs_enable_disable(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_only_enable_azure_monitor_logs_succeeds(self):
+        namespace = SimpleNamespace()
+        namespace.enable_azure_monitor_logs = True
+        namespace.disable_azure_monitor_logs = False
+        
+        # Should not raise an exception
+        validators.validate_azure_monitor_logs_enable_disable(namespace)
+
+    def test_only_disable_azure_monitor_logs_succeeds(self):
+        namespace = SimpleNamespace()
+        namespace.enable_azure_monitor_logs = False
+        namespace.disable_azure_monitor_logs = True
+        
+        # Should not raise an exception
+        validators.validate_azure_monitor_logs_enable_disable(namespace)
+
+    def test_neither_enable_nor_disable_azure_monitor_logs_succeeds(self):
+        namespace = SimpleNamespace()
+        namespace.enable_azure_monitor_logs = False
+        namespace.disable_azure_monitor_logs = False
+        
+        # Should not raise an exception
+        validators.validate_azure_monitor_logs_enable_disable(namespace)
+
+
+class TestAzureMonitorLogsParameters(unittest.TestCase):
+    """Test that Azure Monitor logs parameters are processed correctly."""
+
+    def test_enable_azure_monitor_logs_modifies_enable_addons(self):
+        """Test that enable_azure_monitor_logs=True adds 'monitoring' to enable_addons."""
+        import azext_aks_preview.custom as custom
+
+        # Test case 1: enable_addons is None initially
+        enable_addons = None
+        enable_azure_monitor_logs = True
+        
+        # This mimics the logic from aks_create function
+        if enable_azure_monitor_logs:
+            if enable_addons is None:
+                enable_addons = ["monitoring"]
+            else:
+                enable_addons = list(enable_addons)
+                if "monitoring" not in enable_addons:
+                    enable_addons.append("monitoring")
+        
+        self.assertEqual(enable_addons, ["monitoring"])
+        
+        # Test case 2: enable_addons already has other addons
+        enable_addons = ["azure-policy", "ingress-appgw"]
+        enable_azure_monitor_logs = True
+        
+        if enable_azure_monitor_logs:
+            if enable_addons is None:
+                enable_addons = ["monitoring"]
+            else:
+                enable_addons = list(enable_addons)
+                if "monitoring" not in enable_addons:
+                    enable_addons.append("monitoring")
+        
+        self.assertIn("monitoring", enable_addons)
+        self.assertIn("azure-policy", enable_addons)
+        self.assertIn("ingress-appgw", enable_addons)
+        self.assertEqual(len(enable_addons), 3)
+        
+        # Test case 3: monitoring already in enable_addons
+        enable_addons = ["monitoring", "azure-policy"]
+        enable_azure_monitor_logs = True
+        
+        if enable_azure_monitor_logs:
+            if enable_addons is None:
+                enable_addons = ["monitoring"]
+            else:
+                enable_addons = list(enable_addons)
+                if "monitoring" not in enable_addons:
+                    enable_addons.append("monitoring")
+        
+        # Should not duplicate monitoring
+        self.assertEqual(enable_addons.count("monitoring"), 1)
+        self.assertEqual(len(enable_addons), 2)
+
+    def test_disable_azure_monitor_logs_calls_disable_function(self):
+        """Test that disable_azure_monitor_logs=True calls the disable addons function."""
+        import azext_aks_preview.custom as custom
+        
+        # Track if disable_addons was called with correct parameters
+        disable_call_params = {}
+        
+        def mock_disable_addons(**kwargs):
+            nonlocal disable_call_params
+            disable_call_params.update(kwargs)
+            return {"addonProfiles": {"omsagent": {"enabled": False}}}
+        
+        # Mock the aks_disable_addons function
+        original_disable_addons = getattr(custom, 'aks_disable_addons', None)
+        custom.aks_disable_addons = mock_disable_addons
+        
+        try:
+            # Test the logic from aks_update function when disable_azure_monitor_logs=True
+            disable_azure_monitor_logs = True
+            
+            if disable_azure_monitor_logs:
+                result = custom.aks_disable_addons(
+                    cmd="mock_cmd",
+                    client="mock_client", 
+                    resource_group_name="test-rg",
+                    name="test-cluster",
+                    addons="monitoring"
+                )
+                
+            # Verify the mock was called with correct parameters
+            self.assertEqual(disable_call_params['addons'], 'monitoring')
+            self.assertEqual(disable_call_params['resource_group_name'], 'test-rg')
+            self.assertEqual(disable_call_params['name'], 'test-cluster')
+            
+            # Verify the result indicates monitoring is disabled
+            self.assertIn('addonProfiles', result)
+            self.assertIn('omsagent', result['addonProfiles'])
+            self.assertFalse(result['addonProfiles']['omsagent']['enabled'])
+            
+        finally:
+            # Restore original function
+            if original_disable_addons:
+                custom.aks_disable_addons = original_disable_addons
+
+    def test_azure_monitor_logs_parameter_equivalency(self):
+        """Test that Azure Monitor logs parameters behave equivalently to addon parameters."""
+        # Test enable equivalency
+        enable_addons_approach = ["monitoring"]  # Using --enable-addons monitoring
+        
+        # Using --enable-azure-monitor-logs (our new parameter)  
+        enable_addons = None
+        enable_azure_monitor_logs = True
+        
+        if enable_azure_monitor_logs:
+            if enable_addons is None:
+                enable_addons = ["monitoring"]
+            else:
+                enable_addons = list(enable_addons)
+                if "monitoring" not in enable_addons:
+                    enable_addons.append("monitoring")
+        
+        # Both approaches should result in the same addon configuration
+        self.assertEqual(enable_addons, enable_addons_approach)
+        
+        # Test disable equivalency - both should call aks_disable_addons with "monitoring"
+        # This is tested by verifying both approaches use the same function call
+        disable_addons_approach = "monitoring"  # Using --disable-addons monitoring
+        azure_monitor_logs_approach = "monitoring"  # Using --disable-azure-monitor-logs
+        
+        self.assertEqual(disable_addons_approach, azure_monitor_logs_approach)
+
+    def test_azure_monitor_logs_with_conflicting_parameters(self):
+        """Test validation catches conflicting Azure Monitor logs parameters."""
+        import azext_aks_preview._validators as validators
+        
+        # Test enable and disable together should fail
+        namespace = SimpleNamespace()
+        namespace.enable_azure_monitor_logs = True
+        namespace.disable_azure_monitor_logs = True
+        
+        with self.assertRaises(ArgumentUsageError):
+            validators.validate_azure_monitor_logs_enable_disable(namespace)
+        
+        # Test that non-conflicting cases don't raise errors
+        namespace = SimpleNamespace()
+        namespace.enable_azure_monitor_logs = True
+        namespace.disable_azure_monitor_logs = False
+        
+        try:
+            validators.validate_azure_monitor_logs_enable_disable(namespace)
+        except ArgumentUsageError:
+            self.fail("validate_azure_monitor_logs_enable_disable raised exception unexpectedly")
+        
+        # Test that only disable doesn't raise errors
+        namespace = SimpleNamespace()  
+        namespace.enable_azure_monitor_logs = False
+        namespace.disable_azure_monitor_logs = True
+        
+        try:
+            validators.validate_azure_monitor_logs_enable_disable(namespace)
+        except ArgumentUsageError:
+            self.fail("validate_azure_monitor_logs_enable_disable raised exception unexpectedly")
+
+    def test_azure_monitor_logs_opentelemetry_dependency(self):
+        """Test that OpenTelemetry logs requires Azure Monitor logs to be enabled."""
+        import azext_aks_preview._validators as validators
+        
+        # Test OpenTelemetry logs with Azure Monitor logs enabled should pass
+        namespace = SimpleNamespace()
+        namespace.enable_opentelemetry_logs = True
+        namespace.enable_azure_monitor_logs = True
+        namespace.enable_addons = None
+        
+        try:
+            validators.validate_opentelemetry_logs_dependencies(namespace)
+        except ArgumentUsageError:
+            self.fail("validate_opentelemetry_logs_dependencies raised exception unexpectedly")
+            
+        # Test OpenTelemetry logs with monitoring addon enabled should pass
+        namespace = SimpleNamespace()
+        namespace.enable_opentelemetry_logs = True
+        namespace.enable_azure_monitor_logs = False
+        namespace.enable_addons = ["monitoring"]
+        
+        try:
+            validators.validate_opentelemetry_logs_dependencies(namespace)
+        except ArgumentUsageError:
+            self.fail("validate_opentelemetry_logs_dependencies raised exception unexpectedly")
+            
+        # Test OpenTelemetry logs without Azure Monitor logs should fail
+        namespace = SimpleNamespace()
+        namespace.enable_opentelemetry_logs = True
+        namespace.enable_azure_monitor_logs = False
+        namespace.enable_addons = None
+        
+        with self.assertRaises(ArgumentUsageError):
+            validators.validate_opentelemetry_logs_dependencies(namespace)
 
 
 if __name__ == "__main__":

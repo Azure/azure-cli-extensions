@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "dynatrace monitor get-vm-host-payload",
 )
 class GetVmHostPayload(AAZCommand):
-    """Return the payload that need to be passed in the request body for installing Dynatrace agent on a VM
+    """Return payload to be included in API request body when installing Dynatrace agent on a Virtual Machine. Use this command to facilitate automated deployment of monitoring agents across VMs.
 
     :example: Get-vm-host-payload
         az dynatrace monitor get-vm-host-payload -g rg --monitor-name monitor
     """
 
     _aaz_info = {
-        "version": "2021-09-01",
+        "version": "2024-04-24",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}/getvmhostpayload", "2021-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}/getvmhostpayload", "2024-04-24"],
         ]
     }
 
@@ -48,6 +48,10 @@ class GetVmHostPayload(AAZCommand):
             options=["--monitor-name"],
             help="Monitor resource name",
             required=True,
+            id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9_-]*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -119,7 +123,7 @@ class GetVmHostPayload(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2021-09-01",
+                    "api-version", "2024-04-24",
                     required=True,
                 ),
             }
@@ -160,6 +164,10 @@ class GetVmHostPayload(AAZCommand):
             )
 
             return cls._schema_on_200
+
+
+class _GetVmHostPayloadHelper:
+    """Helper class for GetVmHostPayload"""
 
 
 __all__ = ["GetVmHostPayload"]

@@ -87,7 +87,7 @@ def _parse_roles(roles):
 
 
 def _parse_lbs(lbs, cmd, resource_group_name):
-    from msrestazure.tools import resource_id, is_valid_resource_id
+    from azure.mgmt.core.tools import resource_id, is_valid_resource_id
     from azure.cli.core.commands.client_factory import get_subscription_id
 
     if not lbs:
@@ -121,7 +121,7 @@ def _parse_lbs(lbs, cmd, resource_group_name):
 
 
 def _parse_secrets(secrets, cmd, resource_group_name):
-    from msrestazure.tools import resource_id, is_valid_resource_id
+    from azure.mgmt.core.tools import resource_id, is_valid_resource_id
     from azure.cli.core.commands.client_factory import get_subscription_id
 
     if not secrets:

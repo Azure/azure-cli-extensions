@@ -7,9 +7,9 @@ from knack.help_files import helps
 
 helps['vm repair'] = """
     type: group
-    short-summary: Auto repair commands to fix VMs.
+    short-summary: Setup repair VMs with copied source OS Disk to resolve issues.
     long-summary: |
-        VM repair command will enable Azure users to self-repair non-bootable VMs by copying the source VM's OS disk and attaching it to a newly created repair VM.
+        When your VM is non-bootable, VM Repair enables users to setup new repair VMs and copy over the source VM's OS Disk and attach it as a data disk. Then the user can run their own scripts or use [pre-built](https://github.com/Azure/repair-script-library) ones to fix the disk.
 """
 
 helps['vm repair create'] = """
@@ -19,12 +19,33 @@ helps['vm repair create'] = """
         - name: Create a repair VM
           text: >
             az vm repair create -g MyResourceGroup -n myVM --verbose
+        - name: Create a repair VM with tags
+          text: >
+            az vm repair create -g MyResourceGroup -n myVM --tags "env=dev owner=alice" --verbose
+        - name: Create a repair VM with identical tags to the source VM
+          text: >
+            az vm repair create -g MyResourceGroup -n myVM --copy-tags --verbose
         - name: Create a repair VM and set the VM authentication
           text: >
             az vm repair create -g MyResourceGroup -n myVM --repair-username username --repair-password password!234 --verbose
         - name: Create a repair VM of a specific distro or a specific URN could also be provided
           text: >
             az vm repair create -g MyResourceGroup -n myVM --distro 'rhel7|sles12|ubuntu20|centos6|oracle8|sles15'
+        - name: Create a repair VM with a Private IP address
+          text: >
+            az vm repair create -g MyResourceGroup -n myVM --repair-username <username> --repair-password <password>
+        - name: Create a repair VM with a Public IP address.
+          text: >
+            az vm repair create -g MyResourceGroup -n myVM --associate-public-ip --repair-username <username> --repair-password <password>
+        - name: Create a repair VM with Standard Security type.
+          text: >
+            az vm repair create -g MyResourceGroup -n myVM --repair-username <username> --repair-password <password> --disable-trusted-launch
+        - name: Create a repair VM from a source VM with an encrypted disk. The repair VM is created with the data disk unencrypted and accessible.
+          text: >
+            az vm repair create -g MyResourceGroup -n myVM --repair-username <username> --repair-password <password> --unlock-encrypted-vm --encrypt-recovery-key <key>
+        - name: Create a repair VM with an OS Disk storage type of StandardSSD_LRS.
+          text: >
+            az vm repair create -g MyResourceGroup -n myVM --repair-username <username> --repair-password <password> --os-disk-type StandardSSD_LRS
 """
 
 helps['vm repair restore'] = """
@@ -52,12 +73,15 @@ helps['vm repair run'] = """
         - name: Run a script with parameters on the VM.
           text: >
             az vm repair run -g MyResourceGroup -n MySourceWinVM --run-id win-hello-world --parameters hello=hi world=earth --verbose
+        - name: Run a verified script with some parameters. In the first parameter named 'key', only the value 'test' is sent to the script. The second parameter named \'initiator\', uses the prefix '++' to send the entire following string 'initiator=selfhelp' to the script.
+          text: >
+            az vm repair run -g MyResourceGroup -n MySourceWinVM --run-id linux-alar2 --parameters key=test ++initiator=selfhelp --verbose --debug
         - name: Run a local custom script on the VM.
           text: >
             az vm repair run -g MyResourceGroup -n MySourceWinVM --custom-script-file ./file.ps1 --verbose
         - name: Run unverified script from your fork of https://github.com/Azure/repair-script-library
           text: >
-            az vm repair run -g MyResourceGroup -n MySourceWinVM --preview "https://github.com/haagha/repair-script-library/blob/master/map.json" --run-id test
+            az vm repair run -g MyResourceGroup -n MySourceWinVM --preview "https://github.com/User/repair-script-library/blob/main/map.json" --run-id test
 """
 
 helps['vm repair list-scripts'] = """
@@ -75,20 +99,52 @@ helps['vm repair list-scripts'] = """
             az vm repair list-scripts --query "[?contains(description, 'test')]"
         - name: List unverified script from your fork of https://github.com/Azure/repair-script-library
           text: >
-            az vm repair list-scripts --preview "https://github.com/haagha/repair-script-library/blob/master/map.json"
+            az vm repair list-scripts --preview "https://github.com/User/repair-script-library/blob/main/map.json"
 """
 
 helps['vm repair reset-nic'] = """
     type: command
-    short-summary: Reset the network interface stack on the VM guest OS. https://docs.microsoft.com/en-us/troubleshoot/azure/virtual-machines/reset-network-interface
+    short-summary: Reset the network interface stack on the VM guest OS. https://learn.microsoft.com/en-us/troubleshoot/azure/virtual-machines/reset-network-interface
     examples:
         - name: Reset the VM guest NIC. Specify VM resource group and name.
           text: >
             az vm repair reset-nic -g MyResourceGroup -n MyVM --verbose
         - name: Reset the VM guest NIC. Specify subscription id, VM resource group and name.
           text: >
-            az vm repair reset-nic -g MyResourceGroup -n MyVM --subscription mySub --verbose
+            az vm repair reset-nic -g MyResourceGroup -n MyVM --subscription 00000000-0000-0000-0000-000000000000 --verbose
         - name: Reset the VM guest NIC and auto-start the VM if it is not in running state.
           text: >
             az vm repair reset-nic -g MyResourceGroup -n MyVM --yes --verbose
+"""
+
+helps['vm repair repair-and-restore'] = """
+    type: command
+    short-summary: Repair and restore the VM.
+    parameters:
+        - name: --tags
+          type: string
+          short-summary: Space-separated tags in 'key[=value]' format. Use '' to clear existing tags.
+    examples:
+        - name: Repair and restore a VM with tags.
+          text: >
+            az vm repair repair-and-restore --name vmrepairtest --resource-group MyResourceGroup --tags env=prod owner=bob --verbose
+        - name: Repair and restore a VM.
+          text: >
+            az vm repair repair-and-restore --name vmrepairtest --resource-group MyResourceGroup --verbose
+"""
+
+helps['vm repair repair-button'] = """
+    type: command
+    short-summary: repair button script.
+    parameters:
+        - name: --tags
+          type: string
+          short-summary: Space-separated tags in 'key[=value]' format. Use '' to clear existing tags.
+    examples:
+        - name: repair-button with tags.
+          text: >
+            az vm repair repair-button --name vmrepairtest --resource-group MyResourceGroup --button-command fstab --tags env=test --verbose
+        - name: repair-button.
+          text: >
+            az vm repair repair-button --name vmrepairtest --resource-group MyResourceGroup --button-command fstab --verbose
 """

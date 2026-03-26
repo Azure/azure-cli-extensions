@@ -18,70 +18,6 @@ helps['network vhub get-effective-routes'] = """
           az network vhub get-effective-routes --resource-type P2SConnection --resource-id /subscriptions/MySub/resourceGroups/MyRG/providers/Microsoft.Network/p2sVpnGateways/MyGateway/p2sConnectionConfigurations/MyConnection -g MyRG -n MyHub
 """
 
-helps['network vhub connection'] = """
-    type: group
-    short-summary: Manage virtual hub VNet connections.
-"""
-
-helps['network vhub connection create'] = """
-    type: command
-    short-summary: Create a virtual hub VNet connection.
-    examples:
-    - name: Create a virtual hub VNet connection without routing configuration.
-      text: |
-          az network vhub connection create -n MyConnection --vhub-name MyHub -g MyRG --remote-vnet MyVNet
-    - name: Create a virtual hub VNet connection with routing configuration.
-      text: |
-          az network vhub connection create -n MyConnection --vhub-name MyHub -g MyRG --remote-vnet MyVNet --associated-route-table /subscriptions/MySub/resourceGroups/MyRG/providers/Microsoft.Network/virtualHubs/MyHub/hubRouteTables/RouteTable1 --propagated-route-tables /subscriptions/MySub/resourceGroups/MyRG/providers/Microsoft.Network/virtualHubs/MyHub/hubRouteTables/RouteTable1 /subscriptions/MySub/resourceGroups/MyRG/providers/Microsoft.Network/virtualHubs/MyHub/hubRouteTables/RouteTable2 --labels label1 label2 --route-name route1 --next-hop 70.0.0.2 --address-prefixes 10.80.0.0/16 10.90.0.0/16
-"""
-
-helps['network vhub connection list'] = """
-    type: command
-    short-summary: List virtual hub VNet connections.
-    examples:
-    - name: List VNet connections in a given virtual hub.
-      text: |
-          az network vhub connection list --vhub-name MyHub -g MyRG
-"""
-
-helps['network vhub connection show'] = """
-    type: command
-    short-summary: Get the details of a virtual hub VNet connection.
-    examples:
-    - name: Get the details of a virtual hub VNet connection.
-      text: |
-          az network vhub connection show -n MyConnection --vhub-name MyHub -g MyRG
-"""
-
-helps['network vhub connection delete'] = """
-    type: command
-    short-summary: Delete a virtual hub VNet connection.
-    examples:
-    - name: Delete a virtual hub VNet connection.
-      text: |
-          az network vhub connection delete -n MyConnection --vhub-name MyHub -g MyRG
-"""
-
-helps['network vhub connection update'] = """
-    type: command
-    short-summary: Update settings of a virtual hub connection.
-    examples:
-    - name: Add labels of a virtual hub connection.
-      text: |
-          az network vhub connection update -n MyConnection --vhub-name MyHub -g MyRG --labels Newlabel1 Newlabel2
-    - name: Add labels for propagatedRouteTables of a virtual hub connection.
-      text: |
-          az network vhub connection update -n MyConnection --vhub-name MyHub -g MyRG --add routingConfiguration.propagatedRouteTables.labels Newlabel1 Newlabel2
-    - name: Reset labels of a virtual hub connection.
-      text: |
-          az network vhub connection update -n MyConnection --vhub-name MyHub -g MyRG --set routingConfiguration.propagatedRouteTables.labels[0]=Newlabel
-"""
-
-helps['network vhub connection wait'] = """
-    type: command
-    short-summary: Place the CLI in a waiting state until a condition of virtual hub VNet connection is met.
-"""
-
 helps['network vhub bgpconnection'] = """
     type: group
     short-summary: Manage virtual hub bgpconnections.
@@ -316,15 +252,9 @@ helps['network vpn-gateway connection update'] = """
     type: command
     short-summary: Update settings of VPN gateway connection.
     examples:
-      - name: Update settings of VPN gateway connection.
+      - name: Add labels for propagated route tables under routing configuration.
         text: |
             az network vpn-gateway connection update -g MyRG -n MyConnection --gateway-name MyGateway --labels NewLabel1 NewLabels2
-      - name: Add labels of VPN gateway connection.
-        text: |
-            az network vpn-gateway connection update -g MyRG -n MyConnection --gateway-name MyGateway --add routingConfiguration.propagatedRouteTables.labels Newlabel1 Newlabel2
-      - name: Reset labels of VPN gateway connection.
-        text: |
-            az network vpn-gateway connection update -g MyRG -n MyConnection --gateway-name MyGateway --set routingConfiguration.propagatedRouteTables.labels[0]=Newlabel1
 """
 
 helps['network vpn-gateway connection wait'] = """
@@ -593,7 +523,7 @@ helps['network p2s-vpn-gateway update'] = """
     type: command
     short-summary: Update settings of a point-to-site VPN gateway.
     examples:
-      - name: Update settings of a point-to-site VPN gateway with routing configuration.
+      - name: Add labels for propagated route tables under routing configuration.
         text: |
             az network p2s-vpn-gateway update -g MyRG -n MyP2SVPNGateway --labels Newlabel1 Newlabel2 Newlabel3
 """

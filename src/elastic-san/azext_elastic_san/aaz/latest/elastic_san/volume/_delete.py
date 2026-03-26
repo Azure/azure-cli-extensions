@@ -13,20 +13,25 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "elastic-san volume delete",
-    is_preview=True,
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
     """Delete a Volume.
 
     :example: Delete a Volume.
-        az elastic-san volume delete -g {rg} -e {san_name} -v {vg_name} -n {volume_name}
+        az elastic-san volume delete -g "rg" -e "san_name" -v "vg_name" -n "volume_name"
+
+    :example: Delete a volume with its snapshot
+        az elastic-san volume delete -g "rg" -e "san_name" -v "vg_name" -n "volume_name" -y --x-ms-delete-snapshots true --x-ms-force-delete true
+
+    :example: Delete a deleted volume permanently
+        az elastic-san volume delete -g rg_name -e san_name -v volume_group_name -n deleted_volume_name -y --delete-type permanent
     """
 
     _aaz_info = {
-        "version": "2021-11-20-preview",
+        "version": "2025-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}/volumes/{}", "2021-11-20-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}/volumes/{}", "2025-09-01"],
         ]
     }
 
@@ -47,8 +52,18 @@ class Delete(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.x_ms_delete_snapshots = AAZStrArg(
+            options=["--delete-snapshots", "--x-ms-delete-snapshots"],
+            help="Optional, used to delete snapshots under volume. Allowed value are only true or false. Default value is false.",
+            enum={"false": "false", "true": "true"},
+        )
+        _args_schema.x_ms_force_delete = AAZStrArg(
+            options=["--force-delete", "--x-ms-force-delete"],
+            help="Optional, used to delete volume if active sessions present. Allowed value are only true or false. Default value is false.",
+            enum={"false": "false", "true": "true"},
+        )
         _args_schema.elastic_san_name = AAZStrArg(
-            options=["-e", "--elastic-san-name"],
+            options=["-e", "--elastic-san", "--elastic-san-name"],
             help="The name of the ElasticSan.",
             required=True,
             id_part="name",
@@ -62,7 +77,7 @@ class Delete(AAZCommand):
             required=True,
         )
         _args_schema.volume_group_name = AAZStrArg(
-            options=["-v", "--volume-group-name"],
+            options=["-v", "--volume-group", "--volume-group-name"],
             help="The name of the VolumeGroup.",
             required=True,
             id_part="child_name_1",
@@ -90,11 +105,11 @@ class Delete(AAZCommand):
         yield self.VolumesDelete(ctx=self.ctx)()
         self.post_operations()
 
-    # @register_callback
+    @register_callback
     def pre_operations(self):
         pass
 
-    # @register_callback
+    @register_callback
     def post_operations(self):
         pass
 
@@ -110,7 +125,7 @@ class Delete(AAZCommand):
                     session,
                     self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
             if session.http_response.status_code in [200]:
@@ -119,7 +134,7 @@ class Delete(AAZCommand):
                     session,
                     self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
             if session.http_response.status_code in [204]:
@@ -128,7 +143,7 @@ class Delete(AAZCommand):
                     session,
                     self.on_204,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -179,8 +194,20 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2021-11-20-preview",
+                    "api-version", "2025-09-01",
                     required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "x-ms-delete-snapshots", self.ctx.args.x_ms_delete_snapshots,
+                ),
+                **self.serialize_header_param(
+                    "x-ms-force-delete", self.ctx.args.x_ms_force_delete,
                 ),
             }
             return parameters
@@ -190,6 +217,10 @@ class Delete(AAZCommand):
 
         def on_204(self, session):
             pass
+
+
+class _DeleteHelper:
+    """Helper class for Delete"""
 
 
 __all__ = ["Delete"]
