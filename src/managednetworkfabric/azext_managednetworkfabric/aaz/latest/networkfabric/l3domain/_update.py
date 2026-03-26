@@ -96,7 +96,7 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.aggregate_route_configuration = AAZObjectArg(
-            options=["--aggregate-route-configuration"],
+            options=["--aggr-route-config", "--aggregate-route-configuration"],
             arg_group="Properties",
             help="Aggregate route configurations.",
             nullable=True,

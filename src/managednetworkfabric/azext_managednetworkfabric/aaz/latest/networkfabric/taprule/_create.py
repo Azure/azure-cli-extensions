@@ -126,7 +126,7 @@ class Create(AAZCommand):
             ),
         )
         _args_schema.global_network_tap_rule_actions = AAZObjectArg(
-            options=["--global-network-tap-rule-actions"],
+            options=["--global-ntr-actions", "--global-network-tap-rule-actions"],
             arg_group="Properties",
             help="Global network tap rule actions",
         )
@@ -144,7 +144,7 @@ class Create(AAZCommand):
             ),
         )
         _args_schema.polling_interval_in_seconds = AAZIntArg(
-            options=["--polling-interval-in-seconds"],
+            options=["--polling-interval", "--polling-interval-in-seconds"],
             arg_group="Properties",
             help="Polling interval in seconds.",
             default=30,

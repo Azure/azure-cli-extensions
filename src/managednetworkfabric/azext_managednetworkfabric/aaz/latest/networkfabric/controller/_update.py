@@ -102,7 +102,7 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.workload_express_route_connections = AAZListArg(
-            options=["--wl-er-connections", "--workload-express-route-connections"],
+            options=["--wl-er-connections", "--workload-er-connections", "--workload-express-route-connections"],
             arg_group="Properties",
             help="As part of an update, the workload ExpressRoute CircuitID should be provided to create and Provision a NFC. This Express route is dedicated for Workload services. (This is a Mandatory attribute).",
             nullable=True,

@@ -115,7 +115,7 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.global_network_tap_rule_actions = AAZObjectArg(
-            options=["--global-network-tap-rule-actions"],
+            options=["--global-ntr-actions", "--global-network-tap-rule-actions"],
             arg_group="Properties",
             help="Global network tap rule actions",
             nullable=True,
