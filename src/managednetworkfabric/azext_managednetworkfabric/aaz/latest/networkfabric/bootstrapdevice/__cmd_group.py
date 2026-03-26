@@ -8,16 +8,16 @@
 # pylint: skip-file
 # flake8: noqa
 
-from .__cmd_group import *
-from ._list import *
-from ._reboot import *
-from ._refresh_configuration import *
-from ._resync_certificate import *
-from ._resync_password import *
-from ._run_ro import *
-from ._run_rw import *
-from ._show import *
-from ._update import *
-from ._update_admin_state import *
-from ._upgrade import *
-from ._wait import *
+from azure.cli.core.aaz import *
+
+
+@register_command_group(
+    "networkfabric bootstrapdevice",
+)
+class __CMDGroup(AAZCommandGroup):
+    """Manage Network Bootstrap Device Resource
+    """
+    pass
+
+
+__all__ = ["__CMDGroup"]
