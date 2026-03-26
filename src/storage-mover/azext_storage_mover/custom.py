@@ -195,3 +195,45 @@ def endpoint_update_for_smb(cmd, endpoint_name, resource_group, storage_mover_na
     args = _get_args_for_endpoint_for_smb(endpoint_name, resource_group, storage_mover_name,
                                           username_uri=username_uri, password_uri=password_uri, description=description)
     return Update_Endpoint(args)
+
+
+def _get_args_for_endpoint_for_s3_with_hmac(endpoint_name, resource_group, storage_mover_name,
+                                            source_uri=None, source_type=None,
+                                            access_key_uri=None, secret_key_uri=None,
+                                            other_source_type_description=None,
+                                            description=None):
+    args = {
+        "endpoint_name": endpoint_name, "resource_group": resource_group, "storage_mover_name": storage_mover_name,
+        "description": description,
+        "s3_with_hmac": {
+            "source_uri": source_uri,
+            "source_type": source_type,
+            "other_source_type_description": other_source_type_description,
+        }
+    }
+    if access_key_uri is not None or secret_key_uri is not None:
+        args["s3_with_hmac"]["credentials"] = {
+            "access_key_uri": access_key_uri,
+            "secret_key_uri": secret_key_uri,
+        }
+    return args
+
+
+def endpoint_create_for_s3_with_hmac(cmd, endpoint_name, resource_group, storage_mover_name,
+                                     source_uri, source_type, access_key_uri, secret_key_uri,
+                                     other_source_type_description=None, description=None):
+    Create_Endpoint = Create(cmd.loader)
+    args = _get_args_for_endpoint_for_s3_with_hmac(
+        endpoint_name, resource_group, storage_mover_name,
+        source_uri, source_type, access_key_uri, secret_key_uri,
+        other_source_type_description, description)
+    return Create_Endpoint(args)
+
+
+def endpoint_update_for_s3_with_hmac(cmd, endpoint_name, resource_group, storage_mover_name,
+                                     access_key_uri=None, secret_key_uri=None, description=None):
+    Update_Endpoint = Update(cmd.loader)
+    args = _get_args_for_endpoint_for_s3_with_hmac(
+        endpoint_name, resource_group, storage_mover_name,
+        access_key_uri=access_key_uri, secret_key_uri=secret_key_uri, description=description)
+    return Update_Endpoint(args)

@@ -3,6 +3,13 @@
 Release History
 ===============
 
+1.3.0
++++++
+* Updated to the 2025-12-01 GA API version.
+* Added `connection` resource commands (create, delete, list, show, update, wait).
+* Added S3-compatible storage endpoint type (`create-for-s3-with-hmac`, `update-for-s3-with-hmac`).
+* Added `schedule`, `connections`, `preserve-permissions`, and `data-integrity-validation` parameters to job definition commands.
+
 1.2.1
 +++++
 * Added system assigned MI creation as part of az storage-mover endpoint create-for-storage-container command.

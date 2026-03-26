@@ -11,14 +11,17 @@
 from azure.cli.core.aaz import *
 
 
+@register_command(
+    "storage-mover agent create",
+)
 class Create(AAZCommand):
-    """Creates an Agent resource, which references a hybrid compute machine that can run jobs.
+    """Create an Agent resource, which references a hybrid compute machine that can run jobs.
     """
 
     _aaz_info = {
-        "version": "2025-07-01",
+        "version": "2025-12-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/agents/{}", "2025-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/agents/{}", "2025-12-01"],
         ]
     }
 
@@ -50,6 +53,9 @@ class Create(AAZCommand):
             options=["--storage-mover-name"],
             help="The name of the Storage Mover resource.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$",
+            ),
         )
 
         # define Arg Group "Properties"
@@ -220,7 +226,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-01",
+                    "api-version", "2025-12-01",
                     required=True,
                 ),
             }

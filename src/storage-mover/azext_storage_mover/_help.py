@@ -135,6 +135,29 @@ examples:
         -n "endpoint_multi_cloud_connector" --description endpointMultiCloudConnectorDescUpdate
 """
 
+helps['storage-mover endpoint create-for-s3-with-hmac'] = """
+type: command
+short-summary: Creates an Endpoint resource for S3-compatible storage using HMAC credentials.
+examples:
+    - name: endpoint create-for-s3-with-hmac
+      text: >
+        az storage-mover endpoint create-for-s3-with-hmac -g "rg" --storage-mover-name "mover_name"
+        -n "endpoint_s3" --source-uri "https://s3.example.com/bucket" --source-type BACKBLAZE
+        --access-key-uri "https://keyvault.vault.azure.net/secrets/access-key"
+        --secret-key-uri "https://keyvault.vault.azure.net/secrets/secret-key"
+        --description endpointS3Desc
+"""
+
+helps['storage-mover endpoint update-for-s3-with-hmac'] = """
+type: command
+short-summary: Updates an Endpoint resource for S3-compatible storage using HMAC credentials.
+examples:
+    - name: endpoint update-for-s3-with-hmac
+      text: >
+        az storage-mover endpoint update-for-s3-with-hmac -g "rg" --storage-mover-name "mover_name"
+        -n "endpoint_s3" --description endpointS3DescUpdate
+"""
+
 helps['storage-mover endpoint identity assign'] = """
 type: command
 short-summary: Assigns a managed identity to an Endpoint resource.

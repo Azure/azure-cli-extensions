@@ -19,9 +19,9 @@ class Remove(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-07-01",
+        "version": "2025-12-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/endpoints/{}", "2025-07-01", "identity"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/endpoints/{}", "2025-12-01", "identity"],
         ]
     }
 
@@ -54,6 +54,9 @@ class Remove(AAZCommand):
             options=["--storage-mover-name"],
             help="The name of the Storage Mover resource.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$",
+            ),
         )
 
         # define Arg Group "Endpoint.identity"
@@ -168,7 +171,7 @@ class Remove(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-01",
+                    "api-version", "2025-12-01",
                     required=True,
                 ),
             }
@@ -255,7 +258,7 @@ class Remove(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-01",
+                    "api-version", "2025-12-01",
                     required=True,
                 ),
             }
@@ -391,6 +394,9 @@ class _RemoveHelper:
 
         properties = _schema_endpoint_read.properties
         properties.description = AAZStrType()
+        properties.endpoint_kind = AAZStrType(
+            serialized_name="endpointKind",
+        )
         properties.endpoint_type = AAZStrType(
             serialized_name="endpointType",
             flags={"required": True},
@@ -449,6 +455,29 @@ class _RemoveHelper:
         )
         disc_nfs_mount.nfs_version = AAZStrType(
             serialized_name="nfsVersion",
+        )
+
+        disc_s3_with_hmac = _schema_endpoint_read.properties.discriminate_by("endpoint_type", "S3WithHMAC")
+        disc_s3_with_hmac.credentials = AAZObjectType()
+        disc_s3_with_hmac.other_source_type_description = AAZStrType(
+            serialized_name="otherSourceTypeDescription",
+        )
+        disc_s3_with_hmac.source_type = AAZStrType(
+            serialized_name="sourceType",
+        )
+        disc_s3_with_hmac.source_uri = AAZStrType(
+            serialized_name="sourceUri",
+        )
+
+        credentials = _schema_endpoint_read.properties.discriminate_by("endpoint_type", "S3WithHMAC").credentials
+        credentials.access_key_uri = AAZStrType(
+            serialized_name="accessKeyUri",
+        )
+        credentials.secret_key_uri = AAZStrType(
+            serialized_name="secretKeyUri",
+        )
+        credentials.type = AAZStrType(
+            flags={"required": True},
         )
 
         disc_smb_mount = _schema_endpoint_read.properties.discriminate_by("endpoint_type", "SmbMount")
