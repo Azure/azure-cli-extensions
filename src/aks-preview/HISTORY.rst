@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Add MIG (Multi-Instance GPU) strategy option to node pool property in `az aks nodepool add` and `az aks nodepool update`.
 
 19.0.0b28
 +++++++
@@ -20,7 +21,6 @@ Pending
 * `az aks list-vm-skus`: New command to list available VM SKUs for AKS clusters in a given region.
 * Add managed GPU enablement option to node pool property in `az aks nodepool add` and `az aks nodepool update`.
 * `az aks namespace update`: Fix location should use existing namespace location.
-* Add MIG (Multi-Instance GPU) strategy option to node pool property in `az aks nodepool add` and `az aks nodepool update`.
 
 19.0.0b27
 +++++++
