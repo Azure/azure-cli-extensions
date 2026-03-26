@@ -41,6 +41,7 @@ from azext_changesafety.aaz.latest.changesafety.changerecord import (
     Update as _ChangeRecordUpdate,
     Show as _ChangeRecordShow,
     Delete as _ChangeRecordDelete,
+    List as _ChangeRecordList,
 )
 # Import for schema building - used by _build_custom_show_schema
 from azext_changesafety.aaz.latest.changesafety.changerecord._show import (
@@ -627,17 +628,18 @@ ChangeRecordCreate.AZ_HELP = {
                 "az changesafety changerecord create -g MyResourceGroup -n changerecord002 "
                 "--change-type ManualTouch --rollout-type Normal "
                 "--stage-map \"{resource-id:/subscriptions/00000000-0000-0000-0000-000000000000/"
-                "resourceGroups/MyResourceGroup/providers/Microsoft.ChangeSafety/stageMaps/rolloutStageMap}\" "
+                "providers/Microsoft.ChangeSafety/stageMaps/rolloutStageMap}\" "
                 "--targets \"resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/"
                 "resourceGroups/MyResourceGroup/providers/Microsoft.Compute/virtualMachines/myVm,operation=PATCH\" "
                 "--links \"[{name:status,uri:'https://contoso.com/change/rollout-002'}]\"\n"
             ),
         },
         {
-            "name": "Create a ChangeRecord for a VM rollout",
+            "name": "Create a ChangeRecord for an app deployment with StageMap",
             "text": (
                 "az changesafety changerecord create -g MyResourceGroup -n changerecord001 "
                 "--change-type AppDeployment --rollout-type Normal "
+                "--stagemap-name rolloutStageMap "
                 "--targets \"resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/"
                 "resourceGroups/MyResourceGroup/providers/Microsoft.Compute/virtualMachines/myVm,operation=PUT\""
             ),
@@ -698,8 +700,8 @@ ChangeRecordUpdate.AZ_HELP = {
             "name": "Update scheduling window",
             "text": (
                 "az changesafety changerecord update -g MyResourceGroup -n changerecord001 "
-                "--anticipated-start-time \"2024-09-01T08:00:00Z\" "
-                "--anticipated-end-time \"2024-09-01T12:00:00Z\""
+                "--anticipated-start-time \"2026-09-01T08:00:00Z\" "
+                "--anticipated-end-time \"2026-09-01T12:00:00Z\""
             ),
         },
         {
@@ -728,6 +730,22 @@ ChangeRecordShow.AZ_HELP = {
         {
             "name": "Show a ChangeRecord",
             "text": "az changesafety changerecord show -g MyResourceGroup -n changerecord001",
+        },
+    ],
+}
+
+_ChangeRecordList.AZ_HELP = {
+    **_ChangeRecordList.AZ_HELP,
+    "short-summary": "List ChangeRecord resources.",
+    "long-summary": "List all ChangeRecord resources in a subscription or resource group.",
+    "examples": [
+        {
+            "name": "List all ChangeRecords in the current subscription",
+            "text": "az changesafety changerecord list",
+        },
+        {
+            "name": "List ChangeRecords in a specific resource group",
+            "text": "az changesafety changerecord list -g MyResourceGroup",
         },
     ],
 }

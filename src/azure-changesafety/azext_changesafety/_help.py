@@ -51,22 +51,19 @@ helps['changesafety changerecord create'] = """
       - name: --links
         short-summary: Add supporting links by repeating --links name=NAME uri=URL [description=TEXT].
     examples:
-      - name: Create with StageMap reference and status link
-        text: |-
-          az changesafety changerecord create -g MyResourceGroup -n changerecord002 --change-type ManualTouch --rollout-type Normal --stage-map "{resource-id:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.ChangeSafety/stageMaps/rolloutStageMap}" --targets "resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Compute/virtualMachines/myVm,operation=PATCH" --links "[{name:status,uri:'https://contoso.com/change/rollout-002'}]"
-          az changesafety changerecord delete -g MyResourceGroup -n changerecord002 --yes
-      - name: Create a ChangeRecord for a VM rollout
-        text: |-
-          az changesafety changerecord create -g MyResourceGroup -n changerecord001 --change-type AppDeployment --rollout-type Normal --targets "resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Compute/virtualMachines/myVm,operation=PUT"
       - name: Create a ChangeRecord for deleting a Traffic Manager profile
         text: |-
           az changesafety changerecord create -g MyResourceGroup -n delete-trafficmanager --change-type ManualTouch --rollout-type Hotfix --targets "resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Network/trafficManagerProfiles/myProfile,operation=DELETE" --description "Delete Traffic Manager profile"
-      - name: Create with staging rollout configuration
-        text: |-
-          az changesafety changerecord create -g MyResourceGroup -n changerecord-ops01 --change-type AppDeployment --rollout-type Hotfix --targets "resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Web/sites/myApp,operation=POST"
       - name: Reference a StageMap by name
         text: |-
           az changesafety changerecord create -g MyResourceGroup -n changerecord003 --change-type ManualTouch --rollout-type Normal --stagemap-name rolloutStageMap --targets "resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Compute/virtualMachines/myVm,operation=DELETE"
+      - name: Create with StageMap reference and status link
+        text: |-
+          az changesafety changerecord create -g MyResourceGroup -n changerecord002 --change-type ManualTouch --rollout-type Normal --stage-map "{resource-id:/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ChangeSafety/stageMaps/rolloutStageMap}" --targets "resourceId=/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Compute/virtualMachines/myVm,operation=PATCH" --links "[{name:status,uri:'https://contoso.com/change/rollout-002'}]"
+          az changesafety changerecord delete -g MyResourceGroup -n changerecord002 --yes
+      - name: Create at subscription scope (no resource group)
+        text: |-
+          az changesafety changerecord create -n changerecord-sub-scope --change-type AppDeployment --rollout-type Normal --stagemap-name rolloutStageMap --targets "subscriptionId=00000000-0000-0000-0000-000000000000"
 """
 
 helps['changesafety changerecord update'] = """
@@ -94,7 +91,7 @@ helps['changesafety changerecord update'] = """
           az changesafety changerecord update -g MyResourceGroup -n changerecord001 --rollout-type Emergency --comments "Escalated to emergency rollout"
       - name: Update scheduling window
         text: |-
-          az changesafety changerecord update -g MyResourceGroup -n changerecord001 --anticipated-start-time "2024-09-01T08:00:00Z" --anticipated-end-time "2024-09-01T12:00:00Z"
+          az changesafety changerecord update -g MyResourceGroup -n changerecord001 --anticipated-start-time "2026-09-01T08:00:00Z" --anticipated-end-time "2026-09-01T12:00:00Z"
       - name: Update description
         text: |-
           az changesafety changerecord update -g MyResourceGroup -n changerecord001 --description "Updated rollout for production deployment"

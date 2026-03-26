@@ -13,7 +13,7 @@ az extension add --name azure-changesafety
 ### ChangeRecord
 ```bash
 az changesafety changerecord create  # Create a ChangeRecord for one or more targets.
-az changesafety changerecord update  # Update metadata, rollout configuration, or target definitions.
+az changesafety changerecord update  # Update metadata, rollout settings, or scheduling.
 az changesafety changerecord delete  # Delete a ChangeRecord resource.
 az changesafety changerecord show    # Display details for a ChangeRecord resource.
 az changesafety changerecord list    # List ChangeRecord resources.
@@ -64,7 +64,7 @@ Create a ChangeRecord for a manual touch operation (e.g., delete a Traffic Manag
 ```bash
 az changesafety changerecord create \
   -g MyResourceGroup \
-  -n changerecord-delete-tm \
+  -n delete-trafficmanager \
   --change-type ManualTouch \
   --rollout-type Hotfix \
   --targets "resourceId=/subscriptions/<subId>/resourceGroups/MyResourceGroup/providers/Microsoft.Network/trafficManagerProfiles/myProfile,operation=DELETE" \
@@ -82,6 +82,8 @@ az changesafety changerecord create \
   --stagemap-name rolloutStageMap \
   --links name=Runbook uri=https://contoso.com/runbook
 ```
+
+> **Scope:** When `-g` is omitted, the ChangeRecord is created at subscription scope. Use `-g` to scope it to a specific resource group.
 
 Update the ChangeRecord and add a comment:
 ```bash
