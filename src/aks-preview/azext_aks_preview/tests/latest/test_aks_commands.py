@@ -2759,7 +2759,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         assert machine_show["properties"]["priority"] == "Spot"
         assert machine_show["properties"]["evictionPolicy"] == "Delete"
         assert machine_show["properties"]["billing"]["spotMaxPrice"] == 0.5
-        assert machine_show["properties"]["hardware"]["enableUltraSSD"] is True
+        assert machine_show["properties"]["hardware"]["ultraSsdEnabled"] is True
 
         # delete AKS cluster
         self.cmd(
