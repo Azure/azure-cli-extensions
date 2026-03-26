@@ -163,7 +163,7 @@ class Update(AAZCommand):
             ),
         )
         _args_schema.management_network_configuration = AAZObjectArg(
-            options=["--management-network-configuration"],
+            options=["--managed-network-config", "--management-network-configuration"],
             arg_group="Properties",
             help="Configuration to be used to setup the management network.",
             nullable=True,

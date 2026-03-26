@@ -114,7 +114,7 @@ class Create(AAZCommand):
             required=True,
         )
         _args_schema.network_packet_broker_id = AAZResourceIdArg(
-            options=["--network-packet-broker-id"],
+            options=["--npb-id", "--network-packet-broker-id"],
             arg_group="Properties",
             help="ARM resource ID of the Network Packet Broker.",
             required=True,
