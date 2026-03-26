@@ -1395,6 +1395,7 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
             if agentpool.gpu_profile.nvidia is None:
                 agentpool.gpu_profile.nvidia = self.models.NvidiaGPUProfile()  # pylint: disable=no-member
             agentpool.gpu_profile.nvidia.mig_strategy = gpu_mig_strategy
+            agentpool.gpu_profile.driver = CONST_GPU_DRIVER_INSTALL
         return agentpool
 
     def set_up_pod_ip_allocation_mode(self, agentpool: AgentPool) -> AgentPool:
@@ -1778,6 +1779,7 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
             if agentpool.gpu_profile.nvidia is None:
                 agentpool.gpu_profile.nvidia = self.models.NvidiaGPUProfile()  # pylint: disable=no-member
             agentpool.gpu_profile.nvidia.mig_strategy = gpu_mig_strategy
+            agentpool.gpu_profile.driver = CONST_GPU_DRIVER_INSTALL
         return agentpool
 
     def update_artifact_streaming(self, agentpool: AgentPool) -> AgentPool:

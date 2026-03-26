@@ -5515,6 +5515,64 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[self.is_empty()],
         )
 
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westus3"
+    )
+    def test_aks_nodepool_add_with_gpu_mig_strategy(
+        self, resource_group, resource_group_location
+    ):
+        aks_name = self.create_random_name("cliakstest", 16)
+        node_pool_name = self.create_random_name("c", 6)
+        node_pool_name_second = self.create_random_name("c", 6)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "node_pool_name": node_pool_name,
+                "node_pool_name_second": node_pool_name_second,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} "
+            "--nodepool-name {node_pool_name} -c 1 "
+            "--ssh-key-value={ssh_key_value}"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+            ],
+        )
+
+        # nodepool add with gpu-mig-strategy
+        self.cmd(
+            "aks nodepool add "
+            "--resource-group={resource_group} "
+            "--cluster-name={name} "
+            "--name={node_pool_name_second} "
+            "--enable-managed-gpu=true "
+            "--gpu-instance-profile=MIG3g "
+            "--gpu-mig-strategy=Single "
+            "-c 1 "
+            "--aks-custom-headers UseGPUDedicatedVHD=true "
+            "--node-vm-size=Standard_NC24ads_A100_v4",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("gpuInstanceProfile", "MIG3g"),
+                self.check("gpuProfile.nvidia.migStrategy", "Single"),
+            ],
+        )
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
     @live_only()  # live only due to workspace is not mocked correctly and role assignment is not mocked
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
@@ -6907,7 +6965,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(
             "aks nodepool add --resource-group={resource_group} --cluster-name={name} --name={node_pool_name} "
             "--node-vm-size={node_vm_size} --node-count 1 "
-            " --enable-managed-gpu",
+            "--enable-managed-gpu=true ",
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("gpuProfile.driver", "Install"),
@@ -16644,7 +16702,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--resource-group={resource_group} "
             "--cluster-name={name} "
             "--name={node_pool_name} "
-            "--enable-managed-gpu",
+            "--enable-managed-gpu=true ",
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("gpuProfile.driver", "Install"),
