@@ -2036,13 +2036,6 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
         if self.context.get_vm_set_type() == CONST_VIRTUAL_MACHINES:
             return agentpool
 
-        vm_size = self.context.raw_param.get("node_vm_size")
-        if vm_size is not None:
-            raise InvalidArgumentValueError(
-                "--node-vm-size can only be used with virtual machines agentpools. "
-                "Updating VM size is not supported for virtual machine scale set agentpools."
-            )
-
         (
             update_cluster_autoscaler,
             enable_cluster_autoscaler,
