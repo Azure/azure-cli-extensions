@@ -7,8 +7,8 @@ Release History
 ++++++
 * Enables the following previously removed command/command groups:
 *  - `bootstrapdevice` and `bootstrapinterface` command groups that both support `list` and `show` operations.
-*  - `fabric` commands `resync-certificate` and `resync-configuration` to support resync operations for certificates and configuration on the fabric resource.
-*  - `device` command `resync-certificate` to support resync operations for certificates and configuration on the device resource.
+*  - `fabric` commands `resync-certificate` and `rotate-certificate` to support certificate resync and rotation operations on the fabric resource.
+*  - `device` command `resync-certificate` to support resync operations for certificates on the device resource.
 
 9.0.0
 ++++++

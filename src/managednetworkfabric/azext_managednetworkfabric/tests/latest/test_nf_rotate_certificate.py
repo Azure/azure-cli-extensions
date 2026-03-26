@@ -39,7 +39,7 @@ def call_scenario2(test):
 
 
 def step_rotate_certificate_scenario1(test, checks=None):
-    """nf rotate password operation"""
+    """nf rotate certificate operation"""
     if checks is None:
         checks = []
     test.cmd(
@@ -48,7 +48,7 @@ def step_rotate_certificate_scenario1(test, checks=None):
 
 
 def step_rotate_certificate_scenario2(test, checks=None):
-    """nf rotate password operation"""
+    """nf rotate certificate operation"""
     if checks is None:
         checks = []
     test.cmd(
@@ -69,5 +69,5 @@ class GA_NFRotatePasswordScenarioTest1(ScenarioTest):
         )
 
     def test_GA_nf_rotate_certificate_scenario1(self):
-        """test scenario for NF rotate password operations"""
+        """test scenario for NF rotate certificate operations"""
         call_scenario1(self)

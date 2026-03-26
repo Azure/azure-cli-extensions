@@ -17,11 +17,8 @@ from azure.cli.core.aaz import *
 class List(AAZCommand):
     """List all the Network Bootstrap Interface resources in a given resource group.
 
-    :example: List the Bootstrap Interfaces by Subscription
-        az networkfabric bootstrapinterface list --subscription <subscriptionId> --bootstrap-device example-device
-
-    :example: List the Bootstrap Interfaces by Resource Group
-        az networkfabric bootstrapinterface list --resource-group example-rg --bootstrap-device example-device
+    :example: List the Bootstrap Interfaces in a Resource Group for a specific Subscription
+        az networkfabric bootstrapinterface list --subscription <subscriptionId> --resource-group example-rg --bootstrap-device example-device
     """
 
     _aaz_info = {

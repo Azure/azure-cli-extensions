@@ -92,8 +92,8 @@ class Update(AAZCommand):
             help="List of Connected IPv4 Subnets.",
             nullable=True,
         )
-        _args_schema.connected_ipv6_subnets = AAZListArg(
-            options=["--connected-ipv6-subnets"],
+        _args_schema.connected_i_pv6_subnets = AAZListArg(
+            options=["--connected-i-pv6-subnets"],
             arg_group="Properties",
             help="List of connected IPv6 Subnets.",
             nullable=True,
@@ -233,7 +233,7 @@ class Update(AAZCommand):
         )
         bmp_configuration.neighbor_ip_exclusions = AAZListArg(
             options=["neighbor-ip-exclusions"],
-            help="BMP Collector Address.",
+            help="Neighbor IP Address exclusions for BMP.",
         )
 
         neighbor_ip_exclusions = cls._args_schema.bgp_configuration.bmp_configuration.neighbor_ip_exclusions
@@ -257,9 +257,9 @@ class Update(AAZCommand):
         connected_ipv4_subnets.Element = AAZObjectArg()
         cls._build_args_connected_subnet_patch_update(connected_ipv4_subnets.Element)
 
-        connected_ipv6_subnets = cls._args_schema.connected_ipv6_subnets
-        connected_ipv6_subnets.Element = AAZObjectArg()
-        cls._build_args_connected_subnet_patch_update(connected_ipv6_subnets.Element)
+        connected_i_pv6_subnets = cls._args_schema.connected_i_pv6_subnets
+        connected_i_pv6_subnets.Element = AAZObjectArg()
+        cls._build_args_connected_subnet_patch_update(connected_i_pv6_subnets.Element)
 
         export_route_policy = cls._args_schema.export_route_policy
         export_route_policy.export_ipv4_route_policy_id = AAZResourceIdArg(
@@ -584,7 +584,7 @@ class Update(AAZCommand):
                 properties.set_prop("annotation", AAZStrType, ".annotation", typ_kwargs={"nullable": True})
                 properties.set_prop("bgpConfiguration", AAZObjectType, ".bgp_configuration", typ_kwargs={"nullable": True})
                 properties.set_prop("connectedIPv4Subnets", AAZListType, ".connected_ipv4_subnets", typ_kwargs={"nullable": True})
-                properties.set_prop("connectedIPv6Subnets", AAZListType, ".connected_ipv6_subnets", typ_kwargs={"nullable": True})
+                properties.set_prop("connectedIPv6Subnets", AAZListType, ".connected_i_pv6_subnets", typ_kwargs={"nullable": True})
                 properties.set_prop("egressAclId", AAZStrType, ".egress_acl_id", typ_kwargs={"nullable": True})
                 properties.set_prop("exportRoutePolicy", AAZObjectType, ".export_route_policy", typ_kwargs={"nullable": True})
                 properties.set_prop("importRoutePolicy", AAZObjectType, ".import_route_policy", typ_kwargs={"nullable": True})

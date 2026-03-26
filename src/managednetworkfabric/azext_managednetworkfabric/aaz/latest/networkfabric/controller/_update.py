@@ -61,6 +61,18 @@ class Update(AAZCommand):
             required=True,
         )
 
+        # define Arg Group "Body"
+
+        _args_schema = cls._args_schema
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Body",
+            help="Resource tags.",
+        )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg()
+
         # define Arg Group "Identity"
 
         _args_schema = cls._args_schema
@@ -90,15 +102,10 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.workload_express_route_connections = AAZListArg(
-            options=["--wl-er-connections", "--workload-er-connections", "--workload-express-route-connections"],
+            options=["--wl-er-connections", "--workload-express-route-connections"],
             arg_group="Properties",
             help="As part of an update, the workload ExpressRoute CircuitID should be provided to create and Provision a NFC. This Express route is dedicated for Workload services. (This is a Mandatory attribute).",
             nullable=True,
-        )
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Properties",
-            help="Resource tags.",
         )
 
         infrastructure_express_route_connections = cls._args_schema.infrastructure_express_route_connections
@@ -108,9 +115,6 @@ class Update(AAZCommand):
         workload_express_route_connections = cls._args_schema.workload_express_route_connections
         workload_express_route_connections.Element = AAZObjectArg()
         cls._build_args_express_route_connection_information_update(workload_express_route_connections.Element)
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
         return cls._args_schema
 
     _args_express_route_connection_information_update = None

@@ -60,6 +60,26 @@ class Create(AAZCommand):
             required=True,
         )
 
+        # define Arg Group "Body"
+
+        _args_schema = cls._args_schema
+        _args_schema.location = AAZResourceLocationArg(
+            arg_group="Body",
+            help="The geo-location where the resource lives",
+            required=True,
+            fmt=AAZResourceLocationArgFormat(
+                resource_group_arg="resource_group",
+            ),
+        )
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Body",
+            help="Resource tags.",
+        )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg()
+
         # define Arg Group "Identity"
 
         _args_schema = cls._args_schema
@@ -94,7 +114,7 @@ class Create(AAZCommand):
             required=True,
         )
         _args_schema.network_packet_broker_id = AAZResourceIdArg(
-            options=["--npb-id", "--network-packet-broker-id"],
+            options=["--network-packet-broker-id"],
             arg_group="Properties",
             help="ARM resource ID of the Network Packet Broker.",
             required=True,
@@ -157,26 +177,6 @@ class Create(AAZCommand):
         neighbor_group_ids.Element = AAZResourceIdArg(
             nullable=True,
         )
-
-        # define Arg Group "Resource"
-
-        _args_schema = cls._args_schema
-        _args_schema.location = AAZResourceLocationArg(
-            arg_group="Resource",
-            help="The geo-location where the resource lives",
-            required=True,
-            fmt=AAZResourceLocationArgFormat(
-                resource_group_arg="resource_group",
-            ),
-        )
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Resource",
-            help="Resource tags.",
-        )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):

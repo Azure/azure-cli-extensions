@@ -63,6 +63,26 @@ class Create(AAZCommand):
             required=True,
         )
 
+        # define Arg Group "Body"
+
+        _args_schema = cls._args_schema
+        _args_schema.location = AAZResourceLocationArg(
+            arg_group="Body",
+            help="The geo-location where the resource lives",
+            required=True,
+            fmt=AAZResourceLocationArgFormat(
+                resource_group_arg="resource_group",
+            ),
+        )
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Body",
+            help="Resource tags.",
+        )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg()
+
         # define Arg Group "Identity"
 
         _args_schema = cls._args_schema
@@ -106,7 +126,7 @@ class Create(AAZCommand):
             ),
         )
         _args_schema.global_network_tap_rule_actions = AAZObjectArg(
-            options=["--global-ntr-actions", "--global-network-tap-rule-actions"],
+            options=["--global-network-tap-rule-actions"],
             arg_group="Properties",
             help="Global network tap rule actions",
         )
@@ -124,7 +144,7 @@ class Create(AAZCommand):
             ),
         )
         _args_schema.polling_interval_in_seconds = AAZIntArg(
-            options=["--polling-interval", "--polling-interval-in-seconds"],
+            options=["--polling-interval-in-seconds"],
             arg_group="Properties",
             help="Polling interval in seconds.",
             default=30,
@@ -432,26 +452,6 @@ class Create(AAZCommand):
 
         vlans = cls._args_schema.match_configurations.Element.match_conditions.Element.vlan_match_condition.vlans
         vlans.Element = AAZStrArg()
-
-        # define Arg Group "Resource"
-
-        _args_schema = cls._args_schema
-        _args_schema.location = AAZResourceLocationArg(
-            arg_group="Resource",
-            help="The geo-location where the resource lives",
-            required=True,
-            fmt=AAZResourceLocationArgFormat(
-                resource_group_arg="resource_group",
-            ),
-        )
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Resource",
-            help="Resource tags.",
-        )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):

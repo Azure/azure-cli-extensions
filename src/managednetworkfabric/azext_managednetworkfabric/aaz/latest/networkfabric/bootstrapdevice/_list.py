@@ -21,7 +21,7 @@ class List(AAZCommand):
         az networkfabric bootstrapdevice list --subscription <subscriptionId>
 
     :example: List the Bootstrap Device for Resource Group
-        az networkfabric bootstrapdevice list -resource-group example-rg
+        az networkfabric bootstrapdevice list --resource-group example-rg
     """
 
     _aaz_info = {
