@@ -556,7 +556,6 @@ class AgentPool(ProxyResource):
         "e_tag": {"readonly": True},
         "os_disk_size_gb": {"maximum": 2048, "minimum": 0},
         "current_orchestrator_version": {"readonly": True},
-        "node_image_version": {"readonly": True},
         "provisioning_state": {"readonly": True},
     }
 
@@ -6517,7 +6516,6 @@ class ManagedClusterAgentPoolProfileProperties(_serialization.Model):
         "e_tag": {"readonly": True},
         "os_disk_size_gb": {"maximum": 2048, "minimum": 0},
         "current_orchestrator_version": {"readonly": True},
-        "node_image_version": {"readonly": True},
         "provisioning_state": {"readonly": True},
     }
 
@@ -7173,7 +7171,6 @@ class ManagedClusterAgentPoolProfile(ManagedClusterAgentPoolProfileProperties):
         "e_tag": {"readonly": True},
         "os_disk_size_gb": {"maximum": 2048, "minimum": 0},
         "current_orchestrator_version": {"readonly": True},
-        "node_image_version": {"readonly": True},
         "provisioning_state": {"readonly": True},
         "name": {"required": True, "pattern": r"^[a-z][a-z0-9]{0,11}$"},
     }
