@@ -313,6 +313,28 @@ def transform_deployment_list(result):
     return transformed
 
 
+def transform_deployment_template_list(result):
+    """Table transformer for 'az ml deployment-template list'."""
+    transformed = []
+    for r in result:
+        # Fields may be at top level or nested under "properties"
+        props = r.get("properties", r)
+        entry = OrderedDict(
+            [
+                ("name", props.get("name")),
+                ("version", props.get("version")),
+                ("stage", props.get("stage")),
+                ("deploymentTemplateType", props.get("deploymentTemplateType")),
+                ("defaultInstanceType", props.get("defaultInstanceType")),
+                ("instanceCount", props.get("instanceCount")),
+                ("description", props.get("description")),
+            ]
+        )
+        transformed.append(entry)
+
+    return transformed
+
+
 def transform_endpoint_list(result):
     transformed = []
     for r in result:

@@ -158,6 +158,7 @@ from azext_aks_preview._consts import (
     CONST_ADVANCED_NETWORKPOLICIES_L7,
     CONST_TRANSIT_ENCRYPTION_TYPE_NONE,
     CONST_TRANSIT_ENCRYPTION_TYPE_WIREGUARD,
+    CONST_TRANSIT_ENCRYPTION_TYPE_MTLS,
     CONST_ACNS_DATAPATH_ACCELERATION_MODE_BPFVETH,
     CONST_ACNS_DATAPATH_ACCELERATION_MODE_NONE,
     CONST_UPGRADE_STRATEGY_ROLLING,
@@ -360,6 +361,7 @@ advanced_networkpolicies = [
 transit_encryption_types = [
     CONST_TRANSIT_ENCRYPTION_TYPE_NONE,
     CONST_TRANSIT_ENCRYPTION_TYPE_WIREGUARD,
+    CONST_TRANSIT_ENCRYPTION_TYPE_MTLS,
 ]
 acns_datapath_acceleration_modes = [
     CONST_ACNS_DATAPATH_ACCELERATION_MODE_NONE,
@@ -897,6 +899,8 @@ def load_arguments(self, _):
         )
         c.argument("revision", validator=validate_azure_service_mesh_revision)
         c.argument("image_cleaner_interval_hours", type=int)
+        c.argument("enable_service_account_image_pull", action="store_true", is_preview=True)
+        c.argument("service_account_image_pull_default_managed_identity_id", is_preview=True)
         c.argument(
             "cluster_snapshot_id",
             validator=validate_cluster_snapshot_id,
@@ -970,7 +974,7 @@ def load_arguments(self, _):
             "acns_transit_encryption_type",
             is_preview=True,
             arg_type=get_enum_type(transit_encryption_types),
-            help="Specify the transit encryption type for ACNS. Available values are 'None' and 'WireGuard'.",
+            help="Specify the transit encryption type for ACNS. Available values are 'None', 'WireGuard', and 'mTLS'.",
         )
         c.argument(
             "enable_retina_flow_logs",
@@ -1452,6 +1456,9 @@ def load_arguments(self, _):
         )
         c.argument("image_cleaner_interval_hours", type=int)
         c.argument("disable_image_integrity", action="store_true", is_preview=True)
+        c.argument("enable_service_account_image_pull", action="store_true", is_preview=True)
+        c.argument("disable_service_account_image_pull", action="store_true", is_preview=True)
+        c.argument("service_account_image_pull_default_managed_identity_id", is_preview=True)
         c.argument(
             "enable_apiserver_vnet_integration", action="store_true", is_preview=True
         )
@@ -1648,7 +1655,7 @@ def load_arguments(self, _):
             "acns_transit_encryption_type",
             is_preview=True,
             arg_type=get_enum_type(transit_encryption_types),
-            help="Specify the transit encryption type for ACNS. Available values are 'None' and 'WireGuard'.",
+            help="Specify the transit encryption type for ACNS. Available values are 'None', 'WireGuard', and 'mTLS'.",
         )
         c.argument(
             "enable_retina_flow_logs",
@@ -1818,6 +1825,11 @@ def load_arguments(self, _):
             is_preview=True,
             help="Disable continuous control plane and addon monitor for the cluster.",
         )
+
+    with self.argument_context("aks delete") as c:
+        c.argument("if_match")
+        c.argument("if_none_match")
+        c.argument("ignore_pod_disruption_budget", action="store_true")
 
     with self.argument_context("aks upgrade") as c:
         c.argument("kubernetes_version", completer=get_k8s_upgrades_completion_list)
@@ -2025,6 +2037,12 @@ def load_arguments(self, _):
             is_preview=True,
         )
         c.argument(
+            "enable_managed_gpu",
+            action="store_true",
+            is_preview=True,
+            help="Enable the Managed GPU experience.",
+        )
+        c.argument(
             "node_public_ip_tags",
             arg_type=tags_type,
             validator=validate_node_public_ip_tags,
@@ -2132,6 +2150,12 @@ def load_arguments(self, _):
             action="store_true",
             validator=validate_artifact_streaming,
             is_preview=True,
+        )
+        c.argument(
+            "enable_managed_gpu",
+            action="store_true",
+            is_preview=True,
+            help="Enable the Managed GPU experience.",
         )
         c.argument(
             "os_sku",
@@ -3193,6 +3217,35 @@ def load_arguments(self, _):
         with self.argument_context(scope) as c:
             c.argument('config_file', options_list=['--config-file'], type=file_type, completer=FilesCompleter(),
                        help='Path to the JSON configuration file containing JWT authenticator properties.')
+
+    # aks list-vm-skus command
+    with self.argument_context("aks list-vm-skus") as c:
+        c.argument(
+            "location",
+            options_list=["--location", "-l"],
+            help="Location. Values from: 'az account list-locations'.",
+            required=True,
+        )
+        c.argument(
+            "size",
+            options_list=["--size", "-s"],
+            help="VM size name filter, partial name is accepted.",
+        )
+        c.argument(
+            "zone",
+            options_list=["--zone", "-z"],
+            action="store_true",
+            help="Show only VM SKUs that support availability zones.",
+        )
+        # TODO: Eventually deprecate the -all param.
+        # The List VM SKUs API already performs regional filtering so once AZ filtering is also implemented
+        # within the API, this param will no longer be required.
+        c.argument(
+            "show_all",
+            options_list=["--all"],
+            action="store_true",
+            help="Show all VM SKU information including those not available for the current subscription.",
+        )
 
 
 def _get_default_install_location(exe_name):

@@ -57,8 +57,8 @@ class NginxScenarioTest(ScenarioTest):
         self.kwargs.update({
             'identity_object_id': identity_object_id,
         })
-        self.kwargs['identities'] = "{\"type\":\"UserAssigned\",\"userAssignedIdentities\":{\"" + managed_identity['id'] + "\":{}}}"
-        self.cmd('nginx deployment create --name {deployment_name} --resource-group {rg} --location {location} --sku name={sku} --network-profile front-end-ip-configuration="{public_ip_addresses}" network-interface-configuration="{subnet_id}" --identity {identities} --scaling-properties capacity=10 --auto-upgrade-profile upgrade-channel=preview', checks=[
+        self.kwargs['user_identity_id'] = managed_identity['id']
+        self.cmd('nginx deployment create --name {deployment_name} --resource-group {rg} --location {location} --sku name={sku} --network-profile front-end-ip-configuration="{public_ip_addresses}" network-interface-configuration="{subnet_id}" --identity {{system-assigned:True,user-assigned-identities:{{{user_identity_id}:{{}}}}}} --scaling-properties capacity=10 --auto-upgrade-profile upgrade-channel=preview', checks=[
             self.check('properties.provisioningState', 'Succeeded'),
             self.check('name', self.kwargs['deployment_name'])
         ])
@@ -84,7 +84,7 @@ class NginxScenarioTest(ScenarioTest):
         assert updated_deployment['properties']['networkProfile']['networkInterfaceConfiguration']['subnetId'] == subnet2['id']
 
         # Nginx for Azure API key
-        create_api_key = 'nginx deployment api-key create -n "test-key" --deployment-name {deployment_name} --resource-group {rg} --end-date-time "2026-02-20T17:59:39.123Z" --secret-text "s5V/9~o^4TYCVwmNc2Y>Y1^64&T`0sXg-j9!Xy|8"'
+        create_api_key = 'nginx deployment api-key create -n "test-key" --deployment-name {deployment_name} --resource-group {rg} --end-date-time "2026-04-20T17:59:39.123Z" --secret-text "s5V/9~o^4TYCVwmNc2Y>Y1^64&T`0sXg-j9!Xy|8"'
         self.cmd(create_api_key)
         # Nginx for Azure certificates
         create_keyvault = 'keyvault create --name {kv_name} --resource-group {rg}'
@@ -163,7 +163,7 @@ class NginxScenarioTest(ScenarioTest):
         ])
         self.cmd('nginx deployment configuration delete --name default --deployment-name {deployment_name} --resource-group {rg} --yes')
         self.cmd('nginx deployment configuration analyze --name default --deployment-name {deployment_name}  --resource-group {rg} --root-file nginx.conf --package {compressed_file}', checks=[
-            self.check('status', 'SUCCEEDED'),
+            self.check('status', 'WARNING'),
         ])
 
         # Nginx for Azure Waf v2
@@ -175,6 +175,9 @@ class NginxScenarioTest(ScenarioTest):
         self.cmd("nginx deployment waf-policy show --name default --deployment-name {deployment_name} --resource-group {rg} ", checks=[
             self.check('name', 'default'),
         ])
+
+        analyze_result = self.cmd("nginx deployment waf-policy analyze-waf-policy --deployment-name {deployment_name} --resource-group {rg} --waf-policy-name default --filepath /etc/app_protect/conf/policy.json --content {create_waf2_file}").get_output_in_json()
+        assert len(analyze_result['status']) > 0
 
         waf_policy_list = self.cmd("nginx deployment waf-policy list --deployment-name {deployment_name} --resource-group {rg} ").get_output_in_json()
         assert len(waf_policy_list) > 0

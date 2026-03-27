@@ -1076,6 +1076,8 @@ def aks_create(
     enable_image_cleaner=False,
     image_cleaner_interval_hours=None,
     enable_image_integrity=False,
+    enable_service_account_image_pull=False,
+    service_account_image_pull_default_managed_identity_id=None,
     cluster_snapshot_id=None,
     enable_apiserver_vnet_integration=False,
     apiserver_subnet_id=None,
@@ -1321,6 +1323,9 @@ def aks_update(
     image_cleaner_interval_hours=None,
     enable_image_integrity=False,
     disable_image_integrity=False,
+    enable_service_account_image_pull=False,
+    disable_service_account_image_pull=False,
+    service_account_image_pull_default_managed_identity_id=None,
     enable_apiserver_vnet_integration=False,
     apiserver_subnet_id=None,
     enable_keda=False,
@@ -1443,6 +1448,22 @@ def aks_show(cmd, client, resource_group_name, name, aks_custom_headers=None):
     headers = get_aks_custom_headers(aks_custom_headers)
     mc = client.get(resource_group_name, name, headers=headers)
     return _remove_nulls([mc])[0]
+
+
+def aks_delete(cmd, client, resource_group_name, name, no_wait=False,
+               if_match=None, if_none_match=None, ignore_pod_disruption_budget=None):
+    if if_none_match is not None:
+        logger.warning(
+            "The '--if-none-match' option is not applicable to delete operations and will be ignored."
+        )
+    return sdk_no_wait(
+        no_wait,
+        client.begin_delete,
+        resource_group_name,
+        name,
+        if_match=if_match,
+        ignore_pod_disruption_budget=ignore_pod_disruption_budget,
+    )
 
 
 # pylint: disable=unused-argument
@@ -1903,6 +1924,7 @@ def aks_agentpool_add(
     asg_ids=None,
     node_public_ip_tags=None,
     enable_artifact_streaming=False,
+    enable_managed_gpu=False,
     skip_gpu_driver_install=False,
     gpu_driver=None,
     driver_type=None,
@@ -1977,6 +1999,7 @@ def aks_agentpool_update(
     allowed_host_ports=None,
     asg_ids=None,
     enable_artifact_streaming=False,
+    enable_managed_gpu=False,
     os_sku=None,
     ssh_access=None,
     yes=False,
@@ -3433,6 +3456,35 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
 
 def aks_get_versions(cmd, client, location):    # pylint: disable=unused-argument
     return client.list_kubernetes_versions(location)
+
+
+def aks_list_vm_skus(cmd, client, location, size=None, zone=None, show_all=None):  # pylint: disable=unused-argument
+    """Lists the VM SKUs accepted by AKS when creating node pools in a specified location.
+
+    AKS will perform a best effort approach to provision the requested VM SKUs, but availability is not guaranteed.
+
+    :param location: Azure region to query.
+    :param size: Optional partial VM size name filter (case-insensitive).
+    :param zone: When True, show only SKUs that support availability zones.
+    :param show_all: When True, include SKUs not available to the current subscription.
+    """
+    from azext_aks_preview.vm_skus_util import _aks_is_vm_sku_available
+
+    result = list(client.list(location))
+
+    if not show_all:
+        result = [sku for sku in result if _aks_is_vm_sku_available(sku, zone)]
+
+    if size:
+        result = [sku for sku in result if sku.name and size.lower() in sku.name.lower()]
+
+    if zone:
+        result = [
+            sku for sku in result
+            if sku.location_info and sku.location_info[0].zones
+        ]
+
+    return result
 
 
 def get_aks_custom_headers(aks_custom_headers=None):

@@ -51,7 +51,9 @@ from azext_aks_preview._consts import (
     CONST_APP_ROUTING_ISTIO_MODE_ENABLED,
     CONST_APP_ROUTING_ISTIO_MODE_DISABLED,
     CONST_ACNS_DATAPATH_ACCELERATION_MODE_BPFVETH,
-    CONST_ACNS_DATAPATH_ACCELERATION_MODE_NONE
+    CONST_ACNS_DATAPATH_ACCELERATION_MODE_NONE,
+    CONST_TRANSIT_ENCRYPTION_TYPE_MTLS,
+    CONST_ADVANCED_NETWORKPOLICIES_L7,
 )
 from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_ACSTOR_EXT_INSTALLATION_NAME,
@@ -919,6 +921,49 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 raise MutuallyExclusiveArgumentError(
                     "--disable-acns-security and --disable-acns cannot be used with --acns-transit-encryption-type."
                 )
+            if acns_transit_encryption_type == CONST_TRANSIT_ENCRYPTION_TYPE_MTLS:
+                # Check CLI args for L7
+                acns_advanced_networkpolicies = self.raw_param.get("acns_advanced_networkpolicies")
+                if acns_advanced_networkpolicies == CONST_ADVANCED_NETWORKPOLICIES_L7:
+                    raise MutuallyExclusiveArgumentError(
+                        "'--acns-transit-encryption-type mTLS' cannot be used with "
+                        "'--acns-advanced-networkpolicies L7'. "
+                        "Please choose either '--acns-advanced-networkpolicies L7' or "
+                        "'--acns-transit-encryption-type mTLS', but not both."
+                    )
+                # Check CLI args for Istio
+                enable_asm = self.raw_param.get("enable_azure_service_mesh", False)
+                if enable_asm:
+                    raise MutuallyExclusiveArgumentError(
+                        "'--acns-transit-encryption-type mTLS' cannot be used with "
+                        "'--enable-azure-service-mesh'. "
+                        "Please remove '--enable-azure-service-mesh' or choose a different "
+                        "transit encryption type."
+                    )
+                # On update, check existing cluster state
+                if self.decorator_mode == DecoratorMode.UPDATE and self.mc:
+                    # Check if existing cluster has L7 enabled and user is not changing it
+                    if (acns_advanced_networkpolicies is None and
+                            self.mc.network_profile and
+                            self.mc.network_profile.advanced_networking and
+                            self.mc.network_profile.advanced_networking.security and
+                            self.mc.network_profile.advanced_networking.security.advanced_network_policies ==
+                            CONST_ADVANCED_NETWORKPOLICIES_L7):
+                        raise MutuallyExclusiveArgumentError(
+                            "'--acns-transit-encryption-type mTLS' cannot be used with L7 advanced network policies. "
+                            "The existing cluster already has L7 enabled. Please disable L7 by passing "
+                            "'--acns-advanced-networkpolicies None' or choose a different transit encryption type."
+                        )
+                    # Check if existing cluster has Istio enabled and user is not disabling it
+                    disable_asm = self.raw_param.get("disable_azure_service_mesh", False)
+                    if (not disable_asm and
+                            self.mc.service_mesh_profile and
+                            self.mc.service_mesh_profile.mode == CONST_AZURE_SERVICE_MESH_MODE_ISTIO):
+                        raise MutuallyExclusiveArgumentError(
+                            "'--acns-transit-encryption-type mTLS' cannot be used with Istio service mesh. "
+                            "The existing cluster already has Istio enabled. Please disable Istio by passing "
+                            "'--disable-azure-service-mesh' or choose a different transit encryption type."
+                        )
         return self.raw_param.get("acns_transit_encryption_type")
 
     # Container network logs is the new name for retina flow logs.
@@ -1331,6 +1376,34 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         disable_image_integrity = self.raw_param.get("disable_image_integrity")
 
         return disable_image_integrity
+
+    def get_enable_service_account_image_pull(self) -> bool:
+        """Obtain the value of enable_service_account_image_pull.
+
+        :return: bool
+        """
+        # read the original value passed by the command
+        enable_service_account_image_pull = self.raw_param.get("enable_service_account_image_pull")
+
+        return enable_service_account_image_pull
+
+    def get_disable_service_account_image_pull(self) -> bool:
+        """Obtain the value of disable_service_account_image_pull.
+
+        :return: bool
+        """
+        # read the original value passed by the command
+        disable_service_account_image_pull = self.raw_param.get("disable_service_account_image_pull")
+
+        return disable_service_account_image_pull
+
+    def get_service_account_image_pull_default_managed_identity_id(self):
+        """Obtain the value of service_account_image_pull_default_managed_identity_id.
+
+        :return: str or None
+        """
+        # read the original value passed by the command
+        return self.raw_param.get("service_account_image_pull_default_managed_identity_id")
 
     def get_kms_infrastructure_encryption(self) -> str:
         """Obtain the value of kms_infrastructure_encryption.
@@ -4096,6 +4169,34 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         return mc
 
+    def set_up_service_account_image_pull(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up security profile serviceAccountImagePullProfile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        enable_service_account_image_pull = self.context.get_enable_service_account_image_pull()
+        default_managed_identity_id = self.context.get_service_account_image_pull_default_managed_identity_id()
+
+        if not enable_service_account_image_pull and default_managed_identity_id is not None:
+            raise RequiredArgumentMissingError(
+                "--enable-service-account-image-pull is required when "
+                "--service-account-image-pull-default-managed-identity-id is specified."
+            )
+
+        if enable_service_account_image_pull:
+            if mc.security_profile is None:
+                mc.security_profile = self.models.ManagedClusterSecurityProfile()  # pylint: disable=no-member
+            mc.security_profile.service_account_image_pull_profile = (
+                self.models.ServiceAccountImagePullProfile(  # pylint: disable=no-member
+                    enabled=True,
+                    default_managed_identity_id=default_managed_identity_id,
+                )
+            )
+
+        return mc
+
     def set_up_kms_pmk_and_cmk(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up security profile KubernetesResourceObjectEncryptionProfile and AzureKeyVaultKms for
         the ManagedCluster object.
@@ -4948,6 +5049,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_image_cleaner(mc)
         # set up image integrity
         mc = self.set_up_image_integrity(mc)
+        # set up service account image pull
+        mc = self.set_up_service_account_image_pull(mc)
         # set up KMS infrastructure encryption
         mc = self.set_up_kms_pmk_and_cmk(mc)
         # set up cluster snapshot
@@ -5330,6 +5433,34 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                     scope=cluster.id,
                     resolve_assignee=False,
                 )
+
+    def put_mc(self, mc: ManagedCluster) -> ManagedCluster:
+        if self.check_is_postprocessing_required(mc):
+            # send request
+            poller = self.client.begin_create_or_update(
+                resource_group_name=self.context.get_resource_group_name(),
+                resource_name=self.context.get_name(),
+                parameters=mc,
+                if_match=self.context.get_if_match(),
+                if_none_match=self.context.get_if_none_match(),
+                headers=self.context.get_aks_custom_headers(),
+            )
+            self.immediate_processing_after_request(mc)
+            # poll until the result is returned
+            cluster = LongRunningOperation(self.cmd.cli_ctx)(poller)
+            self.postprocessing_after_mc_created(cluster)
+        else:
+            cluster = sdk_no_wait(
+                self.context.get_no_wait(),
+                self.client.begin_create_or_update,
+                resource_group_name=self.context.get_resource_group_name(),
+                resource_name=self.context.get_name(),
+                parameters=mc,
+                if_match=self.context.get_if_match(),
+                if_none_match=self.context.get_if_none_match(),
+                headers=self.context.get_aks_custom_headers(),
+            )
+        return cluster
 
 
 class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
@@ -6298,6 +6429,66 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             mc.security_profile.image_integrity = image_integrity_profile
 
         image_integrity_profile.enabled = shouldEnable_image_integrity
+
+        return mc
+
+    def update_service_account_image_pull(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update security profile serviceAccountImagePullProfile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        enable_service_account_image_pull = self.context.get_enable_service_account_image_pull()
+        disable_service_account_image_pull = self.context.get_disable_service_account_image_pull()
+        default_managed_identity_id = self.context.get_service_account_image_pull_default_managed_identity_id()
+
+        # no service account image pull related changes
+        if (
+            not enable_service_account_image_pull
+            and not disable_service_account_image_pull
+            and default_managed_identity_id is None
+        ):
+            return mc
+        if enable_service_account_image_pull and disable_service_account_image_pull:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-service-account-image-pull and "
+                "--disable-service-account-image-pull at the same time."
+            )
+        if disable_service_account_image_pull and default_managed_identity_id is not None:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --disable-service-account-image-pull and "
+                "--service-account-image-pull-default-managed-identity-id at the same time."
+            )
+
+        if mc.security_profile is None:
+            mc.security_profile = self.models.ManagedClusterSecurityProfile()  # pylint: disable=no-member
+
+        profile = mc.security_profile.service_account_image_pull_profile
+        if profile is None:
+            profile = self.models.ServiceAccountImagePullProfile()  # pylint: disable=no-member
+            mc.security_profile.service_account_image_pull_profile = profile
+
+        # If only identity ID is provided without enable/disable, ensure the feature is already enabled
+        if (
+            default_managed_identity_id is not None
+            and not enable_service_account_image_pull
+            and not disable_service_account_image_pull
+        ):
+            if not profile.enabled:
+                raise RequiredArgumentMissingError(
+                    "--enable-service-account-image-pull is required when setting "
+                    "--service-account-image-pull-default-managed-identity-id on a cluster "
+                    "that does not have service account image pull enabled."
+                )
+
+        if enable_service_account_image_pull:
+            profile.enabled = True
+        elif disable_service_account_image_pull:
+            profile.enabled = False
+
+        if default_managed_identity_id is not None:
+            profile.default_managed_identity_id = default_managed_identity_id
 
         return mc
 
@@ -7638,6 +7829,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_image_cleaner(mc)
         # update image integrity
         mc = self.update_image_integrity(mc)
+        # update service account image pull
+        mc = self.update_service_account_image_pull(mc)
         # update KMS infrastructure encryption
         mc = self.update_kms_pmk_cmk(mc)
         # update workload auto scaler profile

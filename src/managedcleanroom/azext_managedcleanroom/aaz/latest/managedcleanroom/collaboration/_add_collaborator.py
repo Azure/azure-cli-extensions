@@ -18,14 +18,17 @@ from ..private_endpoint_util import PrivateEndpointUtil
 class AddCollaborator(AAZCommand):
     """Adds a collaborator to a collaboration.
 
-    :example: Add Collaborator
-        az managedcleanroom collaboration add-collaborator --resource-group testrg --collaboration-name ContosoCollaboration --email alice@example.com
+    :example: Add Collaborator(User)
+        az managedcleanroom collaboration add-collaborator --resource-group testrg --collaboration-name ContosoCollaboration --user-identifier "alice@contoso.com"
+
+    :example: Add Collaborator(Service Principal)
+        az managedcleanroom collaboration add-collaborator --resource-group testrg --collaboration-name ContosoCollaboration --user-identifier "0d6b305c-85ee-419f-9c87-d3405c24aab6" --tenant-id "72f988bf-86f1-41af-91ab-2d7cd011db47" --object-id "0f8fad5b-d9cb-469f-a165-70867728950e"
     """
 
     _aaz_info = {
-        "version": "2025-10-31-preview",
+        "version": "2026-03-31-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cleanroom/collaborations/{}/addcollaborator", "2025-10-31-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cleanroom/collaborations/{}/addcollaborator", "2026-03-31-preview"],
         ]
     }
 
@@ -59,14 +62,23 @@ class AddCollaborator(AAZCommand):
             required=True,
         )
 
-        # define Arg Group "Body"
+        # define Arg Group "Collaborator"
 
         _args_schema = cls._args_schema
-        _args_schema.email = AAZStrArg(
-            options=["--email"],
-            arg_group="Body",
-            help="Email of the collaborator to be added.",
-            required=True,
+        _args_schema.object_id = AAZStrArg(
+            options=["--object-id"],
+            arg_group="Collaborator",
+            help="Object ID of the collaborator.",
+        )
+        _args_schema.tenant_id = AAZStrArg(
+            options=["--tenant-id"],
+            arg_group="Collaborator",
+            help="Tenant ID of the collaborator.",
+        )
+        _args_schema.user_identifier = AAZStrArg(
+            options=["--user-identifier"],
+            arg_group="Collaborator",
+            help="User identifier of the collaborator. This can be specified as an email (no OID/TID should be specified) or an SPN (OID/TID required).",
         )
         return cls._args_schema
 
@@ -151,7 +163,7 @@ class AddCollaborator(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-10-31-preview",
+                    "api-version", "2026-03-31-preview",
                     required=True,
                 ),
             }
@@ -176,7 +188,13 @@ class AddCollaborator(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("email", AAZStrType, ".email", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("collaborator", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
+
+            collaborator = _builder.get(".collaborator")
+            if collaborator is not None:
+                collaborator.set_prop("objectId", AAZStrType, ".object_id")
+                collaborator.set_prop("tenantId", AAZStrType, ".tenant_id")
+                collaborator.set_prop("userIdentifier", AAZStrType, ".user_identifier")
 
             return self.serialize_content(_content_value)
 
@@ -225,13 +243,14 @@ class AddCollaborator(AAZCommand):
                 serialized_name="clusterEndpoint",
                 flags={"read_only": True},
             )
+            properties.collaboration_state = AAZStrType(
+                serialized_name="collaborationState",
+                flags={"read_only": True},
+            )
+            properties.collaborators = AAZListType()
             properties.consortium_arm_id = AAZStrType(
                 serialized_name="consortiumArmId",
                 flags={"read_only": True},
-            )
-            properties.consortium_type = AAZStrType(
-                serialized_name="consortiumType",
-                flags={"required": True},
             )
             properties.health = AAZObjectType(
                 flags={"read_only": True},
@@ -244,12 +263,26 @@ class AddCollaborator(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.user_identity = AAZObjectType(
-                serialized_name="userIdentity",
-                flags={"required": True},
-            )
             properties.workloads = AAZListType(
                 flags={"read_only": True},
+            )
+
+            collaborators = cls._schema_on_200.properties.collaborators
+            collaborators.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.collaborators.Element
+            _element.is_collaboration_owner = AAZBoolType(
+                serialized_name="isCollaborationOwner",
+                flags={"read_only": True},
+            )
+            _element.object_id = AAZStrType(
+                serialized_name="objectId",
+            )
+            _element.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+            )
+            _element.user_identifier = AAZStrType(
+                serialized_name="userIdentifier",
             )
 
             health = cls._schema_on_200.properties.health
@@ -282,20 +315,6 @@ class AddCollaborator(AAZCommand):
 
             _element = cls._schema_on_200.properties.managed_on_behalf_of_configuration.mobo_broker_resources.Element
             _element.id = AAZStrType()
-
-            user_identity = cls._schema_on_200.properties.user_identity
-            user_identity.account_type = AAZStrType(
-                serialized_name="accountType",
-                flags={"required": True},
-            )
-            user_identity.object_id = AAZStrType(
-                serialized_name="objectId",
-                flags={"required": True},
-            )
-            user_identity.tenant_id = AAZStrType(
-                serialized_name="tenantId",
-                flags={"required": True},
-            )
 
             workloads = cls._schema_on_200.properties.workloads
             workloads.Element = AAZObjectType()

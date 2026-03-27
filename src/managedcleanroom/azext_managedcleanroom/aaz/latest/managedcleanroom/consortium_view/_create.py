@@ -19,13 +19,13 @@ class Create(AAZCommand):
     """Create a consortium view.
 
     :example: Create Consortium View
-        az managedcleanroom consortium-view create --resource-group testrg --consortium-view-name ContosoConsortiumView --location northeurope --consortium-endpoint https://ContosoEndpoint/ --consortium-service-certificate-pem Contoso certificate pem --member "{certificate-pem:membercertificate,signed-payload:membersignedpayload}"
+        az managedcleanroom consortium-view create --resource-group testrg --consortium-view-name ContosoConsortiumView --location northeurope --consortium-endpoint https://ContosoEndpoint/ --certificate-pem Contoso certificate pem --member "{certificate-pem:membercertificate,signed-payload:membersignedpayload}"
     """
 
     _aaz_info = {
-        "version": "2025-10-31-preview",
+        "version": "2026-03-31-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cleanroom/consortiumviews/{}", "2025-10-31-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cleanroom/consortiumviews/{}", "2026-03-31-preview"],
         ]
     }
 
@@ -205,7 +205,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-10-31-preview",
+                    "api-version", "2026-03-31-preview",
                     required=True,
                 ),
             }

@@ -11,8 +11,25 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+
+19.0.0b28
++++++++
+* Fix `match_condition` kwarg leaking to HTTP transport by overriding `put_mc` and `add_agentpool` to pass `if_match` / `if_none_match` directly to the vendored SDK. This change fixes the compatibility issue as azure-cli/acs module adopts TypeSpec emitted SDKs while azure-cli-extensions/aks-preview still uses the autorest emitted SDK.
++ `az aks list-vm-skus`: New command to list available VM SKUs for AKS clusters in a given region.
+* `az aks create/update`: Add `--enable-service-account-image-pull`, `--disable-service-account-image-pull`, and `--service-account-image-pull-default-managed-identity-id` parameters to manage service account based image pull settings.
+* `az aks list-vm-skus`: New command to list available VM SKUs for AKS clusters in a given region.
+* Add managed GPU enablement option to node pool property in `az aks nodepool add` and `az aks nodepool update`.
+* `az aks namespace update`: Fix location should use existing namespace location.
+
+19.0.0b27
++++++++
+* `az aks nodepool add`: Fix `InvalidParameter` error when `mode` is `Machines`.
+
+19.0.0b26
++++++++
 * `az aks create/update`: Add `--enable-app-routing-istio` / `--disable-app-routing-istio` (short: `--enable-ari` / `--disable-ari`) flags to enable or disable Istio as a Gateway API implementation for App Routing.
 * `az aks approuting gateway istio enable/disable`: Add new subcommands to enable or disable the Istio Gateway API implementation for App Routing on an existing cluster.
+* Add 'mTLS' as a transit encryption type option for `--acns-transit-encryption-type` in `az aks create/update`
 
 19.0.0b25
 +++++++
