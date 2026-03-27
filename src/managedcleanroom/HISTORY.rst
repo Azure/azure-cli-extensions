@@ -3,7 +3,20 @@
 Release History
 ===============
 
+1.0.0b1
++++++++
+* Initial release.
+
+1.0.0b2
++++++++
+* Add frontend commandlets
+* Add MSAL device code flow authentication
+
 1.0.0b3
+++++++
+* Update commands to reflect new API version 2026-03-31-preview
+
+1.0.0b4
 +++++++
 * Updated to latest Frontend API spec from develop branch (2026-03-01-preview)
 * Regenerated analytics_frontend_api SDK with updated method signatures
@@ -34,17 +47,3 @@ Release History
 * Updated: Added --pending-only filter to invitation list command
 * Updated: Added --scope, --from-seqno, --to-seqno filters to audit event list command
 * Updated: Response structures modernized (many list endpoints now return structured objects with value arrays)
-* Remove empty enum value from ApplicationState schema
-
-1.0.0b1
-+++++++
-* Initial release.
-
-1.0.0b2
-+++++++
-* Add frontend commandlets
-* Add MSAL device code flow authentication
-
-1.0.0b3
-++++++
-* Update commands to reflect new API version 2026-03-31-preview
