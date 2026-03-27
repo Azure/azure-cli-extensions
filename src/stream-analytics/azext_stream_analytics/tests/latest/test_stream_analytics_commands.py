@@ -255,24 +255,16 @@ class StreamAnalyticsClientTest(ScenarioTest):
         }
         self.kwargs["properties"] = json.dumps(props)
 
-        # Make sure it raises and exception error
+        # Make sure it raises an exception error and the error is correct
         from azure.core.exceptions import HttpResponseError
-        with self.assertRaises(HttpResponseError):
+        with self.assertRaises(HttpResponseError) as cm:
             self.cmd(
                 "stream-analytics input create -n {input_name} -g {rg} \
                 --job-name {job_name} \
                 --properties '{properties}'"
             )
 
-        # Make sure the raised exception error is correct
-        try:
-            self.cmd(
-                "stream-analytics input create -n {input_name} -g {rg} \
-                --job-name {job_name} \
-                --properties '{properties}'"
-            )
-        except Exception as exception:
-            self.assertTrue("RequestDisallowedByPolicy" in str(exception))
+        self.assertIn("RequestDisallowedByPolicy", str(cm.exception))
 
 
     @AllowLargeResponse()
