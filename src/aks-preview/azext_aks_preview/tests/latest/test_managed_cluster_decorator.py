@@ -73,7 +73,7 @@ from azext_aks_preview.managed_cluster_decorator import (
     AKSPreviewManagedClusterCreateDecorator,
     AKSPreviewManagedClusterModels,
     AKSPreviewManagedClusterUpdateDecorator,
-    _get_monitoring_addon_key,
+    _get_monitoring_addon_key_from_consts,
 )
 from azext_aks_preview.tests.latest.utils import get_test_data_file_path
 from azure.cli.command_modules.acs._consts import (
@@ -136,7 +136,7 @@ class AKSPreviewManagedClusterModelsTestCase(unittest.TestCase):
 
 
 class AKSPreviewGetMonitoringAddonKeyTestCase(unittest.TestCase):
-    """Tests for the standalone _get_monitoring_addon_key helper function."""
+    """Tests for the _get_monitoring_addon_key_from_consts helper function."""
 
     def setUp(self):
         register_aks_preview_resource_type()
@@ -148,49 +148,40 @@ class AKSPreviewGetMonitoringAddonKeyTestCase(unittest.TestCase):
         }
 
     def test_returns_lowercase_key_when_present(self):
-        cluster = self.models.ManagedCluster(
-            location="test_location",
-            addon_profiles={
-                CONST_MONITORING_ADDON_NAME: self.models.ManagedClusterAddonProfile(enabled=True),
-            },
-        )
-        result = _get_monitoring_addon_key(cluster, self.addon_consts)
+        addon_profiles = {
+            CONST_MONITORING_ADDON_NAME: self.models.ManagedClusterAddonProfile(enabled=True),
+        }
+        result = _get_monitoring_addon_key_from_consts(addon_profiles, self.addon_consts)
         self.assertEqual(result, CONST_MONITORING_ADDON_NAME)
 
-    def test_returns_camelcase_key_when_present(self):
-        cluster = self.models.ManagedCluster(
-            location="test_location",
-            addon_profiles={
-                CONST_MONITORING_ADDON_NAME_CAMELCASE: self.models.ManagedClusterAddonProfile(enabled=True),
-            },
-        )
-        result = _get_monitoring_addon_key(cluster, self.addon_consts)
-        self.assertEqual(result, CONST_MONITORING_ADDON_NAME_CAMELCASE)
+    def test_normalizes_camelcase_key(self):
+        addon_profiles = {
+            CONST_MONITORING_ADDON_NAME_CAMELCASE: self.models.ManagedClusterAddonProfile(enabled=True),
+        }
+        result = _get_monitoring_addon_key_from_consts(addon_profiles, self.addon_consts)
+        # After normalization, the canonical key should always be returned
+        self.assertEqual(result, CONST_MONITORING_ADDON_NAME)
+        # Dict should have been re-keyed in place
+        self.assertIn(CONST_MONITORING_ADDON_NAME, addon_profiles)
+        self.assertNotIn(CONST_MONITORING_ADDON_NAME_CAMELCASE, addon_profiles)
 
     def test_prefers_lowercase_when_both_present(self):
-        cluster = self.models.ManagedCluster(
-            location="test_location",
-            addon_profiles={
-                CONST_MONITORING_ADDON_NAME: self.models.ManagedClusterAddonProfile(enabled=True),
-                CONST_MONITORING_ADDON_NAME_CAMELCASE: self.models.ManagedClusterAddonProfile(enabled=True),
-            },
-        )
-        result = _get_monitoring_addon_key(cluster, self.addon_consts)
+        addon_profiles = {
+            CONST_MONITORING_ADDON_NAME: self.models.ManagedClusterAddonProfile(enabled=True),
+            CONST_MONITORING_ADDON_NAME_CAMELCASE: self.models.ManagedClusterAddonProfile(enabled=True),
+        }
+        result = _get_monitoring_addon_key_from_consts(addon_profiles, self.addon_consts)
         self.assertEqual(result, CONST_MONITORING_ADDON_NAME)
 
     def test_returns_default_when_no_addon_profiles(self):
-        cluster = self.models.ManagedCluster(location="test_location")
-        result = _get_monitoring_addon_key(cluster, self.addon_consts)
+        result = _get_monitoring_addon_key_from_consts(None, self.addon_consts)
         self.assertEqual(result, CONST_MONITORING_ADDON_NAME)
 
     def test_returns_default_when_neither_key_present(self):
-        cluster = self.models.ManagedCluster(
-            location="test_location",
-            addon_profiles={
-                "some_other_addon": self.models.ManagedClusterAddonProfile(enabled=True),
-            },
-        )
-        result = _get_monitoring_addon_key(cluster, self.addon_consts)
+        addon_profiles = {
+            "some_other_addon": self.models.ManagedClusterAddonProfile(enabled=True),
+        }
+        result = _get_monitoring_addon_key_from_consts(addon_profiles, self.addon_consts)
         self.assertEqual(result, CONST_MONITORING_ADDON_NAME)
 
 
@@ -4897,7 +4888,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         """Test default behavior when no container network logs or high log scale mode is specified.
 
         When enable_high_log_scale_mode is not explicitly set and container network logs are not enabled,
-        the method should return False (not None) to maintain backward compatibility with the base class.
+        the method should return None to align with the base class behavior.
         """
         ctx = AKSPreviewManagedClusterContext(
             self.cmd,
@@ -4906,7 +4897,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             decorator_mode=DecoratorMode.CREATE,
         )
         result = ctx.get_enable_high_log_scale_mode()
-        self.assertFalse(result)
+        self.assertIsNone(result)
 
     def test_get_enable_high_log_scale_mode_explicit_false_without_cnl(self):
         """Test when user explicitly sets enable_high_log_scale_mode to False without container network logs.
@@ -11723,6 +11714,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         # Verify: The parent class normalizes addon keys to lowercase in-place,
         # so "omsAgent" becomes "omsagent". The key point is no duplicate is created.
         self.assertIn("omsagent", mc_1.addon_profiles)
+        self.assertNotIn("omsAgent", mc_1.addon_profiles)
         self.assertEqual(len([k for k in mc_1.addon_profiles if k.lower() == "omsagent"]), 1)  # No duplicate
         self.assertTrue(mc_1.addon_profiles["omsagent"].enabled)
         self.assertEqual(
@@ -11797,10 +11789,10 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         # Call _disable_azure_monitor_logs
         dec_1._disable_azure_monitor_logs(mc_1)
 
-        # Verify: omsAgent should be disabled
-        self.assertIn("omsAgent", mc_1.addon_profiles)
-        self.assertFalse(mc_1.addon_profiles["omsAgent"].enabled)
-        self.assertIsNone(mc_1.addon_profiles["omsAgent"].config)
+        # After normalization, the camelCase key is re-keyed to canonical lowercase
+        self.assertIn("omsagent", mc_1.addon_profiles)
+        self.assertFalse(mc_1.addon_profiles["omsagent"].enabled)
+        self.assertIsNone(mc_1.addon_profiles["omsagent"].config)
 
     def test_disable_azure_monitor_logs_with_omsagent_lowercase(self):
         # Test that _disable_azure_monitor_logs handles omsagent (lowercase) correctly
@@ -11914,9 +11906,9 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
 
         dec_1._disable_azure_monitor_logs(mc_1)
 
-        # Verify addon profile is disabled
-        self.assertFalse(mc_1.addon_profiles["omsAgent"].enabled)
-        self.assertIsNone(mc_1.addon_profiles["omsAgent"].config)
+        # After normalization, the camelCase key is re-keyed to the canonical lowercase form
+        self.assertFalse(mc_1.addon_profiles["omsagent"].enabled)
+        self.assertIsNone(mc_1.addon_profiles["omsagent"].config)
 
         # Verify container_insights is also disabled
         self.assertFalse(mc_1.azure_monitor_profile.container_insights.enabled)
@@ -14326,7 +14318,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 ),
             ),
             addon_profiles={
-                "omsAgent": self.models.ManagedClusterAddonProfile(
+                "omsagent": self.models.ManagedClusterAddonProfile(
                     enabled=True,
                     config={"enableRetinaNetworkFlags": "False"}
                 )
@@ -16475,6 +16467,99 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         self.assertTrue(
             dec.context.get_intermediate("monitoring_addon_postprocessing_required", default_value=False)
         )
+
+    def test_disable_monitoring_clears_cnl_and_hlsm_config(self):
+        """Disabling monitoring addon should wipe config including enableRetinaNetworkFlags (CNL)
+        and any HLSM-related settings, so that re-enabling does not carry them forward."""
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_azure_monitor_logs": True,
+                "yes": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                CONST_MONITORING_ADDON_NAME: self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={
+                        "logAnalyticsWorkspaceResourceID": "/subscriptions/test/workspace",
+                        CONST_MONITORING_USING_AAD_MSI_AUTH: "false",
+                        "enableRetinaNetworkFlags": "true",
+                    },
+                ),
+            },
+        )
+        dec.context.attach_mc(mc)
+        dec.client = Mock()
+        dec.client.get = Mock(return_value=mc)
+
+        dec._disable_azure_monitor_logs(mc)
+
+        # Config should be completely wiped — no CNL or HLSM values survive
+        self.assertFalse(mc.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled)
+        self.assertIsNone(mc.addon_profiles[CONST_MONITORING_ADDON_NAME].config)
+
+    def test_reenable_monitoring_after_disable_does_not_carry_cnl(self):
+        """Re-enabling monitoring after disable should produce a fresh config
+        without enableRetinaNetworkFlags (CNL) or HLSM-related keys."""
+        # Step 1: start with monitoring enabled + CNL (useAADAuth=false to skip DCR cleanup)
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                CONST_MONITORING_ADDON_NAME: self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={
+                        "logAnalyticsWorkspaceResourceID": "/subscriptions/test/workspace",
+                        CONST_MONITORING_USING_AAD_MSI_AUTH: "false",
+                        "enableRetinaNetworkFlags": "true",
+                    },
+                ),
+            },
+        )
+
+        # Step 2: disable monitoring
+        dec_disable = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_azure_monitor_logs": True,
+                "yes": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        dec_disable.context.attach_mc(mc)
+        dec_disable.client = Mock()
+        dec_disable.client.get = Mock(return_value=mc)
+        dec_disable._disable_azure_monitor_logs(mc)
+        self.assertIsNone(mc.addon_profiles[CONST_MONITORING_ADDON_NAME].config)
+
+        # Step 3: re-enable monitoring (no CNL flag passed)
+        # Simulate server round-trip: after PUT with config=None, the server
+        # returns the addon with config as empty dict, not None.
+        mc.addon_profiles[CONST_MONITORING_ADDON_NAME].config = {}
+        dec_enable = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_azure_monitor_logs": True,
+                "workspace_resource_id": "/subscriptions/test/resourceGroups/test/providers/Microsoft.OperationalInsights/workspaces/new-workspace",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        dec_enable.context.attach_mc(mc)
+        dec_enable.context.set_intermediate("subscription_id", "test-subscription-id")
+        dec_enable._setup_azure_monitor_logs(mc)
+
+        # Config should only have workspace + MSI auth — no CNL or HLSM keys
+        addon_config = mc.addon_profiles[CONST_MONITORING_ADDON_NAME].config
+        self.assertTrue(mc.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled)
+        self.assertIn("logAnalyticsWorkspaceResourceID", addon_config)
+        self.assertIn(CONST_MONITORING_USING_AAD_MSI_AUTH, addon_config)
+        self.assertNotIn("enableRetinaNetworkFlags", addon_config)
 
 
 if __name__ == "__main__":

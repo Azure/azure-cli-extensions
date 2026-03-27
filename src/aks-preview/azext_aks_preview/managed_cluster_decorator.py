@@ -7,8 +7,6 @@
 import copy
 import datetime
 import os
-import random
-import time
 from types import SimpleNamespace
 from typing import Any, Dict, List, Optional, Tuple, TypeVar, Union
 
@@ -68,6 +66,7 @@ from azext_aks_preview._helpers import (
     check_is_azure_cli_core_editable_installed,
     check_is_private_cluster,
     get_cluster_snapshot_by_snapshot_id,
+    get_monitoring_addon_key,
     filter_hard_taints,
 )
 from azext_aks_preview._loadbalancer import create_load_balancer_profile
@@ -102,7 +101,6 @@ from azext_aks_preview.azuremonitormetrics.azuremonitorprofile import (
 from azext_aks_preview.custom import (
     ensure_container_insights_for_monitoring_preview,
 )
-from azure.core.exceptions import HttpResponseError, ResourceExistsError
 from azure.cli.command_modules.acs._client_factory import get_graph_client
 from azure.cli.command_modules.acs._consts import (
     CONST_OUTBOUND_TYPE_LOAD_BALANCER,
@@ -186,19 +184,12 @@ ServiceMeshProfile = TypeVar("ServiceMeshProfile")
 ResourceReference = TypeVar("ResourceReference")
 
 
-def _get_monitoring_addon_key(cluster, addon_consts):
-    """Resolve the monitoring addon key from the cluster's addon_profiles.
-
-    The API response may return the addon key as either "omsagent" or "omsAgent".
-    Returns the key present in addon_profiles, or the default constant if neither is found.
-    """
-    const_monitoring = addon_consts.get("CONST_MONITORING_ADDON_NAME")
-    if cluster.addon_profiles:
-        if const_monitoring in cluster.addon_profiles:
-            return const_monitoring
-        if CONST_MONITORING_ADDON_NAME_CAMELCASE in cluster.addon_profiles:
-            return CONST_MONITORING_ADDON_NAME_CAMELCASE
-    return const_monitoring
+def _get_monitoring_addon_key_from_consts(addon_profiles, addon_consts):
+    """Thin wrapper around get_monitoring_addon_key that unpacks addon_consts dict."""
+    return get_monitoring_addon_key(
+        addon_profiles,
+        addon_consts.get("CONST_MONITORING_ADDON_NAME"),
+    )
 
 
 # pylint: disable=too-few-public-methods
@@ -461,13 +452,11 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             # but MSI-based clusters set client_id to "msi". Check if the monitoring addon
             # already has useAADAuth=true, which indicates MSI auth is actually in use.
             addon_consts = self.get_addon_consts()
-            CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
             CONST_MONITORING_USING_AAD_MSI_AUTH = addon_consts.get("CONST_MONITORING_USING_AAD_MSI_AUTH")
             if self.mc and self.mc.addon_profiles:
-                monitoring_profile = (
-                    self.mc.addon_profiles.get(CONST_MONITORING_ADDON_NAME) or
-                    self.mc.addon_profiles.get(CONST_MONITORING_ADDON_NAME_CAMELCASE)
-                )
+                monitoring_addon_key = _get_monitoring_addon_key_from_consts(
+                    self.mc.addon_profiles, addon_consts)
+                monitoring_profile = self.mc.addon_profiles.get(monitoring_addon_key)
                 result = bool(
                     monitoring_profile and monitoring_profile.config and
                     str(monitoring_profile.config.get(
@@ -1084,15 +1073,13 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 "monitoring" in enable_addons or
                 bool(self.raw_param.get("enable_azure_monitor_logs"))
             )
-            monitoring_already_enabled = (
-                mc.addon_profiles and
-                (
-                    (mc.addon_profiles.get("omsagent") and
-                     mc.addon_profiles["omsagent"].enabled) or
-                    (mc.addon_profiles.get(CONST_MONITORING_ADDON_NAME_CAMELCASE) and
-                     mc.addon_profiles[CONST_MONITORING_ADDON_NAME_CAMELCASE].enabled)
+            monitoring_already_enabled = False
+            if mc.addon_profiles:
+                addon_consts = self.get_addon_consts()
+                mk = _get_monitoring_addon_key_from_consts(mc.addon_profiles, addon_consts)
+                monitoring_already_enabled = bool(
+                    mc.addon_profiles.get(mk) and mc.addon_profiles[mk].enabled
                 )
-            )
             monitoring_enabled = monitoring_being_enabled or monitoring_already_enabled
             if not acns_enabled or not monitoring_enabled:
                 raise InvalidArgumentValueError(
@@ -2890,15 +2877,13 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                     self.mc.azure_monitor_profile.container_insights.enabled
                 )
 
-                # Check legacy addon location (try both lowercase and camelCase)
+                # Check legacy addon location
                 monitoring_addon_enabled = False
                 if self.mc.addon_profiles:
-                    # Try lowercase first (constant value)
-                    if CONST_MONITORING_ADDON_NAME in self.mc.addon_profiles:
-                        monitoring_addon_enabled = self.mc.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled
-                    # Try camelCase variant (what Azure actually returns)
-                    elif CONST_MONITORING_ADDON_NAME_CAMELCASE in self.mc.addon_profiles:
-                        monitoring_addon_enabled = self.mc.addon_profiles[CONST_MONITORING_ADDON_NAME_CAMELCASE].enabled
+                    addon_consts = self.get_addon_consts()
+                    mk = _get_monitoring_addon_key_from_consts(self.mc.addon_profiles, addon_consts)
+                    if mk in self.mc.addon_profiles:
+                        monitoring_addon_enabled = self.mc.addon_profiles[mk].enabled
 
                 monitoring_addon_currently_enabled = container_insights_enabled or monitoring_addon_enabled
 
@@ -3047,10 +3032,9 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             # Check if monitoring addon is already enabled in the cluster
             monitoring_addon_enabled = False
             if self.mc and self.mc.addon_profiles:
-                if CONST_MONITORING_ADDON_NAME in self.mc.addon_profiles:
-                    monitoring_addon_enabled = self.mc.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled
-                elif CONST_MONITORING_ADDON_NAME_CAMELCASE in self.mc.addon_profiles:
-                    monitoring_addon_enabled = self.mc.addon_profiles[CONST_MONITORING_ADDON_NAME_CAMELCASE].enabled
+                mk = _get_monitoring_addon_key_from_consts(self.mc.addon_profiles, addon_consts)
+                if mk in self.mc.addon_profiles:
+                    monitoring_addon_enabled = self.mc.addon_profiles[mk].enabled
 
             if not monitoring_being_enabled and not enable_azure_monitor_logs and not monitoring_addon_enabled:
                 raise RequiredArgumentMissingError(
@@ -3066,11 +3050,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             cnl_already_enabled = False
             if self.mc and self.mc.addon_profiles:
                 addon_consts = self.get_addon_consts()
-                CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
-                monitoring_profile = (
-                    self.mc.addon_profiles.get(CONST_MONITORING_ADDON_NAME) or
-                    self.mc.addon_profiles.get(CONST_MONITORING_ADDON_NAME_CAMELCASE)
-                )
+                mk = _get_monitoring_addon_key_from_consts(self.mc.addon_profiles, addon_consts)
+                monitoring_profile = self.mc.addon_profiles.get(mk)
                 if monitoring_profile and monitoring_profile.config:
                     cnl_already_enabled = str(
                         monitoring_profile.config.get("enableRetinaNetworkFlags", "")
@@ -3083,9 +3064,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 )
 
         # If container network logs are not being enabled, return the original value
-        # Return False if not explicitly set to maintain backward compatibility with base class
-        if enable_high_log_scale_mode is None:
-            return False
         return enable_high_log_scale_mode
 
     def _get_enable_vpa(self, enable_validation: bool = False) -> bool:
@@ -4685,26 +4663,11 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         if not workspace_resource_id:
             ensure_workspace_func = (
                 self.context.external_functions.ensure_default_log_analytics_workspace_for_monitoring)
-            # Retry with exponential backoff + jitter to handle 409 Conflict when
-            # workspace is still provisioning (common when parallel commands target
-            # the same default workspace).  Delays: ~5 s, ~10 s, ~20 s (worst-case
-            # total ~52 s; fast path ~7 s if the first retry succeeds).
-            max_attempts = 4
-            for attempt in range(max_attempts):
-                try:
-                    workspace_resource_id = ensure_workspace_func(
-                        self.cmd,
-                        self.context.get_subscription_id(),
-                        self.context.get_resource_group_name()
-                    )
-                    break
-                except (HttpResponseError, ResourceExistsError):
-                    if attempt < max_attempts - 1:
-                        base_delay = 5 * (2 ** attempt)  # 5 s, 10 s, 20 s
-                        jitter = random.uniform(0, base_delay * 0.5)
-                        time.sleep(base_delay + jitter)
-                    else:
-                        raise
+            workspace_resource_id = ensure_workspace_func(
+                self.cmd,
+                self.context.get_subscription_id(),
+                self.context.get_resource_group_name()
+            )
 
         # Sanitize and configure
         sanitize_func = self.context.external_functions.sanitize_loganalytics_ws_resource_id
@@ -5591,7 +5554,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 )
         elif self._should_create_dcra():
             addon_consts = self.context.get_addon_consts()
-            monitoring_addon_key = _get_monitoring_addon_key(cluster, addon_consts)
+            monitoring_addon_key = _get_monitoring_addon_key_from_consts(
+                cluster.addon_profiles, addon_consts) if cluster.addon_profiles else addon_consts.get("CONST_MONITORING_ADDON_NAME")
             self.context.external_functions.ensure_container_insights_for_monitoring(
                 self.cmd,
                 cluster.addon_profiles[monitoring_addon_key],
@@ -5931,7 +5895,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         if container_network_logs_enabled is not None:
             if mc.addon_profiles:
                 addon_consts = self.context.get_addon_consts()
-                monitoring_addon_key = _get_monitoring_addon_key(mc, addon_consts)
+                monitoring_addon_key = _get_monitoring_addon_key_from_consts(mc.addon_profiles, addon_consts)
                 monitoring_addon_profile = mc.addon_profiles.get(monitoring_addon_key)
                 if monitoring_addon_profile:
                     config = monitoring_addon_profile.config or {}
@@ -5959,16 +5923,13 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             if not monitoring_being_enabled:
                 # Only validate existing addon state when not enabling monitoring simultaneously
                 addon_consts = self.context.get_addon_consts()
-                CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
                 CONST_MONITORING_USING_AAD_MSI_AUTH = addon_consts.get("CONST_MONITORING_USING_AAD_MSI_AUTH")
 
-                # Resolve the addon profile, handling both "omsagent" and "omsAgent" key variants.
+                # Resolve the addon profile, normalizing non-standard key casing.
                 monitoring_addon_profile = None
                 if mc.addon_profiles:
-                    monitoring_addon_profile = (
-                        mc.addon_profiles.get(CONST_MONITORING_ADDON_NAME) or
-                        mc.addon_profiles.get(CONST_MONITORING_ADDON_NAME_CAMELCASE)
-                    )
+                    mk = _get_monitoring_addon_key_from_consts(mc.addon_profiles, addon_consts)
+                    monitoring_addon_profile = mc.addon_profiles.get(mk)
 
                 if not monitoring_addon_profile or not monitoring_addon_profile.enabled:
                     raise RequiredArgumentMissingError(
@@ -5995,11 +5956,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             cnl_already_enabled = False
             if mc.addon_profiles:
                 addon_consts = self.context.get_addon_consts()
-                CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
-                monitoring_profile = (
-                    mc.addon_profiles.get(CONST_MONITORING_ADDON_NAME) or
-                    mc.addon_profiles.get(CONST_MONITORING_ADDON_NAME_CAMELCASE)
-                )
+                mk = _get_monitoring_addon_key_from_consts(mc.addon_profiles, addon_consts)
+                monitoring_profile = mc.addon_profiles.get(mk)
                 if monitoring_profile and monitoring_profile.config:
                     cnl_already_enabled = str(
                         monitoring_profile.config.get("enableRetinaNetworkFlags", "")
@@ -7894,26 +7852,11 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         if not workspace_resource_id:
             ensure_workspace_func = (
                 self.context.external_functions.ensure_default_log_analytics_workspace_for_monitoring)
-            # Retry with exponential backoff + jitter to handle 409 Conflict when
-            # workspace is still provisioning (common when parallel commands target
-            # the same default workspace).  Delays: ~5 s, ~10 s, ~20 s (worst-case
-            # total ~52 s; fast path ~7 s if the first retry succeeds).
-            max_attempts = 4
-            for attempt in range(max_attempts):
-                try:
-                    workspace_resource_id = ensure_workspace_func(
-                        self.cmd,
-                        self.context.get_subscription_id(),
-                        self.context.get_resource_group_name()
-                    )
-                    break
-                except (HttpResponseError, ResourceExistsError):
-                    if attempt < max_attempts - 1:
-                        base_delay = 5 * (2 ** attempt)  # 5 s, 10 s, 20 s
-                        jitter = random.uniform(0, base_delay * 0.5)
-                        time.sleep(base_delay + jitter)
-                    else:
-                        raise
+            workspace_resource_id = ensure_workspace_func(
+                self.cmd,
+                self.context.get_subscription_id(),
+                self.context.get_resource_group_name()
+            )
 
         # Sanitize and configure
         sanitize_func = self.context.external_functions.sanitize_loganalytics_ws_resource_id
@@ -7964,16 +7907,14 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
     def _disable_azure_monitor_logs(self, mc: ManagedCluster) -> None:
         """Disable Azure Monitor logs configuration."""
         addon_consts = self.context.get_addon_consts()
-        CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
         CONST_MONITORING_USING_AAD_MSI_AUTH = addon_consts.get("CONST_MONITORING_USING_AAD_MSI_AUTH")
 
-        # Check if the addon profile exists (check both lowercase and camelCase)
+        # Normalize the addon key (handles any casing variant)
         addon_key = None
         if mc.addon_profiles:
-            if CONST_MONITORING_ADDON_NAME in mc.addon_profiles:
-                addon_key = CONST_MONITORING_ADDON_NAME
-            elif CONST_MONITORING_ADDON_NAME_CAMELCASE in mc.addon_profiles:
-                addon_key = CONST_MONITORING_ADDON_NAME_CAMELCASE
+            addon_key = _get_monitoring_addon_key_from_consts(mc.addon_profiles, addon_consts)
+            if addon_key not in mc.addon_profiles:
+                addon_key = None
 
         # If the addon profile doesn't exist at all, there's nothing to disable
         if not addon_key:
@@ -8009,15 +7950,12 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             # Fetch the current cluster state from Azure (same as aks_disable_addons line 2791)
             current_cluster = self.client.get(self.context.get_resource_group_name(), self.context.get_name())
 
-            # Find the addon key in current_cluster (it may have different casing)
-            current_addon_key = None
-            if current_cluster.addon_profiles:
-                if CONST_MONITORING_ADDON_NAME in current_cluster.addon_profiles:
-                    current_addon_key = CONST_MONITORING_ADDON_NAME
-                elif CONST_MONITORING_ADDON_NAME_CAMELCASE in current_cluster.addon_profiles:
-                    current_addon_key = CONST_MONITORING_ADDON_NAME_CAMELCASE
+            # Find the addon key in current_cluster (normalize casing)
+            current_addon_key = _get_monitoring_addon_key_from_consts(
+                current_cluster.addon_profiles, addon_consts) if current_cluster.addon_profiles else None
+            has_addon = current_addon_key and current_addon_key in (current_cluster.addon_profiles or {})
 
-            if current_addon_key:
+            if has_addon:
                 try:
                     # Use the current cluster's addon profile for cleanup (not the modified mc object)
                     self.context.external_functions.ensure_container_insights_for_monitoring(
@@ -8263,7 +8201,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             addon_consts = self.context.get_addon_consts()
             CONST_MONITORING_USING_AAD_MSI_AUTH = addon_consts.get("CONST_MONITORING_USING_AAD_MSI_AUTH")
 
-            monitoring_addon_key = _get_monitoring_addon_key(cluster, addon_consts)
+            monitoring_addon_key = _get_monitoring_addon_key_from_consts(
+                cluster.addon_profiles, addon_consts) if cluster.addon_profiles else addon_consts.get("CONST_MONITORING_ADDON_NAME")
 
             if (cluster.addon_profiles and
                     monitoring_addon_key in cluster.addon_profiles and

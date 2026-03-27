@@ -66,6 +66,7 @@ from azext_aks_preview._helpers import (
     check_is_private_link_cluster,
     get_cluster_snapshot_by_snapshot_id,
     get_k8s_extension_module,
+    get_monitoring_addon_key,
     get_nodepool_snapshot_by_snapshot_id,
     print_or_merge_credentials,
     process_message_for_run_command,
@@ -3076,14 +3077,16 @@ def aks_disable_addons(cmd, client, resource_group_name, name, addons, no_wait=F
     subscription_id = get_subscription_id(cmd.cli_ctx)
 
     try:
+        addon_profiles = instance.addon_profiles or {}
+        monitoring_addon_key = get_monitoring_addon_key(addon_profiles, CONST_MONITORING_ADDON_NAME)
         if (
             addons == "monitoring" and
-            CONST_MONITORING_ADDON_NAME in instance.addon_profiles and
-            instance.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled and
+            monitoring_addon_key in addon_profiles and
+            addon_profiles[monitoring_addon_key].enabled and
             CONST_MONITORING_USING_AAD_MSI_AUTH in
-            instance.addon_profiles[CONST_MONITORING_ADDON_NAME].config and
+            addon_profiles[monitoring_addon_key].config and
             str(
-                instance.addon_profiles[CONST_MONITORING_ADDON_NAME].config[
+                addon_profiles[monitoring_addon_key].config[
                     CONST_MONITORING_USING_AAD_MSI_AUTH
                 ]
             ).lower() == "true"
@@ -3091,7 +3094,7 @@ def aks_disable_addons(cmd, client, resource_group_name, name, addons, no_wait=F
             # remove the DCR association because otherwise the DCR can't be deleted
             ensure_container_insights_for_monitoring(
                 cmd,
-                instance.addon_profiles[CONST_MONITORING_ADDON_NAME],
+                addon_profiles[monitoring_addon_key],
                 subscription_id,
                 resource_group_name,
                 name,
@@ -3194,11 +3197,13 @@ def aks_enable_addons(
     if (
         is_monitoring_addon_enabled
     ):
+        addon_profiles = instance.addon_profiles or {}
+        monitoring_addon_key = get_monitoring_addon_key(addon_profiles, CONST_MONITORING_ADDON_NAME)
         if (
             CONST_MONITORING_USING_AAD_MSI_AUTH in
-            instance.addon_profiles[CONST_MONITORING_ADDON_NAME].config and
+            addon_profiles[monitoring_addon_key].config and
             str(
-                instance.addon_profiles[CONST_MONITORING_ADDON_NAME].config[
+                addon_profiles[monitoring_addon_key].config[
                     CONST_MONITORING_USING_AAD_MSI_AUTH
                 ]
             ).lower() == "true"
@@ -3206,10 +3211,15 @@ def aks_enable_addons(
             if not msi_auth:
                 raise ArgumentUsageError(
                     "--enable-msi-auth-for-monitoring can not be used on clusters with service principal auth.")
+            # Auto-enable HLSM when CNL is active and HLSM wasn't explicitly set
+            if enable_high_log_scale_mode is None and \
+               (addon_profiles[monitoring_addon_key].config or {}).get(
+                   "enableRetinaNetworkFlags", "").lower() == "true":
+                enable_high_log_scale_mode = True
             # create a Data Collection Rule (DCR) and associate it with the cluster
             ensure_container_insights_for_monitoring(
                 cmd,
-                instance.addon_profiles[CONST_MONITORING_ADDON_NAME],
+                addon_profiles[monitoring_addon_key],
                 subscription_id,
                 resource_group_name,
                 name,
@@ -3237,7 +3247,7 @@ def aks_enable_addons(
                 raise ArgumentUsageError("--ampls-resource-id can not be used without MSI auth.")
             ensure_container_insights_for_monitoring(
                 cmd,
-                instance.addon_profiles[CONST_MONITORING_ADDON_NAME],
+                addon_profiles[monitoring_addon_key],
                 subscription_id,
                 resource_group_name,
                 name,
