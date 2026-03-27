@@ -27,7 +27,6 @@ from azext_aks_preview._consts import (
     CONST_MANAGED_CLUSTER_SKU_TIER_FREE,
     CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM,
     CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD,
-    CONST_MONITORING_ADDON_NAME_CAMELCASE,
     CONST_NETWORK_DATAPLANE_CILIUM,
     CONST_NETWORK_PLUGIN_AZURE,
     CONST_NETWORK_PLUGIN_MODE_OVERLAY,
@@ -2868,7 +2867,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 # 1. New API: azureMonitorProfile.containerInsights.enabled
                 # 2. Legacy: addonProfiles.omsagent.enabled (or omsAgent with camelCase)
                 addon_consts = self.get_addon_consts()
-                CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
 
                 # Check new API location
                 container_insights_enabled = (
@@ -3020,7 +3018,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
             # Validate that monitoring addon is enabled (either being enabled now or already enabled in cluster)
             addon_consts = self.get_addon_consts()
-            CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
 
             # Check if monitoring is being enabled in the command
             enable_addons = self.raw_param.get("enable_addons")
@@ -5554,8 +5551,11 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 )
         elif self._should_create_dcra():
             addon_consts = self.context.get_addon_consts()
-            monitoring_addon_key = _get_monitoring_addon_key_from_consts(
-                cluster.addon_profiles, addon_consts) if cluster.addon_profiles else addon_consts.get("CONST_MONITORING_ADDON_NAME")
+            monitoring_addon_key = (
+                _get_monitoring_addon_key_from_consts(cluster.addon_profiles, addon_consts)
+                if cluster.addon_profiles
+                else addon_consts.get("CONST_MONITORING_ADDON_NAME")
+            )
             self.context.external_functions.ensure_container_insights_for_monitoring(
                 self.cmd,
                 cluster.addon_profiles[monitoring_addon_key],
@@ -5879,10 +5879,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         """
         self._ensure_mc(mc)
 
-        # Call the base class implementation if it exists (CLI >= 2.84.0 added this method to the base).
-        # This ensures any base-class monitoring handling (e.g., enable/disable) is applied first.
-        if hasattr(super(), 'update_monitoring_profile_flow_logs'):
-            mc = super().update_monitoring_profile_flow_logs(mc)
+        # Do not call super() — the base class HLSM validation does not handle
+        # preview-specific flags (--enable-azure-monitor-logs, --enable-addons monitoring).
 
         # Trigger validation for high log scale mode when container network logs are enabled.
         # This ensures proper error messages are raised before cluster update if the user
@@ -8201,8 +8199,11 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             addon_consts = self.context.get_addon_consts()
             CONST_MONITORING_USING_AAD_MSI_AUTH = addon_consts.get("CONST_MONITORING_USING_AAD_MSI_AUTH")
 
-            monitoring_addon_key = _get_monitoring_addon_key_from_consts(
-                cluster.addon_profiles, addon_consts) if cluster.addon_profiles else addon_consts.get("CONST_MONITORING_ADDON_NAME")
+            monitoring_addon_key = (
+                _get_monitoring_addon_key_from_consts(cluster.addon_profiles, addon_consts)
+                if cluster.addon_profiles
+                else addon_consts.get("CONST_MONITORING_ADDON_NAME")
+            )
 
             if (cluster.addon_profiles and
                     monitoring_addon_key in cluster.addon_profiles and
