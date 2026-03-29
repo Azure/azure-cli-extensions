@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Fix monitoring addon key casing compatibility with azure-cli/acs
 
 19.0.0b28
 +++++++
