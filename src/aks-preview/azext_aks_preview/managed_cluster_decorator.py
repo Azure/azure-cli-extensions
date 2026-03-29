@@ -7597,21 +7597,9 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             mc.addon_profiles = {}
 
         CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
-
-        # Detect existing key (could be "omsagent" or "omsAgent" from Azure API)
-        existing_key = None
-        if CONST_MONITORING_ADDON_NAME in mc.addon_profiles:
-            existing_key = CONST_MONITORING_ADDON_NAME
-        elif CONST_MONITORING_ADDON_NAME_CAMELCASE in mc.addon_profiles:
-            existing_key = CONST_MONITORING_ADDON_NAME_CAMELCASE
-
-        if existing_key:
-            addon_profile = mc.addon_profiles[existing_key]
-        else:
-            addon_profile = self.models.ManagedClusterAddonProfile(enabled=False)
-            existing_key = CONST_MONITORING_ADDON_NAME
-
-        addon_profile.enabled = True
+        CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID = addon_consts.get(
+            "CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID")
+        CONST_MONITORING_USING_AAD_MSI_AUTH = addon_consts.get("CONST_MONITORING_USING_AAD_MSI_AUTH")
 
         # Get or create workspace resource ID
         workspace_resource_id = self.context.raw_param.get("workspace_resource_id")
@@ -7628,15 +7616,29 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         sanitize_func = self.context.external_functions.sanitize_loganalytics_ws_resource_id
         workspace_resource_id = sanitize_func(workspace_resource_id)
 
-        CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID = addon_consts.get(
-            "CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID")
-        CONST_MONITORING_USING_AAD_MSI_AUTH = addon_consts.get("CONST_MONITORING_USING_AAD_MSI_AUTH")
-
+        # Call get_enable_msi_auth_for_monitoring BEFORE detecting the existing key,
+        # because the parent's implementation may normalize addon_profiles keys in-place
+        # (e.g., renaming "omsAgent" to "omsagent").
         enable_msi_auth_bool = self.context.get_enable_msi_auth_for_monitoring()
         if enable_msi_auth_bool:
             enable_msi_auth = "true"
         else:
             enable_msi_auth = "false"
+
+        # Detect existing key (could be "omsagent" or "omsAgent" from Azure API)
+        existing_key = None
+        if CONST_MONITORING_ADDON_NAME in mc.addon_profiles:
+            existing_key = CONST_MONITORING_ADDON_NAME
+        elif CONST_MONITORING_ADDON_NAME_CAMELCASE in mc.addon_profiles:
+            existing_key = CONST_MONITORING_ADDON_NAME_CAMELCASE
+
+        if existing_key:
+            addon_profile = mc.addon_profiles[existing_key]
+        else:
+            addon_profile = self.models.ManagedClusterAddonProfile(enabled=False)
+            existing_key = CONST_MONITORING_ADDON_NAME
+
+        addon_profile.enabled = True
 
         new_config = {
             CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: workspace_resource_id,
