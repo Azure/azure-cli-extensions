@@ -176,12 +176,12 @@ helps['managedcleanroom frontend analytics show'] = """
           text: az managedcleanroom frontend analytics show -c <collaboration-id>
 """
 
-helps['managedcleanroom frontend analytics cleanroompolicy'] = """
+helps['managedcleanroom frontend analytics skr-policy'] = """
     type: command
-    short-summary: Get cleanroom policy
+    short-summary: Get SKR policy for a dataset
     examples:
-        - name: Get cleanroom policy
-          text: az managedcleanroom frontend analytics cleanroompolicy -c <collaboration-id>
+        - name: Get SKR policy for a specific dataset
+          text: az managedcleanroom frontend analytics skr-policy -c <collaboration-id> -d <dataset-id>
 """
 
 

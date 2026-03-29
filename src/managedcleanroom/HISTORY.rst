@@ -47,3 +47,22 @@ Release History
 * Updated: Added --pending-only filter to invitation list command
 * Updated: Added --scope, --from-seqno, --to-seqno filters to audit event list command
 * Updated: Response structures modernized (many list endpoints now return structured objects with value arrays)
+
+1.0.0b5
++++++++
+* Updated to latest Frontend API spec (2026-03-01-preview with SKR policy)
+* Regenerated analytics_frontend_api SDK with updated method signatures and SKR policy support
+* BREAKING CHANGE: Removed `az managedcleanroom frontend analytics cleanroompolicy` command
+* Added: `az managedcleanroom frontend analytics skr-policy` - Get SKR (Secure Key Release) policy for a specific dataset
+  - New required parameter: --dataset-id to specify the dataset for which to retrieve the SKR policy
+* SDK Changes (internal):
+  - Added: collaboration.analytics_skr_policy_get(collaboration_id, dataset_id) method
+  - Removed: collaboration.analytics_cleanroompolicy_get(collaboration_id) method
+  - Fixed: analytics_queries_document_id_runhistory_get → analytics_queries_document_id_runs_get
+  - Fixed: analytics_queries_jobid_get → analytics_runs_job_id_get
+* Bug Fixes:
+  - Fixed token normalization in _frontend_auth.py to handle tuple, AccessToken, and string token formats
+  - Added SSL verification environment variable support (AZURE_CLI_DISABLE_CONNECTION_VERIFICATION, REQUESTS_CA_BUNDLE)
+  - Fixed schema_file parameter handling in dataset publish to support Azure CLI auto-loading (dict, string, and @file formats)
+  - Fixed runhistory API endpoint method name
+  - Fixed runresult API endpoint method name

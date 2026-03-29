@@ -156,7 +156,7 @@ class TestFrontendDataset(unittest.TestCase):
             ],
             "format": "Delta"
         }
-        
+
         with patch('builtins.open', unittest.mock.mock_open(read_data=json.dumps(test_schema))):
             # Execute with SSE parameters
             result = frontend_collaboration_dataset_publish(
@@ -180,18 +180,19 @@ class TestFrontendDataset(unittest.TestCase):
                 dek_secret_id=None,
                 kek_keyvault_url=None,
                 kek_secret_id=None,
-                kek_maa_url=None
-            )
+                kek_maa_url=None)
 
         # Verify
         self.assertEqual(result["datasetId"], "test-dataset-123")
         self.assertEqual(result["status"], "published")
-        
+
         # Verify the body was constructed correctly
         call_args = mock_client.collaboration.analytics_datasets_document_id_publish_post.call_args
         body = call_args[0][2]
         self.assertEqual(body["name"], "test-dataset-123")
-        self.assertEqual(body["store"]["storageAccountUrl"], "https://mystorageaccount.blob.core.windows.net")
+        self.assertEqual(
+            body["store"]["storageAccountUrl"],
+            "https://mystorageaccount.blob.core.windows.net")
         self.assertEqual(body["store"]["encryptionMode"], "SSE")
         self.assertEqual(body["identity"]["name"], "northwind-identity")
         self.assertNotIn("dek", body)
@@ -215,7 +216,7 @@ class TestFrontendDataset(unittest.TestCase):
             "fields": [{"fieldName": "id", "fieldType": "string"}],
             "format": "Delta"
         }
-        
+
         with patch('builtins.open', unittest.mock.mock_open(read_data=json.dumps(test_schema))):
             # Execute with CPK parameters
             result = frontend_collaboration_dataset_publish(
@@ -239,18 +240,19 @@ class TestFrontendDataset(unittest.TestCase):
                 dek_secret_id="dek-secret-123",
                 kek_keyvault_url="https://mykeyvault.vault.azure.net",
                 kek_secret_id="kek-secret-123",
-                kek_maa_url="https://sharedeus.eus.attest.azure.net"
-            )
+                kek_maa_url="https://sharedeus.eus.attest.azure.net")
 
         # Verify
         self.assertEqual(result["datasetId"], "test-dataset-cpk")
         self.assertEqual(result["status"], "published")
-        
+
         # Verify CPK fields are present in body
         call_args = mock_client.collaboration.analytics_datasets_document_id_publish_post.call_args
         body = call_args[0][2]
         self.assertIn("dek", body)
-        self.assertEqual(body["dek"]["keyVaultUrl"], "https://mykeyvault.vault.azure.net")
+        self.assertEqual(
+            body["dek"]["keyVaultUrl"],
+            "https://mykeyvault.vault.azure.net")
         self.assertIn("kek", body)
         self.assertEqual(body["kek"]["secretId"], "kek-secret-123")
 
@@ -258,7 +260,7 @@ class TestFrontendDataset(unittest.TestCase):
     def test_publish_dataset_mutual_exclusion(self, mock_get_client):
         """Test that body and parameters are mutually exclusive"""
         from azure.cli.core.util import CLIError
-        
+
         mock_client = Mock()
         mock_get_client.return_value = mock_client
 
@@ -273,13 +275,15 @@ class TestFrontendDataset(unittest.TestCase):
                 container_name="datasets"
             )
 
-        self.assertIn("Cannot use --body together with individual parameters", str(context.exception))
+        self.assertIn(
+            "Cannot use --body together with individual parameters", str(context.exception))
 
     @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
-    def test_publish_dataset_missing_required_parameters(self, mock_get_client):
+    def test_publish_dataset_missing_required_parameters(
+            self, mock_get_client):
         """Test validation of required parameters"""
         from azure.cli.core.util import CLIError
-        
+
         mock_client = Mock()
         mock_get_client.return_value = mock_client
 
@@ -300,13 +304,13 @@ class TestFrontendDataset(unittest.TestCase):
     def test_publish_dataset_cpk_missing_keys(self, mock_get_client):
         """Test CPK mode requires DEK/KEK parameters"""
         from azure.cli.core.util import CLIError
-        
+
         mock_client = Mock()
         mock_get_client.return_value = mock_client
 
         # Mock file reading
         test_schema = {"fields": [], "format": "Delta"}
-        
+
         with patch('builtins.open', unittest.mock.mock_open(read_data=json.dumps(test_schema))):
             # Execute CPK mode without DEK/KEK params - should raise error
             with self.assertRaises(CLIError) as context:
@@ -328,8 +332,9 @@ class TestFrontendDataset(unittest.TestCase):
                     # Missing DEK/KEK params
                 )
 
-            self.assertIn("CPK encryption mode requires", str(context.exception))
-
+            self.assertIn(
+                "CPK encryption mode requires", str(
+                    context.exception))
 
 
 if __name__ == '__main__':

@@ -38,26 +38,32 @@ class AnalyticsFrontendAPI:
         _policies = kwargs.pop("policies", None)
         if _policies is None:
             _policies = [
-                policies.RequestIdPolicy(**kwargs),
+                policies.RequestIdPolicy(
+                    **kwargs),
                 self._config.headers_policy,
                 self._config.user_agent_policy,
                 self._config.proxy_policy,
-                policies.ContentDecodePolicy(**kwargs),
+                policies.ContentDecodePolicy(
+                    **kwargs),
                 self._config.redirect_policy,
                 self._config.retry_policy,
                 self._config.authentication_policy,
                 self._config.custom_hook_policy,
                 self._config.logging_policy,
-                policies.DistributedTracingPolicy(**kwargs),
-                policies.SensitiveHeaderCleanupPolicy(**kwargs) if self._config.redirect_policy else None,
+                policies.DistributedTracingPolicy(
+                    **kwargs),
+                policies.SensitiveHeaderCleanupPolicy(
+                    **kwargs) if self._config.redirect_policy else None,
                 self._config.http_logging_policy,
             ]
-        self._client: AsyncPipelineClient = AsyncPipelineClient(base_url=endpoint, policies=_policies, **kwargs)
+        self._client: AsyncPipelineClient = AsyncPipelineClient(
+            base_url=endpoint, policies=_policies, **kwargs)
 
         self._serialize = Serializer()
         self._deserialize = Deserializer()
         self._serialize.client_side_validation = False
-        self.collaboration = CollaborationOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.collaboration = CollaborationOperations(
+            self._client, self._config, self._serialize, self._deserialize)
 
     def send_request(
         self, request: HttpRequest, *, stream: bool = False, **kwargs: Any
@@ -81,7 +87,8 @@ class AnalyticsFrontendAPI:
 
         request_copy = deepcopy(request)
         request_copy.url = self._client.format_url(request_copy.url)
-        return self._client.send_request(request_copy, stream=stream, **kwargs)  # type: ignore
+        return self._client.send_request(
+            request_copy, stream=stream, **kwargs)  # type: ignore
 
     async def close(self) -> None:
         await self._client.close()

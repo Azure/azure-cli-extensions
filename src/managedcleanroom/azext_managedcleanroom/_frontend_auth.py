@@ -32,12 +32,14 @@ def get_frontend_token(cmd):
 
     # Priority 0: explicit token via environment variable (for local/test envs
     # only)
-    env_token = os.environ.get('MANAGEDCLEANROOM_ACCESS_TOKEN')
+    env_token = os.environ.get("MANAGEDCLEANROOM_ACCESS_TOKEN")
     if env_token:
         logger.warning(
-            "Using token from MANAGEDCLEANROOM_ACCESS_TOKEN env var FOR TESTING PURPOSES ONLY")
+            "Using token from MANAGEDCLEANROOM_ACCESS_TOKEN env var FOR TESTING PURPOSES ONLY"
+        )
         from collections import namedtuple
-        AccessToken = namedtuple('AccessToken', ['token', 'expires_on'])
+
+        AccessToken = namedtuple("AccessToken", ["token", "expires_on"])
         token_obj = AccessToken(token=env_token, expires_on=0)
         return (token_obj, subscription, None)
 
@@ -49,20 +51,46 @@ def get_frontend_token(cmd):
         msal_token = get_msal_token(cmd)
         if msal_token:
             logger.debug("Using MSAL device code flow token")
-            return (msal_token[0], subscription, msal_token[2])
+            from collections import namedtuple
+
+            AccessToken = namedtuple("AccessToken", ["token", "expires_on"])
+            token_obj = AccessToken(token=msal_token[0], expires_on=0)
+            return (token_obj, subscription, msal_token[2])
 
         logger.debug("Using Azure CLI (az login) token")
-        return profile.get_raw_token(
-            subscription=subscription,
-            resource=auth_scope
+        raw_token = profile.get_raw_token(
+            subscription=subscription, resource=auth_scope
         )
+
+        # Normalize to AccessToken object
+        from collections import namedtuple
+
+        AccessToken = namedtuple("AccessToken", ["token", "expires_on"])
+
+        # Handle different return types from get_raw_token
+        if isinstance(raw_token, tuple) and len(raw_token) >= 3:
+            # Tuple format: ('Bearer', 'token_string', {...})
+            # raw_token[2] should be a dict with metadata
+            metadata = raw_token[2] if isinstance(raw_token[2], dict) else {}
+            token_obj = AccessToken(
+                token=raw_token[1], expires_on=metadata.get("expiresOn", 0)
+            )
+        elif hasattr(raw_token, "token"):
+            # Already AccessToken object
+            token_obj = raw_token
+        else:
+            # Raw string token
+            token_obj = AccessToken(token=str(raw_token), expires_on=0)
+
+        return (token_obj, subscription, None)
 
     except Exception as ex:
         raise CLIError(
-            f'Failed to get access token: {str(ex)}\n\n'
-            'Please authenticate using one of:\n'
-            '  1. az managedcleanroom frontend login  (MSAL device code flow)\n'
-            '  2. az login (Azure CLI authentication)\n')
+            f"Failed to get access token: {str(ex)}\n\n"
+            "Please authenticate using one of:\n"
+            "  1. az managedcleanroom frontend login  (MSAL device code flow)\n"
+            "  2. az login (Azure CLI authentication)\n"
+        ) from ex
 
 
 def get_frontend_config(cmd):
@@ -73,7 +101,7 @@ def get_frontend_config(cmd):
     :rtype: str or None
     """
     config = cmd.cli_ctx.config
-    return config.get('managedcleanroom-frontend', 'endpoint', fallback=None)
+    return config.get("managedcleanroom-frontend", "endpoint", fallback=None)
 
 
 def set_frontend_config(cmd, endpoint):
@@ -83,10 +111,7 @@ def set_frontend_config(cmd, endpoint):
     :param endpoint: API endpoint URL to store
     :type endpoint: str
     """
-    cmd.cli_ctx.config.set_value(
-        'managedcleanroom-frontend',
-        'endpoint',
-        endpoint)
+    cmd.cli_ctx.config.set_value("managedcleanroom-frontend", "endpoint", endpoint)
 
 
 def get_frontend_client(cmd, endpoint=None, api_version=None):
@@ -104,33 +129,40 @@ def get_frontend_client(cmd, endpoint=None, api_version=None):
     :raises: CLIError if token fetch fails or endpoint not configured
     """
     from .analytics_frontend_api import AnalyticsFrontendAPI
-    from azure.core.pipeline.policies import BearerTokenCredentialPolicy, SansIOHTTPPolicy
+    from azure.core.pipeline.policies import (
+        BearerTokenCredentialPolicy,
+        SansIOHTTPPolicy,
+    )
 
     # Use provided api_version or default
     if api_version is None:
-        api_version = '2026-03-01-preview'
+        api_version = "2026-03-01-preview"
 
     api_endpoint = endpoint or get_frontend_config(cmd)
     if not api_endpoint:
         raise CLIError(
-            'Analytics Frontend API endpoint not configured.\n'
-            'Configure using: az config set managedcleanroom-frontend.endpoint=<url>\n'
-            'Or use the --endpoint flag with your command.')
+            "Analytics Frontend API endpoint not configured.\n"
+            "Configure using: az config set managedcleanroom-frontend.endpoint=<url>\n"
+            "Or use the --endpoint flag with your command."
+        )
 
     access_token_obj, _, _ = get_frontend_token(cmd)
 
     logger.debug(
-        "Creating Analytics Frontend API client for endpoint: %s",
-        api_endpoint)
+        "Creating Analytics Frontend API client for endpoint: %s", api_endpoint
+    )
 
     # Check if this is a local development endpoint
-    is_local = api_endpoint.startswith(
-        'http://localhost') or api_endpoint.startswith('http://127.0.0.1')
+    is_local = api_endpoint.startswith("http://localhost") or api_endpoint.startswith(
+        "http://127.0.0.1"
+    )
 
     # Create simple credential wrapper for the access token
-    credential = type('TokenCredential', (), {
-        'get_token': lambda self, *args, **kwargs: access_token_obj
-    })()
+    credential = type(
+        "TokenCredential",
+        (),
+        {"get_token": lambda self, *args, **kwargs: access_token_obj},
+    )()
 
     if is_local:
         # For local development, create a custom auth policy that bypasses
@@ -146,7 +178,7 @@ def get_frontend_client(cmd, endpoint=None, api_version=None):
                 # Extract token string from AccessToken object
                 # The token might be a tuple ('Bearer', 'token_string') or just
                 # the token string
-                if hasattr(self._token, 'token'):
+                if hasattr(self._token, "token"):
                     token_value = self._token.token
                 else:
                     token_value = self._token
@@ -157,10 +189,11 @@ def get_frontend_client(cmd, endpoint=None, api_version=None):
                 else:
                     token_string = str(token_value)
 
-                auth_header = f'Bearer {token_string}'
+                auth_header = f"Bearer {token_string}"
                 logger.debug(
-                    "Setting Authorization header: Bearer %s...", token_string[:50])
-                request.http_request.headers['Authorization'] = auth_header
+                    "Setting Authorization header: Bearer %s...", token_string[:50]
+                )
+                request.http_request.headers["Authorization"] = auth_header
 
         auth_policy = LocalBearerTokenPolicy(access_token_obj)
     else:
@@ -168,18 +201,31 @@ def get_frontend_client(cmd, endpoint=None, api_version=None):
         # enforcement
         # Use configured auth_scope with .default suffix for Azure SDK
         from ._msal_auth import get_auth_scope
-        scope = get_auth_scope(cmd)
-        if not scope.endswith('/.default'):
-            scope = f'{scope}/.default'
 
-        auth_policy = BearerTokenCredentialPolicy(
-            credential,
-            scope
+        scope = get_auth_scope(cmd)
+        if not scope.endswith("/.default"):
+            scope = f"{scope}/.default"
+
+        auth_policy = BearerTokenCredentialPolicy(credential, scope)
+
+    # Handle SSL verification settings
+    import os
+
+    client_kwargs = {}
+    if os.environ.get("AZURE_CLI_DISABLE_CONNECTION_VERIFICATION"):
+        logger.warning(
+            "SSL verification disabled via AZURE_CLI_DISABLE_CONNECTION_VERIFICATION"
         )
+        client_kwargs["connection_verify"] = False
+    elif os.environ.get("REQUESTS_CA_BUNDLE"):
+        ca_bundle = os.environ["REQUESTS_CA_BUNDLE"]
+        logger.debug("Using custom CA bundle: %s", ca_bundle)
+        client_kwargs["connection_verify"] = ca_bundle
 
     # Return configured client
     return AnalyticsFrontendAPI(
         endpoint=api_endpoint,
         api_version=api_version,
-        authentication_policy=auth_policy
+        authentication_policy=auth_policy,
+        **client_kwargs,
     )

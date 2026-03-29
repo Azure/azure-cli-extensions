@@ -1,8 +1,8 @@
 # pylint: disable=too-many-lines
 # coding=utf-8
-# --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
+# Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 from collections.abc import MutableMapping
 from io import IOBase
@@ -25,7 +25,6 @@ from azure.core.utils import case_insensitive_dict
 from ..._utils.serialization import Deserializer, Serializer
 from ...operations._operations import (
     build_collaboration_analytics_auditevents_get_request,
-    build_collaboration_analytics_cleanroompolicy_get_request,
     build_collaboration_analytics_datasets_document_id_get_request,
     build_collaboration_analytics_datasets_document_id_publish_post_request,
     build_collaboration_analytics_datasets_document_id_queries_get_request,
@@ -39,6 +38,7 @@ from ...operations._operations import (
     build_collaboration_analytics_queries_list_get_request,
     build_collaboration_analytics_runs_job_id_get_request,
     build_collaboration_analytics_secrets_secret_name_put_request,
+    build_collaboration_analytics_skr_policy_get_request,
     build_collaboration_consent_document_id_get_request,
     build_collaboration_consent_document_id_put_request,
     build_collaboration_id_get_request,
@@ -55,7 +55,8 @@ from .._configuration import AnalyticsFrontendAPIConfiguration
 
 JSON = MutableMapping[str, Any]
 T = TypeVar("T")
-ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, dict[str, Any]], Any]]
+ClsType = Optional[Callable[[PipelineResponse[HttpRequest,
+                                              AsyncHttpResponse], T, dict[str, Any]], Any]]
 
 
 class CollaborationOperations:  # pylint: disable=too-many-public-methods
@@ -70,13 +71,21 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
 
     def __init__(self, *args, **kwargs) -> None:
         input_args = list(args)
-        self._client: AsyncPipelineClient = input_args.pop(0) if input_args else kwargs.pop("client")
-        self._config: AnalyticsFrontendAPIConfiguration = input_args.pop(0) if input_args else kwargs.pop("config")
-        self._serialize: Serializer = input_args.pop(0) if input_args else kwargs.pop("serializer")
-        self._deserialize: Deserializer = input_args.pop(0) if input_args else kwargs.pop("deserializer")
+        self._client: AsyncPipelineClient = input_args.pop(
+            0) if input_args else kwargs.pop("client")
+        self._config: AnalyticsFrontendAPIConfiguration = input_args.pop(
+            0) if input_args else kwargs.pop("config")
+        self._serialize: Serializer = input_args.pop(
+            0) if input_args else kwargs.pop("serializer")
+        self._deserialize: Deserializer = input_args.pop(
+            0) if input_args else kwargs.pop("deserializer")
 
     @distributed_trace_async
-    async def list_get(self, *, active_only: bool = False, **kwargs: Any) -> list[JSON]:
+    async def list_get(
+            self,
+            *,
+            active_only: bool = False,
+            **kwargs: Any) -> list[JSON]:
         """List all collaborations.
 
         List all collaborations.
@@ -129,7 +138,10 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            map_error(
+                status_code=response.status_code,
+                response=response,
+                error_map=error_map)
             raise HttpResponseError(response=response)
 
         if response.content:
@@ -138,12 +150,22 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(pipeline_response, cast(list[JSON], deserialized), {})  # type: ignore
+            return cls(
+                pipeline_response,
+                cast(
+                    list[JSON],
+                    deserialized),
+                {})  # type: ignore
 
         return cast(list[JSON], deserialized)  # type: ignore
 
     @distributed_trace_async
-    async def id_get(self, collaboration_id: str, *, active_only: bool = False, **kwargs: Any) -> JSON:
+    async def id_get(
+            self,
+            collaboration_id: str,
+            *,
+            active_only: bool = False,
+            **kwargs: Any) -> JSON:
         """Get collaboration by id.
 
         Get collaboration by id.
@@ -205,7 +227,10 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 422]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            map_error(
+                status_code=response.status_code,
+                response=response,
+                error_map=error_map)
             raise HttpResponseError(response=response)
 
         if response.content:
@@ -214,7 +239,12 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
+            return cls(
+                pipeline_response,
+                cast(
+                    JSON,
+                    deserialized),
+                {})  # type: ignore
 
         return cast(JSON, deserialized)  # type: ignore
 
@@ -307,7 +337,10 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 400, 422]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            map_error(
+                status_code=response.status_code,
+                response=response,
+                error_map=error_map)
             raise HttpResponseError(response=response)
 
         if response.content:
@@ -316,12 +349,20 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
+            return cls(
+                pipeline_response,
+                cast(
+                    JSON,
+                    deserialized),
+                {})  # type: ignore
 
         return cast(JSON, deserialized)  # type: ignore
 
     @distributed_trace_async
-    async def analytics_get(self, collaboration_id: str, **kwargs: Any) -> JSON:
+    async def analytics_get(
+            self,
+            collaboration_id: str,
+            **kwargs: Any) -> JSON:
         """Get collaboration analytics workload.
 
         Get collaboration analytics workload.
@@ -380,7 +421,10 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 422]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            map_error(
+                status_code=response.status_code,
+                response=response,
+                error_map=error_map)
             raise HttpResponseError(response=response)
 
         if response.content:
@@ -389,18 +433,29 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
+            return cls(
+                pipeline_response,
+                cast(
+                    JSON,
+                    deserialized),
+                {})  # type: ignore
 
         return cast(JSON, deserialized)  # type: ignore
 
     @distributed_trace_async
-    async def analytics_cleanroompolicy_get(self, collaboration_id: str, **kwargs: Any) -> JSON:
-        """Get collaboration analytics cleanroompolicy.
+    async def analytics_skr_policy_get(
+            self,
+            collaboration_id: str,
+            dataset_id: str,
+            **kwargs: Any) -> JSON:
+        """Get collaboration analytics skr policy for a dataset.
 
-        Get collaboration analytics cleanroompolicy.
+        Get collaboration analytics skr policy for a dataset.
 
         :param collaboration_id: Required.
         :type collaboration_id: str
+        :param dataset_id: Required.
+        :type dataset_id: str
         :return: JSON object
         :rtype: JSON
         :raises ~azure.core.exceptions.HttpResponseError:
@@ -410,14 +465,18 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
 
                 # response body for status code(s): 200
                 response == {
-                    "claims": {
-                        "claims": {
-                            "str": {}
+                    "anyOf": [
+                        {
+                            "allOf": [
+                                {
+                                    "claim": "str",
+                                    "equals": "str"
+                                }
+                            ],
+                            "authority": "str"
                         }
-                    },
-                    "proposalIds": [
-                        "str"
-                    ]
+                    ],
+                    "version": "str"
                 }
                 # response body for status code(s): 422
                 response == {
@@ -441,8 +500,9 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
 
         cls: ClsType[JSON] = kwargs.pop("cls", None)
 
-        _request = build_collaboration_analytics_cleanroompolicy_get_request(
+        _request = build_collaboration_analytics_skr_policy_get_request(
             collaboration_id=collaboration_id,
+            dataset_id=dataset_id,
             api_version=self._config.api_version,
             headers=_headers,
             params=_params,
@@ -457,7 +517,10 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 422]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            map_error(
+                status_code=response.status_code,
+                response=response,
+                error_map=error_map)
             raise HttpResponseError(response=response)
 
         if response.content:
@@ -466,12 +529,20 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
+            return cls(
+                pipeline_response,
+                cast(
+                    JSON,
+                    deserialized),
+                {})  # type: ignore
 
         return cast(JSON, deserialized)  # type: ignore
 
     @distributed_trace_async
-    async def oidc_issuer_info_get(self, collaboration_id: str, **kwargs: Any) -> JSON:
+    async def oidc_issuer_info_get(
+            self,
+            collaboration_id: str,
+            **kwargs: Any) -> JSON:
         """Get collaboration OIDC issuer info.
 
         Get collaboration OIDC issuer info.
@@ -532,7 +603,10 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 422]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            map_error(
+                status_code=response.status_code,
+                response=response,
+                error_map=error_map)
             raise HttpResponseError(response=response)
 
         if response.content:
@@ -541,7 +615,12 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
+            return cls(
+                pipeline_response,
+                cast(
+                    JSON,
+                    deserialized),
+                {})  # type: ignore
 
         return cast(JSON, deserialized)  # type: ignore
 
@@ -635,9 +714,11 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         """
 
     @distributed_trace_async
-    async def oidc_set_issuer_url_post(
-        self, collaboration_id: str, body: Optional[Union[JSON, IO[bytes]]] = None, **kwargs: Any
-    ) -> JSON:
+    async def oidc_set_issuer_url_post(self,
+                                       collaboration_id: str,
+                                       body: Optional[Union[JSON,
+                                                            IO[bytes]]] = None,
+                                       **kwargs: Any) -> JSON:
         """Set collaboration oidc issuer url.
 
         Set collaboration oidc issuer url.
@@ -683,7 +764,8 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = kwargs.pop("params", {}) or {}
 
-        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+        content_type: Optional[str] = kwargs.pop(
+            "content_type", _headers.pop("Content-Type", None))
         content_type = content_type if body else None
         cls: ClsType[JSON] = kwargs.pop("cls", None)
 
@@ -717,7 +799,10 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 422]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            map_error(
+                status_code=response.status_code,
+                response=response,
+                error_map=error_map)
             raise HttpResponseError(response=response)
 
         if response.content:
@@ -726,12 +811,20 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
+            return cls(
+                pipeline_response,
+                cast(
+                    JSON,
+                    deserialized),
+                {})  # type: ignore
 
         return cast(JSON, deserialized)  # type: ignore
 
     @distributed_trace_async
-    async def oidc_keys_get(self, collaboration_id: str, **kwargs: Any) -> JSON:
+    async def oidc_keys_get(
+            self,
+            collaboration_id: str,
+            **kwargs: Any) -> JSON:
         """Get collaboration oidc signing keys (JWKS).
 
         Get collaboration oidc signing keys (JWKS).
@@ -801,7 +894,10 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 422]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            map_error(
+                status_code=response.status_code,
+                response=response,
+                error_map=error_map)
             raise HttpResponseError(response=response)
 
         if response.content:
@@ -810,12 +906,22 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
+            return cls(
+                pipeline_response,
+                cast(
+                    JSON,
+                    deserialized),
+                {})  # type: ignore
 
         return cast(JSON, deserialized)  # type: ignore
 
     @distributed_trace_async
-    async def invitations_get(self, collaboration_id: str, *, pending_only: bool = False, **kwargs: Any) -> JSON:
+    async def invitations_get(
+            self,
+            collaboration_id: str,
+            *,
+            pending_only: bool = False,
+            **kwargs: Any) -> JSON:
         """List all invitations.
 
         List all invitations.
@@ -877,7 +983,10 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 422]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            map_error(
+                status_code=response.status_code,
+                response=response,
+                error_map=error_map)
             raise HttpResponseError(response=response)
 
         if response.content:
@@ -886,12 +995,21 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
+            return cls(
+                pipeline_response,
+                cast(
+                    JSON,
+                    deserialized),
+                {})  # type: ignore
 
         return cast(JSON, deserialized)  # type: ignore
 
     @distributed_trace_async
-    async def invitation_id_get(self, collaboration_id: str, invitation_id: str, **kwargs: Any) -> JSON:
+    async def invitation_id_get(
+            self,
+            collaboration_id: str,
+            invitation_id: str,
+            **kwargs: Any) -> JSON:
         """Get invitation by id.
 
         Get invitation by id.
@@ -958,7 +1076,10 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 422]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            map_error(
+                status_code=response.status_code,
+                response=response,
+                error_map=error_map)
             raise HttpResponseError(response=response)
 
         if response.content:
@@ -967,7 +1088,12 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
+            return cls(
+                pipeline_response,
+                cast(
+                    JSON,
+                    deserialized),
+                {})  # type: ignore
 
         return cast(JSON, deserialized)  # type: ignore
 
@@ -1029,7 +1155,10 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [204, 422]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            map_error(
+                status_code=response.status_code,
+                response=response,
+                error_map=error_map)
             raise HttpResponseError(response=response)
 
         deserialized = None
@@ -1045,7 +1174,8 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         return deserialized  # type: ignore
 
     @distributed_trace_async
-    async def analytics_datasets_list_get(self, collaboration_id: str, **kwargs: Any) -> JSON:
+    async def analytics_datasets_list_get(
+            self, collaboration_id: str, **kwargs: Any) -> JSON:
         """List all datasets.
 
         List all datasets.
@@ -1108,7 +1238,10 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 422]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            map_error(
+                status_code=response.status_code,
+                response=response,
+                error_map=error_map)
             raise HttpResponseError(response=response)
 
         if response.content:
@@ -1117,12 +1250,21 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
+            return cls(
+                pipeline_response,
+                cast(
+                    JSON,
+                    deserialized),
+                {})  # type: ignore
 
         return cast(JSON, deserialized)  # type: ignore
 
     @distributed_trace_async
-    async def analytics_datasets_document_id_get(self, collaboration_id: str, document_id: str, **kwargs: Any) -> JSON:
+    async def analytics_datasets_document_id_get(
+            self,
+            collaboration_id: str,
+            document_id: str,
+            **kwargs: Any) -> JSON:
         """Get dataset by id.
 
         Get dataset by id.
@@ -1225,7 +1367,10 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 422]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            map_error(
+                status_code=response.status_code,
+                response=response,
+                error_map=error_map)
             raise HttpResponseError(response=response)
 
         if response.content:
@@ -1234,7 +1379,12 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
+            return cls(
+                pipeline_response,
+                cast(
+                    JSON,
+                    deserialized),
+                {})  # type: ignore
 
         return cast(JSON, deserialized)  # type: ignore
 
@@ -1445,7 +1595,8 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = kwargs.pop("params", {}) or {}
 
-        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+        content_type: Optional[str] = kwargs.pop(
+            "content_type", _headers.pop("Content-Type", None))
         cls: ClsType[Optional[JSON]] = kwargs.pop("cls", None)
 
         content_type = content_type or "application/json"
@@ -1476,7 +1627,10 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [204, 422]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            map_error(
+                status_code=response.status_code,
+                response=response,
+                error_map=error_map)
             raise HttpResponseError(response=response)
 
         deserialized = None
@@ -1492,7 +1646,11 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         return deserialized  # type: ignore
 
     @distributed_trace_async
-    async def consent_document_id_get(self, collaboration_id: str, document_id: str, **kwargs: Any) -> JSON:
+    async def consent_document_id_get(
+            self,
+            collaboration_id: str,
+            document_id: str,
+            **kwargs: Any) -> JSON:
         """Check execution consent by ID of the Query or the Dataset.
 
         Check execution consent by ID of the Query or the Dataset.
@@ -1555,7 +1713,10 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 422]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            map_error(
+                status_code=response.status_code,
+                response=response,
+                error_map=error_map)
             raise HttpResponseError(response=response)
 
         if response.content:
@@ -1564,7 +1725,12 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
+            return cls(
+                pipeline_response,
+                cast(
+                    JSON,
+                    deserialized),
+                {})  # type: ignore
 
         return cast(JSON, deserialized)  # type: ignore
 
@@ -1654,9 +1820,12 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         """
 
     @distributed_trace_async
-    async def consent_document_id_put(
-        self, collaboration_id: str, document_id: str, body: Union[JSON, IO[bytes]], **kwargs: Any
-    ) -> Optional[JSON]:
+    async def consent_document_id_put(self,
+                                      collaboration_id: str,
+                                      document_id: str,
+                                      body: Union[JSON,
+                                                  IO[bytes]],
+                                      **kwargs: Any) -> Optional[JSON]:
         """Set execution consent (enable / disable) by ID of the Query or the Dataset.
 
         Set execution consent (enable / disable) by ID of the Query or the Dataset.
@@ -1699,7 +1868,8 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = kwargs.pop("params", {}) or {}
 
-        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+        content_type: Optional[str] = kwargs.pop(
+            "content_type", _headers.pop("Content-Type", None))
         cls: ClsType[Optional[JSON]] = kwargs.pop("cls", None)
 
         content_type = content_type or "application/json"
@@ -1730,7 +1900,10 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [204, 422]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            map_error(
+                status_code=response.status_code,
+                response=response,
+                error_map=error_map)
             raise HttpResponseError(response=response)
 
         deserialized = None
@@ -1894,7 +2067,8 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = kwargs.pop("params", {}) or {}
 
-        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+        content_type: Optional[str] = kwargs.pop(
+            "content_type", _headers.pop("Content-Type", None))
         cls: ClsType[Optional[JSON]] = kwargs.pop("cls", None)
 
         content_type = content_type or "application/json"
@@ -1925,7 +2099,10 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [204, 422]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            map_error(
+                status_code=response.status_code,
+                response=response,
+                error_map=error_map)
             raise HttpResponseError(response=response)
 
         deserialized = None
@@ -1941,7 +2118,10 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         return deserialized  # type: ignore
 
     @distributed_trace_async
-    async def analytics_queries_list_get(self, collaboration_id: str, **kwargs: Any) -> JSON:
+    async def analytics_queries_list_get(
+            self,
+            collaboration_id: str,
+            **kwargs: Any) -> JSON:
         """List all queries.
 
         List all queries.
@@ -2004,7 +2184,10 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 422]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            map_error(
+                status_code=response.status_code,
+                response=response,
+                error_map=error_map)
             raise HttpResponseError(response=response)
 
         if response.content:
@@ -2013,12 +2196,21 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
+            return cls(
+                pipeline_response,
+                cast(
+                    JSON,
+                    deserialized),
+                {})  # type: ignore
 
         return cast(JSON, deserialized)  # type: ignore
 
     @distributed_trace_async
-    async def analytics_queries_document_id_get(self, collaboration_id: str, document_id: str, **kwargs: Any) -> JSON:
+    async def analytics_queries_document_id_get(
+            self,
+            collaboration_id: str,
+            document_id: str,
+            **kwargs: Any) -> JSON:
         """Get query by id.
 
         Get query by id.
@@ -2099,7 +2291,10 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 422]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            map_error(
+                status_code=response.status_code,
+                response=response,
+                error_map=error_map)
             raise HttpResponseError(response=response)
 
         if response.content:
@@ -2108,7 +2303,12 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
+            return cls(
+                pipeline_response,
+                cast(
+                    JSON,
+                    deserialized),
+                {})  # type: ignore
 
         return cast(JSON, deserialized)  # type: ignore
 
@@ -2245,7 +2445,8 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = kwargs.pop("params", {}) or {}
 
-        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+        content_type: Optional[str] = kwargs.pop(
+            "content_type", _headers.pop("Content-Type", None))
         content_type = content_type if body else None
         cls: ClsType[Optional[JSON]] = kwargs.pop("cls", None)
 
@@ -2280,7 +2481,10 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [204, 422]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            map_error(
+                status_code=response.status_code,
+                response=response,
+                error_map=error_map)
             raise HttpResponseError(response=response)
 
         deserialized = None
@@ -2515,7 +2719,8 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = kwargs.pop("params", {}) or {}
 
-        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+        content_type: Optional[str] = kwargs.pop(
+            "content_type", _headers.pop("Content-Type", None))
         cls: ClsType[JSON] = kwargs.pop("cls", None)
 
         content_type = content_type or "application/json"
@@ -2546,7 +2751,10 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 422]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            map_error(
+                status_code=response.status_code,
+                response=response,
+                error_map=error_map)
             raise HttpResponseError(response=response)
 
         if response.content:
@@ -2555,12 +2763,21 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
+            return cls(
+                pipeline_response,
+                cast(
+                    JSON,
+                    deserialized),
+                {})  # type: ignore
 
         return cast(JSON, deserialized)  # type: ignore
 
     @distributed_trace_async
-    async def analytics_runs_job_id_get(self, collaboration_id: str, job_id: str, **kwargs: Any) -> JSON:
+    async def analytics_runs_job_id_get(
+            self,
+            collaboration_id: str,
+            job_id: str,
+            **kwargs: Any) -> JSON:
         """Get query run result by job id.
 
         Get query run result by job id.
@@ -2636,7 +2853,10 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 422]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            map_error(
+                status_code=response.status_code,
+                response=response,
+                error_map=error_map)
             raise HttpResponseError(response=response)
 
         if response.content:
@@ -2645,7 +2865,12 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
+            return cls(
+                pipeline_response,
+                cast(
+                    JSON,
+                    deserialized),
+                {})  # type: ignore
 
         return cast(JSON, deserialized)  # type: ignore
 
@@ -2754,7 +2979,10 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 422]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            map_error(
+                status_code=response.status_code,
+                response=response,
+                error_map=error_map)
             raise HttpResponseError(response=response)
 
         if response.content:
@@ -2763,7 +2991,8 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(pipeline_response, cast(Union[list[JSON], JSON], deserialized), {})  # type: ignore
+            return cls(pipeline_response, cast(
+                Union[list[JSON], JSON], deserialized), {})  # type: ignore
 
         return cast(Union[list[JSON], JSON], deserialized)  # type: ignore
 
@@ -2829,7 +3058,10 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 422]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            map_error(
+                status_code=response.status_code,
+                response=response,
+                error_map=error_map)
             raise HttpResponseError(response=response)
 
         if response.content:
@@ -2838,7 +3070,8 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(pipeline_response, cast(Union[list[str], JSON], deserialized), {})  # type: ignore
+            return cls(pipeline_response, cast(
+                Union[list[str], JSON], deserialized), {})  # type: ignore
 
         return cast(Union[list[str], JSON], deserialized)  # type: ignore
 
@@ -2936,9 +3169,12 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         """
 
     @distributed_trace_async
-    async def analytics_secrets_secret_name_put(
-        self, collaboration_id: str, secret_name: str, body: Optional[Union[JSON, IO[bytes]]] = None, **kwargs: Any
-    ) -> JSON:
+    async def analytics_secrets_secret_name_put(self,
+                                                collaboration_id: str,
+                                                secret_name: str,
+                                                body: Optional[Union[JSON,
+                                                                     IO[bytes]]] = None,
+                                                **kwargs: Any) -> JSON:
         """Set secret for analytics workload.
 
         Set secret for analytics workload.
@@ -2985,7 +3221,8 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = kwargs.pop("params", {}) or {}
 
-        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+        content_type: Optional[str] = kwargs.pop(
+            "content_type", _headers.pop("Content-Type", None))
         content_type = content_type if body else None
         cls: ClsType[JSON] = kwargs.pop("cls", None)
 
@@ -3020,7 +3257,10 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 422]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            map_error(
+                status_code=response.status_code,
+                response=response,
+                error_map=error_map)
             raise HttpResponseError(response=response)
 
         if response.content:
@@ -3029,7 +3269,12 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
+            return cls(
+                pipeline_response,
+                cast(
+                    JSON,
+                    deserialized),
+                {})  # type: ignore
 
         return cast(JSON, deserialized)  # type: ignore
 
@@ -3119,7 +3364,10 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 422]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            map_error(
+                status_code=response.status_code,
+                response=response,
+                error_map=error_map)
             raise HttpResponseError(response=response)
 
         if response.content:
@@ -3128,6 +3376,11 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
             deserialized = None
 
         if cls:
-            return cls(pipeline_response, cast(JSON, deserialized), {})  # type: ignore
+            return cls(
+                pipeline_response,
+                cast(
+                    JSON,
+                    deserialized),
+                {})  # type: ignore
 
         return cast(JSON, deserialized)  # type: ignore

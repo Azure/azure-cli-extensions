@@ -75,6 +75,11 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
     with self.argument_context('managedcleanroom frontend analytics') as c:
         c.argument('collaboration_id', collaboration_id_type)
 
+    # Analytics SKR policy context
+    with self.argument_context('managedcleanroom frontend analytics skr-policy') as c:
+        c.argument('dataset_id', options_list=['--dataset-id', '-d'],
+                   help='Dataset identifier for which to retrieve SKR policy')
+
     # OIDC context
     with self.argument_context('managedcleanroom frontend oidc issuerinfo') as c:
         c.argument('collaboration_id', collaboration_id_type)
