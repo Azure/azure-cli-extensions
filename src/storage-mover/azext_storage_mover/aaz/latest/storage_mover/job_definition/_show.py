@@ -296,7 +296,7 @@ class Show(AAZCommand):
             execution_time.hour = AAZIntType(
                 flags={"required": True},
             )
-            execution_time.minute = AAZFloatType()
+            execution_time.minute = AAZIntType()
 
             source_target_map = cls._schema_on_200.properties.source_target_map
             source_target_map.value = AAZListType(

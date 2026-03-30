@@ -23,6 +23,13 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
                    help='The name of the Storage Mover resource.')
         c.argument('description', help='A description for the Endpoint.')
 
+    for command in ['create-for-storage-container', 'create-for-nfs', 'create-for-storage-smb-file-share',
+                    'create-for-storage-nfs-file-share', 'create-for-multi-cloud-connector',
+                    'create-for-smb', 'create-for-s3-with-hmac']:
+        with self.argument_context('storage-mover endpoint ' + command) as c:
+            c.argument('endpoint_kind', arg_type=get_enum_type(['Source', 'Target']),
+                       help='The Endpoint resource kind, source or target.')
+
     with self.argument_context('storage-mover endpoint create-for-storage-container') as c:
         c.argument('blob_container_name', options_list=('--container-name'),
                    help='The name of the Storage blob container that is the target destination.')

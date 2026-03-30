@@ -193,7 +193,7 @@ class Update(AAZCommand):
                 minimum=0,
             ),
         )
-        execution_time.minute = AAZFloatArg(
+        execution_time.minute = AAZIntArg(
             options=["minute"],
             help="The minute element of the time. Allowed values are 0 and 30. If not specified, its value defaults to 0.",
             nullable=True,
@@ -475,7 +475,7 @@ class Update(AAZCommand):
             execution_time = _builder.get(".properties.schedule.executionTime")
             if execution_time is not None:
                 execution_time.set_prop("hour", AAZIntType, ".hour", typ_kwargs={"flags": {"required": True}})
-                execution_time.set_prop("minute", AAZFloatType, ".minute")
+                execution_time.set_prop("minute", AAZIntType, ".minute")
 
             return _instance_value
 
@@ -629,7 +629,7 @@ class _UpdateHelper:
         execution_time.hour = AAZIntType(
             flags={"required": True},
         )
-        execution_time.minute = AAZFloatType()
+        execution_time.minute = AAZIntType()
 
         source_target_map = _schema_job_definition_read.properties.source_target_map
         source_target_map.value = AAZListType(
