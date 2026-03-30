@@ -1870,7 +1870,7 @@ short-summary: Show details of a soft-deleted Azure Cosmos DB account.
 examples:
   - name: Show details of a soft-deleted Azure Cosmos DB account.
     text: |
-      az cosmosdb softdeleted-account show --location westus --account-name MyAccount
+      az cosmosdb softdeleted-account show --location westus --name MyAccount --resource-group MyResourceGroup
 """
 
 helps['cosmosdb softdeleted-account delete'] = """
@@ -1879,7 +1879,7 @@ short-summary: Permanently delete a soft-deleted Azure Cosmos DB account.
 examples:
   - name: Permanently delete a soft-deleted Azure Cosmos DB account.
     text: |
-      az cosmosdb softdeleted-account delete --location westus --account-name MyAccount --resource-group MyResourceGroup
+      az cosmosdb softdeleted-account delete --location westus --name MyAccount --resource-group MyResourceGroup
 """
 
 helps['cosmosdb softdeleted-account recover'] = """
@@ -1888,7 +1888,7 @@ short-summary: Recover a soft-deleted Azure Cosmos DB account.
 examples:
   - name: Recover a soft-deleted Azure Cosmos DB account.
     text: |
-      az cosmosdb softdeleted-account recover --location westus --account-name MyAccount --resource-group MyResourceGroup
+      az cosmosdb softdeleted-account recover --location westus --name MyAccount --resource-group MyResourceGroup
 """
 
 helps['cosmosdb sql softdeleted-database'] = """
@@ -1932,43 +1932,43 @@ examples:
       az cosmosdb sql softdeleted-database recover --location westus --account-name MyAccount --name MyDatabase --resource-group MyResourceGroup
 """
 
-helps['cosmosdb sql softdeleted-collection'] = """
+helps['cosmosdb sql softdeleted-container'] = """
 type: group
-short-summary: Manage soft-deleted collections for Azure Cosmos DB SQL API.
+short-summary: Manage soft-deleted containers for Azure Cosmos DB SQL API.
 """
 
-helps['cosmosdb sql softdeleted-collection list'] = """
+helps['cosmosdb sql softdeleted-container list'] = """
 type: command
-short-summary: List all soft-deleted collections in a database.
+short-summary: List all soft-deleted containers in a database.
 examples:
-  - name: List all soft-deleted collections in a database.
+  - name: List all soft-deleted containers in a database.
     text: |
-      az cosmosdb sql softdeleted-collection list --location westus --account-name MyAccount --database-name MyDatabase --resource-group MyResourceGroup
+      az cosmosdb sql softdeleted-container list --location westus --account-name MyAccount --database-name MyDatabase --resource-group MyResourceGroup
 """
 
-helps['cosmosdb sql softdeleted-collection show'] = """
+helps['cosmosdb sql softdeleted-container show'] = """
 type: command
-short-summary: Show details of a soft-deleted collection.
+short-summary: Show details of a soft-deleted container.
 examples:
-  - name: Show details of a soft-deleted collection.
+  - name: Show details of a soft-deleted container.
     text: |
-      az cosmosdb sql softdeleted-collection show --location westus --account-name MyAccount --database-name MyDatabase --name MyCollection --resource-group MyResourceGroup
+      az cosmosdb sql softdeleted-container show --location westus --account-name MyAccount --database-name MyDatabase --name MyContainer --resource-group MyResourceGroup
 """
 
-helps['cosmosdb sql softdeleted-collection delete'] = """
+helps['cosmosdb sql softdeleted-container delete'] = """
 type: command
-short-summary: Permanently delete a soft-deleted collection.
+short-summary: Permanently delete a soft-deleted container.
 examples:
-  - name: Permanently delete a soft-deleted collection.
+  - name: Permanently delete a soft-deleted container.
     text: |
-      az cosmosdb sql softdeleted-collection delete --location westus --account-name MyAccount --database-name MyDatabase --name MyCollection --resource-group MyResourceGroup
+      az cosmosdb sql softdeleted-container delete --location westus --account-name MyAccount --database-name MyDatabase --name MyContainer --resource-group MyResourceGroup
 """
 
-helps['cosmosdb sql softdeleted-collection recover'] = """
+helps['cosmosdb sql softdeleted-container recover'] = """
 type: command
-short-summary: Recover a soft-deleted collection.
+short-summary: Recover a soft-deleted container.
 examples:
-  - name: Recover a soft-deleted collection.
+  - name: Recover a soft-deleted container.
     text: |
-      az cosmosdb sql softdeleted-collection recover --location westus --account-name MyAccount --database-name MyDatabase --name MyCollection --resource-group MyResourceGroup
+      az cosmosdb sql softdeleted-container recover --location westus --account-name MyAccount --database-name MyDatabase --name MyContainer --resource-group MyResourceGroup
 """

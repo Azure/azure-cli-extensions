@@ -3537,7 +3537,7 @@ def cli_cosmosdb_sql_softdeleted_database_recover(client,
 
 
 # Soft-deleted Collection operations
-def cli_cosmosdb_sql_softdeleted_collection_list(client,
+def cli_cosmosdb_sql_softdeleted_container_list(client,
                                                  resource_group,
                                                  location,
                                                  account_name,
@@ -3546,7 +3546,7 @@ def cli_cosmosdb_sql_softdeleted_collection_list(client,
     return client.list(resource_group, location, account_name, database_name)
 
 
-def cli_cosmosdb_sql_softdeleted_collection_show(client,
+def cli_cosmosdb_sql_softdeleted_container_show(client,
                                                  resource_group,
                                                  location,
                                                  account_name,
@@ -3556,7 +3556,7 @@ def cli_cosmosdb_sql_softdeleted_collection_show(client,
     return client.get(resource_group, location, account_name, database_name, container_name)
 
 
-def cli_cosmosdb_sql_softdeleted_collection_delete(client,
+def cli_cosmosdb_sql_softdeleted_container_delete(client,
                                                    resource_group,
                                                    location,
                                                    account_name,
@@ -3567,7 +3567,7 @@ def cli_cosmosdb_sql_softdeleted_collection_delete(client,
     return client.begin_purge(resource_group, location, account_name, database_name, container_name, soft_delete_action_kind=SoftDeleteActionKind.PERMANENT_DELETE_RESOURCE)
 
 
-def cli_cosmosdb_sql_softdeleted_collection_recover(client,
+def cli_cosmosdb_sql_softdeleted_container_recover(client,
                                                     resource_group,
                                                     location,
                                                     account_name,

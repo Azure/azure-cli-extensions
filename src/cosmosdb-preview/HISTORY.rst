@@ -7,7 +7,7 @@ Release History
 * Add support for soft-deleted resource operations for SQL API
 * New command group `az cosmosdb sql softdeleted-account` to list, show, delete (purge), and recover soft-deleted accounts
 * New command group `az cosmosdb sql softdeleted-database` to list, show, delete (purge), and recover soft-deleted databases
-* New command group `az cosmosdb sql softdeleted-collection` to list, show, delete (purge), and recover soft-deleted containers
+* New command group `az cosmosdb sql softdeleted-container` to list, show, delete (purge), and recover soft-deleted containers
 
 1.6.1
 +++++

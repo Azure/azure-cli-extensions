@@ -412,14 +412,14 @@ def load_command_table(self, _):
         g.custom_command('recover', 'cli_cosmosdb_sql_softdeleted_database_recover')
 
     # Soft-deleted Collection commands
-    with self.command_group('cosmosdb sql softdeleted-collection',
+    with self.command_group('cosmosdb sql softdeleted-container',
                             cosmosdb_softdeleted_sql_containers_sdk,
                             client_factory=cf_softdeleted_sql_containers,
                             is_preview=True) as g:
-        g.custom_command('list', 'cli_cosmosdb_sql_softdeleted_collection_list')
-        g.custom_show_command('show', 'cli_cosmosdb_sql_softdeleted_collection_show')
-        g.custom_command('delete', 'cli_cosmosdb_sql_softdeleted_collection_delete', confirmation=True)
-        g.custom_command('recover', 'cli_cosmosdb_sql_softdeleted_collection_recover')
+        g.custom_command('list', 'cli_cosmosdb_sql_softdeleted_container_list')
+        g.custom_show_command('show', 'cli_cosmosdb_sql_softdeleted_container_show')
+        g.custom_command('delete', 'cli_cosmosdb_sql_softdeleted_container_delete', confirmation=True)
+        g.custom_command('recover', 'cli_cosmosdb_sql_softdeleted_container_recover')
 
     setup_mongocluster_commands(self)
 

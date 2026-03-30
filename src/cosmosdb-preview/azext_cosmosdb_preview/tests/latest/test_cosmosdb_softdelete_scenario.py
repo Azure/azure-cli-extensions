@@ -90,14 +90,14 @@ class CosmosDBSoftDeleteScenarioTest(ScenarioTest):
         logger.info("Showing soft-deleted account details")
         soft_deleted_account = self.cmd(
             'az cosmosdb softdeleted-account show '
-            '--location {loc} --account-name {acc} -g {rg}'
+            '--location {loc} --name {acc} -g {rg}'
         ).get_output_in_json()
         assert soft_deleted_account is not None
 
         logger.info("Recovering the soft-deleted account")
         self.cmd(
             'az cosmosdb softdeleted-account recover '
-            '--location {loc} --account-name {acc} -g {rg}'
+            '--location {loc} --name {acc} -g {rg}'
         )
         
         logger.info("Waiting for account recovery to complete")
@@ -151,14 +151,14 @@ class CosmosDBSoftDeleteScenarioTest(ScenarioTest):
         logger.info("Showing soft-deleted account details")
         soft_deleted_account = self.cmd(
             'az cosmosdb softdeleted-account show '
-            '--location {loc} --account-name {acc} -g {rg}'
+            '--location {loc} --name {acc} -g {rg}'
         ).get_output_in_json()
         assert soft_deleted_account is not None
 
         logger.info("Purging the soft-deleted account")
         self.cmd(
             'az cosmosdb softdeleted-account delete '
-            '--location {loc} --account-name {acc} -g {rg} --yes'
+            '--location {loc} --name {acc} -g {rg} --yes'
         )
         
         logger.info("Waiting for account purge to complete")
@@ -254,7 +254,7 @@ class CosmosDBSoftDeleteScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_softdelete_coll_recover', location='westus')
-    def test_cosmosdb_sql_softdeleted_collection_recover(self, resource_group):
+    def test_cosmosdb_sql_softdeleted_container_recover(self, resource_group):
         """
         Test soft-deleted collection recovery operations: list, show, and recover.
         
@@ -298,7 +298,7 @@ class CosmosDBSoftDeleteScenarioTest(ScenarioTest):
 
         logger.info("Listing soft-deleted collections")
         soft_deleted_colls = self.cmd(
-            'az cosmosdb sql softdeleted-collection list '
+            'az cosmosdb sql softdeleted-container list '
             '--location {loc} --account-name {acc} '
             '--database-name {db_name} -g {rg}'
         ).get_output_in_json()
@@ -309,7 +309,7 @@ class CosmosDBSoftDeleteScenarioTest(ScenarioTest):
 
         logger.info("Showing soft-deleted collection details")
         soft_deleted_coll = self.cmd(
-            'az cosmosdb sql softdeleted-collection show '
+            'az cosmosdb sql softdeleted-container show '
             '--location {loc} --account-name {acc} '
             '--database-name {db_name} --name {coll_name} -g {rg}'
         ).get_output_in_json()
@@ -318,7 +318,7 @@ class CosmosDBSoftDeleteScenarioTest(ScenarioTest):
 
         logger.info("Recovering the soft-deleted collection")
         self.cmd(
-            'az cosmosdb sql softdeleted-collection recover '
+            'az cosmosdb sql softdeleted-container recover '
             '--location {loc} --account-name {acc} '
             '--database-name {db_name} --name {coll_name} -g {rg}'
         )
@@ -334,7 +334,7 @@ class CosmosDBSoftDeleteScenarioTest(ScenarioTest):
 
         logger.info("Verifying collection is no longer soft-deleted")
         soft_deleted_colls_after = self.cmd(
-            'az cosmosdb sql softdeleted-collection list '
+            'az cosmosdb sql softdeleted-container list '
             '--location {loc} --account-name {acc} '
             '--database-name {db_name} -g {rg}'
         ).get_output_in_json()
@@ -399,7 +399,7 @@ class CosmosDBSoftDeleteScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_softdelete_coll_purge', location='westus')
-    def test_cosmosdb_sql_softdeleted_collection_purge(self, resource_group):
+    def test_cosmosdb_sql_softdeleted_container_purge(self, resource_group):
         """
         Test soft-deleted collection purge (permanent deletion) operation.
         
@@ -442,7 +442,7 @@ class CosmosDBSoftDeleteScenarioTest(ScenarioTest):
 
         logger.info("Listing soft-deleted collections")
         soft_deleted_colls = self.cmd(
-            'az cosmosdb sql softdeleted-collection list '
+            'az cosmosdb sql softdeleted-container list '
             '--location {loc} --account-name {acc} '
             '--database-name {db_name} -g {rg}'
         ).get_output_in_json()
@@ -452,7 +452,7 @@ class CosmosDBSoftDeleteScenarioTest(ScenarioTest):
 
         logger.info("Showing soft-deleted collection details")
         soft_deleted_coll = self.cmd(
-            'az cosmosdb sql softdeleted-collection show '
+            'az cosmosdb sql softdeleted-container show '
             '--location {loc} --account-name {acc} '
             '--database-name {db_name} --name {coll_name} -g {rg}'
         ).get_output_in_json()
@@ -460,7 +460,7 @@ class CosmosDBSoftDeleteScenarioTest(ScenarioTest):
 
         logger.info("Purging the soft-deleted collection")
         self.cmd(
-            'az cosmosdb sql softdeleted-collection delete '
+            'az cosmosdb sql softdeleted-container delete '
             '--location {loc} --account-name {acc} '
             '--database-name {db_name} --name {coll_name} -g {rg} --yes'
         )
@@ -471,7 +471,7 @@ class CosmosDBSoftDeleteScenarioTest(ScenarioTest):
         
         logger.info("Verifying collection is no longer in soft-deleted list")
         soft_deleted_colls_after = self.cmd(
-            'az cosmosdb sql softdeleted-collection list '
+            'az cosmosdb sql softdeleted-container list '
             '--location {loc} --account-name {acc} '
             '--database-name {db_name} -g {rg}'
         ).get_output_in_json()
