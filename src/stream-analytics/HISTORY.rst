@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.2
++++++++++++++++
+* Fix creating stream analytics input not triggering policy bug
+
 1.0.1
 +++++++++++++++
 * Supports stream-analytics output type: Microsoft.AzureFunction

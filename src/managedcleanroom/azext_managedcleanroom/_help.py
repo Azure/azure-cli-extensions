@@ -24,6 +24,12 @@ helps['managedcleanroom frontend'] = """
         2. Azure CLI authentication (az login)
 
         You must configure the Analytics Frontend API endpoint URL before using these commands.
+
+        All frontend commands support the --api-version parameter to specify the API version.
+        Default: 2026-03-01-preview
+
+        Supported versions:
+          - 2026-03-01-preview
 """
 
 helps['managedcleanroom frontend login'] = """
@@ -116,6 +122,8 @@ helps['managedcleanroom frontend collaboration list'] = """
     examples:
         - name: List all collaborations
           text: az managedcleanroom frontend collaboration list
+        - name: List only active collaborations
+          text: az managedcleanroom frontend collaboration list --active-only
 """
 
 helps['managedcleanroom frontend show'] = """
@@ -124,24 +132,30 @@ helps['managedcleanroom frontend show'] = """
     examples:
         - name: Show collaboration details
           text: az managedcleanroom frontend show --collaboration-id <id>
+        - name: Show collaboration details (active collaborations only)
+          text: az managedcleanroom frontend show --collaboration-id <id> --active-only
 """
 
 
 # ============================================================================
-# Workloads Help
+# Report Help
 # ============================================================================
 
-helps['managedcleanroom frontend workloads'] = """
-    type: group
-    short-summary: Manage collaboration workloads
-"""
-
-helps['managedcleanroom frontend workloads list'] = """
+helps['managedcleanroom frontend report'] = """
     type: command
-    short-summary: List workloads for a collaboration
+    short-summary: Get comprehensive attestation report
+    long-summary: |
+        Retrieves a comprehensive attestation report for a collaboration,
+        including CGS attestation and cleanroom attestation information.
+
+        This command replaces the deprecated 'attestation cgs' and
+        'attestationreport cleanroom' commands, providing a unified
+        report endpoint.
     examples:
-        - name: List workloads
-          text: az managedcleanroom frontend workloads list -c <collaboration-id>
+        - name: Get attestation report for a collaboration
+          text: az managedcleanroom frontend report --collaboration-id <id>
+        - name: Get attestation report (short form)
+          text: az managedcleanroom frontend report -c <id>
 """
 
 
@@ -162,14 +176,6 @@ helps['managedcleanroom frontend analytics show'] = """
           text: az managedcleanroom frontend analytics show -c <collaboration-id>
 """
 
-helps['managedcleanroom frontend analytics deploymentinfo'] = """
-    type: command
-    short-summary: Get deployment information
-    examples:
-        - name: Get deployment info
-          text: az managedcleanroom frontend analytics deploymentinfo -c <collaboration-id>
-"""
-
 helps['managedcleanroom frontend analytics cleanroompolicy'] = """
     type: command
     short-summary: Get cleanroom policy
@@ -180,12 +186,69 @@ helps['managedcleanroom frontend analytics cleanroompolicy'] = """
 
 
 # ============================================================================
+# Analytics Secret Help
+# ============================================================================
+
+helps['managedcleanroom frontend analytics secret'] = """
+    type: group
+    short-summary: Manage analytics secrets
+"""
+
+helps['managedcleanroom frontend analytics secret set'] = """
+    type: command
+    short-summary: Set an analytics secret
+    long-summary: |
+        Sets or updates a secret in the analytics collaboration. Secrets are
+        used for secure configuration values needed by analytics workloads.
+    examples:
+        - name: Set an analytics secret
+          text: |
+            az managedcleanroom frontend analytics secret set \
+              --collaboration-id <cid> \
+              --secret-name <name> \
+              --secret-value <value>
+        - name: Set secret (short form)
+          text: az managedcleanroom frontend analytics secret set -c <cid> --secret-name mySecret --secret-value myValue
+"""
+
+
+# ============================================================================
 # OIDC Help
 # ============================================================================
 
 helps['managedcleanroom frontend oidc'] = """
     type: group
     short-summary: Manage OIDC configuration
+"""
+
+helps['managedcleanroom frontend oidc set-issuer-url'] = """
+    type: command
+    short-summary: Set OIDC issuer URL for a collaboration
+    long-summary: |
+        Configures the OIDC issuer URL for the collaboration. This URL is used
+        for OpenID Connect authentication and token validation.
+    examples:
+        - name: Set OIDC issuer URL
+          text: |
+            az managedcleanroom frontend oidc set-issuer-url \
+              --collaboration-id <cid> \
+              --url https://oidc.example.com
+        - name: Set OIDC issuer URL (short form)
+          text: az managedcleanroom frontend oidc set-issuer-url -c <cid> --url https://oidc.example.com
+"""
+
+helps['managedcleanroom frontend oidc keys'] = """
+    type: command
+    short-summary: Get OIDC signing keys (JWKS)
+    long-summary: |
+        Retrieves the JSON Web Key Set (JWKS) containing the public keys used
+        to verify OIDC tokens issued by the collaboration. This endpoint returns
+        the keys in standard JWKS format.
+    examples:
+        - name: Get OIDC signing keys
+          text: az managedcleanroom frontend oidc keys --collaboration-id <cid>
+        - name: Get OIDC signing keys (short form)
+          text: az managedcleanroom frontend oidc keys -c <cid>
 """
 
 helps['managedcleanroom frontend oidc issuerinfo'] = """
@@ -215,8 +278,10 @@ helps['managedcleanroom frontend invitation list'] = """
     type: command
     short-summary: List invitations for a collaboration
     examples:
-        - name: List invitations
+        - name: List all invitations
           text: az managedcleanroom frontend invitation list -c <collaboration-id>
+        - name: List only pending invitations
+          text: az managedcleanroom frontend invitation list -c <collaboration-id> --pending-only
 """
 
 helps['managedcleanroom frontend invitation show'] = """
@@ -261,31 +326,134 @@ helps['managedcleanroom frontend analytics dataset show'] = """
           text: az managedcleanroom frontend analytics dataset show -c <cid> -d <document-id>
 """
 
+helps['managedcleanroom frontend analytics dataset queries'] = """
+    type: command
+    short-summary: List queries that use a specific dataset
+    long-summary: |
+        Retrieves a list of all queries that reference the specified dataset
+        as an input. This is useful for understanding dataset dependencies
+        and impact analysis.
+    examples:
+        - name: List queries using a dataset
+          text: |
+            az managedcleanroom frontend analytics dataset queries \
+              --collaboration-id <cid> \
+              --document-id <dataset-document-id>
+        - name: List queries using a dataset (short form)
+          text: az managedcleanroom frontend analytics dataset queries -c <cid> -d <dataset-doc-id>
+"""
+
 helps['managedcleanroom frontend analytics dataset publish'] = """
     type: command
-    short-summary: Publish a dataset
+    short-summary: Publish a dataset to the collaboration
     long-summary: |
-        Publishes a dataset with configuration including dataset access point,
-        protection settings, encryption secrets, and identity configuration.
-
-        The body parameter must contain a JSON object with:
-        - data.datasetAccessPoint: Dataset access configuration
-          - name: Access point name
-          - path: Dataset path
-          - protection: Protection configuration with proxyMode, proxyType, etc.
+        Publish a dataset configuration with storage, schema, access policy, and identity information.
+        Supports both SSE (Server-Side Encryption) and CPK (Customer-Provided Key) encryption modes.
+        You can use either individual parameters or a JSON body file for configuration.
+    parameters:
+        - name: --collaboration-id -c
+          type: string
+          short-summary: Collaboration identifier
+        - name: --document-id -d
+          type: string
+          short-summary: Dataset document identifier
+        - name: --body
+          type: string
+          short-summary: JSON configuration file path (@file.json) or JSON string (legacy mode)
+        - name: --storage-account-url
+          type: string
+          short-summary: Azure Storage account URL
+        - name: --container-name
+          type: string
+          short-summary: Blob container name
+        - name: --storage-account-type
+          type: string
+          short-summary: Storage account type (e.g., AzureStorageAccount)
+        - name: --encryption-mode
+          type: string
+          short-summary: Encryption mode (SSE or CPK)
+        - name: --schema-file
+          type: string
+          short-summary: Path to schema file (@path/to/schema.json) containing field definitions
+        - name: --schema-format
+          type: string
+          short-summary: Schema format (default is Delta)
+        - name: --access-mode
+          type: string
+          short-summary: Access mode (e.g., ReadWrite)
+        - name: --allowed-fields
+          type: string
+          short-summary: Comma-separated list of allowed field names
+        - name: --identity-name
+          type: string
+          short-summary: Managed identity name
+        - name: --identity-client-id
+          type: string
+          short-summary: Managed identity client ID (GUID)
+        - name: --identity-tenant-id
+          type: string
+          short-summary: Tenant ID (GUID)
+        - name: --identity-issuer-url
+          type: string
+          short-summary: OIDC issuer URL (HTTPS)
+        - name: --dek-keyvault-url
+          type: string
+          short-summary: Key Vault URL for DEK (CPK mode only)
+        - name: --dek-secret-id
+          type: string
+          short-summary: DEK secret ID (CPK mode only)
+        - name: --kek-keyvault-url
+          type: string
+          short-summary: Key Vault URL for KEK (CPK mode only)
+        - name: --kek-secret-id
+          type: string
+          short-summary: KEK secret ID (CPK mode only)
+        - name: --kek-maa-url
+          type: string
+          short-summary: MAA URL for KEK (CPK mode only)
     examples:
-        - name: Publish a dataset with configuration from file
+        - name: Publish a dataset using SSE encryption with individual parameters
           text: |
             az managedcleanroom frontend analytics dataset publish \
-              --collaboration-id <cid> \
-              --document-id <document-id> \
-              --body @publish-config.json
-        - name: Publish a dataset with inline JSON
+              --collaboration-id my-collab-123 \
+              --document-id my-dataset \
+              --storage-account-url https://mystorageaccount.blob.core.windows.net \
+              --container-name datasets \
+              --storage-account-type AzureStorageAccount \
+              --encryption-mode SSE \
+              --schema-file @schema.json \
+              --access-mode ReadWrite \
+              --allowed-fields "customer_id,revenue,date" \
+              --identity-name northwind-identity \
+              --identity-client-id fb907136-1234-5678-9abc-def012345678 \
+              --identity-tenant-id 72f988bf-1234-5678-9abc-def012345678 \
+              --identity-issuer-url https://oidc.example.com/issuer
+        - name: Publish a dataset using CPK encryption with individual parameters
           text: |
             az managedcleanroom frontend analytics dataset publish \
-              --collaboration-id <cid> \
-              --document-id <document-id> \
-              --body '{"data": {"datasetAccessPoint": {"name": "my-dataset", "path": "/data/path", "protection": {}}}}'
+              --collaboration-id my-collab-123 \
+              --document-id my-dataset \
+              --storage-account-url https://mystorageaccount.blob.core.windows.net \
+              --container-name datasets \
+              --storage-account-type AzureStorageAccount \
+              --encryption-mode CPK \
+              --schema-file @schema.json \
+              --access-mode ReadWrite \
+              --identity-name northwind-identity \
+              --identity-client-id fb907136-1234-5678-9abc-def012345678 \
+              --identity-tenant-id 72f988bf-1234-5678-9abc-def012345678 \
+              --identity-issuer-url https://oidc.example.com/issuer \
+              --dek-keyvault-url https://mykeyvault.vault.azure.net \
+              --dek-secret-id dek-secret-123 \
+              --kek-keyvault-url https://mykeyvault.vault.azure.net \
+              --kek-secret-id kek-secret-123 \
+              --kek-maa-url https://sharedeus.eus.attest.azure.net
+        - name: Publish a dataset using a JSON body file (legacy mode)
+          text: |
+            az managedcleanroom frontend analytics dataset publish \
+              --collaboration-id my-collab-123 \
+              --document-id my-dataset \
+              --body @dataset-config.json
 """
 
 
@@ -309,6 +477,11 @@ helps['managedcleanroom frontend consent check'] = """
 helps['managedcleanroom frontend consent set'] = """
     type: command
     short-summary: Set consent document action
+    long-summary: |
+        Enables or disables consent for a specific document in the collaboration.
+
+        Note: This command was updated in version 1.0.0b4. The consent actions
+        changed from 'accept/reject' to 'enable/disable'.
     examples:
         - name: Enable consent
           text: az managedcleanroom frontend consent set -c <cid> --document-id <doc-id> --consent-action enable
@@ -344,68 +517,120 @@ helps['managedcleanroom frontend analytics query show'] = """
 
 helps['managedcleanroom frontend analytics query publish'] = """
     type: command
-    short-summary: Publish a query
+    short-summary: Publish a query to the collaboration
     long-summary: |
-        Publishes a query with configuration including input datasets, output dataset,
-        and query execution segments.
-
-        The body parameter must contain a JSON object with:
-        - inputDatasets: Array of input dataset configurations
-        - outputDataset: Output dataset configuration
-        - queryData: Query execution data with segments
-    examples:
-        - name: Publish a query with configuration from file
-          text: |
-            az managedcleanroom frontend analytics query publish \
-              --collaboration-id <cid> \
-              --document-id <document-id> \
-              --body @query-publish-config.json
-        - name: Publish a query with inline JSON
-          text: |
-            az managedcleanroom frontend analytics query publish \
-              --collaboration-id <cid> \
-              --document-id <document-id> \
-              --body '{"inputDatasets": [{"datasetDocumentId": "...", "view": "..."}], "outputDataset": {}, "queryData": {"segments": []}}'
-"""
-
-helps['managedcleanroom frontend analytics query run'] = """
-    type: command
-    short-summary: Run a query
-    long-summary: |
-        Executes a query against the collaboration's analytics workload.
-        The run configuration can be provided via --body parameter.
-        If runId is not specified in body, it will be auto-generated.
+        Publish a query configuration with SQL segments, execution sequence, and dataset mappings.
+        Query segments can be provided as @file.json (full segment object including executionSequence)
+        or as inline SQL strings (requires --execution-sequence parameter). The execution sequence
+        defines which segments run in parallel (same number) or sequentially (different numbers).
+        Cannot mix @file.json and inline SQL segments in the same command.
     parameters:
+        - name: --collaboration-id -c
+          type: string
+          short-summary: Collaboration identifier
         - name: --document-id -d
           type: string
           short-summary: Query document identifier
         - name: --body
           type: string
-          short-summary: Run configuration (JSON string or @file path)
-          long-summary: |
-            Optional JSON configuration containing:
-            - runId: Unique run identifier (auto-generated if not provided)
-            - dryRun: Boolean flag for dry run mode
-            - startDate: ISO-8601 formatted start date
-            - endDate: ISO-8601 formatted end date
-            - useOptimizer: Boolean flag to enable query optimizer
+          short-summary: JSON configuration file path (@file.json) or JSON string (legacy mode)
+        - name: --query-segment
+          type: string
+          short-summary: Query segment SQL (@file.sql or inline). Repeatable. Order matters.
+        - name: --execution-sequence
+          type: string
+          short-summary: Comma-separated execution sequence numbers (e.g., "1,1,2"). Must match segment count.
+        - name: --input-datasets
+          type: string
+          short-summary: Comma-separated input datasets as datasetId:viewName pairs
+        - name: --output-dataset
+          type: string
+          short-summary: Output dataset as datasetId:viewName
     examples:
-        - name: Run query with auto-generated run ID
+        - name: Publish a query with segments from JSON files (segment files include executionSequence)
+          text: |
+            az managedcleanroom frontend analytics query publish \\
+              --collaboration-id my-collab-123 \\
+              --document-id my-query \\
+              --query-segment @segment1.json \\
+              --query-segment @segment2.json \\
+              --query-segment @segment3.json \\
+              --input-datasets "dataset1:view1,dataset2:view2" \\
+              --output-dataset "output-dataset:results"
+
+            Note: Each segment JSON file should contain:
+            data, executionSequence, preConditions, postFilters fields
+        - name: Publish a query with inline SQL segments (requires --execution-sequence)
+          text: |
+            az managedcleanroom frontend analytics query publish \\
+              --collaboration-id my-collab-123 \\
+              --document-id my-query \\
+              --query-segment "SELECT * FROM table1" \\
+              --query-segment "SELECT * FROM table2" \\
+              --execution-sequence "1,2" \\
+              --input-datasets "dataset1:view1" \\
+              --output-dataset "output-dataset:results"
+        - name: Publish a query using a JSON body file (legacy mode)
+          text: |
+            az managedcleanroom frontend analytics query publish \
+              --collaboration-id my-collab-123 \
+              --document-id my-query \
+              --body @query-config.json
+"""
+
+helps['managedcleanroom frontend analytics query run'] = """
+    type: command
+    short-summary: Run a query in the collaboration
+    long-summary: |
+        Execute a published query with optional configuration parameters.
+        A run ID is automatically generated if not provided.
+    parameters:
+        - name: --collaboration-id -c
+          type: string
+          short-summary: Collaboration identifier
+        - name: --document-id -d
+          type: string
+          short-summary: Query document identifier
+        - name: --body
+          type: string
+          short-summary: JSON configuration file path (@file.json) or JSON string (legacy mode)
+        - name: --dry-run
+          type: bool
+          short-summary: Perform a dry run without executing the query
+        - name: --start-date
+          type: string
+          short-summary: Start date for query execution
+        - name: --end-date
+          type: string
+          short-summary: End date for query execution
+        - name: --use-optimizer
+          type: bool
+          short-summary: Use query optimizer
+    examples:
+        - name: Run a query with default settings
           text: |
             az managedcleanroom frontend analytics query run \
-              --collaboration-id <cid> \
-              --document-id <document-id>
-        - name: Run query with specific configuration
+              --collaboration-id my-collab-123 \
+              --document-id my-query
+        - name: Run a query with dry run and date range
           text: |
             az managedcleanroom frontend analytics query run \
-              --collaboration-id <cid> \
-              --document-id <document-id> \
-              --body '{"runId": "my-run-001", "dryRun": false, "useOptimizer": true}'
-        - name: Run query with configuration from file
+              --collaboration-id my-collab-123 \
+              --document-id my-query \
+              --dry-run \
+              --start-date "2024-01-01" \
+              --end-date "2024-12-31"
+        - name: Run a query with optimizer enabled
           text: |
             az managedcleanroom frontend analytics query run \
-              --collaboration-id <cid> \
-              --document-id <document-id> \
+              --collaboration-id my-collab-123 \
+              --document-id my-query \
+              --use-optimizer
+        - name: Run a query using a JSON body file (legacy mode)
+          text: |
+            az managedcleanroom frontend analytics query run \
+              --collaboration-id my-collab-123 \
+              --document-id my-query \
               --body @run-config.json
 """
 
@@ -415,70 +640,37 @@ helps['managedcleanroom frontend analytics query run'] = """
 # ============================================================================
 
 helps['managedcleanroom frontend analytics query vote'] = """
-    type: group
-    short-summary: Manage query voting
-"""
-
-helps['managedcleanroom frontend analytics query vote accept'] = """
     type: command
-    short-summary: Accept a query vote
+    short-summary: Vote on a query (accept or reject)
     long-summary: |
-        Accepts a query vote for the specified collaboration and query document.
-        Optionally accepts a --body parameter for additional vote configuration.
-    parameters:
-        - name: --body
-          type: string
-          short-summary: Optional vote configuration (JSON string or @file path)
-          long-summary: |
-            Optional JSON configuration containing:
-            - reason: Text explanation for accepting the vote
-            - metadata: Additional metadata for the vote
-    examples:
-        - name: Accept query vote
-          text: az managedcleanroom frontend analytics query vote accept -c <cid> --document-id <document-id>
-        - name: Accept query vote with reason
-          text: |
-            az managedcleanroom frontend analytics query vote accept \
-              -c <cid> \
-              --document-id <document-id> \
-              --body '{"reason": "Query meets all compliance requirements"}'
-        - name: Accept query vote with configuration from file
-          text: |
-            az managedcleanroom frontend analytics query vote accept \
-              -c <cid> \
-              --document-id <document-id> \
-              --body @vote-config.json
-"""
+        Submits a vote for a query in the collaboration. This unified endpoint
+        allows you to accept or reject a query with a single command.
 
-helps['managedcleanroom frontend analytics query vote reject'] = """
-    type: command
-    short-summary: Reject a query vote
-    long-summary: |
-        Rejects a query vote for the specified collaboration and query document.
-        Optionally accepts a --body parameter for additional vote configuration.
+        This command replaces the deprecated 'vote accept' and 'vote reject'
+        commands in version 1.0.0b4.
     parameters:
-        - name: --body
+        - name: --vote-action
           type: string
-          short-summary: Optional vote configuration (JSON string or @file path)
+          short-summary: Vote action (accept or reject)
           long-summary: |
-            Optional JSON configuration containing:
-            - reason: Text explanation for rejecting the vote
-            - metadata: Additional metadata for the vote
+            The vote action to perform:
+            - accept: Approve the query
+            - reject: Reject the query
     examples:
-        - name: Reject query vote
-          text: az managedcleanroom frontend analytics query vote reject -c <cid> --document-id <document-id>
-        - name: Reject query vote with reason
+        - name: Accept a query vote
           text: |
-            az managedcleanroom frontend analytics query vote reject \
-              -c <cid> \
+            az managedcleanroom frontend analytics query vote \
+              --collaboration-id <cid> \
               --document-id <document-id> \
-              --body '{"reason": "Query violates data access policy"}'
-        - name: Reject query vote with configuration from file
+              --vote-action accept
+        - name: Reject a query vote
           text: |
-            az managedcleanroom frontend analytics query vote reject \
-              -c <cid> \
+            az managedcleanroom frontend analytics query vote \
+              --collaboration-id <cid> \
               --document-id <document-id> \
-              --body @vote-config.json
+              --vote-action reject
+        - name: Accept query vote (short form)
+          text: az managedcleanroom frontend analytics query vote -c <cid> -d <doc-id> --vote-action accept
 """
 
 
@@ -528,38 +720,36 @@ helps['managedcleanroom frontend analytics auditevent'] = """
 helps['managedcleanroom frontend analytics auditevent list'] = """
     type: command
     short-summary: List audit events for a collaboration
+    long-summary: |
+        Retrieves audit events for a collaboration with optional filtering.
+
+        Filter options:
+        - scope: Filter by audit event scope (e.g., 'dataset', 'query', 'collaboration')
+        - from_seqno: Starting sequence number for event range
+        - to_seqno: Ending sequence number for event range
     examples:
-        - name: List audit events
+        - name: List all audit events
           text: az managedcleanroom frontend analytics auditevent list -c <collaboration-id>
+        - name: List audit events for dataset scope
+          text: |
+            az managedcleanroom frontend analytics auditevent list \
+              --collaboration-id <cid> \
+              --scope dataset
+        - name: List audit events in sequence number range
+          text: |
+            az managedcleanroom frontend analytics auditevent list \
+              --collaboration-id <cid> \
+              --from-seqno 100 \
+              --to-seqno 200
+        - name: List dataset audit events in specific range
+          text: |
+            az managedcleanroom frontend analytics auditevent list \
+              -c <cid> \
+              --scope dataset \
+              --from-seqno 50 \
+              --to-seqno 150
 """
-
 
 # ============================================================================
-# Attestation Help
+# Attestation Help (Deprecated - Use 'report' command instead)
 # ============================================================================
-
-helps['managedcleanroom frontend attestation'] = """
-    type: group
-    short-summary: View attestation reports
-"""
-
-helps['managedcleanroom frontend attestation cgs'] = """
-    type: command
-    short-summary: Get CGS attestation report
-    examples:
-        - name: Get CGS attestation report
-          text: az managedcleanroom frontend attestation cgs -c <collaboration-id>
-"""
-
-helps['managedcleanroom frontend analytics attestationreport'] = """
-    type: group
-    short-summary: View attestation reports
-"""
-
-helps['managedcleanroom frontend analytics attestationreport cleanroom'] = """
-    type: command
-    short-summary: Get cleanroom attestation report
-    examples:
-        - name: Get cleanroom attestation report
-          text: az managedcleanroom frontend analytics attestationreport cleanroom -c <collaboration-id>
-"""

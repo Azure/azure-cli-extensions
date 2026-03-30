@@ -26,22 +26,23 @@ def load_frontend_command_table(loader, _):
     # Show command at frontend level (requires --collaboration-id)
     with loader.command_group('managedcleanroom frontend', custom_command_type=frontend_custom) as g:
         g.custom_show_command('show', 'frontend_collaboration_show')
-
-    # Workloads commands
-    with loader.command_group('managedcleanroom frontend workloads', custom_command_type=frontend_custom) as g:
-        g.custom_command('list', 'frontend_collaboration_workloads_list')
+        g.custom_show_command('report', 'frontend_collaboration_report_show')
 
     # Analytics commands
     with loader.command_group('managedcleanroom frontend analytics', custom_command_type=frontend_custom) as g:
         g.custom_show_command('show', 'frontend_collaboration_analytics_show')
         g.custom_command(
-            'deploymentinfo',
-            'frontend_collaboration_analytics_deploymentinfo')
-        g.custom_command(
             'cleanroompolicy',
             'frontend_collaboration_analytics_cleanroompolicy')
 
     # OIDC commands
+    with loader.command_group('managedcleanroom frontend oidc', custom_command_type=frontend_custom) as g:
+        g.custom_command(
+            'set-issuer-url',
+            'frontend_collaboration_oidc_set_issuer_url')
+        g.custom_show_command('keys', 'frontend_collaboration_oidc_keys_show')
+
+    # Keep issuerinfo for backwards compatibility
     with loader.command_group('managedcleanroom frontend oidc issuerinfo', custom_command_type=frontend_custom) as g:
         g.custom_show_command(
             'show', 'frontend_collaboration_oidc_issuerinfo_show')
@@ -57,6 +58,9 @@ def load_frontend_command_table(loader, _):
         g.custom_command('list', 'frontend_collaboration_dataset_list')
         g.custom_show_command('show', 'frontend_collaboration_dataset_show')
         g.custom_command('publish', 'frontend_collaboration_dataset_publish')
+        g.custom_command(
+            'queries',
+            'frontend_collaboration_dataset_queries_list')
 
     # Consent commands
     with loader.command_group('managedcleanroom frontend consent', custom_command_type=frontend_custom) as g:
@@ -69,13 +73,7 @@ def load_frontend_command_table(loader, _):
         g.custom_show_command('show', 'frontend_collaboration_query_show')
         g.custom_command('publish', 'frontend_collaboration_query_publish')
         g.custom_command('run', 'frontend_collaboration_query_run')
-
-    # Query vote commands
-    with loader.command_group(
-            'managedcleanroom frontend analytics query vote',
-            custom_command_type=frontend_custom) as g:
-        g.custom_command('accept', 'frontend_collaboration_query_vote_accept')
-        g.custom_command('reject', 'frontend_collaboration_query_vote_reject')
+        g.custom_command('vote', 'frontend_collaboration_query_vote')
 
     # Query run history commands
     with loader.command_group(
@@ -97,16 +95,9 @@ def load_frontend_command_table(loader, _):
             custom_command_type=frontend_custom) as g:
         g.custom_command('list', 'frontend_collaboration_audit_list')
 
-    # Attestation commands
-    with loader.command_group('managedcleanroom frontend attestation', custom_command_type=frontend_custom) as g:
-        g.custom_command('cgs', 'frontend_collaboration_attestation_cgs')
-
-    with loader.command_group(
-            'managedcleanroom frontend analytics attestationreport',
-            custom_command_type=frontend_custom) as g:
-        g.custom_command(
-            'cleanroom',
-            'frontend_collaboration_attestation_cleanroom')
+    # Analytics secrets command
+    with loader.command_group('managedcleanroom frontend analytics secret', custom_command_type=frontend_custom) as g:
+        g.custom_command('set', 'frontend_collaboration_analytics_secret_set')
 
     # Configuration and authentication commands
     with loader.command_group('managedcleanroom frontend', custom_command_type=frontend_custom) as g:

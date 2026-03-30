@@ -12,6 +12,17 @@
 def load_arguments(self, _):  # pylint: disable=unused-argument
     from knack.arguments import CLIArgumentType
 
+    # Global API versioning parameter for all frontend commands
+    with self.argument_context('managedcleanroom frontend') as c:
+        from azure.cli.core.commands.parameters import get_enum_type
+        c.argument(
+            'api_version',
+            options_list=['--api-version'],
+            help='API version to use for this request. Default: 2026-03-01-preview',
+            arg_type=get_enum_type(
+                ['2026-03-01-preview']),
+            default='2026-03-01-preview')
+
     # Define argument types for frontend commands
     collaboration_id_type = CLIArgumentType(
         options_list=['--collaboration-id', '-c'],
@@ -35,15 +46,29 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
 
     consent_action_type = CLIArgumentType(
         options_list=['--consent-action', '-a'],
-        help='Consent action (enable/disable)'
+        help="Consent action: 'enable' or 'disable'"
+    )
+
+    vote_action_type = CLIArgumentType(
+        options_list=['--vote-action'],
+        help="Vote action: 'accept' or 'reject'"
     )
 
     # Show command context
     with self.argument_context('managedcleanroom frontend show') as c:
         c.argument('collaboration_id', collaboration_id_type)
+        c.argument('active_only', options_list=['--active-only'],
+                   action='store_true',
+                   help='Query only active collaborations')
 
-    # Workloads context
-    with self.argument_context('managedcleanroom frontend workloads') as c:
+    # Collaboration list context
+    with self.argument_context('managedcleanroom frontend collaboration list') as c:
+        c.argument('active_only', options_list=['--active-only'],
+                   action='store_true',
+                   help='Filter to active collaborations only')
+
+    # Report context
+    with self.argument_context('managedcleanroom frontend report') as c:
         c.argument('collaboration_id', collaboration_id_type)
 
     # Analytics context
@@ -54,9 +79,23 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
     with self.argument_context('managedcleanroom frontend oidc issuerinfo') as c:
         c.argument('collaboration_id', collaboration_id_type)
 
+    # OIDC set-issuer-url context
+    with self.argument_context('managedcleanroom frontend oidc set-issuer-url') as c:
+        c.argument('collaboration_id', collaboration_id_type)
+        c.argument('url', options_list=['--url'], help='OIDC issuer URL')
+
+    # OIDC keys context
+    with self.argument_context('managedcleanroom frontend oidc keys') as c:
+        c.argument('collaboration_id', collaboration_id_type)
+
     # Invitation context
     with self.argument_context('managedcleanroom frontend invitation') as c:
         c.argument('collaboration_id', collaboration_id_type)
+
+    with self.argument_context('managedcleanroom frontend invitation list') as c:
+        c.argument('pending_only', options_list=['--pending-only'],
+                   action='store_true',
+                   help='Filter to pending invitations only')
 
     with self.argument_context('managedcleanroom frontend invitation show') as c:
         c.argument('invitation_id', invitation_id_type)
@@ -77,7 +116,93 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
             'body',
             type=str,
             help='JSON string or @file path containing publish configuration. '
-            'Must include datasetAccessPoint with name, path, and protection details.')
+            'Must include datasetAccessPoint with name, path, and '
+            'protection details.')
+
+        # Storage parameters
+        c.argument(
+            'storage_account_url',
+            options_list=['--storage-account-url'],
+            help='Azure Storage account URL')
+        c.argument(
+            'container_name',
+            options_list=['--container-name'],
+            help='Blob container name')
+        c.argument(
+            'storage_account_type',
+            options_list=['--storage-account-type'],
+            help='Storage account type (e.g., AzureStorageAccount)')
+        c.argument(
+            'encryption_mode',
+            options_list=['--encryption-mode'],
+            help='Encryption mode: SSE or CPK')
+
+        # Schema parameters
+        c.argument(
+            'schema_file',
+            options_list=['--schema-file'],
+            help='Path to schema file (@path/to/schema.json) containing '
+            'field definitions')
+        c.argument(
+            'schema_format',
+            options_list=['--schema-format'],
+            help='Schema format (default: Delta)')
+
+        # Access policy parameters
+        c.argument(
+            'access_mode',
+            options_list=['--access-mode'],
+            help='Access mode (e.g., ReadWrite)')
+        c.argument(
+            'allowed_fields',
+            options_list=['--allowed-fields'],
+            help='Comma-separated list of allowed field names')
+
+        # Identity parameters
+        c.argument(
+            'identity_name',
+            options_list=['--identity-name'],
+            help='Managed identity name')
+        c.argument(
+            'identity_client_id',
+            options_list=['--identity-client-id'],
+            help='Managed identity client ID (GUID)')
+        c.argument(
+            'identity_tenant_id',
+            options_list=['--identity-tenant-id'],
+            help='Tenant ID (GUID)')
+        c.argument(
+            'identity_issuer_url',
+            options_list=['--identity-issuer-url'],
+            help='OIDC issuer URL (HTTPS)')
+
+        # CPK DEK parameters
+        c.argument(
+            'dek_keyvault_url',
+            options_list=['--dek-keyvault-url'],
+            help='Key Vault URL for DEK (CPK mode only)')
+        c.argument(
+            'dek_secret_id',
+            options_list=['--dek-secret-id'],
+            help='DEK secret ID (CPK mode only)')
+
+        # CPK KEK parameters
+        c.argument(
+            'kek_keyvault_url',
+            options_list=['--kek-keyvault-url'],
+            help='Key Vault URL for KEK (CPK mode only)')
+        c.argument(
+            'kek_secret_id',
+            options_list=['--kek-secret-id'],
+            help='KEK secret ID (CPK mode only)')
+        c.argument(
+            'kek_maa_url',
+            options_list=['--kek-maa-url'],
+            help='MAA URL for KEK (CPK mode only)')
+
+    # Dataset queries context
+    with self.argument_context('managedcleanroom frontend analytics dataset queries') as c:
+        c.argument('document_id', document_id_type)
 
     # Consent context
     with self.argument_context('managedcleanroom frontend consent') as c:
@@ -102,30 +227,63 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
             help='JSON string or @file path containing publish configuration. '
             'Must include inputDatasets, outputDataset, and queryData.')
 
+        c.argument(
+            'query_segment',
+            options_list=['--query-segment'],
+            action='append',
+            help='Query segment: @file.json (full segment object with data, '
+            'executionSequence, preConditions, postFilters) or inline SQL string. '
+            'Repeatable. Order matters. Cannot mix @file.json and inline segments.')
+        c.argument(
+            'execution_sequence',
+            options_list=['--execution-sequence'],
+            help='Comma-separated execution sequence numbers (e.g., "1,1,2"). '
+            'Required for inline SQL segments. Not used with @file.json segments '
+            '(include executionSequence in each JSON file instead).')
+        c.argument(
+            'input_datasets',
+            options_list=['--input-datasets'],
+            help='Comma-separated input datasets as datasetId:viewName pairs')
+        c.argument(
+            'output_dataset',
+            options_list=['--output-dataset'],
+            help='Output dataset as datasetId:viewName')
+
     with self.argument_context('managedcleanroom frontend analytics query run') as c:
         c.argument('document_id', document_id_type)
         c.argument(
-            'body', type=str, help='JSON string or @file path containing run configuration. '
-            'Optional fields: runId (auto-generated if not provided), dryRun, startDate, endDate, useOptimizer.')
+            'body',
+            type=str,
+            help='JSON string or @file path containing run configuration. '
+            'Optional fields: runId (auto-generated if not provided), '
+            'dryRun, startDate, endDate, useOptimizer.')
 
-    # Query vote context
+        c.argument(
+            'dry_run',
+            options_list=['--dry-run'],
+            action='store_true',
+            help='Perform a dry run without executing the query')
+        c.argument(
+            'start_date',
+            options_list=['--start-date'],
+            help='Start date for query execution')
+        c.argument(
+            'end_date',
+            options_list=['--end-date'],
+            help='End date for query execution')
+        c.argument(
+            'use_optimizer',
+            options_list=['--use-optimizer'],
+            action='store_true',
+            help='Use query optimizer')
+
+    # Query vote context (unified)
     with self.argument_context('managedcleanroom frontend analytics query vote') as c:
         c.argument('collaboration_id', collaboration_id_type)
         c.argument('document_id', document_id_type)
-
-    # Add body parameter for vote accept
-    with self.argument_context('managedcleanroom frontend analytics query vote accept') as c:
-        c.argument(
-            'body',
-            type=str,
-            help='Optional JSON string or @file path containing vote accept configuration.')
-
-    # Add body parameter for vote reject
-    with self.argument_context('managedcleanroom frontend analytics query vote reject') as c:
-        c.argument(
-            'body',
-            type=str,
-            help='Optional JSON string or @file path containing vote reject configuration.')
+        c.argument('vote_action', vote_action_type)
+        c.argument('proposal_id', options_list=['--proposal-id'],
+                   help='Optional proposal ID')
 
     # Query runhistory context
     with self.argument_context('managedcleanroom frontend analytics query runhistory') as c:
@@ -144,6 +302,23 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
     # Audit context
     with self.argument_context('managedcleanroom frontend analytics auditevent') as c:
         c.argument('collaboration_id', collaboration_id_type)
+
+    # Audit event list context
+    with self.argument_context('managedcleanroom frontend analytics auditevent list') as c:
+        c.argument('scope', options_list=['--scope'],
+                   help='Optional scope filter')
+        c.argument('from_seqno', options_list=['--from-seqno'],
+                   help='Optional starting sequence number')
+        c.argument('to_seqno', options_list=['--to-seqno'],
+                   help='Optional ending sequence number')
+
+    # Analytics secrets context
+    with self.argument_context('managedcleanroom frontend analytics secret set') as c:
+        c.argument('collaboration_id', collaboration_id_type)
+        c.argument('secret_name', options_list=['--secret-name', '-n'],
+                   help='Secret name')
+        c.argument('secret_value', options_list=['--secret-value', '-v'],
+                   help='Secret value')
 
     # Attestation context
     with self.argument_context('managedcleanroom frontend attestation') as c:

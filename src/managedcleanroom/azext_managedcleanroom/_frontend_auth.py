@@ -30,10 +30,12 @@ def get_frontend_token(cmd):
     profile = Profile(cli_ctx=cmd.cli_ctx)
     subscription = get_subscription_id(cmd.cli_ctx)
 
-    # Priority 0: explicit token via environment variable (for local/test envs only)
+    # Priority 0: explicit token via environment variable (for local/test envs
+    # only)
     env_token = os.environ.get('MANAGEDCLEANROOM_ACCESS_TOKEN')
     if env_token:
-        logger.warning("Using token from MANAGEDCLEANROOM_ACCESS_TOKEN env var FOR TESTING PURPOSES ONLY")
+        logger.warning(
+            "Using token from MANAGEDCLEANROOM_ACCESS_TOKEN env var FOR TESTING PURPOSES ONLY")
         from collections import namedtuple
         AccessToken = namedtuple('AccessToken', ['token', 'expires_on'])
         token_obj = AccessToken(token=env_token, expires_on=0)
@@ -87,7 +89,7 @@ def set_frontend_config(cmd, endpoint):
         endpoint)
 
 
-def get_frontend_client(cmd, endpoint=None):
+def get_frontend_client(cmd, endpoint=None, api_version=None):
     """Create Analytics Frontend API client with Azure authentication
 
     Uses Profile.get_raw_token() to fetch access token from Azure context.
@@ -96,11 +98,17 @@ def get_frontend_client(cmd, endpoint=None):
     :param cmd: CLI command context
     :param endpoint: Optional explicit endpoint URL (overrides config)
     :type endpoint: str
+    :param api_version: Optional API version (defaults to 2026-03-01-preview)
+    :type api_version: str
     :return: Configured AnalyticsFrontendAPI client
     :raises: CLIError if token fetch fails or endpoint not configured
     """
     from .analytics_frontend_api import AnalyticsFrontendAPI
     from azure.core.pipeline.policies import BearerTokenCredentialPolicy, SansIOHTTPPolicy
+
+    # Use provided api_version or default
+    if api_version is None:
+        api_version = '2026-03-01-preview'
 
     api_endpoint = endpoint or get_frontend_config(cmd)
     if not api_endpoint:
@@ -172,5 +180,6 @@ def get_frontend_client(cmd, endpoint=None):
     # Return configured client
     return AnalyticsFrontendAPI(
         endpoint=api_endpoint,
+        api_version=api_version,
         authentication_policy=auth_policy
     )
