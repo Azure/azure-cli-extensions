@@ -281,6 +281,77 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
+        random_name_length=17,
+        name_prefix="clitest",
+        location="eastus",
+    )
+    # live_only: ManagedNATGatewayV2Preview feature flag must be registered on the
+    # test subscription and the RP-side feature toggle must be active. Recording-based
+    # tests will be added once the feature is enabled in public clouds.
+    @live_only()
+    def test_aks_create_and_update_with_managed_nat_gateway_v2(
+        self, resource_group, resource_group_location
+    ):
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} "
+            "--vm-set-type VirtualMachineScaleSets -c 1 "
+            "--outbound-type=managedNATGatewayV2 "
+            "--nat-gateway-managed-outbound-ip-count 2 "
+            "--ssh-key-value={ssh_key_value}"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check(
+                    "networkProfile.outboundType",
+                    "managedNATGatewayV2",
+                ),
+                self.check(
+                    "networkProfile.natGatewayProfile"
+                    ".managedOutboundIpProfile.count",
+                    2,
+                ),
+            ],
+        )
+
+        update_cmd = (
+            "aks update --resource-group={resource_group} --name={name} "
+            "--nat-gateway-managed-outbound-ip-count 4 "
+            "--nat-gateway-idle-timeout 30 "
+        )
+        self.cmd(
+            update_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check(
+                    "networkProfile.outboundType",
+                    "managedNATGatewayV2",
+                ),
+                self.check(
+                    "networkProfile.natGatewayProfile"
+                    ".idleTimeoutInMinutes",
+                    30,
+                ),
+                self.check(
+                    "networkProfile.natGatewayProfile"
+                    ".managedOutboundIpProfile.count",
+                    4,
+                ),
+            ],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="eastus2euap", preserve_default_location=True,
     )
     def test_aks_create_with_block_and_update_to_none_outbound(

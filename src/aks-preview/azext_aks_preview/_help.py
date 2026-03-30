@@ -158,15 +158,15 @@ helps['aks create'] = f"""
         - name: --nat-gateway-managed-outbound-ip-count
           type: int
           short-summary: NAT gateway managed outbound IP count.
-          long-summary: Desired number of managed outbound IPs for NAT gateway outbound connection. Please specify a value in the range of [1, 16]. Valid for Standard SKU load balancer cluster with managedNATGateway outbound type only.
+          long-summary: Desired number of managed outbound IPs for NAT gateway outbound connection. Please specify a value in the range of [1, 16]. Valid for Standard SKU load balancer cluster with managedNATGateway or managedNATGatewayV2 outbound type only.
         - name: --nat-gateway-idle-timeout
           type: int
           short-summary: NAT gateway idle timeout in minutes.
-          long-summary: Desired idle timeout for NAT gateway outbound flows, default is 4 minutes. Please specify a value in the range of [4, 120]. Valid for Standard SKU load balancer cluster with managedNATGateway outbound type only.
+          long-summary: Desired idle timeout for NAT gateway outbound flows, default is 4 minutes. Please specify a value in the range of [4, 120]. Valid for Standard SKU load balancer cluster with managedNATGateway or managedNATGatewayV2 outbound type only.
         - name: --outbound-type
           type: string
           short-summary: How outbound traffic will be configured for a cluster.
-          long-summary: Select between loadBalancer, userDefinedRouting, managedNATGateway, userAssignedNATGateway, none and block. If not set, defaults to type loadBalancer. Requires --vnet-subnet-id to be provided with a preconfigured route table and --load-balancer-sku to be Standard.
+          long-summary: Select between loadBalancer, userDefinedRouting, managedNATGateway, managedNATGatewayV2, userAssignedNATGateway, none and block. If not set, defaults to type loadBalancer. managedNATGatewayV2 uses Azure NAT Gateway Standard V2 SKU and supports IPv6, user-provided public IPs, and user-provided IP prefixes.
         - name: --enable-addons -a
           type: string
           short-summary: Enable the Kubernetes addons in a comma-separated list.
@@ -960,15 +960,15 @@ helps['aks update'] = """
         - name: --nat-gateway-managed-outbound-ip-count
           type: int
           short-summary: NAT gateway managed outbound IP count.
-          long-summary: Desired number of managed outbound IPs for NAT gateway outbound connection. Please specify a value in the range of [1, 16]. Valid for Standard SKU load balancer cluster with managedNATGateway outbound type only.
+          long-summary: Desired number of managed outbound IPs for NAT gateway outbound connection. Please specify a value in the range of [1, 16]. Valid for Standard SKU load balancer cluster with managedNATGateway or managedNATGatewayV2 outbound type only.
         - name: --nat-gateway-idle-timeout
           type: int
           short-summary: NAT gateway idle timeout in minutes.
-          long-summary: Desired idle timeout for NAT gateway outbound flows, default is 4 minutes. Please specify a value in the range of [4, 120]. Valid for Standard SKU load balancer cluster with managedNATGateway outbound type only.
+          long-summary: Desired idle timeout for NAT gateway outbound flows, default is 4 minutes. Please specify a value in the range of [4, 120]. Valid for Standard SKU load balancer cluster with managedNATGateway or managedNATGatewayV2 outbound type only.
         - name: --outbound-type
           type: string
           short-summary: How outbound traffic will be configured for a cluster.
-          long-summary: This option will change the way how the outbound connections are managed in the AKS cluster. Available options are loadbalancer, managedNATGateway, userAssignedNATGateway, userDefinedRouting, none and block. For custom vnet, loadbalancer, userAssignedNATGateway and userDefinedRouting are supported. For aks managed vnet, loadbalancer, managedNATGateway and userDefinedRouting are supported.
+          long-summary: This option will change the way how the outbound connections are managed in the AKS cluster. Available options are loadbalancer, managedNATGateway, managedNATGatewayV2, userAssignedNATGateway, userDefinedRouting, none and block. For clusters using a custom virtual network, supported values are loadbalancer, userAssignedNATGateway and userDefinedRouting. For clusters using an AKS-managed virtual network, supported values are loadbalancer, managedNATGateway, managedNATGatewayV2 and userDefinedRouting.
         - name: --nrg-lockdown-restriction-level
           type: string
           short-summary: Restriction level on the managed node resource.
