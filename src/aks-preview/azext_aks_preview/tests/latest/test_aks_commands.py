@@ -2605,7 +2605,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--resource-group={resource_group}"
             " --cluster-name={name} "
             "--name={nodepool_name} "
-            " --zones 1 2 3 "
             "--mode=Machines",
             checks=[
                 self.check("provisioningState", "Succeeded"),
@@ -2620,7 +2619,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--cluster-name={name} "
             "--nodepool-name={nodepool_name} "
             "--machine-name={machine_name1} "
-            " --zones=1 "
             "--vm-size={vm_size}"
         )
         self.cmd(
@@ -2629,7 +2627,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--cluster-name={name} "
             "--nodepool-name={nodepool_name} "
             "--machine-name={machine_name2} "
-            " --zones=1 "
             "--vm-size={vm_size}"
         )
 

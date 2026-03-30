@@ -4502,6 +4502,7 @@ class Machine(ProxyResource):
         "name": {"readonly": True},
         "type": {"readonly": True},
         "system_data": {"readonly": True},
+        "zones": {"readonly": True},
     }
 
     _attribute_map = {
@@ -4513,16 +4514,14 @@ class Machine(ProxyResource):
         "zones": {"key": "zones", "type": "[str]"},
     }
 
-    def __init__(self, *, properties: Optional["_models.MachineProperties"] = None, zones: Optional[List[str]] = None, **kwargs: Any) -> None:
+    def __init__(self, *, properties: Optional["_models.MachineProperties"] = None, **kwargs: Any) -> None:
         """
         :keyword properties: The properties of the machine.
         :paramtype properties: ~azure.mgmt.containerservice.models.MachineProperties
-        :keyword zones: The Availability zone in which machine is located.
-        :paramtype zones: list[str]
         """
         super().__init__(**kwargs)
         self.properties = properties
-        self.zones = zones
+        self.zones: Optional[List[str]] = None
 
 
 class MachineBillingProfile(_serialization.Model):
