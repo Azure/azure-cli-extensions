@@ -10922,12 +10922,13 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         # Call _setup_azure_monitor_logs
         dec_1._setup_azure_monitor_logs(mc_1)
 
-        # Verify: Should update existing omsAgent key (not create omsagent lowercase)
-        self.assertIn("omsAgent", mc_1.addon_profiles)
-        self.assertNotIn("omsagent", mc_1.addon_profiles)  # Should NOT create duplicate
-        self.assertTrue(mc_1.addon_profiles["omsAgent"].enabled)
+        # Verify: The parent class normalizes addon keys to lowercase in-place,
+        # so "omsAgent" becomes "omsagent". The key point is no duplicate is created.
+        self.assertIn("omsagent", mc_1.addon_profiles)
+        self.assertEqual(len([k for k in mc_1.addon_profiles if k.lower() == "omsagent"]), 1)  # No duplicate
+        self.assertTrue(mc_1.addon_profiles["omsagent"].enabled)
         self.assertEqual(
-            mc_1.addon_profiles["omsAgent"].config["logAnalyticsWorkspaceResourceID"],
+            mc_1.addon_profiles["omsagent"].config["logAnalyticsWorkspaceResourceID"],
             "/subscriptions/test/resourceGroups/test/providers/Microsoft.OperationalInsights/workspaces/test-workspace"
         )
 
