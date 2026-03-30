@@ -289,7 +289,7 @@ class TestFrontendQuery(unittest.TestCase):
             "postFilters": ""
         }
 
-        def mock_open_handler(filename, mode='r'):
+        def mock_open_handler(filename, mode='r', **kwargs):
             content = {
                 'segment1.json': json.dumps(segment_1),
                 'segment2.json': json.dumps(segment_2),
@@ -468,22 +468,32 @@ class TestFrontendQuery(unittest.TestCase):
         mock_client = Mock()
         mock_get_client.return_value = mock_client
 
-        with self.assertRaises(CLIError) as context:
-            frontend_collaboration_query_publish(
-                cmd=Mock(),
-                collaboration_id="test-collab-123",
-                document_id="test-query-123",
-                body=None,
-                query_segment=[
-                    "@segment1.json",
-                    "SELECT * FROM table2"],
-                # Mixed
-                execution_sequence="1,2",
-                input_datasets="dataset1:view1",
-                output_dataset="output-dataset:results"
-            )
+        # Mock file content for segment1.json
+        segment_1 = {
+            "data": "SELECT * FROM table1",
+            "executionSequence": 1,
+            "preConditions": "",
+            "postFilters": ""
+        }
+        mock_file_content = json.dumps(segment_1)
 
-        self.assertIn("Cannot mix @file.json and inline SQL",
+        with patch('builtins.open', unittest.mock.mock_open(read_data=mock_file_content)):
+            with self.assertRaises(CLIError) as context:
+                frontend_collaboration_query_publish(
+                    cmd=Mock(),
+                    collaboration_id="test-collab-123",
+                    document_id="test-query-123",
+                    body=None,
+                    query_segment=[
+                        "@segment1.json",
+                        "SELECT * FROM table2"],
+                    # Mixed
+                    execution_sequence="1,2",
+                    input_datasets="dataset1:view1",
+                    output_dataset="output-dataset:results"
+                )
+
+        self.assertIn("Cannot mix @file.json / JSON-dict and inline SQL",
                       str(context.exception))
 
     @patch('azext_managedcleanroom._frontend_custom.get_frontend_client')
