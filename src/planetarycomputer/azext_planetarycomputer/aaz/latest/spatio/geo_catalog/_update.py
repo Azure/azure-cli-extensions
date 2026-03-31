@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a GeoCatalog
+
+    :example: Update a GeoCatalog's tags
+        az planetarycomputer geocatalog update --name MyGeoCatalog --resource-group MyResourceGroup --tags key=value
     """
 
     _aaz_info = {

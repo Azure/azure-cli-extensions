@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a GeoCatalog
+
+    :example: Create a GeoCatalog
+        az planetarycomputer geocatalog create --name MyGeoCatalog --resource-group MyResourceGroup --location westus2
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Assign(AAZCommand):
     """Assign the user or system managed identities.
+
+    :example: Assign a user-assigned managed identity
+        az planetarycomputer geocatalog identity assign --name MyGeoCatalog --resource-group MyResourceGroup --user-assigned-identities "{'/subscriptions/sub-id/resourceGroups/rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/my-identity':{}}"
     """
 
     _aaz_info = {
