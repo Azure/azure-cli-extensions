@@ -22796,6 +22796,7 @@ spec:
             "--enable-gateway-api "
             "--ssh-key-value={ssh_key_value} -o json "
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedGatewayAPIPreview "
+            "--kubernetes-version {k8s_version} "
         )
         self.cmd(
             create_cmd,
