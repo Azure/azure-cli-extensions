@@ -100,7 +100,7 @@ class Update(AAZCommand):
         _args_schema.layer2_configuration = AAZObjectArg(
             options=["--l2-config", "--layer2-configuration"],
             arg_group="Properties",
-            help="Common properties for Layer2Configuration.",
+            help="Common properties for Layer2 Configuration.",
             nullable=True,
         )
         _args_schema.micro_bfd_state = AAZStrArg(
@@ -465,7 +465,7 @@ class Update(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("properties", AAZObjectType)
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
 
             properties = _builder.get(".properties")
             if properties is not None:

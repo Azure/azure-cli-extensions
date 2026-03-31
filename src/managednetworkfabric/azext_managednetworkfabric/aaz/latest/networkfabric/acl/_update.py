@@ -58,6 +58,18 @@ class Update(AAZCommand):
             required=True,
         )
 
+        # define Arg Group "Body"
+
+        _args_schema = cls._args_schema
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Body",
+            help="Resource tags.",
+        )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg()
+
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
@@ -130,11 +142,6 @@ class Update(AAZCommand):
             fmt=AAZListArgFormat(
                 min_length=1,
             ),
-        )
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Properties",
-            help="Resource tags.",
         )
 
         control_plane_acl_configuration = cls._args_schema.control_plane_acl_configuration
@@ -607,9 +614,6 @@ class Update(AAZCommand):
 
         vlans = cls._args_schema.match_configurations.Element.match_conditions.Element.vlan_match_condition.vlans
         vlans.Element = AAZStrArg()
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
         return cls._args_schema
 
     _args_control_plane_acl_port_condition_update = None

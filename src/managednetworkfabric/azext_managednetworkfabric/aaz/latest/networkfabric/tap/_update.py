@@ -61,6 +61,18 @@ class Update(AAZCommand):
             required=True,
         )
 
+        # define Arg Group "Body"
+
+        _args_schema = cls._args_schema
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Body",
+            help="Resource tags.",
+        )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg()
+
         # define Arg Group "Identity"
 
         _args_schema = cls._args_schema
@@ -87,7 +99,6 @@ class Update(AAZCommand):
             options=["--annotation"],
             arg_group="Properties",
             help="Switch configuration description.",
-            nullable=True,
         )
         _args_schema.destinations = AAZListArg(
             options=["--destinations"],
@@ -101,11 +112,6 @@ class Update(AAZCommand):
             help="Polling type.",
             nullable=True,
             enum={"Pull": "Pull", "Push": "Push"},
-        )
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Properties",
-            help="Resource tags.",
         )
 
         destinations = cls._args_schema.destinations
@@ -154,9 +160,6 @@ class Update(AAZCommand):
         neighbor_group_ids.Element = AAZResourceIdArg(
             nullable=True,
         )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
@@ -280,7 +283,7 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("annotation", AAZStrType, ".annotation", typ_kwargs={"nullable": True})
+                properties.set_prop("annotation", AAZStrType, ".annotation")
                 properties.set_prop("destinations", AAZListType, ".destinations", typ_kwargs={"nullable": True})
                 properties.set_prop("pollingType", AAZStrType, ".polling_type", typ_kwargs={"nullable": True})
 
