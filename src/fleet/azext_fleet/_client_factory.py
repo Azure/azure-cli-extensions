@@ -14,16 +14,12 @@ from azure.cli.core.profiles import (
 CUSTOM_MGMT_FLEET = CustomResourceType('azext_fleet.vendored_sdks', 'ContainerServiceFleetMgmtClient')
 
 
-FLEET_BASE_URL = "https://management.azure.com"
-
-
 # container service clients
 def get_container_service_client(cli_ctx, subscription_id=None):
     return get_mgmt_service_client(
-        cli_ctx, CUSTOM_MGMT_FLEET,
+        cli_ctx, 
+        CUSTOM_MGMT_FLEET,
         subscription_id=subscription_id,
-        base_url_bound=False,
-        base_url=FLEET_BASE_URL
     )
 
 

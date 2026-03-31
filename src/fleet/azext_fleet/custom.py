@@ -42,6 +42,11 @@ from azext_fleet.vendored_sdks.v2026_03_02_preview.models import (
 logger = get_logger(__name__)
 
 
+def _odata_quote(value):
+    """Escape and single-quote a string for use in an OData $filter expression."""
+    return "'" + value.replace("'", "''") + "'"
+
+
 # pylint: disable=too-many-locals
 def create_fleet(cmd,
                  client,
@@ -385,7 +390,7 @@ def list_fleet_member(cmd,  # pylint: disable=unused-argument
                       cluster_mesh_profile=None):
     filter_expr = None
     if cluster_mesh_profile:
-        filter_expr = f"clusterMeshProfile eq {cluster_mesh_profile}"
+        filter_expr = f"clusterMeshProfile eq {_odata_quote(cluster_mesh_profile)}"
     return client.list_by_fleet(resource_group_name, fleet_name, filter=filter_expr)
 
 
@@ -1165,9 +1170,9 @@ def list_cluster_mesh_profile_members(cmd,
     """
     members_client = cf_fleet_members(cmd.cli_ctx)
     if selector:
-        filter_expr = f"clusterMeshProfile.Selector eq {name}"
+        filter_expr = f"clusterMeshProfile.Selector eq {_odata_quote(name)}"
     else:
-        filter_expr = f"clusterMeshProfile eq {name}"
+        filter_expr = f"clusterMeshProfile eq {_odata_quote(name)}"
     return members_client.list_by_fleet(resource_group_name, fleet_name, filter=filter_expr)
 
 
@@ -1176,7 +1181,7 @@ def _apply_cluster_mesh_what_if(cmd, resource_group_name, fleet_name, name):
     members_client = cf_fleet_members(cmd.cli_ctx)
 
     # Members currently in the mesh (already applied)
-    current_filter = f"clusterMeshProfile eq {name}"
+    current_filter = f"clusterMeshProfile eq {_odata_quote(name)}"
     current_members = {
         m.name: m for m in members_client.list_by_fleet(
             resource_group_name, fleet_name, filter=current_filter
@@ -1184,7 +1189,7 @@ def _apply_cluster_mesh_what_if(cmd, resource_group_name, fleet_name, name):
     }
 
     # Members that match the selector (would be in the mesh after apply)
-    selector_filter = f"clusterMeshProfile.Selector eq {name}"
+    selector_filter = f"clusterMeshProfile.Selector eq {_odata_quote(name)}"
     desired_members = {
         m.name: m for m in members_client.list_by_fleet(
             resource_group_name, fleet_name, filter=selector_filter
