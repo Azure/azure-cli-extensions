@@ -19739,6 +19739,10 @@ spec:
             self.check("addonProfiles.omsagent.enabled", True),
         ])
 
+        # Wait for any in-progress addon operations to complete before update
+        wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800'
+        self.cmd(wait_cmd, checks=[self.is_empty()])
+
         # Update: enable high log scale mode standalone
         update_cmd = (
             "aks update --resource-group={resource_group} --name={name} --yes "
