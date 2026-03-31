@@ -11,9 +11,13 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+
+19.0.0b29
++++++++
 * Add MIG (Multi-Instance GPU) strategy option to node pool property in `az aks nodepool add` and `az aks nodepool update`.
-* `az aks create/update`: Add `--outbound-type managedNATGatewayV2` support using Azure NAT Gateway Standard V2 SKU with IPv6, user-provided IPs, and IP prefixes.
 * Fix monitoring addon key casing compatibility with azure-cli/acs
+* `az aks create/update`: Add `--outbound-type managedNATGatewayV2` support using Azure NAT Gateway Standard V2 SKU with IPv6, user-provided IPs, and IP prefixes.
+* `az aks create/update`: Fix `--outbound-type managedNATGatewayV2` being silently overwritten to `loadBalancer` by the dynamic completion logic.
 
 19.0.0b28
 +++++++

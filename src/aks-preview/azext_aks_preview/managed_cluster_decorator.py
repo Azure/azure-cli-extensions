@@ -561,6 +561,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             not read_from_mc and
             outbound_type not in [
                 CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
+                CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY_V2,
                 CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
                 CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
                 CONST_OUTBOUND_TYPE_NONE,
@@ -580,6 +581,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             if outbound_type in [
                 CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
                 CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
+                CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY_V2,
                 CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
             ]:
                 if safe_lower(self._get_load_balancer_sku(enable_validation=False)) == CONST_LOAD_BALANCER_SKU_BASIC:
@@ -622,7 +624,10 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                                 a standard load balancer with IP addresses"
                             )
             if self.decorator_mode == DecoratorMode.UPDATE:
-                if outbound_type == CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY:
+                if outbound_type in [
+                    CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
+                    CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY_V2,
+                ]:
                     if self.mc.agent_pool_profiles is not None and len(self.mc.agent_pool_profiles) > 1:
                         multizoned = False
                         for ap in self.mc.agent_pool_profiles:
