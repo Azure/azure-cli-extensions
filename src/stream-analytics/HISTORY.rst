@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.3
++++++++++++++++
+* Fix stream analytics output help message
+
 1.0.2
 +++++++++++++++
 * Fix creating stream analytics input not triggering policy bug
