@@ -101,7 +101,7 @@ def constructMachine(cmd, raw_parameters, machine_name):
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
         operation_group="machines"
     )
-    zones = raw_parameters.get("zones")
+    zones = raw_parameters.get("zones", [])
     machine = Machine(
         zones=zones,
         properties=machineProperties
