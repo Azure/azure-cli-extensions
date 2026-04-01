@@ -10,25 +10,50 @@ from azure.cli.testsdk import *
 
 class AmlfsExpansionJobScenario(ScenarioTest):
     def _wait_for_expansion_job_provisioning(self, amlfs_name, expansion_job_name, target_state='Succeeded', max_attempts=60):
-        """Helper method to poll for expansion job provisioning state."""
+        """Helper method to poll for expansion job provisioning state.
+
+        Asserts if the job enters a failure state or if the wait times out.
+        """
+        last_state = None
         for attempt in range(max_attempts):
-            result = self.cmd(f'amlfs expansion show -g {{rg}} --aml-filesystem-name {amlfs_name} --expansion-job-name {expansion_job_name}').get_output_in_json()
+            result = self.cmd(f'az amlfs expansion show -g {{rg}} --aml-filesystem-name {amlfs_name} --expansion-job-name {expansion_job_name}').get_output_in_json()
             current_state = result.get('provisioningState', '')
+            last_state = current_state
             if current_state == target_state:
-                return True
-            elif current_state in ['Failed', 'Canceled']:
-                return False
+                return
+            if current_state in ['Failed', 'Canceled']:
+                self.fail(
+                    f"Expansion job '{expansion_job_name}' provisioning failed with state "
+                    f"'{current_state}' while waiting for '{target_state}'."
+                )
             time.sleep(5)
-        return False
+        self.fail(
+            f"Timed out waiting for expansion job '{expansion_job_name}' provisioning state "
+            f"to reach '{target_state}'. Last observed state: '{last_state}'."
+        )
 
     def _wait_for_expansion_job_completion(self, amlfs_name, expansion_job_name, max_attempts=200):
-        """Helper method to poll for expansion job completion."""
-        terminal_states = ['Completed', 'Failed']
+        """Helper method to poll for expansion job completion.
+
+        Asserts if the job fails or if the wait times out without completing.
+        """
+        last_state = None
         for attempt in range(max_attempts):
-            result = self.cmd(f'amlfs expansion show -g {{rg}} --aml-filesystem-name {amlfs_name} --expansion-job-name {expansion_job_name}').get_output_in_json()
-            if result.get('state', '') in terminal_states:
-                break
+            result = self.cmd(f'az amlfs expansion show -g {{rg}} --aml-filesystem-name {amlfs_name} --expansion-job-name {expansion_job_name}').get_output_in_json()
+            current_state = result.get('state', '')
+            last_state = current_state
+            if current_state == 'Completed':
+                return
+            if current_state == 'Failed':
+                self.fail(
+                    f"Expansion job '{expansion_job_name}' completed with failure state "
+                    f"while waiting for 'Completed'."
+                )
             time.sleep(5)
+        self.fail(
+            f"Timed out waiting for expansion job '{expansion_job_name}' to complete. "
+            f"Last observed state: '{last_state}'."
+        )
 
     @ResourceGroupPreparer(location='canadacentral')
     def test_expansion_job_crud(self, resource_group):
@@ -89,8 +114,8 @@ class AmlfsExpansionJobScenario(ScenarioTest):
         # Test expansion job list
         self.cmd('az amlfs expansion list -g {rg} --aml-filesystem-name {amlfs}', checks=[
             self.check('length(@)', current_expansion_job_count),
-            self.check('[0].name', '{expansion_job}'),
-            self.check('[0].location', 'canadacentral')
+            self.check("[?name=='{expansion_job}'] | length(@)", 1),
+            self.check("[?name=='{expansion_job}'].location | [0]", 'canadacentral')
         ])
 
         # Test expansion job update with tags
