@@ -191,6 +191,7 @@ def _get_monitoring_addon_key_from_consts(addon_profiles, addon_consts):
         addon_consts.get("CONST_MONITORING_ADDON_NAME"),
     )
 
+
 # pylint: disable=too-few-public-methods
 class AKSPreviewManagedClusterModels(AKSManagedClusterModels):
     """Store the models used in aks series of commands.
@@ -5596,7 +5597,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             params.get("enable_retina_flow_logs") is not None or
             params.get("enable_high_log_scale_mode") is not None
         )
-
 
 
 class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):

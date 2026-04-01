@@ -563,7 +563,7 @@ def ensure_container_insights_for_monitoring_preview(
             )
 
             resources = get_resources_client(cmd.cli_ctx, cluster_subscription)
-            for _ in range(3):
+            for attempt in range(3):
                 try:
                     if enable_syslog:
                         resources.begin_create_or_update_by_id(
