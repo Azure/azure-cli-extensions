@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "planetarycomputer geocatalog identity assign",
 )
 class Assign(AAZCommand):
-    """Assign the user or system managed identities.
+    """Assign user managed identities.
 
     :example: Assign a user-assigned managed identity
         az planetarycomputer geocatalog identity assign --name MyGeoCatalog --resource-group MyResourceGroup --user-assigned "{'/subscriptions/sub-id/resourceGroups/rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/my-identity':{}}"
@@ -61,12 +61,6 @@ class Assign(AAZCommand):
         # define Arg Group "Resource.identity"
 
         _args_schema = cls._args_schema
-        _args_schema.mi_system_assigned = AAZStrArg(
-            options=["--system-assigned", "--mi-system-assigned"],
-            arg_group="Resource.identity",
-            help="Set the system managed identity.",
-            blank="True",
-        )
         _args_schema.mi_user_assigned = AAZListArg(
             options=["--user-assigned", "--mi-user-assigned"],
             arg_group="Resource.identity",
@@ -500,7 +494,6 @@ class Assign(AAZCommand):
                 typ=AAZIdentityObjectType
             )
             _builder.set_prop("userAssigned", AAZListType, ".mi_user_assigned", typ_kwargs={"flags": {"action": "assign"}})
-            _builder.set_prop("systemAssigned", AAZStrType, ".mi_system_assigned", typ_kwargs={"flags": {"action": "assign"}})
 
             user_assigned = _builder.get(".userAssigned")
             if user_assigned is not None:

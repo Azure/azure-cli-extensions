@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "planetarycomputer geocatalog",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Geo Catalog
+    """Manage GeoCatalog
     """
     pass
 

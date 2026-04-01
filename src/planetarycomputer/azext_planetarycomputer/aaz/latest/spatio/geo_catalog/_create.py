@@ -60,12 +60,6 @@ class Create(AAZCommand):
         # define Arg Group "Identity"
 
         _args_schema = cls._args_schema
-        _args_schema.mi_system_assigned = AAZStrArg(
-            options=["--system-assigned", "--mi-system-assigned"],
-            arg_group="Identity",
-            help="Set the system managed identity.",
-            blank="True",
-        )
         _args_schema.mi_user_assigned = AAZListArg(
             options=["--user-assigned", "--mi-user-assigned"],
             arg_group="Identity",
@@ -229,7 +223,6 @@ class Create(AAZCommand):
             identity = _builder.get(".identity")
             if identity is not None:
                 identity.set_prop("userAssigned", AAZListType, ".mi_user_assigned", typ_kwargs={"flags": {"action": "create"}})
-                identity.set_prop("systemAssigned", AAZStrType, ".mi_system_assigned", typ_kwargs={"flags": {"action": "create"}})
 
             user_assigned = _builder.get(".identity.userAssigned")
             if user_assigned is not None:

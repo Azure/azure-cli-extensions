@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "planetarycomputer",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Spatio
+    """Manage Planetary Computer resources.
     """
     pass
 

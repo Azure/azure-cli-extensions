@@ -56,3 +56,13 @@ helps['planetarycomputer geocatalog identity assign'] = """
             az planetarycomputer geocatalog identity assign -g MyResourceGroup -n MyCatalog \\
                 --user-assigned "/subscriptions/{sub}/resourcegroups/{rg}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{name}"
 """
+
+helps['planetarycomputer geocatalog identity remove'] = """
+    type: command
+    short-summary: Remove an identity from a GeoCatalog.
+    examples:
+        - name: Remove a user-assigned managed identity
+          text: |-
+            az planetarycomputer geocatalog identity remove -g MyResourceGroup -n MyCatalog \\
+                --user-assigned "/subscriptions/{sub}/resourcegroups/{rg}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{name}"
+"""

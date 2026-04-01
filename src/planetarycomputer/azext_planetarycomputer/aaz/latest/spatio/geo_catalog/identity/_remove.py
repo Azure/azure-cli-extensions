@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "planetarycomputer geocatalog identity remove",
 )
 class Remove(AAZCommand):
-    """Remove the user or system managed identities.
+    """Remove user managed identities.
     """
 
     _aaz_info = {
@@ -58,12 +58,6 @@ class Remove(AAZCommand):
         # define Arg Group "Resource.identity"
 
         _args_schema = cls._args_schema
-        _args_schema.mi_system_assigned = AAZStrArg(
-            options=["--system-assigned", "--mi-system-assigned"],
-            arg_group="Resource.identity",
-            help="Remove the system-assigned managed identity from the catalog.",
-            blank="True",
-        )
         _args_schema.mi_user_assigned = AAZListArg(
             options=["--user-assigned", "--mi-user-assigned"],
             arg_group="Resource.identity",
@@ -497,7 +491,6 @@ class Remove(AAZCommand):
                 typ=AAZIdentityObjectType
             )
             _builder.set_prop("userAssigned", AAZListType, ".mi_user_assigned", typ_kwargs={"flags": {"action": "remove"}})
-            _builder.set_prop("systemAssigned", AAZStrType, ".mi_system_assigned", typ_kwargs={"flags": {"action": "remove"}})
 
             user_assigned = _builder.get(".userAssigned")
             if user_assigned is not None:
