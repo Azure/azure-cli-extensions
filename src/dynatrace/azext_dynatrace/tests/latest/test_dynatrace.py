@@ -8,6 +8,7 @@
 import unittest
 from azure.cli.testsdk import *
 from .credential_replacer import ExpressRoutePortLOAContentReplacer
+import time
 
 
 class DynatraceScenario(ScenarioTest):
@@ -17,13 +18,13 @@ class DynatraceScenario(ScenarioTest):
             ExpressRoutePortLOAContentReplacer()
         ])
 
-    @ResourceGroupPreparer(name_prefix='cli_test_dynatrace_monitor', location='eastus')
+    @ResourceGroupPreparer(name_prefix='cli_test_dynatrace_monitor_new', location='centraluseuap')
     def test_dynatrace_monitor(self, resource_group):
         self.kwargs.update({
             'monitor': self.create_random_name('monitor', 15),
         })
 
-        self.cmd('dynatrace monitor create -g {rg} -n {monitor} --user-info {{first-name:Alice,last-name:Bobab,email-address:agarwalshiv@microsoft.com,phone-number:1234567890,country:US}} --plan-data {{usage-type:COMMITTED,billing-cycle:MONTHLY,plan-details:azureportalintegration_privatepreview@TIDgmz7xq9ge3py,effective-date:2024-10-10}} --environment {{single-sign-on:{{aad-domains:[\'abc\']}}}}')
+        self.cmd('dynatrace monitor create -g {rg} -n {monitor} --user-info {{first-name:Alice,last-name:Bobab,email-address:test@example.com,phone-number:1234567890,country:US}} --plan-data {{usage-type:COMMITTED,billing-cycle:MONTHLY,plan-details:azureportalintegration_privatepreview@TIDgmz7xq9ge3py,effective-date:2024-10-10}} --environment {{single-sign-on:{{aad-domains:[\'abc\']}}}}')
         self.cmd('dynatrace monitor show -g {rg} -n {monitor}', checks=[
             self.check('name', '{monitor}'),
             self.check('resourceGroup', '{rg}'),
@@ -41,11 +42,12 @@ class DynatraceScenario(ScenarioTest):
             self.check('userInfo.lastName', 'Bobab'),
             self.check('userInfo.phoneNumber', '1234567890')
         ])
-        self.cmd('dynatrace monitor update -g {rg} -n {monitor} --tags {{env:dev}}', checks=[
-            self.check('name', '{monitor}'),
-            self.check('resourceGroup', '{rg}'),
-            self.check('tags', {'env': 'dev'})
-        ])
+        # Wait for monitor provisioning to complete before performing update
+        self.cmd('dynatrace monitor wait -g {rg} -n {monitor} --created')
+        # Add a manual delay for backend service stabilization
+        time.sleep(60)
+        # Use standard tag syntax key=value to avoid shorthand parsing issues
+
         self.cmd('dynatrace monitor list -g {rg}', checks=[
             self.check('[0].name', '{monitor}'),
             self.check('[0].resourceGroup', '{rg}'),
@@ -66,23 +68,31 @@ class DynatraceScenario(ScenarioTest):
         self.cmd('dynatrace monitor list-app-service -g {rg} --monitor-name {monitor}')
         self.cmd('dynatrace monitor list-host -g {rg} --monitor-name {monitor}')
         self.cmd('dynatrace monitor list-monitored-resource -g {rg} --monitor-name {monitor}')
-        self.cmd('dynatrace monitor list-linkable-environment -g {rg} --monitor-name {monitor} --user-principal agarwald@microsoft.com --region eastus --tenant-id d99f94f0-719f-4528-a9b1-cba806ef4124')
+        self.cmd('dynatrace monitor list-linkable-environment -g {rg} --monitor-name {monitor} --user-principal arushiarora@microsoft.com --region centraluseuap --tenant-id d99f94f0-719f-4528-a9b1-cba806ef4124')
         self.cmd('dynatrace monitor get-metric-status --resource-group {rg} --monitor-name {monitor}')
-        self.cmd('dynatrace monitor get-sso-detail -g {rg} --monitor-name {monitor} --user-principal agarwald@microsoft.com', checks=[
+        self.cmd('dynatrace monitor get-sso-detail -g {rg} --monitor-name {monitor} --user-principal arushiarora@microsoft.com', checks=[
             self.check('isSsoEnabled', 'Disabled')
         ])
         self.cmd('dynatrace monitor get-vm-host-payload -g {rg} --monitor-name {monitor}', checks=[
             self.exists('environmentId'),
             self.exists('ingestionKey')
         ])
+        self.cmd('dynatrace monitor show -g {rg} -n {monitor}', checks=[
+            self.check('provisioningState', 'Succeeded')
+        ])
+        self.cmd('dynatrace monitor update -g {rg} -n {monitor} --tags {{env:dev}}', checks=[
+            self.check('name', '{monitor}'),
+            self.check('resourceGroup', '{rg}'),
+            self.check('tags', {'env': 'dev'})
+        ])
         self.cmd('dynatrace monitor delete -n {monitor} -g {rg} -y')
 
-    @ResourceGroupPreparer(name_prefix='cli_test_dynatrace_monitor_single_sign_on_configurations', location='eastus')
+    @ResourceGroupPreparer(name_prefix='cli_test_dynatrace_monitor_single_sign_on_configurations', location='centraluseuap')
     def test_dynatrace_monitor_single_sign_on_configurations(self, resource_group):
         self.kwargs.update({
             'monitor': self.create_random_name('monitor', 15),
         })
-        self.cmd('dynatrace monitor create -g {rg} -n {monitor} --user-info {{first-name:Alice,last-name:Bobab,email-address:agarwalshiv@microsoft.com,phone-number:1234567890,country:US}} --plan-data {{usage-type:COMMITTED,billing-cycle:MONTHLY,plan-details:azureportalintegration_privatepreview@TIDgmz7xq9ge3py,effective-date:2024-10-10}} --environment {{single-sign-on:{{aad-domains:[\'abc\']}}}}')
+        self.cmd('dynatrace monitor create -g {rg} -n {monitor} --user-info {{first-name:Alice,last-name:Bobab,email-address:arushiarora@microsoft.com,phone-number:1234567890,country:US}} --plan-data {{usage-type:COMMITTED,billing-cycle:MONTHLY,plan-details:azureportalintegration_privatepreview@TIDgmz7xq9ge3py,effective-date:2024-10-10}} --environment {{single-sign-on:{{aad-domains:[\'abc\']}}}}')
         self.cmd('dynatrace monitor sso-config create -g {rg} --monitor-name {monitor} -n default --aad-domains [\'mpliftrdt20210811outlook.onmicrosoft.com\'] --single-sign-on-url "https://www.dynatrace.io"', checks=[
             self.check('aadDomains[0]', 'mpliftrdt20210811outlook.onmicrosoft.com'),
             self.check('singleSignOnUrl', 'https://www.dynatrace.io')
@@ -95,14 +105,17 @@ class DynatraceScenario(ScenarioTest):
             self.check('[0].aadDomains[0]', 'mpliftrdt20210811outlook.onmicrosoft.com'),
             self.check('[0].singleSignOnUrl', 'https://www.dynatrace.io')
         ])
+        # Single Sign-On configuration update (strict) - add required configuration name (-n default)
+        self.cmd('dynatrace monitor sso-config update --resource-group {rg} --monitor-name {monitor} -n default --aad-domains [\'mpliftrdt20210811outlook.onmicrosoft.com\'] --single-sign-on-url "https://www.dynatrace.io"')
 
-    @ResourceGroupPreparer(name_prefix='cli_test_dynatrace_monitor_tag_rule', location='eastus')
+
+    @ResourceGroupPreparer(name_prefix='cli_test_dynatrace_monitor_tag_rule', location='centraluseuap')
     def test_dynatrace_monitor_tag_rule(self, resource_group):
         self.kwargs.update({
             'monitor': self.create_random_name('monitor', 15),
         })
 
-        self.cmd('dynatrace monitor create -g {rg} -n {monitor} --user-info {{first-name:Alice,last-name:Bobab,email-address:agarwalshiv@microsoft.com,phone-number:1234567890,country:US}} --plan-data {{usage-type:COMMITTED,billing-cycle:MONTHLY,plan-details:azureportalintegration_privatepreview@TIDgmz7xq9ge3py,effective-date:2024-10-10}} --environment {{single-sign-on:{{aad-domains:[\'abc\']}}}} ')
+        self.cmd('dynatrace monitor create -g {rg} -n {monitor} --user-info {{first-name:Alice,last-name:Bobab,email-address:arushiarora@microsoft.com,phone-number:1234567890,country:US}} --plan-data {{usage-type:COMMITTED,billing-cycle:MONTHLY,plan-details:azureportalintegration_privatepreview@TIDgmz7xq9ge3py,effective-date:2024-10-10}} --environment {{single-sign-on:{{aad-domains:[\'abc\']}}}} ')
         self.cmd('dynatrace monitor tag-rule create -g {rg} --monitor-name {monitor} -n default --log-rules {{send-aad-logs:enabled,send-subscription-logs:enabled,send-activity-logs:enabled,filtering-tags:[{{name:env,value:prod,action:include}},{{name:env,value:dev,action:exclude}}]}} --metric-rules {{sending-metrics:enabled,filtering-tags:[{{name:env,value:prod,action:include}}]}}', checks=[
             self.check('name', 'default'),
             self.check('resourceGroup', '{rg}'),
@@ -169,7 +182,7 @@ class DynatraceScenario(ScenarioTest):
         ])
         self.cmd('dynatrace monitor tag-rule delete -g {rg} --monitor-name {monitor} -n default -y')
     
-    @ResourceGroupPreparer(name_prefix='cli_test_dynatrace', location='eastus')
+    @ResourceGroupPreparer(name_prefix='cli_test_dynatrace', location='centraluseuap')
     def test_dynatrace_saas_resource(self, resource_group):
         self.kwargs.update({
             'monitor': self.create_random_name('monitor', 15),

@@ -17,6 +17,7 @@ from azext_aks_preview._client_factory import (
     cf_load_balancers,
     cf_identity_bindings,
     cf_jwt_authenticators,
+    cf_vm_skus,
 )
 
 from azext_aks_preview._format import (
@@ -26,6 +27,7 @@ from azext_aks_preview._format import (
     aks_addon_show_table_format,
     aks_agentpool_list_table_format,
     aks_agentpool_show_table_format,
+    aks_agentpool_rollback_versions_table_format,
     aks_machine_list_table_format,
     aks_machine_show_table_format,
     aks_operation_show_table_format,
@@ -49,6 +51,7 @@ from azext_aks_preview._format import (
     aks_extension_type_version_show_table_format,
     aks_jwtauthenticator_list_table_format,
     aks_jwtauthenticator_show_table_format,
+    aks_list_vm_skus_table_format,
 )
 
 from knack.log import get_logger
@@ -150,6 +153,12 @@ def load_command_table(self, _):
         client_factory=cf_jwt_authenticators,
     )
 
+    vm_skus_sdk = CliCommandType(
+        operations_tmpl="azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks."
+        "operations._vm_skus_operations#VmSkusOperations.{}",
+        client_factory=cf_vm_skus,
+    )
+
     # AKS managed cluster commands
     with self.command_group(
         "aks",
@@ -167,7 +176,7 @@ def load_command_table(self, _):
         )
         g.custom_command("upgrade", "aks_upgrade", supports_no_wait=True)
         g.custom_command("scale", "aks_scale", supports_no_wait=True)
-        g.command("delete", "begin_delete", supports_no_wait=True, confirmation=True)
+        g.custom_command("delete", "aks_delete", supports_no_wait=True, confirmation=True)
         g.custom_show_command(
             "show", "aks_show", table_transformer=aks_show_table_format
         )
@@ -246,7 +255,6 @@ def load_command_table(self, _):
         "aks namespace",
         managed_namespaces_sdk,
         client_factory=cf_managed_namespaces,
-        is_preview=True,
     ) as g:
         g.custom_command("add", "aks_namespace_add", supports_no_wait=True)
         g.custom_command("update", "aks_namespace_update", supports_no_wait=True)
@@ -275,6 +283,12 @@ def load_command_table(self, _):
         g.custom_command("update", "aks_agentpool_update", supports_no_wait=True)
         g.custom_command("delete", "aks_agentpool_delete", supports_no_wait=True)
         g.custom_command("get-upgrades", "aks_agentpool_get_upgrade_profile")
+        g.custom_command(
+            "get-rollback-versions",
+            "aks_agentpool_get_rollback_versions",
+            table_transformer=aks_agentpool_rollback_versions_table_format
+        )
+        g.custom_command("rollback", "aks_agentpool_rollback", supports_no_wait=True)
         g.custom_command("stop", "aks_agentpool_stop", supports_no_wait=True)
         g.custom_command("start", "aks_agentpool_start", supports_no_wait=True)
         g.custom_command(
@@ -302,6 +316,7 @@ def load_command_table(self, _):
             "show", "aks_machine_show", table_transformer=aks_machine_show_table_format
         )
         g.custom_command("add", "aks_machine_add", supports_no_wait=True)
+        g.custom_command("update", "aks_machine_update", supports_no_wait=True)
 
     with self.command_group(
         "aks operation", operations_sdk, client_factory=cf_operations
@@ -441,6 +456,16 @@ def load_command_table(self, _):
             "aks_mesh_get_upgrades",
             table_transformer=aks_mesh_upgrades_table_format,
         )
+        g.custom_command(
+            "enable-istio-cni",
+            "aks_mesh_enable_istio_cni",
+            supports_no_wait=True,
+        )
+        g.custom_command(
+            "disable-istio-cni",
+            "aks_mesh_disable_istio_cni",
+            supports_no_wait=True,
+        )
 
     # AKS mesh upgrade commands
     with self.command_group(
@@ -449,6 +474,14 @@ def load_command_table(self, _):
         g.custom_command("start", "aks_mesh_upgrade_start", supports_no_wait=True)
         g.custom_command("complete", "aks_mesh_upgrade_complete", supports_no_wait=True)
         g.custom_command("rollback", "aks_mesh_upgrade_rollback", supports_no_wait=True)
+
+    # AKS applicationloadbalancer (Application Gateway for Containers) commands
+    with self.command_group(
+        "aks applicationloadbalancer", managed_clusters_sdk, client_factory=cf_managed_clusters
+    ) as g:
+        g.custom_command("enable", "aks_applicationloadbalancer_enable")
+        g.custom_command("disable", "aks_applicationloadbalancer_disable", confirmation=True)
+        g.custom_command("update", "aks_applicationloadbalancer_update")
 
     # AKS approuting commands
     with self.command_group(
@@ -466,6 +499,19 @@ def load_command_table(self, _):
         g.custom_command("delete", "aks_approuting_zone_delete", confirmation=True)
         g.custom_command("update", "aks_approuting_zone_update")
         g.custom_command("list", "aks_approuting_zone_list")
+
+    # AKS approuting default-domain commands
+    with self.command_group(
+        "aks approuting defaultdomain", managed_clusters_sdk, client_factory=cf_managed_clusters
+    ) as g:
+        g.custom_show_command("show", "aks_approuting_default_domain_show")
+
+    # AKS approuting gateway istio commands
+    with self.command_group(
+        "aks approuting gateway istio", managed_clusters_sdk, client_factory=cf_managed_clusters
+    ) as g:
+        g.custom_command("enable", "aks_approuting_gateway_istio_enable")
+        g.custom_command("disable", "aks_approuting_gateway_istio_disable", confirmation=True)
 
     # AKS check-network command
     with self.command_group(
@@ -556,3 +602,29 @@ def load_command_table(self, _):
             "aks_jwtauthenticator_show",
             table_transformer=aks_jwtauthenticator_show_table_format
         )
+
+    # AKS list-vm-skus command
+    with self.command_group(
+        "aks", vm_skus_sdk, client_factory=cf_vm_skus
+    ) as g:
+        g.custom_command(
+            "list-vm-skus",
+            "aks_list_vm_skus",
+            table_transformer=aks_list_vm_skus_table_format,
+        )
+
+    # AKS safeguards commands - override generated commands with custom classes
+    with self.command_group('aks safeguards'):
+        from .aks_safeguards_custom import AKSSafeguardsShowCustom as Show
+        from .aks_safeguards_custom import AKSSafeguardsCreateCustom as Create
+        from .aks_safeguards_custom import AKSSafeguardsUpdateCustom as Update
+        from .aks_safeguards_custom import AKSSafeguardsDeleteCustom as Delete
+        from .aks_safeguards_custom import AKSSafeguardsListCustom as List
+        from .aks_safeguards_custom import AKSSafeguardsWaitCustom as Wait
+
+        self.command_table["aks safeguards show"] = Show(loader=self)
+        self.command_table["aks safeguards create"] = Create(loader=self)
+        self.command_table["aks safeguards update"] = Update(loader=self)
+        self.command_table["aks safeguards delete"] = Delete(loader=self)
+        self.command_table["aks safeguards list"] = List(loader=self)
+        self.command_table["aks safeguards wait"] = Wait(loader=self)

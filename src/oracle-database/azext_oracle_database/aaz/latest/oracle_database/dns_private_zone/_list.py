@@ -22,9 +22,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-09-01",
+        "version": "2025-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/oracle.database/locations/{}/dnsprivatezones", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/oracle.database/locations/{}/dnsprivatezones", "2025-09-01"],
         ]
     }
 
@@ -112,7 +112,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2025-09-01",
                     required=True,
                 ),
             }
@@ -162,9 +162,7 @@ class List(AAZCommand):
             _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
+            _element.properties = AAZObjectType()
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -176,10 +174,11 @@ class List(AAZCommand):
             properties = cls._schema_on_200.value.Element.properties
             properties.is_protected = AAZBoolType(
                 serialized_name="isProtected",
-                flags={"required": True, "read_only": True},
+                flags={"required": True},
             )
             properties.lifecycle_state = AAZStrType(
                 serialized_name="lifecycleState",
+                flags={"required": True},
             )
             properties.ocid = AAZStrType(
                 flags={"required": True},
@@ -189,17 +188,17 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             properties.self = AAZStrType(
-                flags={"required": True, "read_only": True},
+                flags={"required": True},
             )
             properties.serial = AAZIntType(
-                flags={"required": True, "read_only": True},
+                flags={"required": True},
             )
             properties.time_created = AAZStrType(
                 serialized_name="timeCreated",
-                flags={"required": True, "read_only": True},
+                flags={"required": True},
             )
             properties.version = AAZStrType(
-                flags={"required": True, "read_only": True},
+                flags={"required": True},
             )
             properties.view_id = AAZStrType(
                 serialized_name="viewId",

@@ -2,6 +2,20 @@
 
 Release History
 ===============
+
+2.1.0
+++++++
+* Add `--sensitivity` parameter to `az network front-door waf-policy managed-rules override add` for DDoS rule set support.
+
+2.0.0
+++++++
+* Fix a bug in ddos rule set creation.
+
+1.4.0
+++++++
+* Bump swagger version to 2025-10-01
+* Add support for DDos RuleSet
+
 1.3.0
 ++++++
 * Add support for captcha

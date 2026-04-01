@@ -2,6 +2,25 @@
 
 Release History
 ===============
+
+9.1.0
+++++++
+* Enables the following previously removed command/command groups:
+*  - `bootstrapdevice` and `bootstrapinterface` command groups that both support `list` and `show` operations.
+*  - `fabric` commands `resync-certificate` and `rotate-certificate` to support certificate resync and rotation operations on the fabric resource.
+*  - `device` command `resync-certificate` to support resync operations for certificates on the device resource.
+
+9.0.0
+++++++
+* Updates this 2025-07-15 CLI to a stable version (9.0.0) from beta version (9.0.0b1).
+
+9.0.0b1
+++++++
+* Per the v8.1.0 30-day [Breaking Change] notice - the folowing updates have been implmemented:
+*  - Command group `fabric identity` has been removed as current az-cli-core does not support GET-PATCH. This includes the `assign`, `remove`, `show` sub-commands.
+*  - Parameter `route-prefix-limit` has been removed from `l3domain create` and `l3domain update` commands.
+*  - Parameter `version` on `device upgrade` command is now required.
+
 8.2.1
 ++++++
 * Removing the following commands as they are not supported in the API:

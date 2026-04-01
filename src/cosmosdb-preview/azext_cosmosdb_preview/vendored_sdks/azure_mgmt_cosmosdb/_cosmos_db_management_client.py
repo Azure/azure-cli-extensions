@@ -38,6 +38,7 @@ from .operations import (
     FleetOperations,
     FleetspaceAccountOperations,
     FleetspaceOperations,
+    GarnetClustersOperations,
     GraphResourcesOperations,
     GremlinResourcesOperations,
     LocationsOperations,
@@ -75,12 +76,15 @@ from .operations import (
 )
 
 if TYPE_CHECKING:
+    from azure.core import AzureClouds
     from azure.core.credentials import TokenCredential
 
 
 class CosmosDBManagementClient:  # pylint: disable=too-many-instance-attributes
-    """Azure Cosmos DB Chaos Fault REST API.
+    """Azure Cosmos DB Role Based Access Control Resource Provider REST API.
 
+    :ivar cassandra_resources: CassandraResourcesOperations operations
+    :vartype cassandra_resources: azure.mgmt.cosmosdb.operations.CassandraResourcesOperations
     :ivar chaos_fault: ChaosFaultOperations operations
     :vartype chaos_fault: azure.mgmt.cosmosdb.operations.ChaosFaultOperations
     :ivar copy_jobs: CopyJobsOperations operations
@@ -123,18 +127,28 @@ class CosmosDBManagementClient:  # pylint: disable=too-many-instance-attributes
     :vartype mongo_db_resources: azure.mgmt.cosmosdb.operations.MongoDBResourcesOperations
     :ivar table_resources: TableResourcesOperations operations
     :vartype table_resources: azure.mgmt.cosmosdb.operations.TableResourcesOperations
-    :ivar cassandra_resources: CassandraResourcesOperations operations
-    :vartype cassandra_resources: azure.mgmt.cosmosdb.operations.CassandraResourcesOperations
     :ivar gremlin_resources: GremlinResourcesOperations operations
     :vartype gremlin_resources: azure.mgmt.cosmosdb.operations.GremlinResourcesOperations
     :ivar locations: LocationsOperations operations
     :vartype locations: azure.mgmt.cosmosdb.operations.LocationsOperations
     :ivar data_transfer_jobs: DataTransferJobsOperations operations
     :vartype data_transfer_jobs: azure.mgmt.cosmosdb.operations.DataTransferJobsOperations
+    :ivar fleet: FleetOperations operations
+    :vartype fleet: azure.mgmt.cosmosdb.operations.FleetOperations
+    :ivar fleet_analytics: FleetAnalyticsOperations operations
+    :vartype fleet_analytics: azure.mgmt.cosmosdb.operations.FleetAnalyticsOperations
+    :ivar fleetspace: FleetspaceOperations operations
+    :vartype fleetspace: azure.mgmt.cosmosdb.operations.FleetspaceOperations
+    :ivar fleetspace_account: FleetspaceAccountOperations operations
+    :vartype fleetspace_account: azure.mgmt.cosmosdb.operations.FleetspaceAccountOperations
+    :ivar garnet_clusters: GarnetClustersOperations operations
+    :vartype garnet_clusters: azure.mgmt.cosmosdb.operations.GarnetClustersOperations
     :ivar cassandra_clusters: CassandraClustersOperations operations
     :vartype cassandra_clusters: azure.mgmt.cosmosdb.operations.CassandraClustersOperations
     :ivar cassandra_data_centers: CassandraDataCentersOperations operations
     :vartype cassandra_data_centers: azure.mgmt.cosmosdb.operations.CassandraDataCentersOperations
+    :ivar mongo_mi_resources: MongoMIResourcesOperations operations
+    :vartype mongo_mi_resources: azure.mgmt.cosmosdb.operations.MongoMIResourcesOperations
     :ivar network_security_perimeter_configurations:
      NetworkSecurityPerimeterConfigurationsOperations operations
     :vartype network_security_perimeter_configurations:
@@ -193,23 +207,16 @@ class CosmosDBManagementClient:  # pylint: disable=too-many-instance-attributes
     :ivar throughput_pool_account: ThroughputPoolAccountOperations operations
     :vartype throughput_pool_account:
      azure.mgmt.cosmosdb.operations.ThroughputPoolAccountOperations
-    :ivar mongo_mi_resources: MongoMIResourcesOperations operations
-    :vartype mongo_mi_resources: azure.mgmt.cosmosdb.operations.MongoMIResourcesOperations
-    :ivar fleet: FleetOperations operations
-    :vartype fleet: azure.mgmt.cosmosdb.operations.FleetOperations
-    :ivar fleet_analytics: FleetAnalyticsOperations operations
-    :vartype fleet_analytics: azure.mgmt.cosmosdb.operations.FleetAnalyticsOperations
-    :ivar fleetspace: FleetspaceOperations operations
-    :vartype fleetspace: azure.mgmt.cosmosdb.operations.FleetspaceOperations
-    :ivar fleetspace_account: FleetspaceAccountOperations operations
-    :vartype fleetspace_account: azure.mgmt.cosmosdb.operations.FleetspaceAccountOperations
     :param credential: Credential needed for the client to connect to Azure. Required.
     :type credential: ~azure.core.credentials.TokenCredential
     :param subscription_id: The ID of the target subscription. The value must be an UUID. Required.
     :type subscription_id: str
     :param base_url: Service URL. Default value is None.
     :type base_url: str
-    :keyword api_version: Api Version. Default value is "2025-05-01-preview". Note that overriding
+    :keyword cloud_setting: The cloud setting for which to get the ARM endpoint. Default value is
+     None.
+    :paramtype cloud_setting: ~azure.core.AzureClouds
+    :keyword api_version: Api Version. Default value is "2025-11-01-preview". Note that overriding
      this default value may result in unsupported behavior.
     :paramtype api_version: str
     :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
@@ -217,15 +224,25 @@ class CosmosDBManagementClient:  # pylint: disable=too-many-instance-attributes
     """
 
     def __init__(
-        self, credential: "TokenCredential", subscription_id: str, base_url: Optional[str] = None, **kwargs: Any
+        self,
+        credential: "TokenCredential",
+        subscription_id: str,
+        base_url: Optional[str] = None,
+        *,
+        cloud_setting: Optional["AzureClouds"] = None,
+        **kwargs: Any
     ) -> None:
-        _cloud = kwargs.pop("cloud_setting", None) or settings.current.azure_cloud  # type: ignore
+        _cloud = cloud_setting or settings.current.azure_cloud  # type: ignore
         _endpoints = get_arm_endpoints(_cloud)
         if not base_url:
             base_url = _endpoints["resource_manager"]
         credential_scopes = kwargs.pop("credential_scopes", _endpoints["credential_scopes"])
         self._config = CosmosDBManagementClientConfiguration(
-            credential=credential, subscription_id=subscription_id, credential_scopes=credential_scopes, **kwargs
+            credential=credential,
+            subscription_id=subscription_id,
+            cloud_setting=cloud_setting,
+            credential_scopes=credential_scopes,
+            **kwargs
         )
 
         _policies = kwargs.pop("policies", None)
@@ -252,6 +269,9 @@ class CosmosDBManagementClient:  # pylint: disable=too-many-instance-attributes
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
         self._serialize.client_side_validation = False
+        self.cassandra_resources = CassandraResourcesOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
         self.chaos_fault = ChaosFaultOperations(self._client, self._config, self._serialize, self._deserialize)
         self.copy_jobs = CopyJobsOperations(self._client, self._config, self._serialize, self._deserialize)
         self.database_accounts = DatabaseAccountsOperations(
@@ -291,9 +311,6 @@ class CosmosDBManagementClient:  # pylint: disable=too-many-instance-attributes
             self._client, self._config, self._serialize, self._deserialize
         )
         self.table_resources = TableResourcesOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.cassandra_resources = CassandraResourcesOperations(
-            self._client, self._config, self._serialize, self._deserialize
-        )
         self.gremlin_resources = GremlinResourcesOperations(
             self._client, self._config, self._serialize, self._deserialize
         )
@@ -301,10 +318,20 @@ class CosmosDBManagementClient:  # pylint: disable=too-many-instance-attributes
         self.data_transfer_jobs = DataTransferJobsOperations(
             self._client, self._config, self._serialize, self._deserialize
         )
+        self.fleet = FleetOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.fleet_analytics = FleetAnalyticsOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.fleetspace = FleetspaceOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.fleetspace_account = FleetspaceAccountOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.garnet_clusters = GarnetClustersOperations(self._client, self._config, self._serialize, self._deserialize)
         self.cassandra_clusters = CassandraClustersOperations(
             self._client, self._config, self._serialize, self._deserialize
         )
         self.cassandra_data_centers = CassandraDataCentersOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.mongo_mi_resources = MongoMIResourcesOperations(
             self._client, self._config, self._serialize, self._deserialize
         )
         self.network_security_perimeter_configurations = NetworkSecurityPerimeterConfigurationsOperations(
@@ -364,15 +391,6 @@ class CosmosDBManagementClient:  # pylint: disable=too-many-instance-attributes
             self._client, self._config, self._serialize, self._deserialize
         )
         self.throughput_pool_account = ThroughputPoolAccountOperations(
-            self._client, self._config, self._serialize, self._deserialize
-        )
-        self.mongo_mi_resources = MongoMIResourcesOperations(
-            self._client, self._config, self._serialize, self._deserialize
-        )
-        self.fleet = FleetOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.fleet_analytics = FleetAnalyticsOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.fleetspace = FleetspaceOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.fleetspace_account = FleetspaceAccountOperations(
             self._client, self._config, self._serialize, self._deserialize
         )
 

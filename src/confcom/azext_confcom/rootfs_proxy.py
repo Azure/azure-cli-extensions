@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 
+import hashlib
 import os
 import platform
 import stat
@@ -13,11 +14,28 @@ from typing import List
 
 import requests
 from azext_confcom.errors import eprint
+from azext_confcom.lib.paths import get_binaries_dir
 from knack.log import get_logger
+
 
 host_os = platform.system()
 machine = platform.machine()
 logger = get_logger(__name__)
+
+
+_binaries_dir = get_binaries_dir()
+_dmverity_vhd_binaries = {
+    "Linux": {
+        "path": _binaries_dir / "dmverity-vhd",
+        "url": "https://github.com/microsoft/integrity-vhd/releases/download/v1.6/dmverity-vhd",
+        "sha256": "b8cf3fa3594e48070a31aa538d5b4b40d5b33b8ac18bc25a1816245159648fb0",
+    },
+    "Windows": {
+        "path": _binaries_dir / "dmverity-vhd.exe",
+        "url": "https://github.com/microsoft/integrity-vhd/releases/download/dev-platform-support/dmverity-vhd.exe",
+        "sha256": "ca0f95d798323f3ef26feb036112be9019f5ceaa6233ee2a65218d5a143ae474",
+    },
+}
 
 
 class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
@@ -26,34 +44,15 @@ class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
 
     @staticmethod
     def download_binaries():
-        dir_path = os.path.dirname(os.path.realpath(__file__))
 
-        bin_folder = os.path.join(dir_path, "bin")
-        if not os.path.exists(bin_folder):
-            os.makedirs(bin_folder)
+        for binary_info in _dmverity_vhd_binaries.values():
+            dmverity_vhd_fetch_resp = requests.get(binary_info["url"], verify=True)
+            dmverity_vhd_fetch_resp.raise_for_status()
 
-        # These will normally be the same, I'm splitting them here to get the
-        # modified windows binary separately
-        asset_to_version = {
-            "dmverity-vhd": "v1.6",
-            "dmverity-vhd.exe": "dev-platform-support"
-        }
+            assert hashlib.sha256(dmverity_vhd_fetch_resp.content).hexdigest() == binary_info["sha256"]
 
-        for asset_name, release_version in asset_to_version.items():
-            release_req = requests.get(f"https://api.github.com/repos/microsoft/integrity-vhd/releases/tags/{release_version}")
-            release_req.raise_for_status()
-            asset_found = False
-            for asset in release_req.json()["assets"]:
-                if asset["name"] == asset_name:
-                    asset_found = True
-                    print(f"Downloading integrity-vhd version {release_req.json()['tag_name']}")
-                    asset_req = requests.get(asset["browser_download_url"])
-                    asset_req.raise_for_status()
-                    with open(os.path.join(bin_folder, asset["name"]), "wb") as f:
-                        f.write(asset_req.content)
-                    break
-            assert asset_found, f"Could not find {asset} in release {release_version}"
-
+            with open(binary_info["path"], "wb") as f:
+                f.write(dmverity_vhd_fetch_resp.content)
 
     def __init__(self):
         script_directory = os.path.dirname(os.path.realpath(__file__))

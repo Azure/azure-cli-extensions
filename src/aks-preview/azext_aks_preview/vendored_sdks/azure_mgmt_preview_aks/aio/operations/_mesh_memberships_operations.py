@@ -7,7 +7,7 @@
 # --------------------------------------------------------------------------
 from collections.abc import MutableMapping
 from io import IOBase
-from typing import Any, AsyncIterator, Callable, IO, Optional, TypeVar, Union, cast, overload
+from typing import Any, AsyncIterable, AsyncIterator, Callable, Dict, IO, Optional, TypeVar, Union, cast, overload
 import urllib.parse
 
 from azure.core import AsyncPipelineClient
@@ -32,7 +32,7 @@ from azure.mgmt.core.exceptions import ARMErrorFormat
 from azure.mgmt.core.polling.async_arm_polling import AsyncARMPolling
 
 from ... import models as _models
-from ..._utils.serialization import Deserializer, Serializer
+from ..._serialization import Deserializer, Serializer
 from ...operations._mesh_memberships_operations import (
     build_create_or_update_request,
     build_delete_request,
@@ -42,8 +42,7 @@ from ...operations._mesh_memberships_operations import (
 from .._configuration import ContainerServiceClientConfiguration
 
 T = TypeVar("T")
-ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, dict[str, Any]], Any]]
-List = list
+ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
 
 class MeshMembershipsOperations:
@@ -68,10 +67,8 @@ class MeshMembershipsOperations:
     @distributed_trace
     def list_by_managed_cluster(
         self, resource_group_name: str, resource_name: str, **kwargs: Any
-    ) -> AsyncItemPaged["_models.MeshMembership"]:
+    ) -> AsyncIterable["_models.MeshMembership"]:
         """Lists mesh memberships in a managed cluster.
-
-        Lists mesh memberships in a managed cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -157,8 +154,6 @@ class MeshMembershipsOperations:
         self, resource_group_name: str, resource_name: str, mesh_membership_name: str, **kwargs: Any
     ) -> _models.MeshMembership:
         """Gets the mesh membership of a managed cluster.
-
-        Gets the mesh membership of a managed cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -277,10 +272,17 @@ class MeshMembershipsOperations:
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
+        response_headers = {}
+        if response.status_code == 201:
+            response_headers["Azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("Azure-AsyncOperation")
+            )
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
+
         deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
 
         if cls:
-            return cls(pipeline_response, deserialized, {})  # type: ignore
+            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
 
         return deserialized  # type: ignore
 
@@ -296,8 +298,6 @@ class MeshMembershipsOperations:
         **kwargs: Any
     ) -> AsyncLROPoller[_models.MeshMembership]:
         """Creates or updates the mesh membership of a managed cluster.
-
-        Creates or updates the mesh membership of a managed cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -330,8 +330,6 @@ class MeshMembershipsOperations:
     ) -> AsyncLROPoller[_models.MeshMembership]:
         """Creates or updates the mesh membership of a managed cluster.
 
-        Creates or updates the mesh membership of a managed cluster.
-
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
@@ -360,8 +358,6 @@ class MeshMembershipsOperations:
         **kwargs: Any
     ) -> AsyncLROPoller[_models.MeshMembership]:
         """Creates or updates the mesh membership of a managed cluster.
-
-        Creates or updates the mesh membership of a managed cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -410,7 +406,10 @@ class MeshMembershipsOperations:
             return deserialized
 
         if polling is True:
-            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod,
+                AsyncARMPolling(lro_delay, lro_options={"final-state-via": "azure-async-operation"}, **kwargs),
+            )
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:
@@ -473,7 +472,11 @@ class MeshMembershipsOperations:
 
         response_headers = {}
         if response.status_code == 202:
+            response_headers["Azure-AsyncOperation"] = self._deserialize(
+                "str", response.headers.get("Azure-AsyncOperation")
+            )
             response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
 
@@ -487,8 +490,6 @@ class MeshMembershipsOperations:
         self, resource_group_name: str, resource_name: str, mesh_membership_name: str, **kwargs: Any
     ) -> AsyncLROPoller[None]:
         """Deletes the mesh membership of a managed cluster.
-
-        Deletes the mesh membership of a managed cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -528,7 +529,10 @@ class MeshMembershipsOperations:
                 return cls(pipeline_response, None, {})  # type: ignore
 
         if polling is True:
-            polling_method: AsyncPollingMethod = cast(AsyncPollingMethod, AsyncARMPolling(lro_delay, **kwargs))
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod,
+                AsyncARMPolling(lro_delay, lro_options={"final-state-via": "azure-async-operation"}, **kwargs),
+            )
         elif polling is False:
             polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
         else:

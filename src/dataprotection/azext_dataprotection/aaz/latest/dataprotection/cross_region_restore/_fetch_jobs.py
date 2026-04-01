@@ -16,9 +16,9 @@ class FetchJobs(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-04-01",
+        "version": "2025-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/locations/{}/fetchcrossregionrestorejobs", "2024-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/locations/{}/fetchcrossregionrestorejobs", "2025-07-01"],
         ]
     }
 
@@ -130,7 +130,7 @@ class FetchJobs(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-04-01",
+                    "api-version", "2025-07-01",
                     required=True,
                 ),
             }
@@ -249,6 +249,7 @@ class FetchJobs(AAZCommand):
             properties.etag = AAZStrType()
             properties.extended_info = AAZObjectType(
                 serialized_name="extendedInfo",
+                flags={"read_only": True},
             )
             properties.is_user_triggered = AAZBoolType(
                 serialized_name="isUserTriggered",
@@ -338,6 +339,7 @@ class FetchJobs(AAZCommand):
             )
             extended_info.source_recover_point = AAZObjectType(
                 serialized_name="sourceRecoverPoint",
+                flags={"read_only": True},
             )
             _FetchJobsHelper._build_schema_restore_job_recovery_point_details_read(extended_info.source_recover_point)
             extended_info.sub_tasks = AAZListType(
@@ -355,9 +357,7 @@ class FetchJobs(AAZCommand):
             )
 
             additional_details = cls._schema_on_200.value.Element.properties.extended_info.additional_details
-            additional_details.Element = AAZStrType(
-                flags={"read_only": True},
-            )
+            additional_details.Element = AAZStrType()
 
             sub_tasks = cls._schema_on_200.value.Element.properties.extended_info.sub_tasks
             sub_tasks.Element = AAZObjectType()
@@ -384,9 +384,7 @@ class FetchJobs(AAZCommand):
             )
 
             additional_details = cls._schema_on_200.value.Element.properties.extended_info.sub_tasks.Element.additional_details
-            additional_details.Element = AAZStrType(
-                flags={"read_only": True},
-            )
+            additional_details.Element = AAZStrType()
 
             warning_details = cls._schema_on_200.value.Element.properties.extended_info.warning_details
             warning_details.Element = AAZObjectType()
@@ -467,7 +465,9 @@ class _FetchJobsHelper:
             _schema.recovery_point_time = cls._schema_restore_job_recovery_point_details_read.recovery_point_time
             return
 
-        cls._schema_restore_job_recovery_point_details_read = _schema_restore_job_recovery_point_details_read = AAZObjectType()
+        cls._schema_restore_job_recovery_point_details_read = _schema_restore_job_recovery_point_details_read = AAZObjectType(
+            flags={"read_only": True}
+        )
 
         restore_job_recovery_point_details_read = _schema_restore_job_recovery_point_details_read
         restore_job_recovery_point_details_read.recovery_point_id = AAZStrType(

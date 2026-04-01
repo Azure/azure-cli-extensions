@@ -19,9 +19,9 @@ class ValidateForUpdate(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-01-01",
+        "version": "2025-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupinstances/{}/validateformodifybackup", "2025-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupinstances/{}/validateformodifybackup", "2025-07-01"],
         ]
     }
 
@@ -247,12 +247,25 @@ class ValidateForUpdate(AAZCommand):
         backup_datasource_parameters_list.Element = AAZObjectArg()
 
         _element = cls._args_schema.backup_instance.policy_info.policy_parameters.backup_datasource_parameters_list.Element
+        _element.adls_blob_backup_datasource_parameters = AAZObjectArg(
+            options=["adls-blob-backup-datasource-parameters"],
+        )
         _element.blob_backup_datasource_parameters = AAZObjectArg(
             options=["blob-backup-datasource-parameters"],
         )
         _element.kubernetes_cluster_backup_datasource_parameters = AAZObjectArg(
             options=["kubernetes-cluster-backup-datasource-parameters"],
         )
+
+        adls_blob_backup_datasource_parameters = cls._args_schema.backup_instance.policy_info.policy_parameters.backup_datasource_parameters_list.Element.adls_blob_backup_datasource_parameters
+        adls_blob_backup_datasource_parameters.containers_list = AAZListArg(
+            options=["containers-list"],
+            help="List of containers to be backed up during configuration of backup of blobs",
+            required=True,
+        )
+
+        containers_list = cls._args_schema.backup_instance.policy_info.policy_parameters.backup_datasource_parameters_list.Element.adls_blob_backup_datasource_parameters.containers_list
+        containers_list.Element = AAZStrArg()
 
         blob_backup_datasource_parameters = cls._args_schema.backup_instance.policy_info.policy_parameters.backup_datasource_parameters_list.Element.blob_backup_datasource_parameters
         blob_backup_datasource_parameters.containers_list = AAZListArg(
@@ -451,7 +464,7 @@ class ValidateForUpdate(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-01-01",
+                    "api-version", "2025-07-01",
                     required=True,
                 ),
             }
@@ -545,10 +558,20 @@ class ValidateForUpdate(AAZCommand):
 
             _elements = _builder.get(".backupInstance.policyInfo.policyParameters.backupDatasourceParametersList[]")
             if _elements is not None:
+                _elements.set_const("objectType", "AdlsBlobBackupDatasourceParameters", AAZStrType, ".adls_blob_backup_datasource_parameters", typ_kwargs={"flags": {"required": True}})
                 _elements.set_const("objectType", "BlobBackupDatasourceParameters", AAZStrType, ".blob_backup_datasource_parameters", typ_kwargs={"flags": {"required": True}})
                 _elements.set_const("objectType", "KubernetesClusterBackupDatasourceParameters", AAZStrType, ".kubernetes_cluster_backup_datasource_parameters", typ_kwargs={"flags": {"required": True}})
+                _elements.discriminate_by("objectType", "AdlsBlobBackupDatasourceParameters")
                 _elements.discriminate_by("objectType", "BlobBackupDatasourceParameters")
                 _elements.discriminate_by("objectType", "KubernetesClusterBackupDatasourceParameters")
+
+            disc_adls_blob_backup_datasource_parameters = _builder.get(".backupInstance.policyInfo.policyParameters.backupDatasourceParametersList[]{objectType:AdlsBlobBackupDatasourceParameters}")
+            if disc_adls_blob_backup_datasource_parameters is not None:
+                disc_adls_blob_backup_datasource_parameters.set_prop("containersList", AAZListType, ".adls_blob_backup_datasource_parameters.containers_list", typ_kwargs={"flags": {"required": True}})
+
+            containers_list = _builder.get(".backupInstance.policyInfo.policyParameters.backupDatasourceParametersList[]{objectType:AdlsBlobBackupDatasourceParameters}.containersList")
+            if containers_list is not None:
+                containers_list.set_elements(AAZStrType, ".")
 
             disc_blob_backup_datasource_parameters = _builder.get(".backupInstance.policyInfo.policyParameters.backupDatasourceParametersList[]{objectType:BlobBackupDatasourceParameters}")
             if disc_blob_backup_datasource_parameters is not None:
