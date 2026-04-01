@@ -54,13 +54,19 @@ def get_image_platform(image_reference: str) -> str:
     ])
 
 
-def get_image_layers(image: str) -> list[str]:
+def get_image_layers(image: str, platform: str = "linux/amd64") -> list[str]:
 
     binary_path = Path(__file__).parent.parent / "bin" / "dmverity-vhd"
 
     get_image(image)
+
+    arg_list = [binary_path.as_posix(), "-d", "roothash", "-i", image]
+
+    if platform:
+        arg_list += ["--platform", platform]
+
     result = subprocess.run(
-        [binary_path.as_posix(), "-d", "roothash", "-i", image],
+        arg_list,
         stdout=subprocess.PIPE,
         stderr=subprocess.DEVNULL,
         check=True,

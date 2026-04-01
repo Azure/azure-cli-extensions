@@ -3,8 +3,9 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from typing import Optional
 from dataclasses import asdict
-from azext_confcom.lib.images import get_image_layers, get_image_config
+from azext_confcom.lib.images import get_image_layers, get_image_config, get_image_platform
 from azext_confcom.lib.platform import ACI_MOUNTS, VN2_MOUNTS
 
 
@@ -35,17 +36,20 @@ def merge_containers(*args) -> dict:
     return merged_container
 
 
-def from_image(image: str, platform: str) -> dict:
+def from_image(image: str, aci_or_vn2: str) -> dict:
 
     mounts = {
         "aci": [asdict(mount) for mount in ACI_MOUNTS],
         "vn2": VN2_MOUNTS,
-    }.get(platform, None)
+    }.get(aci_or_vn2, None)
+
+    image_platform = get_image_platform(image)
 
     return {
         "id": image,
         "name": image,
-        "layers": get_image_layers(image),
+        "layers": get_image_layers(image, platform=image_platform),
+        "platform": image_platform,
         **({"mounts": mounts} if mounts else {}),
         **get_image_config(image),
     }

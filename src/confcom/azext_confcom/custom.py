@@ -581,7 +581,7 @@ def containers_from_image(
 ) -> None:
     _containers_from_image(
         image=image,
-        platform=platform,
+        aci_or_vn2=platform,
     )
 
 

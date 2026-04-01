@@ -340,7 +340,7 @@ helps[
     parameters:
         - name: --platform
           type: str
-          short-summary: 'The name of the platform the container definition will run on'
+          short-summary: 'The name of the platform the container definition will run on. Must be either "aci" or "vn2".'
 
 
     examples:
