@@ -1,4 +1,4 @@
-# Azure CLI Planetarycomputer Extension #
+# Azure CLI Planetary Computer Extension #
 This is an extension to Azure CLI to manage Planetary Computer GeoCatalog resources.
 
 ## How to use ##
@@ -37,11 +37,11 @@ az planetarycomputer geocatalog wait -g MyResourceGroup -n MyCatalog --created
 #### GeoCatalog Identity Management ####
 ```bash
 # Assign a user-assigned managed identity
-az planetarycomputer geocatalog identity assign -g MyResourceGroup -n MyCatalog --user-assigned MyIdentity
+az planetarycomputer geocatalog identity assign -g MyResourceGroup -n MyCatalog --user-assigned /subscriptions/<subscription-id>/resourceGroups/MyResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/MyIdentity
 
 # Show identity information
 az planetarycomputer geocatalog identity show -g MyResourceGroup -n MyCatalog
 
 # Remove a user-assigned managed identity
-az planetarycomputer geocatalog identity remove -g MyResourceGroup -n MyCatalog --user-assigned MyIdentity
+az planetarycomputer geocatalog identity remove -g MyResourceGroup -n MyCatalog --user-assigned /subscriptions/<subscription-id>/resourceGroups/MyResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/MyIdentity
 ```

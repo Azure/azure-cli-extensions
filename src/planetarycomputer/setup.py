@@ -38,7 +38,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
 setup(
     name='planetarycomputer',
     version=VERSION,
-    description='Microsoft Azure Command-Line Tools Planetarycomputer Extension.',
+    description='Microsoft Azure Command-Line Tools Planetary Computer Extension.',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     author='Microsoft Corporation',

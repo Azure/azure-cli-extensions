@@ -61,13 +61,13 @@ class Remove(AAZCommand):
         _args_schema.mi_system_assigned = AAZStrArg(
             options=["--system-assigned", "--mi-system-assigned"],
             arg_group="Resource.identity",
-            help="Set the system managed identity.",
+            help="Remove the system-assigned managed identity from the catalog.",
             blank="True",
         )
         _args_schema.mi_user_assigned = AAZListArg(
             options=["--user-assigned", "--mi-user-assigned"],
             arg_group="Resource.identity",
-            help="Set the user managed identities.",
+            help="Remove one or more user-assigned managed identities from the catalog.",
             blank=[],
         )
 
