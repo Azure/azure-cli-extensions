@@ -4502,7 +4502,6 @@ class Machine(ProxyResource):
         "name": {"readonly": True},
         "type": {"readonly": True},
         "system_data": {"readonly": True},
-        "zones": {"readonly": True},
     }
 
     _attribute_map = {
