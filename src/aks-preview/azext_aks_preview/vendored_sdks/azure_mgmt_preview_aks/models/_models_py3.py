@@ -4513,14 +4513,14 @@ class Machine(ProxyResource):
         "zones": {"key": "zones", "type": "[str]"},
     }
 
-    def __init__(self, *, properties: Optional["_models.MachineProperties"] = None, **kwargs: Any) -> None:
+    def __init__(self, *, properties: Optional["_models.MachineProperties"] = None, zones: Optional[List[str]] = None, **kwargs: Any) -> None:
         """
         :keyword properties: The properties of the machine.
         :paramtype properties: ~azure.mgmt.containerservice.models.MachineProperties
         """
         super().__init__(**kwargs)
         self.properties = properties
-        self.zones: Optional[List[str]] = None
+        self.zones = zones
 
 
 class MachineBillingProfile(_serialization.Model):
