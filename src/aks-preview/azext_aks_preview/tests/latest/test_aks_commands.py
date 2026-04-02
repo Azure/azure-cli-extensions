@@ -2721,7 +2721,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--resource-group={resource_group}"
             " --cluster-name={name} "
             "--name={nodepool_name} "
-            " --zones 1 "
             "--mode=Machines",
             checks=[
                 self.check("provisioningState", "Succeeded"),
@@ -2740,6 +2739,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             " --priority Spot "
             " --eviction-policy Delete "
             " --spot-max-price 0.5 "
+            " --zones 1 "
             " --enable-ultra-ssd"
         )
 
