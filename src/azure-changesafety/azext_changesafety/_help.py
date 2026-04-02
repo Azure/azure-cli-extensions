@@ -151,6 +151,9 @@ helps['changesafety stagemap create'] = """
       - name: Create a StageMap with parameters
         text: |-
           az changesafety stagemap create --subscription 00000000-0000-0000-0000-000000000000 --stage-map-name parameterized-rollout --stages "[{name:Canary,sequence:1},{name:Production,sequence:2}]" --parameters region.string.default-value=westus batchSize.number.default-value=10
+      - name: Create a StageMap with stage variables
+        text: |-
+          az changesafety stagemap create --subscription 00000000-0000-0000-0000-000000000000 --stage-map-name staged-rollout --stages "[{name:Canary,sequence:1,stage-variables:{region:westus,batchSize:5}},{name:Production,sequence:2,stage-variables:{region:eastus,batchSize:50}}]"
 """
 
 helps['changesafety stagemap update'] = """
@@ -193,4 +196,87 @@ helps['changesafety stagemap list'] = """
       - name: List all StageMaps in the subscription
         text: |-
           az changesafety stagemap list --subscription 00000000-0000-0000-0000-000000000000
+"""
+
+helps['changesafety stageprogression'] = """
+    type: group
+    short-summary: Manage StageProgression resources that track the execution of individual stages within a ChangeRecord.
+"""
+
+helps['changesafety stageprogression create'] = """
+    type: command
+    short-summary: Create a StageProgression to track stage execution for a ChangeRecord.
+    long-summary: >
+        A StageProgression records the status of a specific stage defined in the ChangeRecord's
+        StageMap. Use this command to signal that a stage has started, completed, or encountered
+        an issue. The --stage-reference must match a stage name in the associated StageMap.
+    parameters:
+      - name: --change-record-name
+        short-summary: The name of the ChangeRecord resource this progression belongs to.
+      - name: --stage-reference
+        short-summary: Stage name from the associated StageMap (e.g., Canary, Production).
+      - name: --status
+        short-summary: "Status of the stage progression: Initialized, InProgress, Completed, Failed, Cancelled, Paused, or Skipped."
+      - name: --comments
+        short-summary: Optional comments about this stage progression.
+      - name: --stage-variables
+        short-summary: Key-value pairs of variables specific to this stage execution.
+      - name: --links
+        short-summary: Collection of related links. Use --links name=NAME uri=URL [description=TEXT].
+    examples:
+      - name: Create a StageProgression for the Canary stage
+        text: |-
+          az changesafety stageprogression create --change-record-name my-changerecord -n canary-progression --stage-reference Canary --status InProgress
+      - name: Create a StageProgression with stage variables and a link
+        text: |-
+          az changesafety stageprogression create --change-record-name my-changerecord -n prod-progression --stage-reference Production --status Initialized --stage-variables "{region:eastus,batchSize:50}" --links "[{name:dashboard,uri:'https://contoso.com/deploy/prod'}]"
+"""
+
+helps['changesafety stageprogression update'] = """
+    type: command
+    short-summary: Update an existing StageProgression resource.
+    long-summary: >
+        Update the status, comments, or other metadata of a StageProgression. Commonly used
+        to transition a stage from InProgress to Completed or Failed.
+    parameters:
+      - name: --change-record-name
+        short-summary: The name of the ChangeRecord resource.
+      - name: --status
+        short-summary: "Updated status: Initialized, InProgress, Completed, Failed, Cancelled, Paused, or Skipped."
+      - name: --comments
+        short-summary: Add or update comments about this stage progression.
+    examples:
+      - name: Mark a stage as completed
+        text: |-
+          az changesafety stageprogression update --change-record-name my-changerecord -n canary-progression --status Completed --comments "Canary validation passed"
+      - name: Mark a stage as failed
+        text: |-
+          az changesafety stageprogression update --change-record-name my-changerecord -n prod-progression --status Failed --comments "Deployment rollback triggered"
+"""
+
+helps['changesafety stageprogression show'] = """
+    type: command
+    short-summary: Show details for a StageProgression resource.
+    examples:
+      - name: Show a StageProgression
+        text: |-
+          az changesafety stageprogression show --change-record-name my-changerecord -n canary-progression
+"""
+
+helps['changesafety stageprogression delete'] = """
+    type: command
+    short-summary: Delete a StageProgression resource.
+    examples:
+      - name: Delete a StageProgression
+        text: |-
+          az changesafety stageprogression delete --change-record-name my-changerecord -n canary-progression --yes
+"""
+
+helps['changesafety stageprogression list'] = """
+    type: command
+    short-summary: List StageProgression resources for a ChangeRecord.
+    examples:
+      - name: List all StageProgressions for a ChangeRecord
+        text: |-
+          az changesafety stageprogression list --change-record-name my-changerecord
 """
