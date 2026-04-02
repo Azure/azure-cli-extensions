@@ -58,6 +58,18 @@ class Update(AAZCommand):
             required=True,
         )
 
+        # define Arg Group "Body"
+
+        _args_schema = cls._args_schema
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Body",
+            help="Resource tags.",
+        )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg()
+
         # define Arg Group "Identity"
 
         _args_schema = cls._args_schema
@@ -84,7 +96,6 @@ class Update(AAZCommand):
             options=["--annotation"],
             arg_group="Properties",
             help="Switch configuration description.",
-            nullable=True,
         )
         _args_schema.extended_vlan = AAZStrArg(
             options=["--extended-vlan"],
@@ -106,17 +117,9 @@ class Update(AAZCommand):
         _args_schema.network_to_network_interconnect_id = AAZResourceIdArg(
             options=["--nni-id", "--network-to-network-interconnect-id"],
             arg_group="Properties",
-            help="ARM Resource ID of the networkToNetworkInterconnectId of the L2 ISD resource.",
+            help="ARM Resource ID of the networkToNetworkInterconnectId of the ExternalNetwork resource.",
             nullable=True,
         )
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Properties",
-            help="Resource tags.",
-        )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
@@ -240,7 +243,7 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("annotation", AAZStrType, ".annotation", typ_kwargs={"nullable": True})
+                properties.set_prop("annotation", AAZStrType, ".annotation")
                 properties.set_prop("extendedVlan", AAZStrType, ".extended_vlan", typ_kwargs={"nullable": True})
                 properties.set_prop("mtu", AAZIntType, ".mtu", typ_kwargs={"nullable": True})
                 properties.set_prop("networkToNetworkInterconnectId", AAZStrType, ".network_to_network_interconnect_id", typ_kwargs={"nullable": True})

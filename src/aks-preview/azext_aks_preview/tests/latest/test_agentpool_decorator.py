@@ -258,6 +258,24 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
         ctx_2.attach_agentpool(agentpool_2)
         self.assertEqual(ctx_2.get_enable_artifact_streaming(), None)
 
+    def common_get_disable_artifact_streaming(self):
+        # default
+        ctx_1 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"disable_artifact_streaming": True}),
+            self.models,
+            DecoratorMode.UPDATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_1.get_disable_artifact_streaming(), True)
+        agentpool_1 = self.create_initialized_agentpool_instance(
+            artifact_streaming_profile=self.models.AgentPoolArtifactStreamingProfile(
+                enabled=True
+            )
+        )
+        ctx_1.attach_agentpool(agentpool_1)
+        self.assertEqual(ctx_1.get_disable_artifact_streaming(), True)
+
     def common_get_enable_managed_gpu(self):
         # default
         ctx_1 = AKSPreviewAgentPoolContext(
@@ -433,6 +451,66 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
 
         ctx_0.attach_agentpool(agentpool_0)
         self.assertEqual(ctx_0.get_driver_type(), "CUDA")
+
+    def common_get_gpu_mig_strategy(self):
+        # default
+        ctx_1 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"gpu_mig_strategy": None}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_1.get_gpu_mig_strategy(), None)
+        agentpool_1 = self.create_initialized_agentpool_instance(
+            gpu_profile=self.models.GPUProfile(
+                nvidia=self.models.NvidiaGPUProfile(
+                    mig_strategy="Single"
+                )
+            )
+        )
+
+        ctx_1.attach_agentpool(agentpool_1)
+        self.assertEqual(ctx_1.get_gpu_mig_strategy(), "Single")
+
+        # default
+        ctx_2 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"gpu_mig_strategy": None}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_2.get_gpu_mig_strategy(), None)
+        agentpool_2 = self.create_initialized_agentpool_instance(
+            gpu_profile=self.models.GPUProfile(
+                nvidia=self.models.NvidiaGPUProfile(
+                    mig_strategy="Mixed"
+                )
+            )
+        )
+        ctx_2.attach_agentpool(agentpool_2)
+        self.assertEqual(ctx_2.get_gpu_mig_strategy(), "Mixed")
+
+        # custom
+        ctx_0 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"gpu_mig_strategy": "Single"}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_0.get_gpu_mig_strategy(), "Single")
+        agentpool_0 = self.create_initialized_agentpool_instance(
+            gpu_profile=self.models.GPUProfile(
+                nvidia=self.models.NvidiaGPUProfile(
+                    mig_strategy=None
+                )
+            )
+        )
+
+        ctx_0.attach_agentpool(agentpool_0)
+        self.assertEqual(ctx_0.get_gpu_mig_strategy(), "Single")
 
     def common_get_os_sku(self):
         # default
@@ -1077,6 +1155,9 @@ class AKSPreviewAgentPoolContextStandaloneModeTestCase(
     def test_get_enable_artifact_streaming(self):
         self.common_get_enable_artifact_streaming()
 
+    def test_get_disable_artifact_streaming(self):
+        self.common_get_disable_artifact_streaming()
+
     def test_get_enable_managed_gpu(self):
         self.common_get_enable_managed_gpu()
 
@@ -1094,6 +1175,9 @@ class AKSPreviewAgentPoolContextStandaloneModeTestCase(
 
     def test_get_driver_type(self):
         self.common_get_driver_type()
+
+    def test_get_gpu_mig_strategy(self):
+        self.common_get_gpu_mig_strategy()
 
     def test_get_enable_secure_boot(self):
         self.common_get_enable_secure_boot()
@@ -1185,6 +1269,9 @@ class AKSPreviewAgentPoolContextManagedClusterModeTestCase(
 
     def test_get_enable_artifact_streaming(self):
         self.common_get_enable_artifact_streaming()
+
+    def test_get_disable_artifact_streaming(self):
+        self.common_get_disable_artifact_streaming()
 
     def test_get_enable_secure_boot(self):
         self.common_get_enable_secure_boot()
@@ -2425,6 +2512,42 @@ class AKSPreviewAgentPoolUpdateDecoratorCommonTestCase(unittest.TestCase):
             )
         )
         self.assertEqual(dec_agentpool_2, ground_truth_agentpool_2)
+        
+        dec_3 = AKSPreviewAgentPoolUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"disable_artifact_streaming": True},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        # fail on passing the wrong agentpool object
+        with self.assertRaises(CLIInternalError):
+            dec_3.update_artifact_streaming(None)
+        agentpool_3 = self.create_initialized_agentpool_instance(
+            artifact_streaming_profile=self.models.AgentPoolArtifactStreamingProfile(
+                enabled=True
+            )
+        )
+        dec_3.context.attach_agentpool(agentpool_3)
+        dec_agentpool_3 = dec_3.update_artifact_streaming(agentpool_3)
+        grond_truth_agentpool_3 = self.create_initialized_agentpool_instance(
+            artifact_streaming_profile=self.models.AgentPoolArtifactStreamingProfile(
+                enabled=False
+            )
+        )
+        self.assertEqual(dec_agentpool_3, grond_truth_agentpool_3)
+
+        # Should error if both set
+        dec_4 = AKSPreviewAgentPoolUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_artifact_streaming": True, "disable_artifact_streaming": True},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        dec_4.context.attach_agentpool(agentpool_3)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            dec_4.update_artifact_streaming(agentpool_3)
 
     def common_update_managed_gpu(self):
         dec_1 = AKSPreviewAgentPoolUpdateDecorator(

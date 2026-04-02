@@ -66,6 +66,18 @@ class Update(AAZCommand):
             required=True,
         )
 
+        # define Arg Group "Body"
+
+        _args_schema = cls._args_schema
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Body",
+            help="Resource tags.",
+        )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg()
+
         # define Arg Group "Identity"
 
         _args_schema = cls._args_schema
@@ -191,7 +203,7 @@ class Update(AAZCommand):
         _args_schema.terminal_server_configuration = AAZObjectArg(
             options=["--ts-config", "--terminal-server-configuration"],
             arg_group="Properties",
-            help="Network and credentials configuration already applied to terminal server.",
+            help="Network and credentials configuration currently applied to terminal server.",
             nullable=True,
         )
         _args_schema.trusted_ip_prefixes = AAZListArg(
@@ -205,11 +217,6 @@ class Update(AAZCommand):
             arg_group="Properties",
             help="Unique Route Distinguisher configuration",
             nullable=True,
-        )
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Properties",
-            help="Resource tags.",
         )
 
         authorized_transceiver = cls._args_schema.authorized_transceiver
@@ -340,9 +347,6 @@ class Update(AAZCommand):
             help="Unique Route Distinguisher configuration state. Default is Enabled.",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
         return cls._args_schema
 
     _args_vpn_configuration_patchable_properties_update = None

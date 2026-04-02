@@ -60,6 +60,26 @@ class Create(AAZCommand):
             required=True,
         )
 
+        # define Arg Group "Body"
+
+        _args_schema = cls._args_schema
+        _args_schema.location = AAZResourceLocationArg(
+            arg_group="Body",
+            help="The geo-location where the resource lives",
+            required=True,
+            fmt=AAZResourceLocationArgFormat(
+                resource_group_arg="resource_group",
+            ),
+        )
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Body",
+            help="Resource tags.",
+        )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg()
+
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
@@ -108,26 +128,6 @@ class Create(AAZCommand):
             options=["subnet-mask-length"],
             help="SubnetMaskLength gives the minimum NetworkPrefix length to be matched. Possible values for IPv4 are 1 - 32 . Possible values of IPv6 are 1 - 128.",
         )
-
-        # define Arg Group "Resource"
-
-        _args_schema = cls._args_schema
-        _args_schema.location = AAZResourceLocationArg(
-            arg_group="Resource",
-            help="The geo-location where the resource lives",
-            required=True,
-            fmt=AAZResourceLocationArgFormat(
-                resource_group_arg="resource_group",
-            ),
-        )
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Resource",
-            help="Resource tags.",
-        )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):

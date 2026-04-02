@@ -588,6 +588,11 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
                 self.agentpool.artifact_streaming_profile.enabled is not None
             ):
                 enable_artifact_streaming = self.agentpool.artifact_streaming_profile.enabled
+
+        if enable_artifact_streaming and self.get_disable_artifact_streaming():
+            raise MutuallyExclusiveArgumentError(
+                'Cannot specify both --enable-artifact-streaming and --disable-artifact-streaming.'
+            )
         return enable_artifact_streaming
 
     def get_enable_managed_gpu(self) -> Union[bool, None]:
@@ -610,6 +615,13 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
                     self.agentpool.gpu_profile.nvidia.management_mode == CONST_GPU_MANAGEMENT_MODE_MANAGED
                 )
         return enable_managed_gpu
+
+    def get_disable_artifact_streaming(self) -> bool:
+        """Obtain the value of disable_artifact_streaming.
+        :return: bool
+        """
+
+        return self.raw_param.get("disable_artifact_streaming")
 
     def get_pod_ip_allocation_mode(self: bool = False) -> Union[str, None]:
         """Get the value of pod_ip_allocation_mode.
@@ -751,6 +763,25 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
                 driver_type = self.agentpool.gpu_profile.driver_type
 
         return driver_type
+
+    def get_gpu_mig_strategy(self) -> Union[str, None]:
+        """Obtain the value of gpu_mig_strategy.
+        :return: str or None
+        """
+        # read the original value passed by the command
+        gpu_mig_strategy = self.raw_param.get("gpu_mig_strategy")
+
+        # In create mode, try to read the property value corresponding to the parameter from the `agentpool` object
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.agentpool and
+                self.agentpool.gpu_profile is not None and
+                self.agentpool.gpu_profile.nvidia is not None and
+                self.agentpool.gpu_profile.nvidia.mig_strategy is not None
+            ):
+                gpu_mig_strategy = self.agentpool.gpu_profile.nvidia.mig_strategy
+
+        return gpu_mig_strategy
 
     def get_enable_secure_boot(self) -> bool:
         """Obtain the value of enable_secure_boot.
@@ -1365,6 +1396,20 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
             agentpool.gpu_profile.driver_type = driver_type
         return agentpool
 
+    def set_up_gpu_mig_strategy(self, agentpool: AgentPool) -> AgentPool:
+        """Set up gpu mig strategy property for the AgentPool object."""
+        self._ensure_agentpool(agentpool)
+
+        gpu_mig_strategy = self.context.get_gpu_mig_strategy()
+        if gpu_mig_strategy is not None:
+            if agentpool.gpu_profile is None:
+                agentpool.gpu_profile = self.models.GPUProfile()  # pylint: disable=no-member
+            if agentpool.gpu_profile.nvidia is None:
+                agentpool.gpu_profile.nvidia = self.models.NvidiaGPUProfile()  # pylint: disable=no-member
+            agentpool.gpu_profile.nvidia.mig_strategy = gpu_mig_strategy
+            agentpool.gpu_profile.driver = CONST_GPU_DRIVER_INSTALL
+        return agentpool
+
     def set_up_pod_ip_allocation_mode(self, agentpool: AgentPool) -> AgentPool:
         """Set up pod ip allocation mode for the AgentPool object."""
         self._ensure_agentpool(agentpool)
@@ -1557,6 +1602,8 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool = self.set_up_gpu_profile(agentpool)
         # set up driver_type
         agentpool = self.set_up_driver_type(agentpool)
+        # set up gpu_mig_strategy
+        agentpool = self.set_up_gpu_mig_strategy(agentpool)
         # set up agentpool ssh access
         agentpool = self.set_up_ssh_access(agentpool)
         # set up agentpool pod ip allocation mode
@@ -1733,6 +1780,20 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
             agentpool.gpu_profile.driver = gpu_driver
         return agentpool
 
+    def update_gpu_mig_strategy(self, agentpool: AgentPool) -> AgentPool:
+        """Update gpu mig strategy property for the AgentPool object."""
+        self._ensure_agentpool(agentpool)
+
+        gpu_mig_strategy = self.context.get_gpu_mig_strategy()
+        if gpu_mig_strategy is not None:
+            if agentpool.gpu_profile is None:
+                agentpool.gpu_profile = self.models.GPUProfile()  # pylint: disable=no-member
+            if agentpool.gpu_profile.nvidia is None:
+                agentpool.gpu_profile.nvidia = self.models.NvidiaGPUProfile()  # pylint: disable=no-member
+            agentpool.gpu_profile.nvidia.mig_strategy = gpu_mig_strategy
+            agentpool.gpu_profile.driver = CONST_GPU_DRIVER_INSTALL
+        return agentpool
+
     def update_artifact_streaming(self, agentpool: AgentPool) -> AgentPool:
         """Update artifact streaming property for the AgentPool object.
         :return: the AgentPool object
@@ -1743,6 +1804,11 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
             if agentpool.artifact_streaming_profile is None:
                 agentpool.artifact_streaming_profile = self.models.AgentPoolArtifactStreamingProfile()  # pylint: disable=no-member
             agentpool.artifact_streaming_profile.enabled = True
+
+        if self.context.get_disable_artifact_streaming():
+            if agentpool.artifact_streaming_profile is None:
+                agentpool.artifact_streaming_profile = self.models.AgentPoolArtifactStreamingProfile()  # pylint: disable=no-member
+            agentpool.artifact_streaming_profile.enabled = False
         return agentpool
 
     def update_managed_gpu(self, agentpool: AgentPool) -> AgentPool:
@@ -1760,10 +1826,16 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
                 agentpool.gpu_profile = self.models.GPUProfile()  # pylint: disable=no-member
             if agentpool.gpu_profile.nvidia is None:
                 agentpool.gpu_profile.nvidia = self.models.NvidiaGPUProfile()  # pylint: disable=no-member
+            # Check if already set to the desired value to avoid API error
+            if agentpool.gpu_profile.nvidia.management_mode == CONST_GPU_MANAGEMENT_MODE_MANAGED:
+                return agentpool
             agentpool.gpu_profile.nvidia.management_mode = CONST_GPU_MANAGEMENT_MODE_MANAGED
             agentpool.gpu_profile.driver = CONST_GPU_DRIVER_INSTALL
         else:
             if agentpool.gpu_profile and agentpool.gpu_profile.nvidia:
+                # Check if already set to the desired value to avoid API error
+                if agentpool.gpu_profile.nvidia.management_mode == CONST_GPU_MANAGEMENT_MODE_UNMANAGED:
+                    return agentpool
                 agentpool.gpu_profile.nvidia.management_mode = CONST_GPU_MANAGEMENT_MODE_UNMANAGED
 
         return agentpool
@@ -1924,6 +1996,9 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
 
         # update gpu profile
         agentpool = self.update_gpu_profile(agentpool)
+
+        # update gpu mig strategy
+        agentpool = self.update_gpu_mig_strategy(agentpool)
 
         return agentpool
 

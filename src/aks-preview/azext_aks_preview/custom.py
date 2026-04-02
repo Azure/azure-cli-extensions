@@ -955,6 +955,9 @@ def aks_create(
     load_balancer_backend_pool_type=None,
     nat_gateway_managed_outbound_ip_count=None,
     nat_gateway_idle_timeout=None,
+    nat_gateway_managed_outbound_ipv6_count=None,
+    nat_gateway_outbound_ip_ids=None,
+    nat_gateway_outbound_ip_prefix_ids=None,
     outbound_type=None,
     network_plugin=None,
     network_plugin_mode=None,
@@ -1223,6 +1226,9 @@ def aks_update(
     load_balancer_backend_pool_type=None,
     nat_gateway_managed_outbound_ip_count=None,
     nat_gateway_idle_timeout=None,
+    nat_gateway_managed_outbound_ipv6_count=None,
+    nat_gateway_outbound_ip_ids=None,
+    nat_gateway_outbound_ip_prefix_ids=None,
     kube_proxy_config=None,
     auto_upgrade_channel=None,
     node_os_upgrade_channel=None,
@@ -1928,6 +1934,7 @@ def aks_agentpool_add(
     skip_gpu_driver_install=False,
     gpu_driver=None,
     driver_type=None,
+    gpu_mig_strategy=None,
     ssh_access=CONST_SSH_ACCESS_LOCALUSER,
     # trusted launch
     enable_secure_boot=False,
@@ -1999,6 +2006,7 @@ def aks_agentpool_update(
     allowed_host_ports=None,
     asg_ids=None,
     enable_artifact_streaming=False,
+    disable_artifact_streaming=False,
     enable_managed_gpu=False,
     os_sku=None,
     ssh_access=None,
@@ -2016,6 +2024,7 @@ def aks_agentpool_update(
     localdns_config=None,
     node_vm_size=None,
     gpu_driver=None,
+    gpu_mig_strategy=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()

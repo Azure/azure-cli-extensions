@@ -3,6 +3,13 @@
 Release History
 ===============
 
+9.1.0
+++++++
+* Enables the following previously removed command/command groups:
+*  - `bootstrapdevice` and `bootstrapinterface` command groups that both support `list` and `show` operations.
+*  - `fabric` commands `resync-certificate` and `rotate-certificate` to support certificate resync and rotation operations on the fabric resource.
+*  - `device` command `resync-certificate` to support resync operations for certificates on the device resource.
+
 9.0.0
 ++++++
 * Updates this 2025-07-15 CLI to a stable version (9.0.0) from beta version (9.0.0b1).

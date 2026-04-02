@@ -58,6 +58,18 @@ class Update(AAZCommand):
             required=True,
         )
 
+        # define Arg Group "Body"
+
+        _args_schema = cls._args_schema
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Body",
+            help="Resource tags.",
+        )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg()
+
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
@@ -72,11 +84,6 @@ class Update(AAZCommand):
             arg_group="Properties",
             help="List of IP Extended Community Rules.",
             nullable=True,
-        )
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Properties",
-            help="Resource tags.",
         )
 
         ip_extended_community_rules = cls._args_schema.ip_extended_community_rules
@@ -109,9 +116,6 @@ class Update(AAZCommand):
 
         route_targets = cls._args_schema.ip_extended_community_rules.Element.route_targets
         route_targets.Element = AAZStrArg()
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):

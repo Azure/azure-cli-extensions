@@ -65,6 +65,26 @@ class Create(AAZCommand):
             ),
         )
 
+        # define Arg Group "Body"
+
+        _args_schema = cls._args_schema
+        _args_schema.location = AAZResourceLocationArg(
+            arg_group="Body",
+            help="The geo-location where the resource lives",
+            required=True,
+            fmt=AAZResourceLocationArgFormat(
+                resource_group_arg="resource_group",
+            ),
+        )
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Body",
+            help="Resource tags.",
+        )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg()
+
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
@@ -212,26 +232,6 @@ class Create(AAZCommand):
 
         ip_extended_community_ids = cls._args_schema.statements.Element.condition.ip_extended_community_ids
         ip_extended_community_ids.Element = AAZStrArg()
-
-        # define Arg Group "Resource"
-
-        _args_schema = cls._args_schema
-        _args_schema.location = AAZResourceLocationArg(
-            arg_group="Resource",
-            help="The geo-location where the resource lives",
-            required=True,
-            fmt=AAZResourceLocationArgFormat(
-                resource_group_arg="resource_group",
-            ),
-        )
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Resource",
-            help="Resource tags.",
-        )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
         return cls._args_schema
 
     _args_ip_community_id_list_create = None
