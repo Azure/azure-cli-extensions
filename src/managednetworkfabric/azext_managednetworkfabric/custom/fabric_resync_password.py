@@ -25,6 +25,8 @@ class ResyncPasswordCommand(_ResyncPasswordCommand):
         poller = super()._handler(command_args)
         if poller is None:
             return None
+        if self.ctx.args.no_wait:
+            return poller
         try:
             return poller.result()
         except HttpResponseError as e:

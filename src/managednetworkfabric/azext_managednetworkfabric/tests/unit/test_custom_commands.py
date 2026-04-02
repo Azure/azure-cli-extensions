@@ -5,7 +5,7 @@
 
 import unittest
 from abc import ABC
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock, patch
 
 from azure.core.exceptions import HttpResponseError
 from knack.util import CLIError
@@ -23,6 +23,9 @@ class CustomCommandTestClass(ABC):
         """Verify _handler returns poller result on success."""
         mock_poller = Mock()
         mock_poller.result.return_value = {"status": "Succeeded"}
+
+        self.cmd.ctx = Mock()
+        self.cmd.ctx.args.no_wait = False
 
         with patch.object(self.base_class, "_handler", return_value=mock_poller):
             result = self.cmd._handler(Mock())
@@ -49,6 +52,9 @@ class CustomCommandTestClass(ABC):
 
         mock_poller = Mock()
         mock_poller.result.side_effect = http_error
+
+        self.cmd.ctx = Mock()
+        self.cmd.ctx.args.no_wait = False
 
         with patch.object(self.base_class, "_handler", return_value=mock_poller):
             with self.assertRaises(CLIError) as ctx:
@@ -81,6 +87,9 @@ class CustomCommandTestClass(ABC):
         mock_poller = Mock()
         mock_poller.result.side_effect = http_error
 
+        self.cmd.ctx = Mock()
+        self.cmd.ctx.args.no_wait = False
+
         with patch.object(self.base_class, "_handler", return_value=mock_poller):
             with self.assertRaises(CLIError) as ctx:
                 self.cmd._handler(Mock())
@@ -99,6 +108,19 @@ class CustomCommandTestClass(ABC):
             "",
             "Expected blank line between detail blocks",
         )
+
+    def test_handler_returns_poller_on_no_wait(self):
+        """Verify _handler returns the poller directly when --no-wait is set."""
+        mock_poller = Mock()
+
+        self.cmd.ctx = Mock()
+        self.cmd.ctx.args.no_wait = True
+
+        with patch.object(self.base_class, "_handler", return_value=mock_poller):
+            result = self.cmd._handler(Mock())
+
+        self.assertIs(result, mock_poller)
+        mock_poller.result.assert_not_called()
 
     def test_output_delegates_to_error_format(self):
         """Verify _output calls ErrorFormat._output with self as parent_cmd."""
