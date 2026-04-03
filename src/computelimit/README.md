@@ -18,47 +18,47 @@ There are 2 groups of compute limit operations that customers can perform on the
 #### Add a subscription as a guest to the host subscription. ####
 
 ```bash
- az computelimit guest-subscription add --location eastus --guest-subscription-id 11111111-1111-1111-1111-111111111111
+az computelimit guest-subscription add --location eastus --guest-subscription-id 11111111-1111-1111-1111-111111111111
 ```
 
 #### Remove a subscription as a guest to the host subscription. ####
 
 ```bash
- az computelimit guest-subscription remove --location eastus --guest-subscription-id 11111111-1111-1111-1111-111111111111
+az computelimit guest-subscription remove --location eastus --guest-subscription-id 11111111-1111-1111-1111-111111111111
 ```
 
 #### Get a guest subscription added to the host subscription. ####
 
 ```bash
- az computelimit guest-subscription show --location eastus --guest-subscription-id 11111111-1111-1111-1111-111111111111
+az computelimit guest-subscription show --location eastus --guest-subscription-id 11111111-1111-1111-1111-111111111111
 ```
 
 #### List all guest subscriptions added to the host subscription. ####
 
 ```bash
- az computelimit guest-subscription list --location eastus
+az computelimit guest-subscription list --location eastus
 ```
 
 #### Enable a compute limit to be shared by the host subscription with its guest subscriptions. ####
 
 ```bash
- az computelimit shared-limit add --location eastus --name StandardDSv3Family
+az computelimit shared-limit add --location eastus --name StandardDSv3Family
 ```
 
 #### Disable sharing of a compute limit by the host subscription with its guest subscriptions. ####
 
 ```bash
- az computelimit shared-limit remove --location eastus --name StandardDSv3Family
+az computelimit shared-limit remove --location eastus --name StandardDSv3Family
 ```
 
 #### Get a compute limit shared by the host subscription with its guest subscriptions. ####
 
 ```bash
- az computelimit shared-limit show --location eastus --name StandardDSv3Family
+az computelimit shared-limit show --location eastus --name StandardDSv3Family
 ```
 
 #### List all compute limits shared by the host subscription with its guest subscriptions. ####
 
 ```bash
- az computelimit shared-limit list --location eastus
+az computelimit shared-limit list --location eastus
 ```
