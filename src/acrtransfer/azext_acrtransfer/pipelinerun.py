@@ -48,13 +48,13 @@ def create_pipelinerun(client, resource_group_name, registry_name, pipeline_name
         pipeline_run_request = PipelineRunRequest(pipeline_resource_id=pipeline_resource_id,
                                                   target=pipeline_run_target,
                                                   artifacts=artifacts)
-        
+
     # Display authentication method
     if storage_access_mode == 'ManagedIdentity':
         logger.warning("Authenticating to Storage Account using Entra Managed Identity.")
     elif storage_access_mode == 'SasToken':
         logger.warning("Authenticating to Storage Account using Storage SAS Token.")
-    
+
     force_update_tag_str = str(time.time()) if force_update_tag else None
     pipeline_run = PipelineRun(request=pipeline_run_request, force_update_tag=force_update_tag_str)
 
@@ -70,13 +70,13 @@ def get_pipelinerun(client, resource_group_name, registry_name, pipeline_run_nam
     result = client.pipeline_runs.get(resource_group_name=resource_group_name,
                                       registry_name=registry_name,
                                       pipeline_run_name=pipeline_run_name)
-    
+
     # Display authentication method used during pipeline run
     if result.request and result.request.pipeline_resource_id:
         try:
             pipeline_resource_id = result.request.pipeline_resource_id
             storage_access_mode = None
-            
+
             # Parse resource ID and fetch pipeline based on type
             # Since the auth method is not stored in the pipeline run, we need to fetch the config from the pipeline
             if '/exportPipelines/' in pipeline_resource_id:
@@ -87,7 +87,7 @@ def get_pipelinerun(client, resource_group_name, registry_name, pipeline_run_nam
                 pipeline_name = pipeline_resource_id.split('/importPipelines/')[-1]
                 pipeline = client.import_pipelines.get(resource_group_name, registry_name, pipeline_name)
                 storage_access_mode = pipeline.source.storage_access_mode if pipeline.source else None
-            
+
             # Display type
             if storage_access_mode == 'ManagedIdentity':
                 logger.warning("Authenticating to Storage Account using Entra Managed Identity.")
@@ -95,7 +95,7 @@ def get_pipelinerun(client, resource_group_name, registry_name, pipeline_run_nam
                 logger.warning("Authenticating to Storage Account using Storage SAS Token.")
         except Exception:
             logger.warning("Unable to determine authentication method used for this pipeline run.")
-    
+
     return result
 
 

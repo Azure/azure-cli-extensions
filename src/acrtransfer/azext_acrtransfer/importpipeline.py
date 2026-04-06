@@ -42,12 +42,12 @@ def _extract_keyvault_resource_id(subscription_id, resource_group_name, keyvault
 def _display_permission_guidance(pipeline_type, storage_access_mode, principal_id, subscription_id, resource_group_name, container_uri, keyvault_secret_uri=None):
     """Display permission guidance for the managed identity."""
     storage_resource_id = _extract_storage_account_resource_id(subscription_id, resource_group_name, container_uri)
-    
+
     if storage_access_mode == 'ManagedIdentity':
         # For export pipeline, need write access (Contributor)
         # For import pipeline, need read access (Reader)
         role = "Storage Blob Data Contributor" if pipeline_type == "export" else "Storage Blob Data Reader"
-        
+
         logger.warning("")
         logger.warning("Please ensure that the Managed Identity of the pipeline (Object ID: %s) has the necessary permissions to access the Storage Account Blob Container.", principal_id)
         logger.warning("Please run:")
@@ -56,7 +56,7 @@ def _display_permission_guidance(pipeline_type, storage_access_mode, principal_i
         logger.warning("")
     elif storage_access_mode == 'SasToken' and keyvault_secret_uri:
         keyvault_resource_id = _extract_keyvault_resource_id(subscription_id, resource_group_name, keyvault_secret_uri)
-        
+
         logger.warning("")
         logger.warning("Please ensure that the Managed Identity of the pipeline (Object ID: %s) has the necessary permissions to access the Key Vault Secret containing the Storage Account SAS Key.", principal_id)
         logger.warning("Please run:")
@@ -107,7 +107,7 @@ def create_importpipeline(client, resource_group_name, registry_name, import_pip
                 if identity_info and identity_info.principal_id:
                     principal_id = identity_info.principal_id
                     break
-        
+
         if principal_id:
             from azure.cli.core.commands.client_factory import get_subscription_id
             from azure.cli.core import get_default_cli
@@ -121,7 +121,7 @@ def create_importpipeline(client, resource_group_name, registry_name, import_pip
                 container_uri=storage_account_container_uri,
                 keyvault_secret_uri=keyvault_secret_uri
             )
-    
+
     return result
 
 
