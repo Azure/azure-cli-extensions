@@ -1,10 +1,10 @@
-# --------------------------------------------------------------------------
+# pylint: disable=line-too-long,useless-suppression,too-many-lines,protected-access,broad-exception-caught
+# coding=utf-8
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
+# Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
-# pylint: disable=line-too-long,useless-suppression,too-many-lines,protected-access,broad-exception-caught,multiple-statements
-# flake8: noqa
-# coding=utf-8
+
 # pyright: reportUnnecessaryTypeIgnoreComment=false
 
 from base64 import b64decode, b64encode
@@ -1786,11 +1786,12 @@ class Deserializer:
                         tuple())):
                     return data
 
-                def is_a_text_parsing_type(x): return x not in [  # pylint: disable=unnecessary-lambda-assignment
-                    "object",
-                    "[]",
-                    r"{}",
-                ]
+                def is_a_text_parsing_type(x):  # pylint: disable=unnecessary-lambda-assignment
+                    return x not in [
+                        "object",
+                        "[]",
+                        r"{}",
+                    ]
                 if isinstance(data, ET.Element) and is_a_text_parsing_type(
                         data_type) and not data.text:
                     return None

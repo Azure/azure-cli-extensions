@@ -61,6 +61,18 @@ class Update(AAZCommand):
             required=True,
         )
 
+        # define Arg Group "Body"
+
+        _args_schema = cls._args_schema
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Body",
+            help="Resource tags.",
+        )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg()
+
         # define Arg Group "Identity"
 
         _args_schema = cls._args_schema
@@ -128,11 +140,6 @@ class Update(AAZCommand):
             arg_group="Properties",
             help="Network Tap Rules file URL.",
             nullable=True,
-        )
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Properties",
-            help="Resource tags.",
         )
 
         dynamic_match_configurations = cls._args_schema.dynamic_match_configurations
@@ -410,9 +417,6 @@ class Update(AAZCommand):
 
         vlans = cls._args_schema.match_configurations.Element.match_conditions.Element.vlan_match_condition.vlans
         vlans.Element = AAZStrArg()
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):

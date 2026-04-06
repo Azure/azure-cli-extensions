@@ -233,7 +233,7 @@ class Update(AAZCommand):
         )
         bmp_configuration.neighbor_ip_exclusions = AAZListArg(
             options=["neighbor-ip-exclusions"],
-            help="BMP Collector Address.",
+            help="Neighbor IP Address exclusions for BMP.",
         )
 
         neighbor_ip_exclusions = cls._args_schema.bgp_configuration.bmp_configuration.neighbor_ip_exclusions
