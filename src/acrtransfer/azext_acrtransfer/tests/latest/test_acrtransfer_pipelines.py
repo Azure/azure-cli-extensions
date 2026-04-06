@@ -5,11 +5,12 @@
 
 import unittest
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer, StorageAccountPreparer
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 
 class AcrTransferPipelineScenarioTest(ScenarioTest):
     """Test cases for ACR import/export pipelines with different authentication modes."""
-
+    @AllowLargeResponse(999999)
     @ResourceGroupPreparer(name_prefix='cli_test_acr_transfer_export_mi_')
     @StorageAccountPreparer(name_prefix='acrtransfer', kind='StorageV2', sku='Standard_LRS')
     def test_acr_export_pipeline_entra_mi_auth_no_identity(self, resource_group, storage_account):
@@ -51,6 +52,7 @@ class AcrTransferPipelineScenarioTest(ScenarioTest):
         self.cmd('acr export-pipeline delete -g {rg} -r {registry} -n {pipeline}')
         self.cmd('acr delete -g {rg} -n {registry} --yes')
 
+    @AllowLargeResponse(999999)
     @ResourceGroupPreparer(name_prefix='cli_test_acr_transfer_export_sas_')
     @StorageAccountPreparer(name_prefix='acrtransfer', kind='StorageV2', sku='Standard_LRS')
     def test_acr_export_pipeline_sas_token(self, resource_group, storage_account):
@@ -107,6 +109,7 @@ class AcrTransferPipelineScenarioTest(ScenarioTest):
         self.cmd('acr delete -g {rg} -n {registry} --yes')
         self.cmd('keyvault delete -g {rg} -n {keyvault}')
 
+    @AllowLargeResponse(99999)
     @ResourceGroupPreparer(name_prefix='cli_test_acr_transfer_export_uai_')
     @StorageAccountPreparer(name_prefix='acrtransfer', kind='StorageV2', sku='Standard_LRS')
     def test_acr_export_pipeline_entra_mi_auth_user_assigned(self, resource_group, storage_account):
@@ -152,6 +155,7 @@ class AcrTransferPipelineScenarioTest(ScenarioTest):
         self.cmd('acr delete -g {rg} -n {registry} --yes')
         self.cmd('identity delete -g {rg} -n {identity}')
 
+    @AllowLargeResponse(99999)
     @ResourceGroupPreparer(name_prefix='cli_test_acr_transfer_import_mi_')
     @StorageAccountPreparer(name_prefix='acrtransfer', kind='StorageV2', sku='Standard_LRS')
     def test_acr_import_pipeline_entra_mi_auth_no_identity(self, resource_group, storage_account):
@@ -193,6 +197,7 @@ class AcrTransferPipelineScenarioTest(ScenarioTest):
         self.cmd('acr import-pipeline delete -g {rg} -r {registry} -n {pipeline}')
         self.cmd('acr delete -g {rg} -n {registry} --yes')
 
+    @AllowLargeResponse(99999)
     @ResourceGroupPreparer(name_prefix='cli_test_acr_transfer_import_sas_')
     @StorageAccountPreparer(name_prefix='acrtransfer', kind='StorageV2', sku='Standard_LRS')
     def test_acr_import_pipeline_sas_token(self, resource_group, storage_account):
@@ -249,6 +254,7 @@ class AcrTransferPipelineScenarioTest(ScenarioTest):
         self.cmd('acr delete -g {rg} -n {registry} --yes')
         self.cmd('keyvault delete -g {rg} -n {keyvault}')
 
+    @AllowLargeResponse(99999)
     @ResourceGroupPreparer(name_prefix='cli_test_acr_transfer_export_mi_invalid_')
     @StorageAccountPreparer(name_prefix='acrtransfer', kind='StorageV2', sku='Standard_LRS')
     def test_acr_export_pipeline_entra_mi_auth_with_secret_uri_fails(self, resource_group, storage_account):
@@ -281,6 +287,7 @@ class AcrTransferPipelineScenarioTest(ScenarioTest):
         # Clean up
         self.cmd('acr delete -g {rg} -n {registry} --yes')
 
+    @AllowLargeResponse(99999)
     @ResourceGroupPreparer(name_prefix='cli_test_acr_transfer_import_mi_invalid_')
     @StorageAccountPreparer(name_prefix='acrtransfer', kind='StorageV2', sku='Standard_LRS')
     def test_acr_import_pipeline_entra_mi_auth_with_secret_uri_fails(self, resource_group, storage_account):
@@ -313,6 +320,7 @@ class AcrTransferPipelineScenarioTest(ScenarioTest):
         # Clean up
         self.cmd('acr delete -g {rg} -n {registry} --yes')
 
+    @AllowLargeResponse(99999)
     @ResourceGroupPreparer(name_prefix='cli_test_acr_transfer_import_uai_')
     @StorageAccountPreparer(name_prefix='acrtransfer', kind='StorageV2', sku='Standard_LRS')
     def test_acr_import_pipeline_entra_mi_auth_user_assigned(self, resource_group, storage_account):

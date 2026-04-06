@@ -23,13 +23,7 @@ def create_pipelinerun(client, resource_group_name, registry_name, pipeline_name
         except Exception as e:
             raise ResourceNotFoundError(f'Import pipeline {pipeline_name} not found on registry {registry_name} in the {resource_group_name} resource group.') from e
 
-        # Display authentication method
         storage_access_mode = raw_result.source.storage_access_mode if raw_result.source else None
-        if storage_access_mode == 'ManagedIdentity':
-            logger.warning("Authenticating to Storage Account using Entra Managed Identity.")
-        elif storage_access_mode == 'SasToken':
-            logger.warning("Authenticating to Storage Account using Storage SAS Token.")
-
         pipeline_resource_id = raw_result.id
         pipeline_run_source = PipelineRunSourceProperties(name=storage_blob_name)
         pipeline_run_request = PipelineRunRequest(pipeline_resource_id=pipeline_resource_id, source=pipeline_run_source)
@@ -42,13 +36,7 @@ def create_pipelinerun(client, resource_group_name, registry_name, pipeline_name
         except Exception as e:
             raise ResourceNotFoundError(f'Export pipeline {pipeline_name} not found on registry {registry_name} in the {resource_group_name} resource group.') from e
 
-        # Display authentication method
         storage_access_mode = raw_result.target.storage_access_mode if raw_result.target else None
-        if storage_access_mode == 'ManagedIdentity':
-            logger.warning("Authenticating to Storage Account using Entra Managed Identity.")
-        elif storage_access_mode == 'SasToken':
-            logger.warning("Authenticating to Storage Account using Storage SAS Token.")
-
         pipeline_resource_id = raw_result.id
         if artifacts is None:
             raise RequiredArgumentMissingError("artifacts cannot be null for Export PipelineRuns. Please provide a space-separated list of container images to be exported in the form REPOSITORY:TAG or REPOSITORY@sha256:90659bf80b44ce6be8234e6ff90a1ac34acbeb826903b02cfa0da11c82cbc042.")
@@ -60,7 +48,13 @@ def create_pipelinerun(client, resource_group_name, registry_name, pipeline_name
         pipeline_run_request = PipelineRunRequest(pipeline_resource_id=pipeline_resource_id,
                                                   target=pipeline_run_target,
                                                   artifacts=artifacts)
-
+        
+    # Display authentication method
+    if storage_access_mode == 'ManagedIdentity':
+        logger.warning("Authenticating to Storage Account using Entra Managed Identity.")
+    elif storage_access_mode == 'SasToken':
+        logger.warning("Authenticating to Storage Account using Storage SAS Token.")
+    
     force_update_tag_str = str(time.time()) if force_update_tag else None
     pipeline_run = PipelineRun(request=pipeline_run_request, force_update_tag=force_update_tag_str)
 
@@ -84,6 +78,7 @@ def get_pipelinerun(client, resource_group_name, registry_name, pipeline_run_nam
             storage_access_mode = None
             
             # Parse resource ID and fetch pipeline based on type
+            # Since the auth method is not stored in the pipeline run, we need to fetch the config from the pipeline
             if '/exportPipelines/' in pipeline_resource_id:
                 pipeline_name = pipeline_resource_id.split('/exportPipelines/')[-1]
                 pipeline = client.export_pipelines.get(resource_group_name, registry_name, pipeline_name)
@@ -93,13 +88,13 @@ def get_pipelinerun(client, resource_group_name, registry_name, pipeline_run_nam
                 pipeline = client.import_pipelines.get(resource_group_name, registry_name, pipeline_name)
                 storage_access_mode = pipeline.source.storage_access_mode if pipeline.source else None
             
-            # Display diagnostic messages
+            # Display type
             if storage_access_mode == 'ManagedIdentity':
                 logger.warning("Authenticating to Storage Account using Entra Managed Identity.")
             elif storage_access_mode == 'SasToken':
                 logger.warning("Authenticating to Storage Account using Storage SAS Token.")
         except Exception:
-            pass
+            logger.warning("Unable to determine authentication method used for this pipeline run.")
     
     return result
 
