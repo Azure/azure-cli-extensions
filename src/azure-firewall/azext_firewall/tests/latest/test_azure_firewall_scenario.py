@@ -61,7 +61,9 @@ class AzureFirewallScenario(ScenarioTest):
         self.kwargs.update({
             'pubip': 'pubip',
             'vnet': 'vnet',
-            'firewall': 'firewall'
+            'firewall': 'firewall',
+            'coll': 'rc1',
+            'network_rule1': 'network-rule1',
         })
 
         self.cmd('network public-ip create -g {rg} -n {pubip} --allocation-method Static --sku Standard --edge-zone losangeles')
@@ -70,6 +72,8 @@ class AzureFirewallScenario(ScenarioTest):
             self.check('extendedLocation.type', 'EdgeZone'),
             self.check('extendedLocation.name', 'losangeles')
         ])
+        self.cmd('network firewall network-rule create -g {rg} -f {firewall} -n {network_rule1} -c {coll} --priority 100 --action Allow --source-addresses 10.0.0.1 --protocols TCP --destination-addresses 111.1.0.0/20 --destination-ports 80')
+        self.cmd('network firewall network-rule collection delete -g {rg} -f {firewall} -c {coll}')
 
     @ResourceGroupPreparer(name_prefix="cli_test_firewall_with_additional_log_", location="westus")
     def test_firewall_with_additional_log(self):

@@ -9,13 +9,18 @@ from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 from .custom_preparers import AKSCustomResourceGroupPreparer
 
 class BaseScenario(ScenarioTest):
+    @property
+    def location(self):
+        return 'westus2'
+
     def create_appnet(self):
         """Creates an appnet, and returns its name. Additionally updates the kwargs to include the name"""
         appnet_name = self.create_random_name(prefix="cliappnet", length=20)
         self.kwargs.update({
-            "appnet_name": appnet_name
+            "appnet_name": appnet_name,
+            "location": self.location
         })
-        self.cmd('appnet create --resource-group {rg} --appnet-name {appnet_name} --location westus2', checks=[
+        self.cmd('appnet create --resource-group {rg} --appnet-name {appnet_name} --location {location}', checks=[
             self.check("name", appnet_name)
         ])
         return appnet_name
@@ -26,10 +31,11 @@ class BaseScenario(ScenarioTest):
 
         self.kwargs.update({
             "aks_name": aks_cluster_name,
+            "location": self.location
         })
         cluster = self.cmd('aks create \
                  --resource-group {rg} --name {aks_name} \
-                 --enable-oidc-issuer --enable-workload-identity --os-sku AzureLinux --location westus2',
+                 --enable-oidc-issuer --enable-workload-identity --enable-aad --os-sku AzureLinux --location {location}',
                  checks=[
                      self.check("provisioningState", "Succeeded")
                  ]).get_output_in_json()
@@ -47,17 +53,18 @@ class BaseScenario(ScenarioTest):
 
         member_name = self.create_random_name(prefix="cliappnetmember", length=24)
         self.kwargs.update({
-            "member_name": member_name
+            "member_name": member_name,
+            "location": self.location
         })
         join_cmd = (
             "appnet member join --resource-group {rg} --appnet-name {appnet_name} "
             "--member-name {member_name} --cluster-type AKS --member-resource-id {aks_resource_id} "
-            "--upgrade-mode FullyManaged --release-channel Stable --member-location westus2"
+            "--upgrade-mode FullyManaged --release-channel Stable --member-location {location}"
         )
         self.cmd(join_cmd, checks=[
             self.check('name', member_name),
-            self.check('properties.fullyManagedUpgradeProfile.releaseChannel', "Stable"),
-            self.check('properties.mode', "FullyManaged"),
+            self.check('properties.upgradeProfile.fullyManagedUpgradeProfile.releaseChannel', "Stable"),
+            self.check('properties.upgradeProfile.mode', "FullyManaged"),
         ])
         return member_name
 
@@ -95,7 +102,8 @@ class AppnetPreviewScenario(BaseScenario):
 
     def test_appnet_list_versions(self):
         # Test that list-versions returns a non-empty list
-        self.cmd('appnet list-versions --location westus2', checks=[
+        self.kwargs.update({"location": self.location})
+        self.cmd('appnet list-versions --location {location}', checks=[
             self.greater_than('length(@)', 0)
         ])
 
@@ -110,8 +118,8 @@ class AppnetMemberPreviewScenario(BaseScenario):
         get_cmd = "appnet member show --resource-group {rg} --appnet-name {appnet_name} --member-name {member_name}"
         self.cmd(get_cmd, checks=[
             self.check('name', member_name),
-            self.check('properties.fullyManagedUpgradeProfile.releaseChannel', "Stable"),
-            self.check('properties.mode', "FullyManaged"),
+            self.check('properties.upgradeProfile.fullyManagedUpgradeProfile.releaseChannel', "Stable"),
+            self.check('properties.upgradeProfile.mode', "FullyManaged"),
         ])
 
         update_cmd = (
@@ -120,8 +128,8 @@ class AppnetMemberPreviewScenario(BaseScenario):
         )
         self.cmd(update_cmd, checks=[
             self.check('name', member_name),
-            self.check('properties.fullyManagedUpgradeProfile.releaseChannel', "Rapid"),
-            self.check('properties.mode', "FullyManaged"),
+            self.check('properties.upgradeProfile.fullyManagedUpgradeProfile.releaseChannel', "Rapid"),
+            self.check('properties.upgradeProfile.mode', "FullyManaged"),
         ])
 
         self.delete_appnet_member()

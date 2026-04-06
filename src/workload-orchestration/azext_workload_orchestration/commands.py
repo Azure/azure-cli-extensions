@@ -8,8 +8,7 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 
-# from azure.cli.core.commands import CliCommandType
-
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
-    pass
+    with self.command_group('workload-orchestration support', is_preview=True) as g:
+        g.custom_command('create-bundle', 'create_support_bundle')

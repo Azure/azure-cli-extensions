@@ -10,6 +10,7 @@ from rich.console import Console
 
 from .anthropic_provider import AnthropicProvider
 from .azure_provider import AzureProvider
+from .azure_entraid_provider import AzureEntraIDProvider
 from .base import LLMProvider
 from .gemini_provider import GeminiProvider
 from .openai_compatible_provider import OpenAICompatibleProvider
@@ -19,11 +20,11 @@ console = Console()
 
 _PROVIDER_CLASSES: List[LLMProvider] = [
     AzureProvider,
+    AzureEntraIDProvider,
     OpenAIProvider,
     AnthropicProvider,
     GeminiProvider,
     OpenAICompatibleProvider,
-    # Add new providers here
 ]
 
 PROVIDER_REGISTRY = {}
@@ -49,8 +50,9 @@ def _get_provider_by_index(idx: int) -> LLMProvider:
     Raises ValueError if index is out of range.
     """
     if 1 <= idx <= len(_PROVIDER_CLASSES):
-        console.print("You selected provider:", _PROVIDER_CLASSES[idx - 1]().readable_name, style=f"bold {HELP_COLOR}")
-        return _PROVIDER_CLASSES[idx - 1]()
+        provider = _PROVIDER_CLASSES[idx - 1]()
+        console.print("You selected provider:", provider.readable_name, style=f"bold {HELP_COLOR}")
+        return provider
     raise ValueError(f"Invalid provider index: {idx}")
 
 
