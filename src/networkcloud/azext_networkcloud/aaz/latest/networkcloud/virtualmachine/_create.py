@@ -149,13 +149,10 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="Field Deprecated: The Base64 encoded cloud-init network data. The networkDataContent property will be used in preference to this property.",
         )
-        _args_schema.network_data_content = AAZStrArg(
+        _args_schema.network_data_content = AAZPasswordArg(
             options=["--ndc", "--network-data-content"],
             arg_group="Properties",
             help="The Base64 encoded cloud-init network data.",
-            blank=AAZPromptInput(
-                msg="Password:",
-            ),
         )
         _args_schema.placement_hints = AAZListArg(
             options=["--ph", "--placement-hints"],
@@ -178,13 +175,10 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="Field Deprecated: The Base64 encoded cloud-init user data. The userDataContent property will be used in preference to this property.",
         )
-        _args_schema.user_data_content = AAZStrArg(
+        _args_schema.user_data_content = AAZPasswordArg(
             options=["--udc", "--user-data-content"],
             arg_group="Properties",
             help="The Base64 encoded cloud-init user data.",
-            blank=AAZPromptInput(
-                msg="Password:",
-            ),
         )
         _args_schema.vm_device_model = AAZStrArg(
             options=["--vm-device-model"],
@@ -241,13 +235,14 @@ class Create(AAZCommand):
         console_extended_location = cls._args_schema.console_extended_location
         console_extended_location.name = AAZStrArg(
             options=["name"],
-            help="The name of the extended location.",
+            help="The resource ID of the extended location.",
             required=True,
         )
         console_extended_location.type = AAZStrArg(
             options=["type"],
             help="The type of the extended location.",
             required=True,
+            enum={"CustomLocation": "CustomLocation", "EdgeZone": "EdgeZone"},
         )
 
         network_attachments = cls._args_schema.network_attachments
@@ -354,12 +349,15 @@ class Create(AAZCommand):
         volume_attachments.Element = AAZStrArg()
 
         vm_image_repository_credentials = cls._args_schema.vm_image_repository_credentials
-        vm_image_repository_credentials.password = AAZStrArg(
+        vm_image_repository_credentials.password = AAZPasswordArg(
             options=["password"],
             help="The password or token used to access an image in the target repository.",
             required=True,
             fmt=AAZStrArgFormat(
                 min_length=1,
+            ),
+            blank=AAZPromptPasswordInput(
+                msg="Password:",
             ),
         )
         vm_image_repository_credentials.registry_url = AAZStrArg(
@@ -409,6 +407,7 @@ class Create(AAZCommand):
             options=["type"],
             help="The extended location type, for example, CustomLocation.",
             required=True,
+            enum={"CustomLocation": "CustomLocation", "EdgeZone": "EdgeZone"},
         )
 
         tags = cls._args_schema.tags
@@ -665,7 +664,6 @@ class Create(AAZCommand):
                 serialized_name="extendedLocation",
                 flags={"required": True},
             )
-            _CreateHelper._build_schema_extended_location_read(_schema_on_200_201.extended_location)
             _schema_on_200_201.id = AAZStrType(
                 flags={"read_only": True},
             )
@@ -686,6 +684,14 @@ class Create(AAZCommand):
             _schema_on_200_201.tags = AAZDictType()
             _schema_on_200_201.type = AAZStrType(
                 flags={"read_only": True},
+            )
+
+            extended_location = cls._schema_on_200_201.extended_location
+            extended_location.name = AAZStrType(
+                flags={"required": True},
+            )
+            extended_location.type = AAZStrType(
+                flags={"required": True},
             )
 
             identity = cls._schema_on_200_201.identity
@@ -746,7 +752,6 @@ class Create(AAZCommand):
             properties.console_extended_location = AAZObjectType(
                 serialized_name="consoleExtendedLocation",
             )
-            _CreateHelper._build_schema_extended_location_read(properties.console_extended_location)
             properties.cpu_cores = AAZIntType(
                 serialized_name="cpuCores",
                 flags={"required": True},
@@ -842,6 +847,14 @@ class Create(AAZCommand):
             )
             cloud_services_network_attachment.network_attachment_name = AAZStrType(
                 serialized_name="networkAttachmentName",
+            )
+
+            console_extended_location = cls._schema_on_200_201.properties.console_extended_location
+            console_extended_location.name = AAZStrType(
+                flags={"required": True},
+            )
+            console_extended_location.type = AAZStrType(
+                flags={"required": True},
             )
 
             network_attachments = cls._schema_on_200_201.properties.network_attachments
@@ -969,28 +982,6 @@ class Create(AAZCommand):
 
 class _CreateHelper:
     """Helper class for Create"""
-
-    _schema_extended_location_read = None
-
-    @classmethod
-    def _build_schema_extended_location_read(cls, _schema):
-        if cls._schema_extended_location_read is not None:
-            _schema.name = cls._schema_extended_location_read.name
-            _schema.type = cls._schema_extended_location_read.type
-            return
-
-        cls._schema_extended_location_read = _schema_extended_location_read = AAZObjectType()
-
-        extended_location_read = _schema_extended_location_read
-        extended_location_read.name = AAZStrType(
-            flags={"required": True},
-        )
-        extended_location_read.type = AAZStrType(
-            flags={"required": True},
-        )
-
-        _schema.name = cls._schema_extended_location_read.name
-        _schema.type = cls._schema_extended_location_read.type
 
 
 __all__ = ["Create"]

@@ -65,6 +65,7 @@ class RotateCredential(AAZCommand):
             options=["--credentials"],
             arg_group="Body",
             help="The list of credential names for the credentials to rotate.",
+            required=True,
         )
 
         credentials = cls._args_schema.credentials
@@ -175,7 +176,7 @@ class RotateCredential(AAZCommand):
             _content_value, _builder = self.new_content_builder(
                 self.ctx.args,
                 typ=AAZObjectType,
-                typ_kwargs={"flags": {"client_flatten": True}}
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("credentials", AAZListType, ".credentials", typ_kwargs={"flags": {"required": True}})
 

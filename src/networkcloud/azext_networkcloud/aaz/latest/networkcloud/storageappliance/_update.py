@@ -376,11 +376,9 @@ class Update(AAZCommand):
             monitoring_configuration_status = cls._schema_on_200.properties.monitoring_configuration_status
             monitoring_configuration_status.log_level = AAZStrType(
                 serialized_name="logLevel",
-                flags={"read_only": True},
             )
             monitoring_configuration_status.metrics_level = AAZStrType(
                 serialized_name="metricsLevel",
-                flags={"read_only": True},
             )
 
             secret_rotation_status = cls._schema_on_200.properties.secret_rotation_status

@@ -136,6 +136,7 @@ class Create(AAZCommand):
             options=["type"],
             help="The extended location type, for example, CustomLocation.",
             required=True,
+            enum={"CustomLocation": "CustomLocation", "EdgeZone": "EdgeZone"},
         )
 
         tags = cls._args_schema.tags

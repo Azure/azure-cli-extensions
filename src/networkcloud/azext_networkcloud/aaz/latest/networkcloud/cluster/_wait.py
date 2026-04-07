@@ -159,7 +159,6 @@ class Wait(AAZWaitCommand):
                 serialized_name="extendedLocation",
                 flags={"required": True},
             )
-            _WaitHelper._build_schema_extended_location_read(_schema_on_200.extended_location)
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
@@ -181,6 +180,14 @@ class Wait(AAZWaitCommand):
             _schema_on_200.tags = AAZDictType()
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
+            )
+
+            extended_location = cls._schema_on_200.extended_location
+            extended_location.name = AAZStrType(
+                flags={"required": True},
+            )
+            extended_location.type = AAZStrType(
+                flags={"required": True},
             )
 
             identity = cls._schema_on_200.identity
@@ -246,7 +253,7 @@ class Wait(AAZWaitCommand):
                 serialized_name="clusterExtendedLocation",
                 flags={"read_only": True},
             )
-            _WaitHelper._build_schema_extended_location_read(properties.cluster_extended_location)
+            _WaitHelper._build_schema_azure_resource_manager_common_types_extended_location_read(properties.cluster_extended_location)
             properties.cluster_location = AAZStrType(
                 serialized_name="clusterLocation",
             )
@@ -290,7 +297,7 @@ class Wait(AAZWaitCommand):
                 serialized_name="hybridAksExtendedLocation",
                 flags={"read_only": True},
             )
-            _WaitHelper._build_schema_extended_location_read(properties.hybrid_aks_extended_location)
+            _WaitHelper._build_schema_azure_resource_manager_common_types_extended_location_read(properties.hybrid_aks_extended_location)
             properties.last_successful_version_update_time = AAZStrType(
                 serialized_name="lastSuccessfulVersionUpdateTime",
                 flags={"read_only": True},
@@ -625,27 +632,29 @@ class _WaitHelper:
         _schema.password = cls._schema_administrative_credentials_read.password
         _schema.username = cls._schema_administrative_credentials_read.username
 
-    _schema_extended_location_read = None
+    _schema_azure_resource_manager_common_types_extended_location_read = None
 
     @classmethod
-    def _build_schema_extended_location_read(cls, _schema):
-        if cls._schema_extended_location_read is not None:
-            _schema.name = cls._schema_extended_location_read.name
-            _schema.type = cls._schema_extended_location_read.type
+    def _build_schema_azure_resource_manager_common_types_extended_location_read(cls, _schema):
+        if cls._schema_azure_resource_manager_common_types_extended_location_read is not None:
+            _schema.name = cls._schema_azure_resource_manager_common_types_extended_location_read.name
+            _schema.type = cls._schema_azure_resource_manager_common_types_extended_location_read.type
             return
 
-        cls._schema_extended_location_read = _schema_extended_location_read = AAZObjectType()
-
-        extended_location_read = _schema_extended_location_read
-        extended_location_read.name = AAZStrType(
-            flags={"required": True},
-        )
-        extended_location_read.type = AAZStrType(
-            flags={"required": True},
+        cls._schema_azure_resource_manager_common_types_extended_location_read = _schema_azure_resource_manager_common_types_extended_location_read = AAZObjectType(
+            flags={"read_only": True}
         )
 
-        _schema.name = cls._schema_extended_location_read.name
-        _schema.type = cls._schema_extended_location_read.type
+        azure_resource_manager_common_types_extended_location_read = _schema_azure_resource_manager_common_types_extended_location_read
+        azure_resource_manager_common_types_extended_location_read.name = AAZStrType(
+            flags={"required": True},
+        )
+        azure_resource_manager_common_types_extended_location_read.type = AAZStrType(
+            flags={"required": True},
+        )
+
+        _schema.name = cls._schema_azure_resource_manager_common_types_extended_location_read.name
+        _schema.type = cls._schema_azure_resource_manager_common_types_extended_location_read.type
 
     _schema_identity_selector_read = None
 
@@ -664,7 +673,6 @@ class _WaitHelper:
         )
         identity_selector_read.user_assigned_identity_resource_id = AAZStrType(
             serialized_name="userAssignedIdentityResourceId",
-            nullable=True,
         )
 
         _schema.identity_type = cls._schema_identity_selector_read.identity_type

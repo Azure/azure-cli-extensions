@@ -88,6 +88,9 @@ class Create(AAZCommand):
             arg_group="ClusterManagerParameters",
             help="The kind of the cluster manager.",
             enum={"AzureLocal": "AzureLocal", "Nexus": "Nexus"},
+            fmt=AAZStrArgFormat(
+                pattern="^[-\\w\\._,\\(\\\\\\)]+$",
+            ),
         )
         _args_schema.location = AAZResourceLocationArg(
             arg_group="ClusterManagerParameters",

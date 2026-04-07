@@ -10,7 +10,7 @@ from setuptools import setup, find_packages
 
 
 # HISTORY.rst entry.
-VERSION = '6.0.0b1'
+VERSION = '5.0.1b1'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers

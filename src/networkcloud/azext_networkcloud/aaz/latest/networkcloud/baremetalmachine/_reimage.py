@@ -59,14 +59,13 @@ class Reimage(AAZCommand):
             required=True,
         )
 
-        # define Arg Group "BareMetalMachineReimageParameters"
+        # define Arg Group "Body"
 
         _args_schema = cls._args_schema
         _args_schema.safeguard_mode = AAZStrArg(
             options=["--safeguard-mode"],
-            arg_group="BareMetalMachineReimageParameters",
-            help="The safeguard mode to use for the reimage action, where None indicates to bypass safeguards and All indicates to utilize all safeguards.",
-            default="All",
+            arg_group="Body",
+            help="The safeguard mode to use for the reimage action, where None indicates to bypass safeguards and All indicates to utilize all safeguards. If not specified, the default is All.",
             enum={"All": "All", "None": "None"},
         )
         return cls._args_schema

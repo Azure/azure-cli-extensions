@@ -3,9 +3,9 @@
 Release History
 ===============
 
-6.0.0b1
+5.0.1b1
 ++++++++
-* This preview version supports NetworkCloud 2026-01-01-preview APIs.
+* This preview version supports NetworkCloud 2026-05-01-preview APIs.
 * Adds `cluster` resource to support `rotate-credential` command.
 
 5.0.0b1

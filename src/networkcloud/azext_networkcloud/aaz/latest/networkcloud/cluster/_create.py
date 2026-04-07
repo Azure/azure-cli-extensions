@@ -91,6 +91,9 @@ class Create(AAZCommand):
             arg_group="ClusterParameters",
             help="The type (kind) of the cluster. When specified, the value must exactly match the kind configured on the cluster manager that manages the cluster. If omitted, the service will default the value to the kind value of the cluster manager.",
             enum={"AzureLocal": "AzureLocal", "Nexus": "Nexus"},
+            fmt=AAZStrArgFormat(
+                pattern="^[-\\w\\._,\\(\\\\\\)]+$",
+            ),
         )
         _args_schema.location = AAZResourceLocationArg(
             arg_group="ClusterParameters",
@@ -116,6 +119,7 @@ class Create(AAZCommand):
             options=["type"],
             help="The extended location type, for example, CustomLocation.",
             required=True,
+            enum={"CustomLocation": "CustomLocation", "EdgeZone": "EdgeZone"},
         )
 
         identity = cls._args_schema.identity
@@ -253,7 +257,6 @@ class Create(AAZCommand):
         analytics_output_settings.identity_resource_id = AAZResourceIdArg(
             options=["identity-resource-id"],
             help="The user assigned managed identity resource ID to use. Mutually exclusive with a system assigned identity type.",
-            nullable=True,
         )
 
         cluster_service_principal = cls._args_schema.cluster_service_principal
@@ -262,7 +265,7 @@ class Create(AAZCommand):
             help="The application ID, also known as client ID, of the service principal.",
             required=True,
         )
-        cluster_service_principal.password = AAZStrArg(
+        cluster_service_principal.password = AAZPasswordArg(
             options=["password"],
             help="The password of the service principal.",
             required=True,
@@ -287,7 +290,6 @@ class Create(AAZCommand):
         command_output_settings.identity_resource_id = AAZResourceIdArg(
             options=["identity-resource-id"],
             help="The user assigned managed identity resource ID to use. Mutually exclusive with a system assigned identity type.",
-            nullable=True,
         )
         command_output_settings.container_url = AAZStrArg(
             options=["container-url"],
@@ -310,7 +312,6 @@ class Create(AAZCommand):
         _element.identity_resource_id = AAZResourceIdArg(
             options=["identity-resource-id"],
             help="User assigned identity resource ID used as override.",
-            nullable=True,
         )
         _element.command_output_type = AAZStrArg(
             options=["command-output-type"],
@@ -384,7 +385,6 @@ class Create(AAZCommand):
         secret_archive_settings.identity_resource_id = AAZResourceIdArg(
             options=["identity-resource-id"],
             help="The user assigned managed identity resource ID to use. Mutually exclusive with a system assigned identity type.",
-            nullable=True,
         )
         secret_archive_settings.vault_uri = AAZStrArg(
             options=["vault-uri"],
@@ -450,7 +450,7 @@ class Create(AAZCommand):
         cls._args_administrative_credentials_create = AAZObjectArg()
 
         administrative_credentials_create = cls._args_administrative_credentials_create
-        administrative_credentials_create.password = AAZStrArg(
+        administrative_credentials_create.password = AAZPasswordArg(
             options=["password"],
             help="The password of the administrator of the device used during initialization.",
             required=True,
@@ -792,7 +792,7 @@ class Create(AAZCommand):
             associated_identity = _builder.get(".properties.analyticsOutputSettings.associatedIdentity")
             if associated_identity is not None:
                 associated_identity.set_prop("identityType", AAZStrType, ".identity_type")
-                associated_identity.set_prop("userAssignedIdentityResourceId", AAZStrType, ".identity_resource_id", typ_kwargs={"nullable": True})
+                associated_identity.set_prop("userAssignedIdentityResourceId", AAZStrType, ".identity_resource_id")
 
             cluster_service_principal = _builder.get(".properties.clusterServicePrincipal")
             if cluster_service_principal is not None:
@@ -810,7 +810,7 @@ class Create(AAZCommand):
             associated_identity = _builder.get(".properties.commandOutputSettings.associatedIdentity")
             if associated_identity is not None:
                 associated_identity.set_prop("identityType", AAZStrType, ".identity_type")
-                associated_identity.set_prop("userAssignedIdentityResourceId", AAZStrType, ".identity_resource_id", typ_kwargs={"nullable": True})
+                associated_identity.set_prop("userAssignedIdentityResourceId", AAZStrType, ".identity_resource_id")
 
             overrides = _builder.get(".properties.commandOutputSettings.overrides")
             if overrides is not None:
@@ -825,7 +825,7 @@ class Create(AAZCommand):
             associated_identity = _builder.get(".properties.commandOutputSettings.overrides[].associatedIdentity")
             if associated_identity is not None:
                 associated_identity.set_prop("identityType", AAZStrType, ".identity_type")
-                associated_identity.set_prop("userAssignedIdentityResourceId", AAZStrType, ".identity_resource_id", typ_kwargs={"nullable": True})
+                associated_identity.set_prop("userAssignedIdentityResourceId", AAZStrType, ".identity_resource_id")
 
             compute_deployment_threshold = _builder.get(".properties.computeDeploymentThreshold")
             if compute_deployment_threshold is not None:
@@ -855,7 +855,7 @@ class Create(AAZCommand):
             associated_identity = _builder.get(".properties.secretArchiveSettings.associatedIdentity")
             if associated_identity is not None:
                 associated_identity.set_prop("identityType", AAZStrType, ".identity_type")
-                associated_identity.set_prop("userAssignedIdentityResourceId", AAZStrType, ".identity_resource_id", typ_kwargs={"nullable": True})
+                associated_identity.set_prop("userAssignedIdentityResourceId", AAZStrType, ".identity_resource_id")
 
             update_strategy = _builder.get(".properties.updateStrategy")
             if update_strategy is not None:
@@ -900,7 +900,6 @@ class Create(AAZCommand):
                 serialized_name="extendedLocation",
                 flags={"required": True},
             )
-            _CreateHelper._build_schema_extended_location_read(_schema_on_200_201.extended_location)
             _schema_on_200_201.id = AAZStrType(
                 flags={"read_only": True},
             )
@@ -922,6 +921,14 @@ class Create(AAZCommand):
             _schema_on_200_201.tags = AAZDictType()
             _schema_on_200_201.type = AAZStrType(
                 flags={"read_only": True},
+            )
+
+            extended_location = cls._schema_on_200_201.extended_location
+            extended_location.name = AAZStrType(
+                flags={"required": True},
+            )
+            extended_location.type = AAZStrType(
+                flags={"required": True},
             )
 
             identity = cls._schema_on_200_201.identity
@@ -987,7 +994,7 @@ class Create(AAZCommand):
                 serialized_name="clusterExtendedLocation",
                 flags={"read_only": True},
             )
-            _CreateHelper._build_schema_extended_location_read(properties.cluster_extended_location)
+            _CreateHelper._build_schema_azure_resource_manager_common_types_extended_location_read(properties.cluster_extended_location)
             properties.cluster_location = AAZStrType(
                 serialized_name="clusterLocation",
             )
@@ -1031,7 +1038,7 @@ class Create(AAZCommand):
                 serialized_name="hybridAksExtendedLocation",
                 flags={"read_only": True},
             )
-            _CreateHelper._build_schema_extended_location_read(properties.hybrid_aks_extended_location)
+            _CreateHelper._build_schema_azure_resource_manager_common_types_extended_location_read(properties.hybrid_aks_extended_location)
             properties.last_successful_version_update_time = AAZStrType(
                 serialized_name="lastSuccessfulVersionUpdateTime",
                 flags={"read_only": True},
@@ -1410,27 +1417,29 @@ class _CreateHelper:
         _schema.password = cls._schema_administrative_credentials_read.password
         _schema.username = cls._schema_administrative_credentials_read.username
 
-    _schema_extended_location_read = None
+    _schema_azure_resource_manager_common_types_extended_location_read = None
 
     @classmethod
-    def _build_schema_extended_location_read(cls, _schema):
-        if cls._schema_extended_location_read is not None:
-            _schema.name = cls._schema_extended_location_read.name
-            _schema.type = cls._schema_extended_location_read.type
+    def _build_schema_azure_resource_manager_common_types_extended_location_read(cls, _schema):
+        if cls._schema_azure_resource_manager_common_types_extended_location_read is not None:
+            _schema.name = cls._schema_azure_resource_manager_common_types_extended_location_read.name
+            _schema.type = cls._schema_azure_resource_manager_common_types_extended_location_read.type
             return
 
-        cls._schema_extended_location_read = _schema_extended_location_read = AAZObjectType()
-
-        extended_location_read = _schema_extended_location_read
-        extended_location_read.name = AAZStrType(
-            flags={"required": True},
-        )
-        extended_location_read.type = AAZStrType(
-            flags={"required": True},
+        cls._schema_azure_resource_manager_common_types_extended_location_read = _schema_azure_resource_manager_common_types_extended_location_read = AAZObjectType(
+            flags={"read_only": True}
         )
 
-        _schema.name = cls._schema_extended_location_read.name
-        _schema.type = cls._schema_extended_location_read.type
+        azure_resource_manager_common_types_extended_location_read = _schema_azure_resource_manager_common_types_extended_location_read
+        azure_resource_manager_common_types_extended_location_read.name = AAZStrType(
+            flags={"required": True},
+        )
+        azure_resource_manager_common_types_extended_location_read.type = AAZStrType(
+            flags={"required": True},
+        )
+
+        _schema.name = cls._schema_azure_resource_manager_common_types_extended_location_read.name
+        _schema.type = cls._schema_azure_resource_manager_common_types_extended_location_read.type
 
     _schema_identity_selector_read = None
 
@@ -1449,7 +1458,6 @@ class _CreateHelper:
         )
         identity_selector_read.user_assigned_identity_resource_id = AAZStrType(
             serialized_name="userAssignedIdentityResourceId",
-            nullable=True,
         )
 
         _schema.identity_type = cls._schema_identity_selector_read.identity_type

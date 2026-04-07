@@ -166,7 +166,9 @@ class List(AAZCommand):
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
             )
-            _schema_on_200.value = AAZListType()
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
@@ -316,11 +318,9 @@ class List(AAZCommand):
             monitoring_configuration_status = cls._schema_on_200.value.Element.properties.monitoring_configuration_status
             monitoring_configuration_status.log_level = AAZStrType(
                 serialized_name="logLevel",
-                flags={"read_only": True},
             )
             monitoring_configuration_status.metrics_level = AAZStrType(
                 serialized_name="metricsLevel",
-                flags={"read_only": True},
             )
 
             secret_rotation_status = cls._schema_on_200.value.Element.properties.secret_rotation_status
@@ -477,7 +477,9 @@ class List(AAZCommand):
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
             )
-            _schema_on_200.value = AAZListType()
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
@@ -627,11 +629,9 @@ class List(AAZCommand):
             monitoring_configuration_status = cls._schema_on_200.value.Element.properties.monitoring_configuration_status
             monitoring_configuration_status.log_level = AAZStrType(
                 serialized_name="logLevel",
-                flags={"read_only": True},
             )
             monitoring_configuration_status.metrics_level = AAZStrType(
                 serialized_name="metricsLevel",
-                flags={"read_only": True},
             )
 
             secret_rotation_status = cls._schema_on_200.value.Element.properties.secret_rotation_status

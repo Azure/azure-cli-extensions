@@ -116,14 +116,14 @@ class Replace(AAZCommand):
         )
 
         bmc_credentials = cls._args_schema.bmc_credentials
-        bmc_credentials.password = AAZStrArg(
+        bmc_credentials.password = AAZPasswordArg(
             options=["password"],
             help="The password of the administrator of the device used during initialization.",
             required=True,
             fmt=AAZStrArgFormat(
                 min_length=1,
             ),
-            blank=AAZPromptInput(
+            blank=AAZPromptPasswordInput(
                 msg="Administrator password of device:",
             ),
         )
