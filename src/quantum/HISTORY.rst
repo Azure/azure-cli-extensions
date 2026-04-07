@@ -5,9 +5,9 @@ Release History
 
 1.0.0b13
 +++++++++++++++
-* Updated workspace create command to support creation of user delegation SAS for linked storage account with disabled access keys
+* Updated workspace create command to support job submissions with disabled access keys on linked storage account
+* Updated new storage account to be v2 in workspace creation because of the retirement of General-Purpose v1 (GPv1) storage accounts in October 13, 2026
 * Fixed bug where getting linked storage account from the service was used when storage connection string was provided in job submission related commands
-* Changed new storage account to be v2 because of the retirement of General-Purpose v1 (GPv1) storage accounts in October 13, 2026.
 
 1.0.0b12
 +++++++++++++++
