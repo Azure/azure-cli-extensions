@@ -12,6 +12,13 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+1.0.0b22
+++++++++
+* Bump aks-agent to v0.7.1
+  * Suppress litellm debug logs
+* Feature: Separate Azure OpenAI provider into API Key and Microsoft Entra ID (keyless) providers
+* Feature: Add --yes/-y flag to agent-cleanup command to skip confirmation prompt
+
 1.0.0b21
 ++++++++
 * Bump aks-agent to v0.6.0

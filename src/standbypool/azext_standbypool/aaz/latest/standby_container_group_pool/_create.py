@@ -18,13 +18,13 @@ class Create(AAZCommand):
     """Create a StandbyContainerGroupPoolResource
 
     :example: StandbyContainerGroupPools_CreateOrUpdate
-        az standby-container-group-pool create --resource-group rgstandbypool --name pool --max-ready-capacity 688 --refill-policy always --container-profile-id /subscriptions/00000000-0000-0000-0000-000000000009/resourceGroups/rgstandbypool/providers/Microsoft.ContainerInstance/containerGroupProfiles/cgProfile --profile-revision 1 --subnet-ids "[{id:/subscriptions/00000000-0000-0000-0000-000000000009/resourceGroups/rgstandbypool/providers/Microsoft.Network/virtualNetworks/cgSubnet/subnets/cgSubnet}]" --zones "[1,2,3]" --tags "{}" --location West US --subscription 00000000-0000-0000-0000-000000000009
+        az standby-container-group-pool create --resource-group rgstandbypool --name pool --max-ready-capacity 688 --refill-policy always --dynamic-sizing-enabled True --container-profile-id /subscriptions/00000000-0000-0000-0000-000000000009/resourceGroups/rgstandbypool/providers/Microsoft.ContainerInstance/containerGroupProfiles/cgProfile --profile-revision 1 --subnet-ids "[{id:/subscriptions/00000000-0000-0000-0000-000000000009/resourceGroups/rgstandbypool/providers/Microsoft.Network/virtualNetworks/cgSubnet/subnets/cgSubnet}]" --zones "[1,2,3]" --tags "{}" --location West US
     """
 
     _aaz_info = {
-        "version": "2025-03-01",
+        "version": "2025-10-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.standbypool/standbycontainergrouppools/{}", "2025-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.standbypool/standbycontainergrouppools/{}", "2025-10-01"],
         ]
     }
 
@@ -46,7 +46,6 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="The resource group",
             required=True,
         )
         _args_schema.name = AAZStrArg(
@@ -91,6 +90,15 @@ class Create(AAZCommand):
             required=True,
         )
 
+        # define Arg Group "DynamicSizing"
+
+        _args_schema = cls._args_schema
+        _args_schema.dynamic_sizing_enabled = AAZBoolArg(
+            options=["--dynamic-sizing-enabled"],
+            arg_group="DynamicSizing",
+            help="Indicates whether dynamic sizing is enabled for the standby pool.",
+        )
+
         # define Arg Group "ElasticityProfile"
 
         _args_schema = cls._args_schema
@@ -99,7 +107,6 @@ class Create(AAZCommand):
             arg_group="ElasticityProfile",
             help="Specifies maximum number of standby container groups in the standby pool.",
             fmt=AAZIntArgFormat(
-                maximum=2000,
                 minimum=0,
             ),
         )
@@ -224,7 +231,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-03-01",
+                    "api-version", "2025-10-01",
                     required=True,
                 ),
             }
@@ -279,8 +286,13 @@ class Create(AAZCommand):
 
             elasticity_profile = _builder.get(".properties.elasticityProfile")
             if elasticity_profile is not None:
+                elasticity_profile.set_prop("dynamicSizing", AAZObjectType)
                 elasticity_profile.set_prop("maxReadyCapacity", AAZIntType, ".max_ready_capacity", typ_kwargs={"flags": {"required": True}})
                 elasticity_profile.set_prop("refillPolicy", AAZStrType, ".refill_policy")
+
+            dynamic_sizing = _builder.get(".properties.elasticityProfile.dynamicSizing")
+            if dynamic_sizing is not None:
+                dynamic_sizing.set_prop("enabled", AAZBoolType, ".dynamic_sizing_enabled")
 
             zones = _builder.get(".properties.zones")
             if zones is not None:
@@ -370,6 +382,9 @@ class Create(AAZCommand):
             )
 
             elasticity_profile = cls._schema_on_200_201.properties.elasticity_profile
+            elasticity_profile.dynamic_sizing = AAZObjectType(
+                serialized_name="dynamicSizing",
+            )
             elasticity_profile.max_ready_capacity = AAZIntType(
                 serialized_name="maxReadyCapacity",
                 flags={"required": True},
@@ -377,6 +392,9 @@ class Create(AAZCommand):
             elasticity_profile.refill_policy = AAZStrType(
                 serialized_name="refillPolicy",
             )
+
+            dynamic_sizing = cls._schema_on_200_201.properties.elasticity_profile.dynamic_sizing
+            dynamic_sizing.enabled = AAZBoolType()
 
             zones = cls._schema_on_200_201.properties.zones
             zones.Element = AAZStrType()

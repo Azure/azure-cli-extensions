@@ -556,7 +556,8 @@ class AgentPool(ProxyResource):
         "e_tag": {"readonly": True},
         "os_disk_size_gb": {"maximum": 2048, "minimum": 0},
         "current_orchestrator_version": {"readonly": True},
-        "node_image_version": {"readonly": True},
+        # NOTE: node_image_version readonly intentionally removed to support agentpool rollback.
+        # See: azure-rest-api-specs#37229 (original removal), #38641 (regression), #41598 (upstream fix).
         "provisioning_state": {"readonly": True},
     }
 
@@ -662,6 +663,7 @@ class AgentPool(ProxyResource):
         type_properties_type: Optional[Union[str, "_models.AgentPoolType"]] = None,
         mode: Optional[Union[str, "_models.AgentPoolMode"]] = None,
         orchestrator_version: Optional[str] = None,
+        node_image_version: Optional[str] = None,
         upgrade_strategy: Optional[Union[str, "_models.UpgradeStrategy"]] = None,
         enable_os_disk_full_caching: Optional[bool] = None,
         upgrade_settings: Optional["_models.AgentPoolUpgradeSettings"] = None,
@@ -944,7 +946,7 @@ class AgentPool(ProxyResource):
         self.mode = mode
         self.orchestrator_version = orchestrator_version
         self.current_orchestrator_version: Optional[str] = None
-        self.node_image_version: Optional[str] = None
+        self.node_image_version = node_image_version
         self.upgrade_strategy = upgrade_strategy
         self.enable_os_disk_full_caching = enable_os_disk_full_caching
         self.upgrade_settings = upgrade_settings
@@ -6517,7 +6519,8 @@ class ManagedClusterAgentPoolProfileProperties(_serialization.Model):
         "e_tag": {"readonly": True},
         "os_disk_size_gb": {"maximum": 2048, "minimum": 0},
         "current_orchestrator_version": {"readonly": True},
-        "node_image_version": {"readonly": True},
+        # NOTE: node_image_version readonly intentionally removed to support agentpool rollback.
+        # See: azure-rest-api-specs#37229 (original removal), #38641 (regression), #41598 (upstream fix).
         "provisioning_state": {"readonly": True},
     }
 
@@ -6607,6 +6610,7 @@ class ManagedClusterAgentPoolProfileProperties(_serialization.Model):
         type: Optional[Union[str, "_models.AgentPoolType"]] = None,
         mode: Optional[Union[str, "_models.AgentPoolMode"]] = None,
         orchestrator_version: Optional[str] = None,
+        node_image_version: Optional[str] = None,
         upgrade_strategy: Optional[Union[str, "_models.UpgradeStrategy"]] = None,
         enable_os_disk_full_caching: Optional[bool] = None,
         upgrade_settings: Optional["_models.AgentPoolUpgradeSettings"] = None,
@@ -6889,7 +6893,7 @@ class ManagedClusterAgentPoolProfileProperties(_serialization.Model):
         self.mode = mode
         self.orchestrator_version = orchestrator_version
         self.current_orchestrator_version: Optional[str] = None
-        self.node_image_version: Optional[str] = None
+        self.node_image_version = node_image_version
         self.upgrade_strategy = upgrade_strategy
         self.enable_os_disk_full_caching = enable_os_disk_full_caching
         self.upgrade_settings = upgrade_settings
@@ -7173,7 +7177,8 @@ class ManagedClusterAgentPoolProfile(ManagedClusterAgentPoolProfileProperties):
         "e_tag": {"readonly": True},
         "os_disk_size_gb": {"maximum": 2048, "minimum": 0},
         "current_orchestrator_version": {"readonly": True},
-        "node_image_version": {"readonly": True},
+        # NOTE: node_image_version readonly intentionally removed to support agentpool rollback.
+        # See: azure-rest-api-specs#37229 (original removal), #38641 (regression), #41598 (upstream fix).
         "provisioning_state": {"readonly": True},
         "name": {"required": True, "pattern": r"^[a-z][a-z0-9]{0,11}$"},
     }
@@ -7266,6 +7271,7 @@ class ManagedClusterAgentPoolProfile(ManagedClusterAgentPoolProfileProperties):
         type: Optional[Union[str, "_models.AgentPoolType"]] = None,
         mode: Optional[Union[str, "_models.AgentPoolMode"]] = None,
         orchestrator_version: Optional[str] = None,
+        node_image_version: Optional[str] = None,
         upgrade_strategy: Optional[Union[str, "_models.UpgradeStrategy"]] = None,
         enable_os_disk_full_caching: Optional[bool] = None,
         upgrade_settings: Optional["_models.AgentPoolUpgradeSettings"] = None,
@@ -7549,6 +7555,7 @@ class ManagedClusterAgentPoolProfile(ManagedClusterAgentPoolProfileProperties):
             type=type,
             mode=mode,
             orchestrator_version=orchestrator_version,
+            node_image_version=node_image_version,
             upgrade_strategy=upgrade_strategy,
             enable_os_disk_full_caching=enable_os_disk_full_caching,
             upgrade_settings=upgrade_settings,

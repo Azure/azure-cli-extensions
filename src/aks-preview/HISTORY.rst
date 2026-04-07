@@ -11,8 +11,23 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+
+19.0.0b29
++++++++
+* Add MIG (Multi-Instance GPU) strategy option to node pool property in `az aks nodepool add` and `az aks nodepool update`.
+* Fix monitoring addon key casing compatibility with azure-cli/acs
+* `az aks create/update`: Add `--outbound-type managedNATGatewayV2` support using Azure NAT Gateway Standard V2 SKU with IPv6, user-provided IPs, and IP prefixes.
+* `az aks create/update`: Fix `--outbound-type managedNATGatewayV2` being silently overwritten to `loadBalancer` by the dynamic completion logic.
+
+19.0.0b28
++++++++
 * Fix `match_condition` kwarg leaking to HTTP transport by overriding `put_mc` and `add_agentpool` to pass `if_match` / `if_none_match` directly to the vendored SDK. This change fixes the compatibility issue as azure-cli/acs module adopts TypeSpec emitted SDKs while azure-cli-extensions/aks-preview still uses the autorest emitted SDK.
 + `az aks list-vm-skus`: New command to list available VM SKUs for AKS clusters in a given region.
+* `az aks create/update`: Add `--enable-service-account-image-pull`, `--disable-service-account-image-pull`, and `--service-account-image-pull-default-managed-identity-id` parameters to manage service account based image pull settings.
+* `az aks list-vm-skus`: New command to list available VM SKUs for AKS clusters in a given region.
+* Add managed GPU enablement option to node pool property in `az aks nodepool add` and `az aks nodepool update`.
+* `az aks namespace update`: Fix location should use existing namespace location.
+* `az aks nodepool update`: Add `--disable-artifact-streaming` to disable artifact streaming.
 
 19.0.0b27
 +++++++

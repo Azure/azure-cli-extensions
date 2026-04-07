@@ -3,6 +3,13 @@
 Release History
 ===============
 
+2.1.0
+++++++
+* Upgrade api-version to 2025-10-01
+* `az standby-vm-pool create/update`: Add new properties `--dynamic-sizing-enabled` and `--post-provisioning-delay`.
+* `az standby-container-group-pool create/update`: Add new property `--dynamic-sizing-enabled`.
+* `az standby-vm-pool create/update`: Remove max=2000 constraint on `--max-ready-capacity` and `--min-ready-capacity`.
+
 2.0.0
 ++++++
 * Upgrade api-version to 2025-03-01

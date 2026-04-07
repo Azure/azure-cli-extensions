@@ -188,6 +188,85 @@ class StreamAnalyticsClientTest(ScenarioTest):
         # delete an input
         self.cmd("stream-analytics input delete -n {input_name} -g {rg} --job-name {job_name} --yes")
 
+    @ResourceGroupPreparer(name_prefix="cli_test_stream_analytics_")
+    @StorageAccountPreparer(parameter_name="storage_account")
+    def test_input_create_policy_violation(self, storage_account):
+        self.kwargs.update({
+            "job_name": "job",
+            "input_name": "input",
+            "locale": "en-US",
+            "account": storage_account,
+            "container": "container"
+        })
+
+        policy_param = {
+            "effect": {
+                "value": "Deny"
+            }
+        }
+        self.kwargs["policy_param"] = json.dumps(policy_param)
+        self.cmd(
+            "policy assignment create --name deny-asa-mi --display-name 'Deny ASA non-MI authentication' \
+            --policy ea6c4923-510a-4346-be26-1894919a5b97 \
+            --params '{policy_param}'"
+        )
+
+        # create a streaming job
+        self.cmd(
+            "stream-analytics job create -n {job_name} -g {rg} \
+            --data-locale {locale} \
+            --output-error-policy Drop --out-of-order-policy Drop \
+            --order-max-delay 0 --arrival-max-delay 5"
+        )
+
+        # prepare storage account
+        self.kwargs["key"] = self.cmd(
+            "storage account keys list --account-name {account}"
+        ).get_output_in_json()[0]["value"]
+        self.cmd(
+            "storage container create -n {container} \
+            --account-name {account} --account-key {key}"
+        )
+
+        # create/test an input
+        props = {
+            "type": "Stream",
+            "datasource": {
+                "type": "Microsoft.Storage/Blob",
+                "properties": {
+                    "container": self.kwargs["container"],
+                    "dateFormat": "yyyy/MM/dd",
+                    "pathPattern": "{date}/{time}",
+                    "storageAccounts": [{
+                        "accountName": self.kwargs["account"],
+                        "accountKey": self.kwargs["key"]
+                    }],
+                    "timeFormat": "HH",
+                    "authenticationMode": "ConnectionString"
+                }
+            },
+            "serialization": {
+                "type": "Csv",
+                "properties": {
+                    "encoding": "UTF8",
+                    "fieldDelimiter": ","
+                }
+            }
+        }
+        self.kwargs["properties"] = json.dumps(props)
+
+        # Make sure it raises an exception error and the error is correct
+        from azure.core.exceptions import HttpResponseError
+        with self.assertRaises(HttpResponseError) as cm:
+            self.cmd(
+                "stream-analytics input create -n {input_name} -g {rg} \
+                --job-name {job_name} \
+                --properties '{properties}'"
+            )
+
+        self.assertIn("RequestDisallowedByPolicy", str(cm.exception))
+
+
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix="cli_test_stream_analytics_", location="westus")
     @StorageAccountPreparer(parameter_name="storage_account")

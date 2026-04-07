@@ -102,6 +102,9 @@ from azure.cli.command_modules.acs._consts import (
     DecoratorEarlyExitException,
     DecoratorMode,
 )
+from azext_aks_preview._consts import (
+    CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY_V2,
+)
 from dateutil.parser import parse
 from deepdiff import DeepDiff
 
@@ -1843,7 +1846,86 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         self.assertIsNone(ctx_0.get_image_cleaner_interval_hours())
 
+    def test_get_enable_service_account_image_pull(self):
+        ctx_0 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_0.get_enable_service_account_image_pull(), None)
+
         ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_service_account_image_pull": True,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_enable_service_account_image_pull(), True)
+
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_service_account_image_pull": False,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.assertEqual(ctx_2.get_enable_service_account_image_pull(), False)
+
+    def test_get_disable_service_account_image_pull(self):
+        ctx_0 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.assertEqual(ctx_0.get_disable_service_account_image_pull(), None)
+
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "disable_service_account_image_pull": True,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.assertEqual(ctx_1.get_disable_service_account_image_pull(), True)
+
+    def test_get_service_account_image_pull_default_managed_identity_id(self):
+        ctx_0 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertIsNone(ctx_0.get_service_account_image_pull_default_managed_identity_id())
+
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "service_account_image_pull_default_managed_identity_id": "test_identity_id",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(
+            ctx_1.get_service_account_image_pull_default_managed_identity_id(),
+            "test_identity_id",
+        )
+
+    def test_get_image_cleaner_interval_hours_extended(self):
+        ctx_2 = AKSPreviewManagedClusterContext(
             self.cmd,
             AKSManagedClusterParamDict(
                 {
@@ -1854,7 +1936,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        self.assertEqual(ctx_1.get_image_cleaner_interval_hours(), 24)
+        self.assertEqual(ctx_2.get_image_cleaner_interval_hours(), 24)
 
         ctx_2 = AKSPreviewManagedClusterContext(
             self.cmd,
@@ -4607,6 +4689,22 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         expect_outbound_type_4 = CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY
         self.assertEqual(outbound_type_4,expect_outbound_type_4)
 
+        # managedNATGatewayV2 should be preserved, not overwritten to loadBalancer
+        ctx5 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {"outbound_type": "managedNATGatewayV2"}
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.create_attach_agentpool_context(ctx5)
+        outbound_type_5 = ctx5._get_outbound_type(False, False, None)
+        self.assertEqual(
+            outbound_type_5,
+            CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY_V2,
+        )
+
     def test_get_enable_gateway_api(self):
         # default value
         ctx_1 = AKSPreviewManagedClusterContext(
@@ -6036,6 +6134,87 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             security_profile=ground_truth_security_profile_2,
         )
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+    def test_set_up_service_account_image_pull(self):
+        # test no-op when not enabled
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.set_up_service_account_image_pull(mc_1)
+        ground_truth_mc_1 = self.models.ManagedCluster(location="test_location")
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        # test enabled without managed identity id
+        dec_2 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_service_account_image_pull": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(location="test_location")
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.set_up_service_account_image_pull(mc_2)
+
+        ground_truth_profile_2 = self.models.ServiceAccountImagePullProfile(
+            enabled=True,
+            default_managed_identity_id=None,
+        )
+        ground_truth_security_profile_2 = self.models.ManagedClusterSecurityProfile(
+            service_account_image_pull_profile=ground_truth_profile_2,
+        )
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=ground_truth_security_profile_2,
+        )
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+        # test enabled with managed identity id
+        dec_3 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_service_account_image_pull": True,
+                "service_account_image_pull_default_managed_identity_id": "test_identity_id",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_3 = self.models.ManagedCluster(location="test_location")
+        dec_3.context.attach_mc(mc_3)
+        dec_mc_3 = dec_3.set_up_service_account_image_pull(mc_3)
+
+        ground_truth_profile_3 = self.models.ServiceAccountImagePullProfile(
+            enabled=True,
+            default_managed_identity_id="test_identity_id",
+        )
+        ground_truth_security_profile_3 = self.models.ManagedClusterSecurityProfile(
+            service_account_image_pull_profile=ground_truth_profile_3,
+        )
+        ground_truth_mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=ground_truth_security_profile_3,
+        )
+        self.assertEqual(dec_mc_3, ground_truth_mc_3)
+
+        # test identity id without enable raises RequiredArgumentMissingError
+        dec_4 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "service_account_image_pull_default_managed_identity_id": "test_identity_id",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_4 = self.models.ManagedCluster(location="test_location")
+        dec_4.context.attach_mc(mc_4)
+        with self.assertRaises(RequiredArgumentMissingError):
+            dec_4.set_up_service_account_image_pull(mc_4)
 
     def test_set_up_azure_keyvault_kms(self):
         key_id_1 = (
@@ -9237,6 +9416,159 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_mc_5, ground_truth_mc_5)
 
+    def test_update_service_account_image_pull(self):
+        # test no-op when neither enable nor disable
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.update_service_account_image_pull(mc_1)
+        ground_truth_mc_1 = self.models.ManagedCluster(location="test_location")
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        # test enable
+        dec_2 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_service_account_image_pull": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(location="test_location")
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.update_service_account_image_pull(mc_2)
+
+        ground_truth_profile_2 = self.models.ServiceAccountImagePullProfile(
+            enabled=True,
+        )
+        ground_truth_security_profile_2 = self.models.ManagedClusterSecurityProfile(
+            service_account_image_pull_profile=ground_truth_profile_2,
+        )
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=ground_truth_security_profile_2,
+        )
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+        # test disable
+        dec_3 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_service_account_image_pull": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        security_profile = self.models.ManagedClusterSecurityProfile()
+        security_profile.service_account_image_pull_profile = (
+            self.models.ServiceAccountImagePullProfile(
+                enabled=True,
+            )
+        )
+        mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=security_profile,
+        )
+        dec_3.context.attach_mc(mc_3)
+        dec_mc_3 = dec_3.update_service_account_image_pull(mc_3)
+
+        ground_truth_profile_3 = self.models.ServiceAccountImagePullProfile(
+            enabled=False,
+        )
+        ground_truth_security_profile_3 = self.models.ManagedClusterSecurityProfile(
+            service_account_image_pull_profile=ground_truth_profile_3,
+        )
+        ground_truth_mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=ground_truth_security_profile_3,
+        )
+        self.assertEqual(dec_mc_3, ground_truth_mc_3)
+
+        # test mutual exclusivity
+        dec_4 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_service_account_image_pull": True,
+                "disable_service_account_image_pull": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_4 = self.models.ManagedCluster(location="test_location")
+        dec_4.context.attach_mc(mc_4)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            dec_4.update_service_account_image_pull(mc_4)
+
+        # test update default managed identity id only
+        dec_5 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "service_account_image_pull_default_managed_identity_id": "new_identity_id",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        security_profile = self.models.ManagedClusterSecurityProfile()
+        security_profile.service_account_image_pull_profile = (
+            self.models.ServiceAccountImagePullProfile(
+                enabled=True,
+                default_managed_identity_id="old_identity_id",
+            )
+        )
+        mc_5 = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=security_profile,
+        )
+        dec_5.context.attach_mc(mc_5)
+        dec_mc_5 = dec_5.update_service_account_image_pull(mc_5)
+
+        ground_truth_profile_5 = self.models.ServiceAccountImagePullProfile(
+            enabled=True,
+            default_managed_identity_id="new_identity_id",
+        )
+        ground_truth_security_profile_5 = self.models.ManagedClusterSecurityProfile(
+            service_account_image_pull_profile=ground_truth_profile_5,
+        )
+        ground_truth_mc_5 = self.models.ManagedCluster(
+            location="test_location",
+            security_profile=ground_truth_security_profile_5,
+        )
+        self.assertEqual(dec_mc_5, ground_truth_mc_5)
+
+        # test disable + identity id raises MutuallyExclusiveArgumentError
+        dec_6 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_service_account_image_pull": True,
+                "service_account_image_pull_default_managed_identity_id": "test_identity_id",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_6 = self.models.ManagedCluster(location="test_location")
+        dec_6.context.attach_mc(mc_6)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            dec_6.update_service_account_image_pull(mc_6)
+
+        # test identity id only on cluster without feature enabled raises RequiredArgumentMissingError
+        dec_7 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "service_account_image_pull_default_managed_identity_id": "test_identity_id",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_7 = self.models.ManagedCluster(location="test_location")
+        dec_7.context.attach_mc(mc_7)
+        with self.assertRaises(RequiredArgumentMissingError):
+            dec_7.update_service_account_image_pull(mc_7)
+
     def test_update_azure_keyvault_kms(self):
         dec_1 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
@@ -10609,12 +10941,13 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         # Call _setup_azure_monitor_logs
         dec_1._setup_azure_monitor_logs(mc_1)
 
-        # Verify: Should update existing omsAgent key (not create omsagent lowercase)
-        self.assertIn("omsAgent", mc_1.addon_profiles)
-        self.assertNotIn("omsagent", mc_1.addon_profiles)  # Should NOT create duplicate
-        self.assertTrue(mc_1.addon_profiles["omsAgent"].enabled)
+        # Verify: The parent class normalizes addon keys to lowercase in-place,
+        # so "omsAgent" becomes "omsagent". The key point is no duplicate is created.
+        self.assertIn("omsagent", mc_1.addon_profiles)
+        self.assertEqual(len([k for k in mc_1.addon_profiles if k.lower() == "omsagent"]), 1)  # No duplicate
+        self.assertTrue(mc_1.addon_profiles["omsagent"].enabled)
         self.assertEqual(
-            mc_1.addon_profiles["omsAgent"].config["logAnalyticsWorkspaceResourceID"],
+            mc_1.addon_profiles["omsagent"].config["logAnalyticsWorkspaceResourceID"],
             "/subscriptions/test/resourceGroups/test/providers/Microsoft.OperationalInsights/workspaces/test-workspace"
         )
 
