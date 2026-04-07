@@ -18,42 +18,40 @@ logger = get_logger(__name__)
 
 def _extract_storage_account_resource_id(subscription_id, resource_group_name, container_uri):
     """Extract storage account resource ID from container URI.
-    Used for permission guidance messages 
+    Used for permission guidance messages
     Expected format: https://<storage-account-name>.blob.core.windows.net/<container-name>
     """
     try:
         parsed = urlparse(container_uri)
         storage_account_name = parsed.hostname.split('.')[0]
         return f"/subscriptions/{subscription_id}/resourceGroups/{resource_group_name}/providers/Microsoft.Storage/storageAccounts/{storage_account_name}"
-    except Exception:
+    except Exception:  # pylint: disable=broad-exception-caught
         return "<storage-account-resource-id>"
 
 
 def _extract_keyvault_resource_id(subscription_id, resource_group_name, keyvault_secret_uri):
     """Extract key vault resource ID from secret URI.
-    Used for permission guidance messages 
+    Used for permission guidance messages
     Expected format: https://<keyvault-name>.vault.azure.net/secrets/<secret-name>
     """
     try:
         parsed = urlparse(keyvault_secret_uri)
         keyvault_name = parsed.hostname.split('.')[0]
         return f"/subscriptions/{subscription_id}/resourceGroups/{resource_group_name}/providers/Microsoft.KeyVault/vaults/{keyvault_name}"
-    except Exception:
+    except Exception:  # pylint: disable=broad-exception-caught
         return "<key-vault-resource-id>"
 
 
 def _display_permission_guidance(storage_access_mode, principal_id, subscription_id, resource_group_name, container_uri, keyvault_secret_uri=None):
     """Display permission guidance for the managed identity."""
-
-
     if storage_access_mode == 'ManagedIdentity':
         storage_resource_id = _extract_storage_account_resource_id(subscription_id, resource_group_name, container_uri)
         role = "Storage Blob Data Contributor"
 
         logger.warning("")
-        logger.warning(f"Please ensure that the Managed Identity of the pipeline (Object ID: {principal_id}) has the necessary permissions to access the Storage Account Blob Container.")
+        logger.warning("Please ensure that the Managed Identity of the pipeline (Object ID: %s) has the necessary permissions to access the Storage Account Blob Container.", principal_id)
         logger.warning("Please run:")
-        logger.warning(f"  az role assignment create --assignee \"{principal_id}\" --role \"{role}\" --scope \"{storage_resource_id}\"")
+        logger.warning("  az role assignment create --assignee \"%s\" --role \"%s\" --scope \"%s\"", principal_id, role, storage_resource_id)
         logger.warning("Note: If the Storage Account is in a different resource group, update the --scope parameter accordingly.")
         logger.warning("")
     elif storage_access_mode == 'SasToken' and keyvault_secret_uri:
@@ -61,9 +59,9 @@ def _display_permission_guidance(storage_access_mode, principal_id, subscription
         role = "Key Vault Secrets User"
 
         logger.warning("")
-        logger.warning(f"Please ensure that the Managed Identity of the pipeline (Object ID: {principal_id}) has the necessary permissions to access the Key Vault Secret containing the Storage Account SAS Key.")
+        logger.warning("Please ensure that the Managed Identity of the pipeline (Object ID: %s) has the necessary permissions to access the Key Vault Secret containing the Storage Account SAS Key.", principal_id)
         logger.warning("Please run:")
-        logger.warning(f"  az role assignment create --assignee \"{principal_id}\" --role \"{role}\" --scope \"{keyvault_resource_id}\"")
+        logger.warning("  az role assignment create --assignee \"%s\" --role \"%s\" --scope \"%s\"", principal_id, role, keyvault_resource_id)
         logger.warning("Note: If the Key Vault is in a different resource group, update the --scope parameter accordingly.")
         logger.warning("")
 

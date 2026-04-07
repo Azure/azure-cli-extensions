@@ -93,7 +93,7 @@ def get_pipelinerun(client, resource_group_name, registry_name, pipeline_run_nam
                 logger.warning("Authenticating to Storage Account using Entra Managed Identity.")
             elif storage_access_mode == 'SasToken':
                 logger.warning("Authenticating to Storage Account using Storage SAS Token.")
-        except Exception:
+        except Exception:  # pylint: disable=broad-exception-caught
             logger.warning("Unable to determine authentication method used for this pipeline run.")
 
     return result
