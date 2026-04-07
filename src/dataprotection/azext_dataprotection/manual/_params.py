@@ -42,7 +42,8 @@ from azext_dataprotection.manual.enums import (
     get_permission_scope_values,
     get_resource_type_values,
     get_persistent_volume_restore_mode_values,
-    get_conflict_policy_values
+    get_conflict_policy_values,
+    get_all_backup_strategies,
 )
 
 vault_name_type = CLIArgumentType(help='Name of the backup vault.', options_list=['--vault-name', '-v'], type=str)
@@ -181,6 +182,27 @@ def load_arguments(self, _):
                    'json-string/@json-file. Required when --operation is Backup')
         c.argument('restore_request_object', type=validate_file_or_dict, help='Request body for operation "Restore" Expected value: '
                    'json-string/@json-file. Required when --operation is Restore')
+
+    # Enable Backup command
+    with self.argument_context('dataprotection enable-backup trigger') as c:
+        c.argument('datasource_type', type=str, help="The type of datasource to be backed up. Supported values: AzureKubernetesService.")
+        c.argument('datasource_id', type=str, help="The full ARM resource ID of the datasource to be backed up.")
+        c.argument('backup_strategy', arg_type=get_enum_type(get_all_backup_strategies()),
+                   help="Backup strategy preset (daily incremental backups). "
+                        "For AzureKubernetesService: "
+                        "Week (7-day operational store retention), "
+                        "Month (30-day operational store retention), "
+                        "DisasterRecovery (7-day operational + 90-day vault store retention), "
+                        "Custom (bring your own vault/policy). Default: Week.")
+        c.argument('backup_configuration_file', type=validate_file_or_dict,
+                   options_list=['--backup-configuration-file', '-f'],
+                   help="Path to a JSON backup configuration file. "
+                        "Supports backupVaultId and backupPolicyId "
+                        "(required for Custom strategy). "
+                        "For workload-specific settings, "
+                        "refer to the documentation.")
+        c.argument('yes', options_list=['--yes', '-y'], action='store_true',
+                   help='Do not prompt for confirmation.')
 
     with self.argument_context('dataprotection job show') as c:
         c.argument('resource_group_name', resource_group_name_type)
