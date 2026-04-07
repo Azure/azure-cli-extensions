@@ -6,6 +6,8 @@
 import json
 import os
 import pytest
+import random
+import time
 import unittest
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
@@ -264,6 +266,46 @@ class QuantumJobsScenarioTest(ScenarioTest):
 
         self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp}')
 
+    @live_only()
+    def test_submit_with_disabled_then_enabled_storage_key_access(self):
+        test_location = get_test_workspace_location()
+        test_resource_group = get_test_resource_group()
+        test_workspace_temp = get_test_workspace_random_name()
+        test_provider_sku_list = "rigetti/azure-basic-qvm-only-unlimited"
+        test_storage_temp = "e2etests" + str(random.randint(10000000, 99999999))
+
+        try:
+            # Test that create workspace with not existing storage will create storage
+            self.cmd(f"az quantum workspace create --auto-accept -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage_temp} -r {test_provider_sku_list} --skip-autoadd")
+
+            # Verify that access keys are disabled on the newly created storage account
+            storage_info = self.cmd(f"az storage account show -g {test_resource_group} -n {test_storage_temp} -o json").get_output_in_json()
+            self.assertFalse(storage_info["allowSharedKeyAccess"], "Access keys should be disabled on the newly created storage account for new workspace")
+
+            self.cmd(f"az quantum workspace set -g {test_resource_group} -w {test_workspace_temp} -l {test_location}")
+            
+            # Test that job submission works with disabled acces keys on linked storage (/sasUri returns user delegation SAS)
+            results = self.cmd("az quantum job submit -t rigetti.sim.qvm --job-input-format rigetti.quil.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/bell-state.quil --job-output-format rigetti.quil-results.v1 -o json").get_output_in_json()
+            self.assertIn("id", results)
+            
+            # Enable access keys on the storage account
+            updated = self.cmd(f"az storage account update -g {test_resource_group} -n {test_storage_temp} --allow-shared-key-access true -o json").get_output_in_json()
+            self.assertTrue(updated["allowSharedKeyAccess"], "Access keys should be enabled after update")
+
+            time.sleep(60) # wait for the cache to update
+
+            # Test that job submission works with enabled access keys on linked storage (/sasUri returns container-scoped Service SAS)
+            results = self.cmd("az quantum job submit -t rigetti.sim.qvm --job-input-format rigetti.quil.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/bell-state.quil --job-output-format rigetti.quil-results.v1 -o json").get_output_in_json()
+            self.assertIn("id", results)
+
+            # Retrieve the storage connection string and submit a job with specifying connection string using --storage flag
+            conn_info = self.cmd(f"az storage account show-connection-string -g {test_resource_group} -n {test_storage_temp} -o json").get_output_in_json()
+            storage_connection_string = conn_info["connectionString"]
+            results = self.cmd(f"az quantum job submit -t rigetti.sim.qvm --job-input-format rigetti.quil.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/bell-state.quil --job-output-format rigetti.quil-results.v1 --storage \"{storage_connection_string}\" -o json").get_output_in_json()
+            self.assertIn("id", results)
+        finally:
+            self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp}')
+            self.cmd(f'az storage account delete -g {test_resource_group} -n {test_storage_temp} --yes')
 
     def test_job_list_param_formating(self):
         # Validate filter query formatting for each param

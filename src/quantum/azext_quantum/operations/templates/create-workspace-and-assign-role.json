@@ -156,7 +156,7 @@
                         },
                         {
                             "apiVersion": "2020-04-01-preview",
-                            "name": "[concat(parameters('storageAccountName'), '/Microsoft.Authorization/', guid(reference(concat('Microsoft.Quantum/Workspaces/', parameters('quantumWorkspaceName')), '2019-11-04-preview', 'Full').identity.principalId))]",
+                            "name": "[concat(parameters('storageAccountName'), '/Microsoft.Authorization/', guid(reference(concat('Microsoft.Quantum/Workspaces/', parameters('quantumWorkspaceName')), '2019-11-04-preview', 'Full').identity.principalId, variables('storageAccountContributorRoleId')))]",
                             "type": "Microsoft.Storage/storageAccounts/providers/roleAssignments",
                             "location": "[parameters('storageAccountLocation')]",
                             "properties": {
