@@ -23346,6 +23346,7 @@ spec:
             )
             assert len(zones) > 0, f"SKU '{sku['name']}' has no zones despite --zone filter"
 
+    @live_only()
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="centraluseuap"
