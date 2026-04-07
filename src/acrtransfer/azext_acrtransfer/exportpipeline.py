@@ -23,7 +23,7 @@ def _extract_storage_account_resource_id(subscription_id, resource_group_name, c
         parsed = urlparse(container_uri)
         storage_account_name = parsed.hostname.split('.')[0]
         return f"/subscriptions/{subscription_id}/resourceGroups/{resource_group_name}/providers/Microsoft.Storage/storageAccounts/{storage_account_name}"
-    except Exception:
+    except (AttributeError, IndexError, ValueError):
         return "<storage-account-resource-id>"
 
 
@@ -36,7 +36,7 @@ def _extract_keyvault_resource_id(subscription_id, resource_group_name, keyvault
         parsed = urlparse(keyvault_secret_uri)
         keyvault_name = parsed.hostname.split('.')[0]
         return f"/subscriptions/{subscription_id}/resourceGroups/{resource_group_name}/providers/Microsoft.KeyVault/vaults/{keyvault_name}"
-    except Exception:
+    except (AttributeError, IndexError, ValueError):
         return "<key-vault-resource-id>"
 
 
@@ -57,7 +57,7 @@ def _display_permission_guidance(pipeline_type, storage_access_mode, principal_i
         logger.warning("")
     elif storage_access_mode == 'SasToken' and keyvault_secret_uri:
         keyvault_resource_id = _extract_keyvault_resource_id(subscription_id, resource_group_name, keyvault_secret_uri)
-        
+
         logger.warning("")
         logger.warning("Please ensure that the Managed Identity of the pipeline (Object ID: %s) has the necessary permissions to access the Key Vault Secret containing the Storage Account SAS Key.", principal_id)
         logger.warning("Please run:")
@@ -90,9 +90,9 @@ def create_exportpipeline(client, resource_group_name, registry_name, export_pip
                                          export_pipeline_create_parameters=export_pipeline)
 
     result = client.export_pipelines.get(resource_group_name=resource_group_name,
-                                        registry_name=registry_name,
-                                        export_pipeline_name=export_pipeline_name)
-    
+                                         registry_name=registry_name,
+                                         export_pipeline_name=export_pipeline_name)
+
     # Display permission guidance
     if result.identity:
         principal_id = None
@@ -102,7 +102,7 @@ def create_exportpipeline(client, resource_group_name, registry_name, export_pip
         # For user-assigned identity, extract principal_id from userAssignedIdentities
         elif result.identity.user_assigned_identities:
             # Get the first (and typically only) user-assigned identity
-            for identity_resource_id, identity_info in result.identity.user_assigned_identities.items():
+            for _, identity_info in result.identity.user_assigned_identities.items():
                 if identity_info and identity_info.principal_id:
                     principal_id = identity_info.principal_id
                     break

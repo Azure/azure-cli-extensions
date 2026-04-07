@@ -22,7 +22,7 @@ def _extract_storage_account_resource_id(subscription_id, resource_group_name, c
         parsed = urlparse(container_uri)
         storage_account_name = parsed.hostname.split('.')[0]
         return f"/subscriptions/{subscription_id}/resourceGroups/{resource_group_name}/providers/Microsoft.Storage/storageAccounts/{storage_account_name}"
-    except Exception:
+    except (AttributeError, IndexError, ValueError):
         return "<storage-account-resource-id>"
 
 
@@ -35,7 +35,7 @@ def _extract_keyvault_resource_id(subscription_id, resource_group_name, keyvault
         parsed = urlparse(keyvault_secret_uri)
         keyvault_name = parsed.hostname.split('.')[0]
         return f"/subscriptions/{subscription_id}/resourceGroups/{resource_group_name}/providers/Microsoft.KeyVault/vaults/{keyvault_name}"
-    except Exception:
+    except (AttributeError, IndexError, ValueError):
         return "<key-vault-resource-id>"
 
 
@@ -91,9 +91,9 @@ def create_importpipeline(client, resource_group_name, registry_name, import_pip
                                          import_pipeline_create_parameters=import_pipeline)
 
     result = client.import_pipelines.get(resource_group_name=resource_group_name,
-                                        registry_name=registry_name,
-                                        import_pipeline_name=import_pipeline_name)
-    
+                                         registry_name=registry_name,
+                                         import_pipeline_name=import_pipeline_name)
+
     # Display permission guidance
     if result.identity:
         principal_id = None
@@ -103,7 +103,7 @@ def create_importpipeline(client, resource_group_name, registry_name, import_pip
         # For user-assigned identity, extract principal_id from userAssignedIdentities
         elif result.identity.user_assigned_identities:
             # Get the first (and typically only) user-assigned identity
-            for identity_resource_id, identity_info in result.identity.user_assigned_identities.items():
+            for _, identity_info in result.identity.user_assigned_identities.items():
                 if identity_info and identity_info.principal_id:
                     principal_id = identity_info.principal_id
                     break
