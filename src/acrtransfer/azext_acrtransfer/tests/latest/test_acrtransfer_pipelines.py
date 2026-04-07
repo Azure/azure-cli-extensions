@@ -15,7 +15,7 @@ class AcrTransferPipelineScenarioTest(ScenarioTest):
     @StorageAccountPreparer(name_prefix='acrtransfer', kind='StorageV2', sku='Standard_LRS')
     def test_acr_export_pipeline_entra_mi_auth_no_identity(self, resource_group, storage_account):
         """
-        Test Case 1: Create export pipeline with entra-mi-auth mode, no identity specified.
+        Test Case 1: Create export pipeline with ManagedIdentity mode, no identity specified.
         Expected: System-assigned managed identity should be automatically provisioned.
         """
         self.kwargs.update({
@@ -31,9 +31,9 @@ class AcrTransferPipelineScenarioTest(ScenarioTest):
         # Create storage container
         self.cmd('storage container create -n {container} --account-name {storage_account}')
 
-        # Create export pipeline with entra-mi-auth, no identity specified
+        # Create export pipeline with ManagedIdentity, no identity specified
         result = self.cmd('acr export-pipeline create -g {rg} -r {registry} -n {pipeline} '
-                         '--storage-access-mode entra-mi-auth '
+                         '--storage-access-mode ManagedIdentity '
                          '--storage-container-uri https://{storage_account}.blob.core.windows.net/{container}',
                          checks=[
                              self.check('name', '{pipeline}'),
@@ -57,7 +57,7 @@ class AcrTransferPipelineScenarioTest(ScenarioTest):
     @StorageAccountPreparer(name_prefix='acrtransfer', kind='StorageV2', sku='Standard_LRS')
     def test_acr_export_pipeline_sas_token(self, resource_group, storage_account):
         """
-        Test Case 2: Create export pipeline with storage-sas-token mode.
+        Test Case 2: Create export pipeline with SasToken mode.
         Expected: Pipeline should be created with SasToken mode and keyVaultUri set.
         """
         self.kwargs.update({
@@ -91,9 +91,9 @@ class AcrTransferPipelineScenarioTest(ScenarioTest):
         # Create storage container
         self.cmd('storage container create -n {container} --account-name {storage_account}')
 
-        # Create export pipeline with storage-sas-token
+        # Create export pipeline with SasToken
         self.cmd('acr export-pipeline create -g {rg} -r {registry} -n {pipeline} '
-                '--storage-access-mode storage-sas-token '
+                '--storage-access-mode SasToken '
                 '--secret-uri https://{keyvault}.vault.azure.net/secrets/{secret} '
                 '--storage-container-uri https://{storage_account}.blob.core.windows.net/{container}',
                 checks=[
@@ -114,7 +114,7 @@ class AcrTransferPipelineScenarioTest(ScenarioTest):
     @StorageAccountPreparer(name_prefix='acrtransfer', kind='StorageV2', sku='Standard_LRS')
     def test_acr_export_pipeline_entra_mi_auth_user_assigned(self, resource_group, storage_account):
         """
-        Test Case 3: Create export pipeline with entra-mi-auth mode and user-assigned identity.
+        Test Case 3: Create export pipeline with ManagedIdentity mode and user-assigned identity.
         Expected: Pipeline should use the provided user-assigned managed identity.
         """
         self.kwargs.update({
@@ -138,7 +138,7 @@ class AcrTransferPipelineScenarioTest(ScenarioTest):
 
         # Create export pipeline with user-assigned identity
         self.cmd('acr export-pipeline create -g {rg} -r {registry} -n {pipeline} '
-                '--storage-access-mode entra-mi-auth '
+                '--storage-access-mode ManagedIdentity '
                 '--storage-container-uri https://{storage_account}.blob.core.windows.net/{container} '
                 '--assign-identity {identity_id}',
                 checks=[
@@ -160,7 +160,7 @@ class AcrTransferPipelineScenarioTest(ScenarioTest):
     @StorageAccountPreparer(name_prefix='acrtransfer', kind='StorageV2', sku='Standard_LRS')
     def test_acr_import_pipeline_entra_mi_auth_no_identity(self, resource_group, storage_account):
         """
-        Test Case 4: Create import pipeline with entra-mi-auth mode, no identity specified.
+        Test Case 4: Create import pipeline with ManagedIdentity mode, no identity specified.
         Expected: System-assigned managed identity should be automatically provisioned.
         """
         self.kwargs.update({
@@ -176,9 +176,9 @@ class AcrTransferPipelineScenarioTest(ScenarioTest):
         # Create storage container
         self.cmd('storage container create -n {container} --account-name {storage_account}')
 
-        # Create import pipeline with entra-mi-auth, no identity specified
+        # Create import pipeline with ManagedIdentity, no identity specified
         result = self.cmd('acr import-pipeline create -g {rg} -r {registry} -n {pipeline} '
-                         '--storage-access-mode entra-mi-auth '
+                         '--storage-access-mode ManagedIdentity '
                          '--storage-container-uri https://{storage_account}.blob.core.windows.net/{container}',
                          checks=[
                              self.check('name', '{pipeline}'),
@@ -202,7 +202,7 @@ class AcrTransferPipelineScenarioTest(ScenarioTest):
     @StorageAccountPreparer(name_prefix='acrtransfer', kind='StorageV2', sku='Standard_LRS')
     def test_acr_import_pipeline_sas_token(self, resource_group, storage_account):
         """
-        Test Case 5: Create import pipeline with storage-sas-token mode.
+        Test Case 5: Create import pipeline with SasToken mode.
         Expected: Pipeline should be created with SasToken mode and keyVaultUri set.
         """
         self.kwargs.update({
@@ -236,9 +236,9 @@ class AcrTransferPipelineScenarioTest(ScenarioTest):
         # Create storage container
         self.cmd('storage container create -n {container} --account-name {storage_account}')
 
-        # Create import pipeline with storage-sas-token
+        # Create import pipeline with SasToken
         self.cmd('acr import-pipeline create -g {rg} -r {registry} -n {pipeline} '
-                '--storage-access-mode storage-sas-token '
+                '--storage-access-mode SasToken '
                 '--secret-uri https://{keyvault}.vault.azure.net/secrets/{secret} '
                 '--storage-container-uri https://{storage_account}.blob.core.windows.net/{container}',
                 checks=[
@@ -259,7 +259,7 @@ class AcrTransferPipelineScenarioTest(ScenarioTest):
     @StorageAccountPreparer(name_prefix='acrtransfer', kind='StorageV2', sku='Standard_LRS')
     def test_acr_export_pipeline_entra_mi_auth_with_secret_uri_fails(self, resource_group, storage_account):
         """
-        Test Case 6: Verify export pipeline creation fails when entra-mi-auth is used with --secret-uri.
+        Test Case 6: Verify export pipeline creation fails when ManagedIdentity is used with --secret-uri.
         Expected: Command should fail with validation error since --secret-uri is only for SAS token mode.
         """
         self.kwargs.update({
@@ -277,9 +277,9 @@ class AcrTransferPipelineScenarioTest(ScenarioTest):
         # Create storage container
         self.cmd('storage container create -n {container} --account-name {storage_account}')
 
-        # Attempt to create export pipeline with entra-mi-auth AND secret-uri (should fail)
+        # Attempt to create export pipeline with ManagedIdentity AND secret-uri (should fail)
         self.cmd('acr export-pipeline create -g {rg} -r {registry} -n {pipeline} '
-                 '--storage-access-mode entra-mi-auth '
+                 '--storage-access-mode ManagedIdentity '
                  '--secret-uri https://{keyvault}.vault.azure.net/secrets/{secret} '
                  '--storage-container-uri https://{storage_account}.blob.core.windows.net/{container}',
                  expect_failure=True)
@@ -292,7 +292,7 @@ class AcrTransferPipelineScenarioTest(ScenarioTest):
     @StorageAccountPreparer(name_prefix='acrtransfer', kind='StorageV2', sku='Standard_LRS')
     def test_acr_import_pipeline_entra_mi_auth_with_secret_uri_fails(self, resource_group, storage_account):
         """
-        Test Case 7: Verify import pipeline creation fails when entra-mi-auth is used with --secret-uri.
+        Test Case 7: Verify import pipeline creation fails when ManagedIdentity is used with --secret-uri.
         Expected: Command should fail with validation error since --secret-uri is only for SAS token mode.
         """
         self.kwargs.update({
@@ -310,9 +310,9 @@ class AcrTransferPipelineScenarioTest(ScenarioTest):
         # Create storage container
         self.cmd('storage container create -n {container} --account-name {storage_account}')
 
-        # Attempt to create import pipeline with entra-mi-auth AND secret-uri (should fail)
+        # Attempt to create import pipeline with ManagedIdentity AND secret-uri (should fail)
         self.cmd('acr import-pipeline create -g {rg} -r {registry} -n {pipeline} '
-                 '--storage-access-mode entra-mi-auth '
+                 '--storage-access-mode ManagedIdentity '
                  '--secret-uri https://{keyvault}.vault.azure.net/secrets/{secret} '
                  '--storage-container-uri https://{storage_account}.blob.core.windows.net/{container}',
                  expect_failure=True)
@@ -325,7 +325,7 @@ class AcrTransferPipelineScenarioTest(ScenarioTest):
     @StorageAccountPreparer(name_prefix='acrtransfer', kind='StorageV2', sku='Standard_LRS')
     def test_acr_import_pipeline_entra_mi_auth_user_assigned(self, resource_group, storage_account):
         """
-        Test Case 11: Create import pipeline with entra-mi-auth mode and user-assigned identity.
+        Test Case 11: Create import pipeline with ManagedIdentity mode and user-assigned identity.
         Expected: Pipeline should use the provided user-assigned managed identity.
         """
         self.kwargs.update({
@@ -349,7 +349,7 @@ class AcrTransferPipelineScenarioTest(ScenarioTest):
 
         # Create import pipeline with user-assigned identity
         self.cmd('acr import-pipeline create -g {rg} -r {registry} -n {pipeline} '
-                '--storage-access-mode entra-mi-auth '
+                '--storage-access-mode ManagedIdentity '
                 '--storage-container-uri https://{storage_account}.blob.core.windows.net/{container} '
                 '--assign-identity {identity_id}',
                 checks=[

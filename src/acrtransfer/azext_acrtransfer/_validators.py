@@ -39,22 +39,19 @@ def validate_storage_access_mode_and_secret_uri(namespace):
     storage_access_mode = namespace.storage_access_mode
     secret_uri = namespace.keyvault_secret_uri
 
-    allowed_modes = ["entra-mi-auth", "storage-sas-token"]
+    allowed_modes = ["ManagedIdentity", "SasToken"]
 
     if storage_access_mode not in allowed_modes:
         raise InvalidArgumentValueError(f"Invalid storage access mode '{storage_access_mode}'. Allowed values: {', '.join(allowed_modes)}")
 
-    # Convert CLI values to API values
-    if storage_access_mode == "entra-mi-auth":
-        namespace.storage_access_mode = "ManagedIdentity"
+    if storage_access_mode == "ManagedIdentity":
         # Reject secret-uri when using Managed Identity mode
         if secret_uri is not None:
-            raise InvalidArgumentValueError("The '--secret-uri' flag cannot be supplied when 'entra-mi-auth' is chosen for the flag '--storage-access-mode'.")
-    elif storage_access_mode == "storage-sas-token":
-        namespace.storage_access_mode = "SasToken"
+            raise InvalidArgumentValueError("The '--secret-uri' flag cannot be supplied when 'ManagedIdentity' is chosen for the flag '--storage-access-mode'.")
+    elif storage_access_mode == "SasToken":
         # Require secret-uri when using SasToken mode
         if secret_uri is None:
-            raise InvalidArgumentValueError("--secret-uri is required when --storage-access-mode is storage-sas-token")
+            raise InvalidArgumentValueError("--secret-uri is required when --storage-access-mode is SasToken")
 
 
 def validate_user_assigned_identity_resource_id(namespace):
