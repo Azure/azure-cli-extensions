@@ -8,59 +8,59 @@ from azure.cli.core.azclierror import ResourceNotFoundError
 from knack.log import get_logger
 from .vendored_sdks.containerregistry.v2025_06_01_preview.models._models_py3 import ImportPipeline, ImportPipelineSourceProperties, PipelineTriggerProperties, PipelineSourceTriggerProperties
 from .utility_functions import create_identity_properties
+from urllib.parse import urlparse
 
 logger = get_logger(__name__)
 
 
 def _extract_storage_account_resource_id(subscription_id, resource_group_name, container_uri):
     """Extract storage account resource ID from container URI.
+    Used for permission guidance messages 
     Expected format: https://<storage-account-name>.blob.core.windows.net/<container-name>
     """
     try:
         # Parse the URI to get storage account name
-        from urllib.parse import urlparse
         parsed = urlparse(container_uri)
         storage_account_name = parsed.hostname.split('.')[0]
         return f"/subscriptions/{subscription_id}/resourceGroups/{resource_group_name}/providers/Microsoft.Storage/storageAccounts/{storage_account_name}"
-    except (AttributeError, IndexError, ValueError):
+    except Exception:
         return "<storage-account-resource-id>"
 
 
 def _extract_keyvault_resource_id(subscription_id, resource_group_name, keyvault_secret_uri):
     """Extract key vault resource ID from secret URI.
+    Used for permission guidance messages 
     Expected format: https://<keyvault-name>.vault.azure.net/secrets/<secret-name>
     """
     try:
-        from urllib.parse import urlparse
         parsed = urlparse(keyvault_secret_uri)
         keyvault_name = parsed.hostname.split('.')[0]
         return f"/subscriptions/{subscription_id}/resourceGroups/{resource_group_name}/providers/Microsoft.KeyVault/vaults/{keyvault_name}"
-    except (AttributeError, IndexError, ValueError):
+    except Exception:
         return "<key-vault-resource-id>"
 
 
 def _display_permission_guidance(pipeline_type, storage_access_mode, principal_id, subscription_id, resource_group_name, container_uri, keyvault_secret_uri=None):
     """Display permission guidance for the managed identity."""
-    storage_resource_id = _extract_storage_account_resource_id(subscription_id, resource_group_name, container_uri)
 
     if storage_access_mode == 'ManagedIdentity':
-        # For export pipeline, need write access (Contributor)
-        # For import pipeline, need read access (Reader)
-        role = "Storage Blob Data Contributor" if pipeline_type == "export" else "Storage Blob Data Reader"
+        storage_resource_id = _extract_storage_account_resource_id(subscription_id, resource_group_name, container_uri)
+        role = "Storage Blob Data Reader"
 
         logger.warning("")
-        logger.warning("Please ensure that the Managed Identity of the pipeline (Object ID: %s) has the necessary permissions to access the Storage Account Blob Container.", principal_id)
+        logger.warning(f"Please ensure that the Managed Identity of the pipeline (Object ID: {principal_id}) has the necessary permissions to access the Storage Account Blob Container.")
         logger.warning("Please run:")
-        logger.warning("  az role assignment create --assignee \"%s\" --role \"%s\" --scope \"%s\"", principal_id, role, storage_resource_id)
+        logger.warning(f"  az role assignment create --assignee \"{principal_id}\" --role \"{role}\" --scope \"{storage_resource_id}\"")
         logger.warning("Note: If the Storage Account is in a different resource group, update the --scope parameter accordingly.")
         logger.warning("")
-    elif storage_access_mode == 'SasToken' and keyvault_secret_uri:
+    elif storage_access_mode == 'SasToken':
         keyvault_resource_id = _extract_keyvault_resource_id(subscription_id, resource_group_name, keyvault_secret_uri)
+        role = "Key Vault Secrets User"
 
         logger.warning("")
-        logger.warning("Please ensure that the Managed Identity of the pipeline (Object ID: %s) has the necessary permissions to access the Key Vault Secret containing the Storage Account SAS Key.", principal_id)
+        logger.warning(f"Please ensure that the Managed Identity of the pipeline (Object ID: {principal_id}) has the necessary permissions to access the Key Vault Secret containing the Storage Account SAS Key.")
         logger.warning("Please run:")
-        logger.warning("  az role assignment create --assignee \"%s\" --role \"Key Vault Secrets User\" --scope \"%s\"", principal_id, keyvault_resource_id)
+        logger.warning(f"  az role assignment create --assignee \"{principal_id}\" --role \"{role}\" --scope \"{keyvault_resource_id}\"")
         logger.warning("Note: If the Key Vault is in a different resource group, update the --scope parameter accordingly.")
         logger.warning("")
 
@@ -113,7 +113,6 @@ def create_importpipeline(client, resource_group_name, registry_name, import_pip
             from azure.cli.core import get_default_cli
             subscription_id = get_subscription_id(get_default_cli())
             _display_permission_guidance(
-                pipeline_type="import",
                 storage_access_mode=storage_access_mode,
                 principal_id=principal_id,
                 subscription_id=subscription_id,
