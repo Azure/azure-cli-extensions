@@ -14,6 +14,9 @@ Pending
 * Add MIG (Multi-Instance GPU) strategy option to node pool property in `az aks nodepool add` and `az aks nodepool update`.
 * `az aks create/update`: Add `--outbound-type managedNATGatewayV2` support using Azure NAT Gateway Standard V2 SKU with IPv6, user-provided IPs, and IP prefixes.
 * Fix monitoring addon key casing compatibility with azure-cli/acs
+* `az aks machine add`: Add `--spot-max-price` flag support to set the max price (in US Dollars) you are willing to pay for spot instances on a machine.
+* `az aks machine add`: Add `--eviction-policy` flag support to set the eviction policy for a machine.
+* `az aks machine add`: Add `--enable-ultra-ssd` flag support to enable ultra ssd on a machine.
 
 19.0.0b28
 +++++++
@@ -33,9 +36,6 @@ Pending
 +++++++
 * `az aks create/update`: Add `--enable-app-routing-istio` / `--disable-app-routing-istio` (short: `--enable-ari` / `--disable-ari`) flags to enable or disable Istio as a Gateway API implementation for App Routing.
 * `az aks approuting gateway istio enable/disable`: Add new subcommands to enable or disable the Istio Gateway API implementation for App Routing on an existing cluster.
-* `az aks machine add`: Add `--spot-max-price` flag support to set the max price (in US Dollars) you are willing to pay for spot instances on a machine.
-* `az aks machine add`: Add `--eviction-policy` flag support to set the eviction policy for a machine.
-* `az aks machine add`: Add `--enable-ultra-ssd` flag support to enable ultra ssd on a machine.
 * Add 'mTLS' as a transit encryption type option for `--acns-transit-encryption-type` in `az aks create/update`
 
 19.0.0b25

@@ -15,6 +15,7 @@ import threading
 import time
 import webbrowser
 import subprocess
+from math import isnan
 
 from azext_aks_preview._client_factory import (
     CUSTOM_MGMT_AKS_PREVIEW,
@@ -2767,6 +2768,9 @@ def aks_machine_add(
         raise ClientRequestError(
             f"Machine '{machine_name}' already exists. Please use 'az aks machine update' to update it."
         )
+
+    if isnan(spot_max_price):
+        spot_max_price = -1
 
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
