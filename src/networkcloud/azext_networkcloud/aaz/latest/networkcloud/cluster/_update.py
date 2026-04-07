@@ -56,9 +56,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-01-01-preview",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}", "2026-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}", "2026-05-01-preview"],
         ]
     }
 
@@ -291,7 +291,7 @@ class Update(AAZCommand):
         _element.command_output_type = AAZStrArg(
             options=["command-output-type"],
             help="The type of command output for the override.",
-            enum={"BareMetalMachineRunCommand": "BareMetalMachineRunCommand", "BareMetalMachineRunDataExtracts": "BareMetalMachineRunDataExtracts", "BareMetalMachineRunDataExtractsRestricted": "BareMetalMachineRunDataExtractsRestricted", "BareMetalMachineRunReadCommands": "BareMetalMachineRunReadCommands", "StorageRunReadCommands": "StorageRunReadCommands"},
+            enum={"BareMetalMachineRunCommand": "BareMetalMachineRunCommand", "BareMetalMachineRunDataExtracts": "BareMetalMachineRunDataExtracts", "BareMetalMachineRunDataExtractsRestricted": "BareMetalMachineRunDataExtractsRestricted", "BareMetalMachineRunReadCommands": "BareMetalMachineRunReadCommands", "ClusterSupportAdministrativeActions": "ClusterSupportAdministrativeActions", "StorageRunReadCommands": "StorageRunReadCommands"},
         )
         _element.container_url = AAZStrArg(
             options=["container-url"],
@@ -670,7 +670,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-01-preview",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -977,6 +977,14 @@ class Update(AAZCommand):
                 flags={"read_only": True},
             )
             _UpdateHelper._build_schema_extended_location_read(properties.hybrid_aks_extended_location)
+            properties.last_successful_version_update_time = AAZStrType(
+                serialized_name="lastSuccessfulVersionUpdateTime",
+                flags={"read_only": True},
+            )
+            properties.managed_credentials = AAZListType(
+                serialized_name="managedCredentials",
+                flags={"read_only": True},
+            )
             properties.managed_resource_group_configuration = AAZObjectType(
                 serialized_name="managedResourceGroupConfiguration",
             )
@@ -1190,6 +1198,9 @@ class Update(AAZCommand):
             compute_rack_definitions = cls._schema_on_200.properties.compute_rack_definitions
             compute_rack_definitions.Element = AAZObjectType()
             _UpdateHelper._build_schema_rack_definition_read(compute_rack_definitions.Element)
+
+            managed_credentials = cls._schema_on_200.properties.managed_credentials
+            managed_credentials.Element = AAZStrType()
 
             managed_resource_group_configuration = cls._schema_on_200.properties.managed_resource_group_configuration
             managed_resource_group_configuration.location = AAZStrType()

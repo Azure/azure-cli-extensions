@@ -26,10 +26,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-01-01-preview",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.networkcloud/volumes", "2026-01-01-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/volumes", "2026-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.networkcloud/volumes", "2026-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/volumes", "2026-05-01-preview"],
         ]
     }
 
@@ -130,7 +130,7 @@ class List(AAZCommand):
                     "$top", self.ctx.args.top,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2026-01-01-preview",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -211,6 +211,10 @@ class List(AAZCommand):
             properties = cls._schema_on_200.value.Element.properties
             properties.allocated_size_mi_b = AAZIntType(
                 serialized_name="allocatedSizeMiB",
+                flags={"read_only": True},
+            )
+            properties.assigned_storage_appliance_id = AAZStrType(
+                serialized_name="assignedStorageApplianceId",
                 flags={"read_only": True},
             )
             properties.attached_to = AAZListType(
@@ -319,7 +323,7 @@ class List(AAZCommand):
                     "$top", self.ctx.args.top,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2026-01-01-preview",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -400,6 +404,10 @@ class List(AAZCommand):
             properties = cls._schema_on_200.value.Element.properties
             properties.allocated_size_mi_b = AAZIntType(
                 serialized_name="allocatedSizeMiB",
+                flags={"read_only": True},
+            )
+            properties.assigned_storage_appliance_id = AAZStrType(
+                serialized_name="assignedStorageApplianceId",
                 flags={"read_only": True},
             )
             properties.attached_to = AAZListType(

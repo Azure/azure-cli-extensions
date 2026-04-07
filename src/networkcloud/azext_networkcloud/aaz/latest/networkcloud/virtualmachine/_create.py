@@ -23,9 +23,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-01-01-preview",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/virtualmachines/{}", "2026-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/virtualmachines/{}", "2026-05-01-preview"],
         ]
     }
 
@@ -121,7 +121,6 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="The extended location to use for creation of a VM console resource.",
         )
-        cls._build_args_extended_location_create(_args_schema.console_extended_location)
         _args_schema.cpu_cores = AAZIntArg(
             options=["--cpu-cores"],
             arg_group="Properties",
@@ -154,6 +153,9 @@ class Create(AAZCommand):
             options=["--ndc", "--network-data-content"],
             arg_group="Properties",
             help="The Base64 encoded cloud-init network data.",
+            blank=AAZPromptInput(
+                msg="Password:",
+            ),
         )
         _args_schema.placement_hints = AAZListArg(
             options=["--ph", "--placement-hints"],
@@ -180,6 +182,9 @@ class Create(AAZCommand):
             options=["--udc", "--user-data-content"],
             arg_group="Properties",
             help="The Base64 encoded cloud-init user data.",
+            blank=AAZPromptInput(
+                msg="Password:",
+            ),
         )
         _args_schema.vm_device_model = AAZStrArg(
             options=["--vm-device-model"],
@@ -231,6 +236,18 @@ class Create(AAZCommand):
             fmt=AAZStrArgFormat(
                 max_length=15,
             ),
+        )
+
+        console_extended_location = cls._args_schema.console_extended_location
+        console_extended_location.name = AAZStrArg(
+            options=["name"],
+            help="The name of the extended location.",
+            required=True,
+        )
+        console_extended_location.type = AAZStrArg(
+            options=["type"],
+            help="The type of the extended location.",
+            required=True,
         )
 
         network_attachments = cls._args_schema.network_attachments
@@ -398,32 +415,6 @@ class Create(AAZCommand):
         tags.Element = AAZStrArg()
         return cls._args_schema
 
-    _args_extended_location_create = None
-
-    @classmethod
-    def _build_args_extended_location_create(cls, _schema):
-        if cls._args_extended_location_create is not None:
-            _schema.name = cls._args_extended_location_create.name
-            _schema.type = cls._args_extended_location_create.type
-            return
-
-        cls._args_extended_location_create = AAZObjectArg()
-
-        extended_location_create = cls._args_extended_location_create
-        extended_location_create.name = AAZStrArg(
-            options=["name"],
-            help="The resource ID of the extended location on which the resource will be created.",
-            required=True,
-        )
-        extended_location_create.type = AAZStrArg(
-            options=["type"],
-            help="The extended location type, for example, CustomLocation.",
-            required=True,
-        )
-
-        _schema.name = cls._args_extended_location_create.name
-        _schema.type = cls._args_extended_location_create.type
-
     def _execute_operations(self):
         self.pre_operations()
         yield self.VirtualMachinesCreateOrUpdate(ctx=self.ctx)()
@@ -505,7 +496,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-01-preview",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -561,7 +552,7 @@ class Create(AAZCommand):
                 properties.set_prop("adminUsername", AAZStrType, ".admin_username", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("bootMethod", AAZStrType, ".boot_method")
                 properties.set_prop("cloudServicesNetworkAttachment", AAZObjectType, ".cloud_services_network_attachment", typ_kwargs={"flags": {"required": True}})
-                _CreateHelper._build_schema_extended_location_create(properties.set_prop("consoleExtendedLocation", AAZObjectType, ".console_extended_location"))
+                properties.set_prop("consoleExtendedLocation", AAZObjectType, ".console_extended_location")
                 properties.set_prop("cpuCores", AAZIntType, ".cpu_cores", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("memorySizeGB", AAZIntType, ".memory_size_gib", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("networkAttachments", AAZListType, ".network_attachments")
@@ -584,6 +575,11 @@ class Create(AAZCommand):
                 cloud_services_network_attachment.set_prop("ipv4Address", AAZStrType, ".ipv4_address")
                 cloud_services_network_attachment.set_prop("ipv6Address", AAZStrType, ".ipv6_address")
                 cloud_services_network_attachment.set_prop("networkAttachmentName", AAZStrType, ".network_attachment_name")
+
+            console_extended_location = _builder.get(".properties.consoleExtendedLocation")
+            if console_extended_location is not None:
+                console_extended_location.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
+                console_extended_location.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
 
             network_attachments = _builder.get(".properties.networkAttachments")
             if network_attachments is not None:
@@ -973,13 +969,6 @@ class Create(AAZCommand):
 
 class _CreateHelper:
     """Helper class for Create"""
-
-    @classmethod
-    def _build_schema_extended_location_create(cls, _builder):
-        if _builder is None:
-            return
-        _builder.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
-        _builder.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
 
     _schema_extended_location_read = None
 

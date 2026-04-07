@@ -23,9 +23,9 @@ class Reimage(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-01-01-preview",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/baremetalmachines/{}/reimage", "2026-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/baremetalmachines/{}/reimage", "2026-05-01-preview"],
         ]
     }
 
@@ -57,6 +57,17 @@ class Reimage(AAZCommand):
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
+        )
+
+        # define Arg Group "BareMetalMachineReimageParameters"
+
+        _args_schema = cls._args_schema
+        _args_schema.safeguard_mode = AAZStrArg(
+            options=["--safeguard-mode"],
+            arg_group="BareMetalMachineReimageParameters",
+            help="The safeguard mode to use for the reimage action, where None indicates to bypass safeguards and All indicates to utilize all safeguards.",
+            default="All",
+            enum={"All": "All", "None": "None"},
         )
         return cls._args_schema
 
@@ -141,7 +152,7 @@ class Reimage(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-01-preview",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -151,10 +162,24 @@ class Reimage(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"client_flatten": True}}
+            )
+            _builder.set_prop("safeguardMode", AAZStrType, ".safeguard_mode")
+
+            return self.serialize_content(_content_value)
 
         def on_200_201(self, session):
             data = self.deserialize_http_content(session)

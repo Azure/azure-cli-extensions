@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}", "2026-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}", "2026-05-01-preview"],
         ]
     }
 
@@ -119,7 +119,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-01-preview",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -291,6 +291,14 @@ class Wait(AAZWaitCommand):
                 flags={"read_only": True},
             )
             _WaitHelper._build_schema_extended_location_read(properties.hybrid_aks_extended_location)
+            properties.last_successful_version_update_time = AAZStrType(
+                serialized_name="lastSuccessfulVersionUpdateTime",
+                flags={"read_only": True},
+            )
+            properties.managed_credentials = AAZListType(
+                serialized_name="managedCredentials",
+                flags={"read_only": True},
+            )
             properties.managed_resource_group_configuration = AAZObjectType(
                 serialized_name="managedResourceGroupConfiguration",
             )
@@ -504,6 +512,9 @@ class Wait(AAZWaitCommand):
             compute_rack_definitions = cls._schema_on_200.properties.compute_rack_definitions
             compute_rack_definitions.Element = AAZObjectType()
             _WaitHelper._build_schema_rack_definition_read(compute_rack_definitions.Element)
+
+            managed_credentials = cls._schema_on_200.properties.managed_credentials
+            managed_credentials.Element = AAZStrType()
 
             managed_resource_group_configuration = cls._schema_on_200.properties.managed_resource_group_configuration
             managed_resource_group_configuration.location = AAZStrType()

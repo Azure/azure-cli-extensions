@@ -12,20 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "networkcloud virtualmachine assign-relay",
-    is_preview=True,
+    "networkcloud cluster rotate-credential",
 )
-class AssignRelay(AAZCommand):
-    """Assigns a relay to the specified Microsoft.HybridCompute machine associated with the provided virtual machine.
+class RotateCredential(AAZCommand):
+    """Rotate the specified cluster credential.
 
-    :example: Assign relay to the Microsoft.HybridCompute machine for a virtual machine
-        az networkcloud virtualmachine assign-relay --resource-group "resourceGroupName" --name "virtualMachineName" --machine-id "/subscriptions/123e4567-e89b-12d3-a456-426655440000/resourceGroups/resourceGroupName/providers/Microsoft.HybridCompute/machines/machineName" --relay-type "Platform"
+    :example: Rotate one or more managed credentials
+        az networkcloud cluster rotate-credential --resource-group resourceGroupName --cluster-name clusterName --credentials "['BMC Credential']"
     """
 
     _aaz_info = {
         "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/virtualmachines/{}/assignrelay", "2026-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}/rotatecredential", "2026-05-01-preview"],
         ]
     }
 
@@ -46,39 +45,35 @@ class AssignRelay(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.resource_group = AAZResourceGroupNameArg(
-            required=True,
-        )
-        _args_schema.virtual_machine_name = AAZStrArg(
-            options=["-n", "--name", "--virtual-machine-name"],
-            help="The name of the virtual machine.",
+        _args_schema.cluster_name = AAZStrArg(
+            options=["-n", "--name", "--cluster-name"],
+            help="The name of the cluster.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^([a-zA-Z0-9][a-zA-Z0-9]{0,62}[a-zA-Z0-9])$",
+                pattern="^([a-zA-Z0-9][a-zA-Z0-9-_]{0,28}[a-zA-Z0-9])$",
             ),
         )
+        _args_schema.resource_group = AAZResourceGroupNameArg(
+            required=True,
+        )
 
-        # define Arg Group "VirtualMachineAssignRelayParameters"
+        # define Arg Group "Body"
 
         _args_schema = cls._args_schema
-        _args_schema.machine_id = AAZResourceIdArg(
-            options=["--machine-id"],
-            arg_group="VirtualMachineAssignRelayParameters",
-            help="The resourceId of the Microsoft.HybridCompute machine resource to assign relay usage.",
+        _args_schema.credentials = AAZListArg(
+            options=["--credentials"],
+            arg_group="Body",
+            help="The list of credential names for the credentials to rotate.",
         )
-        _args_schema.relay_type = AAZStrArg(
-            options=["--relay-type"],
-            arg_group="VirtualMachineAssignRelayParameters",
-            help="The indicator of which relay type the machine should be assigned to use. Platform indicates the use of a platform-dedicated relay. Public indicates the use of the standard public relay for Arc services.",
-            default="Platform",
-            enum={"Platform": "Platform", "Public": "Public"},
-        )
+
+        credentials = cls._args_schema.credentials
+        credentials.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.VirtualMachinesAssignRelay(ctx=self.ctx)()
+        yield self.ClustersRotateCredential(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -93,7 +88,7 @@ class AssignRelay(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class VirtualMachinesAssignRelay(AAZHttpOperation):
+    class ClustersRotateCredential(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -123,7 +118,7 @@ class AssignRelay(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.NetworkCloud/virtualMachines/{virtualMachineName}/assignRelay",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.NetworkCloud/clusters/{clusterName}/rotateCredential",
                 **self.url_parameters
             )
 
@@ -139,15 +134,15 @@ class AssignRelay(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
+                    "clusterName", self.ctx.args.cluster_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
                     required=True,
                 ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "virtualMachineName", self.ctx.args.virtual_machine_name,
                     required=True,
                 ),
             }
@@ -182,8 +177,11 @@ class AssignRelay(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"client_flatten": True}}
             )
-            _builder.set_prop("machineId", AAZStrType, ".machine_id", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("relayType", AAZStrType, ".relay_type")
+            _builder.set_prop("credentials", AAZListType, ".credentials", typ_kwargs={"flags": {"required": True}})
+
+            credentials = _builder.get(".credentials")
+            if credentials is not None:
+                credentials.set_elements(AAZStrType, ".")
 
             return self.serialize_content(_content_value)
 
@@ -203,13 +201,13 @@ class AssignRelay(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-            _AssignRelayHelper._build_schema_operation_status_result_read(cls._schema_on_200_201)
+            _RotateCredentialHelper._build_schema_operation_status_result_read(cls._schema_on_200_201)
 
             return cls._schema_on_200_201
 
 
-class _AssignRelayHelper:
-    """Helper class for AssignRelay"""
+class _RotateCredentialHelper:
+    """Helper class for RotateCredential"""
 
     _schema_error_detail_read = None
 
@@ -359,4 +357,4 @@ class _AssignRelayHelper:
         _schema.status = cls._schema_operation_status_result_read.status
 
 
-__all__ = ["AssignRelay"]
+__all__ = ["RotateCredential"]

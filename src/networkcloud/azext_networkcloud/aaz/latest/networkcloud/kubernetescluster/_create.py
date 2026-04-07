@@ -23,9 +23,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-01-01-preview",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/kubernetesclusters/{}", "2026-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/kubernetesclusters/{}", "2026-05-01-preview"],
         ]
     }
 
@@ -519,6 +519,9 @@ class Create(AAZCommand):
                 pattern="^[a-zA-Z0-9]{0,80}$",
                 max_length=80,
             ),
+            blank=AAZPromptInput(
+                msg="Password:",
+            ),
         )
         _element.peer_address = AAZStrArg(
             options=["peer-address"],
@@ -856,7 +859,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-01-preview",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
