@@ -23345,3 +23345,52 @@ spec:
                 (sku.get("locationInfo") or [{}])[0].get("zones") or []
             )
             assert len(zones) > 0, f"SKU '{sku['name']}' has no zones despite --zone filter"
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="centraluseuap"
+    )
+    def test_aks_nodepool_update_vmss_vm_size_resize(
+        self, resource_group, resource_group_location
+    ):
+        """Test VMSS agent pool VM size resize via nodepool update (preview)."""
+        aks_name = self.create_random_name("cliakstest", 16)
+        nodepool_name = "nodepool1"
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "nodepool_name": nodepool_name,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        # Create cluster with Standard_D2s_v3
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} "
+            "--node-count=1 --node-vm-size Standard_D2s_v3 "
+            "--ssh-key-value={ssh_key_value} "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AgentPoolVMSSResize"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("agentPoolProfiles[0].vmSize", "Standard_D2s_v3"),
+            ],
+        )
+
+        # Resize nodepool VM size to Standard_D4s_v3
+        update_cmd = (
+            "aks nodepool update --resource-group={resource_group} "
+            "--cluster-name={name} -n {nodepool_name} "
+            "--node-vm-size Standard_D4s_v3 "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AgentPoolVMSSResize"
+        )
+        self.cmd(
+            update_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("vmSize", "Standard_D4s_v3"),
+            ],
+        )
