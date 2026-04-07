@@ -288,7 +288,7 @@ class QuantumJobsScenarioTest(ScenarioTest):
         self.cmd(f"az quantum workspace set -g {test_resource_group} -w {test_workspace_temp} -l {test_location}")
         time.sleep(60) # wait for role assignments to propagate so the new workspace can access the storage account
 
-        # Test that job submission works with disabled acces keys on linked storage (/sasUri returns user delegation SAS)
+        # Test that job submission works with disabled access keys on linked storage (/sasUri returns user delegation SAS)
         results = self.cmd("az quantum job submit -t rigetti.sim.qvm --job-input-format rigetti.quil.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/bell-state.quil --job-output-format rigetti.quil-results.v1 -o json").get_output_in_json()
         self.assertIn("id", results)
         
