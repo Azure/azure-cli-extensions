@@ -291,3 +291,67 @@ helps['dataprotection recovery-point list'] = """
       - name: List of Recovery Points in a Vault
         text: az dataprotection recovery-point list --backup-instance-name "sample_biname-00000000-0000-0000-0000-000000000000" --resource-group "sample_rg" --vault-name "sample_vault"
 """
+
+helps['dataprotection enable-backup'] = """
+    type: group
+    short-summary: Enable backup for Azure resources.
+"""
+
+helps['dataprotection enable-backup trigger'] = """
+    type: command
+    short-summary: Enable backup for an AKS cluster by setting up all required resources including backup vault, policy, storage account, extension, and trusted access.
+    long-summary: |
+        This command orchestrates all the steps required to enable backup for an AKS cluster:
+          1. Creates or reuses a backup resource group, storage account, and blob container
+          2. Installs the backup extension on the cluster (or reuses an existing one)
+          3. Creates or reuses a backup vault and backup policy
+          4. Configures trusted access and role assignments
+          5. Creates a backup instance
+
+        The --backup-configuration-file parameter accepts a JSON file (@file.json) or inline JSON string with the following optional settings:
+          - storageAccountResourceId: ARM ID of an existing storage account to use
+          - blobContainerName: Name of an existing blob container (used with storageAccountResourceId)
+          - backupResourceGroupId: ARM ID of an existing resource group for backup resources
+          - backupVaultId: ARM ID of an existing backup vault (required for Custom strategy)
+          - backupPolicyId: ARM ID of an existing backup policy (required for Custom strategy)
+          - tags: Dictionary of tags to apply to created resources (e.g., {"Owner": "team", "Env": "prod"})
+
+        Backup strategy presets (--backup-strategy):
+          - Week (default): Daily incremental backups with 7-day retention in Operational Store.
+          - Month: Daily incremental backups with 30-day retention in Operational Store.
+          - DisasterRecovery: Daily incremental backups with 7-day Operational Store + 90-day Vault Store retention. FirstOfDay backups are copied to Vault Store for cross-region restore.
+          - Custom: Bring your own vault and policy. Requires backupVaultId and backupPolicyId in --backup-configuration-file.
+    examples:
+      - name: Enable backup for an AKS cluster with default Week strategy
+        text: az dataprotection enable-backup trigger --datasource-type AzureKubernetesService --datasource-id /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.ContainerService/managedClusters/{cluster}
+      - name: Enable backup with Month strategy
+        text: az dataprotection enable-backup trigger --datasource-type AzureKubernetesService --datasource-id /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.ContainerService/managedClusters/{cluster} --backup-strategy Month
+      - name: Enable backup with Custom strategy using existing vault and policy
+        text: |
+            az dataprotection enable-backup trigger --datasource-type AzureKubernetesService \\
+              --datasource-id /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.ContainerService/managedClusters/{cluster} \\
+              --backup-strategy Custom \\
+              --backup-configuration-file @config.json
+
+            Where config.json contains:
+            {
+              "backupVaultId": "/subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.DataProtection/backupVaults/{vault}",
+              "backupPolicyId": "/subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.DataProtection/backupVaults/{vault}/backupPolicies/{policy}"
+            }
+      - name: Enable backup with resource tags for policy compliance
+        text: |
+            az dataprotection enable-backup trigger --datasource-type AzureKubernetesService \\
+              --datasource-id /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.ContainerService/managedClusters/{cluster} \\
+              --backup-configuration-file '{"tags": {"Owner": "team", "Environment": "prod", "DeleteBy": "2026-12"}}'
+      - name: Enable backup using an existing storage account
+        text: |
+            az dataprotection enable-backup trigger --datasource-type AzureKubernetesService \\
+              --datasource-id /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.ContainerService/managedClusters/{cluster} \\
+              --backup-configuration-file @config.json
+
+            Where config.json contains:
+            {
+              "storageAccountResourceId": "/subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Storage/storageAccounts/{sa}",
+              "blobContainerName": "my-backup-container"
+            }
+"""
