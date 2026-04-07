@@ -5,6 +5,8 @@
 # pylint: disable=line-too-long
 
 from azure.cli.core.azclierror import ResourceNotFoundError
+from azure.cli.core.commands.client_factory import get_subscription_id
+from azure.cli.core import get_default_cli
 from knack.log import get_logger
 from .vendored_sdks.containerregistry.v2025_06_01_preview.models._models_py3 import ImportPipeline, ImportPipelineSourceProperties, PipelineTriggerProperties, PipelineSourceTriggerProperties
 from .utility_functions import create_identity_properties
@@ -40,7 +42,7 @@ def _extract_keyvault_resource_id(subscription_id, resource_group_name, keyvault
         return "<key-vault-resource-id>"
 
 
-def _display_permission_guidance(pipeline_type, storage_access_mode, principal_id, subscription_id, resource_group_name, container_uri, keyvault_secret_uri=None):
+def _display_permission_guidance(storage_access_mode, principal_id, subscription_id, resource_group_name, container_uri, keyvault_secret_uri=None):
     """Display permission guidance for the managed identity."""
 
     if storage_access_mode == 'ManagedIdentity':
@@ -95,22 +97,22 @@ def create_importpipeline(client, resource_group_name, registry_name, import_pip
                                          import_pipeline_name=import_pipeline_name)
 
     # Display permission guidance
-    if result.identity:
-        principal_id = None
+    pipeline_identity = result.identity
+    if pipeline_identity:
         # For system-assigned identity, principal_id is at the top level
-        if result.identity.principal_id:
-            principal_id = result.identity.principal_id
+        if pipeline_identity.principal_id:
+            principal_id = pipeline_identity.principal_id
         # For user-assigned identity, extract principal_id from userAssignedIdentities
-        elif result.identity.user_assigned_identities:
-            # Get the first (and typically only) user-assigned identity
-            for _, identity_info in result.identity.user_assigned_identities.items():
+        elif pipeline_identity.user_assigned_identities:
+            # Azure support multiple. For our case, we only assign 1
+            # Get the first user-assigned identity
+            for identity_info in pipeline_identity.user_assigned_identities.values():
                 if identity_info and identity_info.principal_id:
                     principal_id = identity_info.principal_id
-                    break
+        else:
+            principal_id = None
 
         if principal_id:
-            from azure.cli.core.commands.client_factory import get_subscription_id
-            from azure.cli.core import get_default_cli
             subscription_id = get_subscription_id(get_default_cli())
             _display_permission_guidance(
                 storage_access_mode=storage_access_mode,
