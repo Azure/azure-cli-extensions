@@ -54,7 +54,7 @@ def _display_permission_guidance(storage_access_mode, principal_id, subscription
         logger.warning("  az role assignment create --assignee \"%s\" --role \"%s\" --scope \"%s\"", principal_id, role, storage_resource_id)
         logger.warning("Note: If the Storage Account is in a different resource group, update the --scope parameter accordingly.")
         logger.warning("")
-    elif storage_access_mode == 'SasToken' and keyvault_secret_uri:
+    elif storage_access_mode == 'SasToken':
         keyvault_resource_id = _extract_keyvault_resource_id(subscription_id, resource_group_name, keyvault_secret_uri)
         role = "Key Vault Secrets User"
 
