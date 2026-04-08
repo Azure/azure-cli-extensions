@@ -158,7 +158,7 @@ class EnhancedMonitoring:  # pylint: disable=too-many-instance-attributes
                 'vm_name': self._vm['name'],
             }
             if new_identity == IDENTITY_SYSTEM_ASSIGNED or new_identity == IDENTITY_SYSTEM_USER_ASSIGNED:
-                command_args['mi_system_assigned'] = 'True'
+                command_args['mi_system_assigned'] = True
 
             poller = VMPatch(cli_ctx=self._cmd.cli_ctx)(command_args=command_args)
             self._vm = LongRunningOperation(self._cmd.cli_ctx)(poller).result()
