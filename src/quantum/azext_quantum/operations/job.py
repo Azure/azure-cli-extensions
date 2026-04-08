@@ -280,11 +280,19 @@ def submit(cmd, resource_group_name, workspace_name, target_id, job_input_file, 
     except (IOError, OSError) as e:
         raise FileOperationError(f"An error occurred opening the input file: {job_input_file}") from e
 
+    # Upload the input file to the workspace's storage account
+    if storage is None:
+        from .workspace import get as ws_get
+        ws = ws_get(cmd, resource_group_name, workspace_name)
+        if ws.properties.storage_account is None:
+            raise RequiredArgumentMissingError("No storage account specified or linked with workspace.")
+        storage = ws.properties.storage_account.split('/')[-1]
     job_id = str(uuid.uuid4())
     blob_name = "inputData"
+
     resource_id = "/subscriptions/" + ws_info.subscription + "/resourceGroups/" + ws_info.resource_group + "/providers/Microsoft.Quantum/Workspaces/" + ws_info.name
     credential = _get_data_credentials(cmd.cli_ctx, ws_info.subscription)
-    workspace = Workspace(resource_id=resource_id, credential=credential, storage=storage)
+    workspace = Workspace(resource_id=resource_id, credential=credential)
 
     container_uri = workspace.get_container_uri(job_id=job_id)
     container_client = ContainerClient.from_container_url(container_uri)

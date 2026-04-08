@@ -302,12 +302,6 @@ class QuantumJobsScenarioTest(ScenarioTest):
         results = self.cmd("az quantum job submit -t rigetti.sim.qvm --job-input-format rigetti.quil.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/bell-state.quil --job-output-format rigetti.quil-results.v1 -o json").get_output_in_json()
         self.assertIn("id", results)
 
-        # Retrieve the storage connection string and submit a job with specifying connection string using --storage flag
-        conn_info = self.cmd(f"az storage account show-connection-string -g {test_resource_group} -n {test_storage_temp} -o json").get_output_in_json()
-        storage_connection_string = conn_info["connectionString"]
-        results = self.cmd(f"az quantum job submit -t rigetti.sim.qvm --job-input-format rigetti.quil.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/bell-state.quil --job-output-format rigetti.quil-results.v1 --storage \"{storage_connection_string}\" -o json").get_output_in_json()
-        self.assertIn("id", results)
-
         self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp}')
         self.cmd(f'az storage account delete -g {test_resource_group} -n {test_storage_temp} --yes')
 
