@@ -16,6 +16,10 @@ Pending
 +++++++
 * [Breaking Change] `az aks create/update`: Change `--nat-gateway-outbound-ips` and `--nat-gateway-outbound-ip-prefixes` to use comma-separated values, consistent with load balancer outbound IP parameters.
 
+19.0.0b30
++++++++
+* Add option `AzureContainerLinux` to `--os-sku` for `az aks create`, `az aks nodepool add`, and `az aks nodepool update`.
+
 19.0.0b29
 +++++++
 * Add MIG (Multi-Instance GPU) strategy option to node pool property in `az aks nodepool add` and `az aks nodepool update`.
