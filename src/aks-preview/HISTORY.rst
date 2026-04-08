@@ -11,10 +11,14 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+
+20.0.0b2
++++++++
 * `az aks nodepool update`: clean up some useless code in the update managed gpu function. 
 * `az aks machine add`: Add `--spot-max-price` flag support to set the max price (in US Dollars) you are willing to pay for spot instances on a machine.
 * `az aks machine add`: Add `--eviction-policy` flag support to set the eviction policy for a machine.
 * `az aks machine add`: Add `--enable-ultra-ssd` flag support to enable ultra ssd on a machine.
+* `az aks update`: Fix V2-only NAT gateway params (e.g. `--nat-gateway-managed-outbound-ipv6-count`) being rejected on update when `--outbound-type` is not re-specified for an already-V2 cluster.
 
 20.0.0b1
 +++++++
