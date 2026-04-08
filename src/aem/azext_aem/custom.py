@@ -151,6 +151,12 @@ class EnhancedMonitoring:  # pylint: disable=too-many-instance-attributes
             logger.info("VM has user assigned identity, enabling user and system assigned")
             new_identity = IDENTITY_SYSTEM_USER_ASSIGNED
 
+        if vm_identity.get('type') == IDENTITY_USER_ASSIGNED or \
+            vm_identity.get('type') == IDENTITY_SYSTEM_USER_ASSIGNED:
+            user_assigned = [x for x in vm_identity.get('userAssignedIdentities', {}).keys()]
+        else:
+            user_assigned = []
+
         if new_identity is not None:
             from azure.cli.command_modules.vm.aaz.latest.vm import Patch as VMPatch
             command_args = {
@@ -158,10 +164,13 @@ class EnhancedMonitoring:  # pylint: disable=too-many-instance-attributes
                 'vm_name': self._vm['name'],
             }
             if new_identity == IDENTITY_SYSTEM_ASSIGNED or new_identity == IDENTITY_SYSTEM_USER_ASSIGNED:
-                command_args['mi_system_assigned'] = True
+                command_args['mi_system_assigned'] = 'True'
+            if new_identity == IDENTITY_SYSTEM_USER_ASSIGNED:
+                command_args['mi_user_assigned'] = user_assigned
+            print(command_args)
 
             poller = VMPatch(cli_ctx=self._cmd.cli_ctx)(command_args=command_args)
-            self._vm = LongRunningOperation(self._cmd.cli_ctx)(poller).result()
+            self._vm = LongRunningOperation(self._cmd.cli_ctx)(poller)
 
         scopes = set()
         end_index = 5  # Scope is set to resource group
