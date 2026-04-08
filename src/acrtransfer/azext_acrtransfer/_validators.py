@@ -61,16 +61,11 @@ def validate_user_assigned_identity_resource_id(namespace):
     if identity_id is None:
         return
 
-    # Handle [system] keyword for system-assigned identity
-    if identity_id.lower() == "[system]":
-        namespace.user_assigned_identity_resource_id = None
-        return
-
     if "/providers/Microsoft.ManagedIdentity/userAssignedIdentities/" not in identity_id:
         valid = False
 
     if not valid:
-        logger.warning("Invalid user assigned identity resource ID. Please provide a user assigned identity resource ID of the form /subscriptions/$MySubID/resourceGroups/$MyRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/$MyIdentity or use [system] for system-assigned identity.")
+        logger.warning("Invalid user assigned identity resource ID. Please provide a user assigned identity resource ID of the form /subscriptions/$MySubID/resourceGroups/$MyRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/$MyIdentity.")
 
 
 def validate_import_options(namespace):

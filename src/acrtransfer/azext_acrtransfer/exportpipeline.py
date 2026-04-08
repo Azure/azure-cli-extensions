@@ -96,6 +96,7 @@ def create_exportpipeline(client, resource_group_name, registry_name, export_pip
     # Display permission guidance
     pipeline_identity = result.identity
     if pipeline_identity:
+        principal_id = None
         # For system-assigned identity, principal_id is at the top level
         if pipeline_identity.principal_id:
             principal_id = pipeline_identity.principal_id
