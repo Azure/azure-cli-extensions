@@ -23370,8 +23370,7 @@ spec:
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} "
             "--node-count=1 --node-vm-size Standard_D2s_v3 "
-            "--ssh-key-value={ssh_key_value} "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AgentPoolVMSSResize"
+            "--ssh-key-value={ssh_key_value}"
         )
         self.cmd(
             create_cmd,
@@ -23385,8 +23384,7 @@ spec:
         update_cmd = (
             "aks nodepool update --resource-group={resource_group} "
             "--cluster-name={name} -n {nodepool_name} "
-            "--node-vm-size Standard_D4s_v3 "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AgentPoolVMSSResize"
+            "--node-vm-size Standard_D4s_v3"
         )
         self.cmd(
             update_cmd,
