@@ -314,6 +314,25 @@ helps['fleet updaterun create'] = """
                           "name": "group-b3"
                         }
                       ]
+                    },
+                    {
+                      "name": "stage3-with-scheduled-start",
+                      "beforeGates": [
+                        {
+                          "displayName": "Wait until Friday evening",
+                          "type": "ScheduledStart",
+                          "scheduledStartConfiguration": {
+                            "startDay": "Friday",
+                            "startTime": "18:00",
+                            "utcOffset": "-05:00"
+                          }
+                        }
+                      ],
+                      "groups": [
+                        {
+                          "name": "group-c1"
+                        }
+                      ]
                     }
                   ]
                 }

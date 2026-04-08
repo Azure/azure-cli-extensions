@@ -40,6 +40,8 @@ from azext_fleet.vendored_sdks.v2026_05_01_preview.models import (
     PlacementV1RolloutStrategy,
     PropagationType,
     PlacementType,
+    GateConfiguration,
+    ScheduledStartConfiguration,
 )
 
 logger = get_logger(__name__)
@@ -585,6 +587,29 @@ def skip_update_run(cmd,  # pylint: disable=unused-argument
     skip_properties = update_run_skip_properties_model(targets=skipTargets)
     return sdk_no_wait(no_wait, client.begin_skip, resource_group_name, fleet_name, name, skip_properties)
 
+ 
+def _build_gate_configs(gates_list):
+    """Convert a list of gate dicts from JSON into GateConfiguration model objects."""
+    if not gates_list:
+        return []
+    result = []
+    for gate in gates_list:
+        gate_type = gate.get("type", "Approval")
+        scheduled_start_config = None
+        raw_config = gate.get("scheduledStartConfiguration")
+        if raw_config:
+            scheduled_start_config = ScheduledStartConfiguration(
+                start_day=raw_config["startDay"],
+                start_time=raw_config["startTime"],
+                utc_offset=raw_config["utcOffset"],
+            )
+        result.append(GateConfiguration(
+            type=gate_type,
+            display_name=gate.get("displayName"),
+            scheduled_start_configuration=scheduled_start_config,
+        ))
+    return result
+
 
 def get_update_run_strategy(cmd, operation_group, stages):
     if stages is None:
@@ -631,8 +656,8 @@ def get_update_run_strategy(cmd, operation_group, stages):
                 max_concurrency=group.get("maxConcurrency"),
                 max_allowed_failures=group.get("maxAllowedFailures"),
                 member_selector=group_member_selector,
-                before_gates=group.get("beforeGates", []),
-                after_gates=group.get("afterGates", []),
+                before_gates=_build_gate_configs(group.get("beforeGates", [])),
+                after_gates=_build_gate_configs(group.get("afterGates", [])),
             ))
 
         after_wait = stage.get("afterStageWaitInSeconds") or 0
@@ -647,8 +672,8 @@ def get_update_run_strategy(cmd, operation_group, stages):
             member_selector=stage_member_selector,
             max_concurrency=stage.get("maxConcurrency"),
             max_allowed_failures=stage.get("maxAllowedFailures"),
-            before_gates=stage.get("beforeGates", []),
-            after_gates=stage.get("afterGates", []),
+            before_gates=_build_gate_configs(stage.get("beforeGates", [])),
+            after_gates=_build_gate_configs(stage.get("afterGates", [])),
             after_stage_wait_in_seconds=after_wait
         ))
 
