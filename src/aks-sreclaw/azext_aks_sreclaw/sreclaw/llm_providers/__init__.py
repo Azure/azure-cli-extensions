@@ -11,12 +11,14 @@ from rich.console import Console
 from .anthropic_provider import AnthropicProvider
 from .azure_provider import AzureProvider
 from .base import LLMProvider
+from .github_copilot_provider import GitHubCopilotProvider
 from .openai_provider import OpenAIProvider
 
 console = Console()
 
 _PROVIDER_CLASSES: List[LLMProvider] = [
     AzureProvider,
+    GitHubCopilotProvider,
     OpenAIProvider,
     AnthropicProvider,
     # Add new providers here

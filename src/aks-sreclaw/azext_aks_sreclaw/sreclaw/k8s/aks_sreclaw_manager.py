@@ -10,10 +10,7 @@ import tempfile
 from abc import ABC, abstractmethod
 from typing import Dict, List, Optional, Tuple, Union
 
-from azext_aks_sreclaw._consts import (
-    AGENT_NAMESPACE,
-    AKS_SRECLAW_LABEL_SELECTOR,
-)
+from azext_aks_sreclaw._consts import AGENT_NAMESPACE, AKS_SRECLAW_LABEL_SELECTOR
 from azext_aks_sreclaw.sreclaw.k8s.helm_manager import HelmManager
 from azext_aks_sreclaw.sreclaw.llm_config_manager import LLMConfigManager
 from azext_aks_sreclaw.sreclaw.llm_providers import LLMProvider
@@ -229,7 +226,7 @@ class AKSSREClawManager(AKSSREClawManagerLLMConfigBase):  # pylint: disable=too-
             )
 
             if not secret.data:
-                logger.warning("Secret '%s' exists but has no data", self.llm_secret_name)
+                logger.debug("Secret '%s' exists but has no data", self.llm_secret_name)
                 return
 
             # Decode secret data (base64 encoded)
@@ -969,6 +966,7 @@ class AKSSREClawManager(AKSSREClawManagerLLMConfigBase):  # pylint: disable=too-
             },
             "serviceAccount": {
                 "create": False,
+                "role": "",
                 "name": self.sreclaw_service_account_name
             },
             "azureWorkloadIdentity": {
@@ -987,9 +985,10 @@ class AKSSREClawManager(AKSSREClawManagerLLMConfigBase):  # pylint: disable=too-
             for provider_name, provider_config in self.llm_config_manager.model_list.items():
                 provider_entry = {
                     "name": provider_name,
-                    "apiKeySecretKey": f"{provider_name}-key",
                     "models": provider_config.get("models", [])
                 }
+                if provider_name != "github-copilot":
+                    provider_entry["apiKeySecretKey"] = f"{provider_name}-key"
 
                 if "api_base" in provider_config:
                     provider_entry["apiBase"] = provider_config["api_base"]
