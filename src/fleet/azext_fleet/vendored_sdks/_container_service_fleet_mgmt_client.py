@@ -58,7 +58,7 @@ class ContainerServiceFleetMgmtClient(MultiApiClientMixin, _SDKClient):
     :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
     """
 
-    DEFAULT_API_VERSION = '2026-02-01-preview'
+    DEFAULT_API_VERSION = '2026-05-01-preview'
     _PROFILE_TAG = "azure.mgmt.containerservicefleet.ContainerServiceFleetMgmtClient"
     LATEST_PROFILE = ProfileDefinition({
         _PROFILE_TAG: {
@@ -165,6 +165,9 @@ class ContainerServiceFleetMgmtClient(MultiApiClientMixin, _SDKClient):
         elif api_version == '2026-02-01-preview':
             from .v2026_02_01_preview import models
             return models
+        elif api_version == '2026-05-01-preview':
+            from .v2026_05_01_preview import models
+            return models
         raise ValueError("API version {} is not available".format(api_version))
 
     @property
@@ -186,6 +189,8 @@ class ContainerServiceFleetMgmtClient(MultiApiClientMixin, _SDKClient):
             from .v2025_08_01_preview.operations import AutoUpgradeProfileOperationsOperations as OperationClass
         elif api_version == '2026-02-01-preview':
             from .v2026_02_01_preview.operations import AutoUpgradeProfileOperationsOperations as OperationClass
+        elif api_version == '2026-05-01-preview':
+            from .v2026_05_01_preview.operations import AutoUpgradeProfileOperationsOperations as OperationClass
         else:
             raise ValueError("API version {} does not have operation group 'auto_upgrade_profile_operations'".format(api_version))
         self._config.api_version = api_version
@@ -210,6 +215,8 @@ class ContainerServiceFleetMgmtClient(MultiApiClientMixin, _SDKClient):
             from .v2025_08_01_preview.operations import AutoUpgradeProfilesOperations as OperationClass
         elif api_version == '2026-02-01-preview':
             from .v2026_02_01_preview.operations import AutoUpgradeProfilesOperations as OperationClass
+        elif api_version == '2026-05-01-preview':
+            from .v2026_05_01_preview.operations import AutoUpgradeProfilesOperations as OperationClass
         else:
             raise ValueError("API version {} does not have operation group 'auto_upgrade_profiles'".format(api_version))
         self._config.api_version = api_version
@@ -228,6 +235,8 @@ class ContainerServiceFleetMgmtClient(MultiApiClientMixin, _SDKClient):
             from .v2025_08_01_preview.operations import FleetManagedNamespacesOperations as OperationClass
         elif api_version == '2026-02-01-preview':
             from .v2026_02_01_preview.operations import FleetManagedNamespacesOperations as OperationClass
+        elif api_version == '2026-05-01-preview':
+            from .v2026_05_01_preview.operations import FleetManagedNamespacesOperations as OperationClass
         else:
             raise ValueError("API version {} does not have operation group 'fleet_managed_namespaces'".format(api_version))
         self._config.api_version = api_version
@@ -276,6 +285,8 @@ class ContainerServiceFleetMgmtClient(MultiApiClientMixin, _SDKClient):
             from .v2025_08_01_preview.operations import FleetMembersOperations as OperationClass
         elif api_version == '2026-02-01-preview':
             from .v2026_02_01_preview.operations import FleetMembersOperations as OperationClass
+        elif api_version == '2026-05-01-preview':
+            from .v2026_05_01_preview.operations import FleetMembersOperations as OperationClass
         else:
             raise ValueError("API version {} does not have operation group 'fleet_members'".format(api_version))
         self._config.api_version = api_version
@@ -309,6 +320,8 @@ class ContainerServiceFleetMgmtClient(MultiApiClientMixin, _SDKClient):
             from .v2025_08_01_preview.operations import FleetUpdateStrategiesOperations as OperationClass
         elif api_version == '2026-02-01-preview':
             from .v2026_02_01_preview.operations import FleetUpdateStrategiesOperations as OperationClass
+        elif api_version == '2026-05-01-preview':
+            from .v2026_05_01_preview.operations import FleetUpdateStrategiesOperations as OperationClass
         else:
             raise ValueError("API version {} does not have operation group 'fleet_update_strategies'".format(api_version))
         self._config.api_version = api_version
@@ -357,6 +370,8 @@ class ContainerServiceFleetMgmtClient(MultiApiClientMixin, _SDKClient):
             from .v2025_08_01_preview.operations import FleetsOperations as OperationClass
         elif api_version == '2026-02-01-preview':
             from .v2026_02_01_preview.operations import FleetsOperations as OperationClass
+        elif api_version == '2026-05-01-preview':
+            from .v2026_05_01_preview.operations import FleetsOperations as OperationClass
         else:
             raise ValueError("API version {} does not have operation group 'fleets'".format(api_version))
         self._config.api_version = api_version
@@ -379,6 +394,8 @@ class ContainerServiceFleetMgmtClient(MultiApiClientMixin, _SDKClient):
             from .v2025_08_01_preview.operations import GatesOperations as OperationClass
         elif api_version == '2026-02-01-preview':
             from .v2026_02_01_preview.operations import GatesOperations as OperationClass
+        elif api_version == '2026-05-01-preview':
+            from .v2026_05_01_preview.operations import GatesOperations as OperationClass
         else:
             raise ValueError("API version {} does not have operation group 'gates'".format(api_version))
         self._config.api_version = api_version
@@ -421,6 +438,8 @@ class ContainerServiceFleetMgmtClient(MultiApiClientMixin, _SDKClient):
             from .v2025_08_01_preview.operations import Operations as OperationClass
         elif api_version == '2026-02-01-preview':
             from .v2026_02_01_preview.operations import Operations as OperationClass
+        elif api_version == '2026-05-01-preview':
+            from .v2026_05_01_preview.operations import Operations as OperationClass
         else:
             raise ValueError("API version {} does not have operation group 'operations'".format(api_version))
         self._config.api_version = api_version
@@ -460,8 +479,25 @@ class ContainerServiceFleetMgmtClient(MultiApiClientMixin, _SDKClient):
             from .v2025_08_01_preview.operations import UpdateRunsOperations as OperationClass
         elif api_version == '2026-02-01-preview':
             from .v2026_02_01_preview.operations import UpdateRunsOperations as OperationClass
+        elif api_version == '2026-05-01-preview':
+            from .v2026_05_01_preview.operations import UpdateRunsOperations as OperationClass
         else:
             raise ValueError("API version {} does not have operation group 'update_runs'".format(api_version))
+        self._config.api_version = api_version
+        return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)), api_version)
+
+    @property
+    def cluster_mesh_profiles(self):
+        """Instance depends on the API version:
+
+           * 2026-05-01-preview: :class:`ClusterMeshProfilesOperations<azure.mgmt.containerservicefleet.v2026_05_01_preview.operations.ClusterMeshProfilesOperations>`
+
+        """
+        api_version = self._get_api_version('cluster_mesh_profiles')
+        if api_version == '2026-05-01-preview':
+            from .v2026_05_01_preview.operations import ClusterMeshProfilesOperations as OperationClass
+        else:
+            raise ValueError("API version {} does not have operation group 'cluster_mesh_profiles'".format(api_version))
         self._config.api_version = api_version
         return OperationClass(self._client, self._config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)), api_version)
 
