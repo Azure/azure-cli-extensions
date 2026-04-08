@@ -9,6 +9,7 @@ Release History
 * Added `connection` resource commands (create, delete, list, show, update, wait).
 * Added S3-compatible storage endpoint type (`create-for-s3-with-hmac`, `update-for-s3-with-hmac`).
 * Added `schedule`, `connections`, `preserve-permissions`, and `data-integrity-validation` parameters to job definition commands.
+* Fixed allowed values for S3WithHmac `source-type` parameter to match 2025-12-01 API spec: added `ALIBABA`, `DELL_EMC`, `OTHER` and removed deprecated `BACKBLAZE`, `CLOUDFLARE`.
 
 1.2.1
 +++++

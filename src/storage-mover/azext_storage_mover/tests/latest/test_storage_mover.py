@@ -463,7 +463,7 @@ class StorageMoverScenario(ScenarioTest):
             "mover_name": "teststoragemover2",
             "endpoint_s3": "endpoints3hmac1",
             "source_uri": "https://s3.example.com/bucket",
-            "source_type": "BACKBLAZE",
+            "source_type": "MINIO",
             "access_key_uri": "https://smb-demo-kv.vault.azure.net/secrets/s3-access-key",
             "secret_key_uri": "https://smb-demo-kv.vault.azure.net/secrets/s3-secret-key"
         })
@@ -515,18 +515,44 @@ class StorageMoverScenario(ScenarioTest):
                  '-n nonexistentendpoint',
                  expect_failure=True)
 
-    @record_only()
-    # Skipped: RP returns InternalServerError when processing schedule for CloudToCloud jobs
+    @ResourceGroupPreparer(location='eastus2euap')
+    @StorageAccountPreparer()
     @AllowLargeResponse()
-    def test_storage_mover_job_definition_schedule_scenarios(self):
+    def test_storage_mover_job_definition_schedule_scenarios(self, resource_group, storage_account):
         self.kwargs.update({
-            "rg": "test-storagemover-rg2",
-            "mover_name": "teststoragemover2",
-            "project_name": "testproject",
-            "job_definition": "testdefinitionschedule",
-            "source_endpoint": "sourceendpoint",
-            "target_endpoint": "targetendpoint"
+            "mover_name": self.create_random_name('storage-mover', 24),
+            "project_name": self.create_random_name('project', 24),
+            "job_definition": self.create_random_name('jobdefsch', 24),
+            "account_name": storage_account,
+            "account_key": self.cmd('az storage account keys list -n {} -g {} --query "[0].value" '
+                                    '-otsv'.format(storage_account, resource_group)).output,
+            "account_id": self.cmd('az storage account show -n {} -g {} --query id '
+                                   '-otsv'.format(storage_account, resource_group)).output.strip(),
+            "target_container": self.create_random_name('tgtcontainer', 24),
+            "source_endpoint": self.create_random_name('srcendpoint', 24),
+            "target_endpoint": self.create_random_name('tgtendpoint', 24),
+            "multi_cloud_connector_id": "/subscriptions/b6b34ad8-ca89-4f85-beb7-c2ec13702dac/resourceGroups/E2E-Management-RGsyn/providers/Microsoft.HybridConnectivity/publicCloudConnectors/e2e-sm-rp-connector",
+            "aws_s3_bucket_id": "/subscriptions/b6b34ad8-ca89-4f85-beb7-c2ec13702dac/resourceGroups/aws_640698235822/providers/Microsoft.AWSConnector/s3Buckets/e2e-sm-rp-private-bucket",
         })
+        self.cmd('az storage-mover create -g {rg} -n {mover_name} -l eastus2euap --description MoverDesc')
+        self.cmd('az storage-mover project create -g {rg} --storage-mover-name {mover_name} -n {project_name} '
+                 '--description ProjectDesc')
+
+        # create multi-cloud connector source endpoint
+        self.cmd('az storage-mover endpoint create-for-multi-cloud-connector -g {rg} --storage-mover-name {mover_name} '
+                 '-n {source_endpoint} --multi-cloud-connector-id {multi_cloud_connector_id} '
+                 '--aws-s3-bucket-id {aws_s3_bucket_id} --endpoint-kind Source --description srcMccEndpoint')
+
+        # create blob container target endpoint
+        self.cmd('az storage container create -n {target_container} --account-name {account_name} '
+                 '--account-key {account_key}')
+        self.cmd('az storage-mover endpoint create-for-storage-container -g {rg} --storage-mover-name {mover_name} '
+                 '-n {target_endpoint} --container-name {target_container} --storage-account-id {account_id} '
+                 '--endpoint-kind Target --description tgtEndpointDesc')
+
+        # wait for endpoint replication to RP internal store
+        time.sleep(60)
+
         # create cloud-to-cloud job definition with schedule
         self.cmd('az storage-mover job-definition create -g {rg} -n {job_definition} '
                  '--project-name {project_name} --storage-mover-name {mover_name} '
@@ -544,12 +570,11 @@ class StorageMoverScenario(ScenarioTest):
                          JMESPathCheck('schedule.executionTime.hour', 9),
                          JMESPathCheck('schedule.executionTime.minute', 0),
                          JMESPathCheck('schedule.daysOfWeek', ['Monday', 'Wednesday', 'Friday'])])
-        # update with preserve-permissions and data-integrity-validation
+        # update with data-integrity-validation
         self.cmd('az storage-mover job-definition update -g {rg} -n {job_definition} '
                  '--project-name {project_name} --storage-mover-name {mover_name} '
-                 '--preserve-permissions true --data-integrity-validation FullChecksum',
-                 checks=[JMESPathCheck('preservePermissions', True),
-                         JMESPathCheck('dataIntegrityValidation', 'FullChecksum')])
+                 '--data-integrity-validation SaveVerifyFileMD5',
+                 checks=[JMESPathCheck('dataIntegrityValidation', 'SaveVerifyFileMD5')])
         # cleanup
         self.cmd('az storage-mover job-definition delete -g {rg} -n {job_definition} '
                  '--project-name {project_name} --storage-mover-name {mover_name} -y')

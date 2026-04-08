@@ -68,7 +68,7 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
 
     with self.argument_context('storage-mover endpoint create-for-s3-with-hmac') as c:
         c.argument('source_uri', help='The URI which points to the S3-compatible source.')
-        c.argument('source_type', arg_type=get_enum_type(['BACKBLAZE', 'CLOUDFLARE', 'GCS', 'IBM', 'MINIO']),
+        c.argument('source_type', arg_type=get_enum_type(['ALIBABA', 'DELL_EMC', 'GCS', 'IBM', 'MINIO', 'OTHER']),
                    help='The source type of the S3WithHmac endpoint.')
         c.argument('other_source_type_description',
                    help='The description for other source type of S3WithHmac endpoint.')
