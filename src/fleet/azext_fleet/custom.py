@@ -28,6 +28,7 @@ from azext_fleet.constants import UPGRADE_TYPE_FULL
 from azext_fleet.constants import UPGRADE_TYPE_NODEIMAGEONLY
 from azext_fleet.constants import UPGRADE_TYPE_ERROR_MESSAGES
 from azext_fleet.constants import SUPPORTED_GATE_STATES_FILTERS
+from azext_fleet.constants import SUPPORTED_GATE_TYPE_FILTERS
 from azext_fleet.constants import SUPPORTED_GATE_STATES_PATCH
 from azext_fleet.constants import FLEET_1P_APP_ID
 from azext_fleet.vendored_sdks.v2026_05_01_preview.models import (
@@ -808,8 +809,9 @@ def list_gates_by_fleet(cmd,  # pylint: disable=unused-argument
                         client,
                         resource_group_name,
                         fleet_name,
-                        state_filter=None):
-    params = {}
+                        state_filter=None,
+                        gate_type=None):
+    filters = []
 
     if state_filter:
         if state_filter not in SUPPORTED_GATE_STATES_FILTERS:
@@ -817,8 +819,19 @@ def list_gates_by_fleet(cmd,  # pylint: disable=unused-argument
                 f"Unsupported gate state filter value: '{state_filter}'. "
                 f"Allowed values are {SUPPORTED_GATE_STATES_FILTERS}"
             )
+        filters.append(f"state eq {state_filter}")
 
-        params["$filter"] = f"state eq {state_filter}"
+    if gate_type:
+        if gate_type not in SUPPORTED_GATE_TYPE_FILTERS:
+            raise CLIError(
+                f"Unsupported gate type filter value: '{gate_type}'. "
+                f"Allowed values are {SUPPORTED_GATE_TYPE_FILTERS}"
+            )
+        filters.append(f"gateType eq {gate_type}")
+
+    params = {}
+    if filters:
+        params["$filter"] = " and ".join(filters)
 
     return client.list_by_fleet(resource_group_name, fleet_name, params=params)
 

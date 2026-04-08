@@ -501,6 +501,10 @@ helps['fleet gate list'] = """
           text: az fleet gate list -g MyFleetResourceGroup --fleet-name MyFleetName
         - name: List all gates, filtering on gate state. Valid values are ('Pending', 'Skipped', 'Completed').
           text: az fleet gate list -g MyFleetResourceGroup --fleet-name MyFleetName --state Pending
+        - name: List all gates, filtering on gate type. Valid values are ('Approval', 'ScheduledStart').
+          text: az fleet gate list -g MyFleetResourceGroup --fleet-name MyFleetName --gate-type ScheduledStart
+        - name: List pending ScheduledStart gates.
+          text: az fleet gate list -g MyFleetResourceGroup --fleet-name MyFleetName --gate-type ScheduledStart --state Pending
 """
 
 helps['fleet gate show'] = """
