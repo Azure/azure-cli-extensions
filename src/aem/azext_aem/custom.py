@@ -153,7 +153,7 @@ class EnhancedMonitoring:  # pylint: disable=too-many-instance-attributes
 
         if vm_identity.get('type') == IDENTITY_USER_ASSIGNED or \
                 vm_identity.get('type') == IDENTITY_SYSTEM_USER_ASSIGNED:
-            user_assigned = [x for x in vm_identity.get('userAssignedIdentities', {}).keys()]
+            user_assigned = list(vm_identity.get('userAssignedIdentities', {}).keys())
         else:
             user_assigned = []
 
