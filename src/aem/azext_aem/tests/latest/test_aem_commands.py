@@ -99,7 +99,9 @@ class VMAEM(ScenarioTest):
             'vnet': 'vnet',
             'subnet': 'subnet'
         })
-        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image win2016datacenter --admin-username myadmin --admin-password thisisaTest!@ --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE --size Standard_D2s_v3')
+        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image Debian:debian-10:10:latest '
+                 '--admin-username myadmin --admin-password thisisaTest!@ --subnet {subnet} --vnet-name {vnet} '
+                 '--nsg-rule NONE --size Standard_D2s_v3')
         self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet} --default-outbound-access false')
         self.cmd('identity create -g {rg} -n {ident}')
 
@@ -108,7 +110,7 @@ class VMAEM(ScenarioTest):
         self.assertEqual(str(cm.exception), self.ERR_EXT_NOT_INSTALLED_DELETE)
         vm = self.cmd('vm show -g {rg} -n {vm}').get_output_in_json()
 
-        self.assertIsNone(vm['resources'], msg="VM Extensions installed but should be empty")
+        self.assertIsNone(vm.get('resources'), msg="VM Extensions installed but should be empty")
         with self.assertRaises(CLIError) as cm:
             self.cmd('vm aem verify -g {rg} -n {vm}')
         self.assertEqual(str(cm.exception), self.ERR_EXT_NOT_INSTALLED_VERIFY)
@@ -142,14 +144,14 @@ class VMAEM(ScenarioTest):
         self.assertEqual(str(cm.exception), self.ERR_EXT_NOT_INSTALLED_DELETE)
 
         vm = self.cmd('vm show -g {rg} -n {vm}').get_output_in_json()
-        self.assertIsNone(vm['resources'], msg="VM Extensions installed but should be empty")
+        self.assertIsNone(vm.get('resources'), msg="VM Extensions installed but should be empty")
 
         with self.assertRaises(CLIError) as cm:
             self.cmd('vm aem verify --verbose -g {rg} -n {vm}')
         self.assertEqual(str(cm.exception), self.ERR_EXT_NOT_INSTALLED_VERIFY, msg="Test of extension was positiv but should have failed")
 
         vm = self.cmd('vm show -g {rg} -n {vm}').get_output_in_json()
-        self.assertIsNone(vm['identity'], msg="VM still has an identity")
+        self.assertIsNone(vm.get('identity'), msg="VM still has an identity")
 
         self.cmd('vm aem set --verbose -g {rg} -n {vm} --install-new-extension')
 
@@ -175,14 +177,14 @@ class VMAEM(ScenarioTest):
         self.assertEqual(str(cm.exception), self.ERR_EXT_NOT_INSTALLED_DELETE)
 
         vm = self.cmd('vm show -g {rg} -n {vm}').get_output_in_json()
-        if vm['identity'] is None or (not vm['identity']['type'] == self.IDENT_SYSTEM_ASSIGNED):
+        if vm.get('identity') is None or (not vm.get('identity', {}).get('type') == self.IDENT_SYSTEM_ASSIGNED):
             self.cmd('vm identity assign -g {rg} -n {vm}')
             vm = self.cmd('vm show -g {rg} -n {vm}').get_output_in_json()
 
         vm_identity = vm['identity']['type']
         self.assertEqual(vm_identity, self.IDENT_SYSTEM_ASSIGNED, msg=f'VM does not have the expected identity. Expected: {self.IDENT_SYSTEM_ASSIGNED} Actual: {vm_identity}')
 
-        self.assertIsNone(vm['resources'], msg="VM Extensions installed but should be empty")
+        self.assertIsNone(vm.get('resources'), msg="VM Extensions installed but should be empty")
         with self.assertRaises(CLIError) as cm:
             self.cmd('vm aem verify --verbose -g {rg} -n {vm}')
         self.assertEqual(str(cm.exception), self.ERR_EXT_NOT_INSTALLED_VERIFY, msg="Test of extension was positiv but should have failed")
@@ -211,7 +213,7 @@ class VMAEM(ScenarioTest):
         self.assertEqual(str(cm.exception), self.ERR_EXT_NOT_INSTALLED_DELETE)
 
         vm = self.cmd('vm show -g {rg} -n {vm}').get_output_in_json()
-        self.assertIsNone(vm['resources'], msg="VM Extensions installed but should be empty")
+        self.assertIsNone(vm.get('resources'), msg="VM Extensions installed but should be empty")
 
         with self.assertRaises(CLIError) as cm:
             self.cmd('vm aem verify --verbose -g {rg} -n {vm}')
@@ -237,7 +239,9 @@ class VMAEM(ScenarioTest):
             'subnet': 'subnet'
         })
 
-        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image win2016datacenter --admin-username myadmin --admin-password thisisaTest!@ --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE --size Standard_D2s_v3')
+        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image Debian:debian-10:10:latest '
+                 '--admin-username myadmin --admin-password thisisaTest!@ --subnet {subnet} --vnet-name {vnet} '
+                 '--nsg-rule NONE --size Standard_D2s_v3')
         self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet} --default-outbound-access false')
 
         with self.assertRaises(CLIError) as cm:
@@ -245,7 +249,7 @@ class VMAEM(ScenarioTest):
         self.assertEqual(str(cm.exception), self.ERR_EXT_NOT_INSTALLED_DELETE)
 
         vm = self.cmd('vm show -g {rg} -n {vm}').get_output_in_json()
-        self.assertIsNone(vm['resources'], msg="VM Extensions installed but should be empty")
+        self.assertIsNone(vm.get('resources'), msg="VM Extensions installed but should be empty")
 
         with self.assertRaises(CLIError) as cm:
             self.cmd('vm aem verify --verbose -g {rg} -n {vm}')
@@ -273,7 +277,8 @@ class VMAEM(ScenarioTest):
             'subnet': 'subnet'
         })
 
-        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image SUSE:sles-12-sp5:gen2:latest --generate-ssh-keys --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE --size Standard_D2s_v3')
+        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image Debian:debian-10:10:latest '
+                 '--generate-ssh-keys --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE --size Standard_D2s_v3')
         self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet} --default-outbound-access false')
 
         with self.assertRaises(CLIError) as cm:
@@ -281,7 +286,7 @@ class VMAEM(ScenarioTest):
         self.assertEqual(str(cm.exception), self.ERR_EXT_NOT_INSTALLED_DELETE)
 
         vm = self.cmd('vm show -g {rg} -n {vm}').get_output_in_json()
-        self.assertIsNone(vm['resources'], msg="VM Extensions installed but should be empty")
+        self.assertIsNone(vm.get('resources'), msg="VM Extensions installed but should be empty")
 
         with self.assertRaises(CLIError) as cm:
             self.cmd('vm aem verify --verbose -g {rg} -n {vm}')
@@ -307,7 +312,9 @@ class VMAEM(ScenarioTest):
             'subnet': 'subnet'
         })
 
-        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image win2016datacenter --admin-username myadmin --admin-password thisisaTest!@ --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE --size Standard_D2s_v3')
+        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image Debian:debian-10:10:latest '
+                 '--admin-username myadmin --admin-password thisisaTest!@ --subnet {subnet} --vnet-name {vnet} '
+                 '--nsg-rule NONE --size Standard_D2s_v3')
         self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet} --default-outbound-access false')
 
         with self.assertRaises(CLIError) as cm:
@@ -315,7 +322,7 @@ class VMAEM(ScenarioTest):
         self.assertEqual(str(cm.exception), self.ERR_EXT_NOT_INSTALLED_DELETE)
 
         vm = self.cmd('vm show -g {rg} -n {vm}').get_output_in_json()
-        self.assertIsNone(vm['resources'], msg="VM Extensions installed but should be empty")
+        self.assertIsNone(vm.get('resources'), msg="VM Extensions installed but should be empty")
 
         with self.assertRaises(CLIError) as cm:
             self.cmd('vm aem verify --verbose -g {rg} -n {vm}')
@@ -343,7 +350,9 @@ class VMAEM(ScenarioTest):
             'subnet': 'subnet'
         })
 
-        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image win2016datacenter --admin-username myadmin --admin-password thisisaTest!@ --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE --size Standard_D2s_v3')
+        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image Debian:debian-10:10:latest '
+                 '--admin-username myadmin --admin-password thisisaTest!@ --subnet {subnet} --vnet-name {vnet} '
+                 '--nsg-rule NONE --size Standard_D2s_v3')
         self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet} --default-outbound-access false')
 
         with self.assertRaises(CLIError) as cm:
@@ -351,7 +360,7 @@ class VMAEM(ScenarioTest):
         self.assertEqual(str(cm.exception), self.ERR_EXT_NOT_INSTALLED_DELETE)
 
         vm = self.cmd('vm show -g {rg} -n {vm}').get_output_in_json()
-        self.assertIsNone(vm['resources'], msg="VM Extensions installed but should be empty")
+        self.assertIsNone(vm.get('resources'), msg="VM Extensions installed but should be empty")
 
         with self.assertRaises(CLIError) as cm:
             self.cmd('vm aem verify --verbose -g {rg} -n {vm}')
@@ -397,7 +406,8 @@ class VMAEM(ScenarioTest):
         self.cmd('network nsg create -g {rg} --name {nsg}')
         self.cmd('network nic create -g {rg} --name {nic1} --vnet-name {vnet} --subnet {subnet1} --network-security-group {nsg}')
         self.cmd('network nic create -g {rg} --name {nic2} --vnet-name {vnet} --subnet {subnet2} --network-security-group {nsg}')
-        self.cmd('vm create -g {rg} --name {vm} --os-disk-name os-disk --image SUSE:sles-12-sp5:gen2:latest --generate-ssh-keys --nics {nic1} {nic2} --size Standard_D2s_v3')
+        self.cmd('vm create -g {rg} --name {vm} --os-disk-name os-disk --image Debian:debian-10:10:latest '
+                 '--generate-ssh-keys --nics {nic1} {nic2} --size Standard_D2s_v3')
         self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet1} --default-outbound-access false')
         self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet2} --default-outbound-access false')
 
@@ -406,7 +416,7 @@ class VMAEM(ScenarioTest):
         self.assertEqual(str(cm.exception), self.ERR_EXT_NOT_INSTALLED_DELETE)
 
         vm = self.cmd('vm show -g {rg} -n {vm}').get_output_in_json()
-        self.assertIsNone(vm['resources'], msg="VM Extensions installed but should be empty")
+        self.assertIsNone(vm.get('resources'), msg="VM Extensions installed but should be empty")
 
         with self.assertRaises(CLIError) as cm:
             self.cmd('vm aem verify --verbose -g {rg} -n {vm}')
@@ -443,7 +453,9 @@ class VMAEM(ScenarioTest):
             'subnet': 'subnet'
         })
 
-        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image win2016datacenter --admin-username myadmin --admin-password thisisaTest1234 --ultra-ssd-enabled --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE --size Standard_D2s_v3')
+        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image Debian:debian-10:10:latest '
+                 '--admin-username myadmin --admin-password thisisaTest1234 --ultra-ssd-enabled '
+                 '--subnet {subnet} --vnet-name {vnet} --nsg-rule NONE --size Standard_D2s_v3')
         self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet} --default-outbound-access false')
 
         with self.assertRaises(CLIError) as cm:
@@ -451,7 +463,7 @@ class VMAEM(ScenarioTest):
         self.assertEqual(str(cm.exception), self.ERR_EXT_NOT_INSTALLED_DELETE)
 
         vm = self.cmd('vm show -g {rg} -n {vm}').get_output_in_json()
-        self.assertIsNone(vm['resources'], msg="VM Extensions installed but should be empty")
+        self.assertIsNone(vm.get('resources'), msg="VM Extensions installed but should be empty")
 
         with self.assertRaises(CLIError) as cm:
             self.cmd('vm aem verify --verbose -g {rg} -n {vm}')
@@ -750,7 +762,8 @@ class VMAEM(ScenarioTest):
             'vnet': 'vnet',
             'subnet': 'subnet'
         })
-        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image SUSE:sles-12-sp5:gen2:latest --generate-ssh-keys --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE --size Standard_D2s_v3')
+        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image Debian:debian-10:10:latest '
+                 '--generate-ssh-keys --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE --size Standard_D2s_v3')
         self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet} --default-outbound-access false')
         self.cmd('vm aem set -g {rg} -n {vm} --install-new-extension --verbose')
         self.cmd('vm aem verify -g {rg} -n {vm} --verbose')
@@ -771,7 +784,8 @@ class VMAEM(ScenarioTest):
             'vnet': 'vnet',
             'subnet': 'subnet'
         })
-        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image SUSE:sles-12-sp5:gen2:latest --generate-ssh-keys --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE --size Standard_D2s_v3')
+        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image Debian:debian-10:10:latest '
+                 '--generate-ssh-keys --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE --size Standard_D2s_v3')
         self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet} --default-outbound-access false')
         self.cmd('vm aem set -g {rg} -n {vm} --install-new-extension --set-access-to-individual-resources --verbose')
         self.cmd('vm aem verify -g {rg} -n {vm} --verbose')
@@ -791,7 +805,8 @@ class VMAEM(ScenarioTest):
             'vnet': 'vnet',
             'subnet': 'subnet'
         })
-        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image SUSE:sles-12-sp5:gen2:latest --generate-ssh-keys --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE --size Standard_D2s_v3')
+        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image Debian:debian-10:10:latest '
+                 '--generate-ssh-keys --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE --size Standard_D2s_v3')
         self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet} --default-outbound-access false')
         self.cmd('vm aem set -g {rg} -n {vm} --install-new-extension --proxy-uri http://proxyhost:8080 --verbose')
         self.cmd('vm aem verify -g {rg} -n {vm} --verbose')
