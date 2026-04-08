@@ -173,7 +173,8 @@ class EnhancedMonitoring:  # pylint: disable=too-many-instance-attributes
         scopes.add("/".join(self._vm.get('id', '').split('/')[0:end_index]))
 
         # TODO: do we want to support unmanaged disks?
-        scopes.add("/".join(self._vm.get('storageProfile', {}).get('osDisk', {}).get('managedDisk', {}).get('id', '').split('/')[0:end_index]))
+        scopes.add("/".join(self._vm.get('storageProfile', {}).get('osDisk', {})
+                            .get('managedDisk', {}).get('id', '').split('/')[0:end_index]))
         for data_disk in self._vm.get('storageProfile', {}).get('dataDisks', []):
             logger.info("Adding access to data disk %s", data_disk.get('managedDisk', {}).get('id', ''))
             scopes.add("/".join(data_disk.get('managedDisk', {}).get('id', '').split('/')[0:end_index]))
@@ -213,7 +214,7 @@ class EnhancedMonitoring:  # pylint: disable=too-many-instance-attributes
             },
             'type': self._extension.get('name'),
             'type_handler_version': self._extension.get('version'),
-            'no_wait': self.no_wait
+            'no_wait': self._no_wait
         }
         return VMExtensionCreate(cli_ctx=self._cmd.cli_ctx)(command_args=command_args)
 
@@ -238,7 +239,8 @@ class EnhancedMonitoring:  # pylint: disable=too-many-instance-attributes
 
                 existing_role_assignments = list(self._roles_client.role_assignments.list_for_scope(scope))
                 existing_role_assignment = next((x for x in existing_role_assignments
-                                                 if x.principal_id.lower() == self._vm.get('identity', {}).get('principalId', '').lower() and
+                                                 if (x.principal_id.lower() ==
+                                                     self._vm.get('identity', {}).get('principalId', '').lower()) and
                                                  x.role_definition_id.lower() == role_definition_id.lower() and
                                                  x.scope.lower() == scope.lower()), None)
 
@@ -306,7 +308,7 @@ class EnhancedMonitoring:  # pylint: disable=too-many-instance-attributes
             },
             'type': self._extension.get('name'),
             'type_handler_version': self._extension.get('version'),
-            'no_wait': self.no_wait
+            'no_wait': self._no_wait
         }
         return VMExtensionCreate(cli_ctx=self._cmd.cli_ctx)(command_args=command_args)
 
@@ -320,7 +322,7 @@ class EnhancedMonitoring:  # pylint: disable=too-many-instance-attributes
             'resource_group': self._resource_group,
             'vm_extension_name': existing_ext['name'],
             'vm_name': self._vm['name'],
-            'no_wait': self.no_wait
+            'no_wait': self._no_wait
         })
 
     def verify(self, skip_storage_check, wait_time_in_minutes):
@@ -440,7 +442,8 @@ class EnhancedMonitoring:  # pylint: disable=too-many-instance-attributes
     def _scope_check(self, scope, role_definition_id):
         existing_role_assignments = list(self._roles_client.role_assignments.list_for_scope(scope))
         existing_role_assignment = next((x for x in existing_role_assignments
-                                         if x.principal_id.lower() == self._vm.get('identity', {}).get('principalId', '').lower() and
+                                         if (x.principal_id.lower() ==
+                                             self._vm.get('identity', {}).get('principalId', '').lower()) and
                                          x.role_definition_id.lower() == role_definition_id.lower() and
                                          x.scope.lower() == scope.lower()), None)
 
@@ -494,8 +497,12 @@ class EnhancedMonitoring:  # pylint: disable=too-many-instance-attributes
         logger.warning('VM Extension for SAP public configuration check...')
         expected, _ = self._build_extension_cfgs(disk_info)
         expected.pop('wad.isenabled')
-        public_cfg = {x.get('key', ''): x.get('value', '') for x in self._vm.get('resources', [{}])[0].get('settings', {}).get('cfg', [])}
-        diffs = {k: [expected[k], public_cfg.get(k, None)] for k in expected if expected[k] != public_cfg.get(k, None)}
+        public_cfg = {x.get('key', ''): x.get('value', '') for x in
+                      self._vm.get('resources', [{}])[0].get('settings', {}).get('cfg', [])}
+        diffs = {
+            k: [expected[k], public_cfg.get(k, None)]
+            for k in expected if expected[k] != public_cfg.get(k, None)
+        }
         if diffs:
             success = False
             for err in diffs:
@@ -656,15 +663,19 @@ class EnhancedMonitoring:  # pylint: disable=too-many-instance-attributes
         if extension is None:
             return False
 
-        return (extension.get('typePropertiesType', '').lower() == aem_extension_info_v2.get(self._os_type, {}).get('name', '').lower() and
-                extension.get('publisher', '').lower() == aem_extension_info_v2.get(self._os_type, {}).get('publisher', '').lower())
+        return ((extension.get('typePropertiesType', '').lower() ==
+                 aem_extension_info_v2.get(self._os_type, {}).get('name', '').lower()) and
+                (extension.get('publisher', '').lower() ==
+                 aem_extension_info_v2.get(self._os_type, {}).get('publisher', '').lower()))
 
     def _is_old_extension(self, extension):
         if extension is None:
             return False
 
-        return (extension.get('typePropertiesType', '').lower() == aem_extension_info.get(self._os_type, {}).get('name', '').lower() and
-                extension.get('publisher', '').lower() == aem_extension_info.get(self._os_type, {}).get('publisher', '').lower())
+        return ((extension.get('typePropertiesType', '').lower() ==
+                 aem_extension_info.get(self._os_type, {}).get('name', '').lower()) and
+                (extension.get('publisher', '').lower() ==
+                 aem_extension_info.get(self._os_type, {}).get('publisher', '').lower()))
 
     def _get_disk_info(self):
         disks_info = {}
@@ -692,15 +703,16 @@ class EnhancedMonitoring:  # pylint: disable=too-many-instance-attributes
                     'disk_name': res_info['name'],
                     'resource_group': res_info['resource_group']
                 })
+                tier = disk.get('sku', {}).get('tier', '').lower()
                 disks_info['data_disks'].append({
                     'name': disk.get('name'),
                     'size': disk.get('diskSizeGB'),
-                    'is_premium': disk.get('sku', {}).get('tier', '').lower() == 'premium',
-                    'is_ultra': disk.get('sku', {}).get('tier', '').lower() == 'ultra',
+                    'is_premium': tier == 'premium',
+                    'is_ultra': tier == 'ultra',
                     'caching': data_disk.get('caching'),
                     'lun': data_disk.get('lun'),
-                    'iops': disk.get('diskIOPSReadWrite', 0) if disk.get('sku', {}).get('tier', '').lower() == 'ultra' else 0,
-                    'tp': disk.get('diskMBpsReadWrite', 0) if disk.get('sku', {}).get('tier', '').lower() == 'ultra' else 0
+                    'iops': disk.get('diskIOPSReadWrite', 0) if tier == 'ultra' else 0,
+                    'tp': disk.get('diskMBpsReadWrite', 0) if tier == 'ultra' else 0
                 })
         else:
             storage_accounts = list(self._storage_client.storage_accounts.list())
