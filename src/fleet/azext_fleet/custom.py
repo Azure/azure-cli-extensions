@@ -578,7 +578,7 @@ def skip_update_run(cmd,  # pylint: disable=unused-argument
     skip_properties = update_run_skip_properties_model(targets=skipTargets)
     return sdk_no_wait(no_wait, client.begin_skip, resource_group_name, fleet_name, name, skip_properties)
 
- 
+
 def _build_gate_configs(gates_list):
     """Convert a list of gate dicts from JSON into GateConfiguration model objects."""
     if not gates_list:
