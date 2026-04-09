@@ -70,7 +70,7 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
         c.argument('source_uri', help='The URI which points to the S3-compatible source.')
         c.argument('source_type', arg_type=get_enum_type(['ALIBABA', 'DELL_EMC', 'GCS', 'IBM', 'MINIO', 'OTHER']),
                    help='The source type of the S3WithHmac endpoint.')
-        c.argument('other_source_type_description',
+        c.argument('other_source_type_description', options_list=('--other-source-type-desc', '--other-source-type-description'),
                    help='The description for other source type of S3WithHmac endpoint.')
 
     for command in ['create-for-s3-with-hmac', 'update-for-s3-with-hmac']:

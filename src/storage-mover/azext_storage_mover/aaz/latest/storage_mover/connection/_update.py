@@ -81,7 +81,7 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.private_link_service_id = AAZResourceIdArg(
-            options=["--private-link-service-id"],
+            options=["--private-link-service-id", "--pls-id"],
             arg_group="Properties",
             help="The PrivateLinkServiceId for the connection.",
         )

@@ -194,6 +194,7 @@ class Wait(AAZWaitCommand):
             )
             identity.user_assigned_identities = AAZDictType(
                 serialized_name="userAssignedIdentities",
+                nullable=True,
             )
 
             user_assigned_identities = cls._schema_on_200.identity.user_assigned_identities

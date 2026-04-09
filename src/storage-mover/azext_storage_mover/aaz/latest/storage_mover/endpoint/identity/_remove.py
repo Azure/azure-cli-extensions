@@ -377,6 +377,7 @@ class _RemoveHelper:
         )
         identity.user_assigned_identities = AAZDictType(
             serialized_name="userAssignedIdentities",
+            nullable=True,
         )
 
         user_assigned_identities = _schema_endpoint_read.identity.user_assigned_identities

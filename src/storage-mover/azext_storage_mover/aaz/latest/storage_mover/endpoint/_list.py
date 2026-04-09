@@ -197,6 +197,7 @@ class List(AAZCommand):
             )
             identity.user_assigned_identities = AAZDictType(
                 serialized_name="userAssignedIdentities",
+                nullable=True,
             )
 
             user_assigned_identities = cls._schema_on_200.value.Element.identity.user_assigned_identities

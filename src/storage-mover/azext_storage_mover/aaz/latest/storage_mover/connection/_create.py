@@ -75,7 +75,7 @@ class Create(AAZCommand):
             help="List of job definitions associated with this connection.",
         )
         _args_schema.private_link_service_id = AAZResourceIdArg(
-            options=["--private-link-service-id"],
+            options=["--private-link-service-id", "--pls-id"],
             arg_group="Properties",
             help="The PrivateLinkServiceId for the connection.",
             required=True,

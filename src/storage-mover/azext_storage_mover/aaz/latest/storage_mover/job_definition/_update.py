@@ -90,7 +90,7 @@ class Update(AAZCommand):
             enum={"Additive": "Additive", "Mirror": "Mirror"},
         )
         _args_schema.data_integrity_validation = AAZStrArg(
-            options=["--data-integrity-validation"],
+            options=["--data-integrity-validation", "--data-validation"],
             arg_group="Properties",
             help="The checksum validation mode for the job definition.",
             nullable=True,
@@ -159,11 +159,13 @@ class Update(AAZCommand):
         schedule.frequency = AAZStrArg(
             options=["frequency"],
             help="Type of schedule — Monthly, Weekly, or Daily",
-            enum={"Daily": "Daily", "Monthly": "Monthly", "Onetime": "Onetime", "Weekly": "Weekly"},
+            nullable=True,
+            enum={"Daily": "Daily", "Monthly": "Monthly", "None": "None", "Onetime": "Onetime", "Weekly": "Weekly"},
         )
         schedule.is_active = AAZBoolArg(
             options=["is-active"],
             help="Whether the schedule is currently active",
+            nullable=True,
         )
         schedule.start_date = AAZDateTimeArg(
             options=["start-date"],
@@ -188,12 +190,13 @@ class Update(AAZCommand):
         execution_time.hour = AAZIntArg(
             options=["hour"],
             help="The hour element of the time. Allowed values range from 0 (start of the selected day) to 24 (end of the selected day). Hour value 24 cannot be combined with any other minute value but 0.",
+            nullable=True,
             fmt=AAZIntArgFormat(
                 maximum=24,
                 minimum=0,
             ),
         )
-        execution_time.minute = AAZIntArg(
+        execution_time.minute = AAZFloatArg(
             options=["minute"],
             help="The minute element of the time. Allowed values are 0 and 30. If not specified, its value defaults to 0.",
             nullable=True,
@@ -460,8 +463,8 @@ class Update(AAZCommand):
                 schedule.set_prop("daysOfWeek", AAZListType, ".days_of_week")
                 schedule.set_prop("endDate", AAZStrType, ".end_date")
                 schedule.set_prop("executionTime", AAZObjectType, ".execution_time")
-                schedule.set_prop("frequency", AAZStrType, ".frequency", typ_kwargs={"flags": {"required": True}})
-                schedule.set_prop("isActive", AAZBoolType, ".is_active", typ_kwargs={"flags": {"required": True}})
+                schedule.set_prop("frequency", AAZStrType, ".frequency")
+                schedule.set_prop("isActive", AAZBoolType, ".is_active")
                 schedule.set_prop("startDate", AAZStrType, ".start_date")
 
             days_of_month = _builder.get(".properties.schedule.daysOfMonth")
@@ -474,8 +477,8 @@ class Update(AAZCommand):
 
             execution_time = _builder.get(".properties.schedule.executionTime")
             if execution_time is not None:
-                execution_time.set_prop("hour", AAZIntType, ".hour", typ_kwargs={"flags": {"required": True}})
-                execution_time.set_prop("minute", AAZIntType, ".minute")
+                execution_time.set_prop("hour", AAZIntType, ".hour")
+                execution_time.set_prop("minute", AAZFloatType, ".minute")
 
             return _instance_value
 
@@ -608,12 +611,9 @@ class _UpdateHelper:
         schedule.execution_time = AAZObjectType(
             serialized_name="executionTime",
         )
-        schedule.frequency = AAZStrType(
-            flags={"required": True},
-        )
+        schedule.frequency = AAZStrType()
         schedule.is_active = AAZBoolType(
             serialized_name="isActive",
-            flags={"required": True},
         )
         schedule.start_date = AAZStrType(
             serialized_name="startDate",
@@ -626,10 +626,8 @@ class _UpdateHelper:
         days_of_week.Element = AAZStrType()
 
         execution_time = _schema_job_definition_read.properties.schedule.execution_time
-        execution_time.hour = AAZIntType(
-            flags={"required": True},
-        )
-        execution_time.minute = AAZIntType()
+        execution_time.hour = AAZIntType()
+        execution_time.minute = AAZFloatType()
 
         source_target_map = _schema_job_definition_read.properties.source_target_map
         source_target_map.value = AAZListType(

@@ -275,12 +275,9 @@ class Show(AAZCommand):
             schedule.execution_time = AAZObjectType(
                 serialized_name="executionTime",
             )
-            schedule.frequency = AAZStrType(
-                flags={"required": True},
-            )
+            schedule.frequency = AAZStrType()
             schedule.is_active = AAZBoolType(
                 serialized_name="isActive",
-                flags={"required": True},
             )
             schedule.start_date = AAZStrType(
                 serialized_name="startDate",
@@ -293,10 +290,8 @@ class Show(AAZCommand):
             days_of_week.Element = AAZStrType()
 
             execution_time = cls._schema_on_200.properties.schedule.execution_time
-            execution_time.hour = AAZIntType(
-                flags={"required": True},
-            )
-            execution_time.minute = AAZIntType()
+            execution_time.hour = AAZIntType()
+            execution_time.minute = AAZFloatType()
 
             source_target_map = cls._schema_on_200.properties.source_target_map
             source_target_map.value = AAZListType(

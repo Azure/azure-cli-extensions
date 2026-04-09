@@ -194,7 +194,7 @@ class Create(AAZCommand):
         s3_with_hmac.source_type = AAZStrArg(
             options=["source-type"],
             help="The source type of S3WithHmac endpoint.",
-            enum={"BACKBLAZE": "BACKBLAZE", "CLOUDFLARE": "CLOUDFLARE", "GCS": "GCS", "IBM": "IBM", "MINIO": "MINIO"},
+            enum={"ALIBABA": "ALIBABA", "DELL_EMC": "DELL_EMC", "GCS": "GCS", "IBM": "IBM", "MINIO": "MINIO", "OTHER": "OTHER"},
         )
         s3_with_hmac.source_uri = AAZStrArg(
             options=["source-uri"],
@@ -466,6 +466,7 @@ class Create(AAZCommand):
             )
             identity.user_assigned_identities = AAZDictType(
                 serialized_name="userAssignedIdentities",
+                nullable=True,
             )
 
             user_assigned_identities = cls._schema_on_200.identity.user_assigned_identities
