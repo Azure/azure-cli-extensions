@@ -11,7 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
-* `az aks create/update`: remove dead code 
+* `az aks nodepool update`: clean up some useless code in the update managed gpu function. 
 
 20.0.0b1
 +++++++
