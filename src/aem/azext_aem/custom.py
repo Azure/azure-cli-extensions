@@ -142,8 +142,8 @@ class EnhancedMonitoring:  # pylint: disable=too-many-instance-attributes
         self._extension = aem_extension_info_v2[self._os_type]
 
         new_identity = None
-        vm_identity = self._vm.get('identity')
-        if vm_identity is None:
+        vm_identity = self._vm.get('identity', {})
+        if vm_identity is None or vm_identity == {}:
             logger.info("VM has no identity, enabling system assigned")
             new_identity = IDENTITY_SYSTEM_ASSIGNED
 
@@ -167,7 +167,6 @@ class EnhancedMonitoring:  # pylint: disable=too-many-instance-attributes
                 command_args['mi_system_assigned'] = 'True'
             if new_identity == IDENTITY_SYSTEM_USER_ASSIGNED:
                 command_args['mi_user_assigned'] = user_assigned
-            print(command_args)
 
             poller = VMPatch(cli_ctx=self._cmd.cli_ctx)(command_args=command_args)
             self._vm = LongRunningOperation(self._cmd.cli_ctx)(poller)
