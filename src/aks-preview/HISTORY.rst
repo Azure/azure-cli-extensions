@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* `az aks create/update`: remove dead code 
 
 20.0.0b1
 +++++++
