@@ -381,7 +381,6 @@ class VMAEM(ScenarioTest):
         self.cmd('vm aem set --verbose -g {rg} -n {vm} --install-new-extension --set-access-to-individual-resources')
         self._assert_new_extension(self.IDENT_SYSTEM_ASSIGNED)
 
-    @live_only
     @unittest.skip(
         'Skipped: This test was failing prior to the aaz migration (PR #9765) due to a '
         'RoleAssignmentUpdateNotPermitted error in _create_role_assignments_for_scopes. '
