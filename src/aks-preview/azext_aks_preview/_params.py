@@ -2438,6 +2438,21 @@ def load_arguments(self, _):
             validator=validate_k8s_version,
             help="Version of Kubernetes to use for the machine.",
         )
+        c.argument(
+            "spot_max_price",
+            type=float,
+            validator=validate_spot_max_price,
+            help="The max price (in US Dollars) you are willing to pay for spot instances."
+        )
+        c.argument(
+            "enable_ultra_ssd",
+            action="store_true"
+        )
+        c.argument(
+            "eviction_policy",
+            arg_type=get_enum_type(node_eviction_policies),
+            validator=validate_eviction_policy,
+        )
 
     with self.argument_context("aks machine update") as c:
         c.argument(

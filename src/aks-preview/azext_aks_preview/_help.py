@@ -2731,6 +2731,15 @@ helps['aks machine add'] = """
        - name: --node-public-ip-tags
          type: string
          short-summary: The ipTags of the machine public IPs.
+       - name: --spot-max-price
+         type: number
+         short-summary: The max price (in US Dollars) you are willing to pay for spot instances.
+       - name: --enable-ultra-ssd
+         type: bool
+         short-summary: Whether to enable UltraSSD.
+       - name: --eviction-policy
+         type: string
+         short-summary: The eviction policy for machine. This cannot be specified unless the priority is 'Spot'. If not specified, the default is 'Delete'.
 """
 
 helps['aks machine update'] = """

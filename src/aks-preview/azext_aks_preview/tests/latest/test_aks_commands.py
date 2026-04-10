@@ -2760,6 +2760,84 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="westus2"
     )
+    def test_aks_machine_add_spot_and_ultra_ssd(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name("cliakstest", 16)
+        nodepool_name = self.create_random_name("c", 6)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "location": resource_group_location,
+                "name": aks_name,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "nodepool_name": nodepool_name,
+                "machine_name": "machinetest1",
+                "vm_size": "Standard_D4s_v3",
+            }
+        )
+
+        # create aks cluster
+        self.cmd(
+            "aks create "
+            "--resource-group={resource_group} "
+            "--name={name} "
+            "--ssh-key-value={ssh_key_value}",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+            ],
+        )
+
+        # add machines nodepool
+        self.cmd(
+            "aks nodepool add "
+            "--resource-group={resource_group}"
+            " --cluster-name={name} "
+            "--name={nodepool_name} "
+            "--mode=Machines",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("mode", "Machines"),
+            ],
+        )
+
+        # add machine with spot priority, eviction policy, spot-max-price, and ultra ssd
+        self.cmd(
+            "aks machine add "
+            " --resource-group={resource_group} "
+            " --cluster-name={name} "
+            " --nodepool-name={nodepool_name} "
+            " --machine-name={machine_name} "
+            " --vm-size={vm_size} "
+            " --priority Spot "
+            " --eviction-policy Delete "
+            " --spot-max-price 0.5 "
+            " --zones 1 "
+            " --enable-ultra-ssd"
+        )
+
+        # show the machine and verify spot/eviction/ultra-ssd settings
+        show_cmd = (
+            "aks machine show "
+            " --resource-group={resource_group} "
+            " --cluster-name={name} "
+            " --nodepool-name={nodepool_name} "
+            " --machine-name={machine_name} -o json"
+        )
+        machine_show = self.cmd(show_cmd).get_output_in_json()
+        assert machine_show["properties"]["priority"] == "Spot"
+        assert machine_show["properties"]["evictionPolicy"] == "Delete"
+        assert machine_show["properties"]["billing"]["spotMaxPrice"] == 0.5
+        assert machine_show["properties"]["hardware"]["ultraSsdEnabled"] is True
+
+        # delete AKS cluster
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westus2"
+    )
     def test_aks_operations_cmds(self, resource_group, resource_group_location):
         aks_name = self.create_random_name("cliakstest", 16)
         self.kwargs.update(
