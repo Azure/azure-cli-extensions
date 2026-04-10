@@ -312,7 +312,7 @@ class VMAEM(ScenarioTest):
             'subnet': 'subnet'
         })
 
-        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image Debian:debian-10:10:latest '
+        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image Canonical:UbuntuServer:16.04-LTS:latest '
                  '--admin-username myadmin --admin-password thisisaTest!@ --subnet {subnet} --vnet-name {vnet} '
                  '--nsg-rule NONE --size Standard_D2s_v3')
         self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet} --default-outbound-access false')
