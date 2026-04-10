@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a Connection resource.
+
+    :example: connection update
+        az storage-mover connection update -g {rg} --storage-mover-name {mover_name} -n {connection_name} --description ConnectionDescUpdate
     """
 
     _aaz_info = {

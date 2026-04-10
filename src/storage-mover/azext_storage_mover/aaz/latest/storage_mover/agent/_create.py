@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create an Agent resource, which references a hybrid compute machine that can run jobs.
+
+    :example: agent create
+        az storage-mover agent create -g {rg} --storage-mover-name {mover_name} -n {agent_name} --arc-resource-id {arc_resource_id} --arc-vm-uuid {arc_vm_uuid} --description AgentDesc
     """
 
     _aaz_info = {

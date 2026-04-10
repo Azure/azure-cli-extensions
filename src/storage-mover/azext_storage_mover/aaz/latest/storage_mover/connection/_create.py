@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a Connection resource.
+
+    :example: connection create
+        az storage-mover connection create -g {rg} --storage-mover-name {mover_name} -n {connection_name} --private-link-service-id {pls_resource_id} --description ConnectionDesc
     """
 
     _aaz_info = {
