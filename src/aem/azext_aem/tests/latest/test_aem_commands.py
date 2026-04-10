@@ -239,7 +239,7 @@ class VMAEM(ScenarioTest):
             'subnet': 'subnet'
         })
 
-        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image Debian:debian-10:10:latest '
+        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image Canonical:UbuntuServer:16.04-LTS:latest '
                  '--admin-username myadmin --admin-password thisisaTest!@ --subnet {subnet} --vnet-name {vnet} '
                  '--nsg-rule NONE --size Standard_D2s_v3')
         self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet} --default-outbound-access false')
@@ -406,7 +406,7 @@ class VMAEM(ScenarioTest):
         self.cmd('network nsg create -g {rg} --name {nsg}')
         self.cmd('network nic create -g {rg} --name {nic1} --vnet-name {vnet} --subnet {subnet1} --network-security-group {nsg}')
         self.cmd('network nic create -g {rg} --name {nic2} --vnet-name {vnet} --subnet {subnet2} --network-security-group {nsg}')
-        self.cmd('vm create -g {rg} --name {vm} --os-disk-name os-disk --image Debian:debian-10:10:latest '
+        self.cmd('vm create -g {rg} --name {vm} --os-disk-name os-disk --image Canonical:UbuntuServer:16.04-LTS:latest '
                  '--generate-ssh-keys --nics {nic1} {nic2} --size Standard_D2s_v3')
         self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet1} --default-outbound-access false')
         self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet2} --default-outbound-access false')
@@ -741,7 +741,7 @@ class VMAEM(ScenarioTest):
             'vnet': 'vnet',
             'subnet': 'subnet'
         })
-        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image SUSE:sles-12-sp5:gen2:latest --generate-ssh-keys --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE --size Standard_D2s_v3')
+        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image Canonical:UbuntuServer:16.04-LTS:latest --generate-ssh-keys --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE --size Standard_D2s_v3')
         self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet} --default-outbound-access false')
         self.cmd('vm aem set -g {rg} -n {vm} --verbose')
         self.cmd('vm aem verify -g {rg} -n {vm} --verbose')
@@ -762,7 +762,7 @@ class VMAEM(ScenarioTest):
             'vnet': 'vnet',
             'subnet': 'subnet'
         })
-        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image Debian:debian-10:10:latest '
+        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image Canonical:UbuntuServer:16.04-LTS:latest '
                  '--generate-ssh-keys --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE --size Standard_D2s_v3')
         self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet} --default-outbound-access false')
         self.cmd('vm aem set -g {rg} -n {vm} --install-new-extension --verbose')
@@ -784,7 +784,7 @@ class VMAEM(ScenarioTest):
             'vnet': 'vnet',
             'subnet': 'subnet'
         })
-        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image Debian:debian-10:10:latest '
+        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image Canonical:UbuntuServer:16.04-LTS:latest '
                  '--generate-ssh-keys --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE --size Standard_D2s_v3')
         self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet} --default-outbound-access false')
         self.cmd('vm aem set -g {rg} -n {vm} --install-new-extension --set-access-to-individual-resources --verbose')
