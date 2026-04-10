@@ -29,6 +29,9 @@
     ```
 
   - Windows: [Docker Desktop](https://www.docker.com/products/docker-desktop) and [WSL2](https://docs.microsoft.com/en-us/windows/wsl/install)
+- **CimWriter.dll** (Windows only, for Windows container support)
+  - Required for generating security policies for Windows containers
+  - Windows Server 2025 or newer is recommended for deterministic hash generation
 
 ## Installation Instructions (End User)
 
