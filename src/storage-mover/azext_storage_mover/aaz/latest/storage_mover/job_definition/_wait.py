@@ -290,7 +290,7 @@ class Wait(AAZWaitCommand):
 
             execution_time = cls._schema_on_200.properties.schedule.execution_time
             execution_time.hour = AAZIntType()
-            execution_time.minute = AAZFloatType()
+            execution_time.minute = AAZIntType()
 
             source_target_map = cls._schema_on_200.properties.source_target_map
             source_target_map.value = AAZListType(

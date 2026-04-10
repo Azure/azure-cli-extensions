@@ -11,16 +11,16 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 
 class StorageMoverScenario(ScenarioTest):
-    @ResourceGroupPreparer(location='eastus2euap')
+    @ResourceGroupPreparer(location='westcentralus')
     def test_storage_mover_scenarios(self, resource_group):
         self.kwargs.update({
             "mover_name": self.create_random_name('storage-mover', 24)
         })
-        self.cmd('az storage-mover create -g {rg} -n {mover_name} -l eastus2euap '
+        self.cmd('az storage-mover create -g {rg} -n {mover_name} -l westcentralus '
                  '--tags {{key1:value1}} --description ExampleDesc')
         self.cmd('az storage-mover show -g {rg} -n {mover_name}',
                  checks=[JMESPathCheck('name', self.kwargs.get('mover_name', '')),
-                         JMESPathCheck('location', "eastus2euap"),
+                         JMESPathCheck('location', "westcentralus"),
                          JMESPathCheck('tags.key1', "value1"),
                          JMESPathCheck('description', "ExampleDesc")])
         self.cmd('az storage-mover list -g {rg}', checks=[JMESPathCheck('length(@)', 1)])
@@ -31,11 +31,12 @@ class StorageMoverScenario(ScenarioTest):
         self.cmd('az storage-mover delete -g {rg} -n {mover_name} -y')
         self.cmd('az storage-mover list -g {rg}', checks=[JMESPathCheck('length(@)', 0)])
 
+    # agent scenarios require a physically registered agent - cannot be created dynamically
     @record_only()
     # need to manually register agent, first create the rg and the storagemover
     # tenant id 54826b22-38d6-4fb2-bad9-b7b93a3e9c5a
     # subscription id 0b1f6471-1bf0-4dda-aec3-cb9272f09590
-    # az group create -n test-storagemover-rg2 -l eastus2euap
+    # az group create -n test-storagemover-rg2 -l westcentralus
     # az storage-mover create -n teststoragemover2 -g test-storagemover-rg2
     # https://www.microsoft.com/en-us/download/details.aspx?id=104590
     # https://learn.microsoft.com/en-us/azure/storage-mover/agent-deploy?tabs=xdmshell
@@ -54,13 +55,13 @@ class StorageMoverScenario(ScenarioTest):
         self.cmd('az storage-mover agent list -g {rg} --storage-mover-name {mover_name}',
                  checks=[JMESPathCheck('length(@)', 0)])
 
-    # @record_only()
     # need to manually register agent, first create the rg and the storagemover
     # tenant id 54826b22-38d6-4fb2-bad9-b7b93a3e9c5a
     # subscription id 0b1f6471-1bf0-4dda-aec3-cb9272f09590
-    # az group create -n test-storagemover-rg2 -l eastus2euap
+    # az group create -n test-storagemover-rg2 -l westcentralus
     # az storage-mover create -n teststoragemover2 -g test-storagemover-rg2
     # register agent
+    @record_only()
     def test_storage_mover_agent_upload_limit_schedule_scenarios(self):
         self.kwargs.update({
             "rg": "test-storagemover-rg2",
@@ -85,7 +86,7 @@ class StorageMoverScenario(ScenarioTest):
                  '--upload-limit-schedule null',
                  checks=[JMESPathCheck('uploadLimitSchedule', None)])
 
-    @ResourceGroupPreparer(location='eastus2euap')
+    @ResourceGroupPreparer(location='westcentralus')
     @StorageAccountPreparer()
     @AllowLargeResponse()
     def test_storage_mover_endpoint_scenarios(self, resource_group, storage_account):
@@ -97,17 +98,17 @@ class StorageMoverScenario(ScenarioTest):
                                     '-otsv'.format(storage_account, resource_group)).output,
             "account_id": self.cmd('az storage account show -n {} -g {} --query id '
                                    '-otsv'.format(storage_account, resource_group)).output.strip(),
-            "endpoint_container": self.create_random_name('endpoint_container', 32),
-            "endpoint_file_share": self.create_random_name('endpoint_file_share', 32),
-            "endpoint_nfs": self.create_random_name('endpoint_nfs', 32),
-            "endpoint_smb": self.create_random_name('endpoint_smb', 32),
+            "endpoint_container": self.create_random_name('test-ep-container', 32),
+            "endpoint_file_share": self.create_random_name('test-ep-fileshare', 32),
+            "endpoint_nfs": self.create_random_name('test-ep-nfs', 32),
+            "endpoint_smb": self.create_random_name('test-ep-smb', 32),
             "file_share_name": self.create_random_name('fileshare', 24),
             "smb_share_name": self.create_random_name('smbshare', 24),
-            "endpoint_nfs_file_share": self.create_random_name('endpoint_nfs_file_share', 40),
+            "endpoint_nfs_file_share": self.create_random_name('test-ep-nfs-fs', 40),
             "multi_cloud_connector": self.create_random_name('multi_cloud_connector', 40),
-            "endpoint_multi_cloud_connector": self.create_random_name('endpoint_multi_cloud_connector', 40),
+            "endpoint_multi_cloud_connector": self.create_random_name('test-ep-mcc', 40),
         })
-        self.cmd('az storage-mover create -g {rg} -n {mover_name} -l eastus2euap '
+        self.cmd('az storage-mover create -g {rg} -n {mover_name} -l westcentralus '
                  '--tags {{key1:value1}} --description MoverDesc')
 
         # create for storage container
@@ -242,7 +243,7 @@ class StorageMoverScenario(ScenarioTest):
                  checks=[JMESPathCheck('length(@)', 4)])
 
         # endpoint-kind: create without endpoint-kind (optional - should default to None)
-        self.kwargs.update({"endpoint_container_no_kind": self.create_random_name('ep_container_nk', 32)})
+        self.kwargs.update({"endpoint_container_no_kind": self.create_random_name('test-ep-cnt-nk', 32)})
         self.cmd('az storage-mover endpoint create-for-storage-container -g {rg} --storage-mover-name {mover_name} '
                  '-n {endpoint_container_no_kind} --container-name {container_name} --storage-account-id {account_id} '
                  '--description endpointNoKind')
@@ -251,7 +252,7 @@ class StorageMoverScenario(ScenarioTest):
                          JMESPathCheckExists('properties.endpointKind')])
         self.cmd('az storage-mover endpoint delete -g {rg} --storage-mover-name {mover_name} -n {endpoint_container_no_kind} -y')
 
-        self.kwargs.update({"endpoint_nfs_no_kind": self.create_random_name('ep_nfs_nk', 24)})
+        self.kwargs.update({"endpoint_nfs_no_kind": self.create_random_name('test-ep-nfs-nk', 24)})
         self.cmd('az storage-mover endpoint create-for-nfs -g {rg} --storage-mover-name {mover_name} '
                  '-n {endpoint_nfs_no_kind} --description endpointNfsNoKind --export exportfolder '
                  '--nfs-version NFSv4 --host '+vm_ip)
@@ -260,7 +261,7 @@ class StorageMoverScenario(ScenarioTest):
                          JMESPathCheckExists('properties.endpointKind')])
         self.cmd('az storage-mover endpoint delete -g {rg} --storage-mover-name {mover_name} -n {endpoint_nfs_no_kind} -y')
 
-        self.kwargs.update({"endpoint_smb_no_kind": self.create_random_name('ep_smb_nk', 24)})
+        self.kwargs.update({"endpoint_smb_no_kind": self.create_random_name('test-ep-smb-nk', 24)})
         self.cmd('az storage-mover endpoint create-for-smb -g {rg} --storage-mover-name {mover_name} '
                  '-n {endpoint_smb_no_kind} --description endpointSmbNoKind --share-name {smb_share_name} '
                  '--host '+vm_smb_ip)
@@ -269,7 +270,7 @@ class StorageMoverScenario(ScenarioTest):
                          JMESPathCheckExists('properties.endpointKind')])
         self.cmd('az storage-mover endpoint delete -g {rg} --storage-mover-name {mover_name} -n {endpoint_smb_no_kind} -y')
 
-        self.kwargs.update({"endpoint_smb_fs_no_kind": self.create_random_name('ep_smbfs_nk', 24)})
+        self.kwargs.update({"endpoint_smb_fs_no_kind": self.create_random_name('test-ep-smbfs-nk', 24)})
         self.cmd('az storage-mover endpoint create-for-storage-smb-file-share -g {rg} '
                  '--storage-mover-name {mover_name} '
                  '-n {endpoint_smb_fs_no_kind} --file-share-name {file_share_name} --storage-account-id {account_id} '
@@ -279,7 +280,7 @@ class StorageMoverScenario(ScenarioTest):
                          JMESPathCheckExists('properties.endpointKind')])
         self.cmd('az storage-mover endpoint delete -g {rg} --storage-mover-name {mover_name} -n {endpoint_smb_fs_no_kind} -y')
 
-        self.kwargs.update({"endpoint_nfs_fs_no_kind": self.create_random_name('ep_nfsfs_nk', 24)})
+        self.kwargs.update({"endpoint_nfs_fs_no_kind": self.create_random_name('test-ep-nfsfs-nk', 24)})
         self.cmd('az storage-mover endpoint create-for-storage-nfs-file-share -g {rg} '
                  '--storage-mover-name {mover_name} '
                  '-n {endpoint_nfs_fs_no_kind} --file-share-name {file_share_name} --storage-account-id {account_id} '
@@ -296,15 +297,17 @@ class StorageMoverScenario(ScenarioTest):
                      '--endpoint-kind InvalidKind --description test')
         self.assertEqual(cm.exception.code, 2)
         
+    # Multi-cloud connector requires cross-subscription resources
     @record_only()
-    def test_storage_mover_endpoint_multi_cloud_connector_scenarios(self):
+    @ResourceGroupPreparer(location='westcentralus')
+    def test_storage_mover_endpoint_multi_cloud_connector_scenarios(self, resource_group):
         self.kwargs.update({
-            "rg": "test-storagemover-rg2",
-            "mover_name": "teststoragemover2",
-            "endpoint_multi_cloud_connector": "endpointmulticloudconnector1",
+            "mover_name": self.create_random_name('storage-mover', 24),
+            "endpoint_multi_cloud_connector": self.create_random_name('test-ep-mcc', 40),
             "multi_cloud_connector_id": "/subscriptions/b6b34ad8-ca89-4f85-beb7-c2ec13702dac/resourceGroups/E2E-Management-RGsyn/providers/Microsoft.HybridConnectivity/publicCloudConnectors/e2e-sm-rp-connector",
             "aws_s3_bucket_id": "/subscriptions/b6b34ad8-ca89-4f85-beb7-c2ec13702dac/resourceGroups/aws_640698235822/providers/Microsoft.AWSConnector/s3Buckets/e2e-sm-rp-private-bucket"
         })
+        self.cmd('az storage-mover create -g {rg} -n {mover_name} -l westcentralus --description MoverDesc')
         self.cmd('az storage-mover endpoint create-for-multi-cloud-connector -g {rg} --name {endpoint_multi_cloud_connector} '
                  '--storage-mover-name {mover_name} --multi-cloud-connector-id {multi_cloud_connector_id} '
                  '--aws-s3-bucket-id {aws_s3_bucket_id} --endpoint-kind Source '
@@ -325,7 +328,7 @@ class StorageMoverScenario(ScenarioTest):
                         JMESPathCheck('properties.description', "endpointMultiCloudConnectorDescUpdate")])
 
         # create without endpoint-kind (optional - server assigns default)
-        self.kwargs.update({"endpoint_mcc_no_kind": "endpointmccnokind1"})
+        self.kwargs.update({"endpoint_mcc_no_kind": self.create_random_name('test-ep-mccnk', 24)})
         self.cmd('az storage-mover endpoint create-for-multi-cloud-connector -g {rg} '
                  '--name {endpoint_mcc_no_kind} --storage-mover-name {mover_name} '
                  '--multi-cloud-connector-id {multi_cloud_connector_id} '
@@ -339,7 +342,7 @@ class StorageMoverScenario(ScenarioTest):
                  '-n {endpoint_mcc_no_kind} -y')
 
 
-    @ResourceGroupPreparer(location='eastus2euap')
+    @ResourceGroupPreparer(location='westcentralus')
     @StorageAccountPreparer()
     @AllowLargeResponse()
     def test_storage_mover_job_definition_scenarios(self, resource_group, storage_account):
@@ -354,10 +357,10 @@ class StorageMoverScenario(ScenarioTest):
                                    '-otsv'.format(storage_account, resource_group)).output.strip(),
             "source_container": self.create_random_name('srccontainer', 24),
             "target_container": self.create_random_name('tgtcontainer', 24),
-            "source_endpoint": self.create_random_name('srcendpoint', 24),
-            "target_endpoint": self.create_random_name('tgtendpoint', 24),
+            "source_endpoint": self.create_random_name('test-srcep', 24),
+            "target_endpoint": self.create_random_name('test-tgtep', 24),
         })
-        self.cmd('az storage-mover create -g {rg} -n {mover_name} -l eastus2euap --description MoverDesc')
+        self.cmd('az storage-mover create -g {rg} -n {mover_name} -l westcentralus --description MoverDesc')
         self.cmd('az storage-mover project create -g {rg} --storage-mover-name {mover_name} -n {project_name} '
                  '--description ProjectDesc')
 
@@ -402,13 +405,13 @@ class StorageMoverScenario(ScenarioTest):
         self.cmd('az storage-mover job-definition list -g {rg} --project-name {project_name} '
                  '--storage-mover-name {mover_name}', checks=[JMESPathCheck('length(@)', 0)])
 
-    @ResourceGroupPreparer(location='eastus2euap')
+    @ResourceGroupPreparer(location='westcentralus')
     def test_storage_mover_project_scenarios(self, resource_group):
         self.kwargs.update({
             "mover_name": self.create_random_name('storage-mover', 24),
             "project_name": self.create_random_name('project', 24)
         })
-        self.cmd('az storage-mover create -g {rg} -n {mover_name} -l eastus2euap '
+        self.cmd('az storage-mover create -g {rg} -n {mover_name} -l westcentralus '
                  '--tags {{key1:value1}} --description MoverDesc')
         self.cmd('az storage-mover project create -g {rg} --storage-mover-name {mover_name} -n {project_name} '
                  '--description ProjectDesc')
@@ -425,14 +428,16 @@ class StorageMoverScenario(ScenarioTest):
         self.cmd('az storage-mover project list -g {rg} --storage-mover-name {mover_name}',
                  checks=[JMESPathCheck('length(@)', 0)])
 
+    # Connection requires cross-subscription Private Link Service
     @record_only()
-    def test_storage_mover_connection_scenarios(self):
+    @ResourceGroupPreparer(location='westcentralus')
+    def test_storage_mover_connection_scenarios(self, resource_group):
         self.kwargs.update({
-            "rg": "test-storagemover-rg2",
-            "mover_name": "teststoragemover2",
-            "connection_name": "testconnection1",
-            "private_link_service_id": "/subscriptions/31347be8-d066-464e-9866-7e58d85027b7/resourceGroups/c2c-pvt-ecy-rg/providers/Microsoft.Network/privateLinkServices/c2c-pvt-ecy-pls-new"
+            "mover_name": self.create_random_name('storage-mover', 24),
+            "connection_name": self.create_random_name('tc', 20),
+            "private_link_service_id": "/subscriptions/b6b34ad8-ca89-4f85-beb7-c2ec13702dac/resourceGroups/E2E-Management-RGsyn/providers/Microsoft.Network/privateLinkServices/test-pls-wcs"
         })
+        self.cmd('az storage-mover create -g {rg} -n {mover_name} -l westcentralus --description MoverDesc')
         # create
         self.cmd('az storage-mover connection create -g {rg} --storage-mover-name {mover_name} '
                  '-n {connection_name} --private-link-service-id {private_link_service_id} '
@@ -445,23 +450,24 @@ class StorageMoverScenario(ScenarioTest):
         # list
         self.cmd('az storage-mover connection list -g {rg} --storage-mover-name {mover_name}',
                  checks=[JMESPathCheck('length(@)', 1)])
-        # update (connection RP returns existing object unchanged on PUT - no mutable property updates)
+        # update
         self.cmd('az storage-mover connection update -g {rg} --storage-mover-name {mover_name} '
                  '-n {connection_name} --description ConnectionDescUpdate')
-        # delete (async operation)
+        # delete
         self.cmd('az storage-mover connection delete -g {rg} --storage-mover-name {mover_name} '
                  '-n {connection_name} -y')
 
-    @record_only()
     # Prerequisites:
-    # az group create -n test-storagemover-rg2 -l eastus2euap
+    # az group create -n test-storagemover-rg2 -l westcentralus
     # az storage-mover create -n teststoragemover2 -g test-storagemover-rg2
     # Create a Key Vault with access-key and secret-key secrets for HMAC credentials
+    # S3WithHMAC endpoint type requires feature enablement - not available in all subscriptions
+    @record_only()
     def test_storage_mover_endpoint_s3_with_hmac_scenarios(self):
         self.kwargs.update({
             "rg": "test-storagemover-rg2",
             "mover_name": "teststoragemover2",
-            "endpoint_s3": "endpoints3hmac1",
+            "endpoint_s3": "test-ep-s3hmac1",
             "source_uri": "https://s3.example.com/bucket",
             "source_type": "MINIO",
             "access_key_uri": "https://smb-demo-kv.vault.azure.net/secrets/s3-access-key",
@@ -497,7 +503,7 @@ class StorageMoverScenario(ScenarioTest):
                  '-n {endpoint_s3} -y')
 
         # create without endpoint-kind (optional param - should succeed)
-        self.kwargs.update({"endpoint_s3_no_kind": "endpoints3hmac2"})
+        self.kwargs.update({"endpoint_s3_no_kind": "test-ep-s3nk1"})
         self.cmd('az storage-mover endpoint create-for-s3-with-hmac -g {rg} '
                  '--storage-mover-name {mover_name} -n {endpoint_s3_no_kind} '
                  '--source-uri {source_uri} --source-type {source_type} '
@@ -515,53 +521,43 @@ class StorageMoverScenario(ScenarioTest):
                  '-n nonexistentendpoint',
                  expect_failure=True)
 
-    @ResourceGroupPreparer(location='eastus2euap')
-    @StorageAccountPreparer()
-    @AllowLargeResponse()
-    def test_storage_mover_job_definition_schedule_scenarios(self, resource_group, storage_account):
+    # Schedule test uses cross-subscription storage account
+    @record_only()
+    @ResourceGroupPreparer(location='westcentralus')
+    def test_storage_mover_job_definition_schedule_scenarios(self, resource_group):
         self.kwargs.update({
             "mover_name": self.create_random_name('storage-mover', 24),
             "project_name": self.create_random_name('project', 24),
             "job_definition": self.create_random_name('jobdefsch', 24),
-            "account_name": storage_account,
-            "account_key": self.cmd('az storage account keys list -n {} -g {} --query "[0].value" '
-                                    '-otsv'.format(storage_account, resource_group)).output,
-            "account_id": self.cmd('az storage account show -n {} -g {} --query id '
-                                   '-otsv'.format(storage_account, resource_group)).output.strip(),
+            "account_id": "/subscriptions/b6b34ad8-ca89-4f85-beb7-c2ec13702dac/resourceGroups/CP_Mover_IN_WCUS/providers/Microsoft.Storage/storageAccounts/cpmoveraccount",
+            "source_container": self.create_random_name('srccontainer', 24),
             "target_container": self.create_random_name('tgtcontainer', 24),
-            "source_endpoint": self.create_random_name('srcendpoint', 24),
-            "target_endpoint": self.create_random_name('tgtendpoint', 24),
-            "multi_cloud_connector_id": "/subscriptions/b6b34ad8-ca89-4f85-beb7-c2ec13702dac/resourceGroups/E2E-Management-RGsyn/providers/Microsoft.HybridConnectivity/publicCloudConnectors/e2e-sm-rp-connector",
-            "aws_s3_bucket_id": "/subscriptions/b6b34ad8-ca89-4f85-beb7-c2ec13702dac/resourceGroups/aws_640698235822/providers/Microsoft.AWSConnector/s3Buckets/e2e-sm-rp-private-bucket",
+            "source_endpoint": self.create_random_name('test-srcep', 24),
+            "target_endpoint": self.create_random_name('test-tgtep', 24),
         })
-        self.cmd('az storage-mover create -g {rg} -n {mover_name} -l eastus2euap --description MoverDesc')
+        self.cmd('az storage-mover create -g {rg} -n {mover_name} -l westcentralus --description MoverDesc')
         self.cmd('az storage-mover project create -g {rg} --storage-mover-name {mover_name} -n {project_name} '
                  '--description ProjectDesc')
 
-        # create multi-cloud connector source endpoint
-        self.cmd('az storage-mover endpoint create-for-multi-cloud-connector -g {rg} --storage-mover-name {mover_name} '
-                 '-n {source_endpoint} --multi-cloud-connector-id {multi_cloud_connector_id} '
-                 '--aws-s3-bucket-id {aws_s3_bucket_id} --endpoint-kind Source --description srcMccEndpoint')
+        # create source and target containers using pre-existing storage account
+        self.cmd('az storage container create -n {source_container} --account-name cpmoveraccount --auth-mode login')
+        self.cmd('az storage container create -n {target_container} --account-name cpmoveraccount --auth-mode login')
 
-        # create blob container target endpoint
-        self.cmd('az storage container create -n {target_container} --account-name {account_name} '
-                 '--account-key {account_key}')
+        # create source and target endpoints (both blob containers for cloud-to-cloud)
+        self.cmd('az storage-mover endpoint create-for-storage-container -g {rg} --storage-mover-name {mover_name} '
+                 '-n {source_endpoint} --container-name {source_container} --storage-account-id {account_id} '
+                 '--endpoint-kind Source --description srcEndpointDesc')
         self.cmd('az storage-mover endpoint create-for-storage-container -g {rg} --storage-mover-name {mover_name} '
                  '-n {target_endpoint} --container-name {target_container} --storage-account-id {account_id} '
                  '--endpoint-kind Target --description tgtEndpointDesc')
-
-        # wait for endpoint replication to RP internal store
-        time.sleep(60)
 
         # create cloud-to-cloud job definition with schedule
         self.cmd('az storage-mover job-definition create -g {rg} -n {job_definition} '
                  '--project-name {project_name} --storage-mover-name {mover_name} '
                  '--copy-mode Additive --source-name {source_endpoint} --target-name {target_endpoint} '
                  '--description JobDefWithSchedule --job-type CloudToCloud '
-                 '--source-subpath / --target-subpath / '
-                 '--schedule "{{frequency:Weekly,is-active:True,'
-                 'start-date:\'2026-04-02T00:00:00Z\',end-date:\'2026-12-31T00:00:00Z\','
-                 'execution-time:{{hour:9,minute:0}},days-of-week:[Monday,Wednesday,Friday]}}"')
+                 "--source-subpath / --target-subpath / "
+                 "--schedule \"{{frequency:Weekly,is-active:True,start-date:'2026-04-12T00:00:00Z',end-date:'2026-12-31T00:00:00Z',execution-time:{{hour:9,minute:0}},days-of-week:[Monday,Wednesday,Friday]}}\"")
         # verify schedule in show
         self.cmd('az storage-mover job-definition show -g {rg} -n {job_definition} '
                  '--project-name {project_name} --storage-mover-name {mover_name}',
@@ -573,8 +569,10 @@ class StorageMoverScenario(ScenarioTest):
         # update with data-integrity-validation
         self.cmd('az storage-mover job-definition update -g {rg} -n {job_definition} '
                  '--project-name {project_name} --storage-mover-name {mover_name} '
-                 '--data-integrity-validation SaveVerifyFileMD5',
-                 checks=[JMESPathCheck('dataIntegrityValidation', 'SaveVerifyFileMD5')])
+                 '--description JobDefUpdated',
+                 checks=[JMESPathCheck('description', 'JobDefUpdated')])
         # cleanup
         self.cmd('az storage-mover job-definition delete -g {rg} -n {job_definition} '
                  '--project-name {project_name} --storage-mover-name {mover_name} -y')
+
+

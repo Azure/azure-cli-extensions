@@ -20,7 +20,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002/listKeys?api-version=2024-01-01&$expand=kerb
   response:
     body:
-      string: '{"keys":[{"creationTime":"2026-04-02T06:13:16.9478245Z","keyName":"key1","value":"veryFakedStorageAccountKey==","permissions":"FULL"},{"creationTime":"2026-04-02T06:13:16.9478245Z","keyName":"key2","value":"veryFakedStorageAccountKey==","permissions":"FULL"}]}'
+      string: '{"keys":[{"creationTime":"2026-04-10T06:42:16.9791091Z","keyName":"key1","value":"veryFakedStorageAccountKey==","permissions":"FULL"},{"creationTime":"2026-04-10T06:42:16.9791091Z","keyName":"key2","value":"veryFakedStorageAccountKey==","permissions":"FULL"}]}'
     headers:
       cache-control:
       - no-cache
@@ -29,7 +29,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 02 Apr 2026 06:13:42 GMT
+      - Fri, 10 Apr 2026 06:42:40 GMT
       expires:
       - '-1'
       pragma:
@@ -41,13 +41,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus2euap/14e1dcbb-5dd8-41b1-9a79-7914b556c8bb
+      - tenantId=b5d4074e-8ecd-48c8-b903-c88363015a4c,objectId=e5d2dd28-4569-46ac-b01f-c34c29c0e953/westcentralus/5ed5efc5-4361-490d-8857-0527e0fe6659
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '799'
-      x-ms-throttling-version:
-      - v1
       x-msedge-ref:
-      - 'Ref A: 791265E4AB8048438A68CA24B468932A Ref B: PNQ231110908036 Ref C: 2026-04-02T06:13:42Z'
+      - 'Ref A: E16E39CD3CEB478AA8ABB9980FE60C50 Ref B: PNQ231110907060 Ref C: 2026-04-10T06:42:40Z'
     status:
       code: 200
       message: OK
@@ -70,16 +68,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002?api-version=2024-01-01
   response:
     body:
-      string: '{"sku":{"name":"Standard_LRS","tier":"Standard"},"kind":"Storage","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","name":"clitest000002","type":"Microsoft.Storage/storageAccounts","location":"westus","tags":{"Mover":"Dev","team":"Discovery"},"properties":{"keyCreationTime":{"key1":"2026-04-02T06:13:16.9478245Z","key2":"2026-04-02T06:13:16.9478245Z"},"allowCrossTenantReplication":false,"privateEndpointConnections":[],"minimumTlsVersion":"TLS1_2","allowBlobPublicAccess":false,"networkAcls":{"ipv6Rules":[],"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"keyType":"Account","enabled":true,"lastEnabledTime":"2026-04-02T06:13:16.9579992Z"},"blob":{"keyType":"Account","enabled":true,"lastEnabledTime":"2026-04-02T06:13:16.9579992Z"}},"keySource":"Microsoft.Storage"},"provisioningState":"Succeeded","creationTime":"2026-04-02T06:13:16.6941574Z","primaryEndpoints":{"blob":"https://clitest000002.blob.core.windows.net/","queue":"https://clitest000002.queue.core.windows.net/","table":"https://clitest000002.table.core.windows.net/","file":"https://clitest000002.file.core.windows.net/"},"primaryLocation":"westus","statusOfPrimary":"available"}}'
+      string: '{"sku":{"name":"Standard_LRS","tier":"Standard"},"kind":"Storage","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","name":"clitest000002","type":"Microsoft.Storage/storageAccounts","location":"westus","tags":{},"properties":{"keyCreationTime":{"key1":"2026-04-10T06:42:16.9791091Z","key2":"2026-04-10T06:42:16.9791091Z"},"allowCrossTenantReplication":false,"privateEndpointConnections":[],"minimumTlsVersion":"TLS1_0","allowBlobPublicAccess":false,"networkAcls":{"ipv6Rules":[],"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"keyType":"Account","enabled":true,"lastEnabledTime":"2026-04-10T06:42:16.9862396Z"},"blob":{"keyType":"Account","enabled":true,"lastEnabledTime":"2026-04-10T06:42:16.9862396Z"}},"keySource":"Microsoft.Storage"},"provisioningState":"Succeeded","creationTime":"2026-04-10T06:42:16.8012026Z","primaryEndpoints":{"blob":"https://clitest000002.blob.core.windows.net/","queue":"https://clitest000002.queue.core.windows.net/","table":"https://clitest000002.table.core.windows.net/","file":"https://clitest000002.file.core.windows.net/"},"primaryLocation":"westus","statusOfPrimary":"available"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1353'
+      - '1321'
       content-type:
       - application/json
       date:
-      - Thu, 02 Apr 2026 06:13:43 GMT
+      - Fri, 10 Apr 2026 06:42:42 GMT
       expires:
       - '-1'
       pragma:
@@ -90,15 +88,15 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
-      x-ms-throttling-version:
-      - v2
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
       x-msedge-ref:
-      - 'Ref A: 24C358F886F04C17BEDBA5D2B1BA449B Ref B: PNQ231110906052 Ref C: 2026-04-02T06:13:43Z'
+      - 'Ref A: E83C8E4A97D843BFBC65C80A7E9EFED7 Ref B: PNQ231110907029 Ref C: 2026-04-10T06:42:41Z'
     status:
       code: 200
       message: OK
 - request:
-    body: '{"location": "eastus2euap", "properties": {"description": "MoverDesc"},
+    body: '{"location": "westcentralus", "properties": {"description": "MoverDesc"},
       "tags": {"key1": "value1"}}'
     headers:
       Accept:
@@ -110,7 +108,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '99'
+      - '101'
       Content-Type:
       - application/json
       ParameterSetName:
@@ -121,22 +119,22 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003?api-version=2025-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003","name":"storage-mover000003","type":"microsoft.storagemover/storagemovers","location":"eastus2euap","tags":{"key1":"value1","Mover":"Dev","team":"Discovery"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-04-02T06:13:46.0253004Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-02T06:13:46.0253004Z"},"properties":{"description":"MoverDesc","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003","name":"storage-mover000003","type":"microsoft.storagemover/storagemovers","location":"westcentralus","tags":{"key1":"value1"},"systemData":{"createdBy":"suyashchoudhary42@gmail.com","createdByType":"User","createdAt":"2026-04-10T06:42:43.5542975Z","lastModifiedBy":"suyashchoudhary42@gmail.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-10T06:42:43.5542975Z"},"properties":{"description":"MoverDesc","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '614'
+      - '605'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 02 Apr 2026 06:13:45 GMT
+      - Fri, 10 Apr 2026 06:42:43 GMT
       etag:
-      - '"24000840-0000-3300-0000-69ce091a0000"'
+      - '"07009dd8-0000-0600-0000-69d89be30000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - 54864982-36b4-4363-b700-d58db37cbbfc
+      - fc003fe9-bb79-45f4-85f9-3a064222ac86
       pragma:
       - no-cache
       strict-transport-security:
@@ -146,15 +144,15 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus2euap/3c6ded52-05a4-440f-8e47-776c314104f0
+      - tenantId=b5d4074e-8ecd-48c8-b903-c88363015a4c,objectId=e5d2dd28-4569-46ac-b01f-c34c29c0e953/westcentralus/a2c5196a-88d4-446a-9695-ffb3b26467c4
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '799'
-      x-ms-throttling-version:
-      - v2
+      - '199'
       x-msedge-ref:
-      - 'Ref A: 3F333F8147A84F78A3930167DDE6B943 Ref B: PNQ231110908052 Ref C: 2026-04-02T06:13:44Z'
+      - 'Ref A: F1FD6D8919C543D8A5491C23AB051956 Ref B: PNQ231110907025 Ref C: 2026-04-10T06:42:42Z'
     status:
       code: 200
       message: OK
@@ -176,7 +174,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.76.0 azsdk-python-storage-blob/12.16.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
       x-ms-date:
-      - Thu, 02 Apr 2026 06:13:43 GMT
+      - Fri, 10 Apr 2026 06:42:44 GMT
       x-ms-version:
       - '2022-11-02'
     method: PUT
@@ -188,11 +186,11 @@ interactions:
       content-length:
       - '0'
       date:
-      - Thu, 02 Apr 2026 06:13:47 GMT
+      - Fri, 10 Apr 2026 06:42:44 GMT
       etag:
-      - '"0x8DE907F009D2DFE"'
+      - '"0x8DE96CC5F8A0117"'
       last-modified:
-      - Thu, 02 Apr 2026 06:13:47 GMT
+      - Fri, 10 Apr 2026 06:42:45 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       x-ms-version:
@@ -223,25 +221,25 @@ interactions:
       User-Agent:
       - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_container000005?api-version=2025-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-container000005?api-version=2025-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_container000005","name":"endpoint_container000005","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-04-02T06:13:48.7227097Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-02T06:13:48.7227097Z"},"identity":{"principalId":"a2d4073a-b998-493b-911c-6c9cfaeccce8","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","blobContainerName":"container000004","endpointType":"AzureStorageBlobContainer","endpointKind":"Target","description":"endpointDesc","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-container000005","name":"test-ep-container000005","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"suyashchoudhary42@gmail.com","createdByType":"User","createdAt":"2026-04-10T06:42:46.7499486Z","lastModifiedBy":"suyashchoudhary42@gmail.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-10T06:42:46.7499486Z"},"identity":{"principalId":"0affcaa4-7b85-4658-aa7d-f7bad4030a88","tenantId":"b5d4074e-8ecd-48c8-b903-c88363015a4c","type":"SystemAssigned"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","blobContainerName":"container000004","endpointType":"AzureStorageBlobContainer","endpointKind":"Target","description":"endpointDesc","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1000'
+      - '1020'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 02 Apr 2026 06:13:50 GMT
+      - Fri, 10 Apr 2026 06:42:50 GMT
       etag:
-      - '"1600db2c-0000-3300-0000-69ce091f0000"'
+      - '"0700c997-0000-0600-0000-69d89bea0000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - 7b3222a8-ba3e-4399-86c1-d51db79d4d49
+      - 43f538ac-5cfc-4b72-8f69-293657526083
       pragma:
       - no-cache
       strict-transport-security:
@@ -251,15 +249,15 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus2euap/171eb033-f0f2-4542-95e6-c628e86f67d2
+      - tenantId=b5d4074e-8ecd-48c8-b903-c88363015a4c,objectId=e5d2dd28-4569-46ac-b01f-c34c29c0e953/southindia/a72b275c-0a24-418d-83a2-f1519627fe1e
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '799'
-      x-ms-throttling-version:
-      - v2
+      - '199'
       x-msedge-ref:
-      - 'Ref A: E3810B93668A4D078825E4403E255094 Ref B: PNQ231110906052 Ref C: 2026-04-02T06:13:48Z'
+      - 'Ref A: 979AD3A096EE439F9901A64CCA9579EB Ref B: PNQ231110909034 Ref C: 2026-04-10T06:42:45Z'
     status:
       code: 200
       message: OK
@@ -279,25 +277,25 @@ interactions:
       User-Agent:
       - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_container000005?api-version=2025-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-container000005?api-version=2025-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_container000005","name":"endpoint_container000005","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-04-02T06:13:48.7227097Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-02T06:13:48.7227097Z"},"identity":{"principalId":"a2d4073a-b998-493b-911c-6c9cfaeccce8","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","blobContainerName":"container000004","endpointType":"AzureStorageBlobContainer","endpointKind":"Target","description":"endpointDesc","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-container000005","name":"test-ep-container000005","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"suyashchoudhary42@gmail.com","createdByType":"User","createdAt":"2026-04-10T06:42:46.7499486Z","lastModifiedBy":"suyashchoudhary42@gmail.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-10T06:42:46.7499486Z"},"identity":{"principalId":"0affcaa4-7b85-4658-aa7d-f7bad4030a88","tenantId":"b5d4074e-8ecd-48c8-b903-c88363015a4c","type":"SystemAssigned"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","blobContainerName":"container000004","endpointType":"AzureStorageBlobContainer","endpointKind":"Target","description":"endpointDesc","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1000'
+      - '1020'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 02 Apr 2026 06:13:52 GMT
+      - Fri, 10 Apr 2026 06:42:51 GMT
       etag:
-      - '"1600db2c-0000-3300-0000-69ce091f0000"'
+      - '"0700c997-0000-0600-0000-69d89bea0000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - e90d6c7a-c9b4-4077-99b8-62eb55528877
+      - 265d33b5-a9f4-4c98-8887-1eeef984ee3a
       pragma:
       - no-cache
       strict-transport-security:
@@ -307,13 +305,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus2euap/80ce24f6-fa3e-4581-9cdb-229e5ad015d0
+      - tenantId=b5d4074e-8ecd-48c8-b903-c88363015a4c,objectId=e5d2dd28-4569-46ac-b01f-c34c29c0e953/westcentralus/560b753c-9a2e-4200-8ce3-da91216c8a9c
       x-ms-providerhub-traffic:
       - 'True'
-      x-ms-throttling-version:
-      - v2
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
       x-msedge-ref:
-      - 'Ref A: FD49D8477DB8403FADD2270C79ED7762 Ref B: PNQ231110906023 Ref C: 2026-04-02T06:13:51Z'
+      - 'Ref A: 5298525219304DBD8C1DEDDC8B3213AA Ref B: PNQ231110906029 Ref C: 2026-04-10T06:42:51Z'
     status:
       code: 200
       message: OK
@@ -333,25 +331,25 @@ interactions:
       User-Agent:
       - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_container000005?api-version=2025-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-container000005?api-version=2025-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_container000005","name":"endpoint_container000005","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-04-02T06:13:48.7227097Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-02T06:13:48.7227097Z"},"identity":{"principalId":"a2d4073a-b998-493b-911c-6c9cfaeccce8","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","blobContainerName":"container000004","endpointType":"AzureStorageBlobContainer","endpointKind":"Target","description":"endpointDesc","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-container000005","name":"test-ep-container000005","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"suyashchoudhary42@gmail.com","createdByType":"User","createdAt":"2026-04-10T06:42:46.7499486Z","lastModifiedBy":"suyashchoudhary42@gmail.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-10T06:42:46.7499486Z"},"identity":{"principalId":"0affcaa4-7b85-4658-aa7d-f7bad4030a88","tenantId":"b5d4074e-8ecd-48c8-b903-c88363015a4c","type":"SystemAssigned"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","blobContainerName":"container000004","endpointType":"AzureStorageBlobContainer","endpointKind":"Target","description":"endpointDesc","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1000'
+      - '1020'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 02 Apr 2026 06:13:53 GMT
+      - Fri, 10 Apr 2026 06:42:51 GMT
       etag:
-      - '"1600db2c-0000-3300-0000-69ce091f0000"'
+      - '"0700c997-0000-0600-0000-69d89bea0000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - 90cbc527-c78b-4a31-85af-29a758023a80
+      - f7828ff3-ae18-407f-b8d4-01c73a29d084
       pragma:
       - no-cache
       strict-transport-security:
@@ -361,13 +359,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus2euap/9f21c2a5-2cff-42d1-8c44-08788530555f
+      - tenantId=b5d4074e-8ecd-48c8-b903-c88363015a4c,objectId=e5d2dd28-4569-46ac-b01f-c34c29c0e953/westcentralus/487f4fc7-848f-4685-baf5-ad98c014de9b
       x-ms-providerhub-traffic:
       - 'True'
-      x-ms-throttling-version:
-      - v2
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
       x-msedge-ref:
-      - 'Ref A: 92C00DB661F24F4DBAAE0919CCB22DB5 Ref B: PNQ231110906054 Ref C: 2026-04-02T06:13:52Z'
+      - 'Ref A: A9DEC7C66C15419A87311A0ADB73878B Ref B: PNQ231110907054 Ref C: 2026-04-10T06:42:52Z'
     status:
       code: 200
       message: OK
@@ -393,25 +391,25 @@ interactions:
       User-Agent:
       - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_container000005?api-version=2025-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-container000005?api-version=2025-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_container000005","name":"endpoint_container000005","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-04-02T06:13:48.7227097Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-02T06:13:53.8821064Z"},"identity":{"principalId":"a2d4073a-b998-493b-911c-6c9cfaeccce8","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","blobContainerName":"container000004","endpointType":"AzureStorageBlobContainer","endpointKind":"Target","description":"endpointDescUpdate","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-container000005","name":"test-ep-container000005","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"suyashchoudhary42@gmail.com","createdByType":"User","createdAt":"2026-04-10T06:42:46.7499486Z","lastModifiedBy":"suyashchoudhary42@gmail.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-10T06:42:52.885333Z"},"identity":{"principalId":"0affcaa4-7b85-4658-aa7d-f7bad4030a88","tenantId":"b5d4074e-8ecd-48c8-b903-c88363015a4c","type":"SystemAssigned"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","blobContainerName":"container000004","endpointType":"AzureStorageBlobContainer","endpointKind":"Target","description":"endpointDescUpdate","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1006'
+      - '1025'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 02 Apr 2026 06:13:56 GMT
+      - Fri, 10 Apr 2026 06:42:53 GMT
       etag:
-      - '"1600e52c-0000-3300-0000-69ce09230000"'
+      - '"0700cf97-0000-0600-0000-69d89bed0000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - 7373ca38-5cb2-40e9-a311-0961d8124ce8
+      - 3deea959-0fbf-4aee-a6d0-3ca98b990be0
       pragma:
       - no-cache
       strict-transport-security:
@@ -421,15 +419,15 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus2euap/27859887-61a6-4c9d-b106-ff01d3725de3
+      - tenantId=b5d4074e-8ecd-48c8-b903-c88363015a4c,objectId=e5d2dd28-4569-46ac-b01f-c34c29c0e953/westcentralus/dff48896-3609-456a-9dd1-b31386a3245d
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '799'
-      x-ms-throttling-version:
-      - v2
+      - '199'
       x-msedge-ref:
-      - 'Ref A: 3EBBA9064A25440496B62F6C8F248250 Ref B: PNQ231110907031 Ref C: 2026-04-02T06:13:53Z'
+      - 'Ref A: E3E30B6DA681402B848F0405C6F2443E Ref B: PNQ231110909040 Ref C: 2026-04-10T06:42:52Z'
     status:
       code: 200
       message: OK
@@ -451,7 +449,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.76.0 azsdk-python-storage-file-share/12.21.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
       x-ms-date:
-      - Thu, 02 Apr 2026 06:13:53 GMT
+      - Fri, 10 Apr 2026 06:42:53 GMT
       x-ms-version:
       - '2025-05-05'
     method: PUT
@@ -463,11 +461,11 @@ interactions:
       content-length:
       - '0'
       date:
-      - Thu, 02 Apr 2026 06:13:56 GMT
+      - Fri, 10 Apr 2026 06:42:54 GMT
       etag:
-      - '"0x8DE907F0648F8C9"'
+      - '"0x8DE96CC651BE432"'
       last-modified:
-      - Thu, 02 Apr 2026 06:13:57 GMT
+      - Fri, 10 Apr 2026 06:42:54 GMT
       server:
       - Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0
       x-ms-version:
@@ -498,25 +496,25 @@ interactions:
       User-Agent:
       - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_file_share000006?api-version=2025-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-fileshare000006?api-version=2025-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_file_share000006","name":"endpoint_file_share000006","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-04-02T06:13:58.0728811Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-02T06:13:58.0728811Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000009","endpointType":"AzureStorageSmbFileShare","endpointKind":"Target","description":"endpointFileShareDesc","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-fileshare000006","name":"test-ep-fileshare000006","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"suyashchoudhary42@gmail.com","createdByType":"User","createdAt":"2026-04-10T06:42:55.390171Z","lastModifiedBy":"suyashchoudhary42@gmail.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-10T06:42:55.390171Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000009","endpointType":"AzureStorageSmbFileShare","endpointKind":"Target","description":"endpointFileShareDesc","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '866'
+      - '882'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 02 Apr 2026 06:13:59 GMT
+      - Fri, 10 Apr 2026 06:42:55 GMT
       etag:
-      - '"1600ea2c-0000-3300-0000-69ce09270000"'
+      - '"0700d897-0000-0600-0000-69d89bef0000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - 95c451c7-966f-4106-9fb3-0fdab391aa39
+      - 7d78e6e4-fa57-4b26-a46a-aa0c0b5ad88b
       pragma:
       - no-cache
       strict-transport-security:
@@ -526,15 +524,15 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus2euap/25510a88-1479-4a53-8482-7537413b727b
+      - tenantId=b5d4074e-8ecd-48c8-b903-c88363015a4c,objectId=e5d2dd28-4569-46ac-b01f-c34c29c0e953/westcentralus/31dd1143-dd14-4f7c-84ac-bd1e2cbe5cee
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '799'
-      x-ms-throttling-version:
-      - v2
+      - '199'
       x-msedge-ref:
-      - 'Ref A: 714132A03D63458899B219F992C24E25 Ref B: PNQ231110908052 Ref C: 2026-04-02T06:13:57Z'
+      - 'Ref A: 3BC1BB1D61E14886B7EB595FC2D6B331 Ref B: PNQ231110906042 Ref C: 2026-04-10T06:42:55Z'
     status:
       code: 200
       message: OK
@@ -554,25 +552,25 @@ interactions:
       User-Agent:
       - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_file_share000006?api-version=2025-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-fileshare000006?api-version=2025-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_file_share000006","name":"endpoint_file_share000006","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-04-02T06:13:58.0728811Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-02T06:13:58.0728811Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000009","endpointType":"AzureStorageSmbFileShare","endpointKind":"Target","description":"endpointFileShareDesc","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-fileshare000006","name":"test-ep-fileshare000006","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"suyashchoudhary42@gmail.com","createdByType":"User","createdAt":"2026-04-10T06:42:55.390171Z","lastModifiedBy":"suyashchoudhary42@gmail.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-10T06:42:55.390171Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000009","endpointType":"AzureStorageSmbFileShare","endpointKind":"Target","description":"endpointFileShareDesc","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '866'
+      - '882'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 02 Apr 2026 06:14:00 GMT
+      - Fri, 10 Apr 2026 06:42:55 GMT
       etag:
-      - '"1600ea2c-0000-3300-0000-69ce09270000"'
+      - '"0700d897-0000-0600-0000-69d89bef0000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - 9b466d73-46f3-4ef2-8ccc-1e04aa0c9c87
+      - 3e69bb2f-c5c7-45e4-8257-3d1353aef1e9
       pragma:
       - no-cache
       strict-transport-security:
@@ -582,13 +580,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus2euap/b1b070db-c760-49ee-8518-850e0c38a1f9
+      - tenantId=b5d4074e-8ecd-48c8-b903-c88363015a4c,objectId=e5d2dd28-4569-46ac-b01f-c34c29c0e953/westcentralus/82d54458-17cc-433f-84b4-28791700964b
       x-ms-providerhub-traffic:
       - 'True'
-      x-ms-throttling-version:
-      - v2
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
       x-msedge-ref:
-      - 'Ref A: AEE118EDCA414AAFA6B6C045123ADF33 Ref B: PNQ231110909052 Ref C: 2026-04-02T06:14:00Z'
+      - 'Ref A: D85A1FBFAAB14581B6DBA807EA663F35 Ref B: PNQ231110909054 Ref C: 2026-04-10T06:42:56Z'
     status:
       code: 200
       message: OK
@@ -608,25 +606,25 @@ interactions:
       User-Agent:
       - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_file_share000006?api-version=2025-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-fileshare000006?api-version=2025-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_file_share000006","name":"endpoint_file_share000006","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-04-02T06:13:58.0728811Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-02T06:13:58.0728811Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000009","endpointType":"AzureStorageSmbFileShare","endpointKind":"Target","description":"endpointFileShareDesc","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-fileshare000006","name":"test-ep-fileshare000006","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"suyashchoudhary42@gmail.com","createdByType":"User","createdAt":"2026-04-10T06:42:55.390171Z","lastModifiedBy":"suyashchoudhary42@gmail.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-10T06:42:55.390171Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000009","endpointType":"AzureStorageSmbFileShare","endpointKind":"Target","description":"endpointFileShareDesc","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '866'
+      - '882'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 02 Apr 2026 06:14:05 GMT
+      - Fri, 10 Apr 2026 06:42:56 GMT
       etag:
-      - '"1600ea2c-0000-3300-0000-69ce09270000"'
+      - '"0700d897-0000-0600-0000-69d89bef0000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - aedb5e2d-c5cd-4dfd-a642-9035be65b787
+      - 48f56935-a7ac-47a3-a9dd-d975da5d2a09
       pragma:
       - no-cache
       strict-transport-security:
@@ -636,13 +634,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus2euap/e0260083-bf4c-432d-946e-ed63c5672fb4
+      - tenantId=b5d4074e-8ecd-48c8-b903-c88363015a4c,objectId=e5d2dd28-4569-46ac-b01f-c34c29c0e953/westcentralus/6a65d3d5-1eec-4c3e-92b1-9ba9ba0641f0
       x-ms-providerhub-traffic:
       - 'True'
-      x-ms-throttling-version:
-      - v2
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
       x-msedge-ref:
-      - 'Ref A: DF2C49411E524E15AC79CF51B411DF1A Ref B: PNQ231110907025 Ref C: 2026-04-02T06:14:01Z'
+      - 'Ref A: 1B4CFB3644AC4AC8B95F9D67C2658E88 Ref B: PNQ231110909052 Ref C: 2026-04-10T06:42:56Z'
     status:
       code: 200
       message: OK
@@ -668,25 +666,25 @@ interactions:
       User-Agent:
       - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_file_share000006?api-version=2025-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-fileshare000006?api-version=2025-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_file_share000006","name":"endpoint_file_share000006","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-04-02T06:13:58.0728811Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-02T06:14:06.3527782Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000009","endpointType":"AzureStorageSmbFileShare","endpointKind":"Target","description":"endpointFileShareDescUpdate","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-fileshare000006","name":"test-ep-fileshare000006","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"suyashchoudhary42@gmail.com","createdByType":"User","createdAt":"2026-04-10T06:42:55.390171Z","lastModifiedBy":"suyashchoudhary42@gmail.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-10T06:42:57.3407558Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000009","endpointType":"AzureStorageSmbFileShare","endpointKind":"Target","description":"endpointFileShareDescUpdate","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '872'
+      - '889'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 02 Apr 2026 06:14:06 GMT
+      - Fri, 10 Apr 2026 06:42:57 GMT
       etag:
-      - '"1600f12c-0000-3300-0000-69ce092e0000"'
+      - '"0700de97-0000-0600-0000-69d89bf10000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - 0460e6f4-33f9-44d2-8c9a-8ddbef45d2e5
+      - 69d32eeb-b809-4d86-9e6d-97669ed0b4ea
       pragma:
       - no-cache
       strict-transport-security:
@@ -696,15 +694,15 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus2euap/b7def405-8629-4f39-94ee-8305555db65d
+      - tenantId=b5d4074e-8ecd-48c8-b903-c88363015a4c,objectId=e5d2dd28-4569-46ac-b01f-c34c29c0e953/westcentralus/5ed1d16a-96ff-4b2e-8e51-7e99ca17b275
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '799'
-      x-ms-throttling-version:
-      - v2
+      - '199'
       x-msedge-ref:
-      - 'Ref A: 2AE1E57513354340BBFF513B3CAAE870 Ref B: PNQ231110909042 Ref C: 2026-04-02T06:14:05Z'
+      - 'Ref A: B575A5EB3E9E4DE999A81590DA45D00B Ref B: PNQ231110909029 Ref C: 2026-04-10T06:42:57Z'
     status:
       code: 200
       message: OK
@@ -731,25 +729,25 @@ interactions:
       User-Agent:
       - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs_file_share000011?api-version=2025-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-nfs-fs000011?api-version=2025-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs_file_share000011","name":"endpoint_nfs_file_share000011","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-04-02T06:14:07.6518233Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-02T06:14:07.6518233Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000009","endpointType":"AzureStorageNfsFileShare","endpointKind":"Target","description":"endpointNFSFileShareDesc","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-nfs-fs000011","name":"test-ep-nfs-fs000011","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"suyashchoudhary42@gmail.com","createdByType":"User","createdAt":"2026-04-10T06:42:58.2336558Z","lastModifiedBy":"suyashchoudhary42@gmail.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-10T06:42:58.2336558Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000009","endpointType":"AzureStorageNfsFileShare","endpointKind":"Target","description":"endpointNFSFileShareDesc","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '877'
+      - '881'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 02 Apr 2026 06:14:08 GMT
+      - Fri, 10 Apr 2026 06:42:58 GMT
       etag:
-      - '"1600f32c-0000-3300-0000-69ce09300000"'
+      - '"0700e297-0000-0600-0000-69d89bf20000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - 29a92eb5-ac4d-4d33-9579-239509fd8c91
+      - fb266ada-89e1-445b-964c-9b399597c222
       pragma:
       - no-cache
       strict-transport-security:
@@ -759,15 +757,15 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus2euap/985ea62d-9e67-4f70-a71f-025a7d943e66
+      - tenantId=b5d4074e-8ecd-48c8-b903-c88363015a4c,objectId=e5d2dd28-4569-46ac-b01f-c34c29c0e953/westcentralus/a35c1bab-1923-407b-a9a4-4a71161a16f2
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '799'
-      x-ms-throttling-version:
-      - v2
+      - '199'
       x-msedge-ref:
-      - 'Ref A: 778792779E84486DAD0C1B1DC763122B Ref B: PNQ231110909029 Ref C: 2026-04-02T06:14:07Z'
+      - 'Ref A: E7C0177E1BEF4947A148A7F62AAE2A86 Ref B: PNQ231110907034 Ref C: 2026-04-10T06:42:57Z'
     status:
       code: 200
       message: OK
@@ -787,25 +785,25 @@ interactions:
       User-Agent:
       - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs_file_share000011?api-version=2025-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-nfs-fs000011?api-version=2025-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs_file_share000011","name":"endpoint_nfs_file_share000011","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-04-02T06:14:07.6518233Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-02T06:14:07.6518233Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000009","endpointType":"AzureStorageNfsFileShare","endpointKind":"Target","description":"endpointNFSFileShareDesc","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-nfs-fs000011","name":"test-ep-nfs-fs000011","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"suyashchoudhary42@gmail.com","createdByType":"User","createdAt":"2026-04-10T06:42:58.2336558Z","lastModifiedBy":"suyashchoudhary42@gmail.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-10T06:42:58.2336558Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000009","endpointType":"AzureStorageNfsFileShare","endpointKind":"Target","description":"endpointNFSFileShareDesc","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '877'
+      - '881'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 02 Apr 2026 06:14:09 GMT
+      - Fri, 10 Apr 2026 06:42:59 GMT
       etag:
-      - '"1600f32c-0000-3300-0000-69ce09300000"'
+      - '"0700e297-0000-0600-0000-69d89bf20000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - 812a8c26-668f-4db1-801e-f692cbb332fc
+      - 72df185b-ca72-4961-84ca-cb30d5bb7562
       pragma:
       - no-cache
       strict-transport-security:
@@ -815,13 +813,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus2euap/7d2c8ee6-4fd7-4f22-883a-c8012ecc137c
+      - tenantId=b5d4074e-8ecd-48c8-b903-c88363015a4c,objectId=e5d2dd28-4569-46ac-b01f-c34c29c0e953/westcentralus/c21a792e-bc7c-4007-8034-9e77a8256ec1
       x-ms-providerhub-traffic:
       - 'True'
-      x-ms-throttling-version:
-      - v2
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
       x-msedge-ref:
-      - 'Ref A: 890F3FC7AD6544EDA0B59DBDC225113A Ref B: PNQ231110907036 Ref C: 2026-04-02T06:14:09Z'
+      - 'Ref A: 1395673DF2924BA693C8FB7564A19D64 Ref B: PNQ231110906029 Ref C: 2026-04-10T06:42:59Z'
     status:
       code: 200
       message: OK
@@ -841,25 +839,25 @@ interactions:
       User-Agent:
       - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs_file_share000011?api-version=2025-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-nfs-fs000011?api-version=2025-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs_file_share000011","name":"endpoint_nfs_file_share000011","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-04-02T06:14:07.6518233Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-02T06:14:07.6518233Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000009","endpointType":"AzureStorageNfsFileShare","endpointKind":"Target","description":"endpointNFSFileShareDesc","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-nfs-fs000011","name":"test-ep-nfs-fs000011","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"suyashchoudhary42@gmail.com","createdByType":"User","createdAt":"2026-04-10T06:42:58.2336558Z","lastModifiedBy":"suyashchoudhary42@gmail.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-10T06:42:58.2336558Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000009","endpointType":"AzureStorageNfsFileShare","endpointKind":"Target","description":"endpointNFSFileShareDesc","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '877'
+      - '881'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 02 Apr 2026 06:14:10 GMT
+      - Fri, 10 Apr 2026 06:42:59 GMT
       etag:
-      - '"1600f32c-0000-3300-0000-69ce09300000"'
+      - '"0700e297-0000-0600-0000-69d89bf20000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - c1e86069-56e3-4928-b9e6-dbde05c8413c
+      - 7eabad29-7487-4f36-b06d-5fb28d63012b
       pragma:
       - no-cache
       strict-transport-security:
@@ -869,13 +867,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus2euap/f9190c77-a0b3-45cc-9ed3-837b46b2ab33
+      - tenantId=b5d4074e-8ecd-48c8-b903-c88363015a4c,objectId=e5d2dd28-4569-46ac-b01f-c34c29c0e953/westcentralus/74ea850a-35ce-43ac-9e73-351099632f20
       x-ms-providerhub-traffic:
       - 'True'
-      x-ms-throttling-version:
-      - v2
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
       x-msedge-ref:
-      - 'Ref A: 73DAEB81E0754917A7E2D58689591B13 Ref B: PNQ231110907025 Ref C: 2026-04-02T06:14:10Z'
+      - 'Ref A: DC7E2893BA3A4030A1872A1D244C769B Ref B: PNQ231110906031 Ref C: 2026-04-10T06:42:59Z'
     status:
       code: 200
       message: OK
@@ -901,25 +899,25 @@ interactions:
       User-Agent:
       - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs_file_share000011?api-version=2025-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-nfs-fs000011?api-version=2025-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs_file_share000011","name":"endpoint_nfs_file_share000011","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-04-02T06:14:07.6518233Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-02T06:14:11.592977Z"},"identity":{"principalId":"8ed80f2d-b47f-44ee-a543-72e06f5930d8","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000009","endpointType":"AzureStorageNfsFileShare","endpointKind":"Target","description":"endpointNFSFileShareDesc","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-nfs-fs000011","name":"test-ep-nfs-fs000011","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"suyashchoudhary42@gmail.com","createdByType":"User","createdAt":"2026-04-10T06:42:58.2336558Z","lastModifiedBy":"suyashchoudhary42@gmail.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-10T06:43:00.5879509Z"},"identity":{"principalId":"600d35eb-57d8-463c-ad7a-c7655a7b569f","tenantId":"b5d4074e-8ecd-48c8-b903-c88363015a4c","type":"SystemAssigned"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000009","endpointType":"AzureStorageNfsFileShare","endpointKind":"Target","description":"endpointNFSFileShareDesc","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1016'
+      - '1021'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 02 Apr 2026 06:14:15 GMT
+      - Fri, 10 Apr 2026 06:43:01 GMT
       etag:
-      - '"1600f62c-0000-3300-0000-69ce09370000"'
+      - '"0700e797-0000-0600-0000-69d89bf50000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - ee1605a0-d450-48d5-8c5f-0c5e2de9f725
+      - f6731395-e81c-46e9-9c36-2e750ef0eb52
       pragma:
       - no-cache
       strict-transport-security:
@@ -929,15 +927,15 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus2euap/adee087c-a4b0-4a74-ad65-95c86f3a79ed
+      - tenantId=b5d4074e-8ecd-48c8-b903-c88363015a4c,objectId=e5d2dd28-4569-46ac-b01f-c34c29c0e953/westcentralus/9659f4a9-4f9b-4cb2-95f3-a5b044b7d0f7
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '799'
-      x-ms-throttling-version:
-      - v2
+      - '199'
       x-msedge-ref:
-      - 'Ref A: A12CCD8C2DAD48C6B12EE7047B021CED Ref B: PNQ231110909034 Ref C: 2026-04-02T06:14:11Z'
+      - 'Ref A: 8EDFB67F040B4E9486DAACA63145A6D0 Ref B: PNQ231110909060 Ref C: 2026-04-10T06:43:00Z'
     status:
       code: 200
       message: OK
@@ -957,25 +955,25 @@ interactions:
       User-Agent:
       - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs_file_share000011?api-version=2025-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-nfs-fs000011?api-version=2025-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs_file_share000011","name":"endpoint_nfs_file_share000011","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-04-02T06:14:07.6518233Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-02T06:14:11.592977Z"},"identity":{"principalId":"8ed80f2d-b47f-44ee-a543-72e06f5930d8","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000009","endpointType":"AzureStorageNfsFileShare","endpointKind":"Target","description":"endpointNFSFileShareDesc","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-nfs-fs000011","name":"test-ep-nfs-fs000011","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"suyashchoudhary42@gmail.com","createdByType":"User","createdAt":"2026-04-10T06:42:58.2336558Z","lastModifiedBy":"suyashchoudhary42@gmail.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-10T06:43:00.5879509Z"},"identity":{"principalId":"600d35eb-57d8-463c-ad7a-c7655a7b569f","tenantId":"b5d4074e-8ecd-48c8-b903-c88363015a4c","type":"SystemAssigned"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000009","endpointType":"AzureStorageNfsFileShare","endpointKind":"Target","description":"endpointNFSFileShareDesc","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1016'
+      - '1021'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 02 Apr 2026 06:14:15 GMT
+      - Fri, 10 Apr 2026 06:43:01 GMT
       etag:
-      - '"1600f62c-0000-3300-0000-69ce09370000"'
+      - '"0700e797-0000-0600-0000-69d89bf50000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - f071a785-526f-4433-992e-6132fe3a73b3
+      - b6268bc1-02fb-4f88-ace1-b40e4737e7c2
       pragma:
       - no-cache
       strict-transport-security:
@@ -985,13 +983,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus2euap/217e54eb-f4d0-4546-a706-abefc0fc5549
+      - tenantId=b5d4074e-8ecd-48c8-b903-c88363015a4c,objectId=e5d2dd28-4569-46ac-b01f-c34c29c0e953/westcentralus/0051af92-45f8-45d9-822d-2ffa4ee221d3
       x-ms-providerhub-traffic:
       - 'True'
-      x-ms-throttling-version:
-      - v2
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
       x-msedge-ref:
-      - 'Ref A: 3DD922A951C0438C9714C741DED0FCE2 Ref B: PNQ231110907060 Ref C: 2026-04-02T06:14:16Z'
+      - 'Ref A: 8BF092348E4A4883ADFD29E218CF3D1E Ref B: PNQ231110907054 Ref C: 2026-04-10T06:43:01Z'
     status:
       code: 200
       message: OK
@@ -1011,25 +1009,25 @@ interactions:
       User-Agent:
       - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs_file_share000011?api-version=2025-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-nfs-fs000011?api-version=2025-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs_file_share000011","name":"endpoint_nfs_file_share000011","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-04-02T06:14:07.6518233Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-02T06:14:11.592977Z"},"identity":{"principalId":"8ed80f2d-b47f-44ee-a543-72e06f5930d8","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000009","endpointType":"AzureStorageNfsFileShare","endpointKind":"Target","description":"endpointNFSFileShareDesc","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-nfs-fs000011","name":"test-ep-nfs-fs000011","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"suyashchoudhary42@gmail.com","createdByType":"User","createdAt":"2026-04-10T06:42:58.2336558Z","lastModifiedBy":"suyashchoudhary42@gmail.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-10T06:43:00.5879509Z"},"identity":{"principalId":"600d35eb-57d8-463c-ad7a-c7655a7b569f","tenantId":"b5d4074e-8ecd-48c8-b903-c88363015a4c","type":"SystemAssigned"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000009","endpointType":"AzureStorageNfsFileShare","endpointKind":"Target","description":"endpointNFSFileShareDesc","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1016'
+      - '1021'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 02 Apr 2026 06:14:18 GMT
+      - Fri, 10 Apr 2026 06:43:02 GMT
       etag:
-      - '"1600f62c-0000-3300-0000-69ce09370000"'
+      - '"0700e797-0000-0600-0000-69d89bf50000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - 4e0e0ac4-bd95-4b39-bd9a-b1cc78a3368a
+      - 815174a4-54e9-40c1-8ce8-736f900ca2ee
       pragma:
       - no-cache
       strict-transport-security:
@@ -1039,13 +1037,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus2euap/22411fad-1ba2-41a4-a00f-5b2c81836218
+      - tenantId=b5d4074e-8ecd-48c8-b903-c88363015a4c,objectId=e5d2dd28-4569-46ac-b01f-c34c29c0e953/westcentralus/188bc4bc-e817-4e1e-867d-2c0180b6a08d
       x-ms-providerhub-traffic:
       - 'True'
-      x-ms-throttling-version:
-      - v2
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
       x-msedge-ref:
-      - 'Ref A: C5E1E8BCB3A1441FB25EC85D7F4659BC Ref B: PNQ231110908062 Ref C: 2026-04-02T06:14:18Z'
+      - 'Ref A: 6E3A8B7F8AA94C2F8C91D2CC3AB45CBC Ref B: PNQ231110906060 Ref C: 2026-04-10T06:43:02Z'
     status:
       code: 200
       message: OK
@@ -1071,25 +1069,25 @@ interactions:
       User-Agent:
       - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs_file_share000011?api-version=2025-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-nfs-fs000011?api-version=2025-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs_file_share000011","name":"endpoint_nfs_file_share000011","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-04-02T06:14:07.6518233Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-02T06:14:20.6035018Z"},"identity":{"type":"None"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000009","endpointType":"AzureStorageNfsFileShare","endpointKind":"Target","description":"endpointNFSFileShareDesc","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-nfs-fs000011","name":"test-ep-nfs-fs000011","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"suyashchoudhary42@gmail.com","createdByType":"User","createdAt":"2026-04-10T06:42:58.2336558Z","lastModifiedBy":"suyashchoudhary42@gmail.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-10T06:43:03.7775688Z"},"identity":{"type":"None"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000009","endpointType":"AzureStorageNfsFileShare","endpointKind":"Target","description":"endpointNFSFileShareDesc","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '904'
+      - '908'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 02 Apr 2026 06:14:20 GMT
+      - Fri, 10 Apr 2026 06:43:04 GMT
       etag:
-      - '"1600fc2c-0000-3300-0000-69ce093c0000"'
+      - '"0700eb97-0000-0600-0000-69d89bf70000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - 3dd7f87f-f82b-493a-aef5-413190901d17
+      - 5ba1f481-8802-4607-bd33-0c5ac0efd7a1
       pragma:
       - no-cache
       strict-transport-security:
@@ -1099,15 +1097,15 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus2euap/1f2dd4d2-1f1f-4577-8041-4cbae024e5b7
+      - tenantId=b5d4074e-8ecd-48c8-b903-c88363015a4c,objectId=e5d2dd28-4569-46ac-b01f-c34c29c0e953/westcentralus/74c5ee50-bfea-47ad-ace1-93e566ba38fc
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '799'
-      x-ms-throttling-version:
-      - v2
+      - '199'
       x-msedge-ref:
-      - 'Ref A: 3EC954135EBA4BDD90B90DD38369C612 Ref B: PNQ231110908023 Ref C: 2026-04-02T06:14:18Z'
+      - 'Ref A: 6338FDD1F473467282F88A2C0E94D2DF Ref B: PNQ231110908023 Ref C: 2026-04-10T06:43:02Z'
     status:
       code: 200
       message: OK
@@ -1127,25 +1125,25 @@ interactions:
       User-Agent:
       - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs_file_share000011?api-version=2025-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-nfs-fs000011?api-version=2025-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs_file_share000011","name":"endpoint_nfs_file_share000011","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-04-02T06:14:07.6518233Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-02T06:14:20.6035018Z"},"identity":{"type":"None"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000009","endpointType":"AzureStorageNfsFileShare","endpointKind":"Target","description":"endpointNFSFileShareDesc","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-nfs-fs000011","name":"test-ep-nfs-fs000011","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"suyashchoudhary42@gmail.com","createdByType":"User","createdAt":"2026-04-10T06:42:58.2336558Z","lastModifiedBy":"suyashchoudhary42@gmail.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-10T06:43:03.7775688Z"},"identity":{"type":"None"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000009","endpointType":"AzureStorageNfsFileShare","endpointKind":"Target","description":"endpointNFSFileShareDesc","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '904'
+      - '908'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 02 Apr 2026 06:14:20 GMT
+      - Fri, 10 Apr 2026 06:43:04 GMT
       etag:
-      - '"1600fc2c-0000-3300-0000-69ce093c0000"'
+      - '"0700eb97-0000-0600-0000-69d89bf70000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - de4a0d20-c52f-4995-b1bc-2950b303d092
+      - 66c7f057-8bc4-4898-bfc3-81f0d7c59379
       pragma:
       - no-cache
       strict-transport-security:
@@ -1155,13 +1153,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus2euap/fbd5ba53-846e-4d22-848e-c88c5fb542c0
+      - tenantId=b5d4074e-8ecd-48c8-b903-c88363015a4c,objectId=e5d2dd28-4569-46ac-b01f-c34c29c0e953/westcentralus/67b90e7b-8f30-4174-8baa-c148bd73ef57
       x-ms-providerhub-traffic:
       - 'True'
-      x-ms-throttling-version:
-      - v2
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
       x-msedge-ref:
-      - 'Ref A: E80F4B649BB64561B7DC5782430BB6E5 Ref B: PNQ231110908052 Ref C: 2026-04-02T06:14:21Z'
+      - 'Ref A: 979A033F10A24A319FC449EF04DBBF89 Ref B: PNQ231110906052 Ref C: 2026-04-10T06:43:04Z'
     status:
       code: 200
       message: OK
@@ -1187,25 +1185,25 @@ interactions:
       User-Agent:
       - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs_file_share000011?api-version=2025-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-nfs-fs000011?api-version=2025-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs_file_share000011","name":"endpoint_nfs_file_share000011","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-04-02T06:14:07.6518233Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-02T06:14:22.4959706Z"},"identity":{"type":"None"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000009","endpointType":"AzureStorageNfsFileShare","endpointKind":"Target","description":"endpointNFSFileShareDescUpdate","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-nfs-fs000011","name":"test-ep-nfs-fs000011","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"suyashchoudhary42@gmail.com","createdByType":"User","createdAt":"2026-04-10T06:42:58.2336558Z","lastModifiedBy":"suyashchoudhary42@gmail.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-10T06:43:05.2370055Z"},"identity":{"type":"None"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000009","endpointType":"AzureStorageNfsFileShare","endpointKind":"Target","description":"endpointNFSFileShareDescUpdate","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '910'
+      - '914'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 02 Apr 2026 06:14:22 GMT
+      - Fri, 10 Apr 2026 06:43:05 GMT
       etag:
-      - '"1600012d-0000-3300-0000-69ce093f0000"'
+      - '"0700ee97-0000-0600-0000-69d89bf90000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - d4ca8cea-f176-47dd-8e84-cc1255648229
+      - e8fdb410-e2d4-4b62-b8e3-22f475180cae
       pragma:
       - no-cache
       strict-transport-security:
@@ -1215,15 +1213,15 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus2euap/a97a56a9-27d2-4a1f-b7d3-c9a28372a697
+      - tenantId=b5d4074e-8ecd-48c8-b903-c88363015a4c,objectId=e5d2dd28-4569-46ac-b01f-c34c29c0e953/westcentralus/bb127c2d-2112-45da-8c40-e26cd06789a0
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '799'
-      x-ms-throttling-version:
-      - v2
+      - '199'
       x-msedge-ref:
-      - 'Ref A: 2A570D4737A64CFC849D8365B5269494 Ref B: PNQ231110906060 Ref C: 2026-04-02T06:14:21Z'
+      - 'Ref A: 182A113830794616B587F188DA95A791 Ref B: PNQ231110908029 Ref C: 2026-04-10T06:43:04Z'
     status:
       code: 200
       message: OK
@@ -1250,25 +1248,25 @@ interactions:
       User-Agent:
       - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs000007?api-version=2025-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-nfs000007?api-version=2025-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs000007","name":"endpoint_nfs000007","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-04-02T06:14:24.1694852Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-02T06:14:24.1694852Z"},"properties":{"host":"10.0.0.1","nfsVersion":"NFSv4","export":"exportfolder","endpointType":"NfsMount","endpointKind":"Source","description":"endpointDesc","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-nfs000007","name":"test-ep-nfs000007","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"suyashchoudhary42@gmail.com","createdByType":"User","createdAt":"2026-04-10T06:43:06.9974245Z","lastModifiedBy":"suyashchoudhary42@gmail.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-10T06:43:06.9974245Z"},"properties":{"host":"10.0.0.1","nfsVersion":"NFSv4","export":"exportfolder","endpointType":"NfsMount","endpointKind":"Source","description":"endpointDesc","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '685'
+      - '705'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 02 Apr 2026 06:14:23 GMT
+      - Fri, 10 Apr 2026 06:43:06 GMT
       etag:
-      - '"1600032d-0000-3300-0000-69ce09400000"'
+      - '"0700f097-0000-0600-0000-69d89bfb0000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - 71b430e6-acfa-4579-9ae6-429975bd951b
+      - 6d5ace21-9ac9-4b1d-ab31-99e1f3bad784
       pragma:
       - no-cache
       strict-transport-security:
@@ -1278,15 +1276,15 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus2euap/82c29fdc-b680-4ca9-aadb-98f445fd2893
+      - tenantId=b5d4074e-8ecd-48c8-b903-c88363015a4c,objectId=e5d2dd28-4569-46ac-b01f-c34c29c0e953/westcentralus/235ac8fb-9447-4af5-bae3-fd00f9014c14
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '799'
-      x-ms-throttling-version:
-      - v2
+      - '199'
       x-msedge-ref:
-      - 'Ref A: D29C51B1FEB8412684910C0EA08FD3AE Ref B: PNQ231110909054 Ref C: 2026-04-02T06:14:23Z'
+      - 'Ref A: 214E1CC3E49E47D392A686C395E740D8 Ref B: PNQ231110909025 Ref C: 2026-04-10T06:43:06Z'
     status:
       code: 200
       message: OK
@@ -1306,25 +1304,25 @@ interactions:
       User-Agent:
       - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs000007?api-version=2025-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-nfs000007?api-version=2025-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs000007","name":"endpoint_nfs000007","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-04-02T06:14:24.1694852Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-02T06:14:24.1694852Z"},"properties":{"host":"10.0.0.1","nfsVersion":"NFSv4","export":"exportfolder","endpointType":"NfsMount","endpointKind":"Source","description":"endpointDesc","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-nfs000007","name":"test-ep-nfs000007","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"suyashchoudhary42@gmail.com","createdByType":"User","createdAt":"2026-04-10T06:43:06.9974245Z","lastModifiedBy":"suyashchoudhary42@gmail.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-10T06:43:06.9974245Z"},"properties":{"host":"10.0.0.1","nfsVersion":"NFSv4","export":"exportfolder","endpointType":"NfsMount","endpointKind":"Source","description":"endpointDesc","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '685'
+      - '705'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 02 Apr 2026 06:14:24 GMT
+      - Fri, 10 Apr 2026 06:43:08 GMT
       etag:
-      - '"1600032d-0000-3300-0000-69ce09400000"'
+      - '"0700f097-0000-0600-0000-69d89bfb0000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - ee9168e3-f52f-499e-840c-88f0338a6270
+      - 75c0494c-cbba-44e1-a76c-cf6ebb2c57a2
       pragma:
       - no-cache
       strict-transport-security:
@@ -1334,13 +1332,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus2euap/16b7dd81-bd3c-4428-9295-fe1ad43877e2
+      - tenantId=b5d4074e-8ecd-48c8-b903-c88363015a4c,objectId=e5d2dd28-4569-46ac-b01f-c34c29c0e953/westcentralus/8e994e1e-870b-40b1-8555-557627e1f2d6
       x-ms-providerhub-traffic:
       - 'True'
-      x-ms-throttling-version:
-      - v2
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
       x-msedge-ref:
-      - 'Ref A: C4D8568B025C4B90823D2F117CC29647 Ref B: PNQ231110909062 Ref C: 2026-04-02T06:14:25Z'
+      - 'Ref A: D520599720E14794BE4ACEDB3632AE89 Ref B: PNQ231110906062 Ref C: 2026-04-10T06:43:07Z'
     status:
       code: 200
       message: OK
@@ -1360,25 +1358,25 @@ interactions:
       User-Agent:
       - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs000007?api-version=2025-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-nfs000007?api-version=2025-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs000007","name":"endpoint_nfs000007","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-04-02T06:14:24.1694852Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-02T06:14:24.1694852Z"},"properties":{"host":"10.0.0.1","nfsVersion":"NFSv4","export":"exportfolder","endpointType":"NfsMount","endpointKind":"Source","description":"endpointDesc","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-nfs000007","name":"test-ep-nfs000007","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"suyashchoudhary42@gmail.com","createdByType":"User","createdAt":"2026-04-10T06:43:06.9974245Z","lastModifiedBy":"suyashchoudhary42@gmail.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-10T06:43:06.9974245Z"},"properties":{"host":"10.0.0.1","nfsVersion":"NFSv4","export":"exportfolder","endpointType":"NfsMount","endpointKind":"Source","description":"endpointDesc","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '685'
+      - '705'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 02 Apr 2026 06:14:25 GMT
+      - Fri, 10 Apr 2026 06:43:08 GMT
       etag:
-      - '"1600032d-0000-3300-0000-69ce09400000"'
+      - '"0700f097-0000-0600-0000-69d89bfb0000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - 0112d17e-1094-461a-b22a-89725bdbf55e
+      - 38d27bd9-5640-4944-9738-e8eec0912df0
       pragma:
       - no-cache
       strict-transport-security:
@@ -1388,13 +1386,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus2euap/0c262404-a960-4e7f-8d0d-1e649b18d77b
+      - tenantId=b5d4074e-8ecd-48c8-b903-c88363015a4c,objectId=e5d2dd28-4569-46ac-b01f-c34c29c0e953/westcentralus/33042c9f-3026-4af0-ab10-304e2cec175c
       x-ms-providerhub-traffic:
       - 'True'
-      x-ms-throttling-version:
-      - v2
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
       x-msedge-ref:
-      - 'Ref A: 38B43844A33F4FBD8D400AEC39A7B084 Ref B: PNQ231110906034 Ref C: 2026-04-02T06:14:25Z'
+      - 'Ref A: 4C5AC1853A624A4EAEA065E9D30B08E9 Ref B: PNQ231110907052 Ref C: 2026-04-10T06:43:08Z'
     status:
       code: 200
       message: OK
@@ -1420,25 +1418,25 @@ interactions:
       User-Agent:
       - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs000007?api-version=2025-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-nfs000007?api-version=2025-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs000007","name":"endpoint_nfs000007","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-04-02T06:14:24.1694852Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-02T06:14:27.0026599Z"},"properties":{"host":"10.0.0.1","nfsVersion":"NFSv4","export":"exportfolder","endpointType":"NfsMount","endpointKind":"Source","description":"endpointDescUpdate","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-nfs000007","name":"test-ep-nfs000007","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"suyashchoudhary42@gmail.com","createdByType":"User","createdAt":"2026-04-10T06:43:06.9974245Z","lastModifiedBy":"suyashchoudhary42@gmail.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-10T06:43:09.5069368Z"},"properties":{"host":"10.0.0.1","nfsVersion":"NFSv4","export":"exportfolder","endpointType":"NfsMount","endpointKind":"Source","description":"endpointDescUpdate","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '691'
+      - '711'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 02 Apr 2026 06:14:27 GMT
+      - Fri, 10 Apr 2026 06:43:09 GMT
       etag:
-      - '"1600092d-0000-3300-0000-69ce09430000"'
+      - '"0700f497-0000-0600-0000-69d89bfd0000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - 59068cce-1f01-48cd-a5ee-bd992d742521
+      - dba5d565-b2e6-45a2-85d7-e9b554a9129f
       pragma:
       - no-cache
       strict-transport-security:
@@ -1448,15 +1446,15 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus2euap/c8dcac85-caad-4ff5-bd23-08229623d7d9
+      - tenantId=b5d4074e-8ecd-48c8-b903-c88363015a4c,objectId=e5d2dd28-4569-46ac-b01f-c34c29c0e953/westcentralus/91c62d5f-03f3-4232-8f31-a2aab87d452f
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '799'
-      x-ms-throttling-version:
-      - v2
+      - '199'
       x-msedge-ref:
-      - 'Ref A: EDF871F3501E422FADD265A4F4CB756A Ref B: PNQ231110906062 Ref C: 2026-04-02T06:14:26Z'
+      - 'Ref A: BA79395566114A6BBF32255D03D0A6AF Ref B: PNQ231110908036 Ref C: 2026-04-10T06:43:09Z'
     status:
       code: 200
       message: OK
@@ -1484,25 +1482,25 @@ interactions:
       User-Agent:
       - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_smb000008?api-version=2025-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-smb000008?api-version=2025-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_smb000008","name":"endpoint_smb000008","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-04-02T06:14:28.2003188Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-02T06:14:28.2003188Z"},"properties":{"host":"10.0.0.2","shareName":"smbshare000010","credentials":{"usernameUri":"https://smb-demo-kv.vault.azure.net/secrets/username","passwordUri":"https://smb-demo-kv.vault.azure.net/secrets/password","type":"AzureKeyVaultSmb"},"endpointType":"SmbMount","endpointKind":"Source","description":"endpointSmbDesc","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-smb000008","name":"test-ep-smb000008","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"suyashchoudhary42@gmail.com","createdByType":"User","createdAt":"2026-04-10T06:43:10.9875397Z","lastModifiedBy":"suyashchoudhary42@gmail.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-10T06:43:10.9875397Z"},"properties":{"host":"10.0.0.2","shareName":"smbshare000010","credentials":{"usernameUri":"https://smb-demo-kv.vault.azure.net/secrets/username","passwordUri":"https://smb-demo-kv.vault.azure.net/secrets/password","type":"AzureKeyVaultSmb"},"endpointType":"SmbMount","endpointKind":"Source","description":"endpointSmbDesc","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '852'
+      - '872'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 02 Apr 2026 06:14:27 GMT
+      - Fri, 10 Apr 2026 06:43:10 GMT
       etag:
-      - '"16000b2d-0000-3300-0000-69ce09440000"'
+      - '"0700f797-0000-0600-0000-69d89bff0000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - 3917a41f-e4eb-4814-907a-0caf6bcf3ac5
+      - fbba4988-fefc-423c-97f0-3faadcd93aee
       pragma:
       - no-cache
       strict-transport-security:
@@ -1512,15 +1510,15 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus2euap/3da8846e-85ce-488b-921e-77f63e20d6b5
+      - tenantId=b5d4074e-8ecd-48c8-b903-c88363015a4c,objectId=e5d2dd28-4569-46ac-b01f-c34c29c0e953/westcentralus/840acd0d-9e65-493e-84c7-167059b756ab
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '799'
-      x-ms-throttling-version:
-      - v2
+      - '199'
       x-msedge-ref:
-      - 'Ref A: 59951A39727744BCB83CBDDD4D75D5D5 Ref B: PNQ231110908036 Ref C: 2026-04-02T06:14:27Z'
+      - 'Ref A: A7E9B52A4987423CBFC0E4151F5A66B7 Ref B: PNQ231110907060 Ref C: 2026-04-10T06:43:10Z'
     status:
       code: 200
       message: OK
@@ -1540,25 +1538,25 @@ interactions:
       User-Agent:
       - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_smb000008?api-version=2025-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-smb000008?api-version=2025-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_smb000008","name":"endpoint_smb000008","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-04-02T06:14:28.2003188Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-02T06:14:28.2003188Z"},"properties":{"host":"10.0.0.2","shareName":"smbshare000010","credentials":{"usernameUri":"https://smb-demo-kv.vault.azure.net/secrets/username","passwordUri":"https://smb-demo-kv.vault.azure.net/secrets/password","type":"AzureKeyVaultSmb"},"endpointType":"SmbMount","endpointKind":"Source","description":"endpointSmbDesc","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-smb000008","name":"test-ep-smb000008","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"suyashchoudhary42@gmail.com","createdByType":"User","createdAt":"2026-04-10T06:43:10.9875397Z","lastModifiedBy":"suyashchoudhary42@gmail.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-10T06:43:10.9875397Z"},"properties":{"host":"10.0.0.2","shareName":"smbshare000010","credentials":{"usernameUri":"https://smb-demo-kv.vault.azure.net/secrets/username","passwordUri":"https://smb-demo-kv.vault.azure.net/secrets/password","type":"AzureKeyVaultSmb"},"endpointType":"SmbMount","endpointKind":"Source","description":"endpointSmbDesc","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '852'
+      - '872'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 02 Apr 2026 06:14:29 GMT
+      - Fri, 10 Apr 2026 06:43:11 GMT
       etag:
-      - '"16000b2d-0000-3300-0000-69ce09440000"'
+      - '"0700f797-0000-0600-0000-69d89bff0000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - 660ec72f-8c2e-4880-ae0a-9a0857bf6e38
+      - dfe029bc-6544-4660-b263-938c24b8fb5a
       pragma:
       - no-cache
       strict-transport-security:
@@ -1568,13 +1566,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus2euap/fed542eb-9ff1-4e4c-8249-a812267dacd5
+      - tenantId=b5d4074e-8ecd-48c8-b903-c88363015a4c,objectId=e5d2dd28-4569-46ac-b01f-c34c29c0e953/westcentralus/1515b70e-3ffb-405a-9c43-754e2aa00fea
       x-ms-providerhub-traffic:
       - 'True'
-      x-ms-throttling-version:
-      - v2
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
       x-msedge-ref:
-      - 'Ref A: 22D131427DF34C6CB2F18ECF4553C483 Ref B: PNQ231110906060 Ref C: 2026-04-02T06:14:28Z'
+      - 'Ref A: 908A7554307642AF82F33304C7BD57F2 Ref B: PNQ231110906034 Ref C: 2026-04-10T06:43:11Z'
     status:
       code: 200
       message: OK
@@ -1594,25 +1592,25 @@ interactions:
       User-Agent:
       - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_smb000008?api-version=2025-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-smb000008?api-version=2025-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_smb000008","name":"endpoint_smb000008","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-04-02T06:14:28.2003188Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-02T06:14:28.2003188Z"},"properties":{"host":"10.0.0.2","shareName":"smbshare000010","credentials":{"usernameUri":"https://smb-demo-kv.vault.azure.net/secrets/username","passwordUri":"https://smb-demo-kv.vault.azure.net/secrets/password","type":"AzureKeyVaultSmb"},"endpointType":"SmbMount","endpointKind":"Source","description":"endpointSmbDesc","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-smb000008","name":"test-ep-smb000008","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"suyashchoudhary42@gmail.com","createdByType":"User","createdAt":"2026-04-10T06:43:10.9875397Z","lastModifiedBy":"suyashchoudhary42@gmail.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-10T06:43:10.9875397Z"},"properties":{"host":"10.0.0.2","shareName":"smbshare000010","credentials":{"usernameUri":"https://smb-demo-kv.vault.azure.net/secrets/username","passwordUri":"https://smb-demo-kv.vault.azure.net/secrets/password","type":"AzureKeyVaultSmb"},"endpointType":"SmbMount","endpointKind":"Source","description":"endpointSmbDesc","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '852'
+      - '872'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 02 Apr 2026 06:14:29 GMT
+      - Fri, 10 Apr 2026 06:43:12 GMT
       etag:
-      - '"16000b2d-0000-3300-0000-69ce09440000"'
+      - '"0700f797-0000-0600-0000-69d89bff0000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - 3a9d92b2-3469-42bb-88a5-6b3a6eba6acd
+      - 280f7da4-11ba-441d-8ff3-cdba6c6a68d7
       pragma:
       - no-cache
       strict-transport-security:
@@ -1622,13 +1620,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus2euap/fd6c772c-9d91-42d1-bca2-e7f0a26a1db4
+      - tenantId=b5d4074e-8ecd-48c8-b903-c88363015a4c,objectId=e5d2dd28-4569-46ac-b01f-c34c29c0e953/westcentralus/0a3606a0-c75d-460f-81fc-1da88580608c
       x-ms-providerhub-traffic:
       - 'True'
-      x-ms-throttling-version:
-      - v2
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
       x-msedge-ref:
-      - 'Ref A: 4EAFEC832B394B42AEE30A565C4BDA84 Ref B: PNQ231110909060 Ref C: 2026-04-02T06:14:29Z'
+      - 'Ref A: EF05737CD50844FABAED0E41777CBF6E Ref B: PNQ231110906042 Ref C: 2026-04-10T06:43:12Z'
     status:
       code: 200
       message: OK
@@ -1654,25 +1652,25 @@ interactions:
       User-Agent:
       - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_smb000008?api-version=2025-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-smb000008?api-version=2025-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_smb000008","name":"endpoint_smb000008","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-04-02T06:14:28.2003188Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-02T06:14:30.7256463Z"},"properties":{"host":"10.0.0.2","shareName":"smbshare000010","credentials":{"type":"AzureKeyVaultSmb"},"endpointType":"SmbMount","endpointKind":"Source","description":"endpointSmbDescUpdate","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-smb000008","name":"test-ep-smb000008","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"suyashchoudhary42@gmail.com","createdByType":"User","createdAt":"2026-04-10T06:43:10.9875397Z","lastModifiedBy":"suyashchoudhary42@gmail.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-10T06:43:13.4056942Z"},"properties":{"host":"10.0.0.2","shareName":"smbshare000010","credentials":{"type":"AzureKeyVaultSmb"},"endpointType":"SmbMount","endpointKind":"Source","description":"endpointSmbDescUpdate","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '720'
+      - '740'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 02 Apr 2026 06:14:31 GMT
+      - Fri, 10 Apr 2026 06:43:13 GMT
       etag:
-      - '"16000c2d-0000-3300-0000-69ce09460000"'
+      - '"07000098-0000-0600-0000-69d89c010000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - 755dc347-51ec-47f3-8b4b-f9ac0528e3d1
+      - b8d3b028-9a9d-4ab0-b8ef-9e928bef85f6
       pragma:
       - no-cache
       strict-transport-security:
@@ -1682,15 +1680,15 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus2euap/6accf32a-ab12-48be-ab19-2b45ee636db9
+      - tenantId=b5d4074e-8ecd-48c8-b903-c88363015a4c,objectId=e5d2dd28-4569-46ac-b01f-c34c29c0e953/westcentralus/0630227d-ee64-440f-93e8-55955d326e9c
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '799'
-      x-ms-throttling-version:
-      - v2
+      - '199'
       x-msedge-ref:
-      - 'Ref A: 580D468F43104754A1B5D498D15F6235 Ref B: PNQ231110908029 Ref C: 2026-04-02T06:14:30Z'
+      - 'Ref A: 7BAF2D18748C45FE86E97535DBD660E1 Ref B: PNQ231110908025 Ref C: 2026-04-10T06:43:12Z'
     status:
       code: 200
       message: OK
@@ -1713,20 +1711,20 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints?api-version=2025-12-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_container000005","name":"endpoint_container000005","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-04-02T06:13:48.7227097Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-02T06:13:53.8821064Z"},"identity":{"principalId":"a2d4073a-b998-493b-911c-6c9cfaeccce8","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","blobContainerName":"container000004","endpointType":"AzureStorageBlobContainer","endpointKind":"Target","description":"endpointDescUpdate","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_file_share000006","name":"endpoint_file_share000006","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-04-02T06:13:58.0728811Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-02T06:14:06.3527782Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000009","endpointType":"AzureStorageSmbFileShare","endpointKind":"Target","description":"endpointFileShareDescUpdate","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs_file_share000011","name":"endpoint_nfs_file_share000011","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-04-02T06:14:07.6518233Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-02T06:14:22.4959706Z"},"identity":{"type":"None"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000009","endpointType":"AzureStorageNfsFileShare","endpointKind":"Target","description":"endpointNFSFileShareDescUpdate","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs000007","name":"endpoint_nfs000007","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-04-02T06:14:24.1694852Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-02T06:14:27.0026599Z"},"properties":{"host":"10.0.0.1","nfsVersion":"NFSv4","export":"exportfolder","endpointType":"NfsMount","endpointKind":"Source","description":"endpointDescUpdate","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_smb000008","name":"endpoint_smb000008","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-04-02T06:14:28.2003188Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-02T06:14:30.7256463Z"},"properties":{"host":"10.0.0.2","shareName":"smbshare000010","credentials":{"type":"AzureKeyVaultSmb"},"endpointType":"SmbMount","endpointKind":"Source","description":"endpointSmbDescUpdate","provisioningState":"Succeeded"}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-container000005","name":"test-ep-container000005","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"suyashchoudhary42@gmail.com","createdByType":"User","createdAt":"2026-04-10T06:42:46.7499486Z","lastModifiedBy":"suyashchoudhary42@gmail.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-10T06:42:52.885333Z"},"identity":{"principalId":"0affcaa4-7b85-4658-aa7d-f7bad4030a88","tenantId":"b5d4074e-8ecd-48c8-b903-c88363015a4c","type":"SystemAssigned"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","blobContainerName":"container000004","endpointType":"AzureStorageBlobContainer","endpointKind":"Target","description":"endpointDescUpdate","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-fileshare000006","name":"test-ep-fileshare000006","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"suyashchoudhary42@gmail.com","createdByType":"User","createdAt":"2026-04-10T06:42:55.390171Z","lastModifiedBy":"suyashchoudhary42@gmail.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-10T06:42:57.3407558Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000009","endpointType":"AzureStorageSmbFileShare","endpointKind":"Target","description":"endpointFileShareDescUpdate","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-nfs-fs000011","name":"test-ep-nfs-fs000011","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"suyashchoudhary42@gmail.com","createdByType":"User","createdAt":"2026-04-10T06:42:58.2336558Z","lastModifiedBy":"suyashchoudhary42@gmail.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-10T06:43:05.2370055Z"},"identity":{"type":"None"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000009","endpointType":"AzureStorageNfsFileShare","endpointKind":"Target","description":"endpointNFSFileShareDescUpdate","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-nfs000007","name":"test-ep-nfs000007","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"suyashchoudhary42@gmail.com","createdByType":"User","createdAt":"2026-04-10T06:43:06.9974245Z","lastModifiedBy":"suyashchoudhary42@gmail.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-10T06:43:09.5069368Z"},"properties":{"host":"10.0.0.1","nfsVersion":"NFSv4","export":"exportfolder","endpointType":"NfsMount","endpointKind":"Source","description":"endpointDescUpdate","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-smb000008","name":"test-ep-smb000008","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"suyashchoudhary42@gmail.com","createdByType":"User","createdAt":"2026-04-10T06:43:10.9875397Z","lastModifiedBy":"suyashchoudhary42@gmail.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-10T06:43:13.4056942Z"},"properties":{"host":"10.0.0.2","shareName":"smbshare000010","credentials":{"type":"AzureKeyVaultSmb"},"endpointType":"SmbMount","endpointKind":"Source","description":"endpointSmbDescUpdate","provisioningState":"Succeeded"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '4215'
+      - '4295'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 02 Apr 2026 06:14:32 GMT
+      - Fri, 10 Apr 2026 06:43:14 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - d3edfa2a-07c7-490e-8063-aa65a2a80deb
+      - e55bd418-4bb5-413b-b817-cdc7979b44be
       pragma:
       - no-cache
       strict-transport-security:
@@ -1736,13 +1734,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus2euap/82261c5b-1621-4d12-9c65-35acec11b6c1
+      - tenantId=b5d4074e-8ecd-48c8-b903-c88363015a4c,objectId=e5d2dd28-4569-46ac-b01f-c34c29c0e953/westcentralus/e9d560b4-a74f-40dd-b493-4a28c78e957f
       x-ms-providerhub-traffic:
       - 'True'
-      x-ms-throttling-version:
-      - v2
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3748'
       x-msedge-ref:
-      - 'Ref A: F2DD1C8BE73C47F4B8D4DE78D43B9B2C Ref B: PNQ231110908023 Ref C: 2026-04-02T06:14:32Z'
+      - 'Ref A: 9D254B0CE6C34C518DF52699BB587FF6 Ref B: PNQ231110906052 Ref C: 2026-04-10T06:43:14Z'
     status:
       code: 200
       message: OK
@@ -1764,7 +1762,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs000007?api-version=2025-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-nfs000007?api-version=2025-12-01
   response:
     body:
       string: ''
@@ -1774,11 +1772,11 @@ interactions:
       content-length:
       - '0'
       date:
-      - Thu, 02 Apr 2026 06:14:34 GMT
+      - Fri, 10 Apr 2026 06:43:15 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - 58c0d999-3051-40f3-ad04-feeb10b96685
+      - 8c45fa97-dbd9-48f1-a432-39831c374995
       pragma:
       - no-cache
       strict-transport-security:
@@ -1788,15 +1786,15 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus2euap/5bb76b16-fb02-4b36-b6c6-2cb9fb100ef2
+      - tenantId=b5d4074e-8ecd-48c8-b903-c88363015a4c,objectId=e5d2dd28-4569-46ac-b01f-c34c29c0e953/westcentralus/e4e10d17-39a5-43d6-b2ec-cadcf2aa95eb
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '799'
-      x-ms-throttling-version:
-      - v2
+      - '199'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '2999'
       x-msedge-ref:
-      - 'Ref A: 6511AD55896C494FB092FBE93BE0AD8F Ref B: PNQ231110908025 Ref C: 2026-04-02T06:14:33Z'
+      - 'Ref A: C38110DFB9934A28B95746B48325E66E Ref B: PNQ231110906040 Ref C: 2026-04-10T06:43:15Z'
     status:
       code: 200
       message: OK
@@ -1819,20 +1817,20 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints?api-version=2025-12-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_container000005","name":"endpoint_container000005","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-04-02T06:13:48.7227097Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-02T06:13:53.8821064Z"},"identity":{"principalId":"a2d4073a-b998-493b-911c-6c9cfaeccce8","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","blobContainerName":"container000004","endpointType":"AzureStorageBlobContainer","endpointKind":"Target","description":"endpointDescUpdate","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_file_share000006","name":"endpoint_file_share000006","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-04-02T06:13:58.0728811Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-02T06:14:06.3527782Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000009","endpointType":"AzureStorageSmbFileShare","endpointKind":"Target","description":"endpointFileShareDescUpdate","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_nfs_file_share000011","name":"endpoint_nfs_file_share000011","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-04-02T06:14:07.6518233Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-02T06:14:22.4959706Z"},"identity":{"type":"None"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000009","endpointType":"AzureStorageNfsFileShare","endpointKind":"Target","description":"endpointNFSFileShareDescUpdate","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/endpoint_smb000008","name":"endpoint_smb000008","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-04-02T06:14:28.2003188Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-02T06:14:30.7256463Z"},"properties":{"host":"10.0.0.2","shareName":"smbshare000010","credentials":{"type":"AzureKeyVaultSmb"},"endpointType":"SmbMount","endpointKind":"Source","description":"endpointSmbDescUpdate","provisioningState":"Succeeded"}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-container000005","name":"test-ep-container000005","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"suyashchoudhary42@gmail.com","createdByType":"User","createdAt":"2026-04-10T06:42:46.7499486Z","lastModifiedBy":"suyashchoudhary42@gmail.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-10T06:42:52.885333Z"},"identity":{"principalId":"0affcaa4-7b85-4658-aa7d-f7bad4030a88","tenantId":"b5d4074e-8ecd-48c8-b903-c88363015a4c","type":"SystemAssigned"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","blobContainerName":"container000004","endpointType":"AzureStorageBlobContainer","endpointKind":"Target","description":"endpointDescUpdate","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-fileshare000006","name":"test-ep-fileshare000006","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"suyashchoudhary42@gmail.com","createdByType":"User","createdAt":"2026-04-10T06:42:55.390171Z","lastModifiedBy":"suyashchoudhary42@gmail.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-10T06:42:57.3407558Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000009","endpointType":"AzureStorageSmbFileShare","endpointKind":"Target","description":"endpointFileShareDescUpdate","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-nfs-fs000011","name":"test-ep-nfs-fs000011","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"suyashchoudhary42@gmail.com","createdByType":"User","createdAt":"2026-04-10T06:42:58.2336558Z","lastModifiedBy":"suyashchoudhary42@gmail.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-10T06:43:05.2370055Z"},"identity":{"type":"None"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000009","endpointType":"AzureStorageNfsFileShare","endpointKind":"Target","description":"endpointNFSFileShareDescUpdate","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-smb000008","name":"test-ep-smb000008","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"suyashchoudhary42@gmail.com","createdByType":"User","createdAt":"2026-04-10T06:43:10.9875397Z","lastModifiedBy":"suyashchoudhary42@gmail.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-10T06:43:13.4056942Z"},"properties":{"host":"10.0.0.2","shareName":"smbshare000010","credentials":{"type":"AzureKeyVaultSmb"},"endpointType":"SmbMount","endpointKind":"Source","description":"endpointSmbDescUpdate","provisioningState":"Succeeded"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '3523'
+      - '3583'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 02 Apr 2026 06:14:34 GMT
+      - Fri, 10 Apr 2026 06:43:15 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - 08ef233d-db62-4a28-acd0-450a5600a5ef
+      - 101e265a-e5d7-48d0-8f61-1e21927f6567
       pragma:
       - no-cache
       strict-transport-security:
@@ -1842,13 +1840,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus2euap/922640e8-257c-4173-bbc6-7fc8682f2dc7
+      - tenantId=b5d4074e-8ecd-48c8-b903-c88363015a4c,objectId=e5d2dd28-4569-46ac-b01f-c34c29c0e953/westcentralus/e7c58229-c54d-488d-ae50-7d4744a3648e
       x-ms-providerhub-traffic:
       - 'True'
-      x-ms-throttling-version:
-      - v2
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
       x-msedge-ref:
-      - 'Ref A: 4B127B664BF447AA972BD84F69B712B2 Ref B: PNQ231110906025 Ref C: 2026-04-02T06:14:34Z'
+      - 'Ref A: F53929B0D21142B1A9CFA73812AB5EA9 Ref B: PNQ231110907054 Ref C: 2026-04-10T06:43:16Z'
     status:
       code: 200
       message: OK
@@ -1874,25 +1872,25 @@ interactions:
       User-Agent:
       - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/ep_container_nk000014?api-version=2025-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-cnt-nk000014?api-version=2025-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/ep_container_nk000014","name":"ep_container_nk000014","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-04-02T06:14:36.0800871Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-02T06:14:36.0800871Z"},"identity":{"principalId":"f3476321-c0a0-4cf4-802f-13de962bc46a","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","blobContainerName":"container000004","endpointType":"AzureStorageBlobContainer","endpointKind":"Target","description":"endpointNoKind","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-cnt-nk000014","name":"test-ep-cnt-nk000014","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"suyashchoudhary42@gmail.com","createdByType":"User","createdAt":"2026-04-10T06:43:17.4578645Z","lastModifiedBy":"suyashchoudhary42@gmail.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-10T06:43:17.4578645Z"},"identity":{"principalId":"bb7de51f-1508-434f-a7e4-a45ba0754b5d","tenantId":"b5d4074e-8ecd-48c8-b903-c88363015a4c","type":"SystemAssigned"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","blobContainerName":"container000004","endpointType":"AzureStorageBlobContainer","endpointKind":"Target","description":"endpointNoKind","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '996'
+      - '1016'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 02 Apr 2026 06:14:37 GMT
+      - Fri, 10 Apr 2026 06:43:17 GMT
       etag:
-      - '"1600132d-0000-3300-0000-69ce094d0000"'
+      - '"07000d98-0000-0600-0000-69d89c060000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - 789072d5-0b55-4711-ba9c-2cd849dc0cd0
+      - 2082e661-1348-4464-bc14-fb0c8cab70d4
       pragma:
       - no-cache
       strict-transport-security:
@@ -1902,15 +1900,15 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus2euap/421bebd0-7b0d-4703-9e81-5a753d67123f
+      - tenantId=b5d4074e-8ecd-48c8-b903-c88363015a4c,objectId=e5d2dd28-4569-46ac-b01f-c34c29c0e953/westcentralus/b1aa1088-542f-47c6-9f76-45a972ea38ad
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '799'
-      x-ms-throttling-version:
-      - v2
+      - '199'
       x-msedge-ref:
-      - 'Ref A: 5B4DD92CB5D84BC5BE62DC50447F4E7F Ref B: PNQ231110906029 Ref C: 2026-04-02T06:14:35Z'
+      - 'Ref A: B2A603AE8A0D49189AD5E8094D429393 Ref B: PNQ231110907025 Ref C: 2026-04-10T06:43:17Z'
     status:
       code: 200
       message: OK
@@ -1930,25 +1928,25 @@ interactions:
       User-Agent:
       - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/ep_container_nk000014?api-version=2025-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-cnt-nk000014?api-version=2025-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/ep_container_nk000014","name":"ep_container_nk000014","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-04-02T06:14:36.0800871Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-02T06:14:36.0800871Z"},"identity":{"principalId":"f3476321-c0a0-4cf4-802f-13de962bc46a","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","blobContainerName":"container000004","endpointType":"AzureStorageBlobContainer","endpointKind":"Target","description":"endpointNoKind","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-cnt-nk000014","name":"test-ep-cnt-nk000014","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"suyashchoudhary42@gmail.com","createdByType":"User","createdAt":"2026-04-10T06:43:17.4578645Z","lastModifiedBy":"suyashchoudhary42@gmail.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-10T06:43:17.4578645Z"},"identity":{"principalId":"bb7de51f-1508-434f-a7e4-a45ba0754b5d","tenantId":"b5d4074e-8ecd-48c8-b903-c88363015a4c","type":"SystemAssigned"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","blobContainerName":"container000004","endpointType":"AzureStorageBlobContainer","endpointKind":"Target","description":"endpointNoKind","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '996'
+      - '1016'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 02 Apr 2026 06:14:37 GMT
+      - Fri, 10 Apr 2026 06:43:19 GMT
       etag:
-      - '"1600132d-0000-3300-0000-69ce094d0000"'
+      - '"07000d98-0000-0600-0000-69d89c060000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - 94871378-3920-4ce1-9de6-d27bd03afd44
+      - e811b6cf-c6ed-4f81-839c-8cca4eaf409c
       pragma:
       - no-cache
       strict-transport-security:
@@ -1958,13 +1956,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus2euap/ada9fbfa-6c6a-42a9-bc8b-eeebcfb87ea6
+      - tenantId=b5d4074e-8ecd-48c8-b903-c88363015a4c,objectId=e5d2dd28-4569-46ac-b01f-c34c29c0e953/westcentralus/d8d155e3-f528-44f3-8c28-6ad218c41bcb
       x-ms-providerhub-traffic:
       - 'True'
-      x-ms-throttling-version:
-      - v2
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
       x-msedge-ref:
-      - 'Ref A: BCACD66B815B4E519000CC4A570F7851 Ref B: PNQ231110909054 Ref C: 2026-04-02T06:14:38Z'
+      - 'Ref A: EB93CB1CFAB4456E83A6FE022C00027F Ref B: PNQ231110908025 Ref C: 2026-04-10T06:43:18Z'
     status:
       code: 200
       message: OK
@@ -1986,7 +1984,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/ep_container_nk000014?api-version=2025-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-cnt-nk000014?api-version=2025-12-01
   response:
     body:
       string: ''
@@ -1996,11 +1994,11 @@ interactions:
       content-length:
       - '0'
       date:
-      - Thu, 02 Apr 2026 06:14:40 GMT
+      - Fri, 10 Apr 2026 06:43:19 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - 1e75c43e-8f2c-47c2-b2da-8685641714e6
+      - 547e97e5-fb8f-46eb-9146-e7dc8cb1706a
       pragma:
       - no-cache
       strict-transport-security:
@@ -2010,15 +2008,15 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus2euap/b2a7f497-2ae5-47d1-9255-d920cc241ba6
+      - tenantId=b5d4074e-8ecd-48c8-b903-c88363015a4c,objectId=e5d2dd28-4569-46ac-b01f-c34c29c0e953/westcentralus/316260e4-a73a-49e5-97d1-362d6c23dd23
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '799'
-      x-ms-throttling-version:
-      - v2
+      - '199'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '2999'
       x-msedge-ref:
-      - 'Ref A: BFE42FAAA92F42F59EFA614796BF71CB Ref B: PNQ231110908025 Ref C: 2026-04-02T06:14:39Z'
+      - 'Ref A: 95A29F734D634787930E3B21DF91E522 Ref B: PNQ231110907062 Ref C: 2026-04-10T06:43:19Z'
     status:
       code: 200
       message: OK
@@ -2043,25 +2041,25 @@ interactions:
       User-Agent:
       - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/ep_nfs_nk000015?api-version=2025-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-nfs-nk000015?api-version=2025-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/ep_nfs_nk000015","name":"ep_nfs_nk000015","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-04-02T06:14:41.0650439Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-02T06:14:41.0650439Z"},"properties":{"host":"10.0.0.1","nfsVersion":"NFSv4","export":"exportfolder","endpointType":"NfsMount","endpointKind":"Source","description":"endpointNfsNoKind","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-nfs-nk000015","name":"test-ep-nfs-nk000015","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"suyashchoudhary42@gmail.com","createdByType":"User","createdAt":"2026-04-10T06:43:20.9493481Z","lastModifiedBy":"suyashchoudhary42@gmail.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-10T06:43:20.9493481Z"},"properties":{"host":"10.0.0.1","nfsVersion":"NFSv4","export":"exportfolder","endpointType":"NfsMount","endpointKind":"Source","description":"endpointNfsNoKind","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '684'
+      - '716'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 02 Apr 2026 06:14:40 GMT
+      - Fri, 10 Apr 2026 06:43:21 GMT
       etag:
-      - '"1600182d-0000-3300-0000-69ce09510000"'
+      - '"07001998-0000-0600-0000-69d89c090000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - bae13606-4614-460d-a65f-c89266cb9e4b
+      - 6c5e700b-15e2-4158-9dc4-9c60797d5917
       pragma:
       - no-cache
       strict-transport-security:
@@ -2071,15 +2069,15 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus2euap/df6af639-d0f5-496e-be1c-70ad44ca58de
+      - tenantId=b5d4074e-8ecd-48c8-b903-c88363015a4c,objectId=e5d2dd28-4569-46ac-b01f-c34c29c0e953/westcentralus/a561d808-57bd-40af-a65e-a5fd0543b5d1
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '799'
-      x-ms-throttling-version:
-      - v2
+      - '199'
       x-msedge-ref:
-      - 'Ref A: FB19BC16A4CB40C9AE36832CE2051B32 Ref B: PNQ231110909042 Ref C: 2026-04-02T06:14:40Z'
+      - 'Ref A: B81618A96C814AD78FA11142B99BF043 Ref B: PNQ231110909060 Ref C: 2026-04-10T06:43:20Z'
     status:
       code: 200
       message: OK
@@ -2099,25 +2097,25 @@ interactions:
       User-Agent:
       - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/ep_nfs_nk000015?api-version=2025-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-nfs-nk000015?api-version=2025-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/ep_nfs_nk000015","name":"ep_nfs_nk000015","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-04-02T06:14:41.0650439Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-02T06:14:41.0650439Z"},"properties":{"host":"10.0.0.1","nfsVersion":"NFSv4","export":"exportfolder","endpointType":"NfsMount","endpointKind":"Source","description":"endpointNfsNoKind","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-nfs-nk000015","name":"test-ep-nfs-nk000015","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"suyashchoudhary42@gmail.com","createdByType":"User","createdAt":"2026-04-10T06:43:20.9493481Z","lastModifiedBy":"suyashchoudhary42@gmail.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-10T06:43:20.9493481Z"},"properties":{"host":"10.0.0.1","nfsVersion":"NFSv4","export":"exportfolder","endpointType":"NfsMount","endpointKind":"Source","description":"endpointNfsNoKind","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '684'
+      - '716'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 02 Apr 2026 06:14:41 GMT
+      - Fri, 10 Apr 2026 06:43:21 GMT
       etag:
-      - '"1600182d-0000-3300-0000-69ce09510000"'
+      - '"07001998-0000-0600-0000-69d89c090000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - 34b2a8fe-f6d9-4d09-a1de-ae7e852c69f6
+      - 9788154b-dae9-4495-89e8-6e0646d99cac
       pragma:
       - no-cache
       strict-transport-security:
@@ -2127,13 +2125,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus2euap/91c81f86-233c-46cf-ae7e-70ce63268d1d
+      - tenantId=b5d4074e-8ecd-48c8-b903-c88363015a4c,objectId=e5d2dd28-4569-46ac-b01f-c34c29c0e953/westcentralus/24a4d393-e5ee-414c-b357-7e40ab6a5e49
       x-ms-providerhub-traffic:
       - 'True'
-      x-ms-throttling-version:
-      - v2
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3748'
       x-msedge-ref:
-      - 'Ref A: 16F3C31EAD3A479AB375AF9706447B4B Ref B: PNQ231110907054 Ref C: 2026-04-02T06:14:41Z'
+      - 'Ref A: 4FEB32FDD5764033913473516A08CF31 Ref B: PNQ231110907040 Ref C: 2026-04-10T06:43:21Z'
     status:
       code: 200
       message: OK
@@ -2155,7 +2153,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/ep_nfs_nk000015?api-version=2025-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-nfs-nk000015?api-version=2025-12-01
   response:
     body:
       string: ''
@@ -2165,11 +2163,11 @@ interactions:
       content-length:
       - '0'
       date:
-      - Thu, 02 Apr 2026 06:14:43 GMT
+      - Fri, 10 Apr 2026 06:43:22 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - 21fc0763-929f-4f98-928a-ec49ccf87e4f
+      - 9ae8ae77-4937-46a4-a9cc-1150794b0b45
       pragma:
       - no-cache
       strict-transport-security:
@@ -2179,15 +2177,15 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus2euap/a3eff7ef-776f-48bc-8f0f-5ec99f3776f4
+      - tenantId=b5d4074e-8ecd-48c8-b903-c88363015a4c,objectId=e5d2dd28-4569-46ac-b01f-c34c29c0e953/westcentralus/688bfc86-0b3c-4096-b842-7c4f8d7ad054
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '799'
-      x-ms-throttling-version:
-      - v2
+      - '199'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '2999'
       x-msedge-ref:
-      - 'Ref A: 1C974E91CCD94CABADDF4FC55456497A Ref B: PNQ231110908042 Ref C: 2026-04-02T06:14:42Z'
+      - 'Ref A: 2BDFD6914D87452D92F1A9571E5C755E Ref B: PNQ231110906036 Ref C: 2026-04-10T06:43:22Z'
     status:
       code: 200
       message: OK
@@ -2212,25 +2210,25 @@ interactions:
       User-Agent:
       - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/ep_smb_nk000016?api-version=2025-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-smb-nk000016?api-version=2025-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/ep_smb_nk000016","name":"ep_smb_nk000016","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-04-02T06:14:46.3343322Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-02T06:14:46.3343322Z"},"properties":{"host":"10.0.0.2","shareName":"smbshare000010","endpointType":"SmbMount","endpointKind":"Source","description":"endpointSmbNoKind","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-smb-nk000016","name":"test-ep-smb-nk000016","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"suyashchoudhary42@gmail.com","createdByType":"User","createdAt":"2026-04-10T06:43:23.8109056Z","lastModifiedBy":"suyashchoudhary42@gmail.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-10T06:43:23.8109056Z"},"properties":{"host":"10.0.0.2","shareName":"smbshare000010","endpointType":"SmbMount","endpointKind":"Source","description":"endpointSmbNoKind","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '668'
+      - '700'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 02 Apr 2026 06:14:46 GMT
+      - Fri, 10 Apr 2026 06:43:23 GMT
       etag:
-      - '"1600262d-0000-3300-0000-69ce09560000"'
+      - '"07002298-0000-0600-0000-69d89c0b0000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - a8c3ed15-a76a-408d-9c38-f736effceb52
+      - dc2a7607-3669-4d13-90d3-22eb2ed4e257
       pragma:
       - no-cache
       strict-transport-security:
@@ -2240,15 +2238,15 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus2euap/c89616f5-065b-479d-aaca-017ff453ad3b
+      - tenantId=b5d4074e-8ecd-48c8-b903-c88363015a4c,objectId=e5d2dd28-4569-46ac-b01f-c34c29c0e953/westcentralus/63037bec-0fd0-4c89-a716-302c44c42623
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '799'
-      x-ms-throttling-version:
-      - v2
+      - '199'
       x-msedge-ref:
-      - 'Ref A: 7C818628D7504875B2F330C6559E6989 Ref B: PNQ231110906034 Ref C: 2026-04-02T06:14:44Z'
+      - 'Ref A: 7E4B5966E98D4131ACECC4D423FAA49B Ref B: PNQ231110907023 Ref C: 2026-04-10T06:43:23Z'
     status:
       code: 200
       message: OK
@@ -2268,25 +2266,25 @@ interactions:
       User-Agent:
       - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/ep_smb_nk000016?api-version=2025-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-smb-nk000016?api-version=2025-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/ep_smb_nk000016","name":"ep_smb_nk000016","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-04-02T06:14:46.3343322Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-02T06:14:46.3343322Z"},"properties":{"host":"10.0.0.2","shareName":"smbshare000010","endpointType":"SmbMount","endpointKind":"Source","description":"endpointSmbNoKind","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-smb-nk000016","name":"test-ep-smb-nk000016","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"suyashchoudhary42@gmail.com","createdByType":"User","createdAt":"2026-04-10T06:43:23.8109056Z","lastModifiedBy":"suyashchoudhary42@gmail.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-10T06:43:23.8109056Z"},"properties":{"host":"10.0.0.2","shareName":"smbshare000010","endpointType":"SmbMount","endpointKind":"Source","description":"endpointSmbNoKind","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '668'
+      - '700'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 02 Apr 2026 06:14:46 GMT
+      - Fri, 10 Apr 2026 06:43:24 GMT
       etag:
-      - '"1600262d-0000-3300-0000-69ce09560000"'
+      - '"07002298-0000-0600-0000-69d89c0b0000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - 2e9c7a92-129f-4195-a543-13853f115491
+      - 60ff0e6a-6e17-4bc3-9b61-418ff376ed26
       pragma:
       - no-cache
       strict-transport-security:
@@ -2296,13 +2294,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus2euap/0d22aef1-cf90-4b9a-808a-dfc96b4384fb
+      - tenantId=b5d4074e-8ecd-48c8-b903-c88363015a4c,objectId=e5d2dd28-4569-46ac-b01f-c34c29c0e953/westcentralus/6043ce7a-8598-486e-84a1-2cfc65d02f07
       x-ms-providerhub-traffic:
       - 'True'
-      x-ms-throttling-version:
-      - v2
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
       x-msedge-ref:
-      - 'Ref A: 01959F026AF74051BEFD5CEAD328FB00 Ref B: PNQ231110909060 Ref C: 2026-04-02T06:14:47Z'
+      - 'Ref A: 9C31D93D672B4FFA89A3EB3CCE9D8528 Ref B: PNQ231110908060 Ref C: 2026-04-10T06:43:24Z'
     status:
       code: 200
       message: OK
@@ -2324,7 +2322,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/ep_smb_nk000016?api-version=2025-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-smb-nk000016?api-version=2025-12-01
   response:
     body:
       string: ''
@@ -2334,11 +2332,11 @@ interactions:
       content-length:
       - '0'
       date:
-      - Thu, 02 Apr 2026 06:14:49 GMT
+      - Fri, 10 Apr 2026 06:43:25 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - a7790514-42ed-48f4-a5d8-d4208b543085
+      - f3a71bc7-6050-47fd-8413-12964e5ff133
       pragma:
       - no-cache
       strict-transport-security:
@@ -2348,15 +2346,15 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus2euap/6ec80b13-1418-4f68-9c2b-f6f445f4f496
+      - tenantId=b5d4074e-8ecd-48c8-b903-c88363015a4c,objectId=e5d2dd28-4569-46ac-b01f-c34c29c0e953/westcentralus/769ce238-03f5-4a6e-817b-d08baa2be223
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '799'
-      x-ms-throttling-version:
-      - v2
+      - '199'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '2999'
       x-msedge-ref:
-      - 'Ref A: 2B4AA0E691014EF3A974F593F9947472 Ref B: PNQ231110907029 Ref C: 2026-04-02T06:14:48Z'
+      - 'Ref A: 22F14105B9CF454FA57D857FE292812F Ref B: PNQ231110906052 Ref C: 2026-04-10T06:43:25Z'
     status:
       code: 200
       message: OK
@@ -2381,25 +2379,25 @@ interactions:
       User-Agent:
       - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/ep_smbfs_nk000017?api-version=2025-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-smbfs-nk000017?api-version=2025-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/ep_smbfs_nk000017","name":"ep_smbfs_nk000017","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-04-02T06:14:51.201117Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-02T06:14:51.201117Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000009","endpointType":"AzureStorageSmbFileShare","endpointKind":"Target","description":"endpointSmbFsNoKind","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-smbfs-nk000017","name":"test-ep-smbfs-nk000017","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"suyashchoudhary42@gmail.com","createdByType":"User","createdAt":"2026-04-10T06:43:26.5332989Z","lastModifiedBy":"suyashchoudhary42@gmail.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-10T06:43:26.5332989Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000009","endpointType":"AzureStorageSmbFileShare","endpointKind":"Target","description":"endpointSmbFsNoKind","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '846'
+      - '880'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 02 Apr 2026 06:14:51 GMT
+      - Fri, 10 Apr 2026 06:43:26 GMT
       etag:
-      - '"1600332d-0000-3300-0000-69ce095b0000"'
+      - '"07002798-0000-0600-0000-69d89c0e0000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - 6bc446b3-3c58-4462-932d-a08b3102c23b
+      - 0bc066be-5a27-4747-987d-5a0c7ab0c35f
       pragma:
       - no-cache
       strict-transport-security:
@@ -2409,15 +2407,15 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus2euap/4c4cbbca-e762-4801-aa55-60a6fdedfdee
+      - tenantId=b5d4074e-8ecd-48c8-b903-c88363015a4c,objectId=e5d2dd28-4569-46ac-b01f-c34c29c0e953/westcentralus/96b292fd-648f-4bab-8829-135f0d663962
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '799'
-      x-ms-throttling-version:
-      - v2
+      - '199'
       x-msedge-ref:
-      - 'Ref A: 4E4B692F83394760AD133439574AF8B4 Ref B: PNQ231110907025 Ref C: 2026-04-02T06:14:50Z'
+      - 'Ref A: 200BEE770C9545F59A9929D20CE1A68E Ref B: PNQ231110909034 Ref C: 2026-04-10T06:43:26Z'
     status:
       code: 200
       message: OK
@@ -2437,25 +2435,25 @@ interactions:
       User-Agent:
       - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/ep_smbfs_nk000017?api-version=2025-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-smbfs-nk000017?api-version=2025-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/ep_smbfs_nk000017","name":"ep_smbfs_nk000017","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-04-02T06:14:51.201117Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-02T06:14:51.201117Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000009","endpointType":"AzureStorageSmbFileShare","endpointKind":"Target","description":"endpointSmbFsNoKind","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-smbfs-nk000017","name":"test-ep-smbfs-nk000017","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"suyashchoudhary42@gmail.com","createdByType":"User","createdAt":"2026-04-10T06:43:26.5332989Z","lastModifiedBy":"suyashchoudhary42@gmail.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-10T06:43:26.5332989Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000009","endpointType":"AzureStorageSmbFileShare","endpointKind":"Target","description":"endpointSmbFsNoKind","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '846'
+      - '880'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 02 Apr 2026 06:14:52 GMT
+      - Fri, 10 Apr 2026 06:43:27 GMT
       etag:
-      - '"1600332d-0000-3300-0000-69ce095b0000"'
+      - '"07002798-0000-0600-0000-69d89c0e0000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - 5c1824e2-c2a3-4b68-b0b3-8c54cc3333a8
+      - 2b9bc5a7-ad65-45a4-8bb5-cc613d4540c6
       pragma:
       - no-cache
       strict-transport-security:
@@ -2465,13 +2463,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus2euap/4e06eada-b484-4aa3-8081-12f361108d63
+      - tenantId=b5d4074e-8ecd-48c8-b903-c88363015a4c,objectId=e5d2dd28-4569-46ac-b01f-c34c29c0e953/westcentralus/b1eee424-f358-4939-bec9-998dd6624413
       x-ms-providerhub-traffic:
       - 'True'
-      x-ms-throttling-version:
-      - v2
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3748'
       x-msedge-ref:
-      - 'Ref A: 208951BFDEC44216ADFC67C770948B65 Ref B: PNQ231110907052 Ref C: 2026-04-02T06:14:52Z'
+      - 'Ref A: 0C84AF5A65B24186A1AC3A22F128FB50 Ref B: PNQ231110908060 Ref C: 2026-04-10T06:43:27Z'
     status:
       code: 200
       message: OK
@@ -2493,7 +2491,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/ep_smbfs_nk000017?api-version=2025-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-smbfs-nk000017?api-version=2025-12-01
   response:
     body:
       string: ''
@@ -2503,11 +2501,11 @@ interactions:
       content-length:
       - '0'
       date:
-      - Thu, 02 Apr 2026 06:14:53 GMT
+      - Fri, 10 Apr 2026 06:43:27 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - e70c5722-570c-4435-a69f-142bcd53fc84
+      - 37a41de0-b969-4e22-86ea-06062c5c0c2b
       pragma:
       - no-cache
       strict-transport-security:
@@ -2517,15 +2515,15 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus2euap/6ca327c7-e55f-472b-a16a-a60d7f1ced21
+      - tenantId=b5d4074e-8ecd-48c8-b903-c88363015a4c,objectId=e5d2dd28-4569-46ac-b01f-c34c29c0e953/westcentralus/d1e55bfc-72c5-447c-962e-66cd1e1a929d
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '799'
-      x-ms-throttling-version:
-      - v2
+      - '199'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '2999'
       x-msedge-ref:
-      - 'Ref A: F0935B32584F46C2BD98BC8B562841A2 Ref B: PNQ231110907023 Ref C: 2026-04-02T06:14:52Z'
+      - 'Ref A: BABD489804D14DF6AA1156F595320B88 Ref B: PNQ231110909025 Ref C: 2026-04-10T06:43:27Z'
     status:
       code: 200
       message: OK
@@ -2550,25 +2548,25 @@ interactions:
       User-Agent:
       - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/ep_nfsfs_nk000018?api-version=2025-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-nfsfs-nk000018?api-version=2025-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/ep_nfsfs_nk000018","name":"ep_nfsfs_nk000018","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-04-02T06:14:55.6003147Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-02T06:14:55.6003147Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000009","endpointType":"AzureStorageNfsFileShare","endpointKind":"Target","description":"endpointNfsFsNoKind","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-nfsfs-nk000018","name":"test-ep-nfsfs-nk000018","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"suyashchoudhary42@gmail.com","createdByType":"User","createdAt":"2026-04-10T06:43:29.402402Z","lastModifiedBy":"suyashchoudhary42@gmail.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-10T06:43:29.402402Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000009","endpointType":"AzureStorageNfsFileShare","endpointKind":"Target","description":"endpointNfsFsNoKind","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '848'
+      - '878'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 02 Apr 2026 06:14:56 GMT
+      - Fri, 10 Apr 2026 06:43:29 GMT
       etag:
-      - '"1600392d-0000-3300-0000-69ce095f0000"'
+      - '"07002c98-0000-0600-0000-69d89c110000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - 4fde9ada-4634-46f4-8703-cfee4f2b2f18
+      - d761d697-6903-488d-bbe2-679dc19c0908
       pragma:
       - no-cache
       strict-transport-security:
@@ -2578,15 +2576,15 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus2euap/48d4e51a-02f3-433f-a525-a8aaf8370ea8
+      - tenantId=b5d4074e-8ecd-48c8-b903-c88363015a4c,objectId=e5d2dd28-4569-46ac-b01f-c34c29c0e953/westcentralus/21e660e8-4434-40a1-afcd-19ba567cd001
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '799'
-      x-ms-throttling-version:
-      - v2
+      - '199'
       x-msedge-ref:
-      - 'Ref A: D8CF4E682CFC4B2F8E34CDDB8002FF77 Ref B: PNQ231110906040 Ref C: 2026-04-02T06:14:54Z'
+      - 'Ref A: F67DF89103054B63A4C55E8D9A27A484 Ref B: PNQ231110909062 Ref C: 2026-04-10T06:43:29Z'
     status:
       code: 200
       message: OK
@@ -2606,25 +2604,25 @@ interactions:
       User-Agent:
       - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/ep_nfsfs_nk000018?api-version=2025-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-nfsfs-nk000018?api-version=2025-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/ep_nfsfs_nk000018","name":"ep_nfsfs_nk000018","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-04-02T06:14:55.6003147Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-02T06:14:55.6003147Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000009","endpointType":"AzureStorageNfsFileShare","endpointKind":"Target","description":"endpointNfsFsNoKind","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-nfsfs-nk000018","name":"test-ep-nfsfs-nk000018","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"suyashchoudhary42@gmail.com","createdByType":"User","createdAt":"2026-04-10T06:43:29.402402Z","lastModifiedBy":"suyashchoudhary42@gmail.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-10T06:43:29.402402Z"},"properties":{"storageAccountResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","fileShareName":"fileshare000009","endpointType":"AzureStorageNfsFileShare","endpointKind":"Target","description":"endpointNfsFsNoKind","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '848'
+      - '878'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 02 Apr 2026 06:14:57 GMT
+      - Fri, 10 Apr 2026 06:43:29 GMT
       etag:
-      - '"1600392d-0000-3300-0000-69ce095f0000"'
+      - '"07002c98-0000-0600-0000-69d89c110000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - f4c8f910-a477-47ca-825c-c3f0f5a6f809
+      - 3f1bc91e-bbd2-4878-a7f3-5250a2709862
       pragma:
       - no-cache
       strict-transport-security:
@@ -2634,13 +2632,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus2euap/9e5f909f-2e95-4251-8d9f-ac5a16912865
+      - tenantId=b5d4074e-8ecd-48c8-b903-c88363015a4c,objectId=e5d2dd28-4569-46ac-b01f-c34c29c0e953/westcentralus/520ec869-b2fc-4ff6-9327-11f9b81fd053
       x-ms-providerhub-traffic:
       - 'True'
-      x-ms-throttling-version:
-      - v2
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
       x-msedge-ref:
-      - 'Ref A: 7FC7158BEC934863B8DC98B23CD081CD Ref B: PNQ231110906040 Ref C: 2026-04-02T06:14:56Z'
+      - 'Ref A: D5F4B65E550D41E19F691A753E5162B8 Ref B: PNQ231110906060 Ref C: 2026-04-10T06:43:30Z'
     status:
       code: 200
       message: OK
@@ -2662,7 +2660,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/ep_nfsfs_nk000018?api-version=2025-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000003/endpoints/test-ep-nfsfs-nk000018?api-version=2025-12-01
   response:
     body:
       string: ''
@@ -2672,11 +2670,11 @@ interactions:
       content-length:
       - '0'
       date:
-      - Thu, 02 Apr 2026 06:14:58 GMT
+      - Fri, 10 Apr 2026 06:43:30 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - 76610670-a546-44c9-ad2d-f202d574abc6
+      - 18f7ffaf-454f-40ff-b0d6-7217c3d8c888
       pragma:
       - no-cache
       strict-transport-security:
@@ -2686,15 +2684,15 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/eastus2euap/42d6b622-989b-4695-b2a3-fe85ddddbd56
+      - tenantId=b5d4074e-8ecd-48c8-b903-c88363015a4c,objectId=e5d2dd28-4569-46ac-b01f-c34c29c0e953/westcentralus/5b8a3efc-4d95-4f05-b6be-628675354895
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '799'
-      x-ms-throttling-version:
-      - v2
+      - '199'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '2999'
       x-msedge-ref:
-      - 'Ref A: 59A24E5F74D640C3B9AEE35380655099 Ref B: PNQ231110906062 Ref C: 2026-04-02T06:14:57Z'
+      - 'Ref A: 0E7F4A08C4274F8494362CF05BE82134 Ref B: PNQ231110909034 Ref C: 2026-04-10T06:43:30Z'
     status:
       code: 200
       message: OK

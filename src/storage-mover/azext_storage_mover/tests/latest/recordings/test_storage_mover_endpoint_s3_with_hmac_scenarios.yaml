@@ -1,0 +1,124 @@
+interactions:
+- request:
+    body: '{"location": "westcentralus", "properties": {"description": "MoverDesc"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-mover create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '73'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n -l --description
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002?api-version=2025-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002","name":"storage-mover000002","type":"microsoft.storagemover/storagemovers","location":"westcentralus","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-04-10T08:53:47.9753282Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-10T08:53:47.9753282Z"},"properties":{"description":"MoverDesc","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '558'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 10 Apr 2026 08:53:48 GMT
+      etag:
+      - '"08008826-0000-0600-0000-69d8ba9c0000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - e53926e7-e3c5-46b3-a47e-d1e42ad1c8f1
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/westindia/60d53a49-56d3-4143-89e8-a3b0c65b5f1c
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '12000'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '800'
+      x-msedge-ref:
+      - 'Ref A: DC600F4C4CDF4BEBA1D0B8AF9975F514 Ref B: PNQ231110907029 Ref C: 2026-04-10T08:53:39Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"description": "endpointS3Desc", "endpointKind": "Source",
+      "endpointType": "S3WithHMAC", "credentials": {"accessKeyUri": "https://smb-demo-kv.vault.azure.net/secrets/s3-access-key",
+      "secretKeyUri": "https://smb-demo-kv.vault.azure.net/secrets/s3-secret-key",
+      "type": "AzureKeyVaultS3WithHMAC"}, "sourceType": "MINIO", "sourceUri": "https://s3.example.com/bucket"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-mover endpoint create-for-s3-with-hmac
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '380'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --storage-mover-name -n --source-uri --source-type --access-key-uri --secret-key-uri
+        --endpoint-kind --description
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/endpoints/test-ep-s3000003?api-version=2025-12-01
+  response:
+    body:
+      string: '{"error":{"code":"InvalidEndpointType","message":"The endpoint type
+        \"S3WithHMAC\" is not supported. Kindly consult the public documentation to
+        explore the list of available endpoints."}}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '187'
+      content-type:
+      - application/json
+      date:
+      - Fri, 10 Apr 2026 08:53:50 GMT
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/westcentralus/65fd9fc7-cab0-4599-a22d-14bc70685a09
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 2C827F6DFC7D4A4AAAA1ABB7C513E49D Ref B: PNQ231110907023 Ref C: 2026-04-10T08:53:49Z'
+    status:
+      code: 400
+      message: Bad Request
+version: 1

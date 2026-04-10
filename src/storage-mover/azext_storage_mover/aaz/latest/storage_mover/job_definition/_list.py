@@ -292,7 +292,7 @@ class List(AAZCommand):
 
             execution_time = cls._schema_on_200.value.Element.properties.schedule.execution_time
             execution_time.hour = AAZIntType()
-            execution_time.minute = AAZFloatType()
+            execution_time.minute = AAZIntType()
 
             source_target_map = cls._schema_on_200.value.Element.properties.source_target_map
             source_target_map.value = AAZListType(

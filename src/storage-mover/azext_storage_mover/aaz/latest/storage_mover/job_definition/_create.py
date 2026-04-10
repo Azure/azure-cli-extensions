@@ -195,10 +195,10 @@ class Create(AAZCommand):
                 minimum=0,
             ),
         )
-        execution_time.minute = AAZFloatArg(
+        execution_time.minute = AAZIntArg(
             options=["minute"],
             help="The minute element of the time. Allowed values are 0 and 30. If not specified, its value defaults to 0.",
-            default=0.0,
+            default=0,
             enum={"0": 0, "30": 30},
         )
         return cls._args_schema
@@ -344,7 +344,7 @@ class Create(AAZCommand):
             execution_time = _builder.get(".properties.schedule.executionTime")
             if execution_time is not None:
                 execution_time.set_prop("hour", AAZIntType, ".hour")
-                execution_time.set_prop("minute", AAZFloatType, ".minute")
+                execution_time.set_prop("minute", AAZIntType, ".minute")
 
             return self.serialize_content(_content_value)
 
@@ -484,7 +484,7 @@ class Create(AAZCommand):
 
             execution_time = cls._schema_on_200.properties.schedule.execution_time
             execution_time.hour = AAZIntType()
-            execution_time.minute = AAZFloatType()
+            execution_time.minute = AAZIntType()
 
             source_target_map = cls._schema_on_200.properties.source_target_map
             source_target_map.value = AAZListType(
