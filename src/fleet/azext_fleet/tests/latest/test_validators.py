@@ -57,6 +57,13 @@ class VMSizeNamespace:
         self.vm_size = vm_size
 
 
+class RolloutStrategyNamespace:
+
+    def __init__(self, rollout_strategy=None, cluster_update_strategy=None):
+        self.rollout_strategy = rollout_strategy
+        self.cluster_update_strategy = cluster_update_strategy
+
+
 class TestValidateMemberClusterId(unittest.TestCase):
     def test_invalid_member_cluster_id(self):
         invalid_member_cluster_id = "dummy cluster id"
@@ -211,6 +218,44 @@ class TestValidateUpdateStrategyId(unittest.TestCase):
         namespace = UpdateStrategyNamespace(update_strategy_id=valid_update_strategy_id)
 
         self.assertIsNone(validators.validate_update_strategy_id(namespace))
+
+
+class TestValidateRolloutStrategy(unittest.TestCase):
+    def test_external_without_cluster_update_strategy_raises(self):
+        namespace = RolloutStrategyNamespace(rollout_strategy='External', cluster_update_strategy=None)
+        err = "--cluster-update-strategy is required when --rollout-strategy is 'External'."
+
+        with self.assertRaises(Exception) as cm:
+            validators.validate_rollout_strategy(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_cluster_update_strategy_without_external_raises(self):
+        namespace = RolloutStrategyNamespace(rollout_strategy='RollingUpdate', cluster_update_strategy='my-strategy')
+        err = "--cluster-update-strategy can only be used when --rollout-strategy is 'External'."
+
+        with self.assertRaises(Exception) as cm:
+            validators.validate_rollout_strategy(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_cluster_update_strategy_without_any_rollout_strategy_raises(self):
+        namespace = RolloutStrategyNamespace(rollout_strategy=None, cluster_update_strategy='my-strategy')
+        err = "--cluster-update-strategy can only be used when --rollout-strategy is 'External'."
+
+        with self.assertRaises(Exception) as cm:
+            validators.validate_rollout_strategy(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_external_with_cluster_update_strategy_valid(self):
+        namespace = RolloutStrategyNamespace(rollout_strategy='External', cluster_update_strategy='my-strategy')
+        self.assertIsNone(validators.validate_rollout_strategy(namespace))
+
+    def test_rolling_update_without_cluster_update_strategy_valid(self):
+        namespace = RolloutStrategyNamespace(rollout_strategy='RollingUpdate', cluster_update_strategy=None)
+        self.assertIsNone(validators.validate_rollout_strategy(namespace))
+
+    def test_no_rollout_strategy_valid(self):
+        namespace = RolloutStrategyNamespace(rollout_strategy=None, cluster_update_strategy=None)
+        self.assertIsNone(validators.validate_rollout_strategy(namespace))
 
 
 if __name__ == "__main__":
