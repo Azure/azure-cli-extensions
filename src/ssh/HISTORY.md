@@ -1,5 +1,9 @@
 Release History
 ===============
+2.0.7
+-----
+* Migrate code from Azure SDK to AAZ based commands for compute operations (VM)
+
 2.0.6
 -----
 * Remove msrestazure dependency
