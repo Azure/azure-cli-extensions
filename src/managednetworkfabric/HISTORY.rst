@@ -3,6 +3,10 @@
 Release History
 ===============
 
+9.1.1
+++++++
+* Fix CLI output formatting for `fabric` and `device` `resync-password` and `fabric` `rotate-certificate` commands to prevent duplicated nested error details in both successful and partial-success responses.
+
 9.1.0
 ++++++
 * Enables the following previously removed command/command groups:
