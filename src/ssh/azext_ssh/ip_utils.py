@@ -3,8 +3,6 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azure.cli.core.commands import client_factory
-from azure.cli.core import profiles
 from azure.mgmt.core.tools import parse_resource_id
 
 from knack import log
@@ -13,17 +11,20 @@ logger = log.get_logger(__name__)
 
 
 def get_ssh_ip(cmd, resource_group, vm_name, use_private_ip):
-    compute_client = client_factory.get_mgmt_service_client(cmd.cli_ctx, profiles.ResourceType.MGMT_COMPUTE)
-    vm_client = compute_client.virtual_machines
     from .aaz.latest.network.public_ip import Show as PublicIpShow
     from .aaz.latest.network.nic import Show as InterfaceShow
+    from azure.cli.command_modules.vm.aaz.latest.vm import Show as VMShow
 
-    vm = vm_client.get(resource_group, vm_name)
+    command_args = {
+        'resource_group': resource_group,
+        'vm_name': vm_name
+    }
+    vm = VMShow(cli_ctx=cmd.cli_ctx)(command_args=command_args)
 
     private_ips = []
 
-    for nic_ref in vm.network_profile.network_interfaces:
-        parsed_id = parse_resource_id(nic_ref.id)
+    for nic_ref in vm.get('networkProfile', {}).get('networkInterfaces', []):
+        parsed_id = parse_resource_id(nic_ref.get('id'))
         get_args = {
             'name': parsed_id['name'],
             'resource_group': parsed_id['resource_group']
