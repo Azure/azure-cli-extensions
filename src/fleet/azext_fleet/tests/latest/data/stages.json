@@ -3,6 +3,7 @@
     {
       "name": "stage1",
       "maxConcurrency": "7",
+      "maxAllowedFailures": "1",
       "beforeGates": [
         {
           "displayName": "stage before gate",
@@ -19,6 +20,7 @@
         {
           "name": "group1",
           "maxConcurrency": "100%",
+          "maxAllowedFailures": "0",
           "beforeGates": [
             {
               "displayName": "group before gate",
@@ -35,6 +37,7 @@
         {
           "name": "group2",
           "maxConcurrency": "50%",
+          "maxAllowedFailures": "1",
           "beforeGates": [
             {
               "displayName": "group before gate",
