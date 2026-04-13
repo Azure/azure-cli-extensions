@@ -3,7 +3,7 @@
 Release History
 ===============
 
-2.0.0
+2.0.0b1
 +++++
 * Add Windows container support with CIM-based layer hashing
 * Support for mounted_cim field in security policies for Windows containers
