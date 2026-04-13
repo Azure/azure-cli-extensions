@@ -61,9 +61,15 @@ class FleetHublessScenarioTest(ScenarioTest):
             'updaterun_stage_max_concurrency': 7,
             'updaterun_group1_max_concurrency': 1,
             'updaterun_group2_max_concurrency': 1,
+            'updaterun_stage_max_allowed_failures': 1,
+            'updaterun_group1_max_allowed_failures': 0,
+            'updaterun_group2_max_allowed_failures': 1,
             'strategy_stage_max_concurrency': '7',
             'strategy_group1_max_concurrency': '100%',
-            'strategy_group2_max_concurrency': '50%'
+            'strategy_group2_max_concurrency': '50%',
+            'strategy_stage_max_allowed_failures': '1',
+            'strategy_group1_max_allowed_failures': '0',
+            'strategy_group2_max_allowed_failures': '1'
         })
 
         self.cmd('fleet create -g {rg} -n {fleet_name}', checks=[
@@ -153,8 +159,11 @@ class FleetHublessScenarioTest(ScenarioTest):
         self.cmd('fleet updatestrategy show -g {rg} -n {updateStrategy_name} -f {fleet_name}', checks=[
             self.check('name', '{updateStrategy_name}'),
             self.check('strategy.stages[0].maxConcurrency', '{strategy_stage_max_concurrency}'),
+            self.check('strategy.stages[0].maxAllowedFailures', '{strategy_stage_max_allowed_failures}'),
             self.check('strategy.stages[0].groups[0].maxConcurrency', '{strategy_group1_max_concurrency}'),
-            self.check('strategy.stages[0].groups[1].maxConcurrency', '{strategy_group2_max_concurrency}')
+            self.check('strategy.stages[0].groups[0].maxAllowedFailures', '{strategy_group1_max_allowed_failures}'),
+            self.check('strategy.stages[0].groups[1].maxConcurrency', '{strategy_group2_max_concurrency}'),
+            self.check('strategy.stages[0].groups[1].maxAllowedFailures', '{strategy_group2_max_allowed_failures}')
         ])
 
         self.cmd('fleet updatestrategy list -g {rg} -f {fleet_name}', checks=[
@@ -177,8 +186,11 @@ class FleetHublessScenarioTest(ScenarioTest):
         self.cmd('fleet updaterun show -g {rg} -n {updaterun} -f {fleet_name}', checks=[
             self.check('name', '{updaterun}'),
             self.check('status.stages[0].maxConcurrency', '{updaterun_stage_max_concurrency}'),
+            self.check('status.stages[0].maxAllowedFailures', '{updaterun_stage_max_allowed_failures}'),
             self.check('status.stages[0].groups[0].maxConcurrency', '{updaterun_group1_max_concurrency}'),
-            self.check('status.stages[0].groups[1].maxConcurrency', '{updaterun_group2_max_concurrency}')
+            self.check('status.stages[0].groups[0].maxAllowedFailures', '{updaterun_group1_max_allowed_failures}'),
+            self.check('status.stages[0].groups[1].maxConcurrency', '{updaterun_group2_max_concurrency}'),
+            self.check('status.stages[0].groups[1].maxAllowedFailures', '{updaterun_group2_max_allowed_failures}')
         ])
 
         self.cmd('fleet updaterun list -g {rg} -f {fleet_name}', checks=[

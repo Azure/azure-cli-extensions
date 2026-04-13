@@ -614,6 +614,7 @@ def get_update_run_strategy(cmd, operation_group, stages):
             update_groups.append(update_group_model(
                 name=group["name"],
                 max_concurrency=group.get("maxConcurrency"),
+                max_allowed_failures=group.get("maxAllowedFailures"),
                 before_gates=group.get("beforeGates", []),
                 after_gates=group.get("afterGates", []),
             ))
@@ -624,6 +625,7 @@ def get_update_run_strategy(cmd, operation_group, stages):
             name=stage["name"],
             groups=update_groups,
             max_concurrency=stage.get("maxConcurrency"),
+            max_allowed_failures=stage.get("maxAllowedFailures"),
             before_gates=stage.get("beforeGates", []),
             after_gates=stage.get("afterGates", []),
             after_stage_wait_in_seconds=after_wait

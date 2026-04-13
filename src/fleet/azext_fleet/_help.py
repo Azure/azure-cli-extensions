@@ -213,17 +213,21 @@ helps['fleet updaterun create'] = """
                 Stages and groups have an optional 'maxConcurrency' string property that sets the maximum number of concurrent upgrades allowed. It acts as a ceiling (not a quota)—actual concurrency may be lower due to other limits or member conditions. Minimum is 1.
                 Stage maxConcurrency: applies across all groups in the stage (total concurrent upgrades for the whole stage).
                 Group maxConcurrency: applies within a single group, and is additionally constrained by the stage limit (effective max is min(group cluster count, stage maxConcurrency)). Minimum is 1.
+                Stages and groups also have an optional 'maxAllowedFailures' string property.
+                Stage maxAllowedFailures: The maximum number of member (cluster) upgrade failures tolerated in this stage. Accepts a non-negative integer (e.g. '3') or a percentage (e.g. '25%'). Defaults to 0 if unset, meaning any failure fails the stage.
+                Group maxAllowedFailures: The maximum number of member (cluster) upgrade failures tolerated in this group. Accepts a non-negative integer (e.g. '3') or a percentage (e.g. '25%'). Defaults to 0 if unset, meaning any failure fails the group.
                 Value formats:
                   Fixed count (e.g., 3)
-                  Percentage (e.g., 25%, 1–100) of the relevant cluster total (stage total for stage, group total for group). Percentages are rounded down, with a minimum of 1 enforced.
-                  Examples: 3, 25%, 100%
+                  Percentage (e.g., 25%, 1–100) of the relevant cluster total (stage total for stage, group total for group).
+                  Examples: 0, 3, 25%, 100%
 
-                Example stages JSON, with optional properties maxConcurrency and before/after gates:
+                Example stages JSON, with optional properties maxConcurrency, maxAllowedFailures and before/after gates:
                {
                   "stages": [
                     {
                       "name": "stage1",
                       "maxConcurrency": "7%",
+                      "maxAllowedFailures": "50%",
                       "beforeGates": [
                         {
                           "displayName": "stage before gate",
@@ -240,6 +244,7 @@ helps['fleet updaterun create'] = """
                         {
                           "name": "group-a1",
                           "maxConcurrency": "100%",
+                          "maxAllowedFailures": "5",
                           "beforeGates": [
                             {
                               "displayName": "group before gate",
@@ -256,6 +261,7 @@ helps['fleet updaterun create'] = """
                         {
                           "name": "group-a2",
                           "maxConcurrency": "1",
+                          "maxAllowedFailures": "25%",
                           "beforeGates": [
                             {
                               "displayName": "group before gate",
