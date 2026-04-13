@@ -251,14 +251,16 @@ def _check_for_known_errors(error_message, delete_cert, log_lines):
            (local_major > 8 or (local_major == 8 and local_minor >= 8)):
             logger.warning("The OpenSSH server version in the target VM %d.%d is too old. "
                            "Version incompatible with OpenSSH client version %d.%d. "
-                           "Refer to https://bugzilla.mindrot.org/show_bug.cgi?id=3351 for more information.",
+                           "Refer to \"Potentially-incompatible changes\" in "
+                           "https://www.openssh.org/txt/release-8.8 for more information.",
                            remote_major, remote_minor, local_major, local_minor)
 
         elif (local_major < 7 or (local_major == 7 and local_minor < 8)) and \
              (remote_major > 8 or (remote_major == 8 and remote_minor >= 8)):
             logger.warning("The OpenSSH client version %d.%d is too old. "
                            "Version incompatible with OpenSSH server version %d.%d in the target VM. "
-                           "Refer to https://bugzilla.mindrot.org/show_bug.cgi?id=3351 for more information.",
+                           "Refer to \"Potentially-incompatible changes\" in "
+                           "https://www.openssh.org/txt/release-8.8 for more information.",
                            local_major, local_minor, remote_major, remote_minor)
 
     regex = ("{\"level\":\"fatal\",\"msg\":\"sshproxy: error copying information from the connection: "
