@@ -606,6 +606,7 @@ class ContainerImage:
         self._command = command
         self._workingDir = workingDir
         self._layers = []
+        self._mounted_cim = []
         self._mounts = mounts
         self._allow_elevated = allow_elevated
         self._allow_stdio_access = allowStdioAccess
@@ -660,6 +661,12 @@ class ContainerImage:
 
     def set_layers(self, layers: List[str]) -> None:
         self._layers = layers
+
+    def get_mounted_cim(self) -> List[str]:
+        return self._mounted_cim
+
+    def set_mounted_cim(self, mounted_cim: List[str]) -> None:
+        self._mounted_cim = mounted_cim
 
     def get_user(self) -> Dict:
         return self._user
@@ -784,6 +791,9 @@ class ContainerImage:
             elements.update({
                 config.POLICY_FIELD_CONTAINERS_ELEMENTS_USER: self.get_user()["user_idname"]["pattern"],
             })
+            # Add mounted_cim for Windows if present
+            if self._mounted_cim:
+                elements[config.POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTED_CIM] = self._mounted_cim
 
 
         if not omit_id:

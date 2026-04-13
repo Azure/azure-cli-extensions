@@ -597,13 +597,17 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
                 if isinstance(tar_mapping, dict):
                     tar_location = get_tar_location_from_mapping(tar_mapping, image_name)
                 # populate layer info
-                image.set_layers(proxy.get_policy_image_layers(
+                layer_info = proxy.get_policy_image_layers(
                     image.base,
                     image.tag,
                     platform=self._platform,
                     tar_location=tar_location if tar else "",
                     faster_hashing=faster_hashing,
-                ))
+                )
+                image.set_layers(layer_info.get("layers", []))
+                # Set mounted_cim for Windows containers
+                if "mounted_cim" in layer_info:
+                    image.set_mounted_cim(layer_info["mounted_cim"])
 
                 progress.update()
             progress.close()
@@ -812,7 +816,10 @@ def load_policy_from_arm_template_str(
             extract_probe(exec_processes, image_properties, config.ACI_FIELD_CONTAINERS_READINESS_PROBE)
             extract_probe(exec_processes, image_properties, config.ACI_FIELD_CONTAINERS_LIVENESS_PROBE)
 
-            platform = get_image_platform(image_name)
+            # Use platform from template if specified, otherwise try to auto-detect from image
+            platform = case_insensitive_dict_get(image_properties, "platform")
+            if not platform:
+                platform = get_image_platform(image_name)
 
             containers.append(
                 {
