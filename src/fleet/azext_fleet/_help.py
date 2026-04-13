@@ -295,20 +295,6 @@ helps['fleet updaterun create'] = """
                     {
                       "name": "stage2",
                       "memberSelector": { "byLabel": "env=production" },
-                      "groups": [
-                        {
-                          "name": "group-b1"
-                        },
-                        {
-                          "name": "group-b2"
-                        },
-                        {
-                          "name": "group-b3"
-                        }
-                      ]
-                    },
-                    {
-                      "name": "stage3-with-scheduled-start",
                       "beforeGates": [
                         {
                           "displayName": "Wait until Friday evening",
@@ -322,7 +308,13 @@ helps['fleet updaterun create'] = """
                       ],
                       "groups": [
                         {
-                          "name": "group-c1"
+                          "name": "group-b1"
+                        },
+                        {
+                          "name": "group-b2"
+                        },
+                        {
+                          "name": "group-b3"
                         }
                       ]
                     }
