@@ -17,6 +17,11 @@ Pending
 ++++++
 * Vendor new SDK and bump API version to 2026-02-02-preview.
 
+20.0.0b3
++++++++
+* `az aks create/update`: Fix DCR not being created or updated when `--enable-container-network-logs`, `--enable-retina-flow-logs`, or `--enable-high-log-scale-mode` flags are used, ensuring the Data Collection Rule streams (e.g. `Microsoft-ContainerLogV2-HighScale`) are kept in sync.
+* `az aks update`: Add validation for `--enable-high-log-scale-mode` on the update path requiring the monitoring addon with MSI authentication to be enabled
+
 20.0.0b2
 +++++++
 * `az aks nodepool update`: clean up some useless code in the update managed gpu function. 
@@ -24,6 +29,7 @@ Pending
 * `az aks machine add`: Add `--eviction-policy` flag support to set the eviction policy for a machine.
 * `az aks machine add`: Add `--enable-ultra-ssd` flag support to enable ultra ssd on a machine.
 * `az aks update`: Fix V2-only NAT gateway params (e.g. `--nat-gateway-managed-outbound-ipv6-count`) being rejected on update when `--outbound-type` is not re-specified for an already-V2 cluster.
+
 
 20.0.0b2
 +++++++
