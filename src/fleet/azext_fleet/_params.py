@@ -26,7 +26,8 @@ from azext_fleet._validators import (
     validate_targets,
     validate_update_strategy_id,
     validate_labels,
-    validate_enable_vnet_integration
+    validate_enable_vnet_integration,
+    validate_rollout_strategy
 )
 
 labels_type = CLIArgumentType(
@@ -200,6 +201,8 @@ def load_arguments(self, _):
         c.argument('delete_policy', help='Delete policy for the namespace.', arg_type=get_enum_type(['Keep', 'Delete']), default='Keep')
         c.argument('adoption_policy', help='Adoption policy for the namespace.', arg_type=get_enum_type(['Always', 'IfIdentical', 'Never']), default='Never')
         c.argument('member_cluster_names', nargs='*', validator=validate_member_cluster_names, help='Space-separated list of member cluster names to apply the namespace to.')
+        c.argument('rollout_strategy', help='Rollout strategy type for cluster resource placement.', arg_type=get_enum_type(['RollingUpdate', 'External']), validator=validate_rollout_strategy)
+        c.argument('cluster_update_strategy', help='Name of an existing cluster staged update strategy. Required when --rollout-strategy is "External".')
 
     with self.argument_context('fleet namespace update') as c:
         c.argument('tags', tags_type)
