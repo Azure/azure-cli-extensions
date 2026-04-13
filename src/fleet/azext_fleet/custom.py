@@ -41,8 +41,6 @@ from azext_fleet.vendored_sdks.v2026_05_01_preview.models import (
     PlacementV1RolloutStrategy,
     PropagationType,
     PlacementType,
-    GateConfiguration,
-    ScheduledStartConfiguration,
 )
 
 logger = get_logger(__name__)
@@ -589,22 +587,34 @@ def skip_update_run(cmd,  # pylint: disable=unused-argument
     return sdk_no_wait(no_wait, client.begin_skip, resource_group_name, fleet_name, name, skip_properties)
 
 
-def _build_gate_configs(gates_list):
+def build_gate_configs(cmd, operation_group, gates_list):
     """Convert a list of gate dicts from JSON into GateConfiguration model objects."""
     if not gates_list:
-        return []
+        return None
+
+    gate_configuration_model = cmd.get_models(
+        "GateConfiguration",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group=operation_group
+    )
+    scheduled_start_configuration_model = cmd.get_models(
+        "ScheduledStartConfiguration",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group=operation_group
+    )
+
     result = []
     for gate in gates_list:
         gate_type = gate.get("type", "Approval")
         scheduled_start_config = None
         raw_config = gate.get("scheduledStartConfiguration")
         if raw_config:
-            scheduled_start_config = ScheduledStartConfiguration(
+            scheduled_start_config = scheduled_start_configuration_model(
                 start_day=raw_config["startDay"],
                 start_time=raw_config["startTime"],
                 utc_offset=raw_config["utcOffset"],
             )
-        result.append(GateConfiguration(
+        result.append(gate_configuration_model(
             type=gate_type,
             display_name=gate.get("displayName"),
             scheduled_start_configuration=scheduled_start_config,
@@ -657,8 +667,8 @@ def get_update_run_strategy(cmd, operation_group, stages):
                 max_concurrency=group.get("maxConcurrency"),
                 max_allowed_failures=group.get("maxAllowedFailures"),
                 member_selector=group_member_selector,
-                before_gates=_build_gate_configs(group.get("beforeGates", [])),
-                after_gates=_build_gate_configs(group.get("afterGates", [])),
+                before_gates=build_gate_configs(cmd, operation_group, group.get("beforeGates")),
+                after_gates=build_gate_configs(cmd, operation_group, group.get("afterGates")),
             ))
 
         after_wait = stage.get("afterStageWaitInSeconds") or 0
@@ -673,8 +683,8 @@ def get_update_run_strategy(cmd, operation_group, stages):
             member_selector=stage_member_selector,
             max_concurrency=stage.get("maxConcurrency"),
             max_allowed_failures=stage.get("maxAllowedFailures"),
-            before_gates=_build_gate_configs(stage.get("beforeGates", [])),
-            after_gates=_build_gate_configs(stage.get("afterGates", [])),
+            before_gates=build_gate_configs(cmd, operation_group, stage.get("beforeGates")),
+            after_gates=build_gate_configs(cmd, operation_group, stage.get("afterGates")),
             after_stage_wait_in_seconds=after_wait
         ))
 
@@ -843,7 +853,7 @@ def list_gates_by_fleet(cmd,  # pylint: disable=unused-argument
 
     params = {}
     if filters:
-        params["$filter"] = " and ".join(filters)
+        params["$filter"] = filters
 
     return client.list_by_fleet(resource_group_name, fleet_name, params=params)
 
