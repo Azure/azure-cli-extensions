@@ -25,6 +25,17 @@ def validate_member_cluster_names(namespace):
                     f"--member-cluster-names {name} is not a valid member cluster name.")
 
 
+def validate_rollout_strategy(namespace):
+    rollout_strategy = getattr(namespace, 'rollout_strategy', None)
+    cluster_update_strategy = getattr(namespace, 'cluster_update_strategy', None)
+    if rollout_strategy == 'External' and not cluster_update_strategy:
+        raise InvalidArgumentValueError(
+            "--cluster-update-strategy is required when --rollout-strategy is 'External'.")
+    if cluster_update_strategy and rollout_strategy != 'External':
+        raise InvalidArgumentValueError(
+            "--cluster-update-strategy can only be used when --rollout-strategy is 'External'.")
+
+
 def validate_kubernetes_version(namespace):
     if namespace.kubernetes_version:
         k8s_release_regex = re.compile(r'^[v|V]?(\d+\.\d+(?:\.\d+)?)$')

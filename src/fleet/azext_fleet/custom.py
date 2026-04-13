@@ -35,6 +35,8 @@ from azext_fleet.vendored_sdks.v2026_05_01_preview.models import (
     PlacementProfile,
     PlacementV1ClusterResourcePlacementSpec,
     PlacementV1PlacementPolicy,
+    PlacementV1RolloutStrategy,
+    PlacementV1ClusterUpdateStrategyReference,
     PropagationType,
     PlacementType
 )
@@ -857,6 +859,8 @@ def create_managed_namespace(cmd,
                              delete_policy=None,
                              adoption_policy=None,
                              member_cluster_names=None,
+                             rollout_strategy=None,
+                             cluster_update_strategy=None,
                              no_wait=False):
 
     managed_namespace_model = cmd.get_models(
@@ -921,14 +925,27 @@ def create_managed_namespace(cmd,
         default_network_policy=default_network_policy
     )
 
-    propagation_policy = None
-    if member_cluster_names:
-        placement_policy = PlacementV1PlacementPolicy(
-            placement_type=PlacementType.pick_fixed,
-            cluster_names=member_cluster_names
+    rollout_strategy_obj = None
+    if rollout_strategy:
+        cluster_update_strategy_ref = None
+        if cluster_update_strategy:
+            cluster_update_strategy_ref = PlacementV1ClusterUpdateStrategyReference(name=cluster_update_strategy)
+        rollout_strategy_obj = PlacementV1RolloutStrategy(
+            type=rollout_strategy,
+            cluster_update_strategy=cluster_update_strategy_ref
         )
+
+    propagation_policy = None
+    if member_cluster_names or rollout_strategy_obj:
+        placement_policy = None
+        if member_cluster_names:
+            placement_policy = PlacementV1PlacementPolicy(
+                placement_type=PlacementType.pick_fixed,
+                cluster_names=member_cluster_names
+            )
         placement_spec = PlacementV1ClusterResourcePlacementSpec(
-            policy=placement_policy
+            policy=placement_policy,
+            rollout_strategy=rollout_strategy_obj
         )
         placement_profile = PlacementProfile(
             default_cluster_resource_placement=placement_spec
