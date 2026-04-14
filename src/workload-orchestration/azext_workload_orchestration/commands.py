@@ -10,9 +10,9 @@
 
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
-    with self.command_group('workload-orchestration support', is_preview=True) as g:
+    with self.command_group('workload-orchestration support') as g:
         g.custom_command('create-bundle', 'create_support_bundle')
 
-    with self.command_group('workload-orchestration target', is_preview=True) as g:
+    with self.command_group('workload-orchestration target') as g:
         g.custom_command('init', 'target_init')
         g.custom_command('deploy', 'target_deploy')
