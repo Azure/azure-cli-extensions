@@ -48,38 +48,3 @@ examples:
 """
 
 
-
-helps['workload-orchestration hierarchy'] = """
-type: group
-short-summary: Commands for managing WO site hierarchy levels.
-"""
-
-helps['workload-orchestration hierarchy create'] = """
-type: command
-short-summary: Create a hierarchy level (Service Group + Site + Configuration) in one command.
-long-summary: |
-    Creates all resources needed for a single hierarchy level in Workload Orchestration.
-    This replaces 4 separate az rest calls with a single CLI command.
-
-    Resources created:
-    1. Service Group (Microsoft.Management/serviceGroups)
-    2. Site (Microsoft.Edge/sites) — in the Service Group
-    3. Configuration (Microsoft.Edge/configurations) — in the Resource Group
-    4. Configuration Reference — links the Configuration to the Site
-
-    If no WO context exists, one is auto-created and set as the current context.
-    A site-reference is also auto-created to link the site to the context.
-
-    All operations are idempotent (PUT upsert) — safe to re-run.
-examples:
-  - name: Create a top-level Region hierarchy
-    text: az workload-orchestration hierarchy create --name my-region -g my-rg -l eastus --level-label Region
-  - name: Create a Factory nested under Region
-    text: az workload-orchestration hierarchy create --name my-factory -g my-rg -l eastus --level-label Factory --parent my-region
-  - name: Create with capabilities (auto-added to context)
-    text: az workload-orchestration hierarchy create --name my-region -g my-rg -l eastus --level-label Region --capabilities soap shampoo
-  - name: Use an existing context
-    text: az workload-orchestration hierarchy create --name my-factory -g my-rg -l eastus --level-label Factory --context-name my-context --context-rg context-rg
-  - name: Skip context auto-creation (manual context management)
-    text: az workload-orchestration hierarchy create --name my-factory -g my-rg -l eastus --level-label Factory --skip-context
-"""

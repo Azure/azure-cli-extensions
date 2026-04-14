@@ -66,68 +66,7 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
             help='Kubernetes context to use. Defaults to current context.',
         )
 
-    # -----------------------------------------------------------------------
-    # hierarchy create
-    # -----------------------------------------------------------------------
-    with self.argument_context('workload-orchestration hierarchy create') as c:
-        c.argument(
-            'name',
-            options_list=['--name', '-n'],
-            help='Name for this hierarchy level. Used for Service Group, Site, and '
-                 'Configuration resources. Maximum 24 characters.',
-            required=True,
-        )
-        c.argument(
-            'resource_group',
-            options_list=['--resource-group', '-g'],
-            help='Resource group for the Configuration resource.',
-            required=True,
-        )
-        c.argument(
-            'location',
-            options_list=['--location', '-l'],
-            help='Azure region (determines regional API endpoint for Site/Config).',
-            required=True,
-        )
-        c.argument(
-            'level_label',
-            options_list=['--level-label'],
-            help='Label for this hierarchy level (e.g., Region, Factory, Line).',
-            required=True,
-        )
-        c.argument(
-            'parent',
-            options_list=['--parent'],
-            help='Parent service group name for nesting. '
-                 'Omit for top-level (parent defaults to tenant root).',
-        )
-        c.argument(
-            'capabilities',
-            options_list=['--capabilities'],
-            nargs='+',
-            help='Capabilities to add to the WO context (e.g., soap shampoo).',
-        )
-        c.argument(
-            'description',
-            options_list=['--description'],
-            help='Description for the Site resource. Defaults to the name.',
-        )
-        c.argument(
-            'context_name',
-            options_list=['--context-name'],
-            help='Use an existing context by name (skip auto-create).',
-        )
-        c.argument(
-            'context_rg',
-            options_list=['--context-rg'],
-            help='Resource group of the existing context.',
-        )
-        c.argument(
-            'skip_context',
-            options_list=['--skip-context'],
-            action='store_true',
-            help='Skip auto-creation of context and site-reference.',
-        )
+
         c.argument(
             'skip_site_reference',
             options_list=['--skip-site-reference'],
