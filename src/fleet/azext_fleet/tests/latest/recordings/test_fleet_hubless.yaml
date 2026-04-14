@@ -3033,12 +3033,12 @@ interactions:
       message: OK
 - request:
     body: '{"properties": {"strategy": {"stages": [{"name": "stage1", "groups": [{"name":
-      "group1", "maxConcurrency": "100%", "maxAllowedFailures": "0", "beforeGates": [{"displayName": "group before
+      "group1", "maxConcurrency": "100%", "beforeGates": [{"displayName": "group before
       gate", "type": "Approval"}], "afterGates": [{"displayName": "group after gate",
-      "type": "Approval"}]}, {"name": "group2", "maxConcurrency": "50%", "maxAllowedFailures": "1", "beforeGates":
+      "type": "Approval"}]}, {"name": "group2", "maxConcurrency": "50%", "beforeGates":
       [{"displayName": "group before gate", "type": "Approval"}], "afterGates": [{"displayName":
       "group after gate", "type": "Approval"}]}], "afterStageWaitInSeconds": 3600,
-      "maxConcurrency": "7", "maxAllowedFailures": "1", "beforeGates": [{"displayName": "stage before gate",
+      "maxConcurrency": "7", "beforeGates": [{"displayName": "stage before gate",
       "type": "Approval"}], "afterGates": [{"displayName": "stage after gate", "type":
       "Approval"}]}]}, "managedClusterUpdate": {"upgrade": {"type": "Full", "kubernetesVersion":
       "1.33.0"}, "nodeImageSelection": {"type": "Latest"}}}}'
@@ -3067,15 +3067,15 @@ interactions:
         after gate","status":{"state":"NotStarted"}}],"afterStageWaitStatus":{"status":{"state":"NotStarted"},"waitDurationInSeconds":3600},"beforeGates":[{"displayName":"stage
         before gate","status":{"state":"NotStarted"}}],"groups":[{"afterGates":[{"displayName":"group
         after gate","status":{"state":"NotStarted"}}],"beforeGates":[{"displayName":"group
-        before gate","status":{"state":"NotStarted"}}],"maxAllowedFailures":0,"maxConcurrency":1,"name":"group1","status":{"state":"Skipped"}},{"afterGates":[{"displayName":"group
+        before gate","status":{"state":"NotStarted"}}],"maxConcurrency":1,"name":"group1","status":{"state":"Skipped"}},{"afterGates":[{"displayName":"group
         after gate","status":{"state":"NotStarted"}}],"beforeGates":[{"displayName":"group
-        before gate","status":{"state":"NotStarted"}}],"maxAllowedFailures":1,"maxConcurrency":1,"members":[{"clusterResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli-000001/providers/Microsoft.ContainerService/managedClusters/flmc-000003","name":"flmc-000003","status":{"state":"NotStarted"}}],"name":"group2","status":{"state":"NotStarted"}}],"maxAllowedFailures":1,"maxConcurrency":7,"name":"stage1","status":{"state":"NotStarted"}}],"status":{"state":"NotStarted"}},"strategy":{"stages":[{"afterGates":[{"displayName":"stage
+        before gate","status":{"state":"NotStarted"}}],"maxConcurrency":1,"members":[{"clusterResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli-000001/providers/Microsoft.ContainerService/managedClusters/flmc-000003","name":"flmc-000003","status":{"state":"NotStarted"}}],"name":"group2","status":{"state":"NotStarted"}}],"maxConcurrency":7,"name":"stage1","status":{"state":"NotStarted"}}],"status":{"state":"NotStarted"}},"strategy":{"stages":[{"afterGates":[{"displayName":"stage
         after gate","type":"Approval"}],"afterStageWaitInSeconds":3600,"beforeGates":[{"displayName":"stage
         before gate","type":"Approval"}],"groups":[{"afterGates":[{"displayName":"group
         after gate","type":"Approval"}],"beforeGates":[{"displayName":"group before
-        gate","type":"Approval"}],"maxConcurrency":"100%","maxAllowedFailures":"0","name":"group1"},{"afterGates":[{"displayName":"group
+        gate","type":"Approval"}],"maxConcurrency":"100%","name":"group1"},{"afterGates":[{"displayName":"group
         after gate","type":"Approval"}],"beforeGates":[{"displayName":"group before
-        gate","type":"Approval"}],"maxConcurrency":"50%","maxAllowedFailures":"1","name":"group2"}],"maxConcurrency":"7","maxAllowedFailures":"1","name":"stage1"}]}},"systemData":{"createdAt":"2026-02-24T04:21:37.3752644Z","createdBy":"test@example.com","createdByType":"User","lastModifiedAt":"2026-02-24T04:21:37.3752644Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User"},"type":"Microsoft.ContainerService/fleets/updateRuns"}'
+        gate","type":"Approval"}],"maxConcurrency":"50%","name":"group2"}],"maxConcurrency":"7","name":"stage1"}]}},"systemData":{"createdAt":"2026-02-24T04:21:37.3752644Z","createdBy":"test@example.com","createdByType":"User","lastModifiedAt":"2026-02-24T04:21:37.3752644Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User"},"type":"Microsoft.ContainerService/fleets/updateRuns"}'
     headers:
       cache-control:
       - no-cache
@@ -3133,16 +3133,16 @@ interactions:
         after gate","status":{"state":"NotStarted"}}],"afterStageWaitStatus":{"status":{"state":"NotStarted"},"waitDurationInSeconds":3600},"beforeGates":[{"displayName":"stage
         before gate","status":{"state":"NotStarted"}}],"groups":[{"afterGates":[{"displayName":"group
         after gate","status":{"state":"NotStarted"}}],"beforeGates":[{"displayName":"group
-        before gate","status":{"state":"NotStarted"}}],"maxAllowedFailures":0,"maxConcurrency":1,"name":"group1","status":{"state":"Skipped"}},{"afterGates":[{"displayName":"group
+        before gate","status":{"state":"NotStarted"}}],"maxConcurrency":1,"name":"group1","status":{"state":"Skipped"}},{"afterGates":[{"displayName":"group
         after gate","status":{"completedTime":"2026-02-24T04:21:38.753780638Z","state":"Skipped"}}],"beforeGates":[{"displayName":"group
-        before gate","status":{"completedTime":"2026-02-24T04:21:38.753699637Z","state":"Skipped"}}],"maxAllowedFailures":1,"maxConcurrency":1,"members":[{"clusterResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli-000001/providers/Microsoft.ContainerService/managedClusters/flmc-000003","message":"skipped
-        by request.","name":"flmc-000003","status":{"completedTime":"2026-02-24T04:21:38.753562736Z","state":"Skipped"}}],"name":"group2","status":{"completedTime":"2026-02-24T04:21:38.753780638Z","state":"Skipped"}}],"maxAllowedFailures":1,"maxConcurrency":7,"name":"stage1","status":{"state":"NotStarted"}}],"status":{"state":"NotStarted"}},"strategy":{"stages":[{"afterGates":[{"displayName":"stage
+        before gate","status":{"completedTime":"2026-02-24T04:21:38.753699637Z","state":"Skipped"}}],"maxConcurrency":1,"members":[{"clusterResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli-000001/providers/Microsoft.ContainerService/managedClusters/flmc-000003","message":"skipped
+        by request.","name":"flmc-000003","status":{"completedTime":"2026-02-24T04:21:38.753562736Z","state":"Skipped"}}],"name":"group2","status":{"completedTime":"2026-02-24T04:21:38.753780638Z","state":"Skipped"}}],"maxConcurrency":7,"name":"stage1","status":{"state":"NotStarted"}}],"status":{"state":"NotStarted"}},"strategy":{"stages":[{"afterGates":[{"displayName":"stage
         after gate","type":"Approval"}],"afterStageWaitInSeconds":3600,"beforeGates":[{"displayName":"stage
         before gate","type":"Approval"}],"groups":[{"afterGates":[{"displayName":"group
         after gate","type":"Approval"}],"beforeGates":[{"displayName":"group before
-        gate","type":"Approval"}],"maxConcurrency":"100%","maxAllowedFailures":"0","name":"group1"},{"afterGates":[{"displayName":"group
+        gate","type":"Approval"}],"maxConcurrency":"100%","name":"group1"},{"afterGates":[{"displayName":"group
         after gate","type":"Approval"}],"beforeGates":[{"displayName":"group before
-        gate","type":"Approval"}],"maxConcurrency":"50%","maxAllowedFailures":"1","name":"group2"}],"maxConcurrency":"7","maxAllowedFailures":"1","name":"stage1"}]}},"systemData":{"createdAt":"2026-02-24T04:21:37.3752644Z","createdBy":"test@example.com","createdByType":"User","lastModifiedAt":"2026-02-24T04:21:37.3752644Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User"},"type":"Microsoft.ContainerService/fleets/updateRuns"}'
+        gate","type":"Approval"}],"maxConcurrency":"50%","name":"group2"}],"maxConcurrency":"7","name":"stage1"}]}},"systemData":{"createdAt":"2026-02-24T04:21:37.3752644Z","createdBy":"test@example.com","createdByType":"User","lastModifiedAt":"2026-02-24T04:21:37.3752644Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User"},"type":"Microsoft.ContainerService/fleets/updateRuns"}'
     headers:
       cache-control:
       - no-cache
@@ -3227,12 +3227,12 @@ interactions:
       message: OK
 - request:
     body: '{"properties": {"strategy": {"stages": [{"name": "stage1", "groups": [{"name":
-      "group1", "maxConcurrency": "100%", "maxAllowedFailures": "0", "beforeGates": [{"displayName": "group before
+      "group1", "maxConcurrency": "100%", "beforeGates": [{"displayName": "group before
       gate", "type": "Approval"}], "afterGates": [{"displayName": "group after gate",
-      "type": "Approval"}]}, {"name": "group2", "maxConcurrency": "50%", "maxAllowedFailures": "1", "beforeGates":
+      "type": "Approval"}]}, {"name": "group2", "maxConcurrency": "50%", "beforeGates":
       [{"displayName": "group before gate", "type": "Approval"}], "afterGates": [{"displayName":
       "group after gate", "type": "Approval"}]}], "afterStageWaitInSeconds": 3600,
-      "maxConcurrency": "7", "maxAllowedFailures": "1", "beforeGates": [{"displayName": "stage before gate",
+      "maxConcurrency": "7", "beforeGates": [{"displayName": "stage before gate",
       "type": "Approval"}], "afterGates": [{"displayName": "stage after gate", "type":
       "Approval"}]}]}}}'
     headers:
@@ -3260,9 +3260,9 @@ interactions:
         after gate","type":"Approval"}],"afterStageWaitInSeconds":3600,"beforeGates":[{"displayName":"stage
         before gate","type":"Approval"}],"groups":[{"afterGates":[{"displayName":"group
         after gate","type":"Approval"}],"beforeGates":[{"displayName":"group before
-        gate","type":"Approval"}],"maxConcurrency":"100%","maxAllowedFailures":"0","name":"group1"},{"afterGates":[{"displayName":"group
+        gate","type":"Approval"}],"maxConcurrency":"100%","name":"group1"},{"afterGates":[{"displayName":"group
         after gate","type":"Approval"}],"beforeGates":[{"displayName":"group before
-        gate","type":"Approval"}],"maxConcurrency":"50%","maxAllowedFailures":"1","name":"group2"}],"maxConcurrency":"7","maxAllowedFailures":"1","name":"stage1"}]}},"systemData":{"createdAt":"2026-02-24T04:21:39.7972089Z","createdBy":"test@example.com","createdByType":"User","lastModifiedAt":"2026-02-24T04:21:39.7972089Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User"},"type":"Microsoft.ContainerService/fleets/updateStrategies"}'
+        gate","type":"Approval"}],"maxConcurrency":"50%","name":"group2"}],"maxConcurrency":"7","name":"stage1"}]}},"systemData":{"createdAt":"2026-02-24T04:21:39.7972089Z","createdBy":"test@example.com","createdByType":"User","lastModifiedAt":"2026-02-24T04:21:39.7972089Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User"},"type":"Microsoft.ContainerService/fleets/updateStrategies"}'
     headers:
       cache-control:
       - no-cache
@@ -3316,9 +3316,9 @@ interactions:
         after gate","type":"Approval"}],"afterStageWaitInSeconds":3600,"beforeGates":[{"displayName":"stage
         before gate","type":"Approval"}],"groups":[{"afterGates":[{"displayName":"group
         after gate","type":"Approval"}],"beforeGates":[{"displayName":"group before
-        gate","type":"Approval"}],"maxConcurrency":"100%","maxAllowedFailures":"0","name":"group1"},{"afterGates":[{"displayName":"group
+        gate","type":"Approval"}],"maxConcurrency":"100%","name":"group1"},{"afterGates":[{"displayName":"group
         after gate","type":"Approval"}],"beforeGates":[{"displayName":"group before
-        gate","type":"Approval"}],"maxConcurrency":"50%","maxAllowedFailures":"1","name":"group2"}],"maxConcurrency":"7","maxAllowedFailures":"1","name":"stage1"}]}},"systemData":{"createdAt":"2026-02-24T04:21:39.7972089Z","createdBy":"test@example.com","createdByType":"User","lastModifiedAt":"2026-02-24T04:21:39.7972089Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User"},"type":"Microsoft.ContainerService/fleets/updateStrategies"}'
+        gate","type":"Approval"}],"maxConcurrency":"50%","name":"group2"}],"maxConcurrency":"7","name":"stage1"}]}},"systemData":{"createdAt":"2026-02-24T04:21:39.7972089Z","createdBy":"test@example.com","createdByType":"User","lastModifiedAt":"2026-02-24T04:21:39.7972089Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User"},"type":"Microsoft.ContainerService/fleets/updateStrategies"}'
     headers:
       cache-control:
       - no-cache
@@ -3370,9 +3370,9 @@ interactions:
         after gate","type":"Approval"}],"afterStageWaitInSeconds":3600,"beforeGates":[{"displayName":"stage
         before gate","type":"Approval"}],"groups":[{"afterGates":[{"displayName":"group
         after gate","type":"Approval"}],"beforeGates":[{"displayName":"group before
-        gate","type":"Approval"}],"maxConcurrency":"100%","maxAllowedFailures":"0","name":"group1"},{"afterGates":[{"displayName":"group
+        gate","type":"Approval"}],"maxConcurrency":"100%","name":"group1"},{"afterGates":[{"displayName":"group
         after gate","type":"Approval"}],"beforeGates":[{"displayName":"group before
-        gate","type":"Approval"}],"maxConcurrency":"50%","maxAllowedFailures":"1","name":"group2"}],"maxConcurrency":"7","maxAllowedFailures":"1","name":"stage1"}]}},"systemData":{"createdAt":"2026-02-24T04:21:39.7972089Z","createdBy":"test@example.com","createdByType":"User","lastModifiedAt":"2026-02-24T04:21:39.7972089Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User"},"type":"Microsoft.ContainerService/fleets/updateStrategies"}]}'
+        gate","type":"Approval"}],"maxConcurrency":"50%","name":"group2"}],"maxConcurrency":"7","name":"stage1"}]}},"systemData":{"createdAt":"2026-02-24T04:21:39.7972089Z","createdBy":"test@example.com","createdByType":"User","lastModifiedAt":"2026-02-24T04:21:39.7972089Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User"},"type":"Microsoft.ContainerService/fleets/updateStrategies"}]}'
     headers:
       cache-control:
       - no-cache
@@ -3430,15 +3430,15 @@ interactions:
         after gate","status":{"state":"NotStarted"}}],"afterStageWaitStatus":{"status":{"state":"NotStarted"},"waitDurationInSeconds":3600},"beforeGates":[{"displayName":"stage
         before gate","status":{"state":"NotStarted"}}],"groups":[{"afterGates":[{"displayName":"group
         after gate","status":{"state":"NotStarted"}}],"beforeGates":[{"displayName":"group
-        before gate","status":{"state":"NotStarted"}}],"maxAllowedFailures":0,"maxConcurrency":1,"name":"group1","status":{"state":"Skipped"}},{"afterGates":[{"displayName":"group
+        before gate","status":{"state":"NotStarted"}}],"maxConcurrency":1,"name":"group1","status":{"state":"Skipped"}},{"afterGates":[{"displayName":"group
         after gate","status":{"state":"NotStarted"}}],"beforeGates":[{"displayName":"group
-        before gate","status":{"state":"NotStarted"}}],"maxAllowedFailures":1,"maxConcurrency":1,"members":[{"clusterResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli-000001/providers/Microsoft.ContainerService/managedClusters/flmc-000003","name":"flmc-000003","status":{"state":"NotStarted"}}],"name":"group2","status":{"state":"NotStarted"}}],"maxAllowedFailures":1,"maxConcurrency":7,"name":"stage1","status":{"state":"NotStarted"}}],"status":{"state":"NotStarted"}},"strategy":{"stages":[{"afterGates":[{"displayName":"stage
+        before gate","status":{"state":"NotStarted"}}],"maxConcurrency":1,"members":[{"clusterResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli-000001/providers/Microsoft.ContainerService/managedClusters/flmc-000003","name":"flmc-000003","status":{"state":"NotStarted"}}],"name":"group2","status":{"state":"NotStarted"}}],"maxConcurrency":7,"name":"stage1","status":{"state":"NotStarted"}}],"status":{"state":"NotStarted"}},"strategy":{"stages":[{"afterGates":[{"displayName":"stage
         after gate","type":"Approval"}],"afterStageWaitInSeconds":3600,"beforeGates":[{"displayName":"stage
         before gate","type":"Approval"}],"groups":[{"afterGates":[{"displayName":"group
         after gate","type":"Approval"}],"beforeGates":[{"displayName":"group before
-        gate","type":"Approval"}],"maxConcurrency":"100%","maxAllowedFailures":"0","name":"group1"},{"afterGates":[{"displayName":"group
+        gate","type":"Approval"}],"maxConcurrency":"100%","name":"group1"},{"afterGates":[{"displayName":"group
         after gate","type":"Approval"}],"beforeGates":[{"displayName":"group before
-        gate","type":"Approval"}],"maxConcurrency":"50%","maxAllowedFailures":"1","name":"group2"}],"maxConcurrency":"7","maxAllowedFailures":"1","name":"stage1"}]},"updateStrategyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-000001/providers/Microsoft.ContainerService/fleets/fl-000002/updateStrategies/upstr-000005"},"systemData":{"createdAt":"2026-02-24T04:21:41.2949012Z","createdBy":"test@example.com","createdByType":"User","lastModifiedAt":"2026-02-24T04:21:41.2949012Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User"},"type":"Microsoft.ContainerService/fleets/updateRuns"}'
+        gate","type":"Approval"}],"maxConcurrency":"50%","name":"group2"}],"maxConcurrency":"7","name":"stage1"}]},"updateStrategyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-000001/providers/Microsoft.ContainerService/fleets/fl-000002/updateStrategies/upstr-000005"},"systemData":{"createdAt":"2026-02-24T04:21:41.2949012Z","createdBy":"test@example.com","createdByType":"User","lastModifiedAt":"2026-02-24T04:21:41.2949012Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User"},"type":"Microsoft.ContainerService/fleets/updateRuns"}'
     headers:
       cache-control:
       - no-cache
@@ -3494,15 +3494,15 @@ interactions:
         after gate","status":{"state":"NotStarted"}}],"afterStageWaitStatus":{"status":{"state":"NotStarted"},"waitDurationInSeconds":3600},"beforeGates":[{"displayName":"stage
         before gate","status":{"state":"NotStarted"}}],"groups":[{"afterGates":[{"displayName":"group
         after gate","status":{"state":"NotStarted"}}],"beforeGates":[{"displayName":"group
-        before gate","status":{"state":"NotStarted"}}],"maxAllowedFailures":0,"maxConcurrency":1,"name":"group1","status":{"state":"Skipped"}},{"afterGates":[{"displayName":"group
+        before gate","status":{"state":"NotStarted"}}],"maxConcurrency":1,"name":"group1","status":{"state":"Skipped"}},{"afterGates":[{"displayName":"group
         after gate","status":{"state":"NotStarted"}}],"beforeGates":[{"displayName":"group
-        before gate","status":{"state":"NotStarted"}}],"maxAllowedFailures":1,"maxConcurrency":1,"members":[{"clusterResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli-000001/providers/Microsoft.ContainerService/managedClusters/flmc-000003","name":"flmc-000003","status":{"state":"NotStarted"}}],"name":"group2","status":{"state":"NotStarted"}}],"maxAllowedFailures":1,"maxConcurrency":7,"name":"stage1","status":{"state":"NotStarted"}}],"status":{"state":"NotStarted"}},"strategy":{"stages":[{"afterGates":[{"displayName":"stage
+        before gate","status":{"state":"NotStarted"}}],"maxConcurrency":1,"members":[{"clusterResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli-000001/providers/Microsoft.ContainerService/managedClusters/flmc-000003","name":"flmc-000003","status":{"state":"NotStarted"}}],"name":"group2","status":{"state":"NotStarted"}}],"maxConcurrency":7,"name":"stage1","status":{"state":"NotStarted"}}],"status":{"state":"NotStarted"}},"strategy":{"stages":[{"afterGates":[{"displayName":"stage
         after gate","type":"Approval"}],"afterStageWaitInSeconds":3600,"beforeGates":[{"displayName":"stage
         before gate","type":"Approval"}],"groups":[{"afterGates":[{"displayName":"group
         after gate","type":"Approval"}],"beforeGates":[{"displayName":"group before
-        gate","type":"Approval"}],"maxConcurrency":"100%","maxAllowedFailures":"0","name":"group1"},{"afterGates":[{"displayName":"group
+        gate","type":"Approval"}],"maxConcurrency":"100%","name":"group1"},{"afterGates":[{"displayName":"group
         after gate","type":"Approval"}],"beforeGates":[{"displayName":"group before
-        gate","type":"Approval"}],"maxConcurrency":"50%","maxAllowedFailures":"1","name":"group2"}],"maxConcurrency":"7","maxAllowedFailures":"1","name":"stage1"}]},"updateStrategyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-000001/providers/Microsoft.ContainerService/fleets/fl-000002/updateStrategies/upstr-000005"},"systemData":{"createdAt":"2026-02-24T04:21:41.2949012Z","createdBy":"test@example.com","createdByType":"User","lastModifiedAt":"2026-02-24T04:21:41.2949012Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User"},"type":"Microsoft.ContainerService/fleets/updateRuns"}'
+        gate","type":"Approval"}],"maxConcurrency":"50%","name":"group2"}],"maxConcurrency":"7","name":"stage1"}]},"updateStrategyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-000001/providers/Microsoft.ContainerService/fleets/fl-000002/updateStrategies/upstr-000005"},"systemData":{"createdAt":"2026-02-24T04:21:41.2949012Z","createdBy":"test@example.com","createdByType":"User","lastModifiedAt":"2026-02-24T04:21:41.2949012Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User"},"type":"Microsoft.ContainerService/fleets/updateRuns"}'
     headers:
       cache-control:
       - no-cache
@@ -3556,15 +3556,15 @@ interactions:
         after gate","status":{"state":"NotStarted"}}],"afterStageWaitStatus":{"status":{"state":"NotStarted"},"waitDurationInSeconds":3600},"beforeGates":[{"displayName":"stage
         before gate","gateId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-000001/providers/Microsoft.ContainerService/fleets/fl-000002/gates/ad497fb4-d262-4e78-9e1a-6a8a23451773","status":{"startTime":"2026-02-24T04:21:42.536006086Z","state":"Pending"}}],"groups":[{"afterGates":[{"displayName":"group
         after gate","status":{"state":"NotStarted"}}],"beforeGates":[{"displayName":"group
-        before gate","status":{"state":"NotStarted"}}],"maxAllowedFailures":0,"maxConcurrency":1,"name":"group1","status":{"state":"Skipped"}},{"afterGates":[{"displayName":"group
+        before gate","status":{"state":"NotStarted"}}],"maxConcurrency":1,"name":"group1","status":{"state":"Skipped"}},{"afterGates":[{"displayName":"group
         after gate","status":{"state":"NotStarted"}}],"beforeGates":[{"displayName":"group
-        before gate","status":{"state":"NotStarted"}}],"maxAllowedFailures":1,"maxConcurrency":1,"members":[{"clusterResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli-000001/providers/Microsoft.ContainerService/managedClusters/flmc-000003","name":"flmc-000003","status":{"state":"NotStarted"}}],"name":"group2","status":{"state":"NotStarted"}}],"maxAllowedFailures":1,"maxConcurrency":7,"name":"stage1","status":{"state":"Pending"}}],"status":{"startTime":"2026-02-24T04:21:42.520568247Z","state":"Pending"}},"strategy":{"stages":[{"afterGates":[{"displayName":"stage
+        before gate","status":{"state":"NotStarted"}}],"maxConcurrency":1,"members":[{"clusterResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli-000001/providers/Microsoft.ContainerService/managedClusters/flmc-000003","name":"flmc-000003","status":{"state":"NotStarted"}}],"name":"group2","status":{"state":"NotStarted"}}],"maxConcurrency":7,"name":"stage1","status":{"state":"Pending"}}],"status":{"startTime":"2026-02-24T04:21:42.520568247Z","state":"Pending"}},"strategy":{"stages":[{"afterGates":[{"displayName":"stage
         after gate","type":"Approval"}],"afterStageWaitInSeconds":3600,"beforeGates":[{"displayName":"stage
         before gate","type":"Approval"}],"groups":[{"afterGates":[{"displayName":"group
         after gate","type":"Approval"}],"beforeGates":[{"displayName":"group before
-        gate","type":"Approval"}],"maxConcurrency":"100%","maxAllowedFailures":"0","name":"group1"},{"afterGates":[{"displayName":"group
+        gate","type":"Approval"}],"maxConcurrency":"100%","name":"group1"},{"afterGates":[{"displayName":"group
         after gate","type":"Approval"}],"beforeGates":[{"displayName":"group before
-        gate","type":"Approval"}],"maxConcurrency":"50%","maxAllowedFailures":"1","name":"group2"}],"maxConcurrency":"7","maxAllowedFailures":"1","name":"stage1"}]},"updateStrategyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-000001/providers/Microsoft.ContainerService/fleets/fl-000002/updateStrategies/upstr-000005"},"systemData":{"createdAt":"2026-02-24T04:21:41.2949012Z","createdBy":"test@example.com","createdByType":"User","lastModifiedAt":"2026-02-24T04:21:41.2949012Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User"},"type":"Microsoft.ContainerService/fleets/updateRuns"}'
+        gate","type":"Approval"}],"maxConcurrency":"50%","name":"group2"}],"maxConcurrency":"7","name":"stage1"}]},"updateStrategyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-000001/providers/Microsoft.ContainerService/fleets/fl-000002/updateStrategies/upstr-000005"},"systemData":{"createdAt":"2026-02-24T04:21:41.2949012Z","createdBy":"test@example.com","createdByType":"User","lastModifiedAt":"2026-02-24T04:21:41.2949012Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User"},"type":"Microsoft.ContainerService/fleets/updateRuns"}'
     headers:
       cache-control:
       - no-cache
@@ -3616,15 +3616,15 @@ interactions:
         after gate","status":{"state":"NotStarted"}}],"afterStageWaitStatus":{"status":{"state":"NotStarted"},"waitDurationInSeconds":3600},"beforeGates":[{"displayName":"stage
         before gate","gateId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-000001/providers/Microsoft.ContainerService/fleets/fl-000002/gates/ad497fb4-d262-4e78-9e1a-6a8a23451773","status":{"startTime":"2026-02-24T04:21:42.536006086Z","state":"Pending"}}],"groups":[{"afterGates":[{"displayName":"group
         after gate","status":{"state":"NotStarted"}}],"beforeGates":[{"displayName":"group
-        before gate","status":{"state":"NotStarted"}}],"maxAllowedFailures":0,"maxConcurrency":1,"name":"group1","status":{"state":"Skipped"}},{"afterGates":[{"displayName":"group
+        before gate","status":{"state":"NotStarted"}}],"maxConcurrency":1,"name":"group1","status":{"state":"Skipped"}},{"afterGates":[{"displayName":"group
         after gate","status":{"state":"NotStarted"}}],"beforeGates":[{"displayName":"group
-        before gate","status":{"state":"NotStarted"}}],"maxAllowedFailures":1,"maxConcurrency":1,"members":[{"clusterResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli-000001/providers/Microsoft.ContainerService/managedClusters/flmc-000003","name":"flmc-000003","status":{"state":"NotStarted"}}],"name":"group2","status":{"state":"NotStarted"}}],"maxAllowedFailures":1,"maxConcurrency":7,"name":"stage1","status":{"state":"Pending"}}],"status":{"startTime":"2026-02-24T04:21:42.520568247Z","state":"Pending"}},"strategy":{"stages":[{"afterGates":[{"displayName":"stage
+        before gate","status":{"state":"NotStarted"}}],"maxConcurrency":1,"members":[{"clusterResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli-000001/providers/Microsoft.ContainerService/managedClusters/flmc-000003","name":"flmc-000003","status":{"state":"NotStarted"}}],"name":"group2","status":{"state":"NotStarted"}}],"maxConcurrency":7,"name":"stage1","status":{"state":"Pending"}}],"status":{"startTime":"2026-02-24T04:21:42.520568247Z","state":"Pending"}},"strategy":{"stages":[{"afterGates":[{"displayName":"stage
         after gate","type":"Approval"}],"afterStageWaitInSeconds":3600,"beforeGates":[{"displayName":"stage
         before gate","type":"Approval"}],"groups":[{"afterGates":[{"displayName":"group
         after gate","type":"Approval"}],"beforeGates":[{"displayName":"group before
-        gate","type":"Approval"}],"maxConcurrency":"100%","maxAllowedFailures":"0","name":"group1"},{"afterGates":[{"displayName":"group
+        gate","type":"Approval"}],"maxConcurrency":"100%","name":"group1"},{"afterGates":[{"displayName":"group
         after gate","type":"Approval"}],"beforeGates":[{"displayName":"group before
-        gate","type":"Approval"}],"maxConcurrency":"50%","maxAllowedFailures":"1","name":"group2"}],"maxConcurrency":"7","maxAllowedFailures":"1","name":"stage1"}]},"updateStrategyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-000001/providers/Microsoft.ContainerService/fleets/fl-000002/updateStrategies/upstr-000005"},"systemData":{"createdAt":"2026-02-24T04:21:41.2949012Z","createdBy":"test@example.com","createdByType":"User","lastModifiedAt":"2026-02-24T04:21:41.2949012Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User"},"type":"Microsoft.ContainerService/fleets/updateRuns"}]}'
+        gate","type":"Approval"}],"maxConcurrency":"50%","name":"group2"}],"maxConcurrency":"7","name":"stage1"}]},"updateStrategyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-000001/providers/Microsoft.ContainerService/fleets/fl-000002/updateStrategies/upstr-000005"},"systemData":{"createdAt":"2026-02-24T04:21:41.2949012Z","createdBy":"test@example.com","createdByType":"User","lastModifiedAt":"2026-02-24T04:21:41.2949012Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User"},"type":"Microsoft.ContainerService/fleets/updateRuns"}]}'
     headers:
       cache-control:
       - no-cache
