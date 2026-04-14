@@ -149,8 +149,11 @@ class FleetHublessScenarioTest(ScenarioTest):
         self.cmd('fleet updatestrategy show -g {rg} -n {updateStrategy_name} -f {fleet_name}', checks=[
             self.check('name', '{updateStrategy_name}'),
             self.check('strategy.stages[0].maxConcurrency', '{strategy_stage_max_concurrency}'),
+            self.check('strategy.stages[0].memberSelector.byLabel', 'team=fleet'),
             self.check('strategy.stages[0].groups[0].maxConcurrency', '{strategy_group1_max_concurrency}'),
-            self.check('strategy.stages[0].groups[1].maxConcurrency', '{strategy_group2_max_concurrency}')
+            self.check('strategy.stages[0].groups[0].memberSelector.byLabel', 'team=fleet'),
+            self.check('strategy.stages[0].groups[1].maxConcurrency', '{strategy_group2_max_concurrency}'),
+            self.check('strategy.stages[0].groups[1].memberSelector', None)
         ])
 
         self.cmd('fleet updatestrategy list -g {rg} -f {fleet_name}', checks=[
@@ -174,7 +177,10 @@ class FleetHublessScenarioTest(ScenarioTest):
             self.check('name', '{updaterun}'),
             self.check('status.stages[0].maxConcurrency', '{updaterun_stage_max_concurrency}'),
             self.check('status.stages[0].groups[0].maxConcurrency', '{updaterun_group1_max_concurrency}'),
-            self.check('status.stages[0].groups[1].maxConcurrency', '{updaterun_group2_max_concurrency}')
+            self.check('status.stages[0].groups[1].maxConcurrency', '{updaterun_group2_max_concurrency}'),
+            self.check('strategy.stages[0].memberSelector.byLabel', 'team=fleet'),
+            self.check('strategy.stages[0].groups[0].memberSelector.byLabel', 'team=fleet'),
+            self.check('strategy.stages[0].groups[1].memberSelector', None)
         ])
 
         self.cmd('fleet updaterun list -g {rg} -f {fleet_name}', checks=[
