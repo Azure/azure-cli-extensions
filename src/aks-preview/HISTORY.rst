@@ -14,6 +14,7 @@ Pending
 * `az aks machine add`: Add `--spot-max-price` flag support to set the max price (in US Dollars) you are willing to pay for spot instances on a machine.
 * `az aks machine add`: Add `--eviction-policy` flag support to set the eviction policy for a machine.
 * `az aks machine add`: Add `--enable-ultra-ssd` flag support to enable ultra ssd on a machine.
+* `az aks create`: Add `--control-plane-scaling-size` parameter to configure control plane scaling profile with available sizes 'H2', 'H4', and 'H8'.
 
 20.0.0b1
 +++++++
@@ -52,7 +53,6 @@ Pending
 
 19.0.0b25
 +++++++
-* `az aks create`: Add `--control-plane-scaling-size` parameter to configure control plane scaling profile with available sizes 'H2', 'H4', and 'H8'.
 * `az aks create`: Add `--enable-continuous-control-plane-and-addon-monitor` to enable continuous control plane and addon monitor.
 * `az aks update`: Add `--enable-continuous-control-plane-and-addon-monitor` and `--disable-continuous-control-plane-and-addon-monitor` to manage continuous control plane and addon monitor.
 
