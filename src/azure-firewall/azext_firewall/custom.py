@@ -172,7 +172,7 @@ class AzureFirewallCreate(_AzureFirewallCreate):
         args_schema.pac_file = AAZStrArg(
             options=["--pac-file"],
             arg_group="Explicit Proxy",
-            help="SAS URL for PAC file.",
+            help="URL for PAC file.",
         )
         args_schema.m_public_ip._fmt = AAZResourceIdArgFormat(
             template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network"
@@ -890,7 +890,7 @@ class ThreatIntelAllowListDelete(_AzureFirewallUpdate):
 class AzureFirewallPoliciesCreate(_AzureFirewallPoliciesCreate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZResourceIdArg, AAZResourceIdArgFormat
+        from azure.cli.core.aaz import AAZListArg, AAZResourceIdArg, AAZResourceIdArgFormat, AAZStrArg
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.identity = AAZResourceIdArg(
             options=['--identity'],
@@ -900,11 +900,19 @@ class AzureFirewallPoliciesCreate(_AzureFirewallPoliciesCreate):
                          "Microsoft.ManagedIdentity/userAssignedIdentities/{}",
             )
         )
+        args_schema.identities = AAZListArg(
+            options=['--identities'],
+            help="Space-separated list of ManagedIdentity Resource IDs."
+        )
+        args_schema.identities.Element = AAZResourceIdArg(  
+            fmt=AAZResourceIdArgFormat(
+                template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{}"
+            )
+        )
         args_schema.base_policy._fmt = AAZResourceIdArgFormat(
             template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network"
                      "/firewallPolicies/{}",
-        )
-        args_schema.identity_type._registered = False
+        )   
         args_schema.user_assigned_identities._registered = False
 
         return args_schema
@@ -914,6 +922,10 @@ class AzureFirewallPoliciesCreate(_AzureFirewallPoliciesCreate):
         if has_value(args.identity):
             args.identity_type = "UserAssigned"
             args.user_assigned_identities = {args.identity.to_serialized_data(): {}}
+        elif has_value(args.identities):
+            identities = [id.to_serialized_data() for id in args.identities]
+            args.identity_type = "UserAssigned"
+            args.user_assigned_identities = {id: {} for id in identities}
 
         if has_value(args.dns_servers):
             if not has_value(args.enable_dns_proxy):
@@ -923,7 +935,7 @@ class AzureFirewallPoliciesCreate(_AzureFirewallPoliciesCreate):
 class AzureFirewallPoliciesUpdate(_AzureFirewallPoliciesUpdate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZResourceIdArg, AAZResourceIdArgFormat
+        from azure.cli.core.aaz import AAZResourceIdArg, AAZResourceIdArgFormat, AAZListArg, AAZStrArg
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.identity = AAZResourceIdArg(
             options=['--identity'],
@@ -933,17 +945,32 @@ class AzureFirewallPoliciesUpdate(_AzureFirewallPoliciesUpdate):
                          "Microsoft.ManagedIdentity/userAssignedIdentities/{}",
             )
         )
-        args_schema.identity_type._registered = False
+        args_schema.identities = AAZListArg(
+            options=['--identities'],
+            help="Space-separated list of ManagedIdentity Resource IDs."
+        )        
+        args_schema.identities.Element = AAZResourceIdArg(  
+                fmt=AAZResourceIdArgFormat(
+                    template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{}"
+                )
+        )   
         args_schema.user_assigned_identities._registered = False
         args_schema.configuration._registered = False
 
         return args_schema
 
     def pre_operations(self):
-        args = self.ctx.args
+        args = self.ctx.args     
         if has_value(args.identity):
             args.identity_type = "UserAssigned"
             args.user_assigned_identities = {args.identity.to_serialized_data(): {}}
+        elif has_value(args.identities):
+            identities = [id.to_serialized_data() for id in args.identities]
+            args.identity_type = "UserAssigned"
+            args.user_assigned_identities = {id: {} for id in identities}
+        elif has_value(args.identity_type) and args.identity_type.to_serialized_data() == "None":
+            args.identity_type = "None"
+            args.user_assigned_identities = None   
         elif args.sku == 'Premium':
             args.identity_type = "None"
             args.user_assigned_identities = None
