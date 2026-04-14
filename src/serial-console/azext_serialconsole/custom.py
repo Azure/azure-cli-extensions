@@ -18,7 +18,7 @@ from azure.cli.core.azclierror import ResourceNotFoundError
 from azure.cli.core.azclierror import AzureConnectionError
 from azure.cli.core.azclierror import ForbiddenError
 from azure.cli.core._profile import Profile
-from azure.core.exceptions import ResourceNotFoundError as ComputeClientResourceNotFoundError
+from azure.core.exceptions import HttpResponseError
 from azext_serialconsole._client_factory import cf_serialconsole
 from azext_serialconsole._client_factory import cf_serial_port
 
@@ -602,34 +602,27 @@ def check_resource(cli_ctx, resource_group_name, vm_vmss_name, vmss_instanceid):
     check_serial_console_enabled(cli_ctx, storage_account_region)
 
     if vmss_instanceid:
-        if 'osName' in result.additional_properties and "windows" in result.additional_properties['osName'].lower():
+        if "windows" in result.get('osName', '').lower():
             GV.os_is_windows = True
 
-        power_state = ','.join(
-            [s.display_status for s in result.statuses if s.code.startswith('PowerState/')]).lower()
+        power_state = ','.join([s.get('displayStatus') for s in result.get('statuses', [])
+                                if s.get('code', '').startswith('PowerState/')]).lower()
         if "deallocating" in power_state or "deallocated" in power_state:
             error_message = "Azure Serial Console requires a virtual machine to be running."
             recommendation = 'Use "az vmss start" to start the Virtual Machine.'
-            raise AzureConnectionError(
-                error_message, recommendation=recommendation)
+            raise AzureConnectionError(error_message, recommendation=recommendation)
     else:
-        if (result.instance_view is not None and
-                result.instance_view.os_name is not None and
-                "windows" in result.instance_view.os_name.lower()):
+        if "windows" in result.get('instanceView', {}).get('osName', '').lower():
             GV.os_is_windows = True
-        if (result.storage_profile is not None and
-                result.storage_profile.image_reference is not None and
-                result.storage_profile.image_reference.offer is not None and
-                "windows" in result.storage_profile.image_reference.offer.lower()):
+        if "windows" in result.get('storageProfile', {}).get('imageReference', {}).get('offer', '').lower():
             GV.os_is_windows = True
 
-        power_state = ','.join(
-            [s.display_status for s in result.instance_view.statuses if s.code.startswith('PowerState/')])
+        power_state = ','.join([s.get('displayStatus') for s in result.get('instanceView', {}).get('statuses', [])
+                                if s.get('code', '').startswith('PowerState/')])
         if "deallocating" in power_state or "deallocated" in power_state:
             error_message = "Azure Serial Console requires a virtual machine to be running."
             recommendation = 'Use "az vm start" to start the Virtual Machine.'
-            raise AzureConnectionError(
-                error_message, recommendation=recommendation)
+            raise AzureConnectionError(error_message, recommendation=recommendation)
 
 
 def connect_serialconsole(cmd, resource_group_name, vm_vmss_name, vmss_instanceid=None):
@@ -679,7 +672,7 @@ def disable_serialconsole(cmd):
 
 
 def get_region_from_storage_account(cli_ctx, resource_group_name, vm_vmss_name, vmss_instanceid):
-    from azure.cli.command_modules.vm.operations.vmss_vms import VMSSVMSShow
+    from azure.cli.command_modules.vm.aaz.latest.vmss.vms.instance_view import Show as VMSSVMSInstanceView
     from azure.cli.command_modules.vm.operations.vm import VMShow
     from azure.cli.command_modules.vm.operations.vmss import VMSSShow
     from azext_serialconsole._client_factory import storage_client_factory
@@ -693,10 +686,9 @@ def get_region_from_storage_account(cli_ctx, resource_group_name, vm_vmss_name, 
         command_args = {
             'instance_id': vmss_instanceid,
             'resource_group': resource_group_name,
-            'vm_scale_set_name': vm_vmss_name,
-            'expand': 'instanceView'
+            'vm_scale_set_name': vm_vmss_name
         }
-        result_data = VMSSVMSShow(cli_ctx=cli_ctx)(command_args=command_args)
+        result_data = VMSSVMSInstanceView(cli_ctx=cli_ctx)(command_args=command_args)
         result = result_data
 
         if result_data.get('bootDiagnostics') is None:
@@ -723,14 +715,14 @@ def get_region_from_storage_account(cli_ctx, resource_group_name, vm_vmss_name, 
             }
             result_data = VMShow(cli_ctx=cli_ctx)(command_args=command_args)
             result = result_data
-        except ComputeClientResourceNotFoundError as e:
+        except HttpResponseError as e:
             try:
                 command_args = {
                     'resource_group': resource_group_name,
                     'vm_scale_set_name': vm_vmss_name
                 }
                 VMSSShow(cli_ctx=cli_ctx)(command_args=command_args)
-            except ComputeClientResourceNotFoundError:
+            except HttpResponseError:
                 raise e from e
             error_message = e.message
             recommendation = ("We found that you specified a Virtual Machine Scale Set and not a VM. "
