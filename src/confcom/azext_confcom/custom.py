@@ -193,7 +193,6 @@ def acipolicygen_confcom(
             policy.set_fragment_contents(fragment_policy_list)
 
     for count, policy in enumerate(container_group_policies):
-        # this is where parameters and variables are populated
         policy.populate_policy_content_for_all_images(
             individual_image=bool(image_name), tar_mapping=tar_mapping, faster_hashing=faster_hashing
         )
