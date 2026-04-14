@@ -114,42 +114,39 @@ def target_deploy(
         do_review = False
 
     total = sum([do_config, do_review, do_publish, do_install])
-    step = [0]  # mutable counter
+    current = [0]  # mutable counter
 
-    def _step(name, status=""):
-        step[0] += 1
-        prefix = f"[{step[0]}/{total}]"
+    def _log(step_name, status=""):
         if status:
-            print(f"{prefix} {name}... {status}")
+            print(f"[{current[0]}/{total}] {step_name}... {status}")
         else:
-            print(f"{prefix} {name}...")
+            current[0] += 1
+            print(f"[{current[0]}/{total}] {step_name}...")
 
     results = {}
     sv_id = solution_version_id  # may be set by review or passed via --solution-version-id
 
     # --- Step 0: Config set ---
     if do_config:
-        _step("Config Set")
+        _log("Config Set")
         _handle_config_set(
             cmd, config, config_hierarchy_id, config_template_rg,
             config_template_name, config_template_version,
             resource_group, target_name, sub_id,
         )
-        _step("Config Set", "[OK]")
-        step[0] -= 1  # _step incremented twice; fix
+        _log("Config Set", "[OK]")
         results["configSet"] = "Succeeded"
 
     # --- Step 1: Review ---
     if do_review:
-        _step("Review")
+        _log("Review")
         review_result = _do_review(
             cmd, base_url, solution_template_version_id,
             solution_instance_name, solution_dependencies,
         )
         results["review"] = review_result
         sv_id = _extract_solution_version_id(review_result)
-        _step("Review", f"[OK] -> solutionVersionId: {_short_id(sv_id)}")
-        step[0] -= 1
+        _log("Review", f"[OK] -> solutionVersionId: {_short_id(sv_id)}")
     elif not resume_from:
         # Should not reach here — do_review is True when resume_from is None
         results["review"] = "Skipped"
@@ -163,22 +160,20 @@ def target_deploy(
 
     # --- Step 2: Publish ---
     if do_publish:
-        _step("Publish")
+        _log("Publish")
         publish_result = _do_publish(cmd, base_url, sv_id)
         results["publish"] = publish_result
-        _step("Publish", "[OK]")
-        step[0] -= 1
+        _log("Publish", "[OK]")
     else:
         print(f"[~] Publish skipped (--resume-from install)")
         results["publish"] = "Skipped"
 
     # --- Step 3: Install ---
     if do_install:
-        _step("Install")
+        _log("Install")
         install_result = _do_install(cmd, base_url, sv_id)
         results["install"] = install_result
-        _step("Install", "[OK]")
-        step[0] -= 1
+        _log("Install", "[OK]")
     else:
         print(f"[~] Install skipped (--resume-from install)")
         results["install"] = "Skipped"
