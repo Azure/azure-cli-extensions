@@ -85,12 +85,13 @@ class FleetHubfulScenarioTest(ScenarioTest):
 
         self.cmd('fleet namespace create -g {rg} --fleet-name {fleet_name} -n {namespace_name} '
                  '--adoption-policy Always --delete-policy Delete '
-                 '--member-cluster-names {member_name}',
+                 '--member-cluster-names {member_name} --rollout-strategy RollingUpdate',
                  checks=[
                      self.check('name', '{namespace_name}'),
                      self.check('properties.adoptionPolicy', 'Always'),
                      self.check('properties.deletePolicy', 'Delete'),
-                     self.check('properties.propagationPolicy.placementProfile.defaultClusterResourcePlacement.policy.clusterNames[0]', '{member_name}')
+                     self.check('properties.propagationPolicy.placementProfile.defaultClusterResourcePlacement.policy.clusterNames[0]', '{member_name}'),
+                     self.check('properties.propagationPolicy.placementProfile.defaultClusterResourcePlacement.rolloutStrategy.type', 'RollingUpdate')
                  ])
         
         self.cmd('fleet namespace wait -g {rg} -f {fleet_name} -n {namespace_name} --created', checks=[self.is_empty()])
