@@ -21,7 +21,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cleanroom/collaborations/{}", "2025-10-31-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cleanroom/collaborations/{}", "2026-03-31-preview"],
         ]
     }
 
@@ -120,7 +120,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-10-31-preview",
+                    "api-version", "2026-03-31-preview",
                     required=True,
                 ),
             }
@@ -180,13 +180,14 @@ class Wait(AAZWaitCommand):
                 serialized_name="clusterEndpoint",
                 flags={"read_only": True},
             )
+            properties.collaboration_state = AAZStrType(
+                serialized_name="collaborationState",
+                flags={"read_only": True},
+            )
+            properties.collaborators = AAZListType()
             properties.consortium_arm_id = AAZStrType(
                 serialized_name="consortiumArmId",
                 flags={"read_only": True},
-            )
-            properties.consortium_type = AAZStrType(
-                serialized_name="consortiumType",
-                flags={"required": True},
             )
             properties.health = AAZObjectType(
                 flags={"read_only": True},
@@ -199,12 +200,26 @@ class Wait(AAZWaitCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.user_identity = AAZObjectType(
-                serialized_name="userIdentity",
-                flags={"required": True},
-            )
             properties.workloads = AAZListType(
                 flags={"read_only": True},
+            )
+
+            collaborators = cls._schema_on_200.properties.collaborators
+            collaborators.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.collaborators.Element
+            _element.is_collaboration_owner = AAZBoolType(
+                serialized_name="isCollaborationOwner",
+                flags={"read_only": True},
+            )
+            _element.object_id = AAZStrType(
+                serialized_name="objectId",
+            )
+            _element.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+            )
+            _element.user_identifier = AAZStrType(
+                serialized_name="userIdentifier",
             )
 
             health = cls._schema_on_200.properties.health
@@ -237,20 +252,6 @@ class Wait(AAZWaitCommand):
 
             _element = cls._schema_on_200.properties.managed_on_behalf_of_configuration.mobo_broker_resources.Element
             _element.id = AAZStrType()
-
-            user_identity = cls._schema_on_200.properties.user_identity
-            user_identity.account_type = AAZStrType(
-                serialized_name="accountType",
-                flags={"required": True},
-            )
-            user_identity.object_id = AAZStrType(
-                serialized_name="objectId",
-                flags={"required": True},
-            )
-            user_identity.tenant_id = AAZStrType(
-                serialized_name="tenantId",
-                flags={"required": True},
-            )
 
             workloads = cls._schema_on_200.properties.workloads
             workloads.Element = AAZObjectType()

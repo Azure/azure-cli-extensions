@@ -551,3 +551,64 @@ def _get_jwtauthenticator_table_row(result):
         ('hasClaimRules', has_claim_rules),
         ('hasUserRules', has_user_rules),
     ])
+
+
+def aks_list_vm_skus_table_format(results):
+    """Format a list of VM SKUs as summary results for display with '-o table'."""
+    return [_aks_vm_sku_table_format(r) for r in results]
+
+
+def _aks_vm_sku_table_format(sku):
+    """Format a single ResourceSku for table display."""
+    # sku may be a model object or a dict depending on how the SDK returns it
+    def _get(obj, attr):
+        if isinstance(obj, dict):
+            return obj.get(attr)
+        return getattr(obj, attr, None)
+
+    name = _get(sku, 'name') or ''
+    tier = _get(sku, 'tier') or ''
+    size = _get(sku, 'size') or ''
+    family = _get(sku, 'family') or ''
+
+    # Extract zones from the first location_info entry
+    location_info = _get(sku, 'location_info') or _get(sku, 'locationInfo') or []
+    if location_info:
+        first_loc = location_info[0]
+        zones_list = _get(first_loc, 'zones') or []
+        zones = ', '.join(sorted(zones_list)) if zones_list else ''
+    else:
+        zones = ''
+
+    # Summarise restrictions
+    restrictions = _get(sku, 'restrictions') or []
+    if not restrictions:
+        restrictions_summary = 'None'
+    else:
+        reasons = []
+        for r in restrictions:
+            reason_code = _get(r, 'reason_code') or _get(r, 'reasonCode') or ''
+            r_type = _get(r, 'type') or ''
+            if reason_code:
+                reasons.append(f'{r_type}/{reason_code}')
+        restrictions_summary = '; '.join(reasons) if reasons else 'Restricted'
+
+    # Summarise capabilities as key=value pairs for compact display
+    capabilities = _get(sku, 'capabilities') or []
+    cap_parts = []
+    for cap in capabilities:
+        cap_name = _get(cap, 'name') or ''
+        cap_value = _get(cap, 'value') or ''
+        if cap_name:
+            cap_parts.append(f'{cap_name}={cap_value}')
+    capabilities_summary = ', '.join(cap_parts) if cap_parts else ''
+
+    return OrderedDict([
+        ('name', name),
+        ('tier', tier),
+        ('size', size),
+        ('family', family),
+        ('zones', zones),
+        ('restrictions', restrictions_summary),
+        ('capabilities', capabilities_summary),
+    ])

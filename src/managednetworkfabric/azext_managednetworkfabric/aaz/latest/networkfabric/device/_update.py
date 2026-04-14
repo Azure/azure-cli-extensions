@@ -58,6 +58,18 @@ class Update(AAZCommand):
             required=True,
         )
 
+        # define Arg Group "Body"
+
+        _args_schema = cls._args_schema
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Body",
+            help="Resource tags.",
+        )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg()
+
         # define Arg Group "Identity"
 
         _args_schema = cls._args_schema
@@ -110,11 +122,6 @@ class Update(AAZCommand):
                 min_length=1,
             ),
         )
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Properties",
-            help="Resource tags.",
-        )
 
         identity_selector = cls._args_schema.identity_selector
         identity_selector.identity_type = AAZStrArg(
@@ -127,9 +134,6 @@ class Update(AAZCommand):
             help="The user assigned managed identity resource ID to use. Mutually exclusive with a system assigned identity type.",
             nullable=True,
         )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):

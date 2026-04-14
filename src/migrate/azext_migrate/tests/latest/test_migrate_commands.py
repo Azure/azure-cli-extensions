@@ -3246,7 +3246,7 @@ class MigrateNewProcessInputsAdditionalTests(unittest.TestCase):
         
         mock_get_resource.side_effect = [mock_project, mock_amh]
         
-        amh, project, props = process_amh_solution(
+        amh, _, _, _ = process_amh_solution(
             mock_cmd, mock_machine, mock_site, None, 'rg1', 'machine1',
             '/subscriptions/sub1/resourceGroups/rg1'
         )
@@ -3385,7 +3385,7 @@ class MigrateSetupPolicyTests(unittest.TestCase):
 
     @mock.patch('azext_migrate.helpers.replication.init._setup_policy.send_get_request')
     def test_get_fabric_agent_not_responsive(self, mock_get_request):
-        """Test get_fabric_agent when agent is not responsive."""
+        """Test get_fabric_agent when agent is not responsive and not Succeeded."""
         from azext_migrate.helpers.replication.init._setup_policy import get_fabric_agent
         from knack.util import CLIError
         
@@ -3397,6 +3397,8 @@ class MigrateSetupPolicyTests(unittest.TestCase):
                     'properties': {
                         'machineName': 'appliance1',
                         'isResponsive': False,
+                        'provisioningState': 'Failed',
+                        'lastHeartbeat': '2026-01-01T00:00:00Z',
                         'customProperties': {
                             'instanceType': 'HyperV'
                         }
@@ -3412,6 +3414,99 @@ class MigrateSetupPolicyTests(unittest.TestCase):
             get_fabric_agent(mock_cmd, '/fabrics', fabric, 'appliance1', 'HyperV')
         
         self.assertIn('disconnected state', str(context.exception))
+
+    @mock.patch('azext_migrate.helpers.replication.init._setup_policy.send_get_request')
+    def test_get_fabric_agent_not_responsive_but_succeeded(self, mock_get_request):
+        """Test get_fabric_agent proceeds when DRA is not responsive but provisioning succeeded."""
+        from azext_migrate.helpers.replication.init._setup_policy import get_fabric_agent
+
+        mock_cmd = mock.Mock()
+        mock_response = mock.Mock()
+        mock_response.json.return_value = {
+            'value': [
+                {
+                    'properties': {
+                        'machineName': 'appliance1',
+                        'isResponsive': False,
+                        'provisioningState': 'Succeeded',
+                        'lastHeartbeat': '2026-03-05T21:46:47Z',
+                        'customProperties': {
+                            'instanceType': 'HyperV'
+                        }
+                    }
+                }
+            ]
+        }
+        mock_get_request.return_value = mock_response
+
+        fabric = {'name': 'fabric1'}
+
+        # Should succeed with a warning, not raise
+        result = get_fabric_agent(
+            mock_cmd, '/fabrics', fabric, 'appliance1', 'HyperV')
+        self.assertEqual(
+            result['properties']['machineName'], 'appliance1')
+
+    @mock.patch('azext_migrate.helpers.replication.init._setup_policy.send_get_request')
+    def test_get_fabric_agent_case_insensitive_match(self, mock_get_request):
+        """Test get_fabric_agent matches machineName case-insensitively."""
+        from azext_migrate.helpers.replication.init._setup_policy import get_fabric_agent
+
+        mock_cmd = mock.Mock()
+        mock_response = mock.Mock()
+        mock_response.json.return_value = {
+            'value': [
+                {
+                    'properties': {
+                        'machineName': 'Appliance1',
+                        'isResponsive': True,
+                        'customProperties': {
+                            'instanceType': 'HyperV'
+                        }
+                    }
+                }
+            ]
+        }
+        mock_get_request.return_value = mock_response
+
+        fabric = {'name': 'fabric1'}
+
+        # Should succeed despite case difference
+        result = get_fabric_agent(
+            mock_cmd, '/fabrics', fabric, 'appliance1', 'HyperV')
+        self.assertEqual(
+            result['properties']['machineName'], 'Appliance1')
+
+    @mock.patch('azext_migrate.helpers.replication.init._setup_policy.send_get_request')
+    def test_get_fabric_agent_no_matching_agent(self, mock_get_request):
+        """Test get_fabric_agent when no agent matches the appliance name."""
+        from azext_migrate.helpers.replication.init._setup_policy import get_fabric_agent
+        from knack.util import CLIError
+
+        mock_cmd = mock.Mock()
+        mock_response = mock.Mock()
+        mock_response.json.return_value = {
+            'value': [
+                {
+                    'properties': {
+                        'machineName': 'other-appliance',
+                        'isResponsive': True,
+                        'customProperties': {
+                            'instanceType': 'HyperV'
+                        }
+                    }
+                }
+            ]
+        }
+        mock_get_request.return_value = mock_response
+
+        fabric = {'name': 'fabric1'}
+
+        with self.assertRaises(CLIError) as context:
+            get_fabric_agent(
+                mock_cmd, '/fabrics', fabric, 'appliance1', 'HyperV')
+
+        self.assertIn('No fabric agent found', str(context.exception))
 
 
 class MigrateNewExecuteTests2(unittest.TestCase):

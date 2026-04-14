@@ -92,3 +92,29 @@ def get_persistent_volume_restore_mode_values():
 
 def get_conflict_policy_values():
     return ['Skip', 'Patch']
+
+
+def get_aks_backup_strategies():
+    from azext_dataprotection.manual._consts import CONST_AKS_BACKUP_STRATEGIES
+    return CONST_AKS_BACKUP_STRATEGIES
+
+
+# Export backup_presets for use in aks-preview
+backup_presets = get_aks_backup_strategies()
+
+
+def get_all_backup_strategies():
+    """Returns all backup strategies across all workload types."""
+    all_strategies = set()
+    all_strategies.update(get_aks_backup_strategies())
+    # Add other workload strategies here as they are supported
+    # all_strategies.update(get_postgres_backup_strategies())
+    return list(all_strategies)
+
+
+def get_backup_strategies_for_datasource(datasource_type):
+    """Returns valid backup strategies for a given datasource type."""
+    strategies = {
+        "AzureKubernetesService": get_aks_backup_strategies(),
+    }
+    return strategies.get(datasource_type, [])
