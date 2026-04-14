@@ -183,13 +183,11 @@ def target_deploy(
     print(f"Solution Version ID: {sv_id}")
     print(f"{'=' * 50}")
 
-    return {
-        "targetName": target_name,
-        "resourceGroup": resource_group,
-        "solutionVersionId": sv_id,
-        "solutionTemplateVersionId": solution_template_version_id,
-        "steps": results,
-    }
+    # Return the install LRO result (same format as `az wo target install`)
+    return results.get("install", {
+        "status": "Succeeded",
+        "resourceId": f"{base_url}",
+    })
 
 
 # ---------------------------------------------------------------------------
