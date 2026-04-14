@@ -208,7 +208,7 @@ class Create(AAZCommand):
             ),
         )
         _args_schema.secret_archive_settings = AAZObjectArg(
-            options=["--secret-archive-settings"],
+            options=["--archive-settings", "--secret-archive-settings"],
             arg_group="Properties",
             help="The settings for a customer secret archive that may be used to hold copies of credentials for the Network Fabric.",
         )
