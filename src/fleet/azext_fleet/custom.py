@@ -620,6 +620,8 @@ def get_update_run_strategy(cmd, operation_group, stages):
                 name=group["name"],
                 max_concurrency=group.get("maxConcurrency"),
                 member_selector=group_member_selector,
+                before_gates=group.get("beforeGates", []),
+                after_gates=group.get("afterGates", []),
             ))
 
         after_wait = stage.get("afterStageWaitInSeconds") or 0
@@ -633,6 +635,8 @@ def get_update_run_strategy(cmd, operation_group, stages):
             groups=update_groups,
             member_selector=stage_member_selector,
             max_concurrency=stage.get("maxConcurrency"),
+            before_gates=stage.get("beforeGates", []),
+            after_gates=stage.get("afterGates", []),
             after_stage_wait_in_seconds=after_wait
         ))
 
