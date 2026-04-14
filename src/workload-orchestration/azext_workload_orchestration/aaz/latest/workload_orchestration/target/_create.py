@@ -117,8 +117,39 @@ class Create(AAZCommand):
             options=["--target-specification"],
             arg_group="Properties",
             help="Specifies that we are using Helm charts for the k8s deployment",
-            required=True,
 
+        )
+
+        # V2: Onboarding simplification arguments
+        _args_schema.init_context = AAZStrArg(
+            options=["--init-context"],
+            arg_group="Onboarding",
+            help="Auto-create a default context if none exists. Value is the context name (e.g., 'default'). "
+                 "Auto-injects hierarchy level and capabilities into the context.",
+        )
+        _args_schema.service_group = AAZStrArg(
+            options=["--service-group"],
+            arg_group="Onboarding",
+            help="ServiceGroup name to auto-link this target to after creation.",
+        )
+        _args_schema.init_hierarchy = AAZStrArg(
+            options=["--init-hierarchy"],
+            arg_group="Onboarding",
+            help="Auto-create a regular site hierarchy. Value is the site name. "
+                 "Creates a Site in the target's resource group and links to context.",
+        )
+        _args_schema.init_extended_location = AAZStrArg(
+            options=["--init-extended-location"],
+            arg_group="Onboarding",
+            help="Auto-prepare an Arc-connected cluster for WO and create a custom location. "
+                 "Value is the connected cluster ARM resource ID. "
+                 "Installs cert-manager, trust-manager, WO extension, and creates custom location.",
+        )
+        _args_schema.release_train = AAZStrArg(
+            options=["--release-train"],
+            arg_group="Onboarding",
+            help="Release train for WO extension (used with --init-extended-location). "
+                 "Default: 'dev'. Options: dev, preview, stable.",
         )
 
         capabilities = cls._args_schema.capabilities
@@ -170,30 +201,518 @@ class Create(AAZCommand):
 
     @register_callback
     def pre_operations(self):
-         # If context_id is not provided, try to get it from config
+        # --- V2: --init-extended-location (auto-prepare cluster + create CL) ---
+        if hasattr(self.ctx.args, 'init_extended_location') and self.ctx.args.init_extended_location:
+            self._handle_init_extended_location()
+
+        # --- V2: --init-context (auto-create context if not exists) ---
+        if hasattr(self.ctx.args, 'init_context') and self.ctx.args.init_context:
+            self._handle_init_context()
+
+        # --- V2: --init-hierarchy (auto-create regular site hierarchy) ---
+        if hasattr(self.ctx.args, 'init_hierarchy') and self.ctx.args.init_hierarchy:
+            self._handle_init_hierarchy()
+
+        # If context_id is not provided, try to get it from config
         if not self.ctx.args.context_id:
             try:
-                # Attempt to retrieve the context_id from the config file
                 context_id = self.ctx.cli_ctx.config.get('workload_orchestration', 'context_id')
                 if context_id:
                     self.ctx.args.context_id = context_id
                 else:
-                    # This else block handles the case where the section exists, but the key is empty
                     raise CLIInternalError(
                         "No context-id was provided, and no default context is set. "
-                        "Please provide the --context-id argument or set a default context using 'az workload-orchestration context use'."
+                        "Please provide the --context-id argument, use --init-context, "
+                        "or set a default context using 'az workload-orchestration context use'."
                     )
             except configparser.NoSectionError as e:
                 logger.debug("Config section 'workload_orchestration' not found: %s", e)
-                # This is the fix: catch the specific error when the [workload_orchestration] section is missing
                 raise CLIInternalError(
                     "No context-id was provided, and no default context is set. "
-                    "Please provide the --context-id argument or set a default context using 'az workload-orchestration context use'."
+                    "Please provide the --context-id argument, use --init-context, "
+                    "or set a default context using 'az workload-orchestration context use'."
                 )
+
+        # V2: Default target specification (helm.v3) if not provided
+        if not self.ctx.args.target_specification:
+            self.ctx.args.target_specification = {
+                "topologies": [{
+                    "bindings": [{
+                        "role": "helm.v3",
+                        "provider": "providers.target.helm",
+                        "config": {"inCluster": "true"}
+                    }]
+                }]
+            }
+
+    def _handle_init_extended_location(self):
+        """Auto-prepare cluster (cert-mgr, trust-mgr, extension, custom location)."""
+        from azext_workload_orchestration.onboarding.target_prepare import target_prepare
+        from azext_workload_orchestration.onboarding.utils import CmdProxy
+
+        cluster_arm_id = str(self.ctx.args.init_extended_location)
+        location = str(self.ctx.args.location)
+
+        # Parse cluster name and RG from ARM ID
+        # Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Kubernetes/connectedClusters/{name}
+        parts = cluster_arm_id.strip("/").split("/")
+        if len(parts) < 8:
+            raise CLIInternalError(
+                f"Invalid connected cluster ARM ID: {cluster_arm_id}\n"
+                "Expected format: /subscriptions/{{sub}}/resourceGroups/{{rg}}"
+                "/providers/Microsoft.Kubernetes/connectedClusters/{{name}}"
+            )
+
+        # Extract RG and cluster name from ARM ID
+        cluster_rg = None
+        cluster_name = None
+        for i, part in enumerate(parts):
+            if part.lower() == "resourcegroups" and i + 1 < len(parts):
+                cluster_rg = parts[i + 1]
+            if part.lower() == "connectedclusters" and i + 1 < len(parts):
+                cluster_name = parts[i + 1]
+
+        if not cluster_rg or not cluster_name:
+            raise CLIInternalError(
+                f"Could not extract cluster name/RG from: {cluster_arm_id}\n"
+                "Expected format: /subscriptions/{{sub}}/resourceGroups/{{rg}}"
+                "/providers/Microsoft.Kubernetes/connectedClusters/{{name}}"
+            )
+
+        release_train = None
+        if hasattr(self.ctx.args, 'release_train') and self.ctx.args.release_train:
+            release_train = str(self.ctx.args.release_train)
+
+        print(f"\n[init-extended-location] Preparing cluster '{cluster_name}' in RG '{cluster_rg}'...")
+
+        # Create a cmd proxy for target_prepare
+        cmd_proxy = CmdProxy(self.ctx.cli_ctx)
+
+        result = target_prepare(
+            cmd=cmd_proxy,
+            cluster_name=cluster_name,
+            resource_group=cluster_rg,
+            location=location,
+            release_train=release_train,
+        )
+
+        # Set extended_location from the result
+        cl_id = result.get("customLocationId", "")
+        if cl_id:
+            self.ctx.args.extended_location = {
+                "name": cl_id,
+                "type": "CustomLocation"
+            }
+            print(f"[init-extended-location] Cluster prepared, CL: {cl_id} [OK]\n")
+        else:
+            raise CLIInternalError(
+                "target prepare succeeded but no custom location ID was returned."
+            )
+
+    def _handle_init_context(self):
+        """Auto-create context if none exists, inject hierarchy+capabilities."""
+        from azure.cli.core import get_default_cli
+        from azext_workload_orchestration.onboarding.utils import invoke_cli_command, CmdProxy
+        import io
+        import sys
+        import json
+
+        ctx_name = str(self.ctx.args.init_context)
+        rg = str(self.ctx.args.resource_group)
+        location = str(self.ctx.args.location)
+        hierarchy_level = str(self.ctx.args.hierarchy_level) if self.ctx.args.hierarchy_level else "line"
+        capabilities = [str(c) for c in self.ctx.args.capabilities] if self.ctx.args.capabilities else []
+
+        # Create a cmd proxy for invoke_cli_command
+        cmd_proxy = CmdProxy(self.ctx.cli_ctx)
+        cli = get_default_cli()
+
+        # Check if context already exists via config
+        try:
+            existing_ctx_id = self.ctx.cli_ctx.config.get('workload_orchestration', 'context_id')
+            if existing_ctx_id:
+                logger.info("Context already set: %s", existing_ctx_id)
+                self.ctx.args.context_id = existing_ctx_id
+                # Still need to ensure capabilities are present
+                self._ensure_context_capabilities(cmd_proxy, cli, existing_ctx_id, hierarchy_level, capabilities)
+                print(f"[init-context] Using existing context [OK]")
+                return
+        except (configparser.NoSectionError, configparser.NoOptionError):
+            pass
+
+        # First, try to find existing context in this RG
+        try:
+            existing = invoke_cli_command(cmd_proxy, [
+                "workload-orchestration", "context", "list", "-g", rg
+            ])
+            if existing and isinstance(existing, list) and len(existing) > 0:
+                ctx = existing[0]
+                ctx_id = ctx.get("id", "")
+                if ctx_id:
+                    self.ctx.args.context_id = ctx_id
+                    ctx_parts = ctx_id.split("/")
+                    found_name = ctx_parts[-1] if ctx_parts else ctx_name
+                    self._set_context_current(cli, found_name, rg)
+                    self._ensure_context_capabilities(cmd_proxy, cli, ctx_id, hierarchy_level, capabilities)
+                    print(f"[init-context] Using existing context '{found_name}' [OK]")
+                    return
+        except Exception:
+            pass  # No contexts in this RG, proceed to create
+
+        # Build capabilities args
+        cap_args = []
+        for i, cap in enumerate(capabilities):
+            cap_args.extend([f"[{i}].name={cap}", f"[{i}].description={cap}"])
+
+        # Build hierarchies args
+        hier_args = [f"[0].name={hierarchy_level}", f"[0].description={hierarchy_level}"]
+
+        print(f"[init-context] Creating context '{ctx_name}'...")
+
+        # Try to create the context
+        create_args = [
+            "workload-orchestration", "context", "create",
+            "-g", rg, "-l", location, "--name", ctx_name,
+            "--hierarchies",
+        ] + hier_args
+
+        if cap_args:
+            create_args.append("--capabilities")
+            create_args.extend(cap_args)
+        create_args.extend(["-o", "none"])
+
+        old_stdout, old_stderr = sys.stdout, sys.stderr
+        sys.stdout = io.StringIO()
+        sys.stderr = io.StringIO()
+        try:
+            exit_code = cli.invoke(create_args)
+        finally:
+            sys.stdout, sys.stderr = old_stdout, old_stderr
+
+        if exit_code == 0:
+            # Created successfully — set as current
+            self._set_context_current(cli, ctx_name, rg)
+
+            try:
+                ctx_id = self.ctx.cli_ctx.config.get('workload_orchestration', 'context_id')
+                if ctx_id:
+                    self.ctx.args.context_id = ctx_id
+                    print(f"[init-context] Context '{ctx_name}' created [OK]")
+                    return
+            except (configparser.NoSectionError, configparser.NoOptionError):
+                pass
+
+            sub_id = self.ctx.subscription_id
+            ctx_id = f"/subscriptions/{sub_id}/resourceGroups/{rg}/providers/Microsoft.Edge/contexts/{ctx_name}"
+            self.ctx.args.context_id = ctx_id
+            print(f"[init-context] Context '{ctx_name}' created [OK]")
+            return
+
+        # Context create failed — likely "already exists" in another RG
+        logger.warning("Context create failed (exit %d). Searching for existing context...", exit_code)
+
+        # Search subscription-wide for existing contexts
+        from azure.cli.core.util import send_raw_request
+        sub_id = self.ctx.subscription_id
+        try:
+            resp = send_raw_request(
+                self.ctx.cli_ctx,
+                method="GET",
+                url=(
+                    f"https://management.azure.com/subscriptions/{sub_id}"
+                    f"/providers/Microsoft.Edge/contexts?api-version=2025-08-01"
+                ),
+                resource="https://management.azure.com"
+            )
+            if resp.status_code == 200:
+                data = resp.json()
+                contexts = data.get("value", [])
+                if contexts:
+                    existing_ctx = contexts[0]
+                    existing_id = existing_ctx.get("id", "")
+                    if existing_id:
+                        self.ctx.args.context_id = existing_id
+                        parts = existing_id.split("/")
+                        found_rg = None
+                        found_name = None
+                        for i, p in enumerate(parts):
+                            if p.lower() == "resourcegroups" and i + 1 < len(parts):
+                                found_rg = parts[i + 1]
+                            if p.lower() == "contexts" and i + 1 < len(parts):
+                                found_name = parts[i + 1]
+
+                        if found_rg and found_name:
+                            self._set_context_current(cli, found_name, found_rg)
+                            self._ensure_context_capabilities(
+                                cmd_proxy, cli, existing_id, hierarchy_level, capabilities
+                            )
+
+                        print(f"[init-context] Using existing context '{found_name}' in RG '{found_rg}' [OK]")
+                        return
+        except Exception as exc:
+            logger.warning("Failed to search for existing context: %s", exc)
+
+        raise CLIInternalError(
+            "Could not create or find an existing context. "
+            "Please provide --context-id explicitly."
+        )
+
+    def _set_context_current(self, cli, ctx_name, ctx_rg):
+        """Set a context as the current default (silently)."""
+        import io
+        import sys
+        old_stdout, old_stderr = sys.stdout, sys.stderr
+        sys.stdout = io.StringIO()
+        sys.stderr = io.StringIO()
+        try:
+            cli.invoke(["workload-orchestration", "context", "use",
+                        "--name", ctx_name, "-g", ctx_rg, "-o", "none"])
+        finally:
+            sys.stdout, sys.stderr = old_stdout, old_stderr
+
+    def _ensure_context_capabilities(self, cmd_proxy, cli, ctx_id, hierarchy_level, capabilities):
+        """Ensure the context has the required hierarchy level and capabilities."""
+        import io
+        import sys
+        import json
+        from azext_workload_orchestration.onboarding.utils import invoke_cli_command
+
+        if not capabilities:
+            return
+
+        # Get existing context details
+        parts = ctx_id.split("/")
+        ctx_rg = None
+        ctx_name = None
+        for i, p in enumerate(parts):
+            if p.lower() == "resourcegroups" and i + 1 < len(parts):
+                ctx_rg = parts[i + 1]
+            if p.lower() == "contexts" and i + 1 < len(parts):
+                ctx_name = parts[i + 1]
+
+        if not ctx_rg or not ctx_name:
+            return
+
+        try:
+            ctx_data = invoke_cli_command(cmd_proxy, [
+                "workload-orchestration", "context", "show",
+                "-g", ctx_rg, "--name", ctx_name
+            ])
+        except Exception:
+            return
+
+        if not ctx_data or not isinstance(ctx_data, dict):
+            return
+
+        props = ctx_data.get("properties", {})
+        existing_caps = {c.get("name", "") for c in (props.get("capabilities") or [])}
+        existing_hiers = {h.get("name", "") for h in (props.get("hierarchies") or [])}
+
+        # Check if we need to add capabilities or hierarchies
+        missing_caps = [c for c in capabilities if c not in existing_caps]
+        missing_hier = hierarchy_level not in existing_hiers
+
+        if not missing_caps and not missing_hier:
+            return  # All present
+
+        # Build update — merge existing + new
+        all_caps = list(props.get("capabilities") or [])
+        for cap in missing_caps:
+            all_caps.append({"name": cap, "description": cap})
+
+        all_hiers = list(props.get("hierarchies") or [])
+        if missing_hier:
+            all_hiers.append({"name": hierarchy_level, "description": hierarchy_level})
+
+        # Build update args
+        cap_args = []
+        for i, cap in enumerate(all_caps):
+            cap_args.extend([f"[{i}].name={cap.get('name', '')}", f"[{i}].description={cap.get('description', '')}"])
+
+        hier_args = []
+        for i, h in enumerate(all_hiers):
+            hier_args.extend([f"[{i}].name={h.get('name', '')}", f"[{i}].description={h.get('description', '')}"])
+
+        print(f"[init-context] Adding capabilities {missing_caps} to context...")
+
+        # Use REST PUT to update context (no 'context update' CLI command)
+        from azure.cli.core.util import send_raw_request
+        parts2 = ctx_id.split("/")
+        sub_id = None
+        for i2, p2 in enumerate(parts2):
+            if p2.lower() == "subscriptions" and i2 + 1 < len(parts2):
+                sub_id = parts2[i2 + 1]
+                break
+        if not sub_id:
+            sub_id = self.ctx.subscription_id
+
+        # Build updated body from existing context data
+        location = ctx_data.get("location", str(self.ctx.args.location))
+        update_body = {
+            "location": location,
+            "properties": {
+                "capabilities": [{"name": c.get("name", ""), "description": c.get("description", "")} for c in all_caps],
+                "hierarchies": [{"name": h.get("name", ""), "description": h.get("description", "")} for h in all_hiers],
+            }
+        }
+
+        try:
+            resp = send_raw_request(
+                self.ctx.cli_ctx,
+                method="PUT",
+                url=(
+                    f"https://management.azure.com/subscriptions/{sub_id}"
+                    f"/resourceGroups/{ctx_rg}/providers/Microsoft.Edge"
+                    f"/contexts/{ctx_name}?api-version=2025-08-01"
+                ),
+                body=json.dumps(update_body),
+                resource="https://management.azure.com"
+            )
+            if resp.status_code in (200, 201):
+                print(f"[init-context] Capabilities updated [OK]")
+            else:
+                logger.warning("Context update returned %d: %s", resp.status_code, resp.text)
+        except Exception as exc:
+            logger.warning("Failed to update context capabilities: %s", exc)
+
+    def _handle_init_hierarchy(self):
+        """Auto-create a regular site hierarchy (RG-scoped, no SG)."""
+        from azure.cli.core import get_default_cli
+        import io
+        import sys
+        import json
+
+        site_name = str(self.ctx.args.init_hierarchy)
+        rg = str(self.ctx.args.resource_group)
+        location = str(self.ctx.args.location)
+
+        # Create site in RG scope via az rest
+        sub_id = self.ctx.subscription_id
+        site_url = (
+            f"https://{location}.management.azure.com"
+            f"/subscriptions/{sub_id}/resourceGroups/{rg}"
+            f"/providers/Microsoft.Edge/sites/{site_name}"
+            f"?api-version=2025-06-01"
+        )
+        site_body = json.dumps({
+            "properties": {
+                "displayName": site_name,
+                "description": site_name,
+                "labels": {"level": str(self.ctx.args.hierarchy_level) if self.ctx.args.hierarchy_level else "line"}
+            }
+        })
+
+        print(f"[init-hierarchy] Creating site '{site_name}'...")
+
+        cli = get_default_cli()
+
+        # Helper to invoke CLI silently (suppress stdout/stderr)
+        def _invoke_silent(args):
+            old_stdout, old_stderr = sys.stdout, sys.stderr
+            sys.stdout = io.StringIO()
+            sys.stderr = io.StringIO()
+            try:
+                return cli.invoke(args)
+            finally:
+                sys.stdout, sys.stderr = old_stdout, old_stderr
+
+        # Step 1: Create site
+        _invoke_silent([
+            "rest", "--method", "put", "--url", site_url,
+            "--body", site_body,
+            "--resource", "https://management.azure.com",
+            "--header", "Content-Type=application/json",
+            "-o", "none",
+        ])
+
+        # Step 2: Create configuration
+        config_url = (
+            f"https://{location}.management.azure.com"
+            f"/subscriptions/{sub_id}/resourceGroups/{rg}"
+            f"/providers/Microsoft.Edge/configurations/{site_name}"
+            f"?api-version=2025-08-01"
+        )
+        _invoke_silent([
+            "rest", "--method", "put", "--url", config_url,
+            "--body", json.dumps({"location": location}),
+            "--resource", "https://management.azure.com",
+            "--header", "Content-Type=application/json",
+            "-o", "none",
+        ])
+
+        # Step 3: Create config reference
+        site_id = f"/subscriptions/{sub_id}/resourceGroups/{rg}/providers/Microsoft.Edge/sites/{site_name}"
+        config_id = f"/subscriptions/{sub_id}/resourceGroups/{rg}/providers/Microsoft.Edge/configurations/{site_name}"
+        config_ref_url = (
+            f"https://management.azure.com{site_id}"
+            f"/providers/Microsoft.Edge/configurationreferences/default"
+            f"?api-version=2025-08-01"
+        )
+        _invoke_silent([
+            "rest", "--method", "put", "--url", config_ref_url,
+            "--body", json.dumps({"properties": {"configurationResourceId": config_id}}),
+            "--resource", "https://management.azure.com",
+            "--header", "Content-Type=application/json",
+            "-o", "none",
+        ])
+
+        # Step 4: Create site reference to context
+        if self.ctx.args.context_id:
+            parts = str(self.ctx.args.context_id).split("/")
+            ctx_rg = rg
+            ctx_name = "default"
+            for i, p in enumerate(parts):
+                if p.lower() == "resourcegroups" and i + 1 < len(parts):
+                    ctx_rg = parts[i + 1]
+                if p.lower() == "contexts" and i + 1 < len(parts):
+                    ctx_name = parts[i + 1]
+
+            try:
+                _invoke_silent([
+                    "workload-orchestration", "context", "site-reference", "create",
+                    "-g", ctx_rg, "--context-name", ctx_name,
+                    "--name", f"{site_name}-ref",
+                    "--site-id", site_id,
+                    "-o", "none",
+                ])
+            except Exception:
+                pass
+
+        print(f"[init-hierarchy] Site '{site_name}' + config + references created [OK]")
 
     @register_callback
     def post_operations(self):
-        pass
+        # --- V2: --service-group (auto-link target to SG after creation) ---
+        if hasattr(self.ctx.args, 'service_group') and self.ctx.args.service_group:
+            self._handle_service_group_link()
+
+    def _handle_service_group_link(self):
+        """Link the created target to a service group."""
+        from azext_workload_orchestration.onboarding.target_sg_link import (
+            link_target_to_service_group
+        )
+        from azext_workload_orchestration.onboarding.utils import CmdProxy
+        sg_name = str(self.ctx.args.service_group)
+        # Get target ID from the response
+        target_id = None
+        if hasattr(self.ctx.vars, 'instance') and self.ctx.vars.instance:
+            target_id = self.ctx.vars.instance.get("id")
+
+        if not target_id:
+            # Construct it
+            sub_id = self.ctx.subscription_id
+            rg = str(self.ctx.args.resource_group)
+            name = str(self.ctx.args.target_name)
+            target_id = f"/subscriptions/{sub_id}/resourceGroups/{rg}/providers/Microsoft.Edge/targets/{name}"
+
+        print(f"[service-group] Linking target to '{sg_name}'...")
+        try:
+            cmd_proxy = CmdProxy(self.ctx.cli_ctx)
+            link_target_to_service_group(cmd_proxy, target_id, sg_name)
+            print(f"[service-group] Linked [OK]")
+        except Exception as exc:
+            logger.warning("Service group link failed (non-critical): %s", exc)
+            print(f"[service-group] Link failed (non-critical): {exc}")
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)

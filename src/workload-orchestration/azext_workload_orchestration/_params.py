@@ -65,3 +65,148 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
             options_list=['--kube-context'],
             help='Kubernetes context to use. Defaults to current context.',
         )
+
+    # -----------------------------------------------------------------------
+    # target prepare
+    # -----------------------------------------------------------------------
+    with self.argument_context('workload-orchestration target prepare') as c:
+        c.argument(
+            'cluster_name',
+            options_list=['--cluster-name'],
+            help='Name of the Arc-connected Kubernetes cluster.',
+            required=True,
+        )
+        c.argument(
+            'resource_group',
+            options_list=['--resource-group', '-g'],
+            help='Resource group of the cluster.',
+            required=True,
+        )
+        c.argument(
+            'location',
+            options_list=['--location', '-l'],
+            help='Azure region (e.g., eastus, westeurope).',
+            required=True,
+        )
+        c.argument(
+            'extension_name',
+            options_list=['--extension-name'],
+            help='Name for the WO extension. Defaults to wo-extension.',
+        )
+        c.argument(
+            'custom_location_name',
+            options_list=['--custom-location-name'],
+            help='Name for the custom location. Defaults to {cluster-name}-cl.',
+        )
+        c.argument(
+            'extension_version',
+            options_list=['--extension-version'],
+            help='WO extension version to install (e.g., 2.1.18).',
+        )
+        c.argument(
+            'release_train',
+            options_list=['--release-train'],
+            help='Extension release train. Defaults to preview.',
+        )
+        c.argument(
+            'cert_manager_version',
+            options_list=['--cert-manager-version'],
+            help='cert-manager version to install. Defaults to v1.15.3.',
+        )
+        c.argument(
+            'skip_cert_manager',
+            options_list=['--skip-cert-manager'],
+            action='store_true',
+            help='Skip cert-manager installation.',
+        )
+        c.argument(
+            'skip_trust_manager',
+            options_list=['--skip-trust-manager'],
+            action='store_true',
+            help='Skip trust-manager installation.',
+        )
+        c.argument(
+            'kube_config',
+            options_list=['--kube-config'],
+            help='Path to kubeconfig file. Defaults to ~/.kube/config.',
+        )
+        c.argument(
+            'kube_context',
+            options_list=['--kube-context'],
+            help='Kubernetes context to use. Defaults to current context.',
+        )
+        c.argument(
+            'no_wait',
+            options_list=['--no-wait'],
+            action='store_true',
+            help="Don't wait for the WO extension to finish installing.",
+        )
+
+    # -----------------------------------------------------------------------
+    # hierarchy create
+    # -----------------------------------------------------------------------
+    with self.argument_context('workload-orchestration hierarchy create') as c:
+        c.argument(
+            'name',
+            options_list=['--name', '-n'],
+            help='Name for this hierarchy level. Used for Service Group, Site, and '
+                 'Configuration resources. Maximum 24 characters.',
+            required=True,
+        )
+        c.argument(
+            'resource_group',
+            options_list=['--resource-group', '-g'],
+            help='Resource group for the Configuration resource.',
+            required=True,
+        )
+        c.argument(
+            'location',
+            options_list=['--location', '-l'],
+            help='Azure region (determines regional API endpoint for Site/Config).',
+            required=True,
+        )
+        c.argument(
+            'level_label',
+            options_list=['--level-label'],
+            help='Label for this hierarchy level (e.g., Region, Factory, Line).',
+            required=True,
+        )
+        c.argument(
+            'parent',
+            options_list=['--parent'],
+            help='Parent service group name for nesting. '
+                 'Omit for top-level (parent defaults to tenant root).',
+        )
+        c.argument(
+            'capabilities',
+            options_list=['--capabilities'],
+            nargs='+',
+            help='Capabilities to add to the WO context (e.g., soap shampoo).',
+        )
+        c.argument(
+            'description',
+            options_list=['--description'],
+            help='Description for the Site resource. Defaults to the name.',
+        )
+        c.argument(
+            'context_name',
+            options_list=['--context-name'],
+            help='Use an existing context by name (skip auto-create).',
+        )
+        c.argument(
+            'context_rg',
+            options_list=['--context-rg'],
+            help='Resource group of the existing context.',
+        )
+        c.argument(
+            'skip_context',
+            options_list=['--skip-context'],
+            action='store_true',
+            help='Skip auto-creation of context and site-reference.',
+        )
+        c.argument(
+            'skip_site_reference',
+            options_list=['--skip-site-reference'],
+            action='store_true',
+            help='Skip auto-creation of site-reference to context.',
+        )
