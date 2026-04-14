@@ -8,6 +8,7 @@ import re
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.cli.core.util import CLIError
 from azure.mgmt.core.tools import is_valid_resource_id
+from azext_fleet.vendored_sdks.v2026_05_01_preview.models import RolloutStrategyType
 
 
 def validate_member_cluster_id(namespace):
@@ -28,12 +29,13 @@ def validate_member_cluster_names(namespace):
 def validate_rollout_strategy(namespace):
     rollout_strategy = getattr(namespace, 'rollout_strategy', None)
     cluster_update_strategy = getattr(namespace, 'cluster_update_strategy', None)
-    if rollout_strategy == 'External' and not cluster_update_strategy:
+    external = RolloutStrategyType.EXTERNAL.value
+    if rollout_strategy == external and not cluster_update_strategy:
         raise InvalidArgumentValueError(
-            "--cluster-update-strategy is required when --rollout-strategy is 'External'.")
-    if cluster_update_strategy and rollout_strategy != 'External':
+            f"--cluster-update-strategy is required when --rollout-strategy is '{external}'.")
+    if cluster_update_strategy and rollout_strategy != external:
         raise InvalidArgumentValueError(
-            "--cluster-update-strategy can only be used when --rollout-strategy is 'External'.")
+            f"--cluster-update-strategy can only be used when --rollout-strategy is '{external}'.")
 
 
 def validate_kubernetes_version(namespace):
