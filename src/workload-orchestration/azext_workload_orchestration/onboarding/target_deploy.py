@@ -60,14 +60,11 @@ def target_deploy(
     solution_dependencies=None,
     solution_version_id=None,
     resume_from=None,
-    skip_review=False,
-    skip_install=False,
     config=None,
     config_hierarchy_id=None,
     config_template_rg=None,
     config_template_name=None,
     config_template_version=None,
-    no_wait=False,
 ):
     """Deploy a solution to a target: review -> publish -> install.
 
@@ -105,9 +102,9 @@ def target_deploy(
 
     # Figure out which steps to run
     do_config = config is not None
-    do_review = (resume_from is None) and (not skip_review)
-    do_publish = resume_from in (None, "publish") or skip_review
-    do_install = (not skip_install) and (resume_from != "install" or resume_from == "install")
+    do_review = resume_from is None
+    do_publish = resume_from in (None, "publish")
+    do_install = True
 
     # If resume_from == "install", skip review and publish
     if resume_from == "install":
@@ -154,7 +151,7 @@ def target_deploy(
         _step("Review", f"[OK] -> solutionVersionId: {_short_id(sv_id)}")
         step[0] -= 1
     elif not resume_from:
-        print(f"[~] Review skipped (--skip-review)")
+        # Should not reach here — do_review is True when resume_from is None
         results["review"] = "Skipped"
         sv_id = solution_template_version_id
     else:
@@ -178,15 +175,12 @@ def target_deploy(
     # --- Step 3: Install ---
     if do_install:
         _step("Install")
-        install_result = _do_install(cmd, base_url, sv_id, no_wait=no_wait)
+        install_result = _do_install(cmd, base_url, sv_id)
         results["install"] = install_result
-        if no_wait:
-            _step("Install", "[Accepted] (--no-wait)")
-        else:
-            _step("Install", "[OK]")
+        _step("Install", "[OK]")
         step[0] -= 1
     else:
-        print(f"[~] Install skipped (--skip-install)")
+        print(f"[~] Install skipped (--resume-from install)")
         results["install"] = "Skipped"
 
     print(f"\n{'=' * 50}")
@@ -296,7 +290,7 @@ def _do_publish(cmd, base_url, solution_version_id):
     return _parse_response(resp, "Publish", cmd=cmd)
 
 
-def _do_install(cmd, base_url, solution_version_id, no_wait=False):
+def _do_install(cmd, base_url, solution_version_id):
     """POST .../installSolution"""
     url = f"{base_url}/installSolution?api-version={API_VERSION}"
     body = {"solutionVersionId": solution_version_id}
@@ -307,15 +301,6 @@ def _do_install(cmd, base_url, solution_version_id, no_wait=False):
         headers=["Content-Type=application/json"],
         resource=ARM_RESOURCE,
     )
-
-    if no_wait:
-        # Return 202 without polling
-        if resp.status_code == 202:
-            return {"status": "Accepted", "message": "Install triggered (no-wait)"}
-        try:
-            return resp.json()
-        except Exception:
-            return {"status": "Accepted"}
 
     return _parse_response(resp, "Install", cmd=cmd)
 

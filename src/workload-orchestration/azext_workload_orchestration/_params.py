@@ -86,7 +86,7 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
         c.argument('extension_name', options_list=['--extension-name'],
                    help='Name for the WO extension resource. Default: workload-orchestration.')
         c.argument('custom_location_name', options_list=['--custom-location-name'],
-                   help='Name for the custom location. Default: <cluster-name>-cl.')
+                   help='Name for the custom location. Default: `<cluster-name>-cl`.')
         c.argument('skip_cert_manager', options_list=['--skip-cert-manager'],
                    action='store_true', help='Skip cert-manager installation.')
         c.argument('skip_trust_manager', options_list=['--skip-trust-manager'],
@@ -104,7 +104,7 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
                    help='Name of the target to deploy to.', required=True)
 
         # Solution template: ARM ID (option A)
-        c.argument('solution_template_version_id', options_list=['--solution-template-version-id'],
+        c.argument('solution_template_version_id', options_list=['--solution-template-version-id', '--stv-id'],
                    help='Full ARM resource ID of the solution template version. '
                         'Mutually exclusive with --solution-template-name.')
 
@@ -113,7 +113,7 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
                    help='Name of the solution template. '
                         'Use with --solution-template-version. '
                         'Mutually exclusive with --solution-template-version-id.')
-        c.argument('solution_template_version', options_list=['--solution-template-version'],
+        c.argument('solution_template_version', options_list=['--solution-template-version', '--stv'],
                    help='Version of the solution template (e.g., 1.0.0). '
                         'Required when using --solution-template-name.')
         c.argument('solution_template_rg', options_list=['--solution-template-rg'],
@@ -133,11 +133,6 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
                    choices=['publish', 'install'])
         c.argument('solution_version_id', options_list=['--solution-version-id'],
                    help='Solution version ARM ID. Required with --resume-from.')
-        c.argument('skip_review', options_list=['--skip-review'],
-                   action='store_true',
-                   help='Skip review (use solution-template-version-id directly for publish).')
-        c.argument('skip_install', options_list=['--skip-install'],
-                   action='store_true', help='Skip install step (review + publish only).')
 
         # Config set (step 0)
         c.argument('config', options_list=['--config'],
@@ -148,5 +143,5 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
                    help='Resource group of the configuration template (with --config).')
         c.argument('config_template_name', options_list=['--config-template-name'],
                    help='Name of the configuration template (with --config).')
-        c.argument('config_template_version', options_list=['--config-template-version'],
+        c.argument('config_template_version', options_list=['--config-template-version', '--ct-version'],
                    help='Version of the configuration template (with --config).')

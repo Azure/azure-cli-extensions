@@ -86,8 +86,8 @@ long-summary: |
       3. Install: installs the published solution on the target
 
     You can identify the solution template by either:
-      - ARM ID: --solution-template-version-id <full-ARM-id>
-      - Friendly name: --solution-template-name <name> --solution-template-version <ver>
+      - ARM ID: --solution-template-version-id `<full-ARM-id>`
+      - Friendly name: --solution-template-name `<name>` --solution-template-version `<ver>`
 
     Use --resume-from to restart a partially completed deployment.
     Use --skip-review or --skip-install to skip specific steps.
@@ -114,14 +114,6 @@ examples:
     text: >
         az workload-orchestration target deploy -g my-rg -n my-target
         --resume-from install --solution-version-id /subscriptions/.../solutionVersions/sv1
-  - name: Skip install (review + publish only)
-    text: >
-        az workload-orchestration target deploy -g my-rg -n my-target
-        --solution-template-name tmpl --solution-template-version 1.0.0 --skip-install
-  - name: Deploy without waiting for install
-    text: >
-        az workload-orchestration target deploy -g my-rg -n my-target
-        --solution-template-name tmpl --solution-template-version 1.0.0 --no-wait
 """
 
 

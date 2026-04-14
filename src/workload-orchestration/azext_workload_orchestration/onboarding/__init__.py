@@ -57,14 +57,11 @@ def target_deploy(
     solution_dependencies=None,
     solution_version_id=None,
     resume_from=None,
-    skip_review=False,
-    skip_install=False,
     config=None,
     config_hierarchy_id=None,
     config_template_rg=None,
     config_template_name=None,
     config_template_version=None,
-    no_wait=False,
 ):
     """Deploy a solution to a target: review → publish → install."""
     return _target_deploy(
@@ -79,14 +76,11 @@ def target_deploy(
         solution_dependencies=solution_dependencies,
         solution_version_id=solution_version_id,
         resume_from=resume_from,
-        skip_review=skip_review,
-        skip_install=skip_install,
         config=config,
         config_hierarchy_id=config_hierarchy_id,
         config_template_rg=config_template_rg,
         config_template_name=config_template_name,
         config_template_version=config_template_version,
-        no_wait=no_wait,
     )
 
 
