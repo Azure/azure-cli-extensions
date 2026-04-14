@@ -16310,6 +16310,160 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         self.assertNotIn("enableRetinaNetworkFlags", addon_profile.config)
 
     # ------------------------------------------------------------------
+    # Tests for _setup_azure_monitor_logs workspace change detection
+    # ------------------------------------------------------------------
+    def test_setup_azure_monitor_logs_workspace_change_triggers_postprocessing(self):
+        """_setup_azure_monitor_logs sets monitoring_addon_postprocessing_required when workspace changes."""
+        old_ws = "/subscriptions/test/resourceGroups/test/providers/Microsoft.OperationalInsights/workspaces/old-ws"
+        new_ws = "/subscriptions/test/resourceGroups/test/providers/Microsoft.OperationalInsights/workspaces/new-ws"
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_azure_monitor_logs": True,
+                "workspace_resource_id": new_ws,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                CONST_MONITORING_ADDON_NAME: self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={
+                        "logAnalyticsWorkspaceResourceID": old_ws,
+                        "useAADAuth": "true",
+                    },
+                )
+            },
+        )
+        dec.context.attach_mc(mc)
+        dec.context.set_intermediate("subscription_id", "test-subscription-id")
+
+        with patch.object(
+            dec.context.external_functions,
+            "sanitize_loganalytics_ws_resource_id",
+            side_effect=lambda x: x,
+        ):
+            dec._setup_azure_monitor_logs(mc)
+
+        self.assertTrue(
+            dec.context.get_intermediate("monitoring_addon_postprocessing_required", default_value=False)
+        )
+        # Verify workspace was updated
+        actual_key = next(k for k in mc.addon_profiles if k.lower() == "omsagent")
+        self.assertEqual(mc.addon_profiles[actual_key].config["logAnalyticsWorkspaceResourceID"], new_ws)
+
+    def test_setup_azure_monitor_logs_same_workspace_no_postprocessing(self):
+        """_setup_azure_monitor_logs does NOT set monitoring_addon_postprocessing_required when workspace is unchanged."""
+        ws = "/subscriptions/test/resourceGroups/test/providers/Microsoft.OperationalInsights/workspaces/same-ws"
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_azure_monitor_logs": True,
+                "workspace_resource_id": ws,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                CONST_MONITORING_ADDON_NAME: self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={
+                        "logAnalyticsWorkspaceResourceID": ws,
+                        "useAADAuth": "true",
+                    },
+                )
+            },
+        )
+        dec.context.attach_mc(mc)
+        dec.context.set_intermediate("subscription_id", "test-subscription-id")
+
+        with patch.object(
+            dec.context.external_functions,
+            "sanitize_loganalytics_ws_resource_id",
+            side_effect=lambda x: x,
+        ):
+            dec._setup_azure_monitor_logs(mc)
+
+        self.assertFalse(
+            dec.context.get_intermediate("monitoring_addon_postprocessing_required", default_value=False)
+        )
+
+    def test_setup_azure_monitor_logs_workspace_change_case_insensitive(self):
+        """_setup_azure_monitor_logs compares workspaces case-insensitively (no false positives on casing)."""
+        ws_lower = "/subscriptions/test/resourcegroups/test/providers/microsoft.operationalinsights/workspaces/my-ws"
+        ws_mixed = "/subscriptions/test/resourceGroups/test/providers/Microsoft.OperationalInsights/workspaces/my-ws"
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_azure_monitor_logs": True,
+                "workspace_resource_id": ws_mixed,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={
+                CONST_MONITORING_ADDON_NAME: self.models.ManagedClusterAddonProfile(
+                    enabled=True,
+                    config={
+                        "logAnalyticsWorkspaceResourceID": ws_lower,
+                        "useAADAuth": "true",
+                    },
+                )
+            },
+        )
+        dec.context.attach_mc(mc)
+        dec.context.set_intermediate("subscription_id", "test-subscription-id")
+
+        with patch.object(
+            dec.context.external_functions,
+            "sanitize_loganalytics_ws_resource_id",
+            side_effect=lambda x: x,
+        ):
+            dec._setup_azure_monitor_logs(mc)
+
+        # Same workspace (different casing) should NOT trigger postprocessing
+        self.assertFalse(
+            dec.context.get_intermediate("monitoring_addon_postprocessing_required", default_value=False)
+        )
+
+    def test_setup_azure_monitor_logs_new_addon_no_postprocessing(self):
+        """_setup_azure_monitor_logs does NOT trigger postprocessing when there is no existing addon (fresh enable)."""
+        new_ws = "/subscriptions/test/resourceGroups/test/providers/Microsoft.OperationalInsights/workspaces/new-ws"
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_azure_monitor_logs": True,
+                "workspace_resource_id": new_ws,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            addon_profiles={},
+        )
+        dec.context.attach_mc(mc)
+        dec.context.set_intermediate("subscription_id", "test-subscription-id")
+
+        with patch.object(
+            dec.context.external_functions,
+            "sanitize_loganalytics_ws_resource_id",
+            side_effect=lambda x: x,
+        ):
+            dec._setup_azure_monitor_logs(mc)
+
+        # Fresh enable — no old workspace to compare, should NOT trigger postprocessing
+        self.assertFalse(
+            dec.context.get_intermediate("monitoring_addon_postprocessing_required", default_value=False)
+        )
+
+    # ------------------------------------------------------------------
     # Tests for _disable_azure_monitor_logs disabling containerInsights
     # ------------------------------------------------------------------
     def test_disable_azure_monitor_logs_disables_container_insights_with_msi_auth(self):

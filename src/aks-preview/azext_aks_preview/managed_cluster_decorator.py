@@ -7869,6 +7869,13 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         if existing_key:
             addon_profile = mc.addon_profiles[existing_key]
+            # Detect workspace change: if the workspace is different from the existing one,
+            # trigger DCR postprocessing so the DCR destination gets updated.
+            old_config = addon_profile.config or {}
+            old_workspace = old_config.get(CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID, "")
+            if old_workspace and old_workspace.lower() != workspace_resource_id.lower():
+                self.context.set_intermediate(
+                    "monitoring_addon_postprocessing_required", True, overwrite_exists=True)
         else:
             addon_profile = self.models.ManagedClusterAddonProfile(enabled=False)
             existing_key = CONST_MONITORING_ADDON_NAME
