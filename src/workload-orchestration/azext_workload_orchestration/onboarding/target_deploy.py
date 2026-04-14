@@ -416,15 +416,22 @@ def _extract_solution_version_id(review_result):
     if not review_result or not isinstance(review_result, dict):
         raise CLIInternalError("Review returned no result - cannot determine solution version ID.")
 
-    # Try multiple response shapes
+    # The LRO response structure:
+    # {id, name, status, properties: {id: <SV ARM ID>, properties: {...}, ...}}
+    # The solution version ARM ID is at properties.id (NOT properties.properties.id)
+    props = review_result.get("properties", {})
+
     sv_id = (
-        review_result.get("solutionVersionId")
-        or review_result.get("properties", {}).get("solutionVersionId")
-        or review_result.get("id")
+        props.get("id")                                      # properties.id (most common)
+        or review_result.get("solutionVersionId")             # top-level fallback
+        or props.get("solutionVersionId")                     # properties.solutionVersionId
+        or (props.get("properties", {}) or {}).get("id")      # properties.properties.id
     )
     if not sv_id:
-        logger.warning("Could not extract solutionVersionId from review result: %s",
-                        json.dumps(review_result, indent=2)[:500])
+        logger.warning("Could not extract solutionVersionId. Keys at top: %s, inner keys: %s, full (truncated): %s",
+                        list(review_result.keys()),
+                        list(inner.keys()) if isinstance(inner, dict) else "N/A",
+                        json.dumps(review_result, indent=2)[:800])
         raise CLIInternalError(
             "Review succeeded but no solutionVersionId found in response. "
             "Use --resume-from publish --solution-version-id <id> to continue manually."
