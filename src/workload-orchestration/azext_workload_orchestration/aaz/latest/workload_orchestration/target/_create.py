@@ -210,34 +210,38 @@ class Create(AAZCommand):
         if hasattr(self.ctx.args, 'init_context') and self.ctx.args.init_context:
             self._handle_init_context()
 
+        # Resolve context_id from config before hierarchy (hierarchy needs it for site-reference)
+        if not self.ctx.args.context_id:
+            self._resolve_context_id_from_config()
+
         # --- V2: --init-hierarchy (auto-create regular site hierarchy) ---
         if hasattr(self.ctx.args, 'init_hierarchy') and self.ctx.args.init_hierarchy:
             self._handle_init_hierarchy()
-
-        # If context_id is not provided, try to get it from config
-        if not self.ctx.args.context_id:
-            try:
-                context_id = self.ctx.cli_ctx.config.get('workload_orchestration', 'context_id')
-                if context_id:
-                    self.ctx.args.context_id = context_id
-                else:
-                    raise CLIInternalError(
-                        "No context-id was provided, and no default context is set. "
-                        "Please provide the --context-id argument, use --init-context, "
-                        "or set a default context using 'az workload-orchestration context use'."
-                    )
-            except configparser.NoSectionError as e:
-                logger.debug("Config section 'workload_orchestration' not found: %s", e)
-                raise CLIInternalError(
-                    "No context-id was provided, and no default context is set. "
-                    "Please provide the --context-id argument, use --init-context, "
-                    "or set a default context using 'az workload-orchestration context use'."
-                )
 
         # Default target specification (helm.v3) if not provided
         if not self.ctx.args.target_specification:
             from azext_workload_orchestration.onboarding.consts import DEFAULT_TARGET_SPECIFICATION
             self.ctx.args.target_specification = DEFAULT_TARGET_SPECIFICATION
+
+    def _resolve_context_id_from_config(self):
+        """Resolve context_id from CLI config if not already set."""
+        try:
+            context_id = self.ctx.cli_ctx.config.get('workload_orchestration', 'context_id')
+            if context_id:
+                self.ctx.args.context_id = context_id
+            else:
+                raise CLIInternalError(
+                    "No context-id was provided, and no default context is set. "
+                    "Please provide the --context-id argument, use --init-context, "
+                    "or set a default context using 'az workload-orchestration context use'."
+                )
+        except configparser.NoSectionError as e:
+            logger.debug("Config section 'workload_orchestration' not found: %s", e)
+            raise CLIInternalError(
+                "No context-id was provided, and no default context is set. "
+                "Please provide the --context-id argument, use --init-context, "
+                "or set a default context using 'az workload-orchestration context use'."
+            )
 
     def _handle_init_extended_location(self):
         """Auto-prepare cluster (cert-mgr, trust-mgr, extension, custom location)."""

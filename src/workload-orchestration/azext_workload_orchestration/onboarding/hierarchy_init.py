@@ -56,7 +56,15 @@ def handle_init_hierarchy(cli_ctx, site_name, resource_group, location,
         hierarchy_level: Level label (e.g., "line", "factory")
         context_id: Optional ARM ID of the context to link to
     """
-    sub_id = cli_ctx.data.get('subscription_id', '')
+    # Get subscription ID — prefer extracting from context_id, fall back to CLI profile
+    if context_id:
+        parts = parse_arm_id(context_id)
+        sub_id = parts.get("subscriptions", "")
+    else:
+        sub_id = ""
+    if not sub_id:
+        from azure.cli.core._profile import Profile
+        sub_id = Profile(cli_ctx=cli_ctx).get_subscription_id()
     regional_base = f"https://{location}.management.azure.com"
 
     site_id = (f"/subscriptions/{sub_id}/resourceGroups/{resource_group}"
