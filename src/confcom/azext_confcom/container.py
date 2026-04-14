@@ -795,7 +795,6 @@ class ContainerImage:
             if self._mounted_cim:
                 elements[config.POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTED_CIM] = self._mounted_cim
 
-
         if not omit_id:
             elements[config.POLICY_FIELD_CONTAINERS_ID] = self._identifier
         # if we are omitting the id, we should remove the id value from the policy if it's in the name field
@@ -822,7 +821,10 @@ class UserContainerImage(ContainerImage):
             image.get_mounts().extend(_DEFAULT_MOUNTS_VN2)
 
         # Start with the customer environment rules
-        env_rules = copy.deepcopy(_INJECTED_CUSTOMER_ENV_RULES) if container_json["platform"].startswith("linux") else dict()
+        env_rules = (
+            copy.deepcopy(_INJECTED_CUSTOMER_ENV_RULES)
+            if container_json["platform"].startswith("linux") else dict()
+        )
         # If is_vn2, add the VN2 environment rules
         if is_vn2:
             env_rules += _INJECTED_SERVICE_VN2_ENV_RULES

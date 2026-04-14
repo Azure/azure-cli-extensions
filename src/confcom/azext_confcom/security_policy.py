@@ -236,7 +236,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
                 pretty_print_func(self._allow_unencrypted_scratch),
                 pretty_print_func(self._allow_capability_dropping),
             )
-        elif self._platform.startswith("windows"):
+        if self._platform.startswith("windows"):
             return config.CUSTOMER_REGO_POLICY_WINDOWS % (
                 pretty_print_func(self._api_version),
                 pretty_print_func(sanitized_fragments),
@@ -841,7 +841,9 @@ def load_policy_from_arm_template_str(
                     or [],
                     config.ACI_FIELD_CONTAINERS_MOUNTS: process_mounts(image_properties, volumes)
                     + process_configmap(image_properties),
-                    config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES: exec_processes + get_debug_mode_exec_procs(debug_mode, platform),
+                    config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES: (
+                        exec_processes + get_debug_mode_exec_procs(debug_mode, platform)
+                    ),
                     config.ACI_FIELD_CONTAINERS_SIGNAL_CONTAINER_PROCESSES: [],
                     config.ACI_FIELD_CONTAINERS_ALLOW_STDIO_ACCESS: not disable_stdio,
                     config.ACI_FIELD_CONTAINERS_SECURITY_CONTEXT: case_insensitive_dict_get(
@@ -1081,7 +1083,9 @@ def load_policy_from_json(
                     container_properties, config.ACI_FIELD_TEMPLATE_COMMAND
                 ) or [],
                 config.ACI_FIELD_CONTAINERS_MOUNTS: mounts,
-                config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES: exec_processes + get_debug_mode_exec_procs(debug_mode, platform),
+                config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES: (
+                    exec_processes + get_debug_mode_exec_procs(debug_mode, platform)
+                ),
                 config.ACI_FIELD_CONTAINERS_SIGNAL_CONTAINER_PROCESSES: [],
                 config.ACI_FIELD_CONTAINERS_ALLOW_STDIO_ACCESS: not disable_stdio,
                 config.ACI_FIELD_CONTAINERS_SECURITY_CONTEXT: case_insensitive_dict_get(
@@ -1351,7 +1355,9 @@ def load_policy_from_virtual_node_yaml_str(
                     config.ACI_FIELD_TEMPLATE_ENTRYPOINT: command,
                     config.ACI_FIELD_CONTAINERS_COMMAND: args,
                     config.ACI_FIELD_CONTAINERS_MOUNTS: mounts,
-                    config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES: exec_processes + get_debug_mode_exec_procs(debug_mode, platform),
+                    config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES: (
+                        exec_processes + get_debug_mode_exec_procs(debug_mode, platform)
+                    ),
                     config.ACI_FIELD_CONTAINERS_SIGNAL_CONTAINER_PROCESSES: [],
                     config.ACI_FIELD_CONTAINERS_ALLOW_STDIO_ACCESS: not disable_stdio,
                     config.ACI_FIELD_CONTAINERS_SECURITY_CONTEXT: security_context,

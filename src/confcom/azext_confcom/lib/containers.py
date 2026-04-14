@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from typing import Optional
+
 from dataclasses import asdict
 from azext_confcom.lib.images import get_image_layers, get_image_config, get_image_platform
 from azext_confcom.lib.platform import ACI_MOUNTS, VN2_MOUNTS

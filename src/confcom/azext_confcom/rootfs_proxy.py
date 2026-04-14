@@ -85,7 +85,7 @@ class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
             st = os.stat(self.policy_bin)
             os.chmod(self.policy_bin, st.st_mode | stat.S_IXUSR)
 
-    def get_policy_image_layers(
+    def get_policy_image_layers(  # pylint: disable=redefined-outer-name
         self,
         image: str,
         tag: str,
@@ -149,7 +149,7 @@ class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
                     if "mounted_cim" in json_output:
                         result["mounted_cim"] = json_output["mounted_cim"]
                 except json.JSONDecodeError as e:
-                    logger.error(f"Failed to parse JSON output: {e}")
+                    logger.error("Failed to parse JSON output: %s", e)
                     sys.exit(1)
             else:
                 # Fallback: line-by-line parsing for older dmverity-vhd versions
