@@ -10121,7 +10121,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 ),
                 self.check("networkProfile.ipFamilies", ["IPv4", "IPv6"]),
                 self.check(
-                    "networkProfile.loadBalancerProfile.managedOutboundIPs.countIpv6", 2
+                    "networkProfile.loadBalancerProfile.managedOutboundIPs.countIPv6", 2
                 ),
                 self.check(
                     "networkProfile.loadBalancerProfile.managedOutboundIPs.count", 1
@@ -10150,7 +10150,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 ),
                 self.check("networkProfile.ipFamilies", ["IPv4", "IPv6"]),
                 self.check(
-                    "networkProfile.loadBalancerProfile.managedOutboundIPs.countIpv6", 4
+                    "networkProfile.loadBalancerProfile.managedOutboundIPs.countIPv6", 4
                 ),
                 self.check(
                     "networkProfile.loadBalancerProfile.managedOutboundIPs.count", 1

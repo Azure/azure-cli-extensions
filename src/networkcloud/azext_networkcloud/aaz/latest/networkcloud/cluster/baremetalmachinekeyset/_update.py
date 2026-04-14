@@ -23,9 +23,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}/baremetalmachinekeysets/{}", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}/baremetalmachinekeysets/{}", "2026-01-01-preview"],
         ]
     }
 
@@ -232,7 +232,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-01-01-preview",
                     required=True,
                 ),
             }
@@ -313,190 +313,161 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_bare_metal_machine_key_set_read(cls._schema_on_200)
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.etag = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.extended_location = AAZObjectType(
+                serialized_name="extendedLocation",
+                flags={"required": True},
+            )
+            _schema_on_200.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.location = AAZStrType(
+                flags={"required": True},
+            )
+            _schema_on_200.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.properties = AAZObjectType(
+                flags={"required": True, "client_flatten": True},
+            )
+            _schema_on_200.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _schema_on_200.tags = AAZDictType()
+            _schema_on_200.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            extended_location = cls._schema_on_200.extended_location
+            extended_location.name = AAZStrType(
+                flags={"required": True},
+            )
+            extended_location.type = AAZStrType(
+                flags={"required": True},
+            )
+
+            properties = cls._schema_on_200.properties
+            properties.azure_group_id = AAZStrType(
+                serialized_name="azureGroupId",
+                flags={"required": True},
+            )
+            properties.detailed_status = AAZStrType(
+                serialized_name="detailedStatus",
+                flags={"read_only": True},
+            )
+            properties.detailed_status_message = AAZStrType(
+                serialized_name="detailedStatusMessage",
+                flags={"read_only": True},
+            )
+            properties.expiration = AAZStrType(
+                flags={"required": True},
+            )
+            properties.jump_hosts_allowed = AAZListType(
+                serialized_name="jumpHostsAllowed",
+                flags={"required": True},
+            )
+            properties.last_validation = AAZStrType(
+                serialized_name="lastValidation",
+                flags={"read_only": True},
+            )
+            properties.os_group_name = AAZStrType(
+                serialized_name="osGroupName",
+            )
+            properties.privilege_level = AAZStrType(
+                serialized_name="privilegeLevel",
+                flags={"required": True},
+            )
+            properties.privilege_level_name = AAZStrType(
+                serialized_name="privilegeLevelName",
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.user_list = AAZListType(
+                serialized_name="userList",
+                flags={"required": True},
+            )
+            properties.user_list_status = AAZListType(
+                serialized_name="userListStatus",
+                flags={"read_only": True},
+            )
+
+            jump_hosts_allowed = cls._schema_on_200.properties.jump_hosts_allowed
+            jump_hosts_allowed.Element = AAZStrType()
+
+            user_list = cls._schema_on_200.properties.user_list
+            user_list.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.user_list.Element
+            _element.azure_user_name = AAZStrType(
+                serialized_name="azureUserName",
+                flags={"required": True},
+            )
+            _element.description = AAZStrType()
+            _element.ssh_public_key = AAZObjectType(
+                serialized_name="sshPublicKey",
+                flags={"required": True},
+            )
+            _element.user_principal_name = AAZStrType(
+                serialized_name="userPrincipalName",
+            )
+
+            ssh_public_key = cls._schema_on_200.properties.user_list.Element.ssh_public_key
+            ssh_public_key.key_data = AAZStrType(
+                serialized_name="keyData",
+                flags={"required": True},
+            )
+
+            user_list_status = cls._schema_on_200.properties.user_list_status
+            user_list_status.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.user_list_status.Element
+            _element.azure_user_name = AAZStrType(
+                serialized_name="azureUserName",
+                flags={"read_only": True},
+            )
+            _element.status = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.status_message = AAZStrType(
+                serialized_name="statusMessage",
+                flags={"read_only": True},
+            )
+
+            system_data = cls._schema_on_200.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
+
+            tags = cls._schema_on_200.tags
+            tags.Element = AAZStrType()
 
             return cls._schema_on_200
 
 
 class _UpdateHelper:
     """Helper class for Update"""
-
-    _schema_bare_metal_machine_key_set_read = None
-
-    @classmethod
-    def _build_schema_bare_metal_machine_key_set_read(cls, _schema):
-        if cls._schema_bare_metal_machine_key_set_read is not None:
-            _schema.etag = cls._schema_bare_metal_machine_key_set_read.etag
-            _schema.extended_location = cls._schema_bare_metal_machine_key_set_read.extended_location
-            _schema.id = cls._schema_bare_metal_machine_key_set_read.id
-            _schema.location = cls._schema_bare_metal_machine_key_set_read.location
-            _schema.name = cls._schema_bare_metal_machine_key_set_read.name
-            _schema.properties = cls._schema_bare_metal_machine_key_set_read.properties
-            _schema.system_data = cls._schema_bare_metal_machine_key_set_read.system_data
-            _schema.tags = cls._schema_bare_metal_machine_key_set_read.tags
-            _schema.type = cls._schema_bare_metal_machine_key_set_read.type
-            return
-
-        cls._schema_bare_metal_machine_key_set_read = _schema_bare_metal_machine_key_set_read = AAZObjectType()
-
-        bare_metal_machine_key_set_read = _schema_bare_metal_machine_key_set_read
-        bare_metal_machine_key_set_read.etag = AAZStrType(
-            flags={"read_only": True},
-        )
-        bare_metal_machine_key_set_read.extended_location = AAZObjectType(
-            serialized_name="extendedLocation",
-            flags={"required": True},
-        )
-        bare_metal_machine_key_set_read.id = AAZStrType(
-            flags={"read_only": True},
-        )
-        bare_metal_machine_key_set_read.location = AAZStrType(
-            flags={"required": True},
-        )
-        bare_metal_machine_key_set_read.name = AAZStrType(
-            flags={"read_only": True},
-        )
-        bare_metal_machine_key_set_read.properties = AAZObjectType(
-            flags={"required": True, "client_flatten": True},
-        )
-        bare_metal_machine_key_set_read.system_data = AAZObjectType(
-            serialized_name="systemData",
-            flags={"read_only": True},
-        )
-        bare_metal_machine_key_set_read.tags = AAZDictType()
-        bare_metal_machine_key_set_read.type = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        extended_location = _schema_bare_metal_machine_key_set_read.extended_location
-        extended_location.name = AAZStrType(
-            flags={"required": True},
-        )
-        extended_location.type = AAZStrType(
-            flags={"required": True},
-        )
-
-        properties = _schema_bare_metal_machine_key_set_read.properties
-        properties.azure_group_id = AAZStrType(
-            serialized_name="azureGroupId",
-            flags={"required": True},
-        )
-        properties.detailed_status = AAZStrType(
-            serialized_name="detailedStatus",
-            flags={"read_only": True},
-        )
-        properties.detailed_status_message = AAZStrType(
-            serialized_name="detailedStatusMessage",
-            flags={"read_only": True},
-        )
-        properties.expiration = AAZStrType(
-            flags={"required": True},
-        )
-        properties.jump_hosts_allowed = AAZListType(
-            serialized_name="jumpHostsAllowed",
-            flags={"required": True},
-        )
-        properties.last_validation = AAZStrType(
-            serialized_name="lastValidation",
-            flags={"read_only": True},
-        )
-        properties.os_group_name = AAZStrType(
-            serialized_name="osGroupName",
-        )
-        properties.privilege_level = AAZStrType(
-            serialized_name="privilegeLevel",
-            flags={"required": True},
-        )
-        properties.privilege_level_name = AAZStrType(
-            serialized_name="privilegeLevelName",
-        )
-        properties.provisioning_state = AAZStrType(
-            serialized_name="provisioningState",
-            flags={"read_only": True},
-        )
-        properties.user_list = AAZListType(
-            serialized_name="userList",
-            flags={"required": True},
-        )
-        properties.user_list_status = AAZListType(
-            serialized_name="userListStatus",
-            flags={"read_only": True},
-        )
-
-        jump_hosts_allowed = _schema_bare_metal_machine_key_set_read.properties.jump_hosts_allowed
-        jump_hosts_allowed.Element = AAZStrType()
-
-        user_list = _schema_bare_metal_machine_key_set_read.properties.user_list
-        user_list.Element = AAZObjectType()
-
-        _element = _schema_bare_metal_machine_key_set_read.properties.user_list.Element
-        _element.azure_user_name = AAZStrType(
-            serialized_name="azureUserName",
-            flags={"required": True},
-        )
-        _element.description = AAZStrType()
-        _element.ssh_public_key = AAZObjectType(
-            serialized_name="sshPublicKey",
-            flags={"required": True},
-        )
-        _element.user_principal_name = AAZStrType(
-            serialized_name="userPrincipalName",
-        )
-
-        ssh_public_key = _schema_bare_metal_machine_key_set_read.properties.user_list.Element.ssh_public_key
-        ssh_public_key.key_data = AAZStrType(
-            serialized_name="keyData",
-            flags={"required": True},
-        )
-
-        user_list_status = _schema_bare_metal_machine_key_set_read.properties.user_list_status
-        user_list_status.Element = AAZObjectType()
-
-        _element = _schema_bare_metal_machine_key_set_read.properties.user_list_status.Element
-        _element.azure_user_name = AAZStrType(
-            serialized_name="azureUserName",
-            flags={"read_only": True},
-        )
-        _element.status = AAZStrType(
-            flags={"read_only": True},
-        )
-        _element.status_message = AAZStrType(
-            serialized_name="statusMessage",
-            flags={"read_only": True},
-        )
-
-        system_data = _schema_bare_metal_machine_key_set_read.system_data
-        system_data.created_at = AAZStrType(
-            serialized_name="createdAt",
-        )
-        system_data.created_by = AAZStrType(
-            serialized_name="createdBy",
-        )
-        system_data.created_by_type = AAZStrType(
-            serialized_name="createdByType",
-        )
-        system_data.last_modified_at = AAZStrType(
-            serialized_name="lastModifiedAt",
-        )
-        system_data.last_modified_by = AAZStrType(
-            serialized_name="lastModifiedBy",
-        )
-        system_data.last_modified_by_type = AAZStrType(
-            serialized_name="lastModifiedByType",
-        )
-
-        tags = _schema_bare_metal_machine_key_set_read.tags
-        tags.Element = AAZStrType()
-
-        _schema.etag = cls._schema_bare_metal_machine_key_set_read.etag
-        _schema.extended_location = cls._schema_bare_metal_machine_key_set_read.extended_location
-        _schema.id = cls._schema_bare_metal_machine_key_set_read.id
-        _schema.location = cls._schema_bare_metal_machine_key_set_read.location
-        _schema.name = cls._schema_bare_metal_machine_key_set_read.name
-        _schema.properties = cls._schema_bare_metal_machine_key_set_read.properties
-        _schema.system_data = cls._schema_bare_metal_machine_key_set_read.system_data
-        _schema.tags = cls._schema_bare_metal_machine_key_set_read.tags
-        _schema.type = cls._schema_bare_metal_machine_key_set_read.type
 
 
 __all__ = ["Update"]

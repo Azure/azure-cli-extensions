@@ -1203,6 +1203,7 @@ def load_arguments(self, _):
         c.argument("enable_hosted_system", action="store_true", is_preview=True)
         c.argument(
             "control_plane_scaling_size",
+            options_list=["--control-plane-scaling-size", "--cp-scaling-size"],
             arg_type=get_enum_type(["H2", "H4", "H8"]),
             is_preview=True,
             help="The control plane scaling size. Provides scaled and performance-guaranteed control plane capacity. "

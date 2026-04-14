@@ -1235,6 +1235,10 @@ class AKSPreviewAgentPoolContextManagedClusterModeTestCase(
             enable_node_public_ip=False,
             enable_auto_scaling=False,
             count=3,
+            # The new SDK defaults scale_set_priority to None, but the core
+            # decorator's set_up_priority_properties always sets it to "Regular"
+            # via get_priority() when no explicit priority is passed.
+            scale_set_priority="Regular",
             node_taints=[],
             node_initialization_taints=[],
             os_disk_size_gb=0,
@@ -2001,6 +2005,10 @@ class AKSPreviewAgentPoolAddDecoratorStandaloneModeTestCase(
             enable_node_public_ip=False,
             enable_auto_scaling=False,
             count=3,
+            # The new SDK defaults scale_set_priority to None, but the core
+            # decorator's set_up_priority_properties always sets it to "Regular"
+            # via get_priority() when no explicit priority is passed.
+            scale_set_priority="Regular",
             node_taints=[],
             node_initialization_taints=[],
             os_disk_size_gb=0,
@@ -2135,6 +2143,10 @@ class AKSPreviewAgentPoolAddDecoratorManagedClusterModeTestCase(
             enable_node_public_ip=False,
             enable_auto_scaling=False,
             count=3,
+            # The new SDK defaults scale_set_priority to None, but the core
+            # decorator's set_up_priority_properties always sets it to "Regular"
+            # via get_priority() when no explicit priority is passed.
+            scale_set_priority="Regular",
             node_taints=[],
             node_initialization_taints=[],
             os_disk_size_gb=0,

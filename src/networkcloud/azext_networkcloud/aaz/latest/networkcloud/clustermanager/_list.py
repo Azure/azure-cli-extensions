@@ -26,10 +26,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.networkcloud/clustermanagers", "2025-09-01"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clustermanagers", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.networkcloud/clustermanagers", "2026-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clustermanagers", "2026-01-01-preview"],
         ]
     }
 
@@ -130,7 +130,7 @@ class List(AAZCommand):
                     "$top", self.ctx.args.top,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-01-01-preview",
                     required=True,
                 ),
             }
@@ -179,6 +179,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _element.identity = AAZIdentityObjectType()
+            _element.kind = AAZStrType()
             _element.location = AAZStrType(
                 flags={"required": True},
             )
@@ -262,6 +263,10 @@ class List(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.relay_configuration = AAZObjectType(
+                serialized_name="relayConfiguration",
+                flags={"read_only": True},
+            )
             properties.vm_size = AAZStrType(
                 serialized_name="vmSize",
             )
@@ -292,6 +297,11 @@ class List(AAZCommand):
             )
             manager_extended_location.type = AAZStrType(
                 flags={"required": True},
+            )
+
+            relay_configuration = cls._schema_on_200.value.Element.properties.relay_configuration
+            relay_configuration.relay_namespace_id = AAZStrType(
+                serialized_name="relayNamespaceId",
             )
 
             system_data = cls._schema_on_200.value.Element.system_data
@@ -369,7 +379,7 @@ class List(AAZCommand):
                     "$top", self.ctx.args.top,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-01-01-preview",
                     required=True,
                 ),
             }
@@ -418,6 +428,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _element.identity = AAZIdentityObjectType()
+            _element.kind = AAZStrType()
             _element.location = AAZStrType(
                 flags={"required": True},
             )
@@ -501,6 +512,10 @@ class List(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.relay_configuration = AAZObjectType(
+                serialized_name="relayConfiguration",
+                flags={"read_only": True},
+            )
             properties.vm_size = AAZStrType(
                 serialized_name="vmSize",
             )
@@ -531,6 +546,11 @@ class List(AAZCommand):
             )
             manager_extended_location.type = AAZStrType(
                 flags={"required": True},
+            )
+
+            relay_configuration = cls._schema_on_200.value.Element.properties.relay_configuration
+            relay_configuration.relay_namespace_id = AAZStrType(
+                serialized_name="relayNamespaceId",
             )
 
             system_data = cls._schema_on_200.value.Element.system_data
