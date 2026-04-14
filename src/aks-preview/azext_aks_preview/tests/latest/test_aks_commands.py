@@ -9959,6 +9959,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[self.is_empty()],
         )
 
+    @live_only()
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
@@ -9987,8 +9988,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "aks create --resource-group={resource_group} --name={name} --location={location} "
             "--network-plugin azure --network-plugin-mode overlay --pod-cidr 10.244.0.0/16 "
             "--ssh-key-value={ssh_key_value} --node-count 1 "
-            "--control-plane-scaling-size H4 "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ControlPlaneScalingProfilePreview"
+            "--control-plane-scaling-size H4"
         )
         self.cmd(
             create_cmd,
