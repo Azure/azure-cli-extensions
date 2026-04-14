@@ -79,7 +79,7 @@
     "resources": [
         {
             "type": "Microsoft.Quantum/workspaces",
-            "apiVersion": "2019-11-04-preview",
+            "apiVersion": "2025-12-15-preview",
             "name": "[parameters('quantumWorkspaceName')]",
             "location": "[parameters('location')]",
             "tags": "[parameters('tags')]",
@@ -156,12 +156,12 @@
                         },
                         {
                             "apiVersion": "2020-04-01-preview",
-                            "name": "[concat(parameters('storageAccountName'), '/Microsoft.Authorization/', guid(reference(concat('Microsoft.Quantum/Workspaces/', parameters('quantumWorkspaceName')), '2019-11-04-preview', 'Full').identity.principalId, variables('storageAccountContributorRoleId')))]",
+                            "name": "[concat(parameters('storageAccountName'), '/Microsoft.Authorization/', guid(reference(concat('Microsoft.Quantum/Workspaces/', parameters('quantumWorkspaceName')), '2025-12-15-preview', 'Full').identity.principalId, variables('storageAccountContributorRoleId')))]",
                             "type": "Microsoft.Storage/storageAccounts/providers/roleAssignments",
                             "location": "[parameters('storageAccountLocation')]",
                             "properties": {
                                 "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', variables('storageAccountContributorRoleId'))]",
-                                "principalId": "[reference(concat('Microsoft.Quantum/Workspaces/', parameters('quantumWorkspaceName')), '2019-11-04-preview', 'Full').identity.principalId]",
+                                "principalId": "[reference(concat('Microsoft.Quantum/Workspaces/', parameters('quantumWorkspaceName')), '2025-12-15-preview', 'Full').identity.principalId]",
                                 "principalType": "ServicePrincipal"
                             },
                             "dependsOn": [
@@ -170,12 +170,12 @@
                         },
                         {
                             "apiVersion": "2020-04-01-preview",
-                            "name": "[concat(parameters('storageAccountName'), '/Microsoft.Authorization/', guid(reference(concat('Microsoft.Quantum/Workspaces/', parameters('quantumWorkspaceName')), '2019-11-04-preview', 'Full').identity.principalId, variables('storageBlobDataContributorRoleId')))]",
+                            "name": "[concat(parameters('storageAccountName'), '/Microsoft.Authorization/', guid(reference(concat('Microsoft.Quantum/Workspaces/', parameters('quantumWorkspaceName')), '2025-12-15-preview', 'Full').identity.principalId, variables('storageBlobDataContributorRoleId')))]",
                             "type": "Microsoft.Storage/storageAccounts/providers/roleAssignments",
                             "location": "[parameters('storageAccountLocation')]",
                             "properties": {
                                 "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', variables('storageBlobDataContributorRoleId'))]",
-                                "principalId": "[reference(concat('Microsoft.Quantum/Workspaces/', parameters('quantumWorkspaceName')), '2019-11-04-preview', 'Full').identity.principalId]",
+                                "principalId": "[reference(concat('Microsoft.Quantum/Workspaces/', parameters('quantumWorkspaceName')), '2025-12-15-preview', 'Full').identity.principalId]",
                                 "principalType": "ServicePrincipal"
                             },
                             "dependsOn": [
