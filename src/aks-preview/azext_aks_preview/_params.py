@@ -102,6 +102,7 @@ from azext_aks_preview._consts import (
     CONST_OS_SKU_MARINER,
     CONST_OS_SKU_AZURELINUXOSGUARD,
     CONST_OS_SKU_AZURELINUX3OSGUARD,
+    CONST_OS_SKU_AZURECONTAINERLINUX,
     CONST_OS_SKU_UBUNTU,
     CONST_OS_SKU_UBUNTU2204,
     CONST_OS_SKU_UBUNTU2404,
@@ -302,6 +303,7 @@ node_os_skus_create = [
     CONST_OS_SKU_UBUNTU2404,
     CONST_OS_SKU_AZURELINUXOSGUARD,
     CONST_OS_SKU_AZURELINUX3OSGUARD,
+    CONST_OS_SKU_AZURECONTAINERLINUX,
 ]
 node_os_skus_add = node_os_skus_create + [
     CONST_OS_SKU_WINDOWS2019,
@@ -318,6 +320,7 @@ node_os_skus_update = [
     CONST_OS_SKU_UBUNTU2404,
     CONST_OS_SKU_AZURELINUXOSGUARD,
     CONST_OS_SKU_AZURELINUX3OSGUARD,
+    CONST_OS_SKU_AZURECONTAINERLINUX,
 ]
 scale_down_modes = [CONST_SCALE_DOWN_MODE_DELETE, CONST_SCALE_DOWN_MODE_DEALLOCATE]
 workload_runtimes = [
@@ -691,8 +694,7 @@ def load_arguments(self, _):
                 "--nat-gateway-outbound-ips",
                 "--nat-gw-ips",
             ],
-            nargs="+",
-            help="Space-separated public IP resource IDs for the "
+            help="Comma-separated public IP resource IDs for the "
                  "cluster NAT gateway. V2 only.",
         )
         c.argument(
@@ -701,8 +703,7 @@ def load_arguments(self, _):
                 "--nat-gateway-outbound-ip-prefixes",
                 "--nat-gw-prefixes",
             ],
-            nargs="+",
-            help="Space-separated public IP prefix resource IDs "
+            help="Comma-separated public IP prefix resource IDs "
                  "for the cluster NAT gateway. V2 only.",
         )
         c.argument(
@@ -1329,8 +1330,7 @@ def load_arguments(self, _):
                 "--nat-gateway-outbound-ips",
                 "--nat-gw-ips",
             ],
-            nargs="+",
-            help="Space-separated public IP resource IDs for the "
+            help="Comma-separated public IP resource IDs for the "
                  "cluster NAT gateway. V2 only.",
         )
         c.argument(
@@ -1339,8 +1339,7 @@ def load_arguments(self, _):
                 "--nat-gateway-outbound-ip-prefixes",
                 "--nat-gw-prefixes",
             ],
-            nargs="+",
-            help="Space-separated public IP prefix resource IDs "
+            help="Comma-separated public IP prefix resource IDs "
                  "for the cluster NAT gateway. V2 only.",
         )
         c.argument("network_dataplane", arg_type=get_enum_type(network_dataplanes))
@@ -2438,6 +2437,21 @@ def load_arguments(self, _):
             options_list=["--kubernetes-version"],
             validator=validate_k8s_version,
             help="Version of Kubernetes to use for the machine.",
+        )
+        c.argument(
+            "spot_max_price",
+            type=float,
+            validator=validate_spot_max_price,
+            help="The max price (in US Dollars) you are willing to pay for spot instances."
+        )
+        c.argument(
+            "enable_ultra_ssd",
+            action="store_true"
+        )
+        c.argument(
+            "eviction_policy",
+            arg_type=get_enum_type(node_eviction_policies),
+            validator=validate_eviction_policy,
         )
 
     with self.argument_context("aks machine update") as c:
