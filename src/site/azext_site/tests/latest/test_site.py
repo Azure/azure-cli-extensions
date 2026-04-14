@@ -131,3 +131,59 @@ class SiteScenario(ScenarioTest):
 
         #Delete Site at subscription scope
         self.cmd("az site delete --site-name TestSubsSiteName --yes")
+
+
+class SiteKeyScenario(ScenarioTest):
+
+    @ResourceGroupPreparer(name_prefix="cli_test_site_key_", location="eastus")
+    def test_edge_site_key_crud(self):
+        # First create a site to link keys to
+        self.cmd(
+            "az site create --site-name TestSiteForKey --resource-group {rg} "
+            "--display-name 'Test Site' --description 'Site for key testing' "
+            "--street-address1='16 TOWNSEND ST' --city='San Francisco' "
+            "--state-or-province=CA --country=US --postal-code=94107",
+            checks=[
+                self.check("name", "TestSiteForKey"),
+            ]
+        )
+
+        # Create a site key
+        self.cmd(
+            "az site key create --name TestSiteKey --resource-group {rg} --site-name TestSiteForKey",
+            checks=[
+                self.check("name", "TestSiteKey"),
+                self.check("properties.provisioningState", "Succeeded"),
+            ]
+        )
+
+        # Show the site key
+        self.cmd(
+            "az site key show --name TestSiteKey --resource-group {rg}",
+            checks=[
+                self.check("name", "TestSiteKey"),
+                self.check("properties.provisioningState", "Succeeded"),
+            ]
+        )
+
+        # List site keys
+        result = self.cmd(
+            "az site key list --resource-group {rg}"
+        ).get_output_in_json()
+        assert any(item.get("name") == "TestSiteKey" for item in result), \
+            "'TestSiteKey' not found in site key list"
+
+        # Download the site key token
+        self.cmd(
+            "az site key download --name TestSiteKey --resource-group {rg} --file test-token.txt",
+            checks=[
+                self.exists("filePath"),
+                self.check("message", "Token saved successfully"),
+            ]
+        )
+
+        # Delete the site key
+        self.cmd("az site key delete --name TestSiteKey --resource-group {rg} --yes")
+
+        # Clean up: delete the site
+        self.cmd("az site delete --site-name TestSiteForKey --resource-group {rg} --yes")
