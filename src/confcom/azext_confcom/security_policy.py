@@ -158,6 +158,10 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
             container_image.parse_all_parameters_and_variables(self.all_params, self.all_vars)
             container_results.append(container_image)
 
+        # Default platform if no containers were present to set it
+        if self._platform is None:
+            self._platform = "linux/amd64"
+
         self._images = container_results
 
     def __enter__(self) -> Any:

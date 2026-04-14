@@ -823,7 +823,7 @@ class UserContainerImage(ContainerImage):
         # Start with the customer environment rules
         env_rules = (
             copy.deepcopy(_INJECTED_CUSTOMER_ENV_RULES)
-            if container_json["platform"].startswith("linux") else dict()
+            if container_json["platform"].startswith("linux") else []
         )
         # If is_vn2, add the VN2 environment rules
         if is_vn2:
