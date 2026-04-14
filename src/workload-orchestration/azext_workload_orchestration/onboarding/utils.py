@@ -34,6 +34,56 @@ class CmdProxy:
 
 
 # ---------------------------------------------------------------------------
+# ARM ID parsing
+# ---------------------------------------------------------------------------
+
+def parse_arm_id(arm_id):
+    """Parse an ARM resource ID into a dict of segment name → value.
+
+    Example:
+        parse_arm_id("/subscriptions/abc/resourceGroups/myRG/providers/Microsoft.Edge/contexts/myCtx")
+        → {"subscriptions": "abc", "resourcegroups": "myRG", "contexts": "myCtx"}
+
+    Keys are lowercased for case-insensitive lookup.
+    Returns empty dict if arm_id is None or empty.
+    """
+    if not arm_id:
+        return {}
+    parts = arm_id.strip("/").split("/")
+    result = {}
+    i = 0
+    while i < len(parts) - 1:
+        result[parts[i].lower()] = parts[i + 1]
+        i += 2
+    return result
+
+
+# ---------------------------------------------------------------------------
+# Silent CLI invocation
+# ---------------------------------------------------------------------------
+
+def invoke_silent(cli_args):
+    """Invoke an az CLI command silently (suppress all stdout/stderr).
+
+    Returns the exit code. Useful for fire-and-forget operations
+    where you don't need the output (e.g., setting config, creating
+    resources via 'az rest').
+    """
+    from azure.cli.core import get_default_cli
+    import io
+    import sys
+
+    cli = get_default_cli()
+    old_stdout, old_stderr = sys.stdout, sys.stderr
+    sys.stdout = io.StringIO()
+    sys.stderr = io.StringIO()
+    try:
+        return cli.invoke(cli_args)
+    finally:
+        sys.stdout, sys.stderr = old_stdout, old_stderr
+
+
+# ---------------------------------------------------------------------------
 # CLI command invocation
 # ---------------------------------------------------------------------------
 
