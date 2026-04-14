@@ -349,6 +349,7 @@ def _handle_config_set(
         "--template-name", template_name,
         "--version", template_version,
         "--file", config_file,
+        "--solution",
     ], expect_json=False)
 
 
