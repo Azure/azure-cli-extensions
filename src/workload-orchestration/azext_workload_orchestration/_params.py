@@ -73,3 +73,65 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
             action='store_true',
             help='Skip auto-creation of site-reference to context.',
         )
+
+    with self.argument_context('workload-orchestration target init') as c:
+        c.argument(
+            'cluster_name',
+            options_list=['--cluster-name', '-c'],
+            help='Name of the Arc-connected Kubernetes cluster.',
+            required=True,
+        )
+        c.argument(
+            'resource_group',
+            options_list=['--resource-group', '-g'],
+            help='Resource group of the Arc-connected cluster.',
+            required=True,
+        )
+        c.argument(
+            'location',
+            options_list=['--location', '-l'],
+            help='Azure region for the custom location (e.g., eastus2euap).',
+            required=True,
+        )
+        c.argument(
+            'release_train',
+            options_list=['--release-train'],
+            help='Extension release train. Default: stable.',
+        )
+        c.argument(
+            'extension_version',
+            options_list=['--extension-version'],
+            help='Specific WO extension version to install.',
+        )
+        c.argument(
+            'extension_name',
+            options_list=['--extension-name'],
+            help='Name for the WO extension resource. Default: workload-orchestration.',
+        )
+        c.argument(
+            'custom_location_name',
+            options_list=['--custom-location-name'],
+            help='Name for the custom location. Default: <cluster-name>-cl.',
+        )
+        c.argument(
+            'skip_cert_manager',
+            options_list=['--skip-cert-manager'],
+            action='store_true',
+            help='Skip cert-manager installation.',
+        )
+        c.argument(
+            'skip_trust_manager',
+            options_list=['--skip-trust-manager'],
+            action='store_true',
+            help='Skip trust-manager installation.',
+        )
+        c.argument(
+            'kube_config',
+            options_list=['--kube-config'],
+            help='Path to kubeconfig file. Defaults to ~/.kube/config.',
+        )
+        c.argument(
+            'kube_context',
+            options_list=['--kube-context'],
+            help='Kubernetes context to use. Defaults to current context.',
+        )

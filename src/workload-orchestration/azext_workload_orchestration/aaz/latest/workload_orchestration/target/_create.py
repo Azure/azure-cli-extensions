@@ -121,36 +121,11 @@ class Create(AAZCommand):
 
         )
 
-        # V2: Onboarding simplification arguments
-        _args_schema.init_context = AAZStrArg(
-            options=["--init-context"],
-            arg_group="Onboarding",
-            help="Auto-create a default context if none exists. Value is the context name (e.g., 'default'). "
-                 "Auto-injects hierarchy level and capabilities into the context.",
-        )
+        # Onboarding simplification arguments
         _args_schema.service_group = AAZStrArg(
             options=["--service-group"],
             arg_group="Onboarding",
             help="ServiceGroup name to auto-link this target to after creation.",
-        )
-        _args_schema.init_hierarchy = AAZStrArg(
-            options=["--init-hierarchy"],
-            arg_group="Onboarding",
-            help="Auto-create a regular site hierarchy. Value is the site name. "
-                 "Creates a Site in the target's resource group and links to context.",
-        )
-        _args_schema.init_extended_location = AAZStrArg(
-            options=["--init-extended-location"],
-            arg_group="Onboarding",
-            help="Auto-prepare an Arc-connected cluster for WO and create a custom location. "
-                 "Value is the connected cluster ARM resource ID. "
-                 "Installs cert-manager, trust-manager, WO extension, and creates custom location.",
-        )
-        _args_schema.release_train = AAZStrArg(
-            options=["--release-train"],
-            arg_group="Onboarding",
-            help="Release train for WO extension (used with --init-extended-location). "
-                 "Default: 'stable'. Options: dev, preview, stable.",
         )
 
         capabilities = cls._args_schema.capabilities
@@ -202,21 +177,9 @@ class Create(AAZCommand):
 
     @register_callback
     def pre_operations(self):
-        # --- V2: --init-extended-location (auto-prepare cluster + create CL) ---
-        if hasattr(self.ctx.args, 'init_extended_location') and self.ctx.args.init_extended_location:
-            self._handle_init_extended_location()
-
-        # --- V2: --init-context (auto-create context if not exists) ---
-        if hasattr(self.ctx.args, 'init_context') and self.ctx.args.init_context:
-            self._handle_init_context()
-
-        # Resolve context_id from config before hierarchy (hierarchy needs it for site-reference)
+        # Resolve context_id from CLI config if not provided
         if not self.ctx.args.context_id:
             self._resolve_context_id_from_config()
-
-        # --- V2: --init-hierarchy (auto-create regular site hierarchy) ---
-        if hasattr(self.ctx.args, 'init_hierarchy') and self.ctx.args.init_hierarchy:
-            self._handle_init_hierarchy()
 
         # Default target specification (helm.v3) if not provided
         if not self.ctx.args.target_specification:
@@ -232,91 +195,20 @@ class Create(AAZCommand):
             else:
                 raise CLIInternalError(
                     "No context-id was provided, and no default context is set. "
-                    "Please provide the --context-id argument, use --init-context, "
+                    "Please provide the --context-id argument "
                     "or set a default context using 'az workload-orchestration context use'."
                 )
         except configparser.NoSectionError as e:
             logger.debug("Config section 'workload_orchestration' not found: %s", e)
             raise CLIInternalError(
                 "No context-id was provided, and no default context is set. "
-                "Please provide the --context-id argument, use --init-context, "
+                "Please provide the --context-id argument "
                 "or set a default context using 'az workload-orchestration context use'."
             )
 
-    def _handle_init_extended_location(self):
-        """Auto-prepare cluster (cert-mgr, trust-mgr, extension, custom location)."""
-        from azext_workload_orchestration.onboarding.target_prepare import target_prepare
-        from azext_workload_orchestration.onboarding.utils import CmdProxy, parse_arm_id
-
-        cluster_arm_id = str(self.ctx.args.init_extended_location)
-        location = str(self.ctx.args.location)
-        parts = parse_arm_id(cluster_arm_id)
-
-        cluster_rg = parts.get("resourcegroups")
-        cluster_name = parts.get("connectedclusters")
-
-        if not cluster_rg or not cluster_name:
-            raise CLIInternalError(
-                f"Invalid connected cluster ARM ID: {cluster_arm_id}\n"
-                "Expected: /subscriptions/{{sub}}/resourceGroups/{{rg}}"
-                "/providers/Microsoft.Kubernetes/connectedClusters/{{name}}"
-            )
-
-        release_train = None
-        if hasattr(self.ctx.args, 'release_train') and self.ctx.args.release_train:
-            release_train = str(self.ctx.args.release_train)
-
-        print(f"\n[init-extended-location] Preparing cluster '{cluster_name}' in RG '{cluster_rg}'...")
-
-        result = target_prepare(
-            cmd=CmdProxy(self.ctx.cli_ctx),
-            cluster_name=cluster_name,
-            resource_group=cluster_rg,
-            location=location,
-            release_train=release_train,
-        )
-
-        cl_id = result.get("customLocationId", "")
-        if cl_id:
-            self.ctx.args.extended_location = {"name": cl_id, "type": "CustomLocation"}
-            print(f"[init-extended-location] Cluster prepared, CL: {cl_id} [OK]\n")
-        else:
-            raise CLIInternalError(
-                "target prepare succeeded but no custom location ID was returned."
-            )
-
-    def _handle_init_context(self):
-        """Auto-create or find a context, inject hierarchy + capabilities."""
-        from azext_workload_orchestration.onboarding.context_init import handle_init_context
-
-        ctx_name = str(self.ctx.args.init_context)
-        rg = str(self.ctx.args.resource_group)
-        location = str(self.ctx.args.location)
-        hierarchy_level = str(self.ctx.args.hierarchy_level) if self.ctx.args.hierarchy_level else "line"
-        capabilities = [str(c) for c in self.ctx.args.capabilities] if self.ctx.args.capabilities else []
-
-        ctx_id = handle_init_context(
-            self.ctx.cli_ctx, ctx_name, rg, location, hierarchy_level, capabilities
-        )
-        self.ctx.args.context_id = ctx_id
-
-    def _handle_init_hierarchy(self):
-        """Auto-create a regular site hierarchy (RG-scoped, no SG)."""
-        from azext_workload_orchestration.onboarding.hierarchy_init import handle_init_hierarchy
-
-        site_name = str(self.ctx.args.init_hierarchy)
-        rg = str(self.ctx.args.resource_group)
-        location = str(self.ctx.args.location)
-        hierarchy_level = str(self.ctx.args.hierarchy_level) if self.ctx.args.hierarchy_level else "line"
-        context_id = str(self.ctx.args.context_id) if self.ctx.args.context_id else None
-
-        handle_init_hierarchy(
-            self.ctx.cli_ctx, site_name, rg, location, hierarchy_level, context_id
-        )
-
     @register_callback
     def post_operations(self):
-        # --- V2: --service-group (auto-link target to SG after creation) ---
+        # --service-group: auto-link target to SG after creation
         if hasattr(self.ctx.args, 'service_group') and self.ctx.args.service_group:
             self._handle_service_group_link()
 
