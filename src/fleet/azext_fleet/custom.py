@@ -957,7 +957,7 @@ def create_managed_namespace(cmd,
         )
 
     propagation_policy = None
-    if member_cluster_names or rollout_strategy_obj:
+    if member_cluster_names or rollout_strategy:
         placement_policy = None
         if member_cluster_names:
             placement_policy = PlacementV1PlacementPolicy(
