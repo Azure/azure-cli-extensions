@@ -22,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-07-15",
+        "version": "2026-01-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkpacketbrokers/{}", "2025-07-15"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkpacketbrokers/{}", "2026-01-15-preview"],
         ]
     }
 
@@ -123,7 +123,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-15",
+                    "api-version", "2026-01-15-preview",
                     required=True,
                 ),
             }
@@ -241,6 +241,11 @@ class Show(AAZCommand):
             )
             properties.source_interface_ids = AAZListType(
                 serialized_name="sourceInterfaceIds",
+                flags={"read_only": True},
+            )
+            properties.source_network_tap_rule_id = AAZStrType(
+                serialized_name="sourceNetworkTapRuleId",
+                nullable=True,
                 flags={"read_only": True},
             )
 

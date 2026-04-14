@@ -43,8 +43,8 @@ def step_resync_certificate(test, checks=None):
     )
 
 
-class GA_DeviceResyncCertificateScenarioTest1(ScenarioTest):
-    """Device resync-certificate scenario test"""
+class GA_DeviceRefreshConfigurationScenarioTest1(ScenarioTest):
+    """DeviceScenario test"""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

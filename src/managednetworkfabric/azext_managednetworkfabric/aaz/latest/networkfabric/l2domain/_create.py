@@ -22,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-07-15",
+        "version": "2026-01-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l2isolationdomains/{}", "2025-07-15"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l2isolationdomains/{}", "2026-01-15-preview"],
         ]
     }
 
@@ -131,7 +131,7 @@ class Create(AAZCommand):
         _args_schema.network_to_network_interconnect_id = AAZResourceIdArg(
             options=["--nni-id", "--network-to-network-interconnect-id"],
             arg_group="Properties",
-            help="ARM Resource ID of the networkToNetworkInterconnectId of the ExternalNetwork resource.",
+            help="ARM Resource ID of the networkToNetworkInterconnectId of the L2 ISD resource.",
             nullable=True,
         )
         _args_schema.vlan_id = AAZIntArg(
@@ -227,7 +227,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-15",
+                    "api-version", "2026-01-15-preview",
                     required=True,
                 ),
             }
