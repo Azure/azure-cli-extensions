@@ -57,7 +57,7 @@ Pending
 
 19.0.0b25
 +++++++
-* `az aks create/update`: Add `--control-plane-scaling-size` parameter to configure control plane scaling profile with available sizes 'H2', 'H4', and 'H8'.
+* `az aks create`: Add `--control-plane-scaling-size` parameter to configure control plane scaling profile with available sizes 'H2', 'H4', and 'H8'.
 
 19.0.0b24
 +++++++
