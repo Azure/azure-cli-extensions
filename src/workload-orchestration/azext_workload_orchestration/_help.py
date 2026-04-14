@@ -79,31 +79,49 @@ helps['workload-orchestration target deploy'] = """
 type: command
 short-summary: Deploy a solution to a target in one step (review → publish → install).
 long-summary: |
-    Chains the three deployment steps into a single command:
-    1. Review: validates the solution template version against the target
-    2. Publish: publishes the reviewed solution version
-    3. Install: installs the published solution on the target
+    Chains up to four steps into a single command:
+      0. Config Set (optional): applies configuration values from a YAML/JSON file
+      1. Review: validates the solution template version against the target
+      2. Publish: publishes the reviewed solution version
+      3. Install: installs the published solution on the target
 
-    Optionally set configuration values from a YAML file before review
-    using --config-file with the config template parameters.
+    You can identify the solution template by either:
+      - ARM ID: --solution-template-version-id <full-ARM-id>
+      - Friendly name: --solution-template-name <name> --solution-template-version <ver>
 
-    Use --skip-review if the solution is already reviewed, or
-    --skip-install to publish without installing.
+    Use --resume-from to restart a partially completed deployment.
+    Use --skip-review or --skip-install to skip specific steps.
+    Use --config to set configuration values before the review step.
 examples:
-  - name: Deploy a solution template version to a target
+  - name: Deploy using friendly name
     text: >
         az workload-orchestration target deploy -g my-rg -n my-target
-        --solution-template-version-id /subscriptions/sub/resourceGroups/rg/providers/Microsoft.Edge/solutionTemplates/tmpl/versions/1.0.0
+        --solution-template-name sofi-hotmelt-template --solution-template-version 1.0.0
+  - name: Deploy using ARM ID
+    text: >
+        az workload-orchestration target deploy -g my-rg -n my-target
+        --solution-template-version-id /subscriptions/.../solutionTemplates/tmpl/versions/1.0.0
   - name: Deploy with configuration file
     text: >
         az workload-orchestration target deploy -g my-rg -n my-target
-        --solution-template-version-id /subscriptions/sub/resourceGroups/rg/providers/Microsoft.Edge/solutionTemplates/tmpl/versions/1.0.0
-        --config-file values.yaml --config-template-rg rg --config-template-name tmpl --config-template-version 1.0.0
-  - name: Skip review (already reviewed)
+        --solution-template-name tmpl --solution-template-version 1.0.0
+        --config values.yaml --config-template-rg rg --config-template-name cfg --config-template-version 1.0.0
+  - name: Resume from publish (review already done)
     text: >
         az workload-orchestration target deploy -g my-rg -n my-target
-        --solution-template-version-id /subscriptions/sub/resourceGroups/rg/providers/Microsoft.Edge/solutionVersions/v1
-        --skip-review
+        --resume-from publish --solution-version-id /subscriptions/.../solutionVersions/sv1
+  - name: Resume from install (review + publish already done)
+    text: >
+        az workload-orchestration target deploy -g my-rg -n my-target
+        --resume-from install --solution-version-id /subscriptions/.../solutionVersions/sv1
+  - name: Skip install (review + publish only)
+    text: >
+        az workload-orchestration target deploy -g my-rg -n my-target
+        --solution-template-name tmpl --solution-template-version 1.0.0 --skip-install
+  - name: Deploy without waiting for install
+    text: >
+        az workload-orchestration target deploy -g my-rg -n my-target
+        --solution-template-name tmpl --solution-template-version 1.0.0 --no-wait
 """
 
 

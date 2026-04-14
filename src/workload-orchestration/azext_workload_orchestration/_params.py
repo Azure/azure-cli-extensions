@@ -97,25 +97,56 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
                    help='Kubernetes context to use. Defaults to current context.')
 
     with self.argument_context('workload-orchestration target deploy') as c:
+        # Required: target identification
         c.argument('resource_group', options_list=['--resource-group', '-g'],
                    help='Resource group of the target.', required=True)
         c.argument('target_name', options_list=['--target-name', '-n'],
                    help='Name of the target to deploy to.', required=True)
+
+        # Solution template: ARM ID (option A)
         c.argument('solution_template_version_id', options_list=['--solution-template-version-id'],
-                   help='ARM resource ID of the solution template version to deploy.', required=True)
+                   help='Full ARM resource ID of the solution template version. '
+                        'Mutually exclusive with --solution-template-name.')
+
+        # Solution template: friendly name (option B)
+        c.argument('solution_template_name', options_list=['--solution-template-name'],
+                   help='Name of the solution template. '
+                        'Use with --solution-template-version. '
+                        'Mutually exclusive with --solution-template-version-id.')
+        c.argument('solution_template_version', options_list=['--solution-template-version'],
+                   help='Version of the solution template (e.g., 1.0.0). '
+                        'Required when using --solution-template-name.')
+        c.argument('solution_template_rg', options_list=['--solution-template-rg'],
+                   help='Resource group of the solution template. '
+                        'Defaults to --resource-group if omitted.')
+
+        # Optional review args
         c.argument('solution_instance_name', options_list=['--solution-instance-name'],
-                   help='Optional solution instance name for the review step.')
+                   help='Custom solution instance name for the review step.')
+        c.argument('solution_dependencies', options_list=['--solution-dependencies'],
+                   help='JSON string of solution dependency definitions.')
+
+        # Resume / skip
+        c.argument('resume_from', options_list=['--resume-from'],
+                   help='Resume deployment from a specific step. '
+                        'Choices: publish, install. Requires --solution-version-id.',
+                   choices=['publish', 'install'])
+        c.argument('solution_version_id', options_list=['--solution-version-id'],
+                   help='Solution version ARM ID. Required with --resume-from.')
         c.argument('skip_review', options_list=['--skip-review'],
-                   action='store_true', help='Skip the review step (use when already reviewed).')
+                   action='store_true',
+                   help='Skip review (use solution-template-version-id directly for publish).')
         c.argument('skip_install', options_list=['--skip-install'],
-                   action='store_true', help='Skip the install step (publish only).')
-        c.argument('config_file', options_list=['--config-file'],
-                   help='YAML file with configuration values to set before review.')
+                   action='store_true', help='Skip install step (review + publish only).')
+
+        # Config set (step 0)
+        c.argument('config', options_list=['--config'],
+                   help='Path to YAML/JSON file with configuration values to set before review.')
         c.argument('config_hierarchy_id', options_list=['--config-hierarchy-id'],
                    help='ARM ID of hierarchy entity for config set. Defaults to target ARM ID.')
         c.argument('config_template_rg', options_list=['--config-template-rg'],
-                   help='Resource group of the configuration template (used with --config-file).')
+                   help='Resource group of the configuration template (with --config).')
         c.argument('config_template_name', options_list=['--config-template-name'],
-                   help='Name of the configuration template (used with --config-file).')
+                   help='Name of the configuration template (with --config).')
         c.argument('config_template_version', options_list=['--config-template-version'],
-                   help='Version of the configuration template (used with --config-file).')
+                   help='Version of the configuration template (with --config).')
