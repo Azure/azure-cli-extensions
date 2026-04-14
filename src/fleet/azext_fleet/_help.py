@@ -205,8 +205,11 @@ helps['fleet updaterun create'] = """
             az fleet updaterun create -g MyResourceGroup -f MyFleet -n MyUpdateRun --upgrade-type Full --kubernetes-version 1.25.0 --node-image-selection Latest --stages ./test/stages.json
 
                 The following JSON structure represents example contents of the parameter '--stages ./test/stages.json'.
-                A stages array is composed of one or more stages, each containing one or more groups.
+                A stages array is composed of one or more stages, each containing one or more groups and/or a memberSelector.
                 Each group contains the 'name' property, which represents the group to which a cluster belongs (see 'az fleet member create --help').
+                Stages and groups can optionally include a 'memberSelector' to filter members by label. A 'memberSelector' contains a 'byLabel' property with a Kubernetes-style label selector string (e.g., "env=production"). When set on a group, it overrides name-based matching.
+                Stage memberSelector: pre-filters members for the entire stage. Only matching members are candidates for group-level matching.
+                Group memberSelector: selects members by label instead of matching by FleetMember.Group name. When set, overrides name-based matching.
                 Stages have an optional 'afterStageWaitInSeconds' integer property, acting as a delay between stage execution.
                 Stages and groups have an optional 'maxConcurrency' string property that sets the maximum number of concurrent upgrades allowed. It acts as a ceiling (not a quota)—actual concurrency may be lower due to other limits or member conditions. Minimum is 1.
                 Stage maxConcurrency: applies across all groups in the stage (total concurrent upgrades for the whole stage).
@@ -221,6 +224,7 @@ helps['fleet updaterun create'] = """
                   "stages": [
                     {
                       "name": "stage1",
+                      "memberSelector": { "byLabel": "env=staging" },
                       "maxConcurrency": "7%",
                       "beforeGates": [
                         {
@@ -237,6 +241,7 @@ helps['fleet updaterun create'] = """
                       "groups": [
                         {
                           "name": "group-a1",
+                          "memberSelector": { "byLabel": "tier=frontend" },
                           "maxConcurrency": "100%",
                           "beforeGates": [
                             {
@@ -253,6 +258,7 @@ helps['fleet updaterun create'] = """
                         },
                         {
                           "name": "group-a2",
+                          "memberSelector": { "byLabel": "tier=backend" },
                           "maxConcurrency": "1",
                           "beforeGates": [
                             {
@@ -288,6 +294,7 @@ helps['fleet updaterun create'] = """
                     },
                     {
                       "name": "stage2",
+                      "memberSelector": { "byLabel": "env=production" },
                       "groups": [
                         {
                           "name": "group-b1"

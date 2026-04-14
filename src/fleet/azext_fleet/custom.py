@@ -601,27 +601,38 @@ def get_update_run_strategy(cmd, operation_group, stages):
         resource_type=CUSTOM_MGMT_FLEET,
         operation_group=operation_group
     )
+    member_selector_model = cmd.get_models(
+        "MemberSelector",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group=operation_group
+    )
 
     update_stages = []
 
     for stage in data["stages"]:
         update_groups = []
         for group in stage["groups"]:
+            group_member_selector = None
+            raw_group_selector = group.get("memberSelector")
+            if raw_group_selector:
+                group_member_selector = member_selector_model(by_label=raw_group_selector.get("byLabel"))
             update_groups.append(update_group_model(
                 name=group["name"],
                 max_concurrency=group.get("maxConcurrency"),
-                before_gates=group.get("beforeGates", []),
-                after_gates=group.get("afterGates", []),
+                member_selector=group_member_selector,
             ))
 
         after_wait = stage.get("afterStageWaitInSeconds") or 0
 
+        stage_member_selector = None
+        raw_stage_selector = stage.get("memberSelector")
+        if raw_stage_selector:
+            stage_member_selector = member_selector_model(by_label=raw_stage_selector.get("byLabel"))
         update_stages.append(update_stage_model(
             name=stage["name"],
             groups=update_groups,
+            member_selector=stage_member_selector,
             max_concurrency=stage.get("maxConcurrency"),
-            before_gates=stage.get("beforeGates", []),
-            after_gates=stage.get("afterGates", []),
             after_stage_wait_in_seconds=after_wait
         ))
 

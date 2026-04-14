@@ -3,6 +3,9 @@
     {
       "name": "stage1",
       "maxConcurrency": "7",
+      "memberSelector": {
+        "byLabel": "team=fleet"
+      },
       "beforeGates": [
         {
           "displayName": "stage before gate",
@@ -19,6 +22,9 @@
         {
           "name": "group1",
           "maxConcurrency": "100%",
+          "memberSelector": {
+            "byLabel": "team=fleet"
+          },
           "beforeGates": [
             {
               "displayName": "group before gate",
