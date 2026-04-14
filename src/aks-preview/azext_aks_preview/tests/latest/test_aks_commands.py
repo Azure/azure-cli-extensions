@@ -18972,6 +18972,23 @@ spec:
             ],
         )
 
+        # Update unrelated acns field
+        update_cmd = (
+            "aks update --resource-group={resource_group} --name={name} "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingPerformancePreview,"
+            "AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingL7PolicyPreview "
+            "--enable-acns --acns-advanced-networkpolicies L7"
+        )
+
+        self.cmd(
+            update_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.advancedNetworking.performance.accelerationMode", "None"),
+                self.check("networkProfile.advancedNetworking.security.advancedNetworkPolicies", "L7")
+            ],
+        )
+
         # Update acceleration mode to None
         update_cmd = (
             "aks update --resource-group={resource_group} --name={name} "
