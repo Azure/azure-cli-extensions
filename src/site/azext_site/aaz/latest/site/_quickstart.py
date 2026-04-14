@@ -246,9 +246,9 @@ def _summarize_deployment_ops(ops: list[dict] | None) -> tuple[str | None, str |
 
 
 def _create_resource_group(cli, rg_name: str, location_arg: str | None) -> str:
-    create_loc = (location_arg or "eastus2").strip()
+    create_loc = (location_arg or "eastus").strip()
     if not create_loc:
-        create_loc = "eastus2"
+        create_loc = "eastus"
 
     create_args = [
         "group", "create",
@@ -323,7 +323,7 @@ class Quickstart(AAZCommand):
 
         _args_schema.location = AAZResourceLocationArg(
             options=["-l", "--location"],
-            help="Location. Used only when creating the default resource group (default: eastus2).",
+            help="Location. Used only when creating the default resource group (default: eastus).",
         )
 
         _args_schema.config_name = AAZStrArg(
