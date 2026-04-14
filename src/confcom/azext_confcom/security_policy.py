@@ -41,7 +41,8 @@ from azext_confcom.template_util import (case_insensitive_dict_get,
                                          process_fragment_imports,
                                          process_mounts,
                                          process_mounts_from_config,
-                                         readable_diff)
+                                         readable_diff,
+                                         find_value_in_params_and_vars)
 from azext_confcom.lib.images import get_image_platform
 from azext_confcom.lib.defaults import get_debug_mode_exec_procs
 from knack.log import get_logger
@@ -714,7 +715,8 @@ def load_policy_from_arm_template_str(
     get_values_for_params(input_parameter_json, all_params)
 
     AciPolicy.all_params = all_params
-    AciPolicy.all_vars = case_insensitive_dict_get(input_arm_json, config.ACI_FIELD_TEMPLATE_VARIABLES) or {}
+    all_vars = case_insensitive_dict_get(input_arm_json, config.ACI_FIELD_TEMPLATE_VARIABLES) or {}
+    AciPolicy.all_vars = all_vars
 
     container_groups = []
 
@@ -819,7 +821,12 @@ def load_policy_from_arm_template_str(
             # Use platform from template if specified, otherwise try to auto-detect from image
             platform = case_insensitive_dict_get(image_properties, "platform")
             if not platform:
-                platform = get_image_platform(image_name)
+                # By this point, we have not substituted any parameters or
+                # variables yet, but in order to get the image we have to know
+                # the final image name.  So resolve it here temporarily (later
+                # on, the constructor of AciPolicy will resolve it again)
+                image_name_with_param_substituted = find_value_in_params_and_vars(all_params, all_vars, image_name)
+                platform = get_image_platform(image_name_with_param_substituted)
 
             containers.append(
                 {
