@@ -204,12 +204,6 @@ def target_prepare(
 
     print_success(f"Cluster '{cluster_name}' is ready for Workload Orchestration")
     print_detail("Custom Location ID", cl_id)
-    print_detail("Extended Location JSON", json.dumps(extended_location))
-    print()
-    print("  Next steps:")
-    print("    1. Create hierarchy:  az workload-orchestration hierarchy create ...")
-    print("    2. Create target:     az workload-orchestration target create "
-          "--extended-location '@extended-location.json' ...")
     print()
 
     return {
