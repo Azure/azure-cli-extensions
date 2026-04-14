@@ -19,7 +19,6 @@ from azure.cli.core.azclierror import AzureConnectionError
 from azure.cli.core.azclierror import ForbiddenError
 from azure.cli.core._profile import Profile
 from azure.core.exceptions import ResourceNotFoundError as ComputeClientResourceNotFoundError
-from azext_serialconsole._client_factory import _compute_client_factory
 from azext_serialconsole._client_factory import cf_serialconsole
 from azext_serialconsole._client_factory import cf_serial_port
 
@@ -680,21 +679,27 @@ def disable_serialconsole(cmd):
 
 
 def get_region_from_storage_account(cli_ctx, resource_group_name, vm_vmss_name, vmss_instanceid):
+    from azure.cli.command_modules.vm.operations.vmss_vms import VMSSVMSShow
+    from azure.cli.command_modules.vm.operations.vm import VMShow
+    from azure.cli.command_modules.vm.operations.vmss import VMSSShow
     from azext_serialconsole._client_factory import storage_client_factory
     from knack.log import get_logger
 
     logger = get_logger(__name__)
-    result = None
     storage_account_region = None
-    client = _compute_client_factory(cli_ctx)
     scf = storage_client_factory(cli_ctx)
 
     if vmss_instanceid:
-        result_data = client.virtual_machine_scale_set_vms.get_instance_view(
-            resource_group_name, vm_vmss_name, vmss_instanceid)
+        command_args = {
+            'instance_id': vmss_instanceid,
+            'resource_group': resource_group_name,
+            'vm_scale_set_name': vm_vmss_name,
+            'expand': 'instanceView'
+        }
+        result_data = VMSSVMSShow(cli_ctx=cli_ctx)(command_args=command_args)
         result = result_data
 
-        if result_data.boot_diagnostics is None:
+        if result_data.get('bootDiagnostics') is None:
             error_message = "Azure Serial Console requires boot diagnostics to be enabled."
             recommendation = ('Use "az vmss update --name MyScaleSet --resource-group MyResourceGroup --set '
                               'virtualMachineProfile.diagnosticsProfile="{\\"bootDiagnostics\\": {\\"Enabled\\" : '
@@ -704,40 +709,44 @@ def get_region_from_storage_account(cli_ctx, resource_group_name, vm_vmss_name, 
                               'MyScaleSet -g MyResourceGroup --instance-ids *".')
             raise AzureConnectionError(
                 error_message, recommendation=recommendation)
-        if result.boot_diagnostics is not None:
-            logger.debug(result.boot_diagnostics)
-            if result.boot_diagnostics.console_screenshot_blob_uri is not None:
-                storage_account_url = result.boot_diagnostics.console_screenshot_blob_uri
+        if result.get('bootDiagnostics') is not None:
+            logger.debug(result.get('bootDiagnostics'))
+            if result.get('bootDiagnostics', {}).get('consoleScreenshotBlobUri') is not None:
+                storage_account_url = result['bootDiagnostics']['consoleScreenshotBlobUri']
                 storage_account_region = get_storage_account_info(storage_account_url, scf)
     else:
         try:
-            result_data = client.virtual_machines.get(
-                resource_group_name, vm_vmss_name, expand='instanceView')
+            command_args = {
+                'resource_group': resource_group_name,
+                'vm_name': vm_vmss_name,
+                'expand': 'instanceView'
+            }
+            result_data = VMShow(cli_ctx=cli_ctx)(command_args=command_args)
             result = result_data
         except ComputeClientResourceNotFoundError as e:
             try:
-                client.virtual_machine_scale_sets.get(resource_group_name, vm_vmss_name)
+                command_args = {
+                    'resource_group': resource_group_name,
+                    'vm_scale_set_name': vm_vmss_name
+                }
+                VMSSShow(cli_ctx=cli_ctx)(command_args=command_args)
             except ComputeClientResourceNotFoundError:
                 raise e from e
             error_message = e.message
             recommendation = ("We found that you specified a Virtual Machine Scale Set and not a VM. "
                               "Use the --instance-id parameter to select the VMSS instance you want to connect to.")
-            raise ResourceNotFoundError(
-                error_message, recommendation=recommendation) from e
+            raise ResourceNotFoundError(error_message, recommendation=recommendation) from e
 
-        if (result.diagnostics_profile is None or
-                result.diagnostics_profile.boot_diagnostics is None or
-                not result.diagnostics_profile.boot_diagnostics.enabled):
+        if (result.get('diagnosticsProfile', {}).get('bootDiagnostics') is None or
+                not result['diagnosticsProfile']['bootDiagnostics'].get('enabled')):
             error_message = "Azure Serial Console requires boot diagnostics to be enabled."
             recommendation = ('Use "az vm boot-diagnostics enable --name MyVM --resource-group MyResourceGroup" '
                               'to enable boot diagnostics. You can specify a custom storage account with the '
                               'parameter "--storage https://mystor.blob.windows.net/".')
-            raise AzureConnectionError(
-                error_message, recommendation=recommendation)
-        if result.diagnostics_profile is not None:
-            if result.diagnostics_profile.boot_diagnostics is not None:
-                storage_account_url = result.diagnostics_profile.boot_diagnostics.storage_uri
-                storage_account_region = get_storage_account_info(storage_account_url, scf)
+            raise AzureConnectionError(error_message, recommendation=recommendation)
+        if result.get('diagnosticsProfile', {}).get('bootDiagnostics') is not None:
+            storage_account_url = result['diagnosticsProfile']['bootDiagnostics'].get('storageUri')
+            storage_account_region = get_storage_account_info(storage_account_url, scf)
 
     return result, storage_account_region
 
