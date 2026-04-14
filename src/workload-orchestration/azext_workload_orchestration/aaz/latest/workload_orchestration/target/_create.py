@@ -150,7 +150,7 @@ class Create(AAZCommand):
             options=["--release-train"],
             arg_group="Onboarding",
             help="Release train for WO extension (used with --init-extended-location). "
-                 "Default: 'dev'. Options: dev, preview, stable.",
+                 "Default: 'stable'. Options: dev, preview, stable.",
         )
 
         capabilities = cls._args_schema.capabilities

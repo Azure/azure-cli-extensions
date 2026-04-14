@@ -5,9 +5,8 @@
 
 """Unit tests for service group link helper."""
 
-import json
 import unittest
-from unittest.mock import patch, MagicMock, call
+from unittest.mock import patch, MagicMock
 
 from azure.cli.core.azclierror import CLIInternalError
 

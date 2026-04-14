@@ -6,7 +6,7 @@
 """Hierarchy create command - creates a hierarchy level in a single command.
 
 Wraps 4-6 operations into one:
-  0. Auto-create Context + update hierarchies/capabilities (if needed)
+  0. Auto-create Context (if needed)
   1. Create Service Group
   2. Create Site (in Service Group)
   3. Create Configuration

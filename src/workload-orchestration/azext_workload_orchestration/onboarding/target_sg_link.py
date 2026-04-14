@@ -85,13 +85,15 @@ def link_target_to_service_group(cmd, target_id, service_group_name):
 
         # PUT target (update to refresh hierarchy)
         if target_data and isinstance(target_data, dict):
-            # Strip read-only fields
+            # Strip read-only fields, preserve writable top-level fields
             body = {
                 "location": target_data.get("location", ""),
                 "properties": target_data.get("properties", {}),
             }
             if "extendedLocation" in target_data:
                 body["extendedLocation"] = target_data["extendedLocation"]
+            if "tags" in target_data:
+                body["tags"] = target_data["tags"]
 
             invoke_cli_command(cmd, [
                 "rest",

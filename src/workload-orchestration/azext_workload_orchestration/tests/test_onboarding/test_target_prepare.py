@@ -6,7 +6,7 @@
 """Unit tests for target prepare command."""
 
 import unittest
-from unittest.mock import patch, MagicMock, PropertyMock
+from unittest.mock import patch, MagicMock
 
 from azure.cli.core.azclierror import CLIInternalError, ValidationError
 
