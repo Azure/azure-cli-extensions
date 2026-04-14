@@ -1440,14 +1440,6 @@ helps['aks update'] = """
         - name: --disable-application-load-balancer
           type: bool
           short-summary: Disable Application Load Balancer (Application Gateway for Containers) addon.
-        - name: --control-plane-scaling-size
-          type: string
-          short-summary: (PREVIEW) The control plane scaling size for the cluster.
-          long-summary: |
-              Provides scaled and performance-guaranteed control plane capacity for AKS clusters.
-              Enables customers to select a control plane scaling size that delivers higher API server throughput,
-              increased etcd capacity, and faster pod scheduling rates. Available values are 'H2', 'H4', and 'H8'.
-              Requires Kubernetes version >= 1.33.0 and Azure CNI Overlay networking.
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
@@ -1531,8 +1523,6 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-opentelemetry-logs --opentelemetry-logs-port 4317
       - name: Disable OpenTelemetry metrics collection on an existing cluster
         text: az aks update -g MyResourceGroup -n MyManagedCluster --disable-opentelemetry-metrics
-      - name: Update a kubernetes cluster's control plane scaling size.
-        text: az aks update -g MyResourceGroup -n MyManagedCluster --control-plane-scaling-size H8
       - name: Disable OpenTelemetry logs collection on an existing cluster
         text: az aks update -g MyResourceGroup -n MyManagedCluster --disable-opentelemetry-logs
 """

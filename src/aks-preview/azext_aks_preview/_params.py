@@ -1786,13 +1786,6 @@ def load_arguments(self, _):
             is_preview=True,
             help="Disable Application Load Balancer (Application Gateway for Containers)."
         )
-        c.argument(
-            "control_plane_scaling_size",
-            arg_type=get_enum_type(["H2", "H4", "H8"]),
-            is_preview=True,
-            help="The control plane scaling size. Provides scaled and performance-guaranteed control plane capacity. "
-                 "Available values are 'H2', 'H4', and 'H8'.",
-        )
 
     with self.argument_context("aks upgrade") as c:
         c.argument("kubernetes_version", completer=get_k8s_upgrades_completion_list)
