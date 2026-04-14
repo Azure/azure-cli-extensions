@@ -65,8 +65,6 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
             options_list=['--kube-context'],
             help='Kubernetes context to use. Defaults to current context.',
         )
-
-
         c.argument(
             'skip_site_reference',
             options_list=['--skip-site-reference'],
@@ -75,63 +73,49 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
         )
 
     with self.argument_context('workload-orchestration target init') as c:
-        c.argument(
-            'cluster_name',
-            options_list=['--cluster-name', '-c'],
-            help='Name of the Arc-connected Kubernetes cluster.',
-            required=True,
-        )
-        c.argument(
-            'resource_group',
-            options_list=['--resource-group', '-g'],
-            help='Resource group of the Arc-connected cluster.',
-            required=True,
-        )
-        c.argument(
-            'location',
-            options_list=['--location', '-l'],
-            help='Azure region for the custom location (e.g., eastus2euap).',
-            required=True,
-        )
-        c.argument(
-            'release_train',
-            options_list=['--release-train'],
-            help='Extension release train. Default: stable.',
-        )
-        c.argument(
-            'extension_version',
-            options_list=['--extension-version'],
-            help='Specific WO extension version to install.',
-        )
-        c.argument(
-            'extension_name',
-            options_list=['--extension-name'],
-            help='Name for the WO extension resource. Default: workload-orchestration.',
-        )
-        c.argument(
-            'custom_location_name',
-            options_list=['--custom-location-name'],
-            help='Name for the custom location. Default: <cluster-name>-cl.',
-        )
-        c.argument(
-            'skip_cert_manager',
-            options_list=['--skip-cert-manager'],
-            action='store_true',
-            help='Skip cert-manager installation.',
-        )
-        c.argument(
-            'skip_trust_manager',
-            options_list=['--skip-trust-manager'],
-            action='store_true',
-            help='Skip trust-manager installation.',
-        )
-        c.argument(
-            'kube_config',
-            options_list=['--kube-config'],
-            help='Path to kubeconfig file. Defaults to ~/.kube/config.',
-        )
-        c.argument(
-            'kube_context',
-            options_list=['--kube-context'],
-            help='Kubernetes context to use. Defaults to current context.',
-        )
+        c.argument('cluster_name', options_list=['--cluster-name', '-c'],
+                   help='Name of the Arc-connected Kubernetes cluster.', required=True)
+        c.argument('resource_group', options_list=['--resource-group', '-g'],
+                   help='Resource group of the Arc-connected cluster.', required=True)
+        c.argument('location', options_list=['--location', '-l'],
+                   help='Azure region for the custom location (e.g., eastus2euap).', required=True)
+        c.argument('release_train', options_list=['--release-train'],
+                   help='Extension release train. Default: stable.')
+        c.argument('extension_version', options_list=['--extension-version'],
+                   help='Specific WO extension version to install.')
+        c.argument('extension_name', options_list=['--extension-name'],
+                   help='Name for the WO extension resource. Default: workload-orchestration.')
+        c.argument('custom_location_name', options_list=['--custom-location-name'],
+                   help='Name for the custom location. Default: <cluster-name>-cl.')
+        c.argument('skip_cert_manager', options_list=['--skip-cert-manager'],
+                   action='store_true', help='Skip cert-manager installation.')
+        c.argument('skip_trust_manager', options_list=['--skip-trust-manager'],
+                   action='store_true', help='Skip trust-manager installation.')
+        c.argument('kube_config', options_list=['--kube-config'],
+                   help='Path to kubeconfig file. Defaults to ~/.kube/config.')
+        c.argument('kube_context', options_list=['--kube-context'],
+                   help='Kubernetes context to use. Defaults to current context.')
+
+    with self.argument_context('workload-orchestration target deploy') as c:
+        c.argument('resource_group', options_list=['--resource-group', '-g'],
+                   help='Resource group of the target.', required=True)
+        c.argument('target_name', options_list=['--target-name', '-n'],
+                   help='Name of the target to deploy to.', required=True)
+        c.argument('solution_template_version_id', options_list=['--solution-template-version-id'],
+                   help='ARM resource ID of the solution template version to deploy.', required=True)
+        c.argument('solution_instance_name', options_list=['--solution-instance-name'],
+                   help='Optional solution instance name for the review step.')
+        c.argument('skip_review', options_list=['--skip-review'],
+                   action='store_true', help='Skip the review step (use when already reviewed).')
+        c.argument('skip_install', options_list=['--skip-install'],
+                   action='store_true', help='Skip the install step (publish only).')
+        c.argument('config_file', options_list=['--config-file'],
+                   help='YAML file with configuration values to set before review.')
+        c.argument('config_hierarchy_id', options_list=['--config-hierarchy-id'],
+                   help='ARM ID of hierarchy entity for config set. Defaults to target ARM ID.')
+        c.argument('config_template_rg', options_list=['--config-template-rg'],
+                   help='Resource group of the configuration template (used with --config-file).')
+        c.argument('config_template_name', options_list=['--config-template-name'],
+                   help='Name of the configuration template (used with --config-file).')
+        c.argument('config_template_version', options_list=['--config-template-version'],
+                   help='Version of the configuration template (used with --config-file).')

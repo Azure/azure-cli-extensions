@@ -10,6 +10,7 @@ into single-command operations to reduce onboarding steps.
 """
 
 from azext_workload_orchestration.onboarding.target_prepare import target_prepare
+from azext_workload_orchestration.onboarding.target_deploy import target_deploy as _target_deploy
 
 
 def target_init(
@@ -44,4 +45,35 @@ def target_init(
     return result
 
 
-__all__ = ['target_prepare', 'target_init']
+def target_deploy(
+    cmd,
+    resource_group,
+    target_name,
+    solution_template_version_id,
+    solution_instance_name=None,
+    skip_review=False,
+    skip_install=False,
+    config_file=None,
+    config_hierarchy_id=None,
+    config_template_rg=None,
+    config_template_name=None,
+    config_template_version=None,
+):
+    """Deploy a solution to a target: review → publish → install."""
+    return _target_deploy(
+        cmd=cmd,
+        resource_group=resource_group,
+        target_name=target_name,
+        solution_template_version_id=solution_template_version_id,
+        solution_instance_name=solution_instance_name,
+        skip_review=skip_review,
+        skip_install=skip_install,
+        config_file=config_file,
+        config_hierarchy_id=config_hierarchy_id,
+        config_template_rg=config_template_rg,
+        config_template_name=config_template_name,
+        config_template_version=config_template_version,
+    )
+
+
+__all__ = ['target_prepare', 'target_init', 'target_deploy']

@@ -75,4 +75,35 @@ examples:
     text: az workload-orchestration target init -c my-cluster -g my-rg -l eastus2euap --skip-cert-manager
 """
 
+helps['workload-orchestration target deploy'] = """
+type: command
+short-summary: Deploy a solution to a target in one step (review → publish → install).
+long-summary: |
+    Chains the three deployment steps into a single command:
+    1. Review: validates the solution template version against the target
+    2. Publish: publishes the reviewed solution version
+    3. Install: installs the published solution on the target
+
+    Optionally set configuration values from a YAML file before review
+    using --config-file with the config template parameters.
+
+    Use --skip-review if the solution is already reviewed, or
+    --skip-install to publish without installing.
+examples:
+  - name: Deploy a solution template version to a target
+    text: >
+        az workload-orchestration target deploy -g my-rg -n my-target
+        --solution-template-version-id /subscriptions/sub/resourceGroups/rg/providers/Microsoft.Edge/solutionTemplates/tmpl/versions/1.0.0
+  - name: Deploy with configuration file
+    text: >
+        az workload-orchestration target deploy -g my-rg -n my-target
+        --solution-template-version-id /subscriptions/sub/resourceGroups/rg/providers/Microsoft.Edge/solutionTemplates/tmpl/versions/1.0.0
+        --config-file values.yaml --config-template-rg rg --config-template-name tmpl --config-template-version 1.0.0
+  - name: Skip review (already reviewed)
+    text: >
+        az workload-orchestration target deploy -g my-rg -n my-target
+        --solution-template-version-id /subscriptions/sub/resourceGroups/rg/providers/Microsoft.Edge/solutionVersions/v1
+        --skip-review
+"""
+
 
