@@ -22709,7 +22709,7 @@ spec:
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="centraluseuap"
+        random_name_length=17, name_prefix="clitest", location="westus2"
     )
     def test_aks_create_and_update_with_gateway_api_and_azureservicemesh(
         self, resource_group, resource_group_location
@@ -22774,7 +22774,7 @@ spec:
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="centraluseuap"
+        random_name_length=17, name_prefix="clitest", location="westus2"
     )
     def test_aks_create_and_update_with_gateway_api_without_azureservicemesh(
         self, resource_group, resource_group_location
