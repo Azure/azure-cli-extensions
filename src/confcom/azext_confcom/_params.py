@@ -115,6 +115,14 @@ def load_arguments(self, _):
             validator=validate_aci_source
         )
         c.argument(
+            "platform",
+            options_list=("--platform",),
+            required=False,
+            default="linux/amd64",
+            help="Target platform for policy generation. Defaults to linux/amd64.",
+            choices=["linux/amd64", "windows/amd64"],
+        )
+        c.argument(
             "tar_mapping_location",
             options_list=("--tar",),
             required=False,

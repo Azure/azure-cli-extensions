@@ -42,6 +42,7 @@ def acipolicygen_confcom(
     virtual_node_yaml_path: str,
     infrastructure_svn: str,
     tar_mapping_location: str,
+    platform: str = "linux/amd64",
     container_definitions: Optional[list] = None,
     approve_wildcards: str = False,
     outraw: bool = False,
@@ -120,6 +121,7 @@ def acipolicygen_confcom(
         if output_type == security_policy.OutputType.DEFAULT
         else "clear text",
     )
+    logger.warning("Using platform: %s", platform)
     # error checking for making sure an input is provided is above
     if input_path:
         container_group_policies = security_policy.load_policy_from_json_file(
@@ -128,6 +130,7 @@ def acipolicygen_confcom(
             infrastructure_svn=infrastructure_svn,
             disable_stdio=(not stdio_enabled),
             exclude_default_fragments=exclude_default_fragments,
+            platform=platform,
         )
     elif arm_template:
         container_group_policies = security_policy.load_policy_from_arm_template_file(
@@ -140,10 +143,12 @@ def acipolicygen_confcom(
             diff_mode=diff,
             rego_imports=fragments_list,
             exclude_default_fragments=exclude_default_fragments,
+            platform=platform,
         )
     elif image_name:
         container_group_policies = security_policy.load_policy_from_image_name(
-            image_name, debug_mode=debug_mode, disable_stdio=(not stdio_enabled)
+            image_name, debug_mode=debug_mode, disable_stdio=(not stdio_enabled),
+            platform=platform,
         )
     elif virtual_node_yaml_path:
         container_group_policies = security_policy.load_policy_from_virtual_node_yaml_file(
@@ -155,6 +160,7 @@ def acipolicygen_confcom(
             rego_imports=fragments_list,
             exclude_default_fragments=exclude_default_fragments,
             infrastructure_svn=infrastructure_svn,
+            platform=platform,
         )
     elif container_definitions:
         container_group_policies = AciPolicy(

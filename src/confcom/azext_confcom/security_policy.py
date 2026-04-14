@@ -41,9 +41,8 @@ from azext_confcom.template_util import (case_insensitive_dict_get,
                                          process_fragment_imports,
                                          process_mounts,
                                          process_mounts_from_config,
-                                         readable_diff,
-                                         find_value_in_params_and_vars)
-from azext_confcom.lib.images import get_image_platform
+                                         readable_diff)
+from azext_confcom.lib.images import get_image_platform  # pylint: disable=unused-import
 from azext_confcom.lib.defaults import get_debug_mode_exec_procs
 from knack.log import get_logger
 from tqdm import tqdm
@@ -281,7 +280,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         if len(policy_ids) == 0:
             eprint("No sidecar images found in the policy.")
 
-        policy = load_policy_from_image_name(policy_ids)
+        policy = load_policy_from_image_name(policy_ids, platform=self._platform or "linux/amd64")
 
         policy.populate_policy_content_for_all_images(individual_image=True)
         policy_str = self.get_serialized_output(
@@ -678,6 +677,7 @@ def load_policy_from_arm_template_str(
     rego_imports: Any = None,
     fragment_contents: Any = None,
     exclude_default_fragments: bool = False,
+    platform: str = "linux/amd64",
 ) -> List[AciPolicy]:
     """Function that converts ARM template string to an ACI Policy"""
     input_arm_json = os_util.load_json_from_str(template_data)
@@ -737,6 +737,18 @@ def load_policy_from_arm_template_str(
         container_group_properties = case_insensitive_dict_get(
             resource, config.ACI_FIELD_TEMPLATE_PROPERTIES
         )
+
+        # Validate that osType in the ARM template matches the specified platform
+        os_type = case_insensitive_dict_get(container_group_properties, "osType")
+        if os_type:
+            expected_os = "linux" if platform.startswith("linux") else "windows"
+            if os_type.lower() != expected_os:
+                eprint(
+                    f'ARM template osType "{os_type}" does not match '
+                    f'the supplied platform "{platform}". '
+                    f'Please use --platform to specify a consistent platform.'
+                )
+
         container_list = case_insensitive_dict_get(
             container_group_properties, config.ACI_FIELD_TEMPLATE_CONTAINERS
         )
@@ -818,16 +830,6 @@ def load_policy_from_arm_template_str(
             extract_probe(exec_processes, image_properties, config.ACI_FIELD_CONTAINERS_READINESS_PROBE)
             extract_probe(exec_processes, image_properties, config.ACI_FIELD_CONTAINERS_LIVENESS_PROBE)
 
-            # Use platform from template if specified, otherwise try to auto-detect from image
-            platform = case_insensitive_dict_get(image_properties, "platform")
-            if not platform:
-                # By this point, we have not substituted any parameters or
-                # variables yet, but in order to get the image we have to know
-                # the final image name.  So resolve it here temporarily (later
-                # on, the constructor of AciPolicy will resolve it again)
-                image_name_with_param_substituted = find_value_in_params_and_vars(all_params, all_vars, image_name)
-                platform = get_image_platform(image_name_with_param_substituted)
-
             containers.append(
                 {
                     config.ACI_FIELD_CONTAINERS_ID: image_name,
@@ -882,6 +884,7 @@ def load_policy_from_arm_template_file(
     rego_imports: list = None,
     fragment_contents: list = None,
     exclude_default_fragments: bool = False,
+    platform: str = "linux/amd64",
 ) -> List[AciPolicy]:
     """Utility function: generate policy object from given arm template and parameter file paths"""
     input_arm_json = os_util.load_str_from_file(template_path)
@@ -899,11 +902,13 @@ def load_policy_from_arm_template_file(
         diff_mode=diff_mode,
         fragment_contents=fragment_contents,
         exclude_default_fragments=exclude_default_fragments,
+        platform=platform,
     )
 
 
 def load_policy_from_image_name(
-    image_names: Union[List[str], str], debug_mode: bool = False, disable_stdio: bool = False
+    image_names: Union[List[str], str], debug_mode: bool = False, disable_stdio: bool = False,
+    platform: str = "linux/amd64",
 ) -> AciPolicy:
     # can either take a list of image names or a single image name
     if isinstance(image_names, str):
@@ -925,7 +930,7 @@ def load_policy_from_image_name(
         container[config.ACI_FIELD_CONTAINERS_CONTAINERIMAGE] = image_name
         container[config.ACI_FIELD_CONTAINERS_ALLOW_STDIO_ACCESS] = not disable_stdio
 
-        container["platform"] = get_image_platform(image_name)
+        container["platform"] = platform
 
         containers.append(container)
 
@@ -945,6 +950,7 @@ def load_policy_from_json_file(
     disable_stdio: bool = False,
     infrastructure_svn: str = None,
     exclude_default_fragments: bool = False,
+    platform: str = "linux/amd64",
 ) -> AciPolicy:
     json_content = os_util.load_str_from_file(data)
     return load_policy_from_json(
@@ -952,7 +958,8 @@ def load_policy_from_json_file(
         debug_mode=debug_mode,
         disable_stdio=disable_stdio,
         infrastructure_svn=infrastructure_svn,
-        exclude_default_fragments=exclude_default_fragments
+        exclude_default_fragments=exclude_default_fragments,
+        platform=platform,
     )
 
 
@@ -962,6 +969,7 @@ def load_policy_from_json(
     disable_stdio: bool = False,
     infrastructure_svn: str = None,
     exclude_default_fragments: bool = False,
+    platform: str = "linux/amd64",
 ) -> AciPolicy:
     output_containers = []
     # 1) Parse incoming string as JSON
@@ -1070,8 +1078,6 @@ def load_policy_from_json(
 
         envs += process_env_vars_from_config(container_properties)
 
-        platform = get_image_platform(image_name)
-
         output_containers.append(
             {
                 config.ACI_FIELD_CONTAINERS_ID: image_name,
@@ -1129,6 +1135,7 @@ def load_policy_from_virtual_node_yaml_file(
         exclude_default_fragments: bool = False,
         fragment_contents: list = None,
         infrastructure_svn: str = None,
+        platform: str = "linux/amd64",
 ) -> List[AciPolicy]:
     yaml_contents_str = os_util.load_str_from_file(virtual_node_yaml_path)
     return load_policy_from_virtual_node_yaml_str(
@@ -1141,6 +1148,7 @@ def load_policy_from_virtual_node_yaml_file(
         exclude_default_fragments=exclude_default_fragments,
         fragment_contents=fragment_contents,
         infrastructure_svn=infrastructure_svn,
+        platform=platform,
     )
 
 
@@ -1155,6 +1163,7 @@ def load_policy_from_virtual_node_yaml_str(
         exclude_default_fragments: bool = False,
         fragment_contents: Any = None,
         infrastructure_svn: str = None,
+        platform: str = "linux/amd64",
 ) -> List[AciPolicy]:
     """
     Load a virtual node yaml file and generate a policy object
@@ -1342,8 +1351,6 @@ def load_policy_from_virtual_node_yaml_str(
             # lifecycle hooks
             extract_lifecycle_hook(exec_processes, container, config.VIRTUAL_NODE_YAML_LIFECYCLE_POST_START)
             extract_lifecycle_hook(exec_processes, container, config.VIRTUAL_NODE_YAML_LIFECYCLE_PRE_STOP)
-
-            platform = get_image_platform(image)
 
             policy_containers.append(
                 {
