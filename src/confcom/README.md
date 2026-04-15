@@ -60,6 +60,21 @@ The `confcom` extension does not currently support:
 - Variables and Parameters with non-primitive data types e.g. objects and arrays
 - Nested and Linked ARM Templates
 
+## Platform Support (Linux and Windows Policies)
+
+The `--platform` parameter controls whether policies are generated for Linux (`linux/amd64`, the default) or Windows (`windows/amd64`) containers.
+
+**Docker Desktop must be running in the matching container mode** to produce correct layer hashes:
+
+| Policy Target | Docker Container Mode | Where to Run |
+|---|---|---|
+| Linux (`--platform linux/amd64`) | Linux containers | WSL or PowerShell |
+| Windows (`--platform windows/amd64`) | Windows containers | PowerShell only |
+
+- **Windows policies cannot be generated from WSL**, because Windows layer hashing (CIMfs) requires Windows APIs.
+- **Linux policies can be generated from either WSL or PowerShell**, as long as Docker Desktop is in Linux containers mode.
+- Running with the wrong Docker container mode may produce **incorrect layer hashes** that will cause the container to be rejected at runtime.
+
 ## Trademarks
 
 This project may contain trademarks or logos for projects, products, or services. Authorized use of Microsoft
