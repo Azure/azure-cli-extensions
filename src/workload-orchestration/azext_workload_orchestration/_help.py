@@ -75,35 +75,3 @@ examples:
     text: az workload-orchestration target init -c my-cluster -g my-rg -l eastus2euap --skip-cert-manager
 """
 
-helps['workload-orchestration target deploy'] = """
-type: command
-short-summary: Deploy a solution to a target in one step (review → publish → install).
-long-summary: |
-    Chains up to four steps into a single command:
-      0. Config Set (optional): applies configuration values from a YAML/JSON file
-      1. Review: validates the solution template version against the target
-      2. Publish: publishes the reviewed solution version
-      3. Install: installs the published solution on the target
-
-    You can identify the solution template by either:
-      - ARM ID: --solution-template-version-id `<full-ARM-id>`
-      - Friendly name: --solution-template-name `<name>` --solution-template-version `<ver>`
-
-    Use --config to set configuration values before the review step.
-examples:
-  - name: Deploy using friendly name
-    text: >
-        az workload-orchestration target deploy -g my-rg -n my-target
-        --solution-template-name sofi-hotmelt-template --solution-template-version 1.0.0
-  - name: Deploy using ARM ID
-    text: >
-        az workload-orchestration target deploy -g my-rg -n my-target
-        --solution-template-version-id /subscriptions/.../solutionTemplates/tmpl/versions/1.0.0
-  - name: Deploy with configuration file
-    text: >
-        az workload-orchestration target deploy -g my-rg -n my-target
-        --solution-template-name tmpl --solution-template-version 1.0.0
-        --config values.yaml --config-template-rg rg --config-template-name cfg --config-template-version 1.0.0
-"""
-
-

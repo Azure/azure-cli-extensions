@@ -9,15 +9,26 @@
 # flake8: noqa
 
 from azure.cli.core.aaz import *
+from azure.cli.core.azclierror import CLIInternalError, ValidationError
 
 
 @register_command(
     "workload-orchestration target install",
 )
 class Install(AAZCommand):
-    """Post request to install a solution
-    :example: Install a solution to a target
-        az workload-orchestration target install -g rg1 -n target1 --solution-version-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRG/providers/Microsoft.Edge/solutionVersions/mySolutionVersion
+    """Install a solution on a target.
+
+    When invoked with --solution-template-version-id (or --solution-template-name + --solution-template-version),
+    runs the full deployment chain: config-set (optional) → review → publish → install.
+
+    When invoked with --solution-version-id only (old flow), runs direct install.
+
+    :example: Full deploy (friendly name)
+        az workload-orchestration target install -g rg1 -n target1 --solution-template-name tmpl --solution-template-version 1.0.0
+    :example: Full deploy with config
+        az workload-orchestration target install -g rg1 -n target1 --solution-template-name tmpl --stv 1.0.0 --config values.yaml --config-template-rg rg1 --config-template-name tmpl --ct-version 1.0.0
+    :example: Direct install (old flow)
+        az workload-orchestration target install -g rg1 -n target1 --solution-version-id /subscriptions/.../solutionVersions/sv1
     """
 
     _aaz_info = {
@@ -41,8 +52,6 @@ class Install(AAZCommand):
             return cls._args_schema
         cls._args_schema = super()._build_arguments_schema(*args, **kwargs)
 
-        # define Arg Group ""
-
         _args_schema = cls._args_schema
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -59,31 +68,72 @@ class Install(AAZCommand):
             ),
         )
 
-        # define Arg Group "Body"
-        _args_schema = cls._args_schema
-        
-        # Remove these parameters (v2025_06_01)
-        # _args_schema.solution = AAZStrArg(
-        #     options=["--solution"],
-        #     arg_group="Body",
-        #     help="Solution Name",
-        #     required=True,
-        # )
-        # _args_schema.solution_version = AAZStrArg(
-        #     options=["--solution-version"],
-        #     arg_group="Body",
-        #     help="Solution Version Name",
-        #     required=True,
-        # )
-        
-        # Add new parameter (v2025_06_01)
+        # Old flow: direct install with solution-version-id
         _args_schema.solution_version_id = AAZStrArg(
             options=["--solution-version-id"],
             arg_group="Body",
-            help="Solution Version ARM Id",
-            required=True,
+            help="Solution Version ARM ID (direct install, skips review/publish).",
         )
-        
+
+        # New flow: full deploy chain
+        _args_schema.solution_template_version_id = AAZStrArg(
+            options=["--solution-template-version-id", "--stv-id"],
+            arg_group="Deploy",
+            help="Full ARM ID of the solution template version. Triggers full deploy chain.",
+        )
+        _args_schema.solution_template_name = AAZStrArg(
+            options=["--solution-template-name"],
+            arg_group="Deploy",
+            help="Name of the solution template. Use with --solution-template-version.",
+        )
+        _args_schema.solution_template_version = AAZStrArg(
+            options=["--solution-template-version", "--stv"],
+            arg_group="Deploy",
+            help="Version of the solution template (e.g., 1.0.0).",
+        )
+        _args_schema.solution_template_rg = AAZStrArg(
+            options=["--solution-template-rg"],
+            arg_group="Deploy",
+            help="Resource group of the solution template. Defaults to -g.",
+        )
+        _args_schema.solution_instance_name = AAZStrArg(
+            options=["--solution-instance-name"],
+            arg_group="Deploy",
+            help="Custom solution instance name for the review step.",
+        )
+        _args_schema.solution_dependencies = AAZStrArg(
+            options=["--solution-dependencies"],
+            arg_group="Deploy",
+            help="JSON string of solution dependency definitions.",
+        )
+
+        # Config set args
+        _args_schema.config = AAZStrArg(
+            options=["--config"],
+            arg_group="Config",
+            help="Path to YAML/JSON config file to set before review.",
+        )
+        _args_schema.config_hierarchy_id = AAZStrArg(
+            options=["--config-hierarchy-id"],
+            arg_group="Config",
+            help="ARM ID of hierarchy entity for config set. Defaults to target ARM ID.",
+        )
+        _args_schema.config_template_rg = AAZStrArg(
+            options=["--config-template-rg"],
+            arg_group="Config",
+            help="Resource group of the configuration template.",
+        )
+        _args_schema.config_template_name = AAZStrArg(
+            options=["--config-template-name"],
+            arg_group="Config",
+            help="Name of the configuration template.",
+        )
+        _args_schema.config_template_version = AAZStrArg(
+            options=["--config-template-version", "--ct-version"],
+            arg_group="Config",
+            help="Version of the configuration template.",
+        )
+
         return cls._args_schema
 
     def _execute_operations(self):
@@ -93,7 +143,59 @@ class Install(AAZCommand):
 
     @register_callback
     def pre_operations(self):
-        pass
+        """If template args provided, run config-set → review → publish before install."""
+        args = self.ctx.args
+        has_template = (
+            args.solution_template_version_id
+            or args.solution_template_name
+        )
+        has_direct = args.solution_version_id
+
+        # Validate: need either template args OR solution-version-id
+        if not has_template and not has_direct:
+            raise ValidationError(
+                "Provide either --solution-template-version-id (or --solution-template-name + "
+                "--solution-template-version) for full deploy, or --solution-version-id for direct install."
+            )
+
+        if has_template and has_direct:
+            raise ValidationError(
+                "Provide either solution template args (for full deploy) or "
+                "--solution-version-id (for direct install), not both."
+            )
+
+        if has_template:
+            self._run_deploy_chain()
+
+    def _run_deploy_chain(self):
+        """Run config-set → review → publish, then let the AAZ install handle the final step."""
+        from azext_workload_orchestration.onboarding.target_deploy import (
+            target_deploy_pre_install,
+        )
+        from azext_workload_orchestration.onboarding.utils import CmdProxy
+
+        args = self.ctx.args
+        cmd_proxy = CmdProxy(self.ctx.cli_ctx)
+
+        sv_id = target_deploy_pre_install(
+            cmd=cmd_proxy,
+            resource_group=str(args.resource_group),
+            target_name=str(args.target_name),
+            solution_template_version_id=str(args.solution_template_version_id) if args.solution_template_version_id else None,
+            solution_template_name=str(args.solution_template_name) if args.solution_template_name else None,
+            solution_template_version=str(args.solution_template_version) if args.solution_template_version else None,
+            solution_template_rg=str(args.solution_template_rg) if args.solution_template_rg else None,
+            solution_instance_name=str(args.solution_instance_name) if args.solution_instance_name else None,
+            solution_dependencies=str(args.solution_dependencies) if args.solution_dependencies else None,
+            config=str(args.config) if args.config else None,
+            config_hierarchy_id=str(args.config_hierarchy_id) if args.config_hierarchy_id else None,
+            config_template_rg=str(args.config_template_rg) if args.config_template_rg else None,
+            config_template_name=str(args.config_template_name) if args.config_template_name else None,
+            config_template_version=str(args.config_template_version) if args.config_template_version else None,
+        )
+
+        # Set the solution_version_id for the AAZ install step
+        args.solution_version_id = sv_id
 
     @register_callback
     def post_operations(self):

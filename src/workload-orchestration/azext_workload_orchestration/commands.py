@@ -15,4 +15,3 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
 
     with self.command_group('workload-orchestration target') as g:
         g.custom_command('init', 'target_init')
-        g.custom_command('deploy', 'target_deploy')

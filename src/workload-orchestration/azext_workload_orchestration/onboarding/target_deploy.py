@@ -59,10 +59,10 @@ def target_deploy(
     config_template_name=None,
     config_template_version=None,
 ):
-    """Deploy a solution to a target: review -> publish -> install.
+    """Deploy a solution to a target: config-set → review → publish → install.
 
-    Chains up to 4 steps (config-set + review + publish + install),
-    passing the solution-version-id from review into publish and install.
+    Standalone deploy command (kept for backward compat).
+    Prefer using `target install` with template args instead.
     """
     sub_id = _get_subscription_id(cmd)
 
@@ -138,6 +138,82 @@ def target_deploy(
         "status": "Succeeded",
         "resourceId": f"{base_url}",
     })
+
+
+def target_deploy_pre_install(
+    cmd,
+    resource_group,
+    target_name,
+    solution_template_version_id=None,
+    solution_template_name=None,
+    solution_template_version=None,
+    solution_template_rg=None,
+    solution_instance_name=None,
+    solution_dependencies=None,
+    config=None,
+    config_hierarchy_id=None,
+    config_template_rg=None,
+    config_template_name=None,
+    config_template_version=None,
+):
+    """Run config-set → review → publish and return the solution-version-id.
+
+    Called by the enhanced `target install` command before the AAZ install step.
+    Does NOT run install — that's handled by the AAZ LRO.
+    """
+    sub_id = _get_subscription_id(cmd)
+
+    solution_template_version_id = _resolve_template_version_id(
+        solution_template_version_id, solution_template_name,
+        solution_template_version, solution_template_rg,
+        resource_group, sub_id,
+    )
+
+    base_url = (
+        f"{ARM_RESOURCE}/subscriptions/{sub_id}"
+        f"/resourceGroups/{resource_group}"
+        f"/providers/Microsoft.Edge/targets/{target_name}"
+    )
+
+    do_config = config is not None
+    total = sum([do_config, True, True, True])  # config + review + publish + install(AAZ)
+    current = [0]
+
+    def _log(step_name, status=""):
+        if status:
+            print(f"[{current[0]}/{total}] {step_name}... {status}")
+        else:
+            current[0] += 1
+            print(f"[{current[0]}/{total}] {step_name}...")
+
+    # --- Step 0: Config set ---
+    if do_config:
+        _log("Config Set")
+        _handle_config_set(
+            cmd, config, config_hierarchy_id, config_template_rg,
+            config_template_name, config_template_version,
+            resource_group, target_name, sub_id,
+        )
+        _log("Config Set", "[OK]")
+
+    # --- Step 1: Review ---
+    _log("Review")
+    review_result = _do_review(
+        cmd, base_url, solution_template_version_id,
+        solution_instance_name, solution_dependencies,
+    )
+    sv_id = _extract_solution_version_id(review_result)
+    _log("Review", f"[OK] -> solutionVersionId: {_short_id(sv_id)}")
+
+    # --- Step 2: Publish ---
+    _log("Publish")
+    _do_publish(cmd, base_url, sv_id)
+    _log("Publish", "[OK]")
+
+    # Step 3 (Install) is handled by AAZ LRO
+    _log("Install")
+
+    return sv_id
 
 
 # ---------------------------------------------------------------------------

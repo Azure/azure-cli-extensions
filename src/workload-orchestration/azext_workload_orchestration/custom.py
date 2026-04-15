@@ -10,4 +10,3 @@ from azext_workload_orchestration.support import create_support_bundle  # pylint
 
 # Onboarding simplification commands
 from azext_workload_orchestration.onboarding import target_init  # pylint: disable=unused-import  # noqa: F401
-from azext_workload_orchestration.onboarding import target_deploy  # pylint: disable=unused-import  # noqa: F401
