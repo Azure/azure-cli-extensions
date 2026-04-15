@@ -30,13 +30,14 @@ from azext_fleet.constants import UPGRADE_TYPE_ERROR_MESSAGES
 from azext_fleet.constants import SUPPORTED_GATE_STATES_FILTERS
 from azext_fleet.constants import SUPPORTED_GATE_STATES_PATCH
 from azext_fleet.constants import FLEET_1P_APP_ID
+from azext_fleet.constants import POLLING_INTERVAL_SECS
 from azext_fleet.vendored_sdks.v2026_05_01_preview.models import (
     PropagationPolicy,
     PlacementProfile,
     PlacementV1ClusterResourcePlacementSpec,
+    PlacementV1ClusterUpdateStrategyReference,
     PlacementV1PlacementPolicy,
     PlacementV1RolloutStrategy,
-    PlacementV1ClusterUpdateStrategyReference,
     PropagationType,
     PlacementType
 )
@@ -197,7 +198,10 @@ def update_fleet(cmd,
         identity=managed_service_identity
     )
 
-    return sdk_no_wait(no_wait, client.begin_update, resource_group_name, name, fleet_patch, polling_interval=5)
+    return sdk_no_wait(
+        no_wait, client.begin_update, resource_group_name, name, fleet_patch,
+        polling_interval=POLLING_INTERVAL_SECS
+    )
 
 
 def show_fleet(cmd,  # pylint: disable=unused-argument
@@ -220,7 +224,7 @@ def delete_fleet(cmd,  # pylint: disable=unused-argument
                  resource_group_name,
                  name,
                  no_wait=False):
-    return sdk_no_wait(no_wait, client.begin_delete, resource_group_name, name, polling_interval=5)
+    return sdk_no_wait(no_wait, client.begin_delete, resource_group_name, name, polling_interval=POLLING_INTERVAL_SECS)
 
 
 def _convert_kubeconfig_to_azurecli(path):
@@ -857,6 +861,75 @@ def approve_gate(cmd,  # pylint: disable=unused-argument
     return _patch_gate(cmd, client, resource_group_name, fleet_name, gate_name, "Completed", no_wait)
 
 
+def _build_resource_quota(cmd, cpu_requests, cpu_limits, memory_requests, memory_limits):
+    if not (cpu_requests or cpu_limits or memory_requests or memory_limits):
+        return None
+    resource_quota_model = cmd.get_models(
+        "ResourceQuota",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="fleet_managed_namespaces"
+    )
+    resource_limits = {}
+    if cpu_requests:
+        resource_limits['cpu_request'] = cpu_requests
+    if memory_requests:
+        resource_limits['memory_request'] = memory_requests
+    if cpu_limits:
+        resource_limits['cpu_limit'] = cpu_limits
+    if memory_limits:
+        resource_limits['memory_limit'] = memory_limits
+    return resource_quota_model(**resource_limits)
+
+
+def _build_network_policy(cmd, ingress_policy, egress_policy):
+    if not (ingress_policy or egress_policy):
+        return None
+    network_policy_model = cmd.get_models(
+        "NetworkPolicy",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="fleet_managed_namespaces"
+    )
+    network_policies = {}
+    if ingress_policy:
+        network_policies['ingress'] = ingress_policy
+    if egress_policy:
+        network_policies['egress'] = egress_policy
+    return network_policy_model(**network_policies)
+
+
+def _build_propagation_policy(member_cluster_names, rollout_strategy=None, cluster_update_strategy=None):
+    rollout_strategy_obj = None
+    if rollout_strategy:
+        cluster_update_strategy_ref = None
+        if cluster_update_strategy:
+            cluster_update_strategy_ref = PlacementV1ClusterUpdateStrategyReference(name=cluster_update_strategy)
+        rollout_strategy_obj = PlacementV1RolloutStrategy(
+            type=rollout_strategy,
+            cluster_update_strategy=cluster_update_strategy_ref
+        )
+
+    if not (member_cluster_names or rollout_strategy):
+        return None
+
+    placement_policy = None
+    if member_cluster_names:
+        placement_policy = PlacementV1PlacementPolicy(
+            placement_type=PlacementType.pick_fixed,
+            cluster_names=member_cluster_names
+        )
+    placement_spec = PlacementV1ClusterResourcePlacementSpec(
+        policy=placement_policy,
+        rollout_strategy=rollout_strategy_obj
+    )
+    placement_profile = PlacementProfile(
+        default_cluster_resource_placement=placement_spec
+    )
+    return PropagationPolicy(
+        type=PropagationType.placement,
+        placement_profile=placement_profile
+    )
+
+
 def create_managed_namespace(cmd,
                              client,
                              resource_group_name,
@@ -896,80 +969,18 @@ def create_managed_namespace(cmd,
         operation_group="fleet_managed_namespaces"
     )
 
-    resource_quota_model = cmd.get_models(
-        "ResourceQuota",
-        resource_type=CUSTOM_MGMT_FLEET,
-        operation_group="fleet_managed_namespaces"
-    )
-
-    network_policy_model = cmd.get_models(
-        "NetworkPolicy",
-        resource_type=CUSTOM_MGMT_FLEET,
-        operation_group="fleet_managed_namespaces"
-    )
-
     fleet_client = cf_fleets(cmd.cli_ctx)
     fleet = fleet_client.get(resource_group_name, fleet_name)
-
-    default_resource_quota = None
-    if cpu_requests or cpu_limits or memory_requests or memory_limits:
-        resource_limits = {}
-        if cpu_requests:
-            resource_limits['cpu_request'] = cpu_requests
-        if memory_requests:
-            resource_limits['memory_request'] = memory_requests
-        if cpu_limits:
-            resource_limits['cpu_limit'] = cpu_limits
-        if memory_limits:
-            resource_limits['memory_limit'] = memory_limits
-        default_resource_quota = resource_quota_model(**resource_limits)
-
-    default_network_policy = None
-    if ingress_policy or egress_policy:
-        network_policies = {}
-        if ingress_policy:
-            network_policies['ingress'] = ingress_policy
-        if egress_policy:
-            network_policies['egress'] = egress_policy
-        default_network_policy = network_policy_model(**network_policies)
 
     managed_namespace_props = managed_namespace_properties_model(
         labels=labels,
         annotations=annotations,
-        default_resource_quota=default_resource_quota,
-        default_network_policy=default_network_policy
+        default_resource_quota=_build_resource_quota(cmd, cpu_requests, cpu_limits, memory_requests, memory_limits),
+        default_network_policy=_build_network_policy(cmd, ingress_policy, egress_policy)
     )
 
-    rollout_strategy_obj = None
-    if rollout_strategy:
-        cluster_update_strategy_ref = None
-        if cluster_update_strategy:
-            cluster_update_strategy_ref = PlacementV1ClusterUpdateStrategyReference(name=cluster_update_strategy)
-        rollout_strategy_obj = PlacementV1RolloutStrategy(
-            type=rollout_strategy,
-            cluster_update_strategy=cluster_update_strategy_ref
-        )
-
-    propagation_policy = None
-    if member_cluster_names or rollout_strategy:
-        placement_policy = None
-        if member_cluster_names:
-            placement_policy = PlacementV1PlacementPolicy(
-                placement_type=PlacementType.pick_fixed,
-                cluster_names=member_cluster_names
-            )
-        placement_spec = PlacementV1ClusterResourcePlacementSpec(
-            policy=placement_policy,
-            rollout_strategy=rollout_strategy_obj
-        )
-        placement_profile = PlacementProfile(
-            default_cluster_resource_placement=placement_spec
-        )
-        propagation_policy = PropagationPolicy(
-            type=PropagationType.placement,
-            placement_profile=placement_profile
-        )
-    else:
+    propagation_policy = _build_propagation_policy(member_cluster_names, rollout_strategy, cluster_update_strategy)
+    if not member_cluster_names:
         logger.warning("--member-cluster-names was empty; namespace will not be placed on any member clusters")
 
     fleet_managed_namespace_props = fleet_managed_namespace_properties_model(
@@ -992,7 +1003,7 @@ def create_managed_namespace(cmd,
         fleet_name,
         managed_namespace_name,
         managed_namespace,
-        polling_interval=5
+        polling_interval=POLLING_INTERVAL_SECS
     )
 
 
@@ -1001,23 +1012,70 @@ def update_managed_namespace(cmd,
                              resource_group_name,
                              fleet_name,
                              managed_namespace_name,
-                             tags=None):
-    """
-    Update a fleet managed namespace. Currently only supports updating tags.
-    """
+                             tags=None,
+                             labels=None,
+                             annotations=None,
+                             cpu_requests=None,
+                             cpu_limits=None,
+                             memory_requests=None,
+                             memory_limits=None,
+                             ingress_policy=None,
+                             egress_policy=None,
+                             delete_policy=None,
+                             adoption_policy=None,
+                             member_cluster_names=None,
+                             rollout_strategy=None,
+                             cluster_update_strategy=None,
+                             no_wait=False):
     fleet_managed_namespace_patch_model = cmd.get_models(
         "FleetManagedNamespacePatch",
         resource_type=CUSTOM_MGMT_FLEET,
         operation_group="fleet_managed_namespaces"
     )
 
-    patch = fleet_managed_namespace_patch_model(tags=tags)
+    fleet_managed_namespace_properties_patch_model = cmd.get_models(
+        "FleetManagedNamespacePropertiesPatch",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="fleet_managed_namespaces"
+    )
 
-    return client.begin_update(
+    default_resource_quota = _build_resource_quota(cmd, cpu_requests, cpu_limits, memory_requests, memory_limits)
+    default_network_policy = _build_network_policy(cmd, ingress_policy, egress_policy)
+
+    managed_namespace_props = None
+    if labels is not None or annotations is not None or default_resource_quota or default_network_policy:
+        managed_namespace_properties_model = cmd.get_models(
+            "ManagedNamespaceProperties",
+            resource_type=CUSTOM_MGMT_FLEET,
+            operation_group="fleet_managed_namespaces"
+        )
+        managed_namespace_props = managed_namespace_properties_model(
+            labels=labels,
+            annotations=annotations,
+            default_resource_quota=default_resource_quota,
+            default_network_policy=default_network_policy
+        )
+
+    properties_patch = fleet_managed_namespace_properties_patch_model(
+        managed_namespace_properties=managed_namespace_props,
+        adoption_policy=adoption_policy,
+        delete_policy=delete_policy,
+        propagation_policy=_build_propagation_policy(member_cluster_names, rollout_strategy, cluster_update_strategy)
+    )
+
+    patch = fleet_managed_namespace_patch_model(
+        tags=tags,
+        properties=properties_patch
+    )
+
+    return sdk_no_wait(
+        no_wait,
+        client.begin_update,
         resource_group_name=resource_group_name,
         fleet_name=fleet_name,
         managed_namespace_name=managed_namespace_name,
-        properties=patch
+        properties=patch,
+        polling_interval=POLLING_INTERVAL_SECS
     )
 
 
@@ -1033,7 +1091,7 @@ def delete_managed_namespace(cmd,  # pylint: disable=unused-argument
         resource_group_name,
         fleet_name,
         managed_namespace_name,
-        polling_interval=5
+        polling_interval=POLLING_INTERVAL_SECS
     )
 
 

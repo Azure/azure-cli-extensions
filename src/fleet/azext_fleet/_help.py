@@ -535,10 +535,20 @@ helps['fleet namespace update'] = """
     type: command
     short-summary: Updates a fleet managed namespace.
     examples:
-        - name: Updates a fleet managed namespace.
-          text: az fleet namespace update -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace
         - name: Update tags for a fleet managed namespace.
           text: az fleet namespace update -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --tags environment=production
+        - name: Update labels and annotations.
+          text: az fleet namespace update -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --labels env=production team=devops --annotations owner=team-a
+        - name: Update resource quotas.
+          text: az fleet namespace update -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --cpu-requests 1m --cpu-limits 4m --memory-requests 1Mi --memory-limits 4Mi
+        - name: Update network and lifecycle policies.
+          text: az fleet namespace update -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --ingress-policy AllowAll --egress-policy DenyAll --adoption-policy IfIdentical --delete-policy Delete
+        - name: Update member cluster placement.
+          text: az fleet namespace update -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --member-cluster-names team-01 team-02 team-03
+        - name: Update the rollout strategy to rolling update.
+          text: az fleet namespace update -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --rollout-strategy RollingUpdate
+        - name: Update the rollout strategy to external with a cluster update strategy.
+          text: az fleet namespace update -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --rollout-strategy External --cluster-update-strategy my-update-strategy
 """
 
 helps['fleet namespace list'] = """
