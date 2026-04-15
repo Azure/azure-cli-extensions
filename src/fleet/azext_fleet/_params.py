@@ -215,6 +215,19 @@ def load_arguments(self, _):
 
     with self.argument_context('fleet namespace update') as c:
         c.argument('tags', tags_type)
+        c.argument('labels', labels_type, help='Space-separated labels in key=value format. Example: env=production region=us-west team=devops')
+        c.argument('annotations', labels_type, help='Space-separated annotations in key=value format. Example: env=production region=us-west team=devops')
+        c.argument('cpu_requests', help='CPU requests for the namespace. Example: 1000m')
+        c.argument('cpu_limits', help='CPU limits for the namespace. Example: 1000m')
+        c.argument('memory_requests', help='Memory requests for the namespace. Example: 500Mi')
+        c.argument('memory_limits', help='Memory limits for the namespace. Example: 500Mi')
+        c.argument('ingress_policy', help='Ingress policy for the namespace', arg_type=get_enum_type(['DenyAll', 'AllowAll', 'AllowSameNamespace']))
+        c.argument('egress_policy', help='Egress policy for the namespace', arg_type=get_enum_type(['DenyAll', 'AllowAll', 'AllowSameNamespace']))
+        c.argument('delete_policy', help='Delete policy for the namespace.', arg_type=get_enum_type(['Keep', 'Delete']))
+        c.argument('adoption_policy', help='Adoption policy for the namespace.', arg_type=get_enum_type(['Always', 'IfIdentical', 'Never']))
+        c.argument('member_cluster_names', nargs='*', validator=validate_member_cluster_names, help='Space-separated list of member cluster names to apply the namespace to.')
+        c.argument('rollout_strategy', help='The rollout strategy type for the namespace.', arg_type=get_enum_type(['RollingUpdate', 'External']))
+        c.argument('cluster_update_strategy', help='Name of the cluster update strategy. Required when rollout strategy is External.')
 
     with self.argument_context('fleet namespace get-credentials') as c:
         c.argument('managed_namespace_name', options_list=['--name', '-n'], help='Specify the managed namespace name.')
