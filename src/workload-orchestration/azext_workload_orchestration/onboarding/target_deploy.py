@@ -50,7 +50,6 @@ def target_deploy(
     solution_template_version_id=None,
     solution_template_name=None,
     solution_template_version=None,
-    solution_template_rg=None,
     solution_instance_name=None,
     solution_dependencies=None,
     config=None,
@@ -61,15 +60,14 @@ def target_deploy(
 ):
     """Deploy a solution to a target: config-set → review → publish → install.
 
-    Standalone deploy command (kept for backward compat).
-    Prefer using `target install` with template args instead.
+    Standalone deploy function (used internally).
     """
     sub_id = _get_subscription_id(cmd)
 
     # --- Resolve solution-template-version-id ---
     solution_template_version_id = _resolve_template_version_id(
         solution_template_version_id, solution_template_name,
-        solution_template_version, solution_template_rg,
+        solution_template_version, None,
         resource_group, sub_id,
     )
 
@@ -147,7 +145,6 @@ def target_deploy_pre_install(
     solution_template_version_id=None,
     solution_template_name=None,
     solution_template_version=None,
-    solution_template_rg=None,
     solution_instance_name=None,
     solution_dependencies=None,
     config=None,
@@ -157,16 +154,14 @@ def target_deploy_pre_install(
     Called by the enhanced `target install` command before the AAZ install step.
     Does NOT run install — that's handled by the AAZ LRO.
 
-    Config-template args are auto-derived from solution template args:
-      config-template-rg   → solution_template_rg or resource_group
-      config-template-name → solution_template_name
-      config-template-version → solution_template_version
+    When using friendly name, the target's resource_group is used for the ST.
+    Config-template args are auto-derived from solution template args.
     """
     sub_id = _get_subscription_id(cmd)
 
     solution_template_version_id = _resolve_template_version_id(
         solution_template_version_id, solution_template_name,
-        solution_template_version, solution_template_rg,
+        solution_template_version, None,
         resource_group, sub_id,
     )
 
@@ -248,7 +243,7 @@ def _get_subscription_id(cmd):
 
 
 def _resolve_template_version_id(
-    arm_id, template_name, template_version, template_rg,
+    arm_id, template_name, template_version, _unused,
     default_rg, sub_id,
 ):
     """Resolve solution-template-version-id from friendly name or ARM ID.
@@ -256,6 +251,8 @@ def _resolve_template_version_id(
     Mutual exclusivity:
       - Provide --solution-template-version-id (full ARM ID)
       - OR --solution-template-name + --solution-template-version (friendly)
+
+    When using friendly name, the target's resource group is used.
     """
     if arm_id and template_name:
         raise ValidationError(
@@ -271,9 +268,8 @@ def _resolve_template_version_id(
             raise ValidationError(
                 "--solution-template-version is required when using --solution-template-name."
             )
-        rg = template_rg or default_rg
         return (
-            f"/subscriptions/{sub_id}/resourceGroups/{rg}"
+            f"/subscriptions/{sub_id}/resourceGroups/{default_rg}"
             f"/providers/Microsoft.Edge/solutionTemplates/{template_name}"
             f"/versions/{template_version}"
         )

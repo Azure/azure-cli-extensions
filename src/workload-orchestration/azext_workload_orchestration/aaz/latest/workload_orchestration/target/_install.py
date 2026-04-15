@@ -91,11 +91,6 @@ class Install(AAZCommand):
             arg_group="Deploy",
             help="Version of the solution template (e.g., 1.0.0).",
         )
-        _args_schema.solution_template_rg = AAZStrArg(
-            options=["--solution-template-rg"],
-            arg_group="Deploy",
-            help="Resource group of the solution template. Defaults to -g.",
-        )
         _args_schema.solution_instance_name = AAZStrArg(
             options=["--solution-instance-name"],
             arg_group="Deploy",
@@ -164,7 +159,6 @@ class Install(AAZCommand):
             solution_template_version_id=str(args.solution_template_version_id) if args.solution_template_version_id else None,
             solution_template_name=str(args.solution_template_name) if args.solution_template_name else None,
             solution_template_version=str(args.solution_template_version) if args.solution_template_version else None,
-            solution_template_rg=str(args.solution_template_rg) if args.solution_template_rg else None,
             solution_instance_name=str(args.solution_instance_name) if args.solution_instance_name else None,
             solution_dependencies=str(args.solution_dependencies) if args.solution_dependencies else None,
             config=str(args.config) if args.config else None,
