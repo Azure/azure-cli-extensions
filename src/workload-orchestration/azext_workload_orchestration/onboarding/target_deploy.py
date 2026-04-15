@@ -151,15 +151,16 @@ def target_deploy_pre_install(
     solution_instance_name=None,
     solution_dependencies=None,
     config=None,
-    config_hierarchy_id=None,
-    config_template_rg=None,
-    config_template_name=None,
-    config_template_version=None,
 ):
     """Run config-set → review → publish and return the solution-version-id.
 
     Called by the enhanced `target install` command before the AAZ install step.
     Does NOT run install — that's handled by the AAZ LRO.
+
+    Config-template args are auto-derived from solution template args:
+      config-template-rg   → solution_template_rg or resource_group
+      config-template-name → solution_template_name
+      config-template-version → solution_template_version
     """
     sub_id = _get_subscription_id(cmd)
 
@@ -189,9 +190,26 @@ def target_deploy_pre_install(
     # --- Step 0: Config set ---
     if do_config:
         _log("Config Set")
+        # Auto-derive config template args from solution template args
+        ct_rg = solution_template_rg or resource_group
+        ct_name = solution_template_name
+        ct_version = solution_template_version
+
+        # If using ARM ID, extract name/version/rg from it
+        if not ct_name and solution_template_version_id:
+            parts = solution_template_version_id.strip("/").split("/")
+            # .../resourceGroups/{rg}/providers/Microsoft.Edge/solutionTemplates/{name}/versions/{ver}
+            for i, part in enumerate(parts):
+                if part.lower() == "resourcegroups" and i + 1 < len(parts):
+                    ct_rg = parts[i + 1]
+                elif part.lower() == "solutiontemplates" and i + 1 < len(parts):
+                    ct_name = parts[i + 1]
+                elif part.lower() == "versions" and i + 1 < len(parts):
+                    ct_version = parts[i + 1]
+
         _handle_config_set(
-            cmd, config, config_hierarchy_id, config_template_rg,
-            config_template_name, config_template_version,
+            cmd, config, None, ct_rg,
+            ct_name, ct_version,
             resource_group, target_name, sub_id,
         )
         _log("Config Set", "[OK]")

@@ -109,29 +109,9 @@ class Install(AAZCommand):
 
         # Config set args
         _args_schema.config = AAZStrArg(
-            options=["--config"],
+            options=["--config", "--configuration"],
             arg_group="Config",
             help="Path to YAML/JSON config file to set before review.",
-        )
-        _args_schema.config_hierarchy_id = AAZStrArg(
-            options=["--config-hierarchy-id"],
-            arg_group="Config",
-            help="ARM ID of hierarchy entity for config set. Defaults to target ARM ID.",
-        )
-        _args_schema.config_template_rg = AAZStrArg(
-            options=["--config-template-rg"],
-            arg_group="Config",
-            help="Resource group of the configuration template.",
-        )
-        _args_schema.config_template_name = AAZStrArg(
-            options=["--config-template-name"],
-            arg_group="Config",
-            help="Name of the configuration template.",
-        )
-        _args_schema.config_template_version = AAZStrArg(
-            options=["--config-template-version", "--ct-version"],
-            arg_group="Config",
-            help="Version of the configuration template.",
         )
 
         return cls._args_schema
@@ -188,10 +168,6 @@ class Install(AAZCommand):
             solution_instance_name=str(args.solution_instance_name) if args.solution_instance_name else None,
             solution_dependencies=str(args.solution_dependencies) if args.solution_dependencies else None,
             config=str(args.config) if args.config else None,
-            config_hierarchy_id=str(args.config_hierarchy_id) if args.config_hierarchy_id else None,
-            config_template_rg=str(args.config_template_rg) if args.config_template_rg else None,
-            config_template_name=str(args.config_template_name) if args.config_template_name else None,
-            config_template_version=str(args.config_template_version) if args.config_template_version else None,
         )
 
         # Set the solution_version_id for the AAZ install step
