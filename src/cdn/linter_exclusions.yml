@@ -151,6 +151,8 @@ afd rule create:
             rule_exclusions:
             - option_length_too_long
 afd rule update:
+    rule_exclusions:
+    - missing_command_example
     parameters:
         preserve_unmatched_path:
             rule_exclusions:
@@ -174,6 +176,8 @@ afd rule condition list:
     rule_exclusions:
     - no_ids_for_list_commands
 afd rule action add:
+    rule_exclusions:
+    - missing_command_example
     parameters:
         preserve_unmatched_path:
             rule_exclusions:
@@ -190,6 +194,8 @@ afd rule action remove:
             rule_exclusions:
             - option_length_too_long
 afd rule condition add:
+    rule_exclusions:
+    - missing_command_example
     parameters:
         match_processing_behavior:
             rule_exclusions:
@@ -364,6 +370,9 @@ cdn edge-action execution-filter create:
 cdn profile:
     rule_exclusions:
     - require_wait_command_if_no_wait
+cdn usage:
+    rule_exclusions:
+    - missing_command_example
 cdn profile deployment-version:
     rule_exclusions:
     - require_wait_command_if_no_wait
@@ -374,12 +383,20 @@ cdn profile-migration:
 cdn profile-migration abort:
     rule_exclusions:
     - require_wait_command_if_no_wait
+    - missing_command_example
+cdn profile-migration commit:
+    rule_exclusions:
+    - missing_command_example
 cdn profile-migration check-compatibility:
+    rule_exclusions:
+    - missing_command_example
     parameters:
         migration_endpoint_mappings:
             rule_exclusions:
             - option_length_too_long
 cdn profile-migration migrate:
+    rule_exclusions:
+    - missing_command_example
     parameters:
         migration_endpoint_mappings:
             rule_exclusions:
@@ -387,4 +404,13 @@ cdn profile-migration migrate:
         user_assigned_identities:
             rule_exclusions:
             - option_length_too_long
+cdn custom-domain update:
+    rule_exclusions:
+    - missing_command_example
+cdn custom-domain disable-https:
+    rule_exclusions:
+    - missing_command_example
+afd rule-set usage:
+    rule_exclusions:
+    - missing_command_example
 ...
