@@ -9,6 +9,7 @@
 # flake8: noqa
 
 from azure.cli.core.aaz import *
+from azure.cli.core.azclierror import CLIInternalError as CLIError
 
 
 @register_command(
@@ -128,6 +129,14 @@ class Create(AAZCommand):
 
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg()
+
+        # Custom arg: --site-id (not sent to ARM, used in post_operations)
+        _args_schema.site_id = AAZStrArg(
+            options=["--site-id"],
+            arg_group="Onboarding",
+            help="ARM resource ID of a Site to auto-create a site reference after context creation.",
+        )
+
         return cls._args_schema
 
     def _execute_operations(self):
@@ -141,7 +150,47 @@ class Create(AAZCommand):
 
     @register_callback
     def post_operations(self):
-        pass
+        if hasattr(self.ctx.args, 'site_id') and self.ctx.args.site_id:
+            self._create_site_reference()
+
+    def _create_site_reference(self):
+        """Auto-create a site reference linking the site to this context."""
+        import logging
+        import re
+        logger = logging.getLogger(__name__)
+
+        site_id = str(self.ctx.args.site_id)
+        context_name = str(self.ctx.args.context_name)
+        rg = str(self.ctx.args.resource_group)
+
+        # Extract site name from ARM ID for the reference name
+        site_name = site_id.rstrip("/").split("/")[-1]
+        ref_name = f"{site_name}-ref"
+        # Sanitize: only alphanumeric and hyphens, 3-61 chars
+        ref_name = re.sub(r'[^a-zA-Z0-9-]', '-', ref_name)[:61]
+
+        logger.info("Creating site reference '%s' -> %s", ref_name, site_id)
+
+        try:
+            from azext_workload_orchestration.onboarding.utils import invoke_cli_command, CmdProxy
+            cmd_proxy = CmdProxy(self.ctx.cli_ctx)
+            invoke_cli_command(cmd_proxy, [
+                "workload-orchestration", "context", "site-reference", "create",
+                "-g", rg,
+                "--context-name", context_name,
+                "--site-reference-name", ref_name,
+                "--site-id", site_id,
+            ])
+            logger.info("Site reference '%s' created successfully", ref_name)
+        except Exception as exc:
+            logger.warning("Site reference creation failed: %s", exc)
+            raise CLIError(
+                f"Context created successfully, but site reference creation failed: {exc}\n"
+                f"Run manually:\n"
+                f"  az workload-orchestration context site-reference create "
+                f"-g {rg} --context-name {context_name} "
+                f"--site-reference-name {ref_name} --site-id {site_id}"
+            )
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
