@@ -1251,6 +1251,134 @@ def check_kube_connection() -> str:
     assert False
 
 
+def _resolve_helm_pull_target(
+    mcr_url: str,
+    helm_mcr_repo: str,
+    helm_version: str,
+    operating_system: str,
+    arch: str,
+) -> str:
+    """Return the ORAS pull target for the helm binary.
+
+    Tries the arch-specific tag first (e.g. ``helm-v3.20.1-linux-arm64``).
+    If that tag does not exist, falls back to the manifest list tag
+    (``helm-v3.20.1``) and resolves the correct entry by matching the
+    ``org.opencontainers.image.title`` annotation on each child manifest.
+
+    Uses the OCI Distribution v2 HTTP API directly so that the logic is
+    independent of the ``oras`` library version installed.
+
+    :param mcr_url: MCR hostname (e.g. ``mcr.microsoft.com``)
+    :param helm_mcr_repo: repository path within MCR (e.g. ``azurearck8s/helm``)
+    :param helm_version: helm version string including the leading ``v`` (e.g. ``v3.20.1``)
+    :param operating_system: lower-case OS name: ``linux``, ``darwin``, or ``windows``
+    :param arch: CPU architecture: ``amd64`` or ``arm64``
+    :returns: full ORAS pull target string (tag-based or digest-based)
+    """
+    import requests as http_client  # pylint: disable=import-outside-toplevel
+
+    arch_specific_tag = f"helm-{helm_version}-{operating_system}-{arch}"
+    arch_specific_target = f"{mcr_url}/{helm_mcr_repo}:{arch_specific_tag}"
+    base_api = f"https://{mcr_url}/v2/{helm_mcr_repo}/manifests"
+
+    # OCI media types required by MCR (HEAD/GET return 404 without Accept).
+    oci_accept = (
+        "application/vnd.oci.image.manifest.v1+json, "
+        "application/vnd.oci.image.index.v1+json"
+    )
+
+    # Check whether the arch-specific tag exists.
+    try:
+        response = http_client.head(
+            f"{base_api}/{arch_specific_tag}",
+            headers={"Accept": oci_accept},
+            timeout=30,
+        )
+        if response.status_code == 200:
+            return arch_specific_target
+        logger.debug(
+            "Arch-specific tag %s returned HTTP %d; trying manifest list.",
+            arch_specific_tag,
+            response.status_code,
+        )
+    except Exception as e:  # pylint: disable=broad-except
+        logger.debug(
+            "Arch-specific tag check failed (%s); trying manifest list.",
+            e,
+        )
+
+    # Fall back to the manifest list tag and match via annotation title.
+    # Annotations live on each child manifest, not on the index entries,
+    # so we must fetch every child manifest to find the right one.
+    manifest_list_tag = f"helm-{helm_version}"
+    expected_title_prefix = f"helm-{helm_version}-{operating_system}-{arch}"
+    try:
+        response = http_client.get(
+            f"{base_api}/{manifest_list_tag}",
+            headers={"Accept": oci_accept},
+            timeout=30,
+        )
+        if response.status_code != 200:
+            raise CLIInternalError(
+                f"Could not resolve helm binary for {operating_system}/{arch}. "
+                f"Arch-specific tag '{arch_specific_tag}' check failed and "
+                f"manifest list '{manifest_list_tag}' returned HTTP {response.status_code}."
+            )
+
+        index = response.json()
+        for entry in index.get("manifests", []):
+            # Check platform fields if present (future-proof).
+            plat = entry.get("platform", {})
+            if plat.get("os") == operating_system and plat.get("architecture") == arch:
+                digest = entry["digest"]
+                logger.debug(
+                    "Resolved %s/%s via platform field to digest %s.",
+                    operating_system,
+                    arch,
+                    digest,
+                )
+                return f"{mcr_url}/{helm_mcr_repo}@{digest}"
+
+        # Annotations are on child manifests; fetch each one to match.
+        for entry in index.get("manifests", []):
+            digest = entry.get("digest", "")
+            try:
+                child_resp = http_client.get(
+                    f"{base_api}/{digest}",
+                    headers={"Accept": oci_accept},
+                    timeout=30,
+                )
+                if child_resp.status_code != 200:
+                    continue
+                child = child_resp.json()
+                title = child.get("annotations", {}).get(
+                    "org.opencontainers.image.title", ""
+                )
+                if title.startswith(expected_title_prefix):
+                    logger.debug(
+                        "Resolved %s/%s via child annotation title '%s' to digest %s.",
+                        operating_system,
+                        arch,
+                        title,
+                        digest,
+                    )
+                    return f"{mcr_url}/{helm_mcr_repo}@{digest}"
+            except Exception:  # pylint: disable=broad-except
+                continue
+
+        raise CLIInternalError(
+            f"Could not resolve helm binary for {operating_system}/{arch}. "
+            f"No matching entry found in manifest list '{manifest_list_tag}'."
+        )
+    except CLIInternalError:
+        raise
+    except Exception as e:  # pylint: disable=broad-except
+        raise CLIInternalError(
+            f"Could not resolve helm binary for {operating_system}/{arch}. "
+            f"Manifest list resolution failed: {e}"
+        ) from e
+
+
 def install_helm_client(cmd: CLICommand) -> str:
     print(
         f"Step: {utils.get_utctimestring()}: Install Helm client if it does not exist"
@@ -1263,6 +1391,7 @@ def install_helm_client(cmd: CLICommand) -> str:
     # Fetch system related info
     operating_system = platform.system().lower()
     machine_type = platform.machine()
+    arch = "arm64" if machine_type.lower() in ("aarch64", "arm64") else "amd64"
 
     # Send machine telemetry
     telemetry.add_extension_event(
@@ -1271,20 +1400,18 @@ def install_helm_client(cmd: CLICommand) -> str:
     # Set helm binary download & install locations
     if operating_system == "windows":
         download_location_string = f".azure\\helm\\{consts.HELM_VERSION}"
-        download_file_name = f"helm-{consts.HELM_VERSION}-{operating_system}-amd64.zip"
+        download_file_name = f"helm-{consts.HELM_VERSION}-{operating_system}-{arch}.zip"
         install_location_string = (
-            f".azure\\helm\\{consts.HELM_VERSION}\\{operating_system}-amd64\\helm.exe"
+            f".azure\\helm\\{consts.HELM_VERSION}\\{operating_system}-{arch}\\helm.exe"
         )
-        artifactTag = f"helm-{consts.HELM_VERSION}-{operating_system}-amd64"
     elif operating_system == "linux" or operating_system == "darwin":
         download_location_string = f".azure/helm/{consts.HELM_VERSION}"
         download_file_name = (
-            f"helm-{consts.HELM_VERSION}-{operating_system}-amd64.tar.gz"
+            f"helm-{consts.HELM_VERSION}-{operating_system}-{arch}.tar.gz"
         )
         install_location_string = (
-            f".azure/helm/{consts.HELM_VERSION}/{operating_system}-amd64/helm"
+            f".azure/helm/{consts.HELM_VERSION}/{operating_system}-{arch}/helm"
         )
-        artifactTag = f"helm-{consts.HELM_VERSION}-{operating_system}-amd64"
     else:
         telemetry.set_exception(
             exception="Unsupported OS for installing helm client",
@@ -1296,15 +1423,15 @@ def install_helm_client(cmd: CLICommand) -> str:
         )
 
     download_location = os.path.expanduser(os.path.join("~", download_location_string))
-    download_dir = os.path.dirname(download_location)
     install_location = os.path.expanduser(os.path.join("~", install_location_string))
 
     # Download compressed Helm binary if not already present
     if not os.path.isfile(install_location):
-        # Creating the helm folder if it doesnt exist
-        if not os.path.exists(download_dir):
+        # The archive is downloaded to ~/.azure/helm/<version>/<archive-file>.
+        # Ensure the <version> directory exists first to avoid file-not-found errors.
+        if not os.path.exists(download_location):
             try:
-                os.makedirs(download_dir)
+                os.makedirs(download_location)
             except Exception as e:
                 telemetry.set_exception(
                     exception=e,
@@ -1318,15 +1445,23 @@ def install_helm_client(cmd: CLICommand) -> str:
             "Downloading helm client for first time. This can take few minutes..."
         )
 
+        retry_count = 3
+        retry_delay = 5
+        # Helm binaries are downloaded from MCR artifacts for all architectures.
         mcr_url = utils.get_mcr_path(cmd.cli_ctx.cloud.endpoints.active_directory)
 
         client = oras.client.OrasClient(hostname=mcr_url)
-        retry_count = 3
-        retry_delay = 5
+        pull_target = _resolve_helm_pull_target(
+            mcr_url,
+            consts.HELM_MCR_URL,
+            consts.HELM_VERSION,
+            operating_system,
+            arch,
+        )
         for i in range(retry_count):
             try:
                 client.pull(
-                    target=f"{mcr_url}/{consts.HELM_MCR_URL}:{artifactTag}",
+                    target=pull_target,
                     outdir=download_location,
                 )
                 break
