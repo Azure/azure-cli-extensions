@@ -186,7 +186,7 @@ def target_deploy_pre_install(
     if do_config:
         _log("Config Set")
         # Auto-derive config template args from solution template args
-        ct_rg = solution_template_rg or resource_group
+        ct_rg = resource_group
         ct_name = solution_template_name
         ct_version = solution_template_version
 
