@@ -16,7 +16,7 @@ import types
 from types import SimpleNamespace
 from unittest import mock
 
-from azure.cli.testsdk import ScenarioTest, JMESPathCheck
+from azure.cli.testsdk import ScenarioTest, JMESPathCheck, LiveScenarioTest
 
 from azext_changesafety.custom import (
     _inject_change_definition_into_content,
@@ -60,6 +60,13 @@ class ChangeRecordScenario(ScenarioTest):
         dummy = SimpleNamespace()
         dummy.to_serialized_data = lambda: payload
         return SimpleNamespace(vars=SimpleNamespace(change_definition=dummy))
+    @classmethod
+    def _safe_subscription_id(cls, cmd):
+        """Get subscription ID safely, falling back to FAKE_SUBSCRIPTION_ID in CI."""
+        try:
+            return cmd.ctx.subscription_id or cls.FAKE_SUBSCRIPTION_ID
+        except Exception:  # pylint: disable=broad-except
+            return cls.FAKE_SUBSCRIPTION_ID
 
     @classmethod
     def _ensure_msrestazure_stub(cls):
@@ -144,7 +151,7 @@ class ChangeRecordScenario(ScenarioTest):
         cmd.pre_operations()
         name = cls._get_arg_value(cmd, "change_record_name", "mock-change")
         resource_group = cls._get_arg_value(cmd, "resource_group", "mock-rg")
-        subscription_id = cmd.ctx.subscription_id or cls.FAKE_SUBSCRIPTION_ID
+        subscription_id = cls._safe_subscription_id(cmd)
         change_type = cls._get_arg_value(cmd, "change_type", "ManualTouch")
         rollout_type = cls._get_arg_value(cmd, "rollout_type", "Normal")
         comments = cls._get_arg_value(cmd, "comments")
@@ -191,7 +198,7 @@ class ChangeRecordScenario(ScenarioTest):
         if current is None:
             name = cls._get_arg_value(cmd, "change_record_name", "mock-change")
             resource_group = cls._get_arg_value(cmd, "resource_group", "mock-rg")
-            subscription_id = cmd.ctx.subscription_id or cls.FAKE_SUBSCRIPTION_ID
+            subscription_id = cls._safe_subscription_id(cmd)
             current = cls._build_mock_instance(
                 name=name,
                 resource_group=resource_group,
@@ -484,6 +491,14 @@ class StageMapScenario(ScenarioTest):
     """Test scenarios for StageMap CRUD operations."""
 
     FAKE_SUBSCRIPTION_ID = "00000000-0000-0000-0000-000000000000"
+
+    @classmethod
+    def _safe_subscription_id(cls, cmd):
+        """Get subscription ID safely, falling back to FAKE_SUBSCRIPTION_ID in CI."""
+        try:
+            return cmd.ctx.subscription_id or cls.FAKE_SUBSCRIPTION_ID
+        except Exception:  # pylint: disable=broad-except
+            return cls.FAKE_SUBSCRIPTION_ID
     _SCENARIO_STATE = {}
 
     class _DummyPoller:  # pylint: disable=too-few-public-methods
@@ -524,7 +539,7 @@ class StageMapScenario(ScenarioTest):
         cmd.pre_operations()
         name_arg = getattr(cmd.ctx.args, "stage_map_name", None)
         name = name_arg.to_serialized_data() if name_arg and has_value(name_arg) else "mock-stagemap"
-        subscription_id = cmd.ctx.subscription_id or cls.FAKE_SUBSCRIPTION_ID
+        subscription_id = cls._safe_subscription_id(cmd)
         stages_arg = getattr(cmd.ctx.args, "stages", None)
         stages = stages_arg.to_serialized_data() if stages_arg and has_value(stages_arg) else None
         instance = cls._build_mock_stagemap(name, subscription_id, stages)
@@ -552,7 +567,7 @@ class StageMapScenario(ScenarioTest):
         if current is None:
             name_arg = getattr(cmd.ctx.args, "stage_map_name", None)
             name = name_arg.to_serialized_data() if name_arg and has_value(name_arg) else "mock-stagemap"
-            subscription_id = cmd.ctx.subscription_id or cls.FAKE_SUBSCRIPTION_ID
+            subscription_id = cls._safe_subscription_id(cmd)
             current = cls._build_mock_stagemap(name, subscription_id)
         stages_arg = getattr(cmd.ctx.args, "stages", None)
         if stages_arg and has_value(stages_arg):
@@ -676,6 +691,14 @@ class StageProgressionScenario(ScenarioTest):
     """Test scenarios for StageProgression CRUD operations."""
 
     FAKE_SUBSCRIPTION_ID = "00000000-0000-0000-0000-000000000000"
+
+    @classmethod
+    def _safe_subscription_id(cls, cmd):
+        """Get subscription ID safely, falling back to FAKE_SUBSCRIPTION_ID in CI."""
+        try:
+            return cmd.ctx.subscription_id or cls.FAKE_SUBSCRIPTION_ID
+        except Exception:  # pylint: disable=broad-except
+            return cls.FAKE_SUBSCRIPTION_ID
     _SCENARIO_STATE = {}
 
     class _DummyPoller:  # pylint: disable=too-few-public-methods
@@ -717,7 +740,7 @@ class StageProgressionScenario(ScenarioTest):
         name = name_arg.to_serialized_data() if name_arg and has_value(name_arg) else "mock-progression"
         cr_arg = getattr(cmd.ctx.args, "change_record_name", None)
         change_record_name = cr_arg.to_serialized_data() if cr_arg and has_value(cr_arg) else "mock-changerecord"
-        subscription_id = cmd.ctx.subscription_id or cls.FAKE_SUBSCRIPTION_ID
+        subscription_id = cls._safe_subscription_id(cmd)
         stage_ref_arg = getattr(cmd.ctx.args, "stage_reference", None)
         stage_reference = stage_ref_arg.to_serialized_data() if stage_ref_arg and has_value(stage_ref_arg) else "Stage1"
         status_arg = getattr(cmd.ctx.args, "status", None)
@@ -751,7 +774,7 @@ class StageProgressionScenario(ScenarioTest):
             name = name_arg.to_serialized_data() if name_arg and has_value(name_arg) else "mock-progression"
             cr_arg = getattr(cmd.ctx.args, "change_record_name", None)
             change_record_name = cr_arg.to_serialized_data() if cr_arg and has_value(cr_arg) else "mock-changerecord"
-            subscription_id = cmd.ctx.subscription_id or cls.FAKE_SUBSCRIPTION_ID
+            subscription_id = cls._safe_subscription_id(cmd)
             current = cls._build_mock_stageprogression(name, change_record_name, subscription_id, "Stage1")
         status_arg = getattr(cmd.ctx.args, "status", None)
         if status_arg and has_value(status_arg):
@@ -1001,7 +1024,7 @@ def _ensure_msrestazure_stub():
 _ensure_msrestazure_stub()
 
 
-class ChangeSafetyLiveScenario(ScenarioTest):
+class ChangeSafetyLiveScenario(LiveScenarioTest):
     """Live test scenarios for generating recordings.
 
     Run with: azdev test azure-changesafety --live

@@ -230,7 +230,10 @@ def _append_or_set_element(elements, idx, value):
     if idx is not None:
         while len(elements) <= idx:
             elements.append('')
-        elements[idx] = value
+        if elements[idx]:
+            elements[idx] = elements[idx] + ',' + value
+        else:
+            elements[idx] = value
     else:
         elements.append(value)
 
