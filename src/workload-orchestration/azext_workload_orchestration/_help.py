@@ -47,13 +47,13 @@ examples:
     text: az workload-orchestration support create-bundle --kube-config ~/.kube/prod-config --kube-context my-cluster
 """
 
-helps['workload-orchestration target init'] = """
+helps['workload-orchestration cluster init'] = """
 type: command
 short-summary: Prepare an Arc-connected Kubernetes cluster for Workload Orchestration.
 long-summary: |
     Installs all prerequisites on an Arc-connected cluster to make it ready for
-    Workload Orchestration target creation. This is an idempotent operation that
-    skips components already installed.
+    Workload Orchestration. This is an idempotent operation that skips components
+    already installed.
 
     Steps performed:
     1. Verify cluster is Arc-connected with required features enabled
@@ -66,12 +66,12 @@ long-summary: |
     'az workload-orchestration target create --extended-location'.
 examples:
   - name: Initialize a cluster with defaults
-    text: az workload-orchestration target init -c my-cluster -g my-rg -l eastus2euap
+    text: az workload-orchestration cluster init -c my-cluster -g my-rg -l eastus2euap
   - name: Initialize with a specific release train
-    text: az workload-orchestration target init -c my-cluster -g my-rg -l eastus2euap --release-train preview
+    text: az workload-orchestration cluster init -c my-cluster -g my-rg -l eastus2euap --release-train preview
   - name: Initialize with custom location name
-    text: az workload-orchestration target init -c my-cluster -g my-rg -l eastus2euap --custom-location-name my-cl
+    text: az workload-orchestration cluster init -c my-cluster -g my-rg -l eastus2euap --custom-location-name my-cl
   - name: Skip cert-manager if already managed externally
-    text: az workload-orchestration target init -c my-cluster -g my-rg -l eastus2euap --skip-cert-manager
+    text: az workload-orchestration cluster init -c my-cluster -g my-rg -l eastus2euap --skip-cert-manager
 """
 

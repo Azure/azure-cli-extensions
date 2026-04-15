@@ -72,7 +72,7 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
             help='Skip auto-creation of site-reference to context.',
         )
 
-    with self.argument_context('workload-orchestration target init') as c:
+    with self.argument_context('workload-orchestration cluster init') as c:
         c.argument('cluster_name', options_list=['--cluster-name', '-c'],
                    help='Name of the Arc-connected Kubernetes cluster.', required=True)
         c.argument('resource_group', options_list=['--resource-group', '-g'],
