@@ -12,6 +12,8 @@ NETWORK_CONTRIBUTOR_ROLE_ID = "4d97b98b-1d4f-4787-a291-c67834d212e7"
 SUPPORTED_GATE_STATES_FILTERS = ["Pending", "Skipped", "Completed"]
 SUPPORTED_GATE_STATES_PATCH = ["Completed"]
 
+POLLING_INTERVAL_SECS = 5
+
 UPGRADE_TYPE_ERROR_MESSAGES = {
     UPGRADE_TYPE_CONTROLPLANEONLY: f"Please set kubernetes version when upgrade type is '{UPGRADE_TYPE_CONTROLPLANEONLY}'.",  # pylint: disable=line-too-long
     UPGRADE_TYPE_FULL: f"Please set kubernetes version when upgrade type is '{UPGRADE_TYPE_FULL}'.",
