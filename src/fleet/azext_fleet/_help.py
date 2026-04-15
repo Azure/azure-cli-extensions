@@ -525,6 +525,10 @@ helps['fleet namespace create'] = """
           text: az fleet namespace create -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --annotations key=value --labels key=value --cpu-requests 1m --cpu-limits 4m --memory-requests 1Mi --memory-limits 4Mi --ingress-policy AllowAll --egress-policy DenyAll --delete-policy Keep --adoption-policy Never
         - name: Create a fleet managed namespace on specific member clusters.
           text: az fleet namespace create -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --member-cluster-names team-01 team-02 team-03 team-04
+        - name: Create a fleet managed namespace with a rolling update rollout strategy.
+          text: az fleet namespace create -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --member-cluster-names team-01 team-02 --rollout-strategy RollingUpdate
+        - name: Create a fleet managed namespace with an external rollout strategy.
+          text: az fleet namespace create -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --member-cluster-names team-01 team-02 --rollout-strategy External --cluster-update-strategy MyUpdateStrategy
 """
 
 helps['fleet namespace update'] = """
