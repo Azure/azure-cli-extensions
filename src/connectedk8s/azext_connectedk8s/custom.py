@@ -1446,9 +1446,6 @@ def install_helm_client(cmd: CLICommand) -> str:
             "Downloading helm client for first time. This can take few minutes..."
         )
 
-        mcr_url = utils.get_mcr_path(cmd.cli_ctx.cloud.endpoints.active_directory)
-
-        client = oras.client.OrasClient(hostname=mcr_url)
         retry_count = 3
         retry_delay = 5
         # Helm binaries are downloaded from MCR artifacts for all architectures.
