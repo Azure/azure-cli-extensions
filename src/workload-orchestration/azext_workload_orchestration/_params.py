@@ -126,14 +126,6 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
         c.argument('solution_dependencies', options_list=['--solution-dependencies'],
                    help='JSON string of solution dependency definitions.')
 
-        # Resume / skip
-        c.argument('resume_from', options_list=['--resume-from'],
-                   help='Resume deployment from a specific step. '
-                        'Choices: publish, install. Requires --solution-version-id.',
-                   choices=['publish', 'install'])
-        c.argument('solution_version_id', options_list=['--solution-version-id'],
-                   help='Solution version ARM ID. Required with --resume-from.')
-
         # Config set (step 0)
         c.argument('config', options_list=['--config'],
                    help='Path to YAML/JSON file with configuration values to set before review.')

@@ -29,11 +29,6 @@ Usage:
         --solution-template-version-id <ARM_ID> \\
         --config values.yaml \\
         --config-template-rg rg --config-template-name tmpl --config-template-version 1.0.0
-
-    # Resume from publish (already reviewed)
-    az workload-orchestration target deploy \\
-        -g my-rg -n my-target \\
-        --resume-from publish --solution-version-id <SV_ARM_ID>
 """
 
 import json
@@ -58,8 +53,6 @@ def target_deploy(
     solution_template_rg=None,
     solution_instance_name=None,
     solution_dependencies=None,
-    solution_version_id=None,
-    resume_from=None,
     config=None,
     config_hierarchy_id=None,
     config_template_rg=None,
@@ -73,26 +66,12 @@ def target_deploy(
     """
     sub_id = _get_subscription_id(cmd)
 
-    # --- Validate resume-from (before template resolution) ---
-    if resume_from:
-        resume_from = resume_from.lower()
-        if resume_from not in ("publish", "install"):
-            raise ValidationError("--resume-from must be 'publish' or 'install'.")
-        if not solution_version_id:
-            raise ValidationError(
-                "--solution-version-id is required when using --resume-from."
-            )
-
-    # --- Resolve solution-template-version-id (not needed for resume) ---
-    if not resume_from:
-        solution_template_version_id = _resolve_template_version_id(
-            solution_template_version_id, solution_template_name,
-            solution_template_version, solution_template_rg,
-            resource_group, sub_id,
-        )
-    elif not solution_template_version_id:
-        # resume_from is set, template version not required
-        solution_template_version_id = None
+    # --- Resolve solution-template-version-id ---
+    solution_template_version_id = _resolve_template_version_id(
+        solution_template_version_id, solution_template_name,
+        solution_template_version, solution_template_rg,
+        resource_group, sub_id,
+    )
 
     base_url = (
         f"{ARM_RESOURCE}/subscriptions/{sub_id}"
@@ -102,18 +81,8 @@ def target_deploy(
 
     # Figure out which steps to run
     do_config = config is not None
-    do_review = resume_from is None
-    do_publish = resume_from in (None, "publish")
-    do_install = True
 
-    # If resume_from == "install", skip review and publish
-    if resume_from == "install":
-        do_review = False
-        do_publish = False
-    elif resume_from == "publish":
-        do_review = False
-
-    total = sum([do_config, do_review, do_publish, do_install])
+    total = sum([do_config, True, True, True])  # config(opt) + review + publish + install
     current = [0]  # mutable counter
 
     def _log(step_name, status=""):
@@ -124,7 +93,7 @@ def target_deploy(
             print(f"[{current[0]}/{total}] {step_name}...")
 
     results = {}
-    sv_id = solution_version_id  # may be set by review or passed via --solution-version-id
+    sv_id = None
 
     # --- Step 0: Config set ---
     if do_config:
@@ -138,45 +107,26 @@ def target_deploy(
         results["configSet"] = "Succeeded"
 
     # --- Step 1: Review ---
-    if do_review:
-        _log("Review")
-        review_result = _do_review(
-            cmd, base_url, solution_template_version_id,
-            solution_instance_name, solution_dependencies,
-        )
-        results["review"] = review_result
-        sv_id = _extract_solution_version_id(review_result)
-        _log("Review", f"[OK] -> solutionVersionId: {_short_id(sv_id)}")
-    elif not resume_from:
-        # Should not reach here — do_review is True when resume_from is None
-        results["review"] = "Skipped"
-        sv_id = solution_template_version_id
-    else:
-        print(f"[~] Review skipped (--resume-from {resume_from})")
-        results["review"] = "Skipped"
-
-    if not sv_id:
-        raise CLIInternalError("No solution-version-id available. Cannot proceed with publish.")
+    _log("Review")
+    review_result = _do_review(
+        cmd, base_url, solution_template_version_id,
+        solution_instance_name, solution_dependencies,
+    )
+    results["review"] = review_result
+    sv_id = _extract_solution_version_id(review_result)
+    _log("Review", f"[OK] -> solutionVersionId: {_short_id(sv_id)}")
 
     # --- Step 2: Publish ---
-    if do_publish:
-        _log("Publish")
-        publish_result = _do_publish(cmd, base_url, sv_id)
-        results["publish"] = publish_result
-        _log("Publish", "[OK]")
-    else:
-        print(f"[~] Publish skipped (--resume-from install)")
-        results["publish"] = "Skipped"
+    _log("Publish")
+    publish_result = _do_publish(cmd, base_url, sv_id)
+    results["publish"] = publish_result
+    _log("Publish", "[OK]")
 
     # --- Step 3: Install ---
-    if do_install:
-        _log("Install")
-        install_result = _do_install(cmd, base_url, sv_id)
-        results["install"] = install_result
-        _log("Install", "[OK]")
-    else:
-        print(f"[~] Install skipped (--resume-from install)")
-        results["install"] = "Skipped"
+    _log("Install")
+    install_result = _do_install(cmd, base_url, sv_id)
+    results["install"] = install_result
+    _log("Install", "[OK]")
 
     print(f"\n{'=' * 50}")
     print(f"Deployment complete for target '{target_name}'")

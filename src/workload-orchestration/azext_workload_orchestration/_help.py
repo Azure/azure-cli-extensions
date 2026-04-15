@@ -89,8 +89,6 @@ long-summary: |
       - ARM ID: --solution-template-version-id `<full-ARM-id>`
       - Friendly name: --solution-template-name `<name>` --solution-template-version `<ver>`
 
-    Use --resume-from to restart a partially completed deployment.
-    Use --skip-review or --skip-install to skip specific steps.
     Use --config to set configuration values before the review step.
 examples:
   - name: Deploy using friendly name
@@ -106,14 +104,6 @@ examples:
         az workload-orchestration target deploy -g my-rg -n my-target
         --solution-template-name tmpl --solution-template-version 1.0.0
         --config values.yaml --config-template-rg rg --config-template-name cfg --config-template-version 1.0.0
-  - name: Resume from publish (review already done)
-    text: >
-        az workload-orchestration target deploy -g my-rg -n my-target
-        --resume-from publish --solution-version-id /subscriptions/.../solutionVersions/sv1
-  - name: Resume from install (review + publish already done)
-    text: >
-        az workload-orchestration target deploy -g my-rg -n my-target
-        --resume-from install --solution-version-id /subscriptions/.../solutionVersions/sv1
 """
 
 
