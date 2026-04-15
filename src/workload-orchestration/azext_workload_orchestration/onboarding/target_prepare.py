@@ -199,9 +199,6 @@ def target_prepare(
     extended_location = {"name": cl_id, "type": "CustomLocation"}
     _write_extended_location_file(extended_location)
 
-    # Print diagnostic summary (all steps succeeded)
-    _print_diagnostic_summary(step_results, cluster_name, resource_group)
-
     print_success(f"Cluster '{cluster_name}' is ready for Workload Orchestration")
     print_detail("Custom Location ID", cl_id)
     print()
