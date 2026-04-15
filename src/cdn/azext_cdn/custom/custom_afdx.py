@@ -5,9 +5,13 @@
 # pylint: disable=too-many-locals, too-many-statements too-many-boolean-expressions too-many-branches protected-access
 
 from azure.mgmt.cdn.models import SkuName
+from azure.cli.core.aaz import AAZStrArg, AAZBoolArg, AAZListArg, AAZTimeArg, AAZIntArg, AAZIntArgFormat
 from azure.cli.core.aaz._base import has_value
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.core.exceptions import ResourceNotFoundError
+from knack.log import get_logger
+from knack.util import CLIError
+
 from azext_cdn.aaz.latest.afd.custom_domain import Create as _AFDCustomDomainCreate, \
     Update as _AFDCustomDomainUpdate
 from azext_cdn.aaz.latest.afd.origin import Create as _AFDOriginCreate, Update as _AFDOriginUpdate
@@ -26,9 +30,6 @@ from azext_cdn.aaz.latest.afd.endpoint import Show as _AFDEndpointShow, \
     Create as _AFDEndpointCreate, Update as _AFDEndpointUpdate
 from azext_cdn.aaz.latest.afd.origin_group import Show as _AFDOriginGroupShow, \
     Create as _AFDOriginGroupCreate, Update as _AFDOriginGroupUpdate
-from azure.cli.core.aaz import AAZStrArg, AAZBoolArg, AAZListArg, AAZTimeArg, AAZIntArg, AAZIntArgFormat
-from knack.util import CLIError
-from knack.log import get_logger
 from .custom_rule_util import (create_condition, create_action,
                                create_conditions_from_existing, create_actions_from_existing)
 logger = get_logger(__name__)

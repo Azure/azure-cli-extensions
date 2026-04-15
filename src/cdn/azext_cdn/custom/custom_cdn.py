@@ -4,15 +4,21 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=too-many-locals, too-many-statements too-many-boolean-expressions too-many-branches protected-access
 
+import argparse
+
+from azure.cli.core.aaz import AAZStrArg, AAZBoolArg, AAZIntArg, AAZListArg, AAZTimeArg
+from azure.cli.core.aaz._base import has_value
 from azure.mgmt.cdn.models import (MinimumTlsVersion, ProtocolType, SkuName, UpdateRule, DeleteRule, CertificateType,
                                    ResourceType)
-from azure.cli.core.aaz._base import has_value
-from azext_cdn.aaz.latest.cdn.custom_domain import EnableHttps as _EnableHttps, \
-    Delete as _CDNCustomDomainDelete
+from knack.log import get_logger
+from knack.util import CLIError
+
 from azext_cdn.aaz.latest.afd.profile import Show as _AFDProfileShow, \
     Create as _AFDProfileCreate, Update as _AFDProfileUpdate, Delete as _AFDProfileDelete, \
     List as _AFDProfileList
-from azure.cli.core.aaz import AAZStrArg, AAZBoolArg, AAZIntArg, AAZListArg, AAZTimeArg
+from azext_cdn.aaz.latest.cdn._name_exists import NameExists
+from azext_cdn.aaz.latest.cdn.custom_domain import EnableHttps as _EnableHttps, \
+    Delete as _CDNCustomDomainDelete
 from azext_cdn.aaz.latest.cdn.origin import Create as _CDNOriginCreate, \
     Update as _CDNOriginUpdate
 from azext_cdn.aaz.latest.cdn.origin_group import Create as _CDNOriginGroupCreate, \
@@ -20,12 +26,7 @@ from azext_cdn.aaz.latest.cdn.origin_group import Create as _CDNOriginGroupCreat
 from azext_cdn.aaz.latest.cdn.endpoint import Create as _CDNEndpointCreate, \
     Update as _CDNEndpointUpdate, Show as _CDNEndpointShow
 from azext_cdn.aaz.latest.cdn.profile_migration import Migrate as _Migrate
-from azext_cdn.aaz.latest.cdn._name_exists import NameExists
 from .custom_rule_util import (create_condition, create_action, create_delivery_policy_from_existing)
-import argparse
-
-from knack.util import CLIError
-from knack.log import get_logger
 
 logger = get_logger(__name__)
 
