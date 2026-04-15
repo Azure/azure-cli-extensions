@@ -66,6 +66,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
     top_type = CLIArgumentType(options_list=['--top'], help='The number of jobs listed per page.')
     orderby_type = CLIArgumentType(options_list=['--orderby'], help='The field on which to order the list.')
     order_type = CLIArgumentType(options_list=['--order'], help='How to order the list: `asc` or `desc`')
+    byo_storage_account_type = CLIArgumentType(options_list=['--byo-storage'], help='Create a user-owned storage account')
 
     with self.argument_context('quantum workspace') as c:
         c.argument('workspace_name', workspace_name_type)
@@ -75,6 +76,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
         c.argument('provider_sku_list', provider_sku_list_type)
         c.argument('auto_accept', auto_accept_type)
         c.argument('skip_autoadd', skip_autoadd_type)
+        c.argument('byo_storage_account', byo_storage_account_type)
 
     with self.argument_context('quantum target') as c:
         c.argument('workspace_name', workspace_name_type)
