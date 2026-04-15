@@ -422,6 +422,10 @@ class SshCustomCommandTest(unittest.TestCase):
     def test_do_ssh_op_arc_local_user(self, mock_get_cert, mock_check_keys, mock_start_ssh, mock_get_relay_info, mock_get_proxy):
         mock_get_relay_info.return_value = ('relay', False)
         cmd = mock.Mock()
+        cmd.cli_ctx = mock.Mock()
+        cmd.cli_ctx.cloud = mock.Mock()
+        cmd.cli_ctx.cloud.endpoints = mock.Mock()
+        cmd.cli_ctx.cloud.endpoints.active_directory = "https://login.microsoftonline.com"
         mock_op = mock.Mock()
 
         op_info = ssh_info.SSHSession("rg", "vm", None, None, None, False, "user", None, "port", None, [], False, "Microsoft.HybridCompute/machines", None, None, False, False)
@@ -432,7 +436,7 @@ class SshCustomCommandTest(unittest.TestCase):
 
         custom._do_ssh_op(cmd, op_info, mock_op)
 
-        mock_get_proxy.assert_called_once_with('proxy')
+        mock_get_proxy.assert_called_once_with(cmd, 'proxy')
         mock_get_relay_info.assert_called_once_with(cmd, 'rg', 'vm', 'Microsoft.HybridCompute/machines', None, "port", False)
         mock_op.assert_called_once_with(op_info, False, False)
         mock_get_cert.assert_not_called()
@@ -457,6 +461,8 @@ class SshCustomCommandTest(unittest.TestCase):
         cmd.cli_ctx = mock.Mock()
         cmd.cli_ctx.cloud = mock.Mock()
         cmd.cli_ctx.cloud.name = "azurecloud"
+        cmd.cli_ctx.cloud.endpoints = mock.Mock()
+        cmd.cli_ctx.cloud.endpoints.active_directory = "https://login.microsoftonline.com"
         mock_check_files.return_value = "public", "private", False
         mock_principal.return_value = ["username"]
         mock_get_mod_exp.return_value = "modulus", "exponent"
@@ -483,7 +489,7 @@ class SshCustomCommandTest(unittest.TestCase):
         mock_check_files.assert_called_once_with("publicfile", "privatefile", None, "client")
         mock_get_mod_exp.assert_called_once_with("public")
         mock_write_cert.assert_called_once_with("certificate", "public-aadcert.pub")
-        mock_get_proxy.assert_called_once_with('proxy')
+        mock_get_proxy.assert_called_once_with(cmd, 'proxy')
         mock_get_relay_info.assert_called_once_with(cmd, 'rg', 'vm', 'Microsoft.HybridCompute/machines', 3600, 'port', False)
         mock_op.assert_called_once_with(op_info, False, True)
 
