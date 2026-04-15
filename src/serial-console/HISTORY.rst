@@ -1,6 +1,6 @@
 Release History
 ===============
-1.0.0b4
+1.0.0
 ++++++
 * Migrate code from Azure SDK to AAZ based commands for compute operations (VM)
 
