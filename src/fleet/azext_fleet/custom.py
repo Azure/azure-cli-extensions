@@ -30,6 +30,7 @@ from azext_fleet.constants import UPGRADE_TYPE_ERROR_MESSAGES
 from azext_fleet.constants import SUPPORTED_GATE_STATES_FILTERS
 from azext_fleet.constants import SUPPORTED_GATE_STATES_PATCH
 from azext_fleet.constants import FLEET_1P_APP_ID
+from azext_fleet.constants import POLLING_INTERVAL_SECS
 from azext_fleet.vendored_sdks.v2026_05_01_preview.models import (
     PropagationPolicy,
     PlacementProfile,
@@ -197,7 +198,10 @@ def update_fleet(cmd,
         identity=managed_service_identity
     )
 
-    return sdk_no_wait(no_wait, client.begin_update, resource_group_name, name, fleet_patch, polling_interval=5)
+    return sdk_no_wait(
+        no_wait, client.begin_update, resource_group_name, name, fleet_patch,
+        polling_interval=POLLING_INTERVAL_SECS
+    )
 
 
 def show_fleet(cmd,  # pylint: disable=unused-argument
@@ -220,7 +224,7 @@ def delete_fleet(cmd,  # pylint: disable=unused-argument
                  resource_group_name,
                  name,
                  no_wait=False):
-    return sdk_no_wait(no_wait, client.begin_delete, resource_group_name, name, polling_interval=5)
+    return sdk_no_wait(no_wait, client.begin_delete, resource_group_name, name, polling_interval=POLLING_INTERVAL_SECS)
 
 
 def _convert_kubeconfig_to_azurecli(path):
@@ -1005,7 +1009,7 @@ def create_managed_namespace(cmd,
         fleet_name,
         managed_namespace_name,
         managed_namespace,
-        polling_interval=5
+        polling_interval=POLLING_INTERVAL_SECS
     )
 
 
@@ -1077,7 +1081,7 @@ def update_managed_namespace(cmd,
         fleet_name=fleet_name,
         managed_namespace_name=managed_namespace_name,
         properties=patch,
-        polling_interval=5
+        polling_interval=POLLING_INTERVAL_SECS
     )
 
 
@@ -1093,7 +1097,7 @@ def delete_managed_namespace(cmd,  # pylint: disable=unused-argument
         resource_group_name,
         fleet_name,
         managed_namespace_name,
-        polling_interval=5
+        polling_interval=POLLING_INTERVAL_SECS
     )
 
 
