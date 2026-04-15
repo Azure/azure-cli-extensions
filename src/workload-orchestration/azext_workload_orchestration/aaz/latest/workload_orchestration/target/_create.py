@@ -181,11 +181,6 @@ class Create(AAZCommand):
         if not self.ctx.args.context_id:
             self._resolve_context_id_from_config()
 
-        # Default target specification (helm.v3) if not provided
-        if not self.ctx.args.target_specification:
-            from azext_workload_orchestration.onboarding.consts import DEFAULT_TARGET_SPECIFICATION
-            self.ctx.args.target_specification = DEFAULT_TARGET_SPECIFICATION
-
     def _resolve_context_id_from_config(self):
         """Resolve context_id from CLI config if not already set."""
         try:
