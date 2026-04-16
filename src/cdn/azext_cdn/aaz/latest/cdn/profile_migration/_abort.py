@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Abort(AAZCommand):
     """Abort the migration to Azure Frontdoor Premium/Standard.
+
+    :example: Profiles_CdnMigrationCommit
+        az cdn profile-migration abort --resource-group RG --profile-name profile1
     """
 
     _aaz_info = {

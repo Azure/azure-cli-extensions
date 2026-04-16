@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Migrate(AAZCommand):
     """Migrate the CDN profile to Azure Frontdoor(Standard/Premium) profile. This step prepares the profile for migration and will be followed by Commit to finalize the migration.
+
+    :example: Profiles_CdnMigrate
+        az cdn profile-migration migrate --resource-group RG --profile-name profile1 --sku Standard_AzureFrontDoor
     """
 
     _aaz_info = {

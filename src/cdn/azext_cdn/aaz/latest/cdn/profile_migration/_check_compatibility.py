@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class CheckCompatibility(AAZCommand):
     """Checks if CDN profile can be migrated to Azure Frontdoor(Standard/Premium) profile.
+
+    :example: Profiles_CdnCanMigrate
+        az cdn profile-migration check-compatibility --resource-group RG --profile-name profile1
     """
 
     _aaz_info = {

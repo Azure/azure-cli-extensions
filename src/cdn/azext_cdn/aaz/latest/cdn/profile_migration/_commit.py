@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Commit(AAZCommand):
     """Commit the migrated Azure Frontdoor(Standard/Premium) profile.
+
+    :example: Profiles_MigrationCommit
+        az cdn profile-migration commit --resource-group RG --profile-name profile1
     """
 
     _aaz_info = {
@@ -48,6 +51,11 @@ class Commit(AAZCommand):
             help="Name of the CDN profile which is unique within the resource group.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9]+(-*[a-zA-Z0-9])*$",
+                max_length=260,
+                min_length=1,
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
