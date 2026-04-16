@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a file share.
+
+    :example: Create a file share with NFS protocol
+        az fileshare create --name MyFileShare --resource-group MyRG --location eastus --provisioned-storage-gi-b 1024 --provisioned-io-per-sec 3000 --throughput-mibps 125 --protocol NFS --redundancy Local
     """
 
     _aaz_info = {

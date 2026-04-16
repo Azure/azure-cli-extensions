@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a FileShare
+
+    :example: Update the provisioned storage of a file share
+        az fileshare update --name MyFileShare --resource-group MyRG --storage-gib 2048
     """
 
     _aaz_info = {

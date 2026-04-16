@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a FileShareSnapshot.
+
+    :example: Create a snapshot of a file share
+        az fileshare snapshot create --name MySnapshot --resource-group MyRG --resource-name MyFileShare
     """
 
     _aaz_info = {

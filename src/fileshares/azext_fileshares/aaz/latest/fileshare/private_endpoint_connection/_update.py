@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update the state of specified private endpoint connection associated with the file share.
+
+    :example: Reject a private endpoint connection
+        az fileshare private-endpoint-connection update --name MyConnection --resource-group MyRG --resource-name MyFileShare --connection-state status=Rejected description="Rejected"
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a FileShareSnapshot.
+
+    :example: Update a file share snapshot metadata
+        az fileshare snapshot update --name MySnapshot --resource-group MyRG --resource-name MyFileShare --metadata key1=value1
     """
 
     _aaz_info = {
