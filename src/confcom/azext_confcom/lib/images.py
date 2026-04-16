@@ -48,6 +48,7 @@ def get_image(image_ref: str) -> docker.models.images.Image:
 
 
 def get_image_platform(image_reference: str) -> str:
+    """Return the platform of the pulled image (e.g. 'linux/amd64')."""
     return "/".join([
         pull_image(image_reference).attrs['Os'],
         pull_image(image_reference).attrs['Architecture']

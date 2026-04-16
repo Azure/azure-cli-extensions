@@ -158,6 +158,8 @@ def get_image_info(progress, message_queue, tar_mapping, image):
                         break
                     except (docker.errors.ImageNotFound, docker.errors.NotFound):
                         continue
+                if raw_image is None:
+                    raise docker.errors.ImageNotFound(image_name)
                 image_info = {
                     "platform": "/".join([raw_image.attrs.get("Os"), raw_image.attrs.get("Architecture")]),
                     **raw_image.attrs.get("Config")

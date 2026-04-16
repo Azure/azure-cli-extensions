@@ -5,7 +5,6 @@
 
 import copy
 import json
-import subprocess
 import warnings
 from enum import Enum, auto
 from typing import Any, Dict, List, Optional, Tuple, Union
@@ -44,7 +43,7 @@ from azext_confcom.template_util import (case_insensitive_dict_get,
                                          process_mounts_from_config,
                                          readable_diff,
                                          find_value_in_params_and_vars)
-from azext_confcom.lib.images import get_image_platform
+from azext_confcom.lib.images import get_image_platform  # pylint: disable=unused-import
 from azext_confcom.lib.defaults import get_debug_mode_exec_procs
 from knack.log import get_logger
 from tqdm import tqdm
@@ -671,73 +670,57 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         self._images = images
 
 
-def _get_image_platforms_from_docker(image_name: str) -> List[str]:
-    """Detect all platforms an image supports using docker manifest inspect.
-
-    If the image reference is a digest (@sha256:...), strip it back to the
-    tag so that multi-platform manifest list lookups work correctly.
-    """
-    # Strip digest references — manifest inspect needs a tag, not a digest
-    if "@sha256:" in image_name:
-        image_name = image_name.split("@sha256:")[0]
-        if ":" not in image_name.split("/")[-1]:
-            image_name += ":latest"
-
-    try:
-        result = subprocess.run(
-            ["docker", "manifest", "inspect", image_name],
-            capture_output=True, text=True, timeout=30, check=True,
-        )
-        data = json.loads(result.stdout)
-        platforms = []
-        for manifest in data.get("manifests", []):
-            plat = manifest.get("platform", {})
-            os_name = plat.get("os", "unknown")
-            arch = plat.get("architecture", "unknown")
-            if os_name != "unknown" and arch != "unknown":
-                platforms.append(f"{os_name}/{arch}")
-        if platforms:
-            return platforms
-    except (subprocess.CalledProcessError, subprocess.TimeoutExpired,
-            json.JSONDecodeError, FileNotFoundError):
-        pass
-    return []
-
-
 def validate_image_platform(image_name: str, platform: str) -> None:
-    """Validate that the image supports the specified platform.
+    """Validate that the image's platform matches --platform.
 
-    Uses docker manifest inspect for multi-platform detection,
-    then falls back to get_image_platform (docker pull) for single-platform.
+    Checks the local Docker image first, then attempts to pull with the
+    specified platform if not found locally. Verifies the image's
+    Os/Architecture attrs match the requested platform.
     """
-    supported = _get_image_platforms_from_docker(image_name)
-
-    # Fall back to single-platform detection via docker pull
-    if not supported:
-        try:
-            detected = get_image_platform(image_name)
-            if detected:
-                supported = [detected]
-        except (ValueError, KeyError, AttributeError):
-            pass
-
-    if not supported:
-        logger.warning(
-            "Could not detect supported platforms for image '%s'. "
-            "Skipping platform validation.", image_name,
-        )
+    import docker as docker_module
+    try:
+        client = docker_module.from_env()
+    except docker_module.errors.DockerException:
+        eprint("Docker is not running. Please start Docker.")
         return
 
-    if len(supported) == 1 and supported[0] != platform:
-        eprint(
-            f'Image "{image_name}" only supports platform "{supported[0]}", '
-            f'which does not match the specified platform "{platform}".'
-        )
+    image = None
 
-    if len(supported) > 1 and platform not in supported:
+    # Try local image first
+    try:
+        image = client.images.get(image_name)
+    except (docker_module.errors.ImageNotFound, docker_module.errors.NullResource):
+        pass
+
+    # If not local, try pulling with the specified platform
+    if image is None:
+        try:
+            image = client.images.pull(image_name, platform=platform)
+        except (docker_module.errors.ImageNotFound, docker_module.errors.NotFound):
+            eprint(
+                f'Image "{image_name}" is not found. '
+                f'Please check the image name and repository.'
+            )
+        except docker_module.errors.APIError as e:
+            error_msg = str(e).lower()
+            if "not supported" in error_msg or "no matching manifest" in error_msg:
+                eprint(
+                    f'Image "{image_name}" could not be pulled for platform "{platform}". '
+                    f'Docker Desktop must be in the correct container mode '
+                    f'(Linux containers for linux/amd64, '
+                    f'Windows containers for windows/amd64).'
+                )
+            else:
+                eprint(
+                    f'Image "{image_name}" could not be pulled for platform '
+                    f'"{platform}": {e}'
+                )
+
+    detected = f"{image.attrs.get('Os')}/{image.attrs.get('Architecture')}"
+    if detected != platform:
         eprint(
-            f'Image "{image_name}" supports platforms {supported}, '
-            f'which does not include the specified platform "{platform}".'
+            f'Image "{image_name}" has platform "{detected}", '
+            f'which does not match the specified platform "{platform}".'
         )
 
 
