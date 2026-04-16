@@ -11,6 +11,7 @@ into single-command operations to reduce onboarding steps.
 
 from azext_workload_orchestration.onboarding.target_prepare import target_prepare
 from azext_workload_orchestration.onboarding.target_deploy import target_deploy as _target_deploy
+from azext_workload_orchestration.onboarding.hierarchy_create_v2 import hierarchy_create as _hierarchy_create
 
 
 def target_init(
@@ -72,4 +73,14 @@ def target_deploy(
     )
 
 
-__all__ = ['target_prepare', 'target_init', 'target_deploy']
+__all__ = ['target_prepare', 'target_init', 'target_deploy', 'hierarchy_create']
+
+
+def hierarchy_create(cmd, resource_group=None, configuration_location=None, hierarchy_spec=None):
+    """Create a hierarchy: Site + Configuration + ConfigurationReference."""
+    return _hierarchy_create(
+        cmd=cmd,
+        resource_group=resource_group,
+        configuration_location=configuration_location,
+        hierarchy_spec=hierarchy_spec,
+    )

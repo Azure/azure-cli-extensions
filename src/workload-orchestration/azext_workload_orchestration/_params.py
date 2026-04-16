@@ -87,3 +87,43 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
                    help='Name for the WO extension resource. Default: wo-extension.')
         c.argument('custom_location_name', options_list=['--custom-location-name'],
                    help='Name for the custom location. Default: `<cluster-name>-cl`.')
+
+    with self.argument_context('workload-orchestration hierarchy create') as c:
+        c.argument('resource_group', options_list=['--resource-group', '-g'],
+                   help='Resource group (required for ResourceGroup type hierarchy).')
+        c.argument('configuration_location', options_list=['--configuration-location'],
+                   help='Azure region for the Configuration resource (e.g., eastus2euap).', required=True)
+        c.argument('hierarchy_spec', options_list=['--hierarchy-spec'],
+                   help='Hierarchy specification as YAML/JSON file (@file.yaml) or shorthand syntax.',
+                   required=True, type=_parse_hierarchy_spec)
+
+
+def _parse_hierarchy_spec(value):
+    """Parse hierarchy spec from file path or shorthand syntax."""
+    import os
+
+    # Handle @file syntax (@ may be stripped by CLI framework)
+    filepath = value.lstrip('@')
+    if os.path.exists(filepath):
+        try:
+            import yaml
+        except ImportError:
+            import json as yaml_fallback
+            with open(filepath, 'r', encoding='utf-8') as f:
+                return yaml_fallback.load(f)
+        with open(filepath, 'r', encoding='utf-8') as f:
+            return yaml.safe_load(f)
+
+    # Shorthand: name=X level=Y type=Z
+    result = {}
+    for pair in value.split():
+        if '=' in pair:
+            k, v = pair.split('=', 1)
+            result[k] = v
+    if not result:
+        from azure.cli.core.azclierror import ValidationError
+        raise ValidationError(
+            f"Invalid hierarchy-spec: '{value}'. "
+            "Use a YAML file path or shorthand: name=X level=Y"
+        )
+    return result

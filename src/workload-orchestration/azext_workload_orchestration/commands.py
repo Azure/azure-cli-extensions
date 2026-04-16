@@ -15,3 +15,6 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
 
     with self.command_group('workload-orchestration cluster') as g:
         g.custom_command('init', 'target_init')
+
+    with self.command_group('workload-orchestration hierarchy') as g:
+        g.custom_command('create', 'hierarchy_create')

@@ -75,3 +75,23 @@ examples:
     text: az workload-orchestration cluster init -c my-cluster -g my-rg -l eastus2euap --custom-location-name my-cl
 """
 
+helps['workload-orchestration hierarchy create'] = """
+type: command
+short-summary: Create a hierarchy (Site + Configuration + ConfigurationReference) in one command.
+long-summary: |
+    Creates the full resource stack for a hierarchy level:
+      1. Site (with level label)
+      2. Configuration (in specified region)
+      3. ConfigurationReference (links site to configuration)
+
+    Supports two types:
+      - ResourceGroup (default): single site in a resource group
+      - ServiceGroup: nested sites under a service group (up to 3 levels)
+examples:
+  - name: Create RG hierarchy from YAML file
+    text: az workload-orchestration hierarchy create -g my-rg --configuration-location eastus2euap --hierarchy-spec "@hierarchy.yaml"
+  - name: Create RG hierarchy with shorthand
+    text: az workload-orchestration hierarchy create -g my-rg --configuration-location eastus2euap --hierarchy-spec "name=Mehoopany level=factory"
+  - name: Create ServiceGroup hierarchy from YAML
+    text: az workload-orchestration hierarchy create --configuration-location eastus2euap --hierarchy-spec "@sg-hierarchy.yaml"
+"""
