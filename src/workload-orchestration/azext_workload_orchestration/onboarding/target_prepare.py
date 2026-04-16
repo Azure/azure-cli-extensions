@@ -450,29 +450,6 @@ def _ensure_wo_extension(
             )
             return ext_id
 
-        # Extension exists but is in failed/creating state - delete and reinstall
-        logger.info(
-            "WO extension exists but in '%s' state. Deleting and reinstalling...",
-            prov_state
-        )
-        print_step(
-            3, TOTAL_STEPS,
-            f"WO extension... Found in '{prov_state}' state, reinstalling"
-        )
-        try:
-            invoke_cli_command(cmd, [
-                "k8s-extension", "delete",
-                "-g", resource_group,
-                "--cluster-name", cluster_name,
-                "--cluster-type", "connectedClusters",
-                "--name", ext.get("name", extension_name),
-                "--yes",
-            ], expect_json=False)
-            import time as _time
-            _time.sleep(10)  # Wait for delete to propagate
-        except CLIInternalError:
-            pass  # Best effort delete
-
     # Install extension
     version_msg = f" version {extension_version}" if extension_version else ""
     print_step(

@@ -22,10 +22,6 @@ def target_init(
     extension_version=None,
     extension_name=None,
     custom_location_name=None,
-    skip_cert_manager=False,
-    skip_trust_manager=False,
-    kube_config=None,
-    kube_context=None,
 ):
     """Prepare an Arc-connected cluster for Workload Orchestration."""
     result = target_prepare(
@@ -37,10 +33,6 @@ def target_init(
         custom_location_name=custom_location_name,
         extension_version=extension_version,
         release_train=release_train,
-        skip_cert_manager=skip_cert_manager,
-        skip_trust_manager=skip_trust_manager,
-        kube_config=kube_config,
-        kube_context=kube_context,
     )
     return result
 

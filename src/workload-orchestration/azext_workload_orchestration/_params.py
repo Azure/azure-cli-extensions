@@ -84,14 +84,6 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
         c.argument('extension_version', options_list=['--extension-version'],
                    help='Specific WO extension version to install.')
         c.argument('extension_name', options_list=['--extension-name'],
-                   help='Name for the WO extension resource. Default: workload-orchestration.')
+                   help='Name for the WO extension resource. Default: wo-extension.')
         c.argument('custom_location_name', options_list=['--custom-location-name'],
                    help='Name for the custom location. Default: `<cluster-name>-cl`.')
-        c.argument('skip_cert_manager', options_list=['--skip-cert-manager'],
-                   action='store_true', help='Skip cert-manager installation.')
-        c.argument('skip_trust_manager', options_list=['--skip-trust-manager'],
-                   action='store_true', help='Skip trust-manager installation.')
-        c.argument('kube_config', options_list=['--kube-config'],
-                   help='Path to kubeconfig file. Defaults to ~/.kube/config.')
-        c.argument('kube_context', options_list=['--kube-context'],
-                   help='Kubernetes context to use. Defaults to current context.')

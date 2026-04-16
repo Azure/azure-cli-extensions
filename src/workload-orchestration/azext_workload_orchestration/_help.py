@@ -68,10 +68,10 @@ examples:
   - name: Initialize a cluster with defaults
     text: az workload-orchestration cluster init -c my-cluster -g my-rg -l eastus2euap
   - name: Initialize with a specific release train
-    text: az workload-orchestration cluster init -c my-cluster -g my-rg -l eastus2euap --release-train preview
-  - name: Initialize with custom location name
+    text: az workload-orchestration cluster init -c my-cluster -g my-rg -l eastus2euap --release-train dev
+  - name: Pin a specific extension version
+    text: az workload-orchestration cluster init -c my-cluster -g my-rg -l eastus2euap --extension-version 2.1.28
+  - name: Custom location name
     text: az workload-orchestration cluster init -c my-cluster -g my-rg -l eastus2euap --custom-location-name my-cl
-  - name: Skip cert-manager if already managed externally
-    text: az workload-orchestration cluster init -c my-cluster -g my-rg -l eastus2euap --skip-cert-manager
 """
 
