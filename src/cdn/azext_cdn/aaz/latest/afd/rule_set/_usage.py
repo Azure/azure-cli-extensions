@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Usage(AAZCommand):
     """Checks the quota and actual usage of endpoints under the given Azure Front Door profile..
+
+    :example: RuleSets_ListResourceUsage
+        az afd rule-set usage --resource-group RG --profile-name profile1 --rule-set-name ruleSet1
     """
 
     _aaz_info = {
@@ -168,7 +171,9 @@ class Usage(AAZCommand):
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
             )
-            _schema_on_200.value = AAZListType()
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()

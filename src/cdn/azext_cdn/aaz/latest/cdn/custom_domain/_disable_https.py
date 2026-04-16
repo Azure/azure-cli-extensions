@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class DisableHttps(AAZCommand):
     """Disable https delivery of the custom domain.
+
+    :example: CustomDomains_DisableCustomHttps
+        az cdn custom-domain disable-https --resource-group RG --profile-name profile1 --endpoint-name endpoint1 --custom-domain-name www-someDomain-net
     """
 
     _aaz_info = {
@@ -59,6 +62,11 @@ class DisableHttps(AAZCommand):
             help="Name of the CDN profile which is unique within the resource group.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9]+(-*[a-zA-Z0-9])*$",
+                max_length=260,
+                min_length=1,
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -94,7 +102,7 @@ class DisableHttps(AAZCommand):
                     session,
                     self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
             if session.http_response.status_code in [200]:
@@ -103,7 +111,7 @@ class DisableHttps(AAZCommand):
                     session,
                     self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
 
