@@ -15,7 +15,7 @@ def get_vm_size_completion_list(cmd, prefix, namespace):    # pylint: disable=un
 
     location = _get_location(cmd.cli_ctx, namespace)
     result = get_vm_sizes(cmd.cli_ctx, location)
-    return set(r.name for r in result) & set(c.value for c in ContainerServiceVMSizeTypes)
+    return set(r.get('name') for r in result) & set(c.value for c in ContainerServiceVMSizeTypes)
 
 
 @Completer
@@ -27,8 +27,10 @@ def get_kube_sku_completion_list(cmd, prefix, namespace):   # pylint: disable=un
 
 
 def get_vm_sizes(cli_ctx, location):
-    from ._client_factory import cf_compute_service
-    return cf_compute_service(cli_ctx).virtual_machine_sizes.list(location)
+    from azure.cli.command_modules.vm.operations.vm import VMListSizes
+    return VMListSizes(cli_ctx=cli_ctx)(command_args={
+        'location': location
+    })
 
 
 def _get_location(cli_ctx, namespace):

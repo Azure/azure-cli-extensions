@@ -452,12 +452,6 @@ def create_app_service_plan(cmd, resource_group_name, name, is_linux, hyper_v, p
                                          tags, no_wait)
 
 
-def get_vm_sizes(cli_ctx, location):
-    from ._client_factory import cf_compute_service
-
-    return cf_compute_service(cli_ctx).virtual_machine_sizes.list(location)
-
-
 def _get_kube_env_from_custom_location(cmd, custom_location, resource_group):
     kube_environment_id = ""
     custom_location_name = custom_location
