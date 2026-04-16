@@ -485,6 +485,7 @@ class Quickstart(AAZCommand):
                 "siteId": site_id,
                 "siteName": site_name,
                 "type": "Microsoft.Edge/sites",
+                "scope": scope,
                 "siteConfiguration": {
                     "configurationId": config_id,
                     "location": rg_location,
