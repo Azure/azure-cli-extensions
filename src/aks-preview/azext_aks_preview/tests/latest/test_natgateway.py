@@ -235,5 +235,55 @@ class TestIsNatGatewayV2ProfileProvided(unittest.TestCase):
         self.assertFalse(result)
 
 
+class TestValidateNatGatewayV2Params(unittest.TestCase):
+    """Test the cross-parameter validator for V2-only params."""
+
+    def _make_namespace(self, **kwargs):
+        from types import SimpleNamespace
+        defaults = {
+            'nat_gateway_managed_outbound_ipv6_count': None,
+            'nat_gateway_outbound_ip_ids': None,
+            'nat_gateway_outbound_ip_prefix_ids': None,
+            'outbound_type': None,
+        }
+        defaults.update(kwargs)
+        return SimpleNamespace(**defaults)
+
+    def test_v2_params_allowed_when_outbound_type_is_v2(self):
+        from azext_aks_preview._validators import validate_nat_gateway_v2_params
+        ns = self._make_namespace(
+            nat_gateway_managed_outbound_ipv6_count=4,
+            outbound_type='managedNATGatewayV2',
+        )
+        # Should not raise
+        validate_nat_gateway_v2_params(ns)
+
+    def test_v2_params_allowed_when_outbound_type_not_specified(self):
+        """On update, outbound_type may be None if cluster is already V2."""
+        from azext_aks_preview._validators import validate_nat_gateway_v2_params
+        ns = self._make_namespace(
+            nat_gateway_managed_outbound_ipv6_count=3,
+            outbound_type=None,
+        )
+        # Should not raise — let RP validate
+        validate_nat_gateway_v2_params(ns)
+
+    def test_v2_params_rejected_when_outbound_type_is_non_v2(self):
+        from azure.cli.core.azclierror import InvalidArgumentValueError
+        from azext_aks_preview._validators import validate_nat_gateway_v2_params
+        ns = self._make_namespace(
+            nat_gateway_managed_outbound_ipv6_count=4,
+            outbound_type='loadBalancer',
+        )
+        with self.assertRaises(InvalidArgumentValueError):
+            validate_nat_gateway_v2_params(ns)
+
+    def test_no_v2_params_passes_always(self):
+        from azext_aks_preview._validators import validate_nat_gateway_v2_params
+        ns = self._make_namespace(outbound_type='loadBalancer')
+        # No V2 params set, should not raise
+        validate_nat_gateway_v2_params(ns)
+
+
 if __name__ == '__main__':
     unittest.main()

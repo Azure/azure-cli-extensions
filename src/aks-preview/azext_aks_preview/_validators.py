@@ -1168,7 +1168,11 @@ def validate_nat_gateway_managed_outbound_ipv6_count(namespace):
 
 
 def validate_nat_gateway_v2_params(namespace):
-    """Validate that V2-only NAT gateway params require managedNATGatewayV2."""
+    """Validate that V2-only NAT gateway params require managedNATGatewayV2.
+
+    On update, --outbound-type may not be specified if the cluster is already V2.
+    Only reject when --outbound-type is explicitly set to a non-V2 value.
+    """
     v2_params = [
         getattr(namespace, 'nat_gateway_managed_outbound_ipv6_count', None),
         getattr(namespace, 'nat_gateway_outbound_ip_ids', None),
@@ -1176,7 +1180,7 @@ def validate_nat_gateway_v2_params(namespace):
     ]
     if any(p is not None for p in v2_params):
         outbound_type = getattr(namespace, 'outbound_type', None)
-        if outbound_type != 'managedNATGatewayV2':
+        if outbound_type is not None and outbound_type != 'managedNATGatewayV2':
             raise InvalidArgumentValueError(
                 "--nat-gateway-managed-outbound-ipv6-count, "
                 "--nat-gateway-outbound-ips, and "

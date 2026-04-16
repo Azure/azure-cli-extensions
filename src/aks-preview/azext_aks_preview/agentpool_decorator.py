@@ -1826,16 +1826,10 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
                 agentpool.gpu_profile = self.models.GPUProfile()  # pylint: disable=no-member
             if agentpool.gpu_profile.nvidia is None:
                 agentpool.gpu_profile.nvidia = self.models.NvidiaGPUProfile()  # pylint: disable=no-member
-            # Check if already set to the desired value to avoid API error
-            if agentpool.gpu_profile.nvidia.management_mode == CONST_GPU_MANAGEMENT_MODE_MANAGED:
-                return agentpool
             agentpool.gpu_profile.nvidia.management_mode = CONST_GPU_MANAGEMENT_MODE_MANAGED
             agentpool.gpu_profile.driver = CONST_GPU_DRIVER_INSTALL
         else:
             if agentpool.gpu_profile and agentpool.gpu_profile.nvidia:
-                # Check if already set to the desired value to avoid API error
-                if agentpool.gpu_profile.nvidia.management_mode == CONST_GPU_MANAGEMENT_MODE_UNMANAGED:
-                    return agentpool
                 agentpool.gpu_profile.nvidia.management_mode = CONST_GPU_MANAGEMENT_MODE_UNMANAGED
 
         return agentpool
