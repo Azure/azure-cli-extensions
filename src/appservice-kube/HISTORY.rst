@@ -2,7 +2,7 @@
 
 Release History
 ===============
-0.1.12
+1.0.0b1
 ++++++
 * Remove unused compute SDK client factory and completers
 
