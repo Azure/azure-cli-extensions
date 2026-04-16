@@ -69,7 +69,7 @@ class Create(AAZCommand):
             help="The name of the file share as seen by the end user when mounting the share, such as in a URI or UNC format in their operating system.",
         )
         _args_schema.nfs_protocol_properties = AAZObjectArg(
-            options=["--nfs-protocol-properties"],
+            options=["--nfs-props", "--nfs-protocol-properties"],
             arg_group="Properties",
             help="Protocol settings specific NFS.",
         )
@@ -85,17 +85,17 @@ class Create(AAZCommand):
             help="The provisioned IO / sec of the share.",
         )
         _args_schema.provisioned_storage_gi_b = AAZIntArg(
-            options=["--provisioned-storage-gi-b"],
+            options=["--storage-gib", "--provisioned-storage-gi-b"],
             arg_group="Properties",
             help="The provisioned storage size of the share in GiB (1 GiB is 1024^3 bytes or 1073741824 bytes). A component of the file share's bill is the provisioned storage, regardless of the amount of used storage.",
         )
         _args_schema.provisioned_throughput_mi_b_per_sec = AAZIntArg(
-            options=["--provisioned-throughput-mi-b-per-sec"],
+            options=["--throughput-mibps", "--provisioned-throughput-mi-b-per-sec"],
             arg_group="Properties",
             help="The provisioned throughput / sec of the share.",
         )
         _args_schema.public_access_properties = AAZObjectArg(
-            options=["--public-access-properties"],
+            options=["--public-access", "--public-access-properties"],
             arg_group="Properties",
             help="The set of properties for control public access.",
         )
