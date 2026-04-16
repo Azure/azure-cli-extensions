@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Usage(AAZCommand):
     """Check the quota and actual usage of the CDN profiles under the given subscription.
+
+    :example: ResourceUsage_List
+        az cdn usage
     """
 
     _aaz_info = {
@@ -137,7 +140,7 @@ class Usage(AAZCommand):
                 serialized_name="nextLink",
             )
             _schema_on_200.value = AAZListType(
-                flags={"read_only": True},
+                flags={"required": True},
             )
 
             value = cls._schema_on_200.value
