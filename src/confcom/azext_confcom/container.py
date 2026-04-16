@@ -563,7 +563,7 @@ class ContainerImage:
             mounts=mounts,
             allow_elevated=allow_elevated,
             extraEnvironmentRules=[],
-            platform=container_json["platform"],
+            platform=container_json.get("platform", "linux/amd64"),
             execProcesses=exec_processes,
             signals=signals,
             user=user,
@@ -814,7 +814,7 @@ class UserContainerImage(ContainerImage):
         image.__class__ = UserContainerImage
         # inject default mounts for user container
         if (image.base not in config.BASELINE_SIDECAR_CONTAINERS) and (not is_vn2):
-            if container_json["platform"].startswith("linux"):
+            if container_json.get("platform", "linux/amd64").startswith("linux"):
                 image.get_mounts().extend(_DEFAULT_MOUNTS)
 
         if (image.base not in config.BASELINE_SIDECAR_CONTAINERS) and (is_vn2):
@@ -823,7 +823,7 @@ class UserContainerImage(ContainerImage):
         # Start with the customer environment rules
         env_rules = (
             copy.deepcopy(_INJECTED_CUSTOMER_ENV_RULES)
-            if container_json["platform"].startswith("linux") else []
+            if container_json.get("platform", "linux/amd64").startswith("linux") else []
         )
         # If is_vn2, add the VN2 environment rules
         if is_vn2:

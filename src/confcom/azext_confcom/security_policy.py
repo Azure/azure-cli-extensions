@@ -149,8 +149,11 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
             image_platform = c.get("platform", "linux/amd64")
             if self._platform is None:
                 self._platform = image_platform
-            else:
-                assert self._platform == image_platform, "All images must have the same platform"
+            elif self._platform != image_platform:
+                eprint(
+                    f'All images must have the same platform. '
+                    f'Found "{image_platform}" but expected "{self._platform}".'
+                )
 
             if not is_sidecar(c[config.POLICY_FIELD_CONTAINERS_ID]):
                 container_image = UserContainerImage.from_json(c, is_vn2=is_vn2)
@@ -250,6 +253,8 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
                 pretty_print_func(self._allow_runtime_logging),
                 pretty_print_func(self._allow_environment_variable_dropping),
             )
+        eprint(f'Unsupported platform: "{self._platform}". '
+               f'Supported platforms are linux/amd64 and windows/amd64.')
 
     def validate_cce_policy(self) -> Tuple[bool, Dict]:
         """Utility method: check to see if the existing policy
@@ -715,6 +720,12 @@ def validate_image_platform(image_name: str, platform: str) -> None:
                     f'Image "{image_name}" could not be pulled for platform '
                     f'"{platform}": {e}'
                 )
+
+    if image is None:
+        eprint(
+            f'Image "{image_name}" could not be retrieved for platform validation.'
+        )
+        return
 
     detected = f"{image.attrs.get('Os')}/{image.attrs.get('Architecture')}"
     if detected != platform:
