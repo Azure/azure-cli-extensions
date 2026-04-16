@@ -16,6 +16,12 @@ from azure.cli.core.aaz import *
 )
 class CheckNameAvailability(AAZCommand):
     """Implements local CheckNameAvailability operations
+
+    :example: FileShares_CheckNameAvailability_MaximumSet
+        az fileshare check-name-availability --location westus --name fvykqbgmd --type Microsoft.FileShares/fileShares
+
+    :example: FileShares_CheckNameAvailability_MinimumSet
+        az fileshare check-name-availability --location westus --name fvykqbgmd --type Microsoft.FileShares/fileShares
     """
 
     _aaz_info = {

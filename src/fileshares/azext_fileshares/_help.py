@@ -9,3 +9,85 @@
 # pylint: disable=too-many-lines
 
 from knack.help_files import helps  # pylint: disable=unused-import
+
+helps['fileshare create'] = """
+type: command
+short-summary: Create a file share.
+examples:
+  - name: Create a file share with NFS protocol
+    text: |
+      az fileshare create --name MyFileShare --resource-group MyRG --location eastus \
+        --provisioned-storage-gi-b 1024 --provisioned-io-per-sec 3000 \
+        --provisioned-throughput-mi-b-per-sec 125 --protocol NFS
+"""
+
+helps['fileshare update'] = """
+type: command
+short-summary: Update a file share.
+examples:
+  - name: Update the provisioned storage of a file share
+    text: |
+      az fileshare update --name MyFileShare --resource-group MyRG \
+        --provisioned-storage-gi-b 2048
+"""
+
+helps['fileshare check-name-availability'] = """
+type: command
+short-summary: Check if a file share name is available.
+examples:
+  - name: Check name availability for a file share
+    text: |
+      az fileshare check-name-availability --location eastus --name MyFileShare
+"""
+
+helps['fileshare get-provisioning-recommendation'] = """
+type: command
+short-summary: Get provisioning recommendations for an Azure file share.
+examples:
+  - name: Get provisioning recommendations for a file share
+    text: |
+      az fileshare get-provisioning-recommendation --location eastus \
+        --provisioned-storage-gi-b 1024
+"""
+
+helps['fileshare snapshot create'] = """
+type: command
+short-summary: Create a file share snapshot.
+examples:
+  - name: Create a snapshot of a file share
+    text: |
+      az fileshare snapshot create --name MySnapshot --resource-group MyRG \
+        --resource-name MyFileShare
+"""
+
+helps['fileshare snapshot update'] = """
+type: command
+short-summary: Update a file share snapshot.
+examples:
+  - name: Update a file share snapshot metadata
+    text: |
+      az fileshare snapshot update --name MySnapshot --resource-group MyRG \
+        --resource-name MyFileShare --metadata key1=value1
+"""
+
+helps['fileshare private-endpoint-connection create'] = """
+type: command
+short-summary: Create a private endpoint connection for a file share.
+examples:
+  - name: Approve a private endpoint connection
+    text: |
+      az fileshare private-endpoint-connection create --name MyConnection \
+        --resource-group MyRG --resource-name MyFileShare \
+        --connection-state status=Approved description="Approved by admin"
+"""
+
+helps['fileshare private-endpoint-connection update'] = """
+type: command
+short-summary: Update a private endpoint connection for a file share.
+examples:
+  - name: Reject a private endpoint connection
+    text: |
+      az fileshare private-endpoint-connection update --name MyConnection \
+        --resource-group MyRG --resource-name MyFileShare \
+        --connection-state status=Rejected description="Rejected by admin"
+"""
