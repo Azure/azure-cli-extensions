@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "computelimit guest-subscription list",
-    is_preview=True,
 )
 class List(AAZCommand):
     """List all guest subscriptions added to the host subscription in a location.
