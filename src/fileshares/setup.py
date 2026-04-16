@@ -38,7 +38,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
 setup(
     name='fileshares',
     version=VERSION,
-    description='Microsoft Azure Command-Line Tools Fileshares Extension.',
+    description='Commands for managing Azure file shares, snapshots, and private endpoint connections.',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     author='Microsoft Corporation',
