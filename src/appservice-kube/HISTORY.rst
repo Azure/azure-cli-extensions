@@ -4,7 +4,7 @@ Release History
 ===============
 0.1.12
 ++++++
-* Migrate code from Azure SDK to AAZ-based commands for compute operations (VM)
+* Remove unused completer
 
 0.1.11
 ++++++
