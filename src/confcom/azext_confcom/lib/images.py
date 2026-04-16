@@ -74,14 +74,23 @@ def get_image_layers(image: str, platform: str = "linux/amd64") -> list[str]:
         text=True,
     )
 
+    stdout_str = result.stdout.strip()
+
+    # Try JSON output first (newer dmverity-vhd versions)
+    if stdout_str.startswith("{"):
+        try:
+            import json
+            json_output = json.loads(stdout_str)
+            return json_output.get("layers", [])
+        except json.JSONDecodeError:
+            pass
+
+    # Fallback: line-by-line parsing for older versions
     layers = []
-    for line in result.stdout.splitlines():
+    for line in stdout_str.splitlines():
         if "hash: " in line:
             layers.append(line.split("hash: ")[-1])
         else:
-            # dmverity-vhd may print warnings to stdout (e.g. OCI format
-            # parsing errors). Log them so they are visible but don't treat them
-            # as layer hashes.
             logger.warning("Unexpected dmverity-vhd output: %s", line)
 
     return layers
