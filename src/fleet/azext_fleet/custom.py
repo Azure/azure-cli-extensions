@@ -28,6 +28,7 @@ from azext_fleet.constants import UPGRADE_TYPE_FULL
 from azext_fleet.constants import UPGRADE_TYPE_NODEIMAGEONLY
 from azext_fleet.constants import UPGRADE_TYPE_ERROR_MESSAGES
 from azext_fleet.constants import SUPPORTED_GATE_STATES_FILTERS
+from azext_fleet.constants import SUPPORTED_GATE_TYPE_FILTERS
 from azext_fleet.constants import SUPPORTED_GATE_STATES_PATCH
 from azext_fleet.constants import FLEET_1P_APP_ID
 from azext_fleet.constants import POLLING_INTERVAL_SECS
@@ -39,7 +40,7 @@ from azext_fleet.vendored_sdks.v2026_05_01_preview.models import (
     PlacementV1PlacementPolicy,
     PlacementV1RolloutStrategy,
     PropagationType,
-    PlacementType
+    PlacementType,
 )
 
 logger = get_logger(__name__)
@@ -582,6 +583,41 @@ def skip_update_run(cmd,  # pylint: disable=unused-argument
     return sdk_no_wait(no_wait, client.begin_skip, resource_group_name, fleet_name, name, skip_properties)
 
 
+def build_gate_configs(cmd, operation_group, gates_list):
+    """Convert a list of gate dicts from JSON into GateConfiguration model objects."""
+    if not gates_list:
+        return None
+
+    gate_configuration_model = cmd.get_models(
+        "GateConfiguration",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group=operation_group
+    )
+    scheduled_start_configuration_model = cmd.get_models(
+        "ScheduledStartConfiguration",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group=operation_group
+    )
+
+    result = []
+    for gate in gates_list:
+        gate_type = gate.get("type", "Approval")
+        scheduled_start_config = None
+        raw_config = gate.get("scheduledStartConfiguration")
+        if raw_config:
+            scheduled_start_config = scheduled_start_configuration_model(
+                start_day=raw_config["startDay"],
+                start_time=raw_config["startTime"],
+                utc_offset=raw_config["utcOffset"],
+            )
+        result.append(gate_configuration_model(
+            type=gate_type,
+            display_name=gate.get("displayName"),
+            scheduled_start_configuration=scheduled_start_config,
+        ))
+    return result
+
+
 def get_update_run_strategy(cmd, operation_group, stages):
     if stages is None:
         return None
@@ -626,8 +662,8 @@ def get_update_run_strategy(cmd, operation_group, stages):
                 name=group["name"],
                 max_concurrency=group.get("maxConcurrency"),
                 member_selector=group_member_selector,
-                before_gates=group.get("beforeGates", []),
-                after_gates=group.get("afterGates", []),
+                before_gates=build_gate_configs(cmd, operation_group, group.get("beforeGates")),
+                after_gates=build_gate_configs(cmd, operation_group, group.get("afterGates")),
             ))
 
         after_wait = stage.get("afterStageWaitInSeconds") or 0
@@ -641,8 +677,8 @@ def get_update_run_strategy(cmd, operation_group, stages):
             groups=update_groups,
             member_selector=stage_member_selector,
             max_concurrency=stage.get("maxConcurrency"),
-            before_gates=stage.get("beforeGates", []),
-            after_gates=stage.get("afterGates", []),
+            before_gates=build_gate_configs(cmd, operation_group, stage.get("beforeGates")),
+            after_gates=build_gate_configs(cmd, operation_group, stage.get("afterGates")),
             after_stage_wait_in_seconds=after_wait
         ))
 
@@ -789,8 +825,9 @@ def list_gates_by_fleet(cmd,  # pylint: disable=unused-argument
                         client,
                         resource_group_name,
                         fleet_name,
-                        state_filter=None):
-    params = {}
+                        state_filter=None,
+                        gate_type=None):
+    filters = []
 
     if state_filter:
         if state_filter not in SUPPORTED_GATE_STATES_FILTERS:
@@ -798,8 +835,19 @@ def list_gates_by_fleet(cmd,  # pylint: disable=unused-argument
                 f"Unsupported gate state filter value: '{state_filter}'. "
                 f"Allowed values are {SUPPORTED_GATE_STATES_FILTERS}"
             )
+        filters.append(f"state eq {state_filter}")
 
-        params["$filter"] = f"state eq {state_filter}"
+    if gate_type:
+        if gate_type not in SUPPORTED_GATE_TYPE_FILTERS:
+            raise CLIError(
+                f"Unsupported gate type filter value: '{gate_type}'. "
+                f"Allowed values are {SUPPORTED_GATE_TYPE_FILTERS}"
+            )
+        filters.append(f"gateType eq {gate_type}")
+
+    params = {}
+    if filters:
+        params["$filter"] = filters
 
     return client.list_by_fleet(resource_group_name, fleet_name, params=params)
 

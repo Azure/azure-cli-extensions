@@ -9,7 +9,9 @@ import tempfile
 import os
 from unittest.mock import MagicMock, patch
 from azext_fleet.custom import get_update_run_strategy
-from azext_fleet.vendored_sdks.v2026_05_01_preview.models import UpdateRunStrategy, UpdateStage, UpdateGroup, MemberSelector
+from azext_fleet.vendored_sdks.v2026_05_01_preview.models import (
+    UpdateRunStrategy, UpdateStage, UpdateGroup, MemberSelector, GateConfiguration, ScheduledStartConfiguration,
+)
 from azure.cli.core.azclierror import (
     InvalidArgumentValueError,
 )
@@ -45,6 +47,10 @@ class TestStagesJsonHandling(unittest.TestCase):
                 return UpdateRunStrategy
             elif model_name == "MemberSelector":
                 return MemberSelector
+            elif model_name == "GateConfiguration":
+                return GateConfiguration
+            elif model_name == "ScheduledStartConfiguration":
+                return ScheduledStartConfiguration
             else:
                 return MagicMock()
         
@@ -265,6 +271,69 @@ class TestStagesJsonHandling(unittest.TestCase):
         # Should raise an error when parsing invalid JSON
         with self.assertRaises(InvalidArgumentValueError):
             get_update_run_strategy(self.mock_cmd, "fleet_update_runs", invalid_json)
+
+    def test_scheduled_start_gate(self):
+        """Test that ScheduledStart gates are correctly parsed into GateConfiguration models."""
+        data = {
+            "stages": [
+                {
+                    "name": "stage1",
+                    "beforeGates": [
+                        {
+                            "displayName": "Wait until Friday evening",
+                            "type": "ScheduledStart",
+                            "scheduledStartConfiguration": {
+                                "startDay": "Friday",
+                                "startTime": "18:00",
+                                "utcOffset": "-05:00"
+                            }
+                        }
+                    ],
+                    "groups": [{"name": "group1"}]
+                }
+            ]
+        }
+        inline_json = json.dumps(data)
+        result = get_update_run_strategy(self.mock_cmd, "fleet_update_runs", inline_json)
+
+        stage = result.stages[0]
+        self.assertEqual(len(stage.before_gates), 1)
+        gate = stage.before_gates[0]
+        self.assertIsInstance(gate, GateConfiguration)
+        self.assertEqual(gate.type, "ScheduledStart")
+        self.assertEqual(gate.display_name, "Wait until Friday evening")
+        self.assertIsNotNone(gate.scheduled_start_configuration)
+        self.assertIsInstance(gate.scheduled_start_configuration, ScheduledStartConfiguration)
+        self.assertEqual(gate.scheduled_start_configuration.start_day, "Friday")
+        self.assertEqual(gate.scheduled_start_configuration.start_time, "18:00")
+        self.assertEqual(gate.scheduled_start_configuration.utc_offset, "-05:00")
+
+    def test_approval_gate_no_schedule(self):
+        """Test that Approval gates work correctly without scheduledStartConfiguration."""
+        data = {
+            "stages": [
+                {
+                    "name": "stage1",
+                    "beforeGates": [
+                        {
+                            "displayName": "Approval gate",
+                            "type": "Approval"
+                        }
+                    ],
+                    "groups": [{"name": "group1"}]
+                }
+            ]
+        }
+        inline_json = json.dumps(data)
+        result = get_update_run_strategy(self.mock_cmd, "fleet_update_runs", inline_json)
+
+        stage = result.stages[0]
+        self.assertEqual(len(stage.before_gates), 1)
+        gate = stage.before_gates[0]
+        self.assertIsInstance(gate, GateConfiguration)
+        self.assertEqual(gate.type, "Approval")
+        self.assertEqual(gate.display_name, "Approval gate")
+        self.assertIsNone(gate.scheduled_start_configuration)
 
 
 if __name__ == "__main__":
