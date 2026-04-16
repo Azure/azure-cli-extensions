@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a new delivery rule within the specified rule set.
+
+    :example: Rules_Update
+        az afd rule update --resource-group RG --profile-name profile1 --rule-set-name ruleSet1 --rule-name rule1 --actions "[{name:ModifyResponseHeader,parameters:{headerAction:Overwrite,headerName:X-CDN,typeName:DeliveryRuleHeaderActionParameters,value:MSFT}}]" --conditions "[{name:RequestMethod,parameters:{matchValues:[GET],negateCondition:False,operator:Equal,typeName:DeliveryRuleRequestMethodConditionParameters}}]" --order 1
     """
 
     _aaz_info = {
