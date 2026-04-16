@@ -8,6 +8,7 @@ import json
 import argparse
 import sys
 from knack.arguments import CLIArgumentType
+from argcomplete.completers import FilesCompleter
 from azext_confcom._validators import (
     validate_params_file,
     validate_diff,
@@ -503,4 +504,63 @@ def load_arguments(self, _):
             required=False,
             type=str,
             help='The name of the container in the template to use. If omitted, all containers are returned.'
+        )
+
+    with self.argument_context("confcom containers from_radius") as c:
+        c.positional(
+            "template",
+            type=str,
+            completer=FilesCompleter(),
+            help="Radius Bicep template to create container definition from",
+        )
+        c.argument(
+            "parameters",
+            options_list=['--parameters', '-p'],
+            action='append',
+            nargs='+',
+            completer=FilesCompleter(),
+            required=False,
+            default=[],
+            help='The parameters for the radius template'
+        )
+        c.argument(
+            "container_index",
+            options_list=['--idx'],
+            required=False,
+            default=0,
+            type=int,
+            help='The index of the container definition in the template to use'
+        )
+        c.argument(
+            "platform",
+            options_list=["--platform"],
+            required=False,
+            default="aci",
+            type=str,
+            help="Platform to create container definition for",
+        )
+
+    with self.argument_context("confcom radius policy_insert") as c:
+        c.positional(
+            "policy_file",
+            nargs='?',
+            type=argparse.FileType('rb'),
+            default=sys.stdin.buffer,
+            help="Policy file to insert (reads from stdin if not provided)",
+        )
+        c.argument(
+            "template_path",
+            options_list=['--template', '-t'],
+            required=True,
+            type=str,
+            completer=FilesCompleter(),
+            help='Path to Radius Bicep template to update with the policy',
+        )
+        c.argument(
+            "container_index",
+            options_list=['--idx'],
+            required=False,
+            default=0,
+            type=int,
+            help='Index of the container in the template to update (0-based). Defaults to 0.'
         )

@@ -27,6 +27,8 @@ from azext_confcom.command.fragment_attach import fragment_attach as _fragment_a
 from azext_confcom.command.fragment_push import fragment_push as _fragment_push
 from azext_confcom.command.containers_from_image import containers_from_image as _containers_from_image
 from azext_confcom.command.containers_from_vn2 import containers_from_vn2 as _containers_from_vn2
+from azext_confcom.command.containers_from_radius import containers_from_radius as _containers_from_radius
+from azext_confcom.command.radius_policy_insert import radius_policy_insert as _radius_policy_insert
 from knack.log import get_logger
 from packaging.version import Version
 
@@ -593,3 +595,31 @@ def containers_from_vn2(
         template=template,
         container_name=container_name,
     ))
+
+
+def containers_from_radius(
+    cmd,
+    template: str,
+    parameters: list,
+    container_index: int = 0,
+    platform: str = "aci",
+) -> None:
+    print(_containers_from_radius(
+        az_cli_command=cmd,
+        template=template,
+        parameters=parameters,
+        container_index=container_index,
+        platform=platform,
+    ))
+
+
+def radius_policy_insert(
+    policy_file,
+    template_path: str,
+    container_index: int = 0,
+) -> None:
+    _radius_policy_insert(
+        policy_file=policy_file,
+        template_path=template_path,
+        container_index=container_index,
+    )

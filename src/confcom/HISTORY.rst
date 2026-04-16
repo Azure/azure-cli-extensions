@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.9.0
++++++
+* Add command for generating container policy defintions from radius application templates
+* Add command to insert generated policy into radius application templates
+
 1.8.0
 +++++
 * Ensure that fragments are attached to the correct manifest for a multiarch image.
