@@ -3,31 +3,43 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-"""Hierarchy create command - creates a hierarchy level in a single command.
+"""Hierarchy create command - creates Site + Configuration + ConfigurationReference.
 
-Wraps 4-6 operations into one:
-  0. Auto-create Context (if needed)
-  1. Create Service Group
-  2. Create Site (in Service Group)
-  3. Create Configuration
-  4. Create Configuration Reference (links Config to Site)
-  5. Create Site Reference (links Site to Context)
+Supports two hierarchy types:
+  - ResourceGroup: Single site in a resource group (no children)
+  - ServiceGroup: Nested sites under a service group (up to 3 levels)
 
-Usage:
+For ResourceGroup:
     az workload-orchestration hierarchy create \\
-        --name my-factory -g my-rg -l eastus --level-label Factory \\
-        --parent my-region --capabilities soap shampoo
+        --resource-group rg --configuration-location eastus2euap \\
+        --hierarchy-spec "@hierarchy.yaml"
+
+    hierarchy.yaml:
+        name: Mehoopany
+        level: factory
+
+For ServiceGroup:
+    az workload-orchestration hierarchy create \\
+        --configuration-location eastus2euap \\
+        --hierarchy-spec "@hierarchy.yaml"
+
+    hierarchy.yaml:
+        type: ServiceGroup
+        name: India
+        level: country
+        children:
+          name: Karnataka
+          level: region
+          children:
+            - name: BangaloreSouth
+              level: factory
 """
 
 # pylint: disable=broad-exception-caught
 # pylint: disable=too-many-locals
-# pylint: disable=too-many-statements
-# pylint: disable=too-many-branches
-# pylint: disable=import-outside-toplevel
 
 import json
 import logging
-from datetime import datetime, timezone
 
 from azure.cli.core.azclierror import (
     CLIInternalError,
@@ -42,460 +54,252 @@ from azext_workload_orchestration.onboarding.consts import (
     CONFIGURATION_API_VERSION,
     CONFIG_REF_API_VERSION,
     EDGE_RP_NAMESPACE,
-    MAX_HIERARCHY_NAME_LENGTH,
-)
-from azext_workload_orchestration.onboarding.utils import (
-    invoke_cli_command,
-    print_step,
-    print_success,
-    print_detail,
 )
 
 logger = logging.getLogger(__name__)
 
-TOTAL_STEPS_WITH_CONTEXT = 6
-TOTAL_STEPS_NO_CONTEXT = 4
+MAX_SG_DEPTH = 3
 
 
-def hierarchy_create(
-    cmd,
-    name,
-    resource_group,
-    location,
-    level_label,
-    parent=None,
-    capabilities=None,
-    description=None,
-    context_name=None,
-    context_rg=None,
-    skip_context=False,
-    skip_site_reference=False,
-):
-    """Create a hierarchy level (ServiceGroup + Site + Config + ConfigRef) in one command.
+def hierarchy_create(cmd, resource_group=None, configuration_location=None, hierarchy_spec=None):
+    """Create a hierarchy: Site + Configuration + ConfigurationReference.
 
-    Optionally auto-creates a default Context and SiteReference if none exists.
-    All PUT operations are idempotent (safe to re-run).
+    Parses the hierarchy spec (YAML/JSON or shorthand) and creates
+    the full resource stack.
     """
-    # -----------------------------------------------------------------------
-    # Pre-flight validation
-    # -----------------------------------------------------------------------
-    if len(name) > MAX_HIERARCHY_NAME_LENGTH:
-        raise ValidationError(
-            f"Name '{name}' is {len(name)} characters. "
-            f"Maximum is {MAX_HIERARCHY_NAME_LENGTH} "
-            "(limited by the Configuration resource name constraint)."
-        )
+    if not hierarchy_spec:
+        raise ValidationError("--hierarchy-spec is required.")
+    if not configuration_location:
+        raise ValidationError("--configuration-location is required.")
+    if not resource_group:
+        raise ValidationError("--resource-group is required (used for Configuration resources).")
 
-    description = description or name
+    # Parse spec (could be dict from shorthand or file)
+    spec = hierarchy_spec if isinstance(hierarchy_spec, dict) else hierarchy_spec
+
+    name = spec.get("name")
+    level = spec.get("level")
+    hierarchy_type = spec.get("type", "ResourceGroup")
+
+    if not name:
+        raise ValidationError("hierarchy-spec must include 'name'.")
+    if not level:
+        raise ValidationError("hierarchy-spec must include 'level'.")
+
+    if hierarchy_type == "ServiceGroup":
+        return _create_sg_hierarchy(cmd, spec, configuration_location, resource_group)
+    else:
+        return _create_rg_hierarchy(cmd, resource_group, configuration_location, name, level)
+
+
+# ---------------------------------------------------------------------------
+# ResourceGroup hierarchy
+# ---------------------------------------------------------------------------
+
+def _create_rg_hierarchy(cmd, resource_group, config_location, name, level):
+    """Create Site + Configuration + ConfigurationReference in a resource group."""
     sub_id = _get_sub_id(cmd)
-    tenant_id = _get_tenant_id(cmd)
+    total = 3
+    step = [0]
 
-    total_steps = TOTAL_STEPS_NO_CONTEXT if skip_context else TOTAL_STEPS_WITH_CONTEXT
-    step = 0
-    step_results = {}
+    def _log(msg, status=""):
+        if status:
+            print(f"[{step[0]}/{total}] {msg}... {status}")
+        else:
+            step[0] += 1
+            print(f"[{step[0]}/{total}] {msg}...")
 
-    print(f"\nCreating hierarchy level '{name}' ({level_label})...\n")
+    site_id = f"/subscriptions/{sub_id}/resourceGroups/{resource_group}/providers/{EDGE_RP_NAMESPACE}/sites/{name}"
+    config_name = f"{name}Config"
+    config_id = f"/subscriptions/{sub_id}/resourceGroups/{resource_group}/providers/{EDGE_RP_NAMESPACE}/configurations/{config_name}"
 
-    # -----------------------------------------------------------------------
-    # Step 0: Auto-create / detect Context (if not skipped)
-    # -----------------------------------------------------------------------
-    ctx_name = None
-    ctx_rg = None
+    print(f"\nCreating hierarchy '{name}' (level: {level}) in RG '{resource_group}'...\n")
 
-    if not skip_context:
-        step += 1
-        try:
-            ctx_name, ctx_rg = _ensure_context(
-                cmd, resource_group, location, context_name, context_rg,
-                level_label, capabilities, step, total_steps
-            )
-            step_results["context"] = "Succeeded"
-        except Exception as exc:
-            step_results["context"] = f"FAILED: {exc}"
-            _print_hierarchy_diagnostic(step_results, name, resource_group)
-            raise CLIInternalError(
-                f"Context setup failed: {exc}",
-                recommendation=(
-                    "Try creating context manually:\n"
-                    f"  az workload-orchestration context create -g {resource_group} "
-                    f"-l {location} --name {resource_group}-context "
-                    "--capabilities [] --hierarchies []"
-                )
-            )
+    # Step 1: Create Site
+    _log(f"Site '{name}' ({level})")
+    _arm_put(cmd, f"{ARM_ENDPOINT}{site_id}", {
+        "properties": {
+            "displayName": name,
+            "description": name,
+            "labels": {"level": level},
+        }
+    }, SITE_API_VERSION)
+    _log(f"Site '{name}'", "[OK]")
 
-    # -----------------------------------------------------------------------
-    # Step 1: Create Service Group
-    # -----------------------------------------------------------------------
-    step += 1
-    try:
-        parent_id = (
-            f"/providers/Microsoft.Management/serviceGroups/{parent}"
-            if parent
-            else f"/providers/Microsoft.Management/serviceGroups/{tenant_id}"
-        )
-        sg_id = f"/providers/Microsoft.Management/serviceGroups/{name}"
+    # Step 2: Create Configuration
+    _log(f"Configuration '{config_name}'")
+    _arm_put(cmd, f"{ARM_ENDPOINT}{config_id}", {
+        "location": config_location,
+    }, CONFIGURATION_API_VERSION)
+    _log(f"Configuration '{config_name}'", "[OK]")
 
-        _arm_put_quiet(cmd, f"{ARM_ENDPOINT}{sg_id}", {
-            "properties": {
-                "displayName": name,
-                "parent": {"resourceId": parent_id}
-            }
-        }, SERVICE_GROUP_API_VERSION)
+    # Step 3: Create ConfigurationReference (links site → config)
+    config_ref_url = f"{ARM_ENDPOINT}{site_id}/providers/{EDGE_RP_NAMESPACE}/configurationReferences/default"
+    _log("ConfigurationReference")
+    _arm_put(cmd, config_ref_url, {
+        "properties": {
+            "configurationResourceId": config_id,
+        }
+    }, CONFIG_REF_API_VERSION)
+    _log("ConfigurationReference", "[OK]")
 
-        print_step(step, total_steps, "Service Group", "[OK] Created")
-        step_results["service-group"] = "Succeeded"
-    except Exception as exc:
-        step_results["service-group"] = f"FAILED: {exc}"
-        _print_hierarchy_diagnostic(step_results, name, resource_group)
-        raise CLIInternalError(
-            f"Service Group creation failed: {exc}",
-            recommendation=(
-                f"Try manually: az rest --method put "
-                f"--url \"{ARM_ENDPOINT}{sg_id}?api-version={SERVICE_GROUP_API_VERSION}\" "
-                f"--header Content-Type=application/json "
-                f"--body \"{{\\\"properties\\\":{{\\\"displayName\\\":\\\"{name}\\\","
-                f"\\\"parent\\\":{{\\\"resourceId\\\":\\\"{parent_id}\\\"}}}}}}\" "
-                f"--resource {ARM_ENDPOINT}"
-            )
-        )
-
-    # -----------------------------------------------------------------------
-    # Step 2: Create Site (in Service Group, regional endpoint)
-    # Retry with backoff - RBAC on new ServiceGroup scope takes time to propagate
-    # -----------------------------------------------------------------------
-    step += 1
-    site_id = f"{sg_id}/providers/{EDGE_RP_NAMESPACE}/sites/{name}"
-    try:
-        regional_url = f"https://{location}.management.azure.com{site_id}"
-
-        max_retries = 4
-        retry_delay = 10  # seconds
-        last_err = None
-        for attempt in range(max_retries):
-            try:
-                _arm_put_quiet(cmd, regional_url, {
-                    "properties": {
-                        "displayName": name,
-                        "description": description,
-                        "labels": {"level": level_label}
-                    }
-                }, SITE_API_VERSION)
-                last_err = None
-                break
-            except Exception as exc:
-                last_err = exc
-                err_str = str(exc).lower()
-                is_auth_error = any(x in err_str for x in [
-                    "authorizationfailed", "forbidden", "403",
-                    "does not have authorization"
-                ])
-                if is_auth_error and attempt < max_retries - 1:
-                    wait = retry_delay * (attempt + 1)
-                    logger.info(
-                        "Site creation got 403 (RBAC propagation). "
-                        "Retry %d/%d in %ds...", attempt + 1, max_retries - 1, wait
-                    )
-                    print_step(step, total_steps, "Site",
-                               f"Waiting for permissions ({wait}s)...")
-                    import time
-                    time.sleep(wait)
-                else:
-                    raise
-
-        if last_err:
-            raise last_err
-
-        print_step(step, total_steps, "Site", "[OK] Created")
-        step_results["site"] = "Succeeded"
-    except Exception as exc:
-        step_results["site"] = f"FAILED: {exc}"
-        _print_hierarchy_diagnostic(step_results, name, resource_group)
-        raise CLIInternalError(
-            f"Site creation failed: {exc}",
-            recommendation=(
-                "Check that the region supports the Sites API. "
-                f"Region used: {location}. "
-                "Try eastus2euap for canary testing."
-            )
-        )
-
-    # -----------------------------------------------------------------------
-    # Step 3: Create Configuration
-    # -----------------------------------------------------------------------
-    step += 1
-    config_id = (
-        f"/subscriptions/{sub_id}/resourceGroups/{resource_group}"
-        f"/providers/{EDGE_RP_NAMESPACE}/configurations/{name}"
-    )
-    try:
-        regional_config_url = f"https://{location}.management.azure.com{config_id}"
-
-        _arm_put_quiet(cmd, regional_config_url, {
-            "location": location
-        }, CONFIGURATION_API_VERSION)
-
-        print_step(step, total_steps, "Configuration", "[OK] Created")
-        step_results["configuration"] = "Succeeded"
-    except Exception as exc:
-        step_results["configuration"] = f"FAILED: {exc}"
-        _print_hierarchy_diagnostic(step_results, name, resource_group)
-        raise CLIInternalError(
-            f"Configuration creation failed: {exc}",
-            recommendation=(
-                f"Configuration name must be ≤{MAX_HIERARCHY_NAME_LENGTH} chars. "
-                f"Current name: '{name}' ({len(name)} chars)."
-            )
-        )
-
-    # -----------------------------------------------------------------------
-    # Step 4: Create Configuration Reference (links Config → Site)
-    # -----------------------------------------------------------------------
-    step += 1
-    try:
-        config_ref_url = (
-            f"{ARM_ENDPOINT}{site_id}"
-            f"/providers/{EDGE_RP_NAMESPACE}/configurationreferences/default"
-        )
-
-        _arm_put_quiet(cmd, config_ref_url, {
-            "properties": {
-                "configurationResourceId": config_id
-            }
-        }, CONFIG_REF_API_VERSION)
-
-        print_step(step, total_steps, "Configuration Reference", "[OK] Linked")
-        step_results["config-reference"] = "Succeeded"
-    except Exception as exc:
-        step_results["config-reference"] = f"FAILED: {exc}"
-        _print_hierarchy_diagnostic(step_results, name, resource_group)
-        raise CLIInternalError(
-            f"Configuration Reference creation failed: {exc}",
-            recommendation="This links the Configuration to the Site. Check ARM access."
-        )
-
-    # -----------------------------------------------------------------------
-    # Step 5: Create Site Reference (links Site → Context)
-    # -----------------------------------------------------------------------
-    if not skip_context and not skip_site_reference and ctx_name:
-        step += 1
-        try:
-            invoke_cli_command(cmd, [
-                "workload-orchestration", "context", "site-reference", "create",
-                "-g", ctx_rg or resource_group,
-                "--context-name", ctx_name,
-                "--name", f"{name}-ref",
-                "--site-id", site_id,
-            ], expect_json=False)
-
-            print_step(step, total_steps, "Site Reference", "[OK] Linked to context")
-            step_results["site-reference"] = "Succeeded"
-        except Exception as exc:
-            # Site reference may already exist (not critical)
-            if "already exists" in str(exc).lower() or "conflict" in str(exc).lower():
-                print_step(step, total_steps, "Site Reference", "Already exists [OK]")
-                step_results["site-reference"] = "Already exists"
-            else:
-                step_results["site-reference"] = f"FAILED: {exc}"
-                logger.warning("Site reference creation failed (non-critical): %s", exc)
-                print_step(step, total_steps, "Site Reference", f"[WARN] Warning: {exc}")
-
-    # -----------------------------------------------------------------------
-    # Output
-    # -----------------------------------------------------------------------
-    _print_hierarchy_diagnostic(step_results, name, resource_group)
-
-    print_success(f"Hierarchy level '{name}' created")
-    print_detail("Service Group", sg_id)
-    print_detail("Site ID", site_id)
-    print_detail("Configuration ID", config_id)
-    if ctx_name:
-        print_detail("Context", ctx_name)
-    print()
+    print(f"\nHierarchy '{name}' created successfully (3 resources).\n")
 
     return {
+        "type": "ResourceGroup",
         "name": name,
-        "levelLabel": level_label,
-        "serviceGroupId": sg_id,
+        "level": level,
+        "resourceGroup": resource_group,
         "siteId": site_id,
         "configurationId": config_id,
-        "contextName": ctx_name,
-        "contextAutoCreated": ctx_name is not None and not context_name,
     }
 
 
 # ---------------------------------------------------------------------------
-# Context helpers
+# ServiceGroup hierarchy (recursive, max 3 levels)
 # ---------------------------------------------------------------------------
 
-def _ensure_context(
-    cmd, resource_group, location, context_name, context_rg,
-    level_label, capabilities, step, total_steps
-):
-    """Ensure a WO context exists. Auto-create if needed.
+def _create_sg_hierarchy(cmd, spec, config_location, resource_group):
+    """Create ServiceGroup + nested Sites + Configurations recursively."""
+    sub_id = _get_sub_id(cmd)
+    tenant_id = _get_tenant_id(cmd)
 
-    Returns (context_name, context_rg) tuple.
-    """
-    # Check if context is already set in CLI config
+    # Count total nodes
+    nodes = _count_nodes(spec)
+    if nodes > MAX_SG_DEPTH:
+        raise ValidationError(
+            f"ServiceGroup hierarchy has {nodes} levels. Maximum is {MAX_SG_DEPTH}."
+        )
+
+    print(f"\nCreating ServiceGroup hierarchy '{spec['name']}' ({nodes} levels)...\n")
+
+    results = []
+    _create_sg_level(cmd, spec, config_location, sub_id, tenant_id,
+                     resource_group, parent_sg=None, results=results, depth=0)
+
+    print(f"\nHierarchy created successfully ({nodes} levels, {len(results)} resources).\n")
+
+    return {
+        "type": "ServiceGroup",
+        "name": spec["name"],
+        "levels": nodes,
+        "resources": results,
+    }
+
+
+def _create_sg_level(cmd, node, config_location, sub_id, tenant_id, resource_group, parent_sg, results, depth):
+    """Recursively create SG + Site + Config + ConfigRef at each level."""
+    import time
+
+    name = node["name"]
+    level = node["level"]
+
+    # Create or reference the ServiceGroup
+    if parent_sg:
+        parent_id = f"/providers/Microsoft.Management/serviceGroups/{parent_sg}"
+    else:
+        parent_id = f"/providers/Microsoft.Management/serviceGroups/{tenant_id}"
+
+    sg_id = f"/providers/Microsoft.Management/serviceGroups/{name}"
+    indent = "  " * depth
+
+    # 1. Create ServiceGroup
+    print(f"{indent}[+] ServiceGroup '{name}'...")
     try:
-        current = invoke_cli_command(cmd, [
-            "workload-orchestration", "context", "current",
-        ])
-        if current and isinstance(current, dict):
-            existing_name = current.get("name") or current.get("contextName")
-            existing_rg = current.get("resourceGroup")
-            if existing_name:
-                print_step(step, total_steps, "Context",
-                           f"Using existing '{existing_name}' [OK]")
-
-                # Update context with new hierarchy level and capabilities if needed
-                _update_context_if_needed(
-                    cmd, existing_name, existing_rg or resource_group,
-                    level_label, capabilities
-                )
-                return existing_name, existing_rg or resource_group
-    except Exception:
-        pass  # No context set, try to find or create one
-
-    # Try to use explicitly provided context
-    if context_name:
-        ctx_rg = context_rg or resource_group
-        print_step(step, total_steps, "Context",
-                   f"Using specified '{context_name}' [OK]")
-        _update_context_if_needed(cmd, context_name, ctx_rg, level_label, capabilities)
-
-        # Set as current
-        try:
-            invoke_cli_command(cmd, [
-                "workload-orchestration", "context", "use",
-                "--name", context_name, "-g", ctx_rg,
-            ], expect_json=False)
-        except Exception:
-            pass
-        return context_name, ctx_rg
-
-    # Auto-create default context
-    default_ctx_name = f"{resource_group}-context"
-    ctx_rg = context_rg or resource_group
-    print_step(step, total_steps, "Context",
-               f"Creating default '{default_ctx_name}'")
-
-    # Build hierarchies and capabilities for context create
-    hierarchies_args = [
-        f"[0].name={level_label.lower()}",
-        f"[0].description={level_label}",
-    ]
-    capabilities_args = []
-    if capabilities:
-        for i, cap in enumerate(capabilities):
-            capabilities_args.extend([
-                f"[{i}].name={cap}",
-                f"[{i}].description={cap}",
-            ])
-
-    create_args = [
-        "workload-orchestration", "context", "create",
-        "-g", ctx_rg,
-        "-l", location,
-        "--name", default_ctx_name,
-        "--hierarchies",
-    ] + hierarchies_args
-
-    if capabilities_args:
-        create_args.append("--capabilities")
-        create_args.extend(capabilities_args)
-
-    invoke_cli_command(cmd, create_args, expect_json=False)
-
-    # Set as current
-    try:
-        invoke_cli_command(cmd, [
-            "workload-orchestration", "context", "use",
-            "--name", default_ctx_name, "-g", ctx_rg,
-        ], expect_json=False)
-    except Exception:
-        pass
-
-    print_step(step, total_steps, "Context",
-               f"Created '{default_ctx_name}' [OK]")
-    return default_ctx_name, ctx_rg
-
-
-def _update_context_if_needed(cmd, context_name, context_rg, level_label, capabilities):
-    """Update existing context with new hierarchy level or capabilities if not already present."""
-    try:
-        ctx = invoke_cli_command(cmd, [
-            "workload-orchestration", "context", "show",
-            "-g", context_rg, "--name", context_name,
-        ])
-        if not ctx or not isinstance(ctx, dict):
-            return
-
-        props = ctx.get("properties", {})
-        existing_hierarchies = [
-            h.get("name", "").lower()
-            for h in (props.get("hierarchies") or [])
-        ]
-        existing_capabilities = [
-            c.get("name", "").lower()
-            for c in (props.get("capabilities") or [])
-        ]
-
-        needs_update = False
-
-        # Check if hierarchy level needs adding
-        if level_label.lower() not in existing_hierarchies:
-            logger.info("Adding hierarchy level '%s' to context", level_label)
-            needs_update = True
-
-        # Check if capabilities need adding
-        if capabilities:
-            new_caps = [c for c in capabilities if c.lower() not in existing_capabilities]
-            if new_caps:
-                logger.info("Adding capabilities %s to context", new_caps)
-                needs_update = True
-
-        if needs_update:
-            # Context update with hierarchies/capabilities is complex,
-            # log the need but don't auto-update to avoid breaking existing config
-            logger.info(
-                "Context '%s' may need hierarchy/capability updates. "
-                "Run: az workload-orchestration context update ...",
-                context_name
-            )
+        _arm_put(cmd, f"{ARM_ENDPOINT}{sg_id}", {
+            "properties": {
+                "displayName": name,
+                "parent": {"resourceId": parent_id},
+            }
+        }, SERVICE_GROUP_API_VERSION)
+        print(f"{indent}[+] ServiceGroup '{name}'... [OK]")
+        results.append({"type": "ServiceGroup", "name": name, "id": sg_id})
     except Exception as exc:
-        logger.debug("Could not check/update context: %s", exc)
+        logger.warning("ServiceGroup creation failed: %s", exc)
+        raise CLIInternalError(f"ServiceGroup '{name}' creation failed: {exc}")
+
+    # Wait for RBAC propagation on new SG scope
+    print(f"{indent}    Waiting for RBAC propagation...")
+    _wait_for_sg_rbac(cmd, config_location, sg_id, name)
+
+    # 2. Create Site under ServiceGroup (regional endpoint)
+    site_id = f"{sg_id}/providers/{EDGE_RP_NAMESPACE}/sites/{name}"
+    print(f"{indent}  [+] Site '{name}' ({level})...")
+    _arm_put_regional(cmd, config_location, site_id, {
+        "properties": {
+            "displayName": name,
+            "description": name,
+            "labels": {"level": level},
+        }
+    }, SITE_API_VERSION)
+    print(f"{indent}  [+] Site '{name}'... [OK]")
+    results.append({"type": "Site", "name": name, "level": level, "id": site_id})
+
+    # 3. Create Configuration (RG-scoped, NOT under SG)
+    config_name = f"{name}Config"
+    config_id = f"/subscriptions/{sub_id}/resourceGroups/{resource_group}/providers/{EDGE_RP_NAMESPACE}/configurations/{config_name}"
+    print(f"{indent}  [+] Configuration '{config_name}' (in RG: {resource_group})...")
+    _arm_put(cmd, f"{ARM_ENDPOINT}{config_id}", {
+        "location": config_location,
+    }, CONFIGURATION_API_VERSION)
+    print(f"{indent}  [+] Configuration '{config_name}'... [OK]")
+    results.append({"type": "Configuration", "name": config_name, "id": config_id})
+
+    # 4. Create ConfigurationReference on Site (regional, links site -> RG config)
+    config_ref_id = f"{site_id}/providers/{EDGE_RP_NAMESPACE}/configurationReferences/default"
+    print(f"{indent}  [+] ConfigurationReference...")
+    _arm_put_regional(cmd, config_location, config_ref_id, {
+        "properties": {
+            "configurationResourceId": config_id,
+        }
+    }, CONFIG_REF_API_VERSION)
+    print(f"{indent}  [+] ConfigurationReference... [OK]")
+    results.append({"type": "ConfigurationReference", "siteId": site_id})
+
+    # Recurse into children
+    children = node.get("children")
+    if children:
+        if isinstance(children, dict):
+            children = [children]
+        for child in children:
+            _create_sg_level(cmd, child, config_location, sub_id, tenant_id,
+                             resource_group, parent_sg=name, results=results, depth=depth + 1)
+
+
+def _count_nodes(node):
+    """Count total depth of hierarchy tree."""
+    children = node.get("children")
+    if not children:
+        return 1
+    if isinstance(children, dict):
+        return 1 + _count_nodes(children)
+    return 1 + max(_count_nodes(c) for c in children)
 
 
 # ---------------------------------------------------------------------------
-# ARM helper (quiet - no output)
+# ARM helpers
 # ---------------------------------------------------------------------------
 
-def _arm_put_quiet(cmd, url, body, api_version):
-    """PUT request using send_raw_request with manual token for regional endpoints.
-
-    We manually acquire the token with the correct subscription context and
-    pass it as an Authorization header. This bypasses send_raw_request's
-    built-in auth which fails on regional URLs (eastus2euap.management.azure.com)
-    because it can't match them to a known cloud endpoint.
-    """
-    from azure.cli.core._profile import Profile
-
+def _arm_put(cmd, url, body, api_version):
+    """PUT to ARM endpoint."""
     full_url = f"{url}?api-version={api_version}"
-    body_str = json.dumps(body) if isinstance(body, dict) else body
-    logger.debug("PUT %s", full_url)
-
-    # Get token manually with correct subscription
-    profile = Profile(cli_ctx=cmd.cli_ctx)
-    token_info, _, _ = profile.get_raw_token(
-        resource="https://management.azure.com",
-        subscription=profile.get_subscription_id()
+    send_raw_request(
+        cmd.cli_ctx, "PUT", full_url,
+        body=json.dumps(body),
+        headers=["Content-Type=application/json"],
+        resource=ARM_ENDPOINT,
     )
-    token_type, token, _ = token_info
+
+
+def _arm_put_regional(cmd, location, resource_id, body, api_version):
+    """PUT to regional ARM endpoint (for SG-scoped resources)."""
+    full_url = f"https://{location}.management.azure.com{resource_id}?api-version={api_version}"
+    body_str = json.dumps(body)
+
+    token_type, token = _get_token(cmd)
 
     send_raw_request(
-        cmd.cli_ctx,
-        method="PUT",
-        url=full_url,
+        cmd.cli_ctx, "PUT", full_url,
         body=body_str,
         headers=[
             f"Authorization={token_type} {token}",
@@ -505,56 +309,71 @@ def _arm_put_quiet(cmd, url, body, api_version):
     )
 
 
-# ---------------------------------------------------------------------------
-# Diagnostics
-# ---------------------------------------------------------------------------
+def _arm_get_regional(cmd, location, resource_id, api_version):
+    """GET from regional ARM endpoint."""
+    full_url = f"https://{location}.management.azure.com{resource_id}?api-version={api_version}"
 
-def _print_hierarchy_diagnostic(step_results, name, resource_group):
-    """Print diagnostic summary for hierarchy creation."""
-    print("\n" + "=" * 60)
-    print("  Hierarchy Creation - Diagnostic Summary")
-    print(f"  Name: {name}")
-    print(f"  Resource Group: {resource_group}")
-    print(f"  Timestamp: {datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')}")
-    print("=" * 60)
+    token_type, token = _get_token(cmd)
 
-    for step_name, result in step_results.items():
-        if "FAILED" in result:
-            icon = "[FAIL]"
-        elif "Warning" in result:
-            icon = "[WARN]"
-        else:
-            icon = "[OK]"
-        print(f"  {icon} {step_name}: {result}")
-
-    has_failure = any("FAILED" in v for v in step_results.values())
-    if has_failure:
-        print("\n  [WARN] One or more steps failed.")
-        print("  Re-run the command to retry - PUTs are idempotent (safe to re-run).")
-    print("=" * 60 + "\n")
+    resp = send_raw_request(
+        cmd.cli_ctx, "GET", full_url,
+        headers=[
+            f"Authorization={token_type} {token}",
+        ],
+        skip_authorization_header=True,
+    )
+    return resp
 
 
-# ---------------------------------------------------------------------------
-# Helpers
-# ---------------------------------------------------------------------------
+def _wait_for_sg_rbac(cmd, location, sg_id, sg_name, max_retries=18, wait_sec=10):
+    """Wait for RBAC to propagate on a newly created ServiceGroup.
+
+    After SG creation, it takes time for permissions to propagate.
+    We poll by trying to list sites under the SG until it succeeds.
+    """
+    import time
+
+    site_list_id = f"{sg_id}/providers/{EDGE_RP_NAMESPACE}/sites"
+
+    for attempt in range(max_retries):
+        try:
+            _arm_get_regional(cmd, location, site_list_id, SITE_API_VERSION)
+            logger.info("RBAC propagated for SG '%s' after %ds", sg_name, attempt * wait_sec)
+            return
+        except Exception:
+            if attempt < max_retries - 1:
+                logger.debug("RBAC not ready (attempt %d/%d), waiting %ds...", attempt + 1, max_retries, wait_sec)
+                time.sleep(wait_sec)
+            else:
+                logger.warning(
+                    "RBAC propagation timeout for SG '%s' after %ds. Continuing anyway...",
+                    sg_name, max_retries * wait_sec
+                )
+
+
+def _get_token(cmd):
+    """Get ARM bearer token."""
+    from azure.cli.core._profile import Profile
+    profile = Profile(cli_ctx=cmd.cli_ctx)
+    token_info, _, _ = profile.get_raw_token(
+        resource="https://management.azure.com",
+        subscription=profile.get_subscription_id()
+    )
+    return token_info[0], token_info[1]  # token_type, token
+
 
 def _get_sub_id(cmd):
-    """Get subscription ID from CLI context."""
-    try:
+    """Get subscription ID."""
+    sub_id = cmd.cli_ctx.data.get('subscription_id')
+    if not sub_id:
         from azure.cli.core._profile import Profile
-        profile = Profile(cli_ctx=cmd.cli_ctx)
-        sub = profile.get_subscription()
-        return sub.get("id", "")
-    except Exception:
-        return ""
+        sub_id = Profile(cli_ctx=cmd.cli_ctx).get_subscription_id()
+    return sub_id
 
 
 def _get_tenant_id(cmd):
-    """Get tenant ID from CLI context."""
-    try:
-        from azure.cli.core._profile import Profile
-        profile = Profile(cli_ctx=cmd.cli_ctx)
-        sub = profile.get_subscription()
-        return sub.get("tenantId", "")
-    except Exception:
-        return ""
+    """Get tenant ID."""
+    from azure.cli.core._profile import Profile
+    profile = Profile(cli_ctx=cmd.cli_ctx)
+    _, _, tenant_id = profile.get_raw_token(resource="https://management.azure.com")
+    return tenant_id
