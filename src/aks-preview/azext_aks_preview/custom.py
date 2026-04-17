@@ -4735,7 +4735,7 @@ def _aks_verify_resource(resource, resource_type):
 
 def _aks_verify_resource_by_aaz(resource, resource_type):
     if resource.get('provisioningState') != CONST_NODE_PROVISIONING_STATE_SUCCEEDED:
-        raise ValidationError(f"Node pool {resource.name} is in {resource.get('provisioningState')} state!")
+        raise ValidationError(f"Node pool {resource.get('name')} is in {resource.get('provisioningState')} state!")
 
     node_image_version = ""
     os_type = ""
@@ -4823,7 +4823,7 @@ def _aks_get_node_name_vmss(
         index = node_name.find("vmss")
         if index != -1:
             vmss_name = node_name[:index + 4]
-            instance_id = int(node_name[index + 4:], base=36)
+            instance_id = str(int(node_name[index + 4:], base=36))
             command_args = {
                 'instance_id': instance_id,
                 'resource_group': managed_resource_group,
@@ -4878,7 +4878,7 @@ def _aks_get_node_name_as(
             raise ValidationError(f"VM {vm_name} not found in the managed resource group {managed_resource_group}!")
         _aks_verify_resource_by_aaz(vm_info, CONST_VIRTUAL_MACHINES)
 
-    return node_name
+    return vm_name
 
 
 def aks_check_network_outbound(

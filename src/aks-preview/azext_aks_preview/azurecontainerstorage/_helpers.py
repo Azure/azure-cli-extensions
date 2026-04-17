@@ -656,5 +656,5 @@ def _get_vm_sku_details(cli_ctx, location=None):
     result = VMListSkus(cli_ctx=cli_ctx)(command_args={})
     result = [x for x in result if x.get('resourceType', '').lower() == 'virtualmachines']
     if location:
-        result = [r for r in result if _is_vm_in_required_location(location, r.locations)]
+        result = [r for r in result if _is_vm_in_required_location(location, r.get('locations', []))]
     return result
