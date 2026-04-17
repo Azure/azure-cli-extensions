@@ -99,7 +99,6 @@ class Update(AAZCommand):
             options=["--annotation"],
             arg_group="Properties",
             help="Switch configuration description.",
-            nullable=True,
         )
         return cls._args_schema
 
@@ -228,7 +227,7 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("additionalDescription", AAZStrType, ".additional_description", typ_kwargs={"nullable": True})
-                properties.set_prop("annotation", AAZStrType, ".annotation", typ_kwargs={"nullable": True})
+                properties.set_prop("annotation", AAZStrType, ".annotation")
 
             return self.serialize_content(_content_value)
 

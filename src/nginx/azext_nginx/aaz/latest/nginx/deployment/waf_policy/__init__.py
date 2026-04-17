@@ -9,6 +9,7 @@
 # flake8: noqa
 
 from .__cmd_group import *
+from ._analyze_waf_policy import *
 from ._create import *
 from ._delete import *
 from ._list import *

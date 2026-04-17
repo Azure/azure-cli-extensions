@@ -61,6 +61,18 @@ class Update(AAZCommand):
             required=True,
         )
 
+        # define Arg Group "Body"
+
+        _args_schema = cls._args_schema
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Body",
+            help="Resource tags.",
+        )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg()
+
         # define Arg Group "Identity"
 
         _args_schema = cls._args_schema
@@ -139,11 +151,6 @@ class Update(AAZCommand):
             help="IPv6 VRF Limit configuration.",
             nullable=True,
         )
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Properties",
-            help="Resource tags.",
-        )
 
         aggregate_route_configuration = cls._args_schema.aggregate_route_configuration
         aggregate_route_configuration.ipv4_routes = AAZListArg(
@@ -218,9 +225,6 @@ class Update(AAZCommand):
             options=["threshold"],
             help="Threshold for the routes.",
         )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
         return cls._args_schema
 
     _args_aggregate_route_update = None

@@ -20,13 +20,16 @@ class List(AAZCommand):
 
     :example: List consortiums in subscription
         az managedcleanroom consortium list
+
+    :example: List consortiums in a resource group
+        az managedcleanroom consortium list --resource-group testrg
     """
 
     _aaz_info = {
-        "version": "2025-10-31-preview",
+        "version": "2026-03-31-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.cleanroom/consortiums", "2025-10-31-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cleanroom/consortiums", "2025-10-31-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.cleanroom/consortiums", "2026-03-31-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cleanroom/consortiums", "2026-03-31-preview"],
         ]
     }
 
@@ -113,7 +116,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-10-31-preview",
+                    "api-version", "2026-03-31-preview",
                     required=True,
                 ),
             }
@@ -180,10 +183,15 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
-            properties.consortium_type = AAZStrType(
-                serialized_name="consortiumType",
+            properties.consortium_state = AAZStrType(
+                serialized_name="consortiumState",
+                flags={"read_only": True},
             )
             properties.endpoint = AAZStrType(
+                flags={"read_only": True},
+            )
+            properties.governance_type = AAZStrType(
+                serialized_name="governanceType",
                 flags={"read_only": True},
             )
             properties.health = AAZObjectType(
@@ -252,6 +260,9 @@ class List(AAZCommand):
             _element.is_operator = AAZBoolType(
                 serialized_name="isOperator",
                 flags={"required": True},
+            )
+            _element.recovery_role = AAZStrType(
+                serialized_name="recoveryRole",
             )
 
             system_data = cls._schema_on_200.value.Element.system_data
@@ -323,7 +334,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-10-31-preview",
+                    "api-version", "2026-03-31-preview",
                     required=True,
                 ),
             }
@@ -390,10 +401,15 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
-            properties.consortium_type = AAZStrType(
-                serialized_name="consortiumType",
+            properties.consortium_state = AAZStrType(
+                serialized_name="consortiumState",
+                flags={"read_only": True},
             )
             properties.endpoint = AAZStrType(
+                flags={"read_only": True},
+            )
+            properties.governance_type = AAZStrType(
+                serialized_name="governanceType",
                 flags={"read_only": True},
             )
             properties.health = AAZObjectType(
@@ -462,6 +478,9 @@ class List(AAZCommand):
             _element.is_operator = AAZBoolType(
                 serialized_name="isOperator",
                 flags={"required": True},
+            )
+            _element.recovery_role = AAZStrType(
+                serialized_name="recoveryRole",
             )
 
             system_data = cls._schema_on_200.value.Element.system_data

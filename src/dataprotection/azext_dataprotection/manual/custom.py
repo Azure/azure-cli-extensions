@@ -13,8 +13,8 @@
 # pylint: disable=too-many-nested-blocks
 # pylint: disable=no-else-continue
 # pylint: disable=no-else-raise
-import time
 import json
+import time
 from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
     InvalidArgumentValueError,
@@ -1149,3 +1149,56 @@ def restore_initialize_for_item_recovery(cmd, datasource_type, source_datastore,
                                                                                                    vaulted_blob_prefix_pattern)
 
     return restore_request
+
+
+def dataprotection_enable_backup(cmd, datasource_type, datasource_id,
+                                 backup_strategy=None,
+                                 backup_configuration_file=None,
+                                 yes=False):
+    """Enable backup for a datasource using a single command.
+
+    This command orchestrates all the steps required to enable backup:
+    - Creates backup infrastructure (resource group, storage account, vault)
+    - Installs required extensions
+    - Configures backup instance with specified strategy
+    """
+    from azext_dataprotection.manual.enums import get_backup_strategies_for_datasource
+
+    # Supported datasource types
+    supported_datasource_types = ["AzureKubernetesService"]
+
+    # Validate datasource type is supported
+    if datasource_type not in supported_datasource_types:
+        raise InvalidArgumentValueError(
+            f"Unsupported datasource type: {datasource_type}. "
+            f"Supported types: {', '.join(supported_datasource_types)}"
+        )
+
+    # Get valid strategies for this datasource type
+    valid_strategies = get_backup_strategies_for_datasource(datasource_type)
+
+    # Set default strategy based on datasource type
+    if backup_strategy is None:
+        if datasource_type == "AzureKubernetesService":
+            backup_strategy = 'Week'
+        # Add defaults for other datasource types here as they are supported
+
+    # Validate strategy for datasource type
+    if backup_strategy not in valid_strategies:
+        raise InvalidArgumentValueError(
+            f"Invalid backup-strategy '{backup_strategy}' for {datasource_type}. "
+            f"Allowed values: {', '.join(valid_strategies)}"
+        )
+
+    config = backup_configuration_file if backup_configuration_file is not None else {}
+
+    # Route to datasource-specific handler
+    if datasource_type == "AzureKubernetesService":
+        if "Microsoft.ContainerService/managedClusters".lower() not in datasource_id.lower():
+            raise InvalidArgumentValueError(
+                "datasource-id must be an AKS cluster resource ID for AzureKubernetesService datasource type"
+            )
+
+        from azext_dataprotection.manual.aks.aks_helper import dataprotection_enable_backup_helper
+        dataprotection_enable_backup_helper(
+            cmd, datasource_id, backup_strategy, config, yes=yes)

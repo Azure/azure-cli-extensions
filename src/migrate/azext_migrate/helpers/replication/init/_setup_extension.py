@@ -260,7 +260,8 @@ def build_extension_body(instance_type, source_fabric_id,
 
 
 def _wait_for_extension_creation(cmd, extension_uri):
-    """Wait for extension creation to complete."""
+    """Wait for extension creation to complete. Returns final state."""
+    ext_state = None
     for i in range(20):
         time.sleep(30)
         try:
@@ -277,6 +278,7 @@ def _wait_for_extension_creation(cmd, extension_uri):
                     break
         except CLIError:
             print(f"Waiting for extension... ({i + 1}/20)")
+    return ext_state
 
 
 def _handle_extension_creation_error(cmd, extension_uri, create_error):
@@ -315,7 +317,20 @@ def create_replication_extension(cmd, extension_uri, extension_body):
             print("Extension creation initiated successfully")
             # Wait for the extension to be created
             print("Waiting for extension creation to complete...")
-            _wait_for_extension_creation(cmd, extension_uri)
+            ext_state = _wait_for_extension_creation(cmd, extension_uri)
+            if ext_state == ProvisioningState.Failed.value:
+                raise CLIError(
+                    "Replication extension creation failed. "
+                    "Check the extension resource in the Azure portal "
+                    "for detailed error information.")
+            if ext_state == ProvisioningState.Canceled.value:
+                raise CLIError(
+                    "Replication extension creation was canceled.")
+            if ext_state is None:
+                raise CLIError(
+                    "Replication extension creation timed out after "
+                    "10 minutes. Check the extension status in the "
+                    "Azure portal.")
     except CLIError as create_error:
         _handle_extension_creation_error(cmd, extension_uri, create_error)
 

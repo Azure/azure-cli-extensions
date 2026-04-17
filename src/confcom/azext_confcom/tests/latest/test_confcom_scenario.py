@@ -796,10 +796,10 @@ class CustomJsonParsingIncorrect(unittest.TestCase):
             ]
         }
         """
-        with load_policy_from_json(custom_json) as aci_policy:
-            with self.assertRaises(SystemExit) as exc_info:
+        with self.assertRaises(SystemExit) as exc_info:
+            with load_policy_from_json(custom_json) as aci_policy:
                 aci_policy.populate_policy_content_for_all_images()
-            self.assertEqual(exc_info.exception.code, 1)
+        self.assertEqual(exc_info.exception.code, 1)
 
     def test_incorrect_allow_elevated_data_type(self):
         custom_json = """

@@ -14,6 +14,7 @@ from typing import Dict, List, Optional, Tuple, Union
 from azext_aks_agent._consts import (
     AGENT_LABEL_SELECTOR,
     AGENT_NAMESPACE,
+    AKS_AGENT_VERSION,
     AKS_MCP_LABEL_SELECTOR,
     CONFIG_DIR,
 )
@@ -128,7 +129,7 @@ class AKSAgentManager(AKSAgentManagerLLMConfigBase):  # pylint: disable=too-many
         self.subscription_id: str = subscription_id
 
         self.chart_repo = "oci://mcr.microsoft.com/aks/aks-agent-chart/aks-agent"
-        self.chart_version = "0.3.0"
+        self.chart_version = AKS_AGENT_VERSION
 
         # credentials for aks-mcp
         # Default empty customized cluster role name means using default cluster role
@@ -231,7 +232,7 @@ class AKSAgentManager(AKSAgentManagerLLMConfigBase):  # pylint: disable=too-many
             )
 
             if not secret.data:
-                logger.warning("Secret '%s' exists but has no data", self.llm_secret_name)
+                logger.debug("Secret '%s' exists but has no data", self.llm_secret_name)
                 return
 
             # Decode secret data (base64 encoded)
@@ -926,6 +927,22 @@ class AKSAgentManager(AKSAgentManagerLLMConfigBase):  # pylint: disable=too-many
             "create": False,
         }
 
+        # Configure aks-agent pod to use the same service account as aks-mcp for workload identity
+        helm_values["workloadIdentity"] = {
+            "enabled": True,
+        }
+        helm_values["serviceAccount"] = {
+            "create": False,
+            "name": self.aks_mcp_service_account_name,
+        }
+
+        has_empty_api_key = any(
+            not model_config.get("api_key") or not model_config.get("api_key").strip()
+            for model_config in self.llm_config_manager.model_list.values()
+        )
+        if has_empty_api_key:
+            helm_values["azureADTokenAuth"] = True
+
         return helm_values
 
     def save_llm_config(self, provider: LLMProvider, params: dict) -> None:
@@ -973,7 +990,7 @@ class AKSAgentManagerClient(AKSAgentManagerLLMConfigBase):  # pylint: disable=to
         self.config_dir = self.base_config_dir / subscription_id / resource_group_name / cluster_name
 
         # Docker image for client mode execution
-        self.docker_image = "mcr.microsoft.com/aks/aks-agent:v0.3.0-client"
+        self.docker_image = f"mcr.microsoft.com/aks/aks-agent:v{AKS_AGENT_VERSION}-client"
 
         self.llm_config_manager = LLMConfigManagerLocal(
             subscription_id=subscription_id,

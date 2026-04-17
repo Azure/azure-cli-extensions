@@ -5,12 +5,13 @@
 
 
 import hashlib
+import json
 import os
 import platform
 import stat
 import subprocess
 import sys
-from typing import List
+from typing import List, Dict
 
 import requests
 from azext_confcom.errors import eprint
@@ -27,13 +28,13 @@ _binaries_dir = get_binaries_dir()
 _dmverity_vhd_binaries = {
     "Linux": {
         "path": _binaries_dir / "dmverity-vhd",
-        "url": "https://github.com/microsoft/integrity-vhd/releases/download/v1.6/dmverity-vhd",
-        "sha256": "b8cf3fa3594e48070a31aa538d5b4b40d5b33b8ac18bc25a1816245159648fb0",
+        "url": "https://github.com/microsoft/integrity-vhd/releases/download/v2.0/dmverity-vhd",
+        "sha256": "e7ad858fef018acd7d8a4ccb74f1b7a9cc1b3d6db5a7f8da5a259f71b26c12ea",
     },
     "Windows": {
         "path": _binaries_dir / "dmverity-vhd.exe",
-        "url": "https://github.com/microsoft/integrity-vhd/releases/download/v1.6/dmverity-vhd.exe",
-        "sha256": "ca0f95d798323f3ef26feb036112be9019f5ceaa6233ee2a65218d5a143ae474",
+        "url": "https://github.com/microsoft/integrity-vhd/releases/download/v2.0/dmverity-vhd.exe",
+        "sha256": "6ef425c4bd07739d9cc90e57488985c1fca41f8d106fc816123b95b6305ee0af",
     },
 }
 
@@ -84,13 +85,14 @@ class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
             st = os.stat(self.policy_bin)
             os.chmod(self.policy_bin, st.st_mode | stat.S_IXUSR)
 
-    def get_policy_image_layers(
+    def get_policy_image_layers(  # pylint: disable=redefined-outer-name
         self,
         image: str,
         tag: str,
+        platform: str = "linux/amd64",
         tar_location: str = "",
         faster_hashing=False
-    ) -> List[str]:
+    ) -> Dict[str, List[str]]:
         image_name = f"{image}:{tag}"
         # populate layer info
         if self.layer_cache.get(image_name):
@@ -115,13 +117,16 @@ class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
         # add the image to the end of the parameter list
         arg_list += ["roothash", "-i", f"{image_name}"]
 
+        if platform.startswith("windows"):
+            arg_list += ["--platform", platform]
+
         item = subprocess.run(
             arg_list,
             capture_output=True,
             check=False,
         )
 
-        output = []
+        result = {}
         if item.returncode != 0:
             if item.stderr.decode("utf-8") != "" and item.stderr.decode("utf-8") is not None:
                 logger.warning(item.stderr.decode("utf-8"))
@@ -133,13 +138,29 @@ class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
                 )
             sys.exit(item.returncode)
         elif len(item.stdout) > 0:
-            output = item.stdout.decode("utf8").strip("\n").split("\n")
-            output = [i.split(": ", 1)[1] for i in output if len(i.split(": ", 1)) > 1]
+            stdout_str = item.stdout.decode("utf8").strip()
+
+            # Try parsing as JSON (both Linux and Windows now output JSON)
+            if stdout_str.startswith("{"):
+                try:
+                    json_output = json.loads(stdout_str)
+                    result["layers"] = json_output.get("layers", [])
+                    # mounted_cim is only present for Windows
+                    if "mounted_cim" in json_output:
+                        result["mounted_cim"] = json_output["mounted_cim"]
+                except json.JSONDecodeError as e:
+                    logger.error("Failed to parse JSON output: %s", e)
+                    sys.exit(1)
+            else:
+                # Fallback: line-by-line parsing for older dmverity-vhd versions
+                lines = stdout_str.split("\n")
+                layers = [i.split(": ", 1)[1] for i in lines if len(i.split(": ", 1)) > 1]
+                result["layers"] = layers
         else:
             eprint(
                 "Could not get layer hashes"
             )
 
-        # cache output layers
-        self.layer_cache[image_name] = output
-        return output
+        # cache output
+        self.layer_cache[image_name] = result
+        return result

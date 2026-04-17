@@ -30,7 +30,7 @@ from azext_fleet.constants import UPGRADE_TYPE_ERROR_MESSAGES
 from azext_fleet.constants import SUPPORTED_GATE_STATES_FILTERS
 from azext_fleet.constants import SUPPORTED_GATE_STATES_PATCH
 from azext_fleet.constants import FLEET_1P_APP_ID
-from azext_fleet.vendored_sdks.v2025_08_01_preview.models import (
+from azext_fleet.vendored_sdks.v2026_02_01_preview.models import (
     PropagationPolicy,
     PlacementProfile,
     PlacementV1ClusterResourcePlacementSpec,
@@ -441,6 +441,9 @@ def create_update_run(cmd,
         raise CLIError((f"The upgrade type parameter '{upgrade_type}' is not valid."
                         f"Valid options are: '{UPGRADE_TYPE_FULL}', '{UPGRADE_TYPE_CONTROLPLANEONLY}', or '{UPGRADE_TYPE_NODEIMAGEONLY}'"))  # pylint: disable=line-too-long
 
+    if upgrade_type == UPGRADE_TYPE_CONTROLPLANEONLY and node_image_selection is not None:
+        raise CLIError("Node image selection must not be set when upgrade type is 'ControlPlaneOnly'.")
+
     if stages is not None and update_strategy_name is not None:
         raise CLIError("Cannot set stages when update strategy name is set.")
 
@@ -469,9 +472,12 @@ def create_update_run(cmd,
 
     managed_cluster_upgrade_spec = managed_cluster_upgrade_spec_model(
         type=upgrade_type, kubernetes_version=kubernetes_version)
-    if node_image_selection is None:
-        node_image_selection = "Latest"
-    node_image_selection_type = node_image_selection_model(type=node_image_selection)
+
+    node_image_selection_type = None
+    if upgrade_type != UPGRADE_TYPE_CONTROLPLANEONLY:
+        if node_image_selection is None:
+            node_image_selection = "Latest"
+        node_image_selection_type = node_image_selection_model(type=node_image_selection)
 
     managed_cluster_update = managed_cluster_update_model(
         upgrade=managed_cluster_upgrade_spec,
@@ -603,6 +609,7 @@ def get_update_run_strategy(cmd, operation_group, stages):
         for group in stage["groups"]:
             update_groups.append(update_group_model(
                 name=group["name"],
+                max_concurrency=group.get("maxConcurrency"),
                 before_gates=group.get("beforeGates", []),
                 after_gates=group.get("afterGates", []),
             ))
@@ -612,6 +619,7 @@ def get_update_run_strategy(cmd, operation_group, stages):
         update_stages.append(update_stage_model(
             name=stage["name"],
             groups=update_groups,
+            max_concurrency=stage.get("maxConcurrency"),
             before_gates=stage.get("beforeGates", []),
             after_gates=stage.get("afterGates", []),
             after_stage_wait_in_seconds=after_wait
@@ -863,6 +871,12 @@ def create_managed_namespace(cmd,
         operation_group="fleet_managed_namespaces"
     )
 
+    fleet_managed_namespace_properties_model = cmd.get_models(
+        "FleetManagedNamespaceProperties",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="fleet_managed_namespaces"
+    )
+
     resource_quota_model = cmd.get_models(
         "ResourceQuota",
         resource_type=CUSTOM_MGMT_FLEET,
@@ -926,13 +940,17 @@ def create_managed_namespace(cmd,
     else:
         logger.warning("--member-cluster-names was empty; namespace will not be placed on any member clusters")
 
-    managed_namespace = managed_namespace_model(
-        location=fleet.location,
-        tags=tags,
+    fleet_managed_namespace_props = fleet_managed_namespace_properties_model(
         managed_namespace_properties=managed_namespace_props,
         adoption_policy=adoption_policy,
         delete_policy=delete_policy,
         propagation_policy=propagation_policy
+    )
+
+    managed_namespace = managed_namespace_model(
+        location=fleet.location,
+        tags=tags,
+        properties=fleet_managed_namespace_props
     )
 
     return sdk_no_wait(

@@ -15,6 +15,7 @@ import threading
 import time
 import webbrowser
 import subprocess
+from math import isnan
 
 from azext_aks_preview._client_factory import (
     CUSTOM_MGMT_AKS_PREVIEW,
@@ -955,6 +956,9 @@ def aks_create(
     load_balancer_backend_pool_type=None,
     nat_gateway_managed_outbound_ip_count=None,
     nat_gateway_idle_timeout=None,
+    nat_gateway_managed_outbound_ipv6_count=None,
+    nat_gateway_outbound_ip_ids=None,
+    nat_gateway_outbound_ip_prefix_ids=None,
     outbound_type=None,
     network_plugin=None,
     network_plugin_mode=None,
@@ -1076,6 +1080,8 @@ def aks_create(
     enable_image_cleaner=False,
     image_cleaner_interval_hours=None,
     enable_image_integrity=False,
+    enable_service_account_image_pull=False,
+    service_account_image_pull_default_managed_identity_id=None,
     cluster_snapshot_id=None,
     enable_apiserver_vnet_integration=False,
     apiserver_subnet_id=None,
@@ -1160,7 +1166,11 @@ def aks_create(
     enable_upstream_kubescheduler_user_configuration=False,
     # managed gateway installation
     enable_gateway_api=False,
-    enable_hosted_system=False
+    # app routing istio
+    enable_app_routing_istio=False,
+    enable_hosted_system=False,
+    # health monitor
+    enable_continuous_control_plane_and_addon_monitor=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1217,6 +1227,9 @@ def aks_update(
     load_balancer_backend_pool_type=None,
     nat_gateway_managed_outbound_ip_count=None,
     nat_gateway_idle_timeout=None,
+    nat_gateway_managed_outbound_ipv6_count=None,
+    nat_gateway_outbound_ip_ids=None,
+    nat_gateway_outbound_ip_prefix_ids=None,
     kube_proxy_config=None,
     auto_upgrade_channel=None,
     node_os_upgrade_channel=None,
@@ -1317,6 +1330,9 @@ def aks_update(
     image_cleaner_interval_hours=None,
     enable_image_integrity=False,
     disable_image_integrity=False,
+    enable_service_account_image_pull=False,
+    disable_service_account_image_pull=False,
+    service_account_image_pull_default_managed_identity_id=None,
     enable_apiserver_vnet_integration=False,
     apiserver_subnet_id=None,
     enable_keda=False,
@@ -1401,9 +1417,15 @@ def aks_update(
     # managed gateway installation
     enable_gateway_api=False,
     disable_gateway_api=False,
+    # app routing istio
+    enable_app_routing_istio=False,
+    disable_app_routing_istio=False,
     # application load balancer
     enable_application_load_balancer=False,
     disable_application_load_balancer=False,
+    # health monitor
+    enable_continuous_control_plane_and_addon_monitor=False,
+    disable_continuous_control_plane_and_addon_monitor=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1433,6 +1455,22 @@ def aks_show(cmd, client, resource_group_name, name, aks_custom_headers=None):
     headers = get_aks_custom_headers(aks_custom_headers)
     mc = client.get(resource_group_name, name, headers=headers)
     return _remove_nulls([mc])[0]
+
+
+def aks_delete(cmd, client, resource_group_name, name, no_wait=False,
+               if_match=None, if_none_match=None, ignore_pod_disruption_budget=None):
+    if if_none_match is not None:
+        logger.warning(
+            "The '--if-none-match' option is not applicable to delete operations and will be ignored."
+        )
+    return sdk_no_wait(
+        no_wait,
+        client.begin_delete,
+        resource_group_name,
+        name,
+        if_match=if_match,
+        ignore_pod_disruption_budget=ignore_pod_disruption_budget,
+    )
 
 
 # pylint: disable=unused-argument
@@ -1893,9 +1931,11 @@ def aks_agentpool_add(
     asg_ids=None,
     node_public_ip_tags=None,
     enable_artifact_streaming=False,
+    enable_managed_gpu=False,
     skip_gpu_driver_install=False,
     gpu_driver=None,
     driver_type=None,
+    gpu_mig_strategy=None,
     ssh_access=CONST_SSH_ACCESS_LOCALUSER,
     # trusted launch
     enable_secure_boot=False,
@@ -1967,6 +2007,8 @@ def aks_agentpool_update(
     allowed_host_ports=None,
     asg_ids=None,
     enable_artifact_streaming=False,
+    disable_artifact_streaming=False,
+    enable_managed_gpu=False,
     os_sku=None,
     ssh_access=None,
     yes=False,
@@ -1983,6 +2025,7 @@ def aks_agentpool_update(
     localdns_config=None,
     node_vm_size=None,
     gpu_driver=None,
+    gpu_mig_strategy=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -2265,13 +2308,21 @@ def aks_agentpool_rollback(cmd,   # pylint: disable=unused-argument
                 "unmanaged",
             ]
 
-            if upgrade_channel_enabled or node_os_channel_enabled:
+            if upgrade_channel_enabled:
                 logger.warning(
                     "Auto-upgrade is enabled on cluster '%s' (upgradeChannel=%s, nodeOSUpgradeChannel=%s). "
                     "Rollback will not succeed until auto-upgrade is disabled. Please disable auto-upgrade to roll back the node pool.",
                     cluster_name,
                     upgrade_channel or "none",
                     node_os_upgrade_channel or "Unmanaged",
+                )
+            if node_os_channel_enabled:
+                logger.warning(
+                    "nodeOSUpgradeChannel is enabled on cluster '%s' (nodeOSUpgradeChannel=%s). "
+                    "The orchestrator version rollback will proceed, but the node image rollback "
+                    "will not succeed. Please disable nodeOSUpgradeChannel if you want to roll back the node image.",
+                    cluster_name,
+                    node_os_upgrade_channel,
                 )
         except Exception as ex:  # pylint: disable=broad-except
             logger.debug("Unable to retrieve auto-upgrade configuration before rollback: %s", ex)
@@ -2711,6 +2762,9 @@ def aks_machine_add(
     vm_size=None,
     kubernetes_version=None,
     no_wait=False,
+    spot_max_price=float("nan"),
+    enable_ultra_ssd=False,
+    eviction_policy=None,
 ):
     existedMachine = None
     try:
@@ -2722,6 +2776,9 @@ def aks_machine_add(
         raise ClientRequestError(
             f"Machine '{machine_name}' already exists. Please use 'az aks machine update' to update it."
         )
+
+    if isnan(spot_max_price):
+        spot_max_price = -1
 
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -3423,6 +3480,35 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
 
 def aks_get_versions(cmd, client, location):    # pylint: disable=unused-argument
     return client.list_kubernetes_versions(location)
+
+
+def aks_list_vm_skus(cmd, client, location, size=None, zone=None, show_all=None):  # pylint: disable=unused-argument
+    """Lists the VM SKUs accepted by AKS when creating node pools in a specified location.
+
+    AKS will perform a best effort approach to provision the requested VM SKUs, but availability is not guaranteed.
+
+    :param location: Azure region to query.
+    :param size: Optional partial VM size name filter (case-insensitive).
+    :param zone: When True, show only SKUs that support availability zones.
+    :param show_all: When True, include SKUs not available to the current subscription.
+    """
+    from azext_aks_preview.vm_skus_util import _aks_is_vm_sku_available
+
+    result = list(client.list(location))
+
+    if not show_all:
+        result = [sku for sku in result if _aks_is_vm_sku_available(sku, zone)]
+
+    if size:
+        result = [sku for sku in result if sku.name and size.lower() in sku.name.lower()]
+
+    if zone:
+        result = [
+            sku for sku in result
+            if sku.location_info and sku.location_info[0].zones
+        ]
+
+    return result
 
 
 def get_aks_custom_headers(aks_custom_headers=None):
@@ -4343,6 +4429,38 @@ def aks_approuting_disable(
         enable_app_routing=False)
 
 
+def aks_approuting_gateway_istio_enable(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        aks_custom_headers=None
+):
+    return _aks_approuting_update(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        enable_app_routing_istio=True,
+        aks_custom_headers=aks_custom_headers)
+
+
+def aks_approuting_gateway_istio_disable(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        aks_custom_headers=None
+):
+    return _aks_approuting_update(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        disable_app_routing_istio=True,
+        aks_custom_headers=aks_custom_headers)
+
+
 def aks_approuting_update(
         cmd,
         client,
@@ -4511,6 +4629,9 @@ def _aks_approuting_update(
         nginx=None,
         enable_default_domain=None,
         disable_default_domain=None,
+        enable_app_routing_istio=None,
+        disable_app_routing_istio=None,
+        aks_custom_headers=None,
 ):
     from azure.cli.command_modules.acs._consts import DecoratorEarlyExitException
     from azext_aks_preview.managed_cluster_decorator import AKSPreviewManagedClusterUpdateDecorator
@@ -4527,6 +4648,7 @@ def _aks_approuting_update(
     try:
         mc = aks_update_decorator.fetch_mc()
         mc = aks_update_decorator.update_app_routing_profile(mc)
+        mc = aks_update_decorator.update_ingress_profile_app_routing_istio(mc)
     except DecoratorEarlyExitException:
         return None
 
