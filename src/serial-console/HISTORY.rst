@@ -1,7 +1,7 @@
 Release History
 ===============
 1.0.0b4
-++++++
++++++++
 * Fixed rendering of binary WebSocket frames by decoding them as UTF-8 so ANSI escapes and multi-byte characters display correctly instead of as ``repr()`` literals.
 
 1.0.0b3
