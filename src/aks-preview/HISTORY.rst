@@ -13,6 +13,7 @@ Pending
 +++++++
 * `az aks bastion`: Fix failure when the bastion host is in a different subscription than the cluster by using the subscription from the bastion resource ID for the internal `az network bastion tunnel` command.
 * Set `principalType` when creating role assignments to avoid `PrincipalNotFound` failures caused by Microsoft Entra ID replication delay for freshly created identities.
+* `az aks update`: Fix misleading error when updating outbound type to `userDefinedRouting` or `userAssignedNATGateway`. For managed VNet clusters (unsupported), a clear error message is now shown instead of asking for `--vnet-subnet-id`. For BYO VNet clusters, the update works correctly without requiring the user to re-specify the subnet.
 
 21.0.0b6
 ++++++++
