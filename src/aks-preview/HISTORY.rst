@@ -9,11 +9,12 @@ If there is no rush to release a new version, please just add a description of t
 
 To release a new version, please select a new version number (usually plus 1 to last patch version, X.Y.Z -> Major.Minor.Patch, more details in `\doc <https://semver.org/>`_), and then add a new section named as the new version number in this file, the content should include the new modifications and everything from the *Pending* section. Finally, update the `VERSION` variable in `setup.py` with this new version number.
 
-Pending
+20.0.0b2
 +++++++
 * `az aks machine add`: Add `--spot-max-price` flag support to set the max price (in US Dollars) you are willing to pay for spot instances on a machine.
 * `az aks machine add`: Add `--eviction-policy` flag support to set the eviction policy for a machine.
 * `az aks machine add`: Add `--enable-ultra-ssd` flag support to enable ultra ssd on a machine.
+* `az aks update`: Fix acceleration mode getting wiped out when modifying unrelated parameters in an ACNS enabled cluster.
 
 20.0.0b1
 +++++++
