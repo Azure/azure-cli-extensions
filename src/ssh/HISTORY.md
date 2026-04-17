@@ -1,5 +1,9 @@
 Release History
 ===============
+2.1.0
+-----
+* Add Entra ID SSH Login support for all clouds
+
 2.0.6
 -----
 * Remove msrestazure dependency
