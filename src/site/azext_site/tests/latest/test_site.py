@@ -175,7 +175,7 @@ class SiteKeyScenario(ScenarioTest):
 
         # Download the site key token
         self.cmd(
-            "az site key download --name TestSiteKey --resource-group {rg} --file test-token.txt",
+            "az site key download --name TestSiteKey --resource-group {rg} --file test-token.SiteKey",
             checks=[
                 self.exists("filePath"),
                 self.check("message", "Token saved successfully"),

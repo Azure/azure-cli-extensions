@@ -52,10 +52,10 @@ examples:
 helps['site key download'] = """
 type: command
 short-summary: Download the token for a site key.
-long-summary: Downloads the site key token and saves it to a file. If --file is not specified, the token is saved to <key-name>.txt in the current directory.
+long-summary: Downloads the site key token and saves it to a file. If --file is not specified, the token is saved to <key-name>.SiteKey in the current directory.
 examples:
   - name: Download a site key token
     text: az site key download --name TestSiteKeyName --resource-group TestRGName
   - name: Download to a specific file
-    text: az site key download --name TestSiteKeyName --resource-group TestRGName --file ./my-token.txt
+    text: az site key download --name TestSiteKeyName --resource-group TestRGName --file ./my-token.SiteKey
 """
