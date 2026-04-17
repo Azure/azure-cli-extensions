@@ -1,5 +1,9 @@
 Release History
 ===============
+1.0.0b4
+++++++
+* Fixed rendering of binary WebSocket frames by decoding them as UTF-8 so ANSI escapes and multi-byte characters display correctly instead of as ``repr()`` literals.
+
 1.0.0b3
 ++++++
 * Fixed an issue where admin commands were not being sent when the VM was using a custom boot diagnostics storage account.
