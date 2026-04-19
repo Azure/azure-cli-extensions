@@ -432,6 +432,11 @@ class SerialConsole:
                 GV.websocket_instance.send(self.access_token)
 
         def on_message(_, message):
+            # Binary websocket frames arrive as bytes from websocket-client >= 1.0.
+            # Decode to str so that ANSI escapes and CR/LF are interpreted by the
+            # user's terminal instead of being printed as a bytes repr (b'...').
+            if isinstance(message, (bytes, bytearray)):
+                message = bytes(message).decode("utf-8", errors="replace")
             if GV.first_message:
                 GV.websocket_instance.send(self.access_token)
                 GV.first_message = False
