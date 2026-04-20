@@ -99,22 +99,39 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
 
 
 def _parse_hierarchy_spec(value):
-    """Parse hierarchy spec from file path or shorthand syntax."""
+    """Parse hierarchy spec from file path, YAML content, or shorthand syntax.
+
+    Handles three input modes:
+    1. File path: 'hierarchy.yaml' or '@hierarchy.yaml' (@ stripped by CLI)
+    2. YAML content: when CLI framework pre-loads @file, we get raw YAML text
+    3. Shorthand: 'name=X level=Y type=Z'
+    """
     import os
 
-    # Handle @file syntax (@ may be stripped by CLI framework)
+    # Mode 1: File path (with or without @)
     filepath = value.lstrip('@')
     if os.path.exists(filepath):
         try:
             import yaml
         except ImportError:
-            import json as yaml_fallback
+            import json
             with open(filepath, 'r', encoding='utf-8') as f:
-                return yaml_fallback.load(f)
+                return json.load(f)
         with open(filepath, 'r', encoding='utf-8') as f:
             return yaml.safe_load(f)
 
-    # Shorthand: name=X level=Y type=Z
+    # Mode 2: YAML content (CLI framework pre-loaded @file)
+    # Detect YAML by checking for colon-separated key-value or newlines
+    if ':' in value and ('\n' in value or 'name:' in value or 'level:' in value):
+        try:
+            import yaml
+            parsed = yaml.safe_load(value)
+            if isinstance(parsed, dict):
+                return parsed
+        except Exception:
+            pass
+
+    # Mode 3: Shorthand syntax: name=X level=Y type=Z
     result = {}
     for pair in value.split():
         if '=' in pair:
