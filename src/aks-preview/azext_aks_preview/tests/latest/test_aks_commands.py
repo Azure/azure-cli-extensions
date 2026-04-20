@@ -22709,7 +22709,7 @@ spec:
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="centraluseuap"
+        random_name_length=17, name_prefix="clitest", location="westus2"
     )
     def test_aks_create_and_update_with_gateway_api_and_azureservicemesh(
         self, resource_group, resource_group_location
@@ -22740,6 +22740,69 @@ spec:
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("serviceMeshProfile.mode", "Istio"),
+                self.check("ingressProfile.gatewayApi.installation", "Standard"),
+            ],
+        )
+
+        # Test disabling Gateway API
+        update_cmd = (
+            "aks update --resource-group={resource_group} --name={name} "
+            "--disable-gateway-api "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedGatewayAPIPreview "
+        )
+        self.cmd(
+            update_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("ingressProfile.gatewayApi.installation", "Disabled"),
+            ],
+        )
+
+        # Test re-enabling Gateway API
+        update_cmd = (
+            "aks update --resource-group={resource_group} --name={name} "
+            "--enable-gateway-api "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedGatewayAPIPreview "
+        )
+        self.cmd(
+            update_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("ingressProfile.gatewayApi.installation", "Standard"),
+            ],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westus2"
+    )
+    def test_aks_create_and_update_with_gateway_api_without_azureservicemesh(
+        self, resource_group, resource_group_location
+    ):
+        aks_name = self.create_random_name("cliakstest", 16)
+        _, create_version = self._get_versions(resource_group_location)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "k8s_version": create_version,
+            }
+        )
+
+        # Test successful creation with Gateway API enabled and without Azure Service Mesh addon
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} "
+            "--enable-gateway-api "
+            "--ssh-key-value={ssh_key_value} -o json "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedGatewayAPIPreview "
+            "--kubernetes-version={k8s_version} "
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("serviceMeshProfile", None),
                 self.check("ingressProfile.gatewayApi.installation", "Standard"),
             ],
         )
@@ -22931,9 +22994,6 @@ spec:
 
     # TODO (indusridhar): Add tests for `test_aks_nodepool_get_rollback_versions` and `test_aks_nodepool_rollback`
     # after AKS RP Jan 2026 release is complete and recently_used_versions field is populated in upgrade profile API
-
-    # TODO (zheweihu): add test `test_aks_create_and_update_with_gateway_api_without_azureservicemesh`
-    # once https://msazure.visualstudio.com/CloudNativeCompute/_git/aks-rp/pullrequest/14404771 is rolled out
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
