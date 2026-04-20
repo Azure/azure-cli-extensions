@@ -93,5 +93,15 @@ examples:
   - name: Create RG hierarchy with shorthand
     text: az workload-orchestration hierarchy create -g my-rg --configuration-location eastus2euap --hierarchy-spec "name=Mehoopany level=factory"
   - name: Create ServiceGroup hierarchy from YAML
-    text: az workload-orchestration hierarchy create --configuration-location eastus2euap --hierarchy-spec "@sg-hierarchy.yaml"
+    text: az workload-orchestration hierarchy create -g my-rg --configuration-location eastus2euap --hierarchy-spec "@sg-hierarchy.yaml"
+"""
+
+helps['workload-orchestration cluster'] = """
+type: group
+short-summary: Commands for cluster preparation for workload orchestration.
+"""
+
+helps['workload-orchestration hierarchy'] = """
+type: group
+short-summary: Commands for managing workload orchestration hierarchies.
 """

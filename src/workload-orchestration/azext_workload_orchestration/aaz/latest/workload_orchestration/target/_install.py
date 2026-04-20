@@ -77,7 +77,7 @@ class Install(AAZCommand):
 
         # New flow: full deploy chain
         _args_schema.solution_template_version_id = AAZStrArg(
-            options=["--solution-template-version-id"],
+            options=["--solution-template-version-id", "-v"],
             arg_group="Deploy",
             help="Full ARM ID of the solution template version. Triggers full deploy chain.",
         )
@@ -87,7 +87,7 @@ class Install(AAZCommand):
             help="Name of the solution template. Use with --solution-template-version.",
         )
         _args_schema.solution_template_version = AAZStrArg(
-            options=["--solution-template-version"],
+            options=["--solution-template-version", "--version"],
             arg_group="Deploy",
             help="Version of the solution template (e.g., 1.0.0).",
         )
