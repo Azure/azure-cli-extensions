@@ -1,0 +1,101 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - quantum workspace set
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -w -l
+      User-Agent:
+      - AZURECLI/2.84.0 azsdk-python-core/1.38.3 Python/3.13.9 (Windows-11-10.0.26200-SP0)
+        az-cli-ext/1.0.0b13
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/ws-v1-e2e-tests-eastus-4605175?api-version=2023-11-13-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/ws-v1-e2e-tests-eastus-4605175","name":"ws-v1-e2e-tests-eastus-4605175","type":"microsoft.quantum/workspaces","location":"eastus","tags":{},"systemData":{"createdBy":"zulfat.nutfullin@akvelon.com","createdByType":"User","createdAt":"2026-04-16T23:32:04.5173504Z","lastModifiedBy":"zulfat.nutfullin@akvelon.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-16T23:32:04.5173504Z"},"identity":{"principalId":"d4d37a95-dac4-40fb-ad17-6a4ad94f3501","tenantId":"c4080ecf-cfd1-4c2f-af95-3e1af4fac6c9","type":"SystemAssigned"},"properties":{"providers":[{"providerId":"rigetti","providerSku":"azure-basic-qvm-only-unlimited","applicationName":"ws-v1-e2e-tests-eastus-4605175-rigetti","provisioningState":"Succeeded","resourceUsageId":"ecfebc8a-ad43-4921-be51-f0117fe705e9"}],"provisioningState":"Succeeded","usable":"Yes","storageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/e2etests47140761","apiKeyEnabled":true,"endpointUri":"https://ws-v1-e2e-tests-eastus-4605175.eastus.quantum.azure.com"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1213'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 20 Apr 2026 22:44:52 GMT
+      etag:
+      - '"ff037ee7-0000-0700-0000-69e171df0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 1F8DFFB11260405F9E61794E238152DC Ref B: MWH011020806054 Ref C: 2026-04-20T22:44:52Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-quantum/3.7.0b1 Python/3.13.9 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://ws-v1-e2e-tests-eastus-4605175.eastus.quantum.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/ws-v1-e2e-tests-eastus-4605175/providerStatus?api-version=2026-01-15-preview
+  response:
+    body:
+      string: '{"value":[{"id":"rigetti","currentAvailability":"Available","targets":[{"id":"rigetti.sim.qvm","currentAvailability":"Available","averageQueueTime":5,"statusPage":"https://rigetti.statuspage.io/"}]}],"nextLink":null}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '216'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 20 Apr 2026 22:44:53 GMT
+      mise-correlation-id:
+      - 87b02ccc-a3ef-4fb7-9abc-c27728488b00
+      server:
+      - Microsoft-IIS/10.0
+      set-cookie:
+      - ApplicationGatewayAffinityCORS=f41f4d84e6de1cfe7357bf648ccde6bc; Path=/; SameSite=None;
+        Secure
+      - ApplicationGatewayAffinity=f41f4d84e6de1cfe7357bf648ccde6bc; Path=/
+      - ARRAffinity=9d716053ef092553e7bdd2639d89f002241b80715630c2dbb839c205a5e8d5f8;Path=/;HttpOnly;Secure;Domain=app-jobscheduler-westus-003.ase-jobscheduler-westus-003.appserviceenvironment.net
+      - ARRAffinitySameSite=9d716053ef092553e7bdd2639d89f002241b80715630c2dbb839c205a5e8d5f8;Path=/;HttpOnly;SameSite=None;Secure;Domain=app-jobscheduler-westus-003.ase-jobscheduler-westus-003.appserviceenvironment.net
+      strict-transport-security:
+      - max-age=2592000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-ms-trace-id:
+      - cd0176fa74f315c45f7b4b6ed65196c0
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+version: 1
