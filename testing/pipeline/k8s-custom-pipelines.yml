@@ -60,6 +60,11 @@ stages:
     parameters:
       jobName: ForcedDeleteTest
       path: ./test/configurations/ForcedDelete.Tests.ps1
+  - template: ./templates/run-test.yml
+    parameters:
+      jobName: BasicOnboardingHelm4Test
+      path: ./test/configurations/BasicOnboarding.Tests.ps1
+      useHelm4: true
   - job: BuildPublishExtension
     pool:
       vmImage: 'ubuntu-latest'

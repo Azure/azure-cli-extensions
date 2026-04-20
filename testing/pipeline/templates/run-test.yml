@@ -1,6 +1,8 @@
 parameters:
   jobName: ''
   path: ''
+  useHelm4: false
+  helm4Version: 'v4.1.3'
 
 jobs:
 - job: ${{ parameters.jobName}}
@@ -78,11 +80,22 @@ jobs:
       curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
     displayName: "Upgrade az to latest version"
 
-  - bash: |
-      curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
-      chmod 700 get_helm.sh
-      ./get_helm.sh --version v3.6.3
-    displayName: "Install Helm"
+  - ${{ if not(eq(parameters.useHelm4, true)) }}:
+    - bash: |
+        curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+        chmod 700 get_helm.sh
+        ./get_helm.sh --version v3.6.3
+      displayName: "Install Helm 3"
+
+  - ${{ if eq(parameters.useHelm4, true) }}:
+    - bash: |
+        set -ev
+        echo "Installing Helm ${{ parameters.helm4Version }}..."
+        curl -fsSL "https://get.helm.sh/helm-${{ parameters.helm4Version }}-linux-amd64.tar.gz" | tar xz
+        sudo mv linux-amd64/helm /usr/local/bin/helm4
+        helm4 version
+        echo "##vso[task.setvariable variable=HELM_CLIENT_PATH]/usr/local/bin/helm4"
+      displayName: "Install Helm 4 and set HELM_CLIENT_PATH"
 
   - task: AzureCLI@2
     displayName: Bootstrap
@@ -93,6 +106,9 @@ jobs:
       inlineScript: |
         .\Bootstrap.ps1 -CI
       workingDirectory: $(TEST_PATH)
+    ${{ if eq(parameters.useHelm4, true) }}:
+      env:
+        HELM_CLIENT_PATH: $(HELM_CLIENT_PATH)
   - task: AzureCLI@2
     displayName: Run the Test Suite for ${{ parameters.path }}
     inputs:
@@ -103,6 +119,9 @@ jobs:
         .\Test.ps1 -CI -Path ${{ parameters.path }} -Type connectedk8s
       workingDirectory: $(TEST_PATH)
     continueOnError: true
+    ${{ if eq(parameters.useHelm4, true) }}:
+      env:
+        HELM_CLIENT_PATH: $(HELM_CLIENT_PATH)
 
   - task: PublishTestResults@2
     inputs:
