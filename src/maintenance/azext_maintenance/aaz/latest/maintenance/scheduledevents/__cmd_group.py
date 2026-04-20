@@ -12,11 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "maintenance scheduledevent",
-    is_preview=True,
+    "maintenance scheduledevents",
 )
 class __CMDGroup(AAZCommandGroup):
-    """ScheduledEvents action
+    """Manage Scheduled Events
     """
     pass
 

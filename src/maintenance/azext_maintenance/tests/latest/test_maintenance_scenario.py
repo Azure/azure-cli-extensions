@@ -32,9 +32,9 @@ def setup_scenario(test):
     test.cmd('az group show --resource-group "{rg}" ', checks=[])
 
     # Dedicated host
-    test.cmd('az vm host group create --name clidhtesthostgroup --resource-group "{rg}" --platform-fault-domain-count 1 ', checks=[])
+    test.cmd('az vm host group create --name clidhtesthostgroup --resource-group "{rg}" --platform-fault-domain-count 1 --location centraluseuap ', checks=[])
 
-    test.cmd('az vm host create --host-group clidhtesthostgroup --name clidhtesthost --resource-group "{rg}" --sku DDSv4-Type2  --platform-fault-domain 0', checks=[])
+    test.cmd('az vm host create --host-group clidhtesthostgroup --name clidhtesthost --resource-group "{rg}" --sku FSv2-Type3 --platform-fault-domain 0 --location centraluseuap', checks=[])
 
     # Create NetworkSecurityGroup
     test.cmd('az network nsg create --resource-group "{rg}" --name "clitestnsg"', checks=[])
@@ -42,7 +42,7 @@ def setup_scenario(test):
     test.cmd('az network vnet subnet create --name "clitestsubnet" --vnet-name "clitestvnet" --resource-group "{rg}" --address-prefixes "10.0.0.0/24"  --network-security-group "clitestnsg"', checks=[])
 
     #Load balancer and health probe
-    test.cmd('az network public-ip create --resource-group "{rg}" --name clitestip')
+    test.cmd('az network public-ip create --resource-group "{rg}" --name clitestip --sku Standard --allocation-method Static --ip-tags "FirstPartyUsage=/PlannedMaintenanceNonProd"')
     test.cmd('az network lb create --resource-group "{rg}" --name clitestlb --sku Standard --frontend-ip-name clitestfrontendpool --backend-pool-name clitestbackendpool --public-ip-address clitestip')
     test.cmd('az network lb probe create --resource-group "{rg}" --lb-name clitestlb --name clitestprobe --protocol Http --port 80 --path /')
     test.cmd('az network lb rule create --resource-group "{rg}" --lb-name clitestlb --name clitestlbrule --protocol Tcp --frontend-port 80 --backend-port 80 --frontend-ip-name clitestfrontendpool --backend-pool-name clitestbackendpool --probe-name clitestprobe')
@@ -107,7 +107,8 @@ def step_assignment_create_or_update_parent(test):
              '--resource-name "clidhtesthost" '
              '--resource-parent-name "clidhtesthostgroup" '
              '--resource-parent-type "hostgroups" '
-             '--resource-type "hosts" ',
+             '--resource-type "hosts" '
+             '--location centraluseuap ',
              checks=[])
 
 
@@ -171,7 +172,7 @@ def step__applyupdates_get_applyupdates_get(test):
 
 def step__maintenanceconfigurations_put_maintenanceconfigurations_createorupdateforresource(test):
     test.cmd('az maintenance configuration create '
-             '--location "eastus2euap" '
+             '--location "centraluseuap" '
              '--maintenance-scope "OSImage" '
              '--maintenance-window-duration "05:00" '
              '--maintenance-window-expiration-date-time "9999-12-31 00:00" '
@@ -187,7 +188,7 @@ def step__maintenanceconfigurations_put_maintenanceconfigurations_createorupdate
 
 def step__maintenanceconfigurations_put_maintenanceconfigurations_createorupdateforresource_host(test):
     test.cmd('az maintenance configuration create '
-             '--location "eastus2euap" '
+             '--location "centraluseuap" '
              '--maintenance-scope "Host" '
              '--maintenance-window-duration "04:00" '
              '--maintenance-window-expiration-date-time "9999-12-31 00:00" '
@@ -224,7 +225,7 @@ def step__maintenanceconfigurations_get_maintenanceconfigurations_list(test):
 
 def step__maintenanceconfigurations_patch_maintenanceconfigurations_updateforresource(test):
     test.cmd('az maintenance configuration update '
-             '--location "eastus2euap" '
+             '--location "centraluseuap" '
              '--maintenance-scope "OSImage" '
              '--maintenance-window-duration "05:00" '
              '--maintenance-window-expiration-date-time "9999-12-31 00:00" '
@@ -331,7 +332,7 @@ def step__maintenanceconfigurations_delete_publicmaintenanceconfigurations_delet
 
 def step__maintenanceconfigurations_put_publicmaintenanceconfigurations_createorupdateforresource(test):
     test.cmd('az maintenance configuration create '
-             '--location "eastus2euap" '
+             '--location "centraluseuap" '
              '--maintenance-scope "SQLDB" '
              '--maintenance-window-duration "05:00" '
              '--maintenance-window-expiration-date-time "9999-12-31 00:00" '
@@ -348,6 +349,7 @@ def step__maintenanceconfigurations_put_publicmaintenanceconfigurations_createor
 
 def step__maintenanceconfigurations_create_maintenanceconfigurations_inguestpatchadvanced(test):
     test.cmd('az maintenance configuration create --maintenance-scope InGuestPatch '
+             '--location centraluseuap '
              '--maintenance-window-duration "02:00" '
              '--maintenance-window-expiration-date-time "9999-12-31 00:00" '
              '--maintenance-window-recur-every "Day" '
@@ -377,7 +379,7 @@ def step__maintenanceconfigurations_create_maintenanceconfigurations_inguestpatc
 
 def step__maintenanceconfigurations_create_maintenanceconfigurations_inguestpatchadvanced_forcancel(test, start_date):
     test.cmd('az maintenance configuration create --maintenance-scope InGuestPatch '
-             '--location eastus2euap '
+             '--location centraluseuap '
              '--namespace "Microsoft.Maintenance" '
              '--visibility "Custom" '
              '--maintenance-window-duration "02:00" '
@@ -476,6 +478,7 @@ def step__configurationassignments_put_configurationassignments_createorupdate_r
              '--maintenance-configuration-id "/subscriptions/{subscription_id}/resourcegroups/{rg}/providers/Microsoft.'
              'Maintenance/maintenanceConfigurations/clitestmrpconfinguestadvanced" '
              '--name cli_dynamicscope_recording01 '
+             '--location centraluseuap '
              '--filter-locations eastus2euap centraluseuap '
              '--filter-os-types windows linux '
              '--filter-tags {{tagKey1:[tagKey1Val1,tagKey1Val2],tagKey2:[tagKey2Val1,tagKey2Val2]}} '
@@ -489,6 +492,7 @@ def step__configurationassignments_put_configurationassignments_update_resourceg
              '--maintenance-configuration-id "/subscriptions/{subscription_id}/resourcegroups/{rg}/providers/Microsoft.'
              'Maintenance/maintenanceConfigurations/clitestmrpconfinguestadvanced" '
              '--name cli_dynamicscope_recording01 '
+             '--location centraluseuap '
              '--filter-locations eastus2euap centraluseuap '
              '--filter-os-types windows linux '
              '--filter-tags {{tagKey1:[tagKey1Val1,tagKey1Val2],tagKey2:[tagKey2Val1,tagKey2Val2]}} '
@@ -509,17 +513,31 @@ def step__configurationassignments_put_configurationassignments_delete_resourceg
              checks=[])
 
 
-def step__scheduledevent_acknowledge(test):
+def step__scheduledevents_acknowledge(test):
     from azure.core.exceptions import ResourceNotFoundError
     try:
-        test.cmd('az maintenance scheduledevent acknowledge '
+        test.cmd('az maintenance scheduledevents acknowledge '
              '--resource-group "{rg}" '
              '--resource-name "clitestvmss" '
              '--resource-type "virtualMachineScaleSets" '
-             '--scheduled-event-id "00000000-0000-0000-0000-000000000000" ',
+             '--scheduled-events-id "8482AE8A-ED76-48E8-A055-8E8B40CF8A57" ',
              checks=[])
     except ResourceNotFoundError as e:
         test.assertIn("InvalidScheduledEventId", str(e))
+
+def step__scheduledevents_list_acknowledge(test):
+    from azure.core.exceptions import HttpResponseError
+    try:
+        test.cmd('az maintenance scheduledevents list acknowledge '
+             '--resource-group "{rg}" '
+             '--resource-name "clitestvmss" '
+             '--resource-type "virtualMachineScaleSets" '
+             "--value '[\"8482AE8A-ED76-48E8-A055-8E8B40CF8A57\", \"42086D38-19CC-4A01-882A-DE2A884C534D\"]' ",
+             checks=[])
+    except HttpResponseError as e:
+        test.assertIn("Multi-Status", str(e))
+        test.assertEqual(2, str(e).count('"Code": "NotFound"'))
+        test.assertEqual(2, str(e).count('"Message": "Scheduled event not found"'))
 
 
 # Testcase: Scenario
@@ -527,7 +545,8 @@ def call_scenario(test):
     setup_scenario(test)
 
     # Scheduled events approve
-    step__scheduledevent_acknowledge(test)
+    step__scheduledevents_acknowledge(test)
+    step__scheduledevents_list_acknowledge(test)
 
     # OS Image create/ vmss. CRUD maintenance config
     step__maintenanceconfigurations_put_maintenanceconfigurations_createorupdateforresource(test)
@@ -573,6 +592,7 @@ def call_scenario(test):
     # create host config
     step__maintenanceconfigurations_put_maintenanceconfigurations_createorupdateforresource_host(test)
 
+    time.sleep(4 * 60)
     step_assignment_create_or_update_parent(test)
     step_assignment_list_parent(test)
     step_assignment_show_parent(test)
@@ -615,7 +635,7 @@ class MaintenanceScenarioTest(ScenarioTest):
         })
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='clitestmaintenance_examplerg'[:7], key='rg', parameter_name='rg', location="eastus2euap")
+    @ResourceGroupPreparer(name_prefix='clitestmaintenance_examplerg'[:7], key='rg', parameter_name='rg', location="centraluseuap")
     def test_maintenance_Scenario(self, rg):
         call_scenario(self)
         calc_coverage(__file__)
