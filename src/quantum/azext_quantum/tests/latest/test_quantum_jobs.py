@@ -206,34 +206,15 @@ class QuantumJobsScenarioTest(ScenarioTest):
 
         # Submit a job to Rigetti and look for SAS tokens in URIs in the output
         results = self.cmd("az quantum job submit -t rigetti.sim.qvm --job-input-format rigetti.quil.v1 -t rigetti.sim.qvm --job-input-file src/quantum/azext_quantum/tests/latest/input_data/bell-state.quil --job-output-format rigetti.quil-results.v1 -o json").get_output_in_json()
-        self.assertNotIn("?sv=", results["containerUri"])
-        self.assertNotIn("&sig=", results["containerUri"])
-
-        self.assertNotIn("?sv=", results["inputDataUri"])
-        self.assertNotIn("&sig=", results["inputDataUri"])
-
-        self.assertNotIn("?sv=", results["outputDataUri"])
-        self.assertNotIn("&sig=", results["outputDataUri"])
+        self.assert_not_contains_standard_sas_params(results["containerUri"])
+        self.assert_not_contains_standard_sas_params(results["inputDataUri"])
+        self.assert_not_contains_standard_sas_params(results["outputDataUri"])
 
         job = self.cmd(f"az quantum job show -j {results['id']} -o json").get_output_in_json()
-
-        self.assertIn("?sv=", job["containerUri"])
-        self.assertIn("&st=", job["containerUri"])
-        self.assertIn("&se=", job["containerUri"])
-        self.assertIn("&sp=", job["containerUri"])
-        self.assertIn("&sig=", job["containerUri"])
-
-        self.assertIn("?sv=", job["inputDataUri"])
-        self.assertIn("&st=", job["inputDataUri"])
-        self.assertIn("&se=", job["inputDataUri"])
-        self.assertIn("&sp=", job["inputDataUri"])
-        self.assertIn("&sig=", job["inputDataUri"])
-
-        self.assertIn("?sv=", job["outputDataUri"])
-        self.assertIn("&st=", job["outputDataUri"])
-        self.assertIn("&se=", job["outputDataUri"])
-        self.assertIn("&sp=", job["outputDataUri"])
-        self.assertIn("&sig=", job["outputDataUri"])
+  
+        self.assert_contains_standard_sas_params(job["containerUri"])
+        self.assert_contains_standard_sas_params(job["inputDataUri"])
+        self.assert_contains_standard_sas_params(job["outputDataUri"])
 
         # Run a Quil pass-through job on Rigetti
         results = self.cmd("az quantum run -t rigetti.sim.qvm --job-input-format rigetti.quil.v1 -t rigetti.sim.qvm --job-input-file src/quantum/azext_quantum/tests/latest/input_data/bell-state.quil --job-output-format rigetti.quil-results.v1 -o json").get_output_in_json()
@@ -291,17 +272,34 @@ class QuantumJobsScenarioTest(ScenarioTest):
         # Test that job submission works with disabled access keys on linked storage (/sasUri returns user delegation SAS)
         results = self.cmd("az quantum job submit -t rigetti.sim.qvm --job-input-format rigetti.quil.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/bell-state.quil --job-output-format rigetti.quil-results.v1 -o json").get_output_in_json()
         self.assertIn("id", results)
-        
+
+        job = self.cmd(f"az quantum job show -j {results['id']} -o json").get_output_in_json()
+        self.assert_contains_standard_sas_params(job["containerUri"])
+        self.assert_contains_standard_sas_params(job["inputDataUri"])
+        self.assert_contains_standard_sas_params(job["outputDataUri"])
+        self.assert_contains_user_delegation_sas_params(job["containerUri"])
+        self.assert_contains_user_delegation_sas_params(job["inputDataUri"])
+        self.assert_contains_user_delegation_sas_params(job["outputDataUri"])
+
         # Enable access keys on the storage account
         updated = self.cmd(f"az storage account update -g {test_resource_group} -n {test_storage_temp} --allow-shared-key-access true -o json").get_output_in_json()
         self.assertTrue(updated["allowSharedKeyAccess"], "Access keys should be enabled after update")
 
-        time.sleep(60) # wait for the cache to update
+        time.sleep(300) # wait for the cache to update
 
         # Test that job submission works with enabled access keys on linked storage (/sasUri returns container-scoped Service SAS)
         results = self.cmd("az quantum job submit -t rigetti.sim.qvm --job-input-format rigetti.quil.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/bell-state.quil --job-output-format rigetti.quil-results.v1 -o json").get_output_in_json()
         self.assertIn("id", results)
 
+        job = self.cmd(f"az quantum job show -j {results['id']} -o json").get_output_in_json()
+        self.assert_contains_standard_sas_params(job["containerUri"])
+        self.assert_contains_standard_sas_params(job["inputDataUri"])
+        self.assert_contains_standard_sas_params(job["outputDataUri"])
+        self.assert_not_contains_user_delegation_sas_params(job["containerUri"])
+        self.assert_not_contains_user_delegation_sas_params(job["inputDataUri"])
+        self.assert_not_contains_user_delegation_sas_params(job["outputDataUri"])
+
+        # Clean up
         self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp}')
         self.cmd(f'az storage account delete -g {test_resource_group} -n {test_storage_temp} --yes')
 
@@ -397,3 +395,39 @@ class QuantumJobsScenarioTest(ScenarioTest):
             assert False
         except RequiredArgumentMissingError as e:
             assert str(e) == ERROR_MSG_MISSING_ORDERBY_ARGUMENT
+
+    def assert_contains_user_delegation_sas_params(self, uri: str):
+        """Assert that the given URI contains user delegation SAS parameters."""
+        self.assertIn("?skoid=", uri)   # signed key object ID (service principal OID)
+        self.assertIn("&sktid=", uri)  # signed key tenant ID
+        self.assertIn("&skt=", uri)    # signed key start time
+        self.assertIn("&ske=", uri)    # signed key expiry time
+        self.assertIn("&sks=", uri)    # signed key service (b = Blob)
+        self.assertIn("&skv=", uri)    # signed key version
+    
+    def assert_not_contains_user_delegation_sas_params(self, uri: str):
+        """Assert that the given URI does not contain user delegation SAS parameters."""
+        self.assertNotIn("?skoid=", uri)
+        self.assertNotIn("&sktid=", uri)
+        self.assertNotIn("&skt=", uri)
+        self.assertNotIn("&ske=", uri)
+        self.assertNotIn("&sks=", uri)
+        self.assertNotIn("&skv=", uri)
+
+    def assert_contains_standard_sas_params(self, uri: str):
+        """Assert that the given URI contains standard SAS parameters."""
+        self.assertIn("sv=", uri)     # SAS version
+        self.assertIn("&st=", uri)     # start time
+        self.assertIn("&se=", uri)     # expiry time
+        self.assertIn("&sr=", uri)     # signed resource (e.g. c = container)
+        self.assertIn("&sp=", uri)     # permissions
+        self.assertIn("&sig=", uri)    # signature
+
+    def assert_not_contains_standard_sas_params(self, uri: str):
+        """Assert that the given URI does not contain standard SAS parameters."""
+        self.assertNotIn("sv=", uri)
+        self.assertNotIn("&st=", uri)
+        self.assertNotIn("&se=", uri)
+        self.assertNotIn("&sr=", uri)
+        self.assertNotIn("&sp=", uri)
+        self.assertNotIn("&sig=", uri)
