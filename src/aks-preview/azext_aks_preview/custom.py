@@ -17,9 +17,7 @@ import webbrowser
 import subprocess
 from math import isnan
 
-from azext_aks_preview._client_factory import (
-    CUSTOM_MGMT_AKS_PREVIEW,
-    cf_agent_pools)
+from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW, cf_agent_pools
 from azext_aks_preview._consts import (
     ADDONS,
     ADDONS_DESCRIPTIONS,
