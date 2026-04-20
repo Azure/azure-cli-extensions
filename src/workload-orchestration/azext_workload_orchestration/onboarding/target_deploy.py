@@ -50,8 +50,6 @@ def target_deploy(
     solution_template_version_id=None,
     solution_template_name=None,
     solution_template_version=None,
-    solution_instance_name=None,
-    solution_dependencies=None,
     config=None,
     config_hierarchy_id=None,
     config_template_rg=None,
@@ -106,10 +104,7 @@ def target_deploy(
 
     # --- Step 1: Review ---
     _log("Review")
-    review_result = _do_review(
-        cmd, base_url, solution_template_version_id,
-        solution_instance_name, solution_dependencies,
-    )
+    review_result = _do_review(cmd, base_url, solution_template_version_id)
     results["review"] = review_result
     sv_id = _extract_solution_version_id(review_result)
     _log("Review", f"[OK] -> solutionVersionId: {_short_id(sv_id)}")
@@ -145,8 +140,6 @@ def target_deploy_pre_install(
     solution_template_version_id=None,
     solution_template_name=None,
     solution_template_version=None,
-    solution_instance_name=None,
-    solution_dependencies=None,
     config=None,
 ):
     """Run config-set → review → publish and return the solution-version-id.
@@ -211,10 +204,7 @@ def target_deploy_pre_install(
 
     # --- Step 1: Review ---
     _log("Review")
-    review_result = _do_review(
-        cmd, base_url, solution_template_version_id,
-        solution_instance_name, solution_dependencies,
-    )
+    review_result = _do_review(cmd, base_url, solution_template_version_id)
     sv_id = _extract_solution_version_id(review_result)
     _log("Review", f"[OK] -> solutionVersionId: {_short_id(sv_id)}")
 
@@ -284,21 +274,12 @@ def _resolve_template_version_id(
 # Step implementations
 # ---------------------------------------------------------------------------
 
-def _do_review(cmd, base_url, solution_template_version_id,
-               solution_instance_name=None, solution_dependencies=None):
+def _do_review(cmd, base_url, solution_template_version_id):
     """POST .../reviewSolutionVersion"""
     url = f"{base_url}/reviewSolutionVersion?api-version={API_VERSION}"
     body = {
         "solutionTemplateVersionId": solution_template_version_id,
     }
-    if solution_instance_name:
-        body["solutionInstanceName"] = solution_instance_name
-    if solution_dependencies:
-        body["solutionDependencies"] = (
-            json.loads(solution_dependencies)
-            if isinstance(solution_dependencies, str)
-            else solution_dependencies
-        )
 
     resp = send_raw_request(
         cmd.cli_ctx, "POST", url,
