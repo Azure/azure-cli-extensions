@@ -29,6 +29,7 @@ from azure.cli.core.util import (
     read_file_content,
     sdk_no_wait,
 )
+from azure.core import MatchConditions
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
 
@@ -58,6 +59,16 @@ from azext_aks_preview._helpers import (
 )
 
 logger = get_logger(__name__)
+
+
+def _get_etag_match_condition(if_match, if_none_match):
+    """Convert if_match/if_none_match to etag/match_condition for the new SDK."""
+    if if_match is not None:
+        return if_match, MatchConditions.IfNotModified
+    if if_none_match is not None:
+        return if_none_match, MatchConditions.IfMissing
+    return None, None
+
 
 # type variables
 AgentPool = TypeVar("AgentPool")
@@ -1184,7 +1195,7 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         # if vm_size is not specified, use the size from the existing agentpool profile
         if vm_size is None:
             if autoscale_profile:
-                vm_size = autoscale_profile.size
+                vm_size = autoscale_profile[0].size
 
             if manual_scale_profile:
                 vm_size = manual_scale_profile[0].size
@@ -1481,11 +1492,11 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         if enable_auto_scaling:
             agentpool.virtual_machines_profile = self.models.VirtualMachinesProfile(
                 scale=self.models.ScaleProfile(
-                    autoscale=self.models.AutoScaleProfile(
+                    autoscale=[self.models.AutoScaleProfile(
                         size=sizes[0],
                         min_count=min_count,
                         max_count=max_count,
-                    )
+                    )]
                 )
             )
         else:
@@ -1710,6 +1721,9 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
     def add_agentpool(self, agentpool: AgentPool) -> AgentPool:
         """Send request to add a new agentpool."""
         self._ensure_agentpool(agentpool)
+        etag, match_condition = _get_etag_match_condition(
+            self.context.get_if_match(), self.context.get_if_none_match()
+        )
         return sdk_no_wait(
             self.context.get_no_wait(),
             self.client.begin_create_or_update,
@@ -1717,8 +1731,8 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
             self.context.get_cluster_name(),
             self.context._get_nodepool_name(enable_validation=False),
             agentpool,
-            if_match=self.context.get_if_match(),
-            if_none_match=self.context.get_if_none_match(),
+            etag=etag,
+            match_condition=match_condition,
             headers=self.context.get_aks_custom_headers(),
         )
 
@@ -2065,11 +2079,11 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
         if update_cluster_autoscaler or enable_cluster_autoscaler:
             agentpool.virtual_machines_profile = self.models.VirtualMachinesProfile(
                 scale=self.models.ScaleProfile(
-                    autoscale=self.models.AutoScaleProfile(
+                    autoscale=[self.models.AutoScaleProfile(
                         size=vm_size,
                         min_count=min_count,
                         max_count=max_count,
-                    )
+                    )]
                 )
             )
 
@@ -2182,6 +2196,9 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
         """
         self._ensure_agentpool(agentpool)
 
+        etag, match_condition = _get_etag_match_condition(
+            self.context.get_if_match(), self.context.get_if_none_match()
+        )
         return sdk_no_wait(
             self.context.get_no_wait(),
             self.client.begin_create_or_update,
@@ -2189,8 +2206,8 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
             self.context.get_cluster_name(),
             self.context.get_nodepool_name(),
             agentpool,
-            if_match=self.context.get_if_match(),
-            if_none_match=self.context.get_if_none_match(),
+            etag=etag,
+            match_condition=match_condition,
             headers=self.context.get_aks_custom_headers(),
         )
 
@@ -2205,6 +2222,9 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
         """
         self._ensure_agentpool(agentpool)
 
+        etag, match_condition = _get_etag_match_condition(
+            self.context.get_if_match(), self.context.get_if_none_match()
+        )
         return sdk_no_wait(
             self.context.get_no_wait(),
             self.client.begin_create_or_update,
@@ -2213,7 +2233,7 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
             # validated in "init_agentpool", skip to avoid duplicate api calls
             self.context._get_nodepool_name(enable_validation=False),
             agentpool,
-            if_match=self.context.get_if_match(),
-            if_none_match=self.context.get_if_none_match(),
+            etag=etag,
+            match_condition=match_condition,
             headers=self.context.get_aks_custom_headers(),
         )
