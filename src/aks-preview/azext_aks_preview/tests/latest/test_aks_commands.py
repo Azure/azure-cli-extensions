@@ -22341,9 +22341,9 @@ spec:
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check("agentPoolProfiles[0].type", "VirtualMachines"),
-            self.check('agentPoolProfiles[0].virtualMachinesProfile.scale.autoscale.size', 'standard_d2s_v3'),
-            self.check('agentPoolProfiles[0].virtualMachinesProfile.scale.autoscale.minCount', 1),
-            self.check('agentPoolProfiles[0].virtualMachinesProfile.scale.autoscale.maxCount', 3),
+            self.check('agentPoolProfiles[0].virtualMachinesProfile.scale.autoscale[0].size', 'standard_d2s_v3'),
+            self.check('agentPoolProfiles[0].virtualMachinesProfile.scale.autoscale[0].minCount', 1),
+            self.check('agentPoolProfiles[0].virtualMachinesProfile.scale.autoscale[0].maxCount', 3),
         ])
 
         # add another vms nodepool with autoscaler enabled
@@ -22354,9 +22354,9 @@ spec:
                            '--min-count 0 --max-count 3'
         self.cmd(add_nodepool_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('virtualMachinesProfile.scale.autoscale.size', 'standard_d2s_v3'),
-            self.check('virtualMachinesProfile.scale.autoscale.minCount', 0),
-            self.check('virtualMachinesProfile.scale.autoscale.maxCount', 3),
+            self.check('virtualMachinesProfile.scale.autoscale[0].size', 'standard_d2s_v3'),
+            self.check('virtualMachinesProfile.scale.autoscale[0].minCount', 0),
+            self.check('virtualMachinesProfile.scale.autoscale[0].maxCount', 3),
         ])
 
         # update a VirtualMachines node pool with autoscaler enabled to change the VM size and min/max node count.
@@ -22366,9 +22366,9 @@ spec:
                               '--min-count 1 --max-count 5'
         self.cmd(update_nodepool_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('virtualMachinesProfile.scale.autoscale.size', 'standard_d4s_v3'),
-            self.check('virtualMachinesProfile.scale.autoscale.minCount', 1),
-            self.check('virtualMachinesProfile.scale.autoscale.maxCount', 5),
+            self.check('virtualMachinesProfile.scale.autoscale[0].size', 'standard_d4s_v3'),
+            self.check('virtualMachinesProfile.scale.autoscale[0].minCount', 1),
+            self.check('virtualMachinesProfile.scale.autoscale[0].maxCount', 5),
         ])
 
         # disable autoscaler (auto to manual)
@@ -22384,9 +22384,9 @@ spec:
                                 '--enable-cluster-autoscaler --min-count 1 --max-count 3'
         self.cmd(enable_autoscaler_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('virtualMachinesProfile.scale.autoscale.size', 'standard_d4s_v3'),
-            self.check('virtualMachinesProfile.scale.autoscale.minCount', 1),
-            self.check('virtualMachinesProfile.scale.autoscale.maxCount', 3),
+            self.check('virtualMachinesProfile.scale.autoscale[0].size', 'standard_d4s_v3'),
+            self.check('virtualMachinesProfile.scale.autoscale[0].minCount', 1),
+            self.check('virtualMachinesProfile.scale.autoscale[0].maxCount', 3),
         ])
 
         # delete

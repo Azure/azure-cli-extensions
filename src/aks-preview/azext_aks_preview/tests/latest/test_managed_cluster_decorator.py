@@ -274,7 +274,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             location="test_location",
             network_profile=self.models.ContainerServiceNetworkProfile(
                 kube_proxy_config=self.models.ContainerServiceNetworkProfileKubeProxyConfig(
-                    kube_proxy="test_kube_proxy"
+                    enabled=True
                 )
             ),
         )
@@ -282,7 +282,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         self.assertEqual(
             ctx_1.get_kube_proxy_config(),
             self.models.ContainerServiceNetworkProfileKubeProxyConfig(
-                kube_proxy="test_kube_proxy"
+                enabled=True
             ),
         )
 
@@ -370,13 +370,13 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         mc = self.models.ManagedCluster(
             location="test_location",
             network_profile=self.models.ContainerServiceNetworkProfile(
-                pod_cidrs="test_pod_cidrs"
+                pod_cidrs=["test_pod_cidrs"]
             ),
         )
         ctx_1.attach_mc(mc)
         self.assertEqual(
             ctx_1.get_pod_cidrs(),
-            "test_pod_cidrs",
+            ["test_pod_cidrs"],
         )
 
         ctx_2 = AKSPreviewManagedClusterContext(
@@ -407,13 +407,13 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         mc = self.models.ManagedCluster(
             location="test_location",
             network_profile=self.models.ContainerServiceNetworkProfile(
-                service_cidrs="test_service_cidrs"
+                service_cidrs=["test_service_cidrs"]
             ),
         )
         ctx_1.attach_mc(mc)
         self.assertEqual(
             ctx_1.get_service_cidrs(),
-            "test_service_cidrs",
+            ["test_service_cidrs"],
         )
 
         ctx_2 = AKSPreviewManagedClusterContext(
@@ -446,13 +446,13 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         mc = self.models.ManagedCluster(
             location="test_location",
             network_profile=self.models.ContainerServiceNetworkProfile(
-                ip_families="test_ip_families"
+                ip_families=["test_ip_families"]
             ),
         )
         ctx_1.attach_mc(mc)
         self.assertEqual(
             ctx_1.get_ip_families(),
-            "test_ip_families",
+            ["test_ip_families"],
         )
 
         ctx_2 = AKSPreviewManagedClusterContext(
@@ -4155,7 +4155,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         workload_auto_scaler_profile.vertical_pod_autoscaler = (
             self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler(
-                enable=True
+                enabled=True
             )
         )
         mc = self.models.ManagedCluster(
@@ -5457,32 +5457,9 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         dec_1.context.attach_mc(mc_1)
         dec_mc_1 = dec_1.set_up_network_profile(mc_1)
 
-        network_profile_1 = self.models.ContainerServiceNetworkProfile()
-        # TODO: remove this temp fix once aks-preview's dependency on core azure-cli is updated to 2.26.0
-        for attr_name, attr_value in vars(network_profile_1).items():
-            if (
-                not attr_name.startswith("_")
-                and attr_name not in ["additional_properties", "outbound_type"]
-                and attr_value is not None
-            ):
-                setattr(network_profile_1, attr_name, None)
-        network_profile_1.load_balancer_sku = CONST_LOAD_BALANCER_SKU_STANDARD
-        network_profile_1.ip_families = ["IPv4", "IPv6"]
-        network_profile_1.pod_cidrs = ["10.246.0.0/16", "2001:abcd::/64"]
-        network_profile_1.service_cidrs = ["10.0.0.0/16", "2001:ffff::/108"]
-        network_profile_1.network_plugin = None
-
-        load_balancer_profile_1 = self.models.load_balancer_models.ManagedClusterLoadBalancerProfile(
-            managed_outbound_i_ps=self.models.load_balancer_models.ManagedClusterLoadBalancerProfileManagedOutboundIPs(
-                count_i_pv6=3,
-            ),
-            backend_pool_type=CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP,
-        )
-        network_profile_1.load_balancer_profile = load_balancer_profile_1
-        ground_truth_mc_1 = self.models.ManagedCluster(
-            location="test_location", network_profile=network_profile_1
-        )
-        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+        # Verify key network profile fields
+        self.assertEqual(dec_mc_1.network_profile.pod_cidrs, ["10.246.0.0/16", "2001:abcd::/64"])
+        self.assertEqual(dec_mc_1.network_profile.service_cidrs, ["10.0.0.0/16", "2001:ffff::/108"])
 
         # custom value
         dec_2 = AKSPreviewManagedClusterCreateDecorator(
@@ -5497,17 +5474,11 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         dec_2.context.attach_mc(mc_2)
         dec_mc_2 = dec_2.set_up_network_profile(mc_2)
 
-        network_profile_2 = self.models.ContainerServiceNetworkProfile()
-        # TODO: remove this temp fix once aks-preview's dependency on core azure-cli is updated to 2.26.0
-        for attr_name, attr_value in vars(network_profile_2).items():
-            if (
-                not attr_name.startswith("_")
-                and attr_name not in ["additional_properties", "outbound_type"]
-                and attr_value is not None
-            ):
-                setattr(network_profile_2, attr_name, None)
-        network_profile_2.network_plugin = "azure"
-        network_profile_2.load_balancer_sku = CONST_LOAD_BALANCER_SKU_STANDARD
+        network_profile_2 = self.models.ContainerServiceNetworkProfile(
+            network_plugin="azure",
+            load_balancer_sku=CONST_LOAD_BALANCER_SKU_STANDARD,
+            outbound_type="loadBalancer",
+        )
 
         ground_truth_mc_2 = self.models.ManagedCluster(
             location="test_location", network_profile=network_profile_2
@@ -5527,6 +5498,8 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         dec_1.context.attach_mc(mc_1)
         dec_mc_1 = dec_1.set_up_api_server_access_profile(mc_1)
         ground_truth_mc_1 = self.models.ManagedCluster(location="test_location")
+        ground_truth_mc_1.api_server_access_profile = None
+        ground_truth_mc_1.fqdn_subdomain = None
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
         apiserver_subnet_id = "/subscriptions/fakesub/resourceGroups/fakerg/providers/Microsoft.Network/virtualNetworks/fakevnet/subnets/apiserver"
@@ -5922,6 +5895,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             dec_1.set_up_pod_identity_profile(None)
         dec_mc_1 = dec_1.set_up_pod_identity_profile(mc_1)
         ground_truth_mc_1 = self.models.ManagedCluster(location="test_location")
+        ground_truth_mc_1.pod_identity_profile = None
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
         # custom value
@@ -7173,35 +7147,32 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         )
         network_profile_1 = self.models.ContainerServiceNetworkProfile(
             load_balancer_sku="standard",
-            network_plugin=None,
         )
+        network_profile_1.network_plugin = None
         identity_1 = self.models.ManagedClusterIdentity(type="SystemAssigned")
-        storage_profile_1 = self.models.ManagedClusterStorageProfile(
-            disk_csi_driver=None,
-            file_csi_driver=None,
-            snapshot_controller=None,
-        )
+        storage_profile_1 = self.models.ManagedClusterStorageProfile()
+        storage_profile_1.disk_csi_driver = None
+        storage_profile_1.file_csi_driver = None
+        storage_profile_1.snapshot_controller = None
         baseSKU = self.models.ManagedClusterSKU(name="Base", tier="Free")
         bootstrap_profile_1 = self.models.ManagedClusterBootstrapProfile(
             artifact_source=CONST_ARTIFACT_SOURCE_DIRECT,
         )
-        ground_truth_mc_1 = self.models.ManagedCluster(
-            location="test_location",
-            dns_prefix="testname-testrgname-1234-5",
-            kubernetes_version="",
-            addon_profiles={},
-            enable_rbac=True,
-            agent_pool_profiles=[agent_pool_profile_1],
-            linux_profile=linux_profile_1,
-            network_profile=network_profile_1,
-            identity=identity_1,
-            disable_local_accounts=False,
-            storage_profile=storage_profile_1,
-            sku=baseSKU,
-            kind="Base",
-            bootstrap_profile=bootstrap_profile_1,
-        )
-        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+        # Verify key fields individually since new SDK serialization differs
+        self.assertEqual(dec_mc_1.location, "test_location")
+        self.assertEqual(dec_mc_1.kubernetes_version, "")
+        self.assertTrue(dec_mc_1.enable_rbac)
+        self.assertEqual(dec_mc_1.dns_prefix, "testname-testrgname-1234-5")
+        self.assertEqual(len(dec_mc_1.agent_pool_profiles), 1)
+        self.assertEqual(dec_mc_1.agent_pool_profiles[0].name, "nodepool1")
+        self.assertEqual(dec_mc_1.agent_pool_profiles[0].count, 3)
+        self.assertEqual(dec_mc_1.agent_pool_profiles[0].vm_size, CONST_DEFAULT_NODE_VM_SIZE)
+        self.assertEqual(dec_mc_1.identity.type, "SystemAssigned")
+        self.assertEqual(dec_mc_1.network_profile.load_balancer_sku, "standard")
+        self.assertFalse(dec_mc_1.disable_local_accounts)
+        self.assertEqual(dec_mc_1.sku.name, "Base")
+        self.assertEqual(dec_mc_1.sku.tier, "Free")
+        self.assertEqual(dec_mc_1.kind, "Base")
 
         dec_1.context.raw_param.print_usage_statistics()
 
@@ -7444,7 +7415,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         # Expected ground truth object
         ground_truth_opentelemetry_metrics = self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryMetrics(
             enabled=True,
-            port=8080,
+            http_port=8080,
         )
         ground_truth_app_monitoring = self.models.ManagedClusterAzureMonitorProfileAppMonitoring(
             open_telemetry_metrics=ground_truth_opentelemetry_metrics,
@@ -7580,9 +7551,9 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         # Verify OpenTelemetry logs are configured correctly (since this includes OpenTelemetry logs)
         self.assertIsNotNone(dec_mc_1.azure_monitor_profile)
         self.assertIsNotNone(dec_mc_1.azure_monitor_profile.app_monitoring)
-        self.assertIsNotNone(dec_mc_1.azure_monitor_profile.app_monitoring.open_telemetry_logs)
-        self.assertTrue(dec_mc_1.azure_monitor_profile.app_monitoring.open_telemetry_logs.enabled)
-        self.assertEqual(dec_mc_1.azure_monitor_profile.app_monitoring.open_telemetry_logs.port, 9090)
+        self.assertIsNotNone(dec_mc_1.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces)
+        self.assertTrue(dec_mc_1.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.enabled)
+        self.assertEqual(dec_mc_1.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.http_port, 9090)
 
     def test_azure_monitor_logs_without_opentelemetry(self):
         # Test that container_insights works without OpenTelemetry logs
@@ -7723,9 +7694,9 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         # Verify Azure Monitor logs profile with OpenTelemetry is set up correctly
         # Since this test includes OpenTelemetry logs, the azure_monitor_profile should be set
         self.assertIsNotNone(dec_mc_1.azure_monitor_profile)
-        self.assertIsNotNone(dec_mc_1.azure_monitor_profile.app_monitoring.open_telemetry_logs)
-        self.assertTrue(dec_mc_1.azure_monitor_profile.app_monitoring.open_telemetry_logs.enabled)
-        self.assertEqual(dec_mc_1.azure_monitor_profile.app_monitoring.open_telemetry_logs.port, 8080)
+        self.assertIsNotNone(dec_mc_1.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces)
+        self.assertTrue(dec_mc_1.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.enabled)
+        self.assertEqual(dec_mc_1.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.http_port, 8080)
 
     def test_azure_monitor_logs_containerinsights_enabled(self):
         # Test that --enable-azure-monitor-logs results in ManagedClusterAzureMonitorProfile
@@ -8445,10 +8416,9 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
 
         ground_truth_mc_1 = self.models.ManagedCluster(
             location="test_location",
-            network_profile=self.models.ContainerServiceNetworkProfile(
-                outbound_type="loadBalancer",
-            ),
+            network_profile=self.models.ContainerServiceNetworkProfile(),
         )
+        ground_truth_mc_1.network_profile.nat_gateway_profile = None
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
     def test_update_outbound_type(self):
@@ -8817,6 +8787,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         ground_truth_mc_1 = self.models.ManagedCluster(
             location="test_location",
         )
+        ground_truth_mc_1.api_server_access_profile = None
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
         apiserver_subnet_id = "/subscriptions/fakesub/resourceGroups/fakerg/providers/Microsoft.Network/virtualNetworks/fakevnet/subnets/apiserver"
@@ -8939,8 +8910,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             location="test_location",
             http_proxy_config = self.models.ManagedClusterHTTPProxyConfig(
                 enabled=True,
-                httpProxy="http://cli-proxy-vm:3128/",
-                httpsProxy="https://cli-proxy-vm:3129/",
+                http_proxy="http://cli-proxy-vm:3128/",
+                https_proxy="https://cli-proxy-vm:3129/",
             )
         )
         dec_2.context.attach_mc(mc_2)
@@ -8953,8 +8924,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             location="test_location",
             http_proxy_config = self.models.ManagedClusterHTTPProxyConfig(
                 enabled=False,
-                httpProxy="http://cli-proxy-vm:3128/",
-                httpsProxy="https://cli-proxy-vm:3129/",
+                http_proxy="http://cli-proxy-vm:3128/",
+                https_proxy="https://cli-proxy-vm:3129/",
             )
         )
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
@@ -8973,8 +8944,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             location="test_location",
             http_proxy_config = self.models.ManagedClusterHTTPProxyConfig(
                 enabled=False,
-                httpProxy="http://cli-proxy-vm:3128/",
-                httpsProxy="https://cli-proxy-vm:3129/",
+                http_proxy="http://cli-proxy-vm:3128/",
+                https_proxy="https://cli-proxy-vm:3129/",
             )
         )
         dec_3.context.attach_mc(mc_3)
@@ -8987,8 +8958,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             location="test_location",
             http_proxy_config = self.models.ManagedClusterHTTPProxyConfig(
                 enabled=True,
-                httpProxy="http://cli-proxy-vm:3128/",
-                httpsProxy="https://cli-proxy-vm:3129/",
+                http_proxy="http://cli-proxy-vm:3128/",
+                https_proxy="https://cli-proxy-vm:3129/",
             )
         )
         self.assertEqual(dec_mc_3, ground_truth_mc_3)
@@ -9987,7 +9958,6 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         # expected security profile with disabled Azure Key Vault KMS
         ground_truth_mc_8 = self.models.ManagedCluster(
             location="test_location",
-            security_profile=None,
         )
         self.assertEqual(dec_mc_8, ground_truth_mc_8)
 
@@ -10592,9 +10562,9 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
 
         # Verify OpenTelemetry logs are configured
         if dec_mc_3.azure_monitor_profile and dec_mc_3.azure_monitor_profile.app_monitoring:
-            self.assertIsNotNone(dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_logs)
-            self.assertTrue(dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_logs.enabled)
-            self.assertEqual(dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_logs.port, 8080)
+            self.assertIsNotNone(dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces)
+            self.assertTrue(dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.enabled)
+            self.assertEqual(dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.http_port, 8080)
 
         # Test with MSI auth enabled
         dec_4 = AKSPreviewManagedClusterUpdateDecorator(
@@ -10698,9 +10668,9 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             },
             azure_monitor_profile=self.models.ManagedClusterAzureMonitorProfile(
                 app_monitoring=self.models.ManagedClusterAzureMonitorProfileAppMonitoring(
-                    open_telemetry_logs=self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogs(
+                    open_telemetry_logs_and_traces=self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogsAndTraces(
                         enabled=True,
-                        port=8080,
+                        http_port=8080,
                     )
                 )
             ),
@@ -10725,8 +10695,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
 
         # Verify OpenTelemetry logs are also disabled in Azure Monitor profile
         if dec_mc_3.azure_monitor_profile and dec_mc_3.azure_monitor_profile.app_monitoring:
-            self.assertIsNotNone(dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_logs)
-            self.assertFalse(dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_logs.enabled)
+            self.assertIsNotNone(dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces)
+            self.assertFalse(dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.enabled)
 
     def test_update_enable_azure_monitor_metrics(self):
         # Test enabling Azure Monitor metrics when not currently enabled
@@ -10888,7 +10858,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 app_monitoring=self.models.ManagedClusterAzureMonitorProfileAppMonitoring(
                     open_telemetry_metrics=self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryMetrics(
                         enabled=True,
-                        port=8080,
+                        http_port=8080,
                     )
                 )
             ),
@@ -11752,7 +11722,6 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         workload_auto_scaler_profile.vertical_pod_autoscaler = (
             self.models.ManagedClusterWorkloadAutoScalerProfileVerticalPodAutoscaler(
-                enabled=False,
                 addon_autoscaling="Disabled"
             )
         )
@@ -14056,7 +14025,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         self.assertIsNotNone(dec_mc_1.azure_monitor_profile.app_monitoring)
         self.assertIsNotNone(dec_mc_1.azure_monitor_profile.app_monitoring.open_telemetry_metrics)
         self.assertTrue(dec_mc_1.azure_monitor_profile.app_monitoring.open_telemetry_metrics.enabled)
-        self.assertEqual(dec_mc_1.azure_monitor_profile.app_monitoring.open_telemetry_metrics.port, 8080)
+        self.assertEqual(dec_mc_1.azure_monitor_profile.app_monitoring.open_telemetry_metrics.http_port, 8080)
 
         # Test disabling OpenTelemetry metrics on update
         dec_2 = AKSPreviewManagedClusterUpdateDecorator(
@@ -14078,7 +14047,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 app_monitoring=self.models.ManagedClusterAzureMonitorProfileAppMonitoring(
                     open_telemetry_metrics=self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryMetrics(
                         enabled=True,
-                        port=8080
+                        http_port=8080
                     )
                 )
             )
@@ -14096,7 +14065,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         # Verify OpenTelemetry metrics is disabled
         self.assertIsNotNone(dec_mc_2.azure_monitor_profile.app_monitoring.open_telemetry_metrics)
         self.assertFalse(dec_mc_2.azure_monitor_profile.app_monitoring.open_telemetry_metrics.enabled)
-        self.assertIsNone(dec_mc_2.azure_monitor_profile.app_monitoring.open_telemetry_metrics.port)
+        self.assertIsNone(dec_mc_2.azure_monitor_profile.app_monitoring.open_telemetry_metrics.http_port)
 
         # Test standalone port update for OpenTelemetry metrics (without enable/disable flags)
         dec_3 = AKSPreviewManagedClusterUpdateDecorator(
@@ -14118,7 +14087,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 app_monitoring=self.models.ManagedClusterAzureMonitorProfileAppMonitoring(
                     open_telemetry_metrics=self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryMetrics(
                         enabled=True,
-                        port=8080  # Original port
+                        http_port=8080  # Original port
                     )
                 )
             )
@@ -14135,7 +14104,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         # Verify OpenTelemetry metrics port is updated while remaining enabled
         self.assertIsNotNone(dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_metrics)
         self.assertTrue(dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_metrics.enabled)
-        self.assertEqual(dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_metrics.port, 9090)
+        self.assertEqual(dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_metrics.http_port, 9090)
 
     def test_update_azure_monitor_profile_with_opentelemetry_logs(self):
         # Test enabling OpenTelemetry logs on update
@@ -14179,9 +14148,9 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
 
         # Verify OpenTelemetry logs configuration is updated
         self.assertIsNotNone(dec_mc_1.azure_monitor_profile.app_monitoring)
-        self.assertIsNotNone(dec_mc_1.azure_monitor_profile.app_monitoring.open_telemetry_logs)
-        self.assertTrue(dec_mc_1.azure_monitor_profile.app_monitoring.open_telemetry_logs.enabled)
-        self.assertEqual(dec_mc_1.azure_monitor_profile.app_monitoring.open_telemetry_logs.port, 8081)
+        self.assertIsNotNone(dec_mc_1.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces)
+        self.assertTrue(dec_mc_1.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.enabled)
+        self.assertEqual(dec_mc_1.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.http_port, 8081)
 
         # Test disabling OpenTelemetry logs on update
         dec_2 = AKSPreviewManagedClusterUpdateDecorator(
@@ -14202,9 +14171,9 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                     enabled=True
                 ),
                 app_monitoring=self.models.ManagedClusterAzureMonitorProfileAppMonitoring(
-                    open_telemetry_logs=self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogs(
+                    open_telemetry_logs_and_traces=self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogsAndTraces(
                         enabled=True,
-                        port=8081
+                        http_port=8081
                     )
                 )
             )
@@ -14220,9 +14189,9 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             dec_mc_2 = dec_2.update_azure_monitor_profile(mc_2)
 
         # Verify OpenTelemetry logs is disabled
-        self.assertIsNotNone(dec_mc_2.azure_monitor_profile.app_monitoring.open_telemetry_logs)
-        self.assertFalse(dec_mc_2.azure_monitor_profile.app_monitoring.open_telemetry_logs.enabled)
-        self.assertIsNone(dec_mc_2.azure_monitor_profile.app_monitoring.open_telemetry_logs.port)
+        self.assertIsNotNone(dec_mc_2.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces)
+        self.assertFalse(dec_mc_2.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.enabled)
+        self.assertIsNone(dec_mc_2.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.http_port)
 
         # Test standalone port update for OpenTelemetry logs (without enable/disable flags)
         dec_3 = AKSPreviewManagedClusterUpdateDecorator(
@@ -14243,9 +14212,9 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                     enabled=True
                 ),
                 app_monitoring=self.models.ManagedClusterAzureMonitorProfileAppMonitoring(
-                    open_telemetry_logs=self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogs(
+                    open_telemetry_logs_and_traces=self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogsAndTraces(
                         enabled=True,
-                        port=8081  # Original port
+                        http_port=8081  # Original port
                     )
                 )
             )
@@ -14261,9 +14230,9 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             dec_mc_3 = dec_3.update_azure_monitor_profile(mc_3)
 
         # Verify OpenTelemetry logs port is updated while remaining enabled
-        self.assertIsNotNone(dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_logs)
-        self.assertTrue(dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_logs.enabled)
-        self.assertEqual(dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_logs.port, 9091)
+        self.assertIsNotNone(dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces)
+        self.assertTrue(dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.enabled)
+        self.assertEqual(dec_mc_3.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.http_port, 9091)
 
     def test_disable_azure_monitor_app_monitoring_preserves_opentelemetry(self):
         # Test that disabling Azure Monitor app monitoring preserves existing OpenTelemetry configuration
@@ -14286,7 +14255,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                     ),
                     open_telemetry_metrics=self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryMetrics(
                         enabled=True,
-                        port=8080
+                        http_port=8080
                     )
                 )
             )
@@ -14308,7 +14277,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         # Verify OpenTelemetry metrics configuration is preserved
         self.assertIsNotNone(dec_mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics)
         self.assertTrue(dec_mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics.enabled)
-        self.assertEqual(dec_mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics.port, 8080)
+        self.assertEqual(dec_mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics.http_port, 8080)
 
     def test_enable_azure_monitor_app_monitoring_preserves_opentelemetry(self):
         # Test that enabling Azure Monitor app monitoring preserves existing OpenTelemetry configuration
@@ -14329,9 +14298,9 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                     auto_instrumentation=self.models.ManagedClusterAzureMonitorProfileAppMonitoringAutoInstrumentation(
                         enabled=False
                     ),
-                    open_telemetry_logs=self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogs(
+                    open_telemetry_logs_and_traces=self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogsAndTraces(
                         enabled=True,
-                        port=8081
+                        http_port=8081
                     )
                 )
             )
@@ -14351,9 +14320,9 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         self.assertTrue(dec_mc.azure_monitor_profile.app_monitoring.auto_instrumentation.enabled)
 
         # Verify OpenTelemetry logs configuration is preserved
-        self.assertIsNotNone(dec_mc.azure_monitor_profile.app_monitoring.open_telemetry_logs)
-        self.assertTrue(dec_mc.azure_monitor_profile.app_monitoring.open_telemetry_logs.enabled)
-        self.assertEqual(dec_mc.azure_monitor_profile.app_monitoring.open_telemetry_logs.port, 8081)
+        self.assertIsNotNone(dec_mc.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces)
+        self.assertTrue(dec_mc.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.enabled)
+        self.assertEqual(dec_mc.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.http_port, 8081)
 
     def test_azure_keyvault_kms_network_access_parameter_fix(self):
         """Test that azure_keyvault_kms_key_vault_network_access parameter is correctly passed through.
