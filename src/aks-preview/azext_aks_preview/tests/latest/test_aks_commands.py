@@ -18935,7 +18935,7 @@ spec:
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
-        location="westcentralus",
+        location="westus2",
     )
     def test_aks_create_with_acns_performance(
         self, resource_group, resource_group_location
