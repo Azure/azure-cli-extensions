@@ -4767,7 +4767,7 @@ def _aks_get_node_name_vmss(
         node_name,
         managed_resource_group):
     from azure.cli.command_modules.vm.aaz.latest.vmss import List as VMSSList
-    from azure.cli.command_modules.vm.aaz.latest.vmss import ListInstances as VMSSListInstances
+    from azure.cli.command_modules.vm.operations.vmss import VMSSListInstances
     from azure.cli.command_modules.vm.operations.vmss_vms import VMSSVMSShow
 
     if not node_name:
