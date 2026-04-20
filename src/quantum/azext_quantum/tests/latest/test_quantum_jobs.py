@@ -9,6 +9,7 @@ import pytest
 import random
 import time
 import unittest
+from urllib.parse import urlparse, parse_qs
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import ScenarioTest
@@ -398,36 +399,40 @@ class QuantumJobsScenarioTest(ScenarioTest):
 
     def assert_contains_user_delegation_sas_params(self, uri: str):
         """Assert that the given URI contains user delegation SAS parameters."""
-        self.assertIn("?skoid=", uri)   # signed key object ID (service principal OID)
-        self.assertIn("&sktid=", uri)  # signed key tenant ID
-        self.assertIn("&skt=", uri)    # signed key start time
-        self.assertIn("&ske=", uri)    # signed key expiry time
-        self.assertIn("&sks=", uri)    # signed key service (b = Blob)
-        self.assertIn("&skv=", uri)    # signed key version
-    
+        params = parse_qs(urlparse(uri).query)
+        self.assertIn("skoid", params)   # signed key object ID (service principal OID)
+        self.assertIn("sktid", params)   # signed key tenant ID
+        self.assertIn("skt", params)     # signed key start time
+        self.assertIn("ske", params)     # signed key expiry time
+        self.assertIn("sks", params)     # signed key service (b = Blob)
+        self.assertIn("skv", params)     # signed key version
+
     def assert_not_contains_user_delegation_sas_params(self, uri: str):
         """Assert that the given URI does not contain user delegation SAS parameters."""
-        self.assertNotIn("?skoid=", uri)
-        self.assertNotIn("&sktid=", uri)
-        self.assertNotIn("&skt=", uri)
-        self.assertNotIn("&ske=", uri)
-        self.assertNotIn("&sks=", uri)
-        self.assertNotIn("&skv=", uri)
+        params = parse_qs(urlparse(uri).query)
+        self.assertNotIn("skoid", params)
+        self.assertNotIn("sktid", params)
+        self.assertNotIn("skt", params)
+        self.assertNotIn("ske", params)
+        self.assertNotIn("sks", params)
+        self.assertNotIn("skv", params)
 
     def assert_contains_standard_sas_params(self, uri: str):
         """Assert that the given URI contains standard SAS parameters."""
-        self.assertIn("sv=", uri)     # SAS version
-        self.assertIn("&st=", uri)     # start time
-        self.assertIn("&se=", uri)     # expiry time
-        self.assertIn("&sr=", uri)     # signed resource (e.g. c = container)
-        self.assertIn("&sp=", uri)     # permissions
-        self.assertIn("&sig=", uri)    # signature
+        params = parse_qs(urlparse(uri).query)
+        self.assertIn("sv", params)    # SAS version
+        self.assertIn("st", params)    # start time
+        self.assertIn("se", params)    # expiry time
+        self.assertIn("sr", params)    # signed resource (e.g. c = container)
+        self.assertIn("sp", params)    # permissions
+        self.assertIn("sig", params)   # signature
 
     def assert_not_contains_standard_sas_params(self, uri: str):
         """Assert that the given URI does not contain standard SAS parameters."""
-        self.assertNotIn("sv=", uri)
-        self.assertNotIn("&st=", uri)
-        self.assertNotIn("&se=", uri)
-        self.assertNotIn("&sr=", uri)
-        self.assertNotIn("&sp=", uri)
-        self.assertNotIn("&sig=", uri)
+        params = parse_qs(urlparse(uri).query)
+        self.assertNotIn("sv", params)
+        self.assertNotIn("st", params)
+        self.assertNotIn("se", params)
+        self.assertNotIn("sr", params)
+        self.assertNotIn("sp", params)
+        self.assertNotIn("sig", params)
