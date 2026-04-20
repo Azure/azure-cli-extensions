@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+20.0.0b3
+++++++
+* Vendor new SDK and bump API version to 2026-02-02-preview.
+
 20.0.0b2
 +++++++
 * `az aks nodepool update`: clean up some useless code in the update managed gpu function. 
