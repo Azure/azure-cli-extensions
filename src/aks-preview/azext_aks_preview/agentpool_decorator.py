@@ -1560,10 +1560,23 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         if mode == CONST_NODEPOOL_MODE_MACHINES:
             agentpool.mode = CONST_NODEPOOL_MODE_MACHINES
             # Make sure all other attributes are None
-            for attr in vars(agentpool):
-                if attr != 'name' and attr != 'mode' and not attr.startswith('_'):
-                    if hasattr(agentpool, attr):
+            # Check properties sub-model first (AgentPool), then flat fields (ManagedClusterAgentPoolProfile)
+            props = getattr(agentpool, 'properties', None)
+            if props is not None and hasattr(props, '_attr_to_rest_field'):
+                target, fields = props, props._attr_to_rest_field
+            elif hasattr(agentpool, '_attr_to_rest_field') and 'mode' in agentpool._attr_to_rest_field:
+                target, fields = agentpool, agentpool._attr_to_rest_field
+            else:
+                target, fields = None, None
+            if target is not None:
+                for attr in list(fields.keys()):
+                    if attr not in ('name', 'mode'):
                         setattr(agentpool, attr, None)
+            else:
+                for attr in vars(agentpool):
+                    if attr != 'name' and attr != 'mode' and not attr.startswith('_'):
+                        if hasattr(agentpool, attr):
+                            setattr(agentpool, attr, None)
 
         return agentpool
 

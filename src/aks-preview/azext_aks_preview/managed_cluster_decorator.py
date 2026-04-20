@@ -5570,15 +5570,23 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             # Check if agentpool is in ManagedSystem mode and handle special case
             if agentpool.mode == CONST_NODEPOOL_MODE_MANAGEDSYSTEM:
                 # Make sure all other attributes are None
-                # Use _attr_to_rest_field for new SDK models, fall back to vars() for old SDK
-                field_names = getattr(agentpool, '_attr_to_rest_field', None)
-                if field_names is not None:
-                    attrs = list(field_names.keys())
+                # Check properties sub-model first (AgentPool), then flat fields (ManagedClusterAgentPoolProfile)
+                props = getattr(agentpool, 'properties', None)
+                if props is not None and hasattr(props, '_attr_to_rest_field'):
+                    target, fields = props, props._attr_to_rest_field
+                elif hasattr(agentpool, '_attr_to_rest_field') and 'mode' in agentpool._attr_to_rest_field:
+                    target, fields = agentpool, agentpool._attr_to_rest_field
                 else:
-                    attrs = [a for a in vars(agentpool) if not a.startswith('_')]
-                for attr in attrs:
-                    if attr not in ('name', 'mode'):
-                        setattr(agentpool, attr, None)
+                    target, fields = None, None
+                if target is not None:
+                    for attr in list(fields.keys()):
+                        if attr not in ('name', 'mode'):
+                            setattr(agentpool, attr, None)
+                else:
+                    for attr in vars(agentpool):
+                        if attr != 'name' and attr != 'mode' and not attr.startswith('_'):
+                            if hasattr(agentpool, attr):
+                                setattr(agentpool, attr, None)
         return mc
 
     def init_models(self) -> None:
