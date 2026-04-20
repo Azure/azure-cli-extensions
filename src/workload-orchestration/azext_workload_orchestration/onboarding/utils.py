@@ -23,12 +23,8 @@ logger = logging.getLogger(__name__)
 # CmdProxy - bridge between AAZ hooks and helpers expecting cmd.cli_ctx
 # ---------------------------------------------------------------------------
 
-class CmdProxy:
-    """Lightweight proxy to pass CLI context where a full cmd object is expected.
-
-    AAZ-generated commands don't expose a cmd object in hooks, but many
-    helper functions expect cmd.cli_ctx. This proxy bridges the gap.
-    """
+class CmdProxy:  # pylint: disable=too-few-public-methods
+    """Lightweight proxy to pass CLI context where a full cmd object is expected."""
     def __init__(self, cli_ctx):
         self.cli_ctx = cli_ctx
 
@@ -87,7 +83,7 @@ def invoke_silent(cli_args):
 # CLI command invocation
 # ---------------------------------------------------------------------------
 
-def invoke_cli_command(cmd, command_args, expect_json=True):
+def invoke_cli_command(cmd, command_args, expect_json=True):  # pylint: disable=unused-argument
     """Invoke another az CLI command in-process (shares auth context).
 
     Uses get_default_cli().invoke() so the child command shares

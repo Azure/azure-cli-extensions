@@ -28,6 +28,7 @@ from azure.cli.core.azclierror import (
     CLIInternalError,
     ValidationError,
 )
+from azure.cli.core.util import send_raw_request
 
 from azext_workload_orchestration.onboarding.consts import (
     DEFAULT_CERT_MANAGER_VERSION,
@@ -52,8 +53,6 @@ from azext_workload_orchestration.onboarding.utils import (
     print_success,
     print_detail,
 )
-
-from azure.cli.core.util import send_raw_request
 
 logger = logging.getLogger(__name__)
 

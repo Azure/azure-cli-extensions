@@ -362,7 +362,7 @@ def _parse_response(resp, step_name, cmd=None):
     if status in (200, 201):
         try:
             return resp.json()
-        except Exception:
+        except (ValueError, AttributeError):
             return {"status": "Succeeded"}
     if status == 202:
         return _poll_lro(resp, step_name, cmd=cmd)
@@ -370,7 +370,7 @@ def _parse_response(resp, step_name, cmd=None):
     # Error
     try:
         error_body = resp.text
-    except Exception:
+    except (ValueError, AttributeError):
         error_body = f"HTTP {status}"
     raise CLIInternalError(f"{step_name} failed (HTTP {status}): {error_body}")
 
@@ -391,13 +391,13 @@ def _poll_lro(resp, step_name, cmd=None):
         time.sleep(retry_after)
         try:
             poll_resp = send_raw_request(cmd.cli_ctx, "GET", location, resource=ARM_RESOURCE)
-        except Exception:
+        except (CLIInternalError, ValueError, ConnectionError):
             logger.debug("LRO poll attempt %d failed for %s", i + 1, step_name)
             continue
 
         try:
             body = poll_resp.json()
-        except Exception:
+        except (ValueError, AttributeError):
             continue
 
         poll_status = body.get("status", "").lower()
@@ -428,13 +428,13 @@ def _extract_solution_version_id(review_result):
         or (props.get("properties", {}) or {}).get("id")      # properties.properties.id
     )
     if not sv_id:
-        logger.warning("Could not extract solutionVersionId. Keys at top: %s, inner keys: %s, full (truncated): %s",
-                        list(review_result.keys()),
-                        list(inner.keys()) if isinstance(inner, dict) else "N/A",
-                        json.dumps(review_result, indent=2)[:800])
+        logger.warning(
+            "Could not extract solutionVersionId. Keys: %s, full (truncated): %s",
+            list(review_result.keys()),
+            json.dumps(review_result, indent=2)[:800]
+        )
         raise CLIInternalError(
-            "Review succeeded but no solutionVersionId found in response. "
-            "Use --resume-from publish --solution-version-id <id> to continue manually."
+            "Review succeeded but no solutionVersionId found in response."
         )
     return sv_id
 

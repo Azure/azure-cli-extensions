@@ -88,8 +88,7 @@ def hierarchy_create(cmd, resource_group=None, configuration_location=None, hier
 
     if hierarchy_type == "ServiceGroup":
         return _create_sg_hierarchy(cmd, spec, configuration_location, resource_group)
-    else:
-        return _create_rg_hierarchy(cmd, resource_group, configuration_location, name, level)
+    return _create_rg_hierarchy(cmd, resource_group, configuration_location, name, level)
 
 
 # ---------------------------------------------------------------------------
@@ -109,9 +108,15 @@ def _create_rg_hierarchy(cmd, resource_group, config_location, name, level):
             step[0] += 1
             print(f"[{step[0]}/{total}] {msg}...")
 
-    site_id = f"/subscriptions/{sub_id}/resourceGroups/{resource_group}/providers/{EDGE_RP_NAMESPACE}/sites/{name}"
+    site_id = (
+        f"/subscriptions/{sub_id}/resourceGroups/{resource_group}"
+        f"/providers/{EDGE_RP_NAMESPACE}/sites/{name}"
+    )
     config_name = f"{name}Config"
-    config_id = f"/subscriptions/{sub_id}/resourceGroups/{resource_group}/providers/{EDGE_RP_NAMESPACE}/configurations/{config_name}"
+    config_id = (
+        f"/subscriptions/{sub_id}/resourceGroups/{resource_group}"
+        f"/providers/{EDGE_RP_NAMESPACE}/configurations/{config_name}"
+    )
 
     print(f"\nCreating hierarchy '{name}' (level: {level}) in RG '{resource_group}'...\n")
 
@@ -189,8 +194,6 @@ def _create_sg_hierarchy(cmd, spec, config_location, resource_group):
 
 def _create_sg_level(cmd, node, config_location, sub_id, tenant_id, resource_group, parent_sg, results, depth):
     """Recursively create SG + Site + Config + ConfigRef at each level."""
-    import time
-
     name = node["name"]
     level = node["level"]
 
@@ -237,7 +240,10 @@ def _create_sg_level(cmd, node, config_location, sub_id, tenant_id, resource_gro
 
     # 3. Create Configuration (RG-scoped, NOT under SG)
     config_name = f"{name}Config"
-    config_id = f"/subscriptions/{sub_id}/resourceGroups/{resource_group}/providers/{EDGE_RP_NAMESPACE}/configurations/{config_name}"
+    config_id = (
+        f"/subscriptions/{sub_id}/resourceGroups/{resource_group}"
+        f"/providers/{EDGE_RP_NAMESPACE}/configurations/{config_name}"
+    )
     print(f"{indent}  [+] Configuration '{config_name}' (in RG: {resource_group})...")
     _arm_put(cmd, f"{ARM_ENDPOINT}{config_id}", {
         "location": config_location,
