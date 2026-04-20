@@ -22,8 +22,8 @@ class ServiceGroupScenarioTest(ScenarioTest):
             'az service-group create --name {name} --display-name "{display_name}"',
             checks=[
                 self.check('name', '{name}'),
-                self.check('properties.displayName', '{display_name}'),
-                self.check('properties.provisioningState', 'Succeeded'),
+                self.check('displayName', '{display_name}'),
+                self.check('provisioningState', 'Succeeded'),
             ]
         )
 
@@ -32,7 +32,7 @@ class ServiceGroupScenarioTest(ScenarioTest):
             'az service-group show --name {name}',
             checks=[
                 self.check('name', '{name}'),
-                self.check('properties.displayName', '{display_name}'),
+                self.check('displayName', '{display_name}'),
             ]
         )
 
@@ -41,7 +41,7 @@ class ServiceGroupScenarioTest(ScenarioTest):
             'az service-group update --name {name} --display-name "{updated_display_name}"',
             checks=[
                 self.check('name', '{name}'),
-                self.check('properties.displayName', '{updated_display_name}'),
+                self.check('displayName', '{updated_display_name}'),
             ]
         )
 
@@ -60,7 +60,7 @@ class ServiceGroupScenarioTest(ScenarioTest):
         self.cmd(
             'az service-group create --name {parent_name} --display-name "Parent Group"',
             checks=[
-                self.check('properties.provisioningState', 'Succeeded'),
+                self.check('provisioningState', 'Succeeded'),
             ]
         )
 
@@ -69,7 +69,7 @@ class ServiceGroupScenarioTest(ScenarioTest):
             'az service-group create --name {child_name} --display-name "Child Group" '
             '--parent resource-id="/providers/Microsoft.Management/serviceGroups/{parent_name}"',
             checks=[
-                self.check('properties.provisioningState', 'Succeeded'),
+                self.check('provisioningState', 'Succeeded'),
             ]
         )
 
@@ -103,7 +103,7 @@ class ServiceGroupScenarioTest(ScenarioTest):
             'az service-group create --name {parent_name} --display-name "Parent Group"',
             checks=[
                 self.check('name', '{parent_name}'),
-                self.check('properties.provisioningState', 'Succeeded'),
+                self.check('provisioningState', 'Succeeded'),
             ]
         )
 
@@ -113,9 +113,9 @@ class ServiceGroupScenarioTest(ScenarioTest):
             '--parent resource-id="/providers/Microsoft.Management/serviceGroups/{parent_name}"',
             checks=[
                 self.check('name', '{child_name}'),
-                self.check('properties.parent.resourceId',
+                self.check('parent.resourceId',
                            '/providers/Microsoft.Management/serviceGroups/{parent_name}'),
-                self.check('properties.provisioningState', 'Succeeded'),
+                self.check('provisioningState', 'Succeeded'),
             ]
         )
 

@@ -11,7 +11,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "service-group delete",
-    confirmation="Are you sure you want to perform this operation?",
+    confirmation="Are you sure you want to delete this service group?",
 )
 class Delete(AAZCommand):
     """Delete a service group.
