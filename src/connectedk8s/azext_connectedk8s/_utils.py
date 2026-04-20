@@ -1484,6 +1484,25 @@ def redact_sensitive_fields_from_string(input_text: str) -> str:
     return input_text
 
 
+def get_helm_major_version(helm_client_location: str) -> int:
+    """Returns the major version of the helm client (e.g. 3 or 4)."""
+    try:
+        result = Popen(
+            [helm_client_location, "version", "--short"],
+            stdout=PIPE,
+            stderr=PIPE,
+        )
+        out, _ = result.communicate()
+        version_str = out.decode("ascii").strip()
+        # version_str is like "v3.17.0+gabcdef" or "v4.1.3+gabcdef"
+        match = re.match(r"v(\d+)\.", version_str)
+        if match:
+            return int(match.group(1))
+    except (OSError, ValueError):
+        pass
+    return 3  # assume Helm 3 if we cannot determine version
+
+
 def get_release_namespace(
     kube_config: str | None,
     kube_context: str | None,
@@ -1494,11 +1513,14 @@ def get_release_namespace(
     cmd_helm_release = [
         helm_client_location,
         "list",
-        "-a",
         "--all-namespaces",
         "--output",
         "json",
     ]
+    # Helm 4 removed the --all flag (all releases are shown by default).
+    # Helm 3 requires --all to include non-deployed releases.
+    if get_helm_major_version(helm_client_location) < 4:
+        cmd_helm_release.insert(2, "--all")
     if kube_config:
         cmd_helm_release.extend(["--kubeconfig", kube_config])
     if kube_context:
