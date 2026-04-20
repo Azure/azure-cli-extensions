@@ -108,7 +108,7 @@ jobs:
           ls
       - name: Install azdev
         if: ${{ env.no_changed_mod == 'false' }}
-        run: | 
+        run: |
            python -m pip install --upgrade pip
            set -ev
            python -m venv env
@@ -118,6 +118,17 @@ jobs:
            azdev --version
            cd ../
            azdev setup -c azure-cli -r azure-cli-extensions --debug
+           # `azdev setup` installs azure-cli's pinned requirements which
+           # downgrade transitive dependencies that azdev itself relies on,
+           # leaving the environment in an inconsistent state:
+           #   - azure-cli-diff-tool 0.1.1 requires requests~=2.32.3,
+           #     but azure-cli's requirements pin requests==2.33.0
+           #   - tox 4.53.0 requires packaging>=26,
+           #     but azure-cli's requirements pin packaging==25.0
+           # Realign these so the subsequent metadata generation steps run
+           # against a consistent dependency set.
+           pip install --upgrade "requests~=2.32.3" "packaging>=26"
+           pip check || true
            az --version
            pip list -v
       - name: Gen Base and Diff Metadata
