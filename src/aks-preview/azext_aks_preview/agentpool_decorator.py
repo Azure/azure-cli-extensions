@@ -1570,7 +1570,7 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
                 if rest_fields is not None and 'mode' in rest_fields:
                     target, fields = agentpool, rest_fields
                 else:
-                target, fields = None, None
+                    target, fields = None, None
             if target is not None:
                 for attr in list(fields.keys()):
                     if attr not in ('name', 'mode'):
