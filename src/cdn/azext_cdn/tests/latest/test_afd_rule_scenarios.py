@@ -8,7 +8,7 @@ from .afdx_scenario_mixin import CdnAfdScenarioMixin
 
 from azure.cli.core.azclierror import (InvalidArgumentValueError)
 
-from azure.mgmt.cdn.models import SkuName
+from azext_cdn.vendored_sdks.models import SkuName
 
 from collections import namedtuple
 from azure.core.exceptions import HttpResponseError

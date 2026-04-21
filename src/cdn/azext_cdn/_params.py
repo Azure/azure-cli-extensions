@@ -4,9 +4,9 @@
 # --------------------------------------------------------------------------------------------
 from knack.arguments import CLIArgumentType
 
-from azure.mgmt.cdn.models import (QueryStringCachingBehavior, DeliveryRuleAction,
-                                   ForwardingProtocol, DeliveryRuleCondition,
-                                   AfdQueryStringCachingBehavior, Transform)
+from azext_cdn.vendored_sdks.models import (QueryStringCachingBehavior, DeliveryRuleAction,
+                                              ForwardingProtocol, DeliveryRuleCondition,
+                                              AfdQueryStringCachingBehavior, Transform)
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
 from azure.cli.core.commands.parameters import get_three_state_flag, get_enum_type
 from ._validators import (validate_origin)

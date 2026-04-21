@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=too-many-locals, too-many-statements too-many-boolean-expressions too-many-branches protected-access
 
-from azure.mgmt.cdn.models import SkuName
+from azext_cdn.vendored_sdks.models import SkuName
 from azure.cli.core.aaz import AAZStrArg, AAZBoolArg, AAZListArg, AAZTimeArg, AAZIntArg, AAZIntArgFormat
 from azure.cli.core.aaz._base import has_value
 from azure.cli.core.azclierror import InvalidArgumentValueError

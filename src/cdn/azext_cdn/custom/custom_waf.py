@@ -3,10 +3,10 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azure.mgmt.cdn.models import (SkuName, PolicyMode, PolicyEnabledState, CdnWebApplicationFirewallPolicy,
-                                   ManagedRuleSet, ManagedRuleGroupOverride, CustomRule, RateLimitRule)
+from azext_cdn.vendored_sdks.models import (SkuName, PolicyMode, PolicyEnabledState, CdnWebApplicationFirewallPolicy,
+                                              ManagedRuleSet, ManagedRuleGroupOverride, CustomRule, RateLimitRule)
 
-from azure.mgmt.cdn.operations import EndpointsOperations
+from azext_cdn.vendored_sdks.operations import EndpointsOperations
 
 from azure.cli.core.util import (sdk_no_wait, find_child_item)
 from azure.cli.core.commands import upsert_to_collection
@@ -36,7 +36,7 @@ def set_endpoint_waf_policy_link(client: EndpointsOperations,
                                  waf_policy_name: str = "",
                                  waf_policy_id: str = ""):
 
-    from azure.mgmt.cdn.models import (EndpointPropertiesUpdateParametersWebApplicationFirewallPolicyLink)
+    from azext_cdn.vendored_sdks.models import (EndpointPropertiesUpdateParametersWebApplicationFirewallPolicyLink)
 
     endpoint = client.get(resource_group_name, profile_name, endpoint_name)
 
@@ -94,7 +94,7 @@ def set_waf_policy(client,
                    block_response_status_code=None,
                    tags=None):
     from azure.core.exceptions import ResourceNotFoundError
-    from azure.mgmt.cdn.models import (PolicySettings, Sku)
+    from azext_cdn.vendored_sdks.models import (PolicySettings, Sku)
     policy = CdnWebApplicationFirewallPolicy(
         tags=tags,
         sku=Sku(name=sku),
@@ -266,7 +266,7 @@ def set_waf_custom_rule(client,
                         action,
                         match_conditions,
                         disabled=None):
-    from azure.mgmt.cdn.models import (CustomRuleEnabledState)
+    from azext_cdn.vendored_sdks.models import (CustomRuleEnabledState)
 
     rule = CustomRule(name=name,
                       enabled_state=CustomRuleEnabledState.disabled if disabled else CustomRuleEnabledState.enabled,
@@ -312,7 +312,7 @@ def set_waf_rate_limit_rule(client,
                             duration,
                             match_conditions,
                             disabled=None):
-    from azure.mgmt.cdn.models import (CustomRuleEnabledState)
+    from azext_cdn.vendored_sdks.models import (CustomRuleEnabledState)
 
     rule = RateLimitRule(name=name,
                          enabled_state=CustomRuleEnabledState.disabled if disabled else CustomRuleEnabledState.enabled,

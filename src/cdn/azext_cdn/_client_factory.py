@@ -6,7 +6,7 @@
 
 def cf_cdn(cli_ctx, *kwargs):  # pylint: disable=unused-argument
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    from azure.mgmt.cdn import CdnManagementClient
+    from azext_cdn.vendored_sdks import CdnManagementClient
     return get_mgmt_service_client(cli_ctx, CdnManagementClient)
 
 

@@ -5,7 +5,7 @@
 # pylint: disable=too-many-locals, too-many-statements too-many-return-statements simplifiable-if-expression
 
 from azure.cli.core.aaz._base import has_value
-from azure.mgmt.cdn.models import (RequestMethodOperator, RuleIsCompressionEnabled)
+from azext_cdn.vendored_sdks.models import (RequestMethodOperator, RuleIsCompressionEnabled)
 from azure.mgmt.core.tools import is_valid_resource_id
 
 

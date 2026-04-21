@@ -5,7 +5,7 @@
 from azure.cli.testsdk import ResourceGroupPreparer, JMESPathCheck
 from azure.cli.testsdk import ScenarioTest, record_only
 from .afdx_scenario_mixin import CdnAfdScenarioMixin
-from azure.mgmt.cdn.models import (AfdCertificateType, AfdMinimumTlsVersion)
+from azext_cdn.vendored_sdks.models import (AfdCertificateType, AfdMinimumTlsVersion)
 
 
 class CdnAfdCustomDomainScenarioTest(CdnAfdScenarioMixin, ScenarioTest):

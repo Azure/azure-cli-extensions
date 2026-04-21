@@ -7,7 +7,7 @@ import sys
 
 from typing import Optional
 
-from azure.mgmt.cdn.models import (Endpoint, SkuName, EndpointUpdateParameters, ProfileUpdateParameters,
+from azext_cdn.vendored_sdks.models import (Endpoint, SkuName, EndpointUpdateParameters, ProfileUpdateParameters,
                                    MinimumTlsVersion, EndpointPropertiesUpdateParametersDeliveryPolicy, DeliveryRule,
                                    DeliveryRuleRemoteAddressCondition, RemoteAddressMatchConditionParameters,
                                    DeliveryRuleRequestMethodCondition, RequestMethodMatchConditionParameters,
@@ -41,8 +41,8 @@ from azure.mgmt.cdn.models import (Endpoint, SkuName, EndpointUpdateParameters, 
                                    DeliveryRuleSslProtocolCondition, SslProtocolMatchConditionParameters,
                                    SslProtocol, ResourceType)
 
-from azure.mgmt.cdn.models._cdn_management_client_enums import CacheType
-from azure.mgmt.cdn.operations import (OriginsOperations, OriginGroupsOperations)
+from azext_cdn.vendored_sdks.models._cdn_management_client_enums import CacheType
+from azext_cdn.vendored_sdks.operations import (OriginsOperations, OriginGroupsOperations)
 from azure.mgmt.core.tools import is_valid_resource_id
 
 from azure.cli.core.commands.client_factory import get_subscription_id
@@ -65,7 +65,7 @@ def _check_condition_allowed_opertors(conditon_name, operator):
             conditon_allowed_operators = ["Equal"]
         else:
             try:
-                attr = getattr(sys.modules["azure.mgmt.cdn.models"], conditon_name + "Operator")
+                attr = getattr(sys.modules["azext_cdn.vendored_sdks.models"], conditon_name + "Operator")
                 conditon_allowed_operators = [operator.value for _, operator in attr.__members__.items()]
             except AttributeError:
                 pass
@@ -84,7 +84,7 @@ def _check_condition_allowed_match_values_opertors(conditon_name, match_values):
         else:
             try:
                 attr = getattr(
-                    sys.modules["azure.mgmt.cdn.models"],
+                    sys.modules["azext_cdn.vendored_sdks.models"],
                     conditon_name + "MatchConditionParametersMatchValuesItem")
                 conditon_allowed_match_values = [match_value.value for _, match_value in attr.__members__.items()]
             except AttributeError:
@@ -732,7 +732,7 @@ def enable_custom_https(cmd, client, resource_group_name, profile_name, endpoint
                         user_cert_vault_name=None, user_cert_secret_name=None, user_cert_secret_version=None,
                         user_cert_protocol_type=None, min_tls_version=None):
 
-    from azure.mgmt.cdn.models import (CdnCertificateSourceParameters,
+    from azext_cdn.vendored_sdks.models import (CdnCertificateSourceParameters,
                                        UserManagedHttpsParameters,
                                        CdnManagedHttpsParameters,
                                        KeyVaultCertificateSourceParameters,
@@ -842,7 +842,7 @@ def update_origin(client: OriginsOperations,
                   private_link_resource_id: Optional[str] = None,
                   private_link_location: Optional[str] = None,
                   private_link_approval_message: Optional[str] = None):
-    from azure.mgmt.cdn.models import OriginUpdateParameters
+    from azext_cdn.vendored_sdks.models import OriginUpdateParameters
 
     return client.begin_update(resource_group_name,
                                profile_name,
@@ -876,7 +876,7 @@ def create_origin(client: OriginsOperations,
                   private_link_resource_id: Optional[str] = None,
                   private_link_location: Optional[str] = None,
                   private_link_approval_message: Optional[str] = None):
-    from azure.mgmt.cdn.models import Origin
+    from azext_cdn.vendored_sdks.models import Origin
 
     return client.begin_create(resource_group_name,
                                profile_name,
@@ -908,7 +908,7 @@ def update_profile(instance, tags=None):
 def create_profile(client, resource_group_name, name,
                    sku=SkuName.standard_akamai.value,
                    location=None, tags=None):
-    from azure.mgmt.cdn.models import (Profile, Sku)
+    from azext_cdn.vendored_sdks.models import (Profile, Sku)
     profile = Profile(location=location, sku=Sku(name=sku), tags=tags)
     return client.profiles.begin_create(resource_group_name, name, profile)
 
@@ -917,7 +917,7 @@ def _parse_ranges(ranges: str):
     if ranges is None:
         return []
 
-    from azure.mgmt.cdn.models import HttpErrorRangeParameters
+    from azext_cdn.vendored_sdks.models import HttpErrorRangeParameters
 
     def parse_range(error_range: str):
         split = error_range.split('-')
@@ -952,7 +952,7 @@ def create_origin_group(cmd,
     response_error_detection_failover_threshold: Optional[int] = None
     response_error_detection_status_code_ranges: Optional[str] = None
 
-    from azure.mgmt.cdn.models import (OriginGroup,
+    from azext_cdn.vendored_sdks.models import (OriginGroup,
                                        HealthProbeParameters,
                                        ResponseBasedOriginErrorDetectionParameters)
 
@@ -1013,7 +1013,7 @@ def update_origin_group(cmd,
     failover_threshold: Optional[int] = None
     status_code_ranges: Optional[str] = None
 
-    from azure.mgmt.cdn.models import (OriginGroupUpdateParameters,
+    from azext_cdn.vendored_sdks.models import (OriginGroupUpdateParameters,
                                        HealthProbeParameters,
                                        ResponseBasedOriginErrorDetectionParameters)
 

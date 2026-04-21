@@ -14,7 +14,7 @@ class OriginType(argparse._AppendAction):
         super().__call__(parser, namespace, deep_created_origin, option_string)
 
     def get_origin(self, values, option_string):
-        from azure.mgmt.cdn.models import DeepCreatedOrigin
+        from azext_cdn.vendored_sdks.models import DeepCreatedOrigin
 
         if not 1 <= len(values) <= 3 and not 5 <= len(values) <= 6:
             msg = '%s takes 1, 2, 3, 5, or 6 values, %d given'

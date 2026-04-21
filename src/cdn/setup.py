@@ -24,9 +24,7 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = [
-    'azure-mgmt-cdn',
-]
+DEPENDENCIES = []
 
 with open('README.md', 'r', encoding='utf-8') as f:
     README = f.read()

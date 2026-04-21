@@ -8,8 +8,8 @@ import argparse
 
 from azure.cli.core.aaz import AAZStrArg, AAZBoolArg, AAZIntArg, AAZListArg, AAZTimeArg
 from azure.cli.core.aaz._base import has_value
-from azure.mgmt.cdn.models import (MinimumTlsVersion, ProtocolType, SkuName, UpdateRule, DeleteRule, CertificateType,
-                                   ResourceType)
+from azext_cdn.vendored_sdks.models import (MinimumTlsVersion, ProtocolType, SkuName, UpdateRule, DeleteRule, CertificateType,
+                                              ResourceType)
 from knack.log import get_logger
 from knack.util import CLIError
 
@@ -46,7 +46,7 @@ def _parse_ranges(ranges: str):
     if ranges is None:
         return []
 
-    from azure.mgmt.cdn.models import HttpErrorRangeParameters
+    from azext_cdn.vendored_sdks.models import HttpErrorRangeParameters
 
     def parse_range(error_range: str):
         split = error_range.split('-')

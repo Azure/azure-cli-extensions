@@ -38,13 +38,13 @@ def load_command_table(self, _):
     endpoint_not_found_msg = _not_found_msg.format('Endpoint')
 
     cdn_endpoints_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.cdn.operations#EndpointsOperations.{}',
+        operations_tmpl='azext_cdn.vendored_sdks.operations#EndpointsOperations.{}',
         client_factory=cf_endpoints,
         exception_handler=_not_found(endpoint_not_found_msg)
     )
 
     cdn_domain_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.cdn.operations#CustomDomainsOperations.{}',
+        operations_tmpl='azext_cdn.vendored_sdks.operations#CustomDomainsOperations.{}',
         client_factory=cf_custom_domain,
         exception_handler=_not_found(cd_not_found_msg)
     )
@@ -112,23 +112,23 @@ def load_command_table(self, _):
     with self.command_group('cdn endpoint rule', cdn_endpoints_sdk, is_preview=True) as g:
         g.show_command('show', 'get')
         g.custom_command('add', 'add_rule', client_factory=cf_cdn,
-                         doc_string_source='azure.mgmt.cdn.models#Endpoint')
+                         doc_string_source='azext_cdn.vendored_sdks.models#Endpoint')
         g.custom_command('remove', 'remove_rule', client_factory=cf_cdn,
-                         doc_string_source='azure.mgmt.cdn.models#Endpoint')
+                         doc_string_source='azext_cdn.vendored_sdks.models#Endpoint')
 
     with self.command_group('cdn endpoint rule condition', cdn_endpoints_sdk, is_preview=True) as g:
         g.show_command('show', 'get')
         g.custom_command('add', 'add_condition', client_factory=cf_cdn,
-                         doc_string_source='azure.mgmt.cdn.models#Endpoint')
+                         doc_string_source='azext_cdn.vendored_sdks.models#Endpoint')
         g.custom_command('remove', 'remove_condition', client_factory=cf_cdn,
-                         doc_string_source='azure.mgmt.cdn.models#Endpoint')
+                         doc_string_source='azext_cdn.vendored_sdks.models#Endpoint')
 
     with self.command_group('cdn endpoint rule action', cdn_endpoints_sdk, is_preview=True) as g:
         g.show_command('show', 'get')
         g.custom_command('add', 'add_action', client_factory=cf_cdn,
-                         doc_string_source='azure.mgmt.cdn.models#Endpoint')
+                         doc_string_source='azext_cdn.vendored_sdks.models#Endpoint')
         g.custom_command('remove', 'remove_action', client_factory=cf_cdn,
-                         doc_string_source='azure.mgmt.cdn.models#Endpoint')
+                         doc_string_source='azext_cdn.vendored_sdks.models#Endpoint')
 
     # from .custom.custom_cdn import CDNEndpointRuleConditionAdd
     # self.command_table['cdn endpoint rule condition add'] = CDNEndpointRuleConditionAdd(loader=self)

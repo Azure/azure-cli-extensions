@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 from azure.cli.testsdk import ResourceGroupPreparer, JMESPathCheck
 from azure.cli.testsdk import ScenarioTest
-from azure.mgmt.cdn.models import SkuName
+from azext_cdn.vendored_sdks.models import SkuName
 from .scenario_mixin import CdnScenarioMixin
 
 
