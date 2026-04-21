@@ -38,6 +38,7 @@ setup(
     version=VERSION,
     description='Microsoft Azure Command-Line Tools Relationship Extension.',
     long_description=README + '\n\n' + HISTORY,
+    long_description_content_type='text/markdown',
     license='MIT',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',

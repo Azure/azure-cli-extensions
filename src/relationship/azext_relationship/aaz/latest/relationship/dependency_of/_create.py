@@ -63,6 +63,7 @@ class Create(AAZCommand):
             options=["--target-id"],
             arg_group="Properties",
             help="The relationship target resource id.",
+            required=True,
         )
         _args_schema.target_tenant = AAZStrArg(
             options=["--target-tenant"],

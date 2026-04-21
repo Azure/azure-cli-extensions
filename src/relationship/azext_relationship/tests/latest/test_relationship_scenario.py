@@ -11,15 +11,29 @@ from azure.cli.testsdk import (
     live_only,
 )
 
-# Tests require a pre-existing Service Group as target.
-# Default: SDKTestsSG. Override via AZURE_RELATIONSHIP_TEST_TARGET_SG env var.
-SDK_TESTS_SG = os.environ.get(
-    'AZURE_RELATIONSHIP_TEST_TARGET_SG',
-    '/providers/Microsoft.Management/serviceGroups/SDKTestsSG'
-)
+# Tests that target a real Service Group require AZURE_RELATIONSHIP_TEST_TARGET_SG
+# to be explicitly configured in the live environment.
+SDK_TESTS_SG = os.environ.get('AZURE_RELATIONSHIP_TEST_TARGET_SG')
 
 
 class RelationshipScenarioTest(ScenarioTest):
+
+    def setUp(self):
+        super().setUp()
+        tests_not_requiring_target_sg = {
+            'test_dependency_of_same_source_target',
+            'test_sgm_invalid_target',
+            'test_sgm_nonexistent_sg',
+        }
+        if (
+            getattr(self, 'is_live', False)
+            and self._testMethodName not in tests_not_requiring_target_sg
+            and not SDK_TESTS_SG
+        ):
+            self.skipTest(
+                'Set AZURE_RELATIONSHIP_TEST_TARGET_SG to run live tests '
+                'that require a pre-existing Service Group target.'
+            )
 
     @live_only()
     def test_dependency_of_crud(self):
