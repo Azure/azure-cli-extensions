@@ -103,15 +103,6 @@ def hierarchy_create(cmd, resource_group=None, configuration_location=None, hier
 def _create_rg_hierarchy(cmd, resource_group, config_location, name, level):
     """Create Site + Configuration + ConfigurationReference in a resource group."""
     sub_id = _get_sub_id(cmd)
-    total = 3
-    step = [0]
-
-    def _log(msg, status=""):
-        if status:
-            _eprint(f"[{step[0]}/{total}] {msg}... {status}")
-        else:
-            step[0] += 1
-            _eprint(f"[{step[0]}/{total}] {msg}...")
 
     site_id = (
         f"/subscriptions/{sub_id}/resourceGroups/{resource_group}"
@@ -123,10 +114,10 @@ def _create_rg_hierarchy(cmd, resource_group, config_location, name, level):
         f"/providers/{EDGE_RP_NAMESPACE}/configurations/{config_name}"
     )
 
-    _eprint(f"\nCreating hierarchy '{name}' (level: {level}) in RG '{resource_group}'...\n")
+    _eprint(f"\nCreating hierarchy in RG '{resource_group}'...\n")
 
     # Step 1: Create Site
-    _log(f"Site '{name}' ({level})")
+    _eprint(f"📁 {name} ({level})")
     _arm_put(cmd, f"{ARM_ENDPOINT}{site_id}", {
         "properties": {
             "displayName": name,
@@ -134,26 +125,27 @@ def _create_rg_hierarchy(cmd, resource_group, config_location, name, level):
             "labels": {"level": level},
         }
     }, SITE_API_VERSION)
-    _log(f"Site '{name}'", "[OK]")
+    _eprint(f"├── Site '{name}' ✓")
 
     # Step 2: Create Configuration
-    _log(f"Configuration '{config_name}'")
     _arm_put(cmd, f"{ARM_ENDPOINT}{config_id}", {
         "location": config_location,
     }, CONFIGURATION_API_VERSION)
-    _log(f"Configuration '{config_name}'", "[OK]")
+    _eprint(f"├── Configuration '{config_name}' ✓")
 
     # Step 3: Create ConfigurationReference (links site → config)
-    config_ref_url = f"{ARM_ENDPOINT}{site_id}/providers/{EDGE_RP_NAMESPACE}/configurationReferences/default"
-    _log("ConfigurationReference")
+    config_ref_url = (
+        f"{ARM_ENDPOINT}{site_id}/providers/"
+        f"{EDGE_RP_NAMESPACE}/configurationReferences/default"
+    )
     _arm_put(cmd, config_ref_url, {
         "properties": {
             "configurationResourceId": config_id,
         }
     }, CONFIG_REF_API_VERSION)
-    _log("ConfigurationReference", "[OK]")
+    _eprint(f"└── ConfigurationReference ✓")
 
-    _eprint(f"\nHierarchy '{name}' created successfully (3 resources).\n")
+    _eprint(f"\n✅ Hierarchy created (3 resources)\n")
 
     return {
         "type": "ResourceGroup",
@@ -185,9 +177,10 @@ def _create_sg_hierarchy(cmd, spec, config_location, resource_group):
 
     results = []
     _create_sg_level(cmd, spec, config_location, sub_id, tenant_id,
-                     resource_group, parent_sg=None, results=results, depth=0)
+                     resource_group, parent_sg=None, results=results,
+                     depth=0, is_last=True)
 
-    _eprint(f"\nHierarchy created successfully ({nodes} levels, {len(results)} resources).\n")
+    _eprint(f"\n✅ Hierarchy created ({nodes} levels, {len(results)} resources)\n")
 
     return {
         "type": "ServiceGroup",
@@ -197,22 +190,27 @@ def _create_sg_hierarchy(cmd, spec, config_location, resource_group):
     }
 
 
-def _create_sg_level(cmd, node, config_location, sub_id, tenant_id, resource_group, parent_sg, results, depth):
+def _create_sg_level(cmd, node, config_location, sub_id, tenant_id, resource_group, parent_sg, results, depth, is_last=True):
     """Recursively create SG + Site + Config + ConfigRef at each level."""
     name = node["name"]
     level = node["level"]
 
-    # Create or reference the ServiceGroup
     if parent_sg:
         parent_id = f"/providers/Microsoft.Management/serviceGroups/{parent_sg}"
     else:
         parent_id = f"/providers/Microsoft.Management/serviceGroups/{tenant_id}"
 
     sg_id = f"/providers/Microsoft.Management/serviceGroups/{name}"
-    indent = "  " * depth
+
+    # Tree drawing characters
+    prefix = ""
+    for d in range(depth):
+        prefix += "│   "
+    connector = "└── " if is_last else "├── "
+    child_prefix = prefix + ("    " if is_last else "│   ")
 
     # 1. Create ServiceGroup
-    _eprint(f"{indent}[+] ServiceGroup '{name}'...")
+    _eprint(f"{prefix}{connector}📁 {name} ({level})")
     try:
         _arm_put(cmd, f"{ARM_ENDPOINT}{sg_id}", {
             "properties": {
@@ -220,19 +218,16 @@ def _create_sg_level(cmd, node, config_location, sub_id, tenant_id, resource_gro
                 "parent": {"resourceId": parent_id},
             }
         }, SERVICE_GROUP_API_VERSION)
-        _eprint(f"{indent}[+] ServiceGroup '{name}'... [OK]")
         results.append({"type": "ServiceGroup", "name": name, "id": sg_id})
     except Exception as exc:
         logger.warning("ServiceGroup creation failed: %s", exc)
         raise CLIInternalError(f"ServiceGroup '{name}' creation failed: {exc}")
 
-    # Wait for RBAC propagation on new SG scope
-    _eprint(f"{indent}    Waiting for RBAC propagation...")
+    # Wait for RBAC propagation silently
     _wait_for_sg_rbac(cmd, config_location, sg_id, name)
 
     # 2. Create Site under ServiceGroup (regional endpoint)
     site_id = f"{sg_id}/providers/{EDGE_RP_NAMESPACE}/sites/{name}"
-    _eprint(f"{indent}  [+] Site '{name}' ({level})...")
     _arm_put_regional(cmd, config_location, site_id, {
         "properties": {
             "displayName": name,
@@ -240,31 +235,29 @@ def _create_sg_level(cmd, node, config_location, sub_id, tenant_id, resource_gro
             "labels": {"level": level},
         }
     }, SITE_API_VERSION)
-    _eprint(f"{indent}  [+] Site '{name}'... [OK]")
+    _eprint(f"{child_prefix}├── Site '{name}' ✓")
     results.append({"type": "Site", "name": name, "level": level, "id": site_id})
 
-    # 3. Create Configuration (RG-scoped, NOT under SG)
+    # 3. Create Configuration (RG-scoped)
     config_name = f"{name}Config"
     config_id = (
         f"/subscriptions/{sub_id}/resourceGroups/{resource_group}"
         f"/providers/{EDGE_RP_NAMESPACE}/configurations/{config_name}"
     )
-    _eprint(f"{indent}  [+] Configuration '{config_name}' (in RG: {resource_group})...")
     _arm_put(cmd, f"{ARM_ENDPOINT}{config_id}", {
         "location": config_location,
     }, CONFIGURATION_API_VERSION)
-    _eprint(f"{indent}  [+] Configuration '{config_name}'... [OK]")
+    _eprint(f"{child_prefix}├── Configuration '{config_name}' ✓")
     results.append({"type": "Configuration", "name": config_name, "id": config_id})
 
-    # 4. Create ConfigurationReference on Site (regional, links site -> RG config)
+    # 4. Create ConfigurationReference
     config_ref_id = f"{site_id}/providers/{EDGE_RP_NAMESPACE}/configurationReferences/default"
-    _eprint(f"{indent}  [+] ConfigurationReference...")
     _arm_put_regional(cmd, config_location, config_ref_id, {
         "properties": {
             "configurationResourceId": config_id,
         }
     }, CONFIG_REF_API_VERSION)
-    _eprint(f"{indent}  [+] ConfigurationReference... [OK]")
+    _eprint(f"{child_prefix}└── ConfigurationReference ✓")
     results.append({"type": "ConfigurationReference", "siteId": site_id})
 
     # Recurse into children
@@ -272,9 +265,11 @@ def _create_sg_level(cmd, node, config_location, sub_id, tenant_id, resource_gro
     if children:
         if isinstance(children, dict):
             children = [children]
-        for child in children:
+        for i, child in enumerate(children):
+            child_is_last = (i == len(children) - 1)
             _create_sg_level(cmd, child, config_location, sub_id, tenant_id,
-                             resource_group, parent_sg=name, results=results, depth=depth + 1)
+                             resource_group, parent_sg=name, results=results,
+                             depth=depth + 1, is_last=child_is_last)
 
 
 def _count_nodes(node):
