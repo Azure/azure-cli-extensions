@@ -117,7 +117,7 @@ def _create_rg_hierarchy(cmd, resource_group, config_location, name, level):
     _eprint(f"\nCreating hierarchy in RG '{resource_group}'...\n")
 
     # Step 1: Create Site
-    _eprint(f"📁 {name} ({level})")
+    _eprint(f"{name} ({level})")
     _arm_put(cmd, f"{ARM_ENDPOINT}{site_id}", {
         "properties": {
             "displayName": name,
@@ -210,7 +210,7 @@ def _create_sg_level(cmd, node, config_location, sub_id, tenant_id, resource_gro
     child_prefix = prefix + ("    " if is_last else "│   ")
 
     # 1. Create ServiceGroup
-    _eprint(f"{prefix}{connector}📁 {name} ({level})")
+    _eprint(f"{prefix}{connector}{name} ({level})")
     try:
         _arm_put(cmd, f"{ARM_ENDPOINT}{sg_id}", {
             "properties": {
@@ -383,4 +383,5 @@ def _get_tenant_id(cmd):
     profile = Profile(cli_ctx=cmd.cli_ctx)
     _, _, tenant_id = profile.get_raw_token(resource="https://management.azure.com")
     return tenant_id
+
 
