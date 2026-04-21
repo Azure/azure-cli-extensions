@@ -100,62 +100,62 @@ def transform_mc_objects_with_custom_cas(result):
 def load_command_table(self, _):
     managed_clusters_sdk = CliCommandType(
         operations_tmpl="azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks."
-        "operations._managed_clusters_operations#ManagedClustersOperations.{}",
+        "operations._operations#ManagedClustersOperations.{}",
         operation_group="managed_clusters",
         client_factory=cf_managed_clusters,
     )
 
     agent_pools_sdk = CliCommandType(
         operations_tmpl="azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks."
-        "operations._agent_pools_operations#AgentPoolsOperations.{}",
+        "operations._operations#AgentPoolsOperations.{}",
         client_factory=cf_managed_clusters,
     )
 
     managed_namespaces_sdk = CliCommandType(
         operations_tmpl="azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks."
-        "operations._managed_namespaces_operations#ManagedNamespacesOperations.{}",
+        "operations._operations#ManagedNamespacesOperations.{}",
         client_factory=cf_managed_namespaces,
     )
 
     machines_sdk = CliCommandType(
         operations_tmpl="azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks."
-        "operations._machine_operations#MachinesOperations.{}",
+        "operations._operations#MachinesOperations.{}",
         client_factory=cf_managed_clusters,
     )
 
     operations_sdk = CliCommandType(
         operations_tmpl="azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks."
-        "operations._operationstatusresult_operations#OperationStatusResultOperations.{}",
+        "operations._operations#OperationStatusResultOperations.{}",
         client_factory=cf_operations,
     )
 
     maintenance_configuration_sdk = CliCommandType(
         operations_tmpl="azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks."
-        "operations._maintenance_configurations_operations#MaintenanceConfigurationsOperations.{}",
+        "operations._operations#MaintenanceConfigurationsOperations.{}",
         client_factory=cf_maintenance_configurations,
     )
 
     nodepool_snapshot_sdk = CliCommandType(
         operations_tmpl="azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks."
-        "operations._snapshots_operations#SnapshotsOperations.{}",
+        "operations._operations#SnapshotsOperations.{}",
         client_factory=cf_nodepool_snapshots,
     )
 
     mc_snapshot_sdk = CliCommandType(
         operations_tmpl="azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks."
-        "operations._managed_clusters_snapshots_operations#ManagedClusterSnapshotsOperations.{}",
+        "operations._operations#ManagedClusterSnapshotsOperations.{}",
         client_factory=cf_mc_snapshots,
     )
 
     jwt_authenticators_sdk = CliCommandType(
         operations_tmpl="azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks."
-        "operations._jwt_authenticators_operations#JWTAuthenticatorsOperations.{}",
+        "operations._operations#JWTAuthenticatorsOperations.{}",
         client_factory=cf_jwt_authenticators,
     )
 
     vm_skus_sdk = CliCommandType(
         operations_tmpl="azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks."
-        "operations._vm_skus_operations#VmSkusOperations.{}",
+        "operations._operations#VmSkusOperations.{}",
         client_factory=cf_vm_skus,
     )
 

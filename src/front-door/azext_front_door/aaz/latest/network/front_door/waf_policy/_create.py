@@ -18,13 +18,13 @@ class Create(AAZCommand):
     """Create policy with specified rule set name within a resource group.
 
     :example: Creates specific policy
-        az network front-door waf-policy create --resource-group rg1 --policy-name Policy1 --location WestUs --enabled-state Enabled --mode Prevention --redirect-url http://www.bing.com --custom-block-response-status-code 429 --custom-block-response-body PGh0bWw+CjxoZWFkZXI+PHRpdGxlPkhlbGxvPC90aXRsZT48L2hlYWRlcj4KPGJvZHk+CkhlbGxvIHdvcmxkCjwvYm9keT4KPC9odG1sPg== --request-body-check Disabled --javascript-challenge-expiration-in-minutes 30 --captcha-expiration-in-minutes 30 --log-scrubbing "{state:Enabled,scrubbing-rules:[{match-variable:RequestIPAddress,selector-match-operator:EqualsAny,selector:null,state:Enabled}]}" --custom-rules "{rules:[{name:Rule1,priority:1,rule-type:RateLimitRule,rate-limit-threshold:1000,match-conditions:[{match-variable:RemoteAddr,operator:IPMatch,match-value:[192.168.1.0/24,10.0.0.0/24]}],action:Block},{name:Rule2,priority:2,rule-type:MatchRule,match-conditions:[{match-variable:RemoteAddr,operator:GeoMatch,match-value:[CH]},{match-variable:RequestHeader,operator:Contains,selector:UserAgent,match-value:[windows],transforms:[Lowercase]}],action:Block},{name:Rule3,priority:1,rule-type:RateLimitRule,rate-limit-threshold:1000,match-conditions:[{match-variable:RemoteAddr,operator:ServiceTagMatch,match-value:[AzureBackup,AzureBotService]}],action:CAPTCHA}]}" --managed-rules "{managed-rule-sets:[{rule-set-type:DefaultRuleSet,rule-set-version:1.0,rule-set-action:Block,exclusions:[{matchVariable:RequestHeaderNames,selectorMatchOperator:Equals,selector:User-Agent}],rule-group-overrides:[{rule-group-name:SQLI,exclusions:[{matchVariable:RequestCookieNames,selectorMatchOperator:StartsWith,selector:token}],rules:[{rule-id:942100,enabled-state:Enabled,action:Redirect,exclusions:[{matchVariable:QueryStringArgNames,selectorMatchOperator:Equals,selector:query}]},{rule-id:942110,enabled-state:Disabled}]}]},{rule-set-type:Microsoft_HTTPDDoSRuleSet,rule-set-version:1.0,rule-group-overrides:[{rule-group-name:ExcessiveRequests,rules:[{rule-id:500100,enabled-state:Enabled,action:Block,sensitivity:High}]}]}]}" --sku Premium_AzureFrontDoor
+        az network front-door waf-policy create --resource-group rg1 --policy-name Policy1 --location WestUs --enabled-state Enabled --mode Prevention --redirect-url http://www.bing.com --custom-block-response-status-code 429 --custom-block-response-body PGh0bWw+CjxoZWFkZXI+PHRpdGxlPkhlbGxvPC90aXRsZT48L2hlYWRlcj4KPGJvZHk+CkhlbGxvIHdvcmxkCjwvYm9keT4KPC9odG1sPg== --request-body-check Disabled --javascript-challenge-expiration-in-minutes 30 --captcha-expiration-in-minutes 30 --log-scrubbing "{state:Enabled,scrubbing-rules:[{match-variable:RequestIPAddress,selector-match-operator:EqualsAny,selector:null,state:Enabled}]}" --custom-rules "{rules:[{name:Rule1,priority:1,rule-type:RateLimitRule,rate-limit-threshold:1000,match-conditions:[{match-variable:RemoteAddr,operator:IPMatch,match-value:[192.168.1.0/24,10.0.0.0/24]}],action:Block},{name:Rule2,priority:2,rule-type:MatchRule,match-conditions:[{match-variable:RemoteAddr,operator:GeoMatch,match-value:[CH]},{match-variable:RequestHeader,operator:Contains,selector:UserAgent,match-value:[windows],transforms:[Lowercase]}],action:Block},{name:Rule3,priority:1,rule-type:RateLimitRule,rate-limit-threshold:1000,match-conditions:[{match-variable:RemoteAddr,operator:ServiceTagMatch,match-value:[AzureBackup,AzureBotService]}],action:CAPTCHA}]}" --managed-rules "{managed-rule-sets:[{rule-set-type:Microsoft_DefaultRuleSet,rule-set-version:2.2,rule-set-action:Block,exclusions:[{matchVariable:RequestHeaderNames,selectorMatchOperator:Equals,selector:User-Agent}],rule-group-overrides:[{rule-group-name:SQLI,exclusions:[{matchVariable:RequestCookieNames,selectorMatchOperator:StartsWith,selector:token}],rules:[{rule-id:942100,enabled-state:Enabled,action:Redirect,exclusions:[{matchVariable:QueryStringArgNames,selectorMatchOperator:Equals,selector:query}]},{rule-id:942110,enabled-state:Disabled}]}]},{rule-set-type:Microsoft_HTTPDDoSRuleSet,rule-set-version:1.0,rule-group-overrides:[{rule-group-name:ExcessiveRequests,rules:[{rule-id:500100,enabled-state:Enabled,action:Block,sensitivity:High}]}]}],exceptions-list:{exceptions:[{match-variable:RequestHeaderNames,selector-match-operator:Equals,selector:User-Agent,value-match-operator:Contains,match-values:[Mozilla],scopes:[{rule-set-type:Microsoft_DefaultRuleSet,rule-set-version:2.2},{rule-set-type:Microsoft_HTTPDDoSRuleSet,rule-set-version:1.0}]}]}}" --sku Premium_AzureFrontDoor
     """
 
     _aaz_info = {
-        "version": "2025-10-01",
+        "version": "2025-11-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/frontdoorwebapplicationfirewallpolicies/{}", "2025-10-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/frontdoorwebapplicationfirewallpolicies/{}", "2025-11-01"],
         ]
     }
 
@@ -283,7 +283,7 @@ class Create(AAZCommand):
             options=["match-variable"],
             help="Request variable to compare with.",
             required=True,
-            enum={"Cookies": "Cookies", "PostArgs": "PostArgs", "QueryString": "QueryString", "RemoteAddr": "RemoteAddr", "RequestBody": "RequestBody", "RequestHeader": "RequestHeader", "RequestMethod": "RequestMethod", "RequestUri": "RequestUri", "SocketAddr": "SocketAddr"},
+            enum={"Cookies": "Cookies", "JA4": "JA4", "PostArgs": "PostArgs", "QueryString": "QueryString", "RemoteAddr": "RemoteAddr", "RequestBody": "RequestBody", "RequestHeader": "RequestHeader", "RequestMethod": "RequestMethod", "RequestUri": "RequestUri", "SocketAddr": "SocketAddr"},
         )
         _element.negate_condition = AAZBoolArg(
             options=["negate-condition"],
@@ -293,7 +293,7 @@ class Create(AAZCommand):
             options=["operator"],
             help="Comparison type to use for matching with the variable value.",
             required=True,
-            enum={"Any": "Any", "BeginsWith": "BeginsWith", "Contains": "Contains", "EndsWith": "EndsWith", "Equal": "Equal", "GeoMatch": "GeoMatch", "GreaterThan": "GreaterThan", "GreaterThanOrEqual": "GreaterThanOrEqual", "IPMatch": "IPMatch", "LessThan": "LessThan", "LessThanOrEqual": "LessThanOrEqual", "RegEx": "RegEx", "ServiceTagMatch": "ServiceTagMatch"},
+            enum={"Any": "Any", "AsnMatch": "AsnMatch", "BeginsWith": "BeginsWith", "ClientFingerprint": "ClientFingerprint", "Contains": "Contains", "EndsWith": "EndsWith", "Equal": "Equal", "GeoMatch": "GeoMatch", "GreaterThan": "GreaterThan", "GreaterThanOrEqual": "GreaterThanOrEqual", "IPMatch": "IPMatch", "LessThan": "LessThan", "LessThanOrEqual": "LessThanOrEqual", "RegEx": "RegEx", "ServiceTagMatch": "ServiceTagMatch"},
         )
         _element.selector = AAZStrArg(
             options=["selector"],
@@ -313,9 +313,101 @@ class Create(AAZCommand):
         )
 
         managed_rules = cls._args_schema.managed_rules
+        managed_rules.exceptions_list = AAZObjectArg(
+            options=["exceptions-list"],
+            help="List of exceptions applied on the managed rule sets.",
+        )
         managed_rules.managed_rule_sets = AAZListArg(
             options=["managed-rule-sets"],
             help="List of rule sets.",
+        )
+
+        exceptions_list = cls._args_schema.managed_rules.exceptions_list
+        exceptions_list.exceptions = AAZListArg(
+            options=["exceptions"],
+            help="List of exceptions.",
+        )
+
+        exceptions = cls._args_schema.managed_rules.exceptions_list.exceptions
+        exceptions.Element = AAZObjectArg()
+
+        _element = cls._args_schema.managed_rules.exceptions_list.exceptions.Element
+        _element.match_values = AAZListArg(
+            options=["match-values"],
+            help="List of values to be matched with.",
+            required=True,
+        )
+        _element.match_variable = AAZStrArg(
+            options=["match-variable"],
+            help="The variable to be evaluated for excluding the request.",
+            required=True,
+            enum={"RequestHeaderNames": "RequestHeaderNames", "RequestUri": "RequestUri", "SocketAddr": "SocketAddr"},
+        )
+        _element.scopes = AAZListArg(
+            options=["scopes"],
+            help="Scope(s) of the exception.",
+            required=True,
+        )
+        _element.selector = AAZStrArg(
+            options=["selector"],
+            help="When matchVariable is a collection, operator used to specify which elements in the collection this exception applies to. Currently supported only for RequestHeaderNames.",
+        )
+        _element.selector_match_operator = AAZStrArg(
+            options=["selector-match-operator"],
+            help="Comparison operator to apply to the selector when specifying which elements in the collection this exception applies to.",
+            enum={"Equals": "Equals"},
+        )
+        _element.value_match_operator = AAZStrArg(
+            options=["value-match-operator"],
+            help="Comparison operator to apply to the value to be matched.",
+            required=True,
+            enum={"Contains": "Contains", "EndsWith": "EndsWith", "Equals": "Equals", "EqualsAny": "EqualsAny", "IPMatch": "IPMatch", "StartsWith": "StartsWith"},
+        )
+
+        match_values = cls._args_schema.managed_rules.exceptions_list.exceptions.Element.match_values
+        match_values.Element = AAZStrArg()
+
+        scopes = cls._args_schema.managed_rules.exceptions_list.exceptions.Element.scopes
+        scopes.Element = AAZObjectArg()
+
+        _element = cls._args_schema.managed_rules.exceptions_list.exceptions.Element.scopes.Element
+        _element.rule_group_scopes = AAZListArg(
+            options=["rule-group-scopes"],
+            help="List of rule group scopes.",
+        )
+        _element.rule_set_type = AAZStrArg(
+            options=["rule-set-type"],
+            help="Defines the rule set type. Examples: DefaultRuleSet, Microsoft_DefaultRuleSet, Microsoft_BotManagerRuleSet, Microsoft_HTTPDDoSRuleSet, BotProtection",
+            required=True,
+        )
+        _element.rule_set_version = AAZStrArg(
+            options=["rule-set-version"],
+            help="Defines the version of the rule set.",
+            required=True,
+        )
+
+        rule_group_scopes = cls._args_schema.managed_rules.exceptions_list.exceptions.Element.scopes.Element.rule_group_scopes
+        rule_group_scopes.Element = AAZObjectArg()
+
+        _element = cls._args_schema.managed_rules.exceptions_list.exceptions.Element.scopes.Element.rule_group_scopes.Element
+        _element.rule_group_name = AAZStrArg(
+            options=["rule-group-name"],
+            help="Defines the rule group name.",
+            required=True,
+        )
+        _element.rule_scopes = AAZListArg(
+            options=["rule-scopes"],
+            help="List of rule scopes.",
+        )
+
+        rule_scopes = cls._args_schema.managed_rules.exceptions_list.exceptions.Element.scopes.Element.rule_group_scopes.Element.rule_scopes
+        rule_scopes.Element = AAZObjectArg()
+
+        _element = cls._args_schema.managed_rules.exceptions_list.exceptions.Element.scopes.Element.rule_group_scopes.Element.rule_scopes.Element
+        _element.rule_id = AAZStrArg(
+            options=["rule-id"],
+            help="Defines the rule id.",
+            required=True,
         )
 
         managed_rule_sets = cls._args_schema.managed_rules.managed_rule_sets
@@ -481,7 +573,7 @@ class Create(AAZCommand):
                     session,
                     self.on_200_201,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
             if session.http_response.status_code in [200, 201]:
@@ -490,7 +582,7 @@ class Create(AAZCommand):
                     session,
                     self.on_200_201,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -533,7 +625,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-10-01",
+                    "api-version", "2025-11-01",
                     required=True,
                 ),
             }
@@ -621,7 +713,56 @@ class Create(AAZCommand):
 
             managed_rules = _builder.get(".properties.managedRules")
             if managed_rules is not None:
+                managed_rules.set_prop("exceptionsList", AAZObjectType, ".exceptions_list")
                 managed_rules.set_prop("managedRuleSets", AAZListType, ".managed_rule_sets")
+
+            exceptions_list = _builder.get(".properties.managedRules.exceptionsList")
+            if exceptions_list is not None:
+                exceptions_list.set_prop("exceptions", AAZListType, ".exceptions")
+
+            exceptions = _builder.get(".properties.managedRules.exceptionsList.exceptions")
+            if exceptions is not None:
+                exceptions.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.managedRules.exceptionsList.exceptions[]")
+            if _elements is not None:
+                _elements.set_prop("matchValues", AAZListType, ".match_values", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("matchVariable", AAZStrType, ".match_variable", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("scopes", AAZListType, ".scopes", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("selector", AAZStrType, ".selector")
+                _elements.set_prop("selectorMatchOperator", AAZStrType, ".selector_match_operator")
+                _elements.set_prop("valueMatchOperator", AAZStrType, ".value_match_operator", typ_kwargs={"flags": {"required": True}})
+
+            match_values = _builder.get(".properties.managedRules.exceptionsList.exceptions[].matchValues")
+            if match_values is not None:
+                match_values.set_elements(AAZStrType, ".")
+
+            scopes = _builder.get(".properties.managedRules.exceptionsList.exceptions[].scopes")
+            if scopes is not None:
+                scopes.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.managedRules.exceptionsList.exceptions[].scopes[]")
+            if _elements is not None:
+                _elements.set_prop("ruleGroupScopes", AAZListType, ".rule_group_scopes")
+                _elements.set_prop("ruleSetType", AAZStrType, ".rule_set_type", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("ruleSetVersion", AAZStrType, ".rule_set_version", typ_kwargs={"flags": {"required": True}})
+
+            rule_group_scopes = _builder.get(".properties.managedRules.exceptionsList.exceptions[].scopes[].ruleGroupScopes")
+            if rule_group_scopes is not None:
+                rule_group_scopes.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.managedRules.exceptionsList.exceptions[].scopes[].ruleGroupScopes[]")
+            if _elements is not None:
+                _elements.set_prop("ruleGroupName", AAZStrType, ".rule_group_name", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("ruleScopes", AAZListType, ".rule_scopes")
+
+            rule_scopes = _builder.get(".properties.managedRules.exceptionsList.exceptions[].scopes[].ruleGroupScopes[].ruleScopes")
+            if rule_scopes is not None:
+                rule_scopes.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.managedRules.exceptionsList.exceptions[].scopes[].ruleGroupScopes[].ruleScopes[]")
+            if _elements is not None:
+                _elements.set_prop("ruleId", AAZStrType, ".rule_id", typ_kwargs={"flags": {"required": True}})
 
             managed_rule_sets = _builder.get(".properties.managedRules.managedRuleSets")
             if managed_rule_sets is not None:
@@ -906,16 +1047,84 @@ class _CreateHelper:
         transforms.Element = AAZStrType()
 
         frontend_endpoint_links = _schema_web_application_firewall_policy_read.properties.frontend_endpoint_links
-        frontend_endpoint_links.Element = AAZObjectType(
-            flags={"read_only": True},
-        )
+        frontend_endpoint_links.Element = AAZObjectType()
 
         _element = _schema_web_application_firewall_policy_read.properties.frontend_endpoint_links.Element
         _element.id = AAZStrType()
 
         managed_rules = _schema_web_application_firewall_policy_read.properties.managed_rules
+        managed_rules.exceptions_list = AAZObjectType(
+            serialized_name="exceptionsList",
+        )
         managed_rules.managed_rule_sets = AAZListType(
             serialized_name="managedRuleSets",
+        )
+
+        exceptions_list = _schema_web_application_firewall_policy_read.properties.managed_rules.exceptions_list
+        exceptions_list.exceptions = AAZListType()
+
+        exceptions = _schema_web_application_firewall_policy_read.properties.managed_rules.exceptions_list.exceptions
+        exceptions.Element = AAZObjectType()
+
+        _element = _schema_web_application_firewall_policy_read.properties.managed_rules.exceptions_list.exceptions.Element
+        _element.match_values = AAZListType(
+            serialized_name="matchValues",
+            flags={"required": True},
+        )
+        _element.match_variable = AAZStrType(
+            serialized_name="matchVariable",
+            flags={"required": True},
+        )
+        _element.scopes = AAZListType(
+            flags={"required": True},
+        )
+        _element.selector = AAZStrType()
+        _element.selector_match_operator = AAZStrType(
+            serialized_name="selectorMatchOperator",
+        )
+        _element.value_match_operator = AAZStrType(
+            serialized_name="valueMatchOperator",
+            flags={"required": True},
+        )
+
+        match_values = _schema_web_application_firewall_policy_read.properties.managed_rules.exceptions_list.exceptions.Element.match_values
+        match_values.Element = AAZStrType()
+
+        scopes = _schema_web_application_firewall_policy_read.properties.managed_rules.exceptions_list.exceptions.Element.scopes
+        scopes.Element = AAZObjectType()
+
+        _element = _schema_web_application_firewall_policy_read.properties.managed_rules.exceptions_list.exceptions.Element.scopes.Element
+        _element.rule_group_scopes = AAZListType(
+            serialized_name="ruleGroupScopes",
+        )
+        _element.rule_set_type = AAZStrType(
+            serialized_name="ruleSetType",
+            flags={"required": True},
+        )
+        _element.rule_set_version = AAZStrType(
+            serialized_name="ruleSetVersion",
+            flags={"required": True},
+        )
+
+        rule_group_scopes = _schema_web_application_firewall_policy_read.properties.managed_rules.exceptions_list.exceptions.Element.scopes.Element.rule_group_scopes
+        rule_group_scopes.Element = AAZObjectType()
+
+        _element = _schema_web_application_firewall_policy_read.properties.managed_rules.exceptions_list.exceptions.Element.scopes.Element.rule_group_scopes.Element
+        _element.rule_group_name = AAZStrType(
+            serialized_name="ruleGroupName",
+            flags={"required": True},
+        )
+        _element.rule_scopes = AAZListType(
+            serialized_name="ruleScopes",
+        )
+
+        rule_scopes = _schema_web_application_firewall_policy_read.properties.managed_rules.exceptions_list.exceptions.Element.scopes.Element.rule_group_scopes.Element.rule_scopes
+        rule_scopes.Element = AAZObjectType()
+
+        _element = _schema_web_application_firewall_policy_read.properties.managed_rules.exceptions_list.exceptions.Element.scopes.Element.rule_group_scopes.Element.rule_scopes.Element
+        _element.rule_id = AAZStrType(
+            serialized_name="ruleId",
+            flags={"required": True},
         )
 
         managed_rule_sets = _schema_web_application_firewall_policy_read.properties.managed_rules.managed_rule_sets
@@ -1026,17 +1235,13 @@ class _CreateHelper:
         _element.state = AAZStrType()
 
         routing_rule_links = _schema_web_application_firewall_policy_read.properties.routing_rule_links
-        routing_rule_links.Element = AAZObjectType(
-            flags={"read_only": True},
-        )
+        routing_rule_links.Element = AAZObjectType()
 
         _element = _schema_web_application_firewall_policy_read.properties.routing_rule_links.Element
         _element.id = AAZStrType()
 
         security_policy_links = _schema_web_application_firewall_policy_read.properties.security_policy_links
-        security_policy_links.Element = AAZObjectType(
-            flags={"read_only": True},
-        )
+        security_policy_links.Element = AAZObjectType()
 
         _element = _schema_web_application_firewall_policy_read.properties.security_policy_links.Element
         _element.id = AAZStrType()

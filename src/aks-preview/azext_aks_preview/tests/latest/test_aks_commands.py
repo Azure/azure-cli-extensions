@@ -22388,9 +22388,9 @@ spec:
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check("agentPoolProfiles[0].type", "VirtualMachines"),
-            self.check('agentPoolProfiles[0].virtualMachinesProfile.scale.autoscale.size', 'standard_d2s_v3'),
-            self.check('agentPoolProfiles[0].virtualMachinesProfile.scale.autoscale.minCount', 1),
-            self.check('agentPoolProfiles[0].virtualMachinesProfile.scale.autoscale.maxCount', 3),
+            self.check('agentPoolProfiles[0].virtualMachinesProfile.scale.autoscale[0].size', 'standard_d2s_v3'),
+            self.check('agentPoolProfiles[0].virtualMachinesProfile.scale.autoscale[0].minCount', 1),
+            self.check('agentPoolProfiles[0].virtualMachinesProfile.scale.autoscale[0].maxCount', 3),
         ])
 
         # add another vms nodepool with autoscaler enabled
@@ -22401,9 +22401,9 @@ spec:
                            '--min-count 0 --max-count 3'
         self.cmd(add_nodepool_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('virtualMachinesProfile.scale.autoscale.size', 'standard_d2s_v3'),
-            self.check('virtualMachinesProfile.scale.autoscale.minCount', 0),
-            self.check('virtualMachinesProfile.scale.autoscale.maxCount', 3),
+            self.check('virtualMachinesProfile.scale.autoscale[0].size', 'standard_d2s_v3'),
+            self.check('virtualMachinesProfile.scale.autoscale[0].minCount', 0),
+            self.check('virtualMachinesProfile.scale.autoscale[0].maxCount', 3),
         ])
 
         # update a VirtualMachines node pool with autoscaler enabled to change the VM size and min/max node count.
@@ -22413,9 +22413,9 @@ spec:
                               '--min-count 1 --max-count 5'
         self.cmd(update_nodepool_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('virtualMachinesProfile.scale.autoscale.size', 'standard_d4s_v3'),
-            self.check('virtualMachinesProfile.scale.autoscale.minCount', 1),
-            self.check('virtualMachinesProfile.scale.autoscale.maxCount', 5),
+            self.check('virtualMachinesProfile.scale.autoscale[0].size', 'standard_d4s_v3'),
+            self.check('virtualMachinesProfile.scale.autoscale[0].minCount', 1),
+            self.check('virtualMachinesProfile.scale.autoscale[0].maxCount', 5),
         ])
 
         # disable autoscaler (auto to manual)
@@ -22431,9 +22431,9 @@ spec:
                                 '--enable-cluster-autoscaler --min-count 1 --max-count 3'
         self.cmd(enable_autoscaler_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('virtualMachinesProfile.scale.autoscale.size', 'standard_d4s_v3'),
-            self.check('virtualMachinesProfile.scale.autoscale.minCount', 1),
-            self.check('virtualMachinesProfile.scale.autoscale.maxCount', 3),
+            self.check('virtualMachinesProfile.scale.autoscale[0].size', 'standard_d4s_v3'),
+            self.check('virtualMachinesProfile.scale.autoscale[0].minCount', 1),
+            self.check('virtualMachinesProfile.scale.autoscale[0].maxCount', 3),
         ])
 
         # delete
@@ -22756,7 +22756,7 @@ spec:
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="centraluseuap"
+        random_name_length=17, name_prefix="clitest", location="westus2"
     )
     def test_aks_create_and_update_with_gateway_api_and_azureservicemesh(
         self, resource_group, resource_group_location
@@ -22787,6 +22787,69 @@ spec:
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("serviceMeshProfile.mode", "Istio"),
+                self.check("ingressProfile.gatewayApi.installation", "Standard"),
+            ],
+        )
+
+        # Test disabling Gateway API
+        update_cmd = (
+            "aks update --resource-group={resource_group} --name={name} "
+            "--disable-gateway-api "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedGatewayAPIPreview "
+        )
+        self.cmd(
+            update_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("ingressProfile.gatewayApi.installation", "Disabled"),
+            ],
+        )
+
+        # Test re-enabling Gateway API
+        update_cmd = (
+            "aks update --resource-group={resource_group} --name={name} "
+            "--enable-gateway-api "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedGatewayAPIPreview "
+        )
+        self.cmd(
+            update_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("ingressProfile.gatewayApi.installation", "Standard"),
+            ],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westus2"
+    )
+    def test_aks_create_and_update_with_gateway_api_without_azureservicemesh(
+        self, resource_group, resource_group_location
+    ):
+        aks_name = self.create_random_name("cliakstest", 16)
+        _, create_version = self._get_versions(resource_group_location)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "k8s_version": create_version,
+            }
+        )
+
+        # Test successful creation with Gateway API enabled and without Azure Service Mesh addon
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} "
+            "--enable-gateway-api "
+            "--ssh-key-value={ssh_key_value} -o json "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedGatewayAPIPreview "
+            "--kubernetes-version={k8s_version} "
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("serviceMeshProfile", None),
                 self.check("ingressProfile.gatewayApi.installation", "Standard"),
             ],
         )
@@ -22978,9 +23041,6 @@ spec:
 
     # TODO (indusridhar): Add tests for `test_aks_nodepool_get_rollback_versions` and `test_aks_nodepool_rollback`
     # after AKS RP Jan 2026 release is complete and recently_used_versions field is populated in upgrade profile API
-
-    # TODO (zheweihu): add test `test_aks_create_and_update_with_gateway_api_without_azureservicemesh`
-    # once https://msazure.visualstudio.com/CloudNativeCompute/_git/aks-rp/pullrequest/14404771 is rolled out
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
@@ -23392,3 +23452,51 @@ spec:
                 (sku.get("locationInfo") or [{}])[0].get("zones") or []
             )
             assert len(zones) > 0, f"SKU '{sku['name']}' has no zones despite --zone filter"
+
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="centraluseuap"
+    )
+    def test_aks_nodepool_update_vmss_vm_size_resize(
+        self, resource_group, resource_group_location
+    ):
+        """Test VMSS agent pool VM size resize via nodepool update (preview)."""
+        aks_name = self.create_random_name("cliakstest", 16)
+        nodepool_name = "nodepool1"
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "nodepool_name": nodepool_name,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        # Create cluster with Standard_D2s_v3
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} "
+            "--node-count=1 --node-vm-size Standard_D2s_v3 "
+            "--ssh-key-value={ssh_key_value}"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("agentPoolProfiles[0].vmSize", "Standard_D2s_v3"),
+            ],
+        )
+
+        # Resize nodepool VM size to Standard_D4s_v3
+        update_cmd = (
+            "aks nodepool update --resource-group={resource_group} "
+            "--cluster-name={name} -n {nodepool_name} "
+            "--node-vm-size Standard_D4s_v3"
+        )
+        self.cmd(
+            update_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("vmSize", "Standard_D4s_v3"),
+            ],
+        )

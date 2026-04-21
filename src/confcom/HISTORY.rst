@@ -3,6 +3,11 @@
 Release History
 ===============
 
+2.0.0b1
++++++++
+* Add Windows container support with CIM-based layer hashing
+* Support for mounted_cim field in security policies for Windows containers
+
 1.8.0
 +++++
 * Ensure that fragments are attached to the correct manifest for a multiarch image.

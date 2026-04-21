@@ -11,6 +11,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* `az aks nodepool update`: Support `--node-vm-size` to resize VM size of an existing VMSS-based agent pool (preview). Requires AFEC registration `Microsoft.ContainerService/AgentPoolVMSSResize`.
+
+20.0.0b3
+++++++
+* Vendor new SDK and bump API version to 2026-02-02-preview.
 
 20.0.0b2
 +++++++
