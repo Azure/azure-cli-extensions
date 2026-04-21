@@ -88,10 +88,12 @@ def target_deploy(
 
     def _log(step_name, status=""):
         if status:
-            _eprint(f"[{current[0]}/{total}] {step_name}... {status}")
+            connector = "└──" if current[0] == total else "├──"
+            _eprint(f"{connector} {step_name} {status}")
         else:
             current[0] += 1
-            _eprint(f"[{current[0]}/{total}] {step_name}...")
+            connector = "└──" if current[0] == total else "├──"
+            _eprint(f"{connector} {step_name}...")
 
     results = {}
     sv_id = None
@@ -104,7 +106,7 @@ def target_deploy(
             config_template_name, config_template_version,
             resource_group, target_name, sub_id,
         )
-        _log("Config Set", "[OK]")
+        _log("Config Set", "✓")
         results["configSet"] = "Succeeded"
 
     # --- Step 1: Review ---
@@ -112,19 +114,19 @@ def target_deploy(
     review_result = _do_review(cmd, base_url, solution_template_version_id)
     results["review"] = review_result
     sv_id = _extract_solution_version_id(review_result)
-    _log("Review", f"[OK] -> solutionVersionId: {_short_id(sv_id)}")
+    _log("Review", f"✓ solutionVersionId: {_short_id(sv_id)}")
 
     # --- Step 2: Publish ---
     _log("Publish")
     publish_result = _do_publish(cmd, base_url, sv_id)
     results["publish"] = publish_result
-    _log("Publish", "[OK]")
+    _log("Publish", "✓")
 
     # --- Step 3: Install ---
     _log("Install")
     install_result = _do_install(cmd, base_url, sv_id)
     results["install"] = install_result
-    _log("Install", "[OK]")
+    _log("Install", "✓")
 
     _eprint(f"\n✅ Deployment complete for target '{target_name}'")
     _eprint(f"   Solution Version: {_short_id(sv_id)}")
@@ -174,10 +176,12 @@ def target_deploy_pre_install(
 
     def _log(step_name, status=""):
         if status:
-            _eprint(f"[{current[0]}/{total}] {step_name}... {status}")
+            connector = "└──" if current[0] == total else "├──"
+            _eprint(f"{connector} {step_name} {status}")
         else:
             current[0] += 1
-            _eprint(f"[{current[0]}/{total}] {step_name}...")
+            connector = "└──" if current[0] == total else "├──"
+            _eprint(f"{connector} {step_name}...")
 
     # --- Step 0: Config set ---
     if do_config:
@@ -204,18 +208,18 @@ def target_deploy_pre_install(
             ct_name, ct_version,
             resource_group, target_name, sub_id,
         )
-        _log("Config Set", "[OK]")
+        _log("Config Set", "✓")
 
     # --- Step 1: Review ---
     _log("Review")
     review_result = _do_review(cmd, base_url, solution_template_version_id)
     sv_id = _extract_solution_version_id(review_result)
-    _log("Review", f"[OK] -> solutionVersionId: {_short_id(sv_id)}")
+    _log("Review", f"✓ solutionVersionId: {_short_id(sv_id)}")
 
     # --- Step 2: Publish ---
     _log("Publish")
     _do_publish(cmd, base_url, sv_id)
-    _log("Publish", "[OK]")
+    _log("Publish", "✓")
 
     # Step 3 (Install) is handled by AAZ LRO
     _log("Install")

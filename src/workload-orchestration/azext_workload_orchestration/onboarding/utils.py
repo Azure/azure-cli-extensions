@@ -150,17 +150,17 @@ def _eprint(*args, **kwargs):
 
 
 def print_step(step_num, total, message, status=""):
-    """Print a formatted step indicator to stderr."""
-    prefix = f"[{step_num}/{total}]"
+    """Print a formatted step indicator to stderr using tree characters."""
+    connector = "└──" if step_num == total else "├──"
     if status:
-        _eprint(f"{prefix} {message}... {status}")
+        _eprint(f"{connector} {message} {status}")
     else:
-        _eprint(f"{prefix} {message}...")
+        _eprint(f"{connector} {message}...")
 
 
 def print_success(message):
     """Print a success summary line to stderr."""
-    _eprint(f"\n[OK] {message}")
+    _eprint(f"\n✅ {message}")
 
 
 def print_detail(label, value):

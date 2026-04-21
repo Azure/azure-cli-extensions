@@ -310,7 +310,7 @@ def _ensure_cert_manager(version, kube_config, kube_context):
         if len(running) >= CERT_MANAGER_MIN_PODS:
             print_step(
                 1, TOTAL_STEPS, "cert-manager",
-                f"Already installed [OK] ({len(running)} pods running)"
+                f"Already installed ✓ ({len(running)} pods running)"
             )
             return
         logger.info(
@@ -338,7 +338,7 @@ def _ensure_cert_manager(version, kube_config, kube_context):
         f"--timeout={CERT_MANAGER_WAIT_TIMEOUT}"
     ], kube_config, kube_context)
 
-    print_step(1, TOTAL_STEPS, "cert-manager", f"Installed {version} [OK]")
+    print_step(1, TOTAL_STEPS, "cert-manager", f"Installed {version} ✓")
 
 
 # ---------------------------------------------------------------------------
@@ -372,7 +372,7 @@ def _ensure_trust_manager(kube_config, kube_context):
         apps_v1.read_namespaced_deployment(
             TRUST_MANAGER_DEPLOYMENT, CERT_MANAGER_NAMESPACE
         )
-        print_step(2, TOTAL_STEPS, "trust-manager", "Already installed [OK]")
+        print_step(2, TOTAL_STEPS, "trust-manager", "Already installed ✓")
         return
     except ApiException as exc:
         if exc.status != 404:
@@ -407,7 +407,7 @@ def _ensure_trust_manager(kube_config, kube_context):
         "--wait"
     ])
 
-    print_step(2, TOTAL_STEPS, "trust-manager", "Installed [OK]")
+    print_step(2, TOTAL_STEPS, "trust-manager", "Installed ✓")
 
 
 # ---------------------------------------------------------------------------
@@ -450,7 +450,7 @@ def _ensure_wo_extension(
         if prov_state == "succeeded":
             print_step(
                 3, TOTAL_STEPS, "WO extension",
-                f"Already installed [OK] (version {ext_ver})"
+                f"Already installed ✓ (version {ext_ver})"
             )
             return ext_id
 
@@ -489,9 +489,9 @@ def _ensure_wo_extension(
     ext_id = result.get("id", "") if isinstance(result, dict) else ""
 
     if no_wait:
-        print_step(3, TOTAL_STEPS, "WO extension", "Creating (--no-wait) [OK]")
+        print_step(3, TOTAL_STEPS, "WO extension", "Creating (--no-wait) ✓")
     else:
-        print_step(3, TOTAL_STEPS, "WO extension", "Installed [OK]")
+        print_step(3, TOTAL_STEPS, "WO extension", "Installed ✓")
 
     return ext_id
 
@@ -526,7 +526,7 @@ def _ensure_custom_location(
             if cl_id:
                 print_step(
                     4, TOTAL_STEPS, "Custom location",
-                    f"Already exists [OK] ('{custom_location_name}')"
+                    f"Already exists ✓ ('{custom_location_name}')"
                 )
                 return cl_id
     except Exception:
@@ -570,7 +570,7 @@ def _ensure_custom_location(
             )
         )
 
-    print_step(4, TOTAL_STEPS, "Custom location", "Created [OK]")
+    print_step(4, TOTAL_STEPS, "Custom location", "Created ✓")
     return cl_id
 
 
@@ -620,11 +620,11 @@ def _print_diagnostic_summary(step_results, cluster_name, resource_group):
 
     for step_name, result in step_results.items():
         if "FAILED" in result:
-            icon = "[FAIL]"
+            icon = "✗"
         elif result == "Skipped":
             icon = "○"
         else:
-            icon = "[OK]"
+            icon = "✓"
         _eprint(f"  {icon} {step_name}: {result}")
 
     has_failure = any("FAILED" in v for v in step_results.values())
