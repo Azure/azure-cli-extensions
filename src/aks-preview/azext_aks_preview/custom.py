@@ -1508,6 +1508,7 @@ def aks_list(cmd, client, resource_group_name=None):
     return _remove_nulls(list(managed_clusters))
 
 
+# pylint: disable=too-many-nested-blocks
 def _remove_nulls(managed_clusters):
     """
     Remove some often-empty fields from a list of ManagedClusters, so the JSON representation
