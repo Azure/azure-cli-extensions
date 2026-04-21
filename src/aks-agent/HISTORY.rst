@@ -12,7 +12,58 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+1.0.0b22
+++++++++
+* Bump aks-agent to v0.7.1
+  * Suppress litellm debug logs
+* Feature: Separate Azure OpenAI provider into API Key and Microsoft Entra ID (keyless) providers
+* Feature: Add --yes/-y flag to agent-cleanup command to skip confirmation prompt
+
+1.0.0b21
+++++++++
+* Bump aks-agent to v0.6.0
+  * Bump aks-mcp to v0.0.16 to accept AKS managed webhook token path for workload identity
+
+1.0.0b20
+++++++++
+* Bump aks-agent to v0.5.0
+  * Add probe and seccompProfile to address compatibility with AKS Automatic clusters
+
+1.0.0b19
+++++++++
+* Bump aks-agent to v0.4.0
+  * Chore: Remove aks mcp tool description to reduce system prompt length
+  * Fix: Delete runbook from prompts after runbook toolset is removed
+
+1.0.0b18
+++++++++
+* Bump aks-agent to v0.3.0
+  * Chore: use aks mcp streamable-http mode
+  * Remove runbook toolset until it's stabilized
+  * Several CEV fixes
+* Fix: accept endpoints ending with cognitiveservices.azure.com/ for Azure OpenAI service
+
+1.0.0b17
+++++++++
+* Fix: remove the prompt to user about managed identity client id during `az aks agent-init`
+
+1.0.0b16
+++++++++
+* Fix: client mode use AzureCLICredential to authenticate with Azure
+* Fix: correct wrong prompt message for init and cleanup
+* Fix: prompt the whole flags including --resource-group, --name and optional --namespace for az aks agent command
+* Enhancement: cluster mode cleanup will wait for pods to be removed after deletion
+
+1.0.0b15
+++++++++
+* Feature: Add local mode support - run AKS agent in Docker container on local machine as an alternative to cluster deployment
+* Feature: Mode selection during `az aks agent-init` - choose between cluster mode (Helm deployment) or local mode (Docker container)
+* Feature: Cluster Mode requires the user to specify the namespace and service account name during `az aks agent-init`
+* Feature: Cluster Mode requires namespace for `az aks agent-cleanup` and `az aks agent`
+* Enhancement: Comprehensive telemetry tracking - track init, cleanup, and startup events with mode information (cluster/local)
+
 1.0.0b14
+++++++++
 * Fix: set stdout to blocking mode to avoid "BlockingIOError: [Errno 35] write could not complete without blocking"
 * Fix: gracefully handle the connection reset error
 * Fix: correct the prompt to user `az aks agent-init` to initialize the aks agent
@@ -20,6 +71,7 @@ Pending
 * Close websocket and restore terminal settings after `az aks agent` ends
 
 1.0.0b13
+++++++++
 * Fix subscription id not correctly set in helm chart
 
 1.0.0b12

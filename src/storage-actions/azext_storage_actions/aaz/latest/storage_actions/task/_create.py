@@ -158,7 +158,7 @@ class Create(AAZCommand):
 
         operations = cls._args_schema.action.else_.operations
         operations.Element = AAZObjectArg()
-        cls._build_args_storage_task_operation_create(operations.Element)
+        cls._build_args_storagetaskoperation_create_or_update_create(operations.Element)
 
         if_ = cls._args_schema.action.if_
         if_.condition = AAZStrArg(
@@ -174,51 +174,51 @@ class Create(AAZCommand):
 
         operations = cls._args_schema.action.if_.operations
         operations.Element = AAZObjectArg()
-        cls._build_args_storage_task_operation_create(operations.Element)
+        cls._build_args_storagetaskoperation_create_or_update_create(operations.Element)
         return cls._args_schema
 
-    _args_storage_task_operation_create = None
+    _args_storagetaskoperation_create_or_update_create = None
 
     @classmethod
-    def _build_args_storage_task_operation_create(cls, _schema):
-        if cls._args_storage_task_operation_create is not None:
-            _schema.name = cls._args_storage_task_operation_create.name
-            _schema.on_failure = cls._args_storage_task_operation_create.on_failure
-            _schema.on_success = cls._args_storage_task_operation_create.on_success
-            _schema.parameters = cls._args_storage_task_operation_create.parameters
+    def _build_args_storagetaskoperation_create_or_update_create(cls, _schema):
+        if cls._args_storagetaskoperation_create_or_update_create is not None:
+            _schema.name = cls._args_storagetaskoperation_create_or_update_create.name
+            _schema.on_failure = cls._args_storagetaskoperation_create_or_update_create.on_failure
+            _schema.on_success = cls._args_storagetaskoperation_create_or_update_create.on_success
+            _schema.parameters = cls._args_storagetaskoperation_create_or_update_create.parameters
             return
 
-        cls._args_storage_task_operation_create = AAZObjectArg()
+        cls._args_storagetaskoperation_create_or_update_create = AAZObjectArg()
 
-        storage_task_operation_create = cls._args_storage_task_operation_create
-        storage_task_operation_create.name = AAZStrArg(
+        storagetaskoperation_create_or_update_create = cls._args_storagetaskoperation_create_or_update_create
+        storagetaskoperation_create_or_update_create.name = AAZStrArg(
             options=["name"],
             help="The operation to be performed on the object.",
             required=True,
             enum={"DeleteBlob": "DeleteBlob", "SetBlobExpiry": "SetBlobExpiry", "SetBlobImmutabilityPolicy": "SetBlobImmutabilityPolicy", "SetBlobLegalHold": "SetBlobLegalHold", "SetBlobTags": "SetBlobTags", "SetBlobTier": "SetBlobTier", "UndeleteBlob": "UndeleteBlob"},
         )
-        storage_task_operation_create.on_failure = AAZStrArg(
+        storagetaskoperation_create_or_update_create.on_failure = AAZStrArg(
             options=["on-failure"],
             help="Action to be taken when the operation fails for a object.",
             enum={"break": "break"},
         )
-        storage_task_operation_create.on_success = AAZStrArg(
+        storagetaskoperation_create_or_update_create.on_success = AAZStrArg(
             options=["on-success"],
             help="Action to be taken when the operation is successful for a object.",
             enum={"continue": "continue"},
         )
-        storage_task_operation_create.parameters = AAZDictArg(
+        storagetaskoperation_create_or_update_create.parameters = AAZDictArg(
             options=["parameters"],
             help="Key-value parameters for the operation.",
         )
 
-        parameters = cls._args_storage_task_operation_create.parameters
+        parameters = cls._args_storagetaskoperation_create_or_update_create.parameters
         parameters.Element = AAZStrArg()
 
-        _schema.name = cls._args_storage_task_operation_create.name
-        _schema.on_failure = cls._args_storage_task_operation_create.on_failure
-        _schema.on_success = cls._args_storage_task_operation_create.on_success
-        _schema.parameters = cls._args_storage_task_operation_create.parameters
+        _schema.name = cls._args_storagetaskoperation_create_or_update_create.name
+        _schema.on_failure = cls._args_storagetaskoperation_create_or_update_create.on_failure
+        _schema.on_success = cls._args_storagetaskoperation_create_or_update_create.on_success
+        _schema.parameters = cls._args_storagetaskoperation_create_or_update_create.parameters
 
     def _execute_operations(self):
         self.pre_operations()
@@ -363,7 +363,7 @@ class Create(AAZCommand):
 
             operations = _builder.get(".properties.action.else.operations")
             if operations is not None:
-                _CreateHelper._build_schema_storage_task_operation_create(operations.set_elements(AAZObjectType, "."))
+                _CreateHelper._build_schema_storagetaskoperation_create_or_update_create(operations.set_elements(AAZObjectType, "."))
 
             if_ = _builder.get(".properties.action.if")
             if if_ is not None:
@@ -372,7 +372,7 @@ class Create(AAZCommand):
 
             operations = _builder.get(".properties.action.if.operations")
             if operations is not None:
-                _CreateHelper._build_schema_storage_task_operation_create(operations.set_elements(AAZObjectType, "."))
+                _CreateHelper._build_schema_storagetaskoperation_create_or_update_create(operations.set_elements(AAZObjectType, "."))
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -489,7 +489,7 @@ class Create(AAZCommand):
 
             operations = cls._schema_on_200_201.properties.action["else"].operations
             operations.Element = AAZObjectType()
-            _CreateHelper._build_schema_storage_task_operation_read(operations.Element)
+            _CreateHelper._build_schema_storagetaskoperation_read(operations.Element)
 
             if_ = cls._schema_on_200_201.properties.action["if"]
             if_.condition = AAZStrType(
@@ -501,7 +501,7 @@ class Create(AAZCommand):
 
             operations = cls._schema_on_200_201.properties.action["if"].operations
             operations.Element = AAZObjectType()
-            _CreateHelper._build_schema_storage_task_operation_read(operations.Element)
+            _CreateHelper._build_schema_storagetaskoperation_read(operations.Element)
 
             system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(
@@ -533,7 +533,7 @@ class _CreateHelper:
     """Helper class for Create"""
 
     @classmethod
-    def _build_schema_storage_task_operation_create(cls, _builder):
+    def _build_schema_storagetaskoperation_create_or_update_create(cls, _builder):
         if _builder is None:
             return
         _builder.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
@@ -545,38 +545,38 @@ class _CreateHelper:
         if parameters is not None:
             parameters.set_elements(AAZStrType, ".")
 
-    _schema_storage_task_operation_read = None
+    _schema_storagetaskoperation_read = None
 
     @classmethod
-    def _build_schema_storage_task_operation_read(cls, _schema):
-        if cls._schema_storage_task_operation_read is not None:
-            _schema.name = cls._schema_storage_task_operation_read.name
-            _schema.on_failure = cls._schema_storage_task_operation_read.on_failure
-            _schema.on_success = cls._schema_storage_task_operation_read.on_success
-            _schema.parameters = cls._schema_storage_task_operation_read.parameters
+    def _build_schema_storagetaskoperation_read(cls, _schema):
+        if cls._schema_storagetaskoperation_read is not None:
+            _schema.name = cls._schema_storagetaskoperation_read.name
+            _schema.on_failure = cls._schema_storagetaskoperation_read.on_failure
+            _schema.on_success = cls._schema_storagetaskoperation_read.on_success
+            _schema.parameters = cls._schema_storagetaskoperation_read.parameters
             return
 
-        cls._schema_storage_task_operation_read = _schema_storage_task_operation_read = AAZObjectType()
+        cls._schema_storagetaskoperation_read = _schema_storagetaskoperation_read = AAZObjectType()
 
-        storage_task_operation_read = _schema_storage_task_operation_read
-        storage_task_operation_read.name = AAZStrType(
+        storagetaskoperation_read = _schema_storagetaskoperation_read
+        storagetaskoperation_read.name = AAZStrType(
             flags={"required": True},
         )
-        storage_task_operation_read.on_failure = AAZStrType(
+        storagetaskoperation_read.on_failure = AAZStrType(
             serialized_name="onFailure",
         )
-        storage_task_operation_read.on_success = AAZStrType(
+        storagetaskoperation_read.on_success = AAZStrType(
             serialized_name="onSuccess",
         )
-        storage_task_operation_read.parameters = AAZDictType()
+        storagetaskoperation_read.parameters = AAZDictType()
 
-        parameters = _schema_storage_task_operation_read.parameters
+        parameters = _schema_storagetaskoperation_read.parameters
         parameters.Element = AAZStrType()
 
-        _schema.name = cls._schema_storage_task_operation_read.name
-        _schema.on_failure = cls._schema_storage_task_operation_read.on_failure
-        _schema.on_success = cls._schema_storage_task_operation_read.on_success
-        _schema.parameters = cls._schema_storage_task_operation_read.parameters
+        _schema.name = cls._schema_storagetaskoperation_read.name
+        _schema.on_failure = cls._schema_storagetaskoperation_read.on_failure
+        _schema.on_success = cls._schema_storagetaskoperation_read.on_success
+        _schema.parameters = cls._schema_storagetaskoperation_read.parameters
 
 
 __all__ = ["Create"]

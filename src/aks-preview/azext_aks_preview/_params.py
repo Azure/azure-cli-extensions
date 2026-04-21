@@ -33,6 +33,10 @@ from azure.cli.core.commands.parameters import (
     tags_type,
     zones_type,
 )
+from azext_aks_preview._validators import (
+    validate_nat_gateway_managed_outbound_ipv6_count,
+    validate_nat_gateway_v2_params,
+)
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
 from azext_aks_preview._completers import (
     get_k8s_upgrades_completion_list,
@@ -98,6 +102,7 @@ from azext_aks_preview._consts import (
     CONST_OS_SKU_MARINER,
     CONST_OS_SKU_AZURELINUXOSGUARD,
     CONST_OS_SKU_AZURELINUX3OSGUARD,
+    CONST_OS_SKU_AZURECONTAINERLINUX,
     CONST_OS_SKU_UBUNTU,
     CONST_OS_SKU_UBUNTU2204,
     CONST_OS_SKU_UBUNTU2404,
@@ -147,17 +152,21 @@ from azext_aks_preview._consts import (
     CONST_ARTIFACT_SOURCE_CACHE,
     CONST_OUTBOUND_TYPE_NONE,
     CONST_OUTBOUND_TYPE_BLOCK,
+    CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY_V2,
     CONST_APP_ROUTING_ANNOTATION_CONTROLLED_NGINX,
     CONST_APP_ROUTING_EXTERNAL_NGINX,
     CONST_APP_ROUTING_INTERNAL_NGINX,
     CONST_APP_ROUTING_NONE_NGINX,
     CONST_GPU_DRIVER_TYPE_CUDA,
     CONST_GPU_DRIVER_TYPE_GRID,
+    CONST_GPU_MIG_STRATEGY_SINGLE,
+    CONST_GPU_MIG_STRATEGY_MIXED,
     CONST_ADVANCED_NETWORKPOLICIES_NONE,
     CONST_ADVANCED_NETWORKPOLICIES_FQDN,
     CONST_ADVANCED_NETWORKPOLICIES_L7,
     CONST_TRANSIT_ENCRYPTION_TYPE_NONE,
     CONST_TRANSIT_ENCRYPTION_TYPE_WIREGUARD,
+    CONST_TRANSIT_ENCRYPTION_TYPE_MTLS,
     CONST_ACNS_DATAPATH_ACCELERATION_MODE_BPFVETH,
     CONST_ACNS_DATAPATH_ACCELERATION_MODE_NONE,
     CONST_UPGRADE_STRATEGY_ROLLING,
@@ -294,6 +303,7 @@ node_os_skus_create = [
     CONST_OS_SKU_UBUNTU2404,
     CONST_OS_SKU_AZURELINUXOSGUARD,
     CONST_OS_SKU_AZURELINUX3OSGUARD,
+    CONST_OS_SKU_AZURECONTAINERLINUX,
 ]
 node_os_skus_add = node_os_skus_create + [
     CONST_OS_SKU_WINDOWS2019,
@@ -310,6 +320,7 @@ node_os_skus_update = [
     CONST_OS_SKU_UBUNTU2404,
     CONST_OS_SKU_AZURELINUXOSGUARD,
     CONST_OS_SKU_AZURELINUX3OSGUARD,
+    CONST_OS_SKU_AZURECONTAINERLINUX,
 ]
 scale_down_modes = [CONST_SCALE_DOWN_MODE_DELETE, CONST_SCALE_DOWN_MODE_DEALLOCATE]
 workload_runtimes = [
@@ -360,6 +371,7 @@ advanced_networkpolicies = [
 transit_encryption_types = [
     CONST_TRANSIT_ENCRYPTION_TYPE_NONE,
     CONST_TRANSIT_ENCRYPTION_TYPE_WIREGUARD,
+    CONST_TRANSIT_ENCRYPTION_TYPE_MTLS,
 ]
 acns_datapath_acceleration_modes = [
     CONST_ACNS_DATAPATH_ACCELERATION_MODE_NONE,
@@ -371,6 +383,7 @@ outbound_types = [
     CONST_OUTBOUND_TYPE_LOAD_BALANCER,
     CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
     CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
+    CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY_V2,
     CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
     CONST_OUTBOUND_TYPE_NONE,
     CONST_OUTBOUND_TYPE_BLOCK,
@@ -540,6 +553,11 @@ gpu_driver_types = [
     CONST_GPU_DRIVER_TYPE_GRID,
 ]
 
+gpu_mig_strategies = [
+    CONST_GPU_MIG_STRATEGY_SINGLE,
+    CONST_GPU_MIG_STRATEGY_MIXED,
+]
+
 upgrade_strategies = [
     CONST_UPGRADE_STRATEGY_ROLLING,
     CONST_UPGRADE_STRATEGY_BLUE_GREEN,
@@ -659,7 +677,40 @@ def load_arguments(self, _):
             type=int,
             validator=validate_nat_gateway_idle_timeout,
         )
-        c.argument("outbound_type", arg_type=get_enum_type(outbound_types))
+        c.argument(
+            "nat_gateway_managed_outbound_ipv6_count",
+            options_list=[
+                "--nat-gateway-managed-outbound-ipv6-count",
+                "--nat-gw-ipv6-count",
+            ],
+            type=int,
+            validator=validate_nat_gateway_managed_outbound_ipv6_count,
+            help="NAT gateway managed outbound IPv6 IP count. "
+                 "Valid only with --outbound-type managedNATGatewayV2.",
+        )
+        c.argument(
+            "nat_gateway_outbound_ip_ids",
+            options_list=[
+                "--nat-gateway-outbound-ips",
+                "--nat-gw-ips",
+            ],
+            help="Comma-separated public IP resource IDs for the "
+                 "cluster NAT gateway. V2 only.",
+        )
+        c.argument(
+            "nat_gateway_outbound_ip_prefix_ids",
+            options_list=[
+                "--nat-gateway-outbound-ip-prefixes",
+                "--nat-gw-prefixes",
+            ],
+            help="Comma-separated public IP prefix resource IDs "
+                 "for the cluster NAT gateway. V2 only.",
+        )
+        c.argument(
+            "outbound_type",
+            arg_type=get_enum_type(outbound_types),
+            validator=validate_nat_gateway_v2_params,
+        )
         c.argument("network_plugin", arg_type=get_enum_type(network_plugins))
         c.argument("network_plugin_mode", arg_type=get_enum_type(network_plugin_modes))
         c.argument("network_policy")
@@ -789,6 +840,7 @@ def load_arguments(self, _):
             arg_type=get_enum_type(app_routing_nginx_configs),
             options_list=["--app-routing-default-nginx-controller", "--ardnc"]
         )
+        c.argument("enable_default_domain", action="store_true", is_preview=True)
         # nodepool paramerters
         c.argument(
             "nodepool_name",
@@ -896,6 +948,8 @@ def load_arguments(self, _):
         )
         c.argument("revision", validator=validate_azure_service_mesh_revision)
         c.argument("image_cleaner_interval_hours", type=int)
+        c.argument("enable_service_account_image_pull", action="store_true", is_preview=True)
+        c.argument("service_account_image_pull_default_managed_identity_id", is_preview=True)
         c.argument(
             "cluster_snapshot_id",
             validator=validate_cluster_snapshot_id,
@@ -969,7 +1023,7 @@ def load_arguments(self, _):
             "acns_transit_encryption_type",
             is_preview=True,
             arg_type=get_enum_type(transit_encryption_types),
-            help="Specify the transit encryption type for ACNS. Available values are 'None' and 'WireGuard'.",
+            help="Specify the transit encryption type for ACNS. Available values are 'None', 'WireGuard', and 'mTLS'.",
         )
         c.argument(
             "enable_retina_flow_logs",
@@ -1099,7 +1153,7 @@ def load_arguments(self, _):
         # azure container storage
         c.argument(
             "enable_azure_container_storage",
-            arg_type=_get_enable_azure_container_storage_type(),
+            arg_type=_get_container_storage_enum_type(storage_pool_types),
             help="enable azure container storage. Can be used as a flag (defaults to True) or with a"
             " storage pool type value: (azureDisk, ephemeralDisk, elasticSan)",
         )
@@ -1199,7 +1253,20 @@ def load_arguments(self, _):
             action="store_true",
             help="Enable managed installation of Gateway API CRDs from the standard release channel."
         )
+        c.argument(
+            "enable_app_routing_istio",
+            options_list=["--enable-app-routing-istio", "--enable-ari"],
+            action="store_true",
+            is_preview=True,
+            help="Enable Gateway API based ingress on App Routing via Istio"
+        )
         c.argument("enable_hosted_system", action="store_true", is_preview=True)
+        c.argument(
+            "enable_continuous_control_plane_and_addon_monitor",
+            action="store_true",
+            is_preview=True,
+            help="Enable continuous control plane and addon monitor for the cluster.",
+        )
 
     with self.argument_context("aks update") as c:
         # managed cluster paramerters
@@ -1245,6 +1312,35 @@ def load_arguments(self, _):
             "nat_gateway_idle_timeout",
             type=int,
             validator=validate_nat_gateway_idle_timeout,
+        )
+        c.argument(
+            "nat_gateway_managed_outbound_ipv6_count",
+            options_list=[
+                "--nat-gateway-managed-outbound-ipv6-count",
+                "--nat-gw-ipv6-count",
+            ],
+            type=int,
+            validator=validate_nat_gateway_managed_outbound_ipv6_count,
+            help="NAT gateway managed outbound IPv6 IP count. "
+                 "Valid only with --outbound-type managedNATGatewayV2.",
+        )
+        c.argument(
+            "nat_gateway_outbound_ip_ids",
+            options_list=[
+                "--nat-gateway-outbound-ips",
+                "--nat-gw-ips",
+            ],
+            help="Comma-separated public IP resource IDs for the "
+                 "cluster NAT gateway. V2 only.",
+        )
+        c.argument(
+            "nat_gateway_outbound_ip_prefix_ids",
+            options_list=[
+                "--nat-gateway-outbound-ip-prefixes",
+                "--nat-gw-prefixes",
+            ],
+            help="Comma-separated public IP prefix resource IDs "
+                 "for the cluster NAT gateway. V2 only.",
         )
         c.argument("network_dataplane", arg_type=get_enum_type(network_dataplanes))
         c.argument("network_policy")
@@ -1424,7 +1520,11 @@ def load_arguments(self, _):
             validator=validate_ssh_key_for_update,
         )
         c.argument("load_balancer_managed_outbound_ipv6_count", type=int)
-        c.argument("outbound_type", arg_type=get_enum_type(outbound_types))
+        c.argument(
+            "outbound_type",
+            arg_type=get_enum_type(outbound_types),
+            validator=validate_nat_gateway_v2_params,
+        )
         c.argument("enable_pod_identity", action="store_true")
         c.argument("enable_pod_identity_with_kubenet", action="store_true")
         c.argument("disable_pod_identity", action="store_true")
@@ -1438,6 +1538,9 @@ def load_arguments(self, _):
         )
         c.argument("image_cleaner_interval_hours", type=int)
         c.argument("disable_image_integrity", action="store_true", is_preview=True)
+        c.argument("enable_service_account_image_pull", action="store_true", is_preview=True)
+        c.argument("disable_service_account_image_pull", action="store_true", is_preview=True)
+        c.argument("service_account_image_pull_default_managed_identity_id", is_preview=True)
         c.argument(
             "enable_apiserver_vnet_integration", action="store_true", is_preview=True
         )
@@ -1634,7 +1737,7 @@ def load_arguments(self, _):
             "acns_transit_encryption_type",
             is_preview=True,
             arg_type=get_enum_type(transit_encryption_types),
-            help="Specify the transit encryption type for ACNS. Available values are 'None' and 'WireGuard'.",
+            help="Specify the transit encryption type for ACNS. Available values are 'None', 'WireGuard', and 'mTLS'.",
         )
         c.argument(
             "enable_retina_flow_logs",
@@ -1669,13 +1772,13 @@ def load_arguments(self, _):
         # azure container storage
         c.argument(
             "enable_azure_container_storage",
-            arg_type=_get_enable_azure_container_storage_type(),
+            arg_type=_get_container_storage_enum_type(storage_pool_types),
             help="enable azure container storage. Can be used as a flag (defaults to True) or with a"
             " storage pool type value: (azureDisk, ephemeralDisk, elasticSan)",
         )
         c.argument(
             "disable_azure_container_storage",
-            arg_type=_get_disable_azure_container_storage_type(),
+            arg_type=_get_container_storage_enum_type(disable_storage_pool_types),
             help="disable azure container storage or any one of the storage pool types."
             " Can be used as a flag (defaults to True) or with a storagepool type value:"
             " azureDisk, ephemeralDisk, elasticSan, all (to disable all storage pools).",
@@ -1767,6 +1870,20 @@ def load_arguments(self, _):
             help="Disable managed installation of Gateway API CRDs."
         )
         c.argument(
+            "enable_app_routing_istio",
+            options_list=["--enable-app-routing-istio", "--enable-ari"],
+            action="store_true",
+            is_preview=True,
+            help="Enable Gateway API based ingress on App Routing via Istio."
+        )
+        c.argument(
+            "disable_app_routing_istio",
+            options_list=["--disable-app-routing-istio", "--disable-ari"],
+            action="store_true",
+            is_preview=True,
+            help="Disable Gateway API based ingress on App Routing via Istio."
+        )
+        c.argument(
             "enable_application_load_balancer",
             action="store_true",
             is_preview=True,
@@ -1778,6 +1895,23 @@ def load_arguments(self, _):
             is_preview=True,
             help="Disable Application Load Balancer (Application Gateway for Containers)."
         )
+        c.argument(
+            "enable_continuous_control_plane_and_addon_monitor",
+            action="store_true",
+            is_preview=True,
+            help="Enable continuous control plane and addon monitor for the cluster.",
+        )
+        c.argument(
+            "disable_continuous_control_plane_and_addon_monitor",
+            action="store_true",
+            is_preview=True,
+            help="Disable continuous control plane and addon monitor for the cluster.",
+        )
+
+    with self.argument_context("aks delete") as c:
+        c.argument("if_match")
+        c.argument("if_none_match")
+        c.argument("ignore_pod_disruption_budget", action="store_true")
 
     with self.argument_context("aks upgrade") as c:
         c.argument("kubernetes_version", completer=get_k8s_upgrades_completion_list)
@@ -1985,6 +2119,12 @@ def load_arguments(self, _):
             is_preview=True,
         )
         c.argument(
+            "enable_managed_gpu",
+            arg_type=get_three_state_flag(),
+            is_preview=True,
+            help="Enable the Managed GPU experience.",
+        )
+        c.argument(
             "node_public_ip_tags",
             arg_type=tags_type,
             validator=validate_node_public_ip_tags,
@@ -2008,6 +2148,12 @@ def load_arguments(self, _):
             "driver_type",
             arg_type=get_enum_type(gpu_driver_types),
             is_preview=True,
+        )
+        c.argument(
+            "gpu_mig_strategy",
+            arg_type=get_enum_type(gpu_mig_strategies),
+            is_preview=True,
+            help="Specify the GPU Multi-Instance GPU (MIG) strategy. Allowed values: Single, Mixed.",
         )
         # in creation scenario, use "localuser" as default
         c.argument(
@@ -2095,6 +2241,18 @@ def load_arguments(self, _):
             is_preview=True,
         )
         c.argument(
+            "disable_artifact_streaming",
+            action="store_true",
+            validator=validate_artifact_streaming,
+            is_preview=True,
+        )
+        c.argument(
+            "enable_managed_gpu",
+            arg_type=get_three_state_flag(),
+            is_preview=True,
+            help="Enable or disable the Managed GPU experience.",
+        )
+        c.argument(
             "os_sku",
             arg_type=get_enum_type(node_os_skus_update),
             validator=validate_os_sku,
@@ -2142,10 +2300,17 @@ def load_arguments(self, _):
             "node_vm_size",
             options_list=["--node-vm-size", "-s"],
             completer=get_vm_size_completion_list,
+            is_preview=True,
         )
         c.argument(
             "gpu_driver",
             arg_type=get_enum_type(gpu_driver_install_modes)
+        )
+        c.argument(
+            "gpu_mig_strategy",
+            arg_type=get_enum_type(gpu_mig_strategies),
+            is_preview=True,
+            help="Specify the GPU Multi-Instance GPU (MIG) strategy. Allowed values: Single, Mixed.",
         )
 
     with self.argument_context("aks nodepool upgrade") as c:
@@ -2199,6 +2364,14 @@ def load_arguments(self, _):
 
     with self.argument_context("aks nodepool manual-scale delete") as c:
         c.argument("current_vm_sizes", is_preview=True)
+
+    with self.argument_context("aks nodepool get-rollback-versions") as c:
+        pass  # Uses common nodepool parameters
+
+    with self.argument_context("aks nodepool rollback") as c:
+        c.argument("aks_custom_headers", nargs="*")
+        c.argument("if_match")
+        c.argument("if_none_match")
 
     with self.argument_context("aks machine") as c:
         c.argument("cluster_name", help="The cluster name.")
@@ -2266,6 +2439,21 @@ def load_arguments(self, _):
             options_list=["--kubernetes-version"],
             validator=validate_k8s_version,
             help="Version of Kubernetes to use for the machine.",
+        )
+        c.argument(
+            "spot_max_price",
+            type=float,
+            validator=validate_spot_max_price,
+            help="The max price (in US Dollars) you are willing to pay for spot instances."
+        )
+        c.argument(
+            "enable_ultra_ssd",
+            action="store_true"
+        )
+        c.argument(
+            "eviction_policy",
+            arg_type=get_enum_type(node_eviction_policies),
+            validator=validate_eviction_policy,
         )
 
     with self.argument_context("aks machine update") as c:
@@ -2829,11 +3017,14 @@ def load_arguments(self, _):
         c.argument("enable_kv", action="store_true")
         c.argument("keyvault_id", options_list=["--attach-kv"])
         c.argument("nginx", arg_type=get_enum_type(app_routing_nginx_configs))
+        c.argument("enable_default_domain", action="store_true", is_preview=True)
 
     with self.argument_context("aks approuting update") as c:
         c.argument("keyvault_id", options_list=["--attach-kv"])
         c.argument("enable_kv", action="store_true")
         c.argument("nginx", arg_type=get_enum_type(app_routing_nginx_configs))
+        c.argument("enable_default_domain", action="store_true", is_preview=True)
+        c.argument("disable_default_domain", action="store_true", is_preview=True)
 
     with self.argument_context("aks approuting zone add") as c:
         c.argument("dns_zone_resource_ids", options_list=["--ids"], required=True)
@@ -2845,6 +3036,12 @@ def load_arguments(self, _):
     with self.argument_context("aks approuting zone update") as c:
         c.argument("dns_zone_resource_ids", options_list=["--ids"], required=True)
         c.argument("attach_zones")
+
+    with self.argument_context("aks approuting gateway istio enable") as c:
+        c.argument("aks_custom_headers")
+
+    with self.argument_context("aks approuting gateway istio disable") as c:
+        c.argument("aks_custom_headers")
 
     with self.argument_context('aks check-network outbound') as c:
         c.argument('cluster_name', options_list=['--name', '-n'],
@@ -3109,6 +3306,7 @@ def load_arguments(self, _):
         c.argument("bastion")
         c.argument("port", type=int)
         c.argument("admin", action="store_true")
+        c.argument("kubeconfig_path")
         c.argument(
             "yes",
             options_list=["--yes", "-y"],
@@ -3137,6 +3335,35 @@ def load_arguments(self, _):
             c.argument('config_file', options_list=['--config-file'], type=file_type, completer=FilesCompleter(),
                        help='Path to the JSON configuration file containing JWT authenticator properties.')
 
+    # aks list-vm-skus command
+    with self.argument_context("aks list-vm-skus") as c:
+        c.argument(
+            "location",
+            options_list=["--location", "-l"],
+            help="Location. Values from: 'az account list-locations'.",
+            required=True,
+        )
+        c.argument(
+            "size",
+            options_list=["--size", "-s"],
+            help="VM size name filter, partial name is accepted.",
+        )
+        c.argument(
+            "zone",
+            options_list=["--zone", "-z"],
+            action="store_true",
+            help="Show only VM SKUs that support availability zones.",
+        )
+        # TODO: Eventually deprecate the -all param.
+        # The List VM SKUs API already performs regional filtering so once AZ filtering is also implemented
+        # within the API, this param will no longer be required.
+        c.argument(
+            "show_all",
+            options_list=["--all"],
+            action="store_true",
+            help="Show all VM SKU information including those not available for the current subscription.",
+        )
+
 
 def _get_default_install_location(exe_name):
     system = platform.system()
@@ -3154,63 +3381,33 @@ def _get_default_install_location(exe_name):
     return install_location
 
 
-def _get_enable_azure_container_storage_type():
+def _get_container_storage_enum_type(choices):
     """Custom argument type that accepts both None and enum values"""
     import argparse
     from azure.cli.core.azclierror import InvalidArgumentValueError
 
     class AzureContainerStorageAction(argparse.Action):
         def __call__(self, parser, namespace, values, option_string=None):
-            if values is None:
+            if values in [[], None]:
                 # When used as a flag without value, set as True
                 setattr(namespace, self.dest, True)
                 return
 
-            if isinstance(values, str):
-                # Handle enum values (case insensitive)
-                for storage_type in storage_pool_types:
-                    if values.lower() == storage_type.lower():
-                        setattr(namespace, self.dest, storage_type)
-                        return
-
-            # Invalid value
-            valid_values = storage_pool_types
-            raise InvalidArgumentValueError(
-                f"Invalid value '{values}'. Valid values are: {', '.join(valid_values)}"
-            )
-
-    return CLIArgumentType(
-        nargs='?',  # Optional argument
-        action=AzureContainerStorageAction,
-    )
-
-
-def _get_disable_azure_container_storage_type():
-    """Custom argument type that accepts both None and enum values"""
-    import argparse
-    from azure.cli.core.azclierror import InvalidArgumentValueError
-
-    class AzureContainerStorageAction(argparse.Action):
-        def __call__(self, parser, namespace, values, option_string=None):
-            if values is None:
-                # When used as a flag without value, set as True
-                setattr(namespace, self.dest, True)
+            # Allow multiple enum values in a case insensitive manner
+            normalized_value_arr = values if isinstance(values, list) else str(values).split(',')
+            normalized_value_arr = [str(v).lower().strip() for v in normalized_value_arr]
+            valid_value_arr = [v for v in choices if v.lower() in normalized_value_arr]
+            if len(valid_value_arr) == len(normalized_value_arr):
+                normalized_values = valid_value_arr[0] if len(valid_value_arr) == 1 else valid_value_arr
+                setattr(namespace, self.dest, normalized_values)
                 return
 
-            if isinstance(values, str):
-                # Handle enum values (case insensitive)
-                for storage_type in disable_storage_pool_types:
-                    if values.lower() == storage_type.lower():
-                        setattr(namespace, self.dest, storage_type)
-                        return
-
             # Invalid value
-            valid_values = disable_storage_pool_types
             raise InvalidArgumentValueError(
-                f"Invalid value '{values}'. Valid values are: {', '.join(valid_values)}"
+                f"Invalid value '{values}'. Valid values are: {', '.join(choices)}"
             )
 
     return CLIArgumentType(
-        nargs='?',  # Optional argument
+        nargs='*',  # Allow multiple values
         action=AzureContainerStorageAction,
     )

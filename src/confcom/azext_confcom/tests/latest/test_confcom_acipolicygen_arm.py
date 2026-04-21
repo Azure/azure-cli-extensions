@@ -10,6 +10,7 @@ import io
 import json
 import os
 import tempfile
+import unittest.mock
 import pytest
 from itertools import product
 
@@ -67,7 +68,7 @@ def test_acipolicygen(sample_directory, generated_policy_path):
     parameters_path = os.path.join(SAMPLES_ROOT, sample_directory, "parameters.json")
     if not os.path.isfile(parameters_path):
         parameters_path = None
-    flags = POLICYGEN_ARGS[generated_policy_path]
+    flags = POLICYGEN_ARGS[generated_policy_path].copy()
 
     with open(os.path.join(SAMPLES_ROOT, sample_directory, generated_policy_path), "r", encoding="utf-8") as f:
         expected_policy = f.read()
@@ -166,15 +167,17 @@ def test_acipolicygen_arm_diff(case):
             arm_template_file.flush()
 
         # Populate the arm template with a CCEPolicy field
-        acipolicygen_confcom(
-            input_path=None,
-            arm_template=arm_template_file.name,
-            arm_template_parameters=None,
-            image_name=None,
-            virtual_node_yaml_path=None,
-            infrastructure_svn=None,
-            tar_mapping_location=None,
-        )
+        # Mock input to auto-approve the overwrite prompt
+        with unittest.mock.patch("builtins.input", return_value="y"):
+            acipolicygen_confcom(
+                input_path=None,
+                arm_template=arm_template_file.name,
+                arm_template_parameters=None,
+                image_name=None,
+                virtual_node_yaml_path=None,
+                infrastructure_svn=None,
+                tar_mapping_location=None,
+            )
         arm_template_file.seek(0)
 
         # Modify the ARM template

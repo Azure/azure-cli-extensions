@@ -58,12 +58,12 @@ class Update(AAZCommand):
             required=True,
         )
 
-        # define Arg Group "Properties"
+        # define Arg Group "Body"
 
         _args_schema = cls._args_schema
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
-            arg_group="Properties",
+            arg_group="Body",
             help="Resource tags.",
         )
 

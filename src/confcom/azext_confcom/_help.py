@@ -105,6 +105,10 @@ helps[
           type: boolean
           short-summary: 'When enabled, the default fragments are not included in the generated policy. This includes containers needed to mount azure files, mount secrets, mount git repos, and other common ACI features'
 
+        - name: --platform
+          type: string
+          short-summary: 'Target platform for policy generation (linux/amd64 or windows/amd64). Defaults to linux/amd64. Docker Desktop must be running in the matching container mode to produce correct layer hashes.'
+
     examples:
         - name: Input an ARM Template file to inject a base64 encoded Confidential Container Security Policy into the ARM Template
           text: az confcom acipolicygen --template-file "./template.json"
@@ -116,6 +120,8 @@ helps[
           text: az confcom acipolicygen --template-file "./template.json" --tar "./image.tar"
         - name: Input an ARM Template file and use a fragments JSON file to generate a policy
           text: az confcom acipolicygen --template-file "./template.json" --fragments-json "./fragments.json" --include-fragments
+        - name: Generate a Windows container policy (requires Docker Desktop in Windows containers mode)
+          text: az confcom acipolicygen --template-file "./template.json" --platform windows/amd64 --outraw-pretty-print
 """
 
 helps[
@@ -314,10 +320,55 @@ helps[
       - name: --manifest-tag
         type: string
         short-summary: 'The reference to attach the signed fragment to'
-
+      - name: --platform
+        type: string
+        short-summary: The target platform to attach the fragment to in the format os/architecture. If not specified, this will be auto-detected from the registry.
     examples:
         - name: Attach a signed fragment to a registry
           text: az confcom fragment attach ./fragment.reg.cose --manifest-tag myregistry.azurecr.io/image:latest
         - name: Attach the output of acifragmentgen to a registry
           text: az confcom acifragmentgen --chain my.cert.pem --key my_key.pem --svn "1" --namespace contoso --feed "test-feed" --input ./fragment_spec.json | az confcom fragment attach --manifest-tag myregistry.azurecr.io/image:latest
 """
+
+helps[
+    "confcom containers"
+] = """
+    type: group
+    short-summary: Commands which generate Security Policy Container Definitions.
+"""
+
+helps[
+    "confcom containers from_image"
+] = """
+    type: command
+    short-summary: Create a Security Policy Container Definition based on an image reference.
+
+    parameters:
+        - name: --platform
+          type: str
+          short-summary: 'The name of the platform the container definition will run on. Must be either "aci" or "vn2".'
+
+
+    examples:
+        - name: Input an image reference and generate container definitions
+          text: az confcom containers from_image my.azurecr.io/myimage:tag
+"""
+
+helps[
+    "confcom containers from_vn2"
+] = """
+    type: command
+    short-summary: Create Security Policy Container Definitions based on a VN2 template.
+
+    parameters:
+        - name: --name -n
+          type: string
+          short-summary: 'The name of the container to generate the policy for. If omitted, all containers are returned.'
+
+
+    examples:
+        - name: Input a VN2 Template and generate container definitions
+          text: az confcom containers from_vn2 vn2.yaml --name mycontainer
+        - name: Input a VN2 Template and generate container definitions for all containers
+          text: az confcom containers from_vn2 vn2.yaml
+    """

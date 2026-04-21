@@ -58,7 +58,13 @@ def load_arguments(self, _):
             "manifest_tag",
             help="Manifest tag for the fragment",
         )
-
+        c.argument(
+            "platform",
+            options_list=("--platform",),
+            required=False,
+            type=str,
+            help="The target platform to attach the fragment to in the format os/architecture. If not specified, this will be auto-detected from the registry.",
+        )
     with self.argument_context("confcom fragment push") as c:
         c.positional(
             "signed_fragment",
@@ -107,6 +113,17 @@ def load_arguments(self, _):
             required=False,
             help="Image Name",
             validator=validate_aci_source
+        )
+        c.argument(
+            "platform",
+            options_list=("--platform",),
+            required=False,
+            default="linux/amd64",
+            help="Target platform for policy generation. Defaults to linux/amd64. "
+                 "Note: Docker Desktop must be running in the matching container mode "
+                 "(Linux containers for linux/amd64, Windows containers for windows/amd64) "
+                 "to produce correct layer hashes.",
+            choices=["linux/amd64", "windows/amd64"],
         )
         c.argument(
             "tar_mapping_location",
@@ -468,4 +485,33 @@ def load_arguments(self, _):
             required=False,
             help="Path to containerd socket if not using the default",
             validator=validate_katapolicygen_input,
+        )
+
+    with self.argument_context("confcom containers from_image") as c:
+        c.positional(
+            "image",
+            type=str,
+            help="Image to create container definition from",
+        )
+        c.argument(
+            "platform",
+            options_list=("--platform",),
+            required=False,
+            default="aci",
+            type=str,
+            help="Platform to create container definition for",
+        )
+
+    with self.argument_context("confcom containers from_vn2") as c:
+        c.positional(
+            "template",
+            type=str,
+            help="Template to create container definitions from",
+        )
+        c.argument(
+            "container_name",
+            options_list=['--name', "-n"],
+            required=False,
+            type=str,
+            help='The name of the container in the template to use. If omitted, all containers are returned.'
         )

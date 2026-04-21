@@ -101,13 +101,22 @@ def find_fabric(all_fabrics, appliance_name, fabric_instance_type,
             })
 
         if is_succeeded and is_correct_instance and name_matches:
-            # If solution doesn't match, log warning but still consider it
-            if not is_correct_solution:
-                logger.warning(
-                    "Fabric '%s' matches name and type but has "
-                    "different solution ID", fabric_name)
-            fabric = candidate
-            break
+            if is_correct_solution:
+                # Perfect match - use it immediately
+                fabric = candidate
+                break
+            # Name/type match but wrong solution ID - keep as fallback
+            if not fabric:
+                fabric = candidate
+
+    if fabric:
+        fabric_props = fabric.get('properties', {}).get('customProperties', {})
+        fabric_sol_id = fabric_props.get('migrationSolutionId', '').rstrip('/')
+        expected_sol_id = amh_solution.get('id', '').rstrip('/')
+        if fabric_sol_id.lower() != expected_sol_id.lower():
+            logger.warning(
+                "Fabric '%s' matches name and type but has "
+                "different solution ID", fabric.get('name'))
 
     if not fabric:
         appliance_type_label = "source" if is_source else "target"
@@ -170,6 +179,7 @@ def find_fabric(all_fabrics, appliance_name, fabric_instance_type,
 def get_fabric_agent(cmd, replication_fabrics_uri, fabric, appliance_name,
                      fabric_instance_type):
     """Get and validate fabric agent (DRA) for the given fabric."""
+    logger = get_logger(__name__)
     fabric_name = fabric.get('name')
     dras_uri = (
         f"{replication_fabrics_uri}/{fabric_name}"
@@ -180,18 +190,59 @@ def get_fabric_agent(cmd, replication_fabrics_uri, fabric, appliance_name,
     dras = dras_response.json().get('value', [])
 
     dra = None
+    found_but_not_responsive = None
     for candidate in dras:
         props = candidate.get('properties', {})
         custom_props = props.get('customProperties', {})
-        if (props.get('machineName') == appliance_name and
-                custom_props.get('instanceType') == fabric_instance_type and
-                bool(props.get('isResponsive'))):
-            dra = candidate
-            break
+        machine_name = props.get('machineName', '')
+        if (machine_name.lower() == appliance_name.lower() and
+                custom_props.get('instanceType') == fabric_instance_type):
+            if bool(props.get('isResponsive')):
+                dra = candidate
+                break
+            found_but_not_responsive = candidate
+
+    # Accept a non-responsive DRA if it's the only match and is provisioned
+    if not dra and found_but_not_responsive:
+        nr_props = found_but_not_responsive.get('properties', {})
+        last_heartbeat = nr_props.get('lastHeartbeat', 'unknown')
+        if (nr_props.get('provisioningState') ==
+                ProvisioningState.Succeeded.value):
+            logger.warning(
+                "The appliance '%s' DRA is not responsive "
+                "(last heartbeat: %s). Proceeding since provisioning "
+                "state is 'Succeeded'.",
+                appliance_name, last_heartbeat)
+            dra = found_but_not_responsive
+        else:
+            raise CLIError(
+                f"The appliance '{appliance_name}' is in a "
+                f"disconnected state (last heartbeat: {last_heartbeat}, "
+                f"provisioningState: "
+                f"{nr_props.get('provisioningState')})."
+            )
 
     if not dra:
+        # Log available DRAs for diagnostics
+        if dras:
+            logger.warning(
+                "No matching fabric agent found for appliance '%s' "
+                "(expected instanceType '%s'). Available agents:",
+                appliance_name, fabric_instance_type)
+            for candidate in dras:
+                props = candidate.get('properties', {})
+                custom_props = props.get('customProperties', {})
+                logger.warning(
+                    "  - machineName: '%s', instanceType: '%s', "
+                    "isResponsive: %s",
+                    props.get('machineName'),
+                    custom_props.get('instanceType'),
+                    props.get('isResponsive'))
+
         raise CLIError(
-            f"The appliance '{appliance_name}' is in a disconnected state."
+            f"No fabric agent found for appliance '{appliance_name}' "
+            f"on fabric '{fabric_name}'. Verify that the appliance is "
+            f"properly registered and connected."
         )
 
     return dra

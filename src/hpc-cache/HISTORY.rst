@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.1.6
+++++++
+* Remove `__import__('pkg_resources').declare_namespace(__name__)` to fix the namespace package issue.
+
 0.1.5
 ++++++
 * Migrate to track2 SDK

@@ -19,6 +19,14 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
 
         self.command_table["networkfabric device run-ro"] = RunReadCommand(loader=self)
 
+        from .custom.device_resync_password import (  # pylint: disable=no-name-in-module
+            ResyncPasswordCommand as DeviceResyncPasswordCommand,
+        )
+
+        self.command_table["networkfabric device resync-password"] = (
+            DeviceResyncPasswordCommand(loader=self)
+        )
+
     with self.command_group("networkfabric internetgateway"):
 
         from .operations.internetgateway._show import ShowCommand
@@ -31,4 +39,22 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
 
         self.command_table["networkfabric internetgateway list"] = ListCommand(
             loader=self
+        )
+
+    with self.command_group("networkfabric fabric"):
+
+        from .custom.fabric_resync_password import (  # pylint: disable=no-name-in-module
+            ResyncPasswordCommand as FabricResyncPasswordCommand,
+        )
+
+        self.command_table["networkfabric fabric resync-password"] = (
+            FabricResyncPasswordCommand(loader=self)
+        )
+
+        from .custom.fabric_rotate_certificate import (  # pylint: disable=no-name-in-module
+            RotateCertificateCommand as FabricRotateCertificateCommand,
+        )
+
+        self.command_table["networkfabric fabric rotate-certificate"] = (
+            FabricRotateCertificateCommand(loader=self)
         )

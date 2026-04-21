@@ -9,15 +9,96 @@ If there is no rush to release a new version, please just add a description of t
 
 To release a new version, please select a new version number (usually plus 1 to last patch version, X.Y.Z -> Major.Minor.Patch, more details in `\doc <https://semver.org/>`_), and then add a new section named as the new version number in this file, the content should include the new modifications and everything from the *Pending* section. Finally, update the `VERSION` variable in `setup.py` with this new version number.
 
+20.0.0b4
++++++++
+* Add support for nodepool updating with Capacity Reservation Group.
+    * `az aks nodepool update --crg-id`
+
+20.0.0b3
+++++++
+* Vendor new SDK and bump API version to 2026-02-02-preview.
+
+20.0.0b2
++++++++
+* `az aks nodepool update`: clean up some useless code in the update managed gpu function. 
+* `az aks machine add`: Add `--spot-max-price` flag support to set the max price (in US Dollars) you are willing to pay for spot instances on a machine.
+* `az aks machine add`: Add `--eviction-policy` flag support to set the eviction policy for a machine.
+* `az aks machine add`: Add `--enable-ultra-ssd` flag support to enable ultra ssd on a machine.
+* `az aks update`: Fix V2-only NAT gateway params (e.g. `--nat-gateway-managed-outbound-ipv6-count`) being rejected on update when `--outbound-type` is not re-specified for an already-V2 cluster.
+
+20.0.0b1
++++++++
+* [Breaking Change] `az aks create/update`: Change `--nat-gateway-outbound-ips` and `--nat-gateway-outbound-ip-prefixes` to use comma-separated values, consistent with load balancer outbound IP parameters.
+
+19.0.0b30
++++++++
+* Add option `AzureContainerLinux` to `--os-sku` for `az aks create`, `az aks nodepool add`, and `az aks nodepool update`.
+
+19.0.0b29
++++++++
+* Add MIG (Multi-Instance GPU) strategy option to node pool property in `az aks nodepool add` and `az aks nodepool update`.
+* Fix monitoring addon key casing compatibility with azure-cli/acs
+* `az aks create/update`: Add `--outbound-type managedNATGatewayV2` support using Azure NAT Gateway Standard V2 SKU with IPv6, user-provided IPs, and IP prefixes.
+* `az aks create/update`: Fix `--outbound-type managedNATGatewayV2` being silently overwritten to `loadBalancer` by the dynamic completion logic.
+
+19.0.0b28
++++++++
+* Fix `match_condition` kwarg leaking to HTTP transport by overriding `put_mc` and `add_agentpool` to pass `if_match` / `if_none_match` directly to the vendored SDK. This change fixes the compatibility issue as azure-cli/acs module adopts TypeSpec emitted SDKs while azure-cli-extensions/aks-preview still uses the autorest emitted SDK.
++ `az aks list-vm-skus`: New command to list available VM SKUs for AKS clusters in a given region.
+* `az aks create/update`: Add `--enable-service-account-image-pull`, `--disable-service-account-image-pull`, and `--service-account-image-pull-default-managed-identity-id` parameters to manage service account based image pull settings.
+* `az aks list-vm-skus`: New command to list available VM SKUs for AKS clusters in a given region.
+* Add managed GPU enablement option to node pool property in `az aks nodepool add` and `az aks nodepool update`.
+* `az aks namespace update`: Fix location should use existing namespace location.
+* `az aks nodepool update`: Add `--disable-artifact-streaming` to disable artifact streaming.
+
+19.0.0b27
++++++++
+* `az aks nodepool add`: Fix `InvalidParameter` error when `mode` is `Machines`.
+
+19.0.0b26
++++++++
+* `az aks create/update`: Add `--enable-app-routing-istio` / `--disable-app-routing-istio` (short: `--enable-ari` / `--disable-ari`) flags to enable or disable Istio as a Gateway API implementation for App Routing.
+* `az aks approuting gateway istio enable/disable`: Add new subcommands to enable or disable the Istio Gateway API implementation for App Routing on an existing cluster.
+* Add 'mTLS' as a transit encryption type option for `--acns-transit-encryption-type` in `az aks create/update`
+
+19.0.0b25
++++++++
+* `az aks create`: Add `--enable-continuous-control-plane-and-addon-monitor` to enable continuous control plane and addon monitor.
+* `az aks update`: Add `--enable-continuous-control-plane-and-addon-monitor` and `--disable-continuous-control-plane-and-addon-monitor` to manage continuous control plane and addon monitor.
+
+19.0.0b24
++++++++
+* Vendor new SDK and bump API version to 2026-01-02-preview.
+
+19.0.0b23
++++++++
+* `az aks update`: Fix `--enable-secret-rotation`, `--disable-secret-rotation`, and `--rotation-poll-interval` flags being silently ignored when updating Azure Key Vault Secrets Provider addon configuration.
+* `az aks create/update`: Add `--enable-azure-monitor-logs` support to container network logs validation.
+* `az aks create/update`: Add `--enable-default-domain` and `--disable-default-domain` parameters to manage the default domain feature for web app routing.
+* `az aks create`: Add ephemeralDisk and elasticSan storage options to `--enable-azure-container-storage` for the latest version of Azure Container Storage.
+* `az aks update`: Add ephemeralDisk and elasticSan storage options to `--enable-azure-container-storage` and `--disable-azure-container-storage` for the latest version of Azure Container Storage.
+
+19.0.0b22
++++++++
+* `az aks create/update`: Automatically enable `--enable-high-log-scale-mode` when `--enable-container-network-logs` is specified. Raises an error if user explicitly disables HLSM while enabling CNL.
+
+19.0.0b21
++++++++
+* `az aks nodepool get-rollback-versions`: New command to get available rollback versions for an agent pool.
+* `az aks nodepool rollback`: New command to rollback an agent pool to the most recently used configuration (N-1).
+
+19.0.0b20
++++++++
+* `az aks bastion`: Add new option `--kubeconfig-path` to allow users to specify an existing kubeconfig file
+
 19.0.0b19
 +++++++
 * Add add-on support for `ApplicationLoadBalancer` (Application Gateway for Containers)
-- AKS Create and Update parameters for `--enable-application-load-balancer` and `--disable-application-load-balancer`
- - `az aks applicationloadbalancer enable`: Enable Application Load Balancer add-on for an existing cluster.
- - `az aks applicationloadbalancer disable`: Disable Application Load Balancer add-on for an existing cluster.
- - `az aks applicationloadbalancer update`: Update Application Load Balancer add-on for an existing cluster.
-* Add support for nodepool updating with Capacity Reservation Group.
-    * `az aks nodepool update --crg-id`
+* AKS Create and Update parameters for `--enable-application-load-balancer` and `--disable-application-load-balancer`
+  * `az aks applicationloadbalancer enable`: Enable Application Load Balancer add-on for an existing cluster.
+  * `az aks applicationloadbalancer disable`: Disable Application Load Balancer add-on for an existing cluster.
+  * `az aks applicationloadbalancer update`: Update Application Load Balancer add-on for an existing cluster.
+* Remove prerequisite for `--enable-gateway-api` option in `az aks create` and `az aks update` commands - managed Gateway API ingress provider enablement no longer required
 
 19.0.0b18
 +++++++

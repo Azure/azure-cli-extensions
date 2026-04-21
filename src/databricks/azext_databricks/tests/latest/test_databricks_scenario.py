@@ -263,18 +263,17 @@ class DatabricksClientScenarioTest(ScenarioTest):
             'subnet_name': self.create_random_name(prefix='subnet', length=12),
             'npe_name': self.create_random_name(prefix='npe', length=12),
             'nsg_name': self.create_random_name(prefix='nsg', length=12),
-            'resource_group_exempt': "auto-test-databricks-g9",
         })
-        self.cmd('az network nsg create -g {resource_group_exempt} -n {nsg_name}')
+        self.cmd('az network nsg create -g {rg} -n {nsg_name}')
 
-        vnet = self.cmd('az network vnet create -g {resource_group_exempt} -n {vnet_name} -l {loc} --nsg {nsg_name}', checks=[
+        vnet = self.cmd('az network vnet create -g {rg} -n {vnet_name} -l {loc} --nsg {nsg_name}', checks=[
             self.check('newVNet.location', '{loc}'),
             self.check('newVNet.name', '{vnet_name}'),
             self.check('newVNet.provisioningState', 'Succeeded')
         ]).get_output_in_json()
         self.kwargs['vnet_id'] = vnet['newVNet']['id']
 
-        self.cmd('az network vnet subnet create -g {resource_group_exempt} '
+        self.cmd('az network vnet subnet create -g {rg} '
                  '--vnet-name {vnet_name} '
                  '-n private-subnet '
                  '--address-prefixes 10.0.1.0/24 '
@@ -282,21 +281,21 @@ class DatabricksClientScenarioTest(ScenarioTest):
                  '--nsg {nsg_name} '
                  '--delegations "Microsoft.Databricks/workspaces"')
 
-        self.cmd('az network vnet subnet create -g {resource_group_exempt} '
+        self.cmd('az network vnet subnet create -g {rg} '
                  '--vnet-name {vnet_name} -n public-subnet '
                  '--address-prefixes 10.0.64.0/24 '
                  '--private-endpoint-network-policies Enabled '
                  '--nsg {nsg_name} '
                  '--delegations "Microsoft.Databricks/workspaces"')
 
-        self.cmd('az network vnet subnet create -g {resource_group_exempt} '
+        self.cmd('az network vnet subnet create -g {rg} '
                  '-n {subnet_name} '
                  '--vnet-name {vnet_name} '
                  '--private-endpoint-network-policies Enabled '
                  '--address-prefixes 10.0.32.0/24 '
                  '--nsg {nsg_name}')
 
-        databricks_workspace = self.cmd('az databricks workspace create -g {resource_group_exempt} '
+        databricks_workspace = self.cmd('az databricks workspace create -g {rg} '
                                         '-l {loc} '
                                         '-n {workspace_name} '
                                         '--private-subnet private-subnet '
@@ -306,18 +305,18 @@ class DatabricksClientScenarioTest(ScenarioTest):
                                                 self.check('name', '{workspace_name}'),
                                                 self.check('provisioningState', 'Succeeded')]).get_output_in_json()
 
-        plr = self.cmd('az databricks workspace private-link-resource list -g {resource_group_exempt} --workspace-name {workspace_name}',
+        plr = self.cmd('az databricks workspace private-link-resource list -g {rg} --workspace-name {workspace_name}',
                        checks=self.check('length(@)', 2)).get_output_in_json()
 
         self.kwargs['group_id'] = plr[0]['properties']['groupId']
         self.kwargs['dw_id'] = databricks_workspace['id']
 
-        self.cmd('az databricks workspace private-link-resource show -g {resource_group_exempt} '
+        self.cmd('az databricks workspace private-link-resource show -g {rg} '
                  '--workspace-name {workspace_name} '
                  '-n {group_id}',
                  checks=self.check('name', '{group_id}'))
 
-        self.cmd('az network private-endpoint create -g {resource_group_exempt} '
+        self.cmd('az network private-endpoint create -g {rg} '
                  '-n {npe_name} '
                  '--vnet-name {vnet_name} '
                  '--subnet {subnet_name} '
@@ -327,7 +326,7 @@ class DatabricksClientScenarioTest(ScenarioTest):
                  '-l {loc}',
                  checks=self.check('name', '{npe_name}'))
 
-        self.cmd('az databricks workspace private-endpoint-connection create -g {resource_group_exempt} '
+        self.cmd('az databricks workspace private-endpoint-connection create -g {rg} '
                  '--workspace-name {workspace_name} '
                  '-n {npe_name} '
                  '--status {status} '
@@ -338,22 +337,22 @@ class DatabricksClientScenarioTest(ScenarioTest):
                          self.check('properties.provisioningState', "Succeeded"),
                          self.check('type', "Microsoft.Databricks/workspaces/privateEndpointConnections")])
 
-        self.cmd('az databricks workspace private-endpoint-connection list -g {resource_group_exempt} '
+        self.cmd('az databricks workspace private-endpoint-connection list -g {rg} '
                  '--workspace-name {workspace_name} ',
                  checks=[self.check('length(@)', 1)])
 
-        self.cmd('az databricks workspace private-endpoint-connection show -g {resource_group_exempt} '
+        self.cmd('az databricks workspace private-endpoint-connection show -g {rg} '
                  '--workspace-name {workspace_name} '
                  '-n {npe_name}',
                  checks=[self.check('name', '{npe_name}')])
 
-        self.cmd('az databricks workspace private-endpoint-connection delete -g {resource_group_exempt} '
+        self.cmd('az databricks workspace private-endpoint-connection delete -g {rg} '
                  '--workspace-name {workspace_name} '
                  '-n {npe_name}',
                  checks=[])
 
         self.cmd('az databricks workspace delete '
-                 '--resource-group {resource_group_exempt} '
+                 '--resource-group {rg} '
                  '--name {workspace_name} '
                  '-y',
                  checks=[])
@@ -367,18 +366,17 @@ class DatabricksClientScenarioTest(ScenarioTest):
             'vnet_name': self.create_random_name(prefix='vnet', length=12),
             'subnet_name': self.create_random_name(prefix='subnet', length=12),
             'nsg_name': self.create_random_name(prefix='nsg', length=12),
-            'resource_group_exempt': "auto-test-databricks-g9",
         })
-        self.cmd('az network nsg create -g {resource_group_exempt} -n {nsg_name}')
+        self.cmd('az network nsg create -g {rg} -n {nsg_name}')
 
-        vnet = self.cmd('az network vnet create -g {resource_group_exempt} -n {vnet_name} -l {loc} --nsg {nsg_name}', checks=[
+        vnet = self.cmd('az network vnet create -g {rg} -n {vnet_name} -l {loc} --nsg {nsg_name}', checks=[
             self.check('newVNet.location', '{loc}'),
             self.check('newVNet.name', '{vnet_name}'),
             self.check('newVNet.provisioningState', 'Succeeded')
         ]).get_output_in_json()
         self.kwargs['vnet_id'] = vnet['newVNet']['id']
 
-        self.cmd('az network vnet subnet create -g {resource_group_exempt} '
+        self.cmd('az network vnet subnet create -g {rg} '
                  '--vnet-name {vnet_name} '
                  '-n private-subnet '
                  '--address-prefixes 10.0.1.0/24 '
@@ -386,21 +384,21 @@ class DatabricksClientScenarioTest(ScenarioTest):
                  '--nsg {nsg_name} '
                  '--delegations "Microsoft.Databricks/workspaces"')
 
-        self.cmd('az network vnet subnet create -g {resource_group_exempt} '
+        self.cmd('az network vnet subnet create -g {rg} '
                  '--vnet-name {vnet_name} -n public-subnet '
                  '--address-prefixes 10.0.64.0/24 '
                  '--private-endpoint-network-policies Enabled '
                  '--nsg {nsg_name} '
                  '--delegations "Microsoft.Databricks/workspaces"')
 
-        self.cmd('az network vnet subnet create -g {resource_group_exempt} '
+        self.cmd('az network vnet subnet create -g {rg} '
                  '-n {subnet_name} '
                  '--vnet-name {vnet_name} '
                  '--private-endpoint-network-policies Enabled '
                  '--address-prefixes 10.0.32.0/24 '
                  '--nsg {nsg_name}')
 
-        self.cmd('az databricks workspace create -g {resource_group_exempt} '
+        self.cmd('az databricks workspace create -g {rg} '
                  '-l {loc} '
                  '-n {workspace_name} '
                  '--private-subnet private-subnet '
@@ -410,7 +408,7 @@ class DatabricksClientScenarioTest(ScenarioTest):
                          self.check('name', '{workspace_name}'),
                          self.check('provisioningState', 'Succeeded')])
 
-        self.cmd('az databricks workspace update -g {resource_group_exempt} '
+        self.cmd('az databricks workspace update -g {rg} '
                  '-n {workspace_name} '
                  '--public-network-access Disabled '
                  '--required-nsg-rules "NoAzureDatabricksRules" '
@@ -423,7 +421,7 @@ class DatabricksClientScenarioTest(ScenarioTest):
                          self.check('parameters.storageAccountSkuName.value', 'Standard_GRS')])
 
         self.cmd('az databricks workspace delete '
-                 '--resource-group {resource_group_exempt} '
+                 '--resource-group {rg} '
                  '--name {workspace_name} '
                  '-y',
                  checks=[])
@@ -668,6 +666,22 @@ class DatabricksClientScenarioTest(ScenarioTest):
                  '-y',
                  checks=[])
         
+        self.cmd('az databricks workspace create '
+                 '--resource-group {rg} '
+                 '--name {workspace_name} '
+                 '--location eastus '
+                 '--compute-mode Serverless '
+                 '--public-network-access Disabled ',
+                 checks=[self.check('name', '{workspace_name}'),
+                         self.check('computeMode', 'Serverless'),
+                         self.check('sku.name', 'premium')])
+        
+        self.cmd('az databricks workspace delete '
+                 '--resource-group {rg} '
+                 '--name {workspace_name} '
+                 '-y',
+                 checks=[])
+        
     @AllowLargeResponse(size_kb=10240)
     @ResourceGroupPreparer(name_prefix='cli_test_databricks_expected_failures', location="eastus")
     def test_databricks_serverless_failures(self, resource_group):
@@ -748,7 +762,7 @@ class DatabricksVNetPeeringScenarioTest(ScenarioTest):
             self.check('remoteVirtualNetwork.id', '{vnet_id}'),
             self.check('peeringState', 'Initiated')
         ])
-        self.cmd('az databricks workspace vnet-peering delete -n {peering_name} --workspace-name {workspace_name} -g {rg}')
+        self.cmd('az databricks workspace vnet-peering delete -n {peering_name} --workspace-name {workspace_name} -g {rg} --no-wait')
 
         # user vnet id to create
         peering = self.cmd('az databricks workspace vnet-peering create -n {peering_name} --workspace-name {workspace_name} -g {rg} --remote-vnet {vnet_id}', checks=[
@@ -810,7 +824,7 @@ class DatabricksVNetPeeringScenarioTest(ScenarioTest):
         ])
 
         # delete the peering
-        self.cmd('az databricks workspace vnet-peering delete -n {peering_name} --workspace-name {workspace_name} -g {rg}')
+        self.cmd('az databricks workspace vnet-peering delete -n {peering_name} --workspace-name {workspace_name} -g {rg} --no-wait')
         self.cmd('az databricks workspace vnet-peering list --workspace-name {workspace_name} -g {rg}', checks=[
             self.check('length(@)', 0)
         ])

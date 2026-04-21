@@ -146,8 +146,11 @@ def _ml_deployment_template_update(
     try:
         deployment_template = ml_client.deployment_templates.get(name=parameters["name"], version=parameters["version"])
 
-        deployment_template.description = parameters["description"]
-        deployment_template.tags = parameters["tags"]
+        # Only update optional fields if they are explicitly present in parameters
+        if "description" in parameters:
+            deployment_template.description = parameters.get("description")
+        if "tags" in parameters:
+            deployment_template.tags = parameters.get("tags")
 
         deployment_template_result = ml_client.deployment_templates.create_or_update(deployment_template)
 

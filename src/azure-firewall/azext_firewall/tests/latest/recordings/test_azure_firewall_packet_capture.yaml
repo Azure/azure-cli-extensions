@@ -65,7 +65,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.78.0 azsdk-python-core/1.35.0 Python/3.13.9 (Windows-11-10.0.26100-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/checkNameAvailability?api-version=2025-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/checkNameAvailability?api-version=2025-06-01
   response:
     body:
       string: '{"nameAvailable":true}'
@@ -119,7 +119,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.78.0 azsdk-python-core/1.35.0 Python/3.13.9 (Windows-11-10.0.26100-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_capture000001/providers/Microsoft.Storage/storageAccounts/fwpcap000008?api-version=2025-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_capture000001/providers/Microsoft.Storage/storageAccounts/fwpcap000008?api-version=2025-06-01
   response:
     body:
       string: ''
@@ -269,7 +269,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.78.0 azsdk-python-core/1.35.0 Python/3.13.9 (Windows-11-10.0.26100-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/storageAccounts?api-version=2025-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/storageAccounts?api-version=2025-06-01
   response:
     body:
       string: '{"value":[{"sku":{"name":"Standard_LRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_capture000001/providers/Microsoft.Storage/storageAccounts/fwpcap000008","name":"fwpcap000008","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"keyCreationTime":{"key1":"2025-10-20T21:05:08.0251519Z","key2":"2025-10-20T21:05:08.0251519Z"},"allowCrossTenantReplication":false,"privateEndpointConnections":[],"minimumTlsVersion":"TLS1_0","allowBlobPublicAccess":false,"networkAcls":{"ipv6Rules":[],"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"keyType":"Account","enabled":true,"lastEnabledTime":"2025-10-20T21:05:08.0251519Z"},"blob":{"keyType":"Account","enabled":true,"lastEnabledTime":"2025-10-20T21:05:08.0251519Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2025-10-20T21:05:07.8845236Z","primaryEndpoints":{"dfs":"https://fwpcap000008.dfs.core.windows.net/","web":"https://fwpcap000008.z19.web.core.windows.net/","blob":"https://fwpcap000008.blob.core.windows.net/","queue":"https://fwpcap000008.queue.core.windows.net/","table":"https://fwpcap000008.table.core.windows.net/","file":"https://fwpcap000008.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available"}}]}'
@@ -319,7 +319,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.78.0 azsdk-python-core/1.35.0 Python/3.13.9 (Windows-11-10.0.26100-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_capture000001/providers/Microsoft.Storage/storageAccounts/fwpcap000008/listKeys?api-version=2025-01-01&$expand=kerb
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_capture000001/providers/Microsoft.Storage/storageAccounts/fwpcap000008/listKeys?api-version=2025-06-01&$expand=kerb
   response:
     body:
       string: '{"keys":[{"creationTime":"2025-10-20T21:05:08.0251519Z","keyName":"key1","value":"veryFakedStorageAccountKey==","permissions":"FULL"},{"creationTime":"2025-10-20T21:05:08.0251519Z","keyName":"key2","value":"veryFakedStorageAccountKey==","permissions":"FULL"}]}'
@@ -409,7 +409,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.78.0 azsdk-python-core/1.35.0 Python/3.13.9 (Windows-11-10.0.26100-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_capture000001/providers/Microsoft.Storage/storageAccounts/fwpcap000008?api-version=2025-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_capture000001/providers/Microsoft.Storage/storageAccounts/fwpcap000008?api-version=2025-06-01
   response:
     body:
       string: '{"sku":{"name":"Standard_LRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_capture000001/providers/Microsoft.Storage/storageAccounts/fwpcap000008","name":"fwpcap000008","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"keyCreationTime":{"key1":"2025-10-20T21:05:08.0251519Z","key2":"2025-10-20T21:05:08.0251519Z"},"allowCrossTenantReplication":false,"privateEndpointConnections":[],"minimumTlsVersion":"TLS1_0","allowBlobPublicAccess":false,"networkAcls":{"ipv6Rules":[],"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"keyType":"Account","enabled":true,"lastEnabledTime":"2025-10-20T21:05:08.0251519Z"},"blob":{"keyType":"Account","enabled":true,"lastEnabledTime":"2025-10-20T21:05:08.0251519Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2025-10-20T21:05:07.8845236Z","primaryEndpoints":{"dfs":"https://fwpcap000008.dfs.core.windows.net/","web":"https://fwpcap000008.z19.web.core.windows.net/","blob":"https://fwpcap000008.blob.core.windows.net/","queue":"https://fwpcap000008.queue.core.windows.net/","table":"https://fwpcap000008.table.core.windows.net/","file":"https://fwpcap000008.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available"}}'
@@ -455,7 +455,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.78.0 azsdk-python-core/1.35.0 Python/3.13.9 (Windows-11-10.0.26100-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/storageAccounts?api-version=2025-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/storageAccounts?api-version=2025-06-01
   response:
     body:
       string: '{"value":[{"sku":{"name":"Standard_LRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_capture000001/providers/Microsoft.Storage/storageAccounts/fwpcap000008","name":"fwpcap000008","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"keyCreationTime":{"key1":"2025-10-20T21:05:08.0251519Z","key2":"2025-10-20T21:05:08.0251519Z"},"allowCrossTenantReplication":false,"privateEndpointConnections":[],"minimumTlsVersion":"TLS1_0","allowBlobPublicAccess":false,"networkAcls":{"ipv6Rules":[],"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"keyType":"Account","enabled":true,"lastEnabledTime":"2025-10-20T21:05:08.0251519Z"},"blob":{"keyType":"Account","enabled":true,"lastEnabledTime":"2025-10-20T21:05:08.0251519Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2025-10-20T21:05:07.8845236Z","primaryEndpoints":{"dfs":"https://fwpcap000008.dfs.core.windows.net/","web":"https://fwpcap000008.z19.web.core.windows.net/","blob":"https://fwpcap000008.blob.core.windows.net/","queue":"https://fwpcap000008.queue.core.windows.net/","table":"https://fwpcap000008.table.core.windows.net/","file":"https://fwpcap000008.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available"}}]}'
@@ -505,7 +505,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.78.0 azsdk-python-core/1.35.0 Python/3.13.9 (Windows-11-10.0.26100-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_capture000001/providers/Microsoft.Storage/storageAccounts/fwpcap000008/listKeys?api-version=2025-01-01&$expand=kerb
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_capture000001/providers/Microsoft.Storage/storageAccounts/fwpcap000008/listKeys?api-version=2025-06-01&$expand=kerb
   response:
     body:
       string: '{"keys":[{"creationTime":"2025-10-20T21:05:08.0251519Z","keyName":"key1","value":"veryFakedStorageAccountKey==","permissions":"FULL"},{"creationTime":"2025-10-20T21:05:08.0251519Z","keyName":"key2","value":"veryFakedStorageAccountKey==","permissions":"FULL"}]}'

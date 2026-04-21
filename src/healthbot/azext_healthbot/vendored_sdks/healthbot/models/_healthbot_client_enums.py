@@ -42,3 +42,5 @@ class SkuName(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     F0 = "F0"
     S1 = "S1"
     C0 = "C0"
+    C1 = "C1"
+    PES = "PES"
