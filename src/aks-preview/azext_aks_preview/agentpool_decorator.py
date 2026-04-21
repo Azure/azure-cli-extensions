@@ -1562,11 +1562,14 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
             # Make sure all other attributes are None
             # Check properties sub-model first (AgentPool), then flat fields (ManagedClusterAgentPoolProfile)
             props = getattr(agentpool, 'properties', None)
-            if props is not None and hasattr(props, '_attr_to_rest_field'):
-                target, fields = props, props._attr_to_rest_field
-            elif hasattr(agentpool, '_attr_to_rest_field') and 'mode' in agentpool._attr_to_rest_field:
-                target, fields = agentpool, agentpool._attr_to_rest_field
+            rest_fields = getattr(props, '_attr_to_rest_field', None) if props is not None else None
+            if rest_fields is not None:
+                target, fields = props, rest_fields
             else:
+                rest_fields = getattr(agentpool, '_attr_to_rest_field', None)
+                if rest_fields is not None and 'mode' in rest_fields:
+                    target, fields = agentpool, rest_fields
+                else:
                 target, fields = None, None
             if target is not None:
                 for attr in list(fields.keys()):

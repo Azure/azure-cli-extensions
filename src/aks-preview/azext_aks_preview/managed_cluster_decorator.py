@@ -159,6 +159,7 @@ def _get_etag_match_condition(if_match, if_none_match):
         return if_none_match, MatchConditions.IfMissing
     return None, None
 
+
 # type variables
 ContainerServiceClient = TypeVar("ContainerServiceClient")
 ContainerServiceNetworkProfileKubeProxyConfig = TypeVar("ContainerServiceNetworkProfileKubeProxyConfig")
@@ -4691,7 +4692,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         """Set up OpenTelemetry logs configuration."""
         self._ensure_app_monitoring_profile(mc)
 
-        otlp_logs_config = self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogsAndTraces(enabled=True)
+        otel_logs_cls = self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogsAndTraces
+        otlp_logs_config = otel_logs_cls(enabled=True)
         logs_port = self.context.get_opentelemetry_logs_port()
         if logs_port:
             otlp_logs_config.http_port = logs_port
@@ -5568,25 +5570,28 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             return mc
         for agentpool in mc.agent_pool_profiles:
             # Check if agentpool is in ManagedSystem mode and handle special case
-            if agentpool.mode == CONST_NODEPOOL_MODE_MANAGEDSYSTEM:
-                # Make sure all other attributes are None
-                # Check properties sub-model first (AgentPool), then flat fields (ManagedClusterAgentPoolProfile)
-                props = getattr(agentpool, 'properties', None)
-                if props is not None and hasattr(props, '_attr_to_rest_field'):
-                    target, fields = props, props._attr_to_rest_field
-                elif hasattr(agentpool, '_attr_to_rest_field') and 'mode' in agentpool._attr_to_rest_field:
-                    target, fields = agentpool, agentpool._attr_to_rest_field
+            if agentpool.mode != CONST_NODEPOOL_MODE_MANAGEDSYSTEM:
+                continue
+            # Make sure all other attributes are None
+            # Check properties sub-model first (AgentPool), then flat fields (ManagedClusterAgentPoolProfile)
+            props = getattr(agentpool, 'properties', None)
+            rest_fields = getattr(props, '_attr_to_rest_field', None) if props is not None else None
+            if rest_fields is not None:
+                target, fields = props, rest_fields
+            else:
+                rest_fields = getattr(agentpool, '_attr_to_rest_field', None)
+                if rest_fields is not None and 'mode' in rest_fields:
+                    target, fields = agentpool, rest_fields
                 else:
                     target, fields = None, None
-                if target is not None:
-                    for attr in list(fields.keys()):
-                        if attr not in ('name', 'mode'):
-                            setattr(agentpool, attr, None)
-                else:
-                    for attr in vars(agentpool):
-                        if attr != 'name' and attr != 'mode' and not attr.startswith('_'):
-                            if hasattr(agentpool, attr):
-                                setattr(agentpool, attr, None)
+            if target is not None:
+                for attr in list(fields.keys()):
+                    if attr not in ('name', 'mode'):
+                        setattr(agentpool, attr, None)
+            else:
+                for attr in vars(agentpool):
+                    if attr not in ('name', 'mode') and not attr.startswith('_') and hasattr(agentpool, attr):
+                        setattr(agentpool, attr, None)
         return mc
 
     def init_models(self) -> None:
@@ -6807,7 +6812,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 )
 
             # Configure OpenTelemetry logs with custom port if provided
-            otlp_logs_config = self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogsAndTraces(enabled=True)
+            otel_logs_cls = self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogsAndTraces
+            otlp_logs_config = otel_logs_cls(enabled=True)
             if self.context.get_opentelemetry_logs_port():
                 otlp_logs_config.http_port = self.context.get_opentelemetry_logs_port()
 
