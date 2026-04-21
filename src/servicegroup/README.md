@@ -13,12 +13,13 @@ az extension add --name servicegroup
 
 ### Included Features
 
-#### Create a service group
+#### Create a service group under the tenant root
 ```
-az service-group create --name MyServiceGroup --display-name "My Service Group"
+az service-group create --name MyServiceGroup --display-name "My Service Group" \
+    --parent resource-id="/providers/Microsoft.Management/serviceGroups/<tenantId>"
 ```
 
-#### Create a service group with a parent
+#### Create a child service group under an existing parent
 ```
 az service-group create --name ChildGroup --display-name "Child Group" \
     --parent resource-id="/providers/Microsoft.Management/serviceGroups/ParentGroup"

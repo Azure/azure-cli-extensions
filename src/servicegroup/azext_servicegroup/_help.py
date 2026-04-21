@@ -25,10 +25,11 @@ helps['service-group create'] = """
     short-summary: Create a service group.
     long-summary: Create or update a service group. This is a long-running operation.
     examples:
-      - name: Create a service group
+      - name: Create a service group under the tenant root
         text: >
             az service-group create --name MyServiceGroup --display-name "My Service Group"
-      - name: Create a service group with a parent
+            --parent resource-id="/providers/Microsoft.Management/serviceGroups/<tenantId>"
+      - name: Create a child service group under an existing parent
         text: >
             az service-group create --name ChildGroup --display-name "Child Group"
             --parent resource-id="/providers/Microsoft.Management/serviceGroups/ParentGroup"

@@ -15,9 +15,9 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Create or update a service group.
 
-    :example: Create a service group
-        az service-group create --name MyServiceGroup --display-name "My Service Group"
-    :example: Create a service group with a parent
+    :example: Create a service group under the tenant root
+        az service-group create --name MyServiceGroup --display-name "My Service Group" --parent resource-id="/providers/Microsoft.Management/serviceGroups/<tenantId>"
+    :example: Create a child service group under an existing parent
         az service-group create --name ChildGroup --display-name "Child" --parent resource-id="/providers/Microsoft.Management/serviceGroups/ParentGroup"
     """
 
@@ -89,6 +89,7 @@ class Create(AAZCommand):
         parent.resource_id = AAZStrArg(
             options=["resource-id"],
             help="The fully qualified ID of the parent service group. For example, '/providers/Microsoft.Management/serviceGroups/TestServiceGroup'.",
+            required=True,
         )
 
         return cls._args_schema
