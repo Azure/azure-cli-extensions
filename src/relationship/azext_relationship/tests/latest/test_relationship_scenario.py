@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import os
 import unittest
 
 from azure.cli.testsdk import (
@@ -10,7 +11,12 @@ from azure.cli.testsdk import (
     live_only,
 )
 
-SDK_TESTS_SG = '/providers/Microsoft.Management/serviceGroups/SDKTestsSG'
+# Tests require a pre-existing Service Group as target.
+# Default: SDKTestsSG. Override via AZURE_RELATIONSHIP_TEST_TARGET_SG env var.
+SDK_TESTS_SG = os.environ.get(
+    'AZURE_RELATIONSHIP_TEST_TARGET_SG',
+    '/providers/Microsoft.Management/serviceGroups/SDKTestsSG'
+)
 
 
 class RelationshipScenarioTest(ScenarioTest):
