@@ -605,12 +605,28 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 CONST_OUTBOUND_TYPE_NONE,
                 CONST_OUTBOUND_TYPE_BLOCK,]
         ):
+            # Preserve the user's explicit --outbound-type (if any) before default-completion
+            # overwrites it with CONST_OUTBOUND_TYPE_LOAD_BALANCER below.
+            user_supplied_outbound_type = self.raw_param.get("outbound_type")
             outbound_type = CONST_OUTBOUND_TYPE_LOAD_BALANCER
             skuName = self.get_sku_name()
             isVnetSubnetIdEmpty = self.get_vnet_subnet_id() in ["", None]
-            if skuName is not None and skuName == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC and isVnetSubnetIdEmpty:
-                # outbound_type of Automatic SKU should be ManagedNATGateway if no subnet id provided.
-                outbound_type = CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY
+            # BYO HOBO (hosted-system) scenarios provide a VNet via --system-node-vnet-subnet-id /
+            # --node-vnet-subnet-id instead of --vnet-subnet-id.
+            hobo_byo_subnets = bool(
+                self.raw_param.get("system_node_vnet_subnet_id") or
+                self.raw_param.get("node_vnet_subnet_id")
+            )
+            if (
+                skuName is not None and skuName == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC and
+                isVnetSubnetIdEmpty
+            ):
+                # Default outbound for Automatic SKU without a VNet is managedNATGateway.
+                # For BYO HOBO, only apply this default when the user did NOT explicitly pass
+                # --outbound-type; otherwise we would silently overwrite a user's explicit
+                # --outbound-type loadBalancer (regression seen in BYO SLB scenario).
+                if not (hobo_byo_subnets and user_supplied_outbound_type):
+                    outbound_type = CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY
 
         # validation
         # Note: The parameters involved in the validation are not verified in their own getters.
@@ -1991,8 +2007,18 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # validation
         if enable_validation:
             if self.decorator_mode == DecoratorMode.CREATE:
+                # Cross-validate the BYO VNet HOBO subnet trio on every CREATE so misuse
+                # (e.g. passing --system-node-vnet-subnet-id without --enable-hosted-system)
+                # is rejected up front rather than silently dropped.
+                self._validate_byo_hobo_subnet_trio()
                 vnet_subnet_id = self.get_vnet_subnet_id()
-                if apiserver_subnet_id and vnet_subnet_id is None:
+                # For BYO VNet HOBO automatic clusters, --system-node-vnet-subnet-id and
+                # --node-vnet-subnet-id replace --vnet-subnet-id.
+                hobo_byo_subnets = (
+                    self.raw_param.get("system_node_vnet_subnet_id") or
+                    self.raw_param.get("node_vnet_subnet_id")
+                )
+                if apiserver_subnet_id and vnet_subnet_id is None and not hobo_byo_subnets:
                     raise RequiredArgumentMissingError(
                         '"--apiserver-subnet-id" requires "--vnet-subnet-id".')
 
@@ -4125,9 +4151,93 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         :return: bool
         """
         enable_hosted_system = self.raw_param.get("enable_hosted_system")
+        disable_hosted_system = self.raw_param.get("disable_hosted_system")
+        if enable_hosted_system and disable_hosted_system:
+            raise MutuallyExclusiveArgumentError(
+                'Cannot specify "--enable-hosted-system" and "--disable-hosted-system" at the same time.'
+            )
         if enable_hosted_system and self.get_sku_name() != CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
             raise RequiredArgumentMissingError('"--enable-hosted-system" requires "--sku automatic".')
         return enable_hosted_system
+
+    def get_disable_hosted_system(self) -> bool:
+        """Obtain the value of disable_hosted_system.
+
+        :return: bool
+        """
+        disable_hosted_system = self.raw_param.get("disable_hosted_system")
+        enable_hosted_system = self.raw_param.get("enable_hosted_system")
+        if disable_hosted_system and enable_hosted_system:
+            raise MutuallyExclusiveArgumentError(
+                'Cannot specify "--enable-hosted-system" and "--disable-hosted-system" at the same time.'
+            )
+        if disable_hosted_system and self.get_sku_name() != CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
+            raise RequiredArgumentMissingError('"--disable-hosted-system" requires "--sku automatic".')
+        return disable_hosted_system
+
+    def get_system_node_vnet_subnet_id(self) -> Union[str, None]:
+        """Obtain the value of system_node_vnet_subnet_id.
+
+        Validates that BYO VNet subnet flags are used together with
+        --enable-hosted-system and that the full triple
+        (system-node / node / apiserver) is provided.
+
+        :return: str or None
+        """
+        system_node_vnet_subnet_id = self.raw_param.get("system_node_vnet_subnet_id")
+        self._validate_byo_hobo_subnet_trio()
+        return system_node_vnet_subnet_id
+
+    def get_node_vnet_subnet_id(self) -> Union[str, None]:
+        """Obtain the value of node_vnet_subnet_id.
+
+        :return: str or None
+        """
+        node_vnet_subnet_id = self.raw_param.get("node_vnet_subnet_id")
+        self._validate_byo_hobo_subnet_trio()
+        return node_vnet_subnet_id
+
+    def _validate_byo_hobo_subnet_trio(self) -> None:
+        """Cross-validate the BYO VNet HOBO subnet flags.
+
+        Rule: if any of --system-node-vnet-subnet-id, --node-vnet-subnet-id, or
+        --apiserver-subnet-id is set together with --enable-hosted-system, then
+        all three must be set (SDK requires all three subnets to share a VNet).
+        Any of these flags set without --enable-hosted-system is flagged so
+        the user doesn't silently get a non-HOBO cluster with the wrong shape.
+        """
+        system_node_vnet_subnet_id = self.raw_param.get("system_node_vnet_subnet_id")
+        node_vnet_subnet_id = self.raw_param.get("node_vnet_subnet_id")
+        apiserver_subnet_id = self.raw_param.get("apiserver_subnet_id")
+        enable_hosted_system = self.raw_param.get("enable_hosted_system")
+
+        # The HOBO-specific flags only make sense with --enable-hosted-system.
+        # --apiserver-subnet-id is a general VNet-integration flag, so only
+        # require HOBO on it when one of the other two is also set.
+        hobo_byo_flags_set = bool(system_node_vnet_subnet_id) or bool(node_vnet_subnet_id)
+        if hobo_byo_flags_set and not enable_hosted_system:
+            raise RequiredArgumentMissingError(
+                '"--system-node-vnet-subnet-id" and "--node-vnet-subnet-id" '
+                'require "--enable-hosted-system".'
+            )
+
+        if enable_hosted_system and (
+            system_node_vnet_subnet_id or node_vnet_subnet_id or apiserver_subnet_id
+        ):
+            missing = []
+            if not system_node_vnet_subnet_id:
+                missing.append("--system-node-vnet-subnet-id")
+            if not node_vnet_subnet_id:
+                missing.append("--node-vnet-subnet-id")
+            if not apiserver_subnet_id:
+                missing.append("--apiserver-subnet-id")
+            if missing:
+                raise RequiredArgumentMissingError(
+                    "BYO VNet for hosted-system clusters requires all of "
+                    "--system-node-vnet-subnet-id, --node-vnet-subnet-id, and "
+                    "--apiserver-subnet-id to be provided together. "
+                    f"Missing: {', '.join(missing)}."
+                )
 
     def get_control_plane_scaling_size(self) -> Union[str, None]:
         """Obtain the value of control_plane_scaling_size.
@@ -4355,29 +4465,43 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
     def set_up_api_server_access_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up apiserverAccessProfile enableVnetIntegration and subnetId for the ManagedCluster object.
 
-        Note: Inherited and extended in aks-preview to set vnet integration configs.
+        Note: This is a full override (not calling super()) because the base acs module writes
+        `enableVnetIntegration` / `subnetId` via msrest-style `additional_properties`, which the
+        vendored 2026-02-02-preview SDK (azure.core Model) does not expose and would raise
+        AttributeError. The logic below mirrors the base implementation (authorized IP ranges,
+        private cluster, public FQDN, private DNS zone, fqdn subdomain) but writes
+        `enable_vnet_integration` and `subnet_id` as typed fields.
 
         :return: the ManagedCluster object
         """
-        mc = super().set_up_api_server_access_profile(mc)
-        if self.context.get_enable_apiserver_vnet_integration():
-            if mc.api_server_access_profile is None:
-                # pylint: disable=no-member
-                mc.api_server_access_profile = self.models.ManagedClusterAPIServerAccessProfile()
-            mc.api_server_access_profile.enable_vnet_integration = True
-        if self.context.get_apiserver_subnet_id():
-            if mc.api_server_access_profile is None:
-                # pylint: disable=no-member
-                mc.api_server_access_profile = self.models.ManagedClusterAPIServerAccessProfile()
-            mc.api_server_access_profile.subnet_id = self.context.get_apiserver_subnet_id()
+        self._ensure_mc(mc)
 
-        if (
-            mc.api_server_access_profile is not None and
-            hasattr(mc.api_server_access_profile, 'additional_properties') and
-            mc.api_server_access_profile.additional_properties is not None
-        ):
-            # remove the additional properties that are set in official azure-cli/acs
-            mc.api_server_access_profile.additional_properties = {}
+        api_server_access_profile = None
+        api_server_authorized_ip_ranges = self.context.get_api_server_authorized_ip_ranges()
+        enable_private_cluster = self.context.get_enable_private_cluster()
+        disable_public_fqdn = self.context.get_disable_public_fqdn()
+        private_dns_zone = self.context.get_private_dns_zone()
+        if api_server_authorized_ip_ranges or enable_private_cluster:
+            # pylint: disable=no-member
+            api_server_access_profile = self.models.ManagedClusterAPIServerAccessProfile(
+                authorized_ip_ranges=api_server_authorized_ip_ranges,
+                enable_private_cluster=True if enable_private_cluster else None,
+                enable_private_cluster_public_fqdn=False if disable_public_fqdn else None,
+                private_dns_zone=private_dns_zone,
+            )
+        if self.context.get_enable_apiserver_vnet_integration():
+            if api_server_access_profile is None:
+                # pylint: disable=no-member
+                api_server_access_profile = self.models.ManagedClusterAPIServerAccessProfile()
+            api_server_access_profile.enable_vnet_integration = True
+        if self.context.get_apiserver_subnet_id():
+            if api_server_access_profile is None:
+                # pylint: disable=no-member
+                api_server_access_profile = self.models.ManagedClusterAPIServerAccessProfile()
+            api_server_access_profile.subnet_id = self.context.get_apiserver_subnet_id()
+        mc.api_server_access_profile = api_server_access_profile
+
+        mc.fqdn_subdomain = self.context.get_fqdn_subdomain()
         return mc
 
     def build_gitops_addon_profile(self) -> ManagedClusterAddonProfile:
@@ -5385,16 +5509,122 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         self._ensure_mc(mc)
 
         enable_hosted_components = self.context.get_enable_hosted_system()
+        disable_hosted_components = self.context.get_disable_hosted_system()
         if enable_hosted_components:
             if mc.hosted_system_profile is None:
                 mc.hosted_system_profile = self.models.ManagedClusterHostedSystemProfile()  # pylint: disable=no-member
             mc.hosted_system_profile.enabled = True
 
+            # BYO VNet: plumb subnet IDs through to the SDK model. All three
+            # subnets (system-node / node / apiserver) must share a VNet, but
+            # the server enforces that check.
+            system_node_vnet_subnet_id = self.context.get_system_node_vnet_subnet_id()
+            node_vnet_subnet_id = self.context.get_node_vnet_subnet_id()
+            if system_node_vnet_subnet_id:
+                mc.hosted_system_profile.system_node_subnet_id = system_node_vnet_subnet_id
+            if node_vnet_subnet_id:
+                mc.hosted_system_profile.node_subnet_id = node_vnet_subnet_id
+
             # Remove default agent pool profiles when hosted system profile is enabled
             if mc.agent_pool_profiles is not None:
                 mc.agent_pool_profiles = None
+        elif disable_hosted_components:
+            # Deterministic opt-out: explicitly set enabled=False so customers
+            # don't get HOBO once the server flips the default in their region.
+            if mc.hosted_system_profile is None:
+                mc.hosted_system_profile = self.models.ManagedClusterHostedSystemProfile()  # pylint: disable=no-member
+            mc.hosted_system_profile.enabled = False
 
         return mc
+
+    def process_add_role_assignment_for_vnet_subnet(self, mc: ManagedCluster) -> None:
+        """Extend base role assignment to also cover BYO VNet HOBO subnets.
+
+        Base behavior: if ``--vnet-subnet-id`` is provided, grant Network Contributor on
+        that subnet to the cluster identity (SP or UAMI). BYO HOBO uses three separate
+        subnets (``--system-node-vnet-subnet-id``, ``--node-vnet-subnet-id``,
+        ``--apiserver-subnet-id``) instead of ``--vnet-subnet-id``; without this
+        override, cluster creation fails with ``ResourceMissingPermissionError`` on the
+        BYO subnets.
+
+        Strategy: call super() so the original ``--vnet-subnet-id`` path still works,
+        then iterate over any HOBO BYO subnets and run the same role-assignment logic
+        for each. Skipping is honored via ``--skip-subnet-role-assignment``.
+        """
+        # Preserve base behavior for the --vnet-subnet-id case.
+        super().process_add_role_assignment_for_vnet_subnet(mc)
+
+        # Only extend for BYO VNet HOBO; outside that mode --apiserver-subnet-id keeps its
+        # generic apiserver-VNet-integration meaning and must NOT trigger an extra RBAC grant.
+        if not self.context.get_enable_hosted_system():
+            return
+
+        # Trio validation fires earlier via _get_apiserver_subnet_id on CREATE, so by the
+        # time we reach here we should have either all three HOBO subnets or none. Defend
+        # anyway — skip cleanly when no HOBO subnets are present.
+        hobo_subnets = []
+        seen = set()
+        for raw_key in (
+            "system_node_vnet_subnet_id",
+            "node_vnet_subnet_id",
+            "apiserver_subnet_id",
+        ):
+            subnet_id = self.context.raw_param.get(raw_key)
+            if subnet_id and subnet_id not in seen:
+                seen.add(subnet_id)
+                hobo_subnets.append(subnet_id)
+
+        if not hobo_subnets:
+            return
+
+        if self.context.get_skip_subnet_role_assignment():
+            return
+
+        service_principal_profile = mc.service_principal_profile
+        assign_identity = self.context.get_assign_identity()
+
+        # For system-assigned identity clusters the SP does not exist yet and we can
+        # only grant after the cluster is created. Defer via the existing post-create
+        # flag AND stash the HOBO subnet list so the post-create handler can iterate it;
+        # base behavior only grants on --vnet-subnet-id, which is absent for BYO HOBO.
+        if service_principal_profile is None and not assign_identity:
+            self.context.set_intermediate(
+                "need_post_creation_vnet_permission_granting",
+                True,
+                overwrite_exists=True,
+            )
+            self.context.set_intermediate(
+                "hobo_byo_subnets_pending_grant",
+                hobo_subnets,
+                overwrite_exists=True,
+            )
+            return
+
+        for subnet_id in hobo_subnets:
+            if self.context.external_functions.subnet_role_assignment_exists(self.cmd, subnet_id):
+                continue
+            if assign_identity:
+                identity_object_id = self.context.get_user_assigned_identity_object_id()
+                granted = self.context.external_functions.add_role_assignment(
+                    self.cmd,
+                    "Network Contributor",
+                    identity_object_id,
+                    is_service_principal=False,
+                    scope=subnet_id,
+                )
+            else:
+                granted = self.context.external_functions.add_role_assignment(
+                    self.cmd,
+                    "Network Contributor",
+                    service_principal_profile.client_id,
+                    scope=subnet_id,
+                )
+            if not granted:
+                logger.warning(
+                    "Could not create a role assignment for subnet %s. "
+                    "Are you an Owner on this subscription?",
+                    subnet_id,
+                )
 
     # pylint: disable=unused-argument
     def construct_mc_profile_preview(self, bypass_restore_defaults: bool = False) -> ManagedCluster:
@@ -5570,16 +5800,32 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             # Grant vnet permission to system assigned identity RIGHT AFTER the cluster is put, this operation can
             # reduce latency for the role assignment take effect
             instant_cluster = self.client.get(self.context.get_resource_group_name(), self.context.get_name())
-            if not self.context.external_functions.add_role_assignment(
-                self.cmd,
-                "Network Contributor",
-                instant_cluster.identity.principal_id,
-                scope=self.context.get_vnet_subnet_id(),
-                is_service_principal=False,
-            ):
-                logger.warning(
-                    "Could not create a role assignment for subnet. Are you an Owner on this subscription?"
-                )
+            # Determine the scopes to grant: base behavior uses --vnet-subnet-id only; BYO VNet HOBO
+            # uses the three HOBO subnets stashed by process_add_role_assignment_for_vnet_subnet.
+            # Iterate a list so both classic and HOBO cases share the same code path.
+            scopes = []
+            vnet_subnet_id = self.context.get_vnet_subnet_id()
+            if vnet_subnet_id:
+                scopes.append(vnet_subnet_id)
+            hobo_subnets = self.context.get_intermediate(
+                "hobo_byo_subnets_pending_grant", default_value=[]
+            )
+            for subnet in hobo_subnets or []:
+                if subnet and subnet not in scopes:
+                    scopes.append(subnet)
+            for scope in scopes:
+                if not self.context.external_functions.add_role_assignment(
+                    self.cmd,
+                    "Network Contributor",
+                    instant_cluster.identity.principal_id,
+                    scope=scope,
+                    is_service_principal=False,
+                ):
+                    logger.warning(
+                        "Could not create a role assignment for subnet %s. "
+                        "Are you an Owner on this subscription?",
+                        scope,
+                    )
 
     # pylint: disable=too-many-locals,too-many-branches
     def postprocessing_after_mc_created(self, cluster: ManagedCluster) -> None:

@@ -5984,7 +5984,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # so we only need to test for cluster creation here
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --location={location} "
-            "--sku automatic --enable-hosted-system "
+            "--sku automatic --enable-hosted-system --workspace-resource-id=/subscriptions/feb5b150-60fe-4441-be73-8c02a524f55a/resourceGroups/hobo-test-la-rg/providers/Microsoft.OperationalInsights/workspaces/hobo-test-la-ws "
             "--aks-custom-header AKSHTTPCustomFeatures=Microsoft.ContainerService/AutomaticSKUPreview,"
             "AKSHTTPCustomFeatures=Microsoft.ContainerService/AKS-AutomaticHostedSystemProfilePreview "
             "--ssh-key-value={ssh_key_value}"
@@ -6014,6 +6014,227 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(
             "aks delete -g {resource_group} -n {name} --yes --no-wait",
             checks=[self.is_empty()],
+        )
+
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="eastus2euap"
+    )
+    def test_aks_automatic_sku_hosted_system_byovnet_natgw(self, resource_group, resource_group_location):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        aks_name = self.create_random_name("cliakstest", 16)
+        vnet_name = self.create_random_name("clivnet", 16)
+        identity_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "vnet_name": vnet_name,
+                "identity_name": identity_name,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        # user-assigned MSI is required for BYO VNet on automatic SKU
+        identity_id = self.cmd(
+            "identity create -g {resource_group} -n {identity_name} --query id -o tsv"
+        ).output.strip()
+        self.kwargs.update({"identity_id": identity_id})
+
+        # create a BYO VNet with 3 subnets: system-node, node, apiserver
+        self.cmd(
+            "network vnet create -g {resource_group} -n {vnet_name} "
+            "--address-prefix 10.0.0.0/8 "
+            "--subnet-name systemnode --subnet-prefix 10.42.0.0/20"
+        )
+        self.cmd(
+            "network vnet subnet create -g {resource_group} --vnet-name {vnet_name} "
+            "--name node --address-prefix 10.43.0.0/16"
+        )
+        self.cmd(
+            "network vnet subnet create -g {resource_group} --vnet-name {vnet_name} "
+            "--name apiserver --address-prefix 10.44.0.0/28"
+        )
+        system_node_subnet_id = self.cmd(
+            "network vnet subnet show -g {resource_group} --vnet-name {vnet_name} --name systemnode "
+            "--query id -o tsv"
+        ).output.strip()
+        node_subnet_id = self.cmd(
+            "network vnet subnet show -g {resource_group} --vnet-name {vnet_name} --name node "
+            "--query id -o tsv"
+        ).output.strip()
+        apiserver_subnet_id = self.cmd(
+            "network vnet subnet show -g {resource_group} --vnet-name {vnet_name} --name apiserver "
+            "--query id -o tsv"
+        ).output.strip()
+        self.kwargs.update({
+            "system_node_subnet_id": system_node_subnet_id,
+            "node_subnet_id": node_subnet_id,
+            "apiserver_subnet_id": apiserver_subnet_id,
+        })
+
+        # BYO VNet HOBO automatic cluster (default outbound = NAT gateway)
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--sku automatic --enable-hosted-system --workspace-resource-id=/subscriptions/feb5b150-60fe-4441-be73-8c02a524f55a/resourceGroups/hobo-test-la-rg/providers/Microsoft.OperationalInsights/workspaces/hobo-test-la-ws "
+            "--enable-managed-identity --assign-identity {identity_id} "
+            "--system-node-vnet-subnet-id={system_node_subnet_id} "
+            "--node-vnet-subnet-id={node_subnet_id} "
+            "--apiserver-subnet-id={apiserver_subnet_id} "
+            "--ssh-key-value={ssh_key_value}"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("sku.name", "Automatic"),
+                self.check("hostedSystemProfile.enabled", True),
+                self.check("hostedSystemProfile.systemNodeSubnetId", system_node_subnet_id),
+                self.check("hostedSystemProfile.nodeSubnetId", node_subnet_id),
+                self.check("apiServerAccessProfile.subnetId", apiserver_subnet_id),
+            ],
+        )
+
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="eastus2euap"
+    )
+    def test_aks_automatic_sku_hosted_system_byovnet_slb(self, resource_group, resource_group_location):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        aks_name = self.create_random_name("cliakstest", 16)
+        vnet_name = self.create_random_name("clivnet", 16)
+        identity_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "vnet_name": vnet_name,
+                "identity_name": identity_name,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        # user-assigned MSI is required for BYO VNet on automatic SKU
+        identity_id = self.cmd(
+            "identity create -g {resource_group} -n {identity_name} --query id -o tsv"
+        ).output.strip()
+        self.kwargs.update({"identity_id": identity_id})
+
+        # create a BYO VNet with 3 subnets: system-node, node, apiserver
+        self.cmd(
+            "network vnet create -g {resource_group} -n {vnet_name} "
+            "--address-prefix 10.0.0.0/8 "
+            "--subnet-name systemnode --subnet-prefix 10.42.0.0/20"
+        )
+        self.cmd(
+            "network vnet subnet create -g {resource_group} --vnet-name {vnet_name} "
+            "--name node --address-prefix 10.43.0.0/16"
+        )
+        self.cmd(
+            "network vnet subnet create -g {resource_group} --vnet-name {vnet_name} "
+            "--name apiserver --address-prefix 10.44.0.0/28"
+        )
+        system_node_subnet_id = self.cmd(
+            "network vnet subnet show -g {resource_group} --vnet-name {vnet_name} --name systemnode "
+            "--query id -o tsv"
+        ).output.strip()
+        node_subnet_id = self.cmd(
+            "network vnet subnet show -g {resource_group} --vnet-name {vnet_name} --name node "
+            "--query id -o tsv"
+        ).output.strip()
+        apiserver_subnet_id = self.cmd(
+            "network vnet subnet show -g {resource_group} --vnet-name {vnet_name} --name apiserver "
+            "--query id -o tsv"
+        ).output.strip()
+        self.kwargs.update({
+            "system_node_subnet_id": system_node_subnet_id,
+            "node_subnet_id": node_subnet_id,
+            "apiserver_subnet_id": apiserver_subnet_id,
+        })
+
+        # BYO VNet HOBO automatic cluster with loadBalancer outbound
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--sku automatic --enable-hosted-system --workspace-resource-id=/subscriptions/feb5b150-60fe-4441-be73-8c02a524f55a/resourceGroups/hobo-test-la-rg/providers/Microsoft.OperationalInsights/workspaces/hobo-test-la-ws "
+            "--enable-managed-identity --assign-identity {identity_id} "
+            "--system-node-vnet-subnet-id={system_node_subnet_id} "
+            "--node-vnet-subnet-id={node_subnet_id} "
+            "--apiserver-subnet-id={apiserver_subnet_id} "
+            "--outbound-type loadBalancer "
+            "--ssh-key-value={ssh_key_value}"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("sku.name", "Automatic"),
+                self.check("hostedSystemProfile.enabled", True),
+                self.check("hostedSystemProfile.systemNodeSubnetId", system_node_subnet_id),
+                self.check("hostedSystemProfile.nodeSubnetId", node_subnet_id),
+                self.check("apiServerAccessProfile.subnetId", apiserver_subnet_id),
+                self.check("networkProfile.outboundType", "loadBalancer"),
+            ],
+        )
+
+        # convert to Base SKU; expect the transition to succeed for the BYO VNet HOBO case.
+        # Wait for the cluster to become idle (no in-progress RP reconciliation) before starting
+        # the update; without this the RP returns 409 OperationNotAllowed for a few minutes after
+        # create completes while it finishes post-create reconciliation.
+        self.cmd(
+            "aks wait -g {resource_group} -n {name} --created --timeout 900",
+            checks=[self.is_empty()],
+        )
+        time.sleep(180)
+        self.cmd(
+            "aks update -g {resource_group} -n {name} --sku base",
+            checks=[
+                self.check("sku.name", "Base"),
+            ],
+        )
+
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="eastus2euap"
+    )
+    def test_aks_automatic_sku_with_hosted_system_disabled(self, resource_group, resource_group_location):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        # opt out of HOBO even if the region defaults to it
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--sku automatic --disable-hosted-system --workspace-resource-id=/subscriptions/feb5b150-60fe-4441-be73-8c02a524f55a/resourceGroups/hobo-test-la-rg/providers/Microsoft.OperationalInsights/workspaces/hobo-test-la-ws "
+            "--ssh-key-value={ssh_key_value}"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("sku.name", "Automatic"),
+                self.check("hostedSystemProfile.enabled", False),
+            ],
+        )
+
+        # agent pool profiles should be present (non-HOBO automatic)
+        self.cmd(
+            "aks show --resource-group={resource_group} --name={name}",
+            checks=[self.greater_than("length(agentPoolProfiles)", 0)],
         )
 
     @AllowLargeResponse()
