@@ -138,29 +138,31 @@ def invoke_cli_command(cmd, command_args, expect_json=True):  # pylint: disable=
 
 
 # ---------------------------------------------------------------------------
-# Progress output
+# Progress output (uses stderr so -o json/table/tsv is clean)
 # ---------------------------------------------------------------------------
 
-def print_step(step_num, total, message, status=""):
-    """Print a formatted step indicator.
+import sys
 
-    Examples:
-        [1/4] Installing cert-manager...
-        [1/4] Installing cert-manager... [OK]
-        [1/4] Installing cert-manager... Already installed [OK]
-    """
+
+def _eprint(*args, **kwargs):
+    """Print to stderr."""
+    print(*args, file=sys.stderr, **kwargs)
+
+
+def print_step(step_num, total, message, status=""):
+    """Print a formatted step indicator to stderr."""
     prefix = f"[{step_num}/{total}]"
     if status:
-        print(f"{prefix} {message}... {status}")
+        _eprint(f"{prefix} {message}... {status}")
     else:
-        print(f"{prefix} {message}...")
+        _eprint(f"{prefix} {message}...")
 
 
 def print_success(message):
-    """Print a success summary line."""
-    print(f"\n[OK] {message}")
+    """Print a success summary line to stderr."""
+    _eprint(f"\n[OK] {message}")
 
 
 def print_detail(label, value):
-    """Print a detail line (indented)."""
-    print(f"  {label}: {value}")
+    """Print a detail line (indented) to stderr."""
+    _eprint(f"  {label}: {value}")

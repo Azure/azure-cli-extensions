@@ -37,7 +37,12 @@ import logging
 from azure.cli.core.azclierror import CLIInternalError, ValidationError
 from azure.cli.core.util import send_raw_request
 
+import sys
+
 logger = logging.getLogger(__name__)
+
+def _eprint(*args, **kwargs):
+    print(*args, file=sys.stderr, **kwargs)
 
 API_VERSION = "2025-08-01"
 ARM_RESOURCE = "https://management.azure.com"
@@ -83,10 +88,10 @@ def target_deploy(
 
     def _log(step_name, status=""):
         if status:
-            print(f"[{current[0]}/{total}] {step_name}... {status}")
+            _eprint(f"[{current[0]}/{total}] {step_name}... {status}")
         else:
             current[0] += 1
-            print(f"[{current[0]}/{total}] {step_name}...")
+            _eprint(f"[{current[0]}/{total}] {step_name}...")
 
     results = {}
     sv_id = None
@@ -121,10 +126,10 @@ def target_deploy(
     results["install"] = install_result
     _log("Install", "[OK]")
 
-    print(f"\n{'=' * 50}")
-    print(f"Deployment complete for target '{target_name}'")
-    print(f"Solution Version ID: {sv_id}")
-    print(f"{'=' * 50}")
+    _eprint(f"\n{'=' * 50}")
+    _eprint(f"Deployment complete for target '{target_name}'")
+    _eprint(f"Solution Version ID: {sv_id}")
+    _eprint(f"{'=' * 50}")
 
     # Return the install LRO result (same format as `az wo target install`)
     return results.get("install", {
@@ -170,10 +175,10 @@ def target_deploy_pre_install(
 
     def _log(step_name, status=""):
         if status:
-            print(f"[{current[0]}/{total}] {step_name}... {status}")
+            _eprint(f"[{current[0]}/{total}] {step_name}... {status}")
         else:
             current[0] += 1
-            print(f"[{current[0]}/{total}] {step_name}...")
+            _eprint(f"[{current[0]}/{total}] {step_name}...")
 
     # --- Step 0: Config set ---
     if do_config:
@@ -445,3 +450,4 @@ def _short_id(arm_id):
         return ""
     parts = arm_id.strip("/").split("/")
     return parts[-1] if parts else arm_id
+

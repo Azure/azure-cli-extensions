@@ -23,6 +23,7 @@ import json
 import os
 import subprocess
 import logging
+import sys
 
 from azure.cli.core.azclierror import (
     CLIInternalError,
@@ -56,6 +57,10 @@ from azext_workload_orchestration.onboarding.utils import (
 
 logger = logging.getLogger(__name__)
 
+
+def _eprint(*args, **kwargs):
+    print(*args, file=sys.stderr, **kwargs)
+
 TOTAL_STEPS = 4
 
 
@@ -85,7 +90,7 @@ def target_prepare(
     release_train = release_train or DEFAULT_RELEASE_TRAIN
     cert_manager_version = cert_manager_version or DEFAULT_CERT_MANAGER_VERSION
 
-    print(f"\nPreparing cluster '{cluster_name}' for Workload Orchestration...\n")
+    _eprint(f"\nPreparing cluster '{cluster_name}' for Workload Orchestration...\n")
 
     # Track step results for diagnostic summary
     step_results = {}
@@ -200,7 +205,7 @@ def target_prepare(
 
     print_success(f"Cluster '{cluster_name}' is ready for Workload Orchestration")
     print_detail("Custom Location ID", cl_id)
-    print()
+    _eprint()
 
     return {
         "clusterName": cluster_name,
@@ -606,12 +611,12 @@ def _print_diagnostic_summary(step_results, cluster_name, resource_group):
     """
     from datetime import datetime, timezone
 
-    print("\n" + "=" * 60)
-    print("  Diagnostic Summary")
-    print(f"  Cluster: {cluster_name}")
-    print(f"  Resource Group: {resource_group}")
-    print(f"  Timestamp: {datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')}")
-    print("=" * 60)
+    _eprint("\n" + "=" * 60)
+    _eprint("  Diagnostic Summary")
+    _eprint(f"  Cluster: {cluster_name}")
+    _eprint(f"  Resource Group: {resource_group}")
+    _eprint(f"  Timestamp: {datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')}")
+    _eprint("=" * 60)
 
     for step_name, result in step_results.items():
         if "FAILED" in result:
@@ -620,13 +625,13 @@ def _print_diagnostic_summary(step_results, cluster_name, resource_group):
             icon = "○"
         else:
             icon = "[OK]"
-        print(f"  {icon} {step_name}: {result}")
+        _eprint(f"  {icon} {step_name}: {result}")
 
     has_failure = any("FAILED" in v for v in step_results.values())
     if has_failure:
-        print("\n  [WARN] One or more steps failed. See error details above.")
-        print("  Re-run the command to retry - completed steps will be skipped.")
-    print("=" * 60 + "\n")
+        _eprint("\n  [WARN] One or more steps failed. See error details above.")
+        _eprint("  Re-run the command to retry - completed steps will be skipped.")
+    _eprint("=" * 60 + "\n")
 
 
 def _write_extended_location_file(extended_location):
@@ -634,7 +639,7 @@ def _write_extended_location_file(extended_location):
     filepath = os.path.join(os.getcwd(), "extended-location.json")
     with open(filepath, "w", encoding="utf-8") as f:
         json.dump(extended_location, f, indent=2)
-    print(f"\n  File written: {filepath}")
+    _eprint(f"\n  File written: {filepath}")
 
 
 def _run_kubectl(args, kube_config=None, kube_context=None):
@@ -704,3 +709,4 @@ def _get_sub_id(cmd):
         return sub.get("id", "")
     except Exception:
         return ""
+
