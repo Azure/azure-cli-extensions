@@ -50,7 +50,7 @@ class Create(AAZCommand):
             help="ServiceGroup Name.",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9\-_().]{1,90}$",
+                pattern=r"^[a-zA-Z0-9\-_().]{1,90}$",
             ),
         )
 
