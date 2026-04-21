@@ -91,7 +91,7 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
     with self.argument_context('workload-orchestration hierarchy create') as c:
         c.argument('resource_group', options_list=['--resource-group', '-g'],
                    help='Resource group for Configuration resources.', required=True)
-        c.argument('configuration_location', options_list=['--configuration-location'],
+        c.argument('configuration_location', options_list=['--configuration-location', '-l'],
                    help='Azure region for the Configuration resource (e.g., eastus2euap).', required=True)
         c.argument('hierarchy_spec', options_list=['--hierarchy-spec'],
                    help='Hierarchy specification as YAML/JSON file (@file.yaml) or shorthand syntax.',
