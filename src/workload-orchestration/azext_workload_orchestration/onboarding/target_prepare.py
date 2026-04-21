@@ -117,13 +117,7 @@ def target_prepare(
         logger.error("Step 1/4 failed (cert-manager): %s", exc)
         _print_diagnostic_summary(step_results, cluster_name, resource_group)
         raise CLIInternalError(
-            f"cert-manager installation failed: {exc}",
-            recommendation=(
-                "Check cluster connectivity and kubectl access. "
-                "Verify the cluster has internet access to github.com. "
-                "Try manually: kubectl apply -f https://github.com/cert-manager/"
-                f"cert-manager/releases/download/{cert_manager_version}/cert-manager.yaml"
-            )
+            f"cert-manager installation failed: {exc}"
         )
 
     # Step 2: trust-manager
@@ -141,12 +135,7 @@ def target_prepare(
         logger.error("Step 2/4 failed (trust-manager): %s", exc)
         _print_diagnostic_summary(step_results, cluster_name, resource_group)
         raise CLIInternalError(
-            f"trust-manager installation failed: {exc}",
-            recommendation=(
-                "Ensure helm is installed and the cluster can reach charts.jetstack.io. "
-                "Try manually: helm upgrade trust-manager jetstack/trust-manager "
-                "--install --namespace cert-manager --wait"
-            )
+            f"trust-manager installation failed: {exc}"
         )
 
     # Step 3: WO extension
@@ -162,17 +151,7 @@ def target_prepare(
         logger.error("Step 3/4 failed (WO extension): %s", exc)
         _print_diagnostic_summary(step_results, cluster_name, resource_group)
         raise CLIInternalError(
-            f"WO extension installation failed: {exc}",
-            recommendation=(
-                "Common causes:\n"
-                "  - Wrong release train for this region (try --release-train preview or dev)\n"
-                "  - Insufficient cluster resources (need 2+ CPU cores, 4Gi+ memory)\n"
-                "  - Storage class not available (check: kubectl get sc)\n"
-                "Try manually: az k8s-extension create -g {rg} --cluster-name {cluster} "
-                "--cluster-type connectedClusters --name {ext} "
-                "--extension-type Microsoft.workloadorchestration --scope cluster "
-                f"--release-train {release_train}"
-            ).format(rg=resource_group, cluster=cluster_name, ext=extension_name)
+            f"WO extension installation failed: {exc}"
         )
 
     # Step 4: Custom location
@@ -187,16 +166,7 @@ def target_prepare(
         logger.error("Step 4/4 failed (Custom location): %s", exc)
         _print_diagnostic_summary(step_results, cluster_name, resource_group)
         raise CLIInternalError(
-            f"Custom location creation failed: {exc}",
-            recommendation=(
-                "Ensure custom-locations feature is enabled:\n"
-                f"  az connectedk8s enable-features -n {cluster_name} "
-                f"-g {resource_group} --features cluster-connect custom-locations\n"
-                "Also verify the extension is in 'Succeeded' state:\n"
-                f"  az k8s-extension show -g {resource_group} "
-                f"--cluster-name {cluster_name} --cluster-type connectedClusters "
-                f"--name {extension_name}"
-            )
+            f"Custom location creation failed: {exc}"
         )
 
     # Output extended-location.json
@@ -231,11 +201,7 @@ def _preflight_checks(cmd, cluster_name, resource_group):
     except CLIInternalError:
         raise ValidationError(
             f"Cluster '{cluster_name}' is not Arc-connected or not found "
-            f"in resource group '{resource_group}'.",
-            recommendation=(
-                f"Run: az connectedk8s connect -g {resource_group} "
-                f"-n {cluster_name} -l <location>"
-            )
+            f"in resource group '{resource_group}'."
         )
 
     connected_cluster_id = cluster_info.get("id", "")
@@ -278,8 +244,7 @@ def _ensure_cert_manager(version, kube_config, kube_context):
         from kubernetes.client.rest import ApiException
     except ImportError:
         raise CLIInternalError(
-            "kubernetes Python package is required.",
-            recommendation="Run: pip install kubernetes"
+            "kubernetes Python package is required."
         )
 
     # Load kubeconfig
@@ -290,11 +255,7 @@ def _ensure_cert_manager(version, kube_config, kube_context):
         )
     except Exception as exc:
         raise CLIInternalError(
-            f"Failed to load kubeconfig: {exc}",
-            recommendation=(
-                "Ensure kubectl is configured. "
-                "Use --kube-config and --kube-context if needed."
-            )
+            f"Failed to load kubeconfig: {exc}"
         )
 
     v1 = client.CoreV1Api()
@@ -352,8 +313,7 @@ def _ensure_trust_manager(kube_config, kube_context):
         from kubernetes.client.rest import ApiException
     except ImportError:
         raise CLIInternalError(
-            "kubernetes Python package is required.",
-            recommendation="Run: pip install kubernetes"
+            "kubernetes Python package is required."
         )
 
     # Load kubeconfig (may already be loaded from cert-manager step)
@@ -382,11 +342,7 @@ def _ensure_trust_manager(kube_config, kube_context):
     # Check if helm is available
     if not _is_helm_available():
         raise CLIInternalError(
-            "helm is required to install trust-manager.",
-            recommendation=(
-                "Install helm from https://helm.sh/docs/intro/install/ "
-                "and try again."
-            )
+            "helm is required to install trust-manager."
         )
 
     # Install trust-manager via helm
@@ -534,11 +490,7 @@ def _ensure_custom_location(
 
     if not extension_id:
         raise CLIInternalError(
-            "Cannot create custom location: WO extension ID is not available.",
-            recommendation=(
-                "Ensure the WO extension was installed successfully. "
-                "Re-run without --no-wait."
-            )
+            "Cannot create custom location: WO extension ID is not available."
         )
 
     print_step(
@@ -562,12 +514,7 @@ def _ensure_custom_location(
         cl_id = result.get("id", "") if isinstance(result, dict) else ""
     except CLIInternalError as exc:
         raise CLIInternalError(
-            f"Failed to create custom location: {exc}",
-            recommendation=(
-                "This can happen if the 'custom-locations' feature is not enabled. "
-                f"Run: az connectedk8s enable-features -n {cluster_name} "
-                f"-g {resource_group} --features cluster-connect custom-locations"
-            )
+            f"Failed to create custom location: {exc}"
         )
 
     print_step(4, TOTAL_STEPS, "Custom location", "Created ✓")
@@ -662,8 +609,7 @@ def _run_kubectl(args, kube_config=None, kube_context=None):
     if result.returncode != 0:
         error_msg = result.stderr.strip() or result.stdout.strip()
         raise CLIInternalError(
-            f"kubectl command failed: {' '.join(args)}\n{error_msg}",
-            recommendation="Ensure kubectl is installed and cluster is reachable."
+            f"kubectl command failed: {' '.join(args)}\n{error_msg}"
         )
     return result.stdout
 

@@ -61,16 +61,7 @@ def link_target_to_service_group(cmd, target_id, service_group_name):
         logger.info("ServiceGroupMember created: %s -> %s", target_id, service_group_name)
     except Exception as exc:
         raise CLIInternalError(
-            f"Failed to link target to service group '{service_group_name}': {exc}",
-            recommendation=(
-                f"Try manually:\n"
-                f"  az rest --method put "
-                f"--url \"{sg_member_url}?api-version={SG_MEMBER_API_VERSION}\" "
-                f"--body \"{{\\\"properties\\\":{{\\\"targetId\\\":\\\""
-                f"/providers/Microsoft.Management/serviceGroups/{service_group_name}"
-                f"\\\"}}}}\" "
-                f"--resource {ARM_ENDPOINT} --header Content-Type=application/json"
-            )
+            f"Failed to link target to service group '{service_group_name}': {exc}"
         )
 
     # Step 2: Update target to refresh hierarchy (MANDATORY)
