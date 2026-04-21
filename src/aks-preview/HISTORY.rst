@@ -9,13 +9,15 @@ If there is no rush to release a new version, please just add a description of t
 
 To release a new version, please select a new version number (usually plus 1 to last patch version, X.Y.Z -> Major.Minor.Patch, more details in `\doc <https://semver.org/>`_), and then add a new section named as the new version number in this file, the content should include the new modifications and everything from the *Pending* section. Finally, update the `VERSION` variable in `setup.py` with this new version number.
 
-Pending
+19.0.0b19
 +++++++
 * Add add-on support for `ApplicationLoadBalancer` (Application Gateway for Containers)
 - AKS Create and Update parameters for `--enable-application-load-balancer` and `--disable-application-load-balancer`
  - `az aks applicationloadbalancer enable`: Enable Application Load Balancer add-on for an existing cluster.
  - `az aks applicationloadbalancer disable`: Disable Application Load Balancer add-on for an existing cluster.
  - `az aks applicationloadbalancer update`: Update Application Load Balancer add-on for an existing cluster.
+* Add support for nodepool updating with Capacity Reservation Group.
+    * `az aks nodepool update --crg-id`
 
 19.0.0b18
 +++++++

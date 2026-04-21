@@ -1982,6 +1982,8 @@ def aks_agentpool_update(
     localdns_config=None,
     node_vm_size=None,
     gpu_driver=None,
+    # crg
+    crg_id=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()

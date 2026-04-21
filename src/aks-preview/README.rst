@@ -220,6 +220,6 @@ Released version and adopted API version
     * - 19.0.0b10 ~ 19.0.0b17
       - 2025-09-02-preview
       -
-    * - 19.0.0b18 ~ latest
+    * - 19.0.0b18 ~ 19.0.0b19
       - 2025-10-02-preview
       -

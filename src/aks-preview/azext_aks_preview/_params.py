@@ -2081,6 +2081,7 @@ def load_arguments(self, _):
         c.argument("mode", arg_type=get_enum_type(node_mode_types))
         c.argument("scale_down_mode", arg_type=get_enum_type(scale_down_modes))
         # extensions
+        c.argument("crg_id", validator=validate_crg_id, is_preview=True)
         c.argument(
             "allowed_host_ports", validator=validate_allowed_host_ports, is_preview=True
         )

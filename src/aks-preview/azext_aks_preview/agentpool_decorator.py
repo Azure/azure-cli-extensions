@@ -1746,6 +1746,15 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
             agentpool.enable_fips = False
 
         return agentpool
+    
+    def update_crg(self, agentpool: AgentPool) -> AgentPool:
+        """Update crg id for the AgentPool object.
+        :return: the AgentPool object
+        """
+        self._ensure_agentpool(agentpool)
+
+        agentpool.capacity_reservation_group_id = self.context.get_crg_id()
+        return agentpool
 
     def update_localdns_profile(self, agentpool: AgentPool) -> AgentPool:
         """Update local DNS profile for the AgentPool object if provided via --localdns-config."""
@@ -1820,6 +1829,9 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
 
         # update gpu profile
         agentpool = self.update_gpu_profile(agentpool)
+
+        # update crg id
+        agentpool = self.update_crg(agentpool)
 
         return agentpool
 
