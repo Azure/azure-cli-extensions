@@ -712,6 +712,28 @@ helps['aks create'] = f"""
         - name: --enable-hosted-system
           type: bool
           short-summary: Create a cluster with fully hosted system components. This applies only when creating a new automatic cluster.
+          long-summary: |
+              Deterministically opts the cluster into HOBO (Hosted Overlay System Pool). AKS hosts and manages the system node pool.
+              Can be combined with BYO VNet via `--system-node-vnet-subnet-id`, `--node-vnet-subnet-id`, and `--apiserver-subnet-id`
+              (all three must be provided together and must belong to the same VNet). Cannot be used with `--disable-hosted-system`.
+        - name: --disable-hosted-system
+          type: bool
+          short-summary: Opt the automatic cluster out of hosted system components.
+          long-summary: |
+              Deterministically creates an automatic cluster WITHOUT HOBO, even in regions where HOBO is the default.
+              Only valid with `--sku automatic`. Mutually exclusive with `--enable-hosted-system`.
+        - name: --system-node-vnet-subnet-id
+          type: string
+          short-summary: Resource ID of the subnet to be used by AKS-managed hosted system nodes (BYO VNet HOBO).
+          long-summary: |
+              Only valid with `--enable-hosted-system`. Must be provided together with `--node-vnet-subnet-id`
+              and `--apiserver-subnet-id`, and all three subnets must belong to the same VNet.
+        - name: --node-vnet-subnet-id
+          type: string
+          short-summary: Resource ID of the subnet joined by tenant worker nodes in BYO VNet HOBO clusters.
+          long-summary: |
+              Only valid with `--enable-hosted-system`. Must be provided together with `--system-node-vnet-subnet-id`
+              and `--apiserver-subnet-id`, and all three subnets must belong to the same VNet.
         - name: --control-plane-scaling-size --cp-scaling-size
           type: string
           short-summary: (PREVIEW) The control plane scaling size for the cluster.
@@ -814,6 +836,12 @@ helps['aks create'] = f"""
           text: az aks create -g MyResourceGroup -n MyManagedCluster --control-plane-scaling-size H4
         - name: Create an automatic cluster with hosted system components enabled.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --sku automatic --enable-hosted-system
+        - name: Create a hosted-system automatic cluster in a BYO VNet (NAT gateway outbound, the default).
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --sku automatic --enable-hosted-system --system-node-vnet-subnet-id <systemNodeSubnetID> --node-vnet-subnet-id <nodeSubnetID> --apiserver-subnet-id <apiserverSubnetID>
+        - name: Create a hosted-system automatic cluster in a BYO VNet with Load Balancer outbound.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --sku automatic --enable-hosted-system --system-node-vnet-subnet-id <systemNodeSubnetID> --node-vnet-subnet-id <nodeSubnetID> --apiserver-subnet-id <apiserverSubnetID> --outbound-type loadBalancer
+        - name: Create an automatic cluster and opt out of hosted system components.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --sku automatic --disable-hosted-system
 
 """
 
