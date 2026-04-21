@@ -126,10 +126,8 @@ def target_deploy(
     results["install"] = install_result
     _log("Install", "[OK]")
 
-    _eprint(f"\n{'=' * 50}")
-    _eprint(f"Deployment complete for target '{target_name}'")
-    _eprint(f"Solution Version ID: {sv_id}")
-    _eprint(f"{'=' * 50}")
+    _eprint(f"\n✅ Deployment complete for target '{target_name}'")
+    _eprint(f"   Solution Version: {_short_id(sv_id)}")
 
     # Return the install LRO result (same format as `az wo target install`)
     return results.get("install", {
@@ -145,6 +143,7 @@ def target_deploy_pre_install(
     solution_template_version_id=None,
     solution_template_name=None,
     solution_template_version=None,
+    solution_template_rg=None,
     config=None,
 ):
     """Run config-set → review → publish and return the solution-version-id.
@@ -152,14 +151,14 @@ def target_deploy_pre_install(
     Called by the enhanced `target install` command before the AAZ install step.
     Does NOT run install — that's handled by the AAZ LRO.
 
-    When using friendly name, the target's resource_group is used for the ST.
+    When using friendly name, solution_template_rg defaults to resource_group.
     Config-template args are auto-derived from solution template args.
     """
     sub_id = _get_subscription_id(cmd)
 
     solution_template_version_id = _resolve_template_version_id(
         solution_template_version_id, solution_template_name,
-        solution_template_version, None,
+        solution_template_version, solution_template_rg,
         resource_group, sub_id,
     )
 
@@ -238,16 +237,12 @@ def _get_subscription_id(cmd):
 
 
 def _resolve_template_version_id(
-    arm_id, template_name, template_version, _unused,
+    arm_id, template_name, template_version, template_rg,
     default_rg, sub_id,
 ):
     """Resolve solution-template-version-id from friendly name or ARM ID.
 
-    Mutual exclusivity:
-      - Provide --solution-template-version-id (full ARM ID)
-      - OR --solution-template-name + --solution-template-version (friendly)
-
-    When using friendly name, the target's resource group is used.
+    When using friendly name, template_rg defaults to default_rg (target's RG).
     """
     if arm_id and template_name:
         raise ValidationError(
@@ -263,8 +258,9 @@ def _resolve_template_version_id(
             raise ValidationError(
                 "--solution-template-version is required when using --solution-template-name."
             )
+        rg = template_rg or default_rg
         return (
-            f"/subscriptions/{sub_id}/resourceGroups/{default_rg}"
+            f"/subscriptions/{sub_id}/resourceGroups/{rg}"
             f"/providers/Microsoft.Edge/solutionTemplates/{template_name}"
             f"/versions/{template_version}"
         )
