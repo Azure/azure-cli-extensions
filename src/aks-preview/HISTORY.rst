@@ -12,9 +12,13 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
-20.0.0b3
+20.0.0b4
 +++++++
 * `az aks update`: Fix acceleration mode getting wiped out when modifying unrelated parameters in an ACNS enabled cluster.
+
+20.0.0b3
+++++++
+* Vendor new SDK and bump API version to 2026-02-02-preview.
 
 20.0.0b2
 +++++++

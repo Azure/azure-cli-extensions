@@ -563,6 +563,7 @@ class ContainerImage:
             mounts=mounts,
             allow_elevated=allow_elevated,
             extraEnvironmentRules=[],
+            platform=container_json.get("platform", "linux/amd64"),
             execProcesses=exec_processes,
             signals=signals,
             user=user,
@@ -583,6 +584,7 @@ class ContainerImage:
         allow_elevated: bool,
         id_val: str,
         extraEnvironmentRules: Dict,
+        platform: str = "linux/amd64",
         entrypoint: List[str] = None,
         capabilities: Dict = copy.deepcopy(_CAPABILITIES),
         user: Dict = copy.deepcopy(_DEFAULT_USER),
@@ -604,6 +606,7 @@ class ContainerImage:
         self._command = command
         self._workingDir = workingDir
         self._layers = []
+        self._mounted_cim = []
         self._mounts = mounts
         self._allow_elevated = allow_elevated
         self._allow_stdio_access = allowStdioAccess
@@ -615,6 +618,7 @@ class ContainerImage:
         self._exec_processes = execProcesses or []
         self._signals = signals or []
         self._extraEnvironmentRules = extraEnvironmentRules
+        self._platform = platform
 
     def get_policy_json(self, omit_id: bool = False) -> str:
         return self._populate_policy_json_elements(omit_id=omit_id)
@@ -657,6 +661,12 @@ class ContainerImage:
 
     def set_layers(self, layers: List[str]) -> None:
         self._layers = layers
+
+    def get_mounted_cim(self) -> List[str]:
+        return self._mounted_cim
+
+    def set_mounted_cim(self, mounted_cim: List[str]) -> None:
+        self._mounted_cim = mounted_cim
 
     def get_user(self) -> Dict:
         return self._user
@@ -764,15 +774,26 @@ class ContainerImage:
             config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS: self._get_environment_rules(),
             config.POLICY_FIELD_CONTAINERS_ELEMENTS_WORKINGDIR: self._workingDir,
             config.POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS: self._get_mounts_json(),
-            config.POLICY_FIELD_CONTAINERS_ELEMENTS_ALLOW_ELEVATED: self._allow_elevated,
             config.POLICY_FIELD_CONTAINERS_ELEMENTS_EXEC_PROCESSES: self._exec_processes,
             config.POLICY_FIELD_CONTAINERS_ELEMENTS_SIGNAL_CONTAINER_PROCESSES: self._signals,
-            config.POLICY_FIELD_CONTAINERS_ELEMENTS_USER: self.get_user(),
-            config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES: self._capabilities,
-            config.POLICY_FIELD_CONTAINERS_ELEMENTS_SECCOMP_PROFILE_SHA256: self._seccomp_profile_sha256,
             config.POLICY_FIELD_CONTAINERS_ELEMENTS_ALLOW_STDIO_ACCESS: self._allow_stdio_access,
-            config.POLICY_FIELD_CONTAINERS_ELEMENTS_NO_NEW_PRIVILEGES: not self._allow_privilege_escalation
         }
+
+        if self._platform.startswith("linux"):
+            elements.update({
+                config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES: self._capabilities,
+                config.POLICY_FIELD_CONTAINERS_ELEMENTS_SECCOMP_PROFILE_SHA256: self._seccomp_profile_sha256,
+                config.POLICY_FIELD_CONTAINERS_ELEMENTS_USER: self.get_user(),
+                config.POLICY_FIELD_CONTAINERS_ELEMENTS_ALLOW_ELEVATED: self._allow_elevated,
+                config.POLICY_FIELD_CONTAINERS_ELEMENTS_NO_NEW_PRIVILEGES: not self._allow_privilege_escalation,
+            })
+        elif self._platform.startswith("windows"):
+            elements.update({
+                config.POLICY_FIELD_CONTAINERS_ELEMENTS_USER: self.get_user()["user_idname"]["pattern"],
+            })
+            # Add mounted_cim for Windows if present
+            if self._mounted_cim:
+                elements[config.POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTED_CIM] = self._mounted_cim
 
         if not omit_id:
             elements[config.POLICY_FIELD_CONTAINERS_ID] = self._identifier
@@ -793,13 +814,17 @@ class UserContainerImage(ContainerImage):
         image.__class__ = UserContainerImage
         # inject default mounts for user container
         if (image.base not in config.BASELINE_SIDECAR_CONTAINERS) and (not is_vn2):
-            image.get_mounts().extend(_DEFAULT_MOUNTS)
+            if container_json.get("platform", "linux/amd64").startswith("linux"):
+                image.get_mounts().extend(_DEFAULT_MOUNTS)
 
         if (image.base not in config.BASELINE_SIDECAR_CONTAINERS) and (is_vn2):
             image.get_mounts().extend(_DEFAULT_MOUNTS_VN2)
 
         # Start with the customer environment rules
-        env_rules = copy.deepcopy(_INJECTED_CUSTOMER_ENV_RULES)
+        env_rules = (
+            copy.deepcopy(_INJECTED_CUSTOMER_ENV_RULES)
+            if container_json.get("platform", "linux/amd64").startswith("linux") else []
+        )
         # If is_vn2, add the VN2 environment rules
         if is_vn2:
             env_rules += _INJECTED_SERVICE_VN2_ENV_RULES

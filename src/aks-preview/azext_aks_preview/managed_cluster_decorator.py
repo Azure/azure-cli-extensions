@@ -139,6 +139,7 @@ from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.profiles import ResourceType
 from azure.cli.core.util import get_file_json, read_file_content
+from azure.core import MatchConditions
 from azure.mgmt.containerservice.models import KubernetesSupportPlan
 from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id, resource_id
 from dateutil.parser import parse
@@ -148,6 +149,16 @@ from knack.util import CLIError
 
 
 logger = get_logger(__name__)
+
+
+def _get_etag_match_condition(if_match, if_none_match):
+    """Convert if_match/if_none_match to etag/match_condition for the new SDK."""
+    if if_match is not None:
+        return if_match, MatchConditions.IfNotModified
+    if if_none_match is not None:
+        return if_none_match, MatchConditions.IfMissing
+    return None, None
+
 
 # type variables
 ContainerServiceClient = TypeVar("ContainerServiceClient")
@@ -190,7 +201,7 @@ class AKSPreviewManagedClusterModels(AKSManagedClusterModels):
         """Get nat gateway related models, including V2 sub-models.
 
         Overridden from base class to add ManagedClusterNATGatewayProfileOutboundIPs
-        and ManagedClusterNATGatewayProfileOutboundIPPrefixes for V2 support.
+        and ManagedClusterNATGatewayProfileOutboundIpPrefixes for V2 support.
 
         :return: SimpleNamespace
         """
@@ -209,9 +220,9 @@ class AKSPreviewManagedClusterModels(AKSManagedClusterModels):
                 if hasattr(self, "ManagedClusterNATGatewayProfileOutboundIPs")
                 else None
             )
-            nat_gateway_models["ManagedClusterNATGatewayProfileOutboundIPPrefixes"] = (
-                self.ManagedClusterNATGatewayProfileOutboundIPPrefixes
-                if hasattr(self, "ManagedClusterNATGatewayProfileOutboundIPPrefixes")
+            nat_gateway_models["ManagedClusterNATGatewayProfileOutboundIpPrefixes"] = (
+                self.ManagedClusterNATGatewayProfileOutboundIpPrefixes
+                if hasattr(self, "ManagedClusterNATGatewayProfileOutboundIpPrefixes")
                 else None
             )
             self.__nat_gateway_models = SimpleNamespace(**nat_gateway_models)
@@ -397,7 +408,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 self.mc.sku and
                 getattr(self.mc.sku, 'name', None) is not None
             ):
-                skuName = vars(self.mc.sku)['name'].lower()
+                skuName = self.mc.sku.name.lower()
             else:
                 skuName = CONST_MANAGED_CLUSTER_SKU_NAME_BASE
         return skuName
@@ -2927,8 +2938,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                     self.mc and
                     self.mc.azure_monitor_profile and
                     self.mc.azure_monitor_profile.app_monitoring and
-                    self.mc.azure_monitor_profile.app_monitoring.open_telemetry_logs and
-                    self.mc.azure_monitor_profile.app_monitoring.open_telemetry_logs.enabled
+                    self.mc.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces and
+                    self.mc.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.enabled
                 )
                 if not explicitly_enabling and not already_enabled:
                     raise InvalidArgumentValueError(
@@ -4146,6 +4157,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         if (
             mc.api_server_access_profile is not None and
+            hasattr(mc.api_server_access_profile, 'additional_properties') and
             mc.api_server_access_profile.additional_properties is not None
         ):
             # remove the additional properties that are set in official azure-cli/acs
@@ -4529,7 +4541,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         """
         self._ensure_mc(mc)
 
-        if not mc.network_profile:
+        if mc.network_profile is None:
             raise UnknownError(
                 "Unexpectedly get an empty network profile in the process of updating kube-proxy config."
             )
@@ -4661,7 +4673,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryMetrics(enabled=True))
         metrics_port = self.context.get_opentelemetry_metrics_port()
         if metrics_port:
-            otlp_metrics_config.port = metrics_port
+            otlp_metrics_config.http_port = metrics_port
 
         mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics = otlp_metrics_config
 
@@ -4674,31 +4686,32 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         else:
             mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics.enabled = False
             # Clear the port when disabling OpenTelemetry metrics
-            mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics.port = None
+            mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics.http_port = None
 
     def _setup_opentelemetry_logs(self, mc: ManagedCluster) -> None:
         """Set up OpenTelemetry logs configuration."""
         self._ensure_app_monitoring_profile(mc)
 
-        otlp_logs_config = self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogs(enabled=True)
+        otel_logs_cls = self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogsAndTraces
+        otlp_logs_config = otel_logs_cls(enabled=True)
         logs_port = self.context.get_opentelemetry_logs_port()
         if logs_port:
-            otlp_logs_config.port = logs_port
+            otlp_logs_config.http_port = logs_port
 
-        mc.azure_monitor_profile.app_monitoring.open_telemetry_logs = otlp_logs_config
+        mc.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces = otlp_logs_config
 
     def _disable_opentelemetry_logs(self, mc: ManagedCluster) -> None:
         """Disable OpenTelemetry logs configuration."""
         if (mc.azure_monitor_profile is not None and
                 mc.azure_monitor_profile.app_monitoring is not None):
-            if mc.azure_monitor_profile.app_monitoring.open_telemetry_logs is None:
-                mc.azure_monitor_profile.app_monitoring.open_telemetry_logs = (
-                    self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogs(enabled=False)
+            if mc.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces is None:
+                mc.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces = (
+                    self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogsAndTraces(enabled=False)
                 )
             else:
-                mc.azure_monitor_profile.app_monitoring.open_telemetry_logs.enabled = False
+                mc.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.enabled = False
                 # Clear the port when disabling OpenTelemetry logs
-                mc.azure_monitor_profile.app_monitoring.open_telemetry_logs.port = None
+                mc.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.http_port = None
 
     def set_up_azure_monitor_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up azure monitor profile for the ManagedCluster object.
@@ -5046,7 +5059,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         self._ensure_mc(mc)
 
         if self.context.get_enable_static_egress_gateway():
-            if not mc.network_profile:
+            if mc.network_profile is None:
                 raise UnknownError(
                     "Unexpectedly get an empty network profile in the process of "
                     "updating enable-static-egress-gateway config."
@@ -5508,14 +5521,17 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 )
 
     def put_mc(self, mc: ManagedCluster) -> ManagedCluster:
+        etag, match_condition = _get_etag_match_condition(
+            self.context.get_if_match(), self.context.get_if_none_match()
+        )
         if self.check_is_postprocessing_required(mc):
             # send request
             poller = self.client.begin_create_or_update(
                 resource_group_name=self.context.get_resource_group_name(),
                 resource_name=self.context.get_name(),
                 parameters=mc,
-                if_match=self.context.get_if_match(),
-                if_none_match=self.context.get_if_none_match(),
+                etag=etag,
+                match_condition=match_condition,
                 headers=self.context.get_aks_custom_headers(),
             )
             self.immediate_processing_after_request(mc)
@@ -5529,8 +5545,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 resource_group_name=self.context.get_resource_group_name(),
                 resource_name=self.context.get_name(),
                 parameters=mc,
-                if_match=self.context.get_if_match(),
-                if_none_match=self.context.get_if_none_match(),
+                etag=etag,
+                match_condition=match_condition,
                 headers=self.context.get_aks_custom_headers(),
             )
         return cluster
@@ -5554,12 +5570,28 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             return mc
         for agentpool in mc.agent_pool_profiles:
             # Check if agentpool is in ManagedSystem mode and handle special case
-            if agentpool.mode == CONST_NODEPOOL_MODE_MANAGEDSYSTEM:
-                # Make sure all other attributes are None
+            if agentpool.mode != CONST_NODEPOOL_MODE_MANAGEDSYSTEM:
+                continue
+            # Make sure all other attributes are None
+            # Check properties sub-model first (AgentPool), then flat fields (ManagedClusterAgentPoolProfile)
+            props = getattr(agentpool, 'properties', None)
+            rest_fields = getattr(props, '_attr_to_rest_field', None) if props is not None else None
+            if rest_fields is not None:
+                target, fields = props, rest_fields
+            else:
+                rest_fields = getattr(agentpool, '_attr_to_rest_field', None)
+                if rest_fields is not None and 'mode' in rest_fields:
+                    target, fields = agentpool, rest_fields
+                else:
+                    target, fields = None, None
+            if target is not None:
+                for attr in list(fields.keys()):
+                    if attr not in ('name', 'mode'):
+                        setattr(agentpool, attr, None)
+            else:
                 for attr in vars(agentpool):
-                    if attr != 'name' and attr != 'mode' and not attr.startswith('_'):
-                        if hasattr(agentpool, attr):
-                            setattr(agentpool, attr, None)
+                    if attr not in ('name', 'mode') and not attr.startswith('_') and hasattr(agentpool, attr):
+                        setattr(agentpool, attr, None)
         return mc
 
     def init_models(self) -> None:
@@ -6312,7 +6344,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         """
         self._ensure_mc(mc)
 
-        if not mc.network_profile:
+        if mc.network_profile is None:
             raise UnknownError(
                 "Unexpectedly get an empty network profile in the process of updating load balancer profile."
             )
@@ -6344,7 +6376,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         """
         self._ensure_mc(mc)
 
-        if not mc.network_profile:
+        if mc.network_profile is None:
             raise UnknownError(
                 "Unexpectedly get an empty network profile in the process of updating nat gateway profile."
             )
@@ -6433,7 +6465,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         """
         self._ensure_mc(mc)
 
-        if not mc.network_profile:
+        if mc.network_profile is None:
             raise UnknownError(
                 "Unexpectedly get an empty network profile in the process of updating kube-proxy config."
             )
@@ -6773,7 +6805,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryMetrics(enabled=True)
             )
             if self.context.get_opentelemetry_metrics_port():
-                otlp_metrics_config.port = self.context.get_opentelemetry_metrics_port()
+                otlp_metrics_config.http_port = self.context.get_opentelemetry_metrics_port()
 
             mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics = otlp_metrics_config
 
@@ -6787,11 +6819,12 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 )
 
             # Configure OpenTelemetry logs with custom port if provided
-            otlp_logs_config = self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogs(enabled=True)
+            otel_logs_cls = self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogsAndTraces
+            otlp_logs_config = otel_logs_cls(enabled=True)
             if self.context.get_opentelemetry_logs_port():
-                otlp_logs_config.port = self.context.get_opentelemetry_logs_port()
+                otlp_logs_config.http_port = self.context.get_opentelemetry_logs_port()
 
-            mc.azure_monitor_profile.app_monitoring.open_telemetry_logs = otlp_logs_config
+            mc.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces = otlp_logs_config
 
         if self.context.get_disable_azure_monitor_app_monitoring():
             if mc.azure_monitor_profile is None:
@@ -6823,7 +6856,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 )
             else:
                 mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics.enabled = False
-                mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics.port = None
+                mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics.http_port = None
 
         # Handle disable OpenTelemetry logs updates
         if self.context.get_disable_opentelemetry_logs():
@@ -6835,13 +6868,13 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 )
 
             # Create or update the logs config, setting enabled=False and clearing the port
-            if mc.azure_monitor_profile.app_monitoring.open_telemetry_logs is None:
-                mc.azure_monitor_profile.app_monitoring.open_telemetry_logs = (
-                    self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogs(enabled=False)
+            if mc.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces is None:
+                mc.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces = (
+                    self.models.ManagedClusterAzureMonitorProfileAppMonitoringOpenTelemetryLogsAndTraces(enabled=False)
                 )
             else:
-                mc.azure_monitor_profile.app_monitoring.open_telemetry_logs.enabled = False
-                mc.azure_monitor_profile.app_monitoring.open_telemetry_logs.port = None
+                mc.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.enabled = False
+                mc.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.http_port = None
 
         # Handle standalone port updates for OpenTelemetry metrics
         if (self.context.get_opentelemetry_metrics_port() and
@@ -6853,7 +6886,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics and
                     mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics.enabled):
                 metrics_port = self.context.get_opentelemetry_metrics_port()
-                mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics.port = metrics_port
+                mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics.http_port = metrics_port
 
         # Handle standalone port updates for OpenTelemetry logs
         if (self.context.get_opentelemetry_logs_port() and
@@ -6862,10 +6895,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             # Only update port if OpenTelemetry logs is already enabled and we're not changing the enabled state
             if (mc.azure_monitor_profile and
                     mc.azure_monitor_profile.app_monitoring and
-                    mc.azure_monitor_profile.app_monitoring.open_telemetry_logs and
-                    mc.azure_monitor_profile.app_monitoring.open_telemetry_logs.enabled):
+                    mc.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces and
+                    mc.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.enabled):
                 logs_port = self.context.get_opentelemetry_logs_port()
-                mc.azure_monitor_profile.app_monitoring.open_telemetry_logs.port = logs_port
+                mc.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.http_port = logs_port
 
         # TODO: should remove get value from enable_azuremonitormetrics once the option is removed
         # TODO: should remove get value from disable_azuremonitormetrics once the option is removed
@@ -7508,7 +7541,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         self._ensure_mc(mc)
 
         if self.context.get_enable_static_egress_gateway():
-            if not mc.network_profile:
+            if mc.network_profile is None:
                 raise UnknownError(
                     "Unexpectedly get an empty network profile in the process of updating static-egress-gateway config."
                 )
@@ -7519,7 +7552,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             mc.network_profile.static_egress_gateway_profile.enabled = True
 
         if self.context.get_disable_static_egress_gateway():
-            if not mc.network_profile:
+            if mc.network_profile is None:
                 raise UnknownError(
                     "Unexpectedly get an empty network profile in the process of updating static-egress-gateway config."
                 )
@@ -7772,8 +7805,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         opentelemetry_logs_enabled = (
             mc.azure_monitor_profile and
             mc.azure_monitor_profile.app_monitoring and
-            mc.azure_monitor_profile.app_monitoring.open_telemetry_logs and
-            mc.azure_monitor_profile.app_monitoring.open_telemetry_logs.enabled
+            mc.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces and
+            mc.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.enabled
         )
 
         if opentelemetry_logs_enabled and not self.context.get_yes():
@@ -7834,9 +7867,9 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         # Also disable OpenTelemetry logs when disabling Azure Monitor logs
         if opentelemetry_logs_enabled:
-            mc.azure_monitor_profile.app_monitoring.open_telemetry_logs.enabled = False
+            mc.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.enabled = False
             # Clear the port when disabling OpenTelemetry logs
-            mc.azure_monitor_profile.app_monitoring.open_telemetry_logs.port = None
+            mc.azure_monitor_profile.app_monitoring.open_telemetry_logs_and_traces.http_port = None
 
     def _disable_azure_monitor_metrics(self, mc: ManagedCluster) -> None:
         """Disable Azure Monitor metrics configuration."""
@@ -7878,7 +7911,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         if opentelemetry_metrics_enabled:
             mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics.enabled = False
             # Clear the port when disabling OpenTelemetry metrics
-            mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics.port = None
+            mc.azure_monitor_profile.app_monitoring.open_telemetry_metrics.http_port = None
 
     def update_addon_profiles(self, mc: ManagedCluster) -> ManagedCluster:
         """Update addon profiles for the ManagedCluster object.
@@ -8249,14 +8282,17 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 raise CLIError('Keyvault secrets provider addon must be enabled to attach keyvault.\n')
 
     def put_mc(self, mc: ManagedCluster) -> ManagedCluster:
+        etag, match_condition = _get_etag_match_condition(
+            self.context.get_if_match(), self.context.get_if_none_match()
+        )
         if self.check_is_postprocessing_required(mc):
             # send request
             poller = self.client.begin_create_or_update(
                 resource_group_name=self.context.get_resource_group_name(),
                 resource_name=self.context.get_name(),
                 parameters=mc,
-                if_match=self.context.get_if_match(),
-                if_none_match=self.context.get_if_none_match(),
+                etag=etag,
+                match_condition=match_condition,
                 headers=self.context.get_aks_custom_headers(),
             )
             self.immediate_processing_after_request(mc)
@@ -8270,8 +8306,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 resource_group_name=self.context.get_resource_group_name(),
                 resource_name=self.context.get_name(),
                 parameters=mc,
-                if_match=self.context.get_if_match(),
-                if_none_match=self.context.get_if_none_match(),
+                etag=etag,
+                match_condition=match_condition,
                 headers=self.context.get_aks_custom_headers(),
             )
 
