@@ -14,6 +14,10 @@ Pending
 * Update the minimum required cli core version to `2.76.0` (actually since `20.0.0b3`).
 * `az aks upgrade`: Add `--k8s-support-plan` and `--tier` flag support to allow cluster support plan and tier configuration during cluster upgrade.
 
+21.0.0b1
++++++++
+* [Breaking Change] `az aks create/update`: Remove `--disk-driver-version` option for AzureDisk CSI Driver.
+
 20.0.0b6
 ++++++
 * `az aks loadbalancer update`: Allow updating `--primary-agent-pool-name` for load balancer configurations.

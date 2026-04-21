@@ -421,9 +421,6 @@ helps['aks create'] = f"""
         - name: --disable-disk-driver
           type: bool
           short-summary: Disable AzureDisk CSI Driver.
-        - name: --disk-driver-version
-          type: string
-          short-summary: Specify AzureDisk CSI Driver version.
         - name: --disable-file-driver
           type: bool
           short-summary: Disable AzureFile CSI Driver.
@@ -1131,9 +1128,6 @@ helps['aks update'] = """
           long-summary: |
               Network dataplane used in the Kubernetes cluster.
               Specify "azure" to use the Azure dataplane (default) or "cilium" to enable Cilium dataplane.
-        - name: --disk-driver-version
-          type: string
-          short-summary: Specify AzureDisk CSI Driver version.
         - name: --disable-disk-driver
           type: bool
           short-summary: Disable AzureDisk CSI Driver.
