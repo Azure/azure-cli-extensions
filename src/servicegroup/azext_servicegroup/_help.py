@@ -73,3 +73,12 @@ helps['service-group list-ancestors'] = """
         text: >
             az service-group list-ancestors --name MyServiceGroup
 """
+
+helps['service-group wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the service group is met.
+    examples:
+      - name: Wait until a service group is successfully provisioned
+        text: >
+            az service-group wait --name MyServiceGroup --created
+"""
