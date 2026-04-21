@@ -1076,8 +1076,8 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
 
     def get_update_enable_disable_cluster_autoscaler_and_min_max_count_vmsize_vms(
         self,
-    ) -> Tuple[bool, bool, bool, Union[int, None], Union[int, None], str]:
-        """Obtain the value of update_cluster_autoscaler, enable_cluster_autoscaler, disable_cluster_autoscaler,
+    ) -> Tuple[bool, bool, Union[int, None], Union[int, None], str]:
+        """Obtain the value of enable_cluster_autoscaler, disable_cluster_autoscaler,
         min_count and max_count, and vm size.
 
         This function is for VMs agentpool only.
@@ -1091,8 +1091,8 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         If disable_cluster_autoscaler is specified and autoscaler is not enabled in `ap`,
         it will output warning messages and exit with code 0.
 
-        :return: a tuple containing six elements: update_cluster_autoscaler of bool type, enable_cluster_autoscaler
-        of bool type, disable_cluster_autoscaler of bool type, min_count of int type or None, max_count of int type
+        :return: a tuple containing five elements: enable_cluster_autoscaler of bool type,
+        disable_cluster_autoscaler of bool type, min_count of int type or None, max_count of int type
         or None, and vm_size of str type
         """
         update_cluster_autoscaler = self.raw_param.get("update_cluster_autoscaler", False)
@@ -1185,7 +1185,6 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
                 vm_size = manual_scale_profile[0].size
 
         return (
-            update_cluster_autoscaler,
             enable_cluster_autoscaler,
             disable_cluster_autoscaler,
             min_count,
@@ -2102,7 +2101,6 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
             return agentpool
 
         (
-            update_cluster_autoscaler,
             enable_cluster_autoscaler,
             disable_cluster_autoscaler,
             min_count,
