@@ -2375,6 +2375,20 @@ def load_arguments(self, _):
     with self.argument_context("aks nodepool manual-scale delete") as c:
         c.argument("current_vm_sizes", is_preview=True)
 
+    with self.argument_context("aks nodepool auto-scale add") as c:
+        c.argument("node_vm_size", is_preview=True)
+        c.argument("min_count", type=int, is_preview=True)
+        c.argument("max_count", type=int, is_preview=True)
+
+    with self.argument_context("aks nodepool auto-scale update") as c:
+        c.argument("current_node_vm_size", is_preview=True)
+        c.argument("node_vm_size", is_preview=True)
+        c.argument("min_count", type=int, is_preview=True)
+        c.argument("max_count", type=int, is_preview=True)
+
+    with self.argument_context("aks nodepool auto-scale delete") as c:
+        c.argument("current_node_vm_size", is_preview=True)
+
     with self.argument_context("aks nodepool get-rollback-versions") as c:
         pass  # Uses common nodepool parameters
 

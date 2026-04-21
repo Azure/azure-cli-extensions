@@ -23056,17 +23056,34 @@ spec:
             self.check('virtualMachinesProfile.scale.autoscale[0].maxCount', 3),
         ])
 
-        # update a VirtualMachines node pool with autoscaler enabled to change the VM size and min/max node count.
-        update_nodepool_cmd = 'aks nodepool update -g {resource_group} --cluster-name {name} -n {nodepool_name} ' \
-                              '--node-vm-size {node_vm_size2} ' \
-                              '--update-cluster-autoscaler ' \
-                              '--min-count 1 --max-count 5'
-        self.cmd(update_nodepool_cmd, checks=[
+        # update an existing autoscale profile using auto-scale update
+        update_autoscale_cmd = 'aks nodepool auto-scale update -g {resource_group} --cluster-name {name} -n {nodepool_name} ' \
+                               '--current-node-vm-size {node_vm_size1} ' \
+                               '--node-vm-size {node_vm_size2} ' \
+                               '--min-count 1 --max-count 5'
+        self.cmd(update_autoscale_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('virtualMachinesProfile.scale.autoscale[0].size', 'standard_d4s_v3'),
             self.check('virtualMachinesProfile.scale.autoscale[0].minCount', 1),
             self.check('virtualMachinesProfile.scale.autoscale[0].maxCount', 5),
         ])
+
+        # add a second autoscale profile
+        add_autoscale_cmd = 'aks nodepool auto-scale add -g {resource_group} --cluster-name {name} -n {nodepool_name} ' \
+                            '--node-vm-size {node_vm_size1} ' \
+                            '--min-count 1 --max-count 3'
+        self.cmd(add_autoscale_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('virtualMachinesProfile.scale.autoscale[1].size', 'standard_d2s_v3'),
+            self.check('virtualMachinesProfile.scale.autoscale[1].minCount', 1),
+            self.check('virtualMachinesProfile.scale.autoscale[1].maxCount', 3),
+        ])
+
+        # delete the second autoscale profile
+        delete_autoscale_cmd = 'aks nodepool auto-scale delete -g {resource_group} --cluster-name {name} -n {nodepool_name} ' \
+                               '--current-node-vm-size {node_vm_size1}'
+        np = self.cmd(delete_autoscale_cmd).get_output_in_json()
+        assert len(np["virtualMachinesProfile"]["scale"]["autoscale"]) == 1
 
         # disable autoscaler (auto to manual)
         disable_autoscaler_cmd = 'aks nodepool update -g {resource_group} --cluster-name {name} -n {nodepool_name} ' \
