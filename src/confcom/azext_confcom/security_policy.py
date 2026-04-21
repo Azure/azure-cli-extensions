@@ -497,9 +497,12 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
                 # verify and populate the working directory property
                 if not image.get_working_dir() and image_info:
                     workingDir = image_info.get("WorkingDir")
-                    image.set_working_dir(
-                        workingDir if workingDir else config.DEFAULT_WORKING_DIR
-                    )
+                    if not workingDir:
+                        workingDir = (
+                            "C:\\" if self._platform and self._platform.startswith("windows")
+                            else config.DEFAULT_WORKING_DIR
+                        )
+                    image.set_working_dir(workingDir)
 
                 if (
                     isinstance(image, UserContainerImage) or individual_image
