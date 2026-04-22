@@ -157,6 +157,7 @@ class Create(AAZCommand):
         """Auto-create a site reference linking the site to this context."""
         import logging
         import re
+        import sys
         logger = logging.getLogger(__name__)
 
         site_id = str(self.ctx.args.site_id)
@@ -169,7 +170,7 @@ class Create(AAZCommand):
         # Sanitize: only alphanumeric and hyphens, 3-61 chars
         ref_name = re.sub(r'[^a-zA-Z0-9-]', '-', ref_name)[:61]
 
-        logger.info("Creating site reference '%s' -> %s", ref_name, site_id)
+        print(f"├── site-reference Creating '{ref_name}'...", file=sys.stderr)
 
         try:
             from azext_workload_orchestration.onboarding.utils import invoke_cli_command, CmdProxy
@@ -181,7 +182,7 @@ class Create(AAZCommand):
                 "--site-reference-name", ref_name,
                 "--site-id", site_id,
             ])
-            logger.info("Site reference '%s' created successfully", ref_name)
+            print(f"└── site-reference Created ✓", file=sys.stderr)
         except Exception as exc:
             logger.warning("Site reference creation failed: %s", exc)
             raise CLIError(
