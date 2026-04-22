@@ -612,8 +612,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             outbound_type = CONST_OUTBOUND_TYPE_LOAD_BALANCER
             sku_name = self.get_sku_name()
             is_vnet_subnet_id_empty = self.get_vnet_subnet_id() in ["", None]
-            # BYO HOBO (hosted-system) scenarios provide a VNet via --system-node-vnet-subnet-id /
-            # --node-vnet-subnet-id instead of --vnet-subnet-id.
+            # BYO HOBO (hosted-system) scenarios provide a VNet via --system-node-subnet-id /
+            # --node-subnet-id instead of --vnet-subnet-id.
             hobo_byo_subnets = self.has_byo_hobo_subnets()
             if (
                 sku_name is not None and sku_name == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC and
@@ -646,7 +646,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                     CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
                 ]:
                     # BYO HOBO scenarios satisfy the VNet requirement via
-                    # --system-node-vnet-subnet-id / --node-vnet-subnet-id
+                    # --system-node-subnet-id / --node-subnet-id
                     # instead of --vnet-subnet-id.
                     if (
                         self.get_vnet_subnet_id() in ["", None] and
@@ -2012,12 +2012,12 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         if enable_validation:
             if self.decorator_mode == DecoratorMode.CREATE:
                 # Cross-validate the BYO VNet HOBO subnet trio on every CREATE so misuse
-                # (e.g. passing --system-node-vnet-subnet-id without --enable-hosted-system)
+                # (e.g. passing --system-node-subnet-id without --enable-hosted-system)
                 # is rejected up front rather than silently dropped.
                 self.validate_byo_hobo_subnet_trio()
                 vnet_subnet_id = self.get_vnet_subnet_id()
-                # For BYO VNet HOBO automatic clusters, --system-node-vnet-subnet-id and
-                # --node-vnet-subnet-id replace --vnet-subnet-id.
+                # For BYO VNet HOBO automatic clusters, --system-node-subnet-id and
+                # --node-subnet-id replace --vnet-subnet-id.
                 if (
                     apiserver_subnet_id and
                     vnet_subnet_id is None and
@@ -4179,8 +4179,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             raise RequiredArgumentMissingError('"--disable-hosted-system" requires "--sku automatic".')
         return disable_hosted_system
 
-    def get_system_node_vnet_subnet_id(self) -> Union[str, None]:
-        """Obtain the value of system_node_vnet_subnet_id.
+    def get_system_node_subnet_id(self) -> Union[str, None]:
+        """Obtain the value of system_node_subnet_id.
 
         Validates that BYO VNet subnet flags are used together with
         --enable-hosted-system and that the full triple
@@ -4188,18 +4188,18 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         :return: str or None
         """
-        system_node_vnet_subnet_id = self.raw_param.get("system_node_vnet_subnet_id")
+        system_node_subnet_id = self.raw_param.get("system_node_subnet_id")
         self.validate_byo_hobo_subnet_trio()
-        return system_node_vnet_subnet_id
+        return system_node_subnet_id
 
-    def get_node_vnet_subnet_id(self) -> Union[str, None]:
-        """Obtain the value of node_vnet_subnet_id.
+    def get_node_subnet_id(self) -> Union[str, None]:
+        """Obtain the value of node_subnet_id.
 
         :return: str or None
         """
-        node_vnet_subnet_id = self.raw_param.get("node_vnet_subnet_id")
+        node_subnet_id = self.raw_param.get("node_subnet_id")
         self.validate_byo_hobo_subnet_trio()
-        return node_vnet_subnet_id
+        return node_subnet_id
 
     def has_byo_hobo_subnets(self) -> bool:
         """Return True when at least one of the BYO HOBO node subnet flags is set.
@@ -4209,21 +4209,21 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         non-HOBO apiserver-vnet-integration clusters as BYO HOBO.
         """
         return bool(
-            self.raw_param.get("system_node_vnet_subnet_id") or
-            self.raw_param.get("node_vnet_subnet_id")
+            self.raw_param.get("system_node_subnet_id") or
+            self.raw_param.get("node_subnet_id")
         )
 
     def validate_byo_hobo_subnet_trio(self) -> None:
         """Cross-validate the BYO VNet HOBO subnet flags.
 
-        Rule: if any of --system-node-vnet-subnet-id, --node-vnet-subnet-id, or
+        Rule: if any of --system-node-subnet-id, --node-subnet-id, or
         --apiserver-subnet-id is set together with --enable-hosted-system, then
         all three must be set (SDK requires all three subnets to share a VNet).
         Any of these flags set without --enable-hosted-system is flagged so
         the user doesn't silently get a non-HOBO cluster with the wrong shape.
         """
-        system_node_vnet_subnet_id = self.raw_param.get("system_node_vnet_subnet_id")
-        node_vnet_subnet_id = self.raw_param.get("node_vnet_subnet_id")
+        system_node_subnet_id = self.raw_param.get("system_node_subnet_id")
+        node_subnet_id = self.raw_param.get("node_subnet_id")
         apiserver_subnet_id = self.raw_param.get("apiserver_subnet_id")
         enable_hosted_system = self.raw_param.get("enable_hosted_system")
 
@@ -4232,24 +4232,24 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # require HOBO on it when one of the other two is also set.
         if self.has_byo_hobo_subnets() and not enable_hosted_system:
             raise RequiredArgumentMissingError(
-                '"--system-node-vnet-subnet-id" and "--node-vnet-subnet-id" '
+                '"--system-node-subnet-id" and "--node-subnet-id" '
                 'require "--enable-hosted-system".'
             )
 
         if enable_hosted_system and (
-            system_node_vnet_subnet_id or node_vnet_subnet_id or apiserver_subnet_id
+            system_node_subnet_id or node_subnet_id or apiserver_subnet_id
         ):
             missing = []
-            if not system_node_vnet_subnet_id:
-                missing.append("--system-node-vnet-subnet-id")
-            if not node_vnet_subnet_id:
-                missing.append("--node-vnet-subnet-id")
+            if not system_node_subnet_id:
+                missing.append("--system-node-subnet-id")
+            if not node_subnet_id:
+                missing.append("--node-subnet-id")
             if not apiserver_subnet_id:
                 missing.append("--apiserver-subnet-id")
             if missing:
                 raise RequiredArgumentMissingError(
                     "BYO VNet for hosted-system clusters requires all of "
-                    "--system-node-vnet-subnet-id, --node-vnet-subnet-id, and "
+                    "--system-node-subnet-id, --node-subnet-id, and "
                     "--apiserver-subnet-id to be provided together. "
                     f"Missing: {', '.join(missing)}."
                 )
@@ -5533,12 +5533,12 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             # BYO VNet: plumb subnet IDs through to the SDK model. All three
             # subnets (system-node / node / apiserver) must share a VNet, but
             # the server enforces that check.
-            system_node_vnet_subnet_id = self.context.get_system_node_vnet_subnet_id()
-            node_vnet_subnet_id = self.context.get_node_vnet_subnet_id()
-            if system_node_vnet_subnet_id:
-                mc.hosted_system_profile.system_node_subnet_id = system_node_vnet_subnet_id
-            if node_vnet_subnet_id:
-                mc.hosted_system_profile.node_subnet_id = node_vnet_subnet_id
+            system_node_subnet_id = self.context.get_system_node_subnet_id()
+            node_subnet_id = self.context.get_node_subnet_id()
+            if system_node_subnet_id:
+                mc.hosted_system_profile.system_node_subnet_id = system_node_subnet_id
+            if node_subnet_id:
+                mc.hosted_system_profile.node_subnet_id = node_subnet_id
 
             # Remove default agent pool profiles when hosted system profile is enabled
             if mc.agent_pool_profiles is not None:
@@ -5557,7 +5557,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         Base behavior: if ``--vnet-subnet-id`` is provided, grant Network Contributor on
         that subnet to the cluster identity (SP or UAMI). BYO HOBO uses three separate
-        subnets (``--system-node-vnet-subnet-id``, ``--node-vnet-subnet-id``,
+        subnets (``--system-node-subnet-id``, ``--node-subnet-id``,
         ``--apiserver-subnet-id``) instead of ``--vnet-subnet-id``; without this
         override, cluster creation fails with ``ResourceMissingPermissionError`` on the
         BYO subnets.
@@ -5567,7 +5567,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         for each. Skipping is honored via ``--skip-subnet-role-assignment``.
         """
         # Fail-fast validation BEFORE any role assignment runs, so a malformed BYO HOBO
-        # create (e.g. partial subnet trio, --system-node-vnet-subnet-id without
+        # create (e.g. partial subnet trio, --system-node-subnet-id without
         # --enable-hosted-system) cannot leave residual Network Contributor grants on
         # customer subnets. Trio validation is otherwise invoked later through
         # set_up_api_server_access_profile, which executes AFTER this method in the base
@@ -5587,8 +5587,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         hobo_subnets = []
         seen = set()
         for raw_key in (
-            "system_node_vnet_subnet_id",
-            "node_vnet_subnet_id",
+            "system_node_subnet_id",
+            "node_subnet_id",
             "apiserver_subnet_id",
         ):
             subnet_id = self.context.raw_param.get(raw_key)

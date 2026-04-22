@@ -1438,8 +1438,8 @@ def aks_create(
     enable_app_routing_istio=False,
     enable_hosted_system=False,
     disable_hosted_system=False,
-    system_node_vnet_subnet_id=None,
-    node_vnet_subnet_id=None,
+    system_node_subnet_id=None,
+    node_subnet_id=None,
     control_plane_scaling_size=None,
     # health monitor
     enable_continuous_control_plane_and_addon_monitor=False,
