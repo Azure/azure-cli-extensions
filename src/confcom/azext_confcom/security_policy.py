@@ -499,7 +499,8 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
                     workingDir = image_info.get("WorkingDir")
                     if not workingDir:
                         workingDir = (
-                            "C:\\" if self._platform and self._platform.startswith("windows")
+                            config.DEFAULT_WORKING_DIR_WINDOWS
+                            if self._platform and self._platform.startswith("windows")
                             else config.DEFAULT_WORKING_DIR
                         )
                     image.set_working_dir(workingDir)
