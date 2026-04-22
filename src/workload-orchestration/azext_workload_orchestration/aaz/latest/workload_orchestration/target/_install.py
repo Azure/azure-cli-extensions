@@ -163,7 +163,18 @@ class Install(AAZCommand):
 
     @register_callback
     def post_operations(self):
-        pass
+        # Print Install ✓ after AAZ LRO completes (only when deploy chain was used)
+        args = self.ctx.args
+        has_template = (
+            args.solution_template_version_id
+            or args.solution_template_name
+        )
+        if has_template:
+            import sys
+            print("└── Install ✓\n", file=sys.stderr)
+
+            target_name = str(args.target_name) if args.target_name else ""
+            print(f"✅ Deployment complete for target '{target_name}'", file=sys.stderr)
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)

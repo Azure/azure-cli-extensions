@@ -221,8 +221,7 @@ def target_deploy_pre_install(
     _do_publish(cmd, base_url, sv_id)
     _log("Publish", "✓")
 
-    # Step 3 (Install) is handled by AAZ LRO
-    _log("Install")
+    # Step 3 (Install) is handled by AAZ LRO — tick printed in post_operations
 
     return sv_id
 
