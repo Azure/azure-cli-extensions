@@ -335,11 +335,12 @@ def _arm_get_regional(cmd, location, resource_id, api_version):
     return resp
 
 
-def _wait_for_sg_rbac(cmd, location, sg_id, sg_name, max_retries=6, wait_sec=10):
+def _wait_for_sg_rbac(cmd, location, sg_id, sg_name, max_retries=12, wait_sec=10):
     """Wait for RBAC to propagate on a newly created ServiceGroup.
 
     After SG creation, it takes time for permissions to propagate.
     We poll by trying to list sites under the SG until it succeeds.
+    Waits up to 120s (12 x 10s).
     """
     import time
 
@@ -355,9 +356,9 @@ def _wait_for_sg_rbac(cmd, location, sg_id, sg_name, max_retries=6, wait_sec=10)
                 logger.debug("RBAC not ready (attempt %d/%d), waiting %ds...", attempt + 1, max_retries, wait_sec)
                 time.sleep(wait_sec)
             else:
-                logger.warning(
-                    "RBAC propagation timeout for SG '%s' after %ds. Continuing anyway...",
-                    sg_name, max_retries * wait_sec
+                raise CLIInternalError(
+                    f"RBAC propagation timeout for ServiceGroup '{sg_name}' after {max_retries * wait_sec}s. "
+                    f"Retry the command — the ServiceGroup exists, RBAC just needs more time."
                 )
 
 
