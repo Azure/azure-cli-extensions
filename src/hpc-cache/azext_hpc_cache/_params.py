@@ -8,7 +8,6 @@
 
 from azure.cli.core.commands.parameters import (
     tags_type,
-    resource_group_name_type,
     get_location_type
 )
 from ._validators import process_container_resource, JunctionAddAction, validate_storage_account_name_or_id

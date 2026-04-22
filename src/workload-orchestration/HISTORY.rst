@@ -2,6 +2,32 @@
 
 Release History
 ===============
+5.1.1
+++++++
+* Resolved solution template name to uniqueIdentifier for ``az workload-orchestration target solution-revision-list`` and ``az workload-orchestration target solution-instance-list``
+* Added shared ``_target_helper.py`` for reusable solution template resolution logic
+* Added ``az workload-orchestration support create-bundle`` command for troubleshooting Day 0 (installation) and Day N (runtime) issues on 3rd-party Kubernetes clusters:
+  * Collects cluster info, node details, pod/deployment/service/event descriptions across configurable namespaces
+  * Collects container logs (current + previous for crash-looping pods) with configurable tail lines
+  * Runs prerequisite validation checks across 10 categories
+  * Generates a zip bundle for sharing with Microsoft support
+  * Includes retry with exponential backoff and per-call timeout for resilient K8s API access
+
+5.1.0
+++++++
+* Added new target solution management command:
+  * ``az workload-orchestration target unstage`` - Unstage a solution version from a target
+* Added double confirmation before ``az workload-orchestration target remove-revision`` to prevent accidental deletions
+
+5.0.0
+++++++
+* November 2025 release
+
+4.1.0
+++++++
+* Added currentStage and latestActionTriggeredBy fields in response of below commands:
+  * ``az workload-orchestration target review`` - Post request to review configuration.
+  * ``az workload-orchestration target solution-revision-list`` - List all revisions of a solution deployed on a target.
 
 4.0.0
 ++++++

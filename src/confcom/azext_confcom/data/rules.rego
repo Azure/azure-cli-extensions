@@ -54,6 +54,7 @@ default AllowRequestsFailingPolicy := false
 # Constants
 S_NAME_KEY = "io.kubernetes.cri.sandbox-name"
 S_NAMESPACE_KEY = "io.kubernetes.cri.sandbox-namespace"
+BUNDLE_ID = "[a-z0-9]{64}"
 
 CreateContainerRequest {
     # Check if the input request should be rejected even before checking the
@@ -467,6 +468,9 @@ allow_by_bundle_or_sandbox_id(p_oci, i_oci, p_storages, i_storages) {
 
     bundle_path := i_oci.Annotations["io.katacontainers.pkg.oci.bundle_path"]
     bundle_id := replace(bundle_path, "/run/containerd/io.containerd.runtime.v2.task/k8s.io/", "")
+
+    bundle_id_format := concat("", ["^", BUNDLE_ID, "$"])
+    regex.match(bundle_id_format, bundle_id)
 
     key := "io.kubernetes.cri.sandbox-id"
 
@@ -1226,7 +1230,7 @@ CopyFileRequest {
     some regex1 in policy_data.request_defaults.CopyFileRequest
     regex2 := replace(regex1, "$(sfprefix)", policy_data.common.sfprefix)
     regex3 := replace(regex2, "$(cpath)", policy_data.common.cpath)
-    regex4 := replace(regex3, "$(bundle-id)", "[a-z0-9]{64}")
+    regex4 := replace(regex3, "$(bundle-id)", BUNDLE_ID)
     print("CopyFileRequest: regex4 =", regex4)
 
     regex.match(regex4, input.path)

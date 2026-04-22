@@ -2,6 +2,10 @@
 Release History
 ===============
 
+1.6.2
+* Added throughput bucketing.
++++++++
+
 1.6.1
 +++++
 * Fix SQL container throughput update to preserve existing throughput buckets when not explicitly specified.

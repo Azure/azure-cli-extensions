@@ -160,3 +160,20 @@ Release History
 ++++++
 * Upgrade SDK version to 2025-08-01-preview
 * Add Fleet Managed Namespace support
+
+
+1.8.1
+++++++
+* Ensure role assignment is created for private fleets before fleet creation.
+
+1.8.2
+++++++
+* Fix fleet namespace get-credentials command with fleet member parameter.
+
+1.8.3
+++++++
+* Add automatic kubelogin conversion to Azure CLI authentication for fleet get-credentials command.
+
+1.9.0
+++++++
+* Add 2026-02-01-preview API Version with UpdateRun MaxConcurrency support. Add fix for ControlPlaneOnly upgrade type requiring no node image selection. 

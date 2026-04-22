@@ -23,9 +23,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/baremetalmachines/{}", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/baremetalmachines/{}", "2026-01-01-preview"],
         ]
     }
 
@@ -173,7 +173,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-01-01-preview",
                     required=True,
                 ),
             }
@@ -233,460 +233,462 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_bare_metal_machine_read(cls._schema_on_200)
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.etag = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.extended_location = AAZObjectType(
+                serialized_name="extendedLocation",
+                flags={"required": True},
+            )
+            _schema_on_200.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.location = AAZStrType(
+                flags={"required": True},
+            )
+            _schema_on_200.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.properties = AAZObjectType(
+                flags={"required": True, "client_flatten": True},
+            )
+            _schema_on_200.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _schema_on_200.tags = AAZDictType()
+            _schema_on_200.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            extended_location = cls._schema_on_200.extended_location
+            extended_location.name = AAZStrType(
+                flags={"required": True},
+            )
+            extended_location.type = AAZStrType(
+                flags={"required": True},
+            )
+
+            properties = cls._schema_on_200.properties
+            properties.action_states = AAZListType(
+                serialized_name="actionStates",
+                flags={"read_only": True},
+            )
+            properties.associated_resource_ids = AAZListType(
+                serialized_name="associatedResourceIds",
+                flags={"read_only": True},
+            )
+            properties.bmc_connection_string = AAZStrType(
+                serialized_name="bmcConnectionString",
+                flags={"required": True},
+            )
+            properties.bmc_credentials = AAZObjectType(
+                serialized_name="bmcCredentials",
+                flags={"required": True},
+            )
+            properties.bmc_ipv4_address = AAZStrType(
+                serialized_name="bmcIpv4Address",
+                flags={"read_only": True},
+            )
+            properties.bmc_ipv6_address = AAZStrType(
+                serialized_name="bmcIpv6Address",
+                flags={"read_only": True},
+            )
+            properties.bmc_mac_address = AAZStrType(
+                serialized_name="bmcMacAddress",
+                flags={"required": True},
+            )
+            properties.boot_mac_address = AAZStrType(
+                serialized_name="bootMacAddress",
+                flags={"required": True},
+            )
+            properties.ca_certificate = AAZObjectType(
+                serialized_name="caCertificate",
+                flags={"read_only": True},
+            )
+            properties.cluster_id = AAZStrType(
+                serialized_name="clusterId",
+                flags={"read_only": True},
+            )
+            properties.cordon_status = AAZStrType(
+                serialized_name="cordonStatus",
+                flags={"read_only": True},
+            )
+            properties.detailed_status = AAZStrType(
+                serialized_name="detailedStatus",
+                flags={"read_only": True},
+            )
+            properties.detailed_status_message = AAZStrType(
+                serialized_name="detailedStatusMessage",
+                flags={"read_only": True},
+            )
+            properties.hardware_inventory = AAZObjectType(
+                serialized_name="hardwareInventory",
+                flags={"read_only": True},
+            )
+            properties.hardware_validation_status = AAZObjectType(
+                serialized_name="hardwareValidationStatus",
+                flags={"read_only": True},
+            )
+            properties.hybrid_aks_clusters_associated_ids = AAZListType(
+                serialized_name="hybridAksClustersAssociatedIds",
+                flags={"read_only": True},
+            )
+            properties.kubernetes_node_name = AAZStrType(
+                serialized_name="kubernetesNodeName",
+                flags={"read_only": True},
+            )
+            properties.kubernetes_version = AAZStrType(
+                serialized_name="kubernetesVersion",
+                flags={"read_only": True},
+            )
+            properties.machine_cluster_version = AAZStrType(
+                serialized_name="machineClusterVersion",
+            )
+            properties.machine_details = AAZStrType(
+                serialized_name="machineDetails",
+                flags={"required": True},
+            )
+            properties.machine_name = AAZStrType(
+                serialized_name="machineName",
+                flags={"required": True},
+            )
+            properties.machine_roles = AAZListType(
+                serialized_name="machineRoles",
+                flags={"read_only": True},
+            )
+            properties.machine_sku_id = AAZStrType(
+                serialized_name="machineSkuId",
+                flags={"required": True},
+            )
+            properties.oam_ipv4_address = AAZStrType(
+                serialized_name="oamIpv4Address",
+                flags={"read_only": True},
+            )
+            properties.oam_ipv6_address = AAZStrType(
+                serialized_name="oamIpv6Address",
+                flags={"read_only": True},
+            )
+            properties.os_image = AAZStrType(
+                serialized_name="osImage",
+                flags={"read_only": True},
+            )
+            properties.power_state = AAZStrType(
+                serialized_name="powerState",
+                flags={"read_only": True},
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.rack_id = AAZStrType(
+                serialized_name="rackId",
+                flags={"required": True},
+            )
+            properties.rack_slot = AAZIntType(
+                serialized_name="rackSlot",
+                flags={"required": True},
+            )
+            properties.ready_state = AAZStrType(
+                serialized_name="readyState",
+                flags={"read_only": True},
+            )
+            properties.runtime_protection_status = AAZObjectType(
+                serialized_name="runtimeProtectionStatus",
+                flags={"read_only": True},
+            )
+            properties.secret_rotation_status = AAZListType(
+                serialized_name="secretRotationStatus",
+                flags={"read_only": True},
+            )
+            properties.serial_number = AAZStrType(
+                serialized_name="serialNumber",
+                flags={"required": True},
+            )
+            properties.service_tag = AAZStrType(
+                serialized_name="serviceTag",
+                flags={"read_only": True},
+            )
+            properties.virtual_machines_associated_ids = AAZListType(
+                serialized_name="virtualMachinesAssociatedIds",
+                flags={"read_only": True},
+            )
+
+            action_states = cls._schema_on_200.properties.action_states
+            action_states.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.action_states.Element
+            _element.action_type = AAZStrType(
+                serialized_name="actionType",
+                flags={"read_only": True},
+            )
+            _element.correlation_id = AAZStrType(
+                serialized_name="correlationId",
+                flags={"read_only": True},
+            )
+            _element.end_time = AAZStrType(
+                serialized_name="endTime",
+                flags={"read_only": True},
+            )
+            _element.message = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.start_time = AAZStrType(
+                serialized_name="startTime",
+                flags={"read_only": True},
+            )
+            _element.status = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.step_states = AAZListType(
+                serialized_name="stepStates",
+                flags={"read_only": True},
+            )
+
+            step_states = cls._schema_on_200.properties.action_states.Element.step_states
+            step_states.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.action_states.Element.step_states.Element
+            _element.end_time = AAZStrType(
+                serialized_name="endTime",
+                flags={"read_only": True},
+            )
+            _element.message = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.start_time = AAZStrType(
+                serialized_name="startTime",
+                flags={"read_only": True},
+            )
+            _element.status = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.step_name = AAZStrType(
+                serialized_name="stepName",
+                flags={"read_only": True},
+            )
+
+            associated_resource_ids = cls._schema_on_200.properties.associated_resource_ids
+            associated_resource_ids.Element = AAZStrType()
+
+            bmc_credentials = cls._schema_on_200.properties.bmc_credentials
+            bmc_credentials.password = AAZStrType(
+                flags={"secret": True},
+            )
+            bmc_credentials.username = AAZStrType(
+                flags={"required": True},
+            )
+
+            ca_certificate = cls._schema_on_200.properties.ca_certificate
+            ca_certificate.hash = AAZStrType(
+                flags={"read_only": True},
+            )
+            ca_certificate.value = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            hardware_inventory = cls._schema_on_200.properties.hardware_inventory
+            hardware_inventory.additional_host_information = AAZStrType(
+                serialized_name="additionalHostInformation",
+                flags={"read_only": True},
+            )
+            hardware_inventory.interfaces = AAZListType(
+                flags={"read_only": True},
+            )
+            hardware_inventory.nics = AAZListType(
+                flags={"read_only": True},
+            )
+
+            interfaces = cls._schema_on_200.properties.hardware_inventory.interfaces
+            interfaces.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.hardware_inventory.interfaces.Element
+            _element.link_status = AAZStrType(
+                serialized_name="linkStatus",
+                flags={"read_only": True},
+            )
+            _element.mac_address = AAZStrType(
+                serialized_name="macAddress",
+                flags={"read_only": True},
+            )
+            _element.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.network_interface_id = AAZStrType(
+                serialized_name="networkInterfaceId",
+                flags={"read_only": True},
+            )
+
+            nics = cls._schema_on_200.properties.hardware_inventory.nics
+            nics.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.hardware_inventory.nics.Element
+            _element.lldp_neighbor = AAZObjectType(
+                serialized_name="lldpNeighbor",
+                flags={"read_only": True},
+            )
+            _element.mac_address = AAZStrType(
+                serialized_name="macAddress",
+                flags={"read_only": True},
+            )
+            _element.name = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            lldp_neighbor = cls._schema_on_200.properties.hardware_inventory.nics.Element.lldp_neighbor
+            lldp_neighbor.port_description = AAZStrType(
+                serialized_name="portDescription",
+                flags={"read_only": True},
+            )
+            lldp_neighbor.port_name = AAZStrType(
+                serialized_name="portName",
+                flags={"read_only": True},
+            )
+            lldp_neighbor.system_description = AAZStrType(
+                serialized_name="systemDescription",
+                flags={"read_only": True},
+            )
+            lldp_neighbor.system_name = AAZStrType(
+                serialized_name="systemName",
+                flags={"read_only": True},
+            )
+
+            hardware_validation_status = cls._schema_on_200.properties.hardware_validation_status
+            hardware_validation_status.last_validation_time = AAZStrType(
+                serialized_name="lastValidationTime",
+                flags={"read_only": True},
+            )
+            hardware_validation_status.result = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            hybrid_aks_clusters_associated_ids = cls._schema_on_200.properties.hybrid_aks_clusters_associated_ids
+            hybrid_aks_clusters_associated_ids.Element = AAZStrType()
+
+            machine_roles = cls._schema_on_200.properties.machine_roles
+            machine_roles.Element = AAZStrType()
+
+            runtime_protection_status = cls._schema_on_200.properties.runtime_protection_status
+            runtime_protection_status.agent_health_status = AAZStrType(
+                serialized_name="agentHealthStatus",
+                flags={"read_only": True},
+            )
+            runtime_protection_status.agent_health_status_issues = AAZListType(
+                serialized_name="agentHealthStatusIssues",
+                flags={"read_only": True},
+            )
+            runtime_protection_status.agent_license_status = AAZStrType(
+                serialized_name="agentLicenseStatus",
+                flags={"read_only": True},
+            )
+            runtime_protection_status.definition_update_mode = AAZStrType(
+                serialized_name="definitionUpdateMode",
+                flags={"read_only": True},
+            )
+            runtime_protection_status.definitions_last_updated = AAZStrType(
+                serialized_name="definitionsLastUpdated",
+                flags={"read_only": True},
+            )
+            runtime_protection_status.definitions_version = AAZStrType(
+                serialized_name="definitionsVersion",
+                flags={"read_only": True},
+            )
+            runtime_protection_status.enforcement_level = AAZStrType(
+                serialized_name="enforcementLevel",
+                flags={"read_only": True},
+            )
+            runtime_protection_status.scan_completed_time = AAZStrType(
+                serialized_name="scanCompletedTime",
+                flags={"read_only": True},
+            )
+            runtime_protection_status.scan_scheduled_time = AAZStrType(
+                serialized_name="scanScheduledTime",
+                flags={"read_only": True},
+            )
+            runtime_protection_status.scan_started_time = AAZStrType(
+                serialized_name="scanStartedTime",
+                flags={"read_only": True},
+            )
+
+            agent_health_status_issues = cls._schema_on_200.properties.runtime_protection_status.agent_health_status_issues
+            agent_health_status_issues.Element = AAZStrType()
+
+            secret_rotation_status = cls._schema_on_200.properties.secret_rotation_status
+            secret_rotation_status.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.secret_rotation_status.Element
+            _element.expire_period_days = AAZIntType(
+                serialized_name="expirePeriodDays",
+                flags={"read_only": True},
+            )
+            _element.last_rotation_time = AAZStrType(
+                serialized_name="lastRotationTime",
+                flags={"read_only": True},
+            )
+            _element.rotation_period_days = AAZIntType(
+                serialized_name="rotationPeriodDays",
+                flags={"read_only": True},
+            )
+            _element.secret_archive_reference = AAZObjectType(
+                serialized_name="secretArchiveReference",
+                flags={"read_only": True},
+            )
+            _element.secret_type = AAZStrType(
+                serialized_name="secretType",
+                flags={"read_only": True},
+            )
+
+            secret_archive_reference = cls._schema_on_200.properties.secret_rotation_status.Element.secret_archive_reference
+            secret_archive_reference.key_vault_id = AAZStrType(
+                serialized_name="keyVaultId",
+                flags={"read_only": True},
+            )
+            secret_archive_reference.key_vault_uri = AAZStrType(
+                serialized_name="keyVaultUri",
+                flags={"read_only": True},
+            )
+            secret_archive_reference.secret_name = AAZStrType(
+                serialized_name="secretName",
+                flags={"read_only": True},
+            )
+            secret_archive_reference.secret_version = AAZStrType(
+                serialized_name="secretVersion",
+                flags={"read_only": True},
+            )
+
+            virtual_machines_associated_ids = cls._schema_on_200.properties.virtual_machines_associated_ids
+            virtual_machines_associated_ids.Element = AAZStrType()
+
+            system_data = cls._schema_on_200.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
+
+            tags = cls._schema_on_200.tags
+            tags.Element = AAZStrType()
 
             return cls._schema_on_200
 
 
 class _UpdateHelper:
     """Helper class for Update"""
-
-    _schema_bare_metal_machine_read = None
-
-    @classmethod
-    def _build_schema_bare_metal_machine_read(cls, _schema):
-        if cls._schema_bare_metal_machine_read is not None:
-            _schema.etag = cls._schema_bare_metal_machine_read.etag
-            _schema.extended_location = cls._schema_bare_metal_machine_read.extended_location
-            _schema.id = cls._schema_bare_metal_machine_read.id
-            _schema.location = cls._schema_bare_metal_machine_read.location
-            _schema.name = cls._schema_bare_metal_machine_read.name
-            _schema.properties = cls._schema_bare_metal_machine_read.properties
-            _schema.system_data = cls._schema_bare_metal_machine_read.system_data
-            _schema.tags = cls._schema_bare_metal_machine_read.tags
-            _schema.type = cls._schema_bare_metal_machine_read.type
-            return
-
-        cls._schema_bare_metal_machine_read = _schema_bare_metal_machine_read = AAZObjectType()
-
-        bare_metal_machine_read = _schema_bare_metal_machine_read
-        bare_metal_machine_read.etag = AAZStrType(
-            flags={"read_only": True},
-        )
-        bare_metal_machine_read.extended_location = AAZObjectType(
-            serialized_name="extendedLocation",
-            flags={"required": True},
-        )
-        bare_metal_machine_read.id = AAZStrType(
-            flags={"read_only": True},
-        )
-        bare_metal_machine_read.location = AAZStrType(
-            flags={"required": True},
-        )
-        bare_metal_machine_read.name = AAZStrType(
-            flags={"read_only": True},
-        )
-        bare_metal_machine_read.properties = AAZObjectType(
-            flags={"required": True, "client_flatten": True},
-        )
-        bare_metal_machine_read.system_data = AAZObjectType(
-            serialized_name="systemData",
-            flags={"read_only": True},
-        )
-        bare_metal_machine_read.tags = AAZDictType()
-        bare_metal_machine_read.type = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        extended_location = _schema_bare_metal_machine_read.extended_location
-        extended_location.name = AAZStrType(
-            flags={"required": True},
-        )
-        extended_location.type = AAZStrType(
-            flags={"required": True},
-        )
-
-        properties = _schema_bare_metal_machine_read.properties
-        properties.action_states = AAZListType(
-            serialized_name="actionStates",
-            flags={"read_only": True},
-        )
-        properties.associated_resource_ids = AAZListType(
-            serialized_name="associatedResourceIds",
-            flags={"read_only": True},
-        )
-        properties.bmc_connection_string = AAZStrType(
-            serialized_name="bmcConnectionString",
-            flags={"required": True},
-        )
-        properties.bmc_credentials = AAZObjectType(
-            serialized_name="bmcCredentials",
-            flags={"required": True},
-        )
-        properties.bmc_mac_address = AAZStrType(
-            serialized_name="bmcMacAddress",
-            flags={"required": True},
-        )
-        properties.boot_mac_address = AAZStrType(
-            serialized_name="bootMacAddress",
-            flags={"required": True},
-        )
-        properties.ca_certificate = AAZObjectType(
-            serialized_name="caCertificate",
-            flags={"read_only": True},
-        )
-        properties.cluster_id = AAZStrType(
-            serialized_name="clusterId",
-            flags={"read_only": True},
-        )
-        properties.cordon_status = AAZStrType(
-            serialized_name="cordonStatus",
-            flags={"read_only": True},
-        )
-        properties.detailed_status = AAZStrType(
-            serialized_name="detailedStatus",
-            flags={"read_only": True},
-        )
-        properties.detailed_status_message = AAZStrType(
-            serialized_name="detailedStatusMessage",
-            flags={"read_only": True},
-        )
-        properties.hardware_inventory = AAZObjectType(
-            serialized_name="hardwareInventory",
-            flags={"read_only": True},
-        )
-        properties.hardware_validation_status = AAZObjectType(
-            serialized_name="hardwareValidationStatus",
-            flags={"read_only": True},
-        )
-        properties.hybrid_aks_clusters_associated_ids = AAZListType(
-            serialized_name="hybridAksClustersAssociatedIds",
-            flags={"read_only": True},
-        )
-        properties.kubernetes_node_name = AAZStrType(
-            serialized_name="kubernetesNodeName",
-            flags={"read_only": True},
-        )
-        properties.kubernetes_version = AAZStrType(
-            serialized_name="kubernetesVersion",
-            flags={"read_only": True},
-        )
-        properties.machine_cluster_version = AAZStrType(
-            serialized_name="machineClusterVersion",
-        )
-        properties.machine_details = AAZStrType(
-            serialized_name="machineDetails",
-            flags={"required": True},
-        )
-        properties.machine_name = AAZStrType(
-            serialized_name="machineName",
-            flags={"required": True},
-        )
-        properties.machine_roles = AAZListType(
-            serialized_name="machineRoles",
-            flags={"read_only": True},
-        )
-        properties.machine_sku_id = AAZStrType(
-            serialized_name="machineSkuId",
-            flags={"required": True},
-        )
-        properties.oam_ipv4_address = AAZStrType(
-            serialized_name="oamIpv4Address",
-            flags={"read_only": True},
-        )
-        properties.oam_ipv6_address = AAZStrType(
-            serialized_name="oamIpv6Address",
-            flags={"read_only": True},
-        )
-        properties.os_image = AAZStrType(
-            serialized_name="osImage",
-            flags={"read_only": True},
-        )
-        properties.power_state = AAZStrType(
-            serialized_name="powerState",
-            flags={"read_only": True},
-        )
-        properties.provisioning_state = AAZStrType(
-            serialized_name="provisioningState",
-            flags={"read_only": True},
-        )
-        properties.rack_id = AAZStrType(
-            serialized_name="rackId",
-            flags={"required": True},
-        )
-        properties.rack_slot = AAZIntType(
-            serialized_name="rackSlot",
-            flags={"required": True},
-        )
-        properties.ready_state = AAZStrType(
-            serialized_name="readyState",
-            flags={"read_only": True},
-        )
-        properties.runtime_protection_status = AAZObjectType(
-            serialized_name="runtimeProtectionStatus",
-            flags={"read_only": True},
-        )
-        properties.secret_rotation_status = AAZListType(
-            serialized_name="secretRotationStatus",
-            flags={"read_only": True},
-        )
-        properties.serial_number = AAZStrType(
-            serialized_name="serialNumber",
-            flags={"required": True},
-        )
-        properties.service_tag = AAZStrType(
-            serialized_name="serviceTag",
-            flags={"read_only": True},
-        )
-        properties.virtual_machines_associated_ids = AAZListType(
-            serialized_name="virtualMachinesAssociatedIds",
-            flags={"read_only": True},
-        )
-
-        action_states = _schema_bare_metal_machine_read.properties.action_states
-        action_states.Element = AAZObjectType()
-
-        _element = _schema_bare_metal_machine_read.properties.action_states.Element
-        _element.action_type = AAZStrType(
-            serialized_name="actionType",
-            flags={"read_only": True},
-        )
-        _element.correlation_id = AAZStrType(
-            serialized_name="correlationId",
-            flags={"read_only": True},
-        )
-        _element.end_time = AAZStrType(
-            serialized_name="endTime",
-            flags={"read_only": True},
-        )
-        _element.message = AAZStrType(
-            flags={"read_only": True},
-        )
-        _element.start_time = AAZStrType(
-            serialized_name="startTime",
-            flags={"read_only": True},
-        )
-        _element.status = AAZStrType(
-            flags={"read_only": True},
-        )
-        _element.step_states = AAZListType(
-            serialized_name="stepStates",
-            flags={"read_only": True},
-        )
-
-        step_states = _schema_bare_metal_machine_read.properties.action_states.Element.step_states
-        step_states.Element = AAZObjectType()
-
-        _element = _schema_bare_metal_machine_read.properties.action_states.Element.step_states.Element
-        _element.end_time = AAZStrType(
-            serialized_name="endTime",
-            flags={"read_only": True},
-        )
-        _element.message = AAZStrType(
-            flags={"read_only": True},
-        )
-        _element.start_time = AAZStrType(
-            serialized_name="startTime",
-            flags={"read_only": True},
-        )
-        _element.status = AAZStrType(
-            flags={"read_only": True},
-        )
-        _element.step_name = AAZStrType(
-            serialized_name="stepName",
-            flags={"read_only": True},
-        )
-
-        associated_resource_ids = _schema_bare_metal_machine_read.properties.associated_resource_ids
-        associated_resource_ids.Element = AAZStrType()
-
-        bmc_credentials = _schema_bare_metal_machine_read.properties.bmc_credentials
-        bmc_credentials.password = AAZStrType(
-            flags={"secret": True},
-        )
-        bmc_credentials.username = AAZStrType(
-            flags={"required": True},
-        )
-
-        ca_certificate = _schema_bare_metal_machine_read.properties.ca_certificate
-        ca_certificate.hash = AAZStrType(
-            flags={"read_only": True},
-        )
-        ca_certificate.value = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        hardware_inventory = _schema_bare_metal_machine_read.properties.hardware_inventory
-        hardware_inventory.additional_host_information = AAZStrType(
-            serialized_name="additionalHostInformation",
-            flags={"read_only": True},
-        )
-        hardware_inventory.interfaces = AAZListType(
-            flags={"read_only": True},
-        )
-        hardware_inventory.nics = AAZListType(
-            flags={"read_only": True},
-        )
-
-        interfaces = _schema_bare_metal_machine_read.properties.hardware_inventory.interfaces
-        interfaces.Element = AAZObjectType()
-
-        _element = _schema_bare_metal_machine_read.properties.hardware_inventory.interfaces.Element
-        _element.link_status = AAZStrType(
-            serialized_name="linkStatus",
-            flags={"read_only": True},
-        )
-        _element.mac_address = AAZStrType(
-            serialized_name="macAddress",
-            flags={"read_only": True},
-        )
-        _element.name = AAZStrType(
-            flags={"read_only": True},
-        )
-        _element.network_interface_id = AAZStrType(
-            serialized_name="networkInterfaceId",
-            flags={"read_only": True},
-        )
-
-        nics = _schema_bare_metal_machine_read.properties.hardware_inventory.nics
-        nics.Element = AAZObjectType()
-
-        _element = _schema_bare_metal_machine_read.properties.hardware_inventory.nics.Element
-        _element.lldp_neighbor = AAZObjectType(
-            serialized_name="lldpNeighbor",
-            flags={"read_only": True},
-        )
-        _element.mac_address = AAZStrType(
-            serialized_name="macAddress",
-            flags={"read_only": True},
-        )
-        _element.name = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        lldp_neighbor = _schema_bare_metal_machine_read.properties.hardware_inventory.nics.Element.lldp_neighbor
-        lldp_neighbor.port_description = AAZStrType(
-            serialized_name="portDescription",
-            flags={"read_only": True},
-        )
-        lldp_neighbor.port_name = AAZStrType(
-            serialized_name="portName",
-            flags={"read_only": True},
-        )
-        lldp_neighbor.system_description = AAZStrType(
-            serialized_name="systemDescription",
-            flags={"read_only": True},
-        )
-        lldp_neighbor.system_name = AAZStrType(
-            serialized_name="systemName",
-            flags={"read_only": True},
-        )
-
-        hardware_validation_status = _schema_bare_metal_machine_read.properties.hardware_validation_status
-        hardware_validation_status.last_validation_time = AAZStrType(
-            serialized_name="lastValidationTime",
-            flags={"read_only": True},
-        )
-        hardware_validation_status.result = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        hybrid_aks_clusters_associated_ids = _schema_bare_metal_machine_read.properties.hybrid_aks_clusters_associated_ids
-        hybrid_aks_clusters_associated_ids.Element = AAZStrType()
-
-        machine_roles = _schema_bare_metal_machine_read.properties.machine_roles
-        machine_roles.Element = AAZStrType()
-
-        runtime_protection_status = _schema_bare_metal_machine_read.properties.runtime_protection_status
-        runtime_protection_status.definitions_last_updated = AAZStrType(
-            serialized_name="definitionsLastUpdated",
-            flags={"read_only": True},
-        )
-        runtime_protection_status.definitions_version = AAZStrType(
-            serialized_name="definitionsVersion",
-            flags={"read_only": True},
-        )
-        runtime_protection_status.scan_completed_time = AAZStrType(
-            serialized_name="scanCompletedTime",
-            flags={"read_only": True},
-        )
-        runtime_protection_status.scan_scheduled_time = AAZStrType(
-            serialized_name="scanScheduledTime",
-            flags={"read_only": True},
-        )
-        runtime_protection_status.scan_started_time = AAZStrType(
-            serialized_name="scanStartedTime",
-            flags={"read_only": True},
-        )
-
-        secret_rotation_status = _schema_bare_metal_machine_read.properties.secret_rotation_status
-        secret_rotation_status.Element = AAZObjectType()
-
-        _element = _schema_bare_metal_machine_read.properties.secret_rotation_status.Element
-        _element.expire_period_days = AAZIntType(
-            serialized_name="expirePeriodDays",
-            flags={"read_only": True},
-        )
-        _element.last_rotation_time = AAZStrType(
-            serialized_name="lastRotationTime",
-            flags={"read_only": True},
-        )
-        _element.rotation_period_days = AAZIntType(
-            serialized_name="rotationPeriodDays",
-            flags={"read_only": True},
-        )
-        _element.secret_archive_reference = AAZObjectType(
-            serialized_name="secretArchiveReference",
-            flags={"read_only": True},
-        )
-        _element.secret_type = AAZStrType(
-            serialized_name="secretType",
-            flags={"read_only": True},
-        )
-
-        secret_archive_reference = _schema_bare_metal_machine_read.properties.secret_rotation_status.Element.secret_archive_reference
-        secret_archive_reference.key_vault_id = AAZStrType(
-            serialized_name="keyVaultId",
-            flags={"read_only": True},
-        )
-        secret_archive_reference.key_vault_uri = AAZStrType(
-            serialized_name="keyVaultUri",
-            flags={"read_only": True},
-        )
-        secret_archive_reference.secret_name = AAZStrType(
-            serialized_name="secretName",
-            flags={"read_only": True},
-        )
-        secret_archive_reference.secret_version = AAZStrType(
-            serialized_name="secretVersion",
-            flags={"read_only": True},
-        )
-
-        virtual_machines_associated_ids = _schema_bare_metal_machine_read.properties.virtual_machines_associated_ids
-        virtual_machines_associated_ids.Element = AAZStrType()
-
-        system_data = _schema_bare_metal_machine_read.system_data
-        system_data.created_at = AAZStrType(
-            serialized_name="createdAt",
-        )
-        system_data.created_by = AAZStrType(
-            serialized_name="createdBy",
-        )
-        system_data.created_by_type = AAZStrType(
-            serialized_name="createdByType",
-        )
-        system_data.last_modified_at = AAZStrType(
-            serialized_name="lastModifiedAt",
-        )
-        system_data.last_modified_by = AAZStrType(
-            serialized_name="lastModifiedBy",
-        )
-        system_data.last_modified_by_type = AAZStrType(
-            serialized_name="lastModifiedByType",
-        )
-
-        tags = _schema_bare_metal_machine_read.tags
-        tags.Element = AAZStrType()
-
-        _schema.etag = cls._schema_bare_metal_machine_read.etag
-        _schema.extended_location = cls._schema_bare_metal_machine_read.extended_location
-        _schema.id = cls._schema_bare_metal_machine_read.id
-        _schema.location = cls._schema_bare_metal_machine_read.location
-        _schema.name = cls._schema_bare_metal_machine_read.name
-        _schema.properties = cls._schema_bare_metal_machine_read.properties
-        _schema.system_data = cls._schema_bare_metal_machine_read.system_data
-        _schema.tags = cls._schema_bare_metal_machine_read.tags
-        _schema.type = cls._schema_bare_metal_machine_read.type
 
 
 __all__ = ["Update"]

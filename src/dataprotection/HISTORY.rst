@@ -2,6 +2,28 @@
 
 Release History
 ===============
+1.9.0
++++++
+* `az dataprotection enable-backup trigger`: New command to enable backup for AKS clusters with a single command. Supports preset backup strategies (Week, Month, DisasterRecovery) and Custom strategy with user-provided configuration.
+* Added vendored SDKs: `azure-mgmt-containerservice` (40.2.0), `azure-mgmt-kubernetesconfiguration` (3.1.0), `azure-mgmt-resourcegraph` (8.0.0).
+
+1.8.1
++++++
+* Documentation update for `initialize-backupconfig` and `initialize-restoreconfig` commands to clarify that the generated JSON is meant for use with other CLI commands, and may not work as an input for non-CLI scenarios without modification.
+
+1.8.0
++++++
+* `az dataprotection backup-instance update`: New parameter: `--backup-configuration` to update AKS datasource parameters.
+* Fix in `helpers.py` to correctly prepare/normalize AKS backup-configuration payloads passed via the CLI.
+
+1.7.1
++++++
+* `az dataprotection backup-instance restore initialize-for-item-recovery`: Fixed a bug where the command would fail for AKS Scenarios.
+
+1.7.0
++++++
+* Added support for Azure Data Lake Storage as a backup datasource.
+* `az dataprotection backup-instance restore initialize-for-item-recovery`: Exisiting parameter `--vaulted-blob-prefix-pattern` now allows users to rename blob containers during restore.
 
 1.6.0
 +++++

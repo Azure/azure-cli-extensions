@@ -45,6 +45,7 @@ CONST_OS_SKU_UBUNTU2204 = "Ubuntu2204"
 CONST_OS_SKU_UBUNTU2404 = "Ubuntu2404"
 CONST_OS_SKU_AZURELINUXOSGUARD = "AzureLinuxOSGuard"
 CONST_OS_SKU_AZURELINUX3OSGUARD = "AzureLinux3OSGuard"
+CONST_OS_SKU_AZURECONTAINERLINUX = "AzureContainerLinux"
 
 # vm set type
 CONST_VIRTUAL_MACHINE_SCALE_SETS = "VirtualMachineScaleSets"
@@ -61,7 +62,8 @@ CONST_DEFAULT_WINDOWS_VMS_VM_SIZE = "Standard_D2s_v3"
 # workload runtime
 CONST_WORKLOAD_RUNTIME_OCI_CONTAINER = "OCIContainer"
 CONST_WORKLOAD_RUNTIME_WASM_WASI = "WasmWasi"
-CONST_WORKLOAD_RUNTIME_KATA_MSHV_VM_ISOLATION = "KataMshvVmIsolation"
+CONST_WORKLOAD_RUNTIME_KATA_VM_ISOLATION = "KataVmIsolation"
+CONST_WORKLOAD_RUNTIME_OLD_KATA_VM_ISOLATION = "KataMshvVmIsolation"
 CONST_WORKLOAD_RUNTIME_KATA_CC_ISOLATION = "KataCcIsolation"
 
 # gpu instance
@@ -74,6 +76,10 @@ CONST_GPU_INSTANCE_PROFILE_MIG7_G = "MIG7g"
 # gpu driver install
 CONST_GPU_DRIVER_INSTALL = "Install"
 CONST_GPU_DRIVER_NONE = "None"
+
+# gpu management mode
+CONST_GPU_MANAGEMENT_MODE_MANAGED = "Managed"
+CONST_GPU_MANAGEMENT_MODE_UNMANAGED = "Unmanaged"
 
 # consts for ManagedCluster
 # load balancer sku
@@ -153,6 +159,7 @@ CONST_ADVANCED_NETWORKPOLICIES_L7 = "L7"
 # ACNS transit encryption type
 CONST_TRANSIT_ENCRYPTION_TYPE_NONE = "None"
 CONST_TRANSIT_ENCRYPTION_TYPE_WIREGUARD = "WireGuard"
+CONST_TRANSIT_ENCRYPTION_TYPE_MTLS = "mTLS"
 
 # ACNS performance acceleration mode
 CONST_ACNS_DATAPATH_ACCELERATION_MODE_NONE = "None"
@@ -167,11 +174,15 @@ CONST_DISK_DRIVER_V1 = "v1"
 CONST_DISK_DRIVER_V2 = "v2"
 
 # consts for addons
+# application load balancer (Application Gateway for Containers)
+CONST_APPLICATION_LOAD_BALANCER_ADDON_NAME = "applicationLoadBalancer"
+
 # http application routing
 CONST_HTTP_APPLICATION_ROUTING_ADDON_NAME = "httpApplicationRouting"
 
 # monitoring
 CONST_MONITORING_ADDON_NAME = "omsagent"
+CONST_MONITORING_ADDON_NAME_CAMELCASE = "omsAgent"
 CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID = "logAnalyticsWorkspaceResourceID"
 CONST_MONITORING_USING_AAD_MSI_AUTH = "useAADAuth"
 
@@ -217,8 +228,17 @@ CONST_APP_ROUTING_EXTERNAL_NGINX = "External"
 CONST_APP_ROUTING_INTERNAL_NGINX = "Internal"
 CONST_APP_ROUTING_NONE_NGINX = "None"
 
+# managed gateway api installation
+CONST_MANAGED_GATEWAY_INSTALLATION_DISABLED = "Disabled"
+CONST_MANAGED_GATEWAY_INSTALLATION_STANDARD = "Standard"
+
+# app routing istio mode
+CONST_APP_ROUTING_ISTIO_MODE_ENABLED = "Enabled"
+CONST_APP_ROUTING_ISTIO_MODE_DISABLED = "Disabled"
+
 # all supported addons
 ADDONS = {
+    "application-load-balancer": CONST_APPLICATION_LOAD_BALANCER_ADDON_NAME,
     "http_application_routing": CONST_HTTP_APPLICATION_ROUTING_ADDON_NAME,
     "monitoring": CONST_MONITORING_ADDON_NAME,
     "virtual-node": CONST_VIRTUAL_NODE_ADDON_NAME,
@@ -249,7 +269,10 @@ ADDONS_DESCRIPTIONS = {
         "- enable Azure policy. The Azure Policy add-on for AKS enables at-scale enforcements and safeguards on "
         "your clusters in a centralized, consistent manner.\nLearn more at aka.ms/aks/policy."
     ),
-    CONST_INGRESS_APPGW_ADDON_NAME: "- enable Application Gateway Ingress Controller addon (PREVIEW).",
+    CONST_APPLICATION_LOAD_BALANCER_ADDON_NAME: (
+        "- enable Application Load Balancer (Application Gateway for Containers) addon (PREVIEW)."
+    ),
+    CONST_INGRESS_APPGW_ADDON_NAME: "- enable Application Gateway Ingress Controller addon.",
     CONST_CONFCOM_ADDON_NAME: "- enable confcom addon, this will enable SGX device plugin by default (PREVIEW).",
     CONST_OPEN_SERVICE_MESH_ADDON_NAME: "- enable Open Service Mesh addon (PREVIEW).",
     CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME: "- enable Azure Keyvault Secrets Provider addon.",
@@ -329,6 +352,8 @@ CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE = "Complete"
 CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK = "Rollback"
 CONST_AZURE_SERVICE_MESH_DEFAULT_EGRESS_NAMESPACE = "aks-istio-egress"
 CONST_AZURE_SERVICE_MESH_MAX_EGRESS_NAME_LENGTH = 253
+CONST_AZURE_SERVICE_MESH_PROXY_REDIRECTION_INIT_CONTAINERS = "InitContainers"
+CONST_AZURE_SERVICE_MESH_PROXY_REDIRECTION_CNI_CHAINING = "CNIChaining"
 
 # Node Provisioning Mode Consts
 CONST_NODE_PROVISIONING_MODE_MANUAL = "Manual"
@@ -347,6 +372,7 @@ CONST_MIN_NODE_IMAGE_VERSION = "202403.13.0"
 # SSH Access Consts
 CONST_SSH_ACCESS_DISABLED = "disabled"
 CONST_SSH_ACCESS_LOCALUSER = "localuser"
+CONST_SSH_ACCESS_ENTRAID = "entraid"
 
 # Dns zone contributor role
 CONST_PRIVATE_DNS_ZONE_CONTRIBUTOR_ROLE = "Private DNS Zone Contributor"
@@ -361,6 +387,7 @@ CONST_ARTIFACT_SOURCE_CACHE = "Cache"
 
 CONST_OUTBOUND_TYPE_NONE = "none"
 CONST_OUTBOUND_TYPE_BLOCK = "block"
+CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY_V2 = "managedNATGatewayV2"
 
 # IMDS restriction consts
 CONST_IMDS_RESTRICTION_ENABLED = "None"
@@ -379,6 +406,10 @@ CONST_NAMESPACE_DELETE_POLICY_DELETE = "Delete"
 # GPU Driver Type Consts
 CONST_GPU_DRIVER_TYPE_CUDA = "CUDA"
 CONST_GPU_DRIVER_TYPE_GRID = "GRID"
+
+# GPU MIG Strategy Consts
+CONST_GPU_MIG_STRATEGY_SINGLE = "Single"
+CONST_GPU_MIG_STRATEGY_MIXED = "Mixed"
 
 # k8s extension constants
 CONST_K8S_EXTENSION_CUSTOM_MOD_NAME = "azext_k8s_extension.custom"

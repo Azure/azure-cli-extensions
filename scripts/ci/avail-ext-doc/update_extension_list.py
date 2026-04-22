@@ -15,7 +15,7 @@ import sys
 
 import collections
 import datetime
-from pkg_resources import parse_version
+from packaging.version import Version
 
 from jinja2 import Template  # pylint: disable=import-error
 import requests
@@ -39,10 +39,19 @@ def get_extensions():
     index_extensions = collections.OrderedDict(sorted(get_index_data()['extensions'].items()))
     for _, exts in index_extensions.items():
         # Get latest version
-        exts = sorted(exts, key=lambda c: parse_version(c['metadata']['version']), reverse=True)
+        exts = sorted(exts, key=lambda c: Version(c['metadata']['version']), reverse=True)
 
         # some extension modules may not include 'HISTORY.rst'
-        project_url = exts[0]['metadata']['extensions']['python.details']['project_urls']['Home']
+        # setup.py
+        if 'project_urls' in exts[0]['metadata']['extensions']['python.details']:
+            project_url = exts[0]['metadata']['extensions']['python.details']['project_urls']['Home']
+        # pyproject.toml
+        elif 'project_url' in exts[0]['metadata']:
+            project_url = exts[0]['metadata']['project_url'].replace('homepage,', '').strip()
+            print(f"Warning: extension {exts[0]['metadata']['name']} has migrated to pyproject.toml.")
+        else:
+            project_url = ''
+            print(f"Warning: No project_url found for extension {exts[0]['metadata']['name']}")
         history_tmp = project_url + '/HISTORY.rst'
         history = project_url if str(requests.get(history_tmp).status_code) == '404' else history_tmp
         if exts[0]['metadata'].get('azext.isPreview'):

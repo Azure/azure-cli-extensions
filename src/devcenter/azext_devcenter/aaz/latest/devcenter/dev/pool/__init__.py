@@ -9,5 +9,6 @@
 # flake8: noqa
 
 from .__cmd_group import *
+from ._align import *
 from ._list import *
 from ._show import *

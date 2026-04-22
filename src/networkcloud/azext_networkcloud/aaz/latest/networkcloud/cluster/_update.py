@@ -56,9 +56,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}", "2026-01-01-preview"],
         ]
     }
 
@@ -325,6 +325,12 @@ class Update(AAZCommand):
         cls._build_args_rack_definition_update(compute_rack_definitions.Element)
 
         runtime_protection = cls._args_schema.runtime_protection
+        runtime_protection.definition_update_mode = AAZStrArg(
+            options=["definition-update-mode"],
+            help="The definition update mode for runtime protection.",
+            default="None",
+            enum={"Automatic": "Automatic", "None": "None"},
+        )
         runtime_protection.enforcement_level = AAZStrArg(
             options=["enforcement-level"],
             help="The mode of operation for runtime protection.",
@@ -664,7 +670,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-01-01-preview",
                     required=True,
                 ),
             }
@@ -783,6 +789,7 @@ class Update(AAZCommand):
 
             runtime_protection_configuration = _builder.get(".properties.runtimeProtectionConfiguration")
             if runtime_protection_configuration is not None:
+                runtime_protection_configuration.set_prop("definitionUpdateMode", AAZStrType, ".definition_update_mode")
                 runtime_protection_configuration.set_prop("enforcementLevel", AAZStrType, ".enforcement_level")
 
             secret_archive_settings = _builder.get(".properties.secretArchiveSettings")
@@ -829,7 +836,441 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_cluster_read(cls._schema_on_200)
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.etag = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.extended_location = AAZObjectType(
+                serialized_name="extendedLocation",
+                flags={"required": True},
+            )
+            _UpdateHelper._build_schema_extended_location_read(_schema_on_200.extended_location)
+            _schema_on_200.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.identity = AAZIdentityObjectType()
+            _schema_on_200.kind = AAZStrType()
+            _schema_on_200.location = AAZStrType(
+                flags={"required": True},
+            )
+            _schema_on_200.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.properties = AAZObjectType(
+                flags={"required": True, "client_flatten": True},
+            )
+            _schema_on_200.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _schema_on_200.tags = AAZDictType()
+            _schema_on_200.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            identity = cls._schema_on_200.identity
+            identity.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+            identity.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"read_only": True},
+            )
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+            identity.user_assigned_identities = AAZDictType(
+                serialized_name="userAssignedIdentities",
+            )
+
+            user_assigned_identities = cls._schema_on_200.identity.user_assigned_identities
+            user_assigned_identities.Element = AAZObjectType(
+                nullable=True,
+            )
+
+            _element = cls._schema_on_200.identity.user_assigned_identities.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+                flags={"read_only": True},
+            )
+            _element.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200.properties
+            properties.action_states = AAZListType(
+                serialized_name="actionStates",
+                flags={"read_only": True},
+            )
+            properties.aggregator_or_single_rack_definition = AAZObjectType(
+                serialized_name="aggregatorOrSingleRackDefinition",
+                flags={"required": True},
+            )
+            _UpdateHelper._build_schema_rack_definition_read(properties.aggregator_or_single_rack_definition)
+            properties.analytics_output_settings = AAZObjectType(
+                serialized_name="analyticsOutputSettings",
+            )
+            properties.analytics_workspace_id = AAZStrType(
+                serialized_name="analyticsWorkspaceId",
+            )
+            properties.available_upgrade_versions = AAZListType(
+                serialized_name="availableUpgradeVersions",
+                flags={"read_only": True},
+            )
+            properties.cluster_capacity = AAZObjectType(
+                serialized_name="clusterCapacity",
+                flags={"read_only": True},
+            )
+            properties.cluster_connection_status = AAZStrType(
+                serialized_name="clusterConnectionStatus",
+                flags={"read_only": True},
+            )
+            properties.cluster_extended_location = AAZObjectType(
+                serialized_name="clusterExtendedLocation",
+                flags={"read_only": True},
+            )
+            _UpdateHelper._build_schema_extended_location_read(properties.cluster_extended_location)
+            properties.cluster_location = AAZStrType(
+                serialized_name="clusterLocation",
+            )
+            properties.cluster_manager_connection_status = AAZStrType(
+                serialized_name="clusterManagerConnectionStatus",
+                flags={"read_only": True},
+            )
+            properties.cluster_manager_id = AAZStrType(
+                serialized_name="clusterManagerId",
+                flags={"read_only": True},
+            )
+            properties.cluster_service_principal = AAZObjectType(
+                serialized_name="clusterServicePrincipal",
+            )
+            properties.cluster_type = AAZStrType(
+                serialized_name="clusterType",
+                flags={"required": True},
+            )
+            properties.cluster_version = AAZStrType(
+                serialized_name="clusterVersion",
+                flags={"required": True},
+            )
+            properties.command_output_settings = AAZObjectType(
+                serialized_name="commandOutputSettings",
+            )
+            properties.compute_deployment_threshold = AAZObjectType(
+                serialized_name="computeDeploymentThreshold",
+            )
+            properties.compute_rack_definitions = AAZListType(
+                serialized_name="computeRackDefinitions",
+            )
+            properties.detailed_status = AAZStrType(
+                serialized_name="detailedStatus",
+                flags={"read_only": True},
+            )
+            properties.detailed_status_message = AAZStrType(
+                serialized_name="detailedStatusMessage",
+                flags={"read_only": True},
+            )
+            properties.hybrid_aks_extended_location = AAZObjectType(
+                serialized_name="hybridAksExtendedLocation",
+                flags={"read_only": True},
+            )
+            _UpdateHelper._build_schema_extended_location_read(properties.hybrid_aks_extended_location)
+            properties.managed_resource_group_configuration = AAZObjectType(
+                serialized_name="managedResourceGroupConfiguration",
+            )
+            properties.manual_action_count = AAZIntType(
+                serialized_name="manualActionCount",
+                flags={"read_only": True},
+            )
+            properties.network_fabric_id = AAZStrType(
+                serialized_name="networkFabricId",
+                flags={"required": True},
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.runtime_protection_configuration = AAZObjectType(
+                serialized_name="runtimeProtectionConfiguration",
+            )
+            properties.secret_archive = AAZObjectType(
+                serialized_name="secretArchive",
+            )
+            properties.secret_archive_settings = AAZObjectType(
+                serialized_name="secretArchiveSettings",
+            )
+            properties.support_expiry_date = AAZStrType(
+                serialized_name="supportExpiryDate",
+                flags={"read_only": True},
+            )
+            properties.update_strategy = AAZObjectType(
+                serialized_name="updateStrategy",
+            )
+            properties.vulnerability_scanning_settings = AAZObjectType(
+                serialized_name="vulnerabilityScanningSettings",
+            )
+            properties.workload_resource_ids = AAZListType(
+                serialized_name="workloadResourceIds",
+                flags={"read_only": True},
+            )
+
+            action_states = cls._schema_on_200.properties.action_states
+            action_states.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.action_states.Element
+            _element.action_type = AAZStrType(
+                serialized_name="actionType",
+                flags={"read_only": True},
+            )
+            _element.correlation_id = AAZStrType(
+                serialized_name="correlationId",
+                flags={"read_only": True},
+            )
+            _element.end_time = AAZStrType(
+                serialized_name="endTime",
+                flags={"read_only": True},
+            )
+            _element.message = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.start_time = AAZStrType(
+                serialized_name="startTime",
+                flags={"read_only": True},
+            )
+            _element.status = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.step_states = AAZListType(
+                serialized_name="stepStates",
+                flags={"read_only": True},
+            )
+
+            step_states = cls._schema_on_200.properties.action_states.Element.step_states
+            step_states.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.action_states.Element.step_states.Element
+            _element.end_time = AAZStrType(
+                serialized_name="endTime",
+                flags={"read_only": True},
+            )
+            _element.message = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.start_time = AAZStrType(
+                serialized_name="startTime",
+                flags={"read_only": True},
+            )
+            _element.status = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.step_name = AAZStrType(
+                serialized_name="stepName",
+                flags={"read_only": True},
+            )
+
+            analytics_output_settings = cls._schema_on_200.properties.analytics_output_settings
+            analytics_output_settings.analytics_workspace_id = AAZStrType(
+                serialized_name="analyticsWorkspaceId",
+            )
+            analytics_output_settings.associated_identity = AAZObjectType(
+                serialized_name="associatedIdentity",
+            )
+            _UpdateHelper._build_schema_identity_selector_read(analytics_output_settings.associated_identity)
+
+            available_upgrade_versions = cls._schema_on_200.properties.available_upgrade_versions
+            available_upgrade_versions.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.available_upgrade_versions.Element
+            _element.control_impact = AAZStrType(
+                serialized_name="controlImpact",
+                flags={"read_only": True},
+            )
+            _element.expected_duration = AAZStrType(
+                serialized_name="expectedDuration",
+                flags={"read_only": True},
+            )
+            _element.impact_description = AAZStrType(
+                serialized_name="impactDescription",
+                flags={"read_only": True},
+            )
+            _element.support_expiry_date = AAZStrType(
+                serialized_name="supportExpiryDate",
+                flags={"read_only": True},
+            )
+            _element.target_cluster_version = AAZStrType(
+                serialized_name="targetClusterVersion",
+                flags={"read_only": True},
+            )
+            _element.workload_impact = AAZStrType(
+                serialized_name="workloadImpact",
+                flags={"read_only": True},
+            )
+
+            cluster_capacity = cls._schema_on_200.properties.cluster_capacity
+            cluster_capacity.available_appliance_storage_gb = AAZIntType(
+                serialized_name="availableApplianceStorageGB",
+            )
+            cluster_capacity.available_core_count = AAZIntType(
+                serialized_name="availableCoreCount",
+            )
+            cluster_capacity.available_host_storage_gb = AAZIntType(
+                serialized_name="availableHostStorageGB",
+            )
+            cluster_capacity.available_memory_gb = AAZIntType(
+                serialized_name="availableMemoryGB",
+            )
+            cluster_capacity.total_appliance_storage_gb = AAZIntType(
+                serialized_name="totalApplianceStorageGB",
+            )
+            cluster_capacity.total_core_count = AAZIntType(
+                serialized_name="totalCoreCount",
+            )
+            cluster_capacity.total_host_storage_gb = AAZIntType(
+                serialized_name="totalHostStorageGB",
+            )
+            cluster_capacity.total_memory_gb = AAZIntType(
+                serialized_name="totalMemoryGB",
+            )
+
+            cluster_service_principal = cls._schema_on_200.properties.cluster_service_principal
+            cluster_service_principal.application_id = AAZStrType(
+                serialized_name="applicationId",
+                flags={"required": True},
+            )
+            cluster_service_principal.password = AAZStrType(
+                flags={"secret": True},
+            )
+            cluster_service_principal.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"required": True},
+            )
+            cluster_service_principal.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"required": True},
+            )
+
+            command_output_settings = cls._schema_on_200.properties.command_output_settings
+            command_output_settings.associated_identity = AAZObjectType(
+                serialized_name="associatedIdentity",
+            )
+            _UpdateHelper._build_schema_identity_selector_read(command_output_settings.associated_identity)
+            command_output_settings.container_url = AAZStrType(
+                serialized_name="containerUrl",
+            )
+            command_output_settings.overrides = AAZListType()
+
+            overrides = cls._schema_on_200.properties.command_output_settings.overrides
+            overrides.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.command_output_settings.overrides.Element
+            _element.associated_identity = AAZObjectType(
+                serialized_name="associatedIdentity",
+            )
+            _UpdateHelper._build_schema_identity_selector_read(_element.associated_identity)
+            _element.command_output_type = AAZStrType(
+                serialized_name="commandOutputType",
+            )
+            _element.container_url = AAZStrType(
+                serialized_name="containerUrl",
+            )
+
+            compute_deployment_threshold = cls._schema_on_200.properties.compute_deployment_threshold
+            compute_deployment_threshold.grouping = AAZStrType(
+                flags={"required": True},
+            )
+            compute_deployment_threshold.type = AAZStrType(
+                flags={"required": True},
+            )
+            compute_deployment_threshold.value = AAZIntType(
+                flags={"required": True},
+            )
+
+            compute_rack_definitions = cls._schema_on_200.properties.compute_rack_definitions
+            compute_rack_definitions.Element = AAZObjectType()
+            _UpdateHelper._build_schema_rack_definition_read(compute_rack_definitions.Element)
+
+            managed_resource_group_configuration = cls._schema_on_200.properties.managed_resource_group_configuration
+            managed_resource_group_configuration.location = AAZStrType()
+            managed_resource_group_configuration.name = AAZStrType()
+
+            runtime_protection_configuration = cls._schema_on_200.properties.runtime_protection_configuration
+            runtime_protection_configuration.definition_update_mode = AAZStrType(
+                serialized_name="definitionUpdateMode",
+            )
+            runtime_protection_configuration.enforcement_level = AAZStrType(
+                serialized_name="enforcementLevel",
+            )
+
+            secret_archive = cls._schema_on_200.properties.secret_archive
+            secret_archive.key_vault_id = AAZStrType(
+                serialized_name="keyVaultId",
+                flags={"required": True},
+            )
+            secret_archive.use_key_vault = AAZStrType(
+                serialized_name="useKeyVault",
+            )
+
+            secret_archive_settings = cls._schema_on_200.properties.secret_archive_settings
+            secret_archive_settings.associated_identity = AAZObjectType(
+                serialized_name="associatedIdentity",
+            )
+            _UpdateHelper._build_schema_identity_selector_read(secret_archive_settings.associated_identity)
+            secret_archive_settings.vault_uri = AAZStrType(
+                serialized_name="vaultUri",
+            )
+
+            update_strategy = cls._schema_on_200.properties.update_strategy
+            update_strategy.max_unavailable = AAZIntType(
+                serialized_name="maxUnavailable",
+            )
+            update_strategy.strategy_type = AAZStrType(
+                serialized_name="strategyType",
+                flags={"required": True},
+            )
+            update_strategy.threshold_type = AAZStrType(
+                serialized_name="thresholdType",
+                flags={"required": True},
+            )
+            update_strategy.threshold_value = AAZIntType(
+                serialized_name="thresholdValue",
+                flags={"required": True},
+            )
+            update_strategy.wait_time_minutes = AAZIntType(
+                serialized_name="waitTimeMinutes",
+            )
+
+            vulnerability_scanning_settings = cls._schema_on_200.properties.vulnerability_scanning_settings
+            vulnerability_scanning_settings.container_scan = AAZStrType(
+                serialized_name="containerScan",
+            )
+
+            workload_resource_ids = cls._schema_on_200.properties.workload_resource_ids
+            workload_resource_ids.Element = AAZStrType()
+
+            system_data = cls._schema_on_200.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
+
+            tags = cls._schema_on_200.tags
+            tags.Element = AAZStrType()
 
             return cls._schema_on_200
 
@@ -902,467 +1343,6 @@ class _UpdateHelper:
 
         _schema.password = cls._schema_administrative_credentials_read.password
         _schema.username = cls._schema_administrative_credentials_read.username
-
-    _schema_cluster_read = None
-
-    @classmethod
-    def _build_schema_cluster_read(cls, _schema):
-        if cls._schema_cluster_read is not None:
-            _schema.etag = cls._schema_cluster_read.etag
-            _schema.extended_location = cls._schema_cluster_read.extended_location
-            _schema.id = cls._schema_cluster_read.id
-            _schema.identity = cls._schema_cluster_read.identity
-            _schema.location = cls._schema_cluster_read.location
-            _schema.name = cls._schema_cluster_read.name
-            _schema.properties = cls._schema_cluster_read.properties
-            _schema.system_data = cls._schema_cluster_read.system_data
-            _schema.tags = cls._schema_cluster_read.tags
-            _schema.type = cls._schema_cluster_read.type
-            return
-
-        cls._schema_cluster_read = _schema_cluster_read = AAZObjectType()
-
-        cluster_read = _schema_cluster_read
-        cluster_read.etag = AAZStrType(
-            flags={"read_only": True},
-        )
-        cluster_read.extended_location = AAZObjectType(
-            serialized_name="extendedLocation",
-            flags={"required": True},
-        )
-        cls._build_schema_extended_location_read(cluster_read.extended_location)
-        cluster_read.id = AAZStrType(
-            flags={"read_only": True},
-        )
-        cluster_read.identity = AAZIdentityObjectType()
-        cluster_read.location = AAZStrType(
-            flags={"required": True},
-        )
-        cluster_read.name = AAZStrType(
-            flags={"read_only": True},
-        )
-        cluster_read.properties = AAZObjectType(
-            flags={"required": True, "client_flatten": True},
-        )
-        cluster_read.system_data = AAZObjectType(
-            serialized_name="systemData",
-            flags={"read_only": True},
-        )
-        cluster_read.tags = AAZDictType()
-        cluster_read.type = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        identity = _schema_cluster_read.identity
-        identity.principal_id = AAZStrType(
-            serialized_name="principalId",
-            flags={"read_only": True},
-        )
-        identity.tenant_id = AAZStrType(
-            serialized_name="tenantId",
-            flags={"read_only": True},
-        )
-        identity.type = AAZStrType(
-            flags={"required": True},
-        )
-        identity.user_assigned_identities = AAZDictType(
-            serialized_name="userAssignedIdentities",
-        )
-
-        user_assigned_identities = _schema_cluster_read.identity.user_assigned_identities
-        user_assigned_identities.Element = AAZObjectType(
-            nullable=True,
-        )
-
-        _element = _schema_cluster_read.identity.user_assigned_identities.Element
-        _element.client_id = AAZStrType(
-            serialized_name="clientId",
-            flags={"read_only": True},
-        )
-        _element.principal_id = AAZStrType(
-            serialized_name="principalId",
-            flags={"read_only": True},
-        )
-
-        properties = _schema_cluster_read.properties
-        properties.action_states = AAZListType(
-            serialized_name="actionStates",
-            flags={"read_only": True},
-        )
-        properties.aggregator_or_single_rack_definition = AAZObjectType(
-            serialized_name="aggregatorOrSingleRackDefinition",
-            flags={"required": True},
-        )
-        cls._build_schema_rack_definition_read(properties.aggregator_or_single_rack_definition)
-        properties.analytics_output_settings = AAZObjectType(
-            serialized_name="analyticsOutputSettings",
-        )
-        properties.analytics_workspace_id = AAZStrType(
-            serialized_name="analyticsWorkspaceId",
-        )
-        properties.available_upgrade_versions = AAZListType(
-            serialized_name="availableUpgradeVersions",
-            flags={"read_only": True},
-        )
-        properties.cluster_capacity = AAZObjectType(
-            serialized_name="clusterCapacity",
-            flags={"read_only": True},
-        )
-        properties.cluster_connection_status = AAZStrType(
-            serialized_name="clusterConnectionStatus",
-            flags={"read_only": True},
-        )
-        properties.cluster_extended_location = AAZObjectType(
-            serialized_name="clusterExtendedLocation",
-            flags={"read_only": True},
-        )
-        cls._build_schema_extended_location_read(properties.cluster_extended_location)
-        properties.cluster_location = AAZStrType(
-            serialized_name="clusterLocation",
-        )
-        properties.cluster_manager_connection_status = AAZStrType(
-            serialized_name="clusterManagerConnectionStatus",
-            flags={"read_only": True},
-        )
-        properties.cluster_manager_id = AAZStrType(
-            serialized_name="clusterManagerId",
-            flags={"read_only": True},
-        )
-        properties.cluster_service_principal = AAZObjectType(
-            serialized_name="clusterServicePrincipal",
-        )
-        properties.cluster_type = AAZStrType(
-            serialized_name="clusterType",
-            flags={"required": True},
-        )
-        properties.cluster_version = AAZStrType(
-            serialized_name="clusterVersion",
-            flags={"required": True},
-        )
-        properties.command_output_settings = AAZObjectType(
-            serialized_name="commandOutputSettings",
-        )
-        properties.compute_deployment_threshold = AAZObjectType(
-            serialized_name="computeDeploymentThreshold",
-        )
-        properties.compute_rack_definitions = AAZListType(
-            serialized_name="computeRackDefinitions",
-        )
-        properties.detailed_status = AAZStrType(
-            serialized_name="detailedStatus",
-            flags={"read_only": True},
-        )
-        properties.detailed_status_message = AAZStrType(
-            serialized_name="detailedStatusMessage",
-            flags={"read_only": True},
-        )
-        properties.hybrid_aks_extended_location = AAZObjectType(
-            serialized_name="hybridAksExtendedLocation",
-            flags={"read_only": True},
-        )
-        cls._build_schema_extended_location_read(properties.hybrid_aks_extended_location)
-        properties.managed_resource_group_configuration = AAZObjectType(
-            serialized_name="managedResourceGroupConfiguration",
-        )
-        properties.manual_action_count = AAZIntType(
-            serialized_name="manualActionCount",
-            flags={"read_only": True},
-        )
-        properties.network_fabric_id = AAZStrType(
-            serialized_name="networkFabricId",
-            flags={"required": True},
-        )
-        properties.provisioning_state = AAZStrType(
-            serialized_name="provisioningState",
-            flags={"read_only": True},
-        )
-        properties.runtime_protection_configuration = AAZObjectType(
-            serialized_name="runtimeProtectionConfiguration",
-        )
-        properties.secret_archive = AAZObjectType(
-            serialized_name="secretArchive",
-        )
-        properties.secret_archive_settings = AAZObjectType(
-            serialized_name="secretArchiveSettings",
-        )
-        properties.support_expiry_date = AAZStrType(
-            serialized_name="supportExpiryDate",
-            flags={"read_only": True},
-        )
-        properties.update_strategy = AAZObjectType(
-            serialized_name="updateStrategy",
-        )
-        properties.vulnerability_scanning_settings = AAZObjectType(
-            serialized_name="vulnerabilityScanningSettings",
-        )
-        properties.workload_resource_ids = AAZListType(
-            serialized_name="workloadResourceIds",
-            flags={"read_only": True},
-        )
-
-        action_states = _schema_cluster_read.properties.action_states
-        action_states.Element = AAZObjectType()
-
-        _element = _schema_cluster_read.properties.action_states.Element
-        _element.action_type = AAZStrType(
-            serialized_name="actionType",
-            flags={"read_only": True},
-        )
-        _element.correlation_id = AAZStrType(
-            serialized_name="correlationId",
-            flags={"read_only": True},
-        )
-        _element.end_time = AAZStrType(
-            serialized_name="endTime",
-            flags={"read_only": True},
-        )
-        _element.message = AAZStrType(
-            flags={"read_only": True},
-        )
-        _element.start_time = AAZStrType(
-            serialized_name="startTime",
-            flags={"read_only": True},
-        )
-        _element.status = AAZStrType(
-            flags={"read_only": True},
-        )
-        _element.step_states = AAZListType(
-            serialized_name="stepStates",
-            flags={"read_only": True},
-        )
-
-        step_states = _schema_cluster_read.properties.action_states.Element.step_states
-        step_states.Element = AAZObjectType()
-
-        _element = _schema_cluster_read.properties.action_states.Element.step_states.Element
-        _element.end_time = AAZStrType(
-            serialized_name="endTime",
-            flags={"read_only": True},
-        )
-        _element.message = AAZStrType(
-            flags={"read_only": True},
-        )
-        _element.start_time = AAZStrType(
-            serialized_name="startTime",
-            flags={"read_only": True},
-        )
-        _element.status = AAZStrType(
-            flags={"read_only": True},
-        )
-        _element.step_name = AAZStrType(
-            serialized_name="stepName",
-            flags={"read_only": True},
-        )
-
-        analytics_output_settings = _schema_cluster_read.properties.analytics_output_settings
-        analytics_output_settings.analytics_workspace_id = AAZStrType(
-            serialized_name="analyticsWorkspaceId",
-        )
-        analytics_output_settings.associated_identity = AAZObjectType(
-            serialized_name="associatedIdentity",
-        )
-        cls._build_schema_identity_selector_read(analytics_output_settings.associated_identity)
-
-        available_upgrade_versions = _schema_cluster_read.properties.available_upgrade_versions
-        available_upgrade_versions.Element = AAZObjectType()
-
-        _element = _schema_cluster_read.properties.available_upgrade_versions.Element
-        _element.control_impact = AAZStrType(
-            serialized_name="controlImpact",
-            flags={"read_only": True},
-        )
-        _element.expected_duration = AAZStrType(
-            serialized_name="expectedDuration",
-            flags={"read_only": True},
-        )
-        _element.impact_description = AAZStrType(
-            serialized_name="impactDescription",
-            flags={"read_only": True},
-        )
-        _element.support_expiry_date = AAZStrType(
-            serialized_name="supportExpiryDate",
-            flags={"read_only": True},
-        )
-        _element.target_cluster_version = AAZStrType(
-            serialized_name="targetClusterVersion",
-            flags={"read_only": True},
-        )
-        _element.workload_impact = AAZStrType(
-            serialized_name="workloadImpact",
-            flags={"read_only": True},
-        )
-
-        cluster_capacity = _schema_cluster_read.properties.cluster_capacity
-        cluster_capacity.available_appliance_storage_gb = AAZIntType(
-            serialized_name="availableApplianceStorageGB",
-        )
-        cluster_capacity.available_core_count = AAZIntType(
-            serialized_name="availableCoreCount",
-        )
-        cluster_capacity.available_host_storage_gb = AAZIntType(
-            serialized_name="availableHostStorageGB",
-        )
-        cluster_capacity.available_memory_gb = AAZIntType(
-            serialized_name="availableMemoryGB",
-        )
-        cluster_capacity.total_appliance_storage_gb = AAZIntType(
-            serialized_name="totalApplianceStorageGB",
-        )
-        cluster_capacity.total_core_count = AAZIntType(
-            serialized_name="totalCoreCount",
-        )
-        cluster_capacity.total_host_storage_gb = AAZIntType(
-            serialized_name="totalHostStorageGB",
-        )
-        cluster_capacity.total_memory_gb = AAZIntType(
-            serialized_name="totalMemoryGB",
-        )
-
-        cluster_service_principal = _schema_cluster_read.properties.cluster_service_principal
-        cluster_service_principal.application_id = AAZStrType(
-            serialized_name="applicationId",
-            flags={"required": True},
-        )
-        cluster_service_principal.password = AAZStrType(
-            flags={"secret": True},
-        )
-        cluster_service_principal.principal_id = AAZStrType(
-            serialized_name="principalId",
-            flags={"required": True},
-        )
-        cluster_service_principal.tenant_id = AAZStrType(
-            serialized_name="tenantId",
-            flags={"required": True},
-        )
-
-        command_output_settings = _schema_cluster_read.properties.command_output_settings
-        command_output_settings.associated_identity = AAZObjectType(
-            serialized_name="associatedIdentity",
-        )
-        cls._build_schema_identity_selector_read(command_output_settings.associated_identity)
-        command_output_settings.container_url = AAZStrType(
-            serialized_name="containerUrl",
-        )
-        command_output_settings.overrides = AAZListType()
-
-        overrides = _schema_cluster_read.properties.command_output_settings.overrides
-        overrides.Element = AAZObjectType()
-
-        _element = _schema_cluster_read.properties.command_output_settings.overrides.Element
-        _element.associated_identity = AAZObjectType(
-            serialized_name="associatedIdentity",
-        )
-        cls._build_schema_identity_selector_read(_element.associated_identity)
-        _element.command_output_type = AAZStrType(
-            serialized_name="commandOutputType",
-        )
-        _element.container_url = AAZStrType(
-            serialized_name="containerUrl",
-        )
-
-        compute_deployment_threshold = _schema_cluster_read.properties.compute_deployment_threshold
-        compute_deployment_threshold.grouping = AAZStrType(
-            flags={"required": True},
-        )
-        compute_deployment_threshold.type = AAZStrType(
-            flags={"required": True},
-        )
-        compute_deployment_threshold.value = AAZIntType(
-            flags={"required": True},
-        )
-
-        compute_rack_definitions = _schema_cluster_read.properties.compute_rack_definitions
-        compute_rack_definitions.Element = AAZObjectType()
-        cls._build_schema_rack_definition_read(compute_rack_definitions.Element)
-
-        managed_resource_group_configuration = _schema_cluster_read.properties.managed_resource_group_configuration
-        managed_resource_group_configuration.location = AAZStrType()
-        managed_resource_group_configuration.name = AAZStrType()
-
-        runtime_protection_configuration = _schema_cluster_read.properties.runtime_protection_configuration
-        runtime_protection_configuration.enforcement_level = AAZStrType(
-            serialized_name="enforcementLevel",
-        )
-
-        secret_archive = _schema_cluster_read.properties.secret_archive
-        secret_archive.key_vault_id = AAZStrType(
-            serialized_name="keyVaultId",
-            flags={"required": True},
-        )
-        secret_archive.use_key_vault = AAZStrType(
-            serialized_name="useKeyVault",
-        )
-
-        secret_archive_settings = _schema_cluster_read.properties.secret_archive_settings
-        secret_archive_settings.associated_identity = AAZObjectType(
-            serialized_name="associatedIdentity",
-        )
-        cls._build_schema_identity_selector_read(secret_archive_settings.associated_identity)
-        secret_archive_settings.vault_uri = AAZStrType(
-            serialized_name="vaultUri",
-        )
-
-        update_strategy = _schema_cluster_read.properties.update_strategy
-        update_strategy.max_unavailable = AAZIntType(
-            serialized_name="maxUnavailable",
-        )
-        update_strategy.strategy_type = AAZStrType(
-            serialized_name="strategyType",
-            flags={"required": True},
-        )
-        update_strategy.threshold_type = AAZStrType(
-            serialized_name="thresholdType",
-            flags={"required": True},
-        )
-        update_strategy.threshold_value = AAZIntType(
-            serialized_name="thresholdValue",
-            flags={"required": True},
-        )
-        update_strategy.wait_time_minutes = AAZIntType(
-            serialized_name="waitTimeMinutes",
-        )
-
-        vulnerability_scanning_settings = _schema_cluster_read.properties.vulnerability_scanning_settings
-        vulnerability_scanning_settings.container_scan = AAZStrType(
-            serialized_name="containerScan",
-        )
-
-        workload_resource_ids = _schema_cluster_read.properties.workload_resource_ids
-        workload_resource_ids.Element = AAZStrType()
-
-        system_data = _schema_cluster_read.system_data
-        system_data.created_at = AAZStrType(
-            serialized_name="createdAt",
-        )
-        system_data.created_by = AAZStrType(
-            serialized_name="createdBy",
-        )
-        system_data.created_by_type = AAZStrType(
-            serialized_name="createdByType",
-        )
-        system_data.last_modified_at = AAZStrType(
-            serialized_name="lastModifiedAt",
-        )
-        system_data.last_modified_by = AAZStrType(
-            serialized_name="lastModifiedBy",
-        )
-        system_data.last_modified_by_type = AAZStrType(
-            serialized_name="lastModifiedByType",
-        )
-
-        tags = _schema_cluster_read.tags
-        tags.Element = AAZStrType()
-
-        _schema.etag = cls._schema_cluster_read.etag
-        _schema.extended_location = cls._schema_cluster_read.extended_location
-        _schema.id = cls._schema_cluster_read.id
-        _schema.identity = cls._schema_cluster_read.identity
-        _schema.location = cls._schema_cluster_read.location
-        _schema.name = cls._schema_cluster_read.name
-        _schema.properties = cls._schema_cluster_read.properties
-        _schema.system_data = cls._schema_cluster_read.system_data
-        _schema.tags = cls._schema_cluster_read.tags
-        _schema.type = cls._schema_cluster_read.type
 
     _schema_extended_location_read = None
 

@@ -19,7 +19,7 @@ EXTENSION_TAG_STRING = 'created_by=image-copy-extension'
 def run_cli_command(cmd, return_as_json=False):
     try:
         cmd_output = check_output(cmd, stderr=STDOUT, universal_newlines=True)
-        logger.debug('command: %s ended with output: %s', cmd, cmd_output)
+        logger.debug('command: %s ended with output: %s', _mask_output_token(cmd), cmd_output)
 
         if return_as_json:
             if cmd_output:
@@ -40,13 +40,23 @@ def run_cli_command(cmd, return_as_json=False):
             raise CLIError("Command returned an unexpected empty string.")
         return cmd_output
     except CalledProcessError as ex:
-        logger.error('command failed: %s', cmd)
+        logger.error('command failed: %s', _mask_output_token(cmd))
         logger.error('output: %s', ex.output)
         raise ex
     except Exception as ex:
-        logger.error('command ended with an error: %s', cmd)
+        logger.error('command ended with an error: %s', _mask_output_token(cmd))
         logger.error('args: %s', ex.args)
         raise ex
+
+
+def _mask_output_token(cmd):
+    output = cmd[:]
+    token_param_name = "--sas-token"
+    if token_param_name in output:
+        idx = output.index(token_param_name)
+        output[idx + 1] = "******"
+
+    return output
 
 
 def prepare_cli_command(cmd, output_as_json=True, tags=None, subscription=None, only_show_errors=None):

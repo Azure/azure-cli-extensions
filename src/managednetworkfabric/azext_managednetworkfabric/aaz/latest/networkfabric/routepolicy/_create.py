@@ -30,9 +30,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-06-15-preview",
+        "version": "2025-07-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/routepolicies/{}", "2024-06-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/routepolicies/{}", "2025-07-15"],
         ]
     }
 
@@ -64,6 +64,26 @@ class Create(AAZCommand):
                 pattern="^[a-zA-Z]{1}[a-zA-Z0-9-_]{2,127}$",
             ),
         )
+
+        # define Arg Group "Body"
+
+        _args_schema = cls._args_schema
+        _args_schema.location = AAZResourceLocationArg(
+            arg_group="Body",
+            help="The geo-location where the resource lives",
+            required=True,
+            fmt=AAZResourceLocationArgFormat(
+                resource_group_arg="resource_group",
+            ),
+        )
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Body",
+            help="Resource tags.",
+        )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg()
 
         # define Arg Group "Properties"
 
@@ -212,26 +232,6 @@ class Create(AAZCommand):
 
         ip_extended_community_ids = cls._args_schema.statements.Element.condition.ip_extended_community_ids
         ip_extended_community_ids.Element = AAZStrArg()
-
-        # define Arg Group "Resource"
-
-        _args_schema = cls._args_schema
-        _args_schema.location = AAZResourceLocationArg(
-            arg_group="Resource",
-            help="The geo-location where the resource lives",
-            required=True,
-            fmt=AAZResourceLocationArgFormat(
-                resource_group_arg="resource_group",
-            ),
-        )
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Resource",
-            help="Resource tags.",
-        )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
         return cls._args_schema
 
     _args_ip_community_id_list_create = None
@@ -357,7 +357,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-06-15-preview",
+                    "api-version", "2025-07-15",
                     required=True,
                 ),
             }

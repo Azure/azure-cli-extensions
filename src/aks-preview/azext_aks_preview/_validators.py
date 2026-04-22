@@ -31,7 +31,7 @@ from azure.cli.core.azclierror import (ArgumentUsageError,
                                        RequiredArgumentMissingError)
 from azure.cli.core.commands.validators import validate_tag
 from azure.cli.core.util import CLIError
-from azure.mgmt.core.tools import is_valid_resource_id
+from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id
 from knack.log import get_logger
 
 logger = get_logger(__name__)
@@ -701,26 +701,51 @@ def validate_crg_id(namespace):
 def validate_azure_keyvault_kms_key_id(namespace):
     key_id = namespace.azure_keyvault_kms_key_id
     if key_id:
-        err_msg = (
-            "--azure-keyvault-kms-key-id is not a valid Key Vault key ID. "
-            "See https://docs.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name"  # pylint: disable=line-too-long
-        )
-
         https_prefix = "https://"
         if not key_id.startswith(https_prefix):
+            err_msg = (
+                "--azure-keyvault-kms-key-id is not a valid Key Vault key ID. "
+                "See https://docs.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name"  # pylint: disable=line-too-long
+            )
             raise InvalidArgumentValueError(err_msg)
-
         segments = key_id[len(https_prefix):].split("/")
-        if len(segments) != 4 or segments[1] != "keys":
+        if len(segments) < 3 or segments[1] != "keys":
+            err_msg = (
+                "--azure-keyvault-kms-key-id is not a valid Key Vault key ID. "
+                "See https://docs.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name"  # pylint: disable=line-too-long
+            )
             raise InvalidArgumentValueError(err_msg)
 
 
 def validate_azure_keyvault_kms_key_vault_resource_id(namespace):
     key_vault_resource_id = namespace.azure_keyvault_kms_key_vault_resource_id
-    if key_vault_resource_id is None or key_vault_resource_id == '':
-        return
-    if not is_valid_resource_id(key_vault_resource_id):
-        raise InvalidArgumentValueError("--azure-keyvault-kms-key-vault-resource-id is not a valid Azure resource ID.")
+    if key_vault_resource_id:
+        if not is_valid_resource_id(key_vault_resource_id):
+            raise InvalidArgumentValueError(
+                "--azure-keyvault-kms-key-vault-resource-id is not a valid Azure resource ID."
+            )
+
+        try:
+            parsed = parse_resource_id(key_vault_resource_id)
+            provider = parsed.get('namespace', '').lower()
+            if provider != 'microsoft.keyvault':
+                raise InvalidArgumentValueError(
+                    "--azure-keyvault-kms-key-vault-resource-id must reference a "
+                    "Microsoft.KeyVault resource."
+                )
+            resource_type = parsed.get('type', '').lower()
+            if resource_type not in ['vaults', 'managedhsms']:
+                raise InvalidArgumentValueError(
+                    "--azure-keyvault-kms-key-vault-resource-id must reference a Key Vault "
+                    "(vaults) or Managed HSM (managedHSMs)."
+                )
+        except InvalidArgumentValueError:
+            # Re-raise our validation errors
+            raise
+        except Exception as ex:
+            raise InvalidArgumentValueError(
+                f"--azure-keyvault-kms-key-vault-resource-id parsing failed: {str(ex)}"
+            )
 
 
 def validate_bootstrap_container_registry_resource_id(namespace):
@@ -929,10 +954,20 @@ def validate_asm_egress_name(namespace):
 
 
 def validate_artifact_streaming(namespace):
-    """Validates that artifact streaming enablement can only be used on Linux."""
-    if namespace.enable_artifact_streaming:
-        if hasattr(namespace, 'os_type') and str(namespace.os_type).lower() == "windows":
+    """Validates artifact streaming flags for mutual exclusivity and OS support."""
+    enable_artifact_streaming = getattr(namespace, "enable_artifact_streaming", False)
+    disable_artifact_streaming = getattr(namespace, "disable_artifact_streaming", False)
+
+    if enable_artifact_streaming and disable_artifact_streaming:
+        raise MutuallyExclusiveArgumentError(
+            "Cannot specify both --enable-artifact-streaming and --disable-artifact-streaming at the same time."
+        )
+
+    if hasattr(namespace, "os_type") and str(namespace.os_type).lower() == "windows":
+        if enable_artifact_streaming:
             raise ArgumentUsageError('--enable-artifact-streaming can only be set for Linux nodepools')
+        if disable_artifact_streaming:
+            raise ArgumentUsageError('--disable-artifact-streaming can only be set for Linux nodepools')
 
 
 def validate_custom_endpoints(namespace):
@@ -981,3 +1016,174 @@ def validate_location_resource_group_cluster_parameters(namespace):
         raise MutuallyExclusiveArgumentError(
             "Cannot specify --location and --resource-group and --cluster at the same time."
         )
+
+
+def validate_opentelemetry_ports(namespace):
+    """Validate that OpenTelemetry metrics and logs ports don't conflict."""
+    metrics_port = getattr(namespace, 'opentelemetry_metrics_port', None)
+    logs_port = getattr(namespace, 'opentelemetry_logs_port', None)
+
+    # Check if both ports are specified and are the same
+    if metrics_port is not None and logs_port is not None and metrics_port == logs_port:
+        raise ArgumentUsageError(
+            "OpenTelemetry metrics port and logs port cannot be the same. "
+            "Please specify different ports for --opentelemetry-metrics-port and --opentelemetry-logs-port."
+        )
+
+    # Validate port ranges
+    for port, port_name in [(metrics_port, 'metrics'), (logs_port, 'logs')]:
+        if port is not None and not (1 <= port <= 65535):
+            raise ArgumentUsageError(
+                f"OpenTelemetry {port_name} port must be between 1 and 65535, got {port}."
+            )
+
+
+def validate_opentelemetry_metrics_dependencies(namespace):
+    """Validate OpenTelemetry metrics dependencies for create operations."""
+    enable_otlp_metrics = getattr(namespace, 'enable_opentelemetry_metrics', False)
+    disable_otlp_metrics = getattr(namespace, 'disable_opentelemetry_metrics', False)
+    # Try both new and deprecated parameter names for Azure Monitor metrics
+    enable_azure_monitor_metrics = getattr(namespace, 'enable_azure_monitor_metrics', False)
+    enable_azuremonitormetrics = getattr(namespace, 'enable_azuremonitormetrics', False)  # deprecated flag
+
+    # Check mutual exclusion
+    if enable_otlp_metrics and disable_otlp_metrics:
+        raise MutuallyExclusiveArgumentError(
+            "Cannot specify both --enable-opentelemetry-metrics and --disable-opentelemetry-metrics at the same time."
+        )
+
+    # Check if trying to enable OTLP metrics without Azure Monitor metrics
+    # For create operations, require explicit Azure Monitor enablement
+    azure_monitor_enabled_via_params = enable_azure_monitor_metrics or enable_azuremonitormetrics
+
+    if enable_otlp_metrics and not azure_monitor_enabled_via_params:
+        raise ArgumentUsageError(
+            "OpenTelemetry metrics requires Azure Monitor metrics to be enabled. "
+            "Please add --enable-azure-monitor-metrics or --enable-azuremonitormetrics to your command."
+        )
+
+
+def validate_opentelemetry_metrics_dependencies_for_update(namespace):
+    """Validate OpenTelemetry metrics dependencies for update operations."""
+    enable_otlp_metrics = getattr(namespace, 'enable_opentelemetry_metrics', False)
+    disable_otlp_metrics = getattr(namespace, 'disable_opentelemetry_metrics', False)
+
+    # Check mutual exclusion
+    if enable_otlp_metrics and disable_otlp_metrics:
+        raise MutuallyExclusiveArgumentError(
+            "Cannot specify both --enable-opentelemetry-metrics and --disable-opentelemetry-metrics at the same time."
+        )
+
+    # For update operations, validation is deferred to the decorator where we have access
+    # to the cluster's Azure Monitor profile
+
+
+def validate_opentelemetry_logs_dependencies(namespace):
+    """Validate OpenTelemetry logs dependencies for create operations."""
+    enable_otlp_logs = getattr(namespace, 'enable_opentelemetry_logs', False)
+    disable_otlp_logs = getattr(namespace, 'disable_opentelemetry_logs', False)
+    enable_azure_monitor_logs = getattr(namespace, 'enable_azure_monitor_logs', False)
+    enable_addons = getattr(namespace, 'enable_addons', None)
+
+    # Check mutual exclusion
+    if enable_otlp_logs and disable_otlp_logs:
+        raise MutuallyExclusiveArgumentError(
+            "Cannot specify both --enable-opentelemetry-logs and --disable-opentelemetry-logs at the same time."
+        )
+
+    # Check if trying to enable OTLP logs without Azure Monitor
+    # For create operations, require explicit Azure Monitor enablement via either:
+    # 1. --enable-azure-monitor-logs
+    # 2. --enable-addons monitoring
+    azure_monitor_logs_enabled = (enable_azure_monitor_logs or
+                                  (enable_addons and 'monitoring' in enable_addons))
+
+    if enable_otlp_logs and not azure_monitor_logs_enabled:
+        raise ArgumentUsageError(
+            "OpenTelemetry logs requires Azure Monitor logs to be enabled. "
+            "Please add --enable-azure-monitor-logs to your command."
+        )
+
+
+def validate_opentelemetry_logs_dependencies_for_update(namespace):
+    """Validate OpenTelemetry logs dependencies for update operations."""
+    enable_otlp_logs = getattr(namespace, 'enable_opentelemetry_logs', False)
+    disable_otlp_logs = getattr(namespace, 'disable_opentelemetry_logs', False)
+
+    # Check mutual exclusion
+    if enable_otlp_logs and disable_otlp_logs:
+        raise MutuallyExclusiveArgumentError(
+            "Cannot specify both --enable-opentelemetry-logs and --disable-opentelemetry-logs at the same time."
+        )
+    # For update operations, validation is deferred to the decorator where we have access
+    # to the cluster's Azure Monitor profile
+
+
+def validate_azure_monitor_and_opentelemetry_for_create(namespace):
+    """Main validator for Azure Monitor and OpenTelemetry configurations for create operations."""
+    # Run all OpenTelemetry-related validations
+    validate_opentelemetry_ports(namespace)
+    validate_opentelemetry_metrics_dependencies(namespace)
+    validate_opentelemetry_logs_dependencies(namespace)
+
+
+def validate_azure_monitor_and_opentelemetry_for_update(namespace):
+    """Main validator for Azure Monitor and OpenTelemetry configurations for update operations."""
+    # Run all OpenTelemetry-related validations
+    validate_opentelemetry_ports(namespace)
+    validate_opentelemetry_metrics_dependencies_for_update(namespace)
+    validate_opentelemetry_logs_dependencies_for_update(namespace)
+
+
+def validate_azure_monitor_logs_and_enable_addons(namespace):
+    """Validate that enable_azure_monitor_logs and enable_addons don't conflict."""
+    if hasattr(namespace, 'enable_azure_monitor_logs') and namespace.enable_azure_monitor_logs:
+        if hasattr(namespace, 'enable_addons') and namespace.enable_addons:
+            if 'monitoring' in namespace.enable_addons:
+                raise ArgumentUsageError(
+                    "Cannot specify both '--enable-azure-monitor-logs' and '--enable-addons monitoring'. "
+                    "Use either '--enable-azure-monitor-logs' or '--enable-addons monitoring'."
+                )
+
+
+def validate_azure_monitor_logs_enable_disable(namespace):
+    """Validate that enable and disable azure monitor logs parameters don't conflict."""
+    if (hasattr(namespace, 'enable_azure_monitor_logs') and namespace.enable_azure_monitor_logs and
+            hasattr(namespace, 'disable_azure_monitor_logs') and namespace.disable_azure_monitor_logs):
+        raise ArgumentUsageError(
+            "Cannot specify both '--enable-azure-monitor-logs' and '--disable-azure-monitor-logs'. "
+            "Use either '--enable-azure-monitor-logs' or '--disable-azure-monitor-logs'."
+        )
+
+
+def validate_nat_gateway_managed_outbound_ipv6_count(namespace):
+    """validate NAT gateway profile managed outbound IPv6 count"""
+    if namespace.nat_gateway_managed_outbound_ipv6_count is not None:
+        if (namespace.nat_gateway_managed_outbound_ipv6_count < 1 or
+                namespace.nat_gateway_managed_outbound_ipv6_count > 16):
+            raise InvalidArgumentValueError(
+                "--nat-gateway-managed-outbound-ipv6-count "
+                "must be in the range [1,16]"
+            )
+
+
+def validate_nat_gateway_v2_params(namespace):
+    """Validate that V2-only NAT gateway params require managedNATGatewayV2.
+
+    On update, --outbound-type may not be specified if the cluster is already V2.
+    Only reject when --outbound-type is explicitly set to a non-V2 value.
+    """
+    v2_params = [
+        getattr(namespace, 'nat_gateway_managed_outbound_ipv6_count', None),
+        getattr(namespace, 'nat_gateway_outbound_ip_ids', None),
+        getattr(namespace, 'nat_gateway_outbound_ip_prefix_ids', None),
+    ]
+    if any(p is not None for p in v2_params):
+        outbound_type = getattr(namespace, 'outbound_type', None)
+        if outbound_type is not None and outbound_type != 'managedNATGatewayV2':
+            raise InvalidArgumentValueError(
+                "--nat-gateway-managed-outbound-ipv6-count, "
+                "--nat-gateway-outbound-ips, and "
+                "--nat-gateway-outbound-ip-prefixes are only "
+                "valid with --outbound-type managedNATGatewayV2."
+            )

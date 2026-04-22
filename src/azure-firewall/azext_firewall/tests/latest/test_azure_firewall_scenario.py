@@ -61,7 +61,9 @@ class AzureFirewallScenario(ScenarioTest):
         self.kwargs.update({
             'pubip': 'pubip',
             'vnet': 'vnet',
-            'firewall': 'firewall'
+            'firewall': 'firewall',
+            'coll': 'rc1',
+            'network_rule1': 'network-rule1',
         })
 
         self.cmd('network public-ip create -g {rg} -n {pubip} --allocation-method Static --sku Standard --edge-zone losangeles')
@@ -70,6 +72,8 @@ class AzureFirewallScenario(ScenarioTest):
             self.check('extendedLocation.type', 'EdgeZone'),
             self.check('extendedLocation.name', 'losangeles')
         ])
+        self.cmd('network firewall network-rule create -g {rg} -f {firewall} -n {network_rule1} -c {coll} --priority 100 --action Allow --source-addresses 10.0.0.1 --protocols TCP --destination-addresses 111.1.0.0/20 --destination-ports 80')
+        self.cmd('network firewall network-rule collection delete -g {rg} -f {firewall} -c {coll}')
 
     @ResourceGroupPreparer(name_prefix="cli_test_firewall_with_additional_log_", location="westus")
     def test_firewall_with_additional_log(self):
@@ -1494,30 +1498,102 @@ class AzureFirewallScenario(ScenarioTest):
         ])
 
         # add idps mode and profile to policy        
-        self.cmd('network firewall policy update -g {rg} -n {policy_name_1} --idps-mode Alert --idps-profile Advanced',
+        self.cmd('network firewall policy update -g {rg} -n {policy_name_1} --idps-mode Alert --idps-profile Off',
                  checks=[
                      self.check('intrusionDetection.mode', 'Alert'),
-                     self.check('intrusionDetection.profile', 'Advanced')
+                     self.check('intrusionDetection.profile', 'Off')
                  ])
         
         # delete policy 1
         self.cmd('network firewall policy delete -g {rg} --name {policy_name_1}')
 
         # create policy 2 with idps profile        
-        self.cmd('network firewall policy create -g {rg} -n {policy_name_2} -l {location} --sku Premium --idps-mode Deny --idps-profile Standard',
+        self.cmd('network firewall policy create -g {rg} -n {policy_name_2} -l {location} --sku Premium --idps-mode Deny --idps-profile Emerging',
                  checks=[
                      self.check('type', 'Microsoft.Network/FirewallPolicies'),
                      self.check('name', '{policy_name_2}'),
                      self.check('intrusionDetection.mode', 'Deny'),
-                     self.check('intrusionDetection.profile', 'Standard')
+                     self.check('intrusionDetection.profile', 'Emerging')
         ])
 
         # change idps profile in policy 2
-        self.cmd('network firewall policy update -g {rg} -n {policy_name_2} --idps-mode Deny --idps-profile Basic',
+        self.cmd('network firewall policy update -g {rg} -n {policy_name_2} --idps-mode Deny --idps-profile Core',
                  checks=[
                      self.check('intrusionDetection.mode', 'Deny'),
-                     self.check('intrusionDetection.profile', 'Basic')
+                     self.check('intrusionDetection.profile', 'Core')
+        ])  
+
+        # change idps profile in policy 2
+        self.cmd('network firewall policy update -g {rg} -n {policy_name_2} --idps-mode Deny --idps-profile Extended',
+                 checks=[
+                     self.check('intrusionDetection.mode', 'Deny'),
+                     self.check('intrusionDetection.profile', 'Extended')
         ])  
 
         # delete policy 2
         self.cmd('network firewall policy delete -g {rg} --name {policy_name_2}')
+
+    @AllowLargeResponse(size_kb=10240)
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_capture', location='centralus')
+    def test_azure_firewall_packet_capture(self, resource_group, resource_group_location):
+        from datetime import date, timedelta
+        tomorrow = date.today() + timedelta(days=1)
+        self.kwargs.update({
+            "firewall_name": self.create_random_name("firewall-", 16),
+            "vnet_name": self.create_random_name("vnet-", 12),
+            "conf_name": self.create_random_name("ipconfig-", 16),
+            "m_conf_name": self.create_random_name("ipconfig-", 16),
+            "public_ip_name": self.create_random_name("public-ip-", 16),
+            "m_public_ip_name": self.create_random_name("mpublic-ip-", 16),
+            'rg' : resource_group,
+            'sub_id': self.get_subscription_id(),
+            'location': "centralus",
+            'storageaccountname': self.create_random_name('fwpcap', 20).lower(),
+            'expirystring': tomorrow.strftime("%Y-%m-%d"),
+            'containername': 'packetcapturecontainer',
+        })
+
+        self.cmd('storage account create -g {rg} -n {storageaccountname} --sku Standard_LRS --https-only true --kind StorageV2 --access-tier Hot')
+        self.cmd('storage container create -n {containername} --account-name {storageaccountname} --public-access off')
+        storage_account = self.cmd('az storage account show -g {rg} -n {storageaccountname}').get_output_in_json()
+        sas_response = self.cmd('az storage container generate-sas --account-name {storageaccountname} --name {containername} --permissions acdlrw --expiry {expirystring}').get_output_in_json()
+        blob_endpoint = storage_account['primaryEndpoints']['blob']
+        sas_url = f"{blob_endpoint}{self.kwargs['containername']}?{sas_response}"
+        self.kwargs.update({
+            'sas_url': sas_url
+        })
+
+        # Create virtual network with firewall and management subnets
+        self.cmd('az network vnet create -g {rg} -n {vnet_name} --location {location} --address-prefixes 10.0.0.0/16')
+        self.cmd('az network vnet subnet create -g {rg} --vnet-name {vnet_name} --name AzureFirewallSubnet --address-prefixes 10.0.0.0/24')
+        self.cmd('az network vnet subnet create -g {rg} --vnet-name {vnet_name} --name AzureFirewallManagementSubnet --address-prefixes 10.0.1.0/24')
+
+        # Create public IPs
+        self.cmd('az network public-ip create -g {rg} -n {public_ip_name} --sku Standard --location {location} --allocation-method Static')
+        self.cmd('az network public-ip create -g {rg} -n {m_public_ip_name} --sku Standard --location {location} --allocation-method Static')
+
+        # Create Azure Firewall with management IP
+        self.cmd('az network firewall create -g {rg} -n {firewall_name} --location {location} --sku AZFW_VNet --tier Basic --vnet-name {vnet_name} --public-ip {public_ip_name} --conf-name {conf_name} --m-conf-name {m_conf_name} --m-public-ip {m_public_ip_name}')
+
+        # Perform Start Packet Capture Operation on the Azure Firewall
+        self.cmd(
+            'network firewall packet-capture-operation'
+            ' --resource-group {rg}'
+            ' --azure-firewall-name {firewall_name}'
+            ' --duration-in-seconds 1200'
+            ' --number-of-packets-to-capture 50000'
+            ' --sas-url {sas_url}'
+            ' --file-name azureFirewallPacketCapture'
+            ' --protocol Any'
+            ' --flags "[{{type:syn}},{{type:fin}}]"'
+            ' --filters "[{{sources:[20.1.1.0],destinations:[20.1.2.0],destination-ports:[4500]}},{{sources:[10.1.1.0,10.1.1.1],destinations:[10.1.2.0],destination-ports:[123,80]}}]"'
+            ' --operation Start'
+        )
+        # Perform Status Packet Capture Operation on the Azure Firewall
+        self.cmd('network firewall packet-capture-operation --resource-group {rg} --azure-firewall-name {firewall_name} --operation Status')
+
+        # Perform Stop Packet Capture Operation on the Azure Firewall
+        self.cmd('network firewall packet-capture-operation --resource-group {rg} --azure-firewall-name {firewall_name} --operation Stop')
+
+        #Delete firewall
+        self.cmd('network firewall delete -n {firewall_name} -g {rg}')

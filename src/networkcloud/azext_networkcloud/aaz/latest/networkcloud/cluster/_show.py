@@ -23,9 +23,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}", "2026-01-01-preview"],
         ]
     }
 
@@ -124,7 +124,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-01-01-preview",
                     required=True,
                 ),
             }
@@ -169,6 +169,7 @@ class Show(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200.identity = AAZIdentityObjectType()
+            _schema_on_200.kind = AAZStrType()
             _schema_on_200.location = AAZStrType(
                 flags={"required": True},
             )
@@ -514,6 +515,9 @@ class Show(AAZCommand):
             managed_resource_group_configuration.name = AAZStrType()
 
             runtime_protection_configuration = cls._schema_on_200.properties.runtime_protection_configuration
+            runtime_protection_configuration.definition_update_mode = AAZStrType(
+                serialized_name="definitionUpdateMode",
+            )
             runtime_protection_configuration.enforcement_level = AAZStrType(
                 serialized_name="enforcementLevel",
             )

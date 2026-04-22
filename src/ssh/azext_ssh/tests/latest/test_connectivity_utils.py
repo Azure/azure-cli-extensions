@@ -55,19 +55,19 @@ class SshConnectivityUtilsCommandTest(unittest.TestCase):
     
     def test_get_proxy_filename_amd_windows(self):
         name = connectivity_utils._get_proxy_filename('Windows', 'amd64')
-        self.assertEqual(name, 'sshProxy_windows_amd64_1_3_026973.exe')
+        self.assertEqual(name, 'sshProxy_windows_amd64_1_3_033291.exe')
 
     def test_get_proxy_filename_arm_linux(self):
         name = connectivity_utils._get_proxy_filename('Linux', 'arm64')
-        self.assertEqual(name, 'sshProxy_linux_arm64_1_3_026973')
+        self.assertEqual(name, 'sshProxy_linux_arm64_1_3_033291')
 
     def test_get_proxy_filename_arm_Darwin(self):
         name = connectivity_utils._get_proxy_filename('Darwin', 'arm64')
-        self.assertEqual(name, 'sshProxy_darwin_arm64_1_3_026973')
+        self.assertEqual(name, 'sshProxy_darwin_arm64_1_3_033291')
 
     def test_get_proxy_filename_386_linuux(self):
         name = connectivity_utils._get_proxy_filename('Linux', '386')
-        self.assertEqual(name, 'sshProxy_linux_386_1_3_026973')
+        self.assertEqual(name, 'sshProxy_linux_386_1_3_033291')
     
     def test_get_proxy_filename_386_darwin(self):
         with self.assertRaises(azclierror.BadRequestError):
@@ -136,5 +136,5 @@ class SshConnectivityUtilsCommandTest(unittest.TestCase):
         connectivity_utils.install_client_side_proxy(None)
 
         mock_dir.assert_called_once_with("/dir/proxy", "Failed to create client proxy directory \'/dir/proxy\'.")
-        mock_download.assert_called_once_with("/dir/proxy", "sshProxy_linux_arm64_1_3_026973", "linux", "arm64")
-        mock_check.assert_called_once_with("/dir/proxy", "sshProxy_linux_arm64_1_3_026973")
+        mock_download.assert_called_once_with("/dir/proxy", "sshProxy_linux_arm64_1_3_033291", "linux", "arm64")
+        mock_check.assert_called_once_with("/dir/proxy", "sshProxy_linux_arm64_1_3_033291")

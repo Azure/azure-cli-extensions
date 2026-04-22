@@ -7,10 +7,12 @@ import copy
 import json
 import warnings
 from enum import Enum, auto
-from typing import Any, Dict, List, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
+from pydantic import TypeAdapter
 
 import deepdiff
 from azext_confcom import config, os_util
+from azext_confcom.lib.policy import Container
 from azext_confcom.container import ContainerImage, UserContainerImage
 from azext_confcom.errors import eprint
 from azext_confcom.fragment_util import sanitize_fragment_fields
@@ -39,7 +41,10 @@ from azext_confcom.template_util import (case_insensitive_dict_get,
                                          process_fragment_imports,
                                          process_mounts,
                                          process_mounts_from_config,
-                                         readable_diff)
+                                         readable_diff,
+                                         find_value_in_params_and_vars)
+from azext_confcom.lib.images import get_image_platform  # pylint: disable=unused-import
+from azext_confcom.lib.defaults import get_debug_mode_exec_procs
 from knack.log import get_logger
 from tqdm import tqdm
 
@@ -65,8 +70,10 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         disable_stdio: bool = False,
         is_vn2: bool = False,
         fragment_contents: Any = None,
+        container_definitions: Optional[list] = None,
     ) -> None:
         self._rootfs_proxy = None
+        self._platform = None
         self._policy_str = None
         self._policy_str_pp = None
         self._disable_stdio = disable_stdio
@@ -74,6 +81,15 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         self._existing_fragments = existing_rego_fragments
         self._api_version = config.API_VERSION
         self._fragment_contents = fragment_contents
+        self._container_definitions = container_definitions or []
+
+        self._container_definitions = []
+        if container_definitions:
+            for container_definition in container_definitions:
+                if isinstance(container_definition, list):
+                    self._container_definitions.extend(container_definition)
+                else:
+                    self._container_definitions.append(container_definition)
 
         if debug_mode:
             self._allow_properties_access = config.DEBUG_MODE_SETTINGS.get(
@@ -129,12 +145,26 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
 
         # parse and generate each container, either user or sidecar
         for c in containers:
+
+            image_platform = c.get("platform", "linux/amd64")
+            if self._platform is None:
+                self._platform = image_platform
+            elif self._platform != image_platform:
+                eprint(
+                    f'All images must have the same platform. '
+                    f'Found "{image_platform}" but expected "{self._platform}".'
+                )
+
             if not is_sidecar(c[config.POLICY_FIELD_CONTAINERS_ID]):
                 container_image = UserContainerImage.from_json(c, is_vn2=is_vn2)
             else:
                 container_image = ContainerImage.from_json(c)
             container_image.parse_all_parameters_and_variables(self.all_params, self.all_vars)
             container_results.append(container_image)
+
+        # Default platform if no containers were present to set it
+        if self._platform is None:
+            self._platform = "linux/amd64"
 
         self._images = container_results
 
@@ -200,17 +230,31 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
 
         # get rid of fields that aren't strictly needed for the fragment import
         sanitized_fragments = sanitize_fragment_fields(self.get_fragments())
-        return config.CUSTOMER_REGO_POLICY % (
-            pretty_print_func(self._api_version),
-            pretty_print_func(sanitized_fragments),
-            output,
-            pretty_print_func(self._allow_properties_access),
-            pretty_print_func(self._allow_dump_stacks),
-            pretty_print_func(self._allow_runtime_logging),
-            pretty_print_func(self._allow_environment_variable_dropping),
-            pretty_print_func(self._allow_unencrypted_scratch),
-            pretty_print_func(self._allow_capability_dropping),
-        )
+
+        if self._platform.startswith("linux"):
+            return config.CUSTOMER_REGO_POLICY % (
+                pretty_print_func(self._api_version),
+                pretty_print_func(sanitized_fragments),
+                output,
+                pretty_print_func(self._allow_properties_access),
+                pretty_print_func(self._allow_dump_stacks),
+                pretty_print_func(self._allow_runtime_logging),
+                pretty_print_func(self._allow_environment_variable_dropping),
+                pretty_print_func(self._allow_unencrypted_scratch),
+                pretty_print_func(self._allow_capability_dropping),
+            )
+        if self._platform.startswith("windows"):
+            return config.CUSTOMER_REGO_POLICY_WINDOWS % (
+                pretty_print_func(self._api_version),
+                pretty_print_func(sanitized_fragments),
+                output,
+                pretty_print_func(self._allow_properties_access),
+                pretty_print_func(self._allow_dump_stacks),
+                pretty_print_func(self._allow_runtime_logging),
+                pretty_print_func(self._allow_environment_variable_dropping),
+            )
+        eprint(f'Unsupported platform: "{self._platform}". '
+               f'Supported platforms are linux/amd64 and windows/amd64.')
 
     def validate_cce_policy(self) -> Tuple[bool, Dict]:
         """Utility method: check to see if the existing policy
@@ -246,7 +290,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         if len(policy_ids) == 0:
             eprint("No sidecar images found in the policy.")
 
-        policy = load_policy_from_image_name(policy_ids)
+        policy = load_policy_from_image_name(policy_ids, platform=self._platform or "linux/amd64")
 
         policy.populate_policy_content_for_all_images(individual_image=True)
         policy_str = self.get_serialized_output(
@@ -263,7 +307,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         return policy.validate(policy_content, sidecar_validation=True)
 
     # pylint: disable=too-many-locals
-    def validate(self, policy, sidecar_validation=False) -> Tuple[bool, Dict]:
+    def validate(self, container_policy_list, sidecar_validation=False) -> Tuple[bool, Dict]:
         """Utility method: general method to compare two policies.
         One being the current object and the other is passed in as a parameter.
 
@@ -274,8 +318,8 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         The minimum difference is used to match up the containers in the policy vs
         the containers in the ARM template. Afterwards, the differences are compiled
         and returned as a dictionary organized by container name."""
-        if not policy:
-            eprint("Policy is not in the expected form to validate against")
+        if not container_policy_list:
+            container_policy_list = []
 
         policy_str = self.get_serialized_output(
             OutputType.PRETTY_PRINT, rego_boilerplate=False
@@ -286,11 +330,11 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
 
         policy_ids = [
             case_insensitive_dict_get(i, config.POLICY_FIELD_CONTAINERS_ID)
-            for i in policy
+            for i in container_policy_list
         ]
         policy_names = [
             case_insensitive_dict_get(i, config.POLICY_FIELD_CONTAINERS_NAME)
-            for i in policy
+            for i in container_policy_list
         ]
 
         for container in arm_containers:
@@ -324,7 +368,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
             temp_diff_list = []
             for idx in set_idx:
                 temp_diff = {}
-                matching_policy_container = policy[idx]
+                matching_policy_container = container_policy_list[idx]
 
                 diff_values = get_container_diff(matching_policy_container, container)
                 # label the diff with the ID so it can be merged
@@ -394,10 +438,16 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
             policy.append(image_dict)
         if (not is_sidecars or len(regular_container_images) == 0) and include_sidecars:
             # add in the default containers that have their hashes pre-computed
-            policy += copy.deepcopy(config.DEFAULT_CONTAINERS)
+            if self._platform.startswith("linux"):
+                policy += copy.deepcopy(config.DEFAULT_CONTAINERS)
             if self._disable_stdio:
                 for container in policy:
                     container[config.POLICY_FIELD_CONTAINERS_ELEMENTS_ALLOW_STDIO_ACCESS] = False
+
+        policy += [
+            TypeAdapter(Container).dump_python(Container(**c), mode="json")
+            for c in self._container_definitions
+        ]
 
         if pretty_print:
             return pretty_print_func(policy)
@@ -557,9 +607,17 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
                 if isinstance(tar_mapping, dict):
                     tar_location = get_tar_location_from_mapping(tar_mapping, image_name)
                 # populate layer info
-                image.set_layers(proxy.get_policy_image_layers(
-                    image.base, image.tag, tar_location=tar_location if tar else "", faster_hashing=faster_hashing
-                ))
+                layer_info = proxy.get_policy_image_layers(
+                    image.base,
+                    image.tag,
+                    platform=self._platform,
+                    tar_location=tar_location if tar else "",
+                    faster_hashing=faster_hashing,
+                )
+                image.set_layers(layer_info.get("layers", []))
+                # Set mounted_cim for Windows containers
+                if "mounted_cim" in layer_info:
+                    image.set_mounted_cim(layer_info["mounted_cim"])
 
                 progress.update()
             progress.close()
@@ -617,6 +675,66 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         self._images = images
 
 
+def validate_image_platform(image_name: str, platform: str) -> None:
+    """Validate that the image's platform matches --platform.
+
+    Checks the local Docker image first, then attempts to pull with the
+    specified platform if not found locally. Verifies the image's
+    Os/Architecture attrs match the requested platform.
+    """
+    import docker as docker_module
+    try:
+        client = docker_module.from_env()
+    except docker_module.errors.DockerException:
+        eprint("Docker is not running. Please start Docker.")
+        return
+
+    image = None
+
+    # Try local image first
+    try:
+        image = client.images.get(image_name)
+    except (docker_module.errors.ImageNotFound, docker_module.errors.NullResource):
+        pass
+
+    # If not local, try pulling with the specified platform
+    if image is None:
+        try:
+            image = client.images.pull(image_name, platform=platform)
+        except (docker_module.errors.ImageNotFound, docker_module.errors.NotFound):
+            eprint(
+                f'Image "{image_name}" is not found. '
+                f'Please check the image name and repository.'
+            )
+        except docker_module.errors.APIError as e:
+            error_msg = str(e).lower()
+            if "not supported" in error_msg or "no matching manifest" in error_msg:
+                eprint(
+                    f'Image "{image_name}" could not be pulled for platform "{platform}". '
+                    f'Docker Desktop must be in the correct container mode '
+                    f'(Linux containers for linux/amd64, '
+                    f'Windows containers for windows/amd64).'
+                )
+            else:
+                eprint(
+                    f'Image "{image_name}" could not be pulled for platform '
+                    f'"{platform}": {e}'
+                )
+
+    if image is None:
+        eprint(
+            f'Image "{image_name}" could not be retrieved for platform validation.'
+        )
+        return
+
+    detected = f"{image.attrs.get('Os')}/{image.attrs.get('Architecture')}"
+    if detected != platform:
+        eprint(
+            f'Image "{image_name}" has platform "{detected}", '
+            f'which does not match the specified platform "{platform}".'
+        )
+
+
 # pylint: disable=R0914,
 def load_policy_from_arm_template_str(
     template_data: str,
@@ -629,6 +747,7 @@ def load_policy_from_arm_template_str(
     rego_imports: Any = None,
     fragment_contents: Any = None,
     exclude_default_fragments: bool = False,
+    platform: str = "linux/amd64",
 ) -> List[AciPolicy]:
     """Function that converts ARM template string to an ACI Policy"""
     input_arm_json = os_util.load_json_from_str(template_data)
@@ -666,7 +785,8 @@ def load_policy_from_arm_template_str(
     get_values_for_params(input_parameter_json, all_params)
 
     AciPolicy.all_params = all_params
-    AciPolicy.all_vars = case_insensitive_dict_get(input_arm_json, config.ACI_FIELD_TEMPLATE_VARIABLES) or {}
+    all_vars = case_insensitive_dict_get(input_arm_json, config.ACI_FIELD_TEMPLATE_VARIABLES) or {}
+    AciPolicy.all_vars = all_vars
 
     container_groups = []
 
@@ -675,17 +795,30 @@ def load_policy_from_arm_template_str(
         containers = []
         existing_containers = None
         fragments = None
-        exclude_default_fragments = False
+        group_exclude_default_fragments = exclude_default_fragments
 
         tags = case_insensitive_dict_get(resource, config.ACI_FIELD_TEMPLATE_TAGS)
         if tags:
-            exclude_default_fragments = case_insensitive_dict_get(tags, config.ACI_FIELD_TEMPLATE_ZERO_SIDECAR)
-            if isinstance(exclude_default_fragments, str):
-                exclude_default_fragments = exclude_default_fragments.lower() == "true"
+            group_exclude_default_fragments = \
+                case_insensitive_dict_get(tags, config.ACI_FIELD_TEMPLATE_ZERO_SIDECAR)
+            if isinstance(group_exclude_default_fragments, str):
+                group_exclude_default_fragments = group_exclude_default_fragments.lower() == "true"
 
         container_group_properties = case_insensitive_dict_get(
             resource, config.ACI_FIELD_TEMPLATE_PROPERTIES
         )
+
+        # Validate that osType in the ARM template matches the specified platform
+        os_type = case_insensitive_dict_get(container_group_properties, "osType")
+        if os_type:
+            expected_os = "linux" if platform.startswith("linux") else "windows"
+            if os_type.lower() != expected_os:
+                eprint(
+                    f'ARM template osType "{os_type}" does not match '
+                    f'the supplied platform "{platform}". '
+                    f'Please use --platform to specify a consistent platform.'
+                )
+
         container_list = case_insensitive_dict_get(
             container_group_properties, config.ACI_FIELD_TEMPLATE_CONTAINERS
         )
@@ -713,19 +846,17 @@ def load_policy_from_arm_template_str(
                     rego_imports.append(fragment)
                     unique_imports.add(fragment)
 
-        try:
+        if diff_mode:
             existing_containers, fragments = extract_confidential_properties(
                 container_group_properties
             )
-        except ValueError as e:
-            if diff_mode:
-                # In diff mode, we raise an error if the base64 policy is malformed
-                eprint(f"Unable to decode existing policy. Please check the base64 encoding.\n{e}")
-            else:
-                # In non-diff mode, we ignore the error and proceed without the policy
-                existing_containers, fragments = ([], [])
+        else:
+            existing_containers, fragments = ([], [])
 
-        rego_fragments = copy.deepcopy(config.DEFAULT_REGO_FRAGMENTS) if not exclude_default_fragments else []
+        rego_fragments = (
+            copy.deepcopy(config.DEFAULT_REGO_FRAGMENTS)
+            if not group_exclude_default_fragments else []
+        )
         if infrastructure_svn:
             # assumes the first DEFAULT_REGO_FRAGMENT is always the
             # infrastructure fragment
@@ -765,6 +896,10 @@ def load_policy_from_arm_template_str(
                     f'Field ["{config.ACI_FIELD_TEMPLATE_IMAGE}"] is empty or cannot be found'
                 )
 
+            # Resolve ARM parameters/variables to get the real image name for validation
+            resolved_image = find_value_in_params_and_vars(all_params, all_vars, image_name)
+            validate_image_platform(resolved_image, platform)
+
             exec_processes = []
             extract_probe(exec_processes, image_properties, config.ACI_FIELD_CONTAINERS_READINESS_PROBE)
             extract_probe(exec_processes, image_properties, config.ACI_FIELD_CONTAINERS_LIVENESS_PROBE)
@@ -782,15 +917,15 @@ def load_policy_from_arm_template_str(
                     or [],
                     config.ACI_FIELD_CONTAINERS_MOUNTS: process_mounts(image_properties, volumes)
                     + process_configmap(image_properties),
-                    config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES: exec_processes
-                    + config.DEBUG_MODE_SETTINGS.get(config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES)
-                    if debug_mode
-                    else exec_processes,
+                    config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES: (
+                        exec_processes + get_debug_mode_exec_procs(debug_mode, platform)
+                    ),
                     config.ACI_FIELD_CONTAINERS_SIGNAL_CONTAINER_PROCESSES: [],
                     config.ACI_FIELD_CONTAINERS_ALLOW_STDIO_ACCESS: not disable_stdio,
                     config.ACI_FIELD_CONTAINERS_SECURITY_CONTEXT: case_insensitive_dict_get(
                         image_properties, config.ACI_FIELD_TEMPLATE_SECURITY_CONTEXT
                     ),
+                    "platform": platform,
                 }
             )
 
@@ -823,6 +958,7 @@ def load_policy_from_arm_template_file(
     rego_imports: list = None,
     fragment_contents: list = None,
     exclude_default_fragments: bool = False,
+    platform: str = "linux/amd64",
 ) -> List[AciPolicy]:
     """Utility function: generate policy object from given arm template and parameter file paths"""
     input_arm_json = os_util.load_str_from_file(template_path)
@@ -840,11 +976,13 @@ def load_policy_from_arm_template_file(
         diff_mode=diff_mode,
         fragment_contents=fragment_contents,
         exclude_default_fragments=exclude_default_fragments,
+        platform=platform,
     )
 
 
 def load_policy_from_image_name(
-    image_names: Union[List[str], str], debug_mode: bool = False, disable_stdio: bool = False
+    image_names: Union[List[str], str], debug_mode: bool = False, disable_stdio: bool = False,
+    platform: str = "linux/amd64",
 ) -> AciPolicy:
     # can either take a list of image names or a single image name
     if isinstance(image_names, str):
@@ -852,6 +990,8 @@ def load_policy_from_image_name(
 
     containers = []
     for image_name in image_names:
+        validate_image_platform(image_name, platform)
+
         container = {}
         # assign just the fields that are expected
         # the values will come when calling
@@ -865,6 +1005,8 @@ def load_policy_from_image_name(
 
         container[config.ACI_FIELD_CONTAINERS_CONTAINERIMAGE] = image_name
         container[config.ACI_FIELD_CONTAINERS_ALLOW_STDIO_ACCESS] = not disable_stdio
+
+        container["platform"] = platform
 
         containers.append(container)
 
@@ -884,6 +1026,7 @@ def load_policy_from_json_file(
     disable_stdio: bool = False,
     infrastructure_svn: str = None,
     exclude_default_fragments: bool = False,
+    platform: str = "linux/amd64",
 ) -> AciPolicy:
     json_content = os_util.load_str_from_file(data)
     return load_policy_from_json(
@@ -891,7 +1034,8 @@ def load_policy_from_json_file(
         debug_mode=debug_mode,
         disable_stdio=disable_stdio,
         infrastructure_svn=infrastructure_svn,
-        exclude_default_fragments=exclude_default_fragments
+        exclude_default_fragments=exclude_default_fragments,
+        platform=platform,
     )
 
 
@@ -901,6 +1045,7 @@ def load_policy_from_json(
     disable_stdio: bool = False,
     infrastructure_svn: str = None,
     exclude_default_fragments: bool = False,
+    platform: str = "linux/amd64",
 ) -> AciPolicy:
     output_containers = []
     # 1) Parse incoming string as JSON
@@ -964,6 +1109,8 @@ def load_policy_from_json(
                 f'Field ["{config.ACI_FIELD_TEMPLATE_IMAGE}"] is empty or cannot be found'
             )
 
+        validate_image_platform(image_name, platform)
+
         container_name = case_insensitive_dict_get(
             container, config.ACI_FIELD_CONTAINERS_NAME
         ) or image_name
@@ -1020,15 +1167,15 @@ def load_policy_from_json(
                     container_properties, config.ACI_FIELD_TEMPLATE_COMMAND
                 ) or [],
                 config.ACI_FIELD_CONTAINERS_MOUNTS: mounts,
-                config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES: exec_processes
-                + config.DEBUG_MODE_SETTINGS.get(config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES)
-                if debug_mode
-                else exec_processes,
+                config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES: (
+                    exec_processes + get_debug_mode_exec_procs(debug_mode, platform)
+                ),
                 config.ACI_FIELD_CONTAINERS_SIGNAL_CONTAINER_PROCESSES: [],
                 config.ACI_FIELD_CONTAINERS_ALLOW_STDIO_ACCESS: not disable_stdio,
                 config.ACI_FIELD_CONTAINERS_SECURITY_CONTEXT: case_insensitive_dict_get(
                     container_properties, config.ACI_FIELD_TEMPLATE_SECURITY_CONTEXT
                 ),
+                "platform": platform,
             }
         )
 
@@ -1066,6 +1213,7 @@ def load_policy_from_virtual_node_yaml_file(
         exclude_default_fragments: bool = False,
         fragment_contents: list = None,
         infrastructure_svn: str = None,
+        platform: str = "linux/amd64",
 ) -> List[AciPolicy]:
     yaml_contents_str = os_util.load_str_from_file(virtual_node_yaml_path)
     return load_policy_from_virtual_node_yaml_str(
@@ -1078,6 +1226,7 @@ def load_policy_from_virtual_node_yaml_file(
         exclude_default_fragments=exclude_default_fragments,
         fragment_contents=fragment_contents,
         infrastructure_svn=infrastructure_svn,
+        platform=platform,
     )
 
 
@@ -1092,6 +1241,7 @@ def load_policy_from_virtual_node_yaml_str(
         exclude_default_fragments: bool = False,
         fragment_contents: Any = None,
         infrastructure_svn: str = None,
+        platform: str = "linux/amd64",
 ) -> List[AciPolicy]:
     """
     Load a virtual node yaml file and generate a policy object
@@ -1173,6 +1323,8 @@ def load_policy_from_virtual_node_yaml_str(
             image = case_insensitive_dict_get(container, config.ACI_FIELD_TEMPLATE_IMAGE)
             if not image:
                 eprint("Container does not have an image field")
+
+            validate_image_platform(image, platform)
 
             # env vars
             envs = process_env_vars_from_yaml(
@@ -1290,13 +1442,13 @@ def load_policy_from_virtual_node_yaml_str(
                     config.ACI_FIELD_TEMPLATE_ENTRYPOINT: command,
                     config.ACI_FIELD_CONTAINERS_COMMAND: args,
                     config.ACI_FIELD_CONTAINERS_MOUNTS: mounts,
-                    config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES: exec_processes
-                    + config.DEBUG_MODE_SETTINGS.get(config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES)
-                    if debug_mode
-                    else exec_processes,
+                    config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES: (
+                        exec_processes + get_debug_mode_exec_procs(debug_mode, platform)
+                    ),
                     config.ACI_FIELD_CONTAINERS_SIGNAL_CONTAINER_PROCESSES: [],
                     config.ACI_FIELD_CONTAINERS_ALLOW_STDIO_ACCESS: not disable_stdio,
-                    config.ACI_FIELD_CONTAINERS_SECURITY_CONTEXT: security_context
+                    config.ACI_FIELD_CONTAINERS_SECURITY_CONTEXT: security_context,
+                    "platform": platform,
                 }
             )
         all_policies.append(
