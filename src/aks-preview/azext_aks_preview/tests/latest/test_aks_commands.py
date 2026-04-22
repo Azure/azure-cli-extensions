@@ -22505,6 +22505,7 @@ spec:
         lb_name_app = "app-lb"
         nodepool_name = "nodepool1"
         secondary_nodepool_name = "nodepool2"
+        tertiary_nodepool_name = "nodepool3"
         self.kwargs.update(
             {
                 "resource_group": resource_group,
@@ -22514,6 +22515,7 @@ spec:
                 "app_lb": lb_name_app,
                 "nodepool": nodepool_name,
                 "secondary_nodepool": secondary_nodepool_name,
+                "tertiary_nodepool": tertiary_nodepool_name,
             }
         )
 
@@ -22536,6 +22538,14 @@ spec:
         self.cmd(add_np_cmd, checks=[
             self.check("provisioningState", "Succeeded"),
         ])
+
+        # Add a third nodepool for testing primary agent pool update
+        self.cmd(
+            "aks nodepool add -g {resource_group} --cluster-name {name} -n {tertiary_nodepool}",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+            ],
+        )
 
         # Add the default kubernetes load balancer
         add_lb_cmd = (
@@ -22605,6 +22615,18 @@ spec:
                 self.check("contains(serviceNamespaceSelector.matchLabels, 'environment=production')", True),
                 self.exists("nodeSelector.matchLabels"),
                 self.check("contains(nodeSelector.matchLabels, 'disk=ssd')", True),
+            ],
+        )
+
+        # Update the secondary LoadBalancer's primary agent pool
+        self.cmd(
+            "aks loadbalancer update -g {resource_group} --cluster-name {name} "
+            "--name {secondary_lb} "
+            "--primary-agent-pool-name {tertiary_nodepool} "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/MultipleStandardLoadBalancersPreview",
+            checks=[
+                self.check("name", "{secondary_lb}"),
+                self.check("primaryAgentPoolName", "{tertiary_nodepool}"),
             ],
         )
 
