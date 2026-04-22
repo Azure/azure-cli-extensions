@@ -722,7 +722,7 @@ helps['aks create'] = f"""
           long-summary: |
               Deterministically creates an automatic cluster WITHOUT HOBO, even in regions where HOBO is the default.
               Only valid with `--sku automatic`. Mutually exclusive with `--enable-hosted-system`.
-        - name: --system-node-vnet-subnet-id
+        - name: --system-node-vnet-subnet-id --sys-node-subnet-id
           type: string
           short-summary: Resource ID of the subnet to be used by AKS-managed hosted system nodes (BYO VNet HOBO).
           long-summary: |
