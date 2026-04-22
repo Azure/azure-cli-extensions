@@ -355,12 +355,12 @@ def validate_apiserver_subnet_id(namespace):
     _validate_subnet_id(namespace.apiserver_subnet_id, "--apiserver-subnet-id")
 
 
-def validate_system_node_vnet_subnet_id(namespace):
-    _validate_subnet_id(namespace.system_node_vnet_subnet_id, "--system-node-vnet-subnet-id")
+def validate_system_node_subnet_id(namespace):
+    _validate_subnet_id(namespace.system_node_subnet_id, "--system-node-subnet-id")
 
 
-def validate_node_vnet_subnet_id(namespace):
-    _validate_subnet_id(namespace.node_vnet_subnet_id, "--node-vnet-subnet-id")
+def validate_node_subnet_id(namespace):
+    _validate_subnet_id(namespace.node_subnet_id, "--node-subnet-id")
 
 
 def _validate_subnet_id(subnet_id, name):
