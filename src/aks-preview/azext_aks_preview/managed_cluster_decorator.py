@@ -545,6 +545,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                     )
         return disable_local_accounts
 
+    # pylint: disable=too-many-branches
     def _get_outbound_type(
         self,
         enable_validation: bool = False,
@@ -606,8 +607,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             # overwrites it with CONST_OUTBOUND_TYPE_LOAD_BALANCER below.
             user_supplied_outbound_type = self.raw_param.get("outbound_type")
             outbound_type = CONST_OUTBOUND_TYPE_LOAD_BALANCER
-            skuName = self.get_sku_name()
-            isVnetSubnetIdEmpty = self.get_vnet_subnet_id() in ["", None]
+            sku_name = self.get_sku_name()
+            is_vnet_subnet_id_empty = self.get_vnet_subnet_id() in ["", None]
             # BYO HOBO (hosted-system) scenarios provide a VNet via --system-node-vnet-subnet-id /
             # --node-vnet-subnet-id instead of --vnet-subnet-id.
             hobo_byo_subnets = bool(
@@ -615,8 +616,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 self.raw_param.get("node_vnet_subnet_id")
             )
             if (
-                skuName is not None and skuName == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC and
-                isVnetSubnetIdEmpty
+                sku_name is not None and sku_name == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC and
+                is_vnet_subnet_id_empty
             ):
                 # Default outbound for Automatic SKU without a VNet is managedNATGateway.
                 # For BYO HOBO, only apply this default when the user did NOT explicitly pass
