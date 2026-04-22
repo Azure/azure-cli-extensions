@@ -40,6 +40,7 @@ For ServiceGroup:
 
 import json
 import logging
+import re
 
 from azure.cli.core.azclierror import (
     CLIInternalError,
@@ -91,9 +92,36 @@ def hierarchy_create(cmd, resource_group=None, configuration_location=None, hier
     if not level:
         raise ValidationError("hierarchy-spec must include 'level'.")
 
+    # Validate all names in the hierarchy
+    _validate_hierarchy_names(spec)
+
     if hierarchy_type == "ServiceGroup":
         return _create_sg_hierarchy(cmd, spec, configuration_location, resource_group)
     return _create_rg_hierarchy(cmd, resource_group, configuration_location, name, level)
+
+
+_NAME_PATTERN = re.compile(r'^[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9]$')
+
+
+def _validate_hierarchy_names(node):
+    """Validate resource names in hierarchy spec before making REST calls."""
+    name = node.get("name", "")
+    if len(name) < 2 or len(name) > 63:
+        raise ValidationError(
+            f"Name '{name}' must be between 2 and 63 characters."
+        )
+    if not _NAME_PATTERN.match(name):
+        raise ValidationError(
+            f"Name '{name}' contains invalid characters. "
+            f"Use only letters, numbers, and hyphens. Must start and end with alphanumeric."
+        )
+    children = node.get("children")
+    if children:
+        if isinstance(children, dict):
+            _validate_hierarchy_names(children)
+        elif isinstance(children, list):
+            for child in children:
+                _validate_hierarchy_names(child)
 
 
 # ---------------------------------------------------------------------------
