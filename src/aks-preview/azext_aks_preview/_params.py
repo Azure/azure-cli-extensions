@@ -1313,7 +1313,7 @@ def load_arguments(self, _):
         c.argument("disable_hosted_system", action="store_true", is_preview=True)
         c.argument(
             "system_node_vnet_subnet_id",
-            options_list=["--system-node-vnet-subnet-id"],
+            options_list=["--system-node-vnet-subnet-id", "--sys-node-subnet-id"],
             validator=validate_system_node_vnet_subnet_id,
             is_preview=True,
         )

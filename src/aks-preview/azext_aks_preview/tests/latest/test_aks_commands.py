@@ -6190,13 +6190,28 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "aks wait -g {resource_group} -n {name} --created --timeout 900",
             checks=[self.is_empty()],
         )
-        time.sleep(180)
-        self.cmd(
-            "aks update -g {resource_group} -n {name} --sku base",
-            checks=[
-                self.check("sku.name", "Base"),
-            ],
-        )
+        # Poll with retries: `aks wait --created` returns once provisioningState hits Succeeded,
+        # but the RP can still have an internal in-progress reconciliation for several minutes
+        # afterwards which surfaces as 409 OperationNotAllowed on `aks update`. Back off and retry.
+        update_deadline = time.time() + 900
+        last_error = None
+        while time.time() < update_deadline:
+            try:
+                self.cmd(
+                    "aks update -g {resource_group} -n {name} --sku base",
+                    checks=[self.check("sku.name", "Base")],
+                )
+                last_error = None
+                break
+            except Exception as ex:  # pylint: disable=broad-except
+                message = str(ex)
+                if "OperationNotAllowed" in message or "in progress" in message or "409" in message:
+                    last_error = ex
+                    time.sleep(60)
+                    continue
+                raise
+        if last_error is not None:
+            raise last_error
 
     @live_only()
     @AllowLargeResponse()
