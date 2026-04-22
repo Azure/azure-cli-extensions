@@ -19,10 +19,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-10-01-preview",
+        "version": "2026-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.monitor/pipelinegroups", "2024-10-01-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.monitor/pipelinegroups", "2024-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.monitor/pipelinegroups", "2026-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.monitor/pipelinegroups", "2026-04-01"],
         ]
     }
 
@@ -113,7 +113,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01-preview",
+                    "api-version", "2026-04-01",
                     required=True,
                 ),
             }
@@ -156,26 +156,25 @@ class List(AAZCommand):
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.value.Element
-            _element.extended_location = AAZObjectType(
+            cls._schema_on_200.value.Element.extended_location = AAZObjectType(
                 serialized_name="extendedLocation",
             )
-            _element.id = AAZStrType(
+            cls._schema_on_200.value.Element.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.location = AAZStrType(
+            cls._schema_on_200.value.Element.location = AAZStrType(
                 flags={"required": True},
             )
-            _element.name = AAZStrType(
+            cls._schema_on_200.value.Element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType()
-            _element.system_data = AAZObjectType(
+            cls._schema_on_200.value.Element.properties = AAZObjectType()
+            cls._schema_on_200.value.Element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _element.tags = AAZDictType()
-            _element.type = AAZStrType(
+            cls._schema_on_200.value.Element.tags = AAZDictType()
+            cls._schema_on_200.value.Element.type = AAZStrType(
                 flags={"read_only": True},
             )
 
@@ -188,11 +187,11 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
+            properties.execution_placement = AAZObjectType(
+                serialized_name="executionPlacement",
+            )
             properties.exporters = AAZListType(
                 flags={"required": True},
-            )
-            properties.networking_configurations = AAZListType(
-                serialized_name="networkingConfigurations",
             )
             properties.processors = AAZListType(
                 flags={"required": True},
@@ -208,6 +207,33 @@ class List(AAZCommand):
             properties.service = AAZObjectType(
                 flags={"required": True},
             )
+            properties.tls_configurations = AAZListType(
+                serialized_name="tlsConfigurations",
+            )
+
+            execution_placement = cls._schema_on_200.value.Element.properties.execution_placement
+            execution_placement.constraints = AAZListType()
+            execution_placement.distribution = AAZObjectType()
+
+            constraints = cls._schema_on_200.value.Element.properties.execution_placement.constraints
+            constraints.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.execution_placement.constraints.Element
+            _element.capability = AAZStrType(
+                flags={"required": True},
+            )
+            _element.operator = AAZStrType(
+                flags={"required": True},
+            )
+            _element.values = AAZListType()
+
+            values = cls._schema_on_200.value.Element.properties.execution_placement.constraints.Element.values
+            values.Element = AAZStrType()
+
+            distribution = cls._schema_on_200.value.Element.properties.execution_placement.distribution
+            distribution.max_instances_per_host = AAZIntType(
+                serialized_name="maxInstancesPerHost",
+            )
 
             exporters = cls._schema_on_200.value.Element.properties.exporters
             exporters.Element = AAZObjectType()
@@ -219,7 +245,6 @@ class List(AAZCommand):
             _element.name = AAZStrType(
                 flags={"required": True},
             )
-            _element.tcp = AAZObjectType()
             _element.type = AAZStrType(
                 flags={"required": True},
             )
@@ -228,8 +253,7 @@ class List(AAZCommand):
             azure_monitor_workspace_logs.api = AAZObjectType(
                 flags={"required": True},
             )
-            azure_monitor_workspace_logs.cache = AAZObjectType()
-            azure_monitor_workspace_logs.concurrency = AAZObjectType()
+            azure_monitor_workspace_logs.persistence = AAZObjectType()
 
             api = cls._schema_on_200.value.Element.properties.exporters.Element.azure_monitor_workspace_logs.api
             api.data_collection_endpoint_url = AAZStrType(
@@ -292,50 +316,13 @@ class List(AAZCommand):
                 flags={"required": True},
             )
 
-            cache = cls._schema_on_200.value.Element.properties.exporters.Element.azure_monitor_workspace_logs.cache
-            cache.max_storage_usage = AAZIntType(
+            exporter_persistence = cls._schema_on_200.value.Element.properties.exporters.Element.azure_monitor_workspace_logs.persistence
+            exporter_persistence.max_storage_usage = AAZIntType(
                 serialized_name="maxStorageUsage",
             )
-            cache.retention_period = AAZIntType(
+            exporter_persistence.retention_period = AAZIntType(
                 serialized_name="retentionPeriod",
             )
-
-            concurrency = cls._schema_on_200.value.Element.properties.exporters.Element.azure_monitor_workspace_logs.concurrency
-            concurrency.batch_queue_size = AAZIntType(
-                serialized_name="batchQueueSize",
-            )
-            concurrency.worker_count = AAZIntType(
-                serialized_name="workerCount",
-            )
-
-            tcp = cls._schema_on_200.value.Element.properties.exporters.Element.tcp
-            tcp.url = AAZStrType(
-                flags={"required": True},
-            )
-
-            networking_configurations = cls._schema_on_200.value.Element.properties.networking_configurations
-            networking_configurations.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element.properties.networking_configurations.Element
-            _element.external_networking_mode = AAZStrType(
-                serialized_name="externalNetworkingMode",
-                flags={"required": True},
-            )
-            _element.host = AAZStrType()
-            _element.routes = AAZListType(
-                flags={"required": True},
-            )
-
-            routes = cls._schema_on_200.value.Element.properties.networking_configurations.Element.routes
-            routes.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element.properties.networking_configurations.Element.routes.Element
-            _element.path = AAZStrType()
-            _element.port = AAZIntType()
-            _element.receiver = AAZStrType(
-                flags={"required": True},
-            )
-            _element.subdomain = AAZStrType()
 
             processors = cls._schema_on_200.value.Element.properties.processors
             processors.Element = AAZObjectType()
@@ -344,6 +331,9 @@ class List(AAZCommand):
             _element.batch = AAZObjectType()
             _element.name = AAZStrType(
                 flags={"required": True},
+            )
+            _element.transform_language = AAZObjectType(
+                serialized_name="transformLanguage",
             )
             _element.type = AAZStrType(
                 flags={"required": True},
@@ -355,6 +345,12 @@ class List(AAZCommand):
             )
             batch.timeout = AAZIntType()
 
+            transform_language = cls._schema_on_200.value.Element.properties.processors.Element.transform_language
+            transform_language.transform_statement = AAZStrType(
+                serialized_name="transformStatement",
+                flags={"required": True},
+            )
+
             receivers = cls._schema_on_200.value.Element.properties.receivers
             receivers.Element = AAZObjectType()
 
@@ -364,10 +360,12 @@ class List(AAZCommand):
             )
             _element.otlp = AAZObjectType()
             _element.syslog = AAZObjectType()
+            _element.tls_configuration = AAZStrType(
+                serialized_name="tlsConfiguration",
+            )
             _element.type = AAZStrType(
                 flags={"required": True},
             )
-            _element.udp = AAZObjectType()
 
             otlp = cls._schema_on_200.value.Element.properties.receivers.Element.otlp
             otlp.endpoint = AAZStrType(
@@ -375,47 +373,21 @@ class List(AAZCommand):
             )
 
             syslog = cls._schema_on_200.value.Element.properties.receivers.Element.syslog
+            syslog.allow_skip_pri_header = AAZBoolType(
+                serialized_name="allowSkipPriHeader",
+            )
+            syslog.allowed_formats = AAZListType(
+                serialized_name="allowedFormats",
+            )
             syslog.endpoint = AAZStrType(
                 flags={"required": True},
             )
-            syslog.protocol = AAZStrType()
-
-            udp = cls._schema_on_200.value.Element.properties.receivers.Element.udp
-            udp.encoding = AAZStrType()
-            udp.endpoint = AAZStrType(
-                flags={"required": True},
-            )
-            udp.json_array_mapper = AAZObjectType(
-                serialized_name="jsonArrayMapper",
-            )
-            udp.read_queue_length = AAZIntType(
-                serialized_name="readQueueLength",
+            syslog.transport_protocol = AAZStrType(
+                serialized_name="transportProtocol",
             )
 
-            json_array_mapper = cls._schema_on_200.value.Element.properties.receivers.Element.udp.json_array_mapper
-            json_array_mapper.destination_field = AAZObjectType(
-                serialized_name="destinationField",
-            )
-            json_array_mapper.keys = AAZListType(
-                flags={"required": True},
-            )
-            json_array_mapper.source_field = AAZObjectType(
-                serialized_name="sourceField",
-            )
-
-            destination_field = cls._schema_on_200.value.Element.properties.receivers.Element.udp.json_array_mapper.destination_field
-            destination_field.destination = AAZStrType()
-            destination_field.field_name = AAZStrType(
-                serialized_name="fieldName",
-            )
-
-            keys = cls._schema_on_200.value.Element.properties.receivers.Element.udp.json_array_mapper.keys
-            keys.Element = AAZStrType()
-
-            source_field = cls._schema_on_200.value.Element.properties.receivers.Element.udp.json_array_mapper.source_field
-            source_field.field_name = AAZStrType(
-                serialized_name="fieldName",
-            )
+            allowed_formats = cls._schema_on_200.value.Element.properties.receivers.Element.syslog.allowed_formats
+            allowed_formats.Element = AAZStrType()
 
             service = cls._schema_on_200.value.Element.properties.service
             service.persistence = AAZObjectType()
@@ -455,6 +427,66 @@ class List(AAZCommand):
 
             receivers = cls._schema_on_200.value.Element.properties.service.pipelines.Element.receivers
             receivers.Element = AAZStrType()
+
+            tls_configurations = cls._schema_on_200.value.Element.properties.tls_configurations
+            tls_configurations.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.tls_configurations.Element
+            _element.client_ca = AAZObjectType(
+                serialized_name="clientCa",
+            )
+            _element.mode = AAZStrType()
+            _element.name = AAZStrType(
+                flags={"required": True},
+            )
+            _element.tls_certificate = AAZObjectType(
+                serialized_name="tlsCertificate",
+            )
+
+            client_ca = cls._schema_on_200.value.Element.properties.tls_configurations.Element.client_ca
+            client_ca.location = AAZStrType(
+                flags={"required": True},
+            )
+            client_ca.sub_location = AAZStrType(
+                serialized_name="subLocation",
+                flags={"required": True},
+            )
+            client_ca.type = AAZStrType(
+                flags={"required": True},
+            )
+
+            tls_certificate = cls._schema_on_200.value.Element.properties.tls_configurations.Element.tls_certificate
+            tls_certificate.certificate = AAZObjectType(
+                flags={"required": True},
+            )
+            tls_certificate.private_key = AAZObjectType(
+                serialized_name="privateKey",
+                flags={"required": True},
+            )
+
+            cert = cls._schema_on_200.value.Element.properties.tls_configurations.Element.tls_certificate.certificate
+            cert.location = AAZStrType(
+                flags={"required": True},
+            )
+            cert.sub_location = AAZStrType(
+                serialized_name="subLocation",
+                flags={"required": True},
+            )
+            cert.type = AAZStrType(
+                flags={"required": True},
+            )
+
+            private_key = cls._schema_on_200.value.Element.properties.tls_configurations.Element.tls_certificate.private_key
+            private_key.location = AAZStrType(
+                flags={"required": True},
+            )
+            private_key.sub_location = AAZStrType(
+                serialized_name="subLocation",
+                flags={"required": True},
+            )
+            private_key.type = AAZStrType(
+                flags={"required": True},
+            )
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
@@ -521,7 +553,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-10-01-preview",
+                    "api-version", "2026-04-01",
                     required=True,
                 ),
             }
@@ -564,26 +596,25 @@ class List(AAZCommand):
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.value.Element
-            _element.extended_location = AAZObjectType(
+            cls._schema_on_200.value.Element.extended_location = AAZObjectType(
                 serialized_name="extendedLocation",
             )
-            _element.id = AAZStrType(
+            cls._schema_on_200.value.Element.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.location = AAZStrType(
+            cls._schema_on_200.value.Element.location = AAZStrType(
                 flags={"required": True},
             )
-            _element.name = AAZStrType(
+            cls._schema_on_200.value.Element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType()
-            _element.system_data = AAZObjectType(
+            cls._schema_on_200.value.Element.properties = AAZObjectType()
+            cls._schema_on_200.value.Element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _element.tags = AAZDictType()
-            _element.type = AAZStrType(
+            cls._schema_on_200.value.Element.tags = AAZDictType()
+            cls._schema_on_200.value.Element.type = AAZStrType(
                 flags={"read_only": True},
             )
 
@@ -596,11 +627,11 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
+            properties.execution_placement = AAZObjectType(
+                serialized_name="executionPlacement",
+            )
             properties.exporters = AAZListType(
                 flags={"required": True},
-            )
-            properties.networking_configurations = AAZListType(
-                serialized_name="networkingConfigurations",
             )
             properties.processors = AAZListType(
                 flags={"required": True},
@@ -616,6 +647,33 @@ class List(AAZCommand):
             properties.service = AAZObjectType(
                 flags={"required": True},
             )
+            properties.tls_configurations = AAZListType(
+                serialized_name="tlsConfigurations",
+            )
+
+            execution_placement = cls._schema_on_200.value.Element.properties.execution_placement
+            execution_placement.constraints = AAZListType()
+            execution_placement.distribution = AAZObjectType()
+
+            constraints = cls._schema_on_200.value.Element.properties.execution_placement.constraints
+            constraints.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.execution_placement.constraints.Element
+            _element.capability = AAZStrType(
+                flags={"required": True},
+            )
+            _element.operator = AAZStrType(
+                flags={"required": True},
+            )
+            _element.values = AAZListType()
+
+            values = cls._schema_on_200.value.Element.properties.execution_placement.constraints.Element.values
+            values.Element = AAZStrType()
+
+            distribution = cls._schema_on_200.value.Element.properties.execution_placement.distribution
+            distribution.max_instances_per_host = AAZIntType(
+                serialized_name="maxInstancesPerHost",
+            )
 
             exporters = cls._schema_on_200.value.Element.properties.exporters
             exporters.Element = AAZObjectType()
@@ -627,7 +685,6 @@ class List(AAZCommand):
             _element.name = AAZStrType(
                 flags={"required": True},
             )
-            _element.tcp = AAZObjectType()
             _element.type = AAZStrType(
                 flags={"required": True},
             )
@@ -636,8 +693,7 @@ class List(AAZCommand):
             azure_monitor_workspace_logs.api = AAZObjectType(
                 flags={"required": True},
             )
-            azure_monitor_workspace_logs.cache = AAZObjectType()
-            azure_monitor_workspace_logs.concurrency = AAZObjectType()
+            azure_monitor_workspace_logs.persistence = AAZObjectType()
 
             api = cls._schema_on_200.value.Element.properties.exporters.Element.azure_monitor_workspace_logs.api
             api.data_collection_endpoint_url = AAZStrType(
@@ -700,50 +756,13 @@ class List(AAZCommand):
                 flags={"required": True},
             )
 
-            cache = cls._schema_on_200.value.Element.properties.exporters.Element.azure_monitor_workspace_logs.cache
-            cache.max_storage_usage = AAZIntType(
+            exporter_persistence = cls._schema_on_200.value.Element.properties.exporters.Element.azure_monitor_workspace_logs.persistence
+            exporter_persistence.max_storage_usage = AAZIntType(
                 serialized_name="maxStorageUsage",
             )
-            cache.retention_period = AAZIntType(
+            exporter_persistence.retention_period = AAZIntType(
                 serialized_name="retentionPeriod",
             )
-
-            concurrency = cls._schema_on_200.value.Element.properties.exporters.Element.azure_monitor_workspace_logs.concurrency
-            concurrency.batch_queue_size = AAZIntType(
-                serialized_name="batchQueueSize",
-            )
-            concurrency.worker_count = AAZIntType(
-                serialized_name="workerCount",
-            )
-
-            tcp = cls._schema_on_200.value.Element.properties.exporters.Element.tcp
-            tcp.url = AAZStrType(
-                flags={"required": True},
-            )
-
-            networking_configurations = cls._schema_on_200.value.Element.properties.networking_configurations
-            networking_configurations.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element.properties.networking_configurations.Element
-            _element.external_networking_mode = AAZStrType(
-                serialized_name="externalNetworkingMode",
-                flags={"required": True},
-            )
-            _element.host = AAZStrType()
-            _element.routes = AAZListType(
-                flags={"required": True},
-            )
-
-            routes = cls._schema_on_200.value.Element.properties.networking_configurations.Element.routes
-            routes.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element.properties.networking_configurations.Element.routes.Element
-            _element.path = AAZStrType()
-            _element.port = AAZIntType()
-            _element.receiver = AAZStrType(
-                flags={"required": True},
-            )
-            _element.subdomain = AAZStrType()
 
             processors = cls._schema_on_200.value.Element.properties.processors
             processors.Element = AAZObjectType()
@@ -752,6 +771,9 @@ class List(AAZCommand):
             _element.batch = AAZObjectType()
             _element.name = AAZStrType(
                 flags={"required": True},
+            )
+            _element.transform_language = AAZObjectType(
+                serialized_name="transformLanguage",
             )
             _element.type = AAZStrType(
                 flags={"required": True},
@@ -763,6 +785,12 @@ class List(AAZCommand):
             )
             batch.timeout = AAZIntType()
 
+            transform_language = cls._schema_on_200.value.Element.properties.processors.Element.transform_language
+            transform_language.transform_statement = AAZStrType(
+                serialized_name="transformStatement",
+                flags={"required": True},
+            )
+
             receivers = cls._schema_on_200.value.Element.properties.receivers
             receivers.Element = AAZObjectType()
 
@@ -772,10 +800,12 @@ class List(AAZCommand):
             )
             _element.otlp = AAZObjectType()
             _element.syslog = AAZObjectType()
+            _element.tls_configuration = AAZStrType(
+                serialized_name="tlsConfiguration",
+            )
             _element.type = AAZStrType(
                 flags={"required": True},
             )
-            _element.udp = AAZObjectType()
 
             otlp = cls._schema_on_200.value.Element.properties.receivers.Element.otlp
             otlp.endpoint = AAZStrType(
@@ -783,47 +813,21 @@ class List(AAZCommand):
             )
 
             syslog = cls._schema_on_200.value.Element.properties.receivers.Element.syslog
+            syslog.allow_skip_pri_header = AAZBoolType(
+                serialized_name="allowSkipPriHeader",
+            )
+            syslog.allowed_formats = AAZListType(
+                serialized_name="allowedFormats",
+            )
             syslog.endpoint = AAZStrType(
                 flags={"required": True},
             )
-            syslog.protocol = AAZStrType()
-
-            udp = cls._schema_on_200.value.Element.properties.receivers.Element.udp
-            udp.encoding = AAZStrType()
-            udp.endpoint = AAZStrType(
-                flags={"required": True},
-            )
-            udp.json_array_mapper = AAZObjectType(
-                serialized_name="jsonArrayMapper",
-            )
-            udp.read_queue_length = AAZIntType(
-                serialized_name="readQueueLength",
+            syslog.transport_protocol = AAZStrType(
+                serialized_name="transportProtocol",
             )
 
-            json_array_mapper = cls._schema_on_200.value.Element.properties.receivers.Element.udp.json_array_mapper
-            json_array_mapper.destination_field = AAZObjectType(
-                serialized_name="destinationField",
-            )
-            json_array_mapper.keys = AAZListType(
-                flags={"required": True},
-            )
-            json_array_mapper.source_field = AAZObjectType(
-                serialized_name="sourceField",
-            )
-
-            destination_field = cls._schema_on_200.value.Element.properties.receivers.Element.udp.json_array_mapper.destination_field
-            destination_field.destination = AAZStrType()
-            destination_field.field_name = AAZStrType(
-                serialized_name="fieldName",
-            )
-
-            keys = cls._schema_on_200.value.Element.properties.receivers.Element.udp.json_array_mapper.keys
-            keys.Element = AAZStrType()
-
-            source_field = cls._schema_on_200.value.Element.properties.receivers.Element.udp.json_array_mapper.source_field
-            source_field.field_name = AAZStrType(
-                serialized_name="fieldName",
-            )
+            allowed_formats = cls._schema_on_200.value.Element.properties.receivers.Element.syslog.allowed_formats
+            allowed_formats.Element = AAZStrType()
 
             service = cls._schema_on_200.value.Element.properties.service
             service.persistence = AAZObjectType()
@@ -863,6 +867,66 @@ class List(AAZCommand):
 
             receivers = cls._schema_on_200.value.Element.properties.service.pipelines.Element.receivers
             receivers.Element = AAZStrType()
+
+            tls_configurations = cls._schema_on_200.value.Element.properties.tls_configurations
+            tls_configurations.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.tls_configurations.Element
+            _element.client_ca = AAZObjectType(
+                serialized_name="clientCa",
+            )
+            _element.mode = AAZStrType()
+            _element.name = AAZStrType(
+                flags={"required": True},
+            )
+            _element.tls_certificate = AAZObjectType(
+                serialized_name="tlsCertificate",
+            )
+
+            client_ca = cls._schema_on_200.value.Element.properties.tls_configurations.Element.client_ca
+            client_ca.location = AAZStrType(
+                flags={"required": True},
+            )
+            client_ca.sub_location = AAZStrType(
+                serialized_name="subLocation",
+                flags={"required": True},
+            )
+            client_ca.type = AAZStrType(
+                flags={"required": True},
+            )
+
+            tls_certificate = cls._schema_on_200.value.Element.properties.tls_configurations.Element.tls_certificate
+            tls_certificate.certificate = AAZObjectType(
+                flags={"required": True},
+            )
+            tls_certificate.private_key = AAZObjectType(
+                serialized_name="privateKey",
+                flags={"required": True},
+            )
+
+            cert = cls._schema_on_200.value.Element.properties.tls_configurations.Element.tls_certificate.certificate
+            cert.location = AAZStrType(
+                flags={"required": True},
+            )
+            cert.sub_location = AAZStrType(
+                serialized_name="subLocation",
+                flags={"required": True},
+            )
+            cert.type = AAZStrType(
+                flags={"required": True},
+            )
+
+            private_key = cls._schema_on_200.value.Element.properties.tls_configurations.Element.tls_certificate.private_key
+            private_key.location = AAZStrType(
+                flags={"required": True},
+            )
+            private_key.sub_location = AAZStrType(
+                serialized_name="subLocation",
+                flags={"required": True},
+            )
+            private_key.type = AAZStrType(
+                flags={"required": True},
+            )
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
