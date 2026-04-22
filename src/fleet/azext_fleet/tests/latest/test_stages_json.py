@@ -145,14 +145,17 @@ class TestStagesJsonHandling(unittest.TestCase):
                 {
                     "name": "stage1",
                     "maxConcurrency": "7",
+                    "maxAllowedFailures": "1",
                     "groups": [
                         {
                             "name": "group1",
-                            "maxConcurrency": "100%"
+                            "maxConcurrency": "100%",
+                            "maxAllowedFailures": "0"
                         },
                         {
                             "name": "group2",
-                            "maxConcurrency": "70%"
+                            "maxConcurrency": "70%",
+                            "maxAllowedFailures": "1"
                         }
                     ],
                     "afterStageWaitInSeconds": 1800
@@ -160,10 +163,12 @@ class TestStagesJsonHandling(unittest.TestCase):
                 {
                     "name": "stage2", 
                     "maxConcurrency": "100%",
+                    "maxAllowedFailures": "2",
                     "groups": [
                         {
                             "name": "group3",
-                            "maxConcurrency": "1"
+                            "maxConcurrency": "1",
+                            "maxAllowedFailures": "1"
                         }
                     ],
                     "afterStageWaitInSeconds": 3600
@@ -183,20 +188,25 @@ class TestStagesJsonHandling(unittest.TestCase):
         self.assertEqual(stage1.name, "stage1")
         self.assertEqual(stage1.after_stage_wait_in_seconds, 1800)
         self.assertEqual(stage1.max_concurrency, "7")
+        self.assertEqual(stage1.max_allowed_failures, "1")
         self.assertEqual(len(stage1.groups), 2)
         self.assertEqual(stage1.groups[0].name, "group1")
         self.assertEqual(stage1.groups[0].max_concurrency, "100%")
+        self.assertEqual(stage1.groups[0].max_allowed_failures, "0")
         self.assertEqual(stage1.groups[1].name, "group2")
-        self.assertEqual(stage1.groups[1].max_concurrency, "70%")  
+        self.assertEqual(stage1.groups[1].max_concurrency, "70%")
+        self.assertEqual(stage1.groups[1].max_allowed_failures, "1")
         
         # Verify second stage  
         stage2 = result.stages[1]
         self.assertEqual(stage2.name, "stage2")
         self.assertEqual(stage2.after_stage_wait_in_seconds, 3600)
         self.assertEqual(stage2.max_concurrency, "100%")
+        self.assertEqual(stage2.max_allowed_failures, "2")
         self.assertEqual(len(stage2.groups), 1)
         self.assertEqual(stage2.groups[0].name, "group3")
         self.assertEqual(stage2.groups[0].max_concurrency, "1")
+        self.assertEqual(stage2.groups[0].max_allowed_failures, "1")
 
     def test_member_selector_at_stage_and_group(self):
         """Test memberSelector parsing at both stage and group levels."""

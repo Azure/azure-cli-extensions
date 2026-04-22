@@ -661,6 +661,7 @@ def get_update_run_strategy(cmd, operation_group, stages):
             update_groups.append(update_group_model(
                 name=group["name"],
                 max_concurrency=group.get("maxConcurrency"),
+                max_allowed_failures=group.get("maxAllowedFailures"),
                 member_selector=group_member_selector,
                 before_gates=build_gate_configs(cmd, operation_group, group.get("beforeGates")),
                 after_gates=build_gate_configs(cmd, operation_group, group.get("afterGates")),
@@ -677,6 +678,7 @@ def get_update_run_strategy(cmd, operation_group, stages):
             groups=update_groups,
             member_selector=stage_member_selector,
             max_concurrency=stage.get("maxConcurrency"),
+            max_allowed_failures=stage.get("maxAllowedFailures"),
             before_gates=build_gate_configs(cmd, operation_group, stage.get("beforeGates")),
             after_gates=build_gate_configs(cmd, operation_group, stage.get("afterGates")),
             after_stage_wait_in_seconds=after_wait
