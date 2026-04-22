@@ -18977,7 +18977,7 @@ spec:
             "aks update --resource-group={resource_group} --name={name} "
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingPerformancePreview,"
             "AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingL7PolicyPreview "
-            "--enable-acns --disable-acns-observability"
+            "--enable-acns --disable-acns-security"
         )
 
         self.cmd(
