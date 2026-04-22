@@ -14,6 +14,7 @@ from azure.cli.core.commands.parameters import (
     CLIArgumentType
 )
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
+from azext_fleet.vendored_sdks.v2026_05_01_preview.models import RolloutStrategyType
 from azext_fleet._validators import (
     validate_member_cluster_id,
     validate_member_cluster_names,
@@ -26,7 +27,8 @@ from azext_fleet._validators import (
     validate_targets,
     validate_update_strategy_id,
     validate_labels,
-    validate_enable_vnet_integration
+    validate_enable_vnet_integration,
+    validate_rollout_strategy
 )
 
 labels_type = CLIArgumentType(
@@ -156,6 +158,7 @@ def load_arguments(self, _):
         c.argument('resource_group_name', options_list=['--resource-group', '-g'], help='Name of the resource group.')
         c.argument('fleet_name', options_list=['--fleet-name', '-f'], help='Name of the fleet.')
         c.argument('state_filter', options_list=['--state-filter', '--state'], help='Apply a filter on gate state. Valid values are: Pending, Skipped, Completed')
+        c.argument('gate_type', options_list=['--gate-type'], help='Apply a filter on gate type. Valid values are: Approval, ScheduledStart')
 
     with self.argument_context('fleet gate show') as c:
         c.argument('resource_group_name', options_list=['--resource-group', '-g'], help='Name of the resource group.')
@@ -196,9 +199,32 @@ def load_arguments(self, _):
         c.argument('delete_policy', help='Delete policy for the namespace.', arg_type=get_enum_type(['Keep', 'Delete']), default='Keep')
         c.argument('adoption_policy', help='Adoption policy for the namespace.', arg_type=get_enum_type(['Always', 'IfIdentical', 'Never']), default='Never')
         c.argument('member_cluster_names', nargs='*', validator=validate_member_cluster_names, help='Space-separated list of member cluster names to apply the namespace to.')
+        c.argument(
+            'rollout_strategy',
+            help='Rollout strategy type for cluster resource placement.',
+            arg_type=get_enum_type([
+                RolloutStrategyType.ROLLING_UPDATE.value,
+                RolloutStrategyType.EXTERNAL.value,
+            ]),
+            validator=validate_rollout_strategy,
+        )
+        c.argument('cluster_update_strategy', help='Name of an existing cluster staged update strategy. Required when --rollout-strategy is "External".')
 
     with self.argument_context('fleet namespace update') as c:
         c.argument('tags', tags_type)
+        c.argument('labels', labels_type, help='Space-separated labels in key=value format. Example: env=production region=us-west team=devops')
+        c.argument('annotations', labels_type, help='Space-separated annotations in key=value format. Example: env=production region=us-west team=devops')
+        c.argument('cpu_requests', help='CPU requests for the namespace. Example: 1000m')
+        c.argument('cpu_limits', help='CPU limits for the namespace. Example: 1000m')
+        c.argument('memory_requests', help='Memory requests for the namespace. Example: 500Mi')
+        c.argument('memory_limits', help='Memory limits for the namespace. Example: 500Mi')
+        c.argument('ingress_policy', help='Ingress policy for the namespace', arg_type=get_enum_type(['DenyAll', 'AllowAll', 'AllowSameNamespace']))
+        c.argument('egress_policy', help='Egress policy for the namespace', arg_type=get_enum_type(['DenyAll', 'AllowAll', 'AllowSameNamespace']))
+        c.argument('delete_policy', help='Delete policy for the namespace.', arg_type=get_enum_type(['Keep', 'Delete']))
+        c.argument('adoption_policy', help='Adoption policy for the namespace.', arg_type=get_enum_type(['Always', 'IfIdentical', 'Never']))
+        c.argument('member_cluster_names', nargs='*', validator=validate_member_cluster_names, help='Space-separated list of member cluster names to apply the namespace to.')
+        c.argument('rollout_strategy', help='The rollout strategy type for the namespace.', arg_type=get_enum_type(['RollingUpdate', 'External']))
+        c.argument('cluster_update_strategy', help='Name of the cluster update strategy. Required when rollout strategy is External.')
 
     with self.argument_context('fleet namespace get-credentials') as c:
         c.argument('managed_namespace_name', options_list=['--name', '-n'], help='Specify the managed namespace name.')
