@@ -6218,6 +6218,119 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="eastus2euap"
     )
+    def test_aks_automatic_sku_hosted_system_byovnet_user_natgw(self, resource_group, resource_group_location):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        aks_name = self.create_random_name("cliakstest", 16)
+        vnet_name = self.create_random_name("clivnet", 16)
+        identity_name = self.create_random_name("cliakstest", 16)
+        natgw_name = self.create_random_name("clinatgw", 16)
+        pip_name = self.create_random_name("clinatpip", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "vnet_name": vnet_name,
+                "identity_name": identity_name,
+                "natgw_name": natgw_name,
+                "pip_name": pip_name,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        # user-assigned MSI is required for BYO VNet on automatic SKU
+        identity_id = self.cmd(
+            "identity create -g {resource_group} -n {identity_name} --query id -o tsv"
+        ).output.strip()
+        self.kwargs.update({"identity_id": identity_id})
+
+        # create a BYO VNet with 3 subnets: system-node, node, apiserver
+        self.cmd(
+            "network vnet create -g {resource_group} -n {vnet_name} "
+            "--address-prefix 10.0.0.0/8 "
+            "--subnet-name systemnode --subnet-prefix 10.42.0.0/20"
+        )
+        self.cmd(
+            "network vnet subnet create -g {resource_group} --vnet-name {vnet_name} "
+            "--name node --address-prefix 10.43.0.0/16"
+        )
+        self.cmd(
+            "network vnet subnet create -g {resource_group} --vnet-name {vnet_name} "
+            "--name apiserver --address-prefix 10.44.0.0/28"
+        )
+
+        # Create a user-assigned NAT gateway and attach it to the node subnet
+        self.cmd(
+            "network public-ip create -g {resource_group} -n {pip_name} "
+            "--sku Standard --allocation-method Static"
+        )
+        self.cmd(
+            "network nat gateway create -g {resource_group} -n {natgw_name} "
+            "--public-ip-addresses {pip_name} --idle-timeout 10"
+        )
+        natgw_id = self.cmd(
+            "network nat gateway show -g {resource_group} -n {natgw_name} --query id -o tsv"
+        ).output.strip()
+        self.kwargs.update({"natgw_id": natgw_id})
+
+        # Attach the NAT gateway to both the system-node and node subnets (egress paths)
+        self.cmd(
+            "network vnet subnet update -g {resource_group} --vnet-name {vnet_name} "
+            "--name systemnode --nat-gateway {natgw_id}"
+        )
+        self.cmd(
+            "network vnet subnet update -g {resource_group} --vnet-name {vnet_name} "
+            "--name node --nat-gateway {natgw_id}"
+        )
+
+        system_node_subnet_id = self.cmd(
+            "network vnet subnet show -g {resource_group} --vnet-name {vnet_name} --name systemnode "
+            "--query id -o tsv"
+        ).output.strip()
+        node_subnet_id = self.cmd(
+            "network vnet subnet show -g {resource_group} --vnet-name {vnet_name} --name node "
+            "--query id -o tsv"
+        ).output.strip()
+        apiserver_subnet_id = self.cmd(
+            "network vnet subnet show -g {resource_group} --vnet-name {vnet_name} --name apiserver "
+            "--query id -o tsv"
+        ).output.strip()
+        self.kwargs.update({
+            "system_node_subnet_id": system_node_subnet_id,
+            "node_subnet_id": node_subnet_id,
+            "apiserver_subnet_id": apiserver_subnet_id,
+        })
+
+        # BYO VNet HOBO automatic cluster with userAssignedNATGateway outbound
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--sku automatic --enable-hosted-system --workspace-resource-id=/subscriptions/feb5b150-60fe-4441-be73-8c02a524f55a/resourceGroups/hobo-test-la-rg/providers/Microsoft.OperationalInsights/workspaces/hobo-test-la-ws "
+            "--enable-managed-identity --assign-identity {identity_id} "
+            "--system-node-vnet-subnet-id={system_node_subnet_id} "
+            "--node-vnet-subnet-id={node_subnet_id} "
+            "--apiserver-subnet-id={apiserver_subnet_id} "
+            "--outbound-type userAssignedNATGateway "
+            "--ssh-key-value={ssh_key_value}"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("sku.name", "Automatic"),
+                self.check("hostedSystemProfile.enabled", True),
+                self.check("hostedSystemProfile.systemNodeSubnetId", system_node_subnet_id),
+                self.check("hostedSystemProfile.nodeSubnetId", node_subnet_id),
+                self.check("apiServerAccessProfile.subnetId", apiserver_subnet_id),
+                self.check("networkProfile.outboundType", "userAssignedNATGateway"),
+            ],
+        )
+
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="eastus2euap"
+    )
     def test_aks_automatic_sku_with_hosted_system_disabled(self, resource_group, resource_group_location):
         # reset the count so in replay mode the random names will start with 0
         self.test_resources_count = 0
