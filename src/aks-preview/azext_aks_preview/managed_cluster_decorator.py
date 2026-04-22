@@ -5562,6 +5562,14 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         then iterate over any HOBO BYO subnets and run the same role-assignment logic
         for each. Skipping is honored via ``--skip-subnet-role-assignment``.
         """
+        # Fail-fast validation BEFORE any role assignment runs, so a malformed BYO HOBO
+        # create (e.g. partial subnet trio, --system-node-vnet-subnet-id without
+        # --enable-hosted-system) cannot leave residual Network Contributor grants on
+        # customer subnets. Trio validation is otherwise invoked later through
+        # set_up_api_server_access_profile, which executes AFTER this method in the base
+        # construct_mc_profile_default flow.
+        self.context._validate_byo_hobo_subnet_trio()  # pylint: disable=protected-access
+
         # Preserve base behavior for the --vnet-subnet-id case.
         super().process_add_role_assignment_for_vnet_subnet(mc)
 
@@ -5570,9 +5578,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         if not self.context.get_enable_hosted_system():
             return
 
-        # Trio validation fires earlier via _get_apiserver_subnet_id on CREATE, so by the
-        # time we reach here we should have either all three HOBO subnets or none. Defend
-        # anyway — skip cleanly when no HOBO subnets are present.
+        # By the time we reach here trio validation has already passed, so we have either
+        # all three HOBO subnets or none. Defend anyway — skip cleanly when absent.
         hobo_subnets = []
         seen = set()
         for raw_key in (
