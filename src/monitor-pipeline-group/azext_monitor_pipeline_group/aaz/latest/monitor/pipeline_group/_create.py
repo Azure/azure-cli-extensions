@@ -612,7 +612,6 @@ class Create(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-            cls._schema_on_200_201 = AAZObjectType()
 
             cls._schema_on_200_201.extended_location = AAZObjectType(
                 serialized_name="extendedLocation",
