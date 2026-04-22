@@ -648,7 +648,17 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                     CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
                     CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
                 ]:
-                    if self.get_vnet_subnet_id() in ["", None]:
+                    # BYO HOBO scenarios satisfy the VNet requirement via
+                    # --system-node-vnet-subnet-id / --node-vnet-subnet-id
+                    # instead of --vnet-subnet-id.
+                    hobo_byo_has_subnet = bool(
+                        self.raw_param.get("system_node_vnet_subnet_id") or
+                        self.raw_param.get("node_vnet_subnet_id")
+                    )
+                    if (
+                        self.get_vnet_subnet_id() in ["", None] and
+                        not hobo_byo_has_subnet
+                    ):
                         if self.decorator_mode == DecoratorMode.CREATE:
                             raise RequiredArgumentMissingError(
                                 "--vnet-subnet-id must be specified for userDefinedRouting and it must "
