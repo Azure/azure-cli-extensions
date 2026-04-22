@@ -335,7 +335,7 @@ def _arm_get_regional(cmd, location, resource_id, api_version):
     return resp
 
 
-def _wait_for_sg_rbac(cmd, location, sg_id, sg_name, max_retries=3, wait_sec=10):
+def _wait_for_sg_rbac(cmd, location, sg_id, sg_name, max_retries=6, wait_sec=10):
     """Wait for RBAC to propagate on a newly created ServiceGroup.
 
     After SG creation, it takes time for permissions to propagate.
