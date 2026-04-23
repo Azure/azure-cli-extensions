@@ -9,6 +9,18 @@
 # pylint: disable=too-many-lines
 
 from knack.help_files import helps  # pylint: disable=unused-import
+from azext_changesafety.aaz.latest.changesafety.changerecord import (
+    Create as _CRCreate, Update as _CRUpdate, Show as _CRShow,
+    Delete as _CRDelete, List as _CRList,
+)
+from azext_changesafety.aaz.latest.changesafety.stagemap import (
+    Create as _SMCreate, Show as _SMShow, Update as _SMUpdate,
+    Delete as _SMDelete, List as _SMList,
+)
+from azext_changesafety.aaz.latest.changesafety.stageprogression import (
+    Create as _SPCreate, Show as _SPShow, Update as _SPUpdate,
+    Delete as _SPDelete, List as _SPList,
+)
 
 helps['changesafety'] = """
     type: group
@@ -113,6 +125,19 @@ helps['changesafety changerecord show'] = """
       - name: Show a ChangeRecord
         text: |-
           az changesafety changerecord show -g MyResourceGroup -n changerecord001
+"""
+
+helps['changesafety changerecord list'] = """
+    type: command
+    short-summary: List ChangeRecord resources.
+    long-summary: List all ChangeRecord resources in a subscription or resource group.
+    examples:
+      - name: List all ChangeRecords in the current subscription
+        text: |-
+          az changesafety changerecord list
+      - name: List ChangeRecords in a specific resource group
+        text: |-
+          az changesafety changerecord list -g MyResourceGroup
 """
 
 helps['changesafety stagemap'] = """
@@ -280,3 +305,13 @@ helps['changesafety stageprogression list'] = """
         text: |-
           az changesafety stageprogression list --change-record-name my-changerecord
 """
+
+# =============================================================================
+# Clear AZ_HELP so knack falls through to the helps[] dict above.
+# AAZ-generated commands ship with AZ_HELP = {"examples": [], ...} which
+# prevents knack from reading helps[]. Setting AZ_HELP = None fixes that.
+# =============================================================================
+for _cls in [_CRCreate, _CRUpdate, _CRShow, _CRDelete, _CRList,
+             _SMCreate, _SMShow, _SMUpdate, _SMDelete, _SMList,
+             _SPCreate, _SPShow, _SPUpdate, _SPDelete, _SPList]:
+    _cls.AZ_HELP = None

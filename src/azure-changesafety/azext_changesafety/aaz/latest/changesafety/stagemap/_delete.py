@@ -69,7 +69,7 @@ class Delete(AAZCommand):
         condition_1 = has_value(self.ctx.args.stage_map_name) and has_value(self.ctx.subscription_id)
         if condition_0:
             self.StageMapsDeleteAtManagementGroupLevel(ctx=self.ctx)()
-        if condition_1:
+        elif condition_1:
             self.StageMapsDeleteAtSubscriptionLevel(ctx=self.ctx)()
         self.post_operations()
 

@@ -71,34 +71,7 @@ class ChangeRecordScenario(ScenarioTest):
     @classmethod
     def _ensure_msrestazure_stub(cls):
         """Ensure msrestazure stub is available for tests."""
-        if 'msrestazure' in sys.modules:
-            return
-
-        msrestazure = types.ModuleType('msrestazure')
-        azure_operation = types.ModuleType('msrestazure.azure_operation')
-
-        class AzureOperationPoller:  # pylint: disable=too-few-public-methods
-            def _delay(self, *args, **kwargs):  # pylint: disable=unused-argument
-                return
-
-        azure_operation.AzureOperationPoller = AzureOperationPoller
-        arm_polling = types.ModuleType('msrestazure.polling.arm_polling')
-
-        class ARMPolling:  # pylint: disable=too-few-public-methods
-            def _delay(self, *args, **kwargs):  # pylint: disable=unused-argument
-                return
-
-        arm_polling.ARMPolling = ARMPolling
-        polling = types.ModuleType('msrestazure.polling')
-        polling.arm_polling = arm_polling
-
-        msrestazure.azure_operation = azure_operation
-        msrestazure.polling = polling
-
-        sys.modules['msrestazure'] = msrestazure
-        sys.modules['msrestazure.azure_operation'] = azure_operation
-        sys.modules['msrestazure.polling'] = polling
-        sys.modules['msrestazure.polling.arm_polling'] = arm_polling
+        _ensure_msrestazure_stub()
 
     @staticmethod
     def _get_arg_value(cmd, arg_name, default=None):

@@ -250,7 +250,7 @@ class Update(AAZCommand):
         condition_3 = has_value(self.ctx.args.stage_map_name) and has_value(self.ctx.subscription_id)
         if condition_0:
             self.StageMapsGetAtManagementGroupLevel(ctx=self.ctx)()
-        if condition_1:
+        elif condition_1:
             self.StageMapsGetAtSubscriptionLevel(ctx=self.ctx)()
         self.pre_instance_update(self.ctx.vars.instance)
         self.InstanceUpdateByJson(ctx=self.ctx)()

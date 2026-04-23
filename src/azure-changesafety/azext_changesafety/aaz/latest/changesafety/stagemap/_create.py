@@ -212,7 +212,7 @@ class Create(AAZCommand):
         condition_1 = has_value(self.ctx.args.stage_map_name) and has_value(self.ctx.subscription_id)
         if condition_0:
             self.StageMapsCreateOrUpdateAtManagementGroupLevel(ctx=self.ctx)()
-        if condition_1:
+        elif condition_1:
             self.StageMapsCreateOrUpdateAtSubscriptionLevel(ctx=self.ctx)()
         self.post_operations()
 
