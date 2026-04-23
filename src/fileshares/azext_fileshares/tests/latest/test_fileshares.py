@@ -6,7 +6,7 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.testsdk import *
-from azure.cli.testsdk.decorators import AllowLargeResponse
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 
 class FilesharesScenario(ScenarioTest):
