@@ -27,12 +27,12 @@ class FilesharesScenario(ScenarioTest):
             '--location {location} '
             '--protocol NFS '
             '--provisioned-storage-GiB 100 '
-            '--provisioned-iops 500 '
-            '--provisioned-throughput-MiB 80 '
+            '--provisioned-iops 3000 '
+            '--provisioned-throughput-MiB 125 '
             '--redundancy Local',
             checks=[
                 self.check('name', '{name}'),
-                self.check('properties.fileShareProtocol', 'NFS'),
+                self.check('properties.protocol', 'NFS'),
                 self.check('properties.provisionedStorageGiB', 100),
             ]
         )
@@ -44,7 +44,7 @@ class FilesharesScenario(ScenarioTest):
             '--name {name}',
             checks=[
                 self.check('name', '{name}'),
-                self.check('properties.fileShareProtocol', 'NFS'),
+                self.check('properties.protocol', 'NFS'),
             ]
         )
 
@@ -53,7 +53,7 @@ class FilesharesScenario(ScenarioTest):
             'fileshare list '
             '--resource-group {rg}',
             checks=[
-                self.check('length(@.value)', 1),
+                self.check('length(@)', 1),
             ]
         )
 
@@ -138,8 +138,8 @@ class FilesharesScenario(ScenarioTest):
             '--location {location} '
             '--protocol NFS '
             '--provisioned-storage-GiB 100 '
-            '--provisioned-iops 500 '
-            '--provisioned-throughput-MiB 80 '
+            '--provisioned-iops 3000 '
+            '--provisioned-throughput-MiB 125 '
             '--redundancy Local'
         )
 
@@ -148,7 +148,8 @@ class FilesharesScenario(ScenarioTest):
             'fileshare snapshot create '
             '--resource-group {rg} '
             '--resource-name {share_name} '
-            '--name {snap_name}',
+            '--name {snap_name} '
+            '--metadata key1=value1 key2=value2',
             checks=[
                 self.check('name', '{snap_name}'),
             ]
@@ -171,7 +172,7 @@ class FilesharesScenario(ScenarioTest):
             '--resource-group {rg} '
             '--resource-name {share_name}',
             checks=[
-                self.check('length(@.value)', 1),
+                self.check('length(@)', 1),
             ]
         )
 

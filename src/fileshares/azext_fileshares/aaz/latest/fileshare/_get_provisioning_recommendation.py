@@ -53,7 +53,7 @@ class GetProvisioningRecommendation(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.provisioned_storage_gi_b = AAZIntArg(
-            options=["--storage-gib", "--provisioned-storage-gi-b"],
+            options=["--provisioned-storage-GiB", "--storage-gib", "--provisioned-storage-gi-b"],
             arg_group="Properties",
             help="The desired provisioned storage size of the share in GiB. Will be use to calculate the values of remaining provisioning parameters.",
             required=True,

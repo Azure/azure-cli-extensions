@@ -68,17 +68,17 @@ class Update(AAZCommand):
         )
         _args_schema.nfs_protocol_properties._registered = False
         _args_schema.provisioned_io_per_sec = AAZIntArg(
-            options=["--provisioned-io-per-sec"],
+            options=["--provisioned-iops", "--provisioned-io-per-sec"],
             arg_group="Properties",
             help="The provisioned IO / sec of the share.",
         )
         _args_schema.provisioned_storage_gi_b = AAZIntArg(
-            options=["--storage-gib", "--provisioned-storage-gi-b"],
+            options=["--provisioned-storage-GiB", "--storage-gib", "--provisioned-storage-gi-b"],
             arg_group="Properties",
             help="The provisioned storage size of the share in GiB (1 GiB is 1024^3 bytes or 1073741824 bytes). A component of the file share's bill is the provisioned storage, regardless of the amount of used storage.",
         )
         _args_schema.provisioned_throughput_mi_b_per_sec = AAZIntArg(
-            options=["--throughput-mibps", "--provisioned-throughput-mi-b-per-sec"],
+            options=["--provisioned-throughput-MiB", "--throughput-mibps", "--provisioned-throughput-mi-b-per-sec"],
             arg_group="Properties",
             help="The provisioned throughput / sec of the share.",
         )
