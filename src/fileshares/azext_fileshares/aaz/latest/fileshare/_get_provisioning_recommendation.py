@@ -18,7 +18,7 @@ class GetProvisioningRecommendation(AAZCommand):
     """Get file shares provisioning parameters recommendation.
 
     :example: Get provisioning recommendations for a file share
-        az fileshare get-provisioning-recommendation --location eastus --storage-gib 1024
+        az fileshare get-provisioning-recommendation --location eastus --provisioned-storage-GiB 1024
     """
 
     _aaz_info = {

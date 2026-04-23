@@ -17,8 +17,15 @@ examples:
   - name: Create a file share with NFS protocol
     text: |
       az fileshare create --name MyFileShare --resource-group MyRG --location eastus \
-        --provisioned-storage-gi-b 1024 --provisioned-io-per-sec 3000 \
-        --provisioned-throughput-mi-b-per-sec 125 --protocol NFS
+        --provisioned-storage-GiB 1024 --provisioned-iops 3000 \
+        --provisioned-throughput-MiB 125 --protocol NFS --redundancy Local
+  - name: Create a file share with root squash and subnet access
+    text: |
+      az fileshare create --name MyFileShare --resource-group MyRG --location eastus \
+        --provisioned-storage-GiB 1024 --provisioned-iops 3000 \
+        --provisioned-throughput-MiB 125 --protocol NFS --redundancy Local \
+        --root-squash RootSquash --public-network-access Enabled \
+        --allowed-subnets /subscriptions/sub-id/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/vnet/subnets/subnet1
 """
 
 helps['fileshare update'] = """
@@ -28,7 +35,11 @@ examples:
   - name: Update the provisioned storage of a file share
     text: |
       az fileshare update --name MyFileShare --resource-group MyRG \
-        --provisioned-storage-gi-b 2048
+        --provisioned-storage-GiB 2048
+  - name: Update root squash setting
+    text: |
+      az fileshare update --name MyFileShare --resource-group MyRG \
+        --root-squash AllSquash
 """
 
 helps['fileshare check-name-availability'] = """
@@ -47,7 +58,7 @@ examples:
   - name: Get provisioning recommendations for a file share
     text: |
       az fileshare get-provisioning-recommendation --location eastus \
-        --provisioned-storage-gi-b 1024
+        --provisioned-storage-GiB 1024
 """
 
 helps['fileshare snapshot create'] = """
@@ -70,24 +81,35 @@ examples:
         --resource-name MyFileShare --metadata key1=value1
 """
 
-helps['fileshare private-endpoint-connection create'] = """
+helps['fileshare private-endpoint-connection approve'] = """
 type: command
-short-summary: Create a private endpoint connection for a file share.
+short-summary: Approve a private endpoint connection for a file share.
 examples:
   - name: Approve a private endpoint connection
     text: |
-      az fileshare private-endpoint-connection create --name MyConnection \
+      az fileshare private-endpoint-connection approve --name MyConnection \
         --resource-group MyRG --resource-name MyFileShare \
-        --connection-state status=Approved description="Approved by admin"
+        --description "Approved by admin"
+"""
+
+helps['fileshare private-endpoint-connection reject'] = """
+type: command
+short-summary: Reject a private endpoint connection for a file share.
+examples:
+  - name: Reject a private endpoint connection
+    text: |
+      az fileshare private-endpoint-connection reject --name MyConnection \
+        --resource-group MyRG --resource-name MyFileShare \
+        --description "Policy violation"
 """
 
 helps['fileshare private-endpoint-connection update'] = """
 type: command
 short-summary: Update a private endpoint connection for a file share.
 examples:
-  - name: Reject a private endpoint connection
+  - name: Update a private endpoint connection status
     text: |
       az fileshare private-endpoint-connection update --name MyConnection \
         --resource-group MyRG --resource-name MyFileShare \
-        --connection-state status=Rejected description="Rejected by admin"
+        --connection-state status=Approved description="Approved by admin"
 """

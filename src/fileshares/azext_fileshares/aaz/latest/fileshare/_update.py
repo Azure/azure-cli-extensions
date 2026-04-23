@@ -18,7 +18,7 @@ class Update(AAZCommand):
     """Update a FileShare
 
     :example: Update the provisioned storage of a file share
-        az fileshare update --name MyFileShare --resource-group MyRG --storage-gib 2048
+        az fileshare update --name MyFileShare --resource-group MyRG --provisioned-storage-GiB 2048
     """
 
     _aaz_info = {
@@ -66,6 +66,7 @@ class Update(AAZCommand):
             arg_group="Properties",
             help="Protocol settings specific NFS.",
         )
+        _args_schema.nfs_protocol_properties._registered = False
         _args_schema.provisioned_io_per_sec = AAZIntArg(
             options=["--provisioned-io-per-sec"],
             arg_group="Properties",
@@ -86,6 +87,7 @@ class Update(AAZCommand):
             arg_group="Properties",
             help="The set of properties for control public access.",
         )
+        _args_schema.public_access_properties._registered = False
         _args_schema.public_network_access = AAZStrArg(
             options=["--public-network-access"],
             arg_group="Properties",
@@ -114,6 +116,21 @@ class Update(AAZCommand):
         allowed_subnets = cls._args_schema.public_access_properties.allowed_subnets
         allowed_subnets.Element = AAZStrArg()
 
+        # define flat args for NFS and public access
+        _args_schema = cls._args_schema
+        _args_schema.root_squash = AAZStrArg(
+            options=["--root-squash"],
+            arg_group="Properties",
+            help="Root squash defines how root users on clients are mapped to the NFS share.",
+            enum={"AllSquash": "AllSquash", "NoRootSquash": "NoRootSquash", "RootSquash": "RootSquash"},
+        )
+        _args_schema.allowed_subnets = AAZListArg(
+            options=["--allowed-subnets"],
+            arg_group="Properties",
+            help="Space-separated list of subnet resource IDs that are allowed access.",
+        )
+        _args_schema.allowed_subnets.Element = AAZStrArg()
+
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg()
         return cls._args_schema
@@ -125,7 +142,11 @@ class Update(AAZCommand):
 
     @register_callback
     def pre_operations(self):
-        pass
+        args = self.ctx.args
+        if has_value(args.root_squash):
+            args.nfs_protocol_properties = {"root_squash": args.root_squash}
+        if has_value(args.allowed_subnets):
+            args.public_access_properties = {"allowed_subnets": args.allowed_subnets}
 
     @register_callback
     def post_operations(self):

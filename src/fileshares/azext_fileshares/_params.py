@@ -10,4 +10,24 @@
 
 
 def load_arguments(self, _):  # pylint: disable=unused-argument
-    pass
+    with self.argument_context('fileshare create') as c:
+        c.argument('provisioned_io_per_sec',
+                   options_list=['--provisioned-iops', '--provisioned-io-per-sec'])
+        c.argument('provisioned_storage_gi_b',
+                   options_list=['--provisioned-storage-GiB', '--storage-gib', '--provisioned-storage-gi-b'])
+        c.argument('provisioned_throughput_mi_b_per_sec',
+                   options_list=['--provisioned-throughput-MiB', '--throughput-mibps',
+                                 '--provisioned-throughput-mi-b-per-sec'])
+
+    with self.argument_context('fileshare update') as c:
+        c.argument('provisioned_io_per_sec',
+                   options_list=['--provisioned-iops', '--provisioned-io-per-sec'])
+        c.argument('provisioned_storage_gi_b',
+                   options_list=['--provisioned-storage-GiB', '--storage-gib', '--provisioned-storage-gi-b'])
+        c.argument('provisioned_throughput_mi_b_per_sec',
+                   options_list=['--provisioned-throughput-MiB', '--throughput-mibps',
+                                 '--provisioned-throughput-mi-b-per-sec'])
+
+    with self.argument_context('fileshare get-provisioning-recommendation') as c:
+        c.argument('provisioned_storage_gi_b',
+                   options_list=['--provisioned-storage-GiB', '--storage-gib', '--provisioned-storage-gi-b'])

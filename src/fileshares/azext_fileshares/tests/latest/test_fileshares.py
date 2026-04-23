@@ -6,6 +6,7 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.testsdk import *
+from azure.cli.testsdk.decorators import AllowLargeResponse
 
 
 class FilesharesScenario(ScenarioTest):
@@ -25,9 +26,9 @@ class FilesharesScenario(ScenarioTest):
             '--name {name} '
             '--location {location} '
             '--protocol NFS '
-            '--storage-gib 100 '
-            '--provisioned-io-per-sec 500 '
-            '--throughput-mibps 80 '
+            '--provisioned-storage-GiB 100 '
+            '--provisioned-iops 500 '
+            '--provisioned-throughput-MiB 80 '
             '--redundancy Local',
             checks=[
                 self.check('name', '{name}'),
@@ -61,7 +62,7 @@ class FilesharesScenario(ScenarioTest):
             'fileshare update '
             '--resource-group {rg} '
             '--name {name} '
-            '--storage-gib 200',
+            '--provisioned-storage-GiB 200',
             checks=[
                 self.check('name', '{name}'),
                 self.check('properties.provisionedStorageGiB', 200),
@@ -94,8 +95,7 @@ class FilesharesScenario(ScenarioTest):
         self.cmd(
             'fileshare check-name-availability '
             '--location {location} '
-            '--name {name} '
-            '--type Microsoft.FileShares/fileShares',
+            '--name {name}',
             checks=[
                 self.exists('nameAvailable'),
             ]
@@ -115,7 +115,7 @@ class FilesharesScenario(ScenarioTest):
         self.cmd(
             'fileshare get-provisioning-recommendation '
             '--location eastus '
-            '--storage-gib 100',
+            '--provisioned-storage-GiB 100',
             checks=[
                 self.exists('properties'),
             ]
@@ -137,9 +137,9 @@ class FilesharesScenario(ScenarioTest):
             '--name {share_name} '
             '--location {location} '
             '--protocol NFS '
-            '--storage-gib 100 '
-            '--provisioned-io-per-sec 500 '
-            '--throughput-mibps 80 '
+            '--provisioned-storage-GiB 100 '
+            '--provisioned-iops 500 '
+            '--provisioned-throughput-MiB 80 '
             '--redundancy Local'
         )
 

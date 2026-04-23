@@ -18,7 +18,7 @@ class Create(AAZCommand):
     """Create a file share.
 
     :example: Create a file share with NFS protocol
-        az fileshare create --name MyFileShare --resource-group MyRG --location eastus --provisioned-storage-gi-b 1024 --provisioned-io-per-sec 3000 --throughput-mibps 125 --protocol NFS --redundancy Local
+        az fileshare create --name MyFileShare --resource-group MyRG --location eastus --provisioned-storage-GiB 1024 --provisioned-iops 3000 --provisioned-throughput-MiB 125 --protocol NFS --redundancy Local
     """
 
     _aaz_info = {
@@ -76,6 +76,7 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="Protocol settings specific NFS.",
         )
+        _args_schema.nfs_protocol_properties._registered = False
         _args_schema.protocol = AAZStrArg(
             options=["--protocol"],
             arg_group="Properties",
@@ -102,6 +103,7 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="The set of properties for control public access.",
         )
+        _args_schema.public_access_properties._registered = False
         _args_schema.public_network_access = AAZStrArg(
             options=["--public-network-access"],
             arg_group="Properties",
@@ -131,6 +133,21 @@ class Create(AAZCommand):
         allowed_subnets = cls._args_schema.public_access_properties.allowed_subnets
         allowed_subnets.Element = AAZStrArg()
 
+        # define flat args for NFS and public access
+        _args_schema = cls._args_schema
+        _args_schema.root_squash = AAZStrArg(
+            options=["--root-squash"],
+            arg_group="Properties",
+            help="Root squash defines how root users on clients are mapped to the NFS share.",
+            enum={"AllSquash": "AllSquash", "NoRootSquash": "NoRootSquash", "RootSquash": "RootSquash"},
+        )
+        _args_schema.allowed_subnets = AAZListArg(
+            options=["--allowed-subnets"],
+            arg_group="Properties",
+            help="Space-separated list of subnet resource IDs that are allowed access.",
+        )
+        _args_schema.allowed_subnets.Element = AAZStrArg()
+
         # define Arg Group "Resource"
 
         _args_schema = cls._args_schema
@@ -159,7 +176,11 @@ class Create(AAZCommand):
 
     @register_callback
     def pre_operations(self):
-        pass
+        args = self.ctx.args
+        if has_value(args.root_squash):
+            args.nfs_protocol_properties = {"root_squash": args.root_squash}
+        if has_value(args.allowed_subnets):
+            args.public_access_properties = {"allowed_subnets": args.allowed_subnets}
 
     @register_callback
     def post_operations(self):

@@ -17,11 +17,8 @@ from azure.cli.core.aaz import *
 class CheckNameAvailability(AAZCommand):
     """Implements local CheckNameAvailability operations
 
-    :example: FileShares_CheckNameAvailability_MaximumSet
-        az fileshare check-name-availability --location westus --name fvykqbgmd --type Microsoft.FileShares/fileShares
-
-    :example: FileShares_CheckNameAvailability_MinimumSet
-        az fileshare check-name-availability --location westus --name fvykqbgmd --type Microsoft.FileShares/fileShares
+    :example: Check name availability for a file share
+        az fileshare check-name-availability --location westus --name myfileshare
     """
 
     _aaz_info = {
@@ -59,12 +56,14 @@ class CheckNameAvailability(AAZCommand):
             options=["--name"],
             arg_group="Body",
             help="The name of the resource for which availability needs to be checked.",
+            required=True,
         )
         _args_schema.type = AAZStrArg(
             options=["--type"],
             arg_group="Body",
             help="The resource type.",
         )
+        _args_schema.type._registered = False
         return cls._args_schema
 
     def _execute_operations(self):
@@ -74,7 +73,7 @@ class CheckNameAvailability(AAZCommand):
 
     @register_callback
     def pre_operations(self):
-        pass
+        self.ctx.args.type = "Microsoft.FileShares/fileShares"
 
     @register_callback
     def post_operations(self):
