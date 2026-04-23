@@ -900,12 +900,11 @@ class AzureFirewallPoliciesCreate(_AzureFirewallPoliciesCreate):
                          "Microsoft.ManagedIdentity/userAssignedIdentities/{}",
             )
         )
-        
         args_schema.identities = AAZListArg(
             options=['--identities'],
             help="Space-separated list of ManagedIdentity Resource IDs."
         )
-        args_schema.identities.Element = AAZResourceIdArg(  
+        args_schema.identities.Element = AAZResourceIdArg(
             fmt=AAZResourceIdArgFormat(
                 template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{}"
             )
@@ -913,7 +912,7 @@ class AzureFirewallPoliciesCreate(_AzureFirewallPoliciesCreate):
         args_schema.base_policy._fmt = AAZResourceIdArgFormat(
             template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network"
                      "/firewallPolicies/{}",
-        )   
+        )
         args_schema.user_assigned_identities._registered = False
 
         return args_schema
@@ -923,9 +922,9 @@ class AzureFirewallPoliciesCreate(_AzureFirewallPoliciesCreate):
         if (has_value(args.identity) or has_value(args.identities)):
             args.identity_type = "UserAssigned"
             identities = []
-            if(has_value(args.identity)):
+            if (has_value(args.identity)):
                 identities.append(args.identity.to_serialized_data())
-            if(has_value(args.identities)):
+            if (has_value(args.identities)):
                 identities.extend([id.to_serialized_data() for id in args.identities])
             args.user_assigned_identities = {id: {} for id in identities}
 
@@ -950,34 +949,35 @@ class AzureFirewallPoliciesUpdate(_AzureFirewallPoliciesUpdate):
         args_schema.identities = AAZListArg(
             options=['--identities'],
             help="Space-separated list of ManagedIdentity Resource IDs."
-        )        
-        args_schema.identities.Element = AAZResourceIdArg(  
-                fmt=AAZResourceIdArgFormat(
-                    template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{}"
-                )
-        )   
+        )
+        args_schema.identities.Element = AAZResourceIdArg(
+            fmt=AAZResourceIdArgFormat(
+                template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{}"
+            )
+        )
         args_schema.user_assigned_identities._registered = False
         args_schema.configuration._registered = False
 
         return args_schema
 
     def pre_operations(self):
-        args = self.ctx.args     
+        args = self.ctx.args
 
         if (has_value(args.identity) or has_value(args.identities)):
             args.identity_type = "UserAssigned"
             identities = []
-            if(has_value(args.identity)):
+            if (has_value(args.identity)):
                 identities.append(args.identity.to_serialized_data())
-            if(has_value(args.identities)):
+            if (has_value(args.identities)):
                 identities.extend([id.to_serialized_data() for id in args.identities])
             args.user_assigned_identities = {id: {} for id in identities}
         elif has_value(args.identity_type) and args.identity_type.to_serialized_data() == "None":
             args.identity_type = "None"
-            args.user_assigned_identities = None   
+            args.user_assigned_identities = None
         elif args.sku == 'Premium':
             args.identity_type = "None"
             args.user_assigned_identities = None
+
 
 class AzureFirewallPolicyIntrusionDetectionAdd(_AzureFirewallPoliciesUpdate):
     """
