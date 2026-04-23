@@ -41,8 +41,10 @@ import sys
 
 logger = logging.getLogger(__name__)
 
+
 def _eprint(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
+
 
 API_VERSION = "2025-08-01"
 ARM_RESOURCE = "https://management.azure.com"
@@ -449,4 +451,3 @@ def _short_id(arm_id):
         return ""
     parts = arm_id.strip("/").split("/")
     return parts[-1] if parts else arm_id
-

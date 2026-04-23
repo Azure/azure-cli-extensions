@@ -13,6 +13,7 @@ LRO polling with Retry-After support, CLI command invocation, and progress outpu
 
 import json
 import logging
+import sys
 
 from azure.cli.core.azclierror import CLIInternalError
 
@@ -67,7 +68,6 @@ def invoke_silent(cli_args):
     """
     from azure.cli.core import get_default_cli
     import io
-    import sys
 
     cli = get_default_cli()
     old_stdout, old_stderr = sys.stdout, sys.stderr
@@ -94,7 +94,6 @@ def invoke_cli_command(cmd, command_args, expect_json=True):  # pylint: disable=
     """
     from azure.cli.core import get_default_cli
     import io
-    import sys
 
     cli = get_default_cli()
     if expect_json and "-o" not in command_args and "--output" not in command_args:
@@ -140,8 +139,6 @@ def invoke_cli_command(cmd, command_args, expect_json=True):  # pylint: disable=
 # ---------------------------------------------------------------------------
 # Progress output (uses stderr so -o json/table/tsv is clean)
 # ---------------------------------------------------------------------------
-
-import sys
 
 
 def _eprint(*args, **kwargs):

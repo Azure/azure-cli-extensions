@@ -41,6 +41,7 @@ For ServiceGroup:
 import json
 import logging
 import re
+import sys
 
 from azure.cli.core.azclierror import (
     CLIInternalError,
@@ -57,12 +58,12 @@ from azext_workload_orchestration.onboarding.consts import (
     EDGE_RP_NAMESPACE,
 )
 
-import sys
-
 logger = logging.getLogger(__name__)
+
 
 def _eprint(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
+
 
 MAX_SG_DEPTH = 3
 
@@ -171,9 +172,9 @@ def _create_rg_hierarchy(cmd, resource_group, config_location, name, level):
             "configurationResourceId": config_id,
         }
     }, CONFIG_REF_API_VERSION)
-    _eprint(f"└── ConfigurationReference ✓")
+    _eprint("└── ConfigurationReference ✓")
 
-    _eprint(f"\n✅ Hierarchy created (3 resources)\n")
+    _eprint("\n✅ Hierarchy created (3 resources)\n")
 
     return {
         "type": "ResourceGroup",
@@ -218,7 +219,11 @@ def _create_sg_hierarchy(cmd, spec, config_location, resource_group):
     }
 
 
-def _create_sg_level(cmd, node, config_location, sub_id, tenant_id, resource_group, parent_sg, results, depth, is_last=True, parent_prefix=""):
+def _create_sg_level(  # pylint: disable=too-many-arguments
+    cmd, node, config_location, sub_id, tenant_id,
+    resource_group, parent_sg, results, depth,
+    is_last=True, parent_prefix="",
+):
     """Recursively create SG + Site + Config + ConfigRef at each level."""
     name = node["name"]
     level = node["level"]
@@ -416,5 +421,3 @@ def _get_tenant_id(cmd):
     profile = Profile(cli_ctx=cmd.cli_ctx)
     _, _, tenant_id = profile.get_raw_token(resource="https://management.azure.com")
     return tenant_id
-
-

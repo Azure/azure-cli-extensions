@@ -61,6 +61,7 @@ logger = logging.getLogger(__name__)
 def _eprint(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
 
+
 TOTAL_STEPS = 4
 
 
@@ -457,7 +458,7 @@ def _ensure_wo_extension(
 # ---------------------------------------------------------------------------
 
 def _ensure_custom_location(
-    cmd, cluster_name, resource_group, location,
+    cmd, cluster_name, resource_group, location,  # pylint: disable=unused-argument
     custom_location_name, extension_id, connected_cluster_id
 ):
     """Check if custom location exists; create if missing."""
@@ -655,4 +656,3 @@ def _get_sub_id(cmd):
         return sub.get("id", "")
     except Exception:
         return ""
-

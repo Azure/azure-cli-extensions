@@ -128,7 +128,7 @@ def _parse_hierarchy_spec(value):
             parsed = yaml.safe_load(value)
             if isinstance(parsed, dict):
                 return parsed
-        except Exception:
+        except Exception:  # pylint: disable=broad-exception-caught
             pass
 
     # Mode 3: Shorthand syntax: name=X level=Y type=Z
