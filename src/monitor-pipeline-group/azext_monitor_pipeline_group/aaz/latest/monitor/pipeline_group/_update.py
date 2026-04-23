@@ -16,9 +16,6 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a pipeline group instance.
-
-    :example: Update a pipeline-group instance
-        az monitor pipeline-group update --resource-group myResourceGroup --pipeline-group-name plGroup1 --receivers "[{type:Syslog,name:syslog-receiver1,syslog:{endpoint:'0.0.0.0:514'}}]" --processors "[]" --exporters "[{type:AzureMonitorWorkspaceLogs,name:my-workspace-logs-exporter1,azure-monitor-workspace-logs:{api:{data-collection-endpoint-url:'https://logs-myingestion-eb0s.eastus-1.ingest.monitor.azure.com',stream:Custom-MyTableRawData_CL,data-collection-rule:dcr-00000000000000000000000000000000,schema:{record-map:[{from:body,to:Body},{from:severity_text,to:SeverityText},{from:time_unix_nano,to:TimeGenerated}]}}}}]" --service "{pipelines:[{name:MyPipelineForLogs1,type:logs,receivers:[syslog-receiver1],processors:[],exporters:[my-workspace-logs-exporter1]}]}"
     """
 
     _aaz_info = {
@@ -63,166 +60,536 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.exporters = AAZListArg(options=["--exporters"], arg_group="Properties", help="The exporters specified for a pipeline group instance.")
-        _args_schema.execution_placement = AAZObjectArg(options=["--execution-placement"], arg_group="Properties", help="Constraints for guiding the execution environment of the pipeline group.", nullable=True)
-        _args_schema.processors = AAZListArg(options=["--processors"], arg_group="Properties", help="The processors specified for a pipeline group instance.")
-        _args_schema.receivers = AAZListArg(options=["--receivers"], arg_group="Properties", help="The receivers specified for a pipeline group instance.")
-        _args_schema.replicas = AAZIntArg(options=["--replicas"], arg_group="Properties", help="Defines the amount of replicas of the pipeline group instance.", nullable=True, fmt=AAZIntArgFormat(minimum=1))
-        _args_schema.service = AAZObjectArg(options=["--service"], arg_group="Properties", help="The service section for a given pipeline group instance.")
-        _args_schema.tls_configurations = AAZListArg(options=["--tls-configurations"], arg_group="Properties", help="TLS configurations for the pipeline group instance.", nullable=True)
-
-        exporters = cls._args_schema.exporters
-        exporters.Element = AAZObjectArg(nullable=True)
-        _element = cls._args_schema.exporters.Element
-        _element.azure_monitor_workspace_logs = AAZObjectArg(options=["azure-monitor-workspace-logs"], help="Azure Monitor Workspace Logs specific configurations.", nullable=True)
-        _element.name = AAZStrArg(options=["name"], help="The name of exporter.", fmt=AAZStrArgFormat(pattern="^(?!-)[a-zA-Z0-9-]{3,32}[^-]$"))
-        _element.type = AAZStrArg(options=["type"], help="The type of exporter.", enum={"AzureMonitorWorkspaceLogs": "AzureMonitorWorkspaceLogs"})
-
-        azure_monitor_workspace_logs = cls._args_schema.exporters.Element.azure_monitor_workspace_logs
-        azure_monitor_workspace_logs.api = AAZObjectArg(options=["api"], help="API configurations for Azure Monitor workspace exporter.")
-        azure_monitor_workspace_logs.persistence = AAZObjectArg(options=["persistence"], help="Persistence options for the exporter.", nullable=True)
-
-        api = cls._args_schema.exporters.Element.azure_monitor_workspace_logs.api
-        api.data_collection_endpoint_url = AAZStrArg(options=["data-collection-endpoint-url"], help="Data collection endpoint ingestion url.", fmt=AAZStrArgFormat(pattern="^(https?)://[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*$"))
-        api.data_collection_rule = AAZStrArg(options=["data-collection-rule"], help="Data Collection Rule (DCR) immutable id.", fmt=AAZStrArgFormat(pattern="^(?!-)[a-zA-Z0-9.-]{1,1000}[^-]$"))
-        api.schema = AAZObjectArg(options=["schema"], help="The schema mapping for incoming data.")
-        api.stream = AAZStrArg(options=["stream"], help="Stream name in destination.", fmt=AAZStrArgFormat(pattern="^(?!-)[a-zA-Z0-9._-]{1,1000}[^-]$"))
-
-        schema = cls._args_schema.exporters.Element.azure_monitor_workspace_logs.api.schema
-        schema.record_map = AAZListArg(options=["record-map"], help="Record Map.")
-        schema.resource_map = AAZListArg(options=["resource-map"], help="Resource Map.", nullable=True)
-        schema.scope_map = AAZListArg(options=["scope-map"], help="Scope map.", nullable=True)
-
-        record_map = cls._args_schema.exporters.Element.azure_monitor_workspace_logs.api.schema.record_map
-        record_map.Element = AAZObjectArg(nullable=True)
-        _element = record_map.Element
-        _element.from_ = AAZStrArg(options=["from"], help="Record Map Key.")
-        _element.to = AAZStrArg(options=["to"], help="Record Map Value.")
-
-        resource_map = cls._args_schema.exporters.Element.azure_monitor_workspace_logs.api.schema.resource_map
-        resource_map.Element = AAZObjectArg(nullable=True)
-        _element = resource_map.Element
-        _element.from_ = AAZStrArg(options=["from"], help="Resource Map Key.")
-        _element.to = AAZStrArg(options=["to"], help="Resource Map Value.")
-
-        scope_map = cls._args_schema.exporters.Element.azure_monitor_workspace_logs.api.schema.scope_map
-        scope_map.Element = AAZObjectArg(nullable=True)
-        _element = scope_map.Element
-        _element.from_ = AAZStrArg(options=["from"], help="Scope Map Key.")
-        _element.to = AAZStrArg(options=["to"], help="Scope Map Value.")
-
-        persistence = cls._args_schema.exporters.Element.azure_monitor_workspace_logs.persistence
-        persistence.max_storage_usage = AAZIntArg(options=["max-storage-usage"], help="Max storage usage in gigabytes.", nullable=True, fmt=AAZIntArgFormat(minimum=1))
-        persistence.retention_period = AAZIntArg(options=["retention-period"], help="Retention period in minutes.", nullable=True, fmt=AAZIntArgFormat(minimum=1))
+        _args_schema.execution_placement = AAZObjectArg(
+            options=["--execution-placement"],
+            arg_group="Properties",
+            help="Constraints for guiding the execution environment of the pipeline group.",
+            nullable=True,
+        )
+        _args_schema.exporters = AAZListArg(
+            options=["--exporters"],
+            arg_group="Properties",
+            help="The exporters specified for a pipeline group instance.",
+        )
+        _args_schema.processors = AAZListArg(
+            options=["--processors"],
+            arg_group="Properties",
+            help="The processors specified for a pipeline group instance.",
+        )
+        _args_schema.receivers = AAZListArg(
+            options=["--receivers"],
+            arg_group="Properties",
+            help="The receivers specified for a pipeline group instance.",
+        )
+        _args_schema.replicas = AAZIntArg(
+            options=["--replicas"],
+            arg_group="Properties",
+            help="Defines the amount of replicas of the pipeline group instance.",
+            nullable=True,
+            fmt=AAZIntArgFormat(
+                minimum=1,
+            ),
+        )
+        _args_schema.service = AAZObjectArg(
+            options=["--service"],
+            arg_group="Properties",
+            help="The service section for a given pipeline group instance.",
+        )
+        _args_schema.tls_configurations = AAZListArg(
+            options=["--tls-configurations"],
+            arg_group="Properties",
+            help="TLS configurations for the pipeline group instance.",
+            nullable=True,
+        )
 
         execution_placement = cls._args_schema.execution_placement
-        execution_placement.constraints = AAZListArg(options=["constraints"], help="A list of placement constraints.", nullable=True)
-        execution_placement.distribution = AAZObjectArg(options=["distribution"], help="Distribution policy.", nullable=True)
+        execution_placement.constraints = AAZListArg(
+            options=["constraints"],
+            help="A list of placement constraints to guide where pipelineGroup instances should run.",
+            nullable=True,
+        )
+        execution_placement.distribution = AAZObjectArg(
+            options=["distribution"],
+            help="Distribution policy for spreading instances across compute units (nodes/VMs).",
+            nullable=True,
+        )
 
         constraints = cls._args_schema.execution_placement.constraints
-        constraints.Element = AAZObjectArg(nullable=True)
-        _element = constraints.Element
-        _element.capability = AAZStrArg(options=["capability"], help="The capability or attribute key.")
-        _element.operator = AAZStrArg(options=["operator"], help="The match operator.", enum={"DoesNotExist": "DoesNotExist", "Exists": "Exists", "In": "In", "NotIn": "NotIn"})
-        _element.values = AAZListArg(options=["values"], help="The values to match against.", nullable=True)
-        values = _element.values
-        values.Element = AAZStrArg(nullable=True)
+        constraints.Element = AAZObjectArg(
+            nullable=True,
+        )
+
+        _element = cls._args_schema.execution_placement.constraints.Element
+        _element.capability = AAZStrArg(
+            options=["capability"],
+            help="The capability or attribute key used to match compute unit properties.",
+        )
+        _element.operator = AAZStrArg(
+            options=["operator"],
+            help="The match operator, e.g., In, NotIn, Exists, DoesNotExist.",
+            enum={"DoesNotExist": "DoesNotExist", "Exists": "Exists", "In": "In", "NotIn": "NotIn"},
+        )
+        _element.values = AAZListArg(
+            options=["values"],
+            help="The values to match against. Not required for Exists/DoesNotExist.",
+            nullable=True,
+        )
+
+        values = cls._args_schema.execution_placement.constraints.Element.values
+        values.Element = AAZStrArg(
+            nullable=True,
+        )
 
         distribution = cls._args_schema.execution_placement.distribution
-        distribution.max_instances_per_host = AAZIntArg(options=["max-instances-per-host"], help="Maximum number of instances allowed per compute unit.", nullable=True, fmt=AAZIntArgFormat(minimum=1))
+        distribution.max_instances_per_host = AAZIntArg(
+            options=["max-instances-per-host"],
+            help="Maximum number of instances allowed per compute unit (node/VM). If not specified, default scheduling applies.",
+            nullable=True,
+            fmt=AAZIntArgFormat(
+                minimum=1,
+            ),
+        )
+
+        exporters = cls._args_schema.exporters
+        exporters.Element = AAZObjectArg(
+            nullable=True,
+        )
+
+        _element = cls._args_schema.exporters.Element
+        _element.azure_monitor_workspace_logs = AAZObjectArg(
+            options=["azure-monitor-workspace-logs"],
+            help="Azure Monitor Workspace Logs specific configurations.",
+            nullable=True,
+        )
+        _element.name = AAZStrArg(
+            options=["name"],
+            help="The name of exporter.",
+            fmt=AAZStrArgFormat(
+                pattern="^(?!-)[a-zA-Z0-9-]{3,32}[^-]$",
+            ),
+        )
+        _element.type = AAZStrArg(
+            options=["type"],
+            help="The type of exporter.",
+            enum={"AzureMonitorWorkspaceLogs": "AzureMonitorWorkspaceLogs"},
+        )
+
+        azure_monitor_workspace_logs = cls._args_schema.exporters.Element.azure_monitor_workspace_logs
+        azure_monitor_workspace_logs.api = AAZObjectArg(
+            options=["api"],
+            help="API configurations for Azure Monitor workspace exporter.",
+        )
+        azure_monitor_workspace_logs.persistence = AAZObjectArg(
+            options=["persistence"],
+            help="Persistence options for the exporter.",
+            nullable=True,
+        )
+
+        api = cls._args_schema.exporters.Element.azure_monitor_workspace_logs.api
+        api.data_collection_endpoint_url = AAZStrArg(
+            options=["data-collection-endpoint-url"],
+            help="Data collection endpoint ingestion url.",
+            fmt=AAZStrArgFormat(
+                pattern="^(https?)://[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*$",
+            ),
+        )
+        api.data_collection_rule = AAZStrArg(
+            options=["data-collection-rule"],
+            help="Data Collection Rule (DCR) immutable id.",
+            fmt=AAZStrArgFormat(
+                pattern="^(?!-)[a-zA-Z0-9.-]{1,1000}[^-]$",
+            ),
+        )
+        api.schema = AAZObjectArg(
+            options=["schema"],
+            help="The schema mapping for incoming data.",
+        )
+        api.stream = AAZStrArg(
+            options=["stream"],
+            help="Stream name in destination. Azure Monitor stream is related to the destination table.",
+            fmt=AAZStrArgFormat(
+                pattern="^(?!-)[a-zA-Z0-9._-]{1,1000}[^-]$",
+            ),
+        )
+
+        schema = cls._args_schema.exporters.Element.azure_monitor_workspace_logs.api.schema
+        schema.record_map = AAZListArg(
+            options=["record-map"],
+            help="Record Map.",
+        )
+        schema.resource_map = AAZListArg(
+            options=["resource-map"],
+            help="Resource Map captures information about the entity for which telemetry is recorded. For example, metrics exposed by a Kubernetes container can be linked to a resource that specifies the cluster, namespace, pod, and container name.Resource may capture an entire hierarchy of entity identification. It may describe the host in the cloud and specific container or an application running in the process.",
+            nullable=True,
+        )
+        schema.scope_map = AAZListArg(
+            options=["scope-map"],
+            help="A scope map is a logical unit of the application code with which the emitted telemetry can be associated.",
+            nullable=True,
+        )
+
+        record_map = cls._args_schema.exporters.Element.azure_monitor_workspace_logs.api.schema.record_map
+        record_map.Element = AAZObjectArg(
+            nullable=True,
+        )
+
+        _element = cls._args_schema.exporters.Element.azure_monitor_workspace_logs.api.schema.record_map.Element
+        _element.from_ = AAZStrArg(
+            options=["from"],
+            help="Record Map Key.",
+        )
+        _element.to = AAZStrArg(
+            options=["to"],
+            help="Record Map Value.",
+        )
+
+        resource_map = cls._args_schema.exporters.Element.azure_monitor_workspace_logs.api.schema.resource_map
+        resource_map.Element = AAZObjectArg(
+            nullable=True,
+        )
+
+        _element = cls._args_schema.exporters.Element.azure_monitor_workspace_logs.api.schema.resource_map.Element
+        _element.from_ = AAZStrArg(
+            options=["from"],
+            help="Resource Map Key.",
+        )
+        _element.to = AAZStrArg(
+            options=["to"],
+            help="Resource Map Value.",
+        )
+
+        scope_map = cls._args_schema.exporters.Element.azure_monitor_workspace_logs.api.schema.scope_map
+        scope_map.Element = AAZObjectArg(
+            nullable=True,
+        )
+
+        _element = cls._args_schema.exporters.Element.azure_monitor_workspace_logs.api.schema.scope_map.Element
+        _element.from_ = AAZStrArg(
+            options=["from"],
+            help="Scope Map Key.",
+        )
+        _element.to = AAZStrArg(
+            options=["to"],
+            help="Scope Map Value.",
+        )
+
+        persistence = cls._args_schema.exporters.Element.azure_monitor_workspace_logs.persistence
+        persistence.max_storage_usage = AAZIntArg(
+            options=["max-storage-usage"],
+            help="Max storage usage in gigabytes.",
+            nullable=True,
+            fmt=AAZIntArgFormat(
+                minimum=1,
+            ),
+        )
+        persistence.retention_period = AAZIntArg(
+            options=["retention-period"],
+            help="Retention period in minutes.",
+            nullable=True,
+            fmt=AAZIntArgFormat(
+                minimum=1,
+            ),
+        )
 
         processors = cls._args_schema.processors
-        processors.Element = AAZObjectArg(nullable=True)
-        _element = processors.Element
-        _element.batch = AAZObjectArg(options=["batch"], help="Batch processor configurations.", nullable=True)
-        _element.name = AAZStrArg(options=["name"], help="The name of processor.", fmt=AAZStrArgFormat(pattern="^(?!-)[a-zA-Z0-9-]{3,32}[^-]$"))
-        _element.transform_language = AAZObjectArg(options=["transform-language"], help="Transform language processor configurations.", nullable=True)
-        _element.type = AAZStrArg(options=["type"], help="The type of processor.", enum={"Batch": "Batch", "MicrosoftCommonSecurityLog": "MicrosoftCommonSecurityLog", "MicrosoftSyslog": "MicrosoftSyslog", "TransformLanguage": "TransformLanguage"})
+        processors.Element = AAZObjectArg(
+            nullable=True,
+        )
+
+        _element = cls._args_schema.processors.Element
+        _element.batch = AAZObjectArg(
+            options=["batch"],
+            help="Batch processor configurations.",
+            nullable=True,
+        )
+        _element.name = AAZStrArg(
+            options=["name"],
+            help="The name of processor.",
+            fmt=AAZStrArgFormat(
+                pattern="^(?!-)[a-zA-Z0-9-]{3,32}[^-]$",
+            ),
+        )
+        _element.transform_language = AAZObjectArg(
+            options=["transform-language"],
+            help="Transform language processor configurations.",
+            nullable=True,
+        )
+        _element.type = AAZStrArg(
+            options=["type"],
+            help="The type of processor.",
+            enum={"Batch": "Batch", "MicrosoftCommonSecurityLog": "MicrosoftCommonSecurityLog", "MicrosoftSyslog": "MicrosoftSyslog", "TransformLanguage": "TransformLanguage"},
+        )
 
         batch = cls._args_schema.processors.Element.batch
-        batch.batch_size = AAZIntArg(options=["batch-size"], help="Size of the batch.", nullable=True, fmt=AAZIntArgFormat(maximum=100000, minimum=10))
-        batch.timeout = AAZIntArg(options=["timeout"], help="Timeout in milliseconds.", nullable=True, fmt=AAZIntArgFormat(maximum=300000, minimum=10))
+        batch.batch_size = AAZIntArg(
+            options=["batch-size"],
+            help="Size of the batch.",
+            nullable=True,
+            fmt=AAZIntArgFormat(
+                maximum=100000,
+                minimum=10,
+            ),
+        )
+        batch.timeout = AAZIntArg(
+            options=["timeout"],
+            help="Timeout in milliseconds.",
+            nullable=True,
+            fmt=AAZIntArgFormat(
+                maximum=300000,
+                minimum=10,
+            ),
+        )
 
         transform_language = cls._args_schema.processors.Element.transform_language
-        transform_language.transform_statement = AAZStrArg(options=["transform-statement"], help="Transform statement to execute.", fmt=AAZStrArgFormat(min_length=1, max_length=10000))
+        transform_language.transform_statement = AAZStrArg(
+            options=["transform-statement"],
+            help="Transform statement to execute over the data passing through the processor.",
+            fmt=AAZStrArgFormat(
+                max_length=10000,
+                min_length=1,
+            ),
+        )
 
         receivers = cls._args_schema.receivers
-        receivers.Element = AAZObjectArg(nullable=True)
-        _element = receivers.Element
-        _element.name = AAZStrArg(options=["name"], help="The name of receiver.", fmt=AAZStrArgFormat(pattern="^(?!-)[a-zA-Z0-9-]{3,32}[^-]$"))
-        _element.otlp = AAZObjectArg(options=["otlp"], help="OTLP receiver configurations.", nullable=True)
-        _element.syslog = AAZObjectArg(options=["syslog"], help="Syslog configurations.", nullable=True)
-        _element.tls_configuration = AAZStrArg(options=["tls-configuration"], help="Reference to a named TLS configuration.", nullable=True)
-        _element.type = AAZStrArg(options=["type"], help="The type of receiver.", enum={"OTLP": "OTLP", "Syslog": "Syslog"})
+        receivers.Element = AAZObjectArg(
+            nullable=True,
+        )
+
+        _element = cls._args_schema.receivers.Element
+        _element.name = AAZStrArg(
+            options=["name"],
+            help="The name of receiver.",
+            fmt=AAZStrArgFormat(
+                pattern="^(?!-)[a-zA-Z0-9-]{3,32}[^-]$",
+            ),
+        )
+        _element.otlp = AAZObjectArg(
+            options=["otlp"],
+            help="OTLP receiver configurations. This field is mandatory for OTLP receivers.",
+            nullable=True,
+        )
+        _element.syslog = AAZObjectArg(
+            options=["syslog"],
+            help="Syslog configurations. This field is mandatory for syslog type receivers.",
+            nullable=True,
+        )
+        _element.tls_configuration = AAZStrArg(
+            options=["tls-configuration"],
+            help="Reference to a named TLS configuration. If not specified, default TLS configuration is used.",
+            nullable=True,
+        )
+        _element.type = AAZStrArg(
+            options=["type"],
+            help="The type of receiver.",
+            enum={"OTLP": "OTLP", "Syslog": "Syslog"},
+        )
 
         otlp = cls._args_schema.receivers.Element.otlp
-        otlp.endpoint = AAZStrArg(options=["endpoint"], help="OTLP GRPC endpoint definition.", fmt=AAZStrArgFormat(pattern="^[a-zA-Z0-9-\\.]+:[0-9]+$"))
+        otlp.endpoint = AAZStrArg(
+            options=["endpoint"],
+            help="OTLP GRPC endpoint definition. Example: 0.0.0.0:<port>.",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-\\.]+:[0-9]+$",
+            ),
+        )
 
         syslog = cls._args_schema.receivers.Element.syslog
-        syslog.endpoint = AAZStrArg(options=["endpoint"], help="Syslog receiver endpoint definition.", fmt=AAZStrArgFormat(pattern="^[a-zA-Z0-9-\\.]+:[0-9]+$"))
-        syslog.allowed_formats = AAZListArg(options=["allowed-formats"], help="List of allowed message formats.", nullable=True)
-        syslog.transport_protocol = AAZStrArg(options=["transport-protocol"], help="Transport protocol.", nullable=True, enum={"tcp": "tcp", "udp": "udp"})
-        syslog.allow_skip_pri_header = AAZBoolArg(options=["allow-skip-pri-header"], help="Allow parsing without PRI header.", nullable=True)
+        syslog.allow_skip_pri_header = AAZBoolArg(
+            options=["allow-skip-pri-header"],
+            help="Configure the receiver to allow parsing of messages without the PRI header. Default false.",
+            nullable=True,
+        )
+        syslog.allowed_formats = AAZListArg(
+            options=["allowed-formats"],
+            help="List of allowed message formats for syslog/CEF ingestion. Default 'all'.",
+            nullable=True,
+        )
+        syslog.endpoint = AAZStrArg(
+            options=["endpoint"],
+            help="Syslog receiver endpoint definition. Example: 0.0.0.0:<port>.",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-\\.]+:[0-9]+$",
+            ),
+        )
+        syslog.transport_protocol = AAZStrArg(
+            options=["transport-protocol"],
+            help="Transport protocol. Default tcp.",
+            nullable=True,
+            enum={"tcp": "tcp", "udp": "udp"},
+        )
 
         allowed_formats = cls._args_schema.receivers.Element.syslog.allowed_formats
-        allowed_formats.Element = AAZStrArg(nullable=True, enum={"all": "all", "cefRfc3164": "cefRfc3164", "cefRfc5424": "cefRfc5424", "rawCef": "rawCef", "syslogRfc3164": "syslogRfc3164", "syslogRfc5424": "syslogRfc5424"})
+        allowed_formats.Element = AAZStrArg(
+            nullable=True,
+            enum={"all": "all", "cefRfc3164": "cefRfc3164", "cefRfc5424": "cefRfc5424", "rawCef": "rawCef", "syslogRfc3164": "syslogRfc3164", "syslogRfc5424": "syslogRfc5424"},
+        )
 
         service = cls._args_schema.service
-        service.persistence = AAZObjectArg(options=["persistence"], help="Persistence options.", nullable=True)
-        service.pipelines = AAZListArg(options=["pipelines"], help="Pipelines belonging to a given pipeline group.")
+        service.persistence = AAZObjectArg(
+            options=["persistence"],
+            help="Persistence options to all pipelines in the instance.",
+            nullable=True,
+        )
+        service.pipelines = AAZListArg(
+            options=["pipelines"],
+            help="Pipelines belonging to a given pipeline group.",
+        )
 
         persistence = cls._args_schema.service.persistence
-        persistence.persistent_volume_name = AAZStrArg(options=["persistent-volume-name"], help="The name of the mounted persistent volume.")
+        persistence.persistent_volume_name = AAZStrArg(
+            options=["persistent-volume-name"],
+            help="The name of the mounted persistent volume.",
+        )
 
         pipelines = cls._args_schema.service.pipelines
-        pipelines.Element = AAZObjectArg(nullable=True)
-        _element = pipelines.Element
-        _element.exporters = AAZListArg(options=["exporters"], help="Reference to exporters configured for the pipeline.")
-        _element.name = AAZStrArg(options=["name"], help="Name of the pipeline.", fmt=AAZStrArgFormat(pattern="^(?!-)[a-zA-Z0-9-]{3,32}[^-]$"))
-        _element.processors = AAZListArg(options=["processors"], help="Reference to processors configured for the pipeline.", nullable=True)
-        _element.receivers = AAZListArg(options=["receivers"], help="Reference to receivers configured for the pipeline.")
-        _element.type = AAZStrArg(options=["type"], help="The type of pipeline", enum={"Logs": "Logs"})
+        pipelines.Element = AAZObjectArg(
+            nullable=True,
+        )
+
+        _element = cls._args_schema.service.pipelines.Element
+        _element.exporters = AAZListArg(
+            options=["exporters"],
+            help="Reference to exporters configured for the pipeline.",
+        )
+        _element.name = AAZStrArg(
+            options=["name"],
+            help="Name of the pipeline.",
+            fmt=AAZStrArgFormat(
+                pattern="^(?!-)[a-zA-Z0-9-]{3,32}[^-]$",
+            ),
+        )
+        _element.processors = AAZListArg(
+            options=["processors"],
+            help="Reference to processors configured for the pipeline.",
+            nullable=True,
+        )
+        _element.receivers = AAZListArg(
+            options=["receivers"],
+            help="Reference to receivers configured for the pipeline.",
+        )
+        _element.type = AAZStrArg(
+            options=["type"],
+            help="The type of pipeline",
+            enum={"Logs": "Logs"},
+        )
 
         exporters = cls._args_schema.service.pipelines.Element.exporters
-        exporters.Element = AAZStrArg(nullable=True)
+        exporters.Element = AAZStrArg(
+            nullable=True,
+        )
+
         processors = cls._args_schema.service.pipelines.Element.processors
-        processors.Element = AAZStrArg(nullable=True)
+        processors.Element = AAZStrArg(
+            nullable=True,
+        )
+
         receivers = cls._args_schema.service.pipelines.Element.receivers
-        receivers.Element = AAZStrArg(nullable=True)
+        receivers.Element = AAZStrArg(
+            nullable=True,
+        )
 
         tls_configurations = cls._args_schema.tls_configurations
-        tls_configurations.Element = AAZObjectArg(nullable=True)
-        _element = tls_configurations.Element
-        _element.name = AAZStrArg(options=["name"], help="The name of the TLS configuration.", fmt=AAZStrArgFormat(pattern="^(?!-)[a-zA-Z0-9-]{3,32}[^-]$"))
-        _element.mode = AAZStrArg(options=["mode"], help="The TLS security mode.", nullable=True, enum={"disabled": "disabled", "mutualTls": "mutualTls", "serverOnly": "serverOnly"})
-        _element.tls_certificate = AAZObjectArg(options=["tls-certificate"], help="TLS certificate and its private key.", nullable=True)
-        _element.client_ca = AAZObjectArg(options=["client-ca"], help="Certificate source for the client CA.", nullable=True)
+        tls_configurations.Element = AAZObjectArg(
+            nullable=True,
+        )
+
+        _element = cls._args_schema.tls_configurations.Element
+        _element.client_ca = AAZObjectArg(
+            options=["client-ca"],
+            help="Certificate source configuration for the client CA certificate for validating client certificates. If not specified, default CA certificates are used.",
+        )
+        cls._build_args_certificatesource_create_or_update_update(_element.client_ca)
+        _element.mode = AAZStrArg(
+            options=["mode"],
+            help="The TLS security mode for receivers using this configuration. Default is 'mutualTls'.",
+            nullable=True,
+            enum={"disabled": "disabled", "mutualTls": "mutualTls", "serverOnly": "serverOnly"},
+        )
+        _element.name = AAZStrArg(
+            options=["name"],
+            help="The name of the TLS configuration.",
+            fmt=AAZStrArgFormat(
+                pattern="^(?!-)[a-zA-Z0-9-]{3,32}[^-]$",
+            ),
+        )
+        _element.tls_certificate = AAZObjectArg(
+            options=["tls-certificate"],
+            help="TLS certificate and its private key. If not specified, default TLS certificate is used.",
+            nullable=True,
+        )
 
         tls_certificate = cls._args_schema.tls_configurations.Element.tls_certificate
-        tls_certificate.certificate = AAZObjectArg(options=["certificate"], help="Source configuration for the TLS certificate.")
-        tls_certificate.private_key = AAZObjectArg(options=["private-key"], help="Source configuration for the private key.")
-
-        certificate = cls._args_schema.tls_configurations.Element.tls_certificate.certificate
-        certificate.type = AAZStrArg(options=["type"], help="The type of certificate source.", enum={"kubernetesConfigMap": "kubernetesConfigMap", "kubernetesSecret": "kubernetesSecret"})
-        certificate.location = AAZStrArg(options=["location"], help="Location of the certificate source.")
-        certificate.sub_location = AAZStrArg(options=["sub-location"], help="Sub-location within the certificate source.")
+        tls_certificate.certificate = AAZObjectArg(
+            options=["certificate"],
+            help="Source configuration for the TLS certificate.",
+        )
+        cls._build_args_certificatesource_create_or_update_update(tls_certificate.certificate)
+        tls_certificate.private_key = AAZObjectArg(
+            options=["private-key"],
+            help="Source configuration for the private key. Private keys must be stored in Kubernetes secrets for security reasons.",
+        )
 
         private_key = cls._args_schema.tls_configurations.Element.tls_certificate.private_key
-        private_key.type = AAZStrArg(options=["type"], help="The type of private key source.", enum={"kubernetesSecret": "kubernetesSecret"})
-        private_key.location = AAZStrArg(options=["location"], help="Location of the private key source.")
-        private_key.sub_location = AAZStrArg(options=["sub-location"], help="Sub-location within the private key source.")
-
-        client_ca = cls._args_schema.tls_configurations.Element.client_ca
-        client_ca.type = AAZStrArg(options=["type"], help="The type of certificate source.", enum={"kubernetesConfigMap": "kubernetesConfigMap", "kubernetesSecret": "kubernetesSecret"})
-        client_ca.location = AAZStrArg(options=["location"], help="Location of the certificate source.")
-        client_ca.sub_location = AAZStrArg(options=["sub-location"], help="Sub-location within the certificate source.")
+        private_key.location = AAZStrArg(
+            options=["location"],
+            help="Location of the private key source.",
+        )
+        private_key.sub_location = AAZStrArg(
+            options=["sub-location"],
+            help="Sub-location within the private key source.",
+        )
+        private_key.type = AAZStrArg(
+            options=["type"],
+            help="The type of private key source. Only kubernetesSecret is supported for security reasons.",
+            enum={"kubernetesSecret": "kubernetesSecret"},
+        )
 
         # define Arg Group "Resource"
+
         _args_schema = cls._args_schema
-        _args_schema.tags = AAZDictArg(options=["--tags"], arg_group="Resource", help="Resource tags.", nullable=True)
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Resource",
+            help="Resource tags.",
+            nullable=True,
+        )
+
         tags = cls._args_schema.tags
-        tags.Element = AAZStrArg(nullable=True)
+        tags.Element = AAZStrArg(
+            nullable=True,
+        )
         return cls._args_schema
+
+    _args_certificatesource_create_or_update_update = None
+
+    @classmethod
+    def _build_args_certificatesource_create_or_update_update(cls, _schema):
+        if cls._args_certificatesource_create_or_update_update is not None:
+            _schema.location = cls._args_certificatesource_create_or_update_update.location
+            _schema.sub_location = cls._args_certificatesource_create_or_update_update.sub_location
+            _schema.type = cls._args_certificatesource_create_or_update_update.type
+            return
+
+        cls._args_certificatesource_create_or_update_update = AAZObjectArg()
+
+        certificatesource_create_or_update_update = cls._args_certificatesource_create_or_update_update
+        certificatesource_create_or_update_update.location = AAZStrArg(
+            options=["location"],
+            help="Location of the certificate source.",
+        )
+        certificatesource_create_or_update_update.sub_location = AAZStrArg(
+            options=["sub-location"],
+            help="Sub-location within the certificate source.",
+        )
+        certificatesource_create_or_update_update.type = AAZStrArg(
+            options=["type"],
+            help="The type of certificate source.",
+            enum={"kubernetesConfigMap": "kubernetesConfigMap", "kubernetesSecret": "kubernetesSecret"},
+        )
+
+        _schema.location = cls._args_certificatesource_create_or_update_update.location
+        _schema.sub_location = cls._args_certificatesource_create_or_update_update.sub_location
+        _schema.type = cls._args_certificatesource_create_or_update_update.type
 
     def _execute_operations(self):
         self.pre_operations()
@@ -262,6 +629,7 @@ class Update(AAZCommand):
             session = self.client.send_request(request=request, stream=False, **kwargs)
             if session.http_response.status_code in [200]:
                 return self.on_200(session)
+
             return self.on_error(session.http_response)
 
         @property
@@ -282,29 +650,47 @@ class Update(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
-                **self.serialize_url_param("pipelineGroupName", self.ctx.args.pipeline_group_name, required=True),
-                **self.serialize_url_param("resourceGroupName", self.ctx.args.resource_group, required=True),
-                **self.serialize_url_param("subscriptionId", self.ctx.subscription_id, required=True),
+                **self.serialize_url_param(
+                    "pipelineGroupName", self.ctx.args.pipeline_group_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
             }
             return parameters
 
         @property
         def query_parameters(self):
             parameters = {
-                **self.serialize_query_param("api-version", "2026-04-01", required=True),
+                **self.serialize_query_param(
+                    "api-version", "2026-04-01",
+                    required=True,
+                ),
             }
             return parameters
 
         @property
         def header_parameters(self):
             parameters = {
-                **self.serialize_header_param("Accept", "application/json"),
+                **self.serialize_header_param(
+                    "Accept", "application/json",
+                ),
             }
             return parameters
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
-            self.ctx.set_var("instance", data, schema_builder=self._build_schema_on_200)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
+            )
 
         _schema_on_200 = None
 
@@ -312,8 +698,343 @@ class Update(AAZCommand):
         def _build_schema_on_200(cls):
             if cls._schema_on_200 is not None:
                 return cls._schema_on_200
+
             cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_pipeline_group_read(cls._schema_on_200)
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.extended_location = AAZObjectType(
+                serialized_name="extendedLocation",
+            )
+            _schema_on_200.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.location = AAZStrType(
+                flags={"required": True},
+            )
+            _schema_on_200.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.properties = AAZObjectType()
+            _schema_on_200.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _schema_on_200.tags = AAZDictType()
+            _schema_on_200.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            extended_location = cls._schema_on_200.extended_location
+            extended_location.name = AAZStrType(
+                flags={"required": True},
+            )
+            extended_location.type = AAZStrType(
+                flags={"required": True},
+            )
+
+            properties = cls._schema_on_200.properties
+            properties.execution_placement = AAZObjectType(
+                serialized_name="executionPlacement",
+            )
+            properties.exporters = AAZListType(
+                flags={"required": True},
+            )
+            properties.processors = AAZListType(
+                flags={"required": True},
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.receivers = AAZListType(
+                flags={"required": True},
+            )
+            properties.replicas = AAZIntType()
+            properties.service = AAZObjectType(
+                flags={"required": True},
+            )
+            properties.tls_configurations = AAZListType(
+                serialized_name="tlsConfigurations",
+            )
+
+            execution_placement = cls._schema_on_200.properties.execution_placement
+            execution_placement.constraints = AAZListType()
+            execution_placement.distribution = AAZObjectType()
+
+            constraints = cls._schema_on_200.properties.execution_placement.constraints
+            constraints.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.execution_placement.constraints.Element
+            _element.capability = AAZStrType(
+                flags={"required": True},
+            )
+            _element.operator = AAZStrType(
+                flags={"required": True},
+            )
+            _element.values = AAZListType()
+
+            values = cls._schema_on_200.properties.execution_placement.constraints.Element.values
+            values.Element = AAZStrType()
+
+            distribution = cls._schema_on_200.properties.execution_placement.distribution
+            distribution.max_instances_per_host = AAZIntType(
+                serialized_name="maxInstancesPerHost",
+            )
+
+            exporters = cls._schema_on_200.properties.exporters
+            exporters.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.exporters.Element
+            _element.azure_monitor_workspace_logs = AAZObjectType(
+                serialized_name="azureMonitorWorkspaceLogs",
+            )
+            _element.name = AAZStrType(
+                flags={"required": True},
+            )
+            _element.type = AAZStrType(
+                flags={"required": True},
+            )
+
+            azure_monitor_workspace_logs = cls._schema_on_200.properties.exporters.Element.azure_monitor_workspace_logs
+            azure_monitor_workspace_logs.api = AAZObjectType(
+                flags={"required": True},
+            )
+            azure_monitor_workspace_logs.persistence = AAZObjectType()
+
+            api = cls._schema_on_200.properties.exporters.Element.azure_monitor_workspace_logs.api
+            api.data_collection_endpoint_url = AAZStrType(
+                serialized_name="dataCollectionEndpointUrl",
+                flags={"required": True},
+            )
+            api.data_collection_rule = AAZStrType(
+                serialized_name="dataCollectionRule",
+                flags={"required": True},
+            )
+            api.schema = AAZObjectType(
+                flags={"required": True},
+            )
+            api.stream = AAZStrType(
+                flags={"required": True},
+            )
+
+            schema = cls._schema_on_200.properties.exporters.Element.azure_monitor_workspace_logs.api.schema
+            schema.record_map = AAZListType(
+                serialized_name="recordMap",
+                flags={"required": True},
+            )
+            schema.resource_map = AAZListType(
+                serialized_name="resourceMap",
+            )
+            schema.scope_map = AAZListType(
+                serialized_name="scopeMap",
+            )
+
+            record_map = cls._schema_on_200.properties.exporters.Element.azure_monitor_workspace_logs.api.schema.record_map
+            record_map.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.exporters.Element.azure_monitor_workspace_logs.api.schema.record_map.Element
+            _element["from"] = AAZStrType(
+                flags={"required": True},
+            )
+            _element.to = AAZStrType(
+                flags={"required": True},
+            )
+
+            resource_map = cls._schema_on_200.properties.exporters.Element.azure_monitor_workspace_logs.api.schema.resource_map
+            resource_map.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.exporters.Element.azure_monitor_workspace_logs.api.schema.resource_map.Element
+            _element["from"] = AAZStrType(
+                flags={"required": True},
+            )
+            _element.to = AAZStrType(
+                flags={"required": True},
+            )
+
+            scope_map = cls._schema_on_200.properties.exporters.Element.azure_monitor_workspace_logs.api.schema.scope_map
+            scope_map.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.exporters.Element.azure_monitor_workspace_logs.api.schema.scope_map.Element
+            _element["from"] = AAZStrType(
+                flags={"required": True},
+            )
+            _element.to = AAZStrType(
+                flags={"required": True},
+            )
+
+            persistence = cls._schema_on_200.properties.exporters.Element.azure_monitor_workspace_logs.persistence
+            persistence.max_storage_usage = AAZIntType(
+                serialized_name="maxStorageUsage",
+            )
+            persistence.retention_period = AAZIntType(
+                serialized_name="retentionPeriod",
+            )
+
+            processors = cls._schema_on_200.properties.processors
+            processors.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.processors.Element
+            _element.batch = AAZObjectType()
+            _element.name = AAZStrType(
+                flags={"required": True},
+            )
+            _element.transform_language = AAZObjectType(
+                serialized_name="transformLanguage",
+            )
+            _element.type = AAZStrType(
+                flags={"required": True},
+            )
+
+            batch = cls._schema_on_200.properties.processors.Element.batch
+            batch.batch_size = AAZIntType(
+                serialized_name="batchSize",
+            )
+            batch.timeout = AAZIntType()
+
+            transform_language = cls._schema_on_200.properties.processors.Element.transform_language
+            transform_language.transform_statement = AAZStrType(
+                serialized_name="transformStatement",
+                flags={"required": True},
+            )
+
+            receivers = cls._schema_on_200.properties.receivers
+            receivers.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.receivers.Element
+            _element.name = AAZStrType(
+                flags={"required": True},
+            )
+            _element.otlp = AAZObjectType()
+            _element.syslog = AAZObjectType()
+            _element.tls_configuration = AAZStrType(
+                serialized_name="tlsConfiguration",
+            )
+            _element.type = AAZStrType(
+                flags={"required": True},
+            )
+
+            otlp = cls._schema_on_200.properties.receivers.Element.otlp
+            otlp.endpoint = AAZStrType(
+                flags={"required": True},
+            )
+
+            syslog = cls._schema_on_200.properties.receivers.Element.syslog
+            syslog.allow_skip_pri_header = AAZBoolType(
+                serialized_name="allowSkipPriHeader",
+            )
+            syslog.allowed_formats = AAZListType(
+                serialized_name="allowedFormats",
+            )
+            syslog.endpoint = AAZStrType(
+                flags={"required": True},
+            )
+            syslog.transport_protocol = AAZStrType(
+                serialized_name="transportProtocol",
+            )
+
+            allowed_formats = cls._schema_on_200.properties.receivers.Element.syslog.allowed_formats
+            allowed_formats.Element = AAZStrType()
+
+            service = cls._schema_on_200.properties.service
+            service.persistence = AAZObjectType()
+            service.pipelines = AAZListType(
+                flags={"required": True},
+            )
+
+            persistence = cls._schema_on_200.properties.service.persistence
+            persistence.persistent_volume_name = AAZStrType(
+                serialized_name="persistentVolumeName",
+                flags={"required": True},
+            )
+
+            pipelines = cls._schema_on_200.properties.service.pipelines
+            pipelines.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.service.pipelines.Element
+            _element.exporters = AAZListType(
+                flags={"required": True},
+            )
+            _element.name = AAZStrType(
+                flags={"required": True},
+            )
+            _element.processors = AAZListType()
+            _element.receivers = AAZListType(
+                flags={"required": True},
+            )
+            _element.type = AAZStrType(
+                flags={"required": True},
+            )
+
+            exporters = cls._schema_on_200.properties.service.pipelines.Element.exporters
+            exporters.Element = AAZStrType()
+
+            processors = cls._schema_on_200.properties.service.pipelines.Element.processors
+            processors.Element = AAZStrType()
+
+            receivers = cls._schema_on_200.properties.service.pipelines.Element.receivers
+            receivers.Element = AAZStrType()
+
+            tls_configurations = cls._schema_on_200.properties.tls_configurations
+            tls_configurations.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.tls_configurations.Element
+            _element.client_ca = AAZObjectType(
+                serialized_name="clientCa",
+            )
+            _UpdateHelper._build_schema_certificatesource_read(_element.client_ca)
+            _element.mode = AAZStrType()
+            _element.name = AAZStrType(
+                flags={"required": True},
+            )
+            _element.tls_certificate = AAZObjectType(
+                serialized_name="tlsCertificate",
+            )
+
+            tls_certificate = cls._schema_on_200.properties.tls_configurations.Element.tls_certificate
+            tls_certificate.certificate = AAZObjectType(
+                flags={"required": True},
+            )
+            _UpdateHelper._build_schema_certificatesource_read(tls_certificate.certificate)
+            tls_certificate.private_key = AAZObjectType(
+                serialized_name="privateKey",
+                flags={"required": True},
+            )
+
+            private_key = cls._schema_on_200.properties.tls_configurations.Element.tls_certificate.private_key
+            private_key.location = AAZStrType(
+                flags={"required": True},
+            )
+            private_key.sub_location = AAZStrType(
+                serialized_name="subLocation",
+                flags={"required": True},
+            )
+            private_key.type = AAZStrType(
+                flags={"required": True},
+            )
+
+            system_data = cls._schema_on_200.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
+
+            tags = cls._schema_on_200.tags
+            tags.Element = AAZStrType()
+
             return cls._schema_on_200
 
     class PipelineGroupsCreateOrUpdate(AAZHttpOperation):
@@ -324,16 +1045,23 @@ class Update(AAZCommand):
             session = self.client.send_request(request=request, stream=False, **kwargs)
             if session.http_response.status_code in [202]:
                 return self.client.build_lro_polling(
-                    self.ctx.args.no_wait, session, self.on_200_201, self.on_error,
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200_201,
+                    self.on_error,
                     lro_options={"final-state-via": "azure-async-operation"},
                     path_format_arguments=self.url_parameters,
                 )
             if session.http_response.status_code in [200, 201]:
                 return self.client.build_lro_polling(
-                    self.ctx.args.no_wait, session, self.on_200_201, self.on_error,
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200_201,
+                    self.on_error,
                     lro_options={"final-state-via": "azure-async-operation"},
                     path_format_arguments=self.url_parameters,
                 )
+
             return self.on_error(session.http_response)
 
         @property
@@ -354,37 +1082,59 @@ class Update(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
-                **self.serialize_url_param("pipelineGroupName", self.ctx.args.pipeline_group_name, required=True),
-                **self.serialize_url_param("resourceGroupName", self.ctx.args.resource_group, required=True),
-                **self.serialize_url_param("subscriptionId", self.ctx.subscription_id, required=True),
+                **self.serialize_url_param(
+                    "pipelineGroupName", self.ctx.args.pipeline_group_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
             }
             return parameters
 
         @property
         def query_parameters(self):
             parameters = {
-                **self.serialize_query_param("api-version", "2026-04-01", required=True),
+                **self.serialize_query_param(
+                    "api-version", "2026-04-01",
+                    required=True,
+                ),
             }
             return parameters
 
         @property
         def header_parameters(self):
             parameters = {
-                **self.serialize_header_param("Content-Type", "application/json"),
-                **self.serialize_header_param("Accept", "application/json"),
+                **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
+                    "Accept", "application/json",
+                ),
             }
             return parameters
 
         @property
         def content(self):
             _content_value, _builder = self.new_content_builder(
-                self.ctx.args, value=self.ctx.vars.instance,
+                self.ctx.args,
+                value=self.ctx.vars.instance,
             )
+
             return self.serialize_content(_content_value)
 
         def on_200_201(self, session):
             data = self.deserialize_http_content(session)
-            self.ctx.set_var("instance", data, schema_builder=self._build_schema_on_200_201)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200_201
+            )
 
         _schema_on_200_201 = None
 
@@ -392,8 +1142,343 @@ class Update(AAZCommand):
         def _build_schema_on_200_201(cls):
             if cls._schema_on_200_201 is not None:
                 return cls._schema_on_200_201
+
             cls._schema_on_200_201 = AAZObjectType()
-            _UpdateHelper._build_schema_pipeline_group_read(cls._schema_on_200_201)
+
+            _schema_on_200_201 = cls._schema_on_200_201
+            _schema_on_200_201.extended_location = AAZObjectType(
+                serialized_name="extendedLocation",
+            )
+            _schema_on_200_201.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200_201.location = AAZStrType(
+                flags={"required": True},
+            )
+            _schema_on_200_201.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200_201.properties = AAZObjectType()
+            _schema_on_200_201.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _schema_on_200_201.tags = AAZDictType()
+            _schema_on_200_201.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            extended_location = cls._schema_on_200_201.extended_location
+            extended_location.name = AAZStrType(
+                flags={"required": True},
+            )
+            extended_location.type = AAZStrType(
+                flags={"required": True},
+            )
+
+            properties = cls._schema_on_200_201.properties
+            properties.execution_placement = AAZObjectType(
+                serialized_name="executionPlacement",
+            )
+            properties.exporters = AAZListType(
+                flags={"required": True},
+            )
+            properties.processors = AAZListType(
+                flags={"required": True},
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.receivers = AAZListType(
+                flags={"required": True},
+            )
+            properties.replicas = AAZIntType()
+            properties.service = AAZObjectType(
+                flags={"required": True},
+            )
+            properties.tls_configurations = AAZListType(
+                serialized_name="tlsConfigurations",
+            )
+
+            execution_placement = cls._schema_on_200_201.properties.execution_placement
+            execution_placement.constraints = AAZListType()
+            execution_placement.distribution = AAZObjectType()
+
+            constraints = cls._schema_on_200_201.properties.execution_placement.constraints
+            constraints.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.properties.execution_placement.constraints.Element
+            _element.capability = AAZStrType(
+                flags={"required": True},
+            )
+            _element.operator = AAZStrType(
+                flags={"required": True},
+            )
+            _element.values = AAZListType()
+
+            values = cls._schema_on_200_201.properties.execution_placement.constraints.Element.values
+            values.Element = AAZStrType()
+
+            distribution = cls._schema_on_200_201.properties.execution_placement.distribution
+            distribution.max_instances_per_host = AAZIntType(
+                serialized_name="maxInstancesPerHost",
+            )
+
+            exporters = cls._schema_on_200_201.properties.exporters
+            exporters.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.properties.exporters.Element
+            _element.azure_monitor_workspace_logs = AAZObjectType(
+                serialized_name="azureMonitorWorkspaceLogs",
+            )
+            _element.name = AAZStrType(
+                flags={"required": True},
+            )
+            _element.type = AAZStrType(
+                flags={"required": True},
+            )
+
+            azure_monitor_workspace_logs = cls._schema_on_200_201.properties.exporters.Element.azure_monitor_workspace_logs
+            azure_monitor_workspace_logs.api = AAZObjectType(
+                flags={"required": True},
+            )
+            azure_monitor_workspace_logs.persistence = AAZObjectType()
+
+            api = cls._schema_on_200_201.properties.exporters.Element.azure_monitor_workspace_logs.api
+            api.data_collection_endpoint_url = AAZStrType(
+                serialized_name="dataCollectionEndpointUrl",
+                flags={"required": True},
+            )
+            api.data_collection_rule = AAZStrType(
+                serialized_name="dataCollectionRule",
+                flags={"required": True},
+            )
+            api.schema = AAZObjectType(
+                flags={"required": True},
+            )
+            api.stream = AAZStrType(
+                flags={"required": True},
+            )
+
+            schema = cls._schema_on_200_201.properties.exporters.Element.azure_monitor_workspace_logs.api.schema
+            schema.record_map = AAZListType(
+                serialized_name="recordMap",
+                flags={"required": True},
+            )
+            schema.resource_map = AAZListType(
+                serialized_name="resourceMap",
+            )
+            schema.scope_map = AAZListType(
+                serialized_name="scopeMap",
+            )
+
+            record_map = cls._schema_on_200_201.properties.exporters.Element.azure_monitor_workspace_logs.api.schema.record_map
+            record_map.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.properties.exporters.Element.azure_monitor_workspace_logs.api.schema.record_map.Element
+            _element["from"] = AAZStrType(
+                flags={"required": True},
+            )
+            _element.to = AAZStrType(
+                flags={"required": True},
+            )
+
+            resource_map = cls._schema_on_200_201.properties.exporters.Element.azure_monitor_workspace_logs.api.schema.resource_map
+            resource_map.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.properties.exporters.Element.azure_monitor_workspace_logs.api.schema.resource_map.Element
+            _element["from"] = AAZStrType(
+                flags={"required": True},
+            )
+            _element.to = AAZStrType(
+                flags={"required": True},
+            )
+
+            scope_map = cls._schema_on_200_201.properties.exporters.Element.azure_monitor_workspace_logs.api.schema.scope_map
+            scope_map.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.properties.exporters.Element.azure_monitor_workspace_logs.api.schema.scope_map.Element
+            _element["from"] = AAZStrType(
+                flags={"required": True},
+            )
+            _element.to = AAZStrType(
+                flags={"required": True},
+            )
+
+            persistence = cls._schema_on_200_201.properties.exporters.Element.azure_monitor_workspace_logs.persistence
+            persistence.max_storage_usage = AAZIntType(
+                serialized_name="maxStorageUsage",
+            )
+            persistence.retention_period = AAZIntType(
+                serialized_name="retentionPeriod",
+            )
+
+            processors = cls._schema_on_200_201.properties.processors
+            processors.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.properties.processors.Element
+            _element.batch = AAZObjectType()
+            _element.name = AAZStrType(
+                flags={"required": True},
+            )
+            _element.transform_language = AAZObjectType(
+                serialized_name="transformLanguage",
+            )
+            _element.type = AAZStrType(
+                flags={"required": True},
+            )
+
+            batch = cls._schema_on_200_201.properties.processors.Element.batch
+            batch.batch_size = AAZIntType(
+                serialized_name="batchSize",
+            )
+            batch.timeout = AAZIntType()
+
+            transform_language = cls._schema_on_200_201.properties.processors.Element.transform_language
+            transform_language.transform_statement = AAZStrType(
+                serialized_name="transformStatement",
+                flags={"required": True},
+            )
+
+            receivers = cls._schema_on_200_201.properties.receivers
+            receivers.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.properties.receivers.Element
+            _element.name = AAZStrType(
+                flags={"required": True},
+            )
+            _element.otlp = AAZObjectType()
+            _element.syslog = AAZObjectType()
+            _element.tls_configuration = AAZStrType(
+                serialized_name="tlsConfiguration",
+            )
+            _element.type = AAZStrType(
+                flags={"required": True},
+            )
+
+            otlp = cls._schema_on_200_201.properties.receivers.Element.otlp
+            otlp.endpoint = AAZStrType(
+                flags={"required": True},
+            )
+
+            syslog = cls._schema_on_200_201.properties.receivers.Element.syslog
+            syslog.allow_skip_pri_header = AAZBoolType(
+                serialized_name="allowSkipPriHeader",
+            )
+            syslog.allowed_formats = AAZListType(
+                serialized_name="allowedFormats",
+            )
+            syslog.endpoint = AAZStrType(
+                flags={"required": True},
+            )
+            syslog.transport_protocol = AAZStrType(
+                serialized_name="transportProtocol",
+            )
+
+            allowed_formats = cls._schema_on_200_201.properties.receivers.Element.syslog.allowed_formats
+            allowed_formats.Element = AAZStrType()
+
+            service = cls._schema_on_200_201.properties.service
+            service.persistence = AAZObjectType()
+            service.pipelines = AAZListType(
+                flags={"required": True},
+            )
+
+            persistence = cls._schema_on_200_201.properties.service.persistence
+            persistence.persistent_volume_name = AAZStrType(
+                serialized_name="persistentVolumeName",
+                flags={"required": True},
+            )
+
+            pipelines = cls._schema_on_200_201.properties.service.pipelines
+            pipelines.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.properties.service.pipelines.Element
+            _element.exporters = AAZListType(
+                flags={"required": True},
+            )
+            _element.name = AAZStrType(
+                flags={"required": True},
+            )
+            _element.processors = AAZListType()
+            _element.receivers = AAZListType(
+                flags={"required": True},
+            )
+            _element.type = AAZStrType(
+                flags={"required": True},
+            )
+
+            exporters = cls._schema_on_200_201.properties.service.pipelines.Element.exporters
+            exporters.Element = AAZStrType()
+
+            processors = cls._schema_on_200_201.properties.service.pipelines.Element.processors
+            processors.Element = AAZStrType()
+
+            receivers = cls._schema_on_200_201.properties.service.pipelines.Element.receivers
+            receivers.Element = AAZStrType()
+
+            tls_configurations = cls._schema_on_200_201.properties.tls_configurations
+            tls_configurations.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.properties.tls_configurations.Element
+            _element.client_ca = AAZObjectType(
+                serialized_name="clientCa",
+            )
+            _UpdateHelper._build_schema_certificatesource_read(_element.client_ca)
+            _element.mode = AAZStrType()
+            _element.name = AAZStrType(
+                flags={"required": True},
+            )
+            _element.tls_certificate = AAZObjectType(
+                serialized_name="tlsCertificate",
+            )
+
+            tls_certificate = cls._schema_on_200_201.properties.tls_configurations.Element.tls_certificate
+            tls_certificate.certificate = AAZObjectType(
+                flags={"required": True},
+            )
+            _UpdateHelper._build_schema_certificatesource_read(tls_certificate.certificate)
+            tls_certificate.private_key = AAZObjectType(
+                serialized_name="privateKey",
+                flags={"required": True},
+            )
+
+            private_key = cls._schema_on_200_201.properties.tls_configurations.Element.tls_certificate.private_key
+            private_key.location = AAZStrType(
+                flags={"required": True},
+            )
+            private_key.sub_location = AAZStrType(
+                serialized_name="subLocation",
+                flags={"required": True},
+            )
+            private_key.type = AAZStrType(
+                flags={"required": True},
+            )
+
+            system_data = cls._schema_on_200_201.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
+
+            tags = cls._schema_on_200_201.tags
+            tags.Element = AAZStrType()
+
             return cls._schema_on_200_201
 
     class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
@@ -402,7 +1487,11 @@ class Update(AAZCommand):
             self._update_instance(self.ctx.vars.instance)
 
         def _update_instance(self, instance):
-            _instance_value, _builder = self.new_content_builder(self.ctx.args, value=instance, typ=AAZObjectType)
+            _instance_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                value=instance,
+                typ=AAZObjectType
+            )
             _builder.set_prop("properties", AAZObjectType)
             _builder.set_prop("tags", AAZDictType, ".tags")
 
@@ -416,81 +1505,113 @@ class Update(AAZCommand):
                 properties.set_prop("service", AAZObjectType, ".service", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("tlsConfigurations", AAZListType, ".tls_configurations")
 
-            ep = _builder.get(".properties.executionPlacement")
-            if ep is not None:
-                ep.set_prop("constraints", AAZListType, ".constraints")
-                ep.set_prop("distribution", AAZObjectType, ".distribution")
-            epc = _builder.get(".properties.executionPlacement.constraints")
-            if epc is not None:
-                epc.set_elements(AAZObjectType, ".")
+            execution_placement = _builder.get(".properties.executionPlacement")
+            if execution_placement is not None:
+                execution_placement.set_prop("constraints", AAZListType, ".constraints")
+                execution_placement.set_prop("distribution", AAZObjectType, ".distribution")
+
+            constraints = _builder.get(".properties.executionPlacement.constraints")
+            if constraints is not None:
+                constraints.set_elements(AAZObjectType, ".")
+
             _elements = _builder.get(".properties.executionPlacement.constraints[]")
             if _elements is not None:
                 _elements.set_prop("capability", AAZStrType, ".capability", typ_kwargs={"flags": {"required": True}})
                 _elements.set_prop("operator", AAZStrType, ".operator", typ_kwargs={"flags": {"required": True}})
                 _elements.set_prop("values", AAZListType, ".values")
-            epv = _builder.get(".properties.executionPlacement.constraints[].values")
-            if epv is not None:
-                epv.set_elements(AAZStrType, ".")
-            epd = _builder.get(".properties.executionPlacement.distribution")
-            if epd is not None:
-                epd.set_prop("maxInstancesPerHost", AAZIntType, ".max_instances_per_host")
+
+            values = _builder.get(".properties.executionPlacement.constraints[].values")
+            if values is not None:
+                values.set_elements(AAZStrType, ".")
+
+            distribution = _builder.get(".properties.executionPlacement.distribution")
+            if distribution is not None:
+                distribution.set_prop("maxInstancesPerHost", AAZIntType, ".max_instances_per_host")
 
             exporters = _builder.get(".properties.exporters")
             if exporters is not None:
                 exporters.set_elements(AAZObjectType, ".")
+
             _elements = _builder.get(".properties.exporters[]")
             if _elements is not None:
                 _elements.set_prop("azureMonitorWorkspaceLogs", AAZObjectType, ".azure_monitor_workspace_logs")
                 _elements.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
                 _elements.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
-            amwl = _builder.get(".properties.exporters[].azureMonitorWorkspaceLogs")
-            if amwl is not None:
-                amwl.set_prop("api", AAZObjectType, ".api", typ_kwargs={"flags": {"required": True}})
-                amwl.set_prop("persistence", AAZObjectType, ".persistence")
+
+            azure_monitor_workspace_logs = _builder.get(".properties.exporters[].azureMonitorWorkspaceLogs")
+            if azure_monitor_workspace_logs is not None:
+                azure_monitor_workspace_logs.set_prop("api", AAZObjectType, ".api", typ_kwargs={"flags": {"required": True}})
+                azure_monitor_workspace_logs.set_prop("persistence", AAZObjectType, ".persistence")
+
             api = _builder.get(".properties.exporters[].azureMonitorWorkspaceLogs.api")
             if api is not None:
                 api.set_prop("dataCollectionEndpointUrl", AAZStrType, ".data_collection_endpoint_url", typ_kwargs={"flags": {"required": True}})
                 api.set_prop("dataCollectionRule", AAZStrType, ".data_collection_rule", typ_kwargs={"flags": {"required": True}})
                 api.set_prop("schema", AAZObjectType, ".schema", typ_kwargs={"flags": {"required": True}})
                 api.set_prop("stream", AAZStrType, ".stream", typ_kwargs={"flags": {"required": True}})
+
             schema = _builder.get(".properties.exporters[].azureMonitorWorkspaceLogs.api.schema")
             if schema is not None:
                 schema.set_prop("recordMap", AAZListType, ".record_map", typ_kwargs={"flags": {"required": True}})
                 schema.set_prop("resourceMap", AAZListType, ".resource_map")
                 schema.set_prop("scopeMap", AAZListType, ".scope_map")
-            for map_name in ["recordMap", "resourceMap", "scopeMap"]:
-                m = _builder.get(f".properties.exporters[].azureMonitorWorkspaceLogs.api.schema.{map_name}")
-                if m is not None:
-                    m.set_elements(AAZObjectType, ".")
-                me = _builder.get(f".properties.exporters[].azureMonitorWorkspaceLogs.api.schema.{map_name}[]")
-                if me is not None:
-                    me.set_prop("from", AAZStrType, ".from_", typ_kwargs={"flags": {"required": True}})
-                    me.set_prop("to", AAZStrType, ".to", typ_kwargs={"flags": {"required": True}})
-            exp_persist = _builder.get(".properties.exporters[].azureMonitorWorkspaceLogs.persistence")
-            if exp_persist is not None:
-                exp_persist.set_prop("maxStorageUsage", AAZIntType, ".max_storage_usage")
-                exp_persist.set_prop("retentionPeriod", AAZIntType, ".retention_period")
+
+            record_map = _builder.get(".properties.exporters[].azureMonitorWorkspaceLogs.api.schema.recordMap")
+            if record_map is not None:
+                record_map.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.exporters[].azureMonitorWorkspaceLogs.api.schema.recordMap[]")
+            if _elements is not None:
+                _elements.set_prop("from", AAZStrType, ".from_", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("to", AAZStrType, ".to", typ_kwargs={"flags": {"required": True}})
+
+            resource_map = _builder.get(".properties.exporters[].azureMonitorWorkspaceLogs.api.schema.resourceMap")
+            if resource_map is not None:
+                resource_map.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.exporters[].azureMonitorWorkspaceLogs.api.schema.resourceMap[]")
+            if _elements is not None:
+                _elements.set_prop("from", AAZStrType, ".from_", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("to", AAZStrType, ".to", typ_kwargs={"flags": {"required": True}})
+
+            scope_map = _builder.get(".properties.exporters[].azureMonitorWorkspaceLogs.api.schema.scopeMap")
+            if scope_map is not None:
+                scope_map.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.exporters[].azureMonitorWorkspaceLogs.api.schema.scopeMap[]")
+            if _elements is not None:
+                _elements.set_prop("from", AAZStrType, ".from_", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("to", AAZStrType, ".to", typ_kwargs={"flags": {"required": True}})
+
+            persistence = _builder.get(".properties.exporters[].azureMonitorWorkspaceLogs.persistence")
+            if persistence is not None:
+                persistence.set_prop("maxStorageUsage", AAZIntType, ".max_storage_usage")
+                persistence.set_prop("retentionPeriod", AAZIntType, ".retention_period")
 
             processors = _builder.get(".properties.processors")
             if processors is not None:
                 processors.set_elements(AAZObjectType, ".")
+
             _elements = _builder.get(".properties.processors[]")
             if _elements is not None:
                 _elements.set_prop("batch", AAZObjectType, ".batch")
                 _elements.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
                 _elements.set_prop("transformLanguage", AAZObjectType, ".transform_language")
                 _elements.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
+
             batch = _builder.get(".properties.processors[].batch")
             if batch is not None:
                 batch.set_prop("batchSize", AAZIntType, ".batch_size")
                 batch.set_prop("timeout", AAZIntType, ".timeout")
-            tl = _builder.get(".properties.processors[].transformLanguage")
-            if tl is not None:
-                tl.set_prop("transformStatement", AAZStrType, ".transform_statement", typ_kwargs={"flags": {"required": True}})
+
+            transform_language = _builder.get(".properties.processors[].transformLanguage")
+            if transform_language is not None:
+                transform_language.set_prop("transformStatement", AAZStrType, ".transform_statement", typ_kwargs={"flags": {"required": True}})
 
             receivers = _builder.get(".properties.receivers")
             if receivers is not None:
                 receivers.set_elements(AAZObjectType, ".")
+
             _elements = _builder.get(".properties.receivers[]")
             if _elements is not None:
                 _elements.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
@@ -498,29 +1619,35 @@ class Update(AAZCommand):
                 _elements.set_prop("syslog", AAZObjectType, ".syslog")
                 _elements.set_prop("tlsConfiguration", AAZStrType, ".tls_configuration")
                 _elements.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
+
             otlp = _builder.get(".properties.receivers[].otlp")
             if otlp is not None:
                 otlp.set_prop("endpoint", AAZStrType, ".endpoint", typ_kwargs={"flags": {"required": True}})
+
             syslog = _builder.get(".properties.receivers[].syslog")
             if syslog is not None:
                 syslog.set_prop("allowSkipPriHeader", AAZBoolType, ".allow_skip_pri_header")
                 syslog.set_prop("allowedFormats", AAZListType, ".allowed_formats")
                 syslog.set_prop("endpoint", AAZStrType, ".endpoint", typ_kwargs={"flags": {"required": True}})
                 syslog.set_prop("transportProtocol", AAZStrType, ".transport_protocol")
-            af = _builder.get(".properties.receivers[].syslog.allowedFormats")
-            if af is not None:
-                af.set_elements(AAZStrType, ".")
+
+            allowed_formats = _builder.get(".properties.receivers[].syslog.allowedFormats")
+            if allowed_formats is not None:
+                allowed_formats.set_elements(AAZStrType, ".")
 
             service = _builder.get(".properties.service")
             if service is not None:
                 service.set_prop("persistence", AAZObjectType, ".persistence")
                 service.set_prop("pipelines", AAZListType, ".pipelines", typ_kwargs={"flags": {"required": True}})
-            svc_persist = _builder.get(".properties.service.persistence")
-            if svc_persist is not None:
-                svc_persist.set_prop("persistentVolumeName", AAZStrType, ".persistent_volume_name", typ_kwargs={"flags": {"required": True}})
+
+            persistence = _builder.get(".properties.service.persistence")
+            if persistence is not None:
+                persistence.set_prop("persistentVolumeName", AAZStrType, ".persistent_volume_name", typ_kwargs={"flags": {"required": True}})
+
             pipelines = _builder.get(".properties.service.pipelines")
             if pipelines is not None:
                 pipelines.set_elements(AAZObjectType, ".")
+
             _elements = _builder.get(".properties.service.pipelines[]")
             if _elements is not None:
                 _elements.set_prop("exporters", AAZListType, ".exporters", typ_kwargs={"flags": {"required": True}})
@@ -528,39 +1655,40 @@ class Update(AAZCommand):
                 _elements.set_prop("processors", AAZListType, ".processors")
                 _elements.set_prop("receivers", AAZListType, ".receivers", typ_kwargs={"flags": {"required": True}})
                 _elements.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
-            for sub in ["exporters", "processors", "receivers"]:
-                s = _builder.get(f".properties.service.pipelines[].{sub}")
-                if s is not None:
-                    s.set_elements(AAZStrType, ".")
 
-            tls_cfgs = _builder.get(".properties.tlsConfigurations")
-            if tls_cfgs is not None:
-                tls_cfgs.set_elements(AAZObjectType, ".")
+            exporters = _builder.get(".properties.service.pipelines[].exporters")
+            if exporters is not None:
+                exporters.set_elements(AAZStrType, ".")
+
+            processors = _builder.get(".properties.service.pipelines[].processors")
+            if processors is not None:
+                processors.set_elements(AAZStrType, ".")
+
+            receivers = _builder.get(".properties.service.pipelines[].receivers")
+            if receivers is not None:
+                receivers.set_elements(AAZStrType, ".")
+
+            tls_configurations = _builder.get(".properties.tlsConfigurations")
+            if tls_configurations is not None:
+                tls_configurations.set_elements(AAZObjectType, ".")
+
             _elements = _builder.get(".properties.tlsConfigurations[]")
             if _elements is not None:
-                _elements.set_prop("clientCa", AAZObjectType, ".client_ca")
+                _UpdateHelper._build_schema_certificatesource_create_or_update_update(_elements.set_prop("clientCa", AAZObjectType, ".client_ca"))
                 _elements.set_prop("mode", AAZStrType, ".mode")
                 _elements.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
                 _elements.set_prop("tlsCertificate", AAZObjectType, ".tls_certificate")
-            ca = _builder.get(".properties.tlsConfigurations[].clientCa")
-            if ca is not None:
-                ca.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
-                ca.set_prop("subLocation", AAZStrType, ".sub_location", typ_kwargs={"flags": {"required": True}})
-                ca.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
-            tc = _builder.get(".properties.tlsConfigurations[].tlsCertificate")
-            if tc is not None:
-                tc.set_prop("certificate", AAZObjectType, ".certificate", typ_kwargs={"flags": {"required": True}})
-                tc.set_prop("privateKey", AAZObjectType, ".private_key", typ_kwargs={"flags": {"required": True}})
-            cert = _builder.get(".properties.tlsConfigurations[].tlsCertificate.certificate")
-            if cert is not None:
-                cert.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
-                cert.set_prop("subLocation", AAZStrType, ".sub_location", typ_kwargs={"flags": {"required": True}})
-                cert.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
-            pk = _builder.get(".properties.tlsConfigurations[].tlsCertificate.privateKey")
-            if pk is not None:
-                pk.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
-                pk.set_prop("subLocation", AAZStrType, ".sub_location", typ_kwargs={"flags": {"required": True}})
-                pk.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
+
+            tls_certificate = _builder.get(".properties.tlsConfigurations[].tlsCertificate")
+            if tls_certificate is not None:
+                _UpdateHelper._build_schema_certificatesource_create_or_update_update(tls_certificate.set_prop("certificate", AAZObjectType, ".certificate", typ_kwargs={"flags": {"required": True}}))
+                tls_certificate.set_prop("privateKey", AAZObjectType, ".private_key", typ_kwargs={"flags": {"required": True}})
+
+            private_key = _builder.get(".properties.tlsConfigurations[].tlsCertificate.privateKey")
+            if private_key is not None:
+                private_key.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
+                private_key.set_prop("subLocation", AAZStrType, ".sub_location", typ_kwargs={"flags": {"required": True}})
+                private_key.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -580,387 +1708,41 @@ class Update(AAZCommand):
 class _UpdateHelper:
     """Helper class for Update"""
 
-    _schema_pipeline_group_read = None
+    @classmethod
+    def _build_schema_certificatesource_create_or_update_update(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
+        _builder.set_prop("subLocation", AAZStrType, ".sub_location", typ_kwargs={"flags": {"required": True}})
+        _builder.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
+
+    _schema_certificatesource_read = None
 
     @classmethod
-    def _build_schema_pipeline_group_read(cls, _schema):
-        if cls._schema_pipeline_group_read is not None:
-            _schema.extended_location = cls._schema_pipeline_group_read.extended_location
-            _schema.id = cls._schema_pipeline_group_read.id
-            _schema.location = cls._schema_pipeline_group_read.location
-            _schema.name = cls._schema_pipeline_group_read.name
-            _schema.properties = cls._schema_pipeline_group_read.properties
-            _schema.system_data = cls._schema_pipeline_group_read.system_data
-            _schema.tags = cls._schema_pipeline_group_read.tags
-            _schema.type = cls._schema_pipeline_group_read.type
+    def _build_schema_certificatesource_read(cls, _schema):
+        if cls._schema_certificatesource_read is not None:
+            _schema.location = cls._schema_certificatesource_read.location
+            _schema.sub_location = cls._schema_certificatesource_read.sub_location
+            _schema.type = cls._schema_certificatesource_read.type
             return
 
-        cls._schema_pipeline_group_read = _schema_pipeline_group_read = AAZObjectType()
+        cls._schema_certificatesource_read = _schema_certificatesource_read = AAZObjectType()
 
-        _schema_pipeline_group_read.extended_location = AAZObjectType(
-            serialized_name="extendedLocation",
-        )
-        _schema_pipeline_group_read.id = AAZStrType(
-            flags={"read_only": True},
-        )
-        _schema_pipeline_group_read.location = AAZStrType(
+        certificatesource_read = _schema_certificatesource_read
+        certificatesource_read.location = AAZStrType(
             flags={"required": True},
         )
-        _schema_pipeline_group_read.name = AAZStrType(
-            flags={"read_only": True},
-        )
-        _schema_pipeline_group_read.properties = AAZObjectType()
-        _schema_pipeline_group_read.system_data = AAZObjectType(
-            serialized_name="systemData",
-            flags={"read_only": True},
-        )
-        _schema_pipeline_group_read.tags = AAZDictType()
-        _schema_pipeline_group_read.type = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        extended_location = _schema_pipeline_group_read.extended_location
-        extended_location.name = AAZStrType(
-            flags={"required": True},
-        )
-        extended_location.type = AAZStrType(
-            flags={"required": True},
-        )
-
-        properties = _schema_pipeline_group_read.properties
-        properties.execution_placement = AAZObjectType(
-            serialized_name="executionPlacement",
-        )
-        properties.exporters = AAZListType(
-            flags={"required": True},
-        )
-        properties.processors = AAZListType(
-            flags={"required": True},
-        )
-        properties.provisioning_state = AAZStrType(
-            serialized_name="provisioningState",
-            flags={"read_only": True},
-        )
-        properties.receivers = AAZListType(
-            flags={"required": True},
-        )
-        properties.replicas = AAZIntType()
-        properties.service = AAZObjectType(
-            flags={"required": True},
-        )
-        properties.tls_configurations = AAZListType(
-            serialized_name="tlsConfigurations",
-        )
-
-        execution_placement = _schema_pipeline_group_read.properties.execution_placement
-        execution_placement.constraints = AAZListType()
-        execution_placement.distribution = AAZObjectType()
-
-        constraints = _schema_pipeline_group_read.properties.execution_placement.constraints
-        constraints.Element = AAZObjectType()
-
-        _element = _schema_pipeline_group_read.properties.execution_placement.constraints.Element
-        _element.capability = AAZStrType(
-            flags={"required": True},
-        )
-        _element.operator = AAZStrType(
-            flags={"required": True},
-        )
-        _element.values = AAZListType()
-
-        values = _schema_pipeline_group_read.properties.execution_placement.constraints.Element.values
-        values.Element = AAZStrType()
-
-        distribution = _schema_pipeline_group_read.properties.execution_placement.distribution
-        distribution.max_instances_per_host = AAZIntType(
-            serialized_name="maxInstancesPerHost",
-        )
-
-        exporters = _schema_pipeline_group_read.properties.exporters
-        exporters.Element = AAZObjectType()
-
-        _element = _schema_pipeline_group_read.properties.exporters.Element
-        _element.azure_monitor_workspace_logs = AAZObjectType(
-            serialized_name="azureMonitorWorkspaceLogs",
-        )
-        _element.name = AAZStrType(
-            flags={"required": True},
-        )
-        _element.type = AAZStrType(
-            flags={"required": True},
-        )
-
-        azure_monitor_workspace_logs = _schema_pipeline_group_read.properties.exporters.Element.azure_monitor_workspace_logs
-        azure_monitor_workspace_logs.api = AAZObjectType(
-            flags={"required": True},
-        )
-        azure_monitor_workspace_logs.persistence = AAZObjectType()
-
-        api = _schema_pipeline_group_read.properties.exporters.Element.azure_monitor_workspace_logs.api
-        api.data_collection_endpoint_url = AAZStrType(
-            serialized_name="dataCollectionEndpointUrl",
-            flags={"required": True},
-        )
-        api.data_collection_rule = AAZStrType(
-            serialized_name="dataCollectionRule",
-            flags={"required": True},
-        )
-        api.schema = AAZObjectType(
-            flags={"required": True},
-        )
-        api.stream = AAZStrType(
-            flags={"required": True},
-        )
-
-        schema = _schema_pipeline_group_read.properties.exporters.Element.azure_monitor_workspace_logs.api.schema
-        schema.record_map = AAZListType(
-            serialized_name="recordMap",
-            flags={"required": True},
-        )
-        schema.resource_map = AAZListType(
-            serialized_name="resourceMap",
-        )
-        schema.scope_map = AAZListType(
-            serialized_name="scopeMap",
-        )
-
-        record_map = _schema_pipeline_group_read.properties.exporters.Element.azure_monitor_workspace_logs.api.schema.record_map
-        record_map.Element = AAZObjectType()
-
-        _element = _schema_pipeline_group_read.properties.exporters.Element.azure_monitor_workspace_logs.api.schema.record_map.Element
-        _element["from"] = AAZStrType(
-            flags={"required": True},
-        )
-        _element.to = AAZStrType(
-            flags={"required": True},
-        )
-
-        resource_map = _schema_pipeline_group_read.properties.exporters.Element.azure_monitor_workspace_logs.api.schema.resource_map
-        resource_map.Element = AAZObjectType()
-
-        _element = _schema_pipeline_group_read.properties.exporters.Element.azure_monitor_workspace_logs.api.schema.resource_map.Element
-        _element["from"] = AAZStrType(
-            flags={"required": True},
-        )
-        _element.to = AAZStrType(
-            flags={"required": True},
-        )
-
-        scope_map = _schema_pipeline_group_read.properties.exporters.Element.azure_monitor_workspace_logs.api.schema.scope_map
-        scope_map.Element = AAZObjectType()
-
-        _element = _schema_pipeline_group_read.properties.exporters.Element.azure_monitor_workspace_logs.api.schema.scope_map.Element
-        _element["from"] = AAZStrType(
-            flags={"required": True},
-        )
-        _element.to = AAZStrType(
-            flags={"required": True},
-        )
-
-        exporter_persistence = _schema_pipeline_group_read.properties.exporters.Element.azure_monitor_workspace_logs.persistence
-        exporter_persistence.max_storage_usage = AAZIntType(
-            serialized_name="maxStorageUsage",
-        )
-        exporter_persistence.retention_period = AAZIntType(
-            serialized_name="retentionPeriod",
-        )
-
-        processors = _schema_pipeline_group_read.properties.processors
-        processors.Element = AAZObjectType()
-
-        _element = _schema_pipeline_group_read.properties.processors.Element
-        _element.batch = AAZObjectType()
-        _element.name = AAZStrType(
-            flags={"required": True},
-        )
-        _element.transform_language = AAZObjectType(
-            serialized_name="transformLanguage",
-        )
-        _element.type = AAZStrType(
-            flags={"required": True},
-        )
-
-        batch = _schema_pipeline_group_read.properties.processors.Element.batch
-        batch.batch_size = AAZIntType(
-            serialized_name="batchSize",
-        )
-        batch.timeout = AAZIntType()
-
-        transform_language = _schema_pipeline_group_read.properties.processors.Element.transform_language
-        transform_language.transform_statement = AAZStrType(
-            serialized_name="transformStatement",
-            flags={"required": True},
-        )
-
-        receivers = _schema_pipeline_group_read.properties.receivers
-        receivers.Element = AAZObjectType()
-
-        _element = _schema_pipeline_group_read.properties.receivers.Element
-        _element.name = AAZStrType(
-            flags={"required": True},
-        )
-        _element.otlp = AAZObjectType()
-        _element.syslog = AAZObjectType()
-        _element.tls_configuration = AAZStrType(
-            serialized_name="tlsConfiguration",
-        )
-        _element.type = AAZStrType(
-            flags={"required": True},
-        )
-
-        otlp = _schema_pipeline_group_read.properties.receivers.Element.otlp
-        otlp.endpoint = AAZStrType(
-            flags={"required": True},
-        )
-
-        syslog = _schema_pipeline_group_read.properties.receivers.Element.syslog
-        syslog.allow_skip_pri_header = AAZBoolType(
-            serialized_name="allowSkipPriHeader",
-        )
-        syslog.allowed_formats = AAZListType(
-            serialized_name="allowedFormats",
-        )
-        syslog.endpoint = AAZStrType(
-            flags={"required": True},
-        )
-        syslog.transport_protocol = AAZStrType(
-            serialized_name="transportProtocol",
-        )
-
-        allowed_formats = _schema_pipeline_group_read.properties.receivers.Element.syslog.allowed_formats
-        allowed_formats.Element = AAZStrType()
-
-        service = _schema_pipeline_group_read.properties.service
-        service.persistence = AAZObjectType()
-        service.pipelines = AAZListType(
-            flags={"required": True},
-        )
-
-        persistence = _schema_pipeline_group_read.properties.service.persistence
-        persistence.persistent_volume_name = AAZStrType(
-            serialized_name="persistentVolumeName",
-            flags={"required": True},
-        )
-
-        pipelines = _schema_pipeline_group_read.properties.service.pipelines
-        pipelines.Element = AAZObjectType()
-
-        _element = _schema_pipeline_group_read.properties.service.pipelines.Element
-        _element.exporters = AAZListType(
-            flags={"required": True},
-        )
-        _element.name = AAZStrType(
-            flags={"required": True},
-        )
-        _element.processors = AAZListType()
-        _element.receivers = AAZListType(
-            flags={"required": True},
-        )
-        _element.type = AAZStrType(
-            flags={"required": True},
-        )
-
-        exporters = _schema_pipeline_group_read.properties.service.pipelines.Element.exporters
-        exporters.Element = AAZStrType()
-
-        processors = _schema_pipeline_group_read.properties.service.pipelines.Element.processors
-        processors.Element = AAZStrType()
-
-        receivers = _schema_pipeline_group_read.properties.service.pipelines.Element.receivers
-        receivers.Element = AAZStrType()
-
-        tls_configurations = _schema_pipeline_group_read.properties.tls_configurations
-        tls_configurations.Element = AAZObjectType()
-
-        _element = _schema_pipeline_group_read.properties.tls_configurations.Element
-        _element.client_ca = AAZObjectType(
-            serialized_name="clientCa",
-        )
-        _element.mode = AAZStrType()
-        _element.name = AAZStrType(
-            flags={"required": True},
-        )
-        _element.tls_certificate = AAZObjectType(
-            serialized_name="tlsCertificate",
-        )
-
-        client_ca = _schema_pipeline_group_read.properties.tls_configurations.Element.client_ca
-        client_ca.location = AAZStrType(
-            flags={"required": True},
-        )
-        client_ca.sub_location = AAZStrType(
+        certificatesource_read.sub_location = AAZStrType(
             serialized_name="subLocation",
             flags={"required": True},
         )
-        client_ca.type = AAZStrType(
+        certificatesource_read.type = AAZStrType(
             flags={"required": True},
         )
 
-        tls_certificate = _schema_pipeline_group_read.properties.tls_configurations.Element.tls_certificate
-        tls_certificate.certificate = AAZObjectType(
-            flags={"required": True},
-        )
-        tls_certificate.private_key = AAZObjectType(
-            serialized_name="privateKey",
-            flags={"required": True},
-        )
-
-        cert = _schema_pipeline_group_read.properties.tls_configurations.Element.tls_certificate.certificate
-        cert.location = AAZStrType(
-            flags={"required": True},
-        )
-        cert.sub_location = AAZStrType(
-            serialized_name="subLocation",
-            flags={"required": True},
-        )
-        cert.type = AAZStrType(
-            flags={"required": True},
-        )
-
-        private_key = _schema_pipeline_group_read.properties.tls_configurations.Element.tls_certificate.private_key
-        private_key.location = AAZStrType(
-            flags={"required": True},
-        )
-        private_key.sub_location = AAZStrType(
-            serialized_name="subLocation",
-            flags={"required": True},
-        )
-        private_key.type = AAZStrType(
-            flags={"required": True},
-        )
-
-        system_data = _schema_pipeline_group_read.system_data
-        system_data.created_at = AAZStrType(
-            serialized_name="createdAt",
-        )
-        system_data.created_by = AAZStrType(
-            serialized_name="createdBy",
-        )
-        system_data.created_by_type = AAZStrType(
-            serialized_name="createdByType",
-        )
-        system_data.last_modified_at = AAZStrType(
-            serialized_name="lastModifiedAt",
-        )
-        system_data.last_modified_by = AAZStrType(
-            serialized_name="lastModifiedBy",
-        )
-        system_data.last_modified_by_type = AAZStrType(
-            serialized_name="lastModifiedByType",
-        )
-
-        tags = _schema_pipeline_group_read.tags
-        tags.Element = AAZStrType()
-
-
-        _schema.extended_location = cls._schema_pipeline_group_read.extended_location
-        _schema.id = cls._schema_pipeline_group_read.id
-        _schema.location = cls._schema_pipeline_group_read.location
-        _schema.name = cls._schema_pipeline_group_read.name
-        _schema.properties = cls._schema_pipeline_group_read.properties
-        _schema.system_data = cls._schema_pipeline_group_read.system_data
-        _schema.tags = cls._schema_pipeline_group_read.tags
-        _schema.type = cls._schema_pipeline_group_read.type
+        _schema.location = cls._schema_certificatesource_read.location
+        _schema.sub_location = cls._schema_certificatesource_read.sub_location
+        _schema.type = cls._schema_certificatesource_read.type
 
 
 __all__ = ["Update"]

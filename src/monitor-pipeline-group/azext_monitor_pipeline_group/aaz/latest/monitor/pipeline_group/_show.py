@@ -152,25 +152,26 @@ class Show(AAZCommand):
 
             cls._schema_on_200 = AAZObjectType()
 
-            cls._schema_on_200.extended_location = AAZObjectType(
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.extended_location = AAZObjectType(
                 serialized_name="extendedLocation",
             )
-            cls._schema_on_200.id = AAZStrType(
+            _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            cls._schema_on_200.location = AAZStrType(
+            _schema_on_200.location = AAZStrType(
                 flags={"required": True},
             )
-            cls._schema_on_200.name = AAZStrType(
+            _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            cls._schema_on_200.properties = AAZObjectType()
-            cls._schema_on_200.system_data = AAZObjectType(
+            _schema_on_200.properties = AAZObjectType()
+            _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            cls._schema_on_200.tags = AAZDictType()
-            cls._schema_on_200.type = AAZStrType(
+            _schema_on_200.tags = AAZDictType()
+            _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
@@ -312,11 +313,11 @@ class Show(AAZCommand):
                 flags={"required": True},
             )
 
-            exporter_persistence = cls._schema_on_200.properties.exporters.Element.azure_monitor_workspace_logs.persistence
-            exporter_persistence.max_storage_usage = AAZIntType(
+            persistence = cls._schema_on_200.properties.exporters.Element.azure_monitor_workspace_logs.persistence
+            persistence.max_storage_usage = AAZIntType(
                 serialized_name="maxStorageUsage",
             )
-            exporter_persistence.retention_period = AAZIntType(
+            persistence.retention_period = AAZIntType(
                 serialized_name="retentionPeriod",
             )
 
@@ -431,6 +432,7 @@ class Show(AAZCommand):
             _element.client_ca = AAZObjectType(
                 serialized_name="clientCa",
             )
+            _ShowHelper._build_schema_certificatesource_read(_element.client_ca)
             _element.mode = AAZStrType()
             _element.name = AAZStrType(
                 flags={"required": True},
@@ -439,36 +441,13 @@ class Show(AAZCommand):
                 serialized_name="tlsCertificate",
             )
 
-            client_ca = cls._schema_on_200.properties.tls_configurations.Element.client_ca
-            client_ca.location = AAZStrType(
-                flags={"required": True},
-            )
-            client_ca.sub_location = AAZStrType(
-                serialized_name="subLocation",
-                flags={"required": True},
-            )
-            client_ca.type = AAZStrType(
-                flags={"required": True},
-            )
-
             tls_certificate = cls._schema_on_200.properties.tls_configurations.Element.tls_certificate
             tls_certificate.certificate = AAZObjectType(
                 flags={"required": True},
             )
+            _ShowHelper._build_schema_certificatesource_read(tls_certificate.certificate)
             tls_certificate.private_key = AAZObjectType(
                 serialized_name="privateKey",
-                flags={"required": True},
-            )
-
-            cert = cls._schema_on_200.properties.tls_configurations.Element.tls_certificate.certificate
-            cert.location = AAZStrType(
-                flags={"required": True},
-            )
-            cert.sub_location = AAZStrType(
-                serialized_name="subLocation",
-                flags={"required": True},
-            )
-            cert.type = AAZStrType(
                 flags={"required": True},
             )
 
@@ -512,6 +491,34 @@ class Show(AAZCommand):
 
 class _ShowHelper:
     """Helper class for Show"""
+
+    _schema_certificatesource_read = None
+
+    @classmethod
+    def _build_schema_certificatesource_read(cls, _schema):
+        if cls._schema_certificatesource_read is not None:
+            _schema.location = cls._schema_certificatesource_read.location
+            _schema.sub_location = cls._schema_certificatesource_read.sub_location
+            _schema.type = cls._schema_certificatesource_read.type
+            return
+
+        cls._schema_certificatesource_read = _schema_certificatesource_read = AAZObjectType()
+
+        certificatesource_read = _schema_certificatesource_read
+        certificatesource_read.location = AAZStrType(
+            flags={"required": True},
+        )
+        certificatesource_read.sub_location = AAZStrType(
+            serialized_name="subLocation",
+            flags={"required": True},
+        )
+        certificatesource_read.type = AAZStrType(
+            flags={"required": True},
+        )
+
+        _schema.location = cls._schema_certificatesource_read.location
+        _schema.sub_location = cls._schema_certificatesource_read.sub_location
+        _schema.type = cls._schema_certificatesource_read.type
 
 
 __all__ = ["Show"]

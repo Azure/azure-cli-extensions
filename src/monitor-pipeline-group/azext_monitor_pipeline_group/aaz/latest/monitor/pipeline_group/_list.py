@@ -48,12 +48,12 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        condition_0 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
-        condition_1 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_0 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        condition_1 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
         if condition_0:
-            self.PipelineGroupsListByResourceGroup(ctx=self.ctx)()
-        if condition_1:
             self.PipelineGroupsListBySubscription(ctx=self.ctx)()
+        if condition_1:
+            self.PipelineGroupsListByResourceGroup(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -68,6 +68,425 @@ class List(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
+
+    class PipelineGroupsListBySubscription(AAZHttpOperation):
+        CLIENT_TYPE = "MgmtClient"
+
+        def __call__(self, *args, **kwargs):
+            request = self.make_request()
+            session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [200]:
+                return self.on_200(session)
+
+            return self.on_error(session.http_response)
+
+        @property
+        def url(self):
+            return self.client.format_url(
+                "/subscriptions/{subscriptionId}/providers/Microsoft.Monitor/pipelineGroups",
+                **self.url_parameters
+            )
+
+        @property
+        def method(self):
+            return "GET"
+
+        @property
+        def error_format(self):
+            return "MgmtErrorFormat"
+
+        @property
+        def url_parameters(self):
+            parameters = {
+                **self.serialize_url_param(
+                    "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def query_parameters(self):
+            parameters = {
+                **self.serialize_query_param(
+                    "api-version", "2026-04-01",
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Accept", "application/json",
+                ),
+            }
+            return parameters
+
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
+            )
+
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
+            )
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
+
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.extended_location = AAZObjectType(
+                serialized_name="extendedLocation",
+            )
+            _element.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.location = AAZStrType(
+                flags={"required": True},
+            )
+            _element.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.properties = AAZObjectType()
+            _element.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _element.tags = AAZDictType()
+            _element.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            extended_location = cls._schema_on_200.value.Element.extended_location
+            extended_location.name = AAZStrType(
+                flags={"required": True},
+            )
+            extended_location.type = AAZStrType(
+                flags={"required": True},
+            )
+
+            properties = cls._schema_on_200.value.Element.properties
+            properties.execution_placement = AAZObjectType(
+                serialized_name="executionPlacement",
+            )
+            properties.exporters = AAZListType(
+                flags={"required": True},
+            )
+            properties.processors = AAZListType(
+                flags={"required": True},
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.receivers = AAZListType(
+                flags={"required": True},
+            )
+            properties.replicas = AAZIntType()
+            properties.service = AAZObjectType(
+                flags={"required": True},
+            )
+            properties.tls_configurations = AAZListType(
+                serialized_name="tlsConfigurations",
+            )
+
+            execution_placement = cls._schema_on_200.value.Element.properties.execution_placement
+            execution_placement.constraints = AAZListType()
+            execution_placement.distribution = AAZObjectType()
+
+            constraints = cls._schema_on_200.value.Element.properties.execution_placement.constraints
+            constraints.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.execution_placement.constraints.Element
+            _element.capability = AAZStrType(
+                flags={"required": True},
+            )
+            _element.operator = AAZStrType(
+                flags={"required": True},
+            )
+            _element.values = AAZListType()
+
+            values = cls._schema_on_200.value.Element.properties.execution_placement.constraints.Element.values
+            values.Element = AAZStrType()
+
+            distribution = cls._schema_on_200.value.Element.properties.execution_placement.distribution
+            distribution.max_instances_per_host = AAZIntType(
+                serialized_name="maxInstancesPerHost",
+            )
+
+            exporters = cls._schema_on_200.value.Element.properties.exporters
+            exporters.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.exporters.Element
+            _element.azure_monitor_workspace_logs = AAZObjectType(
+                serialized_name="azureMonitorWorkspaceLogs",
+            )
+            _element.name = AAZStrType(
+                flags={"required": True},
+            )
+            _element.type = AAZStrType(
+                flags={"required": True},
+            )
+
+            azure_monitor_workspace_logs = cls._schema_on_200.value.Element.properties.exporters.Element.azure_monitor_workspace_logs
+            azure_monitor_workspace_logs.api = AAZObjectType(
+                flags={"required": True},
+            )
+            azure_monitor_workspace_logs.persistence = AAZObjectType()
+
+            api = cls._schema_on_200.value.Element.properties.exporters.Element.azure_monitor_workspace_logs.api
+            api.data_collection_endpoint_url = AAZStrType(
+                serialized_name="dataCollectionEndpointUrl",
+                flags={"required": True},
+            )
+            api.data_collection_rule = AAZStrType(
+                serialized_name="dataCollectionRule",
+                flags={"required": True},
+            )
+            api.schema = AAZObjectType(
+                flags={"required": True},
+            )
+            api.stream = AAZStrType(
+                flags={"required": True},
+            )
+
+            schema = cls._schema_on_200.value.Element.properties.exporters.Element.azure_monitor_workspace_logs.api.schema
+            schema.record_map = AAZListType(
+                serialized_name="recordMap",
+                flags={"required": True},
+            )
+            schema.resource_map = AAZListType(
+                serialized_name="resourceMap",
+            )
+            schema.scope_map = AAZListType(
+                serialized_name="scopeMap",
+            )
+
+            record_map = cls._schema_on_200.value.Element.properties.exporters.Element.azure_monitor_workspace_logs.api.schema.record_map
+            record_map.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.exporters.Element.azure_monitor_workspace_logs.api.schema.record_map.Element
+            _element["from"] = AAZStrType(
+                flags={"required": True},
+            )
+            _element.to = AAZStrType(
+                flags={"required": True},
+            )
+
+            resource_map = cls._schema_on_200.value.Element.properties.exporters.Element.azure_monitor_workspace_logs.api.schema.resource_map
+            resource_map.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.exporters.Element.azure_monitor_workspace_logs.api.schema.resource_map.Element
+            _element["from"] = AAZStrType(
+                flags={"required": True},
+            )
+            _element.to = AAZStrType(
+                flags={"required": True},
+            )
+
+            scope_map = cls._schema_on_200.value.Element.properties.exporters.Element.azure_monitor_workspace_logs.api.schema.scope_map
+            scope_map.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.exporters.Element.azure_monitor_workspace_logs.api.schema.scope_map.Element
+            _element["from"] = AAZStrType(
+                flags={"required": True},
+            )
+            _element.to = AAZStrType(
+                flags={"required": True},
+            )
+
+            persistence = cls._schema_on_200.value.Element.properties.exporters.Element.azure_monitor_workspace_logs.persistence
+            persistence.max_storage_usage = AAZIntType(
+                serialized_name="maxStorageUsage",
+            )
+            persistence.retention_period = AAZIntType(
+                serialized_name="retentionPeriod",
+            )
+
+            processors = cls._schema_on_200.value.Element.properties.processors
+            processors.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.processors.Element
+            _element.batch = AAZObjectType()
+            _element.name = AAZStrType(
+                flags={"required": True},
+            )
+            _element.transform_language = AAZObjectType(
+                serialized_name="transformLanguage",
+            )
+            _element.type = AAZStrType(
+                flags={"required": True},
+            )
+
+            batch = cls._schema_on_200.value.Element.properties.processors.Element.batch
+            batch.batch_size = AAZIntType(
+                serialized_name="batchSize",
+            )
+            batch.timeout = AAZIntType()
+
+            transform_language = cls._schema_on_200.value.Element.properties.processors.Element.transform_language
+            transform_language.transform_statement = AAZStrType(
+                serialized_name="transformStatement",
+                flags={"required": True},
+            )
+
+            receivers = cls._schema_on_200.value.Element.properties.receivers
+            receivers.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.receivers.Element
+            _element.name = AAZStrType(
+                flags={"required": True},
+            )
+            _element.otlp = AAZObjectType()
+            _element.syslog = AAZObjectType()
+            _element.tls_configuration = AAZStrType(
+                serialized_name="tlsConfiguration",
+            )
+            _element.type = AAZStrType(
+                flags={"required": True},
+            )
+
+            otlp = cls._schema_on_200.value.Element.properties.receivers.Element.otlp
+            otlp.endpoint = AAZStrType(
+                flags={"required": True},
+            )
+
+            syslog = cls._schema_on_200.value.Element.properties.receivers.Element.syslog
+            syslog.allow_skip_pri_header = AAZBoolType(
+                serialized_name="allowSkipPriHeader",
+            )
+            syslog.allowed_formats = AAZListType(
+                serialized_name="allowedFormats",
+            )
+            syslog.endpoint = AAZStrType(
+                flags={"required": True},
+            )
+            syslog.transport_protocol = AAZStrType(
+                serialized_name="transportProtocol",
+            )
+
+            allowed_formats = cls._schema_on_200.value.Element.properties.receivers.Element.syslog.allowed_formats
+            allowed_formats.Element = AAZStrType()
+
+            service = cls._schema_on_200.value.Element.properties.service
+            service.persistence = AAZObjectType()
+            service.pipelines = AAZListType(
+                flags={"required": True},
+            )
+
+            persistence = cls._schema_on_200.value.Element.properties.service.persistence
+            persistence.persistent_volume_name = AAZStrType(
+                serialized_name="persistentVolumeName",
+                flags={"required": True},
+            )
+
+            pipelines = cls._schema_on_200.value.Element.properties.service.pipelines
+            pipelines.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.service.pipelines.Element
+            _element.exporters = AAZListType(
+                flags={"required": True},
+            )
+            _element.name = AAZStrType(
+                flags={"required": True},
+            )
+            _element.processors = AAZListType()
+            _element.receivers = AAZListType(
+                flags={"required": True},
+            )
+            _element.type = AAZStrType(
+                flags={"required": True},
+            )
+
+            exporters = cls._schema_on_200.value.Element.properties.service.pipelines.Element.exporters
+            exporters.Element = AAZStrType()
+
+            processors = cls._schema_on_200.value.Element.properties.service.pipelines.Element.processors
+            processors.Element = AAZStrType()
+
+            receivers = cls._schema_on_200.value.Element.properties.service.pipelines.Element.receivers
+            receivers.Element = AAZStrType()
+
+            tls_configurations = cls._schema_on_200.value.Element.properties.tls_configurations
+            tls_configurations.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.tls_configurations.Element
+            _element.client_ca = AAZObjectType(
+                serialized_name="clientCa",
+            )
+            _ListHelper._build_schema_certificatesource_read(_element.client_ca)
+            _element.mode = AAZStrType()
+            _element.name = AAZStrType(
+                flags={"required": True},
+            )
+            _element.tls_certificate = AAZObjectType(
+                serialized_name="tlsCertificate",
+            )
+
+            tls_certificate = cls._schema_on_200.value.Element.properties.tls_configurations.Element.tls_certificate
+            tls_certificate.certificate = AAZObjectType(
+                flags={"required": True},
+            )
+            _ListHelper._build_schema_certificatesource_read(tls_certificate.certificate)
+            tls_certificate.private_key = AAZObjectType(
+                serialized_name="privateKey",
+                flags={"required": True},
+            )
+
+            private_key = cls._schema_on_200.value.Element.properties.tls_configurations.Element.tls_certificate.private_key
+            private_key.location = AAZStrType(
+                flags={"required": True},
+            )
+            private_key.sub_location = AAZStrType(
+                serialized_name="subLocation",
+                flags={"required": True},
+            )
+            private_key.type = AAZStrType(
+                flags={"required": True},
+            )
+
+            system_data = cls._schema_on_200.value.Element.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
+
+            tags = cls._schema_on_200.value.Element.tags
+            tags.Element = AAZStrType()
+
+            return cls._schema_on_200
 
     class PipelineGroupsListByResourceGroup(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
@@ -156,25 +575,26 @@ class List(AAZCommand):
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
 
-            cls._schema_on_200.value.Element.extended_location = AAZObjectType(
+            _element = cls._schema_on_200.value.Element
+            _element.extended_location = AAZObjectType(
                 serialized_name="extendedLocation",
             )
-            cls._schema_on_200.value.Element.id = AAZStrType(
+            _element.id = AAZStrType(
                 flags={"read_only": True},
             )
-            cls._schema_on_200.value.Element.location = AAZStrType(
+            _element.location = AAZStrType(
                 flags={"required": True},
             )
-            cls._schema_on_200.value.Element.name = AAZStrType(
+            _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            cls._schema_on_200.value.Element.properties = AAZObjectType()
-            cls._schema_on_200.value.Element.system_data = AAZObjectType(
+            _element.properties = AAZObjectType()
+            _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            cls._schema_on_200.value.Element.tags = AAZDictType()
-            cls._schema_on_200.value.Element.type = AAZStrType(
+            _element.tags = AAZDictType()
+            _element.type = AAZStrType(
                 flags={"read_only": True},
             )
 
@@ -316,11 +736,11 @@ class List(AAZCommand):
                 flags={"required": True},
             )
 
-            exporter_persistence = cls._schema_on_200.value.Element.properties.exporters.Element.azure_monitor_workspace_logs.persistence
-            exporter_persistence.max_storage_usage = AAZIntType(
+            persistence = cls._schema_on_200.value.Element.properties.exporters.Element.azure_monitor_workspace_logs.persistence
+            persistence.max_storage_usage = AAZIntType(
                 serialized_name="maxStorageUsage",
             )
-            exporter_persistence.retention_period = AAZIntType(
+            persistence.retention_period = AAZIntType(
                 serialized_name="retentionPeriod",
             )
 
@@ -435,6 +855,7 @@ class List(AAZCommand):
             _element.client_ca = AAZObjectType(
                 serialized_name="clientCa",
             )
+            _ListHelper._build_schema_certificatesource_read(_element.client_ca)
             _element.mode = AAZStrType()
             _element.name = AAZStrType(
                 flags={"required": True},
@@ -443,476 +864,13 @@ class List(AAZCommand):
                 serialized_name="tlsCertificate",
             )
 
-            client_ca = cls._schema_on_200.value.Element.properties.tls_configurations.Element.client_ca
-            client_ca.location = AAZStrType(
-                flags={"required": True},
-            )
-            client_ca.sub_location = AAZStrType(
-                serialized_name="subLocation",
-                flags={"required": True},
-            )
-            client_ca.type = AAZStrType(
-                flags={"required": True},
-            )
-
             tls_certificate = cls._schema_on_200.value.Element.properties.tls_configurations.Element.tls_certificate
             tls_certificate.certificate = AAZObjectType(
                 flags={"required": True},
             )
+            _ListHelper._build_schema_certificatesource_read(tls_certificate.certificate)
             tls_certificate.private_key = AAZObjectType(
                 serialized_name="privateKey",
-                flags={"required": True},
-            )
-
-            cert = cls._schema_on_200.value.Element.properties.tls_configurations.Element.tls_certificate.certificate
-            cert.location = AAZStrType(
-                flags={"required": True},
-            )
-            cert.sub_location = AAZStrType(
-                serialized_name="subLocation",
-                flags={"required": True},
-            )
-            cert.type = AAZStrType(
-                flags={"required": True},
-            )
-
-            private_key = cls._schema_on_200.value.Element.properties.tls_configurations.Element.tls_certificate.private_key
-            private_key.location = AAZStrType(
-                flags={"required": True},
-            )
-            private_key.sub_location = AAZStrType(
-                serialized_name="subLocation",
-                flags={"required": True},
-            )
-            private_key.type = AAZStrType(
-                flags={"required": True},
-            )
-
-            system_data = cls._schema_on_200.value.Element.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
-
-            tags = cls._schema_on_200.value.Element.tags
-            tags.Element = AAZStrType()
-
-            return cls._schema_on_200
-
-    class PipelineGroupsListBySubscription(AAZHttpOperation):
-        CLIENT_TYPE = "MgmtClient"
-
-        def __call__(self, *args, **kwargs):
-            request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200]:
-                return self.on_200(session)
-
-            return self.on_error(session.http_response)
-
-        @property
-        def url(self):
-            return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/Microsoft.Monitor/pipelineGroups",
-                **self.url_parameters
-            )
-
-        @property
-        def method(self):
-            return "GET"
-
-        @property
-        def error_format(self):
-            return "MgmtErrorFormat"
-
-        @property
-        def url_parameters(self):
-            parameters = {
-                **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def query_parameters(self):
-            parameters = {
-                **self.serialize_query_param(
-                    "api-version", "2026-04-01",
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
-            }
-            return parameters
-
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
-
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.next_link = AAZStrType(
-                serialized_name="nextLink",
-            )
-            _schema_on_200.value = AAZListType(
-                flags={"required": True},
-            )
-
-            value = cls._schema_on_200.value
-            value.Element = AAZObjectType()
-
-            cls._schema_on_200.value.Element.extended_location = AAZObjectType(
-                serialized_name="extendedLocation",
-            )
-            cls._schema_on_200.value.Element.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            cls._schema_on_200.value.Element.location = AAZStrType(
-                flags={"required": True},
-            )
-            cls._schema_on_200.value.Element.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            cls._schema_on_200.value.Element.properties = AAZObjectType()
-            cls._schema_on_200.value.Element.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            cls._schema_on_200.value.Element.tags = AAZDictType()
-            cls._schema_on_200.value.Element.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            extended_location = cls._schema_on_200.value.Element.extended_location
-            extended_location.name = AAZStrType(
-                flags={"required": True},
-            )
-            extended_location.type = AAZStrType(
-                flags={"required": True},
-            )
-
-            properties = cls._schema_on_200.value.Element.properties
-            properties.execution_placement = AAZObjectType(
-                serialized_name="executionPlacement",
-            )
-            properties.exporters = AAZListType(
-                flags={"required": True},
-            )
-            properties.processors = AAZListType(
-                flags={"required": True},
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-            properties.receivers = AAZListType(
-                flags={"required": True},
-            )
-            properties.replicas = AAZIntType()
-            properties.service = AAZObjectType(
-                flags={"required": True},
-            )
-            properties.tls_configurations = AAZListType(
-                serialized_name="tlsConfigurations",
-            )
-
-            execution_placement = cls._schema_on_200.value.Element.properties.execution_placement
-            execution_placement.constraints = AAZListType()
-            execution_placement.distribution = AAZObjectType()
-
-            constraints = cls._schema_on_200.value.Element.properties.execution_placement.constraints
-            constraints.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element.properties.execution_placement.constraints.Element
-            _element.capability = AAZStrType(
-                flags={"required": True},
-            )
-            _element.operator = AAZStrType(
-                flags={"required": True},
-            )
-            _element.values = AAZListType()
-
-            values = cls._schema_on_200.value.Element.properties.execution_placement.constraints.Element.values
-            values.Element = AAZStrType()
-
-            distribution = cls._schema_on_200.value.Element.properties.execution_placement.distribution
-            distribution.max_instances_per_host = AAZIntType(
-                serialized_name="maxInstancesPerHost",
-            )
-
-            exporters = cls._schema_on_200.value.Element.properties.exporters
-            exporters.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element.properties.exporters.Element
-            _element.azure_monitor_workspace_logs = AAZObjectType(
-                serialized_name="azureMonitorWorkspaceLogs",
-            )
-            _element.name = AAZStrType(
-                flags={"required": True},
-            )
-            _element.type = AAZStrType(
-                flags={"required": True},
-            )
-
-            azure_monitor_workspace_logs = cls._schema_on_200.value.Element.properties.exporters.Element.azure_monitor_workspace_logs
-            azure_monitor_workspace_logs.api = AAZObjectType(
-                flags={"required": True},
-            )
-            azure_monitor_workspace_logs.persistence = AAZObjectType()
-
-            api = cls._schema_on_200.value.Element.properties.exporters.Element.azure_monitor_workspace_logs.api
-            api.data_collection_endpoint_url = AAZStrType(
-                serialized_name="dataCollectionEndpointUrl",
-                flags={"required": True},
-            )
-            api.data_collection_rule = AAZStrType(
-                serialized_name="dataCollectionRule",
-                flags={"required": True},
-            )
-            api.schema = AAZObjectType(
-                flags={"required": True},
-            )
-            api.stream = AAZStrType(
-                flags={"required": True},
-            )
-
-            schema = cls._schema_on_200.value.Element.properties.exporters.Element.azure_monitor_workspace_logs.api.schema
-            schema.record_map = AAZListType(
-                serialized_name="recordMap",
-                flags={"required": True},
-            )
-            schema.resource_map = AAZListType(
-                serialized_name="resourceMap",
-            )
-            schema.scope_map = AAZListType(
-                serialized_name="scopeMap",
-            )
-
-            record_map = cls._schema_on_200.value.Element.properties.exporters.Element.azure_monitor_workspace_logs.api.schema.record_map
-            record_map.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element.properties.exporters.Element.azure_monitor_workspace_logs.api.schema.record_map.Element
-            _element["from"] = AAZStrType(
-                flags={"required": True},
-            )
-            _element.to = AAZStrType(
-                flags={"required": True},
-            )
-
-            resource_map = cls._schema_on_200.value.Element.properties.exporters.Element.azure_monitor_workspace_logs.api.schema.resource_map
-            resource_map.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element.properties.exporters.Element.azure_monitor_workspace_logs.api.schema.resource_map.Element
-            _element["from"] = AAZStrType(
-                flags={"required": True},
-            )
-            _element.to = AAZStrType(
-                flags={"required": True},
-            )
-
-            scope_map = cls._schema_on_200.value.Element.properties.exporters.Element.azure_monitor_workspace_logs.api.schema.scope_map
-            scope_map.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element.properties.exporters.Element.azure_monitor_workspace_logs.api.schema.scope_map.Element
-            _element["from"] = AAZStrType(
-                flags={"required": True},
-            )
-            _element.to = AAZStrType(
-                flags={"required": True},
-            )
-
-            exporter_persistence = cls._schema_on_200.value.Element.properties.exporters.Element.azure_monitor_workspace_logs.persistence
-            exporter_persistence.max_storage_usage = AAZIntType(
-                serialized_name="maxStorageUsage",
-            )
-            exporter_persistence.retention_period = AAZIntType(
-                serialized_name="retentionPeriod",
-            )
-
-            processors = cls._schema_on_200.value.Element.properties.processors
-            processors.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element.properties.processors.Element
-            _element.batch = AAZObjectType()
-            _element.name = AAZStrType(
-                flags={"required": True},
-            )
-            _element.transform_language = AAZObjectType(
-                serialized_name="transformLanguage",
-            )
-            _element.type = AAZStrType(
-                flags={"required": True},
-            )
-
-            batch = cls._schema_on_200.value.Element.properties.processors.Element.batch
-            batch.batch_size = AAZIntType(
-                serialized_name="batchSize",
-            )
-            batch.timeout = AAZIntType()
-
-            transform_language = cls._schema_on_200.value.Element.properties.processors.Element.transform_language
-            transform_language.transform_statement = AAZStrType(
-                serialized_name="transformStatement",
-                flags={"required": True},
-            )
-
-            receivers = cls._schema_on_200.value.Element.properties.receivers
-            receivers.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element.properties.receivers.Element
-            _element.name = AAZStrType(
-                flags={"required": True},
-            )
-            _element.otlp = AAZObjectType()
-            _element.syslog = AAZObjectType()
-            _element.tls_configuration = AAZStrType(
-                serialized_name="tlsConfiguration",
-            )
-            _element.type = AAZStrType(
-                flags={"required": True},
-            )
-
-            otlp = cls._schema_on_200.value.Element.properties.receivers.Element.otlp
-            otlp.endpoint = AAZStrType(
-                flags={"required": True},
-            )
-
-            syslog = cls._schema_on_200.value.Element.properties.receivers.Element.syslog
-            syslog.allow_skip_pri_header = AAZBoolType(
-                serialized_name="allowSkipPriHeader",
-            )
-            syslog.allowed_formats = AAZListType(
-                serialized_name="allowedFormats",
-            )
-            syslog.endpoint = AAZStrType(
-                flags={"required": True},
-            )
-            syslog.transport_protocol = AAZStrType(
-                serialized_name="transportProtocol",
-            )
-
-            allowed_formats = cls._schema_on_200.value.Element.properties.receivers.Element.syslog.allowed_formats
-            allowed_formats.Element = AAZStrType()
-
-            service = cls._schema_on_200.value.Element.properties.service
-            service.persistence = AAZObjectType()
-            service.pipelines = AAZListType(
-                flags={"required": True},
-            )
-
-            persistence = cls._schema_on_200.value.Element.properties.service.persistence
-            persistence.persistent_volume_name = AAZStrType(
-                serialized_name="persistentVolumeName",
-                flags={"required": True},
-            )
-
-            pipelines = cls._schema_on_200.value.Element.properties.service.pipelines
-            pipelines.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element.properties.service.pipelines.Element
-            _element.exporters = AAZListType(
-                flags={"required": True},
-            )
-            _element.name = AAZStrType(
-                flags={"required": True},
-            )
-            _element.processors = AAZListType()
-            _element.receivers = AAZListType(
-                flags={"required": True},
-            )
-            _element.type = AAZStrType(
-                flags={"required": True},
-            )
-
-            exporters = cls._schema_on_200.value.Element.properties.service.pipelines.Element.exporters
-            exporters.Element = AAZStrType()
-
-            processors = cls._schema_on_200.value.Element.properties.service.pipelines.Element.processors
-            processors.Element = AAZStrType()
-
-            receivers = cls._schema_on_200.value.Element.properties.service.pipelines.Element.receivers
-            receivers.Element = AAZStrType()
-
-            tls_configurations = cls._schema_on_200.value.Element.properties.tls_configurations
-            tls_configurations.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element.properties.tls_configurations.Element
-            _element.client_ca = AAZObjectType(
-                serialized_name="clientCa",
-            )
-            _element.mode = AAZStrType()
-            _element.name = AAZStrType(
-                flags={"required": True},
-            )
-            _element.tls_certificate = AAZObjectType(
-                serialized_name="tlsCertificate",
-            )
-
-            client_ca = cls._schema_on_200.value.Element.properties.tls_configurations.Element.client_ca
-            client_ca.location = AAZStrType(
-                flags={"required": True},
-            )
-            client_ca.sub_location = AAZStrType(
-                serialized_name="subLocation",
-                flags={"required": True},
-            )
-            client_ca.type = AAZStrType(
-                flags={"required": True},
-            )
-
-            tls_certificate = cls._schema_on_200.value.Element.properties.tls_configurations.Element.tls_certificate
-            tls_certificate.certificate = AAZObjectType(
-                flags={"required": True},
-            )
-            tls_certificate.private_key = AAZObjectType(
-                serialized_name="privateKey",
-                flags={"required": True},
-            )
-
-            cert = cls._schema_on_200.value.Element.properties.tls_configurations.Element.tls_certificate.certificate
-            cert.location = AAZStrType(
-                flags={"required": True},
-            )
-            cert.sub_location = AAZStrType(
-                serialized_name="subLocation",
-                flags={"required": True},
-            )
-            cert.type = AAZStrType(
                 flags={"required": True},
             )
 
@@ -956,6 +914,34 @@ class List(AAZCommand):
 
 class _ListHelper:
     """Helper class for List"""
+
+    _schema_certificatesource_read = None
+
+    @classmethod
+    def _build_schema_certificatesource_read(cls, _schema):
+        if cls._schema_certificatesource_read is not None:
+            _schema.location = cls._schema_certificatesource_read.location
+            _schema.sub_location = cls._schema_certificatesource_read.sub_location
+            _schema.type = cls._schema_certificatesource_read.type
+            return
+
+        cls._schema_certificatesource_read = _schema_certificatesource_read = AAZObjectType()
+
+        certificatesource_read = _schema_certificatesource_read
+        certificatesource_read.location = AAZStrType(
+            flags={"required": True},
+        )
+        certificatesource_read.sub_location = AAZStrType(
+            serialized_name="subLocation",
+            flags={"required": True},
+        )
+        certificatesource_read.type = AAZStrType(
+            flags={"required": True},
+        )
+
+        _schema.location = cls._schema_certificatesource_read.location
+        _schema.sub_location = cls._schema_certificatesource_read.sub_location
+        _schema.type = cls._schema_certificatesource_read.type
 
 
 __all__ = ["List"]
