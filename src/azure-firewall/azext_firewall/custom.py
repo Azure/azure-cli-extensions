@@ -900,6 +900,7 @@ class AzureFirewallPoliciesCreate(_AzureFirewallPoliciesCreate):
                          "Microsoft.ManagedIdentity/userAssignedIdentities/{}",
             )
         )
+        
         args_schema.identities = AAZListArg(
             options=['--identities'],
             help="Space-separated list of ManagedIdentity Resource IDs."
@@ -919,12 +920,13 @@ class AzureFirewallPoliciesCreate(_AzureFirewallPoliciesCreate):
 
     def pre_operations(self):
         args = self.ctx.args
-        if has_value(args.identity):
+        if (has_value(args.identity) or has_value(args.identities)):
             args.identity_type = "UserAssigned"
-            args.user_assigned_identities = {args.identity.to_serialized_data(): {}}
-        elif has_value(args.identities):
-            identities = [id.to_serialized_data() for id in args.identities]
-            args.identity_type = "UserAssigned"
+            identities = []
+            if(has_value(args.identity)):
+                identities.append(args.identity.to_serialized_data())
+            if(has_value(args.identities)):
+                identities.extend([id.to_serialized_data() for id in args.identities])
             args.user_assigned_identities = {id: {} for id in identities}
 
         if has_value(args.dns_servers):
@@ -961,12 +963,14 @@ class AzureFirewallPoliciesUpdate(_AzureFirewallPoliciesUpdate):
 
     def pre_operations(self):
         args = self.ctx.args     
-        if has_value(args.identity):
+
+        if (has_value(args.identity) or has_value(args.identities)):
             args.identity_type = "UserAssigned"
-            args.user_assigned_identities = {args.identity.to_serialized_data(): {}}
-        elif has_value(args.identities):
-            identities = [id.to_serialized_data() for id in args.identities]
-            args.identity_type = "UserAssigned"
+            identities = []
+            if(has_value(args.identity)):
+                identities.append(args.identity.to_serialized_data())
+            if(has_value(args.identities)):
+                identities.extend([id.to_serialized_data() for id in args.identities])
             args.user_assigned_identities = {id: {} for id in identities}
         elif has_value(args.identity_type) and args.identity_type.to_serialized_data() == "None":
             args.identity_type = "None"
@@ -974,7 +978,6 @@ class AzureFirewallPoliciesUpdate(_AzureFirewallPoliciesUpdate):
         elif args.sku == 'Premium':
             args.identity_type = "None"
             args.user_assigned_identities = None
-
 
 class AzureFirewallPolicyIntrusionDetectionAdd(_AzureFirewallPoliciesUpdate):
     """

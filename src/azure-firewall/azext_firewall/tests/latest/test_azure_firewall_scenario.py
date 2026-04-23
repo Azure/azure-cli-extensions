@@ -16,14 +16,8 @@ class AzureFirewallScenario(ScenarioTest):
         super(AzureFirewallScenario, self).__init__(
             method_name
         )
-        try:
-            self.cmd('extension add -n ip-group')
-        except AssertionError:
-            pass
-        try:
-            self.cmd('extension add -n virtual-wan')
-        except AssertionError:
-            pass
+        self.cmd('extension add -n ip-group')
+        self.cmd('extension add -n virtual-wan')
 
     @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall')
     def test_azure_firewall(self, resource_group):
