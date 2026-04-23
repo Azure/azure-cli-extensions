@@ -17,13 +17,13 @@ examples:
   - name: Create a file share with NFS protocol
     text: |
       az fileshare create --name MyFileShare --resource-group MyRG --location eastus \
-        --provisioned-storage-GiB 1024 --provisioned-iops 3000 \
-        --provisioned-throughput-MiB 125 --protocol NFS --redundancy Local
+        --storage-gib 1024 --provisioned-io-per-sec 3000 \
+        --throughput-mibps 125 --protocol NFS --redundancy Local
   - name: Create a file share with root squash and subnet access
     text: |
       az fileshare create --name MyFileShare --resource-group MyRG --location eastus \
-        --provisioned-storage-GiB 1024 --provisioned-iops 3000 \
-        --provisioned-throughput-MiB 125 --protocol NFS --redundancy Local \
+        --storage-gib 1024 --provisioned-io-per-sec 3000 \
+        --throughput-mibps 125 --protocol NFS --redundancy Local \
         --root-squash RootSquash --public-network-access Enabled \
         --allowed-subnets /subscriptions/sub-id/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/vnet/subnets/subnet1
 """
@@ -35,7 +35,7 @@ examples:
   - name: Update the provisioned storage of a file share
     text: |
       az fileshare update --name MyFileShare --resource-group MyRG \
-        --provisioned-storage-GiB 2048
+        --storage-gib 2048
   - name: Update root squash setting
     text: |
       az fileshare update --name MyFileShare --resource-group MyRG \
@@ -58,7 +58,7 @@ examples:
   - name: Get provisioning recommendations for a file share
     text: |
       az fileshare get-provisioning-recommendation --location eastus \
-        --provisioned-storage-GiB 1024
+        --storage-gib 1024
 """
 
 helps['fileshare snapshot create'] = """
