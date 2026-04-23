@@ -1,6 +1,6 @@
 Release History
 ===============
-2.1.0
+2.0.8
 -----
 * Add Entra ID SSH Login support for all clouds
 
