@@ -890,7 +890,7 @@ class ThreatIntelAllowListDelete(_AzureFirewallUpdate):
 class AzureFirewallPoliciesCreate(_AzureFirewallPoliciesCreate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZListArg, AAZResourceIdArg, AAZResourceIdArgFormat, AAZStrArg
+        from azure.cli.core.aaz import AAZListArg, AAZResourceIdArg, AAZResourceIdArgFormat
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.identity = AAZResourceIdArg(
             options=['--identity'],
@@ -936,7 +936,7 @@ class AzureFirewallPoliciesCreate(_AzureFirewallPoliciesCreate):
 class AzureFirewallPoliciesUpdate(_AzureFirewallPoliciesUpdate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZResourceIdArg, AAZResourceIdArgFormat, AAZListArg, AAZStrArg
+        from azure.cli.core.aaz import AAZResourceIdArg, AAZResourceIdArgFormat, AAZListArg
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.identity = AAZResourceIdArg(
             options=['--identity'],
