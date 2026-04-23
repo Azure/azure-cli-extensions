@@ -1,0 +1,53 @@
+# This Yaml Document has been converted by ESAI Yaml Pipeline Conversion Tool.
+# Please make sure to check all the converted content, it is your team's responsibility to make sure that the pipeline is still valid and functions as expected.
+# This pipeline will be extended to the OneBranch template
+trigger:
+  batch: true
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - projects/azure-cli-extension/*
+variables:
+- name: Build.SourcesCliDirectory
+  value: '$(Build.SourcesDirectory)/projects/azure-cli-extension'
+- name: PIPELINE_BUILD_NUMBER
+  value: $(Build.BuildNumber)
+- name: SOURCE_BRANCH
+  value: $(Build.SourceBranch)
+- name: LinuxContainerImage
+  value: onebranch.azurecr.io/linux/ubuntu-2204:latest
+- name: WindowsContainerImage
+  value: onebranch.azurecr.io/windows/ltsc2019/vse2022:latest
+resources:
+  repositories:
+  - repository: onebranchTemplates
+    type: git
+    name: OneBranch.Pipelines/GovernedTemplates
+    ref: refs/heads/main
+extends:
+  template: v2/OneBranch.Official.CrossPlat.yml@onebranchTemplates
+  parameters:
+    customTags: 'ES365AIMigrationTooling-BulkMigrated'
+    globalSdl: # https://aka.ms/obpipelines/sdl
+      asyncSdl: # https://aka.ms/obpipelines/asyncsdl
+        enabled: false #
+      tsa:
+        enabled: false # onebranch publish all sdl results to TSA. If TSA is disabled all SDL tools will forced into 'break' build mode.
+      credscan:
+        suppressionsFile: $(Build.SourcesDirectory)\.config\CredScanSuppressions.json
+      binskim:
+        break: true # always break the build on binskim issues in addition to TSA upload
+      policheck:
+        break: true # always break the build on policheck issues. You can disable it by setting to 'false'
+      codeql:
+        compiled:
+          enabled: false
+      # suppression:
+      #   suppressionFile: $(Build.SourcesDirectory)\.gdn\global.gdnsuppress
+    stages:
+    - template: /projects/azure-cli-extension/scripts/ci/pipeline-templates/build.yaml@self
+    - template: /projects/azure-cli-extension/scripts/ci/pipeline-templates/coverage.yaml@self
+    - template: /projects/azure-cli-extension/scripts/ci/pipeline-templates/lint-and-style.yaml@self
+    - template: /projects/azure-cli-extension/scripts/ci/pipeline-templates/test.yaml@self

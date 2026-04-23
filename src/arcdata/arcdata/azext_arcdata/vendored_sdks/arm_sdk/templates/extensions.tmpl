@@ -1,0 +1,39 @@
+{
+  "identity": {
+    "type": "SystemAssigned"
+  },
+  "scope": "[parameters('parentResource')]",
+  "properties": {
+    "extensionType": "microsoft.arcdataservices",
+    "autoUpgradeMinorVersion": false,
+    "releaseTrain": "[parameters('releaseTrain')]",
+    "version": "[parameters('version')]",
+    "scope": {
+      "cluster": {
+        "releaseNamespace": "[parameters('namespace')]"
+      }
+    },
+    "configurationSettings": {
+      {%- if is_least_privilege %}
+      "service-account-extension-install": "[concat('system:serviceaccount:', parameters('namespace'), ':sa-arc-webhook-job')]",
+      "service-account-extension-runtime": "[concat('system:serviceaccount:', parameters('namespace'), ':sa-arc-bootstrapper')]",
+      {% endif %}
+      "imageCredentials.username": "[parameters('imageUsername')]",
+      "imageCredentials.registry": "[parameters('imageRegistry')]",
+      "systemDefaultValues.image": "[parameters('imageVersion')]",
+      "systemDefaultValues.imagePullPolicy": "[parameters('imagePullPolicy')]"
+    },
+    "configurationProtectedSettings": {
+      "imageCredentials.password": "[parameters('imagePassword')]"
+    }
+  },
+  "apiVersion": "[parameters('apiVersion')]",
+  "type": "Microsoft.KubernetesConfiguration/extensions",
+  "name": "[parameters('resourceName')]"
+  {%- if resource.dependsOn %}
+  ,
+  "dependsOn": [
+    "[parameters('{{resource.dependsOn}}')]"
+  ]
+  {% endif %}
+}

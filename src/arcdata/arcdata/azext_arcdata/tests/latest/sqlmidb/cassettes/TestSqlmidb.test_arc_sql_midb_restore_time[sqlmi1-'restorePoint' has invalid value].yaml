@@ -1,0 +1,43 @@
+interactions:
+- request:
+    body: '{"apiVersion": "tasks.sql.arcdata.microsoft.com/v1", "kind": "SqlManagedInstanceRestoreTask",
+      "spec": {"source": {"name": "sqlmi1", "database": "test_database"}, "destination":
+      {"name": "sqlmi1", "database": "dest_database"}, "restorePoint": "Fri Jul 29
+      18:45:20 2022"}, "metadata": {"name": "sql-restore-1659145520.78179", "namespace":
+      "test"}}'
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - OpenAPI-Generator/23.3.0/python
+    method: POST
+    uri: https://mock-host/apis/tasks.sql.arcdata.microsoft.com/v1/namespaces/test/sqlmanagedinstancerestoretasks
+  response:
+    body:
+      string: '{"kind":"Status","apiVersion":"v1","metadata":{},"status":"Failure","message":"admission
+        webhook \"arc-webhook-svc.test.svc\" denied the request: \nField ''restorePoint''
+        has invalid value ''Fri Jul 29 18:45:20 2022'' as value should be a date time
+        in ISO 8601 formats.","details":{"causes":[{"message":"Field ''restorePoint''
+        has invalid value ''Fri Jul 29 18:45:20 2022'' as value should be a date time
+        in ISO 8601 formats.","field":"restorePoint"}]},"code":403}
+
+        '
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Length:
+      - '457'
+      Content-Type:
+      - application/json
+      Date:
+      - Sat, 30 Jul 2022 01:45:20 GMT
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 50b7cd71-3074-4f60-b8c1-d9f7e26aafb7
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - 0a5a0dbc-a4af-4dfd-8e48-3d4d403457c3
+    status:
+      code: 403
+      message: Forbidden
+version: 1

@@ -1,0 +1,15 @@
+{
+    "$schema": "http://schema.express.azure.com/schemas/2015-01-01-alpha/ScopeBindings.json",
+    "contentVersion": "1.0.0.0",
+    "scopeBindings": [
+      {
+        "scopeTagName": "BuildInfo",
+        "bindings": [
+          {
+            "find": "__BuildNumber__",
+            "replaceWith": "$buildVersion()"
+          }
+        ]
+      }
+    ]
+  }

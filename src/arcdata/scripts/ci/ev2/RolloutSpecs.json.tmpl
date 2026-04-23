@@ -1,0 +1,31 @@
+{
+    "${DOLLAR}schema":"http://schema.express.azure.com/schemas/2015-01-01-alpha/RolloutSpec.json",
+    "contentVersion":"1.0.0.0",
+    "rolloutMetadata":{
+        "serviceModelPath":"ServiceModels.json",
+        "name":"azure-cli-extension",
+        "scopeBindingsPath":"ScopeBindings.json",
+        "rolloutType":"Major",
+        "rolloutPolicyReferences":[
+            {
+                "name": "ShellAndAppServiceAutoRestart",
+                "version": "*"
+            }
+        ],
+        "buildSource":{
+            "parameters":{
+                "versionFile":"buildver.txt"
+            }
+        }
+    },
+    "orchestratedSteps":[
+        {
+            "name":"AzPush",
+            "targetType":"ServiceResource",
+            "targetName":"AzPush",
+            "actions":[
+                "Shell/AzPush"
+            ]
+        }
+    ]
+}

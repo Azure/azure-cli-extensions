@@ -1,0 +1,28 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ model.roleName }}
+  namespace: {{ model.namespace }}
+rules:
+- apiGroups: [""]
+  resources: ["pods/log"]
+  verbs: ["get"]
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get", "delete"]
+- apiGroups: [""]
+  resources: ["serviceaccounts"]
+  resourceNames: ["sa-arc-webhook-job", "sa-arc-bootstrapper"]
+  verbs: ["delete"]
+- apiGroups: ["apps"]
+  resources: ["deployments"]
+  verbs: ["delete"]
+- apiGroups: ["rbac.authorization.k8s.io"]
+  resources: ["roles", "rolebindings"]
+  verbs: ["delete"]
+- apiGroups: ["batch"]
+  resources: ["jobs"]
+  verbs: ["create", "get", "list", "delete"]
+- apiGroups: ["arcdata.microsoft.com"]
+  resources: ["datacontrollers"]
+  verbs: ["create", "update", "patch", "delete"]
