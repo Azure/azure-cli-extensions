@@ -14515,6 +14515,51 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         with self.assertRaises(UnknownError):
             dec_3.update_agentpool_profile(mc_3)
 
+    def test_update_agentpool_profile_with_none_agent_pool_profiles_automatic_sku(self):
+        """Test update_agentpool_profile passes through for automatic SKU cluster with no agent pools when not converting to base"""
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        # Create an automatic SKU cluster with None agent_pool_profiles and no hosted system profile
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            agent_pool_profiles=None,
+            hosted_system_profile=None,
+            sku=self.models.ManagedClusterSKU(name="Automatic", tier="Standard"),
+        )
+        dec.context.attach_mc(mc)
+
+        # Should return the MC unchanged (no --sku base requested)
+        result = dec.update_agentpool_profile(mc)
+        self.assertEqual(result, mc)
+        self.assertIsNone(result.agent_pool_profiles)
+
+    def test_update_agentpool_profile_automatic_to_base_no_agent_pools(self):
+        """Test update_agentpool_profile raises RequiredArgumentMissingError when converting automatic to base with no agent pools"""
+        dec = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"sku": "base"},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        # Create an automatic SKU cluster with None agent_pool_profiles
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            agent_pool_profiles=None,
+            hosted_system_profile=None,
+            sku=self.models.ManagedClusterSKU(name="Automatic", tier="Standard"),
+        )
+        dec.context.attach_mc(mc)
+
+        # Should raise RequiredArgumentMissingError asking user to add a system node pool first
+        with self.assertRaises(RequiredArgumentMissingError):
+            dec.update_agentpool_profile(mc)
+
     def test_update_agentpool_profile_with_empty_agent_pool_profiles(self):
         """Test update_agentpool_profile raises UnknownError for empty agent_pool_profiles list"""
         # Test case 4: Empty agent_pool_profiles list (should raise UnknownError)

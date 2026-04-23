@@ -5692,12 +5692,23 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         self._ensure_mc(mc)
 
         # Preview-specific change: an AKS ManagedCluster of automatic
-        # cluster with hosted system components may not have agent pools
-        # When transitioning from hosted to non-hosted automatic clusters,
-        # customers must first add a system node pool before disabling
-        # the hosted system profile.
+        # cluster with hosted system components may not have agent pools.
+        # When converting from automatic to base SKU, customers must first
+        # add a system node pool before changing the SKU.
         if not mc.agent_pool_profiles:
             if mc.hosted_system_profile and mc.hosted_system_profile.enabled:
+                return mc
+            if mc.sku and mc.sku.name and mc.sku.name.lower() == "automatic":
+                # Check if the user is explicitly requesting a conversion to base SKU
+                requested_sku = self.context.raw_param.get("sku")
+                if requested_sku is not None and requested_sku.lower() == CONST_MANAGED_CLUSTER_SKU_NAME_BASE:
+                    raise RequiredArgumentMissingError(
+                        "The cluster does not have any agent pool profiles. "
+                        "Please add a system node pool to the cluster before converting to base SKU. "
+                        "You can add a system node pool by running "
+                        "'az aks nodepool add --cluster-name <cluster-name> -g <resource-group> "
+                        "-n <nodepool-name> --mode System'."
+                    )
                 return mc
             raise UnknownError(
                 "Encounter an unexpected error while getting agent pool profiles from the cluster in the process of "
