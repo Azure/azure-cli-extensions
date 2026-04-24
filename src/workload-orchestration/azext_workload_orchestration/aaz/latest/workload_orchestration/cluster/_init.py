@@ -91,7 +91,7 @@ class Init(AAZCommand):
         )
         _args_schema.custom_location_name = AAZStrArg(
             options=["--custom-location-name"],
-            help="Name for the custom location. Default: <cluster-name>-cl.",
+            help="Name for the custom location. Default: `{cluster-name}-cl`.",
         )
         _args_schema.extension_dependency_version = AAZDictArg(
             options=["--extension-dependency-version"],
