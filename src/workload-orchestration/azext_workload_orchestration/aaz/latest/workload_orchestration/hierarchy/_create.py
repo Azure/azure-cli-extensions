@@ -26,11 +26,11 @@ class Create(AAZCommand):
     (nested, up to 3 levels) hierarchy types.
 
     :example: Create RG hierarchy from YAML file
-        az workload-orchestration hierarchy create -g my-rg -l eastus2euap --hierarchy-spec @hierarchy.yaml
+        az workload-orchestration hierarchy create -g my-rg -l eastus2euap --hierarchy-spec hierarchy.yaml
     :example: Create RG hierarchy with inline shorthand
         az workload-orchestration hierarchy create -g my-rg -l eastus2euap --hierarchy-spec "{name:Mehoopany,level:factory}"
     :example: Create ServiceGroup hierarchy from JSON file
-        az workload-orchestration hierarchy create -g my-rg -l eastus2euap --hierarchy-spec @sg-hierarchy.json
+        az workload-orchestration hierarchy create -g my-rg -l eastus2euap --hierarchy-spec sg-hierarchy.json
     :example: Create ServiceGroup hierarchy with inline shorthand (children as array)
         az workload-orchestration hierarchy create -g my-rg -l eastus2euap --hierarchy-spec "{type:ServiceGroup,name:India,level:country,children:[{name:Karnataka,level:region,children:[{name:BangaloreSouth,level:factory}]}]}"
     """
@@ -62,9 +62,8 @@ class Create(AAZCommand):
             options=["--hierarchy-spec"],
             required=True,
             help=(
-                "Hierarchy spec. Supports shorthand-syntax, JSON-file and "
-                "YAML-file. Try \"??\" to show more. Required keys: name, "
-                "level. Optional: type (ResourceGroup|ServiceGroup, default "
+                "Hierarchy spec. Required keys: name, level. "
+                "Optional: type (ResourceGroup|ServiceGroup, default "
                 "ResourceGroup), children (list of child specs, ServiceGroup "
                 "only, up to 3 levels deep)."
             ),

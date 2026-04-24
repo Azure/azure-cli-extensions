@@ -61,6 +61,8 @@ def target_init(
     extension_version=None,
     extension_name=None,
     custom_location_name=None,
+    custom_location_resource_group=None,
+    custom_location_location=None,
     extension_dependency_version=None,
 ):
     """Prepare an Arc-connected cluster for Workload Orchestration."""
@@ -74,6 +76,8 @@ def target_init(
         location=location,
         extension_name=extension_name,
         custom_location_name=custom_location_name,
+        custom_location_resource_group=custom_location_resource_group,
+        custom_location_location=custom_location_location,
         extension_version=extension_version,
         release_train=release_train,
         cert_manager_version=iot_platform_version,

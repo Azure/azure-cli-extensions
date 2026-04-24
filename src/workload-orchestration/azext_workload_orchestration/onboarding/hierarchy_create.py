@@ -12,7 +12,7 @@ Supports two hierarchy types:
 For ResourceGroup:
     az workload-orchestration hierarchy create \\
         --resource-group rg --configuration-location eastus2euap \\
-        --hierarchy-spec "@hierarchy.yaml"
+        --hierarchy-spec hierarchy.yaml
 
     hierarchy.yaml:
         name: Mehoopany
@@ -21,7 +21,7 @@ For ResourceGroup:
 For ServiceGroup:
     az workload-orchestration hierarchy create \\
         --configuration-location eastus2euap \\
-        --hierarchy-spec "@hierarchy.yaml"
+        --hierarchy-spec hierarchy.yaml
 
     hierarchy.yaml:
         type: ServiceGroup

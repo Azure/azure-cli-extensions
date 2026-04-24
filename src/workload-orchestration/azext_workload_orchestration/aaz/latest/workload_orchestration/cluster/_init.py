@@ -31,9 +31,6 @@ class Init(AAZCommand):
       3. Install WO extension (if not present)
       4. Create custom location (if not present)
 
-    After running this command, use the output custom location ID with
-    'az workload-orchestration target create --extended-location'.
-
     :example: Initialize a cluster with defaults
         az workload-orchestration cluster init -c my-cluster -g my-rg -l eastus2euap
     :example: Use a specific release train
@@ -45,9 +42,13 @@ class Init(AAZCommand):
     :example: Pin a dependency extension (full-value shorthand)
         az workload-orchestration cluster init -c my-cluster -g my-rg -l eastus2euap --extension-dependency-version "{iotplatform:0.7.6}"
     :example: Pin dependencies from a JSON file
-        az workload-orchestration cluster init -c my-cluster -g my-rg -l eastus2euap --extension-dependency-version @deps.json
+        az workload-orchestration cluster init -c my-cluster -g my-rg -l eastus2euap --extension-dependency-version deps.json
     :example: Custom location name
         az workload-orchestration cluster init -c my-cluster -g my-rg -l eastus2euap --custom-location-name my-cl
+    :example: Custom location in a different resource group
+        az workload-orchestration cluster init -c my-cluster -g cluster-rg -l eastus2euap --custom-location-resource-group cl-rg
+    :example: Custom location in a different region
+        az workload-orchestration cluster init -c my-cluster -g my-rg -l eastus2euap --custom-location-location westus2
     """
 
     _aaz_info = {
@@ -93,13 +94,26 @@ class Init(AAZCommand):
             options=["--custom-location-name"],
             help="Name for the custom location. Default: `{cluster-name}-cl`.",
         )
+        _args_schema.custom_location_resource_group = AAZStrArg(
+            options=["--custom-location-resource-group"],
+            help=(
+                "Resource group where the custom location will be created. "
+                "Default: same as --resource-group."
+            ),
+        )
+        _args_schema.custom_location_location = AAZStrArg(
+            options=["--custom-location-location"],
+            help=(
+                "Azure region where the custom location will be created. "
+                "Default: same as --location."
+            ),
+        )
         _args_schema.extension_dependency_version = AAZDictArg(
             options=["--extension-dependency-version"],
             help=(
-                "Pin dependency extension versions. Supports shorthand-syntax, "
-                "JSON-file and YAML-file. Try \"??\" to show more. "
+                "Pin dependency extension versions. "
                 "Supported key: iotplatform. "
-                "Example: iotplatform=0.7.6, {iotplatform:0.7.6}, @deps.json."
+                "Example: iotplatform=0.7.6, {iotplatform:0.7.6}, deps.json."
             ),
         )
         _args_schema.extension_dependency_version.Element = AAZStrArg()
@@ -120,6 +134,14 @@ class Init(AAZCommand):
             extension_version=args.extension_version.to_serialized_data() if args.extension_version._data is not None else None,
             extension_name=args.extension_name.to_serialized_data() if args.extension_name._data is not None else None,
             custom_location_name=args.custom_location_name.to_serialized_data() if args.custom_location_name._data is not None else None,
+            custom_location_resource_group=(
+                args.custom_location_resource_group.to_serialized_data()
+                if args.custom_location_resource_group._data is not None else None
+            ),
+            custom_location_location=(
+                args.custom_location_location.to_serialized_data()
+                if args.custom_location_location._data is not None else None
+            ),
             extension_dependency_version=(
                 args.extension_dependency_version.to_serialized_data()
                 if args.extension_dependency_version._data is not None else None

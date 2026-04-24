@@ -62,7 +62,7 @@ Test-Az 'help: cluster init shows --extension-dependency-version' @('workload-or
 Test-Az 'help: cluster init shows shorthand example' @('workload-orchestration','cluster','init','--help') $false 'iotplatform:0.7.6'
 Test-Az 'help: cluster init no old cert-manager-version' @('workload-orchestration','cluster','init','--help') $false $null 'cert-manager-version'
 Test-Az 'help: hierarchy create shows inline shorthand' @('workload-orchestration','hierarchy','create','--help') $false 'name:Mehoopany'
-Test-Az 'help: hierarchy create shows @file' @('workload-orchestration','hierarchy','create','--help') $false '@hierarchy.yaml'
+Test-Az 'help: hierarchy create shows file example' @('workload-orchestration','hierarchy','create','--help') $false 'hierarchy.yaml'
 
 # =================================================================
 # SECTION 2: Flag removal
@@ -87,11 +87,11 @@ Test-Az 'ext-dep: bare token (no =) rejected' @('workload-orchestration','cluste
 # File input
 $df = Join-Path $env:TEMP 'deps-valid.json'
 '{"iotplatform":"1.6.1"}' | Set-Content -Path $df -Encoding utf8
-Test-Az 'ext-dep: @file.json parses (past parser)' @('workload-orchestration','cluster','init','-c',$NX,'-g',$NXRG,'-l','eastus2euap','--extension-dependency-version',"@$df") $true $null 'Unknown dependency key'
+Test-Az 'ext-dep: file.json parses (past parser)' @('workload-orchestration','cluster','init','-c',$NX,'-g',$NXRG,'-l','eastus2euap','--extension-dependency-version',$df) $true $null 'Unknown dependency key'
 $dfBad = Join-Path $env:TEMP 'deps-bad.json'
 '{"notarealkey":"1.6.1"}' | Set-Content -Path $dfBad -Encoding utf8
-Test-Az 'ext-dep: @file.json unknown key rejected' @('workload-orchestration','cluster','init','-c',$NX,'-g',$NXRG,'-l','eastus2euap','--extension-dependency-version',"@$dfBad") $true
-Test-Az 'ext-dep: @missing file rejected' @('workload-orchestration','cluster','init','-c',$NX,'-g',$NXRG,'-l','eastus2euap','--extension-dependency-version','@C:\no-such-deps-xyz.json') $true
+Test-Az 'ext-dep: file.json unknown key rejected' @('workload-orchestration','cluster','init','-c',$NX,'-g',$NXRG,'-l','eastus2euap','--extension-dependency-version',$dfBad) $true
+Test-Az 'ext-dep: missing file rejected' @('workload-orchestration','cluster','init','-c',$NX,'-g',$NXRG,'-l','eastus2euap','--extension-dependency-version','C:\no-such-deps-xyz.json') $true
 Remove-Item $df, $dfBad -ErrorAction SilentlyContinue
 
 # =================================================================
@@ -104,7 +104,7 @@ Test-Az 'hierarchy: inline missing name rejected' @('workload-orchestration','hi
 Test-Az 'hierarchy: inline missing level rejected' @('workload-orchestration','hierarchy','create','-g',$NXRG,'--configuration-location','eastus2euap','--hierarchy-spec','{name:FactoryZ}') $true "must include 'level'"
 Test-Az 'hierarchy: invalid name rejected' @('workload-orchestration','hierarchy','create','-g',$NXRG,'--configuration-location','eastus2euap','--hierarchy-spec','{name:-bad-,level:factory}') $true
 Test-Az 'hierarchy: scalar rejected' @('workload-orchestration','hierarchy','create','-g',$NXRG,'--configuration-location','eastus2euap','--hierarchy-spec','justastring') $true
-Test-Az 'hierarchy: @missing file rejected' @('workload-orchestration','hierarchy','create','-g',$NXRG,'--configuration-location','eastus2euap','--hierarchy-spec','@no-such-file.yaml') $true
+Test-Az 'hierarchy: missing file rejected' @('workload-orchestration','hierarchy','create','-g',$NXRG,'--configuration-location','eastus2euap','--hierarchy-spec','no-such-file.yaml') $true
 
 # =================================================================
 # SECTION 5: children-must-be-list enforcement
@@ -122,7 +122,7 @@ children:
   name: RegionY
   level: region
 "@ | Set-Content -Path $ydict -Encoding utf8
-Test-Az 'hierarchy: children as dict rejected' @('workload-orchestration','hierarchy','create','-g',$NXRG,'--configuration-location','eastus2euap','--hierarchy-spec',"@$ydict") $true
+Test-Az 'hierarchy: children as dict rejected' @('workload-orchestration','hierarchy','create','-g',$NXRG,'--configuration-location','eastus2euap','--hierarchy-spec',$ydict) $true
 Remove-Item $ydict -ErrorAction SilentlyContinue
 
 # children as a LIST parses fine (Azure call fails on nonexistent RG — but parser passed)
@@ -135,7 +135,7 @@ children:
   - name: RegionL
     level: region
 "@ | Set-Content -Path $ylist -Encoding utf8
-Test-Az 'hierarchy: children as list parses (Azure fail expected)' @('workload-orchestration','hierarchy','create','-g',$NXRG,'--configuration-location','eastus2euap','--hierarchy-spec',"@$ylist") $true $null "must be a list"
+Test-Az 'hierarchy: children as list parses (Azure fail expected)' @('workload-orchestration','hierarchy','create','-g',$NXRG,'--configuration-location','eastus2euap','--hierarchy-spec',$ylist) $true $null "must be a list"
 Remove-Item $ylist -ErrorAction SilentlyContinue
 
 # =================================================================
@@ -175,8 +175,8 @@ children:
     level: region
 "@ | Set-Content -Path $sgYaml -Encoding utf8
 
-    Test-Az 'REAL: hierarchy create (SG, 2 sibling children via @YAML)' `
-        @('workload-orchestration','hierarchy','create','-g',$rgSG,'--configuration-location','eastus2euap','--hierarchy-spec',"@$sgYaml") `
+    Test-Az 'REAL: hierarchy create (SG, 2 sibling children via YAML file)' `
+        @('workload-orchestration','hierarchy','create','-g',$rgSG,'--configuration-location','eastus2euap','--hierarchy-spec',$sgYaml) `
         $false 'Hierarchy created'
 
     # Verify TWO regions appeared under the country in output (name substrings unique to this run)

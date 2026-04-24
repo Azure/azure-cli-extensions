@@ -67,6 +67,8 @@ def target_prepare(
     location,
     extension_name=None,
     custom_location_name=None,
+    custom_location_resource_group=None,
+    custom_location_location=None,
     extension_version=None,
     release_train=None,
     cert_manager_version=None,
@@ -82,6 +84,8 @@ def target_prepare(
     """
     extension_name = extension_name or DEFAULT_EXTENSION_NAME
     custom_location_name = custom_location_name or f"{cluster_name}-cl"
+    custom_location_resource_group = custom_location_resource_group or resource_group
+    custom_location_location = custom_location_location or location
     release_train = release_train or DEFAULT_RELEASE_TRAIN
     cert_manager_version = cert_manager_version or DEFAULT_CERT_MANAGER_VERSION
 
@@ -140,7 +144,7 @@ def target_prepare(
     # Step 4: Custom location
     try:
         cl_id = _ensure_custom_location(
-            cmd, cluster_name, resource_group, location,
+            cmd, cluster_name, custom_location_resource_group, custom_location_location,
             custom_location_name, extension_id, connected_cluster_id
         )
         step_results["custom-location"] = "Succeeded"
