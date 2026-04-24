@@ -144,6 +144,28 @@ def _inject_change_definition_into_content(content, ctx):
     return content
 
 
+def _inject_additional_data_into_content(content, ctx):
+    """Inject the parsed additionalData into the serialized request content.
+
+    The AAZ content builder cannot serialize AAZFreeFormDictType correctly
+    (it produces {}), so we capture the raw value in pre_operations and
+    inject it here — the same pattern used for changeDefinition.
+    """
+    additional_data_value = getattr(ctx.vars, "additional_data", None)
+    if additional_data_value is None:
+        return content
+
+    additional_data = additional_data_value.to_serialized_data()
+    if not additional_data:
+        return content
+
+    if content is None:
+        content = {}
+    properties = content.setdefault("properties", {})
+    properties["additionalData"] = additional_data
+    return content
+
+
 def _preserve_change_definition_in_content(content, ctx):
     """Preserve the original changeDefinition from GET response in the update request.
 
@@ -356,6 +378,19 @@ class ChangeRecordCreate(_ChangeRecordCreate):
         self._ensure_schedule_defaults()
         _apply_stage_map_shortcut(self.ctx)
 
+        # Capture additional_data for injection into request content.
+        # The AAZ builder cannot serialize AAZFreeFormDictType, so we
+        # store the raw value and inject it via the content property.
+        additional_data_arg = getattr(self.ctx.args, "additional_data", None)
+        if has_value(additional_data_arg):
+            additional_data = additional_data_arg.to_serialized_data()
+            if additional_data:
+                self.ctx.set_var(
+                    'additional_data',
+                    additional_data,
+                    schema_builder=_build_any_type,
+                )
+
         change_definition_arg = getattr(self.ctx.args, "change_definition", None)
         change_definition_value = None
         self._raw_targets = [t for t in (self._raw_targets or []) if t and str(t) != 'Undefined']
@@ -490,21 +525,25 @@ class ChangeRecordCreate(_ChangeRecordCreate):
 
     class ChangeRecordsCreateOrUpdateAtSubscriptionLevel(
             _ChangeRecordCreate.ChangeRecordsCreateOrUpdateAtSubscriptionLevel):
-        """Override PUT at subscription level to inject custom changeDefinition."""
+        """Override PUT at subscription level to inject custom payloads."""
 
         @property
         def content(self):
             content = super().content
-            return _inject_change_definition_into_content(content, self.ctx)
+            content = _inject_change_definition_into_content(content, self.ctx)
+            content = _inject_additional_data_into_content(content, self.ctx)
+            return content
 
     class ChangeRecordsCreateOrUpdate(
             _ChangeRecordCreate.ChangeRecordsCreateOrUpdate):
-        """Override PUT at resource group level to inject custom changeDefinition."""
+        """Override PUT at resource group level to inject custom payloads."""
 
         @property
         def content(self):
             content = super().content
-            return _inject_change_definition_into_content(content, self.ctx)
+            content = _inject_change_definition_into_content(content, self.ctx)
+            content = _inject_additional_data_into_content(content, self.ctx)
+            return content
 
 
 class ChangeRecordUpdate(_ChangeRecordUpdate):
@@ -539,6 +578,17 @@ class ChangeRecordUpdate(_ChangeRecordUpdate):
         super().pre_operations()
         _apply_stage_map_shortcut(self.ctx)
 
+        # Capture additional_data for injection (same pattern as Create)
+        additional_data_arg = getattr(self.ctx.args, "additional_data", None)
+        if has_value(additional_data_arg):
+            additional_data = additional_data_arg.to_serialized_data()
+            if additional_data:
+                self.ctx.set_var(
+                    'additional_data',
+                    additional_data,
+                    schema_builder=_build_any_type,
+                )
+
     class ChangeRecordsGetAtSubscriptionLevel(
             _ChangeRecordUpdate.ChangeRecordsGetAtSubscriptionLevel):
         """Override GET at subscription level to capture original changeDefinition."""
@@ -572,23 +622,25 @@ class ChangeRecordUpdate(_ChangeRecordUpdate):
 
     class ChangeRecordsCreateOrUpdateAtSubscriptionLevel(
             _ChangeRecordUpdate.ChangeRecordsCreateOrUpdateAtSubscriptionLevel):
-        """Override PUT at subscription level to preserve original changeDefinition."""
+        """Override PUT at subscription level to preserve changeDefinition and inject additionalData."""
 
         @property
         def content(self):
             content = super().content
-            # Preserve original changeDefinition - it cannot be updated
-            return _preserve_change_definition_in_content(content, self.ctx)
+            content = _preserve_change_definition_in_content(content, self.ctx)
+            content = _inject_additional_data_into_content(content, self.ctx)
+            return content
 
     class ChangeRecordsCreateOrUpdate(
             _ChangeRecordUpdate.ChangeRecordsCreateOrUpdate):
-        """Override PUT at resource group level to preserve original changeDefinition."""
+        """Override PUT at resource group level to preserve changeDefinition and inject additionalData."""
 
         @property
         def content(self):
             content = super().content
-            # Preserve original changeDefinition - it cannot be updated
-            return _preserve_change_definition_in_content(content, self.ctx)
+            content = _preserve_change_definition_in_content(content, self.ctx)
+            content = _inject_additional_data_into_content(content, self.ctx)
+            return content
 
 
 class ChangeRecordShow(_ChangeRecordShow):
