@@ -11,10 +11,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
-* `az aks nodepool update`: Support `--node-vm-size` to resize VM size of an existing VMSS-based agent pool (preview). Requires AFEC registration `Microsoft.ContainerService/AgentPoolVMSSResize`.
 
 20.0.0b4
 +++++++
+* `az aks nodepool update`: Support `--node-vm-size` to resize VM size of an existing VMSS-based agent pool (preview). Requires AFEC registration `Microsoft.ContainerService/AgentPoolVMSSResize`.
 * `az aks create/update`: Fix DCR not being created or updated when `--enable-container-network-logs`, `--enable-retina-flow-logs`, or `--enable-high-log-scale-mode` flags are used, ensuring the Data Collection Rule streams (e.g. `Microsoft-ContainerLogV2-HighScale`) are kept in sync.
 * `az aks update`: Add validation for `--enable-high-log-scale-mode` on the update path requiring the monitoring addon with MSI authentication to be enabled
 
