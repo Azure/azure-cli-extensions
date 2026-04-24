@@ -71,8 +71,8 @@ examples:
     text: az workload-orchestration cluster init -c my-cluster -g my-rg -l eastus2euap --release-train dev
   - name: Pin a specific WO extension version
     text: az workload-orchestration cluster init -c my-cluster -g my-rg -l eastus2euap --extension-version 2.1.28
-  - name: Pin a specific AIO platform (cert-manager bundle) extension version
-    text: az workload-orchestration cluster init -c my-cluster -g my-rg -l eastus2euap --cert-manager-version 0.7.6
+  - name: Pin a dependency extension version (e.g., AIO platform / cert-manager)
+    text: az workload-orchestration cluster init -c my-cluster -g my-rg -l eastus2euap --extension-dependency-version iotplatform=0.7.6
   - name: Custom location name
     text: az workload-orchestration cluster init -c my-cluster -g my-rg -l eastus2euap --custom-location-name my-cl
 """

@@ -37,6 +37,18 @@ RELATIONSHIPS_RP = "Microsoft.Relationships"
 DEFAULT_CERT_MANAGER_VERSION = None  # None = AIO extension default
 CERT_MANAGER_NAMESPACE = "cert-manager"
 
+# Registry of extension dependencies for `--extension-dependency-version`.
+# Keys are the user-facing names; values configure the Arc extension install.
+EXTENSION_DEPENDENCIES = {
+    "iotplatform": {
+        "extension_type": "microsoft.iotoperations.platform",
+        "extension_name": "aio-certmgr",
+        "namespace": "cert-manager",
+        "scope": "cluster",
+        "default_version": None,
+    },
+}
+
 # ---------------------------------------------------------------------------
 # AIO Platform Extension (bundles cert-manager + trust-manager)
 # ---------------------------------------------------------------------------

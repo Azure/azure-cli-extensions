@@ -87,9 +87,11 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
                    help='Name for the WO extension resource. Default: wo-extension.')
         c.argument('custom_location_name', options_list=['--custom-location-name'],
                    help='Name for the custom location. Default: `<cluster-name>-cl`.')
-        c.argument('cert_manager_version', options_list=['--cert-manager-version'],
-                   help='Version of the AIO platform extension '
-                        '(cert-manager + trust-manager bundle) to install. Default: latest.')
+        c.argument('extension_dependency_version',
+                   options_list=['--extension-dependency-version'],
+                   nargs='+',
+                   help='Pin dependency extension versions. Use key=value '
+                        'pairs (e.g., iotplatform=1.6.1).')
 
     with self.argument_context('workload-orchestration hierarchy create') as c:
         c.argument('resource_group', options_list=['--resource-group', '-g'],

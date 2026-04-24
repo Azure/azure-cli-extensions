@@ -14,6 +14,40 @@ from azext_workload_orchestration.onboarding.target_deploy import target_deploy 
 from azext_workload_orchestration.onboarding.hierarchy_create import hierarchy_create as _hierarchy_create
 
 
+def _parse_dependency_versions(raw_pairs):
+    """Parse ``key=value`` pairs into ``{key: version}`` dict."""
+    from azext_workload_orchestration.onboarding.consts import EXTENSION_DEPENDENCIES
+    from azure.cli.core.azclierror import ValidationError
+
+    if not raw_pairs:
+        return {}
+
+    result = {}
+    for pair in raw_pairs:
+        if '=' not in pair:
+            raise ValidationError(
+                f"Invalid dependency format: '{pair}'. "
+                "Expected key=value (e.g., iotplatform=1.6.1)."
+            )
+        key, version = pair.split('=', 1)
+        key = key.strip().lower()
+        version = version.strip()
+        if key not in EXTENSION_DEPENDENCIES:
+            supported = ', '.join(sorted(EXTENSION_DEPENDENCIES))
+            raise ValidationError(
+                f"Unsupported dependency '{key}'. "
+                f"Supported values: {supported}."
+            )
+        if key in result:
+            raise ValidationError(f"Duplicate dependency key '{key}'.")
+        if not version:
+            raise ValidationError(
+                f"Empty version for dependency '{key}'."
+            )
+        result[key] = version
+    return result
+
+
 def target_init(
     cmd,
     cluster_name,
@@ -23,9 +57,14 @@ def target_init(
     extension_version=None,
     extension_name=None,
     custom_location_name=None,
-    cert_manager_version=None,
+    extension_dependency_version=None,
 ):
     """Prepare an Arc-connected cluster for Workload Orchestration."""
+    dep_versions = _parse_dependency_versions(
+        extension_dependency_version
+    )
+    iot_platform_version = dep_versions.get("iotplatform")
+
     result = target_prepare(
         cmd=cmd,
         cluster_name=cluster_name,
@@ -35,7 +74,7 @@ def target_init(
         custom_location_name=custom_location_name,
         extension_version=extension_version,
         release_train=release_train,
-        cert_manager_version=cert_manager_version,
+        cert_manager_version=iot_platform_version,
     )
     return result
 
@@ -53,7 +92,7 @@ def target_deploy(
     config_template_name=None,
     config_template_version=None,
 ):
-    """Deploy a solution to a target: review → publish → install."""
+    """Deploy a solution to a target: review -> publish -> install."""
     return _target_deploy(
         cmd=cmd,
         resource_group=resource_group,
