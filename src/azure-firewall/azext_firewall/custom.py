@@ -913,6 +913,7 @@ class AzureFirewallPoliciesCreate(_AzureFirewallPoliciesCreate):
             template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network"
                      "/firewallPolicies/{}",
         )
+        args_schema.identity_type._registered = False
         args_schema.user_assigned_identities._registered = False
 
         return args_schema
@@ -955,6 +956,7 @@ class AzureFirewallPoliciesUpdate(_AzureFirewallPoliciesUpdate):
                 template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{}"
             )
         )
+        args_schema.identity_type._registered = False
         args_schema.user_assigned_identities._registered = False
         args_schema.configuration._registered = False
 
@@ -971,9 +973,6 @@ class AzureFirewallPoliciesUpdate(_AzureFirewallPoliciesUpdate):
             if (has_value(args.identities)):
                 identities.extend([id.to_serialized_data() for id in args.identities])
             args.user_assigned_identities = {id: {} for id in identities}
-        elif has_value(args.identity_type) and args.identity_type.to_serialized_data() == "None":
-            args.identity_type = "None"
-            args.user_assigned_identities = None
         elif args.sku == 'Premium':
             args.identity_type = "None"
             args.user_assigned_identities = None

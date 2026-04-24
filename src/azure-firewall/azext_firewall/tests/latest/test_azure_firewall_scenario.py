@@ -966,17 +966,7 @@ class AzureFirewallScenario(ScenarioTest):
                      self.check('identity.type', 'UserAssigned'),
                     self.check('identity.userAssignedIdentities | keys(@)[0]', '{identity}')
                  ])
-        
-        self.cmd(
-            'network firewall policy update -g {rg} -n {policy_name} --explicit-proxy enable-explicit-proxy=true http-port=86 enable-pac-file=false  --identity-type "None"',
-            checks=[
-                self.check('name', '{policy_name}'),
-                self.check('explicitProxy.enableExplicitProxy', True),
-                self.check('explicitProxy.httpPort', 86),
-                self.not_exists('identity')
-            ])
 
-    # removed explicit proxy test as it requires a non static sas url which fails other tests 100% of the time
 
     @ResourceGroupPreparer(name_prefix='test_azure_firewall_policy_configure_multipleMSI', location='centraluseuap')
     def test_azure_firewall_policy_configure_multipleMSI(self, resource_group):
