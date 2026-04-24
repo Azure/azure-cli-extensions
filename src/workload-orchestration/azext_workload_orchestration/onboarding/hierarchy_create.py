@@ -28,11 +28,13 @@ For ServiceGroup:
         name: India
         level: country
         children:
-          name: Karnataka
-          level: region
-          children:
-            - name: BangaloreSouth
-              level: factory
+          - name: Karnataka
+            level: region
+            children:
+              - name: BangaloreSouth
+                level: factory
+
+Note: ``children`` MUST be a list (even for a single child).
 """
 
 # pylint: disable=broad-exception-caught
@@ -117,12 +119,16 @@ def _validate_hierarchy_names(node):
             f"Use only letters, numbers, and hyphens. Must start and end with alphanumeric."
         )
     children = node.get("children")
-    if children:
-        if isinstance(children, dict):
-            _validate_hierarchy_names(children)
-        elif isinstance(children, list):
-            for child in children:
-                _validate_hierarchy_names(child)
+    if children is None:
+        return
+    if not isinstance(children, list):
+        raise ValidationError(
+            f"'children' for '{name}' must be a list. "
+            f"Got {type(children).__name__}. "
+            f"Use YAML '- name: X' entries or JSON '[{{...}}]'."
+        )
+    for child in children:
+        _validate_hierarchy_names(child)
 
 
 # ---------------------------------------------------------------------------
@@ -299,8 +305,11 @@ def _create_sg_level(  # pylint: disable=too-many-arguments
 
     # Recurse into children
     if children:
-        if isinstance(children, dict):
-            children = [children]
+        if not isinstance(children, list):
+            raise ValidationError(
+                f"'children' for '{name}' must be a list. "
+                f"Got {type(children).__name__}."
+            )
         for i, child in enumerate(children):
             child_is_last = (i == len(children) - 1)
             _create_sg_level(cmd, child, config_location, sub_id, tenant_id,
@@ -314,8 +323,10 @@ def _count_nodes(node):
     children = node.get("children")
     if not children:
         return 1
-    if isinstance(children, dict):
-        return 1 + _count_nodes(children)
+    if not isinstance(children, list):
+        raise ValidationError(
+            f"'children' for '{node.get('name', '?')}' must be a list."
+        )
     return 1 + max(_count_nodes(c) for c in children)
 
 
