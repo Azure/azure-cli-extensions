@@ -12,6 +12,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 * `az aks nodepool update`: Support `--node-vm-size` to resize VM size of an existing VMSS-based agent pool (preview). Requires AFEC registration `Microsoft.ContainerService/AgentPoolVMSSResize`.
+* `az aks create`: Add `--control-plane-scaling-size` parameter to configure control plane scaling profile with available sizes 'H2', 'H4', and 'H8'.
 
 20.0.0b3
 ++++++
@@ -24,7 +25,6 @@ Pending
 * `az aks machine add`: Add `--eviction-policy` flag support to set the eviction policy for a machine.
 * `az aks machine add`: Add `--enable-ultra-ssd` flag support to enable ultra ssd on a machine.
 * `az aks update`: Fix V2-only NAT gateway params (e.g. `--nat-gateway-managed-outbound-ipv6-count`) being rejected on update when `--outbound-type` is not re-specified for an already-V2 cluster.
-* `az aks create`: Add `--control-plane-scaling-size` parameter to configure control plane scaling profile with available sizes 'H2', 'H4', and 'H8'.
 
 20.0.0b1
 +++++++
