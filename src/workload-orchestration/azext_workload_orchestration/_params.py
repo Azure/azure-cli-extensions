@@ -71,5 +71,3 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
             action='store_true',
             help='Skip auto-creation of site-reference to context.',
         )
-
-
