@@ -12,40 +12,33 @@ into single-command operations to reduce onboarding steps.
 from azext_workload_orchestration.onboarding.target_prepare import target_prepare
 from azext_workload_orchestration.onboarding.target_deploy import target_deploy as _target_deploy
 from azext_workload_orchestration.onboarding.hierarchy_create import hierarchy_create as _hierarchy_create
+from azext_workload_orchestration.onboarding._shorthand import (
+    parse_shorthand,
+    validate_allowed_keys,
+)
 
 
-def _parse_dependency_versions(raw_pairs):
-    """Parse ``key=value`` pairs into ``{key: version}`` dict."""
+def _parse_dependency_versions(raw):
+    """Parse ``--extension-dependency-version`` input into a validated dict.
+
+    Accepts any Azure CLI shorthand form (partial, full, file) and enforces
+    the registry in ``EXTENSION_DEPENDENCIES``.
+    """
     from azext_workload_orchestration.onboarding.consts import EXTENSION_DEPENDENCIES
-    from azure.cli.core.azclierror import ValidationError
 
-    if not raw_pairs:
+    if raw is None:
         return {}
-
-    result = {}
-    for pair in raw_pairs:
-        if '=' not in pair:
-            raise ValidationError(
-                f"Invalid dependency format: '{pair}'. "
-                "Expected key=value (e.g., iotplatform=1.6.1)."
-            )
-        key, version = pair.split('=', 1)
-        key = key.strip().lower()
-        version = version.strip()
-        if key not in EXTENSION_DEPENDENCIES:
-            supported = ', '.join(sorted(EXTENSION_DEPENDENCIES))
-            raise ValidationError(
-                f"Unsupported dependency '{key}'. "
-                f"Supported values: {supported}."
-            )
-        if key in result:
-            raise ValidationError(f"Duplicate dependency key '{key}'.")
-        if not version:
-            raise ValidationError(
-                f"Empty version for dependency '{key}'."
-            )
-        result[key] = version
-    return result
+    data = parse_shorthand(
+        raw,
+        arg_name="extension-dependency-version",
+        allow_yaml_files=False,
+        require_object=True,
+    )
+    return validate_allowed_keys(
+        data,
+        allowed_keys=EXTENSION_DEPENDENCIES.keys(),
+        arg_name="extension-dependency-version",
+    )
 
 
 def target_init(
@@ -113,9 +106,18 @@ __all__ = ['target_prepare', 'target_init', 'target_deploy', 'hierarchy_create']
 
 def hierarchy_create(cmd, resource_group=None, configuration_location=None, hierarchy_spec=None):
     """Create a hierarchy: Site + Configuration + ConfigurationReference."""
+    from azext_workload_orchestration.onboarding._shorthand import parse_shorthand
+
+    parsed_spec = parse_shorthand(
+        hierarchy_spec,
+        arg_name="hierarchy-spec",
+        allow_yaml_files=True,
+        require_object=True,
+    ) if hierarchy_spec is not None else None
+
     return _hierarchy_create(
         cmd=cmd,
         resource_group=resource_group,
         configuration_location=configuration_location,
-        hierarchy_spec=hierarchy_spec,
+        hierarchy_spec=parsed_spec,
     )

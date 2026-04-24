@@ -89,9 +89,9 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
                    help='Name for the custom location. Default: `<cluster-name>-cl`.')
         c.argument('extension_dependency_version',
                    options_list=['--extension-dependency-version'],
-                   nargs='+',
-                   help='Pin dependency extension versions. Use key=value '
-                        'pairs (e.g., iotplatform=1.6.1).')
+                   help='Pin dependency extension versions. Supports Azure CLI '
+                        'shorthand syntax: "iotplatform=1.6.1", '
+                        '"{iotplatform:1.6.1}", or "@deps.json".')
 
     with self.argument_context('workload-orchestration hierarchy create') as c:
         c.argument('resource_group', options_list=['--resource-group', '-g'],
@@ -99,53 +99,7 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
         c.argument('configuration_location', options_list=['--configuration-location', '-l'],
                    help='Azure region for the Configuration resource (e.g., eastus2euap).', required=True)
         c.argument('hierarchy_spec', options_list=['--hierarchy-spec'],
-                   help='Hierarchy specification as YAML/JSON file (@file.yaml) or shorthand syntax.',
-                   required=True, type=_parse_hierarchy_spec)
-
-
-def _parse_hierarchy_spec(value):
-    """Parse hierarchy spec from file path, YAML content, or shorthand syntax.
-
-    Handles three input modes:
-    1. File path: 'hierarchy.yaml' or '@hierarchy.yaml' (@ stripped by CLI)
-    2. YAML content: when CLI framework pre-loads @file, we get raw YAML text
-    3. Shorthand: 'name=X level=Y type=Z'
-    """
-    import os
-
-    # Mode 1: File path (with or without @)
-    filepath = value.lstrip('@')
-    if os.path.exists(filepath):
-        try:
-            import yaml
-        except ImportError:
-            import json
-            with open(filepath, 'r', encoding='utf-8') as f:
-                return json.load(f)
-        with open(filepath, 'r', encoding='utf-8') as f:
-            return yaml.safe_load(f)
-
-    # Mode 2: YAML content (CLI framework pre-loaded @file)
-    # Detect YAML by checking for colon-separated key-value or newlines
-    if ':' in value and ('\n' in value or 'name:' in value or 'level:' in value):
-        try:
-            import yaml
-            parsed = yaml.safe_load(value)
-            if isinstance(parsed, dict):
-                return parsed
-        except Exception:  # pylint: disable=broad-exception-caught
-            pass
-
-    # Mode 3: Shorthand syntax: name=X level=Y type=Z
-    result = {}
-    for pair in value.split():
-        if '=' in pair:
-            k, v = pair.split('=', 1)
-            result[k] = v
-    if not result:
-        from azure.cli.core.azclierror import ValidationError
-        raise ValidationError(
-            f"Invalid hierarchy-spec: '{value}'. "
-            "Use a YAML file path or shorthand: name=X level=Y"
-        )
-    return result
+                   help='Hierarchy specification. Supports Azure CLI shorthand '
+                        'syntax: "{name:X,level:Y}", '
+                        '"@hierarchy.yaml", or "@hierarchy.json".',
+                   required=True)

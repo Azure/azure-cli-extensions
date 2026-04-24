@@ -71,8 +71,12 @@ examples:
     text: az workload-orchestration cluster init -c my-cluster -g my-rg -l eastus2euap --release-train dev
   - name: Pin a specific WO extension version
     text: az workload-orchestration cluster init -c my-cluster -g my-rg -l eastus2euap --extension-version 2.1.28
-  - name: Pin a dependency extension version (e.g., AIO platform / cert-manager)
+  - name: Pin a dependency extension version (partial-value shorthand)
     text: az workload-orchestration cluster init -c my-cluster -g my-rg -l eastus2euap --extension-dependency-version iotplatform=0.7.6
+  - name: Pin a dependency extension version (full-value shorthand)
+    text: az workload-orchestration cluster init -c my-cluster -g my-rg -l eastus2euap --extension-dependency-version "{iotplatform:0.7.6}"
+  - name: Pin dependencies from a JSON file
+    text: az workload-orchestration cluster init -c my-cluster -g my-rg -l eastus2euap --extension-dependency-version @deps.json
   - name: Custom location name
     text: az workload-orchestration cluster init -c my-cluster -g my-rg -l eastus2euap --custom-location-name my-cl
 """
@@ -91,11 +95,11 @@ long-summary: |
       - ServiceGroup: nested sites under a service group (up to 3 levels)
 examples:
   - name: Create RG hierarchy from YAML file
-    text: az workload-orchestration hierarchy create -g my-rg --configuration-location eastus2euap --hierarchy-spec "@hierarchy.yaml"
-  - name: Create RG hierarchy with shorthand
-    text: az workload-orchestration hierarchy create -g my-rg --configuration-location eastus2euap --hierarchy-spec "name=Mehoopany level=factory"
-  - name: Create ServiceGroup hierarchy from YAML
-    text: az workload-orchestration hierarchy create -g my-rg --configuration-location eastus2euap --hierarchy-spec "@sg-hierarchy.yaml"
+    text: az workload-orchestration hierarchy create -g my-rg --configuration-location eastus2euap --hierarchy-spec @hierarchy.yaml
+  - name: Create RG hierarchy with inline shorthand
+    text: az workload-orchestration hierarchy create -g my-rg --configuration-location eastus2euap --hierarchy-spec "{name:Mehoopany,level:factory}"
+  - name: Create ServiceGroup hierarchy from JSON file
+    text: az workload-orchestration hierarchy create -g my-rg --configuration-location eastus2euap --hierarchy-spec @sg-hierarchy.json
 """
 
 helps['workload-orchestration cluster'] = """

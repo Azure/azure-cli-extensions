@@ -81,8 +81,8 @@ def hierarchy_create(cmd, resource_group=None, configuration_location=None, hier
     if not resource_group:
         raise ValidationError("--resource-group is required (used for Configuration resources).")
 
-    # Parse spec (could be dict from shorthand or file)
-    spec = hierarchy_spec if isinstance(hierarchy_spec, dict) else hierarchy_spec
+    # Parse spec (dict from shorthand/file parser in the CLI wrapper)
+    spec = hierarchy_spec
 
     name = spec.get("name")
     level = spec.get("level")
