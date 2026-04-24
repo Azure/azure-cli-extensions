@@ -72,34 +72,4 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
             help='Skip auto-creation of site-reference to context.',
         )
 
-    with self.argument_context('workload-orchestration cluster init') as c:
-        c.argument('cluster_name', options_list=['--cluster-name', '-c'],
-                   help='Name of the Arc-connected Kubernetes cluster.', required=True)
-        c.argument('resource_group', options_list=['--resource-group', '-g'],
-                   help='Resource group of the Arc-connected cluster.', required=True)
-        c.argument('location', options_list=['--location', '-l'],
-                   help='Azure region for the custom location (e.g., eastus2euap).', required=True)
-        c.argument('release_train', options_list=['--release-train'],
-                   help='Extension release train. Default: stable.')
-        c.argument('extension_version', options_list=['--extension-version'],
-                   help='Specific WO extension version to install.')
-        c.argument('extension_name', options_list=['--extension-name'],
-                   help='Name for the WO extension resource. Default: wo-extension.')
-        c.argument('custom_location_name', options_list=['--custom-location-name'],
-                   help='Name for the custom location. Default: `<cluster-name>-cl`.')
-        c.argument('extension_dependency_version',
-                   options_list=['--extension-dependency-version'],
-                   help='Pin dependency extension versions. Supports Azure CLI '
-                        'shorthand syntax: "iotplatform=1.6.1", '
-                        '"{iotplatform:1.6.1}", or "@deps.json".')
 
-    with self.argument_context('workload-orchestration hierarchy create') as c:
-        c.argument('resource_group', options_list=['--resource-group', '-g'],
-                   help='Resource group for Configuration resources.', required=True)
-        c.argument('configuration_location', options_list=['--configuration-location', '-l'],
-                   help='Azure region for the Configuration resource (e.g., eastus2euap).', required=True)
-        c.argument('hierarchy_spec', options_list=['--hierarchy-spec'],
-                   help='Hierarchy specification. Supports Azure CLI shorthand '
-                        'syntax: "{name:X,level:Y}", '
-                        '"@hierarchy.yaml", or "@hierarchy.json".',
-                   required=True)

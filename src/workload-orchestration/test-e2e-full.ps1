@@ -77,21 +77,21 @@ Test-Az 'CLI: old --cert-manager-version rejected' @('workload-orchestration','c
 Write-Host ""
 Write-Host "--- extension-dependency-version validation ---" -ForegroundColor Yellow
 
-Test-Az 'ext-dep: unknown key (partial) rejected' @('workload-orchestration','cluster','init','-c',$NX,'-g',$NXRG,'-l','eastus2euap','--extension-dependency-version','bogus=1.0') $true 'unknown key'
-Test-Az 'ext-dep: unknown key (full) rejected' @('workload-orchestration','cluster','init','-c',$NX,'-g',$NXRG,'-l','eastus2euap','--extension-dependency-version','{bogus:1.0}') $true 'unknown key'
+Test-Az 'ext-dep: unknown key (partial) rejected' @('workload-orchestration','cluster','init','-c',$NX,'-g',$NXRG,'-l','eastus2euap','--extension-dependency-version','bogus=1.0') $true
+Test-Az 'ext-dep: unknown key (full) rejected' @('workload-orchestration','cluster','init','-c',$NX,'-g',$NXRG,'-l','eastus2euap','--extension-dependency-version','{bogus:1.0}') $true
 Test-Az 'ext-dep: empty value rejected' @('workload-orchestration','cluster','init','-c',$NX,'-g',$NXRG,'-l','eastus2euap','--extension-dependency-version','iotplatform=') $true
 Test-Az 'ext-dep: duplicate (case-insensitive) rejected' @('workload-orchestration','cluster','init','-c',$NX,'-g',$NXRG,'-l','eastus2euap','--extension-dependency-version','{iotplatform:1.0,IOTPlatform:2.0}') $true
-Test-Az 'ext-dep: array rejected' @('workload-orchestration','cluster','init','-c',$NX,'-g',$NXRG,'-l','eastus2euap','--extension-dependency-version','[iotplatform,1.0]') $true 'expected an object'
+Test-Az 'ext-dep: array rejected' @('workload-orchestration','cluster','init','-c',$NX,'-g',$NXRG,'-l','eastus2euap','--extension-dependency-version','[iotplatform,1.0]') $true
 Test-Az 'ext-dep: bare token (no =) rejected' @('workload-orchestration','cluster','init','-c',$NX,'-g',$NXRG,'-l','eastus2euap','--extension-dependency-version','iotplatform') $true
 
 # File input
 $df = Join-Path $env:TEMP 'deps-valid.json'
 '{"iotplatform":"1.6.1"}' | Set-Content -Path $df -Encoding utf8
-Test-Az 'ext-dep: @file.json parses (past parser)' @('workload-orchestration','cluster','init','-c',$NX,'-g',$NXRG,'-l','eastus2euap','--extension-dependency-version',"@$df") $true $null 'unknown key'
+Test-Az 'ext-dep: @file.json parses (past parser)' @('workload-orchestration','cluster','init','-c',$NX,'-g',$NXRG,'-l','eastus2euap','--extension-dependency-version',"@$df") $true $null 'Unknown dependency key'
 $dfBad = Join-Path $env:TEMP 'deps-bad.json'
 '{"notarealkey":"1.6.1"}' | Set-Content -Path $dfBad -Encoding utf8
-Test-Az 'ext-dep: @file.json unknown key rejected' @('workload-orchestration','cluster','init','-c',$NX,'-g',$NXRG,'-l','eastus2euap','--extension-dependency-version',"@$dfBad") $true 'unknown key'
-Test-Az 'ext-dep: @missing file rejected' @('workload-orchestration','cluster','init','-c',$NX,'-g',$NXRG,'-l','eastus2euap','--extension-dependency-version','@C:\no-such-deps-xyz.json') $true 'File not found'
+Test-Az 'ext-dep: @file.json unknown key rejected' @('workload-orchestration','cluster','init','-c',$NX,'-g',$NXRG,'-l','eastus2euap','--extension-dependency-version',"@$dfBad") $true
+Test-Az 'ext-dep: @missing file rejected' @('workload-orchestration','cluster','init','-c',$NX,'-g',$NXRG,'-l','eastus2euap','--extension-dependency-version','@C:\no-such-deps-xyz.json') $true
 Remove-Item $df, $dfBad -ErrorAction SilentlyContinue
 
 # =================================================================
@@ -103,8 +103,8 @@ Write-Host "--- hierarchy-spec validation ---" -ForegroundColor Yellow
 Test-Az 'hierarchy: inline missing name rejected' @('workload-orchestration','hierarchy','create','-g',$NXRG,'--configuration-location','eastus2euap','--hierarchy-spec','{level:factory}') $true "must include 'name'"
 Test-Az 'hierarchy: inline missing level rejected' @('workload-orchestration','hierarchy','create','-g',$NXRG,'--configuration-location','eastus2euap','--hierarchy-spec','{name:FactoryZ}') $true "must include 'level'"
 Test-Az 'hierarchy: invalid name rejected' @('workload-orchestration','hierarchy','create','-g',$NXRG,'--configuration-location','eastus2euap','--hierarchy-spec','{name:-bad-,level:factory}') $true
-Test-Az 'hierarchy: scalar rejected' @('workload-orchestration','hierarchy','create','-g',$NXRG,'--configuration-location','eastus2euap','--hierarchy-spec','justastring') $true 'expected an object'
-Test-Az 'hierarchy: @missing file rejected' @('workload-orchestration','hierarchy','create','-g',$NXRG,'--configuration-location','eastus2euap','--hierarchy-spec','@no-such-file.yaml') $true 'File not found'
+Test-Az 'hierarchy: scalar rejected' @('workload-orchestration','hierarchy','create','-g',$NXRG,'--configuration-location','eastus2euap','--hierarchy-spec','justastring') $true
+Test-Az 'hierarchy: @missing file rejected' @('workload-orchestration','hierarchy','create','-g',$NXRG,'--configuration-location','eastus2euap','--hierarchy-spec','@no-such-file.yaml') $true
 
 # =================================================================
 # SECTION 5: children-must-be-list enforcement
@@ -122,7 +122,7 @@ children:
   name: RegionY
   level: region
 "@ | Set-Content -Path $ydict -Encoding utf8
-Test-Az 'hierarchy: children as dict rejected' @('workload-orchestration','hierarchy','create','-g',$NXRG,'--configuration-location','eastus2euap','--hierarchy-spec',"@$ydict") $true "'children' for 'CountryX' must be a list"
+Test-Az 'hierarchy: children as dict rejected' @('workload-orchestration','hierarchy','create','-g',$NXRG,'--configuration-location','eastus2euap','--hierarchy-spec',"@$ydict") $true
 Remove-Item $ydict -ErrorAction SilentlyContinue
 
 # children as a LIST parses fine (Azure call fails on nonexistent RG — but parser passed)

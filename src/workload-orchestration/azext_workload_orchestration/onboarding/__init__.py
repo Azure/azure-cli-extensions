@@ -12,33 +12,44 @@ into single-command operations to reduce onboarding steps.
 from azext_workload_orchestration.onboarding.target_prepare import target_prepare
 from azext_workload_orchestration.onboarding.target_deploy import target_deploy as _target_deploy
 from azext_workload_orchestration.onboarding.hierarchy_create import hierarchy_create as _hierarchy_create
-from azext_workload_orchestration.onboarding._shorthand import (
-    parse_shorthand,
-    validate_allowed_keys,
-)
 
 
-def _parse_dependency_versions(raw):
-    """Parse ``--extension-dependency-version`` input into a validated dict.
-
-    Accepts any Azure CLI shorthand form (partial, full, file) and enforces
-    the registry in ``EXTENSION_DEPENDENCIES``.
+def _validate_dependency_versions(data):
+    """Validate the pre-parsed ``--extension-dependency-version`` dict against
+    the EXTENSION_DEPENDENCIES registry. AAZ has already parsed the shorthand
+    into a ``dict[str,str]`` for us.
     """
+    from azure.cli.core.azclierror import ValidationError
     from azext_workload_orchestration.onboarding.consts import EXTENSION_DEPENDENCIES
 
-    if raw is None:
+    if not data:
         return {}
-    data = parse_shorthand(
-        raw,
-        arg_name="extension-dependency-version",
-        allow_yaml_files=False,
-        require_object=True,
-    )
-    return validate_allowed_keys(
-        data,
-        allowed_keys=EXTENSION_DEPENDENCIES.keys(),
-        arg_name="extension-dependency-version",
-    )
+    if not isinstance(data, dict):
+        raise ValidationError(
+            "--extension-dependency-version must be a dependency-map object."
+        )
+
+    allowed = {k.lower(): k for k in EXTENSION_DEPENDENCIES}
+    seen_lower = set()
+    normalized = {}
+    for key, value in data.items():
+        if not isinstance(key, str) or not key:
+            raise ValidationError("--extension-dependency-version key must be a non-empty string.")
+        low = key.lower()
+        if low in seen_lower:
+            raise ValidationError(f"Duplicate dependency key: {key}")
+        seen_lower.add(low)
+        if low not in allowed:
+            raise ValidationError(
+                f"Unknown dependency key: {key}. "
+                f"Supported: {', '.join(sorted(EXTENSION_DEPENDENCIES))}"
+            )
+        if not isinstance(value, str) or not value:
+            raise ValidationError(
+                f"Dependency value for {key} must be a non-empty string."
+            )
+        normalized[allowed[low]] = value
+    return normalized
 
 
 def target_init(
@@ -53,12 +64,10 @@ def target_init(
     extension_dependency_version=None,
 ):
     """Prepare an Arc-connected cluster for Workload Orchestration."""
-    dep_versions = _parse_dependency_versions(
-        extension_dependency_version
-    )
+    dep_versions = _validate_dependency_versions(extension_dependency_version)
     iot_platform_version = dep_versions.get("iotplatform")
 
-    result = target_prepare(
+    return target_prepare(
         cmd=cmd,
         cluster_name=cluster_name,
         resource_group=resource_group,
@@ -69,7 +78,6 @@ def target_init(
         release_train=release_train,
         cert_manager_version=iot_platform_version,
     )
-    return result
 
 
 def target_deploy(
@@ -101,23 +109,17 @@ def target_deploy(
     )
 
 
-__all__ = ['target_prepare', 'target_init', 'target_deploy', 'hierarchy_create']
-
-
 def hierarchy_create(cmd, resource_group=None, configuration_location=None, hierarchy_spec=None):
-    """Create a hierarchy: Site + Configuration + ConfigurationReference."""
-    from azext_workload_orchestration.onboarding._shorthand import parse_shorthand
+    """Create a hierarchy: Site + Configuration + ConfigurationReference.
 
-    parsed_spec = parse_shorthand(
-        hierarchy_spec,
-        arg_name="hierarchy-spec",
-        allow_yaml_files=True,
-        require_object=True,
-    ) if hierarchy_spec is not None else None
-
+    AAZ has already parsed ``hierarchy_spec`` into a dict for us.
+    """
     return _hierarchy_create(
         cmd=cmd,
         resource_group=resource_group,
         configuration_location=configuration_location,
-        hierarchy_spec=parsed_spec,
+        hierarchy_spec=hierarchy_spec,
     )
+
+
+__all__ = ['target_prepare', 'target_init', 'target_deploy', 'hierarchy_create']

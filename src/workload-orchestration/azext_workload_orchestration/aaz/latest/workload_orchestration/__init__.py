@@ -10,3 +10,5 @@
 
 from .__cmd_group import *
 from ._sync import *
+from . import cluster
+from . import hierarchy
