@@ -2,6 +2,9 @@
 
 Release History
 ===============
+2.0.0b2
++++++++
+* Fix default working directory for Windows containers being set to C:\\ if the image doesn't specify one.
 
 2.0.0b1
 +++++++
