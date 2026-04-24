@@ -11,6 +11,7 @@ from azext_aks_preview._helpers import (
     check_is_private_link_cluster,
     get_cluster_snapshot,
     get_cluster_snapshot_by_snapshot_id,
+    get_monitoring_addon_key,
     get_nodepool_snapshot,
     get_nodepool_snapshot_by_snapshot_id,
     process_message_for_run_command,
@@ -210,6 +211,54 @@ class FilterHardTaintsTestCase(unittest.TestCase):
         ]
         expected_filtered_taints = ["key3=value3:PreferNoSchedule", "key5:PreferNoSchedule"]
         self.assertEqual(filter_hard_taints(input_taints), expected_filtered_taints)
+
+
+class TestGetMonitoringAddonKey(unittest.TestCase):
+    """Tests for the get_monitoring_addon_key helper."""
+
+    def test_returns_canonical_when_present(self):
+        addon_profiles = {"omsagent": Mock(enabled=True)}
+        result = get_monitoring_addon_key(addon_profiles, "omsagent")
+        self.assertEqual(result, "omsagent")
+        # dict should be unchanged
+        self.assertIn("omsagent", addon_profiles)
+
+    def test_normalizes_camelcase_key(self):
+        addon_profiles = {"omsAgent": Mock(enabled=True)}
+        result = get_monitoring_addon_key(addon_profiles, "omsagent")
+        self.assertEqual(result, "omsagent")
+        # dict should have been re-keyed
+        self.assertIn("omsagent", addon_profiles)
+        self.assertNotIn("omsAgent", addon_profiles)
+
+    def test_normalizes_arbitrary_casing(self):
+        addon_profiles = {"OMSagent": Mock(enabled=True)}
+        result = get_monitoring_addon_key(addon_profiles, "omsagent")
+        self.assertEqual(result, "omsagent")
+        self.assertIn("omsagent", addon_profiles)
+        self.assertNotIn("OMSagent", addon_profiles)
+
+    def test_returns_canonical_when_none_profiles(self):
+        result = get_monitoring_addon_key(None, "omsagent")
+        self.assertEqual(result, "omsagent")
+
+    def test_returns_canonical_when_key_not_present(self):
+        addon_profiles = {"some_other_addon": Mock(enabled=True)}
+        result = get_monitoring_addon_key(addon_profiles, "omsagent")
+        self.assertEqual(result, "omsagent")
+
+    def test_prefers_exact_match_over_case_insensitive(self):
+        # If both canonical and variant exist, canonical wins (no re-keying)
+        addon_profiles = {
+            "omsagent": Mock(enabled=True),
+            "omsAgent": Mock(enabled=False),
+        }
+        result = get_monitoring_addon_key(addon_profiles, "omsagent")
+        self.assertEqual(result, "omsagent")
+        # Both keys should still be present (no re-keying needed)
+        self.assertIn("omsagent", addon_profiles)
+        self.assertIn("omsAgent", addon_profiles)
+
 
 if __name__ == "__main__":
     unittest.main()

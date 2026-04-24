@@ -3611,3 +3611,10 @@ confcom containers from_image:
     image:
       rule_exclusions:
         - no_positional_parameters
+
+relationship dependency-of create:
+  rule_exclusions:
+    - missing_command_example
+relationship service-group-member create:
+  rule_exclusions:
+    - missing_command_example

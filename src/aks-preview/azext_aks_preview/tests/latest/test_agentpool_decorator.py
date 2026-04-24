@@ -2773,6 +2773,69 @@ class AKSPreviewAgentPoolUpdateDecoratorCommonTestCase(unittest.TestCase):
         with self.assertRaises(MutuallyExclusiveArgumentError):
             dec_3.update_fips_image(agentpool_2)
 
+    def common_update_vm_size(self):
+        # Test case 1: No node_vm_size provided (should not change agentpool)
+        dec_1 = AKSPreviewAgentPoolUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"node_vm_size": None},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        # fail on passing the wrong agentpool object
+        with self.assertRaises(CLIInternalError):
+            dec_1.update_vm_size(None)
+
+        agentpool_1 = self.create_initialized_agentpool_instance(
+            vm_size="Standard_D2s_v3"
+        )
+        dec_1.context.attach_agentpool(agentpool_1)
+        dec_agentpool_1 = dec_1.update_vm_size(agentpool_1)
+        ground_truth_agentpool_1 = self.create_initialized_agentpool_instance(
+            vm_size="Standard_D2s_v3"
+        )
+        self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
+
+        # Test case 2: node_vm_size provided (should update agentpool)
+        dec_2 = AKSPreviewAgentPoolUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"node_vm_size": "Standard_D4s_v3"},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        agentpool_2 = self.create_initialized_agentpool_instance(
+            vm_size="Standard_D2s_v3"
+        )
+        dec_2.context.attach_agentpool(agentpool_2)
+        dec_agentpool_2 = dec_2.update_vm_size(agentpool_2)
+        ground_truth_agentpool_2 = self.create_initialized_agentpool_instance(
+            vm_size="Standard_D4s_v3"
+        )
+        self.assertEqual(dec_agentpool_2, ground_truth_agentpool_2)
+
+        # Test case 3: VirtualMachines pool with node_vm_size provided (should be no-op)
+        dec_3 = AKSPreviewAgentPoolUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"node_vm_size": "Standard_D4s_v3"},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        agentpool_3 = self.create_initialized_agentpool_instance(
+            vm_size="Standard_D2s_v3"
+        )
+        # Set pool type to VirtualMachines - use the correct attribute based on decorator mode
+        from azure.cli.command_modules.acs._consts import AgentPoolDecoratorMode
+        if self.agentpool_decorator_mode == AgentPoolDecoratorMode.MANAGED_CLUSTER:
+            agentpool_3.type = CONST_VIRTUAL_MACHINES
+        else:
+            agentpool_3.type_properties_type = CONST_VIRTUAL_MACHINES
+        dec_3.context.attach_agentpool(agentpool_3)
+        dec_agentpool_3 = dec_3.update_vm_size(agentpool_3)
+        # vm_size should remain unchanged for VMs pools
+        self.assertEqual(dec_agentpool_3.vm_size, "Standard_D2s_v3")
+
     def common_update_upgrade_strategy(self):
         # Test case 1: No upgrade strategy provided (should not change agentpool)
         dec_1 = AKSPreviewAgentPoolUpdateDecorator(
@@ -3113,6 +3176,9 @@ class AKSPreviewAgentPoolUpdateDecoratorStandaloneModeTestCase(
     def test_update_fips_image(self):
         self.common_update_fips_image()
 
+    def test_update_vm_size(self):
+        self.common_update_vm_size()
+
     def test_update_upgrade_strategy(self):
         self.common_update_upgrade_strategy()
 
@@ -3208,6 +3274,9 @@ class AKSPreviewAgentPoolUpdateDecoratorManagedClusterModeTestCase(
 
     def test_update_fips_image(self):
         self.common_update_fips_image()
+
+    def test_update_vm_size(self):
+        self.common_update_vm_size()
 
     def test_update_upgrade_strategy(self):
         self.common_update_upgrade_strategy()

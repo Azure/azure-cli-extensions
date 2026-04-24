@@ -1944,6 +1944,30 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
 
         return agentpool
 
+    def update_vm_size(self, agentpool: AgentPool) -> AgentPool:
+        """Update VM size for the AgentPool object.
+
+        Allows changing the VM size (SKU) of an existing VMSS-based agent pool.
+        The RP will perform a rolling upgrade (surge new nodes, drain old, delete old)
+        to replace nodes with the new VM size.
+
+        Note: This is only for VMSS pools. VMs pools handle VM size changes through
+        the autoscaler update path (update_auto_scaler_properties_vms).
+
+        :return: the AgentPool object
+        """
+        self._ensure_agentpool(agentpool)
+
+        # Skip for VirtualMachines pools - they handle VM size via autoscaler path
+        if self.context.get_vm_set_type() == CONST_VIRTUAL_MACHINES:
+            return agentpool
+
+        node_vm_size = self.context.raw_param.get("node_vm_size")
+        if node_vm_size:
+            agentpool.vm_size = node_vm_size
+
+        return agentpool
+
     def update_localdns_profile(self, agentpool: AgentPool) -> AgentPool:
         """Update local DNS profile for the AgentPool object if provided via --localdns-config."""
         self._ensure_agentpool(agentpool)
@@ -2006,6 +2030,9 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
         # update ssh access
         agentpool = self.update_ssh_access(agentpool)
 
+        # update vm size for VMSS pools
+        agentpool = self.update_vm_size(agentpool)
+
         # update local DNS profile
         agentpool = self.update_localdns_profile(agentpool)
 
@@ -2038,13 +2065,6 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
         # skip it for virtual machines pool
         if self.context.get_vm_set_type() == CONST_VIRTUAL_MACHINES:
             return agentpool
-
-        vm_size = self.context.raw_param.get("node_vm_size")
-        if vm_size is not None:
-            raise InvalidArgumentValueError(
-                "--node-vm-size can only be used with virtual machines agentpools. "
-                "Updating VM size is not supported for virtual machine scale set agentpools."
-            )
 
         (
             update_cluster_autoscaler,

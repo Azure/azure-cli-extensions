@@ -15,8 +15,8 @@ class MonitorPipelineGroupScenario(ScenarioTest):
         data_path = os.path.relpath(os.path.join(os.path.abspath(__file__), '..', 'data_files'))
         self.kwargs.update({
             'rg': resource_group,
-            'name': 'mygroup',
-            'location': 'eastus2euap',
+            'name': 'testpipeline',
+            'location': 'westus2',
             'exporters_path': os.path.join(data_path, "exporters.json").replace('\\', '\\\\'),
             'extended_location_path': os.path.join(data_path, "extendedLocation.json").replace('\\', '\\\\'),
             'processors_path': os.path.join(data_path, "processors.json").replace('\\', '\\\\'),
@@ -31,7 +31,6 @@ class MonitorPipelineGroupScenario(ScenarioTest):
                  '--receivers @{receivers_path} '
                  '--service @{service_path} '
                  '--extended-location @{extended_location_path} '
-                 '--network-config [] '
                  '--replicas 1 ',
                  checks=[self.check('properties.provisioningState', 'Succeeded')])
         

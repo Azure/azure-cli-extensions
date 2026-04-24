@@ -2299,6 +2299,7 @@ def load_arguments(self, _):
             "node_vm_size",
             options_list=["--node-vm-size", "-s"],
             completer=get_vm_size_completion_list,
+            is_preview=True,
         )
         c.argument(
             "gpu_driver",
