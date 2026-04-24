@@ -180,6 +180,7 @@ CONFIG_FILE_PATH = f"{script_directory}/{CONFIG_FILE}"
 
 _config = load_json_from_file(CONFIG_FILE_PATH)
 DEFAULT_WORKING_DIR = _config["containerd"]["defaultWorkingDir"]
+DEFAULT_WORKING_DIR_WINDOWS = "C:\\"
 
 MOUNT_SOURCE_TABLE = {}
 for entry in _config["mount"]["source_table"]:

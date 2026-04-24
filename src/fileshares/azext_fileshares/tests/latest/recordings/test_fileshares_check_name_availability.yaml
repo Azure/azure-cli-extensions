@@ -1,0 +1,56 @@
+interactions:
+- request:
+    body: '{"name": "share000001", "type": "Microsoft.FileShares/fileShares"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - fileshare check-name-availability
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '66'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --location --name
+      User-Agent:
+      - AZURECLI/2.84.0 azsdk-python-core/1.38.0 Python/3.13.5 (Windows-2022Server-10.0.20348-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.FileShares/locations/eastus/checkNameAvailability?api-version=2025-09-01-preview
+  response:
+    body:
+      string: '{"nameAvailable":true}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '22'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 23 Apr 2026 06:05:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=e4085597-5700-4c80-aa18-78669a90a2b1/westus/608d397a-a837-4c7a-b73e-52786d6aea9b
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: D3F9AD1446B94BEC95B7570CF2D08025 Ref B: CO6AA3150217029 Ref C: 2026-04-23T06:05:55Z'
+    status:
+      code: 200
+      message: OK
+version: 1
