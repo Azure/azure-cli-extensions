@@ -926,8 +926,8 @@ class AzureFirewallPoliciesCreate(_AzureFirewallPoliciesCreate):
             if (has_value(args.identity)):
                 identities.append(args.identity.to_serialized_data())
             if (has_value(args.identities)):
-                identities.extend([id.to_serialized_data() for id in args.identities])
-            args.user_assigned_identities = {id: {} for id in identities}
+                identities.extend([identity_id.to_serialized_data() for identity_id in args.identities])
+            args.user_assigned_identities = {identity_id: {} for identity_id in identities}
 
         if has_value(args.dns_servers):
             if not has_value(args.enable_dns_proxy):
@@ -971,8 +971,8 @@ class AzureFirewallPoliciesUpdate(_AzureFirewallPoliciesUpdate):
             if (has_value(args.identity)):
                 identities.append(args.identity.to_serialized_data())
             if (has_value(args.identities)):
-                identities.extend([id.to_serialized_data() for id in args.identities])
-            args.user_assigned_identities = {id: {} for id in identities}
+                identities.extend([identity_id.to_serialized_data() for identity_id in args.identities])
+            args.user_assigned_identities = {identity_id: {} for identity_id in identities}
         elif args.sku == 'Premium':
             args.identity_type = "None"
             args.user_assigned_identities = None
