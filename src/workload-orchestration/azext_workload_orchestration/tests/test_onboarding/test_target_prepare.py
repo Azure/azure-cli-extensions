@@ -46,28 +46,14 @@ class TestTargetPreparePreFlight(unittest.TestCase):
 
 
 class TestTargetPrepareCertManager(unittest.TestCase):
-    """Test cert-manager detection."""
+    """Test cert-manager + trust-manager AIO extension install."""
 
-    def test_cert_manager_function_exists(self):
-        """Verify _ensure_cert_manager function is importable."""
-        from azext_workload_orchestration.onboarding.target_prepare import _ensure_cert_manager
-        self.assertTrue(callable(_ensure_cert_manager))
-
-
-class TestTargetPrepareHelm(unittest.TestCase):
-    """Test helm detection."""
-
-    @patch('subprocess.run')
-    def test_helm_available(self, mock_run):
-        from azext_workload_orchestration.onboarding.target_prepare import _is_helm_available
-        mock_run.return_value = MagicMock(returncode=0)
-        self.assertTrue(_is_helm_available())
-
-    @patch('subprocess.run')
-    def test_helm_not_available(self, mock_run):
-        from azext_workload_orchestration.onboarding.target_prepare import _is_helm_available
-        mock_run.side_effect = FileNotFoundError()
-        self.assertFalse(_is_helm_available())
+    def test_aio_extension_function_exists(self):
+        """Verify _ensure_cert_trust_manager_via_aio_extension is importable."""
+        from azext_workload_orchestration.onboarding.target_prepare import (
+            _ensure_cert_trust_manager_via_aio_extension,
+        )
+        self.assertTrue(callable(_ensure_cert_trust_manager_via_aio_extension))
 
 
 class TestTargetPrepareExtension(unittest.TestCase):

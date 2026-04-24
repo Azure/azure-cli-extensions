@@ -21,7 +21,6 @@ Usage:
 
 import json
 import os
-import subprocess
 import logging
 import sys
 
@@ -33,20 +32,16 @@ from azure.cli.core.util import send_raw_request
 
 from azext_workload_orchestration.onboarding.consts import (
     DEFAULT_CERT_MANAGER_VERSION,
-    CERT_MANAGER_MANIFEST_URL,
-    CERT_MANAGER_NAMESPACE,
-    CERT_MANAGER_WEBHOOK_DEPLOYMENT,
-    CERT_MANAGER_MIN_PODS,
-    CERT_MANAGER_WAIT_TIMEOUT,
-    TRUST_MANAGER_DEPLOYMENT,
-    TRUST_MANAGER_HELM_REPO,
-    TRUST_MANAGER_HELM_REPO_NAME,
-    TRUST_MANAGER_HELM_CHART,
+    AIO_PLATFORM_EXTENSION_TYPE,
+    AIO_PLATFORM_EXTENSION_NAME,
+    AIO_PLATFORM_EXTENSION_NAMESPACE,
+    AIO_PLATFORM_EXTENSION_SCOPE,
     DEFAULT_EXTENSION_TYPE,
     DEFAULT_EXTENSION_NAME,
     DEFAULT_RELEASE_TRAIN,
     DEFAULT_EXTENSION_NAMESPACE,
     DEFAULT_EXTENSION_SCOPE,
+    DEFAULT_STORAGE_SIZE,
 )
 from azext_workload_orchestration.onboarding.utils import (
     invoke_cli_command,
@@ -75,16 +70,15 @@ def target_prepare(
     extension_version=None,
     release_train=None,
     cert_manager_version=None,
-    skip_cert_manager=False,
-    skip_trust_manager=False,
     kube_config=None,
     kube_context=None,
     no_wait=False,
 ):
     """Prepare an Arc-connected K8s cluster for Workload Orchestration.
 
-    Installs cert-manager, trust-manager, WO extension, and creates a custom
-    location. Skips components that are already installed (idempotent).
+    Installs cert-manager + trust-manager (via the AIO platform Arc
+    extension), the WO extension, and creates a custom location.
+    Idempotent: skips components that are already installed.
     """
     extension_name = extension_name or DEFAULT_EXTENSION_NAME
     custom_location_name = custom_location_name or f"{cluster_name}-cl"
@@ -105,38 +99,26 @@ def target_prepare(
         _print_diagnostic_summary(step_results, cluster_name, resource_group)
         raise
 
-    # Step 1: cert-manager
+    # Step 1+2: cert-manager + trust-manager (single AIO Arc extension)
     try:
-        if skip_cert_manager:
-            print_step(1, TOTAL_STEPS, "cert-manager", "Skipped (--skip-cert-manager)")
-            step_results["cert-manager"] = "Skipped"
-        else:
-            _ensure_cert_manager(cert_manager_version, kube_config, kube_context)
-            step_results["cert-manager"] = "Succeeded"
+        _ensure_cert_trust_manager_via_aio_extension(
+            cmd, cluster_name, resource_group,
+            cert_manager_version, no_wait,
+        )
+        step_results["cert-manager"] = "Succeeded"
+        step_results["trust-manager"] = "Succeeded (bundled)"
+        print_step(
+            2, TOTAL_STEPS, "trust-manager",
+            "Bundled with cert-manager ✓"
+        )
     except Exception as exc:
         step_results["cert-manager"] = f"FAILED: {exc}"
-        logger.error("Step 1/4 failed (cert-manager): %s", exc)
-        _print_diagnostic_summary(step_results, cluster_name, resource_group)
-        raise CLIInternalError(
-            f"cert-manager installation failed: {exc}"
+        logger.error(
+            "Steps 1-2/4 failed (AIO cert/trust-manager): %s", exc
         )
-
-    # Step 2: trust-manager
-    try:
-        if skip_trust_manager:
-            print_step(2, TOTAL_STEPS, "trust-manager", "Skipped (--skip-trust-manager)")
-            step_results["trust-manager"] = "Skipped"
-        else:
-            _ensure_trust_manager(kube_config, kube_context)
-            step_results["trust-manager"] = "Succeeded"
-    except CLIInternalError:
-        raise  # Already has good error message (e.g., helm not installed)
-    except Exception as exc:
-        step_results["trust-manager"] = f"FAILED: {exc}"
-        logger.error("Step 2/4 failed (trust-manager): %s", exc)
         _print_diagnostic_summary(step_results, cluster_name, resource_group)
         raise CLIInternalError(
-            f"trust-manager installation failed: {exc}"
+            f"cert-manager/trust-manager installation failed: {exc}"
         )
 
     # Step 3: WO extension
@@ -144,7 +126,7 @@ def target_prepare(
         extension_id = _ensure_wo_extension(
             cmd, cluster_name, resource_group, extension_name,
             extension_version, release_train, no_wait,
-            kube_config, kube_context
+            kube_config, kube_context,
         )
         step_results["wo-extension"] = "Succeeded"
     except Exception as exc:
@@ -235,136 +217,81 @@ def _preflight_checks(cmd, cluster_name, resource_group):
 
 
 # ---------------------------------------------------------------------------
-# Step 1: cert-manager
+# Step 1+2: cert-manager + trust-manager via AIO Platform extension
 # ---------------------------------------------------------------------------
 
-def _ensure_cert_manager(version, kube_config, kube_context):
-    """Check if cert-manager is installed; install if missing."""
-    try:
-        from kubernetes import client, config as k8s_config
-        from kubernetes.client.rest import ApiException
-    except ImportError:
-        raise CLIInternalError(
-            "kubernetes Python package is required."
-        )
+def _ensure_cert_trust_manager_via_aio_extension(
+    cmd, cluster_name, resource_group, version, no_wait
+):
+    """Install cert-manager + trust-manager as an Arc k8s-extension.
 
-    # Load kubeconfig
+    Uses microsoft.iotoperations.platform which bundles cert-manager and
+    trust-manager. Idempotent: skips if an extension of that type already
+    exists on the cluster.
+    """
+    # Check existing extensions for a matching AIO platform extension
     try:
-        k8s_config.load_kube_config(
-            config_file=kube_config,
-            context=kube_context
+        extensions = invoke_cli_command(
+            cmd,
+            [
+                "k8s-extension", "list",
+                "-g", resource_group,
+                "--cluster-name", cluster_name,
+                "--cluster-type", "connectedClusters",
+            ]
         )
-    except Exception as exc:
-        raise CLIInternalError(
-            f"Failed to load kubeconfig: {exc}"
-        )
+    except CLIInternalError:
+        extensions = []
 
-    v1 = client.CoreV1Api()
+    existing = None
+    for ext in (extensions or []):
+        ext_type = (ext.get("extensionType", "") or "").lower()
+        if ext_type == AIO_PLATFORM_EXTENSION_TYPE.lower():
+            existing = ext
+            break
 
-    # Check if cert-manager namespace exists with running pods
-    try:
-        v1.read_namespace(CERT_MANAGER_NAMESPACE)
-        pods = v1.list_namespaced_pod(CERT_MANAGER_NAMESPACE)
-        running = [
-            p for p in pods.items
-            if p.status and p.status.phase == "Running"
-        ]
-        if len(running) >= CERT_MANAGER_MIN_PODS:
+    if existing:
+        ext_ver = existing.get("version", "unknown")
+        prov_state = (existing.get("provisioningState", "") or "").lower()
+        if prov_state == "succeeded":
             print_step(
-                1, TOTAL_STEPS, "cert-manager",
-                f"Already installed ✓ ({len(running)} pods running)"
+                1, TOTAL_STEPS, "cert-manager + trust-manager",
+                f"Already installed ✓ (AIO platform ext {ext_ver})"
             )
             return
         logger.info(
-            "cert-manager namespace exists but only %d/%d pods running. Reinstalling.",
-            len(running), CERT_MANAGER_MIN_PODS
-        )
-    except ApiException as exc:
-        if exc.status != 404:
-            raise CLIInternalError(f"Failed to check cert-manager: {exc}")
-        # 404 = namespace doesn't exist, proceed with install
-
-    # Install cert-manager
-    print_step(1, TOTAL_STEPS, f"cert-manager... Installing {version}")
-    _run_kubectl([
-        "apply", "-f",
-        CERT_MANAGER_MANIFEST_URL.format(version=version),
-        "--wait"
-    ], kube_config, kube_context)
-
-    # Wait for webhook to be ready
-    _run_kubectl([
-        "wait", "--for=condition=Available",
-        f"deployment/{CERT_MANAGER_WEBHOOK_DEPLOYMENT}",
-        "-n", CERT_MANAGER_NAMESPACE,
-        f"--timeout={CERT_MANAGER_WAIT_TIMEOUT}"
-    ], kube_config, kube_context)
-
-    print_step(1, TOTAL_STEPS, "cert-manager", f"Installed {version} ✓")
-
-
-# ---------------------------------------------------------------------------
-# Step 2: trust-manager
-# ---------------------------------------------------------------------------
-
-def _ensure_trust_manager(kube_config, kube_context):
-    """Check if trust-manager is installed; install via helm if missing."""
-    try:
-        from kubernetes import client, config as k8s_config
-        from kubernetes.client.rest import ApiException
-    except ImportError:
-        raise CLIInternalError(
-            "kubernetes Python package is required."
+            "Existing AIO platform extension in state '%s'; reinstalling.",
+            prov_state,
         )
 
-    # Load kubeconfig (may already be loaded from cert-manager step)
-    try:
-        k8s_config.load_kube_config(
-            config_file=kube_config,
-            context=kube_context
-        )
-    except Exception:
-        pass  # Already loaded, or will fail below
+    version_msg = f" version {version}" if version else ""
+    print_step(
+        1, TOTAL_STEPS,
+        f"cert-manager + trust-manager... Installing AIO platform ext{version_msg}"
+    )
 
-    apps_v1 = client.AppsV1Api()
+    create_args = [
+        "k8s-extension", "create",
+        "--resource-group", resource_group,
+        "--cluster-name", cluster_name,
+        "--name", AIO_PLATFORM_EXTENSION_NAME,
+        "--cluster-type", "connectedClusters",
+        "--extension-type", AIO_PLATFORM_EXTENSION_TYPE,
+        "--scope", AIO_PLATFORM_EXTENSION_SCOPE,
+        "--release-namespace", AIO_PLATFORM_EXTENSION_NAMESPACE,
+    ]
+    if version:
+        create_args.extend(["--version", version, "--auto-upgrade", "false"])
+    if no_wait:
+        create_args.append("--no-wait")
 
-    # Check if trust-manager deployment exists
-    try:
-        apps_v1.read_namespaced_deployment(
-            TRUST_MANAGER_DEPLOYMENT, CERT_MANAGER_NAMESPACE
-        )
-        print_step(2, TOTAL_STEPS, "trust-manager", "Already installed ✓")
-        return
-    except ApiException as exc:
-        if exc.status != 404:
-            raise CLIInternalError(f"Failed to check trust-manager: {exc}")
-        # 404 = not found, proceed with install
+    invoke_cli_command(cmd, create_args)
 
-    # Check if helm is available
-    if not _is_helm_available():
-        raise CLIInternalError(
-            "helm is required to install trust-manager."
-        )
-
-    # Install trust-manager via helm
-    print_step(2, TOTAL_STEPS, "trust-manager... Installing via helm")
-
-    _run_command([
-        "helm", "repo", "add",
-        TRUST_MANAGER_HELM_REPO_NAME,
-        TRUST_MANAGER_HELM_REPO,
-        "--force-update"
-    ])
-
-    _run_command([
-        "helm", "upgrade", TRUST_MANAGER_DEPLOYMENT,
-        TRUST_MANAGER_HELM_CHART,
-        "--install",
-        "--namespace", CERT_MANAGER_NAMESPACE,
-        "--wait"
-    ])
-
-    print_step(2, TOTAL_STEPS, "trust-manager", "Installed ✓")
+    suffix = " (--no-wait)" if no_wait else ""
+    print_step(
+        1, TOTAL_STEPS, "cert-manager + trust-manager",
+        f"Installed via AIO platform extension{suffix} ✓"
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -374,7 +301,7 @@ def _ensure_trust_manager(kube_config, kube_context):
 def _ensure_wo_extension(
     cmd, cluster_name, resource_group, extension_name,
     extension_version, release_train, no_wait,
-    kube_config=None, kube_context=None
+    kube_config=None, kube_context=None,
 ):
     """Check if WO extension is installed; install if missing."""
     # Check existing extensions
@@ -434,12 +361,14 @@ def _ensure_wo_extension(
     if no_wait:
         create_args.append("--no-wait")
 
-    # Auto-detect storage class and pass as config setting
+    # Auto-detect storage class and pass redis PVC config
     storage_class = _detect_storage_class(kube_config, kube_context)
     if storage_class:
         create_args.extend([
             "--configuration-settings",
             f"redis.persistentVolume.storageClass={storage_class}",
+            "--configuration-settings",
+            f"redis.persistentVolume.size={DEFAULT_STORAGE_SIZE}",
         ])
 
     result = invoke_cli_command(cmd, create_args)
@@ -588,63 +517,6 @@ def _write_extended_location_file(extended_location):
     with open(filepath, "w", encoding="utf-8") as f:
         json.dump(extended_location, f, indent=2)
     _eprint(f"\n  File written: {filepath}")
-
-
-def _run_kubectl(args, kube_config=None, kube_context=None):
-    """Run a kubectl command with optional kubeconfig/context."""
-    cmd_args = ["kubectl"]
-    if kube_config:
-        cmd_args.extend(["--kubeconfig", kube_config])
-    if kube_context:
-        cmd_args.extend(["--context", kube_context])
-    cmd_args.extend(args)
-
-    logger.debug("Running: %s", " ".join(cmd_args))
-    result = subprocess.run(  # pylint: disable=subprocess-run-check
-        cmd_args,
-        capture_output=True,
-        encoding="utf-8",
-        errors="replace",
-        timeout=600,
-    )
-    if result.returncode != 0:
-        error_msg = result.stderr.strip() or result.stdout.strip()
-        raise CLIInternalError(
-            f"kubectl command failed: {' '.join(args)}\n{error_msg}"
-        )
-    return result.stdout
-
-
-def _run_command(cmd_args):
-    """Run an arbitrary command (e.g., helm)."""
-    logger.debug("Running: %s", " ".join(cmd_args))
-    result = subprocess.run(  # pylint: disable=subprocess-run-check
-        cmd_args,
-        capture_output=True,
-        encoding="utf-8",
-        errors="replace",
-        timeout=600,
-    )
-    if result.returncode != 0:
-        error_msg = result.stderr.strip() or result.stdout.strip()
-        raise CLIInternalError(
-            f"Command failed: {' '.join(cmd_args)}\n{error_msg}"
-        )
-    return result.stdout
-
-
-def _is_helm_available():
-    """Check if helm is available in PATH."""
-    try:
-        result = subprocess.run(  # pylint: disable=subprocess-run-check
-            ["helm", "version", "--short"],
-            capture_output=True,
-            text=True,
-            timeout=10,
-        )
-        return result.returncode == 0
-    except FileNotFoundError:
-        return False
 
 
 def _get_sub_id(cmd):

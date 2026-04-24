@@ -57,10 +57,10 @@ long-summary: |
 
     Steps performed:
     1. Verify cluster is Arc-connected with required features enabled
-    2. Install cert-manager (if not present)
-    3. Install trust-manager (if not present)
-    4. Install WO extension (if not present)
-    5. Create custom location (if not present)
+    2. Install cert-manager + trust-manager via the AIO platform Arc extension
+       (microsoft.iotoperations.platform)
+    3. Install WO extension (if not present)
+    4. Create custom location (if not present)
 
     After running this command, use the output custom location ID with
     'az workload-orchestration target create --extended-location'.
@@ -69,8 +69,10 @@ examples:
     text: az workload-orchestration cluster init -c my-cluster -g my-rg -l eastus2euap
   - name: Initialize with a specific release train
     text: az workload-orchestration cluster init -c my-cluster -g my-rg -l eastus2euap --release-train dev
-  - name: Pin a specific extension version
+  - name: Pin a specific WO extension version
     text: az workload-orchestration cluster init -c my-cluster -g my-rg -l eastus2euap --extension-version 2.1.28
+  - name: Pin a specific AIO platform (cert-manager bundle) extension version
+    text: az workload-orchestration cluster init -c my-cluster -g my-rg -l eastus2euap --cert-manager-version 0.7.6
   - name: Custom location name
     text: az workload-orchestration cluster init -c my-cluster -g my-rg -l eastus2euap --custom-location-name my-cl
 """

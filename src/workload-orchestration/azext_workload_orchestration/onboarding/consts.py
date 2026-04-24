@@ -32,24 +32,18 @@ SERVICE_GROUP_RP = "Microsoft.Management"
 RELATIONSHIPS_RP = "Microsoft.Relationships"
 
 # ---------------------------------------------------------------------------
-# cert-manager Defaults
+# cert-manager + trust-manager Defaults (installed via AIO Platform extension)
 # ---------------------------------------------------------------------------
-DEFAULT_CERT_MANAGER_VERSION = "v1.15.3"
-CERT_MANAGER_MANIFEST_URL = (
-    "https://github.com/cert-manager/cert-manager/releases/download"
-    "/{version}/cert-manager.yaml"
-)
+DEFAULT_CERT_MANAGER_VERSION = None  # None = AIO extension default
 CERT_MANAGER_NAMESPACE = "cert-manager"
-CERT_MANAGER_WEBHOOK_DEPLOYMENT = "cert-manager-webhook"
-CERT_MANAGER_MIN_PODS = 3  # webhook, controller, cainjector
 
 # ---------------------------------------------------------------------------
-# trust-manager Defaults
+# AIO Platform Extension (bundles cert-manager + trust-manager)
 # ---------------------------------------------------------------------------
-TRUST_MANAGER_DEPLOYMENT = "trust-manager"
-TRUST_MANAGER_HELM_REPO = "https://charts.jetstack.io"
-TRUST_MANAGER_HELM_REPO_NAME = "jetstack"
-TRUST_MANAGER_HELM_CHART = "jetstack/trust-manager"
+AIO_PLATFORM_EXTENSION_TYPE = "microsoft.iotoperations.platform"
+AIO_PLATFORM_EXTENSION_NAME = "aio-certmgr"
+AIO_PLATFORM_EXTENSION_NAMESPACE = "cert-manager"
+AIO_PLATFORM_EXTENSION_SCOPE = "cluster"
 
 # ---------------------------------------------------------------------------
 # WO Extension Defaults
@@ -59,6 +53,7 @@ DEFAULT_EXTENSION_NAME = "wo-extension"
 DEFAULT_RELEASE_TRAIN = "stable"
 DEFAULT_EXTENSION_NAMESPACE = "workloadorchestration"
 DEFAULT_EXTENSION_SCOPE = "cluster"
+DEFAULT_STORAGE_SIZE = "20Gi"
 
 # ---------------------------------------------------------------------------
 # Limits & Timeouts
@@ -66,7 +61,6 @@ DEFAULT_EXTENSION_SCOPE = "cluster"
 MAX_HIERARCHY_NAME_LENGTH = 24  # Configuration resource name limit
 LRO_TIMEOUT_SECONDS = 600  # 10 minutes per LRO step
 LRO_DEFAULT_POLL_INTERVAL = 15  # seconds, overridden by Retry-After header
-CERT_MANAGER_WAIT_TIMEOUT = "300s"
 
 # ---------------------------------------------------------------------------
 # Default Target Specification (helm.v3)
