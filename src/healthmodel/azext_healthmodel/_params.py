@@ -11,41 +11,43 @@ from azure.cli.core.commands.validators import get_default_location_from_resourc
 
 
 def _load_shared_arguments(self):
-    with self.argument_context('cloud-health') as c:
+    with self.argument_context('healthmodel') as c:
         c.argument('resource_group_name', options_list=['--resource-group', '-g'],
                    help='Name of resource group.')
-        c.argument('health_model_name', options_list=['--health-model-name', '--model'],
-                   help='Name of the health model.')
-
-
-def _load_health_model_arguments(self):
-    with self.argument_context('cloud-health health-model') as c:
         c.argument('health_model_name', options_list=['--name', '-n'],
                    help='Name of the health model.')
         c.argument('location', arg_type=get_location_type(self.cli_ctx),
                    validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
 
-    with self.argument_context('cloud-health health-model create') as c:
+    # Sub-groups use --health-model-name/--model instead of --name
+    for sub in ('entity', 'signal-definition', 'relationship', 'auth-setting', 'discovery-rule'):
+        with self.argument_context(f'healthmodel {sub}') as c:
+            c.argument('health_model_name', options_list=['--health-model-name', '--model'],
+                       help='Name of the health model.')
+
+
+def _load_health_model_arguments(self):
+    with self.argument_context('healthmodel create') as c:
         c.argument('identity_type', options_list=['--identity-type'],
                    help='Type of managed identity. Allowed: None, SystemAssigned, UserAssigned, '
                         '"SystemAssigned,UserAssigned".')
 
-    with self.argument_context('cloud-health health-model update') as c:
+    with self.argument_context('healthmodel update') as c:
         c.argument('identity_type', options_list=['--identity-type'],
                    help='Type of managed identity.')
 
-    with self.argument_context('cloud-health health-model list') as c:
+    with self.argument_context('healthmodel list') as c:
         c.argument('resource_group_name', options_list=['--resource-group', '-g'],
                    help='Name of resource group. Omit to list across the subscription.')
 
 
 def _load_entity_arguments(self):
-    with self.argument_context('cloud-health entity') as c:
+    with self.argument_context('healthmodel entity') as c:
         c.argument('entity_name', options_list=['--name', '-n'],
                    help='Name of the entity.')
 
-    with self.argument_context('cloud-health entity create') as c:
+    with self.argument_context('healthmodel entity create') as c:
         c.argument('display_name', help='Display name of the entity.')
         c.argument('impact', help='Impact level: Standard, Limited, or Suppressed.')
         c.argument('health_objective', type=float,
@@ -55,16 +57,16 @@ def _load_entity_arguments(self):
         c.argument('canvas_y', type=float, help='Canvas Y position.')
         c.argument('tags', tags_type)
 
-    with self.argument_context('cloud-health entity get-history') as c:
+    with self.argument_context('healthmodel entity get-history') as c:
         c.argument('start_at', help='Start time (ISO 8601). Defaults to 24h ago.')
         c.argument('end_at', help='End time (ISO 8601). Defaults to now.')
 
-    with self.argument_context('cloud-health entity get-signal-history') as c:
+    with self.argument_context('healthmodel entity get-signal-history') as c:
         c.argument('signal_name', help='Name of the signal to get history for.')
         c.argument('start_at', help='Start time (ISO 8601).')
         c.argument('end_at', help='End time (ISO 8601).')
 
-    with self.argument_context('cloud-health entity ingest') as c:
+    with self.argument_context('healthmodel entity ingest') as c:
         c.argument('signal_name', help='Name of the signal to ingest health report for.')
         c.argument('health_state', help='Health state: Healthy, Degraded, Unhealthy, Unknown.')
         c.argument('value', type=float, help='Signal value.')
@@ -73,11 +75,11 @@ def _load_entity_arguments(self):
 
 
 def _load_signal_definition_arguments(self):
-    with self.argument_context('cloud-health signal-definition') as c:
+    with self.argument_context('healthmodel signal-definition') as c:
         c.argument('signal_definition_name', options_list=['--name', '-n'],
                    help='Name of the signal definition.')
 
-    with self.argument_context('cloud-health signal-definition create') as c:
+    with self.argument_context('healthmodel signal-definition create') as c:
         c.argument('signal_kind', help='Signal kind: AzureResourceMetric, LogAnalyticsQuery, '
                                        'PrometheusMetricsQuery.')
         c.argument('display_name', help='Display name.')
@@ -88,11 +90,11 @@ def _load_signal_definition_arguments(self):
 
 
 def _load_relationship_arguments(self):
-    with self.argument_context('cloud-health relationship') as c:
+    with self.argument_context('healthmodel relationship') as c:
         c.argument('relationship_name', options_list=['--name', '-n'],
                    help='Name of the relationship.')
 
-    with self.argument_context('cloud-health relationship create') as c:
+    with self.argument_context('healthmodel relationship create') as c:
         c.argument('parent_entity_name', help='Name of the parent entity.')
         c.argument('child_entity_name', help='Name of the child entity.')
         c.argument('display_name', help='Display name of the relationship.')
@@ -100,11 +102,11 @@ def _load_relationship_arguments(self):
 
 
 def _load_auth_setting_arguments(self):
-    with self.argument_context('cloud-health auth-setting') as c:
+    with self.argument_context('healthmodel auth-setting') as c:
         c.argument('authentication_setting_name', options_list=['--name', '-n'],
                    help='Name of the authentication setting.')
 
-    with self.argument_context('cloud-health auth-setting create') as c:
+    with self.argument_context('healthmodel auth-setting create') as c:
         c.argument('authentication_kind', help='Authentication kind. Currently: ManagedIdentity.')
         c.argument('managed_identity_name',
                    help='Managed identity name ("SystemAssigned" or full resource ID).')
@@ -112,11 +114,11 @@ def _load_auth_setting_arguments(self):
 
 
 def _load_discovery_rule_arguments(self):
-    with self.argument_context('cloud-health discovery-rule') as c:
+    with self.argument_context('healthmodel discovery-rule') as c:
         c.argument('discovery_rule_name', options_list=['--name', '-n'],
                    help='Name of the discovery rule.')
 
-    with self.argument_context('cloud-health discovery-rule create') as c:
+    with self.argument_context('healthmodel discovery-rule create') as c:
         c.argument('authentication_setting', help='Name of the authentication setting to use.')
         c.argument('discover_relationships', help='Enable relationship discovery: Enabled or Disabled.')
         c.argument('add_recommended_signals', help='Add recommended signals: Enabled or Disabled.')

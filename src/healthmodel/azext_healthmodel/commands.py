@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azext_cloud_health._client_factory import (
+from azext_healthmodel._client_factory import (
     cf_health_models,
     cf_entities,
     cf_signal_definitions,
@@ -16,7 +16,7 @@ from azext_cloud_health._client_factory import (
 def load_command_table(self, _):
 
     with self.command_group(
-        'cloud-health health-model',
+        'healthmodel',
         client_factory=cf_health_models,
         is_preview=True,
     ) as g:
@@ -27,7 +27,7 @@ def load_command_table(self, _):
         g.custom_command('delete', 'health_model_delete', supports_no_wait=True, confirmation=True)
 
     with self.command_group(
-        'cloud-health entity',
+        'healthmodel entity',
         client_factory=cf_entities,
         is_preview=True,
     ) as g:
@@ -40,7 +40,7 @@ def load_command_table(self, _):
         g.custom_command('ingest', 'entity_ingest')
 
     with self.command_group(
-        'cloud-health signal-definition',
+        'healthmodel signal-definition',
         client_factory=cf_signal_definitions,
         is_preview=True,
     ) as g:
@@ -50,7 +50,7 @@ def load_command_table(self, _):
         g.custom_command('delete', 'signal_definition_delete', supports_no_wait=True, confirmation=True)
 
     with self.command_group(
-        'cloud-health relationship',
+        'healthmodel relationship',
         client_factory=cf_relationships,
         is_preview=True,
     ) as g:
@@ -60,7 +60,7 @@ def load_command_table(self, _):
         g.custom_command('delete', 'relationship_delete', supports_no_wait=True, confirmation=True)
 
     with self.command_group(
-        'cloud-health auth-setting',
+        'healthmodel auth-setting',
         client_factory=cf_authentication_settings,
         is_preview=True,
     ) as g:
@@ -70,7 +70,7 @@ def load_command_table(self, _):
         g.custom_command('delete', 'auth_setting_delete', supports_no_wait=True, confirmation=True)
 
     with self.command_group(
-        'cloud-health discovery-rule',
+        'healthmodel discovery-rule',
         client_factory=cf_discovery_rules,
         is_preview=True,
     ) as g:

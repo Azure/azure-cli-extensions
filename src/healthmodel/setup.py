@@ -25,17 +25,17 @@ DEPENDENCIES = [
 ]
 
 setup(
-    name='cloud-health',
+    name='healthmodel',
     version=VERSION,
     description='Microsoft Azure Command-Line Tools CloudHealth Extension',
     long_description='CLI extension for Microsoft.CloudHealth resource provider.',
     license='MIT',
     author='Microsoft Corporation',
     author_email='azpysdkhelp@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/cloud-health',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/healthmodel',
     classifiers=CLASSIFIERS,
     packages=find_packages(),
     install_requires=DEPENDENCIES,
-    package_data={'azext_cloud_health': ['azext_metadata.json']},
+    package_data={'azext_healthmodel': ['azext_metadata.json']},
     python_requires='>=3.10',
 )
