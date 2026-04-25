@@ -275,6 +275,19 @@ class Terminal:
                 termios.tcsetattr(fd, termios.TCSADRAIN, self.unix_original_mode)
 
 
+def _decode_ws_message(message):
+    """Decode a WebSocket message payload for terminal display.
+
+    Per RFC 6455, websocket-client delivers text-opcode frames as ``str``
+    and binary-opcode frames as ``bytes``/``bytearray``. The Serial Console
+    stream is semantically a text TTY regardless of the opcode, so decode
+    binary payloads as UTF-8 with replacement for any stray bytes.
+    """
+    if isinstance(message, (bytes, bytearray)):
+        return message.decode("utf-8", errors="replace")
+    return message
+
+
 class SerialConsole:
     def __init__(self, cmd, resource_group_name, vm_vmss_name, vmss_instanceid):
         _, storage_account_region = get_region_from_storage_account(cmd.cli_ctx, resource_group_name,
@@ -438,6 +451,7 @@ class SerialConsole:
                 GV.loading = False
                 PC.clear_screen()
             else:
+                message = _decode_ws_message(message)
                 PC.print(message)
 
         def on_error(*_):
