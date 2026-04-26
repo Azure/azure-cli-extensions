@@ -18,15 +18,17 @@ from azure.cli.core.azclierror import CLIInternalError, ValidationError
 class Install(AAZCommand):
     """Install a solution on a target.
 
-    When invoked with --solution-template-version-id (or --solution-template-name + --solution-template-version),
+    When invoked with --solution-template-name + --solution-template-version,
     runs the full deployment chain: config-set (optional) → review → publish → install.
 
     When invoked with --solution-version-id only (old flow), runs direct install.
 
     :example: Full deploy (friendly name)
         az workload-orchestration target install -g rg1 -n target1 --solution-template-name tmpl --solution-template-version 1.0.0
+    :example: Full deploy from a different RG
+        az workload-orchestration target install -g rg1 -n target1 --solution-template-name tmpl --solution-template-version 1.0.0 --solution-template-rg shared-rg
     :example: Full deploy with config
-        az workload-orchestration target install -g rg1 -n target1 --solution-template-name tmpl --stv 1.0.0 --config values.yaml --config-template-rg rg1 --config-template-name tmpl --ct-version 1.0.0
+        az workload-orchestration target install -g rg1 -n target1 --solution-template-name tmpl --solution-template-version 1.0.0 --config values.yaml
     :example: Direct install (old flow)
         az workload-orchestration target install -g rg1 -n target1 --solution-version-id /subscriptions/.../solutionVersions/sv1
     """
@@ -76,18 +78,13 @@ class Install(AAZCommand):
         )
 
         # New flow: full deploy chain
-        _args_schema.solution_template_version_id = AAZStrArg(
-            options=["--solution-template-version-id", "-v"],
-            arg_group="Deploy",
-            help="Full ARM ID of the solution template version. Triggers full deploy chain.",
-        )
         _args_schema.solution_template_name = AAZStrArg(
             options=["--solution-template-name"],
             arg_group="Deploy",
             help="Name of the solution template. Use with --solution-template-version.",
         )
         _args_schema.solution_template_version = AAZStrArg(
-            options=["--solution-template-version", "--version"],
+            options=["--solution-template-version", "--version", "-v"],
             arg_group="Deploy",
             help="Version of the solution template (e.g., 1.0.0).",
         )
@@ -115,17 +112,14 @@ class Install(AAZCommand):
     def pre_operations(self):
         """If template args provided, run config-set → review → publish before install."""
         args = self.ctx.args
-        has_template = (
-            args.solution_template_version_id
-            or args.solution_template_name
-        )
+        has_template = bool(args.solution_template_name)
         has_direct = args.solution_version_id
 
         # Validate: need either template args OR solution-version-id
         if not has_template and not has_direct:
             raise ValidationError(
-                "Provide either --solution-template-version-id (or --solution-template-name + "
-                "--solution-template-version) for full deploy, or --solution-version-id for direct install."
+                "Provide either --solution-template-name + --solution-template-version "
+                "for full deploy, or --solution-version-id for direct install."
             )
 
         if has_template and has_direct:
@@ -151,7 +145,6 @@ class Install(AAZCommand):
             cmd=cmd_proxy,
             resource_group=str(args.resource_group),
             target_name=str(args.target_name),
-            solution_template_version_id=str(args.solution_template_version_id) if args.solution_template_version_id else None,
             solution_template_name=str(args.solution_template_name) if args.solution_template_name else None,
             solution_template_version=str(args.solution_template_version) if args.solution_template_version else None,
             solution_template_rg=str(args.solution_template_rg) if args.solution_template_rg else None,
@@ -165,11 +158,7 @@ class Install(AAZCommand):
     def post_operations(self):
         # Print Install ✓ after AAZ LRO completes (only when deploy chain was used)
         args = self.ctx.args
-        has_template = (
-            args.solution_template_version_id
-            or args.solution_template_name
-        )
-        if has_template:
+        if args.solution_template_name:
             import sys
             print("└── Install ✓\n", file=sys.stderr)
 

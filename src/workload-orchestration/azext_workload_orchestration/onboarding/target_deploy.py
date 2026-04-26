@@ -13,20 +13,21 @@ Replaces 3 manual commands:
 Optionally prepends config-set (step 0) when --config is provided.
 
 Usage:
-    # Friendly name
+    # Friendly name (template lives in target's RG)
     az workload-orchestration target deploy \\
         -g my-rg -n my-target \\
         --solution-template-name tmpl --solution-template-version 1.0.0
 
-    # ARM ID
+    # Friendly name with explicit template RG
     az workload-orchestration target deploy \\
         -g my-rg -n my-target \\
-        --solution-template-version-id <ARM_ID>
+        --solution-template-name tmpl --solution-template-version 1.0.0 \\
+        --solution-template-rg shared-rg
 
     # With config
     az workload-orchestration target deploy \\
         -g my-rg -n my-target \\
-        --solution-template-version-id <ARM_ID> \\
+        --solution-template-name tmpl --solution-template-version 1.0.0 \\
         --config values.yaml \\
         --config-template-rg rg --config-template-name tmpl --config-template-version 1.0.0
 """
@@ -54,9 +55,9 @@ def target_deploy(
     cmd,
     resource_group,
     target_name,
-    solution_template_version_id=None,
     solution_template_name=None,
     solution_template_version=None,
+    solution_template_rg=None,
     config=None,
     config_hierarchy_id=None,
     config_template_rg=None,
@@ -71,9 +72,8 @@ def target_deploy(
 
     # --- Resolve solution-template-version-id ---
     solution_template_version_id = _resolve_template_version_id(
-        solution_template_version_id, solution_template_name,
-        solution_template_version, None,
-        resource_group, sub_id,
+        solution_template_name, solution_template_version,
+        solution_template_rg, resource_group, sub_id,
     )
 
     base_url = (
@@ -144,7 +144,6 @@ def target_deploy_pre_install(
     cmd,
     resource_group,
     target_name,
-    solution_template_version_id=None,
     solution_template_name=None,
     solution_template_version=None,
     solution_template_rg=None,
@@ -161,9 +160,8 @@ def target_deploy_pre_install(
     sub_id = _get_subscription_id(cmd)
 
     solution_template_version_id = _resolve_template_version_id(
-        solution_template_version_id, solution_template_name,
-        solution_template_version, solution_template_rg,
-        resource_group, sub_id,
+        solution_template_name, solution_template_version,
+        solution_template_rg, resource_group, sub_id,
     )
 
     base_url = (
@@ -192,18 +190,6 @@ def target_deploy_pre_install(
         ct_rg = solution_template_rg or resource_group
         ct_name = solution_template_name
         ct_version = solution_template_version
-
-        # If using ARM ID, extract name/version/rg from it
-        if not ct_name and solution_template_version_id:
-            parts = solution_template_version_id.strip("/").split("/")
-            # .../resourceGroups/{rg}/providers/Microsoft.Edge/solutionTemplates/{name}/versions/{ver}
-            for i, part in enumerate(parts):
-                if part.lower() == "resourcegroups" and i + 1 < len(parts):
-                    ct_rg = parts[i + 1]
-                elif part.lower() == "solutiontemplates" and i + 1 < len(parts):
-                    ct_name = parts[i + 1]
-                elif part.lower() == "versions" and i + 1 < len(parts):
-                    ct_version = parts[i + 1]
 
         _handle_config_set(
             cmd, config, None, ct_rg,
@@ -242,37 +228,26 @@ def _get_subscription_id(cmd):
 
 
 def _resolve_template_version_id(
-    arm_id, template_name, template_version, template_rg,
+    template_name, template_version, template_rg,
     default_rg, sub_id,
 ):
-    """Resolve solution-template-version-id from friendly name or ARM ID.
+    """Resolve solution-template-version-id from the friendly-name args.
 
-    When using friendly name, template_rg defaults to default_rg (target's RG).
+    When template_rg is not provided, defaults to default_rg (target's RG).
     """
-    if arm_id and template_name:
+    if not template_name:
         raise ValidationError(
-            "Provide either --solution-template-version-id OR "
-            "(--solution-template-name + --solution-template-version), not both."
+            "--solution-template-name is required for full deploy."
         )
-
-    if arm_id:
-        return arm_id
-
-    if template_name:
-        if not template_version:
-            raise ValidationError(
-                "--solution-template-version is required when using --solution-template-name."
-            )
-        rg = template_rg or default_rg
-        return (
-            f"/subscriptions/{sub_id}/resourceGroups/{rg}"
-            f"/providers/Microsoft.Edge/solutionTemplates/{template_name}"
-            f"/versions/{template_version}"
+    if not template_version:
+        raise ValidationError(
+            "--solution-template-version is required when using --solution-template-name."
         )
-
-    raise ValidationError(
-        "Provide either --solution-template-version-id or "
-        "(--solution-template-name + --solution-template-version)."
+    rg = template_rg or default_rg
+    return (
+        f"/subscriptions/{sub_id}/resourceGroups/{rg}"
+        f"/providers/Microsoft.Edge/solutionTemplates/{template_name}"
+        f"/versions/{template_version}"
     )
 
 

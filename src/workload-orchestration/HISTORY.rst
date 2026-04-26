@@ -18,7 +18,7 @@ Release History
 * Enhanced ``az workload-orchestration target create``:
   * Added ``--service-group`` argument to auto-link target to a Service Group after creation
 * Enhanced ``az workload-orchestration target install``:
-  * Added ``--solution-template-version-id``, ``--solution-template-name``, ``--solution-template-version`` for full deploy chain (review → publish → install)
+  * Added ``--solution-template-name``, ``--solution-template-version`` (alias ``-v``), and ``--solution-template-rg`` for full deploy chain (review → publish → install)
   * Added ``--configuration`` to set config values before review (auto-derives config template args)
   * Existing ``--solution-version-id`` direct install flow unchanged
 
