@@ -41,6 +41,5 @@ setup(
     classifiers=CLASSIFIERS,
     package_data={'azext_alias': ['azext_metadata.json']},
     packages=find_packages(exclude=["azext_alias.tests"]),
-    install_requires=DEPENDENCIES,
-    urls='https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/arm-compute/quickstart-templates/aliases.json',
+    install_requires=DEPENDENCIES
 )
