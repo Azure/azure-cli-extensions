@@ -3,7 +3,7 @@
 Release History
 ===============
 1.10.0
-+++++
+++++++
 * Bumped API version to 2026-03-01 for backup-instance create, update, validate-for-backup, and validate-for-update commands.
 * `az dataprotection backup-instance initialize-backupconfig`: New parameters `--auto-protection` and `--exclusion-prefixes` to enable automatic protection of new blob containers for AzureBlob and AzureDataLakeStorage datasource types, with optional exclusion rules by container name prefix.
 
