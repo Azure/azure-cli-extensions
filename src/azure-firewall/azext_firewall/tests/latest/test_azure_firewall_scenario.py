@@ -1014,6 +1014,21 @@ class AzureFirewallScenario(ScenarioTest):
                      self.check('length(identity.userAssignedIdentities)', 1)
                     ])
 
+        self.cmd('network firewall policy update -g {rg} -n {policy_name} --sku Premium '
+                 '--explicit-proxy enable-explicit-proxy=true http-port=85 enable-pac-file=true pac-file-port=122 pac-file={url} '
+                 '--cert-name {certificate_name} --key-vault-secret-id {key_vault_url} '
+                 '--identities {explicit_proxy_identity} --identity "{tls_identity}"',
+                 checks=[
+                     self.check('name', '{policy_name}'),
+                     self.check('explicitProxy.enableExplicitProxy', True),
+                     self.check('explicitProxy.enablePacFile', True),
+                     self.check('explicitProxy.httpPort', 85),
+                     self.check('explicitProxy.pacFile', '{url}'),
+                     self.check('explicitProxy.pacFilePort', 122),
+                     self.check('identity.type', 'UserAssigned'),
+                     self.check('length(identity.userAssignedIdentities)', 2)
+                    ])
+
 
     @ResourceGroupPreparer(name_prefix='test_firewall_with_dns_proxy_')
     def test_firewall_with_dns_proxy(self, resource_group):

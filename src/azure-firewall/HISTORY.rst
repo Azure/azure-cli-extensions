@@ -3,6 +3,11 @@
 Release History
 ===============
 
+2.2.0
+++++++
+* `az network firewall policy create` : Add parameter `--identities` to support multiple MSIs
+* `az network firewall policy update` : Add parameter `--identities` to support multiple MSIs
+
 2.1.1
 ++++++
 * Update AzureFirewall model to support extended location.
