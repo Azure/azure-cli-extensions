@@ -23028,14 +23028,15 @@ spec:
             'ssh_key_value': self.generate_ssh_keys()
         })
 
+        self.cmd('feature register --namespace Microsoft.ContainerService --name VMsAgentPoolAutoscalePreview')
+
         # create cluster with autoscaler enabled
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
                      '--ssh-key-value={ssh_key_value} ' \
                      '--vm-set-type VirtualMachines ' \
                      '--enable-cluster-autoscaler ' \
                      '--node-vm-size={node_vm_size1} ' \
-                     '--min-count 1 --max-count 3 ' \
-                     '--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/VMsAgentPoolAutoscalePreview'
+                     '--min-count 1 --max-count 3'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check("agentPoolProfiles[0].type", "VirtualMachines"),
@@ -23049,8 +23050,7 @@ spec:
                            '--vm-set-type VirtualMachines --mode user ' \
                            '--node-vm-size {node_vm_size1} ' \
                            '--enable-cluster-autoscaler ' \
-                           '--min-count 0 --max-count 3 ' \
-                           '--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/VMsAgentPoolAutoscalePreview'
+                           '--min-count 0 --max-count 3'
         self.cmd(add_nodepool_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('virtualMachinesProfile.scale.autoscale[0].size', 'standard_d2s_v3'),
@@ -23062,8 +23062,7 @@ spec:
         update_autoscale_cmd = 'aks nodepool auto-scale update -g {resource_group} --cluster-name {name} -n {nodepool_name} ' \
                                '--current-node-vm-size {node_vm_size1} ' \
                                '--node-vm-size {node_vm_size2} ' \
-                               '--min-count 1 --max-count 5 ' \
-                               '--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/VMsAgentPoolAutoscalePreview'
+                               '--min-count 1 --max-count 5'
         self.cmd(update_autoscale_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('virtualMachinesProfile.scale.autoscale[0].size', 'standard_d4s_v3'),
@@ -23074,8 +23073,7 @@ spec:
         # add a second autoscale profile
         add_autoscale_cmd = 'aks nodepool auto-scale add -g {resource_group} --cluster-name {name} -n {nodepool_name} ' \
                             '--node-vm-size {node_vm_size1} ' \
-                            '--min-count 1 --max-count 3 ' \
-                            '--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/VMsAgentPoolAutoscalePreview'
+                            '--min-count 1 --max-count 3'
         self.cmd(add_autoscale_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('virtualMachinesProfile.scale.autoscale[1].size', 'standard_d2s_v3'),
@@ -23085,15 +23083,13 @@ spec:
 
         # delete the second autoscale profile
         delete_autoscale_cmd = 'aks nodepool auto-scale delete -g {resource_group} --cluster-name {name} -n {nodepool_name} ' \
-                               '--current-node-vm-size {node_vm_size1} ' \
-                               '--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/VMsAgentPoolAutoscalePreview'
+                               '--current-node-vm-size {node_vm_size1}'
         np = self.cmd(delete_autoscale_cmd).get_output_in_json()
         assert len(np["virtualMachinesProfile"]["scale"]["autoscale"]) == 1
 
         # disable autoscaler (auto to manual)
         disable_autoscaler_cmd = 'aks nodepool update -g {resource_group} --cluster-name {name} -n {nodepool_name} ' \
-                                 '--disable-cluster-autoscaler ' \
-                                 '--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/VMsAgentPoolAutoscalePreview'
+                                 '--disable-cluster-autoscaler'
         self.cmd(disable_autoscaler_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('virtualMachinesProfile.scale.manual[0].size', 'standard_d4s_v3'),
@@ -23101,8 +23097,7 @@ spec:
 
         # enable autoscaler (manual to auto)
         enable_autoscaler_cmd = 'aks nodepool update -g {resource_group} --cluster-name {name} -n {nodepool_name} ' \
-                                '--enable-cluster-autoscaler --min-count 1 --max-count 3 ' \
-                                '--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/VMsAgentPoolAutoscalePreview'
+                                '--enable-cluster-autoscaler --min-count 1 --max-count 3'
         self.cmd(enable_autoscaler_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('virtualMachinesProfile.scale.autoscale[0].size', 'standard_d4s_v3'),
