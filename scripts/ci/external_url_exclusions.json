@@ -1,0 +1,64 @@
+{
+  "tool": "External URL Validation",
+  "exclusions": [
+    {
+      "file": [
+        "*.md",
+        "*.rst",
+        "docs/*",
+        "*/doc/*",
+        "*/docs/*"
+      ],
+      "_justification": "Documentation content may intentionally reference external URLs and is excluded from this source-code-focused validation."
+    },
+    {
+      "file": [
+        "scripts/*"
+      ],
+      "_justification": "CI and tooling scripts are maintained separately from extension source content and are excluded to avoid self-flagging the validator configuration."
+    },
+    {
+      "file": [
+        "*/tests/recordings/*",
+        "*/tests/*.py",
+        "*/tests/*.json",
+        "*/tests/*.yaml",
+        "*/tests/*.yml",
+        "*/tests/*/recordings/*",
+        "*/tests/*/test_*.py",
+        "*/tests/*/*.json",
+        "*/tests/*/*.yaml",
+        "*/tests/*/*.yml"
+      ],
+      "_justification": "Test sources, recordings, and test data can contain external sample URLs that are not shipped as runtime source dependencies."
+    },
+    {
+      "file": [
+        "src/automation/azext_automation/generated/_help.py"
+      ],
+      "_justification": "Generated help content contains a preserved sample raw GitHub URL and is excluded as generated documentation output."
+    },
+    {
+      "file": [
+        "src/custom-providers/azext_custom_providers/_help.py"
+      ],
+      "_justification": "Custom Providers help text documents the service contract for validation specifications and intentionally references raw GitHub as an example input."
+    },
+    {
+      "file": [
+        "src/custom-providers/azext_custom_providers/vendored_sdks/customproviders/models/_models.py",
+        "src/custom-providers/azext_custom_providers/vendored_sdks/customproviders/models/_models_py3.py"
+      ],
+      "_justification": "Vendored SDK model validation regexes intentionally describe the accepted raw GitHub URL format and are not outbound source references."
+    },
+    {
+      "file": [
+        "src/machinelearningservices/azext_mlv2/manual/_help/_data_help.py"
+      ],
+      "_justification": "Manual help content includes a public sample dataset URL for documentation purposes and is excluded from runtime source validation."
+    }
+  ]
+}
+
+
+
