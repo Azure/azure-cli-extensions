@@ -136,31 +136,49 @@ def _validate_hierarchy_names(node):
 # ---------------------------------------------------------------------------
 
 def _create_rg_hierarchy(cmd, resource_group, config_location, name, level):
-    """Create Site + Configuration + ConfigurationReference in a resource group."""
+    """Create Site + Configuration + ConfigurationReference in a resource group.
+
+    A ResourceGroup hierarchy supports exactly ONE site per RG. If a site
+    already exists (any name), reuse it and create/refresh Config + ConfigRef
+    on top. Otherwise create a new site with the requested name.
+    """
     sub_id = _get_sub_id(cmd)
 
-    site_id = (
-        f"/subscriptions/{sub_id}/resourceGroups/{resource_group}"
-        f"/providers/{EDGE_RP_NAMESPACE}/sites/{name}"
-    )
-    config_name = f"{name}Config"
+    _eprint(f"\nCreating Hierarchy in Resource Group '{resource_group}'...\n")
+
+    # Find-or-create site at RG scope (1 site per RG max)
+    existing = _find_existing_site_in_rg(cmd, sub_id, resource_group)
+    if existing:
+        site_name, site_id = existing
+        if site_name != name:
+            _eprint(
+                f"[i] Reusing existing site '{site_name}' in Resource Group '{resource_group}' "
+                f"(requested name '{name}' ignored — RG allows only one site)."
+            )
+        else:
+            _eprint(f"[i] Reusing existing site '{site_name}'.")
+        effective_name = site_name
+    else:
+        effective_name = name
+        site_id = (
+            f"/subscriptions/{sub_id}/resourceGroups/{resource_group}"
+            f"/providers/{EDGE_RP_NAMESPACE}/sites/{effective_name}"
+        )
+        _eprint(f"{effective_name} ({level})")
+        _arm_put(cmd, f"{ARM_ENDPOINT}{site_id}", {
+            "properties": {
+                "displayName": effective_name,
+                "description": effective_name,
+                "labels": {"level": level},
+            }
+        }, SITE_API_VERSION)
+        _eprint(f"├── Site '{effective_name}' ✓")
+
+    config_name = f"{effective_name}Config"
     config_id = (
         f"/subscriptions/{sub_id}/resourceGroups/{resource_group}"
         f"/providers/{EDGE_RP_NAMESPACE}/configurations/{config_name}"
     )
-
-    _eprint(f"\nCreating hierarchy in RG '{resource_group}'...\n")
-
-    # Step 1: Create Site
-    _eprint(f"{name} ({level})")
-    _arm_put(cmd, f"{ARM_ENDPOINT}{site_id}", {
-        "properties": {
-            "displayName": name,
-            "description": name,
-            "labels": {"level": level},
-        }
-    }, SITE_API_VERSION)
-    _eprint(f"├── Site '{name}' ✓")
 
     # Step 2: Create Configuration
     _arm_put(cmd, f"{ARM_ENDPOINT}{config_id}", {
@@ -184,7 +202,7 @@ def _create_rg_hierarchy(cmd, resource_group, config_location, name, level):
 
     return {
         "type": "ResourceGroup",
-        "name": name,
+        "name": effective_name,
         "level": level,
         "resourceGroup": resource_group,
         "siteId": site_id,
@@ -262,19 +280,30 @@ def _create_sg_level(  # pylint: disable=too-many-arguments
     # Wait for RBAC propagation silently
     _wait_for_sg_rbac(cmd, config_location, sg_id, name)
 
-    # 2. Create Site
-    site_id = f"{sg_id}/providers/{EDGE_RP_NAMESPACE}/sites/{name}"
-    _arm_put_regional(cmd, config_location, site_id, {
-        "properties": {
-            "displayName": name,
-            "description": name,
-            "labels": {"level": level},
-        }
-    }, SITE_API_VERSION)
-    results.append({"type": "Site", "name": name, "level": level, "id": site_id})
+    # 2. Find-or-create Site under this SG (1 site per SG max)
+    existing_sg_site = _find_existing_site_in_sg(cmd, config_location, sg_id)
+    if existing_sg_site:
+        site_name, site_id = existing_sg_site
+        if site_name != name:
+            _eprint(
+                f"{child_prefix}[i] Reusing existing site '{site_name}' under SG '{name}' "
+                f"(requested name '{name}' ignored — SG allows only one site)."
+            )
+        effective_site_name = site_name
+    else:
+        effective_site_name = name
+        site_id = f"{sg_id}/providers/{EDGE_RP_NAMESPACE}/sites/{effective_site_name}"
+        _arm_put_regional(cmd, config_location, site_id, {
+            "properties": {
+                "displayName": effective_site_name,
+                "description": effective_site_name,
+                "labels": {"level": level},
+            }
+        }, SITE_API_VERSION)
+    results.append({"type": "Site", "name": effective_site_name, "level": level, "id": site_id})
 
     # 3. Create Configuration
-    config_name = f"{name}Config"
+    config_name = f"{effective_site_name}Config"
     config_id = (
         f"/subscriptions/{sub_id}/resourceGroups/{resource_group}"
         f"/providers/{EDGE_RP_NAMESPACE}/configurations/{config_name}"
@@ -296,8 +325,8 @@ def _create_sg_level(  # pylint: disable=too-many-arguments
     # Show resources created under this node
     children = node.get("children")
     has_children = children is not None
-    _eprint(f"{child_prefix}├── Site ✓")
-    _eprint(f"{child_prefix}├── Configuration ✓")
+    _eprint(f"{child_prefix}├── Site '{effective_site_name}' ✓")
+    _eprint(f"{child_prefix}├── Configuration '{config_name}' ✓")
     if has_children:
         _eprint(f"{child_prefix}├── ConfigurationReference ✓")
     else:
@@ -343,6 +372,91 @@ def _arm_put(cmd, url, body, api_version):
         headers=["Content-Type=application/json"],
         resource=ARM_ENDPOINT,
     )
+
+
+def _arm_get(cmd, url, api_version):
+    """GET from (global) ARM endpoint and return parsed JSON, or None on 404."""
+    full_url = f"{url}?api-version={api_version}"
+    try:
+        resp = send_raw_request(
+            cmd.cli_ctx, "GET", full_url,
+            resource=ARM_ENDPOINT,
+        )
+    except Exception as exc:  # pylint: disable=broad-except
+        if "ResourceNotFound" in str(exc) or "404" in str(exc):
+            return None
+        logger.debug("GET %s failed: %s", full_url, exc)
+        return None
+    try:
+        return resp.json()
+    except Exception as exc:  # pylint: disable=broad-except
+        logger.debug("GET %s json parse failed: %s", full_url, exc)
+        try:
+            import json as _json
+            return _json.loads(resp.content)
+        except Exception:  # pylint: disable=broad-except
+            return None
+
+
+def _check_rg_has_no_other_site(cmd, sub_id, resource_group, intended_name):  # legacy, kept for back-compat callers
+    site = _find_existing_site_in_rg(cmd, sub_id, resource_group)
+    if site and site[0] != intended_name:
+        raise ValidationError(
+            f"Resource group '{resource_group}' already contains site '{site[0]}'. "
+            f"A ResourceGroup hierarchy supports only one site per RG."
+        )
+
+
+def _find_existing_site_in_rg(cmd, sub_id, resource_group):
+    """Return (name, site_id) of the first site found in the RG, else None."""
+    list_url = (
+        f"{ARM_ENDPOINT}/subscriptions/{sub_id}/resourceGroups/{resource_group}"
+        f"/providers/{EDGE_RP_NAMESPACE}/sites"
+    )
+    payload = _arm_get(cmd, list_url, SITE_API_VERSION)
+    if not payload:
+        return None
+    items = payload.get("value", []) if isinstance(payload, dict) else []
+    if not items:
+        return None
+    first = items[0]
+    name = first.get("name")
+    site_id = first.get("id") or (
+        f"/subscriptions/{sub_id}/resourceGroups/{resource_group}"
+        f"/providers/{EDGE_RP_NAMESPACE}/sites/{name}"
+    )
+    return (name, site_id) if name else None
+
+
+def _find_existing_site_in_sg(cmd, location, sg_id):
+    """Return (name, site_id) of the first site found under the SG, else None.
+
+    Uses the regional management endpoint because Sites under a ServiceGroup
+    are tenant-scoped resources accessed via the regional plane.
+    """
+    list_id = f"{sg_id}/providers/{EDGE_RP_NAMESPACE}/sites"
+    full_url = f"https://{location}.management.azure.com{list_id}?api-version={SITE_API_VERSION}"
+    token_type, token = _get_token(cmd)
+    try:
+        resp = send_raw_request(
+            cmd.cli_ctx, "GET", full_url,
+            headers=[f"Authorization={token_type} {token}"],
+            skip_authorization_header=True,
+        )
+        payload = resp.json()
+    except Exception as exc:  # pylint: disable=broad-except
+        if "ResourceNotFound" in str(exc) or "404" in str(exc):
+            return None
+        # On any other transient error, fall through to create-path
+        logger.debug("SG site list failed (%s); proceeding to create.", exc)
+        return None
+    items = payload.get("value", []) if isinstance(payload, dict) else []
+    if not items:
+        return None
+    first = items[0]
+    name = first.get("name")
+    site_id = first.get("id") or f"{sg_id}/providers/{EDGE_RP_NAMESPACE}/sites/{name}"
+    return (name, site_id) if name else None
 
 
 def _arm_put_regional(cmd, location, resource_id, body, api_version):

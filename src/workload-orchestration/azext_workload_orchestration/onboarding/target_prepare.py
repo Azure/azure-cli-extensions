@@ -90,6 +90,7 @@ def target_prepare(
     cert_manager_version = cert_manager_version or DEFAULT_CERT_MANAGER_VERSION
 
     _eprint(f"\nPreparing cluster '{cluster_name}' for Workload Orchestration...\n")
+    _eprint(f"{cluster_name}")
 
     # Track step results for diagnostic summary
     step_results = {}
@@ -100,7 +101,7 @@ def target_prepare(
         step_results["preflight"] = "Passed"
     except Exception as exc:
         step_results["preflight"] = f"FAILED: {exc}"
-        _print_diagnostic_summary(step_results, cluster_name, resource_group)
+        _print_failure_hint(step_results)
         raise
 
     # Step 1+2: cert-manager + trust-manager (single AIO Arc extension)
@@ -120,7 +121,7 @@ def target_prepare(
         logger.error(
             "Steps 1-2/4 failed (AIO cert/trust-manager): %s", exc
         )
-        _print_diagnostic_summary(step_results, cluster_name, resource_group)
+        _print_failure_hint(step_results)
         raise CLIInternalError(
             f"cert-manager/trust-manager installation failed: {exc}"
         )
@@ -136,7 +137,7 @@ def target_prepare(
     except Exception as exc:
         step_results["wo-extension"] = f"FAILED: {exc}"
         logger.error("Step 3/4 failed (WO extension): %s", exc)
-        _print_diagnostic_summary(step_results, cluster_name, resource_group)
+        _print_failure_hint(step_results)
         raise CLIInternalError(
             f"WO extension installation failed: {exc}"
         )
@@ -151,7 +152,7 @@ def target_prepare(
     except Exception as exc:
         step_results["custom-location"] = f"FAILED: {exc}"
         logger.error("Step 4/4 failed (Custom location): %s", exc)
-        _print_diagnostic_summary(step_results, cluster_name, resource_group)
+        _print_failure_hint(step_results)
         raise CLIInternalError(
             f"Custom location creation failed: {exc}"
         )
@@ -161,7 +162,7 @@ def target_prepare(
     _write_extended_location_file(extended_location)
 
     print_success(f"Cluster '{cluster_name}' is ready for Workload Orchestration")
-    print_detail("Custom Location ID", cl_id)
+    _eprint(f"  Custom Location: {cl_id}")
     _eprint()
 
     return {
@@ -484,35 +485,24 @@ def _detect_storage_class(kube_config=None, kube_context=None):
     return None
 
 
-def _print_diagnostic_summary(step_results, cluster_name, resource_group):
-    """Print a diagnostic summary showing what succeeded/failed.
+def _print_failure_hint(step_results):
+    """Print a concise one-line failure summary to stderr.
 
-    This gives the DRI/support engineer a quick picture of where things
-    went wrong when a customer reports an issue.
+    Matches the style of `hierarchy create` (no banner, no boxes). On failure
+    we surface the failed step + the canonical re-run hint.
     """
-    from datetime import datetime, timezone
+    failed = [(k, v) for k, v in step_results.items() if "FAILED" in v]
+    if not failed:
+        return
+    name, result = failed[-1]  # latest failure carries the full message
+    msg = result.replace("FAILED: ", "")
+    _eprint(f"\n✗ {name} failed: {msg}")
+    _eprint("  Re-run the command to retry — completed steps will be skipped.\n")
 
-    _eprint("\n" + "=" * 60)
-    _eprint("  Diagnostic Summary")
-    _eprint(f"  Cluster: {cluster_name}")
-    _eprint(f"  Resource Group: {resource_group}")
-    _eprint(f"  Timestamp: {datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')}")
-    _eprint("=" * 60)
 
-    for step_name, result in step_results.items():
-        if "FAILED" in result:
-            icon = "✗"
-        elif result == "Skipped":
-            icon = "○"
-        else:
-            icon = "✓"
-        _eprint(f"  {icon} {step_name}: {result}")
-
-    has_failure = any("FAILED" in v for v in step_results.values())
-    if has_failure:
-        _eprint("\n  [WARN] One or more steps failed. See error details above.")
-        _eprint("  Re-run the command to retry - completed steps will be skipped.")
-    _eprint("=" * 60 + "\n")
+# Kept for back-compat in case external callers reference it
+def _print_diagnostic_summary(step_results, cluster_name, resource_group):  # pragma: no cover
+    _print_failure_hint(step_results)
 
 
 def _write_extended_location_file(extended_location):

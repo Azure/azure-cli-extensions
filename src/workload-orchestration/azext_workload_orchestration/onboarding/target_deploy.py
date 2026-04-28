@@ -307,7 +307,8 @@ def _handle_config_set(
 ):
     """Set configuration values from file before review.
 
-    Delegates to: az workload-orchestration configuration set
+    Calls the configuration-set REST APIs directly (no subprocess).
+    Flow: resolve config ID → resolve template unique ID → GET/PUT dynamic config version.
     """
     if not hierarchy_id:
         hierarchy_id = (
@@ -321,16 +322,124 @@ def _handle_config_set(
             "--config-template-rg, --config-template-name, and --config-template-version."
         )
 
-    from azext_workload_orchestration.onboarding.utils import invoke_cli_command
-    invoke_cli_command(cmd, [
-        "workload-orchestration", "configuration", "set",
-        "--hierarchy-id", hierarchy_id,
-        "--template-rg", template_rg,
-        "--template-name", template_name,
-        "--version", template_version,
-        "--file", config_file,
-        "--solution",
-    ], expect_json=False)
+    # Read config file content
+    config_content = _read_config_file(config_file)
+
+    # Step 1: Resolve configuration ID from hierarchy's config reference
+    config_ref_url = (
+        f"{ARM_RESOURCE}{hierarchy_id}"
+        f"/providers/Microsoft.Edge/configurationreferences/default"
+        f"?api-version={API_VERSION}"
+    )
+    ref_resp = send_raw_request(
+        cmd.cli_ctx, "GET", config_ref_url,
+        headers=["Accept=application/json"],
+        resource=ARM_RESOURCE,
+    )
+    if ref_resp.status_code != 200:
+        raise CLIInternalError(
+            f"Failed to get configuration reference for {hierarchy_id} "
+            f"(HTTP {ref_resp.status_code}). Ensure hierarchy has a configuration reference."
+        )
+    configuration_id = ref_resp.json().get("properties", {}).get("configurationResourceId")
+    if not configuration_id:
+        raise CLIInternalError(
+            f"Configuration reference for {hierarchy_id} has no configurationResourceId."
+        )
+
+    # Step 2: Resolve solution template unique identifier (used as dynamic config name)
+    st_url = (
+        f"{ARM_RESOURCE}/subscriptions/{sub_id}"
+        f"/resourceGroups/{template_rg}"
+        f"/providers/Microsoft.Edge/solutionTemplates/{template_name}"
+        f"?api-version={API_VERSION}"
+    )
+    st_resp = send_raw_request(
+        cmd.cli_ctx, "GET", st_url,
+        headers=["Accept=application/json"],
+        resource=ARM_RESOURCE,
+    )
+    if st_resp.status_code != 200:
+        raise CLIInternalError(
+            f"Solution template '{template_name}' not found in RG '{template_rg}' "
+            f"(HTTP {st_resp.status_code})."
+        )
+    st_body = st_resp.json()
+    dynamic_config_name = (
+        st_body.get("properties", {}).get("uniqueIdentifier")
+        or template_name
+    )
+
+    # Step 3: GET dynamic config version (check if it exists)
+    version_url = (
+        f"{ARM_RESOURCE}{configuration_id}"
+        f"/dynamicConfigurations/{dynamic_config_name}"
+        f"/versions/{template_version}"
+        f"?api-version={API_VERSION}"
+    )
+    version_resp = send_raw_request(
+        cmd.cli_ctx, "GET", version_url,
+        headers=["Accept=application/json"],
+        resource=ARM_RESOURCE,
+    )
+
+    if version_resp.status_code == 200:
+        # Update existing dynamic config version
+        existing = version_resp.json()
+        existing["properties"]["values"] = config_content
+        send_raw_request(
+            cmd.cli_ctx, "PUT", version_url,
+            body=json.dumps(existing),
+            headers=["Content-Type=application/json", "Accept=application/json"],
+            resource=ARM_RESOURCE,
+        )
+    elif version_resp.status_code == 404:
+        # Create new: first ensure parent dynamic config exists
+        dc_url = (
+            f"{ARM_RESOURCE}{configuration_id}"
+            f"/dynamicConfigurations/{dynamic_config_name}"
+            f"?api-version={API_VERSION}"
+        )
+        dc_body = {"properties": {"currentVersion": template_version}}
+        dc_resp = send_raw_request(
+            cmd.cli_ctx, "PUT", dc_url,
+            body=json.dumps(dc_body),
+            headers=["Content-Type=application/json", "Accept=application/json"],
+            resource=ARM_RESOURCE,
+        )
+        if dc_resp.status_code not in (200, 201):
+            raise CLIInternalError(
+                f"Failed to create dynamic configuration (HTTP {dc_resp.status_code}): "
+                f"{dc_resp.text}"
+            )
+
+        # Then create the version with config values
+        ver_body = {"properties": {"values": config_content}}
+        ver_resp = send_raw_request(
+            cmd.cli_ctx, "PUT", version_url,
+            body=json.dumps(ver_body),
+            headers=["Content-Type=application/json", "Accept=application/json"],
+            resource=ARM_RESOURCE,
+        )
+        if ver_resp.status_code not in (200, 201):
+            raise CLIInternalError(
+                f"Failed to create dynamic configuration version (HTTP {ver_resp.status_code}): "
+                f"{ver_resp.text}"
+            )
+    else:
+        raise CLIInternalError(
+            f"Failed to check dynamic configuration version (HTTP {version_resp.status_code}): "
+            f"{version_resp.text}"
+        )
+
+
+def _read_config_file(file_path):
+    """Read and return contents of a YAML/JSON config file."""
+    import os
+    if not os.path.isfile(file_path):
+        raise ValidationError(f"Config file not found: {file_path}")
+    with open(file_path, "r", encoding="utf-8") as f:
+        return f.read()
 
 
 # ---------------------------------------------------------------------------

@@ -141,7 +141,14 @@ def _put_resource(cli_ctx, url, body, label):
 
 
 def _create_site_reference(context_id, site_name, site_id):
-    """Create a site-reference linking the site to the context."""
+    """Create a site-reference linking the site to the context.
+
+    Name format: <siteName>-<7-char sha256(lower(site_arm_id))>.
+    7-char hash matches the BVT/Git convention (see ContextExtension.cs).
+    """
+    import hashlib
+    import re
+
     parts = parse_arm_id(context_id)
     ctx_rg = parts.get("resourcegroups", "")
     ctx_name = parts.get("contexts", "default")
@@ -149,11 +156,15 @@ def _create_site_reference(context_id, site_name, site_id):
     if not ctx_rg:
         return
 
+    hash_suffix = hashlib.sha256(site_id.lower().encode("utf-8")).hexdigest()[:7]
+    sanitized = re.sub(r'[^a-zA-Z0-9-]', '-', site_name)[:53]
+    ref_name = f"{sanitized}-{hash_suffix}"
+
     try:
         invoke_silent([
             "workload-orchestration", "context", "site-reference", "create",
             "-g", ctx_rg, "--context-name", ctx_name,
-            "--name", f"{site_name}-ref",
+            "--name", ref_name,
             "--site-id", site_id,
             "-o", "none",
         ])

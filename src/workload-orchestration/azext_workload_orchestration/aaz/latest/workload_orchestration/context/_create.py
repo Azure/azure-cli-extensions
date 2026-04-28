@@ -154,7 +154,14 @@ class Create(AAZCommand):
             self._create_site_reference()
 
     def _create_site_reference(self):
-        """Auto-create a site reference linking the site to this context."""
+        """Auto-create a site reference linking the site to this context.
+
+        Reference name format: <siteName>-<7-char sha256 of lowercased site ARM ID>.
+        7-char hash matches the BVT/Git convention (BVT: ContextExtension.cs
+        GenerateTestSuffix → SHA256[..7]). Hash suffix guarantees uniqueness
+        even when sites share simple names across different scopes (RG / SG).
+        """
+        import hashlib
         import logging
         import re
         import sys
@@ -166,11 +173,11 @@ class Create(AAZCommand):
 
         # Extract site name from ARM ID for the reference name
         site_name = site_id.rstrip("/").split("/")[-1]
-        ref_name = f"{site_name}-ref"
-        # Sanitize: only alphanumeric and hyphens, 3-61 chars
-        ref_name = re.sub(r'[^a-zA-Z0-9-]', '-', ref_name)[:61]
-
-        print(f"├── site-reference Creating '{ref_name}'...", file=sys.stderr)
+        # 7-char hex of sha256(lower(site_arm_id)) — matches BVT (Git-style short hash)
+        hash_suffix = hashlib.sha256(site_id.lower().encode("utf-8")).hexdigest()[:7]
+        # Sanitize site name; reserve 8 chars for "-<7-char hash>" within 61-char limit
+        sanitized_site = re.sub(r'[^a-zA-Z0-9-]', '-', site_name)[:53]
+        ref_name = f"{sanitized_site}-{hash_suffix}"
 
         try:
             from azext_workload_orchestration.onboarding.utils import invoke_cli_command, CmdProxy
@@ -182,7 +189,7 @@ class Create(AAZCommand):
                 "--site-reference-name", ref_name,
                 "--site-id", site_id,
             ])
-            print(f"└── site-reference Created ✓", file=sys.stderr)
+            print(f"Site reference '{ref_name}' linked to context '{context_name}'.", file=sys.stderr)
         except Exception as exc:
             logger.warning("Site reference creation failed: %s", exc)
             raise CLIError(
