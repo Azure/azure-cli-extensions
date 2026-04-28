@@ -89,7 +89,6 @@ def target_prepare(
     cert_manager_version = cert_manager_version or DEFAULT_CERT_MANAGER_VERSION
 
     _eprint(f"\nPreparing cluster '{cluster_name}' for Workload Orchestration...\n")
-    _eprint(f"{cluster_name}")
 
     # Track step results for diagnostic summary
     step_results = {}
