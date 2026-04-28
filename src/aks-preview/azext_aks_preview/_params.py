@@ -871,7 +871,7 @@ def load_arguments(self, _):
             validator=validate_node_public_ip_prefix_ids,
             help="Comma-separated list of public IP prefix resource IDs for dual-stack node public IPs "
                  "(IPv4 and/or IPv6). At most one IPv4 and one IPv6 prefix may be specified. "
-                 "Requires --enable-node-public-ip. Cannot be used with --node-public-ip-prefix-id. "
+                 "Automatically enables --enable-node-public-ip. Cannot be used with --node-public-ip-prefix-id. "
                  "Requires the NodePublicIPv6PrefixPreview feature flag to be registered.",
         )
         c.argument("enable_cluster_autoscaler", action="store_true")
@@ -2061,7 +2061,7 @@ def load_arguments(self, _):
             validator=validate_node_public_ip_prefix_ids,
             help="Comma-separated list of public IP prefix resource IDs for dual-stack node public IPs "
                  "(IPv4 and/or IPv6). At most one IPv4 and one IPv6 prefix may be specified. "
-                 "Requires --enable-node-public-ip. Cannot be used with --node-public-ip-prefix-id. "
+                 "Automatically enables --enable-node-public-ip. Cannot be used with --node-public-ip-prefix-id. "
                  "Requires the NodePublicIPv6PrefixPreview feature flag to be registered.",
         )
         c.argument(
