@@ -378,4 +378,3 @@ def capability_show(cli_ctx, resource_group, context_name, name,
     raise ResourceNotFoundError(
         f"Capability '{name}' not found on context '{context_name}'."
     )
-
