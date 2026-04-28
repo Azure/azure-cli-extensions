@@ -12,6 +12,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+21.0.0b2
+++++++++
+* `az aks create`: Add `--node-public-ip-prefix-ids` parameter for specifying dual-stack (IPv4/IPv6) public IP prefixes for instance-level public IPs.
+* `az aks nodepool add`: Add `--node-public-ip-prefix-ids` parameter for specifying dual-stack (IPv4/IPv6) public IP prefixes for instance-level public IPs.
+
 21.0.0b1
 ++++++
 * [BREAKING CHANGE] `az aks create/update`: Remove `--disk-driver-version` option as the `version` field has been removed from the API spec for `ManagedClusterStorageProfileDiskCSIDriver`.
