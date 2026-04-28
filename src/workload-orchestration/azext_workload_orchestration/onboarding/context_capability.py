@@ -268,7 +268,7 @@ def _log(msg):
 
 def capability_add(cli_ctx, resource_group, context_name, name=None,
                    description=None, capabilities=None, subscription=None,
-                   **kwargs):  # noqa: E501
+                   state=None):  # pylint: disable=unused-argument
     """Add capabilities to a context. Idempotent - skips if already present."""
     requested = _normalize_input(name, description, capabilities)
 
@@ -378,3 +378,4 @@ def capability_show(cli_ctx, resource_group, context_name, name,
     raise ResourceNotFoundError(
         f"Capability '{name}' not found on context '{context_name}'."
     )
+
