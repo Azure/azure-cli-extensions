@@ -124,8 +124,11 @@ def invoke_cli_command(cmd, command_args, expect_json=True):  # pylint: disable=
         if hasattr(cli, 'result') and hasattr(cli.result, 'error'):
             cli_error = str(cli.result.error) if cli.result.error else ""
         full_error = cli_error or err_text or f"exit code {exit_code}"
-        cmd_str = f"az {' '.join(command_args)}"
-        raise CLIInternalError(f"{full_error}\nCommand: {cmd_str}")
+        # Log the underlying az command at DEBUG only — surfacing it to
+        # end users adds noise and can leak resource args. The error text
+        # alone is enough for the user; engineers can re-run with --debug.
+        logger.debug("az command failed: az %s", " ".join(command_args))
+        raise CLIInternalError(full_error)
 
     result = cli.result.result
     if expect_json and isinstance(result, str):
