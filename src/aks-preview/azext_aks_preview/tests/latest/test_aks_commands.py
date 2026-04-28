@@ -43,6 +43,22 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             method_name, recording_processors=[KeyReplacer()]
         )
 
+    def _wait_for_nodepool_provisioning(self, show_cmd, extra_checks=None, max_retries=20, interval=30):
+        """Poll nodepool show until provisioningState is Succeeded, then run extra_checks."""
+        import time as _time
+        for attempt in range(max_retries):
+            result = self.cmd(show_cmd).get_output_in_json()
+            if result.get("provisioningState") == "Succeeded":
+                if extra_checks:
+                    self.cmd(show_cmd, checks=[self.check('provisioningState', 'Succeeded')] + extra_checks)
+                return
+            _time.sleep(interval)
+        # Final attempt — let it raise if still not Succeeded
+        checks = [self.check('provisioningState', 'Succeeded')]
+        if extra_checks:
+            checks += extra_checks
+        self.cmd(show_cmd, checks=checks)
+
     def _get_versions(self, location):
         """Return the previous and current Kubernetes minor release versions, such as ("1.11.6", "1.12.4")."""
         supported_versions = self.cmd(
@@ -23074,14 +23090,9 @@ spec:
                                '--min-count 1 --max-count 5'
         self.cmd(update_autoscale_cmd)
 
-        # wait for the nodepool update to complete
-        wait_cmd = 'aks nodepool wait -g {resource_group} --cluster-name {name} -n {nodepool_name} --updated --interval 30 --timeout 1800'
-        self.cmd(wait_cmd)
-
         # verify the autoscale update was applied
         show_cmd = 'aks nodepool show -g {resource_group} --cluster-name {name} -n {nodepool_name}'
-        self.cmd(show_cmd, checks=[
-            self.check('provisioningState', 'Succeeded'),
+        self._wait_for_nodepool_provisioning(show_cmd, [
             self.check('virtualMachinesProfile.scale.autoscale[0].size', 'standard_d4s_v3'),
             self.check('virtualMachinesProfile.scale.autoscale[0].minCount', 1),
             self.check('virtualMachinesProfile.scale.autoscale[0].maxCount', 5),
@@ -23092,9 +23103,7 @@ spec:
                             '--node-vm-size {node_vm_size1} ' \
                             '--min-count 1 --max-count 3'
         self.cmd(add_autoscale_cmd)
-        self.cmd(wait_cmd)
-        self.cmd(show_cmd, checks=[
-            self.check('provisioningState', 'Succeeded'),
+        self._wait_for_nodepool_provisioning(show_cmd, [
             self.check('virtualMachinesProfile.scale.autoscale[1].size', 'standard_d2s_v3'),
             self.check('virtualMachinesProfile.scale.autoscale[1].minCount', 1),
             self.check('virtualMachinesProfile.scale.autoscale[1].maxCount', 3),
@@ -23104,7 +23113,7 @@ spec:
         delete_autoscale_cmd = 'aks nodepool auto-scale delete -g {resource_group} --cluster-name {name} -n {nodepool_name} ' \
                                '--current-node-vm-size {node_vm_size1}'
         self.cmd(delete_autoscale_cmd)
-        self.cmd(wait_cmd)
+        self._wait_for_nodepool_provisioning(show_cmd)
         np = self.cmd(show_cmd).get_output_in_json()
         assert len(np["virtualMachinesProfile"]["scale"]["autoscale"]) == 1
 
@@ -23112,9 +23121,7 @@ spec:
         disable_autoscaler_cmd = 'aks nodepool update -g {resource_group} --cluster-name {name} -n {nodepool_name} ' \
                                  '--disable-cluster-autoscaler'
         self.cmd(disable_autoscaler_cmd)
-        self.cmd(wait_cmd)
-        self.cmd(show_cmd, checks=[
-            self.check('provisioningState', 'Succeeded'),
+        self._wait_for_nodepool_provisioning(show_cmd, [
             self.check('virtualMachinesProfile.scale.manual[0].size', 'standard_d4s_v3'),
         ])
 
@@ -23122,9 +23129,7 @@ spec:
         enable_autoscaler_cmd = 'aks nodepool update -g {resource_group} --cluster-name {name} -n {nodepool_name} ' \
                                 '--enable-cluster-autoscaler --min-count 1 --max-count 3'
         self.cmd(enable_autoscaler_cmd)
-        self.cmd(wait_cmd)
-        self.cmd(show_cmd, checks=[
-            self.check('provisioningState', 'Succeeded'),
+        self._wait_for_nodepool_provisioning(show_cmd, [
             self.check('virtualMachinesProfile.scale.autoscale[0].size', 'standard_d4s_v3'),
             self.check('virtualMachinesProfile.scale.autoscale[0].minCount', 1),
             self.check('virtualMachinesProfile.scale.autoscale[0].maxCount', 3),
