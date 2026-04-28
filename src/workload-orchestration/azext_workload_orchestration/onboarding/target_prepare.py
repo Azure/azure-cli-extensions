@@ -116,13 +116,11 @@ def target_prepare(
         )
     except Exception as exc:
         step_results["cert-manager"] = f"FAILED: {exc}"
-        logger.error(
+        logger.debug(
             "Steps 1-2/4 failed (AIO cert/trust-manager): %s", exc
         )
         _print_failure_hint(step_results)
-        raise CLIInternalError(
-            f"cert-manager/trust-manager installation failed: {exc}"
-        )
+        raise CLIInternalError("cert-manager/trust-manager installation failed. See error above.")
 
     # Step 3: WO extension
     try:
@@ -134,11 +132,9 @@ def target_prepare(
         step_results["wo-extension"] = "Succeeded"
     except Exception as exc:
         step_results["wo-extension"] = f"FAILED: {exc}"
-        logger.error("Step 3/4 failed (WO extension): %s", exc)
+        logger.debug("Step 3/4 failed (WO extension): %s", exc)
         _print_failure_hint(step_results)
-        raise CLIInternalError(
-            f"WO extension installation failed: {exc}"
-        )
+        raise CLIInternalError("WO extension installation failed. See error above.")
 
     # Step 4: Custom location
     try:
@@ -149,11 +145,9 @@ def target_prepare(
         step_results["custom-location"] = "Succeeded"
     except Exception as exc:
         step_results["custom-location"] = f"FAILED: {exc}"
-        logger.error("Step 4/4 failed (Custom location): %s", exc)
+        logger.debug("Step 4/4 failed (Custom location): %s", exc)
         _print_failure_hint(step_results)
-        raise CLIInternalError(
-            f"Custom location creation failed: {exc}"
-        )
+        raise CLIInternalError("Custom location creation failed. See error above.")
 
     # Output extended-location.json
     extended_location = {"name": cl_id, "type": "CustomLocation"}
@@ -486,16 +480,17 @@ def _detect_storage_class(kube_config=None, kube_context=None):
 def _print_failure_hint(step_results):
     """Print a concise one-line failure summary to stderr.
 
-    Matches the style of `hierarchy create` (no banner, no boxes). On failure
-    we surface the failed step + the canonical re-run hint.
+    The raw error from the underlying az subcommand has already been
+    printed (it goes to stderr from `invoke_cli_command`), and azcli
+    will print our raised CLIInternalError on exit. This hint just
+    points to the failed step + tells the user retry is safe.
     """
-    failed = [(k, v) for k, v in step_results.items() if "FAILED" in v]
+    failed = [k for k, v in step_results.items() if "FAILED" in v]
     if not failed:
         return
-    name, result = failed[-1]  # latest failure carries the full message
-    msg = result.replace("FAILED: ", "")
-    _eprint(f"\n✗ {name} failed: {msg}")
-    _eprint("  Re-run the command to retry — completed steps will be skipped.\n")
+    name = failed[-1]
+    _eprint(f"\n✗ {name} failed — see error above.")
+    _eprint("  Re-run the command to retry; completed steps will be skipped.\n")
 
 
 # Kept for back-compat in case external callers reference it
