@@ -393,6 +393,16 @@ def validate_node_public_ip_tags(ns):
         ns.node_public_ip_tags = tags_dict
 
 
+def validate_node_public_ip_prefix_ids(ns):
+    """Validate --node-public-ip-prefix-ids is not used together with --node-public-ip-prefix-id."""
+    ids_value = getattr(ns, "node_public_ip_prefix_ids", None)
+    singular_value = getattr(ns, "node_public_ip_prefix_id", None)
+    if ids_value and singular_value:
+        raise MutuallyExclusiveArgumentError(
+            "--node-public-ip-prefix-ids and --node-public-ip-prefix-id cannot be used at the same time."
+        )
+
+
 def validate_nodepool_labels(namespace):
     """Validates that provided node labels is a valid format"""
 

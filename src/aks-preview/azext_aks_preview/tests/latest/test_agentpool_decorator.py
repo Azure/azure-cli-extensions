@@ -346,6 +346,36 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
         ctx_2.attach_agentpool(agentpool_2)
         self.assertEqual(ctx_2.get_pod_ip_allocation_mode(), "StaticBlock")
 
+    def common_get_node_public_ip_prefix_ids(self):
+        # default - None
+        ctx_1 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"node_public_ip_prefix_ids": None}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_1.get_node_public_ip_prefix_ids(), None)
+
+        # comma-separated string
+        ctx_2 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({
+                "node_public_ip_prefix_ids": "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Network/publicIPPrefixes/ipv4-prefix,"
+                "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Network/publicIPPrefixes/ipv6-prefix"
+            }),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(
+            ctx_2.get_node_public_ip_prefix_ids(),
+            [
+                "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Network/publicIPPrefixes/ipv4-prefix",
+                "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Network/publicIPPrefixes/ipv6-prefix",
+            ],
+        )
+
     def common_get_skip_gpu_driver_install(self):
         # default
         ctx_1 = AKSPreviewAgentPoolContext(
@@ -1164,6 +1194,9 @@ class AKSPreviewAgentPoolContextStandaloneModeTestCase(
     def test_get_pod_ip_allocation_mode(self):
         self.common_get_pod_ip_allocation_mode()
 
+    def test_get_node_public_ip_prefix_ids(self):
+        self.common_get_node_public_ip_prefix_ids()
+
     def test_get_os_sku(self):
         self.common_get_os_sku()
 
@@ -1263,6 +1296,9 @@ class AKSPreviewAgentPoolContextManagedClusterModeTestCase(
 
     def test_get_pod_ip_allocation_mode(self):
         self.common_get_pod_ip_allocation_mode()
+
+    def test_get_node_public_ip_prefix_ids(self):
+        self.common_get_node_public_ip_prefix_ids()
 
     def test_get_os_sku(self):
         self.common_get_os_sku()
