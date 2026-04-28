@@ -23030,6 +23030,15 @@ spec:
 
         self.cmd('feature register --namespace Microsoft.ContainerService --name VMsAgentPoolAutoscalePreview')
 
+        # Wait for feature registration to complete
+        for _ in range(30):
+            result = self.cmd('feature show --namespace Microsoft.ContainerService --name VMsAgentPoolAutoscalePreview').get_output_in_json()
+            if result["properties"]["state"] == "Registered":
+                break
+            time.sleep(30)
+
+        self.cmd('provider register --namespace Microsoft.ContainerService')
+
         # create cluster with autoscaler enabled
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
                      '--ssh-key-value={ssh_key_value} ' \
