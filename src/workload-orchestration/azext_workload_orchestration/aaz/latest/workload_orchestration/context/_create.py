@@ -175,8 +175,10 @@ class Create(AAZCommand):
         site_name = site_id.rstrip("/").split("/")[-1]
         # 7-char hex of sha256(lower(site_arm_id)) — matches BVT (Git-style short hash)
         hash_suffix = hashlib.sha256(site_id.lower().encode("utf-8")).hexdigest()[:7]
-        # Sanitize site name; reserve 8 chars for "-<7-char hash>" within 61-char limit
-        sanitized_site = re.sub(r'[^a-zA-Z0-9-]', '-', site_name)[:53]
+        # Site-reference resource name must satisfy ^[a-zA-Z0-9-]{3,24}$, so the
+        # site-name portion is capped at 16 chars (24 - 1 dash - 7 hash). Strip
+        # any trailing dashes that result from truncation to keep the join clean.
+        sanitized_site = re.sub(r'[^a-zA-Z0-9-]', '-', site_name)[:16].rstrip("-")
         ref_name = f"{sanitized_site}-{hash_suffix}"
 
         try:

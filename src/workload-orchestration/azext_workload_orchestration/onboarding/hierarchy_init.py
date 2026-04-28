@@ -156,8 +156,9 @@ def _create_site_reference(context_id, site_name, site_id):
     if not ctx_rg:
         return
 
+    # Site-reference name must satisfy ^[a-zA-Z0-9-]{3,24}$ — cap site portion at 16 chars
     hash_suffix = hashlib.sha256(site_id.lower().encode("utf-8")).hexdigest()[:7]
-    sanitized = re.sub(r'[^a-zA-Z0-9-]', '-', site_name)[:53]
+    sanitized = re.sub(r'[^a-zA-Z0-9-]', '-', site_name)[:16].rstrip("-")
     ref_name = f"{sanitized}-{hash_suffix}"
 
     try:
