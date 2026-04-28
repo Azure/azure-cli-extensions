@@ -180,23 +180,40 @@ def _create_rg_hierarchy(cmd, resource_group, config_location, name, level):
         f"/providers/{EDGE_RP_NAMESPACE}/configurations/{config_name}"
     )
 
-    # Step 2: Create Configuration
-    _arm_put(cmd, f"{ARM_ENDPOINT}{config_id}", {
-        "location": config_location,
-    }, CONFIGURATION_API_VERSION)
-    _eprint(f"├── Configuration '{config_name}' ✓")
+    # Step 2: Configuration — find-or-create
+    config_url = f"{ARM_ENDPOINT}{config_id}"
+    if existing and _arm_get(cmd, config_url, CONFIGURATION_API_VERSION):
+        _eprint(f"├── Configuration '{config_name}' (reused) ✓")
+    else:
+        _arm_put(cmd, config_url, {
+            "location": config_location,
+        }, CONFIGURATION_API_VERSION)
+        _eprint(f"├── Configuration '{config_name}' ✓")
 
-    # Step 3: Create ConfigurationReference (links site → config)
+    # Step 3: ConfigurationReference — find-or-create (warn on mismatch)
     config_ref_url = (
         f"{ARM_ENDPOINT}{site_id}/providers/"
         f"{EDGE_RP_NAMESPACE}/configurationReferences/default"
     )
-    _arm_put(cmd, config_ref_url, {
-        "properties": {
-            "configurationResourceId": config_id,
-        }
-    }, CONFIG_REF_API_VERSION)
-    _eprint("└── ConfigurationReference ✓")
+    existing_ref = _arm_get(cmd, config_ref_url, CONFIG_REF_API_VERSION) if existing else None
+    if existing_ref:
+        existing_target = (
+            existing_ref.get("properties", {}).get("configurationResourceId", "")
+        )
+        if existing_target and existing_target.lower() != config_id.lower():
+            _eprint(
+                f"└── ConfigurationReference (reused — already points to "
+                f"'{existing_target.rsplit('/', 1)[-1]}', leaving as-is) ✓"
+            )
+        else:
+            _eprint("└── ConfigurationReference (reused) ✓")
+    else:
+        _arm_put(cmd, config_ref_url, {
+            "properties": {
+                "configurationResourceId": config_id,
+            }
+        }, CONFIG_REF_API_VERSION)
+        _eprint("└── ConfigurationReference ✓")
 
     _eprint("\n✅ Hierarchy created (3 resources)\n")
 
@@ -302,35 +319,58 @@ def _create_sg_level(  # pylint: disable=too-many-arguments
         }, SITE_API_VERSION)
     results.append({"type": "Site", "name": effective_site_name, "level": level, "id": site_id})
 
-    # 3. Create Configuration
+    # 3. Configuration — find-or-create
     config_name = f"{effective_site_name}Config"
     config_id = (
         f"/subscriptions/{sub_id}/resourceGroups/{resource_group}"
         f"/providers/{EDGE_RP_NAMESPACE}/configurations/{config_name}"
     )
-    _arm_put(cmd, f"{ARM_ENDPOINT}{config_id}", {
-        "location": config_location,
-    }, CONFIGURATION_API_VERSION)
+    config_url = f"{ARM_ENDPOINT}{config_id}"
+    config_reused = bool(existing_sg_site) and bool(_arm_get(cmd, config_url, CONFIGURATION_API_VERSION))
+    if not config_reused:
+        _arm_put(cmd, config_url, {
+            "location": config_location,
+        }, CONFIGURATION_API_VERSION)
     results.append({"type": "Configuration", "name": config_name, "id": config_id})
 
-    # 4. Create ConfigurationReference
+    # 4. ConfigurationReference — find-or-create
     config_ref_id = f"{site_id}/providers/{EDGE_RP_NAMESPACE}/configurationReferences/default"
-    _arm_put_regional(cmd, config_location, config_ref_id, {
-        "properties": {
-            "configurationResourceId": config_id,
-        }
-    }, CONFIG_REF_API_VERSION)
+    existing_ref = (
+        _arm_get_regional(cmd, config_location, config_ref_id, CONFIG_REF_API_VERSION)
+        if existing_sg_site else None
+    )
+    ref_target_mismatch = False
+    if existing_ref:
+        existing_target = existing_ref.get("properties", {}).get("configurationResourceId", "")
+        ref_target_mismatch = bool(
+            existing_target and existing_target.lower() != config_id.lower()
+        )
+    if not existing_ref:
+        _arm_put_regional(cmd, config_location, config_ref_id, {
+            "properties": {
+                "configurationResourceId": config_id,
+            }
+        }, CONFIG_REF_API_VERSION)
     results.append({"type": "ConfigurationReference", "siteId": site_id})
 
-    # Show resources created under this node
+    # Show resources created/reused under this node
     children = node.get("children")
     has_children = children is not None
-    _eprint(f"{child_prefix}├── Site '{effective_site_name}' ✓")
-    _eprint(f"{child_prefix}├── Configuration '{config_name}' ✓")
-    if has_children:
-        _eprint(f"{child_prefix}├── ConfigurationReference ✓")
+    site_label = "(reused) " if existing_sg_site else ""
+    config_label = "(reused) " if config_reused else ""
+    if existing_ref:
+        if ref_target_mismatch:
+            ref_label = "(reused — points to different config, leaving as-is) "
+        else:
+            ref_label = "(reused) "
     else:
-        _eprint(f"{child_prefix}└── ConfigurationReference ✓")
+        ref_label = ""
+    _eprint(f"{child_prefix}├── Site '{effective_site_name}' {site_label}✓")
+    _eprint(f"{child_prefix}├── Configuration '{config_name}' {config_label}✓")
+    if has_children:
+        _eprint(f"{child_prefix}├── ConfigurationReference {ref_label}✓")
+    else:
+        _eprint(f"{child_prefix}└── ConfigurationReference {ref_label}✓")
 
     # Recurse into children
     if children:
