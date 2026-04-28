@@ -47,7 +47,6 @@ from azext_workload_orchestration.onboarding.utils import (
     invoke_cli_command,
     print_step,
     print_success,
-    print_detail,
 )
 
 logger = logging.getLogger(__name__)
@@ -501,7 +500,7 @@ def _print_failure_hint(step_results):
 
 
 # Kept for back-compat in case external callers reference it
-def _print_diagnostic_summary(step_results, cluster_name, resource_group):  # pragma: no cover
+def _print_diagnostic_summary(step_results, cluster_name, resource_group):  # pragma: no cover  # pylint: disable=unused-argument
     _print_failure_hint(step_results)
 
 

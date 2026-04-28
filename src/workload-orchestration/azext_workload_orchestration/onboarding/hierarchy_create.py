@@ -392,8 +392,7 @@ def _arm_get(cmd, url, api_version):
     except Exception as exc:  # pylint: disable=broad-except
         logger.debug("GET %s json parse failed: %s", full_url, exc)
         try:
-            import json as _json
-            return _json.loads(resp.content)
+            return json.loads(resp.content)
         except Exception:  # pylint: disable=broad-except
             return None
 
