@@ -152,11 +152,11 @@ def _create_rg_hierarchy(cmd, resource_group, config_location, name, level):
         site_name, site_id = existing
         if site_name != name:
             _eprint(
-                f"[i] Reusing existing site '{site_name}' in Resource Group '{resource_group}' "
-                f"(requested name '{name}' ignored — RG allows only one site)."
+                f"[i] Reusing existing Site '{site_name}' in Resource Group '{resource_group}' "
+                f"(requested name '{name}' ignored)."
             )
         else:
-            _eprint(f"[i] Reusing existing site '{site_name}'.")
+            _eprint(f"[i] Reusing existing Site '{site_name}'.")
         effective_name = site_name
     else:
         effective_name = name
@@ -286,8 +286,8 @@ def _create_sg_level(  # pylint: disable=too-many-arguments
         site_name, site_id = existing_sg_site
         if site_name != name:
             _eprint(
-                f"{child_prefix}[i] Reusing existing site '{site_name}' under SG '{name}' "
-                f"(requested name '{name}' ignored — SG allows only one site)."
+                f"{child_prefix}[i] Reusing existing Site '{site_name}' under ServiceGroup '{name}' "
+                f"(requested name '{name}' ignored)."
             )
         effective_site_name = site_name
     else:
