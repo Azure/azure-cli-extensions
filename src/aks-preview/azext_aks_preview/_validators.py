@@ -394,13 +394,29 @@ def validate_node_public_ip_tags(ns):
 
 
 def validate_node_public_ip_prefix_ids(ns):
-    """Validate --node-public-ip-prefix-ids is not used together with --node-public-ip-prefix-id."""
+    """Validate --node-public-ip-prefix-ids value and mutual exclusion with --node-public-ip-prefix-id."""
     ids_value = getattr(ns, "node_public_ip_prefix_ids", None)
     singular_value = getattr(ns, "node_public_ip_prefix_id", None)
     if ids_value and singular_value:
         raise MutuallyExclusiveArgumentError(
             "--node-public-ip-prefix-ids and --node-public-ip-prefix-id cannot be used at the same time."
         )
+    if ids_value is not None:
+        parsed = [x.strip() for x in ids_value.split(",") if x.strip()] if isinstance(ids_value, str) else ids_value
+        if not parsed:
+            raise InvalidArgumentValueError(
+                "--node-public-ip-prefix-ids must contain at least one public IP prefix resource ID."
+            )
+        if len(parsed) > 2:
+            raise InvalidArgumentValueError(
+                "--node-public-ip-prefix-ids accepts at most two public IP prefix resource IDs "
+                "(one IPv4 and one IPv6)."
+            )
+        for prefix_id in parsed:
+            if not is_valid_resource_id(prefix_id):
+                raise InvalidArgumentValueError(
+                    f"'{prefix_id}' is not a valid Azure resource ID for --node-public-ip-prefix-ids."
+                )
 
 
 def validate_nodepool_labels(namespace):

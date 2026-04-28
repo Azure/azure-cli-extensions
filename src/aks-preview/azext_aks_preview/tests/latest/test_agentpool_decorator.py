@@ -376,6 +376,17 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
             ],
         )
 
+        # empty string should raise error
+        ctx_3 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"node_public_ip_prefix_ids": ""}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        with self.assertRaises(InvalidArgumentValueError):
+            ctx_3.get_node_public_ip_prefix_ids()
+
     def common_get_skip_gpu_driver_install(self):
         # default
         ctx_1 = AKSPreviewAgentPoolContext(
