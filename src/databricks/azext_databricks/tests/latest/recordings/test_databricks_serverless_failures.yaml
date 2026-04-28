@@ -18,29 +18,23 @@ interactions:
       ParameterSetName:
       - --resource-group --name --location --compute-mode --sku --public-network-access
       User-Agent:
-      - AZURECLI/2.82.0 azsdk-python-core/1.38.0 Python/3.13.12 (Windows-11-10.0.26200-SP0)
+      - AZURECLI/2.85.0 azsdk-python-core/1.39.0 Python/3.13.12 (Windows-11-10.0.26200-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_expected_failures000001/providers/Microsoft.Databricks/workspaces/failed-workspace?api-version=2026-01-01
   response:
     body:
-      string: '{"error":{"code":"RequestDisallowedByPolicy","target":"failed-workspace","message":"Resource
-        ''failed-workspace'' was disallowed by policy. Reasons: ''In order to comply
-        with SFI ID4.7.1, internal Azure Databricks workspaces are required to have
-        a premium SKU.''. See error details for policy resource IDs.","additionalInfo":[{"type":"PolicyViolation","info":{"evaluationDetails":{"evaluatedExpressions":[{"result":"True","expressionKind":"Field","expression":"type","path":"type","expressionValue":"Microsoft.Databricks/workspaces","targetValue":"Microsoft.Databricks/workspaces","operator":"Equals"},{"result":"True","expressionKind":"Field","expression":"Microsoft.Databricks/workspaces/sku.name","path":"sku.name","expressionValue":"Pxlekmx","targetValue":"Premium","operator":"NotEquals"},{"result":"True","expressionKind":"Value","expression":"[empty(field(''Microsoft.Databricks/workspaces/sku.name''))]","expressionValue":false,"targetValue":"true","operator":"NotEquals"}],"reason":"In
-        order to comply with SFI ID4.7.1, internal Azure Databricks workspaces are
-        required to have a premium SKU."},"policyDefinitionId":"/providers/Microsoft.Authorization/policyDefinitions/2cc2c3b5-c2f8-45aa-a9e6-f90d85ae8352","policyDefinitionName":"2cc2c3b5-c2f8-45aa-a9e6-f90d85ae8352","policyDefinitionDisplayName":"Azure
-        Databricks workspaces should be Premium SKU that supports features like private
-        link, customer-managed key for encryption","policyDefinitionVersion":"1.0.1","policyDefinitionEffect":"Deny","policyAssignmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/policyAssignments/b237d3c86a0947dd8ad15766","policyAssignmentName":"b237d3c86a0947dd8ad15766","policyAssignmentDisplayName":"Azure
-        Databricks workspaces should be Premium SKU","policyAssignmentScope":"/subscriptions/00000000-0000-0000-0000-000000000000","policyAssignmentParameters":{"effect":"Deny"},"policyExemptionIds":[],"policyEnrollmentIds":[]}}]}}'
+      string: "{\r\n  \"error\": {\r\n    \"code\": \"InvalidDatabricksSku\",\r\n
+        \   \"message\": \"The SKU is invalid. The allowed SKUs are: ''Standard',
+        'Premium', 'Trial''.\"\r\n  }\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1961'
+      - '154'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 26 Mar 2026 22:33:23 GMT
+      - Tue, 28 Apr 2026 21:34:31 GMT
       expires:
       - '-1'
       pragma:
@@ -51,13 +45,15 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
-      x-ms-failure-cause:
-      - gateway
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=a70a66b6-f372-4fcc-9f09-6c5e1e64c3dd/westus2/63122fa1-8e89-4004-8b9e-372be74dcd22
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99'
       x-msedge-ref:
-      - 'Ref A: 5426A3EC452F41AE94A0C997807A95AF Ref B: CO6AA3150219053 Ref C: 2026-03-26T22:33:22Z'
+      - 'Ref A: AE5CA6139EC04A789AC9ED61DDA775EE Ref B: CO6AA3150219009 Ref C: 2026-04-28T21:34:29Z'
     status:
-      code: 403
-      message: Forbidden
+      code: 400
+      message: Bad Request
 - request:
     body: '{"location": "eastus", "properties": {"computeMode": "Serverless", "parameters":
       {"enableNoPublicIp": {"value": true}}}, "sku": {"name": "premium"}}'
@@ -77,7 +73,7 @@ interactions:
       ParameterSetName:
       - --resource-group --name --location --compute-mode --sku --enable-no-public-ip
       User-Agent:
-      - AZURECLI/2.82.0 azsdk-python-core/1.38.0 Python/3.13.12 (Windows-11-10.0.26200-SP0)
+      - AZURECLI/2.85.0 azsdk-python-core/1.39.0 Python/3.13.12 (Windows-11-10.0.26200-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_expected_failures000001/providers/Microsoft.Databricks/workspaces/failed-workspace?api-version=2026-01-01
   response:
@@ -93,7 +89,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 26 Mar 2026 22:33:23 GMT
+      - Tue, 28 Apr 2026 21:34:32 GMT
       expires:
       - '-1'
       pragma:
@@ -105,11 +101,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=a70a66b6-f372-4fcc-9f09-6c5e1e64c3dd/eastus/19620b79-a92d-4b33-970b-def15eb7d321
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=a70a66b6-f372-4fcc-9f09-6c5e1e64c3dd/eastus/b28963ec-a1b7-4fb9-b0f4-1146b921d0f3
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '99'
       x-msedge-ref:
-      - 'Ref A: 9549EB2B05C047CDB7C0407DA2C22F40 Ref B: CO6AA3150218053 Ref C: 2026-03-26T22:33:23Z'
+      - 'Ref A: 74653D570AA04041897ADB32418946D8 Ref B: CO1AA3060815054 Ref C: 2026-04-28T21:34:33Z'
     status:
       code: 400
       message: Bad Request
@@ -132,7 +128,7 @@ interactions:
       ParameterSetName:
       - --resource-group --name --location --compute-mode --sku --required-nsg-rules
       User-Agent:
-      - AZURECLI/2.82.0 azsdk-python-core/1.38.0 Python/3.13.12 (Windows-11-10.0.26200-SP0)
+      - AZURECLI/2.85.0 azsdk-python-core/1.39.0 Python/3.13.12 (Windows-11-10.0.26200-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_expected_failures000001/providers/Microsoft.Databricks/workspaces/failed-workspace?api-version=2026-01-01
   response:
@@ -148,7 +144,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 26 Mar 2026 22:33:25 GMT
+      - Tue, 28 Apr 2026 21:34:34 GMT
       expires:
       - '-1'
       pragma:
@@ -160,11 +156,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-operation-identifier:
-      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=a70a66b6-f372-4fcc-9f09-6c5e1e64c3dd/westus/623a83b8-155a-4070-9346-c3c46c21edad
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=a70a66b6-f372-4fcc-9f09-6c5e1e64c3dd/eastus/0cbc7468-af1d-484c-b002-c8a90b3f3e5a
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '99'
       x-msedge-ref:
-      - 'Ref A: 24B5153F7B6E4299A2BB8CF6064D8B50 Ref B: MWH011020809054 Ref C: 2026-03-26T22:33:24Z'
+      - 'Ref A: 06DD03F6A476408789FB93AB436415A8 Ref B: CO1AA3060816023 Ref C: 2026-04-28T21:34:34Z'
     status:
       code: 400
       message: Bad Request
