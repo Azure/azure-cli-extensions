@@ -43,22 +43,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             method_name, recording_processors=[KeyReplacer()]
         )
 
-    def _wait_for_nodepool_provisioning(self, show_cmd, extra_checks=None, max_retries=20, interval=30):
-        """Poll nodepool show until provisioningState is Succeeded, then run extra_checks."""
-        import time as _time
-        for attempt in range(max_retries):
-            result = self.cmd(show_cmd).get_output_in_json()
-            if result.get("provisioningState") == "Succeeded":
-                if extra_checks:
-                    self.cmd(show_cmd, checks=[self.check('provisioningState', 'Succeeded')] + extra_checks)
-                return
-            _time.sleep(interval)
-        # Final attempt — let it raise if still not Succeeded
-        checks = [self.check('provisioningState', 'Succeeded')]
-        if extra_checks:
-            checks += extra_checks
-        self.cmd(show_cmd, checks=checks)
-
     def _get_versions(self, location):
         """Return the previous and current Kubernetes minor release versions, such as ("1.11.6", "1.12.4")."""
         supported_versions = self.cmd(
@@ -23044,17 +23028,6 @@ spec:
             'ssh_key_value': self.generate_ssh_keys()
         })
 
-        self.cmd('feature register --namespace Microsoft.ContainerService --name VMsAgentPoolAutoscalePreview')
-
-        # Wait for feature registration to complete
-        for _ in range(30):
-            result = self.cmd('feature show --namespace Microsoft.ContainerService --name VMsAgentPoolAutoscalePreview').get_output_in_json()
-            if result["properties"]["state"] == "Registered":
-                break
-            time.sleep(30)
-
-        self.cmd('provider register --namespace Microsoft.ContainerService')
-
         # create cluster with autoscaler enabled
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
                      '--ssh-key-value={ssh_key_value} ' \
@@ -23088,11 +23061,8 @@ spec:
                                '--current-node-vm-size {node_vm_size1} ' \
                                '--node-vm-size {node_vm_size2} ' \
                                '--min-count 1 --max-count 5'
-        self.cmd(update_autoscale_cmd)
-
-        # verify the autoscale update was applied
-        show_cmd = 'aks nodepool show -g {resource_group} --cluster-name {name} -n {nodepool_name}'
-        self._wait_for_nodepool_provisioning(show_cmd, [
+        self.cmd(update_autoscale_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
             self.check('virtualMachinesProfile.scale.autoscale[0].size', 'standard_d4s_v3'),
             self.check('virtualMachinesProfile.scale.autoscale[0].minCount', 1),
             self.check('virtualMachinesProfile.scale.autoscale[0].maxCount', 5),
@@ -23102,8 +23072,8 @@ spec:
         add_autoscale_cmd = 'aks nodepool auto-scale add -g {resource_group} --cluster-name {name} -n {nodepool_name} ' \
                             '--node-vm-size {node_vm_size1} ' \
                             '--min-count 1 --max-count 3'
-        self.cmd(add_autoscale_cmd)
-        self._wait_for_nodepool_provisioning(show_cmd, [
+        self.cmd(add_autoscale_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
             self.check('virtualMachinesProfile.scale.autoscale[1].size', 'standard_d2s_v3'),
             self.check('virtualMachinesProfile.scale.autoscale[1].minCount', 1),
             self.check('virtualMachinesProfile.scale.autoscale[1].maxCount', 3),
@@ -23112,24 +23082,22 @@ spec:
         # delete the second autoscale profile
         delete_autoscale_cmd = 'aks nodepool auto-scale delete -g {resource_group} --cluster-name {name} -n {nodepool_name} ' \
                                '--current-node-vm-size {node_vm_size1}'
-        self.cmd(delete_autoscale_cmd)
-        self._wait_for_nodepool_provisioning(show_cmd)
-        np = self.cmd(show_cmd).get_output_in_json()
+        np = self.cmd(delete_autoscale_cmd).get_output_in_json()
         assert len(np["virtualMachinesProfile"]["scale"]["autoscale"]) == 1
 
         # disable autoscaler (auto to manual)
         disable_autoscaler_cmd = 'aks nodepool update -g {resource_group} --cluster-name {name} -n {nodepool_name} ' \
                                  '--disable-cluster-autoscaler'
-        self.cmd(disable_autoscaler_cmd)
-        self._wait_for_nodepool_provisioning(show_cmd, [
+        self.cmd(disable_autoscaler_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
             self.check('virtualMachinesProfile.scale.manual[0].size', 'standard_d4s_v3'),
         ])
 
         # enable autoscaler (manual to auto)
         enable_autoscaler_cmd = 'aks nodepool update -g {resource_group} --cluster-name {name} -n {nodepool_name} ' \
                                 '--enable-cluster-autoscaler --min-count 1 --max-count 3'
-        self.cmd(enable_autoscaler_cmd)
-        self._wait_for_nodepool_provisioning(show_cmd, [
+        self.cmd(enable_autoscaler_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
             self.check('virtualMachinesProfile.scale.autoscale[0].size', 'standard_d4s_v3'),
             self.check('virtualMachinesProfile.scale.autoscale[0].minCount', 1),
             self.check('virtualMachinesProfile.scale.autoscale[0].maxCount', 3),
