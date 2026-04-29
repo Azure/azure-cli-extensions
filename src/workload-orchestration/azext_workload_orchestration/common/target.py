@@ -3,21 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-"""Target prepare, deploy, and service-group link for Workload Orchestration.
-
-Consolidated from target_prepare.py, target_deploy.py, and target_sg_link.py.
-
-target_prepare: Prepares an Arc-connected K8s cluster for WO —
-installs cert-manager, trust-manager, WO extension, and creates a custom
-location. Idempotent — skips components that already exist.
-
-target_deploy: Chains review → publish → install in one step. Optionally
-prepends config-set (step 0) when --config is provided.
-
-target_sg_link: Links a target to a service group after creation. After
-creating the ServiceGroupMember relationship, a target update (PUT) is
-mandatory to refresh the target's hierarchy info.
-"""
+"""Target prepare, deploy, and service-group link for Workload Orchestration."""
 
 # pylint: disable=broad-exception-caught
 # pylint: disable=too-many-locals
@@ -55,7 +41,6 @@ from azext_workload_orchestration.common.utils import (
     _eprint,
     invoke_cli_command,
     print_step,
-    print_success,
 )
 
 logger = logging.getLogger(__name__)
@@ -159,7 +144,6 @@ def target_prepare(
     extended_location = {"name": cl_id, "type": "CustomLocation"}
     _write_extended_location_file(extended_location)
 
-    print_success(f"Cluster '{cluster_name}' is ready for Workload Orchestration")
     _eprint(f"  Custom Location: {cl_id}")
     _eprint()
 
@@ -507,69 +491,6 @@ def _write_extended_location_file(extended_location):
 API_VERSION = "2025-08-01"
 
 
-def target_deploy(
-    cmd,
-    resource_group,
-    target_name,
-    solution_template_name=None,
-    solution_template_version=None,
-    solution_template_rg=None,
-    config=None,
-    config_hierarchy_id=None,
-    config_template_rg=None,
-    config_template_name=None,
-    config_template_version=None,
-):
-    """Deploy a solution to a target: config-set → review → publish → install.
-
-    Standalone deploy function (used internally).
-    """
-    sub_id = _get_subscription_id(cmd)
-
-    solution_template_version_id = _resolve_template_version_id(
-        solution_template_name, solution_template_version,
-        solution_template_rg, resource_group, sub_id,
-    )
-
-    base_url = (
-        f"{ARM_ENDPOINT}/subscriptions/{sub_id}"
-        f"/resourceGroups/{resource_group}"
-        f"/providers/Microsoft.Edge/targets/{target_name}"
-    )
-
-    do_config = config is not None
-
-    results = {}
-    sv_id = None
-
-    # --- Step 0: Config set ---
-    if do_config:
-        _handle_config_set(
-            cmd, config, config_hierarchy_id, config_template_rg,
-            config_template_name, config_template_version,
-            resource_group, target_name, sub_id,
-        )
-        results["configSet"] = "Succeeded"
-
-    # --- Step 1: Review ---
-    review_result = _do_review(cmd, base_url, solution_template_version_id)
-    results["review"] = review_result
-    sv_id = _extract_solution_version_id(review_result)
-
-    # --- Step 2: Publish ---
-    publish_result = _do_publish(cmd, base_url, sv_id)
-    results["publish"] = publish_result
-
-    # --- Step 3: Install ---
-    install_result = _do_install(cmd, base_url, sv_id)
-    results["install"] = install_result
-
-    return results.get("install", {
-        "status": "Succeeded",
-        "resourceId": f"{base_url}",
-    })
-
-
 def target_deploy_pre_install(
     cmd,
     resource_group,
@@ -696,21 +617,6 @@ def _do_publish(cmd, base_url, solution_version_id):
         resource=ARM_ENDPOINT,
     )
     return _parse_response(resp, "Publish", cmd=cmd)
-
-
-def _do_install(cmd, base_url, solution_version_id):
-    """POST .../installSolution"""
-    url = f"{base_url}/installSolution?api-version={API_VERSION}"
-    body = {"solutionVersionId": solution_version_id}
-
-    resp = send_raw_request(
-        cmd.cli_ctx, "POST", url,
-        body=json.dumps(body),
-        headers=["Content-Type=application/json"],
-        resource=ARM_ENDPOINT,
-    )
-
-    return _parse_response(resp, "Install", cmd=cmd)
 
 
 def _handle_config_set(

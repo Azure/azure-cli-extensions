@@ -3,18 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-"""Hierarchy initialization and creation for Workload Orchestration.
-
-Consolidated from hierarchy_init.py and hierarchy_create.py.
-
-hierarchy_init: Lightweight hierarchy initialization for target create
---init-hierarchy. Creates a simple site + configuration + config-reference +
-site-reference in a resource group scope (no service group).
-
-hierarchy_create: Full hierarchy create command — creates Site + Configuration +
-ConfigurationReference. Supports ResourceGroup (single site) and ServiceGroup
-(nested, up to 3 levels) hierarchy types.
-"""
+"""Hierarchy initialization and creation for Workload Orchestration."""
 
 # pylint: disable=broad-exception-caught
 # pylint: disable=too-many-locals
@@ -25,7 +14,6 @@ ConfigurationReference. Supports ResourceGroup (single site) and ServiceGroup
 import json
 import logging
 import re
-import sys
 
 from azure.cli.core.azclierror import (
     CLIInternalError,
@@ -41,16 +29,14 @@ from azext_workload_orchestration.common.consts import (
     CONFIG_REF_API_VERSION,
     EDGE_RP_NAMESPACE,
 )
+from azext_workload_orchestration.common.utils import _eprint
+
 logger = logging.getLogger(__name__)
 
 
 # ===========================================================================
 # hierarchy_create — Public entry point
 # ===========================================================================
-
-def _eprint(*args, **kwargs):
-    print(*args, file=sys.stderr, **kwargs)
-
 
 MAX_SG_DEPTH = 3
 

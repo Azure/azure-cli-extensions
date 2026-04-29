@@ -27,8 +27,6 @@ ARM_ENDPOINT = "https://management.azure.com"
 # Resource Providers
 # ---------------------------------------------------------------------------
 EDGE_RP_NAMESPACE = "Microsoft.Edge"
-SERVICE_GROUP_RP = "Microsoft.Management"
-RELATIONSHIPS_RP = "Microsoft.Relationships"
 
 # ---------------------------------------------------------------------------
 # cert-manager + trust-manager Defaults (installed via AIO Platform extension)
@@ -64,23 +62,3 @@ DEFAULT_RELEASE_TRAIN = "stable"
 DEFAULT_EXTENSION_NAMESPACE = "workloadorchestration"
 DEFAULT_EXTENSION_SCOPE = "cluster"
 DEFAULT_STORAGE_SIZE = "20Gi"
-
-# ---------------------------------------------------------------------------
-# Limits & Timeouts
-# ---------------------------------------------------------------------------
-MAX_HIERARCHY_NAME_LENGTH = 24  # Configuration resource name limit
-LRO_TIMEOUT_SECONDS = 600  # 10 minutes per LRO step
-LRO_DEFAULT_POLL_INTERVAL = 15  # seconds, overridden by Retry-After header
-
-# ---------------------------------------------------------------------------
-# Default Target Specification (helm.v3)
-# ---------------------------------------------------------------------------
-DEFAULT_TARGET_SPECIFICATION = {
-    "topologies": [{
-        "bindings": [{
-            "role": "helm.v3",
-            "provider": "providers.target.helm",
-            "config": {"inCluster": "true"}
-        }]
-    }]
-}

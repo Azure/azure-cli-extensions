@@ -156,13 +156,3 @@ def print_step(step_num, total, message, status=""):
         _eprint(f"{connector} {message} {status}")
     else:
         _eprint(f"{connector} {message}...")
-
-
-def print_success(message):
-    """Print a success summary line to stderr."""
-    _eprint(f"\n✅ {message}")
-
-
-def print_detail(label, value):
-    """Print a detail line (indented) to stderr."""
-    _eprint(f"  {label}: {value}")
