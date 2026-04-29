@@ -14294,6 +14294,195 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
+    def test_update_acns_in_network_profile_preserves_existing_state(self):
+        # Test that updating only network policies preserves existing observability, security, and performance
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_acns": True,
+                "acns_advanced_networkpolicies": "L7",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                advanced_networking=self.models.AdvancedNetworking(
+                    enabled=True,
+                    observability=self.models.AdvancedNetworkingObservability(
+                        enabled=True,
+                    ),
+                    security=self.models.AdvancedNetworkingSecurity(
+                        enabled=True,
+                        advanced_network_policies="FQDN",
+                        transit_encryption=self.models.AdvancedNetworkingSecurityTransitEncryption(
+                            type="WireGuard",
+                        ),
+                    ),
+                    performance=self.models.AdvancedNetworkingPerformance(
+                        acceleration_mode="BpfVeth",
+                    ),
+                ),
+            ),
+        )
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.update_acns_in_network_profile(mc_1)
+
+        # Verify the updated field changed
+        self.assertEqual(
+            dec_mc_1.network_profile.advanced_networking.security.advanced_network_policies,
+            "L7"
+        )
+        # Verify existing observability is preserved
+        self.assertIsNotNone(dec_mc_1.network_profile.advanced_networking.observability)
+        self.assertEqual(dec_mc_1.network_profile.advanced_networking.observability.enabled, True)
+        # Verify existing security.enabled is preserved
+        self.assertEqual(dec_mc_1.network_profile.advanced_networking.security.enabled, True)
+        # Verify existing transit encryption is preserved
+        self.assertIsNotNone(dec_mc_1.network_profile.advanced_networking.security.transit_encryption)
+        self.assertEqual(
+            dec_mc_1.network_profile.advanced_networking.security.transit_encryption.type,
+            "WireGuard"
+        )
+        # Verify existing performance is preserved
+        self.assertIsNotNone(dec_mc_1.network_profile.advanced_networking.performance)
+        self.assertEqual(
+            dec_mc_1.network_profile.advanced_networking.performance.acceleration_mode,
+            "BpfVeth"
+        )
+
+        # Test that updating only performance preserves existing observability and security settings
+        dec_perf = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_acns": True,
+                "acns_datapath_acceleration_mode": "None",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_perf = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                advanced_networking=self.models.AdvancedNetworking(
+                    enabled=True,
+                    observability=self.models.AdvancedNetworkingObservability(
+                        enabled=True,
+                    ),
+                    security=self.models.AdvancedNetworkingSecurity(
+                        enabled=True,
+                        advanced_network_policies="L7",
+                    ),
+                    performance=self.models.AdvancedNetworkingPerformance(
+                        acceleration_mode="BpfVeth",
+                    ),
+                ),
+            ),
+        )
+        dec_perf.context.attach_mc(mc_perf)
+        dec_mc_perf = dec_perf.update_acns_in_network_profile(mc_perf)
+
+        # Verify performance was updated
+        self.assertEqual(
+            dec_mc_perf.network_profile.advanced_networking.performance.acceleration_mode,
+            "None"
+        )
+        # Verify existing observability is preserved
+        self.assertEqual(dec_mc_perf.network_profile.advanced_networking.observability.enabled, True)
+        # Verify existing security is preserved
+        self.assertEqual(dec_mc_perf.network_profile.advanced_networking.security.enabled, True)
+        self.assertEqual(
+            dec_mc_perf.network_profile.advanced_networking.security.advanced_network_policies,
+            "L7"
+        )
+
+        # Test that updating only observability preserves existing security and performance settings
+        dec_2 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_acns": True,
+                "disable_acns_observability": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                advanced_networking=self.models.AdvancedNetworking(
+                    enabled=True,
+                    observability=self.models.AdvancedNetworkingObservability(
+                        enabled=True,
+                    ),
+                    security=self.models.AdvancedNetworkingSecurity(
+                        enabled=True,
+                        advanced_network_policies="FQDN",
+                    ),
+                    performance=self.models.AdvancedNetworkingPerformance(
+                        acceleration_mode="BpfVeth",
+                    ),
+                ),
+            ),
+        )
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.update_acns_in_network_profile(mc_2)
+
+        # Verify observability was updated
+        self.assertEqual(dec_mc_2.network_profile.advanced_networking.observability.enabled, False)
+        # Verify existing security is fully preserved
+        self.assertIsNotNone(dec_mc_2.network_profile.advanced_networking.security)
+        self.assertEqual(dec_mc_2.network_profile.advanced_networking.security.enabled, True)
+        self.assertEqual(
+            dec_mc_2.network_profile.advanced_networking.security.advanced_network_policies,
+            "FQDN"
+        )
+        # Verify existing performance is preserved
+        self.assertIsNotNone(dec_mc_2.network_profile.advanced_networking.performance)
+        self.assertEqual(
+            dec_mc_2.network_profile.advanced_networking.performance.acceleration_mode,
+            "BpfVeth"
+        )
+
+        # Test that disabling ACNS preserves existing sub-objects
+        dec_3 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_acns": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                advanced_networking=self.models.AdvancedNetworking(
+                    enabled=True,
+                    observability=self.models.AdvancedNetworkingObservability(
+                        enabled=True,
+                    ),
+                    security=self.models.AdvancedNetworkingSecurity(
+                        enabled=True,
+                        advanced_network_policies="FQDN",
+                    ),
+                ),
+            ),
+        )
+        dec_3.context.attach_mc(mc_3)
+        dec_mc_3 = dec_3.update_acns_in_network_profile(mc_3)
+
+        # Verify ACNS disabled
+        self.assertEqual(dec_mc_3.network_profile.advanced_networking.enabled, False)
+        # Verify sub-objects are preserved but explicitly disabled
+        self.assertIsNotNone(dec_mc_3.network_profile.advanced_networking.observability)
+        self.assertEqual(dec_mc_3.network_profile.advanced_networking.observability.enabled, False)
+        self.assertIsNotNone(dec_mc_3.network_profile.advanced_networking.security)
+        self.assertEqual(dec_mc_3.network_profile.advanced_networking.security.enabled, False)
+
     def test_update_vmas_to_vms(self):
         # Should not update mc if unset
         dec_0 = AKSPreviewManagedClusterUpdateDecorator(
