@@ -1329,7 +1329,7 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
 
         node_public_ip_prefix_ids = self.context.get_node_public_ip_prefix_ids()
         if node_public_ip_prefix_ids:
-            agentpool.network_profile.node_public_ip_prefix_ids = node_public_ip_prefix_ids
+            agentpool.network_profile["nodePublicIPPrefixIDs"] = node_public_ip_prefix_ids
             agentpool.enable_node_public_ip = True
 
         return agentpool
