@@ -715,6 +715,13 @@ helps['aks create'] = f"""
         - name: --enable-hosted-system
           type: bool
           short-summary: Create a cluster with fully hosted system components. This applies only when creating a new automatic cluster.
+        - name: --control-plane-scaling-size --cp-scaling-size
+          type: string
+          short-summary: (PREVIEW) The control plane scaling size for the cluster.
+          long-summary: |
+              Provides scaled and performance-guaranteed control plane capacity for AKS clusters.
+              Enables customers to select a control plane scaling size that delivers higher API server throughput,
+              increased etcd capacity, and faster pod scheduling rates. Available values are 'H2', 'H4', and 'H8'.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -806,6 +813,8 @@ helps['aks create'] = f"""
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-managed-system-pool
         - name: Create a kubernetes cluster with a managed installation of Gateway API CRDs from the standard release channel.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-gateway-api
+        - name: Create a kubernetes cluster with control plane scaling size H4.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --control-plane-scaling-size H4
         - name: Create an automatic cluster with hosted system components enabled.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --sku automatic --enable-hosted-system
 
@@ -2484,7 +2493,7 @@ helps['aks nodepool update'] = """
           short-summary: Set the localDNS Profile for a nodepool with a JSON config file.
         - name: --node-vm-size -s
           type: string
-          short-summary: VM size for Kubernetes nodes. Only configurable when updating the autoscale settings of a VirtualMachines node pool.
+          short-summary: VM size for Kubernetes nodes. For VMSS pools, changing this triggers a rolling upgrade to replace nodes with the new size (preview). For VirtualMachines pools, only configurable when updating autoscale settings.
         - name: --upgrade-strategy
           type: string
           short-summary: Upgrade strategy for the node pool. Allowed values are "Rolling" or "BlueGreen". Default is "Rolling".
@@ -2519,6 +2528,8 @@ helps['aks nodepool update'] = """
         text: az aks nodepool update --mode System -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
       - name: Update cluster autoscaler vm size, min-count and max-count for virtual machines node pool
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --update-cluster-autoscaler --node-vm-size "Standard_D2s_v3" --min-count 2 --max-count 4
+      - name: Resize VM size for a VMSS node pool (preview, requires AFEC registration)
+        text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-vm-size Standard_D4s_v3
       - name: Update a node pool with blue-green upgrade settings
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --drain-batch-size 50% --drain-timeout-bg 5 --batch-soak-duration 10 --final-soak-duration 10
 """

@@ -11,6 +11,17 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* `az aks create`: Add `--control-plane-scaling-size` parameter to configure control plane scaling profile with available sizes 'H2', 'H4', and 'H8'.
+
+20.0.0b4
++++++++
+* `az aks nodepool update`: Support `--node-vm-size` to resize VM size of an existing VMSS-based agent pool (preview). Requires AFEC registration `Microsoft.ContainerService/AgentPoolVMSSResize`.
+* `az aks create/update`: Fix DCR not being created or updated when `--enable-container-network-logs`, `--enable-retina-flow-logs`, or `--enable-high-log-scale-mode` flags are used, ensuring the Data Collection Rule streams (e.g. `Microsoft-ContainerLogV2-HighScale`) are kept in sync.
+* `az aks update`: Add validation for `--enable-high-log-scale-mode` on the update path requiring the monitoring addon with MSI authentication to be enabled
+
+20.0.0b3
+++++++
+* Vendor new SDK and bump API version to 2026-02-02-preview.
 
 20.0.0b3
 +++++++
@@ -42,7 +53,7 @@ Pending
 19.0.0b28
 +++++++
 * Fix `match_condition` kwarg leaking to HTTP transport by overriding `put_mc` and `add_agentpool` to pass `if_match` / `if_none_match` directly to the vendored SDK. This change fixes the compatibility issue as azure-cli/acs module adopts TypeSpec emitted SDKs while azure-cli-extensions/aks-preview still uses the autorest emitted SDK.
-+ `az aks list-vm-skus`: New command to list available VM SKUs for AKS clusters in a given region.
+* `az aks list-vm-skus`: New command to list available VM SKUs for AKS clusters in a given region.
 * `az aks create/update`: Add `--enable-service-account-image-pull`, `--disable-service-account-image-pull`, and `--service-account-image-pull-default-managed-identity-id` parameters to manage service account based image pull settings.
 * `az aks list-vm-skus`: New command to list available VM SKUs for AKS clusters in a given region.
 * Add managed GPU enablement option to node pool property in `az aks nodepool add` and `az aks nodepool update`.
