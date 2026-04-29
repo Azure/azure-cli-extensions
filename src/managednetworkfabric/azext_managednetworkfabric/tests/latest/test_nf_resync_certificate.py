@@ -27,18 +27,18 @@ def cleanup_scenario(test):
 def call_scenario1(test):
     """Testcase: scenario1"""
     setup_scenario(test)
-    step_resync_certificate_scenario1(test)
+    step_resync_cetificate_scenario1(test)
     cleanup_scenario(test)
 
 
 def call_scenario2(test):
     """Testcase: scenario2"""
     setup_scenario(test)
-    step_resync_certificate_scenario2(test)
+    step_resync_cetificate_scenario2(test)
     cleanup_scenario(test)
 
 
-def step_resync_certificate_scenario1(test, checks=None):
+def step_resync_cetificate_scenario1(test, checks=None):
     """nf resync certificate operation"""
     if checks is None:
         checks = []
@@ -47,7 +47,7 @@ def step_resync_certificate_scenario1(test, checks=None):
     )
 
 
-def step_resync_certificate_scenario2(test, checks=None):
+def step_resync_cetificate_scenario2(test, checks=None):
     """nf resync certificate operation"""
     if checks is None:
         checks = []
