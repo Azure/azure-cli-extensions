@@ -17309,6 +17309,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
+    # live_only: NodePublicIPv6PrefixPreview feature flag must be registered on the
+    # test subscription. Recording-based tests will be added once the feature is GA.
+    @live_only()
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="eastus2euap"
