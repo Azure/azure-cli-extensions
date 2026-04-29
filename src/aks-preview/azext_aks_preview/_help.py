@@ -715,6 +715,13 @@ helps['aks create'] = f"""
         - name: --enable-hosted-system
           type: bool
           short-summary: Create a cluster with fully hosted system components. This applies only when creating a new automatic cluster.
+        - name: --control-plane-scaling-size --cp-scaling-size
+          type: string
+          short-summary: (PREVIEW) The control plane scaling size for the cluster.
+          long-summary: |
+              Provides scaled and performance-guaranteed control plane capacity for AKS clusters.
+              Enables customers to select a control plane scaling size that delivers higher API server throughput,
+              increased etcd capacity, and faster pod scheduling rates. Available values are 'H2', 'H4', and 'H8'.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -806,6 +813,8 @@ helps['aks create'] = f"""
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-managed-system-pool
         - name: Create a kubernetes cluster with a managed installation of Gateway API CRDs from the standard release channel.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-gateway-api
+        - name: Create a kubernetes cluster with control plane scaling size H4.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --control-plane-scaling-size H4
         - name: Create an automatic cluster with hosted system components enabled.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --sku automatic --enable-hosted-system
 

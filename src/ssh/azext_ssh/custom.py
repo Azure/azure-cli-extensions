@@ -205,18 +205,9 @@ def _do_ssh_op(cmd, op_info, op_call):
 
 
 def _get_and_write_certificate(cmd, public_key_file, cert_file, ssh_client_folder):
-    cloudtoscope = {
-        "azurecloud": "https://pas.windows.net/CheckMyAccess/Linux/.default",
-        "azurechinacloud": "https://pas.chinacloudapi.cn/CheckMyAccess/Linux/.default",
-        "azureusgovernment": "https://pasff.usgovcloudapi.net/CheckMyAccess/Linux/.default"
-    }
-    scope = cloudtoscope.get(cmd.cli_ctx.cloud.name.lower(), None)
-    if not scope:
-        raise azclierror.InvalidArgumentValueError(
-            f"Unsupported cloud {cmd.cli_ctx.cloud.name.lower()}",
-            "Supported clouds include azurecloud,azurechinacloud,azureusgovernment")
-
+    scope = f'{const.AADSSHLOGINFORLINUX_SERVER_APP_ID}/.default'
     scopes = [scope]
+
     data = _prepare_jwk_data(public_key_file)
     from azure.cli.core._profile import Profile
     profile = Profile(cli_ctx=cmd.cli_ctx)
