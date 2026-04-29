@@ -49,6 +49,14 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
             FabricResyncPasswordCommand(loader=self)
         )
 
+        from .custom.fabric_rotate_certificate import (
+            RotateCertificateCommand as FabricRotateCertificateCommand,
+        )
+
+        self.command_table["networkfabric fabric rotate-certificate"] = (
+            FabricRotateCertificateCommand(loader=self)
+        )
+
     # with self.command_group("networkfabric bootstrapdevice"):
 
     #     from .custom.bootstrapdevice_resync_password import (
