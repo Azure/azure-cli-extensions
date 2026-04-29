@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-"""Shared utilities for onboarding simplification commands.
+"""Shared utilities for workload orchestration CLI commands.
 
 Provides REST wrappers (using send_raw_request for automatic auth/retry/throttle),
 LRO polling with Retry-After support, CLI command invocation, and progress output.

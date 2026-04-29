@@ -3,42 +3,24 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-"""Hierarchy create command - creates Site + Configuration + ConfigurationReference.
+"""Hierarchy initialization and creation for Workload Orchestration.
 
-Supports two hierarchy types:
-  - ResourceGroup: Single site in a resource group (no children)
-  - ServiceGroup: Nested sites under a service group (up to 3 levels)
+Consolidated from hierarchy_init.py and hierarchy_create.py.
 
-For ResourceGroup:
-    az workload-orchestration hierarchy create \\
-        --resource-group rg --configuration-location eastus2euap \\
-        --hierarchy-spec hierarchy.yaml
+hierarchy_init: Lightweight hierarchy initialization for target create
+--init-hierarchy. Creates a simple site + configuration + config-reference +
+site-reference in a resource group scope (no service group).
 
-    hierarchy.yaml:
-        name: Mehoopany
-        level: factory
-
-For ServiceGroup:
-    az workload-orchestration hierarchy create \\
-        --configuration-location eastus2euap \\
-        --hierarchy-spec hierarchy.yaml
-
-    hierarchy.yaml:
-        type: ServiceGroup
-        name: India
-        level: country
-        children:
-          - name: Karnataka
-            level: region
-            children:
-              - name: BangaloreSouth
-                level: factory
-
-Note: ``children`` MUST be a list (even for a single child).
+hierarchy_create: Full hierarchy create command — creates Site + Configuration +
+ConfigurationReference. Supports ResourceGroup (single site) and ServiceGroup
+(nested, up to 3 levels) hierarchy types.
 """
 
 # pylint: disable=broad-exception-caught
 # pylint: disable=too-many-locals
+# pylint: disable=too-many-statements
+# pylint: disable=too-many-branches
+# pylint: disable=import-outside-toplevel
 
 import json
 import logging
@@ -51,7 +33,7 @@ from azure.cli.core.azclierror import (
 )
 from azure.cli.core.util import send_raw_request
 
-from azext_workload_orchestration.onboarding.consts import (
+from azext_workload_orchestration.common.consts import (
     ARM_ENDPOINT,
     SERVICE_GROUP_API_VERSION,
     SITE_API_VERSION,
@@ -59,9 +41,12 @@ from azext_workload_orchestration.onboarding.consts import (
     CONFIG_REF_API_VERSION,
     EDGE_RP_NAMESPACE,
 )
-
 logger = logging.getLogger(__name__)
 
+
+# ===========================================================================
+# hierarchy_create — Public entry point
+# ===========================================================================
 
 def _eprint(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
@@ -238,7 +223,7 @@ def _create_sg_hierarchy(cmd, spec, config_location, resource_group):
     tenant_id = _get_tenant_id(cmd)
 
     # Count total nodes
-    nodes = _count_nodes(spec)
+    nodes = _count_depth(spec)
     if nodes > MAX_SG_DEPTH:
         raise ValidationError(
             f"ServiceGroup hierarchy has {nodes} levels. Maximum is {MAX_SG_DEPTH}."
@@ -277,7 +262,6 @@ def _create_sg_level(  # pylint: disable=too-many-arguments
 
     sg_id = f"/providers/Microsoft.Management/serviceGroups/{name}"
 
-    # Tree drawing
     connector = "└── " if is_last else "├── "
     child_prefix = parent_prefix + ("    " if is_last else "│   ")
 
@@ -295,7 +279,6 @@ def _create_sg_level(  # pylint: disable=too-many-arguments
         logger.warning("ServiceGroup creation failed: %s", exc)
         raise CLIInternalError(f"ServiceGroup '{name}' creation failed: {exc}")
 
-    # Wait for RBAC propagation silently
     _wait_for_sg_rbac(cmd, config_location, sg_id, name)
 
     # 2. Find-or-create Site under this SG (1 site per SG max)
@@ -337,12 +320,10 @@ def _create_sg_level(  # pylint: disable=too-many-arguments
     )
 
     if existing_ref:
-        # Whole chain reused: don't touch Config or ConfigRef.
         ref_target = existing_ref.get("properties", {}).get("configurationResourceId", "")
         effective_config_id = ref_target or config_id
         config_reused = True
     else:
-        # Fresh Site, or existing Site with no ConfigRef yet.
         config_reused = bool(_arm_get(cmd, config_url, CONFIGURATION_API_VERSION))
         if not config_reused:
             _arm_put(cmd, config_url, {
@@ -358,7 +339,6 @@ def _create_sg_level(  # pylint: disable=too-many-arguments
     results.append({"type": "Configuration", "name": config_name, "id": effective_config_id})
     results.append({"type": "ConfigurationReference", "siteId": site_id})
 
-    # Show resources created/reused under this node
     children = node.get("children")
     has_children = children is not None
     site_label = "(reused) " if existing_sg_site else ""
@@ -371,7 +351,6 @@ def _create_sg_level(  # pylint: disable=too-many-arguments
     else:
         _eprint(f"{child_prefix}└── ConfigurationReference {ref_label}✓")
 
-    # Recurse into children
     if children:
         if not isinstance(children, list):
             raise ValidationError(
@@ -386,7 +365,7 @@ def _create_sg_level(  # pylint: disable=too-many-arguments
                              parent_prefix=child_prefix)
 
 
-def _count_nodes(node):
+def _count_depth(node):
     """Count total depth of hierarchy tree."""
     children = node.get("children")
     if not children:
@@ -395,11 +374,11 @@ def _count_nodes(node):
         raise ValidationError(
             f"'children' for '{node.get('name', '?')}' must be a list."
         )
-    return 1 + max(_count_nodes(c) for c in children)
+    return 1 + max(_count_depth(c) for c in children)
 
 
 # ---------------------------------------------------------------------------
-# ARM helpers
+# hierarchy_create — ARM helpers
 # ---------------------------------------------------------------------------
 
 def _arm_put(cmd, url, body, api_version):
@@ -434,15 +413,6 @@ def _arm_get(cmd, url, api_version):
             return json.loads(resp.content)
         except Exception:  # pylint: disable=broad-except
             return None
-
-
-def _check_rg_has_no_other_site(cmd, sub_id, resource_group, intended_name):  # legacy, kept for back-compat callers
-    site = _find_existing_site_in_rg(cmd, sub_id, resource_group)
-    if site and site[0] != intended_name:
-        raise ValidationError(
-            f"Resource group '{resource_group}' already contains site '{site[0]}'. "
-            f"A ResourceGroup hierarchy supports only one site per RG."
-        )
 
 
 def _find_existing_site_in_rg(cmd, sub_id, resource_group):

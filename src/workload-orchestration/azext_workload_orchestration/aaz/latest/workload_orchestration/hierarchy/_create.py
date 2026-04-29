@@ -105,7 +105,7 @@ class Create(AAZCommand):
         args = self.ctx.args
         spec = args.hierarchy_spec.to_serialized_data()
 
-        from azext_workload_orchestration.onboarding.hierarchy_create import (
+        from azext_workload_orchestration.common.hierarchy import (
             hierarchy_create as _hierarchy_create,
         )
         return _hierarchy_create(

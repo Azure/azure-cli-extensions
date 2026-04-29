@@ -3,15 +3,10 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-"""Onboarding simplification commands for Workload Orchestration.
+"""Common helpers for Workload Orchestration CLI commands."""
 
-Provides convenience CLI commands that wrap multiple API calls
-into single-command operations to reduce onboarding steps.
-"""
-
-from azext_workload_orchestration.onboarding.target_prepare import target_prepare
-from azext_workload_orchestration.onboarding.target_deploy import target_deploy as _target_deploy
-from azext_workload_orchestration.onboarding.hierarchy_create import hierarchy_create as _hierarchy_create
+from azext_workload_orchestration.common.target import target_prepare as _target_prepare
+from azext_workload_orchestration.common.hierarchy import hierarchy_create as _hierarchy_create
 
 
 def _validate_dependency_versions(data):
@@ -20,7 +15,7 @@ def _validate_dependency_versions(data):
     into a ``dict[str,str]`` for us.
     """
     from azure.cli.core.azclierror import ValidationError
-    from azext_workload_orchestration.onboarding.consts import EXTENSION_DEPENDENCIES
+    from azext_workload_orchestration.common.consts import EXTENSION_DEPENDENCIES
 
     if not data:
         return {}
@@ -69,7 +64,7 @@ def target_init(
     dep_versions = _validate_dependency_versions(extension_dependency_version)
     iot_platform_version = dep_versions.get("iotplatform")
 
-    return target_prepare(
+    return _target_prepare(
         cmd=cmd,
         cluster_name=cluster_name,
         resource_group=resource_group,
@@ -81,35 +76,6 @@ def target_init(
         extension_version=extension_version,
         release_train=release_train,
         cert_manager_version=iot_platform_version,
-    )
-
-
-def target_deploy(
-    cmd,
-    resource_group,
-    target_name,
-    solution_template_name=None,
-    solution_template_version=None,
-    solution_template_rg=None,
-    config=None,
-    config_hierarchy_id=None,
-    config_template_rg=None,
-    config_template_name=None,
-    config_template_version=None,
-):
-    """Deploy a solution to a target: review -> publish -> install."""
-    return _target_deploy(
-        cmd=cmd,
-        resource_group=resource_group,
-        target_name=target_name,
-        solution_template_name=solution_template_name,
-        solution_template_version=solution_template_version,
-        solution_template_rg=solution_template_rg,
-        config=config,
-        config_hierarchy_id=config_hierarchy_id,
-        config_template_rg=config_template_rg,
-        config_template_name=config_template_name,
-        config_template_version=config_template_version,
     )
 
 
@@ -126,4 +92,4 @@ def hierarchy_create(cmd, resource_group=None, configuration_location=None, hier
     )
 
 
-__all__ = ['target_prepare', 'target_init', 'target_deploy', 'hierarchy_create']
+__all__ = ['target_init', 'hierarchy_create']

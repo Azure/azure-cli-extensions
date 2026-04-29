@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-"""Constants for onboarding simplification commands."""
+"""Constants for workload orchestration CLI commands."""
 
 # pylint: disable=line-too-long
 
@@ -22,7 +22,6 @@ CONTEXT_API_VERSION = "2025-08-01"
 # ARM Endpoints
 # ---------------------------------------------------------------------------
 ARM_ENDPOINT = "https://management.azure.com"
-ARM_RESOURCE = "https://management.azure.com"
 
 # ---------------------------------------------------------------------------
 # Resource Providers
@@ -35,7 +34,6 @@ RELATIONSHIPS_RP = "Microsoft.Relationships"
 # cert-manager + trust-manager Defaults (installed via AIO Platform extension)
 # ---------------------------------------------------------------------------
 DEFAULT_CERT_MANAGER_VERSION = None  # None = AIO extension default
-CERT_MANAGER_NAMESPACE = "cert-manager"
 
 # Registry of extension dependencies for `--extension-dependency-version`.
 # Keys are the user-facing names; values configure the Arc extension install.

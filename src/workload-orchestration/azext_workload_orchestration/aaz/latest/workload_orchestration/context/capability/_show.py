@@ -55,7 +55,7 @@ class ShowCapability(AAZCommand):
         super()._handler(command_args)
         args = self.ctx.args
 
-        from azext_workload_orchestration.onboarding.context_capability import (
+        from azext_workload_orchestration.common.context import (
             capability_show as _capability_show,
         )
         return _capability_show(

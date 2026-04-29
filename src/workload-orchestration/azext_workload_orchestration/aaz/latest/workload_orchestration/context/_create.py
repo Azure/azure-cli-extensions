@@ -42,8 +42,6 @@ class Create(AAZCommand):
             return cls._args_schema
         cls._args_schema = super()._build_arguments_schema(*args, **kwargs)
 
-        # define Arg Group ""
-
         _args_schema = cls._args_schema
         _args_schema.context_name = AAZStrArg(
             options=["-n", "--name", "--context-name"],
@@ -58,8 +56,6 @@ class Create(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-
-        # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
         _args_schema.capabilities = AAZListArg(
@@ -110,8 +106,6 @@ class Create(AAZCommand):
             required=True,
         )
 
-        # define Arg Group "Resource"
-
         _args_schema = cls._args_schema
         _args_schema.location = AAZResourceLocationArg(
             arg_group="Resource",
@@ -133,7 +127,7 @@ class Create(AAZCommand):
         # Custom arg: --site-id (not sent to ARM, used in post_operations)
         _args_schema.site_id = AAZStrArg(
             options=["--site-id"],
-            arg_group="Onboarding",
+            arg_group="Common",
             help="ARM resource ID of a Site to auto-create a site reference after context creation.",
         )
 
@@ -182,7 +176,7 @@ class Create(AAZCommand):
         ref_name = f"{sanitized_site}-{hash_suffix}"
 
         try:
-            from azext_workload_orchestration.onboarding.utils import invoke_cli_command, CmdProxy
+            from azext_workload_orchestration.common.utils import invoke_cli_command, CmdProxy
             cmd_proxy = CmdProxy(self.ctx.cli_ctx)
             invoke_cli_command(cmd_proxy, [
                 "workload-orchestration", "context", "site-reference", "create",

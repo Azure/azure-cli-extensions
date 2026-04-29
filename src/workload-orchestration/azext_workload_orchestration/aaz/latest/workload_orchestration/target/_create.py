@@ -47,8 +47,6 @@ class Create(AAZCommand):
             return cls._args_schema
         cls._args_schema = super()._build_arguments_schema(*args, **kwargs)
 
-        # define Arg Group ""
-
         _args_schema = cls._args_schema
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -63,8 +61,6 @@ class Create(AAZCommand):
                 min_length=3,
             ),
         )
-
-        # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
         _args_schema.capabilities = AAZListArg(
@@ -121,17 +117,14 @@ class Create(AAZCommand):
 
         )
 
-        # Onboarding simplification arguments
         _args_schema.service_group = AAZStrArg(
             options=["--service-group"],
-            arg_group="Onboarding",
+            arg_group="Common",
             help="ServiceGroup name to auto-link this target to after creation.",
         )
 
         capabilities = cls._args_schema.capabilities
         capabilities.Element = AAZStrArg()
-
-        # define Arg Group "Resource"
 
         _args_schema = cls._args_schema
         _args_schema.extended_location = AAZObjectArg(
@@ -209,10 +202,10 @@ class Create(AAZCommand):
 
     def _handle_service_group_link(self):
         """Link the created target to a service group."""
-        from azext_workload_orchestration.onboarding.target_sg_link import (
+        from azext_workload_orchestration.common.target import (
             link_target_to_service_group
         )
-        from azext_workload_orchestration.onboarding.utils import CmdProxy
+        from azext_workload_orchestration.common.utils import CmdProxy
         sg_name = str(self.ctx.args.service_group)
         # Get target ID from the response
         target_id = None

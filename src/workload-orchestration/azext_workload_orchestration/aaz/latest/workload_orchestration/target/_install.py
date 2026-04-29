@@ -9,7 +9,7 @@
 # flake8: noqa
 
 from azure.cli.core.aaz import *
-from azure.cli.core.azclierror import CLIInternalError, ValidationError
+from azure.cli.core.azclierror import ValidationError
 
 
 @register_command(
@@ -133,10 +133,10 @@ class Install(AAZCommand):
 
     def _run_deploy_chain(self):
         """Run config-set → review → publish, then let the AAZ install handle the final step."""
-        from azext_workload_orchestration.onboarding.target_deploy import (
+        from azext_workload_orchestration.common.target import (
             target_deploy_pre_install,
         )
-        from azext_workload_orchestration.onboarding.utils import CmdProxy
+        from azext_workload_orchestration.common.utils import CmdProxy
 
         args = self.ctx.args
         cmd_proxy = CmdProxy(self.ctx.cli_ctx)
@@ -240,11 +240,6 @@ class Install(AAZCommand):
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             
-            # Remove these properties (v2025_06_01)
-            # _builder.set_prop("solution", AAZStrType, ".solution", typ_kwargs={"flags": {"required": True}})
-            # _builder.set_prop("solutionVersion", AAZStrType, ".solution_version", typ_kwargs={"flags": {"required": True}})
-            
-            # Add new property (v2025_06_01)
             _builder.set_prop("solutionVersionId", AAZStrType, ".solution_version_id", typ_kwargs={"flags": {"required": True}})
             
             return self.serialize_content(_content_value)
@@ -281,7 +276,7 @@ class Install(AAZCommand):
             return cls._schema_on_200
 
 class _InstallHelper:
-    """Helper class for Publish"""
+    """Helper class for Install"""
 
     _schema_solution_dependency_read = None
 

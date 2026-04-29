@@ -124,7 +124,7 @@ class Init(AAZCommand):
         super()._handler(command_args)
         args = self.ctx.args
 
-        from azext_workload_orchestration.onboarding import target_init
+        from azext_workload_orchestration.common import target_init
         return target_init(
             cmd=self,
             cluster_name=args.cluster_name.to_serialized_data(),

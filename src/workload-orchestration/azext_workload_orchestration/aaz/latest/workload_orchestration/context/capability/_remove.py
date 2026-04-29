@@ -76,7 +76,7 @@ class RemoveCapability(AAZCommand):
         force = args.force.to_serialized_data() if args.force._data is not None else False
 
         # AAZ confirmation= already prompted via --yes; we treat that as confirmed.
-        from azext_workload_orchestration.onboarding.context_capability import (
+        from azext_workload_orchestration.common.context import (
             capability_remove as _capability_remove,
         )
         return _capability_remove(

@@ -65,9 +65,3 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
             options_list=['--kube-context'],
             help='Kubernetes context to use. Defaults to current context.',
         )
-        c.argument(
-            'skip_site_reference',
-            options_list=['--skip-site-reference'],
-            action='store_true',
-            help='Skip auto-creation of site-reference to context.',
-        )

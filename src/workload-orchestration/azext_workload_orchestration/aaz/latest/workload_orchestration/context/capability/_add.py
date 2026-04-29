@@ -93,7 +93,7 @@ class AddCapability(AAZCommand):
         # Treat empty list as not-provided (AAZ may default to [])
         capabilities = capabilities_raw if capabilities_raw else None
 
-        from azext_workload_orchestration.onboarding.context_capability import (
+        from azext_workload_orchestration.common.context import (
             capability_add as _capability_add,
         )
         return _capability_add(
