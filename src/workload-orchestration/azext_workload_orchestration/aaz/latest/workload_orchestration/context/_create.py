@@ -195,11 +195,7 @@ class Create(AAZCommand):
         except Exception as exc:
             logger.warning("Site reference creation failed: %s", exc)
             raise CLIError(
-                f"Context created successfully, but site reference creation failed: {exc}\n"
-                f"Run manually:\n"
-                f"  az workload-orchestration context site-reference create "
-                f"-g {rg} --context-name {context_name} "
-                f"--site-reference-name {ref_name} --site-id {site_id}"
+                f"Context created successfully, but site reference creation failed: {exc}"
             )
 
     def _output(self, *args, **kwargs):
