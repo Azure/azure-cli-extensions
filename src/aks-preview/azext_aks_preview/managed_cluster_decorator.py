@@ -3970,6 +3970,13 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             raise RequiredArgumentMissingError('"--enable-hosted-system" requires "--sku automatic".')
         return enable_hosted_system
 
+    def get_control_plane_scaling_size(self) -> Union[str, None]:
+        """Obtain the value of control_plane_scaling_size.
+
+        :return: str or None
+        """
+        return self.raw_param.get("control_plane_scaling_size")
+
     def get_enable_continuous_control_plane_and_addon_monitor(self) -> bool:
         """Obtain the value of enable_continuous_control_plane_and_addon_monitor.
 
@@ -5069,6 +5076,23 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         return mc
 
+    def set_up_control_plane_scaling_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up the control plane scaling profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        control_plane_scaling_size = self.context.get_control_plane_scaling_size()
+        if control_plane_scaling_size is not None:
+            mc.control_plane_scaling_profile = (
+                self.models.ManagedClusterControlPlaneScalingProfile(  # pylint: disable=no-member
+                    scaling_size=control_plane_scaling_size,
+                )
+            )
+
+        return mc
+
     def set_up_health_monitor_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up health monitor profile for the ManagedCluster object.
 
@@ -5211,6 +5235,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_agentpool_profile_ssh_access(mc)
         # set up bootstrap profile
         mc = self.set_up_bootstrap_profile(mc)
+        # set up control plane scaling profile
+        mc = self.set_up_control_plane_scaling_profile(mc)
         # set up static egress gateway profile
         mc = self.set_up_static_egress_gateway(mc)
         # set up health monitor profile

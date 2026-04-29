@@ -5,6 +5,7 @@
 from colorama import Fore
 from colorama import Style
 
+AADSSHLOGINFORLINUX_SERVER_APP_ID = 'ce6ff14a-7fdc-4685-bbe0-f6afdfcfa8e0'
 AGENT_MINIMUM_VERSION_MAJOR = 1
 AGENT_MINIMUM_VERSION_MINOR = 31
 CLIENT_PROXY_VERSION = "1.3.033291"
