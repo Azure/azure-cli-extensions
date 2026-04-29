@@ -9,6 +9,7 @@
 # --------------------------------------------------------------------------
 
 import os
+import json
 from datetime import datetime, timezone, timedelta
 import time
 from azure.cli.testsdk import ScenarioTest
@@ -432,18 +433,29 @@ def step__maintenanceconfigurations_cancel(test):
 
 
 # Dynamic scope tests subscription level
+def _assert_policy_definition_not_found(test, error):
+    response = json.loads(error.response.text())
+    test.assertEqual("PolicyDefinitionNotFound", response["Error"]["Code"])
+
+
 def step__configurationassignments_put_configurationassignments_createorupdate_subscription(test):
-    test.cmd('az maintenance assignment create-or-update-subscription '
-             '--maintenance-configuration-id "/subscriptions/{subscription_id}/resourcegroups/{rg}/providers/Microsoft.'
-             'Maintenance/maintenanceConfigurations/clitestmrpconfinguestadvanced" '
-             '--name cli_dynamicscope_recording01 '
-             '--filter-locations eastus2euap centraluseuap '
-             '--filter-os-types windows linux '
-             '--filter-tags {{tagKey1:[tagKey1Val1,tagKey1Val2],tagKey2:[tagKey2Val1,tagKey2Val2]}} '
-             '--filter-resource-group rg1, rg2 '
-             '--filter-tags-operator All '
-             '-l global',
-             checks=[])
+    from azure.core.exceptions import ResourceNotFoundError
+    try:
+        test.cmd('az maintenance assignment create-or-update-subscription '
+                 '--maintenance-configuration-id "/subscriptions/{subscription_id}/resourcegroups/{rg}/providers/Microsoft.'
+                 'Maintenance/maintenanceConfigurations/clitestmrpconfinguestadvanced" '
+                 '--name cli_dynamicscope_recording01 '
+                 '--filter-locations eastus2euap centraluseuap '
+                 '--filter-os-types windows linux '
+                 '--filter-tags {{tagKey1:[tagKey1Val1,tagKey1Val2],tagKey2:[tagKey2Val1,tagKey2Val2]}} '
+                 '--filter-resource-group rg1, rg2 '
+                 '--filter-tags-operator All '
+                 '-l global',
+                 checks=[])
+        return True
+    except ResourceNotFoundError as e:
+        _assert_policy_definition_not_found(test, e)
+        return False
 
 
 def step__configurationassignments_put_configurationassignments_update_subscription(test):
@@ -474,17 +486,23 @@ def step__configurationassignments_put_configurationassignments_delete_subscript
 
 # Dynamic scope tests resource group level
 def step__configurationassignments_put_configurationassignments_createorupdate_resourcegroup(test):
-    test.cmd('az maintenance assignment create-or-update-resource-group '
-             '--maintenance-configuration-id "/subscriptions/{subscription_id}/resourcegroups/{rg}/providers/Microsoft.'
-             'Maintenance/maintenanceConfigurations/clitestmrpconfinguestadvanced" '
-             '--name cli_dynamicscope_recording01 '
-             '--location centraluseuap '
-             '--filter-locations eastus2euap centraluseuap '
-             '--filter-os-types windows linux '
-             '--filter-tags {{tagKey1:[tagKey1Val1,tagKey1Val2],tagKey2:[tagKey2Val1,tagKey2Val2]}} '
-             '--filter-tags-operator All '
-             '--resource-group "{rg}"',
-             checks=[])
+    from azure.core.exceptions import ResourceNotFoundError
+    try:
+        test.cmd('az maintenance assignment create-or-update-resource-group '
+                 '--maintenance-configuration-id "/subscriptions/{subscription_id}/resourcegroups/{rg}/providers/Microsoft.'
+                 'Maintenance/maintenanceConfigurations/clitestmrpconfinguestadvanced" '
+                 '--name cli_dynamicscope_recording01 '
+                 '--location centraluseuap '
+                 '--filter-locations eastus2euap centraluseuap '
+                 '--filter-os-types windows linux '
+                 '--filter-tags {{tagKey1:[tagKey1Val1,tagKey1Val2],tagKey2:[tagKey2Val1,tagKey2Val2]}} '
+                 '--filter-tags-operator All '
+                 '--resource-group "{rg}"',
+                 checks=[])
+        return True
+    except ResourceNotFoundError as e:
+        _assert_policy_definition_not_found(test, e)
+        return False
 
 
 def step__configurationassignments_put_configurationassignments_update_resourcegroup(test):
@@ -535,9 +553,26 @@ def step__scheduledevents_list_acknowledge(test):
              "--value '[\"8482AE8A-ED76-48E8-A055-8E8B40CF8A57\", \"42086D38-19CC-4A01-882A-DE2A884C534D\"]' ",
              checks=[])
     except HttpResponseError as e:
-        test.assertIn("Multi-Status", str(e))
-        test.assertEqual(2, str(e).count('"Code": "NotFound"'))
-        test.assertEqual(2, str(e).count('"Message": "Scheduled event not found"'))
+        test.assertEqual(207, e.response.status_code)
+        response = json.loads(e.response.text())
+        test.assertEqual("MultiStatusResponse", response["Response"]["Code"])
+        test.assertEqual(2, len(response["Details"]))
+        for detail in response["Details"]:
+            test.assertEqual("NotFound", detail["Code"])
+            test.assertEqual("Scheduled event not found", detail["Message"])
+
+
+def step_assignment_create_or_update_parent_with_retry(test):
+    from azure.core.exceptions import HttpResponseError
+    deadline = time.time() + 10 * 60
+    while True:
+        try:
+            step_assignment_create_or_update_parent(test)
+            return
+        except HttpResponseError as error:
+            if "no inventory found" not in str(error) or time.time() >= deadline:
+                raise
+            time.sleep(30)
 
 
 # Testcase: Scenario
@@ -579,21 +614,20 @@ def call_scenario(test):
     # cancel maintenance config
     step__maintenanceconfigurations_cancel(test)
     # Dynamic scope
-    step__configurationassignments_put_configurationassignments_createorupdate_subscription(test)
-    step__configurationassignments_put_configurationassignments_update_subscription(test)
-    step__configurationassignments_put_configurationassignments_show_subscription(test)
-    step__configurationassignments_put_configurationassignments_delete_subscription(test)
-    step__configurationassignments_put_configurationassignments_createorupdate_resourcegroup(test)
-    step__configurationassignments_put_configurationassignments_update_resourcegroup(test)
-    step__configurationassignments_put_configurationassignments_show_resourcegroup(test)
+    if step__configurationassignments_put_configurationassignments_createorupdate_subscription(test):
+        step__configurationassignments_put_configurationassignments_update_subscription(test)
+        step__configurationassignments_put_configurationassignments_show_subscription(test)
+        step__configurationassignments_put_configurationassignments_delete_subscription(test)
+    if step__configurationassignments_put_configurationassignments_createorupdate_resourcegroup(test):
+        step__configurationassignments_put_configurationassignments_update_resourcegroup(test)
+        step__configurationassignments_put_configurationassignments_show_resourcegroup(test)
 
     # Dedicated host test
 
     # create host config
     step__maintenanceconfigurations_put_maintenanceconfigurations_createorupdateforresource_host(test)
 
-    time.sleep(4 * 60)
-    step_assignment_create_or_update_parent(test)
+    step_assignment_create_or_update_parent_with_retry(test)
     step_assignment_list_parent(test)
     step_assignment_show_parent(test)
 

@@ -18,11 +18,11 @@ class Acknowledge(AAZCommand):
     """Post List of Scheduled Events Acknowledgement
 
     :example: Acknowledge list of Scheduled Events on VirtualMachineScaleSets
-        az maintenance scheduledevents list acknowledge --resource-group {resourceGroupName} --resource-type "virtualMachinesScaleSets" --resource-name {VMSSName} --subscription {subscriptionId} --value []
+        az maintenance scheduledevents list acknowledge --resource-group {resourceGroupName} --resource-type "virtualMachineScaleSets" --resource-name {VMSSName} --subscription {subscriptionId} --value []
         az maintenance scheduledevents list acknowledge --ids /subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/microsoft.compute/virtualMachineScaleSets/{VMSSName}/providers/microsoft.maintenance/scheduledevents --body "{value:[]}"
 
     :example: Acknowledge list of ScheduledEvents on AvailabilitySets
-        az maintenance scheduledvents list acknowledge --resource-group {resourceGroupName} --resource-type "availabilitySets"--resource-name {AvSetname} --value []
+        az maintenance scheduledevents list acknowledge --resource-group {resourceGroupName} --resource-type "availabilitySets" --resource-name {AvSetname} --value []
         az maintenance scheduledevents list acknowledge --ids /subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/microsoft.compute/availabilitySets/{AvSetName}/providers/microsoft.maintenance/scheduledevents --body "{value:[]}"
 
     :example: Acknowledge a single Scheduled Events on VirtualMachine
