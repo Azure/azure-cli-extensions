@@ -17,6 +17,7 @@ import logging
 
 from azure.cli.core.azclierror import (
     CLIInternalError,
+    HTTPError,
     ValidationError,
 )
 from azure.cli.core.util import send_raw_request
@@ -649,16 +650,17 @@ def _handle_config_set(
         f"/providers/Microsoft.Edge/configurationreferences/default"
         f"?api-version={API_VERSION}"
     )
-    ref_resp = send_raw_request(
-        cmd.cli_ctx, "GET", config_ref_url,
-        headers=["Accept=application/json"],
-        resource=ARM_ENDPOINT,
-    )
-    if ref_resp.status_code != 200:
-        raise CLIInternalError(
-            f"Failed to get configuration reference for {hierarchy_id} "
-            f"(HTTP {ref_resp.status_code}). Ensure hierarchy has a configuration reference."
+    try:
+        ref_resp = send_raw_request(
+            cmd.cli_ctx, "GET", config_ref_url,
+            headers=["Accept=application/json"],
+            resource=ARM_ENDPOINT,
         )
+    except HTTPError as e:
+        raise CLIInternalError(
+            f"Failed to get configuration reference for {hierarchy_id}. "
+            f"Ensure hierarchy has a configuration reference. Error: {e}"
+        ) from e
     configuration_id = ref_resp.json().get("properties", {}).get("configurationResourceId")
     if not configuration_id:
         raise CLIInternalError(
@@ -672,16 +674,17 @@ def _handle_config_set(
         f"/providers/Microsoft.Edge/solutionTemplates/{template_name}"
         f"?api-version={API_VERSION}"
     )
-    st_resp = send_raw_request(
-        cmd.cli_ctx, "GET", st_url,
-        headers=["Accept=application/json"],
-        resource=ARM_ENDPOINT,
-    )
-    if st_resp.status_code != 200:
-        raise CLIInternalError(
-            f"Solution template '{template_name}' not found in RG '{template_rg}' "
-            f"(HTTP {st_resp.status_code})."
+    try:
+        st_resp = send_raw_request(
+            cmd.cli_ctx, "GET", st_url,
+            headers=["Accept=application/json"],
+            resource=ARM_ENDPOINT,
         )
+    except HTTPError as e:
+        raise CLIInternalError(
+            f"Solution template '{template_name}' not found in RG '{template_rg}'. "
+            f"Error: {e}"
+        ) from e
     st_body = st_resp.json()
     dynamic_config_name = (
         st_body.get("properties", {}).get("uniqueIdentifier")
@@ -695,13 +698,19 @@ def _handle_config_set(
         f"/versions/{template_version}"
         f"?api-version={API_VERSION}"
     )
-    version_resp = send_raw_request(
-        cmd.cli_ctx, "GET", version_url,
-        headers=["Accept=application/json"],
-        resource=ARM_ENDPOINT,
-    )
+    version_exists = False
+    try:
+        version_resp = send_raw_request(
+            cmd.cli_ctx, "GET", version_url,
+            headers=["Accept=application/json"],
+            resource=ARM_ENDPOINT,
+        )
+        version_exists = True
+    except HTTPError:
+        # 404 is expected when dynamic config version doesn't exist yet
+        pass
 
-    if version_resp.status_code == 200:
+    if version_exists:
         # Update existing dynamic config version
         existing = version_resp.json()
         existing["properties"]["values"] = config_content
@@ -711,7 +720,7 @@ def _handle_config_set(
             headers=["Content-Type=application/json", "Accept=application/json"],
             resource=ARM_ENDPOINT,
         )
-    elif version_resp.status_code == 404:
+    else:
         # Create new: first ensure parent dynamic config exists
         dc_url = (
             f"{ARM_ENDPOINT}{configuration_id}"
@@ -719,35 +728,20 @@ def _handle_config_set(
             f"?api-version={API_VERSION}"
         )
         dc_body = {"properties": {"currentVersion": template_version}}
-        dc_resp = send_raw_request(
+        send_raw_request(
             cmd.cli_ctx, "PUT", dc_url,
             body=json.dumps(dc_body),
             headers=["Content-Type=application/json", "Accept=application/json"],
             resource=ARM_ENDPOINT,
         )
-        if dc_resp.status_code not in (200, 201):
-            raise CLIInternalError(
-                f"Failed to create dynamic configuration (HTTP {dc_resp.status_code}): "
-                f"{dc_resp.text}"
-            )
 
         # Then create the version with config values
         ver_body = {"properties": {"values": config_content}}
-        ver_resp = send_raw_request(
+        send_raw_request(
             cmd.cli_ctx, "PUT", version_url,
             body=json.dumps(ver_body),
             headers=["Content-Type=application/json", "Accept=application/json"],
             resource=ARM_ENDPOINT,
-        )
-        if ver_resp.status_code not in (200, 201):
-            raise CLIInternalError(
-                f"Failed to create dynamic configuration version (HTTP {ver_resp.status_code}): "
-                f"{ver_resp.text}"
-            )
-    else:
-        raise CLIInternalError(
-            f"Failed to check dynamic configuration version (HTTP {version_resp.status_code}): "
-            f"{version_resp.text}"
         )
 
 
