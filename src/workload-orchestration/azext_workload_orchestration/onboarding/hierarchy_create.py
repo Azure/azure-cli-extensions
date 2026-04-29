@@ -516,19 +516,32 @@ def _arm_put_regional(cmd, location, resource_id, body, api_version):
 
 
 def _arm_get_regional(cmd, location, resource_id, api_version):
-    """GET from regional ARM endpoint."""
+    """GET from regional ARM endpoint and return parsed JSON, or None on 404."""
     full_url = f"https://{location}.management.azure.com{resource_id}?api-version={api_version}"
 
     token_type, token = _get_token(cmd)
 
-    resp = send_raw_request(
-        cmd.cli_ctx, "GET", full_url,
-        headers=[
-            f"Authorization={token_type} {token}",
-        ],
-        skip_authorization_header=True,
-    )
-    return resp
+    try:
+        resp = send_raw_request(
+            cmd.cli_ctx, "GET", full_url,
+            headers=[
+                f"Authorization={token_type} {token}",
+            ],
+            skip_authorization_header=True,
+        )
+    except Exception as exc:  # pylint: disable=broad-except
+        if "ResourceNotFound" in str(exc) or "404" in str(exc):
+            return None
+        logger.debug("GET %s failed: %s", full_url, exc)
+        return None
+    try:
+        return resp.json()
+    except Exception as exc:  # pylint: disable=broad-except
+        logger.debug("GET %s json parse failed: %s", full_url, exc)
+        try:
+            return json.loads(resp.content)
+        except Exception:  # pylint: disable=broad-except
+            return None
 
 
 def _wait_for_sg_rbac(cmd, location, sg_id, sg_name, max_retries=12, wait_sec=10):
@@ -541,10 +554,16 @@ def _wait_for_sg_rbac(cmd, location, sg_id, sg_name, max_retries=12, wait_sec=10
     import time
 
     site_list_id = f"{sg_id}/providers/{EDGE_RP_NAMESPACE}/sites"
+    full_url = f"https://{location}.management.azure.com{site_list_id}?api-version={SITE_API_VERSION}"
 
     for attempt in range(max_retries):
         try:
-            _arm_get_regional(cmd, location, site_list_id, SITE_API_VERSION)
+            token_type, token = _get_token(cmd)
+            send_raw_request(
+                cmd.cli_ctx, "GET", full_url,
+                headers=[f"Authorization={token_type} {token}"],
+                skip_authorization_header=True,
+            )
             logger.info("RBAC propagated for SG '%s' after %ds", sg_name, attempt * wait_sec)
             return
         except Exception:
