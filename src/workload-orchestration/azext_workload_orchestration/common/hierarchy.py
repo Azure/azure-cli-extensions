@@ -187,7 +187,6 @@ def _create_rg_hierarchy(cmd, resource_group, config_location, name, level):
         }, CONFIG_REF_API_VERSION)
         _eprint("└── ConfigurationReference ✓")
 
-    _eprint("\n✅ Hierarchy created\n")
 
     return {
         "type": "ResourceGroup",
@@ -222,7 +221,6 @@ def _create_sg_hierarchy(cmd, spec, config_location, resource_group):
                      resource_group, parent_sg=None, results=results,
                      depth=0, is_last=True)
 
-    _eprint(f"\n✅ Hierarchy created ({nodes} levels)\n")
 
     return {
         "type": "ServiceGroup",
