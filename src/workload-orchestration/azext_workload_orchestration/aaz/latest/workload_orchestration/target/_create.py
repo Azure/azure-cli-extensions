@@ -227,14 +227,14 @@ class Create(AAZCommand):
             target_id = f"/subscriptions/{sub_id}/resourceGroups/{rg}/providers/Microsoft.Edge/targets/{name}"
 
         import sys
-        print(f"└── service-group Linking to '{sg_name}'...", file=sys.stderr)
+        print(f"Linking target to service-group '{sg_name}'...", file=sys.stderr)
         try:
             cmd_proxy = CmdProxy(self.ctx.cli_ctx)
             link_target_to_service_group(cmd_proxy, target_id, sg_name)
-            print(f"└── service-group Linked ✓", file=sys.stderr)
+            print("Service-group linked.", file=sys.stderr)
         except Exception as exc:
             logger.warning("Service group link failed (non-critical): %s", exc)
-            print(f"└── service-group Link failed (non-critical): {exc}", file=sys.stderr)
+            print(f"Service-group link failed (non-critical): {exc}", file=sys.stderr)
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
