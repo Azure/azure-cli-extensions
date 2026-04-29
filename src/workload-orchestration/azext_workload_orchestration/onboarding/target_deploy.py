@@ -85,53 +85,30 @@ def target_deploy(
     # Figure out which steps to run
     do_config = config is not None
 
-    total = sum([do_config, True, True, True])  # config(opt) + review + publish + install
-    current = [0]  # mutable counter
-
-    def _log(step_name, status=""):
-        if status:
-            connector = "└──" if current[0] == total else "├──"
-            _eprint(f"{connector} {step_name} {status}")
-        else:
-            current[0] += 1
-            connector = "└──" if current[0] == total else "├──"
-            _eprint(f"{connector} {step_name}...")
-
     results = {}
     sv_id = None
 
     # --- Step 0: Config set ---
     if do_config:
-        _log("Config Set")
         _handle_config_set(
             cmd, config, config_hierarchy_id, config_template_rg,
             config_template_name, config_template_version,
             resource_group, target_name, sub_id,
         )
-        _log("Config Set", "✓")
         results["configSet"] = "Succeeded"
 
     # --- Step 1: Review ---
-    _log("Review")
     review_result = _do_review(cmd, base_url, solution_template_version_id)
     results["review"] = review_result
     sv_id = _extract_solution_version_id(review_result)
-    _log("Review", f"✓ solutionVersionId: {_short_id(sv_id)}")
 
     # --- Step 2: Publish ---
-    _log("Publish")
     publish_result = _do_publish(cmd, base_url, sv_id)
     results["publish"] = publish_result
-    _log("Publish", "✓")
 
     # --- Step 3: Install ---
-    _log("Install")
     install_result = _do_install(cmd, base_url, sv_id)
     results["install"] = install_result
-    _log("Install", "✓")
-
-    _eprint(f"\n✅ Deployment complete for target '{target_name}'")
-    _eprint(f"   Solution Version: {_short_id(sv_id)}")
 
     # Return the install LRO result (same format as `az wo target install`)
     return results.get("install", {
@@ -171,21 +148,9 @@ def target_deploy_pre_install(
     )
 
     do_config = config is not None
-    total = sum([do_config, True, True, True])  # config + review + publish + install(AAZ)
-    current = [0]
-
-    def _log(step_name, status=""):
-        if status:
-            connector = "└──" if current[0] == total else "├──"
-            _eprint(f"{connector} {step_name} {status}")
-        else:
-            current[0] += 1
-            connector = "└──" if current[0] == total else "├──"
-            _eprint(f"{connector} {step_name}...")
 
     # --- Step 0: Config set ---
     if do_config:
-        _log("Config Set")
         # Auto-derive config template args from solution template args
         ct_rg = solution_template_rg or resource_group
         ct_name = solution_template_name
@@ -196,27 +161,22 @@ def target_deploy_pre_install(
             ct_name, ct_version,
             resource_group, target_name, sub_id,
         )
-        _log("Config Set", "✓")
 
     # --- Step 1: Review ---
-    _log("Review")
     review_result = _do_review(cmd, base_url, solution_template_version_id)
     sv_id = _extract_solution_version_id(review_result)
-    _log("Review", f"✓ solutionVersionId: {_short_id(sv_id)}")
 
     # --- Step 2: Publish ---
-    _log("Publish")
     _do_publish(cmd, base_url, sv_id)
-    _log("Publish", "✓")
 
     # Step 3 (Install) is handled by AAZ LRO — tick printed in post_operations
 
     return sv_id
 
-
 # ---------------------------------------------------------------------------
 # Resolution helpers
 # ---------------------------------------------------------------------------
+
 
 def _get_subscription_id(cmd):
     """Get subscription ID from CLI context."""
@@ -250,10 +210,10 @@ def _resolve_template_version_id(
         f"/versions/{template_version}"
     )
 
-
 # ---------------------------------------------------------------------------
 # Step implementations
 # ---------------------------------------------------------------------------
+
 
 def _do_review(cmd, base_url, solution_template_version_id):
     """POST .../reviewSolutionVersion"""
@@ -441,10 +401,10 @@ def _read_config_file(file_path):
     with open(file_path, "r", encoding="utf-8") as f:
         return f.read()
 
-
 # ---------------------------------------------------------------------------
 # LRO and response helpers
 # ---------------------------------------------------------------------------
+
 
 def _parse_response(resp, step_name, cmd=None):
     """Parse REST response, handling 200/201/202 LRO patterns."""
