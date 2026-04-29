@@ -31,7 +31,7 @@ from .offerings import accept_terms, _get_publisher_and_offer_from_provider_id, 
 DEFAULT_WORKSPACE_LOCATION = 'westus'
 DEFAULT_STORAGE_SKU = 'Standard_LRS'
 DEFAULT_STORAGE_SKU_TIER = 'Standard'
-DEFAULT_STORAGE_KIND = 'Storage'
+DEFAULT_STORAGE_KIND = 'StorageV2'
 SUPPORTED_STORAGE_SKU_TIERS = ['Standard']
 SUPPORTED_STORAGE_KINDS = ['Storage', 'StorageV2']
 DEPLOYMENT_NAME_PREFIX = 'Microsoft.AzureQuantum-'
@@ -240,6 +240,7 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account, 
     storage_account_sku_tier = DEFAULT_STORAGE_SKU_TIER
     storage_account_kind = DEFAULT_STORAGE_KIND
     storage_account_location = location
+    storage_account_allow_shared_key_access = False  # Secure default for new accounts
 
     # Look for info on existing storage account
     storage_account_list = list_storage_accounts(cmd, resource_group_name)
@@ -250,6 +251,10 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account, 
                 storage_account_sku_tier = storage_account_info.sku.tier
                 storage_account_kind = storage_account_info.kind
                 storage_account_location = storage_account_info.location
+                # Preserve the existing account's setting to avoid breaking customers
+                # who rely on shared-key auth/connection strings for that account.
+                if storage_account_info.allow_shared_key_access is not None:
+                    storage_account_allow_shared_key_access = storage_account_info.allow_shared_key_access
                 break
 
     # Validate the storage account SKU tier and kind
@@ -266,6 +271,7 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account, 
         'storageAccountLocation': storage_account_location,
         'storageAccountSku': storage_account_sku,
         'storageAccountKind': storage_account_kind,
+        'storageAccountAllowSharedKeyAccess': storage_account_allow_shared_key_access,
         'storageAccountDeploymentName': "Microsoft.StorageAccount-" + time.strftime("%d-%b-%Y-%H-%M-%S", time.gmtime())
     }
     parameters = {k: {'value': v} for k, v in parameters.items()}

@@ -9959,6 +9959,53 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[self.is_empty()],
         )
 
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17,
+        name_prefix="clitest",
+        location="centraluseuap",
+    )
+    def test_aks_create_with_control_plane_scaling_profile(
+        self, resource_group, resource_group_location
+    ):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        # kwargs for string formatting
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "resource_type": "Microsoft.ContainerService/ManagedClusters",
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        # create with control plane scaling size H4
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--network-plugin azure --network-plugin-mode overlay --pod-cidr 10.244.0.0/16 "
+            "--ssh-key-value={ssh_key_value} --node-count 1 "
+            "--control-plane-scaling-size H4"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.networkPlugin", "azure"),
+                self.check("networkProfile.networkPluginMode", "overlay"),
+                self.check("controlPlaneScalingProfile.scalingSize", "H4"),
+            ],
+        )
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
@@ -19322,6 +19369,519 @@ spec:
             checks=[self.is_empty()],
         )
 
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17,
+        name_prefix="clitest",
+        location="eastus2euap",
+    )
+    def test_aks_create_with_azuremonitorlogs_and_cnl(
+        self, resource_group, resource_group_location
+    ):
+        """Test that --enable-azure-monitor-logs with --enable-container-network-logs creates DCR/DCRA correctly.
+
+        This covers the scenario where monitoring is enabled via --enable-azure-monitor-logs (not --enable-addons monitoring)
+        combined with --enable-container-network-logs. The DCRA postprocessing must detect enable_azure_monitor_logs
+        to trigger ensure_container_insights_for_monitoring and create the DCR with ContainerNetworkLogs stream.
+        """
+        self.test_resources_count = 0
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "location": resource_group_location,
+            }
+        )
+
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--ssh-key-value={ssh_key_value} --node-count=1 --tier standard "
+            "--network-plugin azure --network-dataplane=cilium --network-plugin-mode overlay "
+            "--enable-acns --enable-container-network-logs "
+            "--enable-azure-monitor-logs --enable-high-log-scale-mode "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingFlowLogsPreview "
+        )
+
+        response = self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("addonProfiles.omsagent.enabled", True),
+                self.check("addonProfiles.omsagent.config.useAADAuth", "true"),
+                self.check("addonProfiles.omsagent.config.enableRetinaNetworkFlags", "True"),
+            ],
+        ).get_output_in_json()
+
+        cluster_resource_id = response["id"]
+        subscription = cluster_resource_id.split("/")[2]
+
+        # Verify DCR was created with ContainerNetworkLogs stream
+        location = resource_group_location
+        dataCollectionRuleName = f"MSCI-{location}-{aks_name}"
+        dataCollectionRuleName = dataCollectionRuleName[0:64]
+        dcr_resource_id = f"/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Insights/dataCollectionRules/{dataCollectionRuleName}"
+
+        get_cmd = f'rest --method get --url https://management.azure.com{dcr_resource_id}?api-version=2022-06-01'
+        self.cmd(get_cmd, checks=[
+            self.check('properties.dataFlows[0].streams[-1]', 'Microsoft-ContainerNetworkLogs'),
+        ])
+
+        # Verify DCRA was created
+        dcra_resource_id = f"{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/ContainerInsightsExtension"
+        get_cmd = f'rest --method get --url https://management.azure.com{dcra_resource_id}?api-version=2022-06-01'
+        self.cmd(get_cmd, checks=[
+            self.check('properties.dataCollectionRuleId', f'{dcr_resource_id}')
+        ])
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17,
+        name_prefix="clitest",
+        location="westus2",
+    )
+    def test_aks_update_enable_azuremonitorlogs_with_hlsm(
+        self, resource_group, resource_group_location
+    ):
+        """Test that --enable-azure-monitor-logs with --enable-high-log-scale-mode on update creates DCR with HighScale stream.
+
+        Creates a plain cluster, then updates it with --enable-azure-monitor-logs --enable-high-log-scale-mode,
+        and verifies that the DCR is created with the Microsoft-ContainerLogV2-HighScale stream.
+        """
+        self.test_resources_count = 0
+        aks_name = self.create_random_name("cliakstest", 16)
+        node_vm_size = "standard_d2s_v3"
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "node_vm_size": node_vm_size,
+            }
+        )
+
+        # Create a plain cluster without monitoring
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} "
+            "--enable-managed-identity --output=json"
+        )
+        self.cmd(create_cmd, checks=[
+            self.check("provisioningState", "Succeeded"),
+        ])
+
+        # Wait for any in-progress addon operations to complete before next update
+        wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800'
+        self.cmd(wait_cmd, checks=[self.is_empty()])
+
+        # Update: enable monitoring with high log scale mode
+        update_cmd = (
+            "aks update --resource-group={resource_group} --name={name} --yes "
+            "--enable-azure-monitor-logs --enable-high-log-scale-mode --output=json"
+        )
+        self.cmd(update_cmd, checks=[
+            self.check("provisioningState", "Succeeded"),
+            self.check("addonProfiles.omsagent.enabled", True),
+            self.check("addonProfiles.omsagent.config.useAADAuth", "true"),
+        ])
+
+        # Verify aks show reflects the update
+        show_cmd = "aks show --resource-group={resource_group} --name={name} --output=json"
+        response = self.cmd(show_cmd, checks=[
+            self.check("provisioningState", "Succeeded"),
+            self.check("addonProfiles.omsagent.enabled", True),
+        ]).get_output_in_json()
+
+        cluster_resource_id = response["id"]
+        subscription = cluster_resource_id.split("/")[2]
+
+        # Verify DCR was created with HighScale stream
+        location = resource_group_location
+        dataCollectionRuleName = f"MSCI-{location}-{aks_name}"
+        dataCollectionRuleName = dataCollectionRuleName[0:64]
+        dcr_resource_id = f"/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Insights/dataCollectionRules/{dataCollectionRuleName}"
+
+        get_cmd = f'rest --method get --url https://management.azure.com{dcr_resource_id}?api-version=2022-06-01'
+        self.cmd(get_cmd, checks=[
+            self.check('properties.dataFlows[0].streams[1]', 'Microsoft-ContainerLogV2-HighScale'),
+        ])
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17,
+        name_prefix="clitest",
+        location="eastus2euap",
+    )
+    def test_aks_create_with_retina_flow_logs_alias(
+        self, resource_group, resource_group_location
+    ):
+        """Test that --enable-retina-flow-logs works as an alias for --enable-container-network-logs.
+
+        This verifies the alias parameter path: enable_retina_flow_logs is treated identically to
+        enable_container_network_logs in get_container_network_logs() and _is_cnl_or_hlsm_changing().
+        """
+        self.test_resources_count = 0
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "location": resource_group_location,
+            }
+        )
+
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--ssh-key-value={ssh_key_value} --node-count=1 --tier standard "
+            "--network-plugin azure --network-dataplane=cilium --network-plugin-mode overlay "
+            "--enable-acns --enable-retina-flow-logs "
+            "--enable-addons monitoring --enable-high-log-scale-mode "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingFlowLogsPreview "
+        )
+
+        response = self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("addonProfiles.omsagent.enabled", True),
+                self.check("addonProfiles.omsagent.config.enableRetinaNetworkFlags", "True"),
+            ],
+        ).get_output_in_json()
+
+        cluster_resource_id = response["id"]
+        subscription = cluster_resource_id.split("/")[2]
+
+        # Verify DCR was created with ContainerNetworkLogs stream
+        location = resource_group_location
+        dataCollectionRuleName = f"MSCI-{location}-{aks_name}"
+        dataCollectionRuleName = dataCollectionRuleName[0:64]
+        dcr_resource_id = f"/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Insights/dataCollectionRules/{dataCollectionRuleName}"
+
+        get_cmd = f'rest --method get --url https://management.azure.com{dcr_resource_id}?api-version=2022-06-01'
+        self.cmd(get_cmd, checks=[
+            self.check('properties.dataFlows[0].streams[-1]', 'Microsoft-ContainerNetworkLogs'),
+        ])
+
+        # Wait for any in-progress addon operations to complete before next update
+        wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800'
+        self.cmd(wait_cmd, checks=[self.is_empty()])
+
+        # Disable via the alias — run twice like test_aks_create_acns_with_flow_logs
+        # (first run applies the change, second run verifies the result)
+        disable_cmd = "aks update --resource-group={resource_group} --name={name} --disable-retina-flow-logs -o json"
+        self.cmd(disable_cmd, checks=[self.check("provisioningState", "Succeeded")])
+        self.cmd(
+            disable_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("addonProfiles.omsagent.config.enableRetinaNetworkFlags", "False"),
+            ],
+        )
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17,
+        name_prefix="clitest",
+        location="eastus2euap",
+    )
+    def test_aks_update_enable_cnl_via_azuremonitorlogs(
+        self, resource_group, resource_group_location
+    ):
+        """Test enabling CNL on an existing ACNS cluster by adding --enable-azure-monitor-logs on update.
+
+        Creates an ACNS cluster without monitoring, then updates with --enable-azure-monitor-logs
+        --enable-container-network-logs to cover the update decorator path for enabling both
+        monitoring and CNL simultaneously.
+        """
+        self.test_resources_count = 0
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "location": resource_group_location,
+            }
+        )
+
+        # Create an ACNS cluster without monitoring
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--ssh-key-value={ssh_key_value} --node-count=1 --tier standard "
+            "--network-plugin azure --network-dataplane=cilium --network-plugin-mode overlay "
+            "--enable-acns --enable-managed-identity --output=json "
+        )
+        self.cmd(create_cmd, checks=[
+            self.check("provisioningState", "Succeeded"),
+            self.check("networkProfile.advancedNetworking.enabled", True),
+        ])
+
+        # Wait for any in-progress addon operations to complete before next update
+        wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800'
+        self.cmd(wait_cmd, checks=[self.is_empty()])
+
+        # Update: enable monitoring + CNL together
+        update_cmd = (
+            "aks update --resource-group={resource_group} --name={name} --yes "
+            "--enable-azure-monitor-logs --enable-container-network-logs --enable-high-log-scale-mode "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingFlowLogsPreview "
+            "--output=json"
+        )
+        self.cmd(update_cmd)
+
+        # Wait for the update to fully complete, then verify via aks show
+        self.cmd(wait_cmd, checks=[self.is_empty()])
+        show_cmd = "aks show --resource-group={resource_group} --name={name} --output=json"
+        self.cmd(show_cmd, checks=[
+            self.check("provisioningState", "Succeeded"),
+            self.check("addonProfiles.omsagent.enabled", True),
+            self.check("addonProfiles.omsagent.config.enableRetinaNetworkFlags", "True"),
+        ])
+
+        # Verify DCR was created with ContainerNetworkLogs stream
+        response = self.cmd(show_cmd).get_output_in_json()
+
+        cluster_resource_id = response["id"]
+        subscription = cluster_resource_id.split("/")[2]
+
+        location = resource_group_location
+        dataCollectionRuleName = f"MSCI-{location}-{aks_name}"
+        dataCollectionRuleName = dataCollectionRuleName[0:64]
+        dcr_resource_id = f"/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Insights/dataCollectionRules/{dataCollectionRuleName}"
+
+        get_cmd = f'rest --method get --url https://management.azure.com{dcr_resource_id}?api-version=2022-06-01'
+        self.cmd(get_cmd, checks=[
+            self.check('properties.dataFlows[0].streams[-1]', 'Microsoft-ContainerNetworkLogs'),
+        ])
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17,
+        name_prefix="clitest",
+        location="westus2",
+    )
+    def test_aks_update_disable_azuremonitorlogs(
+        self, resource_group, resource_group_location
+    ):
+        """Test disabling Azure Monitor Logs via --disable-azure-monitor-logs on update.
+
+        Creates a cluster with --enable-azure-monitor-logs, then disables monitoring
+        with --disable-azure-monitor-logs. Verifies the _disable_azure_monitor_logs code path
+        which performs DCR/DCRA cleanup before disabling the addon.
+        """
+        self.test_resources_count = 0
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "location": resource_group_location,
+            }
+        )
+
+        # Create cluster with Azure Monitor Logs enabled
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--ssh-key-value={ssh_key_value} --node-count=1 "
+            "--enable-azure-monitor-logs --enable-managed-identity --output=json"
+        )
+        self.cmd(create_cmd, checks=[
+            self.check("provisioningState", "Succeeded"),
+            self.check("addonProfiles.omsagent.enabled", True),
+        ])
+
+        # Disable Azure Monitor Logs
+        # Note: provisioningState may be "Updating" here due to a race between
+        # DCRA deletion (fire-and-forget LRO) and the subsequent PUT request.
+        # The aks show below verifies the final Succeeded state.
+        disable_cmd = (
+            "aks update --resource-group={resource_group} --name={name} --yes "
+            "--disable-azure-monitor-logs --output=json"
+        )
+        self.cmd(disable_cmd, checks=[
+            self.check("addonProfiles.omsagent.enabled", False),
+        ])
+
+        # Verify aks show confirms monitoring is disabled
+        show_cmd = "aks show --resource-group={resource_group} --name={name} --output=json"
+        self.cmd(show_cmd, checks=[
+            self.check("provisioningState", "Succeeded"),
+            self.check("addonProfiles.omsagent.enabled", False),
+        ])
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17,
+        name_prefix="clitest",
+        location="westus2",
+    )
+    def test_aks_update_standalone_enable_high_log_scale_mode(
+        self, resource_group, resource_group_location
+    ):
+        """Test standalone --enable-high-log-scale-mode on update path.
+
+        Creates a cluster with monitoring enabled, then updates with just
+        --enable-high-log-scale-mode to verify the DCR is updated with
+        the Microsoft-ContainerLogV2-HighScale stream.
+        """
+        self.test_resources_count = 0
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "location": resource_group_location,
+            }
+        )
+
+        # Create cluster with Azure Monitor Logs enabled
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--ssh-key-value={ssh_key_value} --node-count=1 "
+            "--enable-azure-monitor-logs --enable-managed-identity --output=json"
+        )
+        self.cmd(create_cmd, checks=[
+            self.check("provisioningState", "Succeeded"),
+            self.check("addonProfiles.omsagent.enabled", True),
+        ])
+
+        # Wait for any in-progress addon operations to complete before update
+        wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800'
+        self.cmd(wait_cmd, checks=[self.is_empty()])
+
+        # Update: enable high log scale mode standalone
+        update_cmd = (
+            "aks update --resource-group={resource_group} --name={name} --yes "
+            "--enable-high-log-scale-mode --output=json"
+        )
+        response = self.cmd(update_cmd, checks=[
+            self.check("provisioningState", "Succeeded"),
+        ]).get_output_in_json()
+
+        cluster_resource_id = response["id"]
+        subscription = cluster_resource_id.split("/")[2]
+        location = resource_group_location
+        dataCollectionRuleName = f"MSCI-{location}-{aks_name}"
+        dataCollectionRuleName = dataCollectionRuleName[0:64]
+        dcr_resource_id = (
+            f"/subscriptions/{subscription}/resourceGroups/{resource_group}"
+            f"/providers/Microsoft.Insights/dataCollectionRules/{dataCollectionRuleName}"
+        )
+
+        # Verify DCR contains the HighScale stream
+        get_cmd = f'rest --method get --url https://management.azure.com{dcr_resource_id}?api-version=2022-06-01'
+        self.cmd(get_cmd, checks=[
+            self.check("contains(properties.dataFlows[0].streams, 'Microsoft-ContainerLogV2-HighScale')", True),
+        ])
+
+        # Wait for any in-progress addon operations to complete before next update
+        wait_cmd = 'aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800'
+        self.cmd(wait_cmd, checks=[self.is_empty()])
+
+        # Now disable high log scale mode
+        disable_cmd = (
+            "aks update --resource-group={resource_group} --name={name} --yes "
+            "--enable-high-log-scale-mode false --output=json"
+        )
+        self.cmd(disable_cmd, checks=[
+            self.check("provisioningState", "Succeeded"),
+        ])
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17,
+        name_prefix="clitest",
+        location="westus2",
+    )
+    def test_aks_update_disable_hlsm_error_when_cnl_enabled(
+        self, resource_group, resource_group_location
+    ):
+        """Test that disabling --enable-high-log-scale-mode raises an error
+        when container network logs are already enabled on the cluster."""
+        self.test_resources_count = 0
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "location": resource_group_location,
+            }
+        )
+
+        # Create cluster with monitoring + CNL + HLSM
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--ssh-key-value={ssh_key_value} --node-count=1 "
+            "--enable-azure-monitor-logs --enable-managed-identity "
+            "--enable-acns --enable-container-network-logs --output=json"
+        )
+        self.cmd(create_cmd, checks=[
+            self.check("provisioningState", "Succeeded"),
+        ])
+
+        # Attempt to disable HLSM while CNL is still enabled — should fail
+        disable_cmd = (
+            "aks update --resource-group={resource_group} --name={name} --yes "
+            "--enable-high-log-scale-mode false --output=json"
+        )
+        with self.assertRaisesRegex(Exception, "container network logs"):
+            self.cmd(disable_cmd)
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
@@ -22341,9 +22901,9 @@ spec:
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check("agentPoolProfiles[0].type", "VirtualMachines"),
-            self.check('agentPoolProfiles[0].virtualMachinesProfile.scale.autoscale.size', 'standard_d2s_v3'),
-            self.check('agentPoolProfiles[0].virtualMachinesProfile.scale.autoscale.minCount', 1),
-            self.check('agentPoolProfiles[0].virtualMachinesProfile.scale.autoscale.maxCount', 3),
+            self.check('agentPoolProfiles[0].virtualMachinesProfile.scale.autoscale[0].size', 'standard_d2s_v3'),
+            self.check('agentPoolProfiles[0].virtualMachinesProfile.scale.autoscale[0].minCount', 1),
+            self.check('agentPoolProfiles[0].virtualMachinesProfile.scale.autoscale[0].maxCount', 3),
         ])
 
         # add another vms nodepool with autoscaler enabled
@@ -22354,9 +22914,9 @@ spec:
                            '--min-count 0 --max-count 3'
         self.cmd(add_nodepool_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('virtualMachinesProfile.scale.autoscale.size', 'standard_d2s_v3'),
-            self.check('virtualMachinesProfile.scale.autoscale.minCount', 0),
-            self.check('virtualMachinesProfile.scale.autoscale.maxCount', 3),
+            self.check('virtualMachinesProfile.scale.autoscale[0].size', 'standard_d2s_v3'),
+            self.check('virtualMachinesProfile.scale.autoscale[0].minCount', 0),
+            self.check('virtualMachinesProfile.scale.autoscale[0].maxCount', 3),
         ])
 
         # update a VirtualMachines node pool with autoscaler enabled to change the VM size and min/max node count.
@@ -22366,9 +22926,9 @@ spec:
                               '--min-count 1 --max-count 5'
         self.cmd(update_nodepool_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('virtualMachinesProfile.scale.autoscale.size', 'standard_d4s_v3'),
-            self.check('virtualMachinesProfile.scale.autoscale.minCount', 1),
-            self.check('virtualMachinesProfile.scale.autoscale.maxCount', 5),
+            self.check('virtualMachinesProfile.scale.autoscale[0].size', 'standard_d4s_v3'),
+            self.check('virtualMachinesProfile.scale.autoscale[0].minCount', 1),
+            self.check('virtualMachinesProfile.scale.autoscale[0].maxCount', 5),
         ])
 
         # disable autoscaler (auto to manual)
@@ -22384,9 +22944,9 @@ spec:
                                 '--enable-cluster-autoscaler --min-count 1 --max-count 3'
         self.cmd(enable_autoscaler_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('virtualMachinesProfile.scale.autoscale.size', 'standard_d4s_v3'),
-            self.check('virtualMachinesProfile.scale.autoscale.minCount', 1),
-            self.check('virtualMachinesProfile.scale.autoscale.maxCount', 3),
+            self.check('virtualMachinesProfile.scale.autoscale[0].size', 'standard_d4s_v3'),
+            self.check('virtualMachinesProfile.scale.autoscale[0].minCount', 1),
+            self.check('virtualMachinesProfile.scale.autoscale[0].maxCount', 3),
         ])
 
         # delete
@@ -22709,7 +23269,7 @@ spec:
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="centraluseuap"
+        random_name_length=17, name_prefix="clitest", location="westus2"
     )
     def test_aks_create_and_update_with_gateway_api_and_azureservicemesh(
         self, resource_group, resource_group_location
@@ -22740,6 +23300,69 @@ spec:
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("serviceMeshProfile.mode", "Istio"),
+                self.check("ingressProfile.gatewayApi.installation", "Standard"),
+            ],
+        )
+
+        # Test disabling Gateway API
+        update_cmd = (
+            "aks update --resource-group={resource_group} --name={name} "
+            "--disable-gateway-api "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedGatewayAPIPreview "
+        )
+        self.cmd(
+            update_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("ingressProfile.gatewayApi.installation", "Disabled"),
+            ],
+        )
+
+        # Test re-enabling Gateway API
+        update_cmd = (
+            "aks update --resource-group={resource_group} --name={name} "
+            "--enable-gateway-api "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedGatewayAPIPreview "
+        )
+        self.cmd(
+            update_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("ingressProfile.gatewayApi.installation", "Standard"),
+            ],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westus2"
+    )
+    def test_aks_create_and_update_with_gateway_api_without_azureservicemesh(
+        self, resource_group, resource_group_location
+    ):
+        aks_name = self.create_random_name("cliakstest", 16)
+        _, create_version = self._get_versions(resource_group_location)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "k8s_version": create_version,
+            }
+        )
+
+        # Test successful creation with Gateway API enabled and without Azure Service Mesh addon
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} "
+            "--enable-gateway-api "
+            "--ssh-key-value={ssh_key_value} -o json "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/ManagedGatewayAPIPreview "
+            "--kubernetes-version={k8s_version} "
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("serviceMeshProfile", None),
                 self.check("ingressProfile.gatewayApi.installation", "Standard"),
             ],
         )
@@ -22931,9 +23554,6 @@ spec:
 
     # TODO (indusridhar): Add tests for `test_aks_nodepool_get_rollback_versions` and `test_aks_nodepool_rollback`
     # after AKS RP Jan 2026 release is complete and recently_used_versions field is populated in upgrade profile API
-
-    # TODO (zheweihu): add test `test_aks_create_and_update_with_gateway_api_without_azureservicemesh`
-    # once https://msazure.visualstudio.com/CloudNativeCompute/_git/aks-rp/pullrequest/14404771 is rolled out
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
@@ -23345,3 +23965,51 @@ spec:
                 (sku.get("locationInfo") or [{}])[0].get("zones") or []
             )
             assert len(zones) > 0, f"SKU '{sku['name']}' has no zones despite --zone filter"
+
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="centraluseuap"
+    )
+    def test_aks_nodepool_update_vmss_vm_size_resize(
+        self, resource_group, resource_group_location
+    ):
+        """Test VMSS agent pool VM size resize via nodepool update (preview)."""
+        aks_name = self.create_random_name("cliakstest", 16)
+        nodepool_name = "nodepool1"
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "nodepool_name": nodepool_name,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        # Create cluster with Standard_D2s_v3
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} "
+            "--node-count=1 --node-vm-size Standard_D2s_v3 "
+            "--ssh-key-value={ssh_key_value}"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("agentPoolProfiles[0].vmSize", "Standard_D2s_v3"),
+            ],
+        )
+
+        # Resize nodepool VM size to Standard_D4s_v3
+        update_cmd = (
+            "aks nodepool update --resource-group={resource_group} "
+            "--cluster-name={name} -n {nodepool_name} "
+            "--node-vm-size Standard_D4s_v3"
+        )
+        self.cmd(
+            update_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("vmSize", "Standard_D4s_v3"),
+            ],
+        )

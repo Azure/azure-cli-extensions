@@ -97,9 +97,9 @@ def configure_nat_gateway_profile(
         )
 
     if outbound_ip_prefix_ids is not None:
-        ManagedClusterNATGatewayProfileOutboundIPPrefixes = models.ManagedClusterNATGatewayProfileOutboundIPPrefixes
+        ManagedClusterNATGatewayProfileOutboundIpPrefixes = models.ManagedClusterNATGatewayProfileOutboundIpPrefixes
         prefix_id_list = [x.strip() for x in outbound_ip_prefix_ids.split(',') if x.strip()]
-        profile.outbound_ip_prefixes = ManagedClusterNATGatewayProfileOutboundIPPrefixes(
+        profile.outbound_ip_prefixes = ManagedClusterNATGatewayProfileOutboundIpPrefixes(
             public_ip_prefixes=prefix_id_list
         )
 

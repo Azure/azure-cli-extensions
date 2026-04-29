@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.0.0b13
++++++++++++++++
+* Updated workspace create command to support job submissions with disabled access keys on linked storage account
+* Updated new storage account to be v2 in workspace creation because of the retirement of General-Purpose v1 (GPv1) storage accounts on October 13, 2026
+
 1.0.0b12
 +++++++++++++++
 * Added support for Data Plane v2 including specifying priority parameter as part of job params when submitting a job

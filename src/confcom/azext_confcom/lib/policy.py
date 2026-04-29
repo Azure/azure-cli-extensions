@@ -106,7 +106,7 @@ class Container:
 @dataclass
 class Policy:
     package: str = "policy"
-    api_version: str = "0.10.0"
+    api_version: str = "0.11.0"
     framework_version: str = "0.2.3"
     fragments: List[FragmentReference] = OrderlessField(default_factory=list)
     containers: List[Container] = OrderlessField(default_factory=list)
