@@ -16,8 +16,14 @@ class AzureFirewallScenario(ScenarioTest):
         super(AzureFirewallScenario, self).__init__(
             method_name
         )
-        self.cmd('extension add -n ip-group')
-        self.cmd('extension add -n virtual-wan')
+        try:
+            self.cmd('extension add -n ip-group')
+        except AssertionError:
+            pass
+        try:
+            self.cmd('extension add -n virtual-wan')
+        except AssertionError:
+            pass
 
     @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall')
     def test_azure_firewall(self, resource_group):
@@ -966,6 +972,21 @@ class AzureFirewallScenario(ScenarioTest):
                      self.check('identity.type', 'UserAssigned'),
                     self.check('identity.userAssignedIdentities | keys(@)[0]', '{identity}')
                  ])
+        
+        self.cmd('network firewall policy create -g {rg} -n {policy_name} --sku Premium '
+                 '--explicit-proxy enable-explicit-proxy=true http-port=86 enable-pac-file=true pac-file-port=122 pac-file={url} '
+                 '--identity [{identity}]',
+                 checks=[
+                     self.check('name', '{policy_name}'),
+                     self.check('explicitProxy.enableExplicitProxy', True),
+                     self.check('explicitProxy.enablePacFile', True),
+                     self.check('explicitProxy.httpPort', 86),
+                     self.check('explicitProxy.pacFile', '{url}'),
+                     self.check('explicitProxy.pacFilePort', 122),
+                     self.check('identity.type', 'UserAssigned'),
+                    self.check('identity.userAssignedIdentities | keys(@)[0]', '{identity}')
+                 ])
+
 
 
     @ResourceGroupPreparer(name_prefix='test_azure_firewall_policy_configure_multipleMSI', location='centraluseuap')
@@ -988,7 +1009,7 @@ class AzureFirewallScenario(ScenarioTest):
         self.cmd('network firewall policy update -g {rg} -n {policy_name} --sku Premium '
                  '--explicit-proxy enable-explicit-proxy=true http-port=85 enable-pac-file=true pac-file-port=122 pac-file={url} '
                  '--cert-name {certificate_name} --key-vault-secret-id {key_vault_url} '
-                 '--identities {explicit_proxy_identity} {tls_identity}',
+                 '--identity {explicit_proxy_identity} {tls_identity}',
                  checks=[
                      self.check('name', '{policy_name}'),
                      self.check('explicitProxy.enableExplicitProxy', True),
@@ -1002,7 +1023,7 @@ class AzureFirewallScenario(ScenarioTest):
         
         self.cmd('network firewall policy update -g {rg} -n {policy_name} --sku Premium '
                  '--explicit-proxy enable-explicit-proxy=true http-port=85 enable-pac-file=true pac-file-port=122 pac-file={url} '
-                 '--identities {explicit_proxy_identity}',
+                 '--identity {explicit_proxy_identity}',
                  checks=[
                      self.check('name', '{policy_name}'),
                      self.check('explicitProxy.enableExplicitProxy', True),
@@ -1017,7 +1038,7 @@ class AzureFirewallScenario(ScenarioTest):
         self.cmd('network firewall policy update -g {rg} -n {policy_name} --sku Premium '
                  '--explicit-proxy enable-explicit-proxy=true http-port=85 enable-pac-file=true pac-file-port=122 pac-file={url} '
                  '--cert-name {certificate_name} --key-vault-secret-id {key_vault_url} '
-                 '--identities {explicit_proxy_identity} --identity "{tls_identity}"',
+                 '--identity [{explicit_proxy_identity}]',
                  checks=[
                      self.check('name', '{policy_name}'),
                      self.check('explicitProxy.enableExplicitProxy', True),
@@ -1026,7 +1047,7 @@ class AzureFirewallScenario(ScenarioTest):
                      self.check('explicitProxy.pacFile', '{url}'),
                      self.check('explicitProxy.pacFilePort', 122),
                      self.check('identity.type', 'UserAssigned'),
-                     self.check('length(identity.userAssignedIdentities)', 2)
+                     self.check('length(identity.userAssignedIdentities)', 1)
                     ])
 
 

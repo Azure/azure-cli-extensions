@@ -892,21 +892,14 @@ class AzureFirewallPoliciesCreate(_AzureFirewallPoliciesCreate):
     def _build_arguments_schema(cls, *args, **kwargs):
         from azure.cli.core.aaz import AAZListArg, AAZResourceIdArg, AAZResourceIdArgFormat
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.identity = AAZResourceIdArg(
+        args_schema.identity = AAZListArg(
             options=['--identity'],
-            help="Name or ID of the ManagedIdentity Resource.",
+            help="Name or Space-separated list of ManagedIdentity Resource IDs.",
+        )
+        args_schema.identity.Element = AAZResourceIdArg(
             fmt=AAZResourceIdArgFormat(
                 template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/"
-                         "Microsoft.ManagedIdentity/userAssignedIdentities/{}",
-            )
-        )
-        args_schema.identities = AAZListArg(
-            options=['--identities'],
-            help="Space-separated list of ManagedIdentity Resource IDs."
-        )
-        args_schema.identities.Element = AAZResourceIdArg(
-            fmt=AAZResourceIdArgFormat(
-                template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{}"
+                 "Microsoft.ManagedIdentity/userAssignedIdentities/{}",
             )
         )
         args_schema.base_policy._fmt = AAZResourceIdArgFormat(
@@ -920,13 +913,10 @@ class AzureFirewallPoliciesCreate(_AzureFirewallPoliciesCreate):
 
     def pre_operations(self):
         args = self.ctx.args
-        if (has_value(args.identity) or has_value(args.identities)):
+        if (has_value(args.identity)):
             args.identity_type = "UserAssigned"
             identities = []
-            if (has_value(args.identity)):
-                identities.append(args.identity.to_serialized_data())
-            if (has_value(args.identities)):
-                identities.extend([identity_id.to_serialized_data() for identity_id in args.identities])
+            identities.extend([identity_id.to_serialized_data() for identity_id in args.identity])
             args.user_assigned_identities = {identity_id: {} for identity_id in identities}
 
         if has_value(args.dns_servers):
@@ -939,21 +929,14 @@ class AzureFirewallPoliciesUpdate(_AzureFirewallPoliciesUpdate):
     def _build_arguments_schema(cls, *args, **kwargs):
         from azure.cli.core.aaz import AAZResourceIdArg, AAZResourceIdArgFormat, AAZListArg
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.identity = AAZResourceIdArg(
+        args_schema.identity = AAZListArg(
             options=['--identity'],
-            help="Name or ID of the ManagedIdentity Resource.",
+            help="Name or Space-separated list of ManagedIdentity Resource IDs.",
+        )
+        args_schema.identity.Element = AAZResourceIdArg(
             fmt=AAZResourceIdArgFormat(
                 template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/"
-                         "Microsoft.ManagedIdentity/userAssignedIdentities/{}",
-            )
-        )
-        args_schema.identities = AAZListArg(
-            options=['--identities'],
-            help="Space-separated list of ManagedIdentity Resource IDs."
-        )
-        args_schema.identities.Element = AAZResourceIdArg(
-            fmt=AAZResourceIdArgFormat(
-                template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{}"
+                "Microsoft.ManagedIdentity/userAssignedIdentities/{}",
             )
         )
         args_schema.identity_type._registered = False
@@ -965,13 +948,10 @@ class AzureFirewallPoliciesUpdate(_AzureFirewallPoliciesUpdate):
     def pre_operations(self):
         args = self.ctx.args
 
-        if (has_value(args.identity) or has_value(args.identities)):
+        if (has_value(args.identity)):
             args.identity_type = "UserAssigned"
             identities = []
-            if (has_value(args.identity)):
-                identities.append(args.identity.to_serialized_data())
-            if (has_value(args.identities)):
-                identities.extend([identity_id.to_serialized_data() for identity_id in args.identities])
+            identities.extend([identity_id.to_serialized_data() for identity_id in args.identity])
             args.user_assigned_identities = {identity_id: {} for identity_id in identities}
         elif args.sku == 'Premium':
             args.identity_type = "None"
