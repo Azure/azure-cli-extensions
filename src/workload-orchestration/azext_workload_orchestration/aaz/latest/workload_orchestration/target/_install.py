@@ -89,7 +89,7 @@ class Install(AAZCommand):
             help="Version of the solution template (e.g., 1.0.0).",
         )
         _args_schema.solution_template_rg = AAZStrArg(
-            options=["--solution-template-rg"],
+            options=["--solution-template-rg", "--solution-template-resource-group"],
             arg_group="Deploy",
             help="Resource group of the solution template. Defaults to target's -g.",
         )
