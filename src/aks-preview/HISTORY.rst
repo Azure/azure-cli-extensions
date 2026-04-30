@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+20.0.0b6
++++++++
+* `az aks create/update`: Improve error message for container network logs validation when ACNS is not enabled to provide clearer guidance.
+
 20.0.0b5
 +++++++
 * `az aks update`: Fix acceleration mode getting wiped out when modifying unrelated parameters in an ACNS enabled cluster.
