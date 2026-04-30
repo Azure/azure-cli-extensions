@@ -129,6 +129,8 @@ def target_prepare(
             custom_location_name, extension_id, connected_cluster_id
         )
         step_results["custom-location"] = "Succeeded"
+    except ValidationError:
+        raise
     except Exception as exc:
         step_results["custom-location"] = f"FAILED: {exc}"
         logger.debug("Step 4/4 failed (Custom location): %s", exc)
