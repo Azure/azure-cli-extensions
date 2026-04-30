@@ -1265,7 +1265,7 @@ def load_arguments(self, _):
             arg_type=get_enum_type(["H2", "H4", "H8"]),
             is_preview=True,
             help="The control plane scaling size. Provides scaled and performance-guaranteed control plane capacity. "
-            "Available values are 'H2', 'H4', and 'H8'.",
+                 "Available values are 'H2', 'H4', and 'H8'.",
         )
         c.argument(
             "enable_continuous_control_plane_and_addon_monitor",

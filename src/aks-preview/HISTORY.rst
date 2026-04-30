@@ -14,6 +14,11 @@ Pending
 * `az aks create`: Add `--control-plane-scaling-size` parameter to configure control plane scaling profile with available sizes 'H2', 'H4', and 'H8'.
 * `az aks update`: Add `--control-plane-scaling-size` parameter to update the control plane scaling size on an existing cluster with available sizes 'H2', 'H4', and 'H8'.
 
+20.0.0b5
++++++++
+* `az aks update`: Fix acceleration mode getting wiped out when modifying unrelated parameters in an ACNS enabled cluster.
+* `az aks create`: Add `--control-plane-scaling-size` parameter to configure control plane scaling profile with available sizes 'H2', 'H4', and 'H8'.
+
 20.0.0b4
 +++++++
 * `az aks nodepool update`: Support `--node-vm-size` to resize VM size of an existing VMSS-based agent pool (preview). Requires AFEC registration `Microsoft.ContainerService/AgentPoolVMSSResize`.
