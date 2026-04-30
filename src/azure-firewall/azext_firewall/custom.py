@@ -899,7 +899,7 @@ class AzureFirewallPoliciesCreate(_AzureFirewallPoliciesCreate):
         args_schema.identity.Element = AAZResourceIdArg(
             fmt=AAZResourceIdArgFormat(
                 template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/"
-                 "Microsoft.ManagedIdentity/userAssignedIdentities/{}",
+                         "Microsoft.ManagedIdentity/userAssignedIdentities/{}",
             )
         )
         args_schema.base_policy._fmt = AAZResourceIdArgFormat(
