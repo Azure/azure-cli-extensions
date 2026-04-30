@@ -51,7 +51,6 @@ logger = logging.getLogger(__name__)
 # ===========================================================================
 
 
-
 def target_prepare(
     cmd,
     cluster_name,
