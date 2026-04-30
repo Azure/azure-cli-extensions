@@ -913,7 +913,7 @@ class AzureFirewallPoliciesCreate(_AzureFirewallPoliciesCreate):
 
     def pre_operations(self):
         args = self.ctx.args
-        if (has_value(args.identity)):
+        if has_value(args.identity):
             args.identity_type = "UserAssigned"
             identities = []
             identities.extend([identity_id.to_serialized_data() for identity_id in args.identity])
@@ -948,7 +948,7 @@ class AzureFirewallPoliciesUpdate(_AzureFirewallPoliciesUpdate):
     def pre_operations(self):
         args = self.ctx.args
 
-        if (has_value(args.identity)):
+        if has_value(args.identity):
             args.identity_type = "UserAssigned"
             identities = []
             identities.extend([identity_id.to_serialized_data() for identity_id in args.identity])
