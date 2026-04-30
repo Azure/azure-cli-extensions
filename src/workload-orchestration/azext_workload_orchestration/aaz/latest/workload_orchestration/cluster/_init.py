@@ -26,10 +26,9 @@ class Init(AAZCommand):
 
     Steps performed:
       1. Verify cluster is Arc-connected with required features enabled
-      2. Install cert-manager + trust-manager via the AIO platform Arc extension
-         (microsoft.iotoperations.platform)
-      3. Install WO extension (if not present)
-      4. Create custom location (if not present)
+      2. Install Workload Orchestration Extension Dependencies
+      3. Install Workload Orchestration Extension
+      4. Create Custom Location (validates cluster binding if already exists)
 
     :example: Initialize a cluster with defaults
         az workload-orchestration cluster init -c my-cluster -g my-rg -l eastus2euap

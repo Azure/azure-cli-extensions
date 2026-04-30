@@ -98,8 +98,26 @@ def _validate_hierarchy_names(node):
             f"Got {type(children).__name__}. "
             f"Use YAML '- name: X' entries or JSON '[{{...}}]'."
         )
+    # Validate that all siblings have the same level value
+    _validate_consistent_levels(children, parent_name=name)
     for child in children:
         _validate_hierarchy_names(child)
+
+
+def _validate_consistent_levels(children, parent_name):
+    """Ensure all sibling nodes at the same level have the same 'level' value."""
+    if not children or len(children) < 2:
+        return
+    levels = set()
+    for child in children:
+        child_level = child.get("level", "")
+        if child_level:
+            levels.add(child_level)
+    if len(levels) > 1:
+        raise ValidationError(
+            f"Inconsistent level names under '{parent_name}': {sorted(levels)}. "
+            f"All siblings at the same hierarchy depth must have the same level value."
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -129,6 +147,15 @@ def _create_rg_hierarchy(cmd, resource_group, config_location, name, level):
         else:
             _eprint(f"[i] Reusing existing Site '{site_name}'.")
         effective_name = site_name
+        # Patch existing site with updated labels
+        _arm_put(cmd, f"{ARM_ENDPOINT}{site_id}", {
+            "properties": {
+                "displayName": effective_name,
+                "description": effective_name,
+                "labels": {"level": level},
+            }
+        }, SITE_API_VERSION)
+        _eprint(f"├── Site '{effective_name}' (updated) ✓")
     else:
         effective_name = name
         site_id = (
@@ -273,6 +300,14 @@ def _create_sg_level(  # pylint: disable=too-many-arguments
                 f"(requested name '{name}' ignored)."
             )
         effective_site_name = site_name
+        # Patch existing site with updated labels
+        _arm_put_regional(cmd, config_location, site_id, {
+            "properties": {
+                "displayName": effective_site_name,
+                "description": effective_site_name,
+                "labels": {"level": level},
+            }
+        }, SITE_API_VERSION)
     else:
         effective_site_name = name
         site_id = f"{sg_id}/providers/{EDGE_RP_NAMESPACE}/sites/{effective_site_name}"
@@ -496,12 +531,12 @@ def _arm_get_regional(cmd, location, resource_id, api_version):
             return None
 
 
-def _wait_for_sg_rbac(cmd, location, sg_id, sg_name, max_retries=12, wait_sec=10):
+def _wait_for_sg_rbac(cmd, location, sg_id, sg_name, max_retries=15, wait_sec=10):
     """Wait for RBAC to propagate on a newly created ServiceGroup.
 
     After SG creation, it takes time for permissions to propagate.
     We poll by trying to list sites under the SG until it succeeds.
-    Waits up to 120s (12 x 10s).
+    Waits up to 150s (15 x 10s).
     """
     import time
 

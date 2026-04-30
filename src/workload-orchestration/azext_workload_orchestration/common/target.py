@@ -41,7 +41,6 @@ from azext_workload_orchestration.common.consts import (
 from azext_workload_orchestration.common.utils import (
     _eprint,
     invoke_cli_command,
-    print_step,
 )
 
 logger = logging.getLogger(__name__)
@@ -51,7 +50,6 @@ logger = logging.getLogger(__name__)
 # target_prepare
 # ===========================================================================
 
-TOTAL_STEPS = 4
 
 
 def target_prepare(
@@ -103,10 +101,6 @@ def target_prepare(
         )
         step_results["cert-manager"] = "Succeeded"
         step_results["trust-manager"] = "Succeeded (bundled)"
-        print_step(
-            2, TOTAL_STEPS, "trust-manager",
-            "Bundled with cert-manager ✓"
-        )
     except Exception as exc:
         step_results["cert-manager"] = f"FAILED: {exc}"
         logger.debug(
@@ -143,9 +137,7 @@ def target_prepare(
         raise CLIInternalError("Custom location creation failed. See error above.")
 
     extended_location = {"name": cl_id, "type": "CustomLocation"}
-    _write_extended_location_file(extended_location)
 
-    _eprint(f"  Custom Location: {cl_id}")
     _eprint()
 
     return {
@@ -239,9 +231,9 @@ def _ensure_cert_trust_manager_via_aio_extension(
         ext_ver = existing.get("version", "unknown")
         prov_state = (existing.get("provisioningState", "") or "").lower()
         if prov_state == "succeeded":
-            print_step(
-                1, TOTAL_STEPS, "cert-manager + trust-manager",
-                f"Already installed ✓ (AIO platform ext {ext_ver})"
+            _eprint(
+                f"  Workload Orchestration Extension Dependency: {AIO_PLATFORM_EXTENSION_NAME} "
+                f"Already installed ✓ ({ext_ver})"
             )
             return
         logger.info(
@@ -250,9 +242,9 @@ def _ensure_cert_trust_manager_via_aio_extension(
         )
 
     version_msg = f" version {version}" if version else ""
-    print_step(
-        1, TOTAL_STEPS,
-        f"cert-manager + trust-manager... Installing AIO platform ext{version_msg}"
+    _eprint(
+        f"  Installing Workload Orchestration Extension Dependency: "
+        f"{AIO_PLATFORM_EXTENSION_NAME}{version_msg}..."
     )
 
     create_args = [
@@ -273,9 +265,9 @@ def _ensure_cert_trust_manager_via_aio_extension(
     invoke_cli_command(cmd, create_args)
 
     suffix = " (--no-wait)" if no_wait else ""
-    print_step(
-        1, TOTAL_STEPS, "cert-manager + trust-manager",
-        f"Installed via AIO platform extension{suffix} ✓"
+    _eprint(
+        f"  Workload Orchestration Extension Dependency: "
+        f"{AIO_PLATFORM_EXTENSION_NAME} Installed{suffix} ✓"
     )
 
 
@@ -315,16 +307,15 @@ def _ensure_wo_extension(
         prov_state = ext.get("provisioningState", "").lower()
 
         if prov_state == "succeeded":
-            print_step(
-                3, TOTAL_STEPS, "WO extension",
-                f"Already installed ✓ (version {ext_ver})"
+            _eprint(
+                f"  Workload Orchestration Extension: {extension_name} "
+                f"Already installed ✓ ({ext_ver})"
             )
             return ext_id
 
     version_msg = f" version {extension_version}" if extension_version else ""
-    print_step(
-        3, TOTAL_STEPS,
-        f"WO extension... Creating '{extension_name}'{version_msg}"
+    _eprint(
+        f"  Installing Workload Orchestration Extension: {extension_name}{version_msg}..."
     )
 
     create_args = [
@@ -357,9 +348,9 @@ def _ensure_wo_extension(
     ext_id = result.get("id", "") if isinstance(result, dict) else ""
 
     if no_wait:
-        print_step(3, TOTAL_STEPS, "WO extension", "Creating (--no-wait) ✓")
+        _eprint(f"  Workload Orchestration Extension: {extension_name} Creating (--no-wait) ✓")
     else:
-        print_step(3, TOTAL_STEPS, "WO extension", "Installed ✓")
+        _eprint(f"  Workload Orchestration Extension: {extension_name} Installed ✓")
 
     return ext_id
 
@@ -392,11 +383,22 @@ def _ensure_custom_location(
             cl_info = response.json()
             cl_id = cl_info.get("id", "")
             if cl_id:
-                print_step(
-                    4, TOTAL_STEPS, "Custom location",
-                    f"Already exists ✓ ('{custom_location_name}')"
+                # Validate that the existing CL is bound to our cluster
+                existing_host = (
+                    cl_info.get("properties", {}).get("hostResourceId", "")
+                )
+                if existing_host.lower() != connected_cluster_id.lower():
+                    raise ValidationError(
+                        f"Requested Custom Location '{custom_location_name}' is already "
+                        f"associated with Cluster '{existing_host}'. "
+                        f"Please choose a different name."
+                    )
+                _eprint(
+                    f"  Custom Location: '{custom_location_name}' Already exists ✓"
                 )
                 return cl_id
+    except ValidationError:
+        raise
     except Exception:
         pass  # Not found or error, proceed to create
 
@@ -405,10 +407,7 @@ def _ensure_custom_location(
             "Cannot create custom location: WO extension ID is not available."
         )
 
-    print_step(
-        4, TOTAL_STEPS,
-        f"Custom location... Creating '{custom_location_name}'"
-    )
+    _eprint(f"  Creating Custom Location: '{custom_location_name}'...")
 
     try:
         result = invoke_cli_command(
@@ -429,7 +428,7 @@ def _ensure_custom_location(
             f"Failed to create custom location: {exc}"
         )
 
-    print_step(4, TOTAL_STEPS, "Custom location", "Created ✓")
+    _eprint(f"  Custom Location: '{custom_location_name}' Created ✓")
     return cl_id
 
 
