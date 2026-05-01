@@ -20,7 +20,6 @@ from .exceptions import (AzCommandError, WindowsOsNotAvailableError, RunScriptNo
 
 from azure.cli.core.azclierror import CLIError
 
-# external-url-exempt: repair script map is maintained in the Azure/repair-script-library repo
 REPAIR_MAP_URL = 'https://raw.githubusercontent.com/Azure/repair-script-library/master/map.json'
 
 logger = get_logger(__name__)
@@ -40,7 +39,7 @@ def _get_cloud_init_script():
 def _set_repair_map_url(url):
     raw_url = str(url)
     if "github.com" in raw_url:
-        raw_url = raw_url.replace("github.com", "raw.githubusercontent.com")  # external-url-exempt: URL transform for user-provided repo links
+        raw_url = raw_url.replace("github.com", "raw.githubusercontent.com")
         raw_url = raw_url.replace("/blob/", "/")
         global REPAIR_MAP_URL
         REPAIR_MAP_URL = raw_url

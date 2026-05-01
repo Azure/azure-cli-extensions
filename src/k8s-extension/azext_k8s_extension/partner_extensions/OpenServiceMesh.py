@@ -129,7 +129,6 @@ def _validate_tested_distro(cmd, cluster_resource_group_name, cluster_name, exte
 
 def _get_tested_distros(chart_version):
 
-    # external-url-exempt: OSM chart values must be fetched from the upstream Azure/osm-azure repo
     chart_url = 'https://raw.githubusercontent.com/Azure/osm-azure/' \
         'v{0}/charts/osm-arc/values.yaml'.format(chart_version)
     chart_request = requests.get(url=chart_url)
