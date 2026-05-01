@@ -61,6 +61,7 @@ from azext_aks_preview._consts import (
     CONST_ARTIFACT_SOURCE_DIRECT,
     CONST_K8S_EXTENSION_CUSTOM_MOD_NAME,
     CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME,
+    CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM,
 )
 from azext_aks_preview._helpers import (
     check_is_private_link_cluster,
@@ -176,6 +177,7 @@ from azure.core.exceptions import (
     ResourceNotFoundError,
     HttpResponseError,
 )
+from azure.mgmt.containerservice.models import KubernetesSupportPlan
 from dateutil.parser import parse
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
@@ -1686,6 +1688,8 @@ def aks_upgrade(cmd,
                 enable_force_upgrade=False,
                 disable_force_upgrade=False,
                 upgrade_override_until=None,
+                tier=None,
+                k8s_support_plan=None,
                 yes=False,
                 if_match=None,
                 if_none_match=None):
@@ -1743,6 +1747,18 @@ def aks_upgrade(cmd,
         disable_force_upgrade=disable_force_upgrade,
         upgrade_override_until=upgrade_override_until)
 
+    if tier is not None:
+        instance.sku.tier = tier
+
+    if k8s_support_plan is not None:
+        instance.support_plan = k8s_support_plan
+
+    if (
+        instance.support_plan == KubernetesSupportPlan.AKS_LONG_TERM_SUPPORT
+        and instance.sku.tier is not None
+        and instance.sku.tier.lower() != CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM.lower()
+    ):
+        raise CLIError("AKS Long Term Support is only available for Premium tier clusters.")
     if instance.kubernetes_version == kubernetes_version:
         if instance.provisioning_state == "Succeeded":
             logger.warning("The cluster is already on version %s and is not in a failed state. No operations "
