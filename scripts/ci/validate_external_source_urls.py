@@ -25,6 +25,7 @@ GITHUB_URL_PATTERN = re.compile(
 INLINE_SUPPRESSION_PATTERN = re.compile(
     r"#\s*external-url-exempt:\s*\S"
 )
+_FILENAME_PATTERN = re.compile(r"^[A-Za-z0-9_\-]+\.[A-Za-z0-9]{1,10}$")
 RECOMMENDED_INTERNAL_URL = "https://azcliprod.blob.core.windows.net/cli"
 SCOPE_CONFIG_PATH = Path(__file__).with_name("external_url_exclusions.json")
 
@@ -90,6 +91,7 @@ def _matches_any(file_path: str, patterns: list) -> bool:
     return any(fnmatch.fnmatch(file_path, p) for p in patterns)
 
 
+
 def _extract_filename_from_url(line: str) -> str:
     """Extract the file name from the first GitHub URL found in *line*.
 
@@ -100,7 +102,7 @@ def _extract_filename_from_url(line: str) -> str:
     if match:
         url_path = match.group(0).rstrip("/")
         basename = url_path.rsplit("/", 1)[-1] if "/" in url_path else ""
-        if "." in basename:
+        if _FILENAME_PATTERN.match(basename):
             return basename
     return "xxx.xxx"
 
