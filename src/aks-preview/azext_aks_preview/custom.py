@@ -1438,6 +1438,8 @@ def aks_update(
     # health monitor
     enable_continuous_control_plane_and_addon_monitor=False,
     disable_continuous_control_plane_and_addon_monitor=False,
+    # control plane scaling
+    control_plane_scaling_size=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
