@@ -21,13 +21,11 @@ def get_horizondb_management_client(cli_ctx, subscription_id=None, **_):
     rm_uri_override = getenv(RM_URI_OVERRIDE)
     subscription = subscription_id if subscription_id is not None else getenv(SUB_ID_OVERRIDE)
     if rm_uri_override:
-        from msrest.authentication import Authentication  # pylint: disable=import-error
-        credentials = Authentication()
-
-        return HorizonDBMgmtClient(
+        return get_mgmt_service_client(
+            cli_ctx,
+            HorizonDBMgmtClient,
             subscription_id=subscription,
-            base_url=rm_uri_override,
-            credential=credentials)
+            base_url=rm_uri_override)
     # Normal production scenario.
     return get_mgmt_service_client(cli_ctx, HorizonDBMgmtClient, subscription_id=subscription)
 

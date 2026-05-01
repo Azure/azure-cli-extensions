@@ -6,7 +6,8 @@
 # pylint: disable=line-too-long, too-many-locals
 
 from knack.log import get_logger
-from azure.cli.core.util import CLIError, sdk_no_wait, user_confirmation
+from azure.cli.core.util import sdk_no_wait, user_confirmation
+from azure.cli.core.azclierror import AzCLIError
 
 logger = get_logger(__name__)
 
@@ -55,7 +56,7 @@ def horizondb_cluster_delete(cmd, client, resource_group_name, cluster_name, no_
             local_context_file.remove_option('horizondb', 'cluster_name')
     except Exception as ex:  # pylint: disable=broad-except
         logger.error(ex)
-        raise CLIError(ex)
+        raise AzCLIError(ex)
     return result
 
 
