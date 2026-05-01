@@ -888,13 +888,13 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
     def get_acns_enablement(self) -> Tuple[
         Union[bool, None],
         Union[bool, None],
+        Union[bool, None],
         Union[bool, None]
     ]:
-        """Get the enablement of acns (not including the performance suite)
-        :return: Tuple of 3 elements which can be bool or None
+        """Get the enablement of acns
+        :return: Tuple of 4 elements which can be bool or None
         """
-        enable_acns, enable_acns_observability, enable_acns_security, _ = self.get_acns_enablement_with_perf()
-        return enable_acns, enable_acns_observability, enable_acns_security
+        return self.get_acns_enablement_with_perf()
 
     def get_acns_enablement_with_perf(self) -> Tuple[
         Union[bool, None],
@@ -4122,7 +4122,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             network_profile.network_dataplane = self.context.get_network_dataplane()
 
         acns = None
-        (acns_enabled, acns_observability_enabled, acns_security_enabled) = self.context.get_acns_enablement()
+        (acns_enabled, acns_observability_enabled, acns_security_enabled, _) = self.context.get_acns_enablement()
         acns_advanced_networkpolicies = self.context.get_acns_advanced_networkpolicies()
         acns_transit_encryption_type = self.context.get_acns_transit_encryption_type()
         acns_datapath_acceleration_mode = self.context.get_acns_datapath_acceleration_mode()
@@ -5853,7 +5853,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         self._ensure_mc(mc)
 
         acns = None
-        (acns_enabled, acns_observability_enabled, acns_security_enabled) = self.context.get_acns_enablement()
+        (acns_enabled, acns_observability_enabled,
+            acns_security_enabled, acns_perf_enabled) = self.context.get_acns_enablement()
         acns_advanced_networkpolicies = self.context.get_acns_advanced_networkpolicies()
         acns_transit_encryption_type = self.context.get_acns_transit_encryption_type()
         acns_datapath_acceleration_mode = self.context.get_acns_datapath_acceleration_mode()
@@ -5882,10 +5883,16 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 if acns.security.transit_encryption is None:
                     acns.security.transit_encryption = self.models.AdvancedNetworkingSecurityTransitEncryption()
                 acns.security.transit_encryption.type = acns_transit_encryption_type
-            if acns_datapath_acceleration_mode is not None:
-                if acns.performance is None:
-                    acns.performance = self.models.AdvancedNetworkingPerformance()
-                acns.performance.acceleration_mode = acns_datapath_acceleration_mode
+            if acns_perf_enabled is not None:
+                acns.performance = self.models.AdvancedNetworkingPerformance(
+                    acceleration_mode=acns_datapath_acceleration_mode,
+                )
+            elif not acns_enabled:
+                acns.performance = self.models.AdvancedNetworkingPerformance(
+                    acceleration_mode=CONST_ACNS_DATAPATH_ACCELERATION_MODE_NONE,
+                )
+            elif mc.network_profile.advanced_networking is not None:
+                acns.performance = mc.network_profile.advanced_networking.performance
             mc.network_profile.advanced_networking = acns
         return mc
 
