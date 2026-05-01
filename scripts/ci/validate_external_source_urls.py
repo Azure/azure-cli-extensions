@@ -17,7 +17,13 @@ from pathlib import Path
 
 
 FORBIDDEN_EXTERNAL_URL_PATTERN = re.compile(
-    r"https://raw\.githubusercontent\.com"
+    r"raw\.githubusercontent\.com"
+)
+GITHUB_URL_PATTERN = re.compile(
+    r"https?://raw\.githubusercontent\.com/[^\s\"'`,)}\]]*"
+)
+INLINE_SUPPRESSION_PATTERN = re.compile(
+    r"#\s*external-url-exempt:\s*\S"
 )
 RECOMMENDED_INTERNAL_URL = "https://azcliprod.blob.core.windows.net/cli"
 SCOPE_CONFIG_PATH = Path(__file__).with_name("external_url_exclusions.json")
@@ -84,6 +90,21 @@ def _matches_any(file_path: str, patterns: list) -> bool:
     return any(fnmatch.fnmatch(file_path, p) for p in patterns)
 
 
+def _extract_filename_from_url(line: str) -> str:
+    """Extract the file name from the first GitHub URL found in *line*.
+
+    Returns the basename (e.g. ``map.json``) or ``"xxx.xxx"`` when no
+    recognisable file name is present.
+    """
+    match = GITHUB_URL_PATTERN.search(line)
+    if match:
+        url_path = match.group(0).rstrip("/")
+        basename = url_path.rsplit("/", 1)[-1] if "/" in url_path else ""
+        if "." in basename:
+            return basename
+    return "xxx.xxx"
+
+
 def _should_flag(file_path: str) -> bool:
     """Decide whether *file_path* should be checked for forbidden URLs.
 
@@ -119,18 +140,26 @@ def _run_diff(src: str, tgt: str, cached: bool = False) -> str:
 def _find_violations(diff_text: str):
     violations = []
     current_file = ""
+    prev_added_line = ""
 
     for line in diff_text.splitlines():
         if line.startswith("+++ b/"):
             current_file = line[6:]
+            prev_added_line = ""
             continue
 
         if not line.startswith("+") or line.startswith("+++"):
+            prev_added_line = ""
             continue
 
         added_line = line[1:]
         if FORBIDDEN_EXTERNAL_URL_PATTERN.search(added_line) and _should_flag(current_file):
-            violations.append((current_file or "<unknown>", added_line.strip()))
+            # Skip if the current line or the previous added line has a suppression comment
+            if not (INLINE_SUPPRESSION_PATTERN.search(added_line)
+                    or INLINE_SUPPRESSION_PATTERN.search(prev_added_line)):
+                violations.append((current_file or "<unknown>", added_line.strip()))
+
+        prev_added_line = added_line
 
     return violations
 
@@ -157,14 +186,32 @@ def main() -> int:
         print("No forbidden external github URL found in added lines.")
         return 0
 
-    print("Found forbidden external github URL in this change:", file=sys.stderr)
+    print("ERROR: Found forbidden external GitHub URL(s) in this change:\n", file=sys.stderr)
     for file_path, content in violations:
-        print(f"  - {file_path}: {content}", file=sys.stderr)
-
-    print(
-        f"Use '{RECOMMENDED_INTERNAL_URL}' instead of raw GitHub URLs to limit external system access.",
-        file=sys.stderr,
-    )
+        filename = _extract_filename_from_url(content)
+        print(
+            f"  {file_path}: {content}\n"
+            "\n"
+            "  To fix, follow one of the options below (in priority order):\n"
+            "\n"
+            "    Option 1 (Preferred) — Host the file in the AME storage account\n"
+            "    ---------------------------------------------------------------\n"
+            "    Reach out to the Platform squad to upload the file to the shared\n"
+            "    Azure CLI storage account. Once uploaded, replace the raw GitHub\n"
+            "    URL with the internal blob URL. The resulting URL should look like:\n"
+            "\n"
+            f"      {RECOMMENDED_INTERNAL_URL}/<module>/{filename}\n"
+            "\n"
+            "    Option 2 (Fallback) — Suppress with an inline comment\n"
+            "    -----------------------------------------------------\n"
+            "    Only if the GitHub URL is required by design (e.g. the upstream\n"
+            "    repo IS the authoritative source), add an inline suppression\n"
+            "    comment on the line before or on the same line like:\n"
+            "\n"
+            "      # external-url-exempt: <reason>\n"
+            f"     {content} \n",
+            file=sys.stderr,
+        )
     return 1
 
 
