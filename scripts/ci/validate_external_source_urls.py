@@ -20,69 +20,81 @@ FORBIDDEN_EXTERNAL_URL_PATTERN = re.compile(
     r"https://raw\.githubusercontent\.com"
 )
 RECOMMENDED_INTERNAL_URL = "https://azcliprod.blob.core.windows.net/cli"
-EXCLUSION_CONFIG_PATH = Path(__file__).with_name("external_url_exclusions.json")
+SCOPE_CONFIG_PATH = Path(__file__).with_name("external_url_exclusions.json")
 
-# Paths matching these glob patterns are excluded from the check.
-# Exclusions are loaded from external_url_exclusions.json.
-EXCLUDED_PATH_PATTERNS = None
+# Scope configuration loaded from external_url_exclusions.json.
+# Contains optional "include" and "exclude" glob-pattern lists.
+_SCOPE_CONFIG = None
 
 
-def _load_excluded_path_patterns():
-    """Load excluded path glob patterns from the JSON configuration file."""
+def _load_scope_config():
+    """Load scope configuration (include/exclude patterns) from the JSON file."""
     try:
-        with EXCLUSION_CONFIG_PATH.open(encoding="utf-8") as input_file:
+        with SCOPE_CONFIG_PATH.open(encoding="utf-8") as input_file:
             config = json.load(input_file)
     except (OSError, ValueError) as ex:
-        raise RuntimeError(f"Unable to load exclusion patterns from '{EXCLUSION_CONFIG_PATH}': {ex}") from ex
+        raise RuntimeError(f"Unable to load scope config from '{SCOPE_CONFIG_PATH}': {ex}") from ex
 
     if not isinstance(config, dict):
         raise RuntimeError(
-            f"Invalid exclusion pattern configuration in '{EXCLUSION_CONFIG_PATH}': expected a JSON object"
+            f"Invalid scope configuration in '{SCOPE_CONFIG_PATH}': expected a JSON object"
         )
 
-    exclusions = config.get("exclusions")
-    if not isinstance(exclusions, list):
+    scope = config.get("scope", {})
+    if not isinstance(scope, dict):
         raise RuntimeError(
-            f"Invalid exclusion pattern configuration in '{EXCLUSION_CONFIG_PATH}': expected 'exclusions' to be a JSON array"
+            f"Invalid scope configuration in '{SCOPE_CONFIG_PATH}': 'scope' must be a JSON object"
         )
 
-    patterns = []
-    for exclusion in exclusions:
-        if not isinstance(exclusion, dict):
-            raise RuntimeError(
-                f"Invalid exclusion pattern configuration in '{EXCLUSION_CONFIG_PATH}': each exclusion must be a JSON object"
-            )
+    include = scope.get("include", [])
+    exclude = scope.get("exclude", [])
 
-        files = exclusion.get("file")
-        if isinstance(files, str):
-            files = [files]
+    if isinstance(include, str):
+        include = [include]
+    if isinstance(exclude, str):
+        exclude = [exclude]
 
-        if not isinstance(files, list) or not all(isinstance(pattern, str) for pattern in files):
-            raise RuntimeError(
-                f"Invalid exclusion pattern configuration in '{EXCLUSION_CONFIG_PATH}': each exclusion 'file' must be a string or JSON array of strings"
-            )
+    if not isinstance(include, list) or not all(isinstance(p, str) for p in include):
+        raise RuntimeError(
+            f"Invalid scope configuration in '{SCOPE_CONFIG_PATH}': 'include' must be a string or array of strings"
+        )
+    if not isinstance(exclude, list) or not all(isinstance(p, str) for p in exclude):
+        raise RuntimeError(
+            f"Invalid scope configuration in '{SCOPE_CONFIG_PATH}': 'exclude' must be a string or array of strings"
+        )
 
-        patterns.extend(pattern.replace("\\", "/") for pattern in files)
-
-    return patterns
-
-
-def _get_excluded_path_patterns():
-    """Return cached excluded path glob patterns."""
-    global EXCLUDED_PATH_PATTERNS  # pylint: disable=global-statement
-
-    if EXCLUDED_PATH_PATTERNS is None:
-        EXCLUDED_PATH_PATTERNS = _load_excluded_path_patterns()
-
-    return EXCLUDED_PATH_PATTERNS
+    return (
+        [p.replace("\\", "/") for p in include],
+        [p.replace("\\", "/") for p in exclude],
+    )
 
 
-def _is_excluded(file_path: str) -> bool:
-    """Return True if *file_path* matches one of the exclusion glob patterns."""
-    for pattern in _get_excluded_path_patterns():
-        if fnmatch.fnmatch(file_path, pattern):
-            return True
-    return False
+def _get_scope_config():
+    """Return cached (include_patterns, exclude_patterns) tuple."""
+    global _SCOPE_CONFIG  # pylint: disable=global-statement
+
+    if _SCOPE_CONFIG is None:
+        _SCOPE_CONFIG = _load_scope_config()
+
+    return _SCOPE_CONFIG
+
+
+def _matches_any(file_path: str, patterns: list) -> bool:
+    """Return True if *file_path* matches any of the given glob patterns."""
+    return any(fnmatch.fnmatch(file_path, p) for p in patterns)
+
+
+def _should_flag(file_path: str) -> bool:
+    """Decide whether *file_path* should be checked for forbidden URLs.
+
+    An entry is included when there is no include list (empty means
+    "entire codebase") or when it matches at least one include pattern.
+    A included entry is then flagged unless it also matches an exclude pattern.
+    """
+    include_patterns, exclude_patterns = _get_scope_config()
+
+    included = (not include_patterns) or _matches_any(file_path, include_patterns)
+    return included and not _matches_any(file_path, exclude_patterns)
 
 
 def _run_diff(src: str, tgt: str, cached: bool = False) -> str:
@@ -117,7 +129,7 @@ def _find_violations(diff_text: str):
             continue
 
         added_line = line[1:]
-        if FORBIDDEN_EXTERNAL_URL_PATTERN.search(added_line) and not _is_excluded(current_file):
+        if FORBIDDEN_EXTERNAL_URL_PATTERN.search(added_line) and _should_flag(current_file):
             violations.append((current_file or "<unknown>", added_line.strip()))
 
     return violations
@@ -131,7 +143,7 @@ def main() -> int:
     args = parser.parse_args()
 
     try:
-        _get_excluded_path_patterns()
+        _get_scope_config()
         diff_text = _run_diff(src=args.src, tgt=args.tgt, cached=args.cached)
     except Exception as ex:  # pylint: disable=broad-except
         if args.cached:
