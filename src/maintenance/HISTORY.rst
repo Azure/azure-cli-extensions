@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.8.0
+++++++
+* Added support for approving list of scheduled events
+
 1.7.0b3
 ++++++
 * Changed live tests to recorded tests for maintenance extension

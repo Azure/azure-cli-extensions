@@ -78,7 +78,7 @@ class Acknowledge(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ScheduledEventOperationGroupAcknowledge(ctx=self.ctx)()
+        self.ScheduledEventsOperationGroupAcknowledge(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -93,7 +93,7 @@ class Acknowledge(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
         return result
 
-    class ScheduledEventOperationGroupAcknowledge(AAZHttpOperation):
+    class ScheduledEventsOperationGroupAcknowledge(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -107,7 +107,7 @@ class Acknowledge(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/Microsoft.Compute/{resourceType}/{resourceName}/providers/Microsoft.Maintenance/scheduledevents/{scheduledEventId}/acknowledge",
+                "/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/Microsoft.Compute/{resourceType}/{resourceName}/providers/Microsoft.Maintenance/scheduledevents/{scheduledEventsId}/acknowledge",
                 **self.url_parameters
             )
 
@@ -135,7 +135,7 @@ class Acknowledge(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "scheduledEventId", self.ctx.args.scheduled_events_id,
+                    "scheduledEventsId", self.ctx.args.scheduled_events_id,
                     required=True,
                 ),
                 **self.serialize_url_param(

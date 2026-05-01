@@ -352,12 +352,12 @@ def step__maintenanceconfigurations_create_maintenanceconfigurations_inguestpatc
     test.cmd('az maintenance configuration create --maintenance-scope InGuestPatch '
              '--location centraluseuap '
              '--maintenance-window-duration "02:00" '
-             '--maintenance-window-expiration-date-time "9999-12-31 00:00" '
+             '--maintenance-window-expiration-date-time "2027-04-30 08:00" '
              '--maintenance-window-recur-every "Day" '
              '--maintenance-window-start-date-time "2024-04-30 08:00" '
              '--maintenance-window-time-zone "Pacific Standard Time" '
              '--resource-group  {rg} '
-             '--resource-name  clitestmrpconfinguestadvanced '
+             '--resource-name  clitestmrpconfinguestadvanced4 '
              '--install-patches-linux-parameters package-name-masks-to-exclude=pkg1 '
              ' package-name-masks-to-exclude=pkg2  classifications-to-include=Other  '
              '--reboot-setting IfRequired '
@@ -368,7 +368,7 @@ def step__maintenanceconfigurations_create_maintenanceconfigurations_inguestpatc
 def step__maintenanceconfigurations_create_maintenanceconfigurations_inguestpatchdefault(test):
     test.cmd('az maintenance configuration create --maintenance-scope InGuestPatch '
              '--maintenance-window-duration "02:00" '
-             '--maintenance-window-expiration-date-time "9999-12-31 00:00" '
+             '--maintenance-window-expiration-date-time "2027-04-30 08:00" '
              '--maintenance-window-recur-every "Day" '
              '--maintenance-window-start-date-time "2024-04-30 08:00" '
              '--maintenance-window-time-zone "Pacific Standard Time" '
@@ -433,35 +433,24 @@ def step__maintenanceconfigurations_cancel(test):
 
 
 # Dynamic scope tests subscription level
-def _assert_policy_definition_not_found(test, error):
-    response = json.loads(error.response.text())
-    test.assertEqual("PolicyDefinitionNotFound", response["Error"]["Code"])
-
-
 def step__configurationassignments_put_configurationassignments_createorupdate_subscription(test):
-    from azure.core.exceptions import ResourceNotFoundError
-    try:
-        test.cmd('az maintenance assignment create-or-update-subscription '
-                 '--maintenance-configuration-id "/subscriptions/{subscription_id}/resourcegroups/{rg}/providers/Microsoft.'
-                 'Maintenance/maintenanceConfigurations/clitestmrpconfinguestadvanced" '
-                 '--name cli_dynamicscope_recording01 '
-                 '--filter-locations eastus2euap centraluseuap '
-                 '--filter-os-types windows linux '
-                 '--filter-tags {{tagKey1:[tagKey1Val1,tagKey1Val2],tagKey2:[tagKey2Val1,tagKey2Val2]}} '
-                 '--filter-resource-group rg1, rg2 '
-                 '--filter-tags-operator All '
-                 '-l global',
-                 checks=[])
-        return True
-    except ResourceNotFoundError as e:
-        _assert_policy_definition_not_found(test, e)
-        return False
+    test.cmd('az maintenance assignment create-or-update-subscription '
+             '--maintenance-configuration-id "/subscriptions/{subscription_id}/resourcegroups/{rg}/providers/Microsoft.'
+             'Maintenance/maintenanceConfigurations/clitestmrpconfinguestadvanced4" '
+             '--name cli_dynamicscope_recording01 '
+             '--filter-locations eastus2euap centraluseuap '
+             '--filter-os-types windows linux '
+             '--filter-tags {{tagKey1:[tagKey1Val1,tagKey1Val2],tagKey2:[tagKey2Val1,tagKey2Val2]}} '
+             '--filter-resource-group rg1, rg2 '
+             '--filter-tags-operator All '
+             '-l global',
+             checks=[])
 
 
 def step__configurationassignments_put_configurationassignments_update_subscription(test):
     test.cmd('az maintenance assignment update-subscription '
              '--maintenance-configuration-id "/subscriptions/{subscription_id}/resourcegroups/{rg}/providers/Microsoft.'
-             'Maintenance/maintenanceConfigurations/clitestmrpconfinguestadvanced" '
+             'Maintenance/maintenanceConfigurations/clitestmrpconfinguestadvanced4" '
              '--name cli_dynamicscope_recording01 '
              '--filter-locations eastus2euap centraluseuap '
              '--filter-os-types windows linux '
@@ -486,29 +475,23 @@ def step__configurationassignments_put_configurationassignments_delete_subscript
 
 # Dynamic scope tests resource group level
 def step__configurationassignments_put_configurationassignments_createorupdate_resourcegroup(test):
-    from azure.core.exceptions import ResourceNotFoundError
-    try:
-        test.cmd('az maintenance assignment create-or-update-resource-group '
-                 '--maintenance-configuration-id "/subscriptions/{subscription_id}/resourcegroups/{rg}/providers/Microsoft.'
-                 'Maintenance/maintenanceConfigurations/clitestmrpconfinguestadvanced" '
-                 '--name cli_dynamicscope_recording01 '
-                 '--location centraluseuap '
-                 '--filter-locations eastus2euap centraluseuap '
-                 '--filter-os-types windows linux '
-                 '--filter-tags {{tagKey1:[tagKey1Val1,tagKey1Val2],tagKey2:[tagKey2Val1,tagKey2Val2]}} '
-                 '--filter-tags-operator All '
-                 '--resource-group "{rg}"',
-                 checks=[])
-        return True
-    except ResourceNotFoundError as e:
-        _assert_policy_definition_not_found(test, e)
-        return False
+    test.cmd('az maintenance assignment create-or-update-resource-group '
+             '--maintenance-configuration-id "/subscriptions/{subscription_id}/resourcegroups/{rg}/providers/Microsoft.'
+             'Maintenance/maintenanceConfigurations/clitestmrpconfinguestadvanced4" '
+             '--name cli_dynamicscope_recording01 '
+             '--location centraluseuap '
+             '--filter-locations eastus2euap centraluseuap '
+             '--filter-os-types windows linux '
+             '--filter-tags {{tagKey1:[tagKey1Val1,tagKey1Val2],tagKey2:[tagKey2Val1,tagKey2Val2]}} '
+             '--filter-tags-operator All '
+             '--resource-group "{rg}"',
+             checks=[])
 
 
 def step__configurationassignments_put_configurationassignments_update_resourcegroup(test):
     test.cmd('az maintenance assignment update-resource-group '
              '--maintenance-configuration-id "/subscriptions/{subscription_id}/resourcegroups/{rg}/providers/Microsoft.'
-             'Maintenance/maintenanceConfigurations/clitestmrpconfinguestadvanced" '
+             'Maintenance/maintenanceConfigurations/clitestmrpconfinguestadvanced4" '
              '--name cli_dynamicscope_recording01 '
              '--location centraluseuap '
              '--filter-locations eastus2euap centraluseuap '
@@ -614,13 +597,13 @@ def call_scenario(test):
     # cancel maintenance config
     step__maintenanceconfigurations_cancel(test)
     # Dynamic scope
-    if step__configurationassignments_put_configurationassignments_createorupdate_subscription(test):
-        step__configurationassignments_put_configurationassignments_update_subscription(test)
-        step__configurationassignments_put_configurationassignments_show_subscription(test)
-        step__configurationassignments_put_configurationassignments_delete_subscription(test)
-    if step__configurationassignments_put_configurationassignments_createorupdate_resourcegroup(test):
-        step__configurationassignments_put_configurationassignments_update_resourcegroup(test)
-        step__configurationassignments_put_configurationassignments_show_resourcegroup(test)
+    step__configurationassignments_put_configurationassignments_createorupdate_subscription(test)
+    step__configurationassignments_put_configurationassignments_update_subscription(test)
+    step__configurationassignments_put_configurationassignments_show_subscription(test)
+    step__configurationassignments_put_configurationassignments_delete_subscription(test)
+    step__configurationassignments_put_configurationassignments_createorupdate_resourcegroup(test)
+    step__configurationassignments_put_configurationassignments_update_resourcegroup(test)
+    step__configurationassignments_put_configurationassignments_show_resourcegroup(test)
 
     # Dedicated host test
 

@@ -85,7 +85,7 @@ class Acknowledge(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ScheduledEventOperationGroupAcknowledgeList(ctx=self.ctx)()
+        self.ScheduledEventsOperationGroupAcknowledgeList(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -100,7 +100,7 @@ class Acknowledge(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class ScheduledEventOperationGroupAcknowledgeList(AAZHttpOperation):
+    class ScheduledEventsOperationGroupAcknowledgeList(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
