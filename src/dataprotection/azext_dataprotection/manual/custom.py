@@ -97,7 +97,7 @@ def dataprotection_backup_instance_initialize_backupconfig(cmd, client, datasour
                                                            auto_protection_exclusion_prefixes=None):
     if datasource_type == "AzureKubernetesService":
         if any([vaulted_backup_containers, include_all_containers, storage_account_name, storage_account_resource_group,
-                auto_protection, auto_protection_exclusion_prefixes]):
+                auto_protection is not None, auto_protection_exclusion_prefixes is not None]):
             raise InvalidArgumentValueError('Invalid argument --vaulted-backup-containers, --include-all-containers, '
                                             '--storage-account-name, --storage-account-resource-group, '
                                             '--auto-protection, --exclusion-prefixes for given datasource type.')
@@ -125,7 +125,7 @@ def dataprotection_backup_instance_initialize_backupconfig(cmd, client, datasour
         if auto_protection_exclusion_prefixes and not auto_protection:
             raise InvalidArgumentValueError('--exclusion-prefixes requires --auto-protection to be enabled.')
         if auto_protection:
-            if any([vaulted_backup_containers, include_all_containers]):
+            if any([vaulted_backup_containers, include_all_containers is not None]):
                 raise InvalidArgumentValueError('--auto-protection cannot be used with --container-list or --include-all-containers.')
             if any([storage_account_name, storage_account_resource_group]):
                 raise InvalidArgumentValueError('--storage-account-name and --storage-account-resource-group are not applicable with --auto-protection.')
