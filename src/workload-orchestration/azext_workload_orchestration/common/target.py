@@ -233,7 +233,7 @@ def _ensure_cert_trust_manager_via_aio_extension(
         prov_state = (existing.get("provisioningState", "") or "").lower()
         if prov_state == "succeeded":
             _eprint(
-                f"  Workload Orchestration Extension Dependency: {AIO_PLATFORM_EXTENSION_NAME} "
+                f"  ├── Workload Orchestration Extension Dependency: {AIO_PLATFORM_EXTENSION_NAME} "
                 f"Already installed ✓ ({ext_ver})"
             )
             return
@@ -244,7 +244,7 @@ def _ensure_cert_trust_manager_via_aio_extension(
 
     version_msg = f" version {version}" if version else ""
     _eprint(
-        f"  Installing Workload Orchestration Extension Dependency: "
+        f"  ├── Installing Workload Orchestration Extension Dependency: "
         f"{AIO_PLATFORM_EXTENSION_NAME}{version_msg}..."
     )
 
@@ -309,14 +309,14 @@ def _ensure_wo_extension(
 
         if prov_state == "succeeded":
             _eprint(
-                f"  Workload Orchestration Extension: {extension_name} "
+                f"  ├── Workload Orchestration Extension: {extension_name} "
                 f"Already installed ✓ ({ext_ver})"
             )
             return ext_id
 
     version_msg = f" version {extension_version}" if extension_version else ""
     _eprint(
-        f"  Installing Workload Orchestration Extension: {extension_name}{version_msg}..."
+        f"  ├── Installing Workload Orchestration Extension: {extension_name}{version_msg}..."
     )
 
     create_args = [
@@ -349,9 +349,9 @@ def _ensure_wo_extension(
     ext_id = result.get("id", "") if isinstance(result, dict) else ""
 
     if no_wait:
-        _eprint(f"  Workload Orchestration Extension: {extension_name} Creating (--no-wait) ✓")
+        _eprint(f"  ├── Workload Orchestration Extension: {extension_name} Creating (--no-wait) ✓")
     else:
-        _eprint(f"  Workload Orchestration Extension: {extension_name} Installed ✓")
+        _eprint(f"  ├── Workload Orchestration Extension: {extension_name} Installed ✓")
 
     return ext_id
 
@@ -395,7 +395,7 @@ def _ensure_custom_location(
                         f"Please choose a different name."
                     )
                 _eprint(
-                    f"  Custom Location: '{custom_location_name}' Already exists ✓"
+                    f"  └── Custom Location: '{custom_location_name}' Already exists ✓"
                 )
                 return cl_id
     except ValidationError:
@@ -408,7 +408,7 @@ def _ensure_custom_location(
             "Cannot create custom location: WO extension ID is not available."
         )
 
-    _eprint(f"  Creating Custom Location: '{custom_location_name}'...")
+    _eprint(f"  └── Creating Custom Location: '{custom_location_name}'...")
 
     try:
         result = invoke_cli_command(
@@ -429,7 +429,7 @@ def _ensure_custom_location(
             f"Failed to create custom location: {exc}"
         )
 
-    _eprint(f"  Custom Location: '{custom_location_name}' Created ✓")
+    _eprint(f"  └── Custom Location: '{custom_location_name}' Created ✓")
     return cl_id
 
 
