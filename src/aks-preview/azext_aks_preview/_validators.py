@@ -21,7 +21,8 @@ from azext_aks_preview._consts import (
     CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD,
     CONST_NETWORK_POD_IP_ALLOCATION_MODE_DYNAMIC_INDIVIDUAL,
     CONST_NETWORK_POD_IP_ALLOCATION_MODE_STATIC_BLOCK,
-    CONST_NODEPOOL_MODE_GATEWAY, CONST_OS_SKU_AZURELINUX,
+    CONST_NODEPOOL_MODE_GATEWAY, CONST_OS_DISK_TYPE_MANAGED,
+    CONST_OS_SKU_AZURELINUX,
     CONST_OS_SKU_CBLMARINER, CONST_OS_SKU_MARINER)
 from azext_aks_preview._helpers import _fuzzy_match
 from azure.cli.core import keys
@@ -950,6 +951,22 @@ def validate_asm_egress_name(namespace):
             f"Istio egress name {name} is invalid. Name must be between 1 and "
             f"{CONST_AZURE_SERVICE_MESH_MAX_EGRESS_NAME_LENGTH} characters, must consist of lower case alphanumeric "
             "characters, '-' or '.', and must start and end with an alphanumeric character."
+        )
+
+
+def validate_os_disk_full_caching(namespace):
+    """Reject --enable-os-disk-full-caching when OS disk type is explicitly Managed.
+
+    Full-cache OS disk requires Ephemeral storage; failing fast at the CLI gives
+    a clearer error than waiting for an ARM round-trip.
+    """
+    if not getattr(namespace, "enable_os_disk_full_caching", False):
+        return
+    node_osdisk_type = getattr(namespace, "node_osdisk_type", None)
+    if node_osdisk_type == CONST_OS_DISK_TYPE_MANAGED:
+        raise ArgumentUsageError(
+            "--enable-os-disk-full-caching requires Ephemeral OS disk; "
+            "it cannot be used with --node-osdisk-type Managed."
         )
 
 

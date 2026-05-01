@@ -55,6 +55,14 @@ helps['aks create'] = f"""
         - name: --node-osdisk-type
           type: string
           short-summary: OS disk type to be used for machines in a given agent pool. Defaults to 'Ephemeral' when possible in conjunction with VM size and OS disk size. May not be changed for this pool after creation. ('Ephemeral' or 'Managed')
+        - name: --enable-os-disk-full-caching --enable-osdisk-fc
+          type: bool
+          short-summary: Enable the full-cache ephemeral OS disk feature for the default node pool.
+          long-summary: |-
+            When enabled, the entire operating system is cached on the local
+            ephemeral OS disk to mitigate E17 events caused by network failures.
+            Requires Ephemeral OS disk and a VM size with sufficient cache.
+            This property is immutable after the node pool is created.
         - name: --node-osdisk-diskencryptionset-id -d
           type: string
           short-summary: ResourceId of the disk encryption set to use for enabling encryption at rest on agent node os disk.
@@ -2106,6 +2114,14 @@ helps['aks nodepool add'] = """
         - name: --node-osdisk-type
           type: string
           short-summary: OS disk type to be used for machines in a given agent pool. Defaults to 'Ephemeral' when possible in conjunction with VM size and OS disk size. May not be changed for this pool after creation. ('Ephemeral' or 'Managed')
+        - name: --enable-os-disk-full-caching --enable-osdisk-fc
+          type: bool
+          short-summary: Enable the full-cache ephemeral OS disk feature for the node pool.
+          long-summary: |-
+            When enabled, the entire operating system is cached on the local
+            ephemeral OS disk to mitigate E17 events caused by network failures.
+            Requires Ephemeral OS disk and a VM size with sufficient cache.
+            This property is immutable after the node pool is created.
         - name: --max-pods -m
           type: int
           short-summary: The maximum number of pods deployable to a node.

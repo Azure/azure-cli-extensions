@@ -606,6 +606,19 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
             )
         return enable_artifact_streaming
 
+    def get_enable_os_disk_full_caching(self) -> bool:
+        """Obtain the value of enable_os_disk_full_caching.
+        :return: bool
+        """
+        enable_os_disk_full_caching = self.raw_param.get("enable_os_disk_full_caching")
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.agentpool and
+                self.agentpool.enable_os_disk_full_caching is not None
+            ):
+                enable_os_disk_full_caching = self.agentpool.enable_os_disk_full_caching
+        return enable_os_disk_full_caching
+
     def get_enable_managed_gpu(self) -> Union[bool, None]:
         """Obtain the value of enable_managed_gpu.
         :return: bool
@@ -1342,6 +1355,14 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
             agentpool.artifact_streaming_profile.enabled = True
         return agentpool
 
+    def set_up_os_disk_full_caching(self, agentpool: AgentPool) -> AgentPool:
+        """Set up enable_os_disk_full_caching property for the AgentPool object."""
+        self._ensure_agentpool(agentpool)
+
+        if self.context.get_enable_os_disk_full_caching():
+            agentpool.enable_os_disk_full_caching = True
+        return agentpool
+
     def set_up_managed_gpu(self, agentpool: AgentPool) -> AgentPool:
         """Set up managed GPU property for the AgentPool object."""
         self._ensure_agentpool(agentpool)
@@ -1621,6 +1642,8 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool = self.set_up_init_taints(agentpool)
         # set up artifact streaming
         agentpool = self.set_up_artifact_streaming(agentpool)
+        # set up os disk full caching
+        agentpool = self.set_up_os_disk_full_caching(agentpool)
         # set up managed gpu
         agentpool = self.set_up_managed_gpu(agentpool)
         # set up skip_gpu_driver_install
