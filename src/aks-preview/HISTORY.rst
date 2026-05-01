@@ -11,6 +11,15 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* `az aks upgrade`: Add `--k8s-support-plan` and `--tier` flag support to allow cluster support plan and tier configuration during cluster upgrade.
+
+20.0.0b6
+++++++
+* `az aks loadbalancer update`: Allow updating `--primary-agent-pool-name` for load balancer configurations.
+
+20.0.0b5
++++++++
+* `az aks update`: Fix acceleration mode getting wiped out when modifying unrelated parameters in an ACNS enabled cluster.
 * `az aks create`: Add `--control-plane-scaling-size` parameter to configure control plane scaling profile with available sizes 'H2', 'H4', and 'H8'.
 
 20.0.0b4

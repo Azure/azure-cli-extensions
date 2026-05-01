@@ -251,9 +251,10 @@ class DatabricksClientScenarioTest(ScenarioTest):
                  checks=[])
 
     @AllowLargeResponse(size_kb=10240)
-    @ResourceGroupPreparer(name_prefix='cli_test_databricks_v2', location=TEST_LOCATION)
-    def test_databricks_v2(self, resource_group):
+    # @ResourceGroupPreparer(dev_setting_name='cli_test_databricks_v2', location=TEST_LOCATION)
+    def test_databricks_v2(self):
         self.kwargs.update({
+            'rg': "lkam-cli-auto",
             'workspace_name': self.create_random_name(prefix='wn', length=12),
             'status': 'Rejected',
             'description': 'Rejected by databricksadmin@contoso.com',
@@ -358,11 +359,12 @@ class DatabricksClientScenarioTest(ScenarioTest):
                  checks=[])
 
     @AllowLargeResponse(size_kb=10240)
-    @ResourceGroupPreparer(name_prefix='cli_test_databricks_v3', location=STAGE_LOCATION)
-    def test_databricks_v3(self, resource_group):
+    # @ResourceGroupPreparer(name_prefix='cli_test_databricks_v3', location=STAGE_LOCATION)
+    def test_databricks_v3(self):
         self.kwargs.update({
+            'rg': "lkam-cli-west",
             'workspace_name': self.create_random_name(prefix='wn', length=12),
-            'loc': STAGE_LOCATION,
+            'loc': "westus",
             'vnet_name': self.create_random_name(prefix='vnet', length=12),
             'subnet_name': self.create_random_name(prefix='subnet', length=12),
             'nsg_name': self.create_random_name(prefix='nsg', length=12),
