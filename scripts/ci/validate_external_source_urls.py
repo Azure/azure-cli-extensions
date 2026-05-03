@@ -16,9 +16,6 @@ import sys
 from pathlib import Path
 
 
-FORBIDDEN_EXTERNAL_URL_PATTERN = re.compile(
-    r"raw\.githubusercontent\.com"
-)
 GITHUB_URL_PATTERN = re.compile(
     r"https?://raw\.githubusercontent\.com/[^\s\"'`,)}\]]*"
 )
@@ -155,7 +152,7 @@ def _find_violations(diff_text: str):
             continue
 
         added_line = line[1:]
-        if FORBIDDEN_EXTERNAL_URL_PATTERN.search(added_line) and _should_flag(current_file):
+        if GITHUB_URL_PATTERN.search(added_line) and _should_flag(current_file):
             # Skip if the current line or the previous added line has a suppression comment
             if not (INLINE_SUPPRESSION_PATTERN.search(added_line)
                     or INLINE_SUPPRESSION_PATTERN.search(prev_added_line)):
