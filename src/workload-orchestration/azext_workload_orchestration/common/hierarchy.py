@@ -22,12 +22,13 @@ from azure.cli.core.azclierror import (
 from azure.cli.core.util import send_raw_request
 
 from azext_workload_orchestration.common.consts import (
-    ARM_ENDPOINT,
     SERVICE_GROUP_API_VERSION,
     SITE_API_VERSION,
     CONFIGURATION_API_VERSION,
     CONFIG_REF_API_VERSION,
     EDGE_RP_NAMESPACE,
+    get_arm_endpoint,
+    get_regional_arm_endpoint,
 )
 from azext_workload_orchestration.common.utils import _eprint
 
@@ -148,7 +149,7 @@ def _create_rg_hierarchy(cmd, resource_group, config_location, name, level):
             _eprint(f"[i] Reusing existing Site '{site_name}'.")
         effective_name = site_name
         # Patch existing site with updated labels
-        _arm_put(cmd, f"{ARM_ENDPOINT}{site_id}", {
+        _arm_put(cmd, f"{get_arm_endpoint(cmd)}{site_id}", {
             "properties": {
                 "displayName": effective_name,
                 "description": effective_name,
@@ -163,7 +164,7 @@ def _create_rg_hierarchy(cmd, resource_group, config_location, name, level):
             f"/providers/{EDGE_RP_NAMESPACE}/sites/{effective_name}"
         )
         _eprint(f"{effective_name} ({level})")
-        _arm_put(cmd, f"{ARM_ENDPOINT}{site_id}", {
+        _arm_put(cmd, f"{get_arm_endpoint(cmd)}{site_id}", {
             "properties": {
                 "displayName": effective_name,
                 "description": effective_name,
@@ -177,9 +178,9 @@ def _create_rg_hierarchy(cmd, resource_group, config_location, name, level):
         f"/subscriptions/{sub_id}/resourceGroups/{resource_group}"
         f"/providers/{EDGE_RP_NAMESPACE}/configurations/{config_name}"
     )
-    config_url = f"{ARM_ENDPOINT}{config_id}"
+    config_url = f"{get_arm_endpoint(cmd)}{config_id}"
     config_ref_url = (
-        f"{ARM_ENDPOINT}{site_id}/providers/"
+        f"{get_arm_endpoint(cmd)}{site_id}/providers/"
         f"{EDGE_RP_NAMESPACE}/configurationReferences/default"
     )
 
@@ -277,7 +278,7 @@ def _create_sg_level(  # pylint: disable=too-many-arguments
     # 1. Create ServiceGroup
     _eprint(f"{parent_prefix}{connector}{name} ({level})")
     try:
-        _arm_put(cmd, f"{ARM_ENDPOINT}{sg_id}", {
+        _arm_put(cmd, f"{get_arm_endpoint(cmd)}{sg_id}", {
             "properties": {
                 "displayName": name,
                 "parent": {"resourceId": parent_id},
@@ -330,7 +331,7 @@ def _create_sg_level(  # pylint: disable=too-many-arguments
         f"/subscriptions/{sub_id}/resourceGroups/{resource_group}"
         f"/providers/{EDGE_RP_NAMESPACE}/configurations/{config_name}"
     )
-    config_url = f"{ARM_ENDPOINT}{config_id}"
+    config_url = f"{get_arm_endpoint(cmd)}{config_id}"
     config_ref_id = f"{site_id}/providers/{EDGE_RP_NAMESPACE}/configurationReferences/default"
 
     existing_ref = (
@@ -407,7 +408,7 @@ def _arm_put(cmd, url, body, api_version):
         cmd.cli_ctx, "PUT", full_url,
         body=json.dumps(body),
         headers=["Content-Type=application/json"],
-        resource=ARM_ENDPOINT,
+        resource=get_arm_endpoint(cmd),
     )
 
 
@@ -417,7 +418,7 @@ def _arm_get(cmd, url, api_version):
     try:
         resp = send_raw_request(
             cmd.cli_ctx, "GET", full_url,
-            resource=ARM_ENDPOINT,
+            resource=get_arm_endpoint(cmd),
         )
     except Exception as exc:  # pylint: disable=broad-except
         if "ResourceNotFound" in str(exc) or "404" in str(exc):
@@ -437,7 +438,7 @@ def _arm_get(cmd, url, api_version):
 def _find_existing_site_in_rg(cmd, sub_id, resource_group):
     """Return (name, site_id) of the first site found in the RG, else None."""
     list_url = (
-        f"{ARM_ENDPOINT}/subscriptions/{sub_id}/resourceGroups/{resource_group}"
+        f"{get_arm_endpoint(cmd)}/subscriptions/{sub_id}/resourceGroups/{resource_group}"
         f"/providers/{EDGE_RP_NAMESPACE}/sites"
     )
     payload = _arm_get(cmd, list_url, SITE_API_VERSION)
@@ -462,7 +463,7 @@ def _find_existing_site_in_sg(cmd, location, sg_id):
     are tenant-scoped resources accessed via the regional plane.
     """
     list_id = f"{sg_id}/providers/{EDGE_RP_NAMESPACE}/sites"
-    full_url = f"https://{location}.management.azure.com{list_id}?api-version={SITE_API_VERSION}"
+    full_url = f"{get_regional_arm_endpoint(cmd, location)}{list_id}?api-version={SITE_API_VERSION}"
     token_type, token = _get_token(cmd)
     try:
         resp = send_raw_request(
@@ -488,7 +489,7 @@ def _find_existing_site_in_sg(cmd, location, sg_id):
 
 def _arm_put_regional(cmd, location, resource_id, body, api_version):
     """PUT to regional ARM endpoint (for SG-scoped resources)."""
-    full_url = f"https://{location}.management.azure.com{resource_id}?api-version={api_version}"
+    full_url = f"{get_regional_arm_endpoint(cmd, location)}{resource_id}?api-version={api_version}"
     body_str = json.dumps(body)
 
     token_type, token = _get_token(cmd)
@@ -506,7 +507,7 @@ def _arm_put_regional(cmd, location, resource_id, body, api_version):
 
 def _arm_get_regional(cmd, location, resource_id, api_version):
     """GET from regional ARM endpoint and return parsed JSON, or None on 404."""
-    full_url = f"https://{location}.management.azure.com{resource_id}?api-version={api_version}"
+    full_url = f"{get_regional_arm_endpoint(cmd, location)}{resource_id}?api-version={api_version}"
 
     token_type, token = _get_token(cmd)
 
@@ -543,7 +544,7 @@ def _wait_for_sg_rbac(cmd, location, sg_id, sg_name, max_retries=15, wait_sec=10
     import time
 
     site_list_id = f"{sg_id}/providers/{EDGE_RP_NAMESPACE}/sites"
-    full_url = f"https://{location}.management.azure.com{site_list_id}?api-version={SITE_API_VERSION}"
+    full_url = f"{get_regional_arm_endpoint(cmd, location)}{site_list_id}?api-version={SITE_API_VERSION}"
 
     for attempt in range(max_retries):
         try:
@@ -571,7 +572,7 @@ def _get_token(cmd):
     from azure.cli.core._profile import Profile
     profile = Profile(cli_ctx=cmd.cli_ctx)
     token_info, _, _ = profile.get_raw_token(
-        resource="https://management.azure.com",
+        resource=get_arm_endpoint(cmd),
         subscription=profile.get_subscription_id()
     )
     return token_info[0], token_info[1]  # token_type, token
@@ -590,5 +591,5 @@ def _get_tenant_id(cmd):
     """Get tenant ID."""
     from azure.cli.core._profile import Profile
     profile = Profile(cli_ctx=cmd.cli_ctx)
-    _, _, tenant_id = profile.get_raw_token(resource="https://management.azure.com")
+    _, _, tenant_id = profile.get_raw_token(resource=get_arm_endpoint(cmd))
     return tenant_id

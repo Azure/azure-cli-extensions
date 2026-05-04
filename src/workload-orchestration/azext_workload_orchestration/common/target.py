@@ -23,7 +23,6 @@ from azure.cli.core.azclierror import (
 from azure.cli.core.util import send_raw_request
 
 from azext_workload_orchestration.common.consts import (
-    ARM_ENDPOINT,
     DEFAULT_CERT_MANAGER_VERSION,
     AIO_PLATFORM_EXTENSION_TYPE,
     AIO_PLATFORM_EXTENSION_NAME,
@@ -37,6 +36,7 @@ from azext_workload_orchestration.common.consts import (
     DEFAULT_STORAGE_SIZE,
     SG_MEMBER_API_VERSION,
     TARGET_API_VERSION,
+    get_arm_endpoint,
 )
 from azext_workload_orchestration.common.utils import (
     _eprint,
@@ -368,7 +368,7 @@ def _ensure_custom_location(
     # Check existing - use REST directly to avoid CLI error output on 404
     sub_id = _get_subscription_id(cmd)
     cl_arm_url = (
-        f"https://management.azure.com/subscriptions"
+        f"{get_arm_endpoint(cmd)}/subscriptions"
         f"/{sub_id}/resourceGroups/{resource_group}"
         f"/providers/Microsoft.ExtendedLocation"
         f"/customLocations/{custom_location_name}"
@@ -378,7 +378,7 @@ def _ensure_custom_location(
             cmd.cli_ctx,
             method="GET",
             url=f"{cl_arm_url}?api-version=2021-08-15",
-            resource="https://management.azure.com"
+            resource=get_arm_endpoint(cmd)
         )
         if response.status_code == 200 and response.text:
             cl_info = response.json()
@@ -517,7 +517,7 @@ def target_deploy_pre_install(
     )
 
     base_url = (
-        f"{ARM_ENDPOINT}/subscriptions/{sub_id}"
+        f"{get_arm_endpoint(cmd)}/subscriptions/{sub_id}"
         f"/resourceGroups/{resource_group}"
         f"/providers/Microsoft.Edge/targets/{target_name}"
     )
@@ -601,7 +601,7 @@ def _do_review(cmd, base_url, solution_template_version_id):
         cmd.cli_ctx, "POST", url,
         body=json.dumps(body),
         headers=["Content-Type=application/json"],
-        resource=ARM_ENDPOINT,
+        resource=get_arm_endpoint(cmd),
     )
     return _parse_response(resp, "Review", cmd=cmd)
 
@@ -615,7 +615,7 @@ def _do_publish(cmd, base_url, solution_version_id):
         cmd.cli_ctx, "POST", url,
         body=json.dumps(body),
         headers=["Content-Type=application/json"],
-        resource=ARM_ENDPOINT,
+        resource=get_arm_endpoint(cmd),
     )
     return _parse_response(resp, "Publish", cmd=cmd)
 
@@ -646,7 +646,7 @@ def _handle_config_set(
 
     # Step 1: Resolve configuration ID from hierarchy's config reference
     config_ref_url = (
-        f"{ARM_ENDPOINT}{hierarchy_id}"
+        f"{get_arm_endpoint(cmd)}{hierarchy_id}"
         f"/providers/Microsoft.Edge/configurationreferences/default"
         f"?api-version={API_VERSION}"
     )
@@ -654,7 +654,7 @@ def _handle_config_set(
         ref_resp = send_raw_request(
             cmd.cli_ctx, "GET", config_ref_url,
             headers=["Accept=application/json"],
-            resource=ARM_ENDPOINT,
+            resource=get_arm_endpoint(cmd),
         )
     except HTTPError as e:
         raise CLIInternalError(
@@ -669,7 +669,7 @@ def _handle_config_set(
 
     # Step 2: Resolve solution template unique identifier (used as dynamic config name)
     st_url = (
-        f"{ARM_ENDPOINT}/subscriptions/{sub_id}"
+        f"{get_arm_endpoint(cmd)}/subscriptions/{sub_id}"
         f"/resourceGroups/{template_rg}"
         f"/providers/Microsoft.Edge/solutionTemplates/{template_name}"
         f"?api-version={API_VERSION}"
@@ -678,7 +678,7 @@ def _handle_config_set(
         st_resp = send_raw_request(
             cmd.cli_ctx, "GET", st_url,
             headers=["Accept=application/json"],
-            resource=ARM_ENDPOINT,
+            resource=get_arm_endpoint(cmd),
         )
     except HTTPError as e:
         raise CLIInternalError(
@@ -693,7 +693,7 @@ def _handle_config_set(
 
     # Step 3: GET dynamic config version (check if it exists)
     version_url = (
-        f"{ARM_ENDPOINT}{configuration_id}"
+        f"{get_arm_endpoint(cmd)}{configuration_id}"
         f"/dynamicConfigurations/{dynamic_config_name}"
         f"/versions/{template_version}"
         f"?api-version={API_VERSION}"
@@ -703,7 +703,7 @@ def _handle_config_set(
         version_resp = send_raw_request(
             cmd.cli_ctx, "GET", version_url,
             headers=["Accept=application/json"],
-            resource=ARM_ENDPOINT,
+            resource=get_arm_endpoint(cmd),
         )
         version_exists = True
     except HTTPError:
@@ -718,12 +718,12 @@ def _handle_config_set(
             cmd.cli_ctx, "PUT", version_url,
             body=json.dumps(existing),
             headers=["Content-Type=application/json", "Accept=application/json"],
-            resource=ARM_ENDPOINT,
+            resource=get_arm_endpoint(cmd),
         )
     else:
         # Create new: first ensure parent dynamic config exists
         dc_url = (
-            f"{ARM_ENDPOINT}{configuration_id}"
+            f"{get_arm_endpoint(cmd)}{configuration_id}"
             f"/dynamicConfigurations/{dynamic_config_name}"
             f"?api-version={API_VERSION}"
         )
@@ -732,7 +732,7 @@ def _handle_config_set(
             cmd.cli_ctx, "PUT", dc_url,
             body=json.dumps(dc_body),
             headers=["Content-Type=application/json", "Accept=application/json"],
-            resource=ARM_ENDPOINT,
+            resource=get_arm_endpoint(cmd),
         )
 
         # Then create the version with config values
@@ -741,7 +741,7 @@ def _handle_config_set(
             cmd.cli_ctx, "PUT", version_url,
             body=json.dumps(ver_body),
             headers=["Content-Type=application/json", "Accept=application/json"],
-            resource=ARM_ENDPOINT,
+            resource=get_arm_endpoint(cmd),
         )
 
 
@@ -790,7 +790,7 @@ def _poll_lro(resp, step_name, cmd=None):
     for i in range(max_polls):
         time.sleep(retry_after)
         try:
-            poll_resp = send_raw_request(cmd.cli_ctx, "GET", location, resource=ARM_ENDPOINT)
+            poll_resp = send_raw_request(cmd.cli_ctx, "GET", location, resource=get_arm_endpoint(cmd))
         except (CLIInternalError, ValueError, ConnectionError):
             logger.debug("LRO poll attempt %d failed for %s", i + 1, step_name)
             continue
@@ -851,7 +851,7 @@ def link_target_to_service_group(cmd, target_id, service_group_name):
     2. PUT {targetId} (update target to refresh hierarchy — MANDATORY)
     """
     sg_member_url = (
-        f"{ARM_ENDPOINT}{target_id}"
+        f"{get_arm_endpoint(cmd)}{target_id}"
         f"/providers/Microsoft.Relationships/serviceGroupMember/{service_group_name}"
     )
 
@@ -866,7 +866,7 @@ def link_target_to_service_group(cmd, target_id, service_group_name):
                     "targetId": f"/providers/Microsoft.Management/serviceGroups/{service_group_name}"
                 }
             }),
-            "--resource", ARM_ENDPOINT,
+            "--resource", get_arm_endpoint(cmd),
             "--header", "Content-Type=application/json",
         ], expect_json=False)
         logger.info("ServiceGroupMember created: %s -> %s", target_id, service_group_name)
@@ -881,8 +881,8 @@ def link_target_to_service_group(cmd, target_id, service_group_name):
         target_data = invoke_cli_command(cmd, [
             "rest",
             "--method", "get",
-            "--url", f"{ARM_ENDPOINT}{target_id}?api-version={TARGET_API_VERSION}",
-            "--resource", ARM_ENDPOINT,
+            "--url", f"{get_arm_endpoint(cmd)}{target_id}?api-version={TARGET_API_VERSION}",
+            "--resource", get_arm_endpoint(cmd),
         ])
 
         # PUT target (update to refresh hierarchy)
@@ -900,9 +900,9 @@ def link_target_to_service_group(cmd, target_id, service_group_name):
             invoke_cli_command(cmd, [
                 "rest",
                 "--method", "put",
-                "--url", f"{ARM_ENDPOINT}{target_id}?api-version={TARGET_API_VERSION}",
+                "--url", f"{get_arm_endpoint(cmd)}{target_id}?api-version={TARGET_API_VERSION}",
                 "--body", json.dumps(body),
-                "--resource", ARM_ENDPOINT,
+                "--resource", get_arm_endpoint(cmd),
                 "--header", "Content-Type=application/json",
             ], expect_json=False)
             logger.info("Target hierarchy refreshed after SG link")

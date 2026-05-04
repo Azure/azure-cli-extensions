@@ -21,7 +21,33 @@ CONTEXT_API_VERSION = "2025-08-01"
 # ---------------------------------------------------------------------------
 # ARM Endpoints
 # ---------------------------------------------------------------------------
-ARM_ENDPOINT = "https://management.azure.com"
+ARM_ENDPOINT = "https://management.azure.com"  # fallback default
+
+
+def get_arm_endpoint(cmd_or_cli_ctx):
+    """Get ARM endpoint from active cloud configuration.
+
+    Accepts either a cmd object (cmd.cli_ctx) or a cli_ctx directly.
+    Returns the resource_manager endpoint configured via
+    ``az cloud update --endpoint-resource-manager``.
+    """
+    try:
+        cli_ctx = getattr(cmd_or_cli_ctx, "cli_ctx", cmd_or_cli_ctx)
+        return cli_ctx.cloud.endpoints.resource_manager.rstrip("/")
+    except AttributeError:
+        return ARM_ENDPOINT
+
+
+def get_regional_arm_endpoint(cmd_or_cli_ctx, location):
+    """Build the regional ARM endpoint URL prefix.
+
+    Constructs ``https://{location}.{domain}`` from the active cloud config,
+    so it works across sovereign clouds and custom endpoints.
+    """
+    from urllib.parse import urlparse
+    base = get_arm_endpoint(cmd_or_cli_ctx)
+    hostname = urlparse(base).hostname or "management.azure.com"
+    return f"https://{location}.{hostname}"
 
 # ---------------------------------------------------------------------------
 # Resource Providers

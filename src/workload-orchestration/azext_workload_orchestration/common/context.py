@@ -32,7 +32,7 @@ from azure.cli.core.azclierror import (
 from azure.cli.core.util import send_raw_request
 
 from azext_workload_orchestration.common.consts import (
-    ARM_ENDPOINT,
+    get_arm_endpoint,
     CONTEXT_API_VERSION,
 )
 from azext_workload_orchestration.common.utils import (
@@ -225,7 +225,7 @@ def _patch_context_capabilities(cli_ctx, sub_id, resource_group,
         }
     }
     url = (
-        f"{ARM_ENDPOINT}/subscriptions/{sub_id}"
+        f"{get_arm_endpoint(cli_ctx)}/subscriptions/{sub_id}"
         f"/resourceGroups/{resource_group}/providers/Microsoft.Edge"
         f"/contexts/{context_name}?api-version={CONTEXT_API_VERSION}"
     )
@@ -234,7 +234,7 @@ def _patch_context_capabilities(cli_ctx, sub_id, resource_group,
         method="PATCH",
         url=url,
         body=json.dumps(body),
-        resource=ARM_ENDPOINT,
+        resource=get_arm_endpoint(cli_ctx),
     )
     if resp.status_code not in (200, 201, 202):
         raise CLIInternalError(
