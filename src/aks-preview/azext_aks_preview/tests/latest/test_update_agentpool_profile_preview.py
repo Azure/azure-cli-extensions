@@ -136,6 +136,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         decorator.update_blue_green_upgrade_settings = Mock(return_value=agentpool)
         decorator.update_gpu_profile = Mock(return_value=agentpool)
         decorator.update_gpu_mig_strategy = Mock(return_value=agentpool)
+        decorator.update_crg = Mock(return_value=agentpool)
 
         # Act
         result = decorator.update_agentpool_profile_preview()
@@ -162,6 +163,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         decorator.update_blue_green_upgrade_settings.assert_called_once_with(agentpool)
         decorator.update_gpu_profile.assert_called_once_with(agentpool)
         decorator.update_gpu_mig_strategy.assert_called_once_with(agentpool)
+        decorator.update_crg.assert_called_once_with(agentpool)
 
     def test_update_agentpool_profile_preview_with_agentpools_parameter(self):
         """Test update_agentpool_profile_preview with agentpools parameter."""
@@ -206,6 +208,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         decorator.update_blue_green_upgrade_settings = Mock(return_value=agentpool)
         decorator.update_gpu_profile = Mock(return_value=agentpool)
         decorator.update_gpu_mig_strategy = Mock(return_value=agentpool)
+        decorator.update_crg = Mock(return_value=agentpool)
 
         # Act
         result = decorator.update_agentpool_profile_preview(agentpools)
@@ -258,6 +261,8 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         decorator.update_upgrade_strategy = Mock()
         decorator.update_blue_green_upgrade_settings = Mock()
         decorator.update_gpu_profile = Mock()
+        decorator.update_gpu_mig_strategy = Mock()
+        decorator.update_crg = Mock()
 
         # Act
         result = decorator.update_agentpool_profile_preview()
@@ -288,6 +293,8 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         decorator.update_upgrade_strategy.assert_not_called()
         decorator.update_blue_green_upgrade_settings.assert_not_called()
         decorator.update_gpu_profile.assert_not_called()
+        decorator.update_gpu_mig_strategy.assert_not_called()
+        decorator.update_crg.assert_not_called()
 
     def test_update_agentpool_profile_preview_managed_system_mode_with_agentpools(self):
         """Test update_agentpool_profile_preview with ManagedSystem mode and agentpools parameter."""
@@ -369,6 +376,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         decorator.update_blue_green_upgrade_settings = Mock(return_value=agentpool)
         decorator.update_gpu_profile = Mock(return_value=agentpool)
         decorator.update_gpu_mig_strategy = Mock(return_value=agentpool)
+        decorator.update_crg = Mock(return_value=agentpool)
 
         # Act
         result = decorator.update_agentpool_profile_preview()
@@ -393,6 +401,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         decorator.update_blue_green_upgrade_settings.assert_called_once_with(agentpool)
         decorator.update_gpu_profile.assert_called_once_with(agentpool)
         decorator.update_gpu_mig_strategy.assert_called_once_with(agentpool)
+        decorator.update_crg.assert_called_once_with(agentpool)
 
     def test_update_agentpool_profile_preview_execution_order(self):
         """Test that update methods are called in the correct order."""
@@ -442,6 +451,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         decorator.update_blue_green_upgrade_settings = create_mock_update_method("update_blue_green_upgrade_settings")
         decorator.update_gpu_profile = create_mock_update_method("update_gpu_profile")
         decorator.update_gpu_mig_strategy = create_mock_update_method("update_gpu_mig_strategy")
+        decorator.update_crg = create_mock_update_method("update_crg")
 
         # Act
         decorator.update_agentpool_profile_preview()
@@ -463,6 +473,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
             "update_blue_green_upgrade_settings",
             "update_gpu_profile",
             "update_gpu_mig_strategy",
+            "update_crg",
         ]
         self.assertEqual(call_order, expected_order)
 
@@ -514,6 +525,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
         decorator.update_blue_green_upgrade_settings = create_tracking_mock("update_blue_green_upgrade_settings")        
         decorator.update_gpu_profile = create_tracking_mock("update_gpu_profile")
         decorator.update_gpu_mig_strategy = create_tracking_mock("update_gpu_mig_strategy")
+        decorator.update_crg = create_tracking_mock("update_crg")
 
         # Act
         result = decorator.update_agentpool_profile_preview()
@@ -577,7 +589,7 @@ class TestUpdateAgentPoolProfilePreview(unittest.TestCase):
                     'update_secure_boot', 'update_vtpm', 'update_os_sku', 'update_fips_image',
                     'update_ssh_access', 'update_vm_size', 'update_localdns_profile', 'update_auto_scaler_properties_vms', 
                     'update_upgrade_strategy', 'update_blue_green_upgrade_settings', 'update_gpu_profile',
-                    'update_gpu_mig_strategy'
+                    'update_gpu_mig_strategy', 'update_crg'
                 ]
 
                 for method_name in update_methods:
@@ -653,6 +665,7 @@ class TestUpdateAgentPoolProfilePreviewManagedClusterMode(TestUpdateAgentPoolPro
         decorator.update_blue_green_upgrade_settings = Mock(return_value=agentpool)
         decorator.update_gpu_profile = Mock(return_value=agentpool)
         decorator.update_gpu_mig_strategy = Mock(return_value=agentpool)
+        decorator.update_crg = Mock(return_value=agentpool)
 
         # Act
         result = decorator.update_agentpool_profile_preview(agentpools)
