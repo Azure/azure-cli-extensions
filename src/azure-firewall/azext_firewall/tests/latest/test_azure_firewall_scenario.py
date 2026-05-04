@@ -6,6 +6,7 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, StorageAccou
                                api_version_constraint)
 from azure.cli.testsdk.scenario_tests.decorators import AllowLargeResponse
 from azure.cli.core.azclierror import ValidationError, CLIError
+from azure.cli.testsdk import live_only
 
 
 class AzureFirewallScenario(ScenarioTest):
@@ -944,6 +945,7 @@ class AzureFirewallScenario(ScenarioTest):
 
         self.cmd('network firewall policy delete -g {rg} --name {policy}')
 
+    @live_only()
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='test_azure_firewall_policy_explicit_proxy', location='centraluseuap')
     def test_azure_firewall_policy_explicit_proxy(self, resource_group):
@@ -982,7 +984,7 @@ class AzureFirewallScenario(ScenarioTest):
                  ])
 
 
-
+    @live_only()
     @ResourceGroupPreparer(name_prefix='test_azure_firewall_policy_configure_multipleMSI', location='centraluseuap')
     def test_azure_firewall_policy_configure_multipleMSI(self, resource_group):
         self.kwargs.update({
