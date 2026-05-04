@@ -155,7 +155,7 @@ def _create_rg_hierarchy(cmd, resource_group, config_location, name, level):
                 "labels": {"level": level},
             }
         }, SITE_API_VERSION)
-        _eprint(f"├── Site '{effective_name}' (updated) ✓")
+        _eprint(f"├── Site '{effective_name}' (updated: labels.level='{level}') ✓")
     else:
         effective_name = name
         site_id = (
@@ -308,6 +308,7 @@ def _create_sg_level(  # pylint: disable=too-many-arguments
                 "labels": {"level": level},
             }
         }, SITE_API_VERSION)
+        _eprint(f"{child_prefix}├── Site '{effective_site_name}' (updated: labels.level='{level}') ✓")
     else:
         effective_site_name = name
         site_id = f"{sg_id}/providers/{EDGE_RP_NAMESPACE}/sites/{effective_site_name}"
@@ -318,6 +319,7 @@ def _create_sg_level(  # pylint: disable=too-many-arguments
                 "labels": {"level": level},
             }
         }, SITE_API_VERSION)
+        _eprint(f"{child_prefix}├── Site '{effective_site_name}' ✓")
     results.append({"type": "Site", "name": effective_site_name, "level": level, "id": site_id})
 
     # 3 & 4. Configuration + ConfigurationReference — if Site was reused AND
