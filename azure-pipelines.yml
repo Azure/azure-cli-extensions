@@ -59,7 +59,7 @@ jobs:
   - task: UsePythonVersion@0
     displayName: 'Use Python 3.14'
     inputs:
-      versionSpec: 3.14
+      versionSpec: '3.14'
   - template: .azure-pipelines/templates/azdev_setup.yml
   - bash: |
       #!/usr/bin/env bash
@@ -75,7 +75,7 @@ jobs:
   - task: UsePythonVersion@0
     displayName: 'Use Python 3.14'
     inputs:
-      versionSpec: 3.14
+      versionSpec: '3.14'
   - bash: |
       #!/usr/bin/env bash
       set -ev
@@ -137,7 +137,7 @@ jobs:
     - task: UsePythonVersion@0
       displayName: 'Use Python 3.14'
       inputs:
-        versionSpec: 3.14
+        versionSpec: '3.14'
     - template: .azure-pipelines/templates/azdev_setup.yml
     - bash: |
         #!/usr/bin/env bash
@@ -161,7 +161,7 @@ jobs:
     - task: UsePythonVersion@0
       displayName: 'Use Python 3.14'
       inputs:
-        versionSpec: 3.14
+        versionSpec: '3.14'
     - template: .azure-pipelines/templates/azdev_setup.yml
     - bash: |
         #!/usr/bin/env bash
@@ -186,7 +186,7 @@ jobs:
     - task: UsePythonVersion@0
       displayName: 'Use Python 3.11'
       inputs:
-        versionSpec: 3.11
+        versionSpec: '3.11'
     - template: .azure-pipelines/templates/azdev_setup.yml
     - bash: |
         #!/usr/bin/env bash
@@ -217,7 +217,7 @@ jobs:
     - task: UsePythonVersion@0
       displayName: 'Use Python 3.11'
       inputs:
-        versionSpec: 3.11
+        versionSpec: '3.11'
     - template: .azure-pipelines/templates/azdev_setup.yml
     - bash: |
         #!/usr/bin/env bash
@@ -246,7 +246,7 @@ jobs:
 #  - task: UsePythonVersion@0
 #    displayName: 'Use Python 3.14'
 #    inputs:
-#      versionSpec: 3.14
+#      versionSpec: '3.14'
 #  - bash: pip install wheel==0.30.0
 #    displayName: 'Install wheel==0.30.0'
 #  - task: Bash@3
@@ -263,6 +263,6 @@ jobs:
   - task: UsePythonVersion@0
     displayName: 'Use Python 3.x'
     inputs:
-      versionSpec: 3.x
+      versionSpec: '3.x'
   - bash: |
       python scripts/ci/test_init.py -v
