@@ -1943,7 +1943,7 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
             agentpool.enable_fips = False
 
         return agentpool
-    
+
     def update_crg(self, agentpool: AgentPool) -> AgentPool:
         """Update crg id for the AgentPool object.
         :return: the AgentPool object

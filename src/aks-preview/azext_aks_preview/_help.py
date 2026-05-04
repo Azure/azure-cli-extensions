@@ -715,6 +715,13 @@ helps['aks create'] = f"""
         - name: --enable-hosted-system
           type: bool
           short-summary: Create a cluster with fully hosted system components. This applies only when creating a new automatic cluster.
+        - name: --control-plane-scaling-size --cp-scaling-size
+          type: string
+          short-summary: (PREVIEW) The control plane scaling size for the cluster.
+          long-summary: |
+              Provides scaled and performance-guaranteed control plane capacity for AKS clusters.
+              Enables customers to select a control plane scaling size that delivers higher API server throughput,
+              increased etcd capacity, and faster pod scheduling rates. Available values are 'H2', 'H4', and 'H8'.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -806,6 +813,8 @@ helps['aks create'] = f"""
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-managed-system-pool
         - name: Create a kubernetes cluster with a managed installation of Gateway API CRDs from the standard release channel.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-gateway-api
+        - name: Create a kubernetes cluster with control plane scaling size H4.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --control-plane-scaling-size H4
         - name: Create an automatic cluster with hosted system components enabled.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --sku automatic --enable-hosted-system
 
@@ -884,6 +893,12 @@ helps['aks upgrade'] = """
           type: string
           short-summary: Until when the cluster upgradeSettings overrides are effective.
           long-summary: It needs to be in a valid date-time format that's within the next 30 days. For example, 2023-04-01T13:00:00Z. Note that if --force-upgrade is set to true and --upgrade-override-until is not set, by default it will be set to 3 days from now.
+        - name: --k8s-support-plan
+          type: string
+          short-summary: Choose from "KubernetesOfficial" or "AKSLongTermSupport". With "AKSLongTermSupport" you get 1 extra year of CVE patches.
+        - name: --tier
+          type: string
+          short-summary: Specify SKU tier for managed clusters. '--tier standard' enables a standard managed cluster service with a financially backed SLA. '--tier free' does not have a financially backed SLA. '--tier premium' is required for '--k8s-support-plan AKSLongTermSupport'.
         - name: --if-match
           type: string
           short-summary: The value provided will be compared to the ETag of the managed cluster, if it matches the operation will proceed. If it does not match, the request will be rejected to prevent accidental overwrites. This must not be specified when creating a new cluster.
@@ -2508,7 +2523,7 @@ helps['aks nodepool update'] = """
           short-summary: Whether to install driver for GPU node pool. Possible values are "Install" or "None".
         - name: --crg-id
           type: string
-          short-summary: The crg-id used to associate the existing nodepool with the existing Capacity Reservation Group resource.
+          short-summary: The Capacity Reservation Group (CRG) ID used to associate the existing nodepool with the existing Capacity Reservation Group resource.
     examples:
       - name: Reconcile the nodepool back to its current state.
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
@@ -2527,7 +2542,7 @@ helps['aks nodepool update'] = """
       - name: Update a node pool with blue-green upgrade settings
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --drain-batch-size 50% --drain-timeout-bg 5 --batch-soak-duration 10 --final-soak-duration 10
       - name: Update a nodepool with a Capacity Reservation Group(CRG) ID.
-        text: az aks nodepool update -g MyResourceGroup -n MyNodePool --cluster-name MyMC --node-vm-size VMSize --crg-id "/subscriptions/SubID/resourceGroups/ResourceGroupName/providers/Microsoft.ContainerService/CapacityReservationGroups/MyCRGID"
+        text: az aks nodepool update -g MyResourceGroup -n MyNodePool --cluster-name MyMC --node-vm-size VMSize --crg-id "/subscriptions/SubID/resourceGroups/ResourceGroupName/providers/Microsoft.Compute/CapacityReservationGroups/MyCRGID"
 """
 
 helps['aks nodepool get-upgrades'] = """

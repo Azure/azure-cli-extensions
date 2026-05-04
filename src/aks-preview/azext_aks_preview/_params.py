@@ -1262,6 +1262,14 @@ def load_arguments(self, _):
         )
         c.argument("enable_hosted_system", action="store_true", is_preview=True)
         c.argument(
+            "control_plane_scaling_size",
+            options_list=["--control-plane-scaling-size", "--cp-scaling-size"],
+            arg_type=get_enum_type(["H2", "H4", "H8"]),
+            is_preview=True,
+            help="The control plane scaling size. Provides scaled and performance-guaranteed control plane capacity. "
+                 "Available values are 'H2', 'H4', and 'H8'.",
+        )
+        c.argument(
             "enable_continuous_control_plane_and_addon_monitor",
             action="store_true",
             is_preview=True,
@@ -1932,6 +1940,8 @@ def load_arguments(self, _):
             validator=validate_force_upgrade_disable_and_enable_parameters
         )
         c.argument('upgrade_override_until')
+        c.argument("k8s_support_plan", arg_type=get_enum_type(k8s_support_plans))
+        c.argument("tier", arg_type=get_enum_type(sku_tiers), validator=validate_sku_tier)
 
     with self.argument_context("aks scale") as c:
         c.argument(
