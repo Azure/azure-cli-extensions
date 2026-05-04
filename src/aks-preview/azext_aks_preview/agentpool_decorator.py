@@ -1250,7 +1250,9 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         """
         self._ensure_agentpool(agentpool)
 
-        agentpool.capacity_reservation_group_id = self.context.get_crg_id()
+        crg_id = self.context.get_crg_id()
+        if crg_id is not None:
+            agentpool.capacity_reservation_group_id = crg_id
         return agentpool
 
     def set_up_motd(self, agentpool: AgentPool) -> AgentPool:
@@ -1950,7 +1952,9 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
         """
         self._ensure_agentpool(agentpool)
 
-        agentpool.capacity_reservation_group_id = self.context.get_crg_id()
+        crg_id = self.context.get_crg_id()
+        if crg_id is not None:
+            agentpool.capacity_reservation_group_id = crg_id
         return agentpool
 
     def update_vm_size(self, agentpool: AgentPool) -> AgentPool:
