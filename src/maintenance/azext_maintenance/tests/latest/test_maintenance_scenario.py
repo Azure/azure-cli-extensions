@@ -651,6 +651,7 @@ class MaintenanceScenarioTest(ScenarioTest):
             'publicMaintenanceConfiguration': 'sqlcli'
         })
 
+    @live_only()
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='clitestmaintenance_examplerg'[:7], key='rg', parameter_name='rg', location="centraluseuap")
     def test_maintenance_Scenario(self, rg):
