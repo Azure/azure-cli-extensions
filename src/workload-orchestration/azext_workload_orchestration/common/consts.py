@@ -49,6 +49,7 @@ def get_regional_arm_endpoint(cmd_or_cli_ctx, location):
     hostname = urlparse(base).hostname or "management.azure.com"
     return f"https://{location}.{hostname}"
 
+
 # ---------------------------------------------------------------------------
 # Resource Providers
 # ---------------------------------------------------------------------------
