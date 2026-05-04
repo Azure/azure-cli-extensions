@@ -164,7 +164,7 @@ def _find_violations(diff_text: str):
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Check diff for forbidden raw github URL usage.")
+    parser = argparse.ArgumentParser(description="Check diff for forbidden raw GitHub URL usage.")
     parser.add_argument("--src", default="HEAD", help="Source ref/commit for git diff.")
     parser.add_argument("--tgt", default="HEAD~1", help="Target ref/commit for git diff.")
     parser.add_argument("--cached", action="store_true", help="Check staged changes in git index.")
@@ -182,7 +182,7 @@ def main() -> int:
 
     violations = _find_violations(diff_text)
     if not violations:
-        print("No forbidden external github URL found in added lines.")
+        print("No forbidden external GitHub URL found in added lines.")
         return 0
 
     print("ERROR: Found forbidden external GitHub URL(s) in this change:\n", file=sys.stderr)
