@@ -2,7 +2,7 @@
 
 Release History
 ===============
-1.8.0
+2.0.0b1
 ++++++
 * Added support for approving list of scheduled events
 
