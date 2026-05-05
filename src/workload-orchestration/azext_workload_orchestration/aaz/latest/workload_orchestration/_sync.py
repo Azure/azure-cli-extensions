@@ -9,6 +9,7 @@
 from azure.cli.core.aaz import *
 import logging
 from azext_workload_orchestration.aaz.latest.workload_orchestration._resync_target_helper import process_targets_in_parallel
+from azext_workload_orchestration.aaz.latest.workload_orchestration._resource_validator import ValidateResourceExists
 
 logger = logging.getLogger(__name__)
 
@@ -73,6 +74,30 @@ class Sync(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
+
+        # Step 0: Validate the custom location argument and confirm the resource exists
+        _log_step("[Step 0] Validating custom location...")
+        custom_location_id = str(self.ctx.args.custom_location)
+        import re
+        from azure.cli.core.azclierror import InvalidArgumentValueError as _InvalidArgError
+        _CUSTOM_LOCATION_RE = re.compile(
+            r"^/subscriptions/[^/]+/resourceGroups/[^/]+/providers/"
+            r"Microsoft\.ExtendedLocation/customLocations/[^/]+$",
+            re.IGNORECASE,
+        )
+        if not _CUSTOM_LOCATION_RE.match(custom_location_id):
+            raise _InvalidArgError(
+                f"'{custom_location_id}' is not a valid custom location resource ID. "
+                "Expected format: /subscriptions/<sub>/resourceGroups/<rg>/providers/"
+                "Microsoft.ExtendedLocation/customLocations/<name>"
+            )
+        ValidateResourceExists(
+            ctx=self.ctx,
+            resource_id=custom_location_id,
+            resource_label="Custom Location",
+            api_version="2021-08-31-preview",
+        )()
+        _log_step("[Step 0] Custom location validated.")
 
         # Step 1: Get all succeeded targets associated with the custom location via ARG
         _log_step("[Step 1/3] Querying targets for the given custom location...")
