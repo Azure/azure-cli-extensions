@@ -1158,7 +1158,9 @@ class AKSAgentManagerClient(AKSAgentManagerLLMConfigBase):  # pylint: disable=to
             # When no API key is configured for an Azure model, enable Azure AD token authentication
             model_list = self.llm_config_manager.model_list
             if model_list and any(
-                "azure/" in model_name and not model_config.get("api_key")
+                "azure/" in model_name and (
+                    not model_config.get("api_key") or not model_config.get("api_key").strip()
+                )
                 for model_name, model_config in model_list.items()
             ):
                 env_vars.extend(["-e", "AZURE_AD_TOKEN_AUTH=True"])
