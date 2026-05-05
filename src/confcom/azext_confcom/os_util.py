@@ -46,7 +46,7 @@ def clean_up_temp_folder(temp_file_path: str) -> None:
     shutil.rmtree(folder_name)
 
 
-def load_json_from_str(data: str) -> dict:
+def load_json_from_str(data: str | bytes | bytearray) -> dict:
     if data:
         try:
             return json.loads(data)
@@ -165,7 +165,7 @@ def get_oci_image_name(image_name: str) -> str:
     return image_name
 
 
-def read_file_from_tar(tar: TarFile, filename: str) -> str:
+def read_file_from_tar(tar: TarFile, filename: str) -> bytes:
     try:
         return tar.extractfile(filename).read()
     except KeyError:
