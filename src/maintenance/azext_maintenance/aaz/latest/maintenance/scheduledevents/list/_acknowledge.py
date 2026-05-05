@@ -12,29 +12,28 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "maintenance scheduledevent acknowledge",
-    is_preview=True,
+    "maintenance scheduledevents list acknowledge",
 )
 class Acknowledge(AAZCommand):
-    """Acknowledge Scheduled Event
+    """Post List of Scheduled Events Acknowledgement
 
-    :example: Acknowledge scheduled event of a VirtualMachine
-        az maintenance scheduledevent acknowledge --resource-group {resourceGroupName} --resource-type "virtualMachines" --resource-name {VMname} --scheduled-event-id {scheduledEventId} --subscription {subscriptionId}
-        az maintenance scheduledevent acknowledge --ids /subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/microsoft.compute/virtualMachines/{resourceName}/providers/microsoft.maintenance/scheduledevents/{scheduledEventId}
+    :example: Acknowledge list of Scheduled Events on VirtualMachineScaleSets
+        az maintenance scheduledevents list acknowledge --resource-group {resourceGroupName} --resource-type "virtualMachineScaleSets" --resource-name {VMSSName} --subscription {subscriptionId} --value []
+        az maintenance scheduledevents list acknowledge --ids /subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/microsoft.compute/virtualMachineScaleSets/{VMSSName}/providers/microsoft.maintenance/scheduledevents --body "{value:[]}"
 
-    :example: Acknowledge scheduled event of a VirtualMachineScaleSets
-        az maintenance scheduledevent acknowledge --resource-group {resourceGroup} --resource-type "virtualMachineScaleSets" --resource-name {VMSSname} --scheduled-event-id {scheduledEventId} --subscription {subscriptionId}
-        az maintenance scheduledevent acknowledge --ids /subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/microsoft.compute/virtualMachineScaleSets/{resourceName}/providers/microsoft.maintenance/scheduledevents/{scheduledEventId}
+    :example: Acknowledge list of ScheduledEvents on AvailabilitySets
+        az maintenance scheduledevents list acknowledge --resource-group {resourceGroupName} --resource-type "availabilitySets" --resource-name {AvSetname} --value []
+        az maintenance scheduledevents list acknowledge --ids /subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/microsoft.compute/availabilitySets/{AvSetName}/providers/microsoft.maintenance/scheduledevents --body "{value:[]}"
 
-    :example: Acknowledge scheduled event of a AvailabilitySet
-        az maintenance scheduledevent acknowledge--resource-group {resourceGroupName} --resource-type "availabilitySets"--resource-name {AVSetname} --scheduled-event-id {scheduledEventId} --subscription {subscriptionId}
-        az maintenance scheduledevent acknowledge --ids /subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/microsoft.compute/AvalabilitySets/{resourceName}/providers/microsoft.maintenance/scheduledevents/{scheduledEventId}
+    :example: Acknowledge a single Scheduled Events on VirtualMachine
+        az maintenance scheduledevents list acknowledge --resource-group {resourceGroupName} --resource-type "virtualMachines" --resource-name {VMname} --value []
+        az maintenance scheduledevents list acknowledge --ids /subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/microsoft.compute/virtualMachines/{virtualMachineName}/providers/microsoft.maintenance/scheduledevents --body "{value:[]}"
     """
 
     _aaz_info = {
-        "version": "2023-10-01-preview",
+        "version": "2025-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.compute/{}/{}/providers/microsoft.maintenance/scheduledevents/{}/acknowledge", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.compute/{}/{}/providers/microsoft.maintenance/scheduledevents", "2025-10-01-preview"],
         ]
     }
 
@@ -59,7 +58,7 @@ class Acknowledge(AAZCommand):
         )
         _args_schema.resource_name = AAZStrArg(
             options=["--resource-name"],
-            help="Resource Name",
+            help="Resource name",
             required=True,
             id_part="name",
         )
@@ -69,17 +68,24 @@ class Acknowledge(AAZCommand):
             required=True,
             id_part="type",
         )
-        _args_schema.scheduled_event_id = AAZStrArg(
-            options=["--scheduled-event-id"],
-            help="Scheduled Event Id. This is a GUID-formatted string (e.g. 00000000-0000-0000-0000-000000000000)",
+
+        # define Arg Group "ScheduledEventsIdList"
+
+        _args_schema = cls._args_schema
+        _args_schema.value = AAZListArg(
+            options=["--value"],
+            arg_group="ScheduledEventsIdList",
+            help="The list of Scheduled Events Id.",
             required=True,
-            id_part="child_name_1",
         )
+
+        value = cls._args_schema.value
+        value.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ScheduledEventAcknowledge(ctx=self.ctx)()
+        self.ScheduledEventsOperationGroupAcknowledgeList(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -94,7 +100,7 @@ class Acknowledge(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class ScheduledEventAcknowledge(AAZHttpOperation):
+    class ScheduledEventsOperationGroupAcknowledgeList(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -108,7 +114,7 @@ class Acknowledge(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/Microsoft.Compute/{resourceType}/{resourceName}/providers/Microsoft.Maintenance/scheduledevents/{scheduledEventId}/acknowledge",
+                "/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/Microsoft.Compute/{resourceType}/{resourceName}/providers/Microsoft.Maintenance/scheduledevents",
                 **self.url_parameters
             )
 
@@ -136,10 +142,6 @@ class Acknowledge(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "scheduledEventId", self.ctx.args.scheduled_event_id,
-                    required=True,
-                ),
-                **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
                 ),
@@ -150,7 +152,7 @@ class Acknowledge(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2025-10-01-preview",
                     required=True,
                 ),
             }
@@ -160,10 +162,28 @@ class Acknowledge(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+            )
+            _builder.set_prop("value", AAZListType, ".value", typ_kwargs={"flags": {"required": True}})
+
+            value = _builder.get(".value")
+            if value is not None:
+                value.set_elements(AAZStrType, ".")
+
+            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
