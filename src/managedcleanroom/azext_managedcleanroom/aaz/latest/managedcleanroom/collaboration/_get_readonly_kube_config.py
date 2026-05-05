@@ -17,6 +17,9 @@ from ..private_endpoint_util import PrivateEndpointUtil
 )
 class GetReadonlyKubeConfig(AAZCommand):
     """Gets the readonly kubeconfig for the collaboration.
+
+    :example: Get Readonly KubeConfig for Collaboration
+        az managedcleanroom collaboration get-readonly-kube-config --resource-group testrg --collaboration-name ContosoCollaboration
     """
 
     _aaz_info = {
