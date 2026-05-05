@@ -22,10 +22,10 @@ class RemoveCapability(AAZCommand):
     The context must retain at least one capability after removal.
 
     :example: Remove a single capability
-        az workload-orchestration context remove-capability -g Mehoopany --context-name Mehoopany-Context --cap-name soap --yes
+        az workload-orchestration context remove-capability -g Mehoopany -n Mehoopany-Context --capabilities "[soap]" --yes
 
     :example: Remove multiple capabilities
-        az workload-orchestration context remove-capability -g Mehoopany --context-name Mehoopany-Context --names "soap,shampoo,detergent" --yes
+        az workload-orchestration context remove-capability -g Mehoopany -n Mehoopany-Context --capabilities "[soap,shampoo,detergent]" --yes
     """
 
     _aaz_info = {
@@ -51,14 +51,15 @@ class RemoveCapability(AAZCommand):
             required=True,
             help="Name of the context.",
         )
-        _args_schema.cap_name = AAZStrArg(
-            options=["--cap-name", "--capability-name"],
-            help="Name of a single capability to remove.",
+        _args_schema.capabilities = AAZListArg(
+            options=["--capabilities"],
+            required=True,
+            help=(
+                "Capability names to remove. String array — accepts shorthand "
+                "(e.g. '[soap,shampoo]') or @file.json."
+            ),
         )
-        _args_schema.names = AAZStrArg(
-            options=["--names"],
-            help="Comma-separated list of capability names to remove.",
-        )
+        _args_schema.capabilities.Element = AAZStrArg()
         _args_schema.force = AAZBoolArg(
             options=["--force"],
             help="Skip in-use validation (placeholder for cross-resource checks).",
@@ -71,11 +72,10 @@ class RemoveCapability(AAZCommand):
         super()._handler(command_args)
 
         args = self.ctx.args
-        cap_name = args.cap_name.to_serialized_data() if args.cap_name._data is not None else None
-        names = args.names.to_serialized_data() if args.names._data is not None else None
+        capabilities_raw = args.capabilities.to_serialized_data() if args.capabilities._data is not None else None
+        capabilities = capabilities_raw if capabilities_raw else None
         force = args.force.to_serialized_data() if args.force._data is not None else False
 
-        # AAZ confirmation= already prompted via --yes; we treat that as confirmed.
         from azext_workload_orchestration.common.context import (
             capability_remove as _capability_remove,
         )
@@ -83,8 +83,8 @@ class RemoveCapability(AAZCommand):
             cli_ctx=self.cli_ctx,
             resource_group=args.resource_group.to_serialized_data(),
             context_name=args.context_name.to_serialized_data(),
-            name=cap_name,
-            names=names,
+            name=None,
+            names=capabilities,
             force=force,
             yes=True,  # AAZ confirmation= flow already enforced --yes
         )

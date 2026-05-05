@@ -86,17 +86,14 @@ def _normalize_input(name, description, capabilities):
     """Normalize user input into a deduped list of {name, description} dicts.
 
     Accepts:
-      - name + description (single capability shorthand)
+      - name + description (single capability shorthand — legacy, kept for internal use)
       - capabilities (list of dicts or strings)
 
+    If description is missing from an item, defaults to name.
     Dedups case-insensitively on name. First occurrence wins.
     """
     items = []
     if name:
-        if capabilities:
-            raise InvalidArgumentValueError(
-                "Specify either --cap-name (with --description) or --capabilities, not both."
-            )
         nm = _validate_cap_name(name)
         desc = description if description else nm
         items.append({"name": nm, "description": desc})
@@ -126,7 +123,7 @@ def _normalize_input(name, description, capabilities):
                 )
     else:
         raise InvalidArgumentValueError(
-            "Provide either --cap-name + --description (single) or --capabilities (bulk)."
+            "Provide --capabilities (JSON array of {name, description?})."
         )
 
     seen = set()
@@ -142,21 +139,27 @@ def _normalize_input(name, description, capabilities):
 
 
 def _normalize_names_input(name, names):
-    """Normalize name/names into a deduped list of validated names."""
+    """Normalize name/names into a deduped list of validated names.
+
+    Accepts:
+      - name: single string (legacy internal use)
+      - names: list of strings (from --capabilities string array), or
+               comma-separated string (legacy --names format)
+    """
     raw = []
     if name and names:
-        raise InvalidArgumentValueError("Specify either --cap-name or --names, not both.")
+        raise InvalidArgumentValueError("Specify either --cap-name or --capabilities, not both.")
     if name:
         raw.append(name)
     elif names:
-        if isinstance(names, str):
+        if isinstance(names, list):
+            raw.extend([n.strip() for n in names if isinstance(n, str) and n.strip()])
+        elif isinstance(names, str):
             raw.extend([n.strip() for n in names.split(",") if n.strip()])
-        elif isinstance(names, list):
-            raw.extend(names)
         else:
-            raise InvalidArgumentValueError("--names must be a string or list.")
+            raise InvalidArgumentValueError("--capabilities must be a string array.")
     else:
-        raise InvalidArgumentValueError("Provide --cap-name or --names.")
+        raise InvalidArgumentValueError("Provide --capabilities (string array of names to remove).")
 
     seen = set()
     deduped = []

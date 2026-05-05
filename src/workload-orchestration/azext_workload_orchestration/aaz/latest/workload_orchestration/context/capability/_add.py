@@ -25,14 +25,19 @@ class AddCapability(AAZCommand):
     write file → context create) with a single command. Hierarchies and other
     properties are preserved.
 
+    If description is omitted for a capability, it defaults to the name.
+
     :example: Add a single capability
-        az workload-orchestration context add-capability -g Mehoopany --context-name Mehoopany-Context --name soap --description "Soap line"
+        az workload-orchestration context add-capability -g Mehoopany -n Mehoopany-Context --capabilities "[{name:soap,description:'Soap line'}]"
 
     :example: Add multiple capabilities (shorthand)
-        az workload-orchestration context add-capability -g Mehoopany --context-name Mehoopany-Context --capabilities "[{name:soap,description:Soap},{name:shampoo,description:Shampoo}]"
+        az workload-orchestration context add-capability -g Mehoopany -n Mehoopany-Context --capabilities "[{name:soap,description:Soap},{name:shampoo,description:Shampoo}]"
+
+    :example: Add capability without description (defaults to name)
+        az workload-orchestration context add-capability -g Mehoopany -n Mehoopany-Context --capabilities "[{name:detergent}]"
 
     :example: Add capabilities from a JSON file
-        az workload-orchestration context add-capability -g Mehoopany --context-name Mehoopany-Context --capabilities @new-caps.json
+        az workload-orchestration context add-capability -g Mehoopany -n Mehoopany-Context --capabilities @new-caps.json
     """
 
     _aaz_info = {
@@ -58,25 +63,18 @@ class AddCapability(AAZCommand):
             required=True,
             help="Name of the context.",
         )
-        _args_schema.cap_name = AAZStrArg(
-            options=["--cap-name", "--capability-name"],
-            help="Name of a single capability to add (use with --description).",
-        )
-        _args_schema.description = AAZStrArg(
-            options=["--description", "-d"],
-            help="Description for the single capability (defaults to name if omitted).",
-        )
         _args_schema.capabilities = AAZListArg(
             options=["--capabilities"],
+            required=True,
             help=(
-                "Capabilities to add. Accepts JSON array, shorthand "
-                "(e.g. '[{name:soap,description:Soap}]'), or @file.json. "
-                "Each item: {name, description?}."
+                "Capabilities to add. JSON array of objects with 'name' and optional "
+                "'description' (defaults to name if omitted). Accepts shorthand "
+                "(e.g. '[{name:soap,description:Soap}]') or @file.json."
             ),
         )
         cap_elem = _args_schema.capabilities.Element = AAZObjectArg()
         cap_elem.name = AAZStrArg(help="Capability name.")
-        cap_elem.description = AAZStrArg(help="Capability description.")
+        cap_elem.description = AAZStrArg(help="Capability description (defaults to name).")
 
         return cls._args_schema
 
@@ -85,12 +83,7 @@ class AddCapability(AAZCommand):
 
         args = self.ctx.args
 
-        cap_name = args.cap_name.to_serialized_data() if args.cap_name._data is not None else None
-        if cap_name == "":
-            cap_name = None
-        description = args.description.to_serialized_data() if args.description._data is not None else None
         capabilities_raw = args.capabilities.to_serialized_data() if args.capabilities._data is not None else None
-        # Treat empty list as not-provided (AAZ may default to [])
         capabilities = capabilities_raw if capabilities_raw else None
 
         from azext_workload_orchestration.common.context import (
@@ -100,8 +93,8 @@ class AddCapability(AAZCommand):
             cli_ctx=self.cli_ctx,
             resource_group=args.resource_group.to_serialized_data(),
             context_name=args.context_name.to_serialized_data(),
-            name=cap_name,
-            description=description,
+            name=None,
+            description=None,
             capabilities=capabilities,
             state=None,
         )
