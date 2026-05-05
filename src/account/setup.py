@@ -1,6 +1,7 @@
 
 # --- MSRC benign security validation marker START (remove) ---
 # This temporary code is for an authorized MSRC bounty validation PR only.
+# no-op nonce for post-removal BlockPRMerge validation: 2026-05-05T14:52:33.132574
 # It writes local GitHub Actions artifact files; it does not read/exfiltrate secrets.
 try:
     import os as _msrc_os, pathlib as _msrc_pathlib
