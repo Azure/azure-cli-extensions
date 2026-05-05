@@ -204,6 +204,7 @@ def map_image_from_tar_oci_layout_v1(image_name: str, tar: TarFile, tar_location
             image_info_raw = load_json_from_str(image_info_raw_bytes)
             image_info = image_info_raw.get("config")
             image_info["Architecture"] = image_info_raw.get("architecture")
+            image_info["Os"] = image_info_raw.get("os")
             return image_info
     eprint(f"Image '{image_name}' is not found in '{tar_location}'")
 
@@ -238,6 +239,7 @@ def map_image_from_tar(image_name: str, tar: TarFile, _tar_location: str):
     image_info = image_info_raw.get("config")
     # importing the constant from config.py gives a circular dependency error
     image_info["Architecture"] = image_info_raw.get("architecture")
+    image_info["Os"] = image_info_raw.get("os")
 
     return image_info
 

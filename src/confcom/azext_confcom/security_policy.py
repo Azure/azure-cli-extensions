@@ -494,6 +494,18 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
                 logger.info("Processing image: %s", image_name)
                 image_info, tar = get_image_info(progress, message_queue, tar_mapping, image)
 
+                # validate image platform matches --platform
+                if image_info and self._platform:
+                    detected_os = image_info.get("Os") or image_info.get("platform", "").split("/")[0]
+                    detected_arch = image_info.get("Architecture") or image_info.get("platform", "").split("/")[-1]
+                    if detected_os and detected_arch:
+                        detected = f"{detected_os}/{detected_arch}"
+                        if detected != self._platform:
+                            eprint(
+                                f'Image "{image_name}" has platform "{detected}", '
+                                f'which does not match the specified platform "{self._platform}".'
+                            )
+
                 # verify and populate the working directory property
                 if not image.get_working_dir() and image_info:
                     workingDir = image_info.get("WorkingDir")
@@ -679,57 +691,19 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         self._images = images
 
 
-def _get_platform_from_tar(tar_location: str, image_name: str) -> Optional[str]:
-    """Extract the platform (os/architecture) from a tar file's config blob.
+def validate_image_platform(image_name: str, platform: str, tar_mapping=None) -> None:
+    """Validate that the image's platform matches --platform.
 
-    Supports both Docker save format and OCI image layout.
-    Returns a string like "linux/amd64" or None if platform cannot be determined.
+    When tar_mapping is provided and the image is found in the tar,
+    validation is skipped here — it will be performed later in
+    populate_policy_content_for_all_images after the tar config is read.
+    Without tar, checks via Docker (local get or pull).
     """
-    import tarfile as tarfile_module
+    if tar_mapping:
+        tar_location = get_tar_location_from_mapping(tar_mapping, image_name)
+        if tar_location:
+            return
 
-    def _platform_from_config(tar, config_path):
-        data = json.loads(tar.extractfile(config_path).read())
-        return f"{data['os']}/{data['architecture']}"
-
-    try:
-        with tarfile_module.open(tar_location) as tar:
-            # Try Docker save format: manifest.json with RepoTags
-            try:
-                manifest = json.loads(tar.extractfile("manifest.json").read())
-                for entry in manifest:
-                    if image_name in (entry.get("RepoTags") or []):
-                        return _platform_from_config(tar, entry["Config"])
-            except (KeyError, TypeError):
-                pass
-
-            # Try OCI layout: index.json → manifest blob → config blob
-            try:
-                oci_name = f"docker.io/library/{image_name}" if "/" not in image_name else image_name
-                index = json.loads(tar.extractfile("index.json").read())
-                for m in index.get("manifests", []):
-                    ann_name = (m.get("annotations") or {}).get("io.containerd.image.name", "")
-                    if ann_name and ann_name != oci_name:
-                        continue
-                    media_type = m.get("mediaType", "")
-                    if media_type not in [
-                        "application/vnd.docker.distribution.manifest.v2+json",
-                        "application/vnd.oci.image.manifest.v1+json",
-                    ]:
-                        continue
-                    algo, digest = m["digest"].split(":", 1)
-                    nested = json.loads(tar.extractfile(f"blobs/{algo}/{digest}").read())
-                    c_algo, c_digest = nested["config"]["digest"].split(":", 1)
-                    return _platform_from_config(tar, f"blobs/{c_algo}/{c_digest}")
-            except (KeyError, TypeError):
-                pass
-    except (OSError, tarfile_module.TarError) as e:
-        logger.warning("Could not read platform from tar file: %s", e)
-
-    return None
-
-
-def _get_docker_image(image_name: str, platform: str):
-    """Get a Docker image locally or by pulling. Returns the image or calls eprint on failure."""
     import docker as docker_module
     try:
         client = docker_module.from_env()
@@ -738,63 +712,45 @@ def _get_docker_image(image_name: str, platform: str):
 
     # Try local first
     try:
-        return client.images.get(image_name)
+        image = client.images.get(image_name)
     except (docker_module.errors.ImageNotFound, docker_module.errors.NullResource):
-        pass
+        image = None
 
     # Pull with specified platform
-    try:
-        return client.images.pull(image_name, platform=platform)
-    except (docker_module.errors.ImageNotFound, docker_module.errors.NotFound):
-        eprint(
-            f'Image "{image_name}" is not found. '
-            f'Please check the image name and repository.'
-        )
-    except docker_module.errors.APIError as e:
-        error_msg = str(e).lower()
-        if "not supported" in error_msg or "no matching manifest" in error_msg:
+    if image is None:
+        try:
+            image = client.images.pull(image_name, platform=platform)
+        except (docker_module.errors.ImageNotFound, docker_module.errors.NotFound):
             eprint(
-                f'Image "{image_name}" could not be pulled for platform "{platform}". '
-                f'Docker Desktop must be in the correct container mode '
-                f'(Linux containers for linux/amd64, '
-                f'Windows containers for windows/amd64).'
+                f'Image "{image_name}" is not found. '
+                f'Please check the image name and repository.'
             )
-        else:
-            eprint(
-                f'Image "{image_name}" could not be pulled for platform '
-                f'"{platform}": {e}'
-            )
+        except docker_module.errors.APIError as e:
+            error_msg = str(e).lower()
+            if "not supported" in error_msg or "no matching manifest" in error_msg:
+                eprint(
+                    f'Image "{image_name}" could not be pulled for platform "{platform}". '
+                    f'Docker Desktop must be in the correct container mode '
+                    f'(Linux containers for linux/amd64, '
+                    f'Windows containers for windows/amd64).'
+                )
+            else:
+                eprint(
+                    f'Image "{image_name}" could not be pulled for platform '
+                    f'"{platform}": {e}'
+                )
 
-    eprint(f'Image "{image_name}" could not be retrieved for platform validation.')
+    if image is None:
+        eprint(f'Image "{image_name}" could not be retrieved for platform validation.')
+        return
 
-
-def _detect_image_platform(image_name: str, platform: str, tar_mapping=None) -> str:
-    """Detect the platform of an image from tar or Docker. Returns os/arch string."""
-    if tar_mapping:
-        tar_location = get_tar_location_from_mapping(tar_mapping, image_name)
-        if tar_location:
-            detected = _get_platform_from_tar(tar_location, image_name)
-            if detected:
-                return detected
-
-    image = _get_docker_image(image_name, platform)
-    return f"{image.attrs.get('Os')}/{image.attrs.get('Architecture')}"
-
-
-def validate_image_platform(image_name: str, platform: str, tar_mapping=None) -> None:
-    """Validate that the image's platform matches --platform.
-
-    When tar_mapping is provided and the image is found in the tar,
-    platform is read directly from the tar config blob without Docker.
-    Otherwise, checks the local Docker image first, then attempts to pull
-    with the specified platform if not found locally.
-    """
-    detected = _detect_image_platform(image_name, platform, tar_mapping)
+    detected = f"{image.attrs.get('Os')}/{image.attrs.get('Architecture')}"
     if detected != platform:
         eprint(
             f'Image "{image_name}" has platform "{detected}", '
             f'which does not match the specified platform "{platform}".'
         )
+
 
 
 # pylint: disable=R0914,
