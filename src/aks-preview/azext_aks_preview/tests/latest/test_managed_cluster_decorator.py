@@ -3178,6 +3178,29 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         ctx_4.attach_mc(mc_4)
         self.assertEqual(ctx_4.get_enable_fips(), True)
 
+        ctx_5 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"disable_fips": True}),
+            self.models,
+            DecoratorMode.UPDATE,
+        )
+        self.assertEqual(ctx_5.get_disable_fips(), True)
+
+        ctx_6 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_fips": True,
+                    "disable_fips": True,
+                    "kubernetes_version": "1.34.0",
+                }
+            ),
+            self.models,
+            DecoratorMode.UPDATE,
+        )
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_6.get_enable_fips()
+
     def test_get_disk_driver(self):
         ctx_1 = AKSPreviewManagedClusterContext(
             self.cmd,
@@ -14145,6 +14168,49 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_4.context.attach_mc(mc_4)
         with self.assertRaises(InvalidArgumentValueError):
             dec_4.update_enable_fips(mc_4)
+
+        dec_5 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"disable_fips": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        agentpool_profile_5 = self.models.ManagedClusterAgentPoolProfile(
+            name="nodepool1",
+            enable_fips=True,
+        )
+        mc_5 = self.models.ManagedCluster(
+            location="test_location",
+            kubernetes_version="1.34.0",
+            agent_pool_profiles=[agentpool_profile_5],
+        )
+        mc_5.properties["enableFIPS"] = True
+        dec_5.context.attach_mc(mc_5)
+        dec_mc_5 = dec_5.update_enable_fips(mc_5)
+        ground_truth_mc_5 = self.models.ManagedCluster(
+            location="test_location",
+            kubernetes_version="1.34.0",
+            agent_pool_profiles=[agentpool_profile_5],
+        )
+        ground_truth_mc_5.properties["enableFIPS"] = False
+        self.assertEqual(dec_mc_5, ground_truth_mc_5)
+
+        dec_6 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_fips": True,
+                "disable_fips": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_6 = self.models.ManagedCluster(
+            location="test_location",
+            kubernetes_version="1.34.0",
+        )
+        dec_6.context.attach_mc(mc_6)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            dec_6.update_enable_fips(mc_6)
 
     def test_mc_get_node_init_taints(self):
         # Default, not set.

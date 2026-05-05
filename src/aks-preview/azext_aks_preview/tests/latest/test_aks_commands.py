@@ -7220,6 +7220,17 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
 
         self.cmd(
+            "aks update --resource-group={resource_group} --name={name} "
+            "--disable-fips "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableFIPSPreview",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("enableFips", False),
+                self.check("agentPoolProfiles[0].enableFips", True),
+            ],
+        )
+
+        self.cmd(
             "aks delete -g {resource_group} -n {name} --yes --no-wait",
             checks=[self.is_empty()],
         )

@@ -1346,6 +1346,7 @@ def aks_update(
     enable_image_integrity=False,
     disable_image_integrity=False,
     enable_fips=False,
+    disable_fips=False,
     enable_service_account_image_pull=False,
     disable_service_account_image_pull=False,
     service_account_image_pull_default_managed_identity_id=None,

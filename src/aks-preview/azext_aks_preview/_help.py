@@ -1278,6 +1278,12 @@ helps['aks update'] = """
             also be created with FIPS enabled. Some addons and extensions aren't
             supported with cluster-wide FIPS. Verify addon and extension
             compatibility before enabling this preview feature.
+        - name: --disable-fips
+          type: bool
+          short-summary: Disable FIPS mode at the cluster level.
+          long-summary: |-
+            Disables cluster-wide FIPS enforcement for AKS-managed components.
+            This doesn't disable FIPS on existing node pools.
         - name: --enable-service-account-image-pull
           type: bool
           short-summary: Enable service account based image pull. For more information, see https://aka.ms/aks/identity-binding/acr-image-pull/docs.
@@ -1532,6 +1538,8 @@ helps['aks update'] = """
         text: az aks update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n MyManagedCluster
       - name: Disable cluster-autoscaler for an existing cluster
         text: az aks update --disable-cluster-autoscaler -g MyResourceGroup -n MyManagedCluster
+      - name: Disable FIPS mode at the cluster level.
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --disable-fips
       - name: Update min-count or max-count for cluster autoscaler.
         text: az aks update --update-cluster-autoscaler --min-count 1 --max-count 10 -g MyResourceGroup -n MyManagedCluster
       - name: Upgrade load balancer sku to standard

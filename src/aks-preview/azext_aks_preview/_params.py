@@ -1548,6 +1548,7 @@ def load_arguments(self, _):
         c.argument("image_cleaner_interval_hours", type=int)
         c.argument("disable_image_integrity", action="store_true", is_preview=True)
         c.argument("enable_fips", action="store_true", is_preview=True)
+        c.argument("disable_fips", action="store_true", is_preview=True)
         c.argument("enable_service_account_image_pull", action="store_true", is_preview=True)
         c.argument("disable_service_account_image_pull", action="store_true", is_preview=True)
         c.argument("service_account_image_pull_default_managed_identity_id", is_preview=True)

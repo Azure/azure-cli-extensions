@@ -1852,6 +1852,10 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         :return: bool
         """
         enable_fips = self.raw_param.get("enable_fips", False)
+        if enable_fips and self.get_disable_fips():
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-fips and --disable-fips at the same time."
+            )
         if self.decorator_mode == DecoratorMode.CREATE:
             value_obtained_from_mc = self._get_enable_fips_from_mc()
             if value_obtained_from_mc is not None:
@@ -1860,6 +1864,17 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         if enable_fips:
             self._validate_enable_fips_kubernetes_version()
         return bool(enable_fips)
+
+    def get_disable_fips(self) -> bool:
+        """Obtain the value of disable_fips.
+        :return: bool
+        """
+        disable_fips = self.raw_param.get("disable_fips", False)
+        if disable_fips and self.raw_param.get("enable_fips", False):
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-fips and --disable-fips at the same time."
+            )
+        return bool(disable_fips)
 
     def get_disk_driver(self) -> Optional[ManagedClusterStorageProfileDiskCSIDriver]:
         """Obtain the value of storage_profile.disk_csi_driver
@@ -6763,6 +6778,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
     def update_enable_fips(self, mc: ManagedCluster) -> ManagedCluster:
         """Update FIPS mode at the cluster level for the ManagedCluster object."""
         self._ensure_mc(mc)
+
+        if self.context.get_disable_fips():
+            self._set_enable_fips_on_mc(mc, False)
+            return mc
 
         if not self.context.get_enable_fips():
             return mc
