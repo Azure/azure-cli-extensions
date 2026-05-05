@@ -42,3 +42,14 @@ examples:
   - name: Show details of an Azure HorizonDB cluster.
     text: az horizondb show --name examplecluster --resource-group exampleresourcegroup
 """
+
+
+helps['horizondb list'] = """
+type: command
+short-summary: List Azure HorizonDB clusters.
+examples:
+  - name: List all Azure HorizonDB clusters in the current subscription.
+    text: az horizondb list
+  - name: List Azure HorizonDB clusters in a resource group.
+    text: az horizondb list --resource-group exampleresourcegroup
+"""

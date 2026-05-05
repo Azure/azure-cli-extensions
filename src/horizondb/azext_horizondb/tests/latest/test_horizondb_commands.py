@@ -51,6 +51,17 @@ class HorizonDBClusterMgmtScenarioTest(ScenarioTest):
         self.assertEqual(show_result['properties']['vCores'], v_cores)
         self.assertEqual(show_result['properties']['replicaCount'], replica_count)
 
+        # Run list assertions in live mode so playback remains stable until
+        # list interactions are recorded.
+        if self.is_live:
+            # List clusters in the resource group and ensure the cluster is returned
+            self.cmd('horizondb list -g {}'.format(resource_group),
+                     checks=[JMESPathCheck("[?name=='{}'] | length(@)".format(cluster_name), 1)])
+
+            # List clusters in subscription scope and ensure the cluster is returned
+            self.cmd('horizondb list',
+                     checks=[JMESPathCheck("[?name=='{}'] | length(@)".format(cluster_name), 1)])
+
         # Delete cluster
         self.cmd('horizondb delete -g {} -n {} --yes'.format(resource_group, cluster_name),
                  checks=NoneCheck())

@@ -24,4 +24,5 @@ def load_command_table(self, _):
                             client_factory=cf_horizondb_clusters) as g:
         g.custom_command('create', 'horizondb_cluster_create', table_transformer=table_transform_output)
         g.custom_command('delete', 'horizondb_cluster_delete')
+        g.custom_command('list', 'horizondb_cluster_list')
         g.show_command('show', 'get')
