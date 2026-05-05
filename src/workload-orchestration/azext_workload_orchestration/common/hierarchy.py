@@ -408,7 +408,6 @@ def _arm_put(cmd, url, body, api_version):
         cmd.cli_ctx, "PUT", full_url,
         body=json.dumps(body),
         headers=["Content-Type=application/json"],
-        resource=get_arm_endpoint(cmd),
     )
 
 
@@ -418,7 +417,6 @@ def _arm_get(cmd, url, api_version):
     try:
         resp = send_raw_request(
             cmd.cli_ctx, "GET", full_url,
-            resource=get_arm_endpoint(cmd),
         )
     except Exception as exc:  # pylint: disable=broad-except
         if "ResourceNotFound" in str(exc) or "404" in str(exc):
@@ -568,11 +566,17 @@ def _wait_for_sg_rbac(cmd, location, sg_id, sg_name, max_retries=15, wait_sec=10
 
 
 def _get_token(cmd):
-    """Get ARM bearer token."""
+    """Get ARM bearer token.
+
+    Uses active_directory_resource_id for OAuth scope (same as AAZ MgmtClient)
+    instead of resource_manager endpoint, which may be a regional URL not
+    registered as an OAuth resource in all tenants.
+    """
     from azure.cli.core._profile import Profile
     profile = Profile(cli_ctx=cmd.cli_ctx)
+    resource = cmd.cli_ctx.cloud.endpoints.active_directory_resource_id
     token_info, _, _ = profile.get_raw_token(
-        resource=get_arm_endpoint(cmd),
+        resource=resource,
         subscription=profile.get_subscription_id()
     )
     return token_info[0], token_info[1]  # token_type, token
@@ -588,8 +592,14 @@ def _get_sub_id(cmd):
 
 
 def _get_tenant_id(cmd):
-    """Get tenant ID."""
+    """Get tenant ID.
+
+    Uses active_directory_resource_id for OAuth scope (same as AAZ MgmtClient)
+    to avoid AADSTS500011 errors when resource_manager is a regional URL not
+    registered in the tenant.
+    """
     from azure.cli.core._profile import Profile
     profile = Profile(cli_ctx=cmd.cli_ctx)
-    _, _, tenant_id = profile.get_raw_token(resource=get_arm_endpoint(cmd))
+    resource = cmd.cli_ctx.cloud.endpoints.active_directory_resource_id
+    _, _, tenant_id = profile.get_raw_token(resource=resource)
     return tenant_id
