@@ -3,6 +3,13 @@
 Release History
 ===============
 
+1.0.0b6
++++++++
+* Update commands to reflect new API version 2026-04-30-preview
+* Added: ``az managedcleanroom collaboration get-readonly-kube-config`` to fetch the read-only kubeconfig for a collaboration
+* PUT -> PATCH on ``collaboration update``, ``consortium update``, ``consortium-view update``
+* Restored ``PrivateEndpointUtil`` and rewired generated URLs through env-var driven namespace (``Microsoft.CleanRoom`` / ``Private.CleanRoom``)
+
 1.0.0b1
 +++++++
 * Initial release.
