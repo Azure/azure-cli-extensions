@@ -283,6 +283,20 @@ helps['aks create'] = f"""
         - name: --enable-fips-image
           type: bool
           short-summary: Use FIPS-enabled OS on agent nodes.
+        - name: --enable-fips
+          type: bool
+          short-summary: Enable FIPS mode at the cluster level.
+          long-summary: |-
+            Enables FIPS compliance for all AKS-managed components, such as the node
+            operating system, addons, and managed containerized components
+            (https://aka.ms/aks/components/docs). See Enable cluster-wide FIPS
+            (https://aka.ms/aks/fips) for more details.
+            Requires Kubernetes version 1.34 or later and the
+            Microsoft.ContainerService/EnableFIPSPreview feature to be registered
+            on the subscription. All node pools must be FIPS-enabled; this command
+            enables FIPS on the default node pool during cluster creation. Some
+            addons and extensions aren't supported with cluster-wide FIPS. Verify
+            addon and extension compatibility before enabling this preview feature.
         - name: --workspace-resource-id
           type: string
           short-summary: The resource ID of an existing Log Analytics Workspace to use for storing monitoring data. If not specified, uses the default Log Analytics Workspace if it exists, otherwise creates one.
@@ -1249,6 +1263,21 @@ helps['aks update'] = """
         - name: --disable-image-integrity
           type: bool
           short-summary: Disable ImageIntegrity Service.
+        - name: --enable-fips
+          type: bool
+          short-summary: Enable FIPS mode at the cluster level.
+          long-summary: |-
+            Enables FIPS compliance for all AKS-managed components, such as the node
+            operating system, addons, and managed containerized components
+            (https://aka.ms/aks/components/docs). See Enable cluster-wide FIPS
+            (https://aka.ms/aks/fips) for more details.
+            Requires Kubernetes version 1.34 or later and the
+            Microsoft.ContainerService/EnableFIPSPreview feature to be registered
+            on the subscription. Existing node pools must already be FIPS-enabled
+            before enabling this cluster-level setting, and future node pools must
+            also be created with FIPS enabled. Some addons and extensions aren't
+            supported with cluster-wide FIPS. Verify addon and extension
+            compatibility before enabling this preview feature.
         - name: --enable-service-account-image-pull
           type: bool
           short-summary: Enable service account based image pull. For more information, see https://aka.ms/aks/identity-binding/acr-image-pull/docs.

@@ -1787,7 +1787,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         value_obtained_from_snapshot = None
         value_obtained_from_cluster_snapshot = None
         # skip dynamic completion if read_only is specified
-        if not read_only:
+        if not read_only and self.agentpool_context:
             snapshot = self.agentpool_context.get_snapshot()
             if snapshot:
                 value_obtained_from_snapshot = snapshot.kubernetes_version
@@ -1820,6 +1820,46 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         :return: string
         """
         return self._get_kubernetes_version(read_only=False)
+
+    def _validate_enable_fips_kubernetes_version(self) -> None:
+        kubernetes_version = self.get_kubernetes_version()
+        if not kubernetes_version:
+            return
+
+        version_parts = str(kubernetes_version).lstrip("v").split(".")
+        if len(version_parts) < 2:
+            return
+        try:
+            major = int(version_parts[0])
+            minor = int(version_parts[1].split("-")[0])
+        except ValueError:
+            return
+        if (major, minor) < (1, 34):
+            raise InvalidArgumentValueError("--enable-fips requires Kubernetes version 1.34 or later.")
+
+    def _get_enable_fips_from_mc(self) -> Optional[bool]:
+        if not self.mc:
+            return None
+        if hasattr(self.mc, "enable_fips") and self.mc.enable_fips is not None:
+            return self.mc.enable_fips
+        properties = getattr(self.mc, "properties", None)
+        if properties is not None:
+            return properties.get("enableFIPS")
+        return None
+
+    def get_enable_fips(self) -> bool:
+        """Obtain the value of enable_fips.
+        :return: bool
+        """
+        enable_fips = self.raw_param.get("enable_fips", False)
+        if self.decorator_mode == DecoratorMode.CREATE:
+            value_obtained_from_mc = self._get_enable_fips_from_mc()
+            if value_obtained_from_mc is not None:
+                enable_fips = value_obtained_from_mc
+
+        if enable_fips:
+            self._validate_enable_fips_kubernetes_version()
+        return bool(enable_fips)
 
     def get_disk_driver(self) -> Optional[ManagedClusterStorageProfileDiskCSIDriver]:
         """Obtain the value of storage_profile.disk_csi_driver
@@ -4297,6 +4337,25 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         return mc
 
+    def set_up_enable_fips(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up FIPS mode at the cluster level for the ManagedCluster object."""
+        self._ensure_mc(mc)
+
+        if self.context.get_enable_fips():
+            self._set_enable_fips_on_mc(mc, True)
+            if mc.agent_pool_profiles:
+                for agentpool in mc.agent_pool_profiles:
+                    agentpool.enable_fips = True
+        return mc
+
+    def _set_enable_fips_on_mc(self, mc: ManagedCluster, value: bool) -> None:
+        if hasattr(mc, "enable_fips"):
+            mc.enable_fips = value
+            return
+        if mc.properties is None:
+            mc.properties = self.models.ManagedClusterProperties()
+        mc.properties["enableFIPS"] = value
+
     def set_up_service_account_image_pull(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up security profile serviceAccountImagePullProfile for the ManagedCluster object.
 
@@ -5189,6 +5248,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_image_cleaner(mc)
         # set up image integrity
         mc = self.set_up_image_integrity(mc)
+        # set up FIPS mode at the cluster level
+        mc = self.set_up_enable_fips(mc)
         # set up service account image pull
         mc = self.set_up_service_account_image_pull(mc)
         # set up KMS infrastructure encryption
@@ -6699,6 +6760,35 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
+    def update_enable_fips(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update FIPS mode at the cluster level for the ManagedCluster object."""
+        self._ensure_mc(mc)
+
+        if not self.context.get_enable_fips():
+            return mc
+
+        non_fips_nodepools = [
+            agentpool.name
+            for agentpool in (mc.agent_pool_profiles or [])
+            if agentpool.enable_fips is not True
+        ]
+        if non_fips_nodepools:
+            raise InvalidArgumentValueError(
+                "--enable-fips requires all node pools in the cluster to be FIPS-enabled. "
+                "Enable FIPS on these node pools first: {}.".format(", ".join(non_fips_nodepools))
+            )
+
+        self._set_enable_fips_on_mc(mc, True)
+        return mc
+
+    def _set_enable_fips_on_mc(self, mc: ManagedCluster, value: bool) -> None:
+        if hasattr(mc, "enable_fips"):
+            mc.enable_fips = value
+            return
+        if mc.properties is None:
+            mc.properties = self.models.ManagedClusterProperties()
+        mc.properties["enableFIPS"] = value
+
     def update_service_account_image_pull(self, mc: ManagedCluster) -> ManagedCluster:
         """Update security profile serviceAccountImagePullProfile for the ManagedCluster object.
 
@@ -8106,6 +8196,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_image_cleaner(mc)
         # update image integrity
         mc = self.update_image_integrity(mc)
+        # update FIPS mode at the cluster level
+        mc = self.update_enable_fips(mc)
         # update service account image pull
         mc = self.update_service_account_image_pull(mc)
         # update KMS infrastructure encryption
