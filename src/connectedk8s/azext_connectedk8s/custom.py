@@ -1268,6 +1268,9 @@ def install_helm_client(cmd: CLICommand) -> str:
     telemetry.add_extension_event(
         "connectedk8s", {"Context.Default.AzureCLI.MachineType": machine_type}
     )
+    # Determine CPU architecture for helm binary selection
+    arch = "arm64" if machine_type.lower() in ("aarch64", "arm64") else "amd64"
+
     # Set helm binary download & install locations
     if operating_system == "windows":
         download_location_string = f".azure\\helm\\{consts.HELM_VERSION}"
@@ -1279,12 +1282,12 @@ def install_helm_client(cmd: CLICommand) -> str:
     elif operating_system == "linux" or operating_system == "darwin":
         download_location_string = f".azure/helm/{consts.HELM_VERSION}"
         download_file_name = (
-            f"helm-{consts.HELM_VERSION}-{operating_system}-amd64.tar.gz"
+            f"helm-{consts.HELM_VERSION}-{operating_system}-{arch}.tar.gz"
         )
         install_location_string = (
-            f".azure/helm/{consts.HELM_VERSION}/{operating_system}-amd64/helm"
+            f".azure/helm/{consts.HELM_VERSION}/{operating_system}-{arch}/helm"
         )
-        artifactTag = f"helm-{consts.HELM_VERSION}-{operating_system}-amd64"
+        artifactTag = f"helm-{consts.HELM_VERSION}-{operating_system}-{arch}"
     else:
         telemetry.set_exception(
             exception="Unsupported OS for installing helm client",
