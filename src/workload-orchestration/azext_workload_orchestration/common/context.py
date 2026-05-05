@@ -237,7 +237,6 @@ def _patch_context_capabilities(cli_ctx, sub_id, resource_group,
         method="PATCH",
         url=url,
         body=json.dumps(body),
-        resource=get_arm_endpoint(cli_ctx),
     )
     if resp.status_code not in (200, 201, 202):
         raise CLIInternalError(
