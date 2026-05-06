@@ -142,25 +142,32 @@ def _map_volume_mounts(container: dict) -> list[dict]:
     Persistent volumes default to read-only per the Radius spec.
     """
     mounts = []
-    for volume_name, mount_info in container.get("volumes", {}).items():
+    # this takes the normalized volumes object added to the container object by
+    # _normalize_compute_container
+    for _volume_name, mount_info in container.get("volumes", {}).items():
         options = ["rbind", "rshared"]
 
-        is_ephemeral = mount_info.get("kind") == "ephemeral"
+        kind = mount_info.get("kind")
         # The API reference uses "permission"; the human-readable docs use "rbac".
         access = mount_info.get("permission") or mount_info.get("rbac")
 
-        if is_ephemeral:
+        # TODO: these constants are defined in src/confcom/azext_confcom/data/internal_config.json
+        if kind == "emptyDir":
             read_only = access == "read"
+            source = "sandbox:///tmp/atlas/emptydir/.+"
+        elif kind == "secret":
+            read_only = access != "write"
+            source = "sandbox:///tmp/atlas/secretsVolume/.+"
         else:
             read_only = access != "write"
+            source = "sandbox:///tmp/atlas/azureFileVolume/.+"
 
-        if read_only:
-            options.append("ro")
+        options.append("ro" if read_only else "rw")
 
         mounts.append({
             "destination": mount_info.get("mountPath"),
             "options": options,
-            "source": mount_info.get("source") or f"ephemeral://{volume_name}",
+            "source": source,
             "type": "bind",
         })
     return mounts
@@ -218,6 +225,12 @@ def _normalize_compute_container(container: dict, resource_volumes: dict) -> dic
     normalized = dict(container)
 
     # --- volumeMounts + resource-level volumes → legacy inline volumes ---
+
+    # TODO: refactor this - given that we're processing it already, we should
+    # just turn it into the actual mounts, with the correct source / dest /
+    # options, instead of creating an intermediate format slightly different
+    # from Radius (ReadOnlyMany vs read, emptyDir vs ephemeral etc)
+
     volume_mounts = container.get("volumeMounts", [])
     if volume_mounts and resource_volumes:
         old_volumes = {}
@@ -228,7 +241,7 @@ def _normalize_compute_container(container: dict, resource_volumes: dict) -> dic
 
             if "emptyDir" in vol_def:
                 old_volumes[vol_name] = {
-                    "kind": "ephemeral",
+                    "kind": "emptyDir",
                     "mountPath": mount_path,
                     "managedStore": vol_def["emptyDir"].get("medium", "disk"),
                 }
@@ -236,14 +249,14 @@ def _normalize_compute_container(container: dict, resource_volumes: dict) -> dic
                 pv = vol_def["persistentVolume"]
                 access = pv.get("accessMode", "ReadWriteOnce")
                 old_volumes[vol_name] = {
-                    "kind": "persistent",
+                    "kind": "persistentVolume",
                     "mountPath": mount_path,
                     "source": pv.get("resourceId", ""),
                     "permission": "read" if access == "ReadOnlyMany" else "write",
                 }
             elif "secretName" in vol_def:
                 old_volumes[vol_name] = {
-                    "kind": "persistent",
+                    "kind": "secret",
                     "mountPath": mount_path,
                     "source": vol_def["secretName"],
                     "permission": "read",
