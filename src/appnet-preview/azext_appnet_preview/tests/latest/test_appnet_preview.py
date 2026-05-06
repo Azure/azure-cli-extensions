@@ -38,7 +38,11 @@ class BaseScenario(ScenarioTest):
         # for joining a managed mesh (AppLink). The AKS RP rejects mesh membership
         # creation if the Managed Gateway API addon is not enabled on the cluster.
         # See https://aka.ms/managed-gateway-api
-        self.cmd("extension add --name aks-preview --upgrade --yes")
+        # Only install during live recording. During playback the extension
+        # index lookup hits aka.ms / azcliextensionsync.blob.core.windows.net
+        # which won't match the cassette's recorded blob URL.
+        if self.is_live:
+            self.cmd("extension add --name aks-preview --upgrade --yes")
         cluster = self.cmd('aks create \
                  --resource-group {rg} --name {aks_name} \
                  --enable-oidc-issuer --enable-workload-identity --enable-aad --enable-gateway-api \
