@@ -45,8 +45,37 @@ import os
 import tempfile
 import re
 
+from azext_confcom import config
 from azext_confcom.lib.containers import from_image, merge_containers
 from azext_confcom.lib.templates import parse_deployment_template
+
+
+_PLATFORM_ENV_RULES = {
+    "aci": (
+        config.OPENGCS_ENV_RULES
+        + config.FABRIC_ENV_RULES
+        + config.MANAGED_IDENTITY_ENV_RULES
+        + config.ENABLE_RESTART_ENV_RULE
+    ),
+    "vn2": (
+        config.OPENGCS_ENV_RULES
+        + config.FABRIC_ENV_RULES
+        + config.MANAGED_IDENTITY_ENV_RULES
+        + config.ENABLE_RESTART_ENV_RULE
+        + config.VIRTUAL_NODE_ENV_RULES
+    ),
+}
+
+
+def _platform_env_rules(platform: str) -> list[dict]:
+    return [
+        {
+            "pattern": rule.get("pattern") or f"{rule.get('name')}={rule.get('value')}",
+            "strategy": rule.get("strategy", "string"),
+            "required": rule.get("required", False),
+        }
+        for rule in _PLATFORM_ENV_RULES.get(platform, [])
+    ]
 
 
 # ---------------------------------------------------------------------------
@@ -348,7 +377,11 @@ def _extract_container_def(container: dict, resource: dict, platform: str) -> di
     if working_dir is not None:
         template_def["working_dir"] = working_dir
 
-    env_rules = _map_env_rules(container) + _map_connection_env_rules(resource)
+    env_rules = (
+        _platform_env_rules(platform)
+        + _map_env_rules(container)
+        + _map_connection_env_rules(resource)
+    )
     if env_rules:
         template_def["env_rules"] = env_rules
 
