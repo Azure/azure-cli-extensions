@@ -6,6 +6,7 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from .custom_preparers import AKSCustomResourceGroupPreparer
 
 class BaseScenario(ScenarioTest):
@@ -117,6 +118,7 @@ class AppnetMemberPreviewScenario(BaseScenario):
     def __init__(self, *args, **kwargs):
         super(AppnetMemberPreviewScenario, self).__init__(*args, **kwargs)
 
+    @AllowLargeResponse(size_kb=99999)
     @AKSCustomResourceGroupPreparer()
     def test_appnet_member_join_fully_managed(self, resource_group):
         member_name = self.create_appnet_member_fully_managed()
