@@ -336,6 +336,71 @@ class TestFrontendDataset(unittest.TestCase):
                 "CPK encryption mode requires", str(
                     context.exception))
 
+    @patch("azext_managedcleanroom._frontend_custom.get_frontend_client")
+    def test_publish_dataset_with_subdirectory(self, mock_get_client):
+        """Test that --subdirectory propagates into the request body's store"""
+        mock_publish_response = {"datasetId": "test-dataset-sub", "status": "published"}
+        mock_client = Mock()
+        mock_client.collaboration.analytics_datasets_document_id_publish_post.return_value = mock_publish_response
+        mock_get_client.return_value = mock_client
+
+        test_schema = {"fields": [], "format": "Delta"}
+
+        with patch("builtins.open", unittest.mock.mock_open(read_data=json.dumps(test_schema))):
+            frontend_collaboration_dataset_publish(
+                cmd=Mock(),
+                collaboration_id="test-collab-123",
+                document_id="test-dataset-sub",
+                body=None,
+                storage_account_url="https://mystorageaccount.blob.core.windows.net",
+                container_name="datasets",
+                storage_account_type="AzureStorageAccount",
+                encryption_mode="SSE",
+                schema_file="@schema.json",
+                access_mode="ReadWrite",
+                identity_name="northwind-identity",
+                identity_client_id="fb907136-1234-5678-9abc-def012345678",
+                identity_tenant_id="72f988bf-1234-5678-9abc-def012345678",
+                identity_issuer_url="https://oidc.example.com/issuer",
+                subdirectory="year=2026/month=05",
+            )
+
+        call_args = mock_client.collaboration.analytics_datasets_document_id_publish_post.call_args
+        body = call_args[0][2]
+        self.assertEqual(body["store"]["subdirectory"], "year=2026/month=05")
+
+    @patch("azext_managedcleanroom._frontend_custom.get_frontend_client")
+    def test_publish_dataset_subdirectory_default_omitted(self, mock_get_client):
+        """Test that subdirectory key is omitted from store when not provided"""
+        mock_publish_response = {"datasetId": "test-dataset-nosub", "status": "published"}
+        mock_client = Mock()
+        mock_client.collaboration.analytics_datasets_document_id_publish_post.return_value = mock_publish_response
+        mock_get_client.return_value = mock_client
+
+        test_schema = {"fields": [], "format": "Delta"}
+
+        with patch("builtins.open", unittest.mock.mock_open(read_data=json.dumps(test_schema))):
+            frontend_collaboration_dataset_publish(
+                cmd=Mock(),
+                collaboration_id="test-collab-123",
+                document_id="test-dataset-nosub",
+                body=None,
+                storage_account_url="https://mystorageaccount.blob.core.windows.net",
+                container_name="datasets",
+                storage_account_type="AzureStorageAccount",
+                encryption_mode="SSE",
+                schema_file="@schema.json",
+                access_mode="ReadWrite",
+                identity_name="northwind-identity",
+                identity_client_id="fb907136-1234-5678-9abc-def012345678",
+                identity_tenant_id="72f988bf-1234-5678-9abc-def012345678",
+                identity_issuer_url="https://oidc.example.com/issuer",
+            )
+
+        call_args = mock_client.collaboration.analytics_datasets_document_id_publish_post.call_args
+        body = call_args[0][2]
+        self.assertNotIn("subdirectory", body["store"])
+
 
 if __name__ == '__main__':
     unittest.main()
