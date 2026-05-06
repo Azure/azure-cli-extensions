@@ -33,9 +33,15 @@ class BaseScenario(ScenarioTest):
             "aks_name": aks_cluster_name,
             "location": self.location
         })
+        # aks-preview is required for --enable-gateway-api, which is a prerequisite
+        # for joining a managed mesh (AppLink). The AKS RP rejects mesh membership
+        # creation if the Managed Gateway API addon is not enabled on the cluster.
+        # See https://aka.ms/managed-gateway-api
+        self.cmd("extension add --name aks-preview --upgrade --yes")
         cluster = self.cmd('aks create \
                  --resource-group {rg} --name {aks_name} \
-                 --enable-oidc-issuer --enable-workload-identity --enable-aad --os-sku AzureLinux --location {location}',
+                 --enable-oidc-issuer --enable-workload-identity --enable-aad --enable-gateway-api \
+                 --os-sku AzureLinux --location {location}',
                  checks=[
                      self.check("provisioningState", "Succeeded")
                  ]).get_output_in_json()
