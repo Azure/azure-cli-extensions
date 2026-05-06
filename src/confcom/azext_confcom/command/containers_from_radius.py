@@ -149,7 +149,7 @@ def _map_connection_env_rules(resource: dict) -> list[dict]:
     """
     return [
         {
-            "pattern": f"CONNECTION_{name.upper()}_.+=.+",
+            "pattern": f"CONNECTION_{name.upper()}_.+=.*",
             "strategy": "re2",
             "required": True,
         }
