@@ -373,9 +373,14 @@ def _extract_container_def(container: dict, resource: dict, platform: str) -> di
     if command is not None:
         template_def["command"] = command
 
-    working_dir = _map_working_dir(container)
-    if working_dir is not None:
-        template_def["working_dir"] = working_dir
+    # ACI does not support overriding working directory, so any workingDir
+    # defined in the recipe are ignored and the container starts with the
+    # image's default working directory.  Therefore, our policygen should ignore
+    # it as well.
+
+    # working_dir = _map_working_dir(container)
+    # if working_dir is not None:
+    #     template_def["working_dir"] = working_dir
 
     env_rules = (
         _platform_env_rules(platform)
