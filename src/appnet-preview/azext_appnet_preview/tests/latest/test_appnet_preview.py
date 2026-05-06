@@ -142,6 +142,7 @@ class AppnetMemberPreviewScenario(BaseScenario):
 
         self.delete_appnet_member()
 
+    @AllowLargeResponse(size_kb=99999)
     @AKSCustomResourceGroupPreparer()
     def test_appnet_member_list(self, resource_group):
         self.create_appnet()
