@@ -10,9 +10,10 @@ import re
 import base64
 
 
-# ccePolicy pattern: any key containing 'ccepolicy' (case-insensitive) followed by a quoted value
+# ccePolicy pattern: the 'ccePolicy' key (optionally quoted) followed by a quoted value
 _CCE_POLICY_PATTERN = re.compile(
-    r'["\']?[^"\']*[cC][cC][eE][pP][oO][lL][iI][cC][yY][^"\']*["\']?\s*:\s*["\'][^"\']*["\']'
+    r'["\']?ccePolicy["\']?\s*:\s*["\'][^"\']*["\']',
+    re.IGNORECASE,
 )
 
 
