@@ -132,7 +132,7 @@ def test_connection_env_no_connections():
 def test_connection_env_single():
     result = _map_connection_env_rules({"connections": {"db": {"source": "x"}}})
     assert result == [{
-        "pattern": "CONNECTIONS_DB_.+=.+", "strategy": "re2", "required": True,
+        "pattern": "CONNECTION_DB_.+=.+", "strategy": "re2", "required": True,
     }]
 
 

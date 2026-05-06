@@ -47,7 +47,7 @@
       "required": false
     },
     {
-      "pattern": "CONNECTIONS_REDIS_.+=.+",
+      "pattern": "CONNECTION_REDIS_.+=.+",
       "strategy": "re2",
       "required": true
     }

@@ -143,13 +143,13 @@ def _map_env_rules(container: dict) -> list[dict]:
 def _map_connection_env_rules(resource: dict) -> list[dict]:
     """Template: resource.connections  →  Policy: env_rules[]
 
-    Radius injects CONNECTIONS_<NAME>_* environment variables for each
+    Radius injects CONNECTION_<NAME>_* environment variables for each
     connection defined on the resource, unless the connection sets
     disableDefaultEnvVars to true.
     """
     return [
         {
-            "pattern": f"CONNECTIONS_{name.upper()}_.+=.+",
+            "pattern": f"CONNECTION_{name.upper()}_.+=.+",
             "strategy": "re2",
             "required": True,
         }
