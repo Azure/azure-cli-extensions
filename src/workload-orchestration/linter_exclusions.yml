@@ -33,3 +33,30 @@ workload-orchestration target review:
     solution_template_version_id:
       rule_exclusions:
       - option_length_too_long
+
+workload-orchestration sync:
+  parameters:
+    local_connected_registry_ip:
+      rule_exclusions:
+      - option_length_too_long
+
+workload-orchestration cluster init:
+  parameters:
+    extension-dependency-version:
+      rule_exclusions:
+      - option_length_too_long
+    extension_dependency_version:
+      rule_exclusions:
+      - option_length_too_long
+    custom-location-resource-group:
+      rule_exclusions:
+      - option_length_too_long
+    custom_location_resource_group:
+      rule_exclusions:
+      - option_length_too_long
+    custom-location-location:
+      rule_exclusions:
+      - option_length_too_long
+    custom_location_location:
+      rule_exclusions:
+      - option_length_too_long

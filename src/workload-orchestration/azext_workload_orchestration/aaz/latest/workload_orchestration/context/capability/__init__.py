@@ -7,8 +7,5 @@
 
 # pylint: skip-file
 # flake8: noqa
-
-from .__cmd_group import *
-from ._sync import *
-from . import cluster
-from . import hierarchy
+from ._add import *
+from ._remove import *
