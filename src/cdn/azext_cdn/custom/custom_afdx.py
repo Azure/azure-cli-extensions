@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=too-many-locals, too-many-statements too-many-boolean-expressions too-many-branches protected-access
 
-from azext_cdn.vendored_sdks.models import SkuName
 from azure.cli.core.aaz import AAZStrArg, AAZBoolArg, AAZListArg, AAZTimeArg, AAZIntArg, AAZIntArgFormat
 from azure.cli.core.aaz._base import has_value
 from azure.cli.core.azclierror import InvalidArgumentValueError
@@ -12,6 +11,7 @@ from azure.core.exceptions import ResourceNotFoundError
 from knack.log import get_logger
 from knack.util import CLIError
 
+from azext_cdn.vendored_sdks.models import SkuName
 from azext_cdn.aaz.latest.afd.custom_domain import Create as _AFDCustomDomainCreate, \
     Update as _AFDCustomDomainUpdate
 from azext_cdn.aaz.latest.afd.origin import Create as _AFDOriginCreate, Update as _AFDOriginUpdate

@@ -7,39 +7,31 @@ import sys
 
 from typing import Optional
 
-from azext_cdn.vendored_sdks.models import (Endpoint, SkuName, EndpointUpdateParameters, ProfileUpdateParameters,
-                                   MinimumTlsVersion, EndpointPropertiesUpdateParametersDeliveryPolicy, DeliveryRule,
-                                   DeliveryRuleRemoteAddressCondition, RemoteAddressMatchConditionParameters,
-                                   DeliveryRuleRequestMethodCondition, RequestMethodMatchConditionParameters,
-                                   DeliveryRuleQueryStringCondition, QueryStringMatchConditionParameters,
-                                   DeliveryRulePostArgsCondition, PostArgsMatchConditionParameters,
-                                   DeliveryRuleRequestHeaderCondition, RequestHeaderMatchConditionParameters,
-                                   DeliveryRuleRequestUriCondition, RequestUriMatchConditionParameters,
-                                   DeliveryRuleRequestBodyCondition, RequestBodyMatchConditionParameters,
-                                   DeliveryRuleRequestSchemeCondition, RequestSchemeMatchConditionParameters,
-                                   DeliveryRuleUrlPathCondition, UrlPathMatchConditionParameters,
-                                   DeliveryRuleUrlFileExtensionCondition, UrlFileExtensionMatchConditionParameters,
-                                   DeliveryRuleUrlFileNameCondition, UrlFileNameMatchConditionParameters,
-                                   DeliveryRuleHttpVersionCondition, HttpVersionMatchConditionParameters,
-                                   DeliveryRuleIsDeviceCondition, IsDeviceMatchConditionParameters,
-                                   DeliveryRuleCookiesCondition, CookiesMatchConditionParameters,
-                                   DeliveryRuleCacheExpirationAction, CacheExpirationActionParameters,
-                                   DeliveryRuleRequestHeaderAction, HeaderActionParameters,
-                                   DeliveryRuleResponseHeaderAction, DeliveryRuleCacheKeyQueryStringAction,
-                                   CacheKeyQueryStringActionParameters, UrlRedirectAction, ValidateCustomDomainInput,
-                                   DeliveryRuleAction, UrlRedirectActionParameters, LoadParameters,
-                                   UrlRewriteAction, UrlRewriteActionParameters, PurgeParameters,
-                                   CheckNameAvailabilityInput, CustomDomainParameters, ProbeProtocol,
-                                   HealthProbeRequestType, RequestMethodOperator, OriginGroupOverrideAction,
-                                   OriginGroupOverrideActionParameters, ResourceReference, CacheConfiguration,
-                                   OriginGroupOverride, DeliveryRuleRouteConfigurationOverrideAction,
-                                   RouteConfigurationOverrideActionParameters, RuleIsCompressionEnabled,
-                                   SocketAddrMatchConditionParameters, DeliveryRuleSocketAddrCondition,
-                                   DeliveryRuleClientPortCondition, ClientPortMatchConditionParameters,
-                                   DeliveryRuleServerPortCondition, ServerPortMatchConditionParameters,
-                                   DeliveryRuleHostNameCondition, HostNameMatchConditionParameters,
-                                   DeliveryRuleSslProtocolCondition, SslProtocolMatchConditionParameters,
-                                   SslProtocol, ResourceType)
+from azext_cdn.vendored_sdks.models import (
+    CacheConfiguration, CacheExpirationActionParameters, CacheKeyQueryStringActionParameters,
+    CheckNameAvailabilityInput, ClientPortMatchConditionParameters, CookiesMatchConditionParameters,
+    CustomDomainParameters, DeliveryRule, DeliveryRuleAction, DeliveryRuleCacheExpirationAction,
+    DeliveryRuleCacheKeyQueryStringAction, DeliveryRuleClientPortCondition, DeliveryRuleCookiesCondition,
+    DeliveryRuleHostNameCondition, DeliveryRuleHttpVersionCondition, DeliveryRuleIsDeviceCondition,
+    DeliveryRulePostArgsCondition, DeliveryRuleQueryStringCondition, DeliveryRuleRemoteAddressCondition,
+    DeliveryRuleRequestBodyCondition, DeliveryRuleRequestHeaderAction, DeliveryRuleRequestHeaderCondition,
+    DeliveryRuleRequestMethodCondition, DeliveryRuleRequestSchemeCondition, DeliveryRuleRequestUriCondition,
+    DeliveryRuleResponseHeaderAction, DeliveryRuleRouteConfigurationOverrideAction,
+    DeliveryRuleServerPortCondition, DeliveryRuleSocketAddrCondition, DeliveryRuleSslProtocolCondition,
+    DeliveryRuleUrlFileExtensionCondition, DeliveryRuleUrlFileNameCondition, DeliveryRuleUrlPathCondition,
+    Endpoint, EndpointPropertiesUpdateParametersDeliveryPolicy, EndpointUpdateParameters,
+    HeaderActionParameters, HealthProbeRequestType, HostNameMatchConditionParameters,
+    HttpVersionMatchConditionParameters, IsDeviceMatchConditionParameters, LoadParameters, MinimumTlsVersion,
+    OriginGroupOverride, OriginGroupOverrideAction, OriginGroupOverrideActionParameters,
+    PostArgsMatchConditionParameters, ProbeProtocol, ProfileUpdateParameters, PurgeParameters,
+    QueryStringMatchConditionParameters, RemoteAddressMatchConditionParameters, RequestBodyMatchConditionParameters,
+    RequestHeaderMatchConditionParameters, RequestMethodMatchConditionParameters, RequestMethodOperator,
+    RequestSchemeMatchConditionParameters, RequestUriMatchConditionParameters, ResourceReference, ResourceType,
+    RouteConfigurationOverrideActionParameters, RuleIsCompressionEnabled, SkuName, SocketAddrMatchConditionParameters,
+    ServerPortMatchConditionParameters, SslProtocol, SslProtocolMatchConditionParameters,
+    UrlFileExtensionMatchConditionParameters, UrlFileNameMatchConditionParameters,
+    UrlPathMatchConditionParameters, UrlRedirectAction, UrlRedirectActionParameters,
+    UrlRewriteAction, UrlRewriteActionParameters, ValidateCustomDomainInput)
 
 from azext_cdn.vendored_sdks.models._cdn_management_client_enums import CacheType
 from azext_cdn.vendored_sdks.operations import (OriginsOperations, OriginGroupsOperations)
@@ -732,15 +724,10 @@ def enable_custom_https(cmd, client, resource_group_name, profile_name, endpoint
                         user_cert_vault_name=None, user_cert_secret_name=None, user_cert_secret_version=None,
                         user_cert_protocol_type=None, min_tls_version=None):
 
-    from azext_cdn.vendored_sdks.models import (CdnCertificateSourceParameters,
-                                       UserManagedHttpsParameters,
-                                       CdnManagedHttpsParameters,
-                                       KeyVaultCertificateSourceParameters,
-                                       CertificateType,
-                                       Profile,
-                                       ProtocolType,
-                                       UpdateRule,
-                                       DeleteRule)
+    from azext_cdn.vendored_sdks.models import (
+        CdnCertificateSourceParameters, CdnManagedHttpsParameters, CertificateType,
+        DeleteRule, KeyVaultCertificateSourceParameters, Profile, ProtocolType, UpdateRule,
+        UserManagedHttpsParameters)
 
     profile: Profile = client.profiles.get(resource_group_name, profile_name)
 
@@ -952,9 +939,8 @@ def create_origin_group(cmd,
     response_error_detection_failover_threshold: Optional[int] = None
     response_error_detection_status_code_ranges: Optional[str] = None
 
-    from azext_cdn.vendored_sdks.models import (OriginGroup,
-                                       HealthProbeParameters,
-                                       ResponseBasedOriginErrorDetectionParameters)
+    from azext_cdn.vendored_sdks.models import (
+        HealthProbeParameters, OriginGroup, ResponseBasedOriginErrorDetectionParameters)
 
     health_probe_settings = HealthProbeParameters(probe_path=probe_path,
                                                   probe_request_type=HealthProbeRequestType[probe_method.upper()],
@@ -1013,9 +999,8 @@ def update_origin_group(cmd,
     failover_threshold: Optional[int] = None
     status_code_ranges: Optional[str] = None
 
-    from azext_cdn.vendored_sdks.models import (OriginGroupUpdateParameters,
-                                       HealthProbeParameters,
-                                       ResponseBasedOriginErrorDetectionParameters)
+    from azext_cdn.vendored_sdks.models import (
+        HealthProbeParameters, OriginGroupUpdateParameters, ResponseBasedOriginErrorDetectionParameters)
 
     if probe_method is not None:
         probe_method = HealthProbeRequestType[probe_method.upper()]

@@ -3,8 +3,9 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azext_cdn.vendored_sdks.models import (SkuName, PolicyMode, PolicyEnabledState, CdnWebApplicationFirewallPolicy,
-                                              ManagedRuleSet, ManagedRuleGroupOverride, CustomRule, RateLimitRule)
+from azext_cdn.vendored_sdks.models import (
+    CdnWebApplicationFirewallPolicy, CustomRule, ManagedRuleGroupOverride, ManagedRuleSet, PolicyEnabledState,
+    PolicyMode, RateLimitRule, SkuName)
 
 from azext_cdn.vendored_sdks.operations import EndpointsOperations
 

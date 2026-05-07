@@ -8,11 +8,11 @@ import argparse
 
 from azure.cli.core.aaz import AAZStrArg, AAZBoolArg, AAZIntArg, AAZListArg, AAZTimeArg
 from azure.cli.core.aaz._base import has_value
-from azext_cdn.vendored_sdks.models import (MinimumTlsVersion, ProtocolType, SkuName, UpdateRule, DeleteRule, CertificateType,
-                                              ResourceType)
 from knack.log import get_logger
 from knack.util import CLIError
 
+from azext_cdn.vendored_sdks.models import (
+    CertificateType, DeleteRule, MinimumTlsVersion, ProtocolType, ResourceType, SkuName, UpdateRule)
 from azext_cdn.aaz.latest.afd.profile import Show as _AFDProfileShow, \
     Create as _AFDProfileCreate, Update as _AFDProfileUpdate, Delete as _AFDProfileDelete, \
     List as _AFDProfileList
