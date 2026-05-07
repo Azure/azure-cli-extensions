@@ -13,19 +13,15 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "connectedmachine run-command update",
-    is_preview=True,
 )
 class Update(AAZCommand):
     """Update operation to create or update a run command.
-
-    :example: sample command for run-command update
-        az connetcedmachine run-command update --resource-group myResourceGroup --name myRunCommand --machine-name myMachine --subscription mySubscription --tags Tag1=Value1
     """
 
     _aaz_info = {
-        "version": "2024-11-10-preview",
+        "version": "2025-02-19-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/runcommands/{}", "2024-11-10-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/runcommands/{}", "2025-02-19-preview"],
         ]
     }
 
@@ -54,7 +50,7 @@ class Update(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="[a-zA-Z0-9-_\.]+",
+                pattern="[a-zA-Z0-9-_\\.]+",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -66,7 +62,7 @@ class Update(AAZCommand):
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
-                pattern="[a-zA-Z0-9-_\.]+",
+                pattern="[a-zA-Z0-9-_\\.]+",
             ),
         )
 
@@ -93,7 +89,7 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.output_blob_managed_identity = AAZObjectArg(
-            options=["--output-blob-id", "--output-blob-managed-identity"],
+            options=["--output-id", "--output-blob-managed-identity"],
             arg_group="Properties",
             help="User-assigned managed identity that has access to outputBlobUri storage blob. Use an empty object in case of system-assigned identity. Make sure managed identity has been given access to blob's container with 'Storage Blob Data Contributor' role assignment. In case of user-assigned identity, make sure you add it under VM's identity. For more info on managed identity and Run Command, refer https://aka.ms/ManagedIdentity and https://aka.ms/RunCommandManaged",
             nullable=True,
@@ -329,7 +325,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-11-10-preview",
+                    "api-version", "2025-02-19-preview",
                     required=True,
                 ),
             }
@@ -432,7 +428,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-11-10-preview",
+                    "api-version", "2025-02-19-preview",
                     required=True,
                 ),
             }
