@@ -23,9 +23,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-03-31-preview",
+        "version": "2026-04-30-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cleanroom/consortiums/{}", "2026-03-31-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cleanroom/consortiums/{}", "2026-04-30-preview"],
         ]
     }
 
@@ -65,6 +65,11 @@ class Create(AAZCommand):
             options=["--members"],
             arg_group="Properties",
             help="Gets or sets the list of members to be added to the consortium.",
+        )
+        _args_schema.resource_location = AAZStrArg(
+            options=["--resource-location"],
+            arg_group="Properties",
+            help="Gets or sets the resource location for the consortium.",
         )
 
         members = cls._args_schema.members
@@ -206,7 +211,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-03-31-preview",
+                    "api-version", "2026-04-30-preview",
                     required=True,
                 ),
             }
@@ -239,6 +244,7 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("members", AAZListType, ".members")
+                properties.set_prop("resourceLocation", AAZStrType, ".resource_location")
 
             members = _builder.get(".properties.members")
             if members is not None:
@@ -321,6 +327,9 @@ class Create(AAZCommand):
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
+            )
+            properties.resource_location = AAZStrType(
+                serialized_name="resourceLocation",
             )
             properties.service_certificate_pem = AAZStrType(
                 serialized_name="serviceCertificatePem",
