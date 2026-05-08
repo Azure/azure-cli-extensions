@@ -7,13 +7,21 @@ import re
 from azure.cli.core.azclierror import ValidationError, ResourceNotFoundError
 
 
-def _format_alert(title, steps, error_code):
-    """Format a polished error alert for CLI output."""
-    lines = [title, ""]
-    lines.append("Recommendation:")
-    for i, step in enumerate(steps, 1):
-        lines.append("  {}. {}".format(i, step))
-    lines.append("")
+def _format_alert(options, error_code):
+    """Format a polished error alert for CLI output.
+
+    Args:
+        options: list of (title, steps) tuples. Each is an Option in the alert.
+        error_code: error code string appended at the end.
+    """
+    lines = []
+    for idx, (title, steps) in enumerate(options, 1):
+        lines.append("Option {}".format(idx))
+        lines.append("  Title: {}".format(title))
+        lines.append("  Recommendation:")
+        for i, step in enumerate(steps, 1):
+            lines.append("    {}. {}".format(i, step))
+        lines.append("")
     lines.append("Error code: {}".format(error_code))
     return "\n".join(lines)
 
@@ -29,11 +37,15 @@ def handle_sitekey_error(ex):
     if "ValidationFailed" in error_msg and "Token expiry date cannot be set beyond" in error_msg:
         raise ValidationError(
             _format_alert(
-                "Site key token expiry date exceeds the allowed maximum.",
                 [
-                    "Set the --token-expiry-date value to a date no more than 7 days from the current UTC time.",
-                    "Alternatively, remove the --token-expiry-date parameter to use the default (7 days from now).",
-                    "Rerun the create command.",
+                    (
+                        "Site key token expiry date exceeds the allowed maximum.",
+                        [
+                            "Set the --token-expiry-date value to a date no more than 7 days from the current UTC time.",
+                            "Alternatively, remove the --token-expiry-date parameter to use the default (7 days from now).",
+                            "Rerun the create command.",
+                        ],
+                    ),
                 ],
                 "ValidationFailed",
             )
@@ -46,24 +58,21 @@ def handle_sitekey_error(ex):
         if match:
             existing_key = match.group(1)
 
-        steps = [
-            "Run 'az site key list -g <resource-group>' to identify the existing site key.",
-        ]
-        if existing_key:
-            steps.append(
-                "If you need a new key, delete the existing one with "
-                "'az site key delete --name {} -g <resource-group> --yes'.".format(existing_key)
-            )
-        else:
-            steps.append(
-                "If you need a new key, delete the existing one with "
-                "'az site key delete --name <existing-key> -g <resource-group> --yes'."
-            )
-        steps.append("Create the new site key after the deletion completes.")
+        delete_cmd = "'az site key delete --name {} -g <resource-group> --yes'".format(
+            existing_key if existing_key else "<existing-key>"
+        )
         raise ValidationError(
             _format_alert(
-                "Site already has an existing site key.",
-                steps,
+                [
+                    (
+                        "Site already has an existing site key.",
+                        [
+                            "Run 'az site key list -g <resource-group>' to identify the existing site key.",
+                            "Delete the existing key with {}.".format(delete_cmd),
+                            "Create the new site key after the deletion completes.",
+                        ],
+                    ),
+                ],
                 "ValidationFailed",
             )
         )
@@ -73,12 +82,16 @@ def handle_sitekey_error(ex):
        "Microsoft.Edge/sites/" in error_msg:
         raise ResourceNotFoundError(
             _format_alert(
-                "Specified site does not exist in the resource group.",
                 [
-                    "Run 'az site list -g <resource-group>' to list available sites.",
-                    "Verify the --site-name value matches an existing site name exactly.",
-                    "Confirm the site is in the same resource group specified with -g.",
-                    "Rerun the create command with the correct site name.",
+                    (
+                        "Specified site does not exist in the resource group.",
+                        [
+                            "Run 'az site list -g <resource-group>' to list available sites.",
+                            "Verify the --site-name value matches an existing site name exactly.",
+                            "Confirm the site is in the same resource group specified with -g.",
+                            "Rerun the create command with the correct site name.",
+                        ],
+                    ),
                 ],
                 "ReadResourceDataFailed, ResourceNotFound",
             )
@@ -88,12 +101,16 @@ def handle_sitekey_error(ex):
     if "ResourceNotFound" in error_msg and "siteKeys/" in error_msg:
         raise ResourceNotFoundError(
             _format_alert(
-                "Specified site key could not be found.",
                 [
-                    "Run 'az site key list -g <resource-group>' to list existing site keys.",
-                    "Verify the --name value matches an existing site key name exactly.",
-                    "Confirm the site key is in the resource group specified with -g.",
-                    "Rerun the command with the correct name.",
+                    (
+                        "Specified site key could not be found.",
+                        [
+                            "Run 'az site key list -g <resource-group>' to list existing site keys.",
+                            "Verify the --name value matches an existing site key name exactly.",
+                            "Confirm the site key is in the resource group specified with -g.",
+                            "Rerun the command with the correct name.",
+                        ],
+                    ),
                 ],
                 "ResourceNotFound",
             )
