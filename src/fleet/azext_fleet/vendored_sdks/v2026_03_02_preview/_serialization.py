@@ -1647,7 +1647,7 @@ class Deserializer:
                 if isinstance(data, self.deserialize_expected_types.get(data_type, tuple())):
                     return data
 
-                is_a_text_parsing_type = lambda x: x not in [  # pylint: disable=unnecessary-lambda-assignment  # noqa: E731
+                is_a_text_parsing_type = lambda x: x not in [  # pylint: disable=unnecessary-lambda-assignment
                     "object",
                     "[]",
                     r"{}",

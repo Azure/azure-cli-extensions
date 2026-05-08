@@ -84,10 +84,12 @@ class ClusterMeshState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
 
     NOT_CONNECTED = "NotConnected"
     """The mesh is not connected."""
-    CONNECTING = "Connecting"
-    """The mesh is connecting."""
+    APPLYING = "Applying"
+    """The mesh is applying."""
     CONNECTED = "Connected"
     """The mesh is connected."""
+    DEGRADED = "Degraded"
+    """The mesh is degraded."""
     FAILED = "Failed"
     """The mesh failed to connect."""
 
@@ -245,8 +247,6 @@ class ManagedServiceIdentityType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
 class MeshMemberState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Mesh member state."""
 
-    NOT_CONNECTED = "NotConnected"
-    """The member is not connected to the mesh."""
     CONNECTING = "Connecting"
     """The member is connecting to the mesh."""
     CONNECTED = "Connected"

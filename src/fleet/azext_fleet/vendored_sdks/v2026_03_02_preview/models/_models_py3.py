@@ -8,12 +8,9 @@
 # --------------------------------------------------------------------------
 
 import datetime
-from collections.abc import MutableMapping
 from typing import Any, Dict, List, Optional, TYPE_CHECKING, Union
 
 from .. import _serialization
-
-JSON = MutableMapping[str, Any]  # pylint: disable=unsubscriptable-object
 
 if TYPE_CHECKING:
     from .. import models as _models
@@ -582,7 +579,7 @@ class ClusterMeshProfileStatus(_serialization.Model):
     All required parameters must be populated in order to send to server.
 
     :ivar state: The state of the cluster mesh. Required. Known values are: "NotConnected",
-     "Connecting", "Connected", and "Failed".
+     "Applying", "Connected", "Degraded", and "Failed".
     :vartype state: str or ~azure.mgmt.containerservicefleet.models.ClusterMeshState
     :ivar last_applied_member_selector: The last applied MemberSelector for the cluster mesh
      profile.
@@ -2100,8 +2097,8 @@ class MeshMemberStatus(_serialization.Model):
 
     All required parameters must be populated in order to send to server.
 
-    :ivar state: The mesh member state. Required. Known values are: "NotConnected", "Connecting",
-     "Connected", "Disconnecting", and "Failed".
+    :ivar state: The mesh member state. Required. Known values are: "Connecting", "Connected",
+     "Disconnecting", and "Failed".
     :vartype state: str or ~azure.mgmt.containerservicefleet.models.MeshMemberState
     :ivar last_updated_at: When the status was last updated.
     :vartype last_updated_at: ~datetime.datetime
