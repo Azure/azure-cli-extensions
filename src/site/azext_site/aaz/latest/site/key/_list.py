@@ -10,6 +10,8 @@
 
 from azure.cli.core.aaz import *
 
+from ._error_handler import handle_sitekey_error
+
 
 @register_command(
     "site key list",
@@ -32,7 +34,14 @@ class List(AAZCommand):
 
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_paging(self._execute_operations, self._output)
+        return self.build_paging(self._execute_operations_with_error_handling, self._output)
+
+    def _execute_operations_with_error_handling(self):
+        try:
+            self._execute_operations()
+        except Exception as ex:
+            handle_sitekey_error(ex)
+            raise
 
     _args_schema = None
 

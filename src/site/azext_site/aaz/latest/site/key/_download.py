@@ -12,6 +12,8 @@ import os
 from azure.cli.core.aaz import *
 from knack.log import get_logger
 
+from ._error_handler import handle_sitekey_error
+
 logger = get_logger(__name__)
 
 
@@ -40,7 +42,11 @@ class Download(AAZCommand):
 
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
+        try:
+            self._execute_operations()
+        except Exception as ex:
+            handle_sitekey_error(ex)
+            raise
         return self._output()
 
     _args_schema = None

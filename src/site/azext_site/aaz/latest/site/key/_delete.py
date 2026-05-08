@@ -10,6 +10,8 @@
 
 from azure.cli.core.aaz import *
 
+from ._error_handler import handle_sitekey_error
+
 
 @register_command(
     "site key delete",
@@ -31,7 +33,11 @@ class Delete(AAZCommand):
 
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
+        try:
+            self._execute_operations()
+        except Exception as ex:
+            handle_sitekey_error(ex)
+            raise
         return None
 
     _args_schema = None
