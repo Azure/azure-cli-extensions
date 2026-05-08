@@ -146,16 +146,31 @@ def _map_connection_env_rules(resource: dict) -> list[dict]:
     Radius injects CONNECTION_<NAME>_* environment variables for each
     connection defined on the resource, unless the connection sets
     disableDefaultEnvVars to true.
+
+    Additionally, the Radius ACI deployment template has special-case
+    handling for a connection literally named ``secrets``: if its target
+    resource exposes a ``userAssignedIdentityClientId`` in computedValues,
+    the container group is injected with ``AZURE_CLIENT_ID`` and
+    ``AZURE_KEYVAULT_URI`` env vars. Emit matching policy rules so that
+    these are allowed when present.
     """
-    return [
-        {
+    rules = []
+    for name, conn in resource.get("connections", {}).items():
+        if conn.get("disableDefaultEnvVars"):
+            continue
+        rules.append({
             "pattern": f"CONNECTION_{name.upper()}_.+=.*",
             "strategy": "re2",
             "required": True,
-        }
-        for name, conn in resource.get("connections", {}).items()
-        if not conn.get("disableDefaultEnvVars")
-    ]
+        })
+        if name == "secrets":
+            for var in ("AZURE_CLIENT_ID", "AZURE_KEYVAULT_URI"):
+                rules.append({
+                    "pattern": f"{var}=.*",
+                    "strategy": "re2",
+                    "required": False,
+                })
+    return rules
 
 
 def _map_volume_mounts(container: dict) -> list[dict]:
