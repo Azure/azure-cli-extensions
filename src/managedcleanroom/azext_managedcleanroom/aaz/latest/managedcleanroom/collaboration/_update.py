@@ -23,9 +23,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-03-31-preview",
+        "version": "2026-04-30-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cleanroom/collaborations/{}", "2026-03-31-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cleanroom/collaborations/{}", "2026-04-30-preview"],
         ]
     }
 
@@ -59,6 +59,16 @@ class Update(AAZCommand):
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
+        )
+
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.resource_location = AAZStrArg(
+            options=["--resource-location"],
+            arg_group="Properties",
+            help="Gets or sets the resource location for the collaboration.",
+            nullable=True,
         )
 
         # define Arg Group "Resource"
@@ -155,7 +165,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-03-31-preview",
+                    "api-version", "2026-04-30-preview",
                     required=True,
                 ),
             }
@@ -254,7 +264,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-03-31-preview",
+                    "api-version", "2026-04-30-preview",
                     required=True,
                 ),
             }
@@ -312,7 +322,12 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("resourceLocation", AAZStrType, ".resource_location")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -361,7 +376,7 @@ class _UpdateHelper:
             flags={"read_only": True},
         )
         collaboration_read.properties = AAZObjectType(
-            flags={"required": True, "client_flatten": True},
+            flags={"client_flatten": True},
         )
         collaboration_read.system_data = AAZObjectType(
             serialized_name="systemData",
@@ -396,6 +411,9 @@ class _UpdateHelper:
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
             flags={"read_only": True},
+        )
+        properties.resource_location = AAZStrType(
+            serialized_name="resourceLocation",
         )
         properties.workloads = AAZListType(
             flags={"read_only": True},

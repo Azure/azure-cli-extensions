@@ -28,9 +28,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-07-15",
+        "version": "2026-01-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/accesscontrollists/{}", "2025-07-15"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/accesscontrollists/{}", "2026-01-15-preview"],
         ]
     }
 
@@ -125,7 +125,7 @@ class Create(AAZCommand):
             options=["--device-role"],
             arg_group="Properties",
             help="Device Role",
-            enum={"CE": "CE", "ManagementSwitch": "ManagementSwitch", "NPB": "NPB", "ToR": "ToR"},
+            enum={"CE": "CE", "ManagementSwitch": "ManagementSwitch", "NPB": "NPB", "TerminalServer": "TerminalServer", "ToR": "ToR"},
         )
         _args_schema.dynamic_match_configurations = AAZListArg(
             options=["--dynamic-match-configs", "--dynamic-match-configurations"],
@@ -783,7 +783,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-15",
+                    "api-version", "2026-01-15-preview",
                     required=True,
                 ),
             }
