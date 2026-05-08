@@ -41,6 +41,7 @@ from azext_fleet.vendored_sdks.v2026_03_02_preview.models import (
 
 logger = get_logger(__name__)
 
+
 # pylint: disable=too-many-locals
 def create_fleet(cmd,
                  client,

@@ -17,7 +17,7 @@ CUSTOM_MGMT_FLEET = CustomResourceType('azext_fleet.vendored_sdks', 'ContainerSe
 # container service clients
 def get_container_service_client(cli_ctx, subscription_id=None):
     return get_mgmt_service_client(
-        cli_ctx, 
+        cli_ctx,
         CUSTOM_MGMT_FLEET,
         subscription_id=subscription_id,
     )
