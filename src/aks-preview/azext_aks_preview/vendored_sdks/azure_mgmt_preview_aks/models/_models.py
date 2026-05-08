@@ -5686,6 +5686,7 @@ class ManagedCluster(TrackedResource):
         "hosted_system_profile",
         "health_monitor_profile",
         "control_plane_scaling_profile",
+        "enable_fips",
         "status",
     ]
 
@@ -9300,6 +9301,8 @@ class ManagedClusterProperties(_Model):
      Kubernetes version 1.33.0 or later.
     :vartype control_plane_scaling_profile:
      ~azure.mgmt.containerservice.models.ManagedClusterControlPlaneScalingProfile
+    :ivar enable_fips: Whether to enable FIPS mode at the cluster level.
+    :vartype enable_fips: bool
     :ivar status: Contains read-only information about the Managed Cluster.
     :vartype status: ~azure.mgmt.containerservice.models.ManagedClusterStatus
     """
@@ -9523,6 +9526,10 @@ class ManagedClusterProperties(_Model):
     )
     """Profile for providing scaled and performance guaranteed control plane capacity to deliver
      consistent performance under high workload. Requires Kubernetes version 1.33.0 or later."""
+    enable_fips: Optional[bool] = rest_field(
+        name="enableFIPS", visibility=["read", "create", "update", "delete", "query"]
+    )
+    """Whether to enable FIPS mode at the cluster level."""
     status: Optional["_models.ManagedClusterStatus"] = rest_field(
         visibility=["read", "create", "update", "delete", "query"]
     )
@@ -9574,6 +9581,7 @@ class ManagedClusterProperties(_Model):
         hosted_system_profile: Optional["_models.ManagedClusterHostedSystemProfile"] = None,
         health_monitor_profile: Optional["_models.ManagedClusterHealthMonitorProfile"] = None,
         control_plane_scaling_profile: Optional["_models.ManagedClusterControlPlaneScalingProfile"] = None,
+        enable_fips: Optional[bool] = None,
         status: Optional["_models.ManagedClusterStatus"] = None,
     ) -> None: ...
 

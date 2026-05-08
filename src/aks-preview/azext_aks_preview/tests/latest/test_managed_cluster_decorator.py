@@ -98,6 +98,8 @@ from azure.cli.core.azclierror import (
     UnknownError,
     CLIError,
 )
+from azure.cli.core.commands import AzCliCommandInvoker
+from azure.cli.core.util import todict
 from azure.cli.command_modules.acs._consts import (
     CONST_OUTBOUND_TYPE_LOAD_BALANCER,
     CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
@@ -7792,8 +7794,12 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             kubernetes_version="1.34.0",
             agent_pool_profiles=[ground_truth_agentpool_profile],
         )
-        ground_truth_mc_2.properties["enableFIPS"] = True
+        ground_truth_mc_2.enable_fips = True
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
+        self.assertEqual(
+            todict(dec_mc_2, AzCliCommandInvoker.remove_additional_prop_layer).get("enableFips"),
+            True,
+        )
 
         dec_3 = AKSPreviewManagedClusterCreateDecorator(
             self.cmd,
@@ -14133,8 +14139,12 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             kubernetes_version="1.34.0",
             agent_pool_profiles=[agentpool_profile],
         )
-        ground_truth_mc_2.properties["enableFIPS"] = True
+        ground_truth_mc_2.enable_fips = True
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
+        self.assertEqual(
+            todict(dec_mc_2, AzCliCommandInvoker.remove_additional_prop_layer).get("enableFips"),
+            True,
+        )
 
         dec_3 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
@@ -14192,8 +14202,12 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             kubernetes_version="1.34.0",
             agent_pool_profiles=[agentpool_profile_5],
         )
-        ground_truth_mc_5.properties["enableFIPS"] = False
+        ground_truth_mc_5.enable_fips = False
         self.assertEqual(dec_mc_5, ground_truth_mc_5)
+        self.assertEqual(
+            todict(dec_mc_5, AzCliCommandInvoker.remove_additional_prop_layer).get("enableFips"),
+            False,
+        )
 
         dec_6 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
