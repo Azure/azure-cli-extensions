@@ -18,7 +18,7 @@ from azure.cli.core import get_default_cli
 from azure.mgmt.core.tools import parse_resource_id
 from azure.cli.command_modules.acs._graph import resolve_object_id
 
-from azext_fleet._client_factory import CUSTOM_MGMT_FLEET, cf_fleet_members, cf_fleets
+from azext_fleet._client_factory import CUSTOM_MGMT_FLEET, cf_fleet_members, cf_fleets, cf_cluster_mesh_profiles
 from azext_fleet._helpers import is_rp_registered, print_or_merge_credentials
 from azext_fleet._helpers import assign_network_contributor_role_to_subnet
 from azext_fleet._helpers import get_msi_object_id
@@ -40,12 +40,6 @@ from azext_fleet.vendored_sdks.v2026_03_02_preview.models import (
 )
 
 logger = get_logger(__name__)
-
-
-def _odata_quote(value):
-    """Escape and single-quote a string for use in an OData $filter expression."""
-    return "'" + value.replace("'", "''") + "'"
-
 
 # pylint: disable=too-many-locals
 def create_fleet(cmd,
@@ -390,7 +384,7 @@ def list_fleet_member(cmd,  # pylint: disable=unused-argument
                       cluster_mesh_profile=None):
     filter_expr = None
     if cluster_mesh_profile:
-        filter_expr = f"clusterMeshProfile eq {_odata_quote(cluster_mesh_profile)}"
+        filter_expr = f"clusterMeshProfile eq {cluster_mesh_profile}"
     return client.list_by_fleet(resource_group_name, fleet_name, filter=filter_expr)
 
 
@@ -1170,30 +1164,80 @@ def list_cluster_mesh_profile_members(cmd,
     """
     members_client = cf_fleet_members(cmd.cli_ctx)
     if selector:
-        filter_expr = f"clusterMeshProfile.Selector eq {_odata_quote(name)}"
+        filter_expr = f"clusterMeshProfile.Selector eq {name}"
     else:
-        filter_expr = f"clusterMeshProfile eq {_odata_quote(name)}"
+        filter_expr = f"clusterMeshProfile eq {name}"
     return members_client.list_by_fleet(resource_group_name, fleet_name, filter=filter_expr)
 
 
-def _apply_cluster_mesh_what_if(cmd, resource_group_name, fleet_name, name):
-    """Simulate apply by comparing currently-applied members vs selector-matched members."""
-    members_client = cf_fleet_members(cmd.cli_ctx)
+def _parse_label_selector(selector_str):
+    """Parse a simple label selector string like 'env=production,tier=frontend'
+    into a dict of {key: value} pairs.  Only equality selectors are supported."""
+    labels = {}
+    if not selector_str:
+        return labels
+    for part in selector_str.split(","):
+        part = part.strip()
+        if "=" in part:
+            k, v = part.split("=", 1)
+            labels[k.strip()] = v.strip()
+    return labels
 
-    # Members currently in the mesh (already applied)
-    current_filter = f"clusterMeshProfile eq {_odata_quote(name)}"
+
+def _member_matches_selector(member_labels, selector_labels):
+    """Return True if the member's labels satisfy every key=value in the selector."""
+    if not selector_labels:
+        return False
+    if not member_labels:
+        return False
+    return all(member_labels.get(k) == v for k, v in selector_labels.items())
+
+
+def _apply_cluster_mesh_what_if(cmd, resource_group_name, fleet_name, name):
+    """Simulate apply by comparing currently-applied members vs selector-matched members.
+
+    The server-side selector filter (clusterMeshProfile.Selector) may exclude
+    members that are already assigned to a *different* mesh profile.  To detect
+    those conflicts we also fetch the profile's selector, list ALL fleet members,
+    and do client-side label matching.
+    """
+    members_client = cf_fleet_members(cmd.cli_ctx)
+    profiles_client = cf_cluster_mesh_profiles(cmd.cli_ctx)
+
+    sub_id = get_subscription_id(cmd.cli_ctx)
+    this_profile_id = (
+        f"/subscriptions/{sub_id}/resourceGroups/{resource_group_name}"
+        f"/providers/Microsoft.ContainerService/fleets/{fleet_name}"
+        f"/clusterMeshProfiles/{name}"
+    )
+
+    # Fetch the profile to read its selector
+    profile = profiles_client.get(resource_group_name, fleet_name, name)
+    selector_str = ""
+    if profile.properties and profile.properties.member_selector:
+        selector_str = profile.properties.member_selector.by_label or ""
+    selector_labels = _parse_label_selector(selector_str)
+
+    # Members currently in the mesh (already applied to THIS profile)
+    current_filter = f"clusterMeshProfile eq {name}"
     current_members = {
         m.name: m for m in members_client.list_by_fleet(
             resource_group_name, fleet_name, filter=current_filter
         )
     }
 
-    # Members that match the selector (would be in the mesh after apply)
-    selector_filter = f"clusterMeshProfile.Selector eq {_odata_quote(name)}"
-    desired_members = {
+    # All fleet members — needed to find selector matches that the server
+    # filter omits (e.g. members assigned to a different mesh profile).
+    all_members = {
         m.name: m for m in members_client.list_by_fleet(
-            resource_group_name, fleet_name, filter=selector_filter
+            resource_group_name, fleet_name
         )
+    }
+
+    # Client-side selector matching across ALL members
+    desired_members = {
+        mname: m for mname, m in all_members.items()
+        if _member_matches_selector(m.labels, selector_labels)
     }
 
     results = []
@@ -1209,19 +1253,39 @@ def _apply_cluster_mesh_what_if(cmd, resource_group_name, fleet_name, name):
         if member.mesh_properties and member.mesh_properties.status:
             mesh_state = member.mesh_properties.status.state
 
+        action = None
+        error_message = None
+
         if in_desired and not in_current:
-            action = "Add"
+            # Check if this member already belongs to a different mesh profile
+            existing_profile_id = (
+                member.mesh_properties.cluster_mesh_profile_resource_id
+                if member.mesh_properties else None
+            )
+            if existing_profile_id and existing_profile_id.lower() != this_profile_id.lower():
+                other_name = existing_profile_id.rsplit("/", 1)[-1]
+                action = "Error"
+                error_message = (
+                    f'This member is part of a different clusterMeshProfile "{other_name}". '
+                    f"Remove it from that profile first."
+                )
+            else:
+                action = "Add"
         elif in_current and not in_desired:
             action = "Remove"
         else:
             action = "-"
 
-        results.append({
+        entry = {
+            "Action": action,
             "ClusterResourceId": member.cluster_resource_id,
             "ETag": member.e_tag,
+            "MeshMembershipState": mesh_state or "-",
             "Name": member.name,
-            "Action": action,
-            "MeshMembershipState": mesh_state or "-"
-        })
+        }
+        if error_message:
+            entry["ErrorMessage"] = error_message
+
+        results.append(entry)
 
     return results
