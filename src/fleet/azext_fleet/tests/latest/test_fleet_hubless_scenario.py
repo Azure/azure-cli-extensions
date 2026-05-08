@@ -44,7 +44,7 @@ class FleetHublessScenarioTest(ScenarioTest):
         return pathname.replace('\\', '\\\\')
 
     @AllowLargeResponse(size_kb=9999)
-    @ResourceGroupPreparer(name_prefix='cli-', random_name_length=8)
+    @ResourceGroupPreparer(name_prefix='cli-', random_name_length=8, location='westcentralus')
     def test_fleet_hubless(self):
 
         self.kwargs.update({
@@ -163,10 +163,10 @@ class FleetHublessScenarioTest(ScenarioTest):
             self.check('strategy.stages[0].memberSelector.byLabel', 'team=fleet'),
             self.check('strategy.stages[0].groups[0].maxConcurrency', '{strategy_group1_max_concurrency}'),
             self.check('strategy.stages[0].groups[0].maxAllowedFailures', '{strategy_group1_max_allowed_failures}'),
-            self.check('strategy.stages[0].groups[0].memberSelector.byLabel', 'team=fleet'),
+            self.check('strategy.stages[0].groups[0].memberSelector', None),
             self.check('strategy.stages[0].groups[1].maxConcurrency', '{strategy_group2_max_concurrency}'),
             self.check('strategy.stages[0].groups[1].maxAllowedFailures', '{strategy_group2_max_allowed_failures}'),
-            self.check('strategy.stages[0].groups[1].memberSelector', None)
+            self.check('strategy.stages[0].groups[1].memberSelector.byLabel', 'team=fleet')
         ])
 
         self.cmd('fleet updatestrategy list -g {rg} -f {fleet_name}', checks=[
@@ -195,8 +195,8 @@ class FleetHublessScenarioTest(ScenarioTest):
             self.check('status.stages[0].groups[1].maxConcurrency', '{updaterun_group2_max_concurrency}'),
             self.check('status.stages[0].groups[1].maxAllowedFailures', '{updaterun_group2_max_allowed_failures}'),
             self.check('strategy.stages[0].memberSelector.byLabel', 'team=fleet'),
-            self.check('strategy.stages[0].groups[0].memberSelector.byLabel', 'team=fleet'),
-            self.check('strategy.stages[0].groups[1].memberSelector', None)
+            self.check('strategy.stages[0].groups[0].memberSelector', None),
+            self.check('strategy.stages[0].groups[1].memberSelector.byLabel', 'team=fleet')
         ])
 
         self.cmd('fleet updaterun list -g {rg} -f {fleet_name}', checks=[
