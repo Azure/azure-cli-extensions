@@ -22,6 +22,10 @@ Pending
 * `az aks nodepool auto-scale update`: New command to update an existing autoscale profile of a VirtualMachines agent pool.
 * `az aks nodepool auto-scale delete`: New command to delete an existing autoscale profile from a VirtualMachines agent pool.
 
+21.0.0b1
+++++++
+* [BREAKING CHANGE] `az aks create/update`: Remove `--disk-driver-version` option as the `version` field has been removed from the API spec for `ManagedClusterStorageProfileDiskCSIDriver`.
+
 20.0.0b7
 +++++++
 * `az aks nodepool update --crg-id`: Allow updating `--crg-id` to associate an existing Capacity Reservation Group with a nodepool not currently associated with one.
