@@ -1,8 +1,8 @@
 Release History
 ===============
 1.0.0b4
-++++++
-* Fixed garbled console output where binary websocket frames were printed as a Python bytes repr (``b'...\\r\\n\\x1b[...]'``) instead of decoded text. Decode bytes to str in ``on_message`` so ANSI escapes and CR/LF are interpreted by the user's terminal.
++++++++
+* Fixed garbled console output where binary websocket frames were printed as a Python bytes repr (``b'...\r\n\x1b[...]'``) instead of decoded text. Decode bytes to str in ``on_message`` so ANSI escapes and CR/LF are interpreted by the user's terminal.
 * Bumped ``websocket-client`` dependency from ``==1.3.1`` to ``~=1.8.0`` to align with the version required by ``azure-cli`` and avoid a ``pkg_resources.ContextualVersionConflict`` at install time.
 
 1.0.0b3
