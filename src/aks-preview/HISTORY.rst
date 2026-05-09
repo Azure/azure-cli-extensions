@@ -22,8 +22,9 @@ Pending
 * `az aks nodepool auto-scale delete`: New command to delete an existing autoscale profile from a VirtualMachines agent pool.
 
 20.0.0b7
-+++++++
+++++++
 * `az aks nodepool update --crg-id`: Allow updating `--crg-id` to associate an existing Capacity Reservation Group with a nodepool not currently associated with one.
+* Vendor new SDK and bump API version to 2026-03-02-preview.
 * Update the minimum required cli core version to `2.76.0` (actually since `20.0.0b3`).
 * `az aks upgrade`: Add `--k8s-support-plan` and `--tier` flag support to allow cluster support plan and tier configuration during cluster upgrade.
 
