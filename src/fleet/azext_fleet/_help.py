@@ -652,3 +652,13 @@ helps['fleet clustermeshprofile list-members'] = """
         - name: List members that would match the profile's selector.
           text: az fleet clustermeshprofile list-members -g MyFleetResourceGroup -f MyFleetName -n MyClusterMeshProfile --selector
 """
+
+helps['fleet clustermeshprofile wait'] = """
+    type: command
+    short-summary: Wait for a cluster mesh profile to reach a desired state.
+    examples:
+        - name: Wait for the cluster mesh profile to finish applying.
+          text: az fleet clustermeshprofile wait -g MyFleetResourceGroup -f MyFleetName -n MyClusterMeshProfile --custom "provisioningState!='Applying'"
+        - name: Wait for the cluster mesh profile to be created.
+          text: az fleet clustermeshprofile wait -g MyFleetResourceGroup -f MyFleetName -n MyClusterMeshProfile --created
+"""
