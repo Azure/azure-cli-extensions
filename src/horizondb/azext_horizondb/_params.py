@@ -42,7 +42,7 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements, too-many-
             help='The administrator login name for the cluster.')
 
         administrator_login_password_arg_type = CLIArgumentType(
-            options_list=['--administrator-login-password'],
+            options_list=['--administrator-login-password', '-p'],
             help='The administrator login password.')
 
         version_arg_type = CLIArgumentType(
@@ -69,7 +69,7 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements, too-many-
             c.argument('cluster_name', arg_type=cluster_name_arg_type)
 
         with self.argument_context('horizondb create') as c:
-            c.argument('location', arg_type=get_location_type(self.cli_ctx))
+            c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False)
             c.argument('tags', tags_type)
             c.argument('administrator_login', arg_type=administrator_login_arg_type)
             c.argument('administrator_login_password', arg_type=administrator_login_password_arg_type)
