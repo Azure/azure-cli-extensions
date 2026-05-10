@@ -75,9 +75,19 @@ class FleetClusterMeshScenarioTest(ScenarioTest):
             checks=[self.check('name', '{member2_name}')]
         ).get_output_in_json()['id']
 
-        # Wait for both AKS clusters to fully provision (including ACNS enablement)
-        self.cmd('aks wait -g {rg} -n {member1_name} --updated', checks=[self.is_empty()])
-        self.cmd('aks wait -g {rg} -n {member2_name} --updated', checks=[self.is_empty()])
+        # Wait for both AKS clusters to fully provision (including ACNS enablement).
+        # Use --custom instead of --updated because ACNS enablement may trigger
+        # a secondary update after the initial create completes.
+        self.cmd(
+            'aks wait -g {rg} -n {member1_name} '
+            '--custom "provisioningState==\'Succeeded\'"',
+            checks=[self.is_empty()]
+        )
+        self.cmd(
+            'aks wait -g {rg} -n {member2_name} '
+            '--custom "provisioningState==\'Succeeded\'"',
+            checks=[self.is_empty()]
+        )
 
         self.kwargs.update({
             'mc1_id': mc1_id,
@@ -100,9 +110,19 @@ class FleetClusterMeshScenarioTest(ScenarioTest):
 
         # Wait for both AKS clusters to settle before creating second member.
         # ACNS-enabled clusters can go through multiple Succeeded→Updating→Succeeded
-        # transitions, so wait for both right before the second member create.
-        self.cmd('aks wait -g {rg} -n {member1_name} --updated', checks=[self.is_empty()])
-        self.cmd('aks wait -g {rg} -n {member2_name} --updated', checks=[self.is_empty()])
+        # transitions; --updated returns as soon as any transition finishes
+        # (even if the cluster immediately starts updating again).
+        # Use --custom to assert the cluster is actually Succeeded.
+        self.cmd(
+            'aks wait -g {rg} -n {member1_name} '
+            '--custom "provisioningState==\'Succeeded\'"',
+            checks=[self.is_empty()]
+        )
+        self.cmd(
+            'aks wait -g {rg} -n {member2_name} '
+            '--custom "provisioningState==\'Succeeded\'"',
+            checks=[self.is_empty()]
+        )
 
         self.cmd(
             'fleet member create -g {rg} --fleet-name {fleet_name} '
@@ -116,8 +136,16 @@ class FleetClusterMeshScenarioTest(ScenarioTest):
 
         self.cmd('fleet member wait -g {rg} --fleet-name {fleet_name} --fleet-member-name {member1_name} --updated', checks=[self.is_empty()])
         self.cmd('fleet member wait -g {rg} --fleet-name {fleet_name} --fleet-member-name {member2_name} --updated', checks=[self.is_empty()])
-        self.cmd('aks wait -g {rg} -n {member1_name} --updated', checks=[self.is_empty()])
-        self.cmd('aks wait -g {rg} -n {member2_name} --updated', checks=[self.is_empty()])
+        self.cmd(
+            'aks wait -g {rg} -n {member1_name} '
+            '--custom "provisioningState==\'Succeeded\'"',
+            checks=[self.is_empty()]
+        )
+        self.cmd(
+            'aks wait -g {rg} -n {member2_name} '
+            '--custom "provisioningState==\'Succeeded\'"',
+            checks=[self.is_empty()]
+        )
 
         # -----------------------------------------------------------
         # Create cluster mesh profiles
@@ -218,11 +246,47 @@ class FleetClusterMeshScenarioTest(ScenarioTest):
             self.assertIn(self.kwargs['cmp1_name'], entry['ErrorMessage'])
 
         # -----------------------------------------------------------
-        # Cleanup: remove members first (CMP cannot be deleted while
-        # it still has members), then delete profiles and fleet.
+        # Cleanup: wait for the CMP apply operation, members, and
+        # AKS clusters to all reach a terminal state before deleting.
         # -----------------------------------------------------------
+        self.cmd(
+            'fleet clustermeshprofile wait -g {rg} -f {fleet_name} -n {cmp1_name} '
+            '--custom "provisioningState!=\'Applying\'"',
+            checks=[self.is_empty()]
+        )
+        self.cmd(
+            'fleet member wait -g {rg} --fleet-name {fleet_name} '
+            '--fleet-member-name {member1_name} '
+            '--custom "provisioningState==\'Succeeded\'"',
+            checks=[self.is_empty()]
+        )
+        self.cmd(
+            'fleet member wait -g {rg} --fleet-name {fleet_name} '
+            '--fleet-member-name {member2_name} '
+            '--custom "provisioningState==\'Succeeded\'"',
+            checks=[self.is_empty()]
+        )
+        self.cmd(
+            'aks wait -g {rg} -n {member1_name} '
+            '--custom "provisioningState==\'Succeeded\'"',
+            checks=[self.is_empty()]
+        )
+        self.cmd(
+            'aks wait -g {rg} -n {member2_name} '
+            '--custom "provisioningState==\'Succeeded\'"',
+            checks=[self.is_empty()]
+        )
+
         self.cmd('fleet member delete -g {rg} --fleet-name {fleet_name} -n {member1_name} --yes')
         self.cmd('fleet member delete -g {rg} --fleet-name {fleet_name} -n {member2_name} --yes')
+
+        # Deleting members can put the CMP back into Applying state;
+        # wait for it to settle before deleting profiles.
+        self.cmd(
+            'fleet clustermeshprofile wait -g {rg} -f {fleet_name} -n {cmp1_name} '
+            '--custom "provisioningState!=\'Applying\'"',
+            checks=[self.is_empty()]
+        )
 
         self.cmd('fleet clustermeshprofile delete -g {rg} -f {fleet_name} -n {cmp1_name} --yes')
         self.cmd('fleet clustermeshprofile delete -g {rg} -f {fleet_name} -n {cmp2_name} --yes')

@@ -216,6 +216,10 @@ def load_arguments(self, _):
         c.argument('name', options_list=['--name', '-n'], help='Specify name for the cluster mesh profile.')
         c.argument('fleet_name', options_list=['--fleet-name', '-f'], help='Specify the fleet name.')
 
+    with self.argument_context('fleet clustermeshprofile wait') as c:
+        c.argument('cluster_mesh_profile_name', options_list=['--cluster-mesh-profile-name', '--name', '-n'],
+                   help='Specify name for the cluster mesh profile.')
+
     with self.argument_context('fleet clustermeshprofile create') as c:
         c.argument('member_selector', options_list=['--member-selector', '--selector', '-s'],
                    help='Kubernetes-style label selector for selecting Fleet members, e.g. "env=production".')

@@ -151,3 +151,4 @@ def load_command_table(self, _):
         g.custom_command("delete", "delete_cluster_mesh_profile", supports_no_wait=True, confirmation=True)
         g.custom_command("apply", "apply_cluster_mesh_profile", supports_no_wait=True)
         g.custom_command("list-members", "list_cluster_mesh_profile_members")
+        g.wait_command("wait")

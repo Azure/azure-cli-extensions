@@ -114,7 +114,11 @@ class FleetHublessScenarioTest(ScenarioTest):
         ])
 
         self.cmd('fleet member wait -g {rg} --fleet-name {fleet_name} --fleet-member-name {member_name} --updated', checks=[self.is_empty()])
-        self.cmd('aks wait -g {rg} -n {member_name} --updated', checks=[self.is_empty()])
+        self.cmd(
+            'aks wait -g {rg} -n {member_name} '
+            '--custom "provisioningState==\'Succeeded\'"',
+            checks=[self.is_empty()]
+        )
 
         self.cmd('fleet member reconcile -g {rg} -f {fleet_name} -n {member_name}', checks=[
             self.check('name', '{member_name}'),
