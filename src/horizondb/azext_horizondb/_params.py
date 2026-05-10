@@ -38,11 +38,11 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements, too-many-
                 scopes=['horizondb']))
 
         administrator_login_arg_type = CLIArgumentType(
-            options_list=['--admin-user', '-u'],
+            options_list=['--administrator-login'],
             help='The administrator login name for the cluster.')
 
         administrator_login_password_arg_type = CLIArgumentType(
-            options_list=['--admin-password', '-p'],
+            options_list=['--administrator-login-password'],
             help='The administrator login password.')
 
         version_arg_type = CLIArgumentType(
