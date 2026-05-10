@@ -114,6 +114,23 @@ class SiteScenario(ScenarioTest):
             ],
         )
 
+        #Quickstart deploy (Site + Config + ConfigRef)
+        site_name = self.create_random_name(prefix="clitestqs", length=24)
+        deployment_name = f"site-quickstart-{site_name}"
+        self.kwargs.update({
+            "qs_site": site_name,
+            "qs_deployment": deployment_name,
+        })
+        self.cmd(
+            "az site quickstart -g {rg} -n {qs_site} --configuration defaults",
+            checks=[
+                self.check("name", "{qs_deployment}"),
+                self.check("properties.provisioningState", "Succeeded"),
+                self.exists("properties.outputs.siteId.value"),
+                self.exists("properties.outputs.configId.value"),
+            ],
+        )
+
         #List Sites at resource group scope
         result = self.cmd(
             "az site list -g {rg}"
@@ -131,3 +148,5 @@ class SiteScenario(ScenarioTest):
 
         #Delete Site at subscription scope
         self.cmd("az site delete --site-name TestSubsSiteName --yes")
+
+    

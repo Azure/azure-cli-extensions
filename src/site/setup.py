@@ -46,6 +46,6 @@ setup(
     url='https://github.com/Azure/azure-cli-extensions/tree/main/src/site',
     classifiers=CLASSIFIERS,
     packages=find_packages(exclude=["tests"]),
-    package_data={'azext_site': ['azext_metadata.json']},
+    package_data={'azext_site': ['azext_metadata.json', 'templates/**/*.json']},
     install_requires=DEPENDENCIES
 )

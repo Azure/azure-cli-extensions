@@ -9,3 +9,11 @@
 # pylint: disable=too-many-lines
 
 from knack.help_files import helps  # pylint: disable=unused-import
+
+helps['site quickstart'] = """
+type: command
+short-summary: Quickstart deploy Site + Config + ConfigRef using an internal ARM template.
+examples:
+  - name: Resource group scope
+    text: az site quickstart --name MySite01 --configuration defaults -g MyRG
+"""
