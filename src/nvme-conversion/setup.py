@@ -37,12 +37,13 @@ setup(
     version=VERSION,
     description='Support for converting VM disk controllers between SCSI and NVMe.',
     long_description=README + '\n\n' + HISTORY,
+    long_description_content_type='text/markdown',
     license='MIT',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
     url='https://github.com/Azure/azure-cli-extensions/tree/main/src/nvme-conversion',
     classifiers=CLASSIFIERS,
-    packages=find_packages(exclude=["tests"]),
+    packages=find_packages(exclude=["tests", "tests.*", "azext_nvme_conversion.tests", "azext_nvme_conversion.tests.*"]),
     package_data={
         'azext_nvme_conversion': [
             'azext_metadata.json',

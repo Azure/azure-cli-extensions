@@ -3,7 +3,7 @@
 **Date**: 2026-05-10
 **Resource Group**: `nvme-conversion-test`
 **Location**: `westus3`
-**Extension version**: `0.1.0`
+**Extension version**: `1.0.0b1`
 **az CLI versions**: WSL 2.86.0 / Windows 2.85.0
 
 ## Test VMs

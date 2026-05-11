@@ -38,7 +38,8 @@ def nvme_conversion_convert(cmd, resource_group_name, vm_name, vm_size=None,
                             ignore_os_check=False,
                             ignore_windows_version_check=False,
                             sleep_seconds=15,
-                            no_wait=False):
+                            no_wait=False,
+                            yes=False):
     """Convert a VM's disk controller between SCSI and NVMe."""
     from azext_nvme_conversion._client_factory import cf_compute
 
@@ -56,10 +57,8 @@ def nvme_conversion_convert(cmd, resource_group_name, vm_name, vm_size=None,
     if new_controller_type is None:
         return {'status': 'no-change', 'vm': vm_name, 'message': 'VM is already on the desired controller type.'}
 
-    # Resolve SKU list once (saves a duplicate ~5s API call)
-    vm_skus = None
-    if not ignore_sku_check or not vm_size:
-        vm_skus = _get_vm_skus(compute_client, vm.location)
+    # Resolve SKU list once when SKU-based validation/resolution is enabled.
+    vm_skus = _get_vm_skus(compute_client, vm.location) if not ignore_sku_check else None
 
     # Resolve VM size: use current if not specified and current supports the target controller
     _status('[2/8] Resolving VM size...')
@@ -67,6 +66,17 @@ def nvme_conversion_convert(cmd, resource_group_name, vm_name, vm_size=None,
                                ignore_sku_check, vm_skus=vm_skus)
 
     _status(f'       Target: {new_controller_type}, Size: {vm_size}')
+
+    # Dynamic confirmation prompt with VM-specific context
+    if not yes:
+        from knack.prompting import prompt_y_n
+        if not prompt_y_n(
+                f'This will deallocate VM \'{vm_name}\', change its disk controller to {new_controller_type}, '
+                f'and resize to {vm_size}'
+                + ('. The VM will be restarted after conversion.' if start_vm else
+                   '. The VM will remain deallocated after conversion.')
+                + ' Continue?', default='n'):
+            raise SystemExit('Aborted by user.')
 
     _status('[3/8] Checking prerequisites (ADE, generation, power state)...')
     _check_ade_extension(compute_client, resource_group_name, vm_name, os_type)
@@ -253,7 +263,7 @@ def nvme_conversion_check(cmd, resource_group_name, vm_name, vm_size=None,
 
     # SKU validation
     if not ignore_sku_check and resolved_vm_size:
-        _status('[5/7] Validating SKU capabilities (this may take a moment)...')
+        _status('[6/7] Validating SKU capabilities (this may take a moment)...')
         try:
             _validate_sku(compute_client, vm, resolved_vm_size, new_controller_type,
                           os_type, vm.hardware_profile.vm_size, vm_skus=vm_skus)

@@ -486,6 +486,9 @@ check_fstab() {
                 # Create a backup of the fstab file
                 cp /etc/fstab /etc/fstab.bak
 
+                # Ensure fstab.new starts fresh (avoid stale leftovers from interrupted runs)
+                rm -f /etc/fstab.new
+
                 # Use sed to replace device names with UUIDs
                 while read -r line; do
                     if [[ "$line" =~ ^[^#] ]]; then

@@ -41,6 +41,9 @@ def load_arguments(self, _):
                    help='Skip the Windows Server version check. NVMe requires Windows Server 2019 or later.')
 
     with self.argument_context('nvme-conversion convert') as c:
+        c.argument('yes', options_list=['--yes', '-y'],
+                   action='store_true', default=False,
+                   help='Do not prompt for confirmation.')
         c.argument('start_vm', options_list=['--start-vm'],
                    action='store_true', default=False,
                    help='Start the VM after conversion completes. If not specified, the VM remains deallocated.')

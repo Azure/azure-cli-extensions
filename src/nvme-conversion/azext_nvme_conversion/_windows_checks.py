@@ -31,8 +31,8 @@ def check_windows_version(vm):
     if vm.storage_profile.image_reference and \
        vm.storage_profile.image_reference.publisher == 'MicrosoftWindowsServer':
         sku = vm.storage_profile.image_reference.sku or ''
-        version_digits = re.sub(r'[^0-9]', '', sku)
-        if version_digits and int(version_digits) < 2019:
+        version_match = re.search(r'(20\d{2})', sku)
+        if version_match and int(version_match.group(1)) < 2019:
             raise ValidationError(
                 f'Windows version {sku} is lower than 2019. '
                 'NVMe controller is only supported on Windows Server 2019 and higher.')

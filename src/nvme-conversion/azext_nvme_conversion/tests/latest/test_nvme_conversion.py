@@ -218,6 +218,23 @@ class WindowsChecksUnitTests(unittest.TestCase):
         self.assertEqual(call_args[0][0], 'rg')
         self.assertEqual(call_args[0][1], 'vm')
 
+    def test_check_windows_version_2012_r2_blocked(self):
+        from azext_nvme_conversion._windows_checks import check_windows_version
+        from azure.cli.core.azclierror import ValidationError
+        vm = MagicMock()
+        vm.storage_profile.image_reference.publisher = 'MicrosoftWindowsServer'
+        vm.storage_profile.image_reference.sku = '2012-R2-Datacenter'
+        with self.assertRaises(ValidationError):
+            check_windows_version(vm)
+
+    def test_check_windows_version_no_year_skips(self):
+        from azext_nvme_conversion._windows_checks import check_windows_version
+        vm = MagicMock()
+        vm.storage_profile.image_reference.publisher = 'MicrosoftWindowsServer'
+        vm.storage_profile.image_reference.sku = 'datacenter-core-smalldisk'
+        # No 4-digit year in SKU — should not raise
+        check_windows_version(vm)
+
     def test_check_windows_version_non_microsoft_publisher_skips(self):
         from azext_nvme_conversion._windows_checks import check_windows_version
         vm = MagicMock()
@@ -516,6 +533,7 @@ class ConvertEndToEndTests(unittest.TestCase):
             'ignore_windows_version_check': True,
             'sleep_seconds': 0,
             'no_wait': False,
+            'yes': True,
         }
         defaults.update(kwargs)
         return nvme_conversion_convert(cmd, **defaults), client
