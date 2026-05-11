@@ -594,7 +594,7 @@ helps['fleet clustermeshprofile'] = """
 
 helps['fleet clustermeshprofile create'] = """
     type: command
-    short-summary: Creates or updates a cluster mesh profile.
+    short-summary: Create or update a cluster mesh profile.
     parameters:
         - name: --member-selector --selector -s
           type: string
@@ -608,7 +608,7 @@ helps['fleet clustermeshprofile create'] = """
 
 helps['fleet clustermeshprofile show'] = """
     type: command
-    short-summary: Gets a cluster mesh profile.
+    short-summary: Get a cluster mesh profile.
     examples:
         - name: Show the details of a cluster mesh profile.
           text: az fleet clustermeshprofile show -g MyFleetResourceGroup -f MyFleetName -n MyClusterMeshProfile
@@ -616,7 +616,7 @@ helps['fleet clustermeshprofile show'] = """
 
 helps['fleet clustermeshprofile list'] = """
     type: command
-    short-summary: Lists all cluster mesh profiles for a fleet.
+    short-summary: List all cluster mesh profiles for a fleet.
     examples:
         - name: List all cluster mesh profiles for a given fleet.
           text: az fleet clustermeshprofile list -g MyFleetResourceGroup -f MyFleetName
@@ -624,7 +624,7 @@ helps['fleet clustermeshprofile list'] = """
 
 helps['fleet clustermeshprofile delete'] = """
     type: command
-    short-summary: Deletes a cluster mesh profile. All members must be removed from the cluster mesh profile before it can be deleted.
+    short-summary: Delete a cluster mesh profile. All members must be removed from the cluster mesh profile before it can be deleted.
     examples:
         - name: Delete a specific cluster mesh profile.
           text: az fleet clustermeshprofile delete -g MyFleetResourceGroup -f MyFleetName -n MyClusterMeshProfile
@@ -632,7 +632,7 @@ helps['fleet clustermeshprofile delete'] = """
 
 helps['fleet clustermeshprofile apply'] = """
     type: command
-    short-summary: Applies the cluster mesh profile to selected fleet members.
+    short-summary: Apply the cluster mesh profile to selected fleet members.
     examples:
         - name: Apply a cluster mesh profile.
           text: az fleet clustermeshprofile apply -g MyFleetResourceGroup -f MyFleetName -n MyClusterMeshProfile
@@ -642,7 +642,7 @@ helps['fleet clustermeshprofile apply'] = """
 
 helps['fleet clustermeshprofile list-members'] = """
     type: command
-    short-summary: Lists fleet members for a cluster mesh profile.
+    short-summary: List fleet members for a cluster mesh profile.
     long-summary: |
         Without --selector, lists members currently applied to the mesh profile.
         With --selector, lists members that would match the profile's label selector (i.e. candidates for the next apply).
