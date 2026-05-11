@@ -12,7 +12,8 @@ def load_command_table(self, _):
 
     with self.command_group('nvme-conversion', client_factory=None) as g:
         g.custom_command('convert', 'nvme_conversion_convert',
-                         confirmation=True,
+                         confirmation='This will deallocate the VM, modify its disk controller type and size, '
+                                      'and (if --start-vm) restart it. Continue?',
                          supports_no_wait=True,
                          table_transformer=convert_result_table_format)
         g.custom_command('check', 'nvme_conversion_check',

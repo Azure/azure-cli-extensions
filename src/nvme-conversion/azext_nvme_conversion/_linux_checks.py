@@ -61,7 +61,7 @@ def prepare_linux(compute_client, resource_group_name, vm_name, fix_os, dry_run)
 
     logger.warning('Running Linux NVMe readiness check%s...', ' (dry-run)' if dry_run else '')
     result = compute_client.virtual_machines.begin_run_command(
-        resource_group_name, vm_name, run_input).result()
+        resource_group_name, vm_name, run_input).result(timeout=600)
 
     errors = []
     for output in (result.value or []):

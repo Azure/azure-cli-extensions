@@ -56,9 +56,15 @@ def nvme_conversion_convert(cmd, resource_group_name, vm_name, vm_size=None,
     if new_controller_type is None:
         return {'status': 'no-change', 'vm': vm_name, 'message': 'VM is already on the desired controller type.'}
 
+    # Resolve SKU list once (saves a duplicate ~5s API call)
+    vm_skus = None
+    if not ignore_sku_check or not vm_size:
+        vm_skus = _get_vm_skus(compute_client, vm.location)
+
     # Resolve VM size: use current if not specified and current supports the target controller
     _status('[2/8] Resolving VM size...')
-    vm_size = _resolve_vm_size(compute_client, vm, vm_size, new_controller_type, ignore_sku_check)
+    vm_size = _resolve_vm_size(compute_client, vm, vm_size, new_controller_type,
+                               ignore_sku_check, vm_skus=vm_skus)
 
     _status(f'       Target: {new_controller_type}, Size: {vm_size}')
 
@@ -74,7 +80,8 @@ def nvme_conversion_convert(cmd, resource_group_name, vm_name, vm_size=None,
     # Phase 2: SKU validation
     if not ignore_sku_check:
         _status('[4/8] Validating SKU capabilities (this may take a moment)...')
-        _validate_sku(compute_client, vm, vm_size, new_controller_type, os_type, original_vm_size)
+        _validate_sku(compute_client, vm, vm_size, new_controller_type, os_type,
+                      original_vm_size, vm_skus=vm_skus)
     else:
         _status('[4/8] SKU validation skipped.')
 
@@ -166,12 +173,21 @@ def nvme_conversion_check(cmd, resource_group_name, vm_name, vm_size=None,
     os_type = _detect_os_type(vm)
     new_controller_type = _resolve_controller_type(vm, new_controller_type)
 
+    # Resolve SKU list once for both _resolve_vm_size and _validate_sku
+    vm_skus = None
+    if new_controller_type is not None and (not ignore_sku_check or not vm_size):
+        try:
+            vm_skus = _get_vm_skus(compute_client, vm.location)
+        except Exception:  # pylint: disable=broad-exception-caught
+            vm_skus = None
+
     # Resolve VM size for the check
     resolved_vm_size = vm_size
     if new_controller_type is not None:
         try:
             resolved_vm_size = _resolve_vm_size(
-                compute_client, vm, vm_size, new_controller_type, ignore_sku_check)
+                compute_client, vm, vm_size, new_controller_type, ignore_sku_check,
+                vm_skus=vm_skus)
         except (InvalidArgumentValueError, ValidationError):
             resolved_vm_size = vm_size or vm.hardware_profile.vm_size
 
@@ -240,7 +256,7 @@ def nvme_conversion_check(cmd, resource_group_name, vm_name, vm_size=None,
         _status('[5/7] Validating SKU capabilities (this may take a moment)...')
         try:
             _validate_sku(compute_client, vm, resolved_vm_size, new_controller_type,
-                          os_type, vm.hardware_profile.vm_size)
+                          os_type, vm.hardware_profile.vm_size, vm_skus=vm_skus)
             results['checks']['skuValidation'] = {'status': 'passed'}
         except (ValidationError, InvalidArgumentValueError) as e:
             results['checks']['skuValidation'] = {'status': 'failed', 'message': str(e)}
@@ -267,13 +283,23 @@ def nvme_conversion_check(cmd, resource_group_name, vm_name, vm_size=None,
 # ---------------------------------------------------------------------------
 
 def _validate_vm(compute_client, resource_group_name, vm_name):
-    """Get VM and raise if not found."""
+    """Get VM and raise if not found or unsupported."""
     try:
         vm = compute_client.virtual_machines.get(resource_group_name, vm_name)
     except Exception as e:
         raise ResourceNotFoundError(
             f'VM {vm_name} not found in resource group {resource_group_name}: {e}') from e
+    if not vm.storage_profile.os_disk.managed_disk:
+        raise ValidationError(
+            f'VM {vm_name} uses an unmanaged (page-blob) OS disk. '
+            'Convert to a managed disk before running nvme-conversion.')
     return vm
+
+
+def _get_vm_skus(compute_client, location):
+    """Resolve and cache the list of virtualMachines SKUs for a location."""
+    skus = list(compute_client.resource_skus.list(filter=f"location eq '{location}'"))
+    return [s for s in skus if s.resource_type == 'virtualMachines']
 
 
 def _detect_os_type(vm):
@@ -332,7 +358,7 @@ def _check_vm_generation(compute_client, vm):
         raise ValidationError(
             'VM is running a Generation 1 image. '
             'NVMe controllers are only supported on Generation 2 images.')
-    logger.warning('VM is running a Generation 2 image.')
+    logger.info('VM is running a Generation 2 image.')
 
 
 def _get_current_controller(vm):
@@ -358,14 +384,15 @@ def _resolve_controller_type(vm, requested_type):
         target = requested_type
 
     if current == target:
-        logger.warning('VM is already running %s. No conversion needed.', current)
+        logger.info('VM is already running %s. No conversion needed.', current)
         return None
 
-    logger.warning('Current controller: %s → Target: %s', current, target)
+    logger.info('Current controller: %s -> Target: %s', current, target)
     return target
 
 
-def _resolve_vm_size(compute_client, vm, requested_size, new_controller_type, ignore_sku_check):
+def _resolve_vm_size(compute_client, vm, requested_size, new_controller_type,
+                     ignore_sku_check, vm_skus=None):
     """Resolve the target VM size.
 
     If requested_size is provided, return it as-is.
@@ -382,8 +409,8 @@ def _resolve_vm_size(compute_client, vm, requested_size, new_controller_type, ig
         return current_size
 
     # Check if current size supports the target controller
-    skus = list(compute_client.resource_skus.list(filter=f"location eq '{vm.location}'"))
-    vm_skus = [s for s in skus if s.resource_type == 'virtualMachines']
+    if vm_skus is None:
+        vm_skus = _get_vm_skus(compute_client, vm.location)
     current_sku = next((s for s in vm_skus if s.name == current_size), None)
 
     if not current_sku:
@@ -417,7 +444,7 @@ def _resolve_vm_size(compute_client, vm, requested_size, new_controller_type, ig
             f'Current VM size {current_size} does not support SCSI. '
             'You must specify --vm-size with a SCSI-capable SKU.')
 
-    logger.warning('Current VM size %s supports %s. Keeping same size.', current_size, new_controller_type)
+    logger.info('Current VM size %s supports %s. Keeping same size.', current_size, new_controller_type)
     return current_size
 
 
@@ -427,28 +454,29 @@ def _check_windows_version(vm):
     check_windows_version(vm)
 
 
-def _validate_sku(compute_client, vm, vm_size, new_controller_type, os_type, original_vm_size):
-    """Validate target SKU exists, is available in the VM's zone, and supports the controller."""
-    logger.warning('Validating SKU %s...', vm_size)
+def _validate_sku(compute_client, vm, vm_size, new_controller_type, os_type,
+                  original_vm_size, vm_skus=None):
+    """Validate target SKU exists, is available in the VM's zone(s), and supports the controller."""
+    logger.info('Validating SKU %s...', vm_size)
 
-    skus = list(compute_client.resource_skus.list(filter=f"location eq '{vm.location}'"))
-    vm_skus = [s for s in skus if s.resource_type == 'virtualMachines']
+    if vm_skus is None:
+        vm_skus = _get_vm_skus(compute_client, vm.location)
     target_sku = next((s for s in vm_skus if s.name == vm_size), None)
 
     if not target_sku:
         raise InvalidArgumentValueError(f'VM SKU {vm_size} does not exist. Check your input.')
 
-    # Zone availability
+    # Zone availability — must be available in every zone the VM is pinned to
     if vm.zones:
-        vm_zone = vm.zones[0]
-        zone_available = False
+        sku_zones = set()
         for loc_info in (target_sku.location_info or []):
-            if vm_zone in (loc_info.zones or []):
-                zone_available = True
-                break
-        if not zone_available:
-            raise InvalidArgumentValueError(f'VM SKU {vm_size} is not available in zone {vm_zone}.')
-        logger.warning('SKU %s is available in zone %s.', vm_size, vm_zone)
+            sku_zones.update(loc_info.zones or [])
+        missing = [z for z in vm.zones if z not in sku_zones]
+        if missing:
+            raise InvalidArgumentValueError(
+                f'VM SKU {vm_size} is not available in zone(s) {",".join(missing)} '
+                f'(VM zones: {",".join(vm.zones)}).')
+        logger.info('SKU %s is available in zone(s) %s.', vm_size, ','.join(vm.zones))
 
     # Resource disk compatibility (Windows only)
     if os_type == 'Windows':
@@ -487,14 +515,19 @@ def _validate_sku(compute_client, vm, vm_size, new_controller_type, os_type, ori
     elif new_controller_type == 'SCSI' and 'SCSI' not in supported_controllers:
         raise InvalidArgumentValueError(f'VM SKU {vm_size} does not support SCSI.')
     else:
-        logger.warning('SKU %s supports %s.', vm_size, new_controller_type)
+        logger.info('SKU %s supports %s.', vm_size, new_controller_type)
 
 
 def _prepare_os(compute_client, resource_group_name, vm_name, os_type,
                 new_controller_type, fix_os, dry_run):
-    """Run OS preparation checks and optionally fix issues."""
+    """Run OS readiness checks and optionally fix issues.
+
+    When fix_os=False and dry_run=False this is a read-only check
+    (used by both `convert` and `check` commands).
+    """
     if new_controller_type != 'NVMe':
-        logger.warning('No OS preparation required for SCSI.')
+        if fix_os or dry_run:
+            logger.info('No OS preparation required for SCSI.')
         return
 
     if os_type == 'Windows':
@@ -506,22 +539,16 @@ def _prepare_os(compute_client, resource_group_name, vm_name, os_type,
 
 
 def _check_os_readiness(compute_client, resource_group_name, vm_name, os_type, new_controller_type):
-    """Check OS readiness without fixing (for the check command)."""
-    if new_controller_type != 'NVMe':
-        return
-    if os_type == 'Windows':
-        from azext_nvme_conversion._windows_checks import prepare_windows
-        prepare_windows(compute_client, resource_group_name, vm_name, fix_os=False)
-    else:
-        from azext_nvme_conversion._linux_checks import prepare_linux
-        prepare_linux(compute_client, resource_group_name, vm_name, fix_os=False, dry_run=False)
+    """Check OS readiness without fixing (thin wrapper around _prepare_os)."""
+    _prepare_os(compute_client, resource_group_name, vm_name, os_type,
+                new_controller_type, fix_os=False, dry_run=False)
 
 
 def _stop_vm(compute_client, resource_group_name, vm_name):
     """Deallocate the VM."""
     poller = compute_client.virtual_machines.begin_deallocate(resource_group_name, vm_name)
     poller.result()
-    logger.warning('VM %s deallocated.', vm_name)
+    logger.info('VM %s deallocated.', vm_name)
 
     # Verify deallocated
     vm_status = compute_client.virtual_machines.instance_view(resource_group_name, vm_name)
@@ -551,7 +578,7 @@ def _update_disk_capabilities(compute_client, vm, new_controller_type):
 
     poller = compute_client.disks.begin_update(disk_rg, disk_name, disk_update)
     poller.result()
-    logger.warning('OS disk %s updated with controller types: %s', disk_name, controller_types)
+    logger.info('OS disk %s updated with controller types: %s', disk_name, controller_types)
 
 
 def _update_vm(compute_client, resource_group_name, vm, vm_size, new_controller_type):
@@ -561,7 +588,7 @@ def _update_vm(compute_client, resource_group_name, vm, vm_size, new_controller_
 
     poller = compute_client.virtual_machines.begin_create_or_update(resource_group_name, vm.name, vm)
     result = poller.result()
-    logger.warning('VM %s updated to size %s with controller %s.', vm.name, vm_size, new_controller_type)
+    logger.info('VM %s updated to size %s with controller %s.', vm.name, vm_size, new_controller_type)
     return result
 
 
@@ -569,10 +596,10 @@ def _start_vm(compute_client, resource_group_name, vm_name):
     """Start the VM."""
     poller = compute_client.virtual_machines.begin_start(resource_group_name, vm_name)
     poller.result()
-    logger.warning('VM %s started.', vm_name)
+    logger.info('VM %s started.', vm_name)
 
 
 def _start_vm_no_wait(compute_client, resource_group_name, vm_name):
     """Start the VM without waiting for completion."""
     compute_client.virtual_machines.begin_start(resource_group_name, vm_name)
-    logger.warning('VM %s start initiated (not waiting for completion).', vm_name)
+    logger.info('VM %s start initiated (not waiting for completion).', vm_name)

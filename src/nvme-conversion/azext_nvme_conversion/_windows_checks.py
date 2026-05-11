@@ -58,7 +58,7 @@ def prepare_windows(compute_client, resource_group_name, vm_name, fix_os):
         )
         run_input = RunCommandInput(command_id='RunPowerShellScript', script=[script])
         compute_client.virtual_machines.begin_run_command(
-            resource_group_name, vm_name, run_input).result()
+            resource_group_name, vm_name, run_input).result(timeout=600)
         logger.warning('Windows stornvme driver set to boot start.')
     else:
         logger.warning('Checking Windows stornvme driver settings...')
@@ -75,7 +75,7 @@ def prepare_windows(compute_client, resource_group_name, vm_name, fix_os):
         ]
         run_input = RunCommandInput(command_id='RunPowerShellScript', script=check_script)
         result = compute_client.virtual_machines.begin_run_command(
-            resource_group_name, vm_name, run_input).result()
+            resource_group_name, vm_name, run_input).result(timeout=600)
 
         errors = []
         for output in (result.value or []):

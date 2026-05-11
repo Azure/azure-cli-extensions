@@ -1,7 +1,6 @@
 # NVMe Conversion Extension — Live Test Tracker
 
 **Date**: 2026-05-10
-**Subscription**: MCAPS-Support-jbrenes
 **Resource Group**: `nvme-conversion-test`
 **Location**: `westus3`
 **Extension version**: `0.1.0`
