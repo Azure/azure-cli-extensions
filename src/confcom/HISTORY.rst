@@ -3,8 +3,8 @@
 Release History
 ===============
 
-2.0.0b3
-+++++++
+2.0.0
++++++
 * Fix path traversal when generating policies from untrusted image tar files
 
 2.0.0b2
