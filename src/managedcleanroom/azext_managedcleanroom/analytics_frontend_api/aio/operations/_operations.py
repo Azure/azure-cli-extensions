@@ -1304,7 +1304,8 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
                             "encryptionMode": "str",
                             "storageAccountType": "str",
                             "storageAccountUrl": "str",
-                            "awsCgsSecretId": "str"
+                            "awsCgsSecretId": "str",
+                            "subdirectory": ""
                         },
                         "dek": {
                             "keyVaultUrl": "str",
@@ -1441,7 +1442,8 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
                         "encryptionMode": "str",
                         "storageAccountType": "str",
                         "storageAccountUrl": "str",
-                        "awsCgsSecretId": "str"
+                        "awsCgsSecretId": "str",
+                        "subdirectory": ""
                     },
                     "dek": {
                         "keyVaultUrl": "str",
@@ -1555,7 +1557,8 @@ class CollaborationOperations:  # pylint: disable=too-many-public-methods
                         "encryptionMode": "str",
                         "storageAccountType": "str",
                         "storageAccountUrl": "str",
-                        "awsCgsSecretId": "str"
+                        "awsCgsSecretId": "str",
+                        "subdirectory": ""
                     },
                     "dek": {
                         "keyVaultUrl": "str",

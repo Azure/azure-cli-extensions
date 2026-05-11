@@ -1940,6 +1940,8 @@ def load_arguments(self, _):
             validator=validate_force_upgrade_disable_and_enable_parameters
         )
         c.argument('upgrade_override_until')
+        c.argument("k8s_support_plan", arg_type=get_enum_type(k8s_support_plans))
+        c.argument("tier", arg_type=get_enum_type(sku_tiers), validator=validate_sku_tier)
 
     with self.argument_context("aks scale") as c:
         c.argument(
