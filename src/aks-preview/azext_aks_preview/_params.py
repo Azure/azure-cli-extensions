@@ -1110,6 +1110,7 @@ def load_arguments(self, _):
             "enable_control_plane_metrics",
             options_list=["--enable-control-plane-metrics", "--enable-cp-metrics"],
             action="store_true",
+            help="Enable collection of Azure Monitor managed Prometheus control plane metrics for managed cluster components (kube-apiserver, etcd, etc). Requires Azure Monitor metrics to be enabled (already enabled or via --enable-azure-monitor-metrics). See aka.ms/aks/controlplane-metrics.",
         )
         c.argument("enable_azure_monitor_app_monitoring",
                    is_preview=True,
@@ -1610,11 +1611,13 @@ def load_arguments(self, _):
             "enable_control_plane_metrics",
             options_list=["--enable-control-plane-metrics", "--enable-cp-metrics"],
             action="store_true",
+            help="Enable collection of Azure Monitor managed Prometheus control plane metrics for managed cluster components (kube-apiserver, etcd, etc). Requires Azure Monitor metrics to be enabled (already enabled or via --enable-azure-monitor-metrics). See aka.ms/aks/controlplane-metrics.",
         )
         c.argument(
             "disable_control_plane_metrics",
             options_list=["--disable-control-plane-metrics", "--disable-cp-metrics"],
             action="store_true",
+            help="Disable collection of Azure Monitor managed Prometheus control plane metrics. Sets azureMonitorProfile.metrics.controlPlane.enabled=false on the cluster.",
         )
         c.argument("enable_azure_monitor_app_monitoring",
                    action="store_true",
