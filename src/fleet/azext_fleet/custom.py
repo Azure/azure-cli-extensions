@@ -18,7 +18,7 @@ from azure.cli.core import get_default_cli
 from azure.mgmt.core.tools import parse_resource_id
 from azure.cli.command_modules.acs._graph import resolve_object_id
 
-from azext_fleet._client_factory import CUSTOM_MGMT_FLEET, cf_fleet_members, cf_fleets, cf_cluster_mesh_profiles
+from azext_fleet._client_factory import CUSTOM_MGMT_FLEET, cf_fleet_members, cf_fleets
 from azext_fleet._helpers import is_rp_registered, print_or_merge_credentials
 from azext_fleet._helpers import assign_network_contributor_role_to_subnet
 from azext_fleet._helpers import get_msi_object_id
@@ -1171,39 +1171,14 @@ def list_cluster_mesh_profile_members(cmd,
     return members_client.list_by_fleet(resource_group_name, fleet_name, filter=filter_expr)
 
 
-def _parse_label_selector(selector_str):
-    """Parse a simple label selector string like 'env=production,tier=frontend'
-    into a dict of {key: value} pairs.  Only equality selectors are supported."""
-    labels = {}
-    if not selector_str:
-        return labels
-    for part in selector_str.split(","):
-        part = part.strip()
-        if "=" in part:
-            k, v = part.split("=", 1)
-            labels[k.strip()] = v.strip()
-    return labels
-
-
-def _member_matches_selector(member_labels, selector_labels):
-    """Return True if the member's labels satisfy every key=value in the selector."""
-    if not selector_labels:
-        return False
-    if not member_labels:
-        return False
-    return all(member_labels.get(k) == v for k, v in selector_labels.items())
-
-
 def _apply_cluster_mesh_what_if(cmd, resource_group_name, fleet_name, name):
     """Simulate apply by comparing currently-applied members vs selector-matched members.
 
-    The server-side selector filter (clusterMeshProfile.Selector) may exclude
-    members that are already assigned to a *different* mesh profile.  To detect
-    those conflicts we also fetch the profile's selector, list ALL fleet members,
-    and do client-side label matching.
+    Uses the server-side selector filter to find members that match the
+    profile's label selector, including members already assigned to a
+    different mesh profile (conflict detection).
     """
     members_client = cf_fleet_members(cmd.cli_ctx)
-    profiles_client = cf_cluster_mesh_profiles(cmd.cli_ctx)
 
     sub_id = get_subscription_id(cmd.cli_ctx)
     this_profile_id = (
@@ -1211,13 +1186,6 @@ def _apply_cluster_mesh_what_if(cmd, resource_group_name, fleet_name, name):
         f"/providers/Microsoft.ContainerService/fleets/{fleet_name}"
         f"/clusterMeshProfiles/{name}"
     )
-
-    # Fetch the profile to read its selector
-    profile = profiles_client.get(resource_group_name, fleet_name, name)
-    selector_str = ""
-    if profile.properties and profile.properties.member_selector:
-        selector_str = profile.properties.member_selector.by_label or ""
-    selector_labels = _parse_label_selector(selector_str)
 
     # Members currently in the mesh (already applied to THIS profile)
     current_filter = f"clusterMeshProfile eq {name}"
@@ -1227,18 +1195,13 @@ def _apply_cluster_mesh_what_if(cmd, resource_group_name, fleet_name, name):
         )
     }
 
-    # All fleet members — needed to find selector matches that the server
-    # filter omits (e.g. members assigned to a different mesh profile).
-    all_members = {
-        m.name: m for m in members_client.list_by_fleet(
-            resource_group_name, fleet_name
-        )
-    }
-
-    # Client-side selector matching across ALL members
+    # Members matching the profile's selector (server-side filter includes
+    # members assigned to other CMPs, enabling conflict detection).
+    selector_filter = f"clusterMeshProfile.Selector eq {name}"
     desired_members = {
-        mname: m for mname, m in all_members.items()
-        if _member_matches_selector(m.labels, selector_labels)
+        m.name: m for m in members_client.list_by_fleet(
+            resource_group_name, fleet_name, filter=selector_filter
+        )
     }
 
     results = []

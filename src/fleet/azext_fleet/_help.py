@@ -624,7 +624,7 @@ helps['fleet clustermeshprofile list'] = """
 
 helps['fleet clustermeshprofile delete'] = """
     type: command
-    short-summary: Delete a cluster mesh profile. All members must be removed from the cluster mesh profile before it can be deleted.
+    short-summary: Delete a cluster mesh profile. Members must be disconnected from the profile before it can be deleted.
     examples:
         - name: Delete a specific cluster mesh profile.
           text: az fleet clustermeshprofile delete -g MyFleetResourceGroup -f MyFleetName -n MyClusterMeshProfile
@@ -657,8 +657,8 @@ helps['fleet clustermeshprofile wait'] = """
     type: command
     short-summary: Wait for a cluster mesh profile to reach a desired state.
     examples:
-        - name: Wait for the cluster mesh profile to finish applying.
-          text: az fleet clustermeshprofile wait -g MyFleetResourceGroup -f MyFleetName -n MyClusterMeshProfile --custom "provisioningState!='Applying'"
+        - name: Wait for the cluster mesh profile to reach Connected state after apply.
+          text: az fleet clustermeshprofile wait -g MyFleetResourceGroup -f MyFleetName -n MyClusterMeshProfile --custom "properties.status.state=='Connected'"
         - name: Wait for the cluster mesh profile to be created.
           text: az fleet clustermeshprofile wait -g MyFleetResourceGroup -f MyFleetName -n MyClusterMeshProfile --created
 """

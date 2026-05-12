@@ -27,11 +27,12 @@ class FleetClusterMeshScenarioTest(ScenarioTest):
         return pathname.replace('\\', '\\\\')
 
     @AllowLargeResponse(size_kb=9999)
-    @ResourceGroupPreparer(name_prefix='cli-', random_name_length=8, location='westcentralus')
+    @ResourceGroupPreparer(name_prefix='cli-', random_name_length=8, location='eastus2euap')
     def test_fleet_cluster_mesh(self):
         """End-to-end cluster mesh profile scenario.
 
-        Creates two Cilium/ACNS-enabled AKS clusters, joins them to a fleet
+        Creates a vnet with flat-network subnets, two Cilium/ACNS-enabled
+        AKS clusters with directly routable pod IPs, joins them to a fleet
         with labels, then exercises the full clustermeshprofile CLI surface:
         create, list, show, list-members (with/without --selector),
         apply (including --what-if with conflict detection), and delete.
@@ -43,6 +44,7 @@ class FleetClusterMeshScenarioTest(ScenarioTest):
             'member2_name': self.create_random_name(prefix='cm2-', length=8),
             'cmp1_name': self.create_random_name(prefix='cmp-', length=8),
             'cmp2_name': self.create_random_name(prefix='cmp-', length=8),
+            'vnet_name': self.create_random_name(prefix='vnet-', length=9),
             'ssh_key_value': self.generate_ssh_keys(),
         })
 
@@ -55,23 +57,50 @@ class FleetClusterMeshScenarioTest(ScenarioTest):
         self.cmd('fleet wait -g {rg} --fleet-name {fleet_name} --created', checks=[self.is_empty()])
 
         # -----------------------------------------------------------
-        # Create two AKS clusters with Cilium + ACNS for mesh support
+        # Create a vnet with flat-network subnets for cluster mesh.
+        # Cluster mesh requires directly routable pod IPs (no overlay).
+        # -----------------------------------------------------------
+        self.cmd(
+            'network vnet create -g {rg} -n {vnet_name} '
+            '--address-prefixes 192.168.0.0/16'
+        )
+        self.cmd('network vnet subnet create -g {rg} --vnet-name {vnet_name} -n nodesubnet1 --address-prefixes 192.168.1.0/24')
+        self.cmd('network vnet subnet create -g {rg} --vnet-name {vnet_name} -n podsubnet1 --address-prefixes 192.168.2.0/24')
+        self.cmd('network vnet subnet create -g {rg} --vnet-name {vnet_name} -n nodesubnet2 --address-prefixes 192.168.11.0/24')
+        self.cmd('network vnet subnet create -g {rg} --vnet-name {vnet_name} -n podsubnet2 --address-prefixes 192.168.12.0/24')
+
+        # Get subnet IDs
+        vnet_show = self.cmd('network vnet show -g {rg} -n {vnet_name}').get_output_in_json()
+        vnet_id = vnet_show['id']
+        self.kwargs.update({
+            'node_subnet1_id': f"{vnet_id}/subnets/nodesubnet1",
+            'pod_subnet1_id': f"{vnet_id}/subnets/podsubnet1",
+            'node_subnet2_id': f"{vnet_id}/subnets/nodesubnet2",
+            'pod_subnet2_id': f"{vnet_id}/subnets/podsubnet2",
+        })
+
+        # -----------------------------------------------------------
+        # Create two AKS clusters with Cilium + ACNS on flat network
         # -----------------------------------------------------------
         mc1_id = self.cmd(
             'aks create -g {rg} -n {member1_name} '
             '--ssh-key-value={ssh_key_value} '
-            '--network-plugin azure --network-plugin-mode overlay '
-            '--network-dataplane cilium --network-policy cilium '
-            '--enable-acns',
+            '--network-plugin azure '
+            '--network-dataplane cilium '
+            '--enable-acns '
+            '--vnet-subnet-id {node_subnet1_id} '
+            '--pod-subnet-id {pod_subnet1_id}',
             checks=[self.check('name', '{member1_name}')]
         ).get_output_in_json()['id']
 
         mc2_id = self.cmd(
             'aks create -g {rg} -n {member2_name} '
             '--ssh-key-value={ssh_key_value} '
-            '--network-plugin azure --network-plugin-mode overlay '
-            '--network-dataplane cilium --network-policy cilium '
-            '--enable-acns',
+            '--network-plugin azure '
+            '--network-dataplane cilium '
+            '--enable-acns '
+            '--vnet-subnet-id {node_subnet2_id} '
+            '--pod-subnet-id {pod_subnet2_id}',
             checks=[self.check('name', '{member2_name}')]
         ).get_output_in_json()['id']
 
@@ -108,11 +137,9 @@ class FleetClusterMeshScenarioTest(ScenarioTest):
             ]
         )
 
-        # Wait for both AKS clusters to settle before creating second member.
-        # ACNS-enabled clusters can go through multiple Succeeded→Updating→Succeeded
-        # transitions; --updated returns as soon as any transition finishes
-        # (even if the cluster immediately starts updating again).
-        # Use --custom to assert the cluster is actually Succeeded.
+        # Wait for both AKS clusters to settle before creating the second
+        # member. Even though member1's join doesn't affect member2's cluster,
+        # member2 may still be completing its own ACNS post-create update.
         self.cmd(
             'aks wait -g {rg} -n {member1_name} '
             '--custom "provisioningState==\'Succeeded\'"',
@@ -134,15 +161,15 @@ class FleetClusterMeshScenarioTest(ScenarioTest):
             ]
         )
 
-        self.cmd('fleet member wait -g {rg} --fleet-name {fleet_name} --fleet-member-name {member1_name} --updated', checks=[self.is_empty()])
-        self.cmd('fleet member wait -g {rg} --fleet-name {fleet_name} --fleet-member-name {member2_name} --updated', checks=[self.is_empty()])
         self.cmd(
-            'aks wait -g {rg} -n {member1_name} '
+            'fleet member wait -g {rg} --fleet-name {fleet_name} '
+            '--fleet-member-name {member1_name} '
             '--custom "provisioningState==\'Succeeded\'"',
             checks=[self.is_empty()]
         )
         self.cmd(
-            'aks wait -g {rg} -n {member2_name} '
+            'fleet member wait -g {rg} --fleet-name {fleet_name} '
+            '--fleet-member-name {member2_name} '
             '--custom "provisioningState==\'Succeeded\'"',
             checks=[self.is_empty()]
         )
@@ -207,6 +234,25 @@ class FleetClusterMeshScenarioTest(ScenarioTest):
         # -----------------------------------------------------------
         self.cmd('fleet clustermeshprofile apply -g {rg} -f {fleet_name} -n {cmp1_name}')
 
+        # Wait for the CMP and members to reach Connected state
+        self.cmd(
+            'fleet clustermeshprofile wait -g {rg} -f {fleet_name} -n {cmp1_name} '
+            '--custom "properties.status.state==\'Connected\'"',
+            checks=[self.is_empty()]
+        )
+        self.cmd(
+            'fleet member wait -g {rg} --fleet-name {fleet_name} '
+            '--fleet-member-name {member1_name} '
+            '--custom "meshProperties.status.state==\'Connected\'"',
+            checks=[self.is_empty()]
+        )
+        self.cmd(
+            'fleet member wait -g {rg} --fleet-name {fleet_name} '
+            '--fleet-member-name {member2_name} '
+            '--custom "meshProperties.status.state==\'Connected\'"',
+            checks=[self.is_empty()]
+        )
+
         # -----------------------------------------------------------
         # Members should now be listed as applied to cmp1
         # -----------------------------------------------------------
@@ -246,12 +292,23 @@ class FleetClusterMeshScenarioTest(ScenarioTest):
             self.assertIn(self.kwargs['cmp1_name'], entry['ErrorMessage'])
 
         # -----------------------------------------------------------
-        # Cleanup: wait for the CMP apply operation, members, and
-        # AKS clusters to all reach a terminal state before deleting.
+        # Cleanup: remove members from the CMP by changing the
+        # selector so no members match, then re-apply to disconnect
+        # them. Members cannot be deleted while they belong to a CMP,
+        # and CMPs cannot be deleted while they have members.
         # -----------------------------------------------------------
+
+        # Update cmp1 with a selector that matches no members
+        self.cmd(
+            'fleet clustermeshprofile create -g {rg} -f {fleet_name} '
+            '-n {cmp1_name} --member-selector "env=none"',
+        )
+        self.cmd('fleet clustermeshprofile apply -g {rg} -f {fleet_name} -n {cmp1_name}')
+
+        # Wait for the CMP to finish and members to disconnect
         self.cmd(
             'fleet clustermeshprofile wait -g {rg} -f {fleet_name} -n {cmp1_name} '
-            '--custom "provisioningState!=\'Applying\'"',
+            '--custom "properties.status.state==\'NotConnected\'"',
             checks=[self.is_empty()]
         )
         self.cmd(
@@ -266,33 +323,17 @@ class FleetClusterMeshScenarioTest(ScenarioTest):
             '--custom "provisioningState==\'Succeeded\'"',
             checks=[self.is_empty()]
         )
-        self.cmd(
-            'aks wait -g {rg} -n {member1_name} '
-            '--custom "provisioningState==\'Succeeded\'"',
-            checks=[self.is_empty()]
-        )
-        self.cmd(
-            'aks wait -g {rg} -n {member2_name} '
-            '--custom "provisioningState==\'Succeeded\'"',
-            checks=[self.is_empty()]
-        )
 
-        self.cmd('fleet member delete -g {rg} --fleet-name {fleet_name} -n {member1_name} --yes')
-        self.cmd('fleet member delete -g {rg} --fleet-name {fleet_name} -n {member2_name} --yes')
-
-        # Deleting members can put the CMP back into Applying state;
-        # wait for it to settle before deleting profiles.
-        self.cmd(
-            'fleet clustermeshprofile wait -g {rg} -f {fleet_name} -n {cmp1_name} '
-            '--custom "provisioningState!=\'Applying\'"',
-            checks=[self.is_empty()]
-        )
-
+        # Now delete CMPs (no members attached)
         self.cmd('fleet clustermeshprofile delete -g {rg} -f {fleet_name} -n {cmp1_name} --yes')
         self.cmd('fleet clustermeshprofile delete -g {rg} -f {fleet_name} -n {cmp2_name} --yes')
 
         self.cmd('fleet clustermeshprofile list -g {rg} -f {fleet_name}', checks=[
             self.check('length([])', 0)
         ])
+
+        # Delete members and fleet
+        self.cmd('fleet member delete -g {rg} --fleet-name {fleet_name} -n {member1_name} --yes')
+        self.cmd('fleet member delete -g {rg} --fleet-name {fleet_name} -n {member2_name} --yes')
 
         self.cmd('fleet delete -g {rg} -n {fleet_name} --yes')
