@@ -2640,6 +2640,13 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                     "at the same time."
                 )
             if enable_control_plane_metrics:
+                # Reject combining enable-control-plane-metrics with disable-azure-monitor-metrics
+                # in the same command — the resulting payload would be inconsistent.
+                if self._get_disable_azure_monitor_metrics(False):
+                    raise MutuallyExclusiveArgumentError(
+                        "Cannot specify --enable-control-plane-metrics together with "
+                        "--disable-azure-monitor-metrics."
+                    )
                 # Must have Azure Monitor metrics enabled (either already or in this command).
                 already_enabled = (
                     self.mc and
