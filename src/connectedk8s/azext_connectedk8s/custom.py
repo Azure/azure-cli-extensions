@@ -304,6 +304,7 @@ def create_connectedk8s(
     try:
         kubectl_client_location = install_kubectl_client()
         helm_client_location = install_helm_client(cmd)
+        logger.debug("Using helm binary: %s", helm_client_location)
     except Exception as e:
         raise CLIInternalError(
             f"An exception has occured while trying to perform kubectl or helm install: {e}"
