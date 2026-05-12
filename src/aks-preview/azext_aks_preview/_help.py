@@ -585,7 +585,7 @@ helps['aks create'] = f"""
           short-summary: Enable Azure Monitor Metrics Profile
         - name: --enable-control-plane-metrics
           type: bool
-          short-summary: Enable collection of Azure Monitor managed Prometheus control plane metrics for managed cluster components (kube-apiserver, etcd, etc). Requires --enable-azure-monitor-metrics. See aka.ms/aks/controlplane-metrics.
+          short-summary: Enable collection of Azure Monitor managed Prometheus control plane metrics for managed cluster components (kube-apiserver, etcd, etc). Requires Azure Monitor metrics to be enabled (already enabled or via --enable-azure-monitor-metrics). See aka.ms/aks/controlplane-metrics.
         - name: --azure-monitor-workspace-resource-id
           type: string
           short-summary: Resource ID of the Azure Monitor Workspace
@@ -1296,7 +1296,7 @@ helps['aks update'] = """
           short-summary: Enable Azure Monitor Metrics Profile
         - name: --enable-control-plane-metrics
           type: bool
-          short-summary: Enable collection of Azure Monitor managed Prometheus control plane metrics for managed cluster components (kube-apiserver, etcd, etc). Requires --enable-azure-monitor-metrics. See aka.ms/aks/controlplane-metrics.
+          short-summary: Enable collection of Azure Monitor managed Prometheus control plane metrics for managed cluster components (kube-apiserver, etcd, etc). Requires Azure Monitor metrics to be enabled (already enabled or via --enable-azure-monitor-metrics). See aka.ms/aks/controlplane-metrics.
         - name: --azure-monitor-workspace-resource-id
           type: string
           short-summary: Resource ID of the Azure Monitor Workspace
