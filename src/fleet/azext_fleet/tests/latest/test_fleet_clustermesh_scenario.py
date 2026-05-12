@@ -89,7 +89,8 @@ class FleetClusterMeshScenarioTest(ScenarioTest):
             '--network-dataplane cilium '
             '--enable-acns '
             '--vnet-subnet-id {node_subnet1_id} '
-            '--pod-subnet-id {pod_subnet1_id}',
+            '--pod-subnet-id {pod_subnet1_id} '
+            '--skip-subnet-role-assignment',
             checks=[self.check('name', '{member1_name}')]
         ).get_output_in_json()['id']
 
@@ -100,7 +101,8 @@ class FleetClusterMeshScenarioTest(ScenarioTest):
             '--network-dataplane cilium '
             '--enable-acns '
             '--vnet-subnet-id {node_subnet2_id} '
-            '--pod-subnet-id {pod_subnet2_id}',
+            '--pod-subnet-id {pod_subnet2_id} '
+            '--skip-subnet-role-assignment',
             checks=[self.check('name', '{member2_name}')]
         ).get_output_in_json()['id']
 
@@ -292,10 +294,11 @@ class FleetClusterMeshScenarioTest(ScenarioTest):
             self.assertIn(self.kwargs['cmp1_name'], entry['ErrorMessage'])
 
         # -----------------------------------------------------------
-        # Cleanup: remove members from the CMP by changing the
-        # selector so no members match, then re-apply to disconnect
-        # them. Members cannot be deleted while they belong to a CMP,
-        # and CMPs cannot be deleted while they have members.
+        # Cleanup: disconnect members from the CMP by changing the
+        # selector so no members match, re-apply, then delete the
+        # CMPs. Remaining resource cleanup (members, AKS clusters,
+        # fleet) is handled by @ResourceGroupPreparer which deletes
+        # the entire resource group regardless of test outcome.
         # -----------------------------------------------------------
 
         # Update cmp1 with a selector that matches no members
@@ -305,35 +308,17 @@ class FleetClusterMeshScenarioTest(ScenarioTest):
         )
         self.cmd('fleet clustermeshprofile apply -g {rg} -f {fleet_name} -n {cmp1_name}')
 
-        # Wait for the CMP to finish and members to disconnect
+        # Wait for the CMP to reach NotConnected and members to settle
         self.cmd(
             'fleet clustermeshprofile wait -g {rg} -f {fleet_name} -n {cmp1_name} '
             '--custom "properties.status.state==\'NotConnected\'"',
             checks=[self.is_empty()]
         )
-        self.cmd(
-            'fleet member wait -g {rg} --fleet-name {fleet_name} '
-            '--fleet-member-name {member1_name} '
-            '--custom "provisioningState==\'Succeeded\'"',
-            checks=[self.is_empty()]
-        )
-        self.cmd(
-            'fleet member wait -g {rg} --fleet-name {fleet_name} '
-            '--fleet-member-name {member2_name} '
-            '--custom "provisioningState==\'Succeeded\'"',
-            checks=[self.is_empty()]
-        )
 
-        # Now delete CMPs (no members attached)
+        # Delete CMPs
         self.cmd('fleet clustermeshprofile delete -g {rg} -f {fleet_name} -n {cmp1_name} --yes')
         self.cmd('fleet clustermeshprofile delete -g {rg} -f {fleet_name} -n {cmp2_name} --yes')
 
         self.cmd('fleet clustermeshprofile list -g {rg} -f {fleet_name}', checks=[
             self.check('length([])', 0)
         ])
-
-        # Delete members and fleet
-        self.cmd('fleet member delete -g {rg} --fleet-name {fleet_name} -n {member1_name} --yes')
-        self.cmd('fleet member delete -g {rg} --fleet-name {fleet_name} -n {member2_name} --yes')
-
-        self.cmd('fleet delete -g {rg} -n {fleet_name} --yes')
