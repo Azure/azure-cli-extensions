@@ -56,10 +56,10 @@ class HorizonDBClusterMgmtScenarioTest(ScenarioTest):
 
         # TODO: Uncomment once cluster list is working. Subscription scoped cluster list currently
         # returns 502 Bad Gateway in live mode, which causes playback to fail since the response is not recorded.
-        # if self.is_live:
-        #     # List clusters in the resource group and ensure the cluster is returned
-        #     self.cmd('horizondb list -g {}'.format(resource_group),
-        #              checks=[JMESPathCheck("[?name=='{}'] | length(@)".format(cluster_name), 1)])
+        if self.is_live:
+            # List clusters in the resource group and ensure the cluster is returned
+            self.cmd('horizondb list -g {}'.format(resource_group),
+                        checks=[JMESPathCheck("[?name=='{}'] | length(@)".format(cluster_name), 1)])
 
         #     # List clusters in subscription scope and ensure the cluster is returned
         #     self.cmd('horizondb list',
