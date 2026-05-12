@@ -326,6 +326,34 @@ def get_blob_backupconfig(cmd, client, vaulted_backup_containers, include_all_co
                                        'for given workload type.')
 
 
+def get_blob_autoprotection_config(datasource_type, exclusion_prefixes=None):
+    if datasource_type == "AzureDataLakeStorage":
+        object_type = "AdlsBlobBackupDatasourceParametersForAutoProtection"
+    else:
+        object_type = "BlobBackupDatasourceParametersForAutoProtection"
+
+    auto_protection_settings = {
+        "object_type": "BlobBackupRuleBasedAutoProtectionSettings",
+        "enabled": True
+    }
+
+    if exclusion_prefixes:
+        auto_protection_settings["rules"] = [
+            {
+                "object_type": "BlobBackupAutoProtectionRule",
+                "mode": "Exclude",
+                "type": "Prefix",
+                "pattern": prefix
+            }
+            for prefix in exclusion_prefixes
+        ]
+
+    return {
+        "object_type": object_type,
+        "auto_protection_settings": auto_protection_settings
+    }
+
+
 def get_datasource_auth_credentials_info(secret_store_type, secret_store_uri):
     datasource_auth_credentials_info = None
 

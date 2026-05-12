@@ -92,11 +92,15 @@ def dataprotection_backup_instance_initialize_backupconfig(cmd, client, datasour
                                                            vaulted_backup_containers=None,
                                                            include_all_containers=None,
                                                            storage_account_name=None, storage_account_resource_group=None,
-                                                           backup_hook_references=None):
+                                                           backup_hook_references=None,
+                                                           auto_protection=None,
+                                                           auto_protection_exclusion_prefixes=None):
     if datasource_type == "AzureKubernetesService":
-        if any([vaulted_backup_containers, include_all_containers, storage_account_name, storage_account_resource_group]):
+        if any([vaulted_backup_containers, include_all_containers, storage_account_name, storage_account_resource_group,
+                auto_protection is not None, auto_protection_exclusion_prefixes is not None]):
             raise InvalidArgumentValueError('Invalid argument --vaulted-backup-containers, --include-all-containers, '
-                                            '--storage-account-name, --storage-account-resource-group for given datasource type.')
+                                            '--storage-account-name, --storage-account-resource-group, '
+                                            '--auto-protection, --exclusion-prefixes for given datasource type.')
         if snapshot_volumes is None:
             snapshot_volumes = True
         if include_cluster_scope_resources is None:
@@ -118,10 +122,18 @@ def dataprotection_backup_instance_initialize_backupconfig(cmd, client, datasour
             raise InvalidArgumentValueError('Invalid arguments --excluded-resource-type, --included-resource-type, --excluded-namespaces, '
                                             ' --included-namespaces, --label-selectors, --snapshot-volumes, --include-cluster-scope-resources, '
                                             ' --backup-hook-references for given datasource type.')
+        if auto_protection_exclusion_prefixes and not auto_protection:
+            raise InvalidArgumentValueError('--exclusion-prefixes requires --auto-protection to be enabled.')
+        if auto_protection:
+            if any([vaulted_backup_containers, include_all_containers is not None]):
+                raise InvalidArgumentValueError('--auto-protection cannot be used with --container-list or --include-all-containers.')
+            if any([storage_account_name, storage_account_resource_group]):
+                raise InvalidArgumentValueError('--storage-account-name and --storage-account-resource-group are not applicable with --auto-protection.')
+            return helper.get_blob_autoprotection_config(datasource_type, auto_protection_exclusion_prefixes)
         return helper.get_blob_backupconfig(cmd, client, vaulted_backup_containers, include_all_containers, storage_account_name, storage_account_resource_group, datasource_type)
 
     raise InvalidArgumentValueError('Given datasource type is not supported currently. '
-                                    'This command only supports "AzureBlob" or "AzureKubernetesService" datasource types.')
+                                    'This command only supports "AzureBlob", "AzureDataLakeStorage" or "AzureKubernetesService" datasource types.')
 
 
 def dataprotection_backup_instance_initialize(datasource_type, datasource_id, datasource_location, policy_id,

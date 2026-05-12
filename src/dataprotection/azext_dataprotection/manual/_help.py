@@ -213,6 +213,10 @@ helps['dataprotection backup-instance initialize-backupconfig'] = """
         text: az dataprotection backup-instance initialize-backupconfig --datasource-type "AzureBlob" --include-all-containers --storage-account-rg "sampleRG" --storage-account-name "samplestorage"
       - name: Initialize backup configuration for AzureDataLakeStorage
         text: az dataprotection backup-instance initialize-backupconfig --datasource-type "AzureDataLakeStorage" --container-list container1 container2 --storage-account-rg "sampleRG" --storage-account-name "samplestorage"
+      - name: Initialize backup configuration for AzureBlob with auto-protection
+        text: az dataprotection backup-instance initialize-backupconfig --datasource-type AzureBlob --auto-protection true
+      - name: Initialize backup configuration for AzureDataLakeStorage with auto-protection and exclusion prefixes
+        text: az dataprotection backup-instance initialize-backupconfig --datasource-type AzureDataLakeStorage --auto-protection true --exclusion-prefixes "logs-" "temp-"
 
 """
 
