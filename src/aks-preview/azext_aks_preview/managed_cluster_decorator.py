@@ -4848,6 +4848,11 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         """
         self._ensure_mc(mc)
 
+        # Trigger control-plane-metrics validation even if the parent metrics flag was
+        # not specified, so users get a clear error instead of silent ignore when they
+        # pass --enable-control-plane-metrics on its own.
+        self.context.get_enable_control_plane_metrics()
+
         if self.context.get_enable_azure_monitor_metrics():
             self._setup_azure_monitor_metrics(mc)
 
