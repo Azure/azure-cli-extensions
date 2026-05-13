@@ -288,8 +288,6 @@ def capability_add(cli_ctx, resource_group, context_name, name=None,
         return ctx
 
     merged = existing + added
-    names_str = ", ".join(c["name"] for c in added)
-    _log(f"Adding {len(added)}: {names_str}")
 
     updated = _patch_context_capabilities(
         cli_ctx, sub_id, resource_group, context_name, merged
