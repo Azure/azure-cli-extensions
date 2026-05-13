@@ -3,6 +3,10 @@
 Release History
 ===============
 
+Unreleased
+++++++++++
+* Add test for tar-based policy generation working even when Docker is unavailable
+
 2.0.0
 +++++
 * Fix path traversal when generating policies from untrusted image tar files

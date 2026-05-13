@@ -9,9 +9,11 @@ import shutil
 import tempfile
 import unittest
 from tarfile import TarFile
+from unittest import mock
 
 import azext_confcom.config as config
 import deepdiff
+import docker
 from azext_confcom.errors import AccContainerError
 from azext_confcom.os_util import delete_silently
 from azext_confcom.rootfs_proxy import SecurityPolicyProxy
@@ -866,3 +868,137 @@ class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
             raise AccContainerError("getting image should fail")
         except FileNotFoundError:
             pass
+
+
+class PolicyGeneratingArmParametersTarFileWithoutDocker(unittest.TestCase):
+    """Regression test for PR #9863:
+
+    When generating policy with --tar (i.e. tar_mapping) and the image is
+    present in the tar, policy generation must not require Docker. Mocking
+    docker.from_env to fail must not cause the policy generation to fail.
+    """
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.path = os.path.dirname(__file__)
+        # Build the tar file with a real Docker client *before* patching, so
+        # that during the actual test Docker is never reached.
+        cls.tar_dir = tempfile.mkdtemp()
+        cls.tar_file = os.path.join(cls.tar_dir, "busybox.tar")
+        create_tar_file(cls.tar_file)
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        shutil.rmtree(cls.tar_dir, ignore_errors=True)
+
+    def test_arm_template_tar_without_docker(self):
+        custom_arm_json_default_value = """
+    {
+        "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+        "contentVersion": "1.0.0.0",
+        "parameters": {
+            "containergroupname": {
+                "type": "string",
+                "defaultValue":"simple-container-group"
+            },
+            "image": {
+                "type": "string",
+                "defaultValue":"mcr.microsoft.com/aks/e2e/library-busybox:master.220314.1-linux-amd64"
+            },
+            "containername": {
+                "type": "string",
+                "defaultValue":"simple-container"
+            },
+            "port": {
+                "type": "string",
+                "defaultValue": "8080"
+            },
+            "cpuCores": {
+                "type": "string",
+                "defaultValue": "1.0"
+            },
+            "memoryInGb": {
+                "type": "string",
+                "defaultValue": "1.5"
+            },
+            "location": {
+                "type": "string",
+                "defaultValue": "[resourceGroup().location]"
+            }
+        },
+        "resources": [
+            {
+            "name": "[parameters('containergroupname')]",
+            "type": "Microsoft.ContainerInstance/containerGroups",
+            "apiVersion": "2023-05-01",
+            "location": "[parameters('location')]",
+            "properties": {
+                "containers": [
+                {
+                    "name": "[parameters('containername')]",
+                    "properties": {
+                    "image": "[parameters('image')]",
+                    "command": [
+                        "/bin/sh",
+                        "-c",
+                        "while true; do sleep 5; done"
+                    ],
+                    "ports": [
+                        {
+                        "port": "[parameters('port')]"
+                        }
+                    ],
+                    "resources": {
+                        "requests": {
+                        "cpu": "[parameters('cpuCores')]",
+                        "memoryInGb": "[parameters('memoryInGb')]"
+                        }
+                    }
+                    }
+                }
+                ],
+                "osType": "Linux",
+                "restartPolicy": "OnFailure",
+                "confidentialComputeProperties": {
+                "IsolationType": "SevSnp"
+                }
+            }
+            }
+        ]
+    }
+    """
+
+        tar_mapping_file = {
+            "mcr.microsoft.com/aks/e2e/library-busybox:master.220314.1-linux-amd64": self.tar_file
+        }
+
+        SecurityPolicyProxy.layer_cache = {}
+
+        # Patch docker.from_env so that *any* attempt to create a Docker
+        # client fails with DockerException. Prior to PR #9863 this would
+        # cause validate_image_platform to call eprint() (sys.exit), even
+        # though the image was supplied via --tar. After the fix, docker
+        # must not be touched at all when the image is found in tar_mapping.
+        def _raise_docker_exception(*_args, **_kwargs):
+            raise docker.errors.DockerException(
+                "mocked: Docker is not available"
+            )
+
+        with mock.patch.object(docker, "from_env", side_effect=_raise_docker_exception):
+            clean_room_image = load_policy_from_arm_template_str(
+                custom_arm_json_default_value, "", tar_mapping=tar_mapping_file,
+            )[0]
+            clean_room_image.populate_policy_content_for_all_images(
+                tar_mapping=tar_mapping_file
+            )
+
+        # Sanity check: the policy was actually populated from the tar.
+        clean_room_json = json.loads(
+            clean_room_image.get_serialized_output(
+                output_type=OutputType.RAW, rego_boilerplate=False
+            )
+        )
+        self.assertTrue(clean_room_json)
+        self.assertIn(
+            config.POLICY_FIELD_CONTAINERS_ID, clean_room_json[0]
+        )
