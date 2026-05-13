@@ -26,10 +26,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-01-01-preview",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.networkcloud/clusters", "2026-01-01-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters", "2026-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.networkcloud/clusters", "2026-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters", "2026-05-01-preview"],
         ]
     }
 
@@ -130,7 +130,7 @@ class List(AAZCommand):
                     "$top", self.ctx.args.top,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2026-01-01-preview",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -166,7 +166,9 @@ class List(AAZCommand):
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
             )
-            _schema_on_200.value = AAZListType()
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
@@ -179,7 +181,6 @@ class List(AAZCommand):
                 serialized_name="extendedLocation",
                 flags={"required": True},
             )
-            _ListHelper._build_schema_extended_location_read(_element.extended_location)
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
@@ -201,6 +202,14 @@ class List(AAZCommand):
             _element.tags = AAZDictType()
             _element.type = AAZStrType(
                 flags={"read_only": True},
+            )
+
+            extended_location = cls._schema_on_200.value.Element.extended_location
+            extended_location.name = AAZStrType(
+                flags={"required": True},
+            )
+            extended_location.type = AAZStrType(
+                flags={"required": True},
             )
 
             identity = cls._schema_on_200.value.Element.identity
@@ -266,7 +275,7 @@ class List(AAZCommand):
                 serialized_name="clusterExtendedLocation",
                 flags={"read_only": True},
             )
-            _ListHelper._build_schema_extended_location_read(properties.cluster_extended_location)
+            _ListHelper._build_schema_azure_resource_manager_common_types_extended_location_read(properties.cluster_extended_location)
             properties.cluster_location = AAZStrType(
                 serialized_name="clusterLocation",
             )
@@ -310,7 +319,15 @@ class List(AAZCommand):
                 serialized_name="hybridAksExtendedLocation",
                 flags={"read_only": True},
             )
-            _ListHelper._build_schema_extended_location_read(properties.hybrid_aks_extended_location)
+            _ListHelper._build_schema_azure_resource_manager_common_types_extended_location_read(properties.hybrid_aks_extended_location)
+            properties.last_successful_version_update_time = AAZStrType(
+                serialized_name="lastSuccessfulVersionUpdateTime",
+                flags={"read_only": True},
+            )
+            properties.managed_credentials = AAZListType(
+                serialized_name="managedCredentials",
+                flags={"read_only": True},
+            )
             properties.managed_resource_group_configuration = AAZObjectType(
                 serialized_name="managedResourceGroupConfiguration",
             )
@@ -524,6 +541,9 @@ class List(AAZCommand):
             compute_rack_definitions = cls._schema_on_200.value.Element.properties.compute_rack_definitions
             compute_rack_definitions.Element = AAZObjectType()
             _ListHelper._build_schema_rack_definition_read(compute_rack_definitions.Element)
+
+            managed_credentials = cls._schema_on_200.value.Element.properties.managed_credentials
+            managed_credentials.Element = AAZStrType()
 
             managed_resource_group_configuration = cls._schema_on_200.value.Element.properties.managed_resource_group_configuration
             managed_resource_group_configuration.location = AAZStrType()
@@ -658,7 +678,7 @@ class List(AAZCommand):
                     "$top", self.ctx.args.top,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2026-01-01-preview",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -694,7 +714,9 @@ class List(AAZCommand):
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
             )
-            _schema_on_200.value = AAZListType()
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
@@ -707,7 +729,6 @@ class List(AAZCommand):
                 serialized_name="extendedLocation",
                 flags={"required": True},
             )
-            _ListHelper._build_schema_extended_location_read(_element.extended_location)
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
@@ -729,6 +750,14 @@ class List(AAZCommand):
             _element.tags = AAZDictType()
             _element.type = AAZStrType(
                 flags={"read_only": True},
+            )
+
+            extended_location = cls._schema_on_200.value.Element.extended_location
+            extended_location.name = AAZStrType(
+                flags={"required": True},
+            )
+            extended_location.type = AAZStrType(
+                flags={"required": True},
             )
 
             identity = cls._schema_on_200.value.Element.identity
@@ -794,7 +823,7 @@ class List(AAZCommand):
                 serialized_name="clusterExtendedLocation",
                 flags={"read_only": True},
             )
-            _ListHelper._build_schema_extended_location_read(properties.cluster_extended_location)
+            _ListHelper._build_schema_azure_resource_manager_common_types_extended_location_read(properties.cluster_extended_location)
             properties.cluster_location = AAZStrType(
                 serialized_name="clusterLocation",
             )
@@ -838,7 +867,15 @@ class List(AAZCommand):
                 serialized_name="hybridAksExtendedLocation",
                 flags={"read_only": True},
             )
-            _ListHelper._build_schema_extended_location_read(properties.hybrid_aks_extended_location)
+            _ListHelper._build_schema_azure_resource_manager_common_types_extended_location_read(properties.hybrid_aks_extended_location)
+            properties.last_successful_version_update_time = AAZStrType(
+                serialized_name="lastSuccessfulVersionUpdateTime",
+                flags={"read_only": True},
+            )
+            properties.managed_credentials = AAZListType(
+                serialized_name="managedCredentials",
+                flags={"read_only": True},
+            )
             properties.managed_resource_group_configuration = AAZObjectType(
                 serialized_name="managedResourceGroupConfiguration",
             )
@@ -1053,6 +1090,9 @@ class List(AAZCommand):
             compute_rack_definitions.Element = AAZObjectType()
             _ListHelper._build_schema_rack_definition_read(compute_rack_definitions.Element)
 
+            managed_credentials = cls._schema_on_200.value.Element.properties.managed_credentials
+            managed_credentials.Element = AAZStrType()
+
             managed_resource_group_configuration = cls._schema_on_200.value.Element.properties.managed_resource_group_configuration
             managed_resource_group_configuration.location = AAZStrType()
             managed_resource_group_configuration.name = AAZStrType()
@@ -1162,27 +1202,29 @@ class _ListHelper:
         _schema.password = cls._schema_administrative_credentials_read.password
         _schema.username = cls._schema_administrative_credentials_read.username
 
-    _schema_extended_location_read = None
+    _schema_azure_resource_manager_common_types_extended_location_read = None
 
     @classmethod
-    def _build_schema_extended_location_read(cls, _schema):
-        if cls._schema_extended_location_read is not None:
-            _schema.name = cls._schema_extended_location_read.name
-            _schema.type = cls._schema_extended_location_read.type
+    def _build_schema_azure_resource_manager_common_types_extended_location_read(cls, _schema):
+        if cls._schema_azure_resource_manager_common_types_extended_location_read is not None:
+            _schema.name = cls._schema_azure_resource_manager_common_types_extended_location_read.name
+            _schema.type = cls._schema_azure_resource_manager_common_types_extended_location_read.type
             return
 
-        cls._schema_extended_location_read = _schema_extended_location_read = AAZObjectType()
-
-        extended_location_read = _schema_extended_location_read
-        extended_location_read.name = AAZStrType(
-            flags={"required": True},
-        )
-        extended_location_read.type = AAZStrType(
-            flags={"required": True},
+        cls._schema_azure_resource_manager_common_types_extended_location_read = _schema_azure_resource_manager_common_types_extended_location_read = AAZObjectType(
+            flags={"read_only": True}
         )
 
-        _schema.name = cls._schema_extended_location_read.name
-        _schema.type = cls._schema_extended_location_read.type
+        azure_resource_manager_common_types_extended_location_read = _schema_azure_resource_manager_common_types_extended_location_read
+        azure_resource_manager_common_types_extended_location_read.name = AAZStrType(
+            flags={"required": True},
+        )
+        azure_resource_manager_common_types_extended_location_read.type = AAZStrType(
+            flags={"required": True},
+        )
+
+        _schema.name = cls._schema_azure_resource_manager_common_types_extended_location_read.name
+        _schema.type = cls._schema_azure_resource_manager_common_types_extended_location_read.type
 
     _schema_identity_selector_read = None
 
@@ -1201,7 +1243,6 @@ class _ListHelper:
         )
         identity_selector_read.user_assigned_identity_resource_id = AAZStrType(
             serialized_name="userAssignedIdentityResourceId",
-            nullable=True,
         )
 
         _schema.identity_type = cls._schema_identity_selector_read.identity_type
