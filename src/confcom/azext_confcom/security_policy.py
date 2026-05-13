@@ -752,7 +752,6 @@ def validate_image_platform(image_name: str, platform: str, tar_mapping=None) ->
         )
 
 
-
 # pylint: disable=R0914,
 def load_policy_from_arm_template_str(
     template_data: str,
