@@ -292,7 +292,6 @@ def capability_add(cli_ctx, resource_group, context_name, name=None,
     updated = _patch_context_capabilities(
         cli_ctx, sub_id, resource_group, context_name, merged
     )
-    _log(f"\u2713 Done ({len(merged)} total capabilities)")
     return updated
 
 
@@ -345,7 +344,6 @@ def capability_remove(cli_ctx, resource_group, context_name, name=None,
     updated = _patch_context_capabilities(
         cli_ctx, sub_id, resource_group, context_name, remaining
     )
-    _log(f"\u2713 Done ({len(remaining)} total capabilities)")
     return updated
 
 
