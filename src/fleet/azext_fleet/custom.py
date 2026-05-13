@@ -653,7 +653,7 @@ def get_update_run_strategy(cmd, operation_group, stages):
 
     for stage in data["stages"]:
         update_groups = []
-        for group in stage["groups"]:
+        for group in stage.get("groups", []):
             group_member_selector = None
             raw_group_selector = group.get("memberSelector")
             if raw_group_selector:
