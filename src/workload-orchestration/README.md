@@ -38,31 +38,6 @@ All workload orchestration resources are managed through Azure Resource Manager,
 
 This guide will help you get started with Workload Orchestration for authoring, deploying, and monitoring application configurations using the converged object model.
 
-### Prerequisites
-
-Workload Orchestration relies on three other Azure CLI extensions at runtime:
-
-| Extension | Used for |
-|---|---|
-| `connectedk8s` | Querying the Arc-connected cluster during pre-flight checks |
-| `k8s-extension` | Installing the `aio-certmgr` and `microsoft.workloadorchestration` (`tco`) cluster extensions |
-| `customlocation` | Creating the Custom Location that targets reference |
-
-**You do not need to install these manually.** Starting in `5.2.1`, `az workload-orchestration cluster init` (and any command that calls `target_prepare`) automatically detects missing extensions and installs them before continuing. If an install fails (for example due to network or permission issues), the command stops with a clear message and the manual install command, e.g.:
-
-```text
-ERROR: Failed to install required az cli extension 'connectedk8s': <reason>
-       Please install manually: az extension add --name connectedk8s
-```
-
-To install all three up front yourself:
-
-```bash
-az extension add --name connectedk8s
-az extension add --name k8s-extension
-az extension add --name customlocation
-```
-
 Key features of the public preview release include end-to-end flows for application dependencies, along with an enhanced UI experience offering additional capabilities like Compare, Copy, Delete, Uninstall, and more.
 
 ---
