@@ -40,6 +40,7 @@ from azext_workload_orchestration.common.consts import (
 )
 from azext_workload_orchestration.common.utils import (
     _eprint,
+    ensure_required_cli_extensions,
     invoke_cli_command,
 )
 
@@ -83,6 +84,17 @@ def target_prepare(
     _eprint(f"\nPreparing cluster '{cluster_name}' for Workload Orchestration...\n")
 
     step_results = {}
+
+    # Step 0: Ensure required az CLI extensions are installed
+    # (connectedk8s, k8s-extension, customlocation are called via invoke_cli_command
+    # and would fail with opaque errors if missing)
+    try:
+        ensure_required_cli_extensions()
+        step_results["cli-extensions"] = "Ready"
+    except Exception as exc:
+        step_results["cli-extensions"] = f"FAILED: {exc}"
+        _print_failure_hint(step_results)
+        raise
 
     try:
         connected_cluster_id = _preflight_checks(cmd, cluster_name, resource_group)
