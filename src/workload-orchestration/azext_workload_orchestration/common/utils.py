@@ -156,3 +156,74 @@ def print_step(step_num, total, message, status=""):
         _eprint(f"{connector} {message} {status}")
     else:
         _eprint(f"{connector} {message}...")
+
+
+# ---------------------------------------------------------------------------
+# CLI extension dependency check
+# ---------------------------------------------------------------------------
+
+# az CLI extensions that workload-orchestration calls at runtime via
+# invoke_cli_command. These MUST be installed before `cluster init` runs,
+# otherwise sub-command invocations fail with opaque "command not recognized"
+# errors. Mirrors the azext_vme.utils.check_and_add_cli_extension pattern.
+REQUIRED_CLI_EXTENSIONS = [
+    "connectedk8s",     # `connectedk8s show` in _preflight_checks
+    "k8s-extension",    # `k8s-extension list/create` for aio-certmgr + wo-extension
+    "customlocation",   # `customlocation create` for Step 4
+]
+
+
+def check_and_add_cli_extension(extension_name):
+    """Check if an az CLI extension is installed; install it if missing.
+
+    Uses subprocess (not invoke_cli_command) so that `az extension add`
+    runs in its own CLI process — needed because in-process invoke does
+    not pick up newly installed extensions in the same Python process.
+
+    Raises CLIInternalError if the install fails.
+    """
+    import shutil
+    import subprocess
+
+    az = shutil.which("az") or "az"
+
+    # Check if installed
+    try:
+        result = subprocess.run(
+            [az, "extension", "list",
+             "--query", f"[?name=='{extension_name}'].name",
+             "-o", "tsv"],
+            capture_output=True, text=True, check=True, encoding="utf-8"
+        )
+        if extension_name in (result.stdout or "").strip():
+            logger.debug("az cli extension '%s' already installed", extension_name)
+            return
+    except subprocess.CalledProcessError as exc:
+        raise CLIInternalError(
+            f"Failed to check for az cli extension '{extension_name}': {exc.stderr or exc}"
+        ) from None
+
+    _eprint(f"  ├── Installing required az cli extension: {extension_name}...")
+    try:
+        subprocess.run(
+            [az, "extension", "add", "--name", extension_name, "--yes"],
+            capture_output=True, text=True, check=True, encoding="utf-8"
+        )
+        _eprint(f"  ├── Installed az cli extension: {extension_name} ✓")
+    except subprocess.CalledProcessError as exc:
+        raise CLIInternalError(
+            f"Failed to install required az cli extension '{extension_name}': "
+            f"{exc.stderr or exc}\n"
+            f"Please install manually: az extension add --name {extension_name}"
+        ) from None
+
+
+def ensure_required_cli_extensions(extension_names=None):
+    """Ensure all required az CLI extensions are installed.
+
+    Defaults to REQUIRED_CLI_EXTENSIONS. Idempotent — skips already-installed
+    extensions. Fails fast with a clear message if any install fails.
+    """
+    extensions = extension_names if extension_names is not None else REQUIRED_CLI_EXTENSIONS
+    for ext in extensions:
+        check_and_add_cli_extension(ext)
