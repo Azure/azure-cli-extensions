@@ -1263,7 +1263,9 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         """
         self._ensure_agentpool(agentpool)
 
-        agentpool.capacity_reservation_group_id = self.context.get_crg_id()
+        crg_id = self.context.get_crg_id()
+        if crg_id is not None:
+            agentpool.capacity_reservation_group_id = crg_id
         return agentpool
 
     def set_up_motd(self, agentpool: AgentPool) -> AgentPool:
@@ -1967,6 +1969,17 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
 
         return agentpool
 
+    def update_crg(self, agentpool: AgentPool) -> AgentPool:
+        """Update crg id for the AgentPool object.
+        :return: the AgentPool object
+        """
+        self._ensure_agentpool(agentpool)
+
+        crg_id = self.context.get_crg_id()
+        if crg_id is not None:
+            agentpool.capacity_reservation_group_id = crg_id
+        return agentpool
+
     def update_vm_size(self, agentpool: AgentPool) -> AgentPool:
         """Update VM size for the AgentPool object.
 
@@ -2073,6 +2086,9 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
 
         # update gpu mig strategy
         agentpool = self.update_gpu_mig_strategy(agentpool)
+
+        # update crg id
+        agentpool = self.update_crg(agentpool)
 
         return agentpool
 
