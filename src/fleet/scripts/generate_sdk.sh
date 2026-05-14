@@ -44,10 +44,14 @@ TAG=""
 
 while [[ $# -gt 0 ]]; do
     case $1 in
-        --branch|-b) BRANCH="$2"; shift 2 ;;
-        --tag|-t)    TAG="$2";    shift 2 ;;
+        --branch|-b)
+            if [[ $# -lt 2 ]]; then echo "ERROR: $1 requires a value." >&2; exit 1; fi
+            BRANCH="$2"; shift 2 ;;
+        --tag|-t)
+            if [[ $# -lt 2 ]]; then echo "ERROR: $1 requires a value." >&2; exit 1; fi
+            TAG="$2"; shift 2 ;;
         --help|-h)
-            head -20 "$0" | grep '^#' | sed 's/^# \?//'
+            sed -n '2,/^[^#]/{ /^#/s/^# \?//p; }' "$0"
             exit 0
             ;;
         *)
@@ -83,6 +87,7 @@ fi
 # The fleet spec readme path is fixed; only the branch changes.
 SPEC_README="https://raw.githubusercontent.com/Azure/azure-rest-api-specs/${BRANCH}/specification/containerservice/resource-manager/Microsoft.ContainerService/fleet/readme.md"
 TMP_DIR="$(mktemp -d)"
+trap 'rm -rf "$TMP_DIR"' EXIT
 SDK_OUTPUT="${TMP_DIR}/containerservice/azure-mgmt-containerservicefleet/azure/mgmt/containerservicefleet"
 
 echo "========================================"
@@ -178,7 +183,7 @@ __all__ = ["ContainerServiceFleetMgmtClient"]
 EOF
 
 # ── Cleanup ───────────────────────────────────────────────────────────────
-rm -rf "$TMP_DIR"
+# TMP_DIR is cleaned up automatically by the EXIT trap.
 
 echo ""
 echo "========================================"
