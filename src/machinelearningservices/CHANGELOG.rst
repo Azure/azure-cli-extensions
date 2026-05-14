@@ -1,4 +1,4 @@
-## Unreleased
+## 2026-05-14
 
 ### Azure Machine Learning CLI (v2) v 2.43.0
 
