@@ -181,4 +181,7 @@ Release History
 1.10.0
 ++++++
 * Add 2026-03-02-preview API version with ClusterMesh support.
+
+1.10.1
+++++++
 * Add SDK generation script for regenerating vendored SDK from azure-rest-api-specs.
