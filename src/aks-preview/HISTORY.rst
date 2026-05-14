@@ -12,6 +12,15 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+20.0.0b8
++++++++
+* `az aks nodepool update`: Support `--enable-cluster-autoscaler` for VirtualMachines pools to convert all manual scale profiles to autoscale profiles.
+* `az aks nodepool update`: Support `--disable-cluster-autoscaler` for VirtualMachines pools to convert all autoscale profiles back to manual scale profiles.
+* `az aks nodepool update`: Block `--update-cluster-autoscaler` for VirtualMachines pools; use `az aks nodepool auto-scale update` instead.
+* `az aks nodepool auto-scale add`: New command to add an autoscale profile to a VirtualMachines agent pool.
+* `az aks nodepool auto-scale update`: New command to update an existing autoscale profile of a VirtualMachines agent pool.
+* `az aks nodepool auto-scale delete`: New command to delete an existing autoscale profile from a VirtualMachines agent pool.
+
 20.0.0b7
 +++++++
 * `az aks nodepool update --crg-id`: Allow updating `--crg-id` to associate an existing Capacity Reservation Group with a nodepool not currently associated with one.
