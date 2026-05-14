@@ -99,9 +99,9 @@ def _get_basic_quantum_workspace(location, info, storage_account):
     # Allow the system to assign the workspace identity
     qw.identity = ManagedServiceIdentity(type="SystemAssigned")
     qw.properties = WorkspaceResourceProperties(
-         storage_account=_get_storage_account_path(info, storage_account),
-         providers=[],
-     )
+        storage_account=_get_storage_account_path(info, storage_account),
+        providers=[],
+    )
     return qw
 
 
