@@ -55,7 +55,7 @@ helps['aks create'] = f"""
         - name: --node-osdisk-type
           type: string
           short-summary: OS disk type to be used for machines in a given agent pool. Defaults to 'Ephemeral' when possible in conjunction with VM size and OS disk size. May not be changed for this pool after creation. ('Ephemeral' or 'Managed')
-        - name: --enable-osdisk-full-caching --enable-osdisk-fc
+        - name: --enable-osdisk-fc --enable-osdisk-full-caching
           type: bool
           short-summary: Enable the full-cache ephemeral OS disk feature for the default node pool.
           long-summary: |-
