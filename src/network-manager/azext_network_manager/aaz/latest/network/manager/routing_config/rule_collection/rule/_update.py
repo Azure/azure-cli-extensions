@@ -23,9 +23,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-05-01",
+        "version": "2025-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/routingconfigurations/{}/rulecollections/{}/rules/{}", "2024-05-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/routingconfigurations/{}/rulecollections/{}/rules/{}", "2025-07-01"],
         ]
     }
 
@@ -121,7 +121,7 @@ class Update(AAZCommand):
         next_hop = cls._args_schema.next_hop
         next_hop.next_hop_address = AAZStrArg(
             options=["next-hop-address"],
-            help="Next hop address. Only relevant if the next hop type is VirtualAppliance.",
+            help="Next hop address. Only relevant if the next hop type is VirtualAppliance. Supports comma-separated IP addresses for ECMP scenarios (e.g., '10.1.0.4,10.1.0.5,10.1.0.6').",
             nullable=True,
         )
         next_hop.next_hop_type = AAZStrArg(
@@ -221,7 +221,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-05-01",
+                    "api-version", "2025-07-01",
                     required=True,
                 ),
             }
@@ -316,7 +316,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-05-01",
+                    "api-version", "2025-07-01",
                     required=True,
                 ),
             }

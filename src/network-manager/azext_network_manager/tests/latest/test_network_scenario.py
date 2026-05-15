@@ -655,6 +655,76 @@ class NetworkScenarioTest(ScenarioTest):
 
     @serial_test()
     @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix='test_network_manager_routing_rule_ecmp', location='eastus2')
+    def test_network_manager_routing_rule_ecmp(self, resource_group):
+        self.kwargs.update({
+            'manager_name': 'TestNetworkManager',
+            "group_name": 'TestNetworkManagerGroup',
+            'sub': '/subscriptions/{}'.format(self.get_subscription_id()),
+            "routing_config": self.create_random_name("routing-config-", 20),
+            "rule_collection": self.create_random_name("rule-collection-", 20),
+            "rule_name": self.create_random_name("rule-", 10),
+            "ecmp_addresses": "10.1.0.4,10.1.0.5,10.1.0.6"
+        })
+
+        self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" '
+                 '--scope-accesses "Routing" '
+                 '--network-manager-scopes '
+                 'subscriptions={sub} '
+                 '-l eastus2 '
+                 '--resource-group {rg}')
+
+        manager_group = self.cmd('network manager group create --name {group_name} --network-manager-name {manager_name} -g {rg}').get_output_in_json()
+
+        self.kwargs.update({
+            'manager_id': manager_group['id']
+        })
+
+        self.cmd('az network manager routing-config create --name {routing_config} --manager-name {manager_name} --resource-group {rg}',
+                 self.check('name', '{routing_config}'))
+
+        self.cmd('az network manager routing-config rule-collection create --config-name {routing_config} --manager-name {manager_name} --name {rule_collection} --resource-group {rg} --applies-to [{{"network_group_id":"{manager_id}"}}] --disable-bgp-route true',
+                 self.check('name', '{rule_collection}'))
+
+        # Create a routing rule with ECMP next hop (comma-separated IP addresses)
+        self.cmd('az network manager routing-config rule-collection rule create --config-name {routing_config} --manager-name {manager_name} --collection-name {rule_collection} --name {rule_name} --resource-group {rg} --destination {{"destination_address":"10.0.0.0/16","type":"AddressPrefix"}} --next-hop {{"next_hop_type":"VirtualAppliance","next_hop_address":"\'{ecmp_addresses}\'"}}',
+                 checks=[
+                     self.check('name', '{rule_name}'),
+                     self.check('nextHop.nextHopType', 'VirtualAppliance'),
+                     self.check('nextHop.nextHopAddress', '{ecmp_addresses}')
+                 ])
+
+        # Verify show preserves comma-separated addresses
+        self.cmd('az network manager routing-config rule-collection rule show --config-name {routing_config} --manager-name {manager_name} --collection-name {rule_collection} --name {rule_name} --resource-group {rg}',
+                 checks=[
+                     self.check('name', '{rule_name}'),
+                     self.check('nextHop.nextHopType', 'VirtualAppliance'),
+                     self.check('nextHop.nextHopAddress', '{ecmp_addresses}')
+                 ])
+
+        # Verify list preserves comma-separated addresses
+        self.cmd('az network manager routing-config rule-collection rule list --config-name {routing_config} --manager-name {manager_name} --collection-name {rule_collection} --resource-group {rg}',
+                 checks=[
+                     self.check('length(@)', 1),
+                     self.check('[0].nextHop.nextHopType', 'VirtualAppliance'),
+                     self.check('[0].nextHop.nextHopAddress', '{ecmp_addresses}')
+                 ])
+
+        # Update the rule and verify ECMP addresses are preserved
+        self.cmd('az network manager routing-config rule-collection rule update --config-name {routing_config} --manager-name {manager_name} --collection-name {rule_collection} --name {rule_name} --resource-group {rg} --description "ecmp test"',
+                 checks=[
+                     self.check('description', 'ecmp test'),
+                     self.check('nextHop.nextHopAddress', '{ecmp_addresses}')
+                 ])
+
+        self.cmd('az network manager routing-config rule-collection rule delete --config-name {routing_config} --manager-name {manager_name} --collection-name {rule_collection} --name {rule_name} --resource-group {rg} -y')
+        self.cmd('az network manager routing-config rule-collection delete --config-name {routing_config} --manager-name {manager_name} --name {rule_collection} --resource-group {rg} -y')
+        self.cmd('az network manager routing-config delete --name {routing_config} --manager-name {manager_name} --resource-group {rg} -y')
+
+        self.cmd('network manager delete --resource-group {rg} --name {manager_name} --force --yes')
+
+    @serial_test()
+    @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='test_network_manager_static_cidr_crud', location='eastus2')
     def test_network_manager_static_cidr_crud(self, resource_group):
         self.kwargs.update({
