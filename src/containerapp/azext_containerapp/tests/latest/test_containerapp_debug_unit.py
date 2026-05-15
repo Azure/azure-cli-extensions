@@ -181,5 +181,49 @@ class TestDebugCommandValidation(unittest.TestCase):
         self.assertIsNone(decorator.get_argument_custom_debug_image_entrypoint_command())
 
 
+class TestValidateDebugCustomImageRequiresCommand(unittest.TestCase):
+    """Validate that --image/--entrypoint require --command."""
+
+    def _make_namespace(self, **kwargs):
+        ns = mock.MagicMock()
+        ns.debug_command = kwargs.get('debug_command', None)
+        ns.custom_debug_image_name = kwargs.get('custom_debug_image_name', None)
+        ns.custom_debug_image_entrypoint_command = kwargs.get('custom_debug_image_entrypoint_command', None)
+        ns.revision = kwargs.get('revision', 'rev')
+        ns.replica = kwargs.get('replica', 'replica')
+        ns.container = kwargs.get('container', 'container')
+        ns.name = 'test-app'
+        ns.resource_group_name = 'test-rg'
+        return ns
+
+    @mock.patch('azext_containerapp._validators._set_debug_defaults')
+    def test_image_without_command_raises(self, mock_defaults):
+        from azext_containerapp._validators import validate_debug
+        ns = self._make_namespace(custom_debug_image_name='ubuntu:22.04')
+        with self.assertRaises(ValidationError) as ctx:
+            validate_debug(mock.MagicMock(), ns)
+        self.assertIn("--image", str(ctx.exception))
+
+    @mock.patch('azext_containerapp._validators._set_debug_defaults')
+    def test_entrypoint_without_command_raises(self, mock_defaults):
+        from azext_containerapp._validators import validate_debug
+        ns = self._make_namespace(custom_debug_image_entrypoint_command='/bin/bash')
+        with self.assertRaises(ValidationError) as ctx:
+            validate_debug(mock.MagicMock(), ns)
+        self.assertIn("--image", str(ctx.exception))
+
+    @mock.patch('azext_containerapp._validators._set_debug_defaults')
+    @mock.patch('azext_containerapp._validators._validate_revision_exists')
+    @mock.patch('azext_containerapp._validators._validate_replica_exists')
+    @mock.patch('azext_containerapp._validators._validate_container_exists')
+    def test_image_with_command_passes(self, mock_cont, mock_rep, mock_rev, mock_defaults):
+        from azext_containerapp._validators import validate_debug
+        ns = self._make_namespace(
+            debug_command='/bin/bash',
+            custom_debug_image_name='ubuntu:22.04',
+        )
+        validate_debug(mock.MagicMock(), ns)  # should not raise
+
+
 if __name__ == '__main__':
     unittest.main()
