@@ -8,13 +8,14 @@ import json
 import tempfile
 import os
 from unittest.mock import MagicMock, patch
-from azext_fleet.custom import get_update_run_strategy
+from azext_fleet.custom import get_update_run_strategy, build_gate_configs
 from azext_fleet.vendored_sdks.v2026_05_01_preview.models import (
     UpdateRunStrategy, UpdateStage, UpdateGroup, MemberSelector, GateConfiguration, ScheduledStartConfiguration,
 )
 from azure.cli.core.azclierror import (
     InvalidArgumentValueError,
 )
+from knack.util import CLIError
 
 class TestStagesJsonHandling(unittest.TestCase):
     """Test inline JSON support for --stages argument in fleet commands."""
@@ -344,6 +345,55 @@ class TestStagesJsonHandling(unittest.TestCase):
         self.assertEqual(gate.type, "Approval")
         self.assertEqual(gate.display_name, "Approval gate")
         self.assertIsNone(gate.scheduled_start_configuration)
+
+    def test_scheduled_start_missing_start_day(self):
+        """Test that missing startDay in scheduledStartConfiguration raises CLIError."""
+        gates_list = [
+            {
+                "type": "ScheduledStart",
+                "displayName": "Wait gate",
+                "scheduledStartConfiguration": {
+                    "startTime": "18:00",
+                    "utcOffset": "-05:00"
+                }
+            }
+        ]
+        with self.assertRaises(CLIError) as ctx:
+            build_gate_configs(self.mock_cmd, "fleet_update_runs", gates_list)
+        self.assertIn("startDay", str(ctx.exception))
+
+    def test_scheduled_start_missing_all_fields(self):
+        """Test that missing all fields in scheduledStartConfiguration raises CLIError."""
+        gates_list = [
+            {
+                "type": "ScheduledStart",
+                "displayName": "Wait gate",
+                "scheduledStartConfiguration": {}
+            }
+        ]
+        with self.assertRaises(CLIError) as ctx:
+            build_gate_configs(self.mock_cmd, "fleet_update_runs", gates_list)
+        self.assertIn("startDay", str(ctx.exception))
+        self.assertIn("startTime", str(ctx.exception))
+        self.assertIn("utcOffset", str(ctx.exception))
+
+    def test_scheduled_start_invalid_start_day(self):
+        """Test that invalid startDay value raises CLIError with user's input."""
+        gates_list = [
+            {
+                "type": "ScheduledStart",
+                "displayName": "Wait gate",
+                "scheduledStartConfiguration": {
+                    "startDay": "abc",
+                    "startTime": "18:00",
+                    "utcOffset": "-05:00"
+                }
+            }
+        ]
+        with self.assertRaises(CLIError) as ctx:
+            build_gate_configs(self.mock_cmd, "fleet_update_runs", gates_list)
+        self.assertIn("abc", str(ctx.exception))
+        self.assertIn("Monday", str(ctx.exception))
 
 
 if __name__ == "__main__":
