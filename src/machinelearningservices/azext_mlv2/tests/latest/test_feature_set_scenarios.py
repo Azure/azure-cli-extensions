@@ -1,4 +1,4 @@
-﻿# --------------------------------------------------------------------------
+# --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for
 # license information.
@@ -10,10 +10,15 @@
 import pytest
 import yaml
 from azext_mlv2.tests.scenario_test_helper import MLBaseScenarioTest
+from azure.cli.testsdk.scenario_tests.decorators import record_only
 
 
 class FeatureSetScenarioTest(MLBaseScenarioTest):
     # This test is not working. TODO: https://dev.azure.com/msdata/Vienna/_workitems/edit/3372868
+    # Marked as record_only because the test uses hardcoded resources
+    # (resource group, registry, etc.) that only exist in the recorded
+    # cassette. Running live raises ResourceNotFound or similar errors.
+    @record_only()
     @pytest.mark.skip(reason="Recording and replay not working.")
     def test_featureSet(self) -> None:
         self.kwargs["resourceGroup"] = "test-rg-000006"

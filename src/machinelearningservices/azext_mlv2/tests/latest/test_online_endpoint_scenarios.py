@@ -19,10 +19,15 @@ from knack.util import CLIError
 from azure.ai.ml._scope_dependent_operations import OperationScope
 
 from ..util import private_flag
+from azure.cli.testsdk.scenario_tests.decorators import record_only
 
 
 class OnlineEndpointScenarioTest(MLBaseScenarioTest):
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_endpoint_properties(self) -> None:
         cmd_create = self.cmd(
             "az ml online-deployment show  -n data-t-t  -e bani-e2e-1 -g testrg -w testworkspace"
@@ -35,6 +40,10 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         assert cmd_create["liveness_probe"] is not None
         assert cmd_create["egress_public_network_access"] is not None
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_online_endpoint_mir(self) -> None:
         endpoint_name_suffix = "-1"
         # Updating dictionary with the job name
@@ -61,6 +70,10 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("online_endpoint_name_1", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_online_endpoint_idempotent(self) -> None:
         endpoint_name_suffix = "-2"
         # Updating dictionary with the job name
@@ -90,6 +103,10 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         self.kwargs.pop("online_endpoint_name_2", None)
 
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="TODO: 2161301, Test is failing when executing from recording in ADO")
     def test_online_endpoint_mir_deployment_create(self) -> None:
         # Using existing endpoint. This eliminated dependency on endpoint creation
@@ -134,6 +151,10 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         self.kwargs.pop("online_endpoint_name_4", None)
         self.kwargs.pop("online_deployment_name_4", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="TODO (2376694): Test fails with InternalServerError and points to non-existent logs")
     def test_online_endpoint_runs_uri(self) -> None:
         endpoint_name_suffix = "-22"
@@ -164,6 +185,10 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         self.kwargs.pop("online_endpoint_name_22", None)
         self.kwargs.pop("online_deployment_name_22", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="TODO (2377182): Online endpoint test fails with ModelAssetPathNotFoundInStorage")
     def test_online_endpoint_datastore_uri(self) -> None:
         endpoint_name_suffix = "-21"
@@ -195,6 +220,10 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         self.kwargs.pop("online_endpoint_name_21", None)
         self.kwargs.pop("online_deployment_name_21", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="TODO: 2161301, Test is failing when executing from recording in ADO")
     def test_online_endpoint_job_uri(self) -> None:
         endpoint_name_suffix = "-20"
@@ -226,6 +255,10 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         self.kwargs.pop("online_endpoint_name_20", None)
         self.kwargs.pop("online_deployment_name_20", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="TODO: 2161301, Test is failing when executing from recording in ADO")
     def test_online_endpoint_mir_deployment_create_with_all_traffic(self) -> None:
         endpoint_name_suffix = "-19v2"
@@ -257,6 +290,10 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         self.kwargs.pop("online_endpoint_name_19", None)
         self.kwargs.pop("online_deployment_name_19", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="TODO: 2161301, Test is failing when executing from recording in ADO")
     def test_online_endpoint_mir_deployment_update(self) -> None:
         endpoint_name_suffix = "-6"
@@ -299,6 +336,10 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         self.kwargs.pop("online_endpoint_name_5", None)
         self.kwargs.pop("online_deployment_name_5", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="TODO: 2161301, Test is failing when executing from recording in ADO")
     def test_online_endpoint_mir_deployment_delete(self) -> None:
         endpoint_name_suffix = "-6"
@@ -319,6 +360,10 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("online_endpoint_name_6", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_online_endpoint_invoke_invalid_deployment(self) -> None:
         endpoint_name_suffix = "-7"
         # Updating dictionary with the job name
@@ -337,6 +382,10 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("online_endpoint_name_7", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_online_endpoint_wrong_deployment(self) -> None:
         endpoint_name_suffix = "-8"
         # Updating dictionary with the job name
@@ -354,6 +403,10 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         self.kwargs.pop("online_endpoint_name_8", None)
         self.kwargs.pop("online_deployment_name_8", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="TODO (2376694): Test fails with InternalServerError and points to non-existent logs")
     def test_online_endpoint_update(self) -> None:
         endpoint_name_suffix = "-91"
@@ -405,6 +458,10 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("online_endpoint_name_9", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="TODO (2376694): Test fails with InternalServerError and points to non-existent logs")
     def test_online_endpoint_invoke(self) -> None:
         endpoint_name_suffix = "-110"
@@ -429,6 +486,10 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("online_endpoint_name_10", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="TODO: Task-1777932 will re-enable and fix this test.")
     def test_mir_deployment_private_feature(self) -> None:
         endpoint_name_suffix = "-11"
@@ -465,6 +526,10 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         self.kwargs.pop("online_endpoint_name_11", None)
         self.kwargs.pop("online_deployment_name_11", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="TODO (2376694): Test fails with InternalServerError and points to non-existent logs")
     def test_online_deployment_update_using_set(self) -> None:
         endpoint_name_suffix = "-12"
@@ -494,6 +559,10 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("online_endpoint_name_12", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="TODO (2377498): test fails with ImageBuildFailure")
     def test_online_deployment_get_logs(self) -> None:
         endpoint_name_suffix = "-15"
@@ -532,12 +601,20 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         self.kwargs.pop("online_endpoint_name_13", None)
         self.kwargs.pop("online_deployment_name_13", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_online_endpoint_delete_nonexisting_endpoint(self) -> None:
         with pytest.raises(Exception) as exp:
             self.cmd("az ml online-endpoint delete -n online-endpoint-nonexisting --no-wait -y -g testrg -w testworkspace")
         # Assert error message when users try to delete a nonexisting online endpoint
         assert f"Online endpoint online-endpoint-nonexisting does not exist." in str(exp.value)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="TODO (2376694): Test fails with InternalServerError and points to non-existent logs")
     def test_online_endpoint_update_using_set_and_file(self) -> None:
         endpoint_name_suffix = "-14"
@@ -563,6 +640,10 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("online_endpoint_name_14", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_online_endpoint_update_with_incomplete_file(self) -> None:
         endpoint_name_suffix = "-15"
         # Updating dictionary with the job name
@@ -595,6 +676,10 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("online_endpoint_name_15", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="TODO: 2161301, Test is failing when executing from recording in ADO")
     def test_online_deployment_update_using_set_and_file(self) -> None:
         endpoint_name_suffix = "-16"
@@ -638,6 +723,10 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         self.kwargs.pop("online_endpoint_name_16", None)
         self.kwargs.pop("online_deployment_name_16", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="TODO: 2161301, Test is failing when executing from recording in ADO")
     def test_online_deployment_update_overwriting_field_using_set(self) -> None:
         endpoint_name_suffix = "-25"
@@ -682,6 +771,10 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         self.kwargs.pop("online_endpoint_name_25", None)
         self.kwargs.pop("online_deployment_name_25", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="TODO (2376694): Test fails with InternalServerError and points to non-existent logs")
     def test_online_deployment_update_using_incomplete_file(self) -> None:
         endpoint_name_suffix = "-17"
@@ -711,6 +804,10 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         self.kwargs.pop("online_endpoint_name_17", None)
         self.kwargs.pop("online_deployment_name_17", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_online_deployment_update_nonexistent_deployment(self) -> None:
         endpoint_name_suffix = "-18"
         # Updating dictionary with the job name
@@ -745,6 +842,10 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         self.kwargs.pop("online_endpoint_name_18", None)
         self.kwargs.pop("online_deployment_name_18", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="TODO (2376694): Test fails with InternalServerError and points to non-existent logs")
     def test_online_deployment_update_without_scale_settings(self):
         endpoint_name_suffix = "-23"
@@ -783,6 +884,10 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         self.kwargs.pop("online_endpoint_name_23", None)
         self.kwargs.pop("online_deployment_name_23", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_online_endpoint_update_nonexistent_endpoint(self) -> None:
         endpoint_name_suffix = "-19"
         # Updating dictionary with the job name
@@ -805,6 +910,10 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("online_endpoint_name_19", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_online_endpoint_traffic_update(self) -> None:
         endpoint_name_suffix = "-20"
         # Updating dictionary with the job name
@@ -819,6 +928,10 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("online_endpoint_name_20", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Failing in playback")
     def test_online_endpoint_code_asset_id(self) -> None:
         endpoint_name_suffix = "-23"
@@ -848,6 +961,10 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         self.kwargs.pop("online_endpoint_name_23", None)
         self.kwargs.pop("online_deployment_name_23", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Failing in playback")
     def test_online_endpoint_code_name_version(self) -> None:
         endpoint_name_suffix = "-24"
@@ -877,6 +994,10 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         self.kwargs.pop("online_endpoint_name_24", None)
         self.kwargs.pop("online_deployment_name_24", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_online_endpoint_list(self) -> None:
         online_endpoint_obj = self.cmd("az ml online-endpoint list -g testrg -w testworkspace")
         online_endpoint_obj = yaml.safe_load(online_endpoint_obj.output)
@@ -894,6 +1015,10 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
             assert "description" not in online_endpoint
             assert "identity" not in online_endpoint
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Failing in playback")
     def test_online_deployment_list(self) -> None:
         online_deployment_obj = self.cmd("az ml online-deployment list -e mir-endpoint -g testrg -w testworkspace")
@@ -920,6 +1045,10 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
             assert "properties" not in online_deployment
 
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="TODO: 2161301, Test is failing when executing from recording in ADO")
     def test_online_endpoint_mir_registry_deployment_create(self) -> None:
         # Using existing endpoint. This eliminated dependency on endpoint creation
@@ -974,6 +1103,10 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
     # To re create it needs an uai, create an uai with below command
     # "az identity create --name test_uai"
     # use the id into the --set below
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_endpoint_create_with_uai(self) -> None:
         self.kwargs[
             "uai"
@@ -984,6 +1117,10 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         endpoint = yaml.safe_load(endpoint.output)
         endpoint["identity"]["user_assigned_identities"][0]["resource_id"] == self.kwargs.pop("uai", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="TODO (2376694): Test fails with InternalServerError and points to non-existent logs")
     def test_endpoint_and_deployment_exist_with_yaml(self) -> None:
 
@@ -1018,6 +1155,10 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("online_endpoint_name_22", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="TODO: 2161301, Test is failing when executing from recording in ADO")
     def test_mdc_data_storage_basic_managed(self) -> None:
         endpoint_name_suffix = "-25"
@@ -1088,6 +1229,10 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         self.kwargs.pop("online_deployment_name_23", None)
         self.kwargs.pop("online_endpoint_name_23", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="TODO (2376694): Test fails with InternalServerError and points to non-existent logs")
     def test_mdc_data_storage_standard_managed(self) -> None:
         endpoint_name_suffix = "-24"
@@ -1166,6 +1311,10 @@ class OnlineEndpointScenarioTest(MLBaseScenarioTest):
         self.kwargs.pop("online_deployment_name_24", None)
         self.kwargs.pop("online_endpoint_name_24", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Could not push test yamls into repo. TOD: task 2007149 will either re-enable or remove")
     def test_ast_scoring_script_validation(self) -> None:
         endpoint_name_suffix = "-26"

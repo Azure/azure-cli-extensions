@@ -1,4 +1,4 @@
-﻿# --------------------------------------------------------------------------
+# --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for
 # license information.
@@ -14,9 +14,14 @@ from azext_mlv2.tests.util import assert_same
 from knack.util import CLIError
 
 from ..util import private_flag
+from azure.cli.testsdk.scenario_tests.decorators import record_only
 
 
 class BatchEndpointScenarioTest(MLBaseScenarioTest):
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_batch_endpoint(self) -> None:
         endpoint_name_suffix = "-1"
         # Updating dictionary with the job name
@@ -57,6 +62,10 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
         self.kwargs.pop("batch_endpoint_name_1", None)
 
     # This test is not working. TODO: https://dev.azure.com/msdata/Vienna/_workitems/edit/3372868
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Recording and replay not working.")
     def test_batch_deployment(self) -> None:
         endpoint_name_suffix = "-2"
@@ -115,6 +124,10 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
         self.kwargs.pop("batch_deployment_name_2", None)
 
     # This test is not working. TODO: https://dev.azure.com/msdata/Vienna/_workitems/edit/3372868
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Recording and replay not working.")
     def test_batch_deployment_endpoint_name_casing(self) -> None:
         endpoint_name_suffix = "-4"
@@ -173,6 +186,10 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
         self.kwargs.pop("batch_endpoint_name_3", None)
         self.kwargs.pop("batch_deployment_name_3", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Can't re-record due to invalid EnvironmentId (2376035)")
     def test_batch_deployment_output_file(self) -> None:
         endpoint_name_suffix = "-41"
@@ -209,6 +226,10 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
         self.kwargs.pop("batch_endpoint_name_4", None)
         self.kwargs.pop("batch_deployment_name_4", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Can't re-record due to missing image (2376067)")
     def test_batch_endpoint_invoke(self) -> None:
         # az ml batch-endpoint update --name test-batch-ept-122342-11  --set defaults.deployment_name=test-batch-dep-000017
@@ -267,6 +288,10 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
         self.kwargs.pop("batch_endpoint_name_5", None)
         self.kwargs.pop("batch_deployment_name_5", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Can't re-record due to invalid EnvironmentId (2376035)")
     def test_batch_endpoint_update(self) -> None:
         endpoint_name_suffix = "-62"
@@ -313,6 +338,10 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("batch_endpoint_name_6", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Can't re-record due to missing image (2376067)")
     def test_batch_deployment_update_with_file_and_set(self) -> None:
         """
@@ -345,6 +374,10 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("batch_endpoint_name_7", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_batch_endpoint_invoke_invalid_deployment(self) -> None:
         endpoint_name_suffix = "-8"
         # Updating dictionary with the job name
@@ -366,12 +399,20 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
         self.kwargs.pop("batch_endpoint_name_8", None)
         self.kwargs.pop("batch_deployment_name_8", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_batch_deployment_wrong_endpoint(self) -> None:
         with pytest.raises(Exception):
             self.cmd(
                 "az ml batch-deployment create -f ./src/machinelearningservices/azext_mlv2/tests/test_configs/deployments/batch/batch_deployment_1.yaml -n {batchDeploymentName} -e {environmentName} -g testrg -w testworkspace"
             )
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_batch_endpoint_list(self) -> None:
         batch_endpoint_list = self.cmd("az ml batch-endpoint list -g testrg -w testworkspace")
         batch_endpoint_list = yaml.safe_load(batch_endpoint_list.output)
@@ -390,6 +431,10 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
             assert "properties" not in endpoint
             assert "tags" not in endpoint
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_batch_deployment_list(self) -> None:
         batch_deployment_list = self.cmd("az ml batch-deployment list -e batch-endpoint-test -g testrg -w testworkspace")
         batch_deployment_list = yaml.safe_load(batch_deployment_list.output)
@@ -417,6 +462,10 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
             assert "resources" not in deployment
             assert "retry_settings" not in deployment
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_batch_deployment_list_jobs(self) -> None:
         batch_deployment_list_jobs = self.cmd("az ml batch-deployment list-jobs -g testrg -w testworkspace -e bla1 --name blue")
         batch_deployment_list_jobs = yaml.safe_load(batch_deployment_list_jobs.output)
@@ -431,6 +480,10 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
             assert "outputFileName" not in deployment
             assert "tags" not in deployment
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_batch_endpoint_update_with_set_and_file(self) -> None:
         endpoint_name_suffix = "-9"
         # Updating dictionary with the job name
@@ -458,6 +511,10 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("batch_endpoint_name_9", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_batch_endpoint_update_non_existent_endpoint(self) -> None:
         with pytest.raises(
             Exception, match=r"Message: The Resource.*test-batch.* under resource group .* was not found."
@@ -465,6 +522,10 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
             batch_endpoint_update = self.cmd("az ml batch-endpoint update -n test-batch --set tags.abc=456 tags.t1=v2 -g testrg -w testworkspace")
         assert "Code: ResourceNotFound" in str(exp.value)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Can't re-record due to invalid EnvironmentId (2376035)")
     def test_batch_endpoint_invoke_with_uri_file(self) -> None:
         endpoint_name_suffix = "-10"
@@ -501,6 +562,10 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
         self.kwargs.pop("batch_endpoint_name_10", None)
         self.kwargs.pop("batch_deployment_name_10", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Can't re-record due to invalid EnvironmentId (2376035)")
     def test_batch_endpoint_invoke_with_uri_folder(self) -> None:
         endpoint_name_suffix = "-11"
@@ -536,6 +601,10 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
         self.kwargs.pop("batch_endpoint_name_11", None)
         self.kwargs.pop("batch_deployment_name_11", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Can't re-record due to invalid EnvironmentId (2376035)")
     def test_batch_endpoint_invoke_with_invalid_input_type(self) -> None:
         endpoint_name_suffix = "-12"
@@ -565,6 +634,10 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
         self.kwargs.pop("batch_endpoint_name_12", None)
         self.kwargs.pop("batch_deployment_name_12", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Can't re-record due to missing image (2376067)")
     def test_batch_endpoint_invoke_with_datastore_paths(self) -> None:
         endpoint_name_suffix = "-13"
@@ -614,6 +687,10 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
         self.kwargs.pop("batch_endpoint_name_13", None)
         self.kwargs.pop("batch_deployment_name_13", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Could not push test yamls into repo. TOD: task 2007149 will either re-enable or remove")
     def test_batch_deployment_ast_scoring_script_validation(self) -> None:
         endpoint_name_suffix = "-14"
@@ -656,6 +733,10 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
         self.kwargs.pop("batch_deployment_name_14", None)
         self.kwargs.pop("batch_endpoint_name_14", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Can't re-record due to invalid EnvironmentId (2376035)")
     def test_batch_endpoint_with_invalid_datastore_path(self) -> None:
         endpoint_name_suffix = "-15"
@@ -687,6 +768,10 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
         self.kwargs.pop("batch_endpoint_name_15", None)
         self.kwargs.pop("batch_deployment_name_15", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Could not re-record test despite test running succesfully")
     def test_batch_deployment_component_create_show(self) -> None:
         endpoint_name_suffix = "-16"
@@ -725,6 +810,10 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
         self.kwargs.pop("batch_endpoint_name_16", None)
         self.kwargs.pop("batch_deployment_name_16", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Could not push test yamls into repo. TOD: task 2007149 will either re-enable or remove")
     def test_batch_deployment_component_invoke(self) -> None:
         endpoint_name_suffix = "-17"
@@ -779,6 +868,10 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
         self.kwargs.pop("batch_endpoint_name_17", None)
         self.kwargs.pop("batch_deployment_name_17", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_batch_component_deployment_local_component_create(self) -> None:
         with private_flag():
             endpoint_name_suffix = "-18"
@@ -822,6 +915,10 @@ class BatchEndpointScenarioTest(MLBaseScenarioTest):
             self.kwargs.pop("batch_endpoint_name_18", None)
             self.kwargs.pop("batch_deployment_name_18", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Could not push test yamls into repo. TOD: task 2007149 will either re-enable or remove")
     def test_batch_deployment_component_invoke_input_types(self) -> None:
         endpoint_name_suffix = "-19"

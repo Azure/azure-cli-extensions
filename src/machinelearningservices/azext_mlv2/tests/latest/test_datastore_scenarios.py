@@ -12,6 +12,7 @@ import yaml
 from azext_mlv2.tests.scenario_test_helper import MLBaseScenarioTest
 from azure.ai.ml.exceptions import ValidationErrorType, ValidationException
 from knack.cli import CLIError
+from azure.cli.testsdk.scenario_tests.decorators import record_only
 
 
 def b64read(p):
@@ -28,6 +29,10 @@ def create_cmd_str(file_name: str, var_name: str, suffix=None) -> str:
 
 
 class DatastoreScenarioTest(MLBaseScenarioTest):
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg' (via create_cmd_str helper), which only exists in the recorded
+    # cassette. Running live raises AuthorizationFailed.
+    @record_only()
     def test_datastore_blob(self) -> None:
         file_name = "blob_store.yml"
         var_name = "blobDatastoreName"
@@ -38,6 +43,10 @@ class DatastoreScenarioTest(MLBaseScenarioTest):
         assert ds_obj["type"] == "azure_blob"
         assert ds_obj["container_name"] == "testblob"
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg' (via create_cmd_str helper), which only exists in the recorded
+    # cassette. Running live raises AuthorizationFailed.
+    @record_only()
     def test_datastore_file(self) -> None:
         file_name = "file_store.yml"
         var_name = "fileDatastoreName"
@@ -48,6 +57,10 @@ class DatastoreScenarioTest(MLBaseScenarioTest):
         assert ds_obj["type"] == "azure_file"
         assert ds_obj["file_share_name"] == "testfileshare"
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg' (via create_cmd_str helper), which only exists in the recorded
+    # cassette. Running live raises AuthorizationFailed.
+    @record_only()
     def test_datastore_blob_credentialless(self) -> None:
         file_name = "credential_less_blob_store.yml"
         var_name = "blobCredlessDatastoreName"
@@ -59,6 +72,10 @@ class DatastoreScenarioTest(MLBaseScenarioTest):
         assert ds_obj["account_name"] == "sdkvnextcli902348975"
         assert ds_obj["container_name"] == "testblob"
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg' (via create_cmd_str helper), which only exists in the recorded
+    # cassette. Running live raises AuthorizationFailed.
+    @record_only()
     def test_datastore_adlsgen1_credentialless(self) -> None:
         file_name = "credential_less_adls_gen1.yml"
         var_name = "adlsgen1CredlessDatastoreName"
@@ -68,6 +85,10 @@ class DatastoreScenarioTest(MLBaseScenarioTest):
         assert ds_obj["type"] == "azure_data_lake_gen1"
         assert ds_obj["store_name"] == "mytestdatalakegen1"
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg' (via create_cmd_str helper), which only exists in the recorded
+    # cassette. Running live raises AuthorizationFailed.
+    @record_only()
     def test_datastore_adlsgen1(self) -> None:
         file_name = "adls_gen1.yml"
         var_name = "adlsgen1DatastoreName"
@@ -77,6 +98,10 @@ class DatastoreScenarioTest(MLBaseScenarioTest):
         assert ds_obj["type"] == "azure_data_lake_gen1"
         assert ds_obj["store_name"] == "cliv2testdatalake"
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg' (via create_cmd_str helper), which only exists in the recorded
+    # cassette. Running live raises AuthorizationFailed.
+    @record_only()
     def test_datastore_adlsgen2_credentialless(self) -> None:
         file_name = "credential_less_adls_gen2.yml"
         var_name = "adlsgen2CredlessDatastoreName"
@@ -87,6 +112,10 @@ class DatastoreScenarioTest(MLBaseScenarioTest):
         assert ds_obj["account_name"] == "mytestdatalakegen2"
         assert ds_obj["filesystem"] == "my-gen2-container"
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg' (via create_cmd_str helper), which only exists in the recorded
+    # cassette. Running live raises AuthorizationFailed.
+    @record_only()
     def test_datastore_adlsgen2(self) -> None:
         file_name = "adls_gen2.yml"
         var_name = "adlsgen2DatastoreName"
@@ -97,6 +126,10 @@ class DatastoreScenarioTest(MLBaseScenarioTest):
         assert ds_obj["account_name"] == "cliv2testblob"
         assert ds_obj["filesystem"] == "a-file-system"
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip("this test is very flaky and causing many issues, please fix")
     def test_datastore_validation_errors(self) -> None:
         with pytest.raises((ValidationException, CLIError)) as ex:
