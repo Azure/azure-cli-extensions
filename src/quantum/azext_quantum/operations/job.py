@@ -280,13 +280,6 @@ def submit(cmd, resource_group_name, workspace_name, target_id, job_input_file, 
     except (IOError, OSError) as e:
         raise FileOperationError(f"An error occurred opening the input file: {job_input_file}") from e
 
-    # Upload the input file to the workspace's storage account
-    if storage is None:
-        from .workspace import get as ws_get
-        ws = ws_get(cmd, resource_group_name, workspace_name)
-        if ws.properties.storage_account is None:
-            raise RequiredArgumentMissingError("No storage account specified or linked with workspace.")
-        storage = ws.properties.storage_account.split('/')[-1]
     job_id = str(uuid.uuid4())
     blob_name = "inputData"
 

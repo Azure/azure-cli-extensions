@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+1.0.0b23
+++++++++
+* Fix: client mode when Microsoft Entra ID (keyless) provider is selected
+
 1.0.0b22
 ++++++++
 * Bump aks-agent to v0.7.1

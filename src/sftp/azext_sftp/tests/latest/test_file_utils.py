@@ -371,5 +371,146 @@ class SftpFileUtilsCertificateTest(unittest.TestCase):
         self.assertIn("Could not parse public key", str(context.exception))
 
 
+class SftpKeyPairOverwritePromptTest(unittest.TestCase):
+    """Test suite for the SSH key-pair overwrite prompt."""
+
+    def setUp(self):
+        super().setUp()
+        self.temp_dir = tempfile.mkdtemp(prefix="sftp_keypair_prompt_test_")
+        self.private_key = os.path.join(self.temp_dir, "id_rsa")
+        self.public_key = os.path.join(self.temp_dir, "id_rsa.pub")
+
+    def tearDown(self):
+        super().tearDown()
+        if os.path.exists(self.temp_dir):
+            shutil.rmtree(self.temp_dir)
+
+    def _write_existing_keys(self):
+        with open(self.private_key, 'w') as f:
+            f.write("existing private key")
+        with open(self.public_key, 'w') as f:
+            f.write("existing public key")
+
+    def test_should_regenerate_no_existing_keys_returns_true(self):
+        """No existing keys -> generate without prompting."""
+        with mock.patch('azext_sftp.file_utils.prompt_y_n') as mock_prompt:
+            result = file_utils._should_regenerate_key_pair(
+                self.private_key, self.public_key, yes_without_prompt=False)
+        self.assertTrue(result)
+        mock_prompt.assert_not_called()
+
+    def test_should_regenerate_yes_flag_skips_prompt(self):
+        """--yes specified -> overwrite without prompting."""
+        self._write_existing_keys()
+        with mock.patch('azext_sftp.file_utils.prompt_y_n') as mock_prompt:
+            result = file_utils._should_regenerate_key_pair(
+                self.private_key, self.public_key, yes_without_prompt=True)
+        self.assertTrue(result)
+        mock_prompt.assert_not_called()
+
+    @mock.patch('azext_sftp.file_utils.prompt_y_n', return_value=True)
+    def test_should_regenerate_user_confirms_overwrite(self, mock_prompt):
+        """Existing keys + user answers 'y' -> regenerate."""
+        self._write_existing_keys()
+        result = file_utils._should_regenerate_key_pair(
+            self.private_key, self.public_key, yes_without_prompt=False)
+        self.assertTrue(result)
+        mock_prompt.assert_called_once()
+
+    @mock.patch('azext_sftp.file_utils.prompt_y_n', return_value=False)
+    def test_should_regenerate_user_declines_overwrite(self, mock_prompt):
+        """Existing keys + user answers 'n' -> reuse."""
+        self._write_existing_keys()
+        result = file_utils._should_regenerate_key_pair(
+            self.private_key, self.public_key, yes_without_prompt=False)
+        self.assertFalse(result)
+        mock_prompt.assert_called_once()
+
+    @mock.patch('azext_sftp.file_utils.prompt_y_n',
+                side_effect=file_utils.NoTTYException())
+    def test_should_regenerate_no_tty_defaults_to_reuse(self, mock_prompt):
+        """No TTY available -> reuse existing keys (safe default)."""
+        self._write_existing_keys()
+        result = file_utils._should_regenerate_key_pair(
+            self.private_key, self.public_key, yes_without_prompt=False)
+        self.assertFalse(result)
+
+    @mock.patch('azext_sftp.file_utils.prompt_y_n', return_value=True)
+    def test_should_regenerate_only_private_key_exists(self, mock_prompt):
+        """Partial existence (private only) is detected and prompted."""
+        with open(self.private_key, 'w') as f:
+            f.write("existing private key")
+        result = file_utils._should_regenerate_key_pair(
+            self.private_key, self.public_key, yes_without_prompt=False)
+        self.assertTrue(result)
+        prompt_text = mock_prompt.call_args[0][0]
+        self.assertIn("private key only", prompt_text)
+
+    @mock.patch('azext_sftp.file_utils.prompt_y_n', return_value=True)
+    def test_should_regenerate_only_public_key_exists(self, mock_prompt):
+        """Partial existence (public only) is detected and prompted."""
+        with open(self.public_key, 'w') as f:
+            f.write("existing public key")
+        result = file_utils._should_regenerate_key_pair(
+            self.private_key, self.public_key, yes_without_prompt=False)
+        self.assertTrue(result)
+        prompt_text = mock_prompt.call_args[0][0]
+        self.assertIn("public key only", prompt_text)
+
+    @mock.patch('azext_sftp.sftp_utils.create_ssh_keyfile')
+    @mock.patch('azext_sftp.file_utils.prompt_y_n', return_value=False)
+    def test_check_or_create_reuses_existing_keys_when_user_declines(
+            self, mock_prompt, mock_create_keyfile):
+        """Existing keys + user declines -> reuse, do not regenerate, delete_keys=False."""
+        self._write_existing_keys()
+        public_key, private_key, delete_keys = file_utils.check_or_create_public_private_files(
+            None, None, self.temp_dir, ssh_client_folder=None, yes_without_prompt=False)
+        self.assertEqual(public_key, self.public_key)
+        self.assertEqual(private_key, self.private_key)
+        self.assertFalse(delete_keys)
+        mock_create_keyfile.assert_not_called()
+        mock_prompt.assert_called_once()
+
+    @mock.patch('azext_sftp.sftp_utils.create_ssh_keyfile')
+    @mock.patch('azext_sftp.file_utils.prompt_y_n', return_value=True)
+    def test_check_or_create_regenerates_keys_when_user_confirms(
+            self, mock_prompt, mock_create_keyfile):
+        """Existing keys + user confirms -> regenerate, delete_keys=True."""
+        self._write_existing_keys()
+
+        def recreate(private_key_path, _ssh_client_folder):
+            with open(private_key_path, 'w') as f:
+                f.write("new private key")
+            with open(private_key_path + ".pub", 'w') as f:
+                f.write("new public key")
+        mock_create_keyfile.side_effect = recreate
+
+        _, private_key, delete_keys = file_utils.check_or_create_public_private_files(
+            None, None, self.temp_dir, ssh_client_folder=None, yes_without_prompt=False)
+        self.assertTrue(delete_keys)
+        mock_create_keyfile.assert_called_once_with(private_key, None)
+        mock_prompt.assert_called_once()
+
+    @mock.patch('azext_sftp.sftp_utils.create_ssh_keyfile')
+    @mock.patch('azext_sftp.file_utils.prompt_y_n')
+    def test_check_or_create_yes_flag_skips_prompt_and_regenerates(
+            self, mock_prompt, mock_create_keyfile):
+        """Existing keys + yes_without_prompt=True -> regenerate without prompt."""
+        self._write_existing_keys()
+
+        def recreate(private_key_path, _ssh_client_folder):
+            with open(private_key_path, 'w') as f:
+                f.write("new private key")
+            with open(private_key_path + ".pub", 'w') as f:
+                f.write("new public key")
+        mock_create_keyfile.side_effect = recreate
+
+        _, private_key, delete_keys = file_utils.check_or_create_public_private_files(
+            None, None, self.temp_dir, ssh_client_folder=None, yes_without_prompt=True)
+        self.assertTrue(delete_keys)
+        mock_create_keyfile.assert_called_once_with(private_key, None)
+        mock_prompt.assert_not_called()
+
+
 if __name__ == '__main__':
     unittest.main()

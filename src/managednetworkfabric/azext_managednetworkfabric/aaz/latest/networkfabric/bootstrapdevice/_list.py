@@ -25,10 +25,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-07-15",
+        "version": "2026-01-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.managednetworkfabric/networkbootstrapdevices", "2025-07-15"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkbootstrapdevices", "2025-07-15"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.managednetworkfabric/networkbootstrapdevices", "2026-01-15-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkbootstrapdevices", "2026-01-15-preview"],
         ]
     }
 
@@ -115,7 +115,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-15",
+                    "api-version", "2026-01-15-preview",
                     required=True,
                 ),
             }
@@ -222,6 +222,9 @@ class List(AAZCommand):
                 serialized_name="configurationState",
                 flags={"read_only": True},
             )
+            properties.control_plane_acls = AAZListType(
+                serialized_name="controlPlaneAcls",
+            )
             properties.dhcp_v4_server_ip_address = AAZStrType(
                 serialized_name="dhcpV4ServerIpAddress",
                 flags={"read_only": True},
@@ -235,6 +238,10 @@ class List(AAZCommand):
             properties.network_fabric_id = AAZStrType(
                 serialized_name="networkFabricId",
                 nullable=True,
+                flags={"read_only": True},
+            )
+            properties.operational_state = AAZStrType(
+                serialized_name="operationalState",
                 flags={"read_only": True},
             )
             properties.primary_management_ipv4_address = AAZStrType(
@@ -257,10 +264,59 @@ class List(AAZCommand):
                 serialized_name="secondaryManagementIpv6Address",
                 flags={"read_only": True},
             )
+            properties.secret_rotation_status = AAZListType(
+                serialized_name="secretRotationStatus",
+                flags={"read_only": True},
+            )
             properties.serial_number = AAZStrType(
                 serialized_name="serialNumber",
             )
             properties.version = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            control_plane_acls = cls._schema_on_200.value.Element.properties.control_plane_acls
+            control_plane_acls.Element = AAZStrType(
+                nullable=True,
+            )
+
+            secret_rotation_status = cls._schema_on_200.value.Element.properties.secret_rotation_status
+            secret_rotation_status.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.secret_rotation_status.Element
+            _element.last_rotation_time = AAZStrType(
+                serialized_name="lastRotationTime",
+                flags={"read_only": True},
+            )
+            _element.secret_archive_reference = AAZObjectType(
+                serialized_name="secretArchiveReference",
+                flags={"read_only": True},
+            )
+            _element.secret_type = AAZStrType(
+                serialized_name="secretType",
+                flags={"read_only": True},
+            )
+            _element.synchronization_status = AAZStrType(
+                serialized_name="synchronizationStatus",
+                flags={"read_only": True},
+            )
+
+            secret_archive_reference = cls._schema_on_200.value.Element.properties.secret_rotation_status.Element.secret_archive_reference
+            secret_archive_reference.key_vault_id = AAZStrType(
+                serialized_name="keyVaultId",
+                nullable=True,
+                flags={"read_only": True},
+            )
+            secret_archive_reference.key_vault_uri = AAZStrType(
+                serialized_name="keyVaultUri",
+                flags={"read_only": True},
+            )
+            secret_archive_reference.secret_name = AAZStrType(
+                serialized_name="secretName",
+                flags={"read_only": True},
+            )
+            secret_archive_reference.secret_version = AAZStrType(
+                serialized_name="secretVersion",
                 flags={"read_only": True},
             )
 
@@ -333,7 +389,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-15",
+                    "api-version", "2026-01-15-preview",
                     required=True,
                 ),
             }
@@ -440,6 +496,9 @@ class List(AAZCommand):
                 serialized_name="configurationState",
                 flags={"read_only": True},
             )
+            properties.control_plane_acls = AAZListType(
+                serialized_name="controlPlaneAcls",
+            )
             properties.dhcp_v4_server_ip_address = AAZStrType(
                 serialized_name="dhcpV4ServerIpAddress",
                 flags={"read_only": True},
@@ -453,6 +512,10 @@ class List(AAZCommand):
             properties.network_fabric_id = AAZStrType(
                 serialized_name="networkFabricId",
                 nullable=True,
+                flags={"read_only": True},
+            )
+            properties.operational_state = AAZStrType(
+                serialized_name="operationalState",
                 flags={"read_only": True},
             )
             properties.primary_management_ipv4_address = AAZStrType(
@@ -475,10 +538,59 @@ class List(AAZCommand):
                 serialized_name="secondaryManagementIpv6Address",
                 flags={"read_only": True},
             )
+            properties.secret_rotation_status = AAZListType(
+                serialized_name="secretRotationStatus",
+                flags={"read_only": True},
+            )
             properties.serial_number = AAZStrType(
                 serialized_name="serialNumber",
             )
             properties.version = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            control_plane_acls = cls._schema_on_200.value.Element.properties.control_plane_acls
+            control_plane_acls.Element = AAZStrType(
+                nullable=True,
+            )
+
+            secret_rotation_status = cls._schema_on_200.value.Element.properties.secret_rotation_status
+            secret_rotation_status.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.secret_rotation_status.Element
+            _element.last_rotation_time = AAZStrType(
+                serialized_name="lastRotationTime",
+                flags={"read_only": True},
+            )
+            _element.secret_archive_reference = AAZObjectType(
+                serialized_name="secretArchiveReference",
+                flags={"read_only": True},
+            )
+            _element.secret_type = AAZStrType(
+                serialized_name="secretType",
+                flags={"read_only": True},
+            )
+            _element.synchronization_status = AAZStrType(
+                serialized_name="synchronizationStatus",
+                flags={"read_only": True},
+            )
+
+            secret_archive_reference = cls._schema_on_200.value.Element.properties.secret_rotation_status.Element.secret_archive_reference
+            secret_archive_reference.key_vault_id = AAZStrType(
+                serialized_name="keyVaultId",
+                nullable=True,
+                flags={"read_only": True},
+            )
+            secret_archive_reference.key_vault_uri = AAZStrType(
+                serialized_name="keyVaultUri",
+                flags={"read_only": True},
+            )
+            secret_archive_reference.secret_name = AAZStrType(
+                serialized_name="secretName",
+                flags={"read_only": True},
+            )
+            secret_archive_reference.secret_version = AAZStrType(
+                serialized_name="secretVersion",
                 flags={"read_only": True},
             )
 

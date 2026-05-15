@@ -14,10 +14,11 @@ class ValidateResourceExists(AAZHttpOperation):
     """Validates that an ARM resource exists by making a GET request to its resource ID."""
     CLIENT_TYPE = "MgmtClient"
 
-    def __init__(self, ctx, resource_id, resource_label="Resource"):
+    def __init__(self, ctx, resource_id, resource_label="Resource", api_version="2025-06-01"):
         super().__init__(ctx)
         self._resource_id = str(resource_id)
         self._resource_label = resource_label
+        self._api_version = api_version
 
     def __call__(self, *args, **kwargs):
         request = self.make_request()
@@ -63,7 +64,7 @@ class ValidateResourceExists(AAZHttpOperation):
     def query_parameters(self):
         parameters = {
             **self.serialize_query_param(
-                "api-version", "2025-06-01",
+                "api-version", self._api_version,
                 required=True,
             ),
         }

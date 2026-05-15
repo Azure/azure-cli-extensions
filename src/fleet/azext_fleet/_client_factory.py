@@ -16,7 +16,11 @@ CUSTOM_MGMT_FLEET = CustomResourceType('azext_fleet.vendored_sdks', 'ContainerSe
 
 # container service clients
 def get_container_service_client(cli_ctx, subscription_id=None):
-    return get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_FLEET, subscription_id=subscription_id)
+    return get_mgmt_service_client(
+        cli_ctx,
+        CUSTOM_MGMT_FLEET,
+        subscription_id=subscription_id,
+    )
 
 
 def cf_fleets(cli_ctx, *_):
@@ -54,6 +58,10 @@ def cf_auto_upgrade_profiles(cli_ctx, *_):
 
 def cf_auto_upgrade_profile_operations(cli_ctx, *_):
     return get_container_service_client(cli_ctx).auto_upgrade_profile_operations
+
+
+def cf_cluster_mesh_profiles(cli_ctx, *_):
+    return get_container_service_client(cli_ctx).cluster_mesh_profiles
 
 
 def get_provider_client(cli_ctx):
