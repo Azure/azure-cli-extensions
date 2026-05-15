@@ -523,7 +523,7 @@ helps['fleet gate update'] = """
 
 helps['fleet gate approve'] = """
     type: command
-    short-summary: Approves a gate, and sets the gate state to Completed. This works for both Approval and ScheduledStart gate types, and modifies the gate state in the same way as the general-purpose update command, however it's simpler to use.
+    short-summary: Approves a gate, and sets the gate state to Completed. This modifies the gate state in the same way as the general-purpose update command, however it's simpler to use.
     examples:
         - name: Approves a gate.
           text: az fleet gate approve -g MyFleetResourceGroup --fleet-name MyFleetName --gate-name 3fa85f64-5717-4562-b3fc-2c963f66afa6
