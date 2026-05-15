@@ -12,7 +12,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
-20.0.0b9
+21.0.0b1
 ++++++
 * [BREAKING CHANGE] `az aks create/update`: Remove `--disk-driver-version` option as the `version` field has been removed from the API spec for `ManagedClusterStorageProfileDiskCSIDriver`.
 * Vendor new SDK and bump API version to 2026-03-02-preview.
