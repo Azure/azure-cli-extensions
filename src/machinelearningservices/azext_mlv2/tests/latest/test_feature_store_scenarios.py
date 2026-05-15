@@ -10,9 +10,14 @@
 import pytest
 import yaml
 from azext_mlv2.tests.scenario_test_helper import MLBaseScenarioTest
+from azure.cli.testsdk.scenario_tests.decorators import record_only
 
 
 class FeatureStoreScenarioTest(MLBaseScenarioTest):
+    # Marked as record_only because the test uses hardcoded resources
+    # (resource group, registry, etc.) that only exist in the recorded
+    # cassette. Running live raises ResourceNotFound or similar errors.
+    @record_only()
     def test_featureStore(self) -> None:
         self.kwargs["resourceGroup"] = "test-rg-000006"
 
@@ -72,6 +77,10 @@ class FeatureStoreScenarioTest(MLBaseScenarioTest):
         )
         self.assertEqual(fs_obj_delete.output, "")
         
+    # Marked as record_only because the test uses hardcoded resources
+    # (resource group, registry, etc.) that only exist in the recorded
+    # cassette. Running live raises ResourceNotFound or similar errors.
+    @record_only()
     def test_featurestore_managednetwork_provision(self) -> None:
         self.kwargs["resourceGroup"] = "test-rg-000006"
 

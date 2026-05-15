@@ -11,14 +11,23 @@ import yaml
 from azext_mlv2.tests.scenario_test_helper import MLBaseScenarioTest
 
 from azure.ai.ml import load_registry
+from azure.cli.testsdk.scenario_tests.decorators import record_only
 
 
 class RegistryScenarioTest(MLBaseScenarioTest):
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_registry_list(self):
         env_obj = self.cmd("az ml registry list -g testrg")
         env_obj = yaml.safe_load(env_obj.output)
         assert env_obj[0]["container_registry"]["acr_account_sku"] == "premium"
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_registry_show(self):
         env_obj = self.cmd("az ml registry show -g testrg --name testregistry")
         env_obj = yaml.safe_load(env_obj.output)
@@ -26,6 +35,10 @@ class RegistryScenarioTest(MLBaseScenarioTest):
 
     # note this test will fail if the specified registry already exists before the test starts.
     # This might happen if the test fails in a live run before the delete operation occurs.
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_registry_create_and_delete(self):
         target_yaml = (
             "./src/machinelearningservices/azext_mlv2/tests/test_configs/registry/registry_valid_cli_test.yaml"
@@ -57,6 +70,10 @@ class RegistryScenarioTest(MLBaseScenarioTest):
         del_result = self.cmd(f"az ml registry delete --debug -g testrg --name {reg.name}")
         assert del_result.output == ""
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_registry_update_with_file(self) -> None:
         # create a registry to start
         env_obj = self.cmd(

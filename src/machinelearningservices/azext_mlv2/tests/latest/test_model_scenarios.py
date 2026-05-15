@@ -18,6 +18,7 @@ from azure.ai.ml._artifacts._constants import ARTIFACT_ORIGIN
 from azure.ai.ml.constants._common import AssetTypes
 
 from ..util import private_flag
+from azure.cli.testsdk.scenario_tests.decorators import record_only
 
 
 class ModelScenarioTest(MLBaseScenarioTest):
@@ -29,6 +30,10 @@ class ModelScenarioTest(MLBaseScenarioTest):
             assert "one the following arguments are required: [--workspace-name/-w, --registry-name]" in str(exp.value)
 
     # This test is not working. TODO: https://dev.azure.com/msdata/Vienna/_workitems/edit/3372868
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Recording and replay not working.")
     def test_model(self) -> None:
         model_obj = self.cmd(
@@ -77,6 +82,10 @@ class ModelScenarioTest(MLBaseScenarioTest):
         assert model_restore_obj.output == ""
 
     # This test is not working. TODO: https://dev.azure.com/msdata/Vienna/_workitems/edit/3372868
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Recording and replay not working.")
     def test_model_with_stage(self) -> None:
         model_obj = self.cmd(
@@ -103,6 +112,10 @@ class ModelScenarioTest(MLBaseScenarioTest):
         assert "stage" in model
         assert model["stage"] == "Production"
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_model_list(self) -> None:
         models = self.cmd("az ml model list -g testrg -w testworkspace")
         models = yaml.safe_load(models.output)
@@ -133,6 +146,10 @@ class ModelScenarioTest(MLBaseScenarioTest):
             assert "tags" in model_name_obj[0]
 
     # This test is not working. TODO: https://dev.azure.com/msdata/Vienna/_workitems/edit/3372868
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Recording and replay not working.")
     def test_model_remote_path(self) -> None:
         model_obj = self.cmd(
@@ -147,6 +164,10 @@ class ModelScenarioTest(MLBaseScenarioTest):
         model_remote_obj["path"] == model_obj["path"]
 
     # This test is not working. TODO: https://dev.azure.com/msdata/Vienna/_workitems/edit/3372868
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Recording and replay not working.")
     def test_model_without_yml(self) -> None:
 
@@ -164,6 +185,10 @@ class ModelScenarioTest(MLBaseScenarioTest):
         assert_same(model_obj, model_show_job)
 
     # This test is not working. TODO: https://dev.azure.com/msdata/Vienna/_workitems/edit/3372868
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Recording and replay not working.")
     def test_model_update_stage(self) -> None:
 
@@ -191,6 +216,10 @@ class ModelScenarioTest(MLBaseScenarioTest):
         model_show_job = yaml.safe_load(model_show_job.output)
         assert_same(model_obj, model_show_job)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_model_datastore_uri(self) -> None:
         """
         Re-record instructions: In order to re-record this test create a job run that outputs a model. Go into datastores
@@ -230,6 +259,10 @@ class ModelScenarioTest(MLBaseScenarioTest):
         model_show_job_file = yaml.safe_load(model_show_job_file.output)
         assert_same(model_obj_file, model_show_job_file)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_model_job_uri(self) -> None:
         """
         Re-record instructions: In order to re-record this test create a job run that outputs a model to either a default output folder or a named output folder.
@@ -263,6 +296,10 @@ class ModelScenarioTest(MLBaseScenarioTest):
         model_show_job_file = yaml.safe_load(model_show_job_file.output)
         assert_same(model_obj_file, model_show_job_file)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_model_mlflow_uri(self) -> None:
         """
         Re-record instructions: In order to re-record this test create a job run that outputs a model using mlflow.autolog(). Copy the run id
@@ -288,6 +325,10 @@ class ModelScenarioTest(MLBaseScenarioTest):
         assert_same(model_obj_folder, model_show_job_folder)
 
     # This test is not working. TODO: https://dev.azure.com/msdata/Vienna/_workitems/edit/3372868
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Recording and replay not working.")
     def test_model_download_mlflow(self) -> None:
         self.cmd(
@@ -302,6 +343,10 @@ class ModelScenarioTest(MLBaseScenarioTest):
         assert "lightgbm_mlflow_model" in files[1]
 
     # This test is not working. TODO: https://dev.azure.com/msdata/Vienna/_workitems/edit/3372868
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Recording and replay not working.")
     def test_model_download_local_upload_singlefile(self) -> None:
         self.cmd(
@@ -315,6 +360,10 @@ class ModelScenarioTest(MLBaseScenarioTest):
         assert "lightgbm_mlflow_model" in files[1]
 
     # This test is not working. TODO: https://dev.azure.com/msdata/Vienna/_workitems/edit/3372868
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Recording and replay not working.")
     def test_model_anon_with_batch(self) -> None:
         """
@@ -330,6 +379,10 @@ class ModelScenarioTest(MLBaseScenarioTest):
         model_cmd_out = yaml.safe_load(model_cmd.output)
         assert "bd64529f9a171e743eea068b71027c76" in model_cmd_out["model"]
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_model_create_in_registry(self) -> None:
         """
         To re record this model we have to increment the version as the model cannot be removed from registry;
@@ -345,6 +398,10 @@ class ModelScenarioTest(MLBaseScenarioTest):
         model_obj = yaml.safe_load(model_obj.output)
         assert len(model_obj) > 1
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_model_show_and_list_in_registry(self) -> None:
         model_obj_get = self.cmd("az ml model show -n model_version_e2e -v 1 --registry-name testFeed -g testrg -w testworkspace")
         model_obj_get = yaml.safe_load(model_obj_get.output)
@@ -355,6 +412,10 @@ class ModelScenarioTest(MLBaseScenarioTest):
         model_obj_list = yaml.safe_load(model_obj_list.output)
         assert len(model_obj_list) > 1
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_model_create_in_registry_no_storage(self) -> None:
         # this will test creation of model in a registry which was created without a storage account. If you want to rerecord create a registry without storage
         # and then use that registry
@@ -367,6 +428,10 @@ class ModelScenarioTest(MLBaseScenarioTest):
         else:
             assert False
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_model_archive_in_registry(self) -> None:
 
         env_archive_obj = self.cmd(
@@ -374,6 +439,10 @@ class ModelScenarioTest(MLBaseScenarioTest):
         )
         assert env_archive_obj.output == ""
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_model_restore_in_registry(self) -> None:
 
         env_restore_obj = self.cmd(

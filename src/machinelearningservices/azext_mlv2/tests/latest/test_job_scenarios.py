@@ -29,6 +29,7 @@ from azure.ai.ml.dsl._utils import environment_variable_overwrite
 from azure.ai.ml.exceptions import UserErrorException
 
 from ..util import private_flag
+from azure.cli.testsdk.scenario_tests.decorators import record_only
 
 
 @pytest.fixture()
@@ -45,6 +46,10 @@ def disable_private_preview_features():
 
 @pytest.mark.usefixtures("enable_private_preview_features")
 class JobScenarioTest(MLBaseScenarioTest):
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="TODO: CannotOverwriteExistingCassetteException in pipeline.")
     def test_job_command_job(self) -> None:
         # TODO: Assumes there is a compute called testCompute, which may prevent a successful recording
@@ -120,6 +125,10 @@ class JobScenarioTest(MLBaseScenarioTest):
         self.kwargs.pop("command_job_name1", None)
         # Ignoring properties ProcessStatusFile and ProcessInfoFile, present only after the job is running
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="ServiceError:Service 'DATA_CAPABILITY' returned capability start response with code")
     def test_job_command_job_show_to_asset_create(self) -> None:
         job_name_suffix = "-2"
@@ -147,6 +156,10 @@ class JobScenarioTest(MLBaseScenarioTest):
 
     #@pytest.mark.public_preview_only
     # This test is not working. TODO: https://dev.azure.com/msdata/Vienna/_workitems/edit/3372868
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Recording and replay not working.")
     def test_job_command_job_list(self) -> None:
         """
@@ -176,6 +189,10 @@ class JobScenarioTest(MLBaseScenarioTest):
         assert len(default_job_list_yml) >= total_jobs
         assert len(default_job_list_yml) <= MAX_LIST_CLI_RESULTS
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_job_command_git_path(self) -> None:
         with private_flag():
             job_name_suffix = "-4"
@@ -200,6 +217,10 @@ class JobScenarioTest(MLBaseScenarioTest):
             self.kwargs.pop("command_job_name4", None)
 
     # This test is not working. TODO: https://dev.azure.com/msdata/Vienna/_workitems/edit/3372868
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Recording and replay not working.")
     def test_job_command_job_create_skip_validation(self) -> None:
         job_name_suffix = "-5"
@@ -214,6 +235,10 @@ class JobScenarioTest(MLBaseScenarioTest):
             mock_validate.assert_called_once()
 
     # This test is not working. TODO: https://dev.azure.com/msdata/Vienna/_workitems/edit/3372868
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Recording and replay not working.")
     def test_job_command_job_archive_restore(self) -> None:
         job_name_suffix = "-3"
@@ -237,6 +262,10 @@ class JobScenarioTest(MLBaseScenarioTest):
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("command_job_name3", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_job_environment_version(self) -> None:
         self.cmd(
             "az ml environment create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/environment/environment_colon_version.yml -g testrg -w testworkspace"
@@ -251,6 +280,10 @@ class JobScenarioTest(MLBaseScenarioTest):
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("job_name1", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.usefixtures("enable_private_preview_features")
     @pytest.mark.skip(reason="TODO: 2161301, Test is failing when executing from recording in ADO")
     def test_job_command_job_with_asset_registry(self) -> None:
@@ -266,6 +299,10 @@ class JobScenarioTest(MLBaseScenarioTest):
             # Delete a key regardless of whether it is in the dictionary for the new name
             self.kwargs.pop("command_job_name1", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="TODO: 1796036, does not complete when recorded")
     def test_job_sweep_job(self) -> None:
         job_name_suffix = "2"
@@ -305,6 +342,10 @@ class JobScenarioTest(MLBaseScenarioTest):
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("sweep_job_name1", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Can't record - job times out due to max_duration reached")
     def test_job_sweep_job_registry(self) -> None:
         job_name_suffix = "90"
@@ -317,6 +358,10 @@ class JobScenarioTest(MLBaseScenarioTest):
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("sweep_job_name", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="TODO: 1788025, could not re-record this test")
     def test_job_pipeline_job_settings_simple(self) -> None:
         job_name_suffix = "-1"
@@ -345,6 +390,10 @@ class JobScenarioTest(MLBaseScenarioTest):
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("pipeline_job_name1", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Unable to get authority configuration for login")
     def test_cli_error(self) -> None:
         create_job_command = "az ml job create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/pipeline_jobs/invalid/with_invalid_component.yml -g testrg -w testworkspace"
@@ -354,6 +403,10 @@ class JobScenarioTest(MLBaseScenarioTest):
         # Assert missing environment path
         assert "jobs.hello_world_component.component.environment" in str(e.value)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="TODO: 1796036, does not complete when recorded")
     def test_job_pipeline_job_input_paths(self) -> None:
         job_name_suffix = "-3"
@@ -427,6 +480,10 @@ class JobScenarioTest(MLBaseScenarioTest):
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("pipeline_job_name2", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Tests always fail.")
     def test_job_pipeline_job_translated_from_command_job(self) -> None:
         job_name_suffix = "-4"
@@ -474,6 +531,10 @@ class JobScenarioTest(MLBaseScenarioTest):
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("pipeline_job_name3", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Recording and replay not working.")
     def test_pipeline_job_validate(self) -> None:
         import json
@@ -501,6 +562,10 @@ class JobScenarioTest(MLBaseScenarioTest):
         }
 
     # This test is not working. TODO: https://dev.azure.com/msdata/Vienna/_workitems/edit/3372868
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Recording and replay not working.")
     def test_automl_tabular_classification_job(self) -> None:
         classification_job_name = "{}{}".format(self.kwargs.get("automlClassificationJobName", None), "-1")
@@ -517,6 +582,10 @@ class JobScenarioTest(MLBaseScenarioTest):
             self._validate_automl_job_common_properties(file_obj=file_obj, job_obj=job_obj)
 
     # This test is not working. TODO: https://dev.azure.com/msdata/Vienna/_workitems/edit/3372868
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Recording and replay not working.")
     def test_automl_tabular_forecasting_job(self) -> None:
         forecasting_job_name = "{}{}".format(self.kwargs.get("automlForecastingJobName", None), "-1")
@@ -540,6 +609,10 @@ class JobScenarioTest(MLBaseScenarioTest):
                 assert value == job_value
 
     # This test is not working. TODO: https://dev.azure.com/msdata/Vienna/_workitems/edit/3372868
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Recording and replay not working.")
     def test_automl_tabular_regression_job(self) -> None:
         regression_job_name = "{}{}".format(self.kwargs.get("automlRegressionJobName", None), "-1")
@@ -555,6 +628,10 @@ class JobScenarioTest(MLBaseScenarioTest):
             file_obj = yaml.safe_load(f)
             self._validate_automl_job_common_properties(file_obj=file_obj, job_obj=job_obj)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Tests always fail.")
     def test_automl_image_classification_job(self) -> None:
         image_classification_job_name = "{}{}".format(self.kwargs.get("automlImageClassificationJobName", None), "-2")
@@ -574,6 +651,10 @@ class JobScenarioTest(MLBaseScenarioTest):
             self._validate_automl_image_job_properties(file_obj=file_obj, job_obj=job_obj)
 
     # This test is not working. TODO: https://dev.azure.com/msdata/Vienna/_workitems/edit/3372868
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Recording and replay not working.")
     def test_automl_image_classification_automode_job(self) -> None:
         image_classification_automode_job_name = "{}{}".format(
@@ -594,6 +675,10 @@ class JobScenarioTest(MLBaseScenarioTest):
             )
             self._validate_automl_image_job_properties(file_obj=file_obj, job_obj=job_obj)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Tests always fail.")
     def test_automl_image_classification_multilabel_job(self) -> None:
         image_classification_multilabel_job_name = "{}{}".format(
@@ -615,6 +700,10 @@ class JobScenarioTest(MLBaseScenarioTest):
             self._validate_automl_image_job_properties(file_obj=file_obj, job_obj=job_obj)
 
     # This test is not working. TODO: https://dev.azure.com/msdata/Vienna/_workitems/edit/3372868
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Recording and replay not working.")
     def test_automl_image_classification_multilabel_automode_job(self) -> None:
         image_classification_multilabel_automode_job_name = "{}{}".format(
@@ -635,6 +724,10 @@ class JobScenarioTest(MLBaseScenarioTest):
             )
             self._validate_automl_image_job_properties(file_obj=file_obj, job_obj=job_obj)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Tests always fail.")
     def test_automl_image_instance_segmentation_job(self) -> None:
         image_instance_segmentation_job_name = "{}{}".format(
@@ -656,6 +749,10 @@ class JobScenarioTest(MLBaseScenarioTest):
             self._validate_automl_image_job_properties(file_obj=file_obj, job_obj=job_obj)
 
     # This test is not working. TODO: https://dev.azure.com/msdata/Vienna/_workitems/edit/3372868
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Recording and replay not working.")
     def test_automl_image_instance_segmentation_automode_job(self) -> None:
         image_instance_segmentation_automode_job_name = "{}{}".format(
@@ -676,6 +773,10 @@ class JobScenarioTest(MLBaseScenarioTest):
             )
             self._validate_automl_image_job_properties(file_obj=file_obj, job_obj=job_obj)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Tests always fail.")
     def test_automl_image_object_detection_job(self) -> None:
         image_object_detection_job_name = "{}{}".format(
@@ -697,6 +798,10 @@ class JobScenarioTest(MLBaseScenarioTest):
             self._validate_automl_image_job_properties(file_obj=file_obj, job_obj=job_obj)
 
     # This test is not working. TODO: https://dev.azure.com/msdata/Vienna/_workitems/edit/3372868
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Recording and replay not working.")
     def test_automl_image_object_detection_automode_job(self) -> None:
         image_object_detection_automode_job_name = "{}{}".format(
@@ -717,6 +822,10 @@ class JobScenarioTest(MLBaseScenarioTest):
             )
             self._validate_automl_image_job_properties(file_obj=file_obj, job_obj=job_obj)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Tests always fail.")
     def test_automl_image_job_limits_outside_sweep(self) -> None:
         image_job_name = "{}{}".format(self.kwargs.get("automlImageObjectDetectionJobName", None), "-1")
@@ -808,6 +917,10 @@ class JobScenarioTest(MLBaseScenarioTest):
         if file_obj.get("training"):
             validate_internal(file_obj["training"], job_obj["training"])
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Tests always fail.")
     def test_automl_text_classification_job(self) -> None:
         job_name = "{}{}".format(self.kwargs.get("automlTextClassificationJobName", None), "-1")
@@ -826,6 +939,10 @@ class JobScenarioTest(MLBaseScenarioTest):
             file_obj = yaml.safe_load(f)
             self._validate_automl_job_common_properties(file_obj=file_obj, job_obj=job_obj, is_gpu=True)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Tests always fail.")
     def test_automl_text_classification_multilabel_job(self) -> None:
         job_name = "{}{}".format(self.kwargs.get("automlTextMultilabelJobName", None), "-1")
@@ -844,6 +961,10 @@ class JobScenarioTest(MLBaseScenarioTest):
             file_obj = yaml.safe_load(f)
             self._validate_automl_job_common_properties(file_obj=file_obj, job_obj=job_obj, is_gpu=True)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Tests always fail.")
     def test_automl_text_ner_job(self) -> None:
         job_name = "{}{}".format(self.kwargs.get("automlTextNERJobName", None), "-1")
@@ -863,6 +984,10 @@ class JobScenarioTest(MLBaseScenarioTest):
             self._validate_automl_job_common_properties(file_obj=file_obj, job_obj=job_obj, is_gpu=True)
 
     """
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.public_preview_only
     def test_job_automl_job_public_preview_sanity(self) -> None:
         with pytest.raises(CLIError) as ex:
@@ -870,6 +995,10 @@ class JobScenarioTest(MLBaseScenarioTest):
         assert "Unsupported job type: automl_job" in str(ex)
     """
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="TODO: 1788034, could not re-record this test")
     def test_component_job_with_registry_uri(self):
         component_obj = self.cmd(
@@ -881,6 +1010,10 @@ class JobScenarioTest(MLBaseScenarioTest):
             == "azureml://registries/testFeed/components/my_hello_world_asset_2/versions/1"
         )
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="TODO: 1796036, does not complete when recorded")
     def test_pipeline_job_with_automl_node(self):
         job_name_suffix = "-11"
@@ -903,6 +1036,10 @@ class JobScenarioTest(MLBaseScenarioTest):
                 file_obj=file_obj, job_obj=job_obj, skip_compute_experiment=True
             )
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="TODO: 1796036, does not complete when recorded")
     def test_pipeline_job_with_parallel_node(self):
         job_name_suffix = "-12"
@@ -913,6 +1050,10 @@ class JobScenarioTest(MLBaseScenarioTest):
         job_obj = yaml.safe_load(job_obj.output)
         assert job_obj["name"] == self.kwargs["pipeline_job_name12"]
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="TODO: 2161301, Test is failing when executing from recording in ADO")
     def test_pipeline_job_with_registry_env(self):
         job_name_suffix = "-14"
@@ -923,6 +1064,10 @@ class JobScenarioTest(MLBaseScenarioTest):
         job_obj = yaml.safe_load(job_obj.output)
         assert job_obj["name"] == self.kwargs["pipeline_job_name14"]
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Tests always fail.")
     def test_pipeline_job_with_pipeline_node(self):
         job_name_suffix = "-15"
@@ -933,6 +1078,10 @@ class JobScenarioTest(MLBaseScenarioTest):
         job_obj = yaml.safe_load(job_obj.output)
         assert job_obj["name"] == self.kwargs["pipeline_job_name15"]
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Tests always fail.")
     def test_pipeline_job_with_parameter_group(self):
         job_name_suffix = "-16"
@@ -943,6 +1092,10 @@ class JobScenarioTest(MLBaseScenarioTest):
         job_obj = yaml.safe_load(job_obj.output)
         assert job_obj["name"] == self.kwargs["pipeline_job_name16"]
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="TODO: 2174601 - Test is failing with RG issues when executing in ADO")
     def test_custom_property_logging(self) -> None:
         job_name_suffix = "-17"
@@ -957,6 +1110,10 @@ class JobScenarioTest(MLBaseScenarioTest):
 @pytest.mark.private_preview_only
 @pytest.mark.usefixtures("disable_private_preview_features")
 class JobPrivatePreviewScenarioTest(MLBaseScenarioTest):
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="TODO: 1796036, does not complete when recorded")
     def test_pipeline_job_private_preview_features(self):
         test_paths = [
