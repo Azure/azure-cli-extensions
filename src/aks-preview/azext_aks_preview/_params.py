@@ -58,8 +58,6 @@ from azext_aks_preview._consts import (
     CONST_CREDENTIAL_FORMAT_AZURE,
     CONST_CREDENTIAL_FORMAT_EXEC,
     CONST_DAILY_MAINTENANCE_SCHEDULE,
-    CONST_DISK_DRIVER_V1,
-    CONST_DISK_DRIVER_V2,
     CONST_GPU_DRIVER_INSTALL,
     CONST_GPU_DRIVER_NONE,
     CONST_GPU_INSTANCE_PROFILE_MIG1_G,
@@ -378,7 +376,6 @@ acns_datapath_acceleration_modes = [
     CONST_ACNS_DATAPATH_ACCELERATION_MODE_BPFVETH,
 ]
 network_dataplanes = [CONST_NETWORK_DATAPLANE_AZURE, CONST_NETWORK_DATAPLANE_CILIUM]
-disk_driver_versions = [CONST_DISK_DRIVER_V1, CONST_DISK_DRIVER_V2]
 outbound_types = [
     CONST_OUTBOUND_TYPE_LOAD_BALANCER,
     CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
@@ -766,7 +763,6 @@ def load_arguments(self, _):
         c.argument("k8s_support_plan", arg_type=get_enum_type(k8s_support_plans))
         c.argument("enable_defender", action="store_true")
         c.argument("defender_config", validator=validate_defender_config_parameter)
-        c.argument("disk_driver_version", arg_type=get_enum_type(disk_driver_versions))
         c.argument("disable_disk_driver", action="store_true")
         c.argument("disable_file_driver", action="store_true")
         c.argument("enable_blob_driver", action="store_true")
@@ -1418,7 +1414,6 @@ def load_arguments(self, _):
         c.argument("enable_defender", action="store_true")
         c.argument("defender_config", validator=validate_defender_config_parameter)
         c.argument("enable_disk_driver", action="store_true")
-        c.argument("disk_driver_version", arg_type=get_enum_type(disk_driver_versions))
         c.argument("disable_disk_driver", action="store_true")
         c.argument("enable_file_driver", action="store_true")
         c.argument("disable_file_driver", action="store_true")

@@ -12,6 +12,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+21.0.0b1
+++++++
+* [BREAKING CHANGE] `az aks create/update`: Remove `--disk-driver-version` option as the `version` field has been removed from the API spec for `ManagedClusterStorageProfileDiskCSIDriver`.
+* Vendor new SDK and bump API version to 2026-03-02-preview.
+
 20.0.0b8
 +++++++
 * `az aks nodepool update`: Support `--enable-cluster-autoscaler` for VirtualMachines pools to convert all manual scale profiles to autoscale profiles.
@@ -22,8 +27,9 @@ Pending
 * `az aks nodepool auto-scale delete`: New command to delete an existing autoscale profile from a VirtualMachines agent pool.
 
 20.0.0b7
-+++++++
+++++++
 * `az aks nodepool update --crg-id`: Allow updating `--crg-id` to associate an existing Capacity Reservation Group with a nodepool not currently associated with one.
+* Vendor new SDK and bump API version to 2026-03-02-preview.
 * Update the minimum required cli core version to `2.76.0` (actually since `20.0.0b3`).
 * `az aks upgrade`: Add `--k8s-support-plan` and `--tier` flag support to allow cluster support plan and tier configuration during cluster upgrade.
 

@@ -25,7 +25,6 @@ from azext_aks_preview._consts import (
     CONST_CUSTOM_CA_TEST_CERT,
     CONST_DEFAULT_NODE_OS_TYPE,
     CONST_DEFAULT_NODE_VM_SIZE,
-    CONST_DISK_DRIVER_V2,
     CONST_GITOPS_ADDON_NAME,
     CONST_HTTP_APPLICATION_ROUTING_ADDON_NAME,
     CONST_INGRESS_APPGW_ADDON_NAME,
@@ -3140,73 +3139,8 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         with self.assertRaises(MutuallyExclusiveArgumentError):
             ctx_1.get_disk_driver()
 
-        ctx_2 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "enable_disk_driver": True,
-                    "disk_driver_version": "v2",
-                    "disable_disk_driver": False,
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        storage_profile_2 = self.models.ManagedClusterStorageProfile(
-            disk_csi_driver=self.models.ManagedClusterStorageProfileDiskCSIDriver(
-                enabled=False,
-                version=None,
-            ),
-            file_csi_driver=None,
-            snapshot_controller=None,
-        )
-        mc_2 = self.models.ManagedCluster(
-            location="test_location",
-            storage_profile=storage_profile_2,
-        )
-        ctx_2.attach_mc(mc_2)
-        ground_truth_disk_csi_driver_2 = (
-            self.models.ManagedClusterStorageProfileDiskCSIDriver(
-                enabled=True,
-                version="v2",
-            )
-        )
-        self.assertEqual(ctx_2.get_disk_driver(), ground_truth_disk_csi_driver_2)
-
-        # fail with enable-disk-driver as false and value passed for disk_driver_version
-        ctx_3 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "disable_disk_driver": True,
-                    "disk_driver_version": "v2",
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-
-        # fail on argument usage error
-        with self.assertRaises(ArgumentUsageError):
-            ctx_3.get_disk_driver()
-
-        # fail with enable-disk-driver as false and value passed for disk_driver_version
-        ctx_4 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "disk_driver_version": "v2",
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        # fail on argument usage error
-        with self.assertRaises(ArgumentUsageError):
-            ctx_4.get_disk_driver()
-
         # fail on prompt_y_n not specified when disabling disk driver
-        ctx_5 = AKSPreviewManagedClusterContext(
+        ctx_2 = AKSPreviewManagedClusterContext(
             self.cmd,
             AKSManagedClusterParamDict(
                 {
@@ -3220,9 +3154,9 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             "azext_aks_preview.managed_cluster_decorator.prompt_y_n",
             return_value=False,
         ), self.assertRaises(DecoratorEarlyExitException):
-            ctx_5.get_disk_driver()
+            ctx_2.get_disk_driver()
 
-        ctx_6 = AKSPreviewManagedClusterContext(
+        ctx_3 = AKSPreviewManagedClusterContext(
             self.cmd,
             AKSManagedClusterParamDict(
                 {
@@ -3232,30 +3166,12 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        ground_truth_disk_csi_driver_6 = (
+        ground_truth_disk_csi_driver_3 = (
             self.models.ManagedClusterStorageProfileDiskCSIDriver(
                 enabled=False,
             )
         )
-        self.assertEqual(ctx_6.get_disk_driver(), ground_truth_disk_csi_driver_6)
-
-        ctx_7 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "disk_driver_version": CONST_DISK_DRIVER_V2,
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.CREATE,
-        )
-        ground_truth_disk_csi_driver_7 = (
-            self.models.ManagedClusterStorageProfileDiskCSIDriver(
-                enabled=True,
-                version=CONST_DISK_DRIVER_V2,
-            )
-        )
-        self.assertEqual(ctx_7.get_disk_driver(), ground_truth_disk_csi_driver_7)
+        self.assertEqual(ctx_3.get_disk_driver(), ground_truth_disk_csi_driver_3)
 
     def test_get_enable_apiserver_vnet_integration(self):
         ctx_0 = AKSPreviewManagedClusterContext(
