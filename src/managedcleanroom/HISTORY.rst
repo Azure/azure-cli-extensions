@@ -73,3 +73,11 @@ Release History
   - Fixed schema_file parameter handling in dataset publish to support Azure CLI auto-loading (dict, string, and @file formats)
   - Fixed runhistory API endpoint method name
   - Fixed runresult API endpoint method name
+
+1.0.0b7
++++++++
+* Added: ``--subdirectory`` parameter to ``az managedcleanroom frontend analytics dataset publish``
+  to mount a specific subdirectory/prefix inside the storage container. Validation of
+  encryption-mode compatibility is enforced by the service.
+* SDK: ``analytics_frontend_api`` updated with the new ``store.subdirectory`` field
+  in the JSON dict templates (sync + async) to match the regenerated autorest output.

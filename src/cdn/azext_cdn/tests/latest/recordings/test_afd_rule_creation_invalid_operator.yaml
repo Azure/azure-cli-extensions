@@ -1,0 +1,1710 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - afd profile create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --profile-name --sku
+      User-Agent:
+      - AZURECLI/2.86.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2024-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"owner":"jingnanxu"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '258'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 07 May 2026 04:56:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 1396FFBFE8F5477BAF63C204F66F3A60 Ref B: SYD03EDGE1415 Ref C: 2026-05-07T04:56:07Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "global", "sku": {"name": "Standard_AzureFrontDoor"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - afd profile create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '66'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --profile-name --sku
+      User-Agent:
+      - AZURECLI/2.86.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002?api-version=2025-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002","type":"Microsoft.Cdn/profiles","name":"profile000002","location":"Global","kind":"frontdoor","tags":{},"sku":{"name":"Standard_AzureFrontDoor"},"properties":{"originResponseTimeoutSeconds":30,"logScrubbing":null,"frontDoorId":"4d9500fa-22d5-4bd7-a038-870816f0336b","extendedProperties":{},"resourceState":"Creating","provisioningState":"Creating"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Cdn/operationresults/1ea0c2ce-f7fd-4b7c-8230-8fe506c7f1bf?api-version=2025-06-01&t=639137265708246217&c=MIIHlDCCBnygAwIBAgIQezb8rseFMm1IRs195n9vVzANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBXVVMyIENBIDAxMB4XDTI2MDQwNzIzNDE1NFoXDTI2MTAwMzA1NDE1NFowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCyN0RC1toIy0MUjNqRPJLB51RUbtwBvAu6pgWK5gw2lmci7lE7U6jMxMh_8ljqwlXFY90FwPHzKHdcfHD4M0Ma3DRUVgE-v0S1aUDhKodisph39p7biWkApcSmxbkzmQMB2D0u2Zm0IhszNnwquCfvJuftV7em4_XCA_NbUt5EYUpfjv1sYzkLLAA8_2geRJLmDRfZGZvSHhgN-bsErNiX7v-BdmAyt_5jYpEcuAWuKp_6DUtXPY_mbwCm-qkLcoXGR39z9dHcyaldZUrJJ6JYcAEG5QNboi3gR2R7bY7pVtxUqbJ9Gx2tDy1qzosxOu0hXflZnevb68ylv7B68Wu9AgMBAAGjggSSMIIEjjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBQNw-Elcx5N6tZ9jh67WrWJYZxlnzAfBgNVHSMEGDAWgBSs43L6A7Jznj2VyO-HW67dG6HtaDCCAbIGA1UdHwSCAakwggGlMGmgZ6BlhmNodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdHVzMi9jcmxzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvMzQvY3VycmVudC5jcmwwa6BpoGeGZWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3R1czIvY3Jscy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxLzM0L2N1cnJlbnQuY3JsMFqgWKBWhlRodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vd2VzdHVzMi9jcmxzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvMzQvY3VycmVudC5jcmwwb6BtoGuGaWh0dHA6Ly9jY21ld2VzdHVzMnBraS53ZXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZXdlc3R1czJpY2EwMS8zNC9jdXJyZW50LmNybDCCAbcGCCsGAQUFBwEBBIIBqTCCAaUwbAYIKwYBBQUHMAKGYGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC93ZXN0dXMyL2NhY2VydHMvY2NtZXdlc3R1czJwa2kvY2NtZXdlc3R1czJpY2EwMS9jZXJ0LmNlcjBuBggrBgEFBQcwAoZiaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdHVzMi9jYWNlcnRzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvY2VydC5jZXIwXQYIKwYBBQUHMAKGUWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS93ZXN0dXMyL2NhY2VydHMvY2NtZXdlc3R1czJwa2kvY2NtZXdlc3R1czJpY2EwMS9jZXJ0LmNlcjBmBggrBgEFBQcwAoZaaHR0cDovL2NjbWV3ZXN0dXMycGtpLndlc3R1czIucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21ld2VzdHVzMmljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBOslPK0kujtTlyxe5WOtpNbQRYZ8iSxYHILxKtavGf63w2nf7l5nX07MzYQqUYkw1ZLV81KZUWrAqmYoK0fTLgq7S_ePVqJ0Bi0EefpAOxc4Q7FtrTXk-2n80mtrwbcDH_jHtUGHd5gGv7MEFSu5Wa2iI3mNDsNSZrscWUqrBhKiZ2zF0slf8YMpHWflHomPT5wBh2LQC9ub-GLJKfkVDFxokxP2roGR1np3ATyRygILitspiTUM4Bcia0TOmYoYUqpLZTBiVNI-ehKyCyQXxR9eeBX0xmiPRji8kPKfC97Q_8KsB0icYO2jpcYUsIggTmm6Rz61nAEqF34O6kWVt8&s=qxFKR0QIOfD-Y5s7Wg2X2KDsbFAo7z5F-moIuTIP-g8KcZPepuOyxMfk1JsTy7MIuizfhOIGIK6O8ZhzVl21l7avco3EbqKjLqqOriJ6Mm97wovghphEzduP9XxlU73biZbzQ1g_V408-XiUytbZmL9Fq0aNfbcMoG9KdT179S0yFeBtxuYac8lNqM-k2hnoMqiqhTzksXr4BUR3PFvNJfzgYbf3WBGYF40t4blpz3Zd45Wjx81qTDRHEMP6KvlIT-paNuxK5zhM91TJHQuSDrvKUxilmTcJcGNAtIAuY891y4XJuZdMf4iyRCvMMj8oFRSZu1oaHVefispDa51TAw&h=YKAdTE6_540TUqd0KPpTiojysMOwFoyaKblw40wKJ4U
+      cache-control:
+      - no-cache
+      content-length:
+      - '488'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 07 May 2026 04:56:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/c1ac2c59-5f62-49fb-8cd6-d2ca44768e4d
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 5E11D748E95B48E2B3DAE849494CF2B2 Ref B: SYD03EDGE1412 Ref C: 2026-05-07T04:56:08Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - afd profile create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --profile-name --sku
+      User-Agent:
+      - AZURECLI/2.86.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Cdn/operationresults/1ea0c2ce-f7fd-4b7c-8230-8fe506c7f1bf?api-version=2025-06-01&t=639137265708246217&c=MIIHlDCCBnygAwIBAgIQezb8rseFMm1IRs195n9vVzANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBXVVMyIENBIDAxMB4XDTI2MDQwNzIzNDE1NFoXDTI2MTAwMzA1NDE1NFowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCyN0RC1toIy0MUjNqRPJLB51RUbtwBvAu6pgWK5gw2lmci7lE7U6jMxMh_8ljqwlXFY90FwPHzKHdcfHD4M0Ma3DRUVgE-v0S1aUDhKodisph39p7biWkApcSmxbkzmQMB2D0u2Zm0IhszNnwquCfvJuftV7em4_XCA_NbUt5EYUpfjv1sYzkLLAA8_2geRJLmDRfZGZvSHhgN-bsErNiX7v-BdmAyt_5jYpEcuAWuKp_6DUtXPY_mbwCm-qkLcoXGR39z9dHcyaldZUrJJ6JYcAEG5QNboi3gR2R7bY7pVtxUqbJ9Gx2tDy1qzosxOu0hXflZnevb68ylv7B68Wu9AgMBAAGjggSSMIIEjjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBQNw-Elcx5N6tZ9jh67WrWJYZxlnzAfBgNVHSMEGDAWgBSs43L6A7Jznj2VyO-HW67dG6HtaDCCAbIGA1UdHwSCAakwggGlMGmgZ6BlhmNodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdHVzMi9jcmxzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvMzQvY3VycmVudC5jcmwwa6BpoGeGZWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3R1czIvY3Jscy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxLzM0L2N1cnJlbnQuY3JsMFqgWKBWhlRodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vd2VzdHVzMi9jcmxzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvMzQvY3VycmVudC5jcmwwb6BtoGuGaWh0dHA6Ly9jY21ld2VzdHVzMnBraS53ZXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZXdlc3R1czJpY2EwMS8zNC9jdXJyZW50LmNybDCCAbcGCCsGAQUFBwEBBIIBqTCCAaUwbAYIKwYBBQUHMAKGYGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC93ZXN0dXMyL2NhY2VydHMvY2NtZXdlc3R1czJwa2kvY2NtZXdlc3R1czJpY2EwMS9jZXJ0LmNlcjBuBggrBgEFBQcwAoZiaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdHVzMi9jYWNlcnRzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvY2VydC5jZXIwXQYIKwYBBQUHMAKGUWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS93ZXN0dXMyL2NhY2VydHMvY2NtZXdlc3R1czJwa2kvY2NtZXdlc3R1czJpY2EwMS9jZXJ0LmNlcjBmBggrBgEFBQcwAoZaaHR0cDovL2NjbWV3ZXN0dXMycGtpLndlc3R1czIucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21ld2VzdHVzMmljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBOslPK0kujtTlyxe5WOtpNbQRYZ8iSxYHILxKtavGf63w2nf7l5nX07MzYQqUYkw1ZLV81KZUWrAqmYoK0fTLgq7S_ePVqJ0Bi0EefpAOxc4Q7FtrTXk-2n80mtrwbcDH_jHtUGHd5gGv7MEFSu5Wa2iI3mNDsNSZrscWUqrBhKiZ2zF0slf8YMpHWflHomPT5wBh2LQC9ub-GLJKfkVDFxokxP2roGR1np3ATyRygILitspiTUM4Bcia0TOmYoYUqpLZTBiVNI-ehKyCyQXxR9eeBX0xmiPRji8kPKfC97Q_8KsB0icYO2jpcYUsIggTmm6Rz61nAEqF34O6kWVt8&s=qxFKR0QIOfD-Y5s7Wg2X2KDsbFAo7z5F-moIuTIP-g8KcZPepuOyxMfk1JsTy7MIuizfhOIGIK6O8ZhzVl21l7avco3EbqKjLqqOriJ6Mm97wovghphEzduP9XxlU73biZbzQ1g_V408-XiUytbZmL9Fq0aNfbcMoG9KdT179S0yFeBtxuYac8lNqM-k2hnoMqiqhTzksXr4BUR3PFvNJfzgYbf3WBGYF40t4blpz3Zd45Wjx81qTDRHEMP6KvlIT-paNuxK5zhM91TJHQuSDrvKUxilmTcJcGNAtIAuY891y4XJuZdMf4iyRCvMMj8oFRSZu1oaHVefispDa51TAw&h=YKAdTE6_540TUqd0KPpTiojysMOwFoyaKblw40wKJ4U
+  response:
+    body:
+      string: '{"status":"InProgress","error":{"code":"None","message":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '62'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 07 May 2026 04:56:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/686691fd-fa2c-4f74-ae01-bdbe04eb2346
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 69655489BC2940CD815F7B33B07D0DFC Ref B: SYD03EDGE2110 Ref C: 2026-05-07T04:56:11Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - afd profile create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --profile-name --sku
+      User-Agent:
+      - AZURECLI/2.86.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Cdn/operationresults/1ea0c2ce-f7fd-4b7c-8230-8fe506c7f1bf?api-version=2025-06-01&t=639137265708246217&c=MIIHlDCCBnygAwIBAgIQezb8rseFMm1IRs195n9vVzANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBXVVMyIENBIDAxMB4XDTI2MDQwNzIzNDE1NFoXDTI2MTAwMzA1NDE1NFowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCyN0RC1toIy0MUjNqRPJLB51RUbtwBvAu6pgWK5gw2lmci7lE7U6jMxMh_8ljqwlXFY90FwPHzKHdcfHD4M0Ma3DRUVgE-v0S1aUDhKodisph39p7biWkApcSmxbkzmQMB2D0u2Zm0IhszNnwquCfvJuftV7em4_XCA_NbUt5EYUpfjv1sYzkLLAA8_2geRJLmDRfZGZvSHhgN-bsErNiX7v-BdmAyt_5jYpEcuAWuKp_6DUtXPY_mbwCm-qkLcoXGR39z9dHcyaldZUrJJ6JYcAEG5QNboi3gR2R7bY7pVtxUqbJ9Gx2tDy1qzosxOu0hXflZnevb68ylv7B68Wu9AgMBAAGjggSSMIIEjjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBQNw-Elcx5N6tZ9jh67WrWJYZxlnzAfBgNVHSMEGDAWgBSs43L6A7Jznj2VyO-HW67dG6HtaDCCAbIGA1UdHwSCAakwggGlMGmgZ6BlhmNodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdHVzMi9jcmxzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvMzQvY3VycmVudC5jcmwwa6BpoGeGZWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3R1czIvY3Jscy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxLzM0L2N1cnJlbnQuY3JsMFqgWKBWhlRodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vd2VzdHVzMi9jcmxzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvMzQvY3VycmVudC5jcmwwb6BtoGuGaWh0dHA6Ly9jY21ld2VzdHVzMnBraS53ZXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZXdlc3R1czJpY2EwMS8zNC9jdXJyZW50LmNybDCCAbcGCCsGAQUFBwEBBIIBqTCCAaUwbAYIKwYBBQUHMAKGYGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC93ZXN0dXMyL2NhY2VydHMvY2NtZXdlc3R1czJwa2kvY2NtZXdlc3R1czJpY2EwMS9jZXJ0LmNlcjBuBggrBgEFBQcwAoZiaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdHVzMi9jYWNlcnRzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvY2VydC5jZXIwXQYIKwYBBQUHMAKGUWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS93ZXN0dXMyL2NhY2VydHMvY2NtZXdlc3R1czJwa2kvY2NtZXdlc3R1czJpY2EwMS9jZXJ0LmNlcjBmBggrBgEFBQcwAoZaaHR0cDovL2NjbWV3ZXN0dXMycGtpLndlc3R1czIucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21ld2VzdHVzMmljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBOslPK0kujtTlyxe5WOtpNbQRYZ8iSxYHILxKtavGf63w2nf7l5nX07MzYQqUYkw1ZLV81KZUWrAqmYoK0fTLgq7S_ePVqJ0Bi0EefpAOxc4Q7FtrTXk-2n80mtrwbcDH_jHtUGHd5gGv7MEFSu5Wa2iI3mNDsNSZrscWUqrBhKiZ2zF0slf8YMpHWflHomPT5wBh2LQC9ub-GLJKfkVDFxokxP2roGR1np3ATyRygILitspiTUM4Bcia0TOmYoYUqpLZTBiVNI-ehKyCyQXxR9eeBX0xmiPRji8kPKfC97Q_8KsB0icYO2jpcYUsIggTmm6Rz61nAEqF34O6kWVt8&s=qxFKR0QIOfD-Y5s7Wg2X2KDsbFAo7z5F-moIuTIP-g8KcZPepuOyxMfk1JsTy7MIuizfhOIGIK6O8ZhzVl21l7avco3EbqKjLqqOriJ6Mm97wovghphEzduP9XxlU73biZbzQ1g_V408-XiUytbZmL9Fq0aNfbcMoG9KdT179S0yFeBtxuYac8lNqM-k2hnoMqiqhTzksXr4BUR3PFvNJfzgYbf3WBGYF40t4blpz3Zd45Wjx81qTDRHEMP6KvlIT-paNuxK5zhM91TJHQuSDrvKUxilmTcJcGNAtIAuY891y4XJuZdMf4iyRCvMMj8oFRSZu1oaHVefispDa51TAw&h=YKAdTE6_540TUqd0KPpTiojysMOwFoyaKblw40wKJ4U
+  response:
+    body:
+      string: '{"status":"InProgress","error":{"code":"None","message":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '62'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 07 May 2026 04:56:42 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/b87fdcf6-2465-424e-ae97-34eb677ed018
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 5EFBBAC9380D4DEF9FD1633626493D01 Ref B: SYD03EDGE1721 Ref C: 2026-05-07T04:56:42Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - afd profile create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --profile-name --sku
+      User-Agent:
+      - AZURECLI/2.86.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Cdn/operationresults/1ea0c2ce-f7fd-4b7c-8230-8fe506c7f1bf?api-version=2025-06-01&t=639137265708246217&c=MIIHlDCCBnygAwIBAgIQezb8rseFMm1IRs195n9vVzANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBXVVMyIENBIDAxMB4XDTI2MDQwNzIzNDE1NFoXDTI2MTAwMzA1NDE1NFowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCyN0RC1toIy0MUjNqRPJLB51RUbtwBvAu6pgWK5gw2lmci7lE7U6jMxMh_8ljqwlXFY90FwPHzKHdcfHD4M0Ma3DRUVgE-v0S1aUDhKodisph39p7biWkApcSmxbkzmQMB2D0u2Zm0IhszNnwquCfvJuftV7em4_XCA_NbUt5EYUpfjv1sYzkLLAA8_2geRJLmDRfZGZvSHhgN-bsErNiX7v-BdmAyt_5jYpEcuAWuKp_6DUtXPY_mbwCm-qkLcoXGR39z9dHcyaldZUrJJ6JYcAEG5QNboi3gR2R7bY7pVtxUqbJ9Gx2tDy1qzosxOu0hXflZnevb68ylv7B68Wu9AgMBAAGjggSSMIIEjjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBQNw-Elcx5N6tZ9jh67WrWJYZxlnzAfBgNVHSMEGDAWgBSs43L6A7Jznj2VyO-HW67dG6HtaDCCAbIGA1UdHwSCAakwggGlMGmgZ6BlhmNodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdHVzMi9jcmxzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvMzQvY3VycmVudC5jcmwwa6BpoGeGZWh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3R1czIvY3Jscy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxLzM0L2N1cnJlbnQuY3JsMFqgWKBWhlRodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vd2VzdHVzMi9jcmxzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvMzQvY3VycmVudC5jcmwwb6BtoGuGaWh0dHA6Ly9jY21ld2VzdHVzMnBraS53ZXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZXdlc3R1czJpY2EwMS8zNC9jdXJyZW50LmNybDCCAbcGCCsGAQUFBwEBBIIBqTCCAaUwbAYIKwYBBQUHMAKGYGh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC93ZXN0dXMyL2NhY2VydHMvY2NtZXdlc3R1czJwa2kvY2NtZXdlc3R1czJpY2EwMS9jZXJ0LmNlcjBuBggrBgEFBQcwAoZiaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdHVzMi9jYWNlcnRzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvY2VydC5jZXIwXQYIKwYBBQUHMAKGUWh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS93ZXN0dXMyL2NhY2VydHMvY2NtZXdlc3R1czJwa2kvY2NtZXdlc3R1czJpY2EwMS9jZXJ0LmNlcjBmBggrBgEFBQcwAoZaaHR0cDovL2NjbWV3ZXN0dXMycGtpLndlc3R1czIucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21ld2VzdHVzMmljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBOslPK0kujtTlyxe5WOtpNbQRYZ8iSxYHILxKtavGf63w2nf7l5nX07MzYQqUYkw1ZLV81KZUWrAqmYoK0fTLgq7S_ePVqJ0Bi0EefpAOxc4Q7FtrTXk-2n80mtrwbcDH_jHtUGHd5gGv7MEFSu5Wa2iI3mNDsNSZrscWUqrBhKiZ2zF0slf8YMpHWflHomPT5wBh2LQC9ub-GLJKfkVDFxokxP2roGR1np3ATyRygILitspiTUM4Bcia0TOmYoYUqpLZTBiVNI-ehKyCyQXxR9eeBX0xmiPRji8kPKfC97Q_8KsB0icYO2jpcYUsIggTmm6Rz61nAEqF34O6kWVt8&s=qxFKR0QIOfD-Y5s7Wg2X2KDsbFAo7z5F-moIuTIP-g8KcZPepuOyxMfk1JsTy7MIuizfhOIGIK6O8ZhzVl21l7avco3EbqKjLqqOriJ6Mm97wovghphEzduP9XxlU73biZbzQ1g_V408-XiUytbZmL9Fq0aNfbcMoG9KdT179S0yFeBtxuYac8lNqM-k2hnoMqiqhTzksXr4BUR3PFvNJfzgYbf3WBGYF40t4blpz3Zd45Wjx81qTDRHEMP6KvlIT-paNuxK5zhM91TJHQuSDrvKUxilmTcJcGNAtIAuY891y4XJuZdMf4iyRCvMMj8oFRSZu1oaHVefispDa51TAw&h=YKAdTE6_540TUqd0KPpTiojysMOwFoyaKblw40wKJ4U
+  response:
+    body:
+      string: '{"status":"Succeeded","error":{"code":"None","message":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '61'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 07 May 2026 04:57:16 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/australiacentral/80c1e844-3d83-4176-93bc-72f233e4f465
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 2BAAA73303084AB58ADD9B736140661F Ref B: SYD03EDGE2010 Ref C: 2026-05-07T04:57:14Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - afd profile create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --profile-name --sku
+      User-Agent:
+      - AZURECLI/2.86.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002?api-version=2025-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002","type":"Microsoft.Cdn/profiles","name":"profile000002","location":"Global","kind":"frontdoor","tags":{},"sku":{"name":"Standard_AzureFrontDoor"},"properties":{"originResponseTimeoutSeconds":30,"logScrubbing":null,"frontDoorId":"4d9500fa-22d5-4bd7-a038-870816f0336b","extendedProperties":{},"resourceState":"Active","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '487'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 07 May 2026 04:57:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: B486A8529A5F465AB7379A84DCD09B2D Ref B: SYD03EDGE1911 Ref C: 2026-05-07T04:57:17Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - afd rule-set create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --rule-set-name --profile-name
+      User-Agent:
+      - AZURECLI/2.86.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003?api-version=2025-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/rulesets/ruleset000003","type":"Microsoft.Cdn/profiles/rulesets","name":"ruleset000003","properties":{"provisioningState":"Succeeded","deploymentStatus":"NotStarted"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '305'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 07 May 2026 04:57:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/e4d5edd2-ee9e-4116-80c6-4efd02792422
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: F82D00F64B4A4F30B6104E70AFAAABA7 Ref B: SYD03EDGE2009 Ref C: 2026-05-07T04:57:19Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - afd rule list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --rule-set-name --profile-name
+      User-Agent:
+      - AZURECLI/2.86.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules?api-version=2025-09-01-preview
+  response:
+    body:
+      string: '{"value":[]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '12'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 07 May 2026 04:57:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/3e5fb542-cd87-48bd-a504-16df45c00065
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 5FB5A1DFE4684B3595021273B7768090 Ref B: SYD03EDGE2112 Ref C: 2026-05-07T04:57:22Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"actions": [{"name": "RouteConfigurationOverride", "parameters":
+      {"cacheConfiguration": {"cacheBehavior": "HonorOrigin", "isCompressionEnabled":
+      "Disabled", "queryStringCachingBehavior": "UseQueryString"}, "typeName": "DeliveryRuleRouteConfigurationOverrideActionParameters"}}],
+      "conditions": [{"name": "RemoteAddress", "parameters": {"matchValues": ["TH",
+      "CN"], "negateCondition": true, "operator": "GeoMatch1", "typeName": "DeliveryRuleRemoteAddressConditionParameters"}}],
+      "matchProcessingBehavior": "Continue", "order": 0}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - afd rule create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '544'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --rule-set-name --profile-name --rule-name --match-variable --operator
+        --negate-condition --match-values --action-name --enable-caching --enable-compression
+        --query-string-caching-behavior --cache-behavior --order
+      User-Agent:
+      - AZURECLI/2.86.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000004?api-version=2025-09-01-preview
+  response:
+    body:
+      string: "{\n  \"error\": {\n    \"code\": \"BadRequest\",\n    \"message\":
+        \"Property 'Rule.Conditions[0].Parameters.Operator' cannot be set to 'GeoMatch1'.
+        Acceptable values are: Any, IPMatch, GeoMatch\"\n  }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '189'
+      content-type:
+      - application/json
+      date:
+      - Thu, 07 May 2026 04:57:24 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/677bdd88-d5bc-4b1d-b6e6-34c27e059088
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 726D4C00D2474D88BEE444D45899F52A Ref B: SYD03EDGE1409 Ref C: 2026-05-07T04:57:24Z'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"properties": {"actions": [{"name": "RouteConfigurationOverride", "parameters":
+      {"cacheConfiguration": {"cacheBehavior": "HonorOrigin", "isCompressionEnabled":
+      "Disabled", "queryStringCachingBehavior": "UseQueryString"}, "typeName": "DeliveryRuleRouteConfigurationOverrideActionParameters"}}],
+      "conditions": [{"name": "RequestMethod", "parameters": {"matchValues": ["HEAD"],
+      "negateCondition": false, "operator": "Equal1", "typeName": "DeliveryRuleRequestMethodConditionParameters"}}],
+      "matchProcessingBehavior": "Continue", "order": 1}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - afd rule create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '538'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --rule-set-name --profile-name --rule-name --match-variable --operator
+        --negate-condition --match-values --action-name --enable-caching --enable-compression
+        --query-string-caching-behavior --cache-behavior --order
+      User-Agent:
+      - AZURECLI/2.86.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000005?api-version=2025-09-01-preview
+  response:
+    body:
+      string: "{\n  \"error\": {\n    \"code\": \"BadRequest\",\n    \"message\":
+        \"Property 'Rule.Conditions[0].Parameters.Operator' cannot be set to 'Equal1'.
+        Acceptable values are: Equal\"\n  }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '169'
+      content-type:
+      - application/json
+      date:
+      - Thu, 07 May 2026 04:57:26 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/3ce4e384-af7a-4329-bfff-750adc5e32a3
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 6C71484E64924C5290D7E7B3D7A92493 Ref B: SYD03EDGE1922 Ref C: 2026-05-07T04:57:26Z'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"properties": {"actions": [{"name": "RouteConfigurationOverride", "parameters":
+      {"cacheConfiguration": {"cacheBehavior": "HonorOrigin", "isCompressionEnabled":
+      "Disabled", "queryStringCachingBehavior": "UseQueryString"}, "typeName": "DeliveryRuleRouteConfigurationOverrideActionParameters"}}],
+      "conditions": [{"name": "QueryString", "parameters": {"matchValues": ["abc"],
+      "negateCondition": false, "operator": "Contains1", "transforms": ["Lowercase",
+      "UrlDecode"], "typeName": "DeliveryRuleQueryStringConditionParameters"}}], "matchProcessingBehavior":
+      "Continue", "order": 2}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - afd rule create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '578'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --rule-set-name --profile-name --rule-name --match-variable --operator
+        --negate-condition --match-values --action-name --enable-caching --enable-compression
+        --query-string-caching-behavior --cache-behavior --order --transforms
+      User-Agent:
+      - AZURECLI/2.86.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000006?api-version=2025-09-01-preview
+  response:
+    body:
+      string: "{\n  \"error\": {\n    \"code\": \"BadRequest\",\n    \"message\":
+        \"Property 'Rule.Conditions[0].Parameters.Operator' cannot be set to 'Contains1'.
+        Acceptable values are: Any, Equal, Contains, BeginsWith, EndsWith, LessThan,
+        LessThanOrEqual, GreaterThan, GreaterThanOrEqual, RegEx, IntEqual\"\n  }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '286'
+      content-type:
+      - application/json
+      date:
+      - Thu, 07 May 2026 04:57:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/5a068c4a-bbc6-4e3d-9f00-dbed71a2de40
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 77A55B3230A9405789876D6400C9388C Ref B: SYD03EDGE1913 Ref C: 2026-05-07T04:57:28Z'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"properties": {"actions": [{"name": "RouteConfigurationOverride", "parameters":
+      {"cacheConfiguration": {"cacheBehavior": "HonorOrigin", "isCompressionEnabled":
+      "Disabled", "queryStringCachingBehavior": "UseQueryString"}, "typeName": "DeliveryRuleRouteConfigurationOverrideActionParameters"}}],
+      "conditions": [{"name": "PostArgs", "parameters": {"matchValues": ["abc[0-9]+"],
+      "negateCondition": false, "operator": "RegEx1", "selector": "Arg1", "transforms":
+      ["Lowercase"], "typeName": "DeliveryRulePostArgsConditionParameters"}}], "matchProcessingBehavior":
+      "Continue", "order": 3}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - afd rule create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '582'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --rule-set-name --profile-name --rule-name --match-variable --operator
+        --negate-condition --match-values --action-name --enable-caching --enable-compression
+        --query-string-caching-behavior --cache-behavior --order --transforms --selector
+      User-Agent:
+      - AZURECLI/2.86.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000007?api-version=2025-09-01-preview
+  response:
+    body:
+      string: "{\n  \"error\": {\n    \"code\": \"BadRequest\",\n    \"message\":
+        \"Property 'Rule.Conditions[0].Parameters.Operator' cannot be set to 'RegEx1'.
+        Acceptable values are: Any, Equal, Contains, BeginsWith, EndsWith, LessThan,
+        LessThanOrEqual, GreaterThan, GreaterThanOrEqual, RegEx, IntEqual\"\n  }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '283'
+      content-type:
+      - application/json
+      date:
+      - Thu, 07 May 2026 04:57:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/73a62bd9-3e83-4aa7-b95f-3c339420c356
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: BE12F9F21087403D88DBB96D0C6820DD Ref B: SYD03EDGE2109 Ref C: 2026-05-07T04:57:31Z'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"properties": {"actions": [{"name": "RouteConfigurationOverride", "parameters":
+      {"cacheConfiguration": {"cacheBehavior": "HonorOrigin", "isCompressionEnabled":
+      "Disabled", "queryStringCachingBehavior": "UseQueryString"}, "typeName": "DeliveryRuleRouteConfigurationOverrideActionParameters"}}],
+      "conditions": [{"name": "RequestUri", "parameters": {"matchValues": ["/test1/submit"],
+      "negateCondition": false, "operator": "Equal1", "transforms": ["Lowercase",
+      "UrlDecode"], "typeName": "DeliveryRuleRequestUriConditionParameters"}}], "matchProcessingBehavior":
+      "Continue", "order": 4}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - afd rule create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '583'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --rule-set-name --profile-name --rule-name --match-variable --operator
+        --negate-condition --match-values --action-name --enable-caching --enable-compression
+        --query-string-caching-behavior --cache-behavior --order --transforms
+      User-Agent:
+      - AZURECLI/2.86.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000008?api-version=2025-09-01-preview
+  response:
+    body:
+      string: "{\n  \"error\": {\n    \"code\": \"BadRequest\",\n    \"message\":
+        \"Property 'Rule.Conditions[0].Parameters.Operator' cannot be set to 'Equal1'.
+        Acceptable values are: Any, Equal, Contains, BeginsWith, EndsWith, LessThan,
+        LessThanOrEqual, GreaterThan, GreaterThanOrEqual, RegEx, IntEqual\"\n  }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '283'
+      content-type:
+      - application/json
+      date:
+      - Thu, 07 May 2026 04:57:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/942dd276-93c8-4d5f-8e09-d84489e822d8
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 8E42516F4BF44D31BF3A15FB690E1C64 Ref B: SYD03EDGE1308 Ref C: 2026-05-07T04:57:33Z'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"properties": {"actions": [{"name": "RouteConfigurationOverride", "parameters":
+      {"cacheConfiguration": {"cacheBehavior": "HonorOrigin", "isCompressionEnabled":
+      "Disabled", "queryStringCachingBehavior": "UseQueryString"}, "typeName": "DeliveryRuleRouteConfigurationOverrideActionParameters"}}],
+      "conditions": [{"name": "RequestHeader", "parameters": {"matchValues": ["head1",
+      "header2"], "negateCondition": false, "operator": "BeginsWith1", "selector":
+      "Header1", "transforms": ["Lowercase", "UrlDecode"], "typeName": "DeliveryRuleRequestHeaderConditionParameters"}}],
+      "matchProcessingBehavior": "Continue", "order": 5}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - afd rule create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '620'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --rule-set-name --profile-name --rule-name --match-variable --operator
+        --negate-condition --match-values --action-name --enable-caching --enable-compression
+        --query-string-caching-behavior --cache-behavior --order --transforms --selector
+      User-Agent:
+      - AZURECLI/2.86.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000009?api-version=2025-09-01-preview
+  response:
+    body:
+      string: "{\n  \"error\": {\n    \"code\": \"BadRequest\",\n    \"message\":
+        \"Property 'Rule.Conditions[0].Parameters.Operator' cannot be set to 'BeginsWith1'.
+        Acceptable values are: Any, Equal, Contains, BeginsWith, EndsWith, LessThan,
+        LessThanOrEqual, GreaterThan, GreaterThanOrEqual, RegEx, IntEqual\"\n  }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '288'
+      content-type:
+      - application/json
+      date:
+      - Thu, 07 May 2026 04:57:35 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/9f135f1c-2cf6-4e4d-a8d3-a71048227bcb
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 328CE9B898544B3483CEE2F5480F360D Ref B: SYD03EDGE2008 Ref C: 2026-05-07T04:57:34Z'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"properties": {"actions": [{"name": "RouteConfigurationOverride", "parameters":
+      {"cacheConfiguration": {"cacheBehavior": "HonorOrigin", "isCompressionEnabled":
+      "Disabled", "queryStringCachingBehavior": "UseQueryString"}, "typeName": "DeliveryRuleRouteConfigurationOverrideActionParameters"}}],
+      "conditions": [{"name": "RequestBody", "parameters": {"matchValues": ["b1",
+      "b2"], "negateCondition": false, "operator": "Contains1", "transforms": ["Lowercase",
+      "UrlDecode"], "typeName": "DeliveryRuleRequestBodyConditionParameters"}}], "matchProcessingBehavior":
+      "Continue", "order": 6}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - afd rule create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '583'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --rule-set-name --profile-name --rule-name --match-variable --operator
+        --negate-condition --match-values --action-name --enable-caching --enable-compression
+        --query-string-caching-behavior --cache-behavior --order --transforms
+      User-Agent:
+      - AZURECLI/2.86.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000010?api-version=2025-09-01-preview
+  response:
+    body:
+      string: "{\n  \"error\": {\n    \"code\": \"BadRequest\",\n    \"message\":
+        \"Property 'Rule.Conditions[0].Parameters.Operator' cannot be set to 'Contains1'.
+        Acceptable values are: Any, Equal, Contains, BeginsWith, EndsWith, LessThan,
+        LessThanOrEqual, GreaterThan, GreaterThanOrEqual, RegEx, IntEqual\"\n  }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '286'
+      content-type:
+      - application/json
+      date:
+      - Thu, 07 May 2026 04:57:37 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/db6500de-675d-4363-84d5-d25f13fc1c3e
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 3CAEDD5A43744E9CA7C8AFDC04C0BFBC Ref B: SYD03EDGE2021 Ref C: 2026-05-07T04:57:37Z'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"properties": {"actions": [{"name": "RouteConfigurationOverride", "parameters":
+      {"cacheConfiguration": {"cacheBehavior": "HonorOrigin", "isCompressionEnabled":
+      "Disabled", "queryStringCachingBehavior": "UseQueryString"}, "typeName": "DeliveryRuleRouteConfigurationOverrideActionParameters"}}],
+      "conditions": [{"name": "RequestScheme", "parameters": {"matchValues": ["HTTPS"],
+      "negateCondition": false, "operator": "Equal1", "typeName": "DeliveryRuleRequestSchemeConditionParameters"}}],
+      "matchProcessingBehavior": "Continue", "order": 7}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - afd rule create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '539'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --rule-set-name --profile-name --rule-name --match-variable --operator
+        --negate-condition --match-values --action-name --enable-caching --enable-compression
+        --query-string-caching-behavior --cache-behavior --order
+      User-Agent:
+      - AZURECLI/2.86.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000011?api-version=2025-09-01-preview
+  response:
+    body:
+      string: "{\n  \"error\": {\n    \"code\": \"BadRequest\",\n    \"message\":
+        \"Property 'Rule.Conditions[0].Parameters.Operator' cannot be set to 'Equal1'.
+        Acceptable values are: Equal\"\n  }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '169'
+      content-type:
+      - application/json
+      date:
+      - Thu, 07 May 2026 04:57:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/e8c2f6b3-bcbb-4dd9-96e4-fe59972d417b
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 0AA7928890E54F4AAA711D982D9F99B4 Ref B: SYD03EDGE1415 Ref C: 2026-05-07T04:57:38Z'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"properties": {"actions": [{"name": "RouteConfigurationOverride", "parameters":
+      {"cacheConfiguration": {"cacheBehavior": "HonorOrigin", "isCompressionEnabled":
+      "Disabled", "queryStringCachingBehavior": "UseQueryString"}, "typeName": "DeliveryRuleRouteConfigurationOverrideActionParameters"}}],
+      "conditions": [{"name": "UrlPath", "parameters": {"matchValues": ["url1"], "negateCondition":
+      true, "operator": "Contains1", "transforms": ["Lowercase"], "typeName": "DeliveryRuleUrlPathMatchConditionParameters"}}],
+      "matchProcessingBehavior": "Continue", "order": 8}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - afd rule create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '562'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --rule-set-name --profile-name --rule-name --match-variable --operator
+        --negate-condition --match-values --action-name --enable-caching --enable-compression
+        --query-string-caching-behavior --cache-behavior --order --transforms
+      User-Agent:
+      - AZURECLI/2.86.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000012?api-version=2025-09-01-preview
+  response:
+    body:
+      string: "{\n  \"error\": {\n    \"code\": \"BadRequest\",\n    \"message\":
+        \"Property 'Rule.Conditions[0].Parameters.Operator' cannot be set to 'Contains1'.
+        Acceptable values are: Any, Equal, Contains, BeginsWith, EndsWith, LessThan,
+        LessThanOrEqual, GreaterThan, GreaterThanOrEqual, Wildcard, RegEx\"\n  }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '286'
+      content-type:
+      - application/json
+      date:
+      - Thu, 07 May 2026 04:57:40 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/baa11698-a7c6-4437-ba1b-25aeffc08070
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 6025012313314051978805176C9ADF96 Ref B: SYD03EDGE1910 Ref C: 2026-05-07T04:57:41Z'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"properties": {"actions": [{"name": "RouteConfigurationOverride", "parameters":
+      {"cacheConfiguration": {"cacheBehavior": "HonorOrigin", "isCompressionEnabled":
+      "Disabled", "queryStringCachingBehavior": "UseQueryString"}, "typeName": "DeliveryRuleRouteConfigurationOverrideActionParameters"}}],
+      "conditions": [{"name": "UrlFileExtension", "parameters": {"matchValues": ["exe",
+      "apk", "msi"], "negateCondition": true, "operator": "Equal1", "transforms":
+      ["Lowercase"], "typeName": "DeliveryRuleUrlFileExtensionMatchConditionParameters"}}],
+      "matchProcessingBehavior": "Continue", "order": 9}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - afd rule create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '590'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --rule-set-name --profile-name --rule-name --match-variable --operator
+        --negate-condition --match-values --action-name --enable-caching --enable-compression
+        --query-string-caching-behavior --cache-behavior --order --transforms
+      User-Agent:
+      - AZURECLI/2.86.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000013?api-version=2025-09-01-preview
+  response:
+    body:
+      string: "{\n  \"error\": {\n    \"code\": \"BadRequest\",\n    \"message\":
+        \"Property 'Rule.Conditions[0].Parameters.Operator' cannot be set to 'Equal1'.
+        Acceptable values are: Any, Equal, Contains, BeginsWith, EndsWith, LessThan,
+        LessThanOrEqual, GreaterThan, GreaterThanOrEqual, RegEx, IntEqual\"\n  }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '283'
+      content-type:
+      - application/json
+      date:
+      - Thu, 07 May 2026 04:57:43 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/453bf745-ace3-4c06-9605-7349aa74c31f
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 2B8D222DA5E044C085B52643293AF2B0 Ref B: SYD03EDGE1422 Ref C: 2026-05-07T04:57:43Z'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"properties": {"actions": [{"name": "RouteConfigurationOverride", "parameters":
+      {"cacheConfiguration": {"cacheBehavior": "HonorOrigin", "isCompressionEnabled":
+      "Disabled", "queryStringCachingBehavior": "UseQueryString"}, "typeName": "DeliveryRuleRouteConfigurationOverrideActionParameters"}}],
+      "conditions": [{"name": "UrlFileName", "parameters": {"matchValues": ["[a-z1-9]+"],
+      "negateCondition": true, "operator": "RegEx1", "transforms": ["Lowercase"],
+      "typeName": "DeliveryRuleUrlFilenameConditionParameters"}}], "matchProcessingBehavior":
+      "Continue", "order": 10}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - afd rule create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '568'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --rule-set-name --profile-name --rule-name --match-variable --operator
+        --negate-condition --match-values --action-name --enable-caching --enable-compression
+        --query-string-caching-behavior --cache-behavior --order --transforms
+      User-Agent:
+      - AZURECLI/2.86.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000014?api-version=2025-09-01-preview
+  response:
+    body:
+      string: "{\n  \"error\": {\n    \"code\": \"BadRequest\",\n    \"message\":
+        \"Property 'Rule.Conditions[0].Parameters.Operator' cannot be set to 'RegEx1'.
+        Acceptable values are: Any, Equal, Contains, BeginsWith, EndsWith, LessThan,
+        LessThanOrEqual, GreaterThan, GreaterThanOrEqual, RegEx, IntEqual\"\n  }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '283'
+      content-type:
+      - application/json
+      date:
+      - Thu, 07 May 2026 04:57:45 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/c6c4dce2-fa0e-4a34-854d-a2f298ced176
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 4A7D233782754E60AC0140283FA7871A Ref B: SYD03EDGE2108 Ref C: 2026-05-07T04:57:45Z'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"properties": {"actions": [{"name": "RouteConfigurationOverride", "parameters":
+      {"cacheConfiguration": {"cacheBehavior": "HonorOrigin", "isCompressionEnabled":
+      "Disabled", "queryStringCachingBehavior": "UseQueryString"}, "typeName": "DeliveryRuleRouteConfigurationOverrideActionParameters"}}],
+      "conditions": [{"name": "HttpVersion", "parameters": {"matchValues": ["1.0",
+      "1.1"], "negateCondition": true, "operator": "Equal1", "typeName": "DeliveryRuleHttpVersionConditionParameters"}}],
+      "matchProcessingBehavior": "Continue", "order": 11}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - afd rule create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '540'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --rule-set-name --profile-name --rule-name --match-variable --operator
+        --negate-condition --match-values --action-name --enable-caching --enable-compression
+        --query-string-caching-behavior --cache-behavior --order
+      User-Agent:
+      - AZURECLI/2.86.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000015?api-version=2025-09-01-preview
+  response:
+    body:
+      string: "{\n  \"error\": {\n    \"code\": \"BadRequest\",\n    \"message\":
+        \"Property 'Rule.Conditions[0].Parameters.Operator' cannot be set to 'Equal1'.
+        Acceptable values are: Equal\"\n  }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '169'
+      content-type:
+      - application/json
+      date:
+      - Thu, 07 May 2026 04:57:48 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/ffe201df-35bb-4ef6-8208-cd6d2ede469b
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 7006AAF0941A414083C96BDCD0035960 Ref B: SYD03EDGE1315 Ref C: 2026-05-07T04:57:47Z'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"properties": {"actions": [{"name": "RouteConfigurationOverride", "parameters":
+      {"cacheConfiguration": {"cacheBehavior": "HonorOrigin", "isCompressionEnabled":
+      "Disabled", "queryStringCachingBehavior": "UseQueryString"}, "typeName": "DeliveryRuleRouteConfigurationOverrideActionParameters"}}],
+      "conditions": [{"name": "Cookies", "parameters": {"matchValues": ["exe", "apk",
+      "msi"], "negateCondition": true, "operator": "Equal1", "selector": "cookie1",
+      "transforms": ["Lowercase"], "typeName": "DeliveryRuleCookiesConditionParameters"}}],
+      "matchProcessingBehavior": "Continue", "order": 12}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - afd rule create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '591'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --rule-set-name --profile-name --rule-name --match-variable --operator
+        --negate-condition --match-values --action-name --enable-caching --enable-compression
+        --query-string-caching-behavior --cache-behavior --order --transforms --selector
+      User-Agent:
+      - AZURECLI/2.86.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000016?api-version=2025-09-01-preview
+  response:
+    body:
+      string: "{\n  \"error\": {\n    \"code\": \"BadRequest\",\n    \"message\":
+        \"Property 'Rule.Conditions[0].Parameters.Operator' cannot be set to 'Equal1'.
+        Acceptable values are: Any, Equal, Contains, BeginsWith, EndsWith, LessThan,
+        LessThanOrEqual, GreaterThan, GreaterThanOrEqual, RegEx, IntEqual\"\n  }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '283'
+      content-type:
+      - application/json
+      date:
+      - Thu, 07 May 2026 04:57:50 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/94fb2508-5664-48db-bd56-f14448d43e05
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 8C71D2E030424AB5957F20AD5EEB1E92 Ref B: SYD03EDGE1312 Ref C: 2026-05-07T04:57:49Z'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"properties": {"actions": [{"name": "RouteConfigurationOverride", "parameters":
+      {"cacheConfiguration": {"cacheBehavior": "HonorOrigin", "isCompressionEnabled":
+      "Disabled", "queryStringCachingBehavior": "UseQueryString"}, "typeName": "DeliveryRuleRouteConfigurationOverrideActionParameters"}}],
+      "conditions": [{"name": "IsDevice", "parameters": {"matchValues": ["Mobile"],
+      "negateCondition": false, "operator": "Equal1", "typeName": "DeliveryRuleIsDeviceConditionParameters"}}],
+      "matchProcessingBehavior": "Continue", "order": 13}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - afd rule create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '531'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --rule-set-name --profile-name --rule-name --match-variable --operator
+        --negate-condition --match-values --action-name --enable-caching --enable-compression
+        --query-string-caching-behavior --cache-behavior --order
+      User-Agent:
+      - AZURECLI/2.86.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000017?api-version=2025-09-01-preview
+  response:
+    body:
+      string: "{\n  \"error\": {\n    \"code\": \"BadRequest\",\n    \"message\":
+        \"Property 'Rule.Conditions[0].Parameters.Operator' cannot be set to 'Equal1'.
+        Acceptable values are: Equal\"\n  }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '169'
+      content-type:
+      - application/json
+      date:
+      - Thu, 07 May 2026 04:57:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/8cd52dd7-c624-472c-bb26-c1398ce3dd3d
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: BD5F9F4000A44EAE96BA0B64460EB625 Ref B: SYD03EDGE1907 Ref C: 2026-05-07T04:57:51Z'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"properties": {"actions": [{"name": "RouteConfigurationOverride", "parameters":
+      {"cacheConfiguration": {"cacheBehavior": "HonorOrigin", "isCompressionEnabled":
+      "Disabled", "queryStringCachingBehavior": "UseQueryString"}, "typeName": "DeliveryRuleRouteConfigurationOverrideActionParameters"}}],
+      "conditions": [{"name": "SocketAddr", "parameters": {"matchValues": ["127.0.0.1"],
+      "negateCondition": true, "operator": "IPMatch1", "typeName": "DeliveryRuleSocketAddrConditionParameters"}}],
+      "matchProcessingBehavior": "Continue", "order": 14}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - afd rule create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '539'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --rule-set-name --profile-name --rule-name --match-variable --operator
+        --negate-condition --match-values --action-name --enable-caching --enable-compression
+        --query-string-caching-behavior --cache-behavior --order
+      User-Agent:
+      - AZURECLI/2.86.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000018?api-version=2025-09-01-preview
+  response:
+    body:
+      string: "{\n  \"error\": {\n    \"code\": \"BadRequest\",\n    \"message\":
+        \"Property 'Rule.Conditions[0].Parameters.Operator' cannot be set to 'IPMatch1'.
+        Acceptable values are: Any, IPMatch\"\n  }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '178'
+      content-type:
+      - application/json
+      date:
+      - Thu, 07 May 2026 04:57:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/89cfa381-0403-44ef-8386-684b3d729918
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 58A5B56749B04A55A3F32D53A5FE5903 Ref B: SYD03EDGE1910 Ref C: 2026-05-07T04:57:53Z'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"properties": {"actions": [{"name": "RouteConfigurationOverride", "parameters":
+      {"cacheConfiguration": {"cacheBehavior": "HonorOrigin", "isCompressionEnabled":
+      "Disabled", "queryStringCachingBehavior": "UseQueryString"}, "typeName": "DeliveryRuleRouteConfigurationOverrideActionParameters"}}],
+      "conditions": [{"name": "ClientPort", "parameters": {"matchValues": ["8000"],
+      "negateCondition": true, "operator": "Equal1", "typeName": "DeliveryRuleClientPortConditionParameters"}}],
+      "matchProcessingBehavior": "Continue", "order": 15}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - afd rule create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '532'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --rule-set-name --profile-name --rule-name --match-variable --operator
+        --negate-condition --match-values --action-name --enable-caching --enable-compression
+        --query-string-caching-behavior --cache-behavior --order
+      User-Agent:
+      - AZURECLI/2.86.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000019?api-version=2025-09-01-preview
+  response:
+    body:
+      string: "{\n  \"error\": {\n    \"code\": \"BadRequest\",\n    \"message\":
+        \"Property 'Rule.Conditions[0].Parameters.Operator' cannot be set to 'Equal1'.
+        Acceptable values are: Any, Equal, Contains, BeginsWith, EndsWith, LessThan,
+        LessThanOrEqual, GreaterThan, GreaterThanOrEqual, RegEx, IntEqual\"\n  }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '283'
+      content-type:
+      - application/json
+      date:
+      - Thu, 07 May 2026 04:57:55 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/9e5ef409-698a-453b-accd-e5dbec20b532
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 50F700E93E19400CA3B8AFB3B8D2C775 Ref B: SYD03EDGE1911 Ref C: 2026-05-07T04:57:55Z'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"properties": {"actions": [{"name": "RouteConfigurationOverride", "parameters":
+      {"cacheConfiguration": {"cacheBehavior": "HonorOrigin", "isCompressionEnabled":
+      "Disabled", "queryStringCachingBehavior": "UseQueryString"}, "typeName": "DeliveryRuleRouteConfigurationOverrideActionParameters"}}],
+      "conditions": [{"name": "ServerPort", "parameters": {"matchValues": ["80", "443"],
+      "negateCondition": false, "operator": "Equal1", "typeName": "DeliveryRuleServerPortConditionParameters"}}],
+      "matchProcessingBehavior": "Continue", "order": 16}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - afd rule create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '538'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --rule-set-name --profile-name --rule-name --match-variable --operator
+        --negate-condition --match-values --action-name --enable-caching --enable-compression
+        --query-string-caching-behavior --cache-behavior --order
+      User-Agent:
+      - AZURECLI/2.86.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000020?api-version=2025-09-01-preview
+  response:
+    body:
+      string: "{\n  \"error\": {\n    \"code\": \"BadRequest\",\n    \"message\":
+        \"Property 'Rule.Conditions[0].Parameters.Operator' cannot be set to 'Equal1'.
+        Acceptable values are: Any, Equal, Contains, BeginsWith, EndsWith, LessThan,
+        LessThanOrEqual, GreaterThan, GreaterThanOrEqual, RegEx, IntEqual\"\n  }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '283'
+      content-type:
+      - application/json
+      date:
+      - Thu, 07 May 2026 04:57:57 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/23395a25-e33c-4104-be7d-82bf3d55ba38
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: F19F7B36192F430CBE69476B2151BA49 Ref B: SYD03EDGE1922 Ref C: 2026-05-07T04:57:57Z'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"properties": {"actions": [{"name": "RouteConfigurationOverride", "parameters":
+      {"cacheConfiguration": {"cacheBehavior": "HonorOrigin", "isCompressionEnabled":
+      "Disabled", "queryStringCachingBehavior": "UseQueryString"}, "typeName": "DeliveryRuleRouteConfigurationOverrideActionParameters"}}],
+      "conditions": [{"name": "HostName", "parameters": {"matchValues": ["www.contoso.com"],
+      "negateCondition": false, "operator": "Equal1", "transforms": ["Lowercase"],
+      "typeName": "DeliveryRuleHostNameConditionParameters"}}], "matchProcessingBehavior":
+      "Continue", "order": 17}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - afd rule create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '569'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --rule-set-name --profile-name --rule-name --match-variable --operator
+        --negate-condition --match-values --action-name --enable-caching --enable-compression
+        --query-string-caching-behavior --cache-behavior --order --transforms
+      User-Agent:
+      - AZURECLI/2.86.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000021?api-version=2025-09-01-preview
+  response:
+    body:
+      string: "{\n  \"error\": {\n    \"code\": \"BadRequest\",\n    \"message\":
+        \"Property 'Rule.Conditions[0].Parameters.Operator' cannot be set to 'Equal1'.
+        Acceptable values are: Any, Equal, Contains, BeginsWith, EndsWith, LessThan,
+        LessThanOrEqual, GreaterThan, GreaterThanOrEqual, RegEx, IntEqual\"\n  }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '283'
+      content-type:
+      - application/json
+      date:
+      - Thu, 07 May 2026 04:57:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/e0ac7fb2-b7a7-4244-8f90-09716e40609f
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 29896FD5D2214801A64823716C061524 Ref B: SYD03EDGE2116 Ref C: 2026-05-07T04:57:59Z'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"properties": {"actions": [{"name": "RouteConfigurationOverride", "parameters":
+      {"cacheConfiguration": {"cacheBehavior": "HonorOrigin", "isCompressionEnabled":
+      "Disabled", "queryStringCachingBehavior": "UseQueryString"}, "typeName": "DeliveryRuleRouteConfigurationOverrideActionParameters"}}],
+      "conditions": [{"name": "SslProtocol", "parameters": {"matchValues": ["TLSv1",
+      "TLSv1.1"], "negateCondition": true, "operator": "Equal1", "typeName": "DeliveryRuleSslProtocolConditionParameters"}}],
+      "matchProcessingBehavior": "Continue", "order": 18}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - afd rule create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '546'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --rule-set-name --profile-name --rule-name --match-variable --operator
+        --negate-condition --match-values --action-name --enable-caching --enable-compression
+        --query-string-caching-behavior --cache-behavior --order
+      User-Agent:
+      - AZURECLI/2.86.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules/rule000022?api-version=2025-09-01-preview
+  response:
+    body:
+      string: "{\n  \"error\": {\n    \"code\": \"BadRequest\",\n    \"message\":
+        \"Property 'Rule.Conditions[0].Parameters.Operator' cannot be set to 'Equal1'.
+        Acceptable values are: Equal\"\n  }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '169'
+      content-type:
+      - application/json
+      date:
+      - Thu, 07 May 2026 04:58:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/b9e081b7-c549-4198-8562-07ff80256532
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 9D456BC783D54C08A8DEEB6E56C1995A Ref B: SYD03EDGE2016 Ref C: 2026-05-07T04:58:01Z'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - afd rule list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --rule-set-name --profile-name
+      User-Agent:
+      - AZURECLI/2.86.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003/rules?api-version=2025-09-01-preview
+  response:
+    body:
+      string: '{"value":[]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '12'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 07 May 2026 04:58:04 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/5a914d43-0467-47c3-9cad-9d0a7343a3c0
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: F37D4B70A9DD42EF928756331228E65B Ref B: SYD03EDGE2010 Ref C: 2026-05-07T04:58:03Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - afd rule-set delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --rule-set-name --profile-name --yes
+      User-Agent:
+      - AZURECLI/2.86.0 azsdk-python-core/1.39.0 Python/3.13.13 (Windows-11-10.0.26200-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Cdn/profiles/profile000002/ruleSets/ruleset000003?api-version=2025-06-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Thu, 07 May 2026 04:58:05 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=2e396a67-4dc1-43ae-afcc-c6747d291866/westus/b8dedba4-3895-48a5-bff6-5f9de06dfc8f
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '799'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '11999'
+      x-msedge-ref:
+      - 'Ref A: 0CCC423F3D5E459CB6B5B9C55CD4B55C Ref B: SYD03EDGE1412 Ref C: 2026-05-07T04:58:05Z'
+    status:
+      code: 200
+      message: OK
+version: 1

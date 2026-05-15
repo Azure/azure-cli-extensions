@@ -920,13 +920,13 @@ helps['aks update'] = """
     parameters:
         - name: --enable-cluster-autoscaler -e
           type: bool
-          short-summary: Enable cluster autoscaler.
+          short-summary: Enable cluster autoscaler. For VirtualMachines pools, converts all manual scale profiles to autoscale profiles using the same min/max counts.
         - name: --disable-cluster-autoscaler -d
           type: bool
-          short-summary: Disable cluster autoscaler.
+          short-summary: Disable cluster autoscaler. For VirtualMachines pools, converts all autoscale profiles back to manual scale profiles.
         - name: --update-cluster-autoscaler -u
           type: bool
-          short-summary: Update min-count or max-count for cluster autoscaler.
+          short-summary: Update min-count or max-count for cluster autoscaler. Not supported for VirtualMachines pools; use 'az aks nodepool auto-scale update' instead.
         - name: --min-count
           type: int
           short-summary: Minimun nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 1000]
@@ -2412,13 +2412,13 @@ helps['aks nodepool update'] = """
     parameters:
         - name: --enable-cluster-autoscaler -e
           type: bool
-          short-summary: Enable cluster autoscaler. Must use VMSS agent pool type.
+          short-summary: Enable cluster autoscaler. For VMSS pools, enables autoscaler on the pool. For VirtualMachines pools, converts all manual scale profiles to autoscale profiles using the same min/max counts.
         - name: --disable-cluster-autoscaler -d
           type: bool
-          short-summary: Disable cluster autoscaler.
+          short-summary: Disable cluster autoscaler. For VirtualMachines pools, converts all autoscale profiles back to manual scale profiles.
         - name: --update-cluster-autoscaler -u
           type: bool
-          short-summary: Update min-count or max-count for cluster autoscaler.
+          short-summary: Update min-count or max-count for cluster autoscaler. Not supported for VirtualMachines pools; use 'az aks nodepool auto-scale update' instead.
         - name: --min-count
           type: int
           short-summary: Minimun nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [0, 1000] for user nodepool, and [1,1000] for system nodepool.
@@ -2530,6 +2530,9 @@ helps['aks nodepool update'] = """
         - name: --gpu-driver
           type: string
           short-summary: Whether to install driver for GPU node pool. Possible values are "Install" or "None".
+        - name: --crg-id
+          type: string
+          short-summary: The Capacity Reservation Group (CRG) ID used to associate the existing nodepool with the existing Capacity Reservation Group resource.
     examples:
       - name: Reconcile the nodepool back to its current state.
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
@@ -2547,6 +2550,8 @@ helps['aks nodepool update'] = """
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-vm-size Standard_D4s_v3
       - name: Update a node pool with blue-green upgrade settings
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --drain-batch-size 50% --drain-timeout-bg 5 --batch-soak-duration 10 --final-soak-duration 10
+      - name: Update a nodepool with a Capacity Reservation Group(CRG) ID.
+        text: az aks nodepool update -g MyResourceGroup -n MyNodePool --cluster-name MyMC --node-vm-size VMSize --crg-id "/subscriptions/SubID/resourceGroups/ResourceGroupName/providers/Microsoft.Compute/CapacityReservationGroups/MyCRGID"
 """
 
 helps['aks nodepool get-upgrades'] = """
@@ -2695,6 +2700,62 @@ helps['aks nodepool manual-scale delete'] = """
         - name: --current-vm-sizes
           type: string
           short-summary: Comma-separated list of sizes in the manual to be deleted.
+"""
+
+helps['aks nodepool auto-scale'] = """
+    type: group
+    short-summary: Commands to manage nodepool virtualMachineProfile.scale.autoscale.
+"""
+
+helps['aks nodepool auto-scale add'] = """
+    type: command
+    short-summary: Add a new autoscale profile to a VirtualMachines agentpool in the managed Kubernetes cluster.
+    parameters:
+        - name: --node-vm-size
+          type: string
+          short-summary: VM size for the autoscale profile.
+        - name: --min-count
+          type: int
+          short-summary: Minimum number of nodes for autoscaling.
+        - name: --max-count
+          type: int
+          short-summary: Maximum number of nodes for autoscaling.
+    examples:
+        - name: Add an autoscale profile to a VirtualMachines agentpool
+          text: az aks nodepool auto-scale add -g MyResourceGroup --cluster-name MyMC --name MyNodePool --node-vm-size Standard_D2s_v3 --min-count 3 --max-count 5
+"""
+
+helps['aks nodepool auto-scale update'] = """
+    type: command
+    short-summary: Update an existing autoscale profile of a VirtualMachines agentpool in the managed Kubernetes cluster.
+    parameters:
+        - name: --current-node-vm-size
+          type: string
+          short-summary: The current VM size of the autoscale profile to be updated.
+        - name: --node-vm-size
+          type: string
+          short-summary: The new VM size for the autoscale profile.
+        - name: --min-count
+          type: int
+          short-summary: Minimum number of nodes for autoscaling.
+        - name: --max-count
+          type: int
+          short-summary: Maximum number of nodes for autoscaling.
+    examples:
+        - name: Update an existing autoscale profile in a VirtualMachines agentpool
+          text: az aks nodepool auto-scale update -g MyResourceGroup --cluster-name MyMC --name MyNodePool --current-node-vm-size Standard_D2s_v3 --node-vm-size Standard_D8s_v3 --min-count 2 --max-count 4
+"""
+
+helps['aks nodepool auto-scale delete'] = """
+    type: command
+    short-summary: Delete an existing autoscale profile from a VirtualMachines agentpool in the managed Kubernetes cluster.
+    parameters:
+        - name: --current-node-vm-size
+          type: string
+          short-summary: The VM size of the autoscale profile to be deleted.
+    examples:
+        - name: Delete an autoscale profile from a VirtualMachines agentpool
+          text: az aks nodepool auto-scale delete -g MyResourceGroup --cluster-name MyMC --name MyNodePool --current-node-vm-size Standard_D2s_v3
 """
 
 helps['aks machine'] = """
