@@ -94,8 +94,6 @@ class ContainerAppDebugCommandDecorator(BaseResource):
         command = self.get_argument_command()
         custom_debug_image_name = self.get_argument_custom_debug_image_name()
         custom_debug_image_entrypoint_command = self.get_argument_custom_debug_image_entrypoint_command()
-        if custom_debug_image_entrypoint_command and not custom_debug_image_name:
-            raise ValidationError("--entrypoint requires --image to also be specified.")
         url = self._get_url(cmd, resource_group_name, container_app_name, revision_name, replica_name, container_name, command, custom_debug_image_name, custom_debug_image_entrypoint_command)
         token = self._get_auth_token(cmd, resource_group_name, container_app_name)
         headers = [f"Authorization=Bearer {token}"]

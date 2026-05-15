@@ -226,6 +226,8 @@ def validate_debug(cmd, namespace):
     logger.warning("Validating...")
     has_custom_image = getattr(namespace, 'custom_debug_image_name', None)
     has_entrypoint = getattr(namespace, 'custom_debug_image_entrypoint_command', None)
+    if has_entrypoint and not has_custom_image:
+        raise ValidationError("--entrypoint requires --image to also be specified.")
     if (has_custom_image or has_entrypoint) and not namespace.debug_command:
         raise ValidationError("--image and --entrypoint are only supported with --command. Interactive mode with custom images is not yet supported.")
     revision_already_set = bool(namespace.revision)

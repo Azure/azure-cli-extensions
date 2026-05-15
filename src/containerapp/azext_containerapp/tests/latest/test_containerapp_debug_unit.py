@@ -96,27 +96,6 @@ class TestDebugCommandValidation(unittest.TestCase):
         decorator.get_param = lambda key: params.get(key)
         return decorator
 
-    def test_entrypoint_without_image_raises_validation_error(self):
-        """--entrypoint without --image should raise ValidationError."""
-        decorator = self._create_decorator_with_params({
-            'custom_debug_image_name': None,
-            'custom_debug_image_entrypoint_command': '/bin/bash',
-            'resource_group_name': 'rg',
-            'container_app_name': 'app',
-            'revision_name': 'rev',
-            'replica_name': 'replica',
-            'container_name': 'container',
-            'command': '/bin/bash',
-        })
-
-        cmd_mock = mock.MagicMock()
-        with mock.patch.object(decorator, '_get_url'), \
-             mock.patch.object(decorator, '_get_auth_token', return_value='token'), \
-             mock.patch('azext_containerapp.containerapp_debug_command_decorator.send_raw_request'):
-            with self.assertRaises(ValidationError) as ctx:
-                decorator.execute_Command(cmd_mock)
-            self.assertIn("--entrypoint requires --image", str(ctx.exception))
-
     def test_image_without_entrypoint_succeeds(self):
         """--image without --entrypoint should not raise."""
         decorator = self._create_decorator_with_params({
@@ -223,6 +202,18 @@ class TestValidateDebugCustomImageRequiresCommand(unittest.TestCase):
             custom_debug_image_name='ubuntu:22.04',
         )
         validate_debug(mock.MagicMock(), ns)  # should not raise
+
+    @mock.patch('azext_containerapp._validators._set_debug_defaults')
+    def test_entrypoint_without_image_raises(self, mock_defaults):
+        """--entrypoint without --image should raise even when --command is set."""
+        from azext_containerapp._validators import validate_debug
+        ns = self._make_namespace(
+            debug_command='/bin/bash',
+            custom_debug_image_entrypoint_command='/bin/bash',
+        )
+        with self.assertRaises(ValidationError) as ctx:
+            validate_debug(mock.MagicMock(), ns)
+        self.assertIn("--entrypoint requires --image", str(ctx.exception))
 
 
 if __name__ == '__main__':
