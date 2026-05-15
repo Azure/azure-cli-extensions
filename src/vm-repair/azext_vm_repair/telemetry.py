@@ -3,72 +3,67 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=line-too-long, import-error, broad-except
+# pylint: disable=line-too-long
 import json
-from applicationinsights import TelemetryClient
-from .repair_utils import _get_current_vmrepair_version
+import re
 
-# For test releases and testing
-TEST_KEY = 'a6bdff92-33b5-426f-9123-33875d0ae98b'
-PROD_KEY = '3e7130f2-759b-41d4-afb8-f1405d1d7ed9'
+from azure.cli.core import telemetry as telemetry_core
 
-tc = TelemetryClient(PROD_KEY)
-tc.context.application.ver = _get_current_vmrepair_version()
+EXTENSION_NAME = 'vm-repair'
+
+# Patterns for scrubbing PII from error messages and stack traces
+_EMAIL_RE = re.compile(r'[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+')
+_HOME_DIR_RE = re.compile(r'(?:/home/|C:\\Users\\)[^\s/\\]+')
+
+
+def _scrub_pii(value):
+    """Remove emails and home directory usernames from a string."""
+    if not isinstance(value, str) or not value:
+        return value
+    value = _EMAIL_RE.sub('[REDACTED_EMAIL]', value)
+    value = _HOME_DIR_RE.sub('[REDACTED_PATH]', value)
+    return value
 
 
 def _track_command_telemetry(logger, command_name, parameters, status, message, error_message, error_stack_trace, duration, subscription_id, result_json):
-    try:
-        properties = {
-            'command_name': command_name,
-            'parameters': json.dumps(parameters),
-            'command_status': status,
-            'message': message,
-            'error_message': error_message,
-            'error_stack_trace': error_stack_trace,
-            'subscription_id': subscription_id,
-            'result_json': json.dumps(result_json)
-        }
-        measurements = {'command_duration': duration}
-        tc.track_event(command_name, properties, measurements)
-        tc.flush()
-    except Exception as exception:
-        logger.error('Unexpected error sending telemetry with exception: %s', str(exception))
+    properties = {
+        'Context.Default.AzureCLI.VmRepairCommandName': command_name,
+        'Context.Default.AzureCLI.VmRepairParameters': json.dumps(parameters),
+        'Context.Default.AzureCLI.VmRepairStatus': status,
+        'Context.Default.AzureCLI.VmRepairMessage': _scrub_pii(message),
+        'Context.Default.AzureCLI.VmRepairErrorMessage': _scrub_pii(error_message),
+        'Context.Default.AzureCLI.VmRepairErrorStackTrace': _scrub_pii(error_stack_trace),
+        'Context.Default.AzureCLI.VmRepairResultJson': json.dumps(result_json),
+        'Context.Default.AzureCLI.VmRepairCommandDuration': duration
+    }
+    telemetry_core.add_extension_event(EXTENSION_NAME, properties)
 
 
 def _track_run_command_telemetry(logger, command_name, parameters, status, message, error_message, error_stack_trace, duration, subscription_id, result_json, script_run_id, script_status, script_output, script_duration):
-    try:
-        properties = {
-            'command_name': command_name,
-            'parameters': json.dumps(parameters),
-            'command_status': status,
-            'message': message,
-            'error_message': error_message,
-            'error_stack_trace': error_stack_trace,
-            'subscription_id': subscription_id,
-            'result_json': json.dumps(result_json),
-            'script_run_id': script_run_id,
-            'script_status': script_status,
-            'script_output': script_output
-        }
-        measurements = {'command_duration': duration, 'script_duration': script_duration}
-        tc.track_event(command_name, properties, measurements)
-        tc.flush()
-    except Exception as exception:
-        logger.error('Unexpected error sending telemetry with exception: %s', str(exception))
+    properties = {
+        'Context.Default.AzureCLI.VmRepairCommandName': command_name,
+        'Context.Default.AzureCLI.VmRepairParameters': json.dumps(parameters),
+        'Context.Default.AzureCLI.VmRepairStatus': status,
+        'Context.Default.AzureCLI.VmRepairMessage': _scrub_pii(message),
+        'Context.Default.AzureCLI.VmRepairErrorMessage': _scrub_pii(error_message),
+        'Context.Default.AzureCLI.VmRepairErrorStackTrace': _scrub_pii(error_stack_trace),
+        'Context.Default.AzureCLI.VmRepairResultJson': json.dumps(result_json),
+        'Context.Default.AzureCLI.VmRepairScriptRunId': script_run_id,
+        'Context.Default.AzureCLI.VmRepairScriptStatus': script_status,
+        'Context.Default.AzureCLI.VmRepairScriptOutput': _scrub_pii(script_output),
+        'Context.Default.AzureCLI.VmRepairCommandDuration': duration,
+        'Context.Default.AzureCLI.VmRepairScriptDuration': script_duration
+    }
+    telemetry_core.add_extension_event(EXTENSION_NAME, properties)
 
 
 def _track_command_telemetry_repair_and_restore(logger, command_name, status, message, error_message, error_stack_trace, duration, subscription_id):
-    try:
-        properties = {
-            'command_name': command_name,
-            'command_status': status,
-            'message': message,
-            'error_message': error_message,
-            'error_stack_trace': error_stack_trace,
-            'subscription_id': subscription_id
-        }
-        measurements = {'command_duration': duration}
-        tc.track_event(command_name, properties, measurements)
-        tc.flush()
-    except Exception as exception:
-        logger.error('Unexpected error sending telemetry with exception: %s', str(exception))
+    properties = {
+        'Context.Default.AzureCLI.VmRepairCommandName': command_name,
+        'Context.Default.AzureCLI.VmRepairStatus': status,
+        'Context.Default.AzureCLI.VmRepairMessage': _scrub_pii(message),
+        'Context.Default.AzureCLI.VmRepairErrorMessage': _scrub_pii(error_message),
+        'Context.Default.AzureCLI.VmRepairErrorStackTrace': _scrub_pii(error_stack_trace),
+        'Context.Default.AzureCLI.VmRepairCommandDuration': duration
+    }
+    telemetry_core.add_extension_event(EXTENSION_NAME, properties)

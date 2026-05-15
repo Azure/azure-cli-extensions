@@ -89,7 +89,7 @@ class command_helper:
         elapsed_time = timeit.default_timer() - self.start_time
         if self.command_name == VM_REPAIR_RUN_COMMAND:
             _track_run_command_telemetry(self.logger, self.command_name, self.command_params, self.status, self.message, self.error_message, self.error_stack_trace, elapsed_time, get_subscription_id(self.cmd.cli_ctx), self.return_dict, self.script.run_id, self.script.status, self.script.output, self.script.run_time)
-        if self.command_name == VM_REPAIR_AND_RESTORE_COMMAND:
+        elif self.command_name == VM_REPAIR_AND_RESTORE_COMMAND:
             _track_command_telemetry_repair_and_restore(self.logger, self.command_name, self.status, self.message, self.error_message, self.error_stack_trace, elapsed_time, get_subscription_id(self.cmd.cli_ctx))
         else:
             _track_command_telemetry(self.logger, self.command_name, self.command_params, self.status, self.message, self.error_message, self.error_stack_trace, elapsed_time, get_subscription_id(self.cmd.cli_ctx), self.return_dict)
