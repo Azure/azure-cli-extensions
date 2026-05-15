@@ -599,14 +599,29 @@ def build_gate_configs(cmd, operation_group, gates_list):
         operation_group=operation_group
     )
 
+    valid_days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
     result = []
     for gate in gates_list:
         gate_type = gate.get("type", "Approval")
         scheduled_start_config = None
         raw_config = gate.get("scheduledStartConfiguration")
-        if raw_config:
+        if raw_config is not None:
+            required_keys = ["startDay", "startTime", "utcOffset"]
+            missing_keys = [k for k in required_keys if k not in raw_config]
+            if missing_keys:
+                raise CLIError(
+                    f"Missing required field(s) {missing_keys} in scheduledStartConfiguration. "
+                    "'startDay', 'startTime', and 'utcOffset' are all required "
+                    "when using scheduledStartConfiguration."
+                )
+            start_day = raw_config["startDay"]
+            if start_day not in valid_days:
+                raise CLIError(
+                    f"Invalid startDay value '{start_day}'. "
+                    f"Valid values are: {', '.join(valid_days)}."
+                )
             scheduled_start_config = scheduled_start_configuration_model(
-                start_day=raw_config["startDay"],
+                start_day=start_day,
                 start_time=raw_config["startTime"],
                 utc_offset=raw_config["utcOffset"],
             )
