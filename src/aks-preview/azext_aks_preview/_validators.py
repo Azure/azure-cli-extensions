@@ -955,7 +955,7 @@ def validate_asm_egress_name(namespace):
 
 
 def validate_os_disk_full_caching(namespace):
-    """Reject --enable-os-disk-full-caching when OS disk type is explicitly Managed.
+    """Reject --enable-osdisk-full-caching when OS disk type is explicitly Managed.
 
     Full-cache OS disk requires Ephemeral storage; failing fast at the CLI gives
     a clearer error than waiting for an ARM round-trip.
@@ -965,7 +965,7 @@ def validate_os_disk_full_caching(namespace):
     node_osdisk_type = getattr(namespace, "node_osdisk_type", None)
     if node_osdisk_type == CONST_OS_DISK_TYPE_MANAGED:
         raise ArgumentUsageError(
-            "--enable-os-disk-full-caching requires Ephemeral OS disk; "
+            "--enable-osdisk-full-caching requires Ephemeral OS disk; "
             "it cannot be used with --node-osdisk-type Managed."
         )
 

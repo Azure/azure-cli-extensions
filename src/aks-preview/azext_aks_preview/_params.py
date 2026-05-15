@@ -902,7 +902,7 @@ def load_arguments(self, _):
         c.argument("node_osdisk_size", type=int)
         c.argument(
             "enable_os_disk_full_caching",
-            options_list=["--enable-os-disk-full-caching", "--enable-osdisk-fc"],
+            options_list=["--enable-osdisk-full-caching", "--enable-osdisk-fc"],
             action="store_true",
             validator=validate_os_disk_full_caching,
             is_preview=True,
@@ -2077,7 +2077,7 @@ def load_arguments(self, _):
         c.argument("node_osdisk_size", type=int)
         c.argument(
             "enable_os_disk_full_caching",
-            options_list=["--enable-os-disk-full-caching", "--enable-osdisk-fc"],
+            options_list=["--enable-osdisk-full-caching", "--enable-osdisk-fc"],
             action="store_true",
             validator=validate_os_disk_full_caching,
             is_preview=True,
