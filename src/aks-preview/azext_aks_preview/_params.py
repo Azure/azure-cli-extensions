@@ -235,6 +235,8 @@ from azext_aks_preview._validators import (
     validate_utc_offset,
     validate_vm_set_type,
     validate_vnet_subnet_id,
+    validate_system_node_subnet_id,
+    validate_node_subnet_id,
     validate_force_upgrade_disable_and_enable_parameters,
     validate_azure_service_mesh_revision,
     validate_artifact_streaming,
@@ -1257,6 +1259,19 @@ def load_arguments(self, _):
             help="Enable Gateway API based ingress on App Routing via Istio"
         )
         c.argument("enable_hosted_system", action="store_true", is_preview=True)
+        c.argument("disable_hosted_system", action="store_true", is_preview=True)
+        c.argument(
+            "system_node_subnet_id",
+            options_list=["--system-node-subnet-id", "--sys-node-subnet-id"],
+            validator=validate_system_node_subnet_id,
+            is_preview=True,
+        )
+        c.argument(
+            "node_subnet_id",
+            options_list=["--node-subnet-id"],
+            validator=validate_node_subnet_id,
+            is_preview=True,
+        )
         c.argument(
             "control_plane_scaling_size",
             options_list=["--control-plane-scaling-size", "--cp-scaling-size"],

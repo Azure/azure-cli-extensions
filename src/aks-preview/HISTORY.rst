@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* `az aks create`: Support BYO VNet for hosted-system automatic clusters via `--system-node-subnet-id` and `--node-subnet-id`; add `--disable-hosted-system` opt-out.
 
 21.0.0b1
 ++++++
