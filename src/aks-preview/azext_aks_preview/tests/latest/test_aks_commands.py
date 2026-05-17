@@ -15577,6 +15577,199 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westus2"
+    )
+    def test_aks_create_with_control_plane_metrics(
+        self, resource_group, resource_group_location
+    ):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        aks_name = self.create_random_name("cliakstest", 16)
+        node_vm_size = "standard_d2s_v3"
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "node_vm_size": node_vm_size,
+            }
+        )
+
+        # create: --enable-azure-monitor-metrics + --enable-control-plane-metrics
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} --enable-managed-identity "
+            "--enable-azure-monitor-metrics --enable-control-plane-metrics --output=json"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("azureMonitorProfile.metrics.enabled", True),
+                self.check("azureMonitorProfile.metrics.controlPlane.enabled", True),
+            ],
+        )
+
+        wait_cmd = (
+            "aks wait --resource-group={resource_group} --name={name} --created "
+            "--interval 60 --timeout 1800"
+        )
+        self.cmd(wait_cmd, checks=[self.is_empty()])
+
+        # delete
+        self.cmd(
+            "aks delete --resource-group={resource_group} --name={name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westus2"
+    )
+    def test_aks_update_with_control_plane_metrics(
+        self, resource_group, resource_group_location
+    ):
+        aks_name = self.create_random_name("cliakstest", 16)
+        node_vm_size = "standard_d2s_v3"
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "node_vm_size": node_vm_size,
+            }
+        )
+
+        # create: with azure monitor metrics but without control plane metrics
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} --enable-managed-identity "
+            "--enable-azure-monitor-metrics --output=json"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("azureMonitorProfile.metrics.enabled", True),
+            ],
+        )
+
+        # update: enable-control-plane-metrics on a cluster that already has AM metrics
+        update_cmd = (
+            "aks update --resource-group={resource_group} --name={name} --yes --output=json "
+            "--enable-control-plane-metrics"
+        )
+        self.cmd(
+            update_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("azureMonitorProfile.metrics.controlPlane.enabled", True),
+            ],
+        )
+
+        wait_cmd = "aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800"
+        self.cmd(wait_cmd, checks=[self.is_empty()])
+
+        # update: disable-control-plane-metrics
+        update_cmd = (
+            "aks update --resource-group={resource_group} --name={name} --yes --output=json "
+            "--disable-control-plane-metrics"
+        )
+        self.cmd(
+            update_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("azureMonitorProfile.metrics.controlPlane.enabled", False),
+            ],
+        )
+
+        self.cmd(wait_cmd, checks=[self.is_empty()])
+
+        # delete
+        self.cmd(
+            "aks delete --resource-group={resource_group} --name={name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westus2"
+    )
+    def test_aks_control_plane_metrics_negative(
+        self, resource_group, resource_group_location
+    ):
+        aks_name = self.create_random_name("cliakstest", 16)
+        node_vm_size = "standard_d2s_v3"
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "node_vm_size": node_vm_size,
+            }
+        )
+
+        # negative: --enable-control-plane-metrics without --enable-azure-monitor-metrics on create
+        create_missing_parent = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} --enable-managed-identity "
+            "--enable-control-plane-metrics --output=json"
+        )
+        self.cmd(create_missing_parent, expect_failure=True)
+
+        # negative: --enable-control-plane-metrics with --disable-azure-monitor-metrics on create
+        create_conflicting = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} --enable-managed-identity "
+            "--enable-azure-monitor-metrics --enable-control-plane-metrics "
+            "--disable-azure-monitor-metrics --output=json"
+        )
+        self.cmd(create_conflicting, expect_failure=True)
+
+        # negative: both --enable-control-plane-metrics and --disable-control-plane-metrics
+        create_both = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} --enable-managed-identity "
+            "--enable-azure-monitor-metrics --enable-control-plane-metrics "
+            "--disable-control-plane-metrics --output=json"
+        )
+        self.cmd(create_both, expect_failure=True)
+
+        # create a baseline cluster (no AM metrics) so we can exercise the update-time negative
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} --enable-managed-identity "
+            "--output=json"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.not_exists("azureMonitorProfile.metrics"),
+            ],
+        )
+
+        # negative: update --enable-control-plane-metrics on a cluster without AM metrics enabled
+        update_missing_parent = (
+            "aks update --resource-group={resource_group} --name={name} --yes --output=json "
+            "--enable-control-plane-metrics"
+        )
+        self.cmd(update_missing_parent, expect_failure=True)
+
+        # delete
+        self.cmd(
+            "aks delete --resource-group={resource_group} --name={name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
     @AllowLargeResponse(8192)
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_update_with_azuremonitorappmonitoring(self, resource_group, resource_group_location):
