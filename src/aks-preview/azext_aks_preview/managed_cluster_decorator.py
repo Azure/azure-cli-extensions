@@ -1796,7 +1796,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         value_obtained_from_snapshot = None
         value_obtained_from_cluster_snapshot = None
         # skip dynamic completion if read_only is specified
-        if not read_only and self.agentpool_context:
+        if not read_only:
             snapshot = self.agentpool_context.get_snapshot()
             if snapshot:
                 value_obtained_from_snapshot = snapshot.kubernetes_version
@@ -1831,7 +1831,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         return self._get_kubernetes_version(read_only=False)
 
     def _validate_enable_fips_kubernetes_version(self) -> None:
-        kubernetes_version = self.get_kubernetes_version()
+        kubernetes_version = self._get_kubernetes_version(read_only=True)
         if not kubernetes_version:
             return
 
