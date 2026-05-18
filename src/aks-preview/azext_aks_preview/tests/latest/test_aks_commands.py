@@ -17358,6 +17358,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
 
         # Create cluster with --node-public-ip-prefix-ids
+        # Dual-stack networking (--ip-families IPv4,IPv6) is required when an
+        # IPv6 prefix is supplied.
         self.cmd(
             "aks create "
             "--resource-group={resource_group} "
@@ -17367,17 +17369,19 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--nodepool-name={node_pool_name} "
             "--node-count=1 "
             "--node-vm-size={node_vm_size} "
+            "--ip-families IPv4,IPv6 "
             "--node-public-ip-prefix-ids={prefix_ids} "
-            "--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/NodePublicIPv6PrefixPreview",
+            "--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/AKS-EnableDualStack,AKSHTTPCustomFeatures=Microsoft.ContainerService/NodePublicIPv6PrefixPreview",
             checks=[
                 self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.ipFamilies", ["IPv4", "IPv6"]),
                 self.check("agentPoolProfiles[0].enableNodePublicIp", True),
                 self.check(
-                    "agentPoolProfiles[0].networkProfile.nodePublicIPPrefixIDs[0]",
+                    "agentPoolProfiles[0].networkProfile.nodePublicIpPrefixIDs[0]",
                     ipv4_prefix_id,
                 ),
                 self.check(
-                    "agentPoolProfiles[0].networkProfile.nodePublicIPPrefixIDs[1]",
+                    "agentPoolProfiles[0].networkProfile.nodePublicIpPrefixIDs[1]",
                     ipv6_prefix_id,
                 ),
             ],
@@ -17403,11 +17407,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 self.check("provisioningState", "Succeeded"),
                 self.check("enableNodePublicIp", True),
                 self.check(
-                    "networkProfile.nodePublicIPPrefixIDs[0]",
+                    "networkProfile.nodePublicIpPrefixIDs[0]",
                     ipv4_prefix_id,
                 ),
                 self.check(
-                    "networkProfile.nodePublicIPPrefixIDs[1]",
+                    "networkProfile.nodePublicIpPrefixIDs[1]",
                     ipv6_prefix_id,
                 ),
             ],
