@@ -17402,6 +17402,126 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
+    # live_only: NodePublicIPv6PrefixPreview feature flag must be registered on the
+    # test subscription. Recording-based tests will be added once the feature is GA.
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="eastus2euap"
+    )
+    def test_node_public_ip_prefix_ids(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name("cliakstest", 16)
+        nodepool_name = self.create_random_name("n", 6)
+        nodepool_name_1 = self.create_random_name("n", 6)
+
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "node_pool_name": nodepool_name,
+                "node_vm_size": "standard_d2a_v4",
+                "ipv4_prefix": self.create_random_name("ipv4prefix", 20),
+                "ipv6_prefix": self.create_random_name("ipv6prefix", 20),
+            }
+        )
+
+        # Create IPv4 and IPv6 public IP prefixes
+        ipv4_result = self.cmd(
+            "network public-ip prefix create "
+            "--resource-group={resource_group} "
+            "--name={ipv4_prefix} "
+            "--location={location} "
+            "--length=28 "
+            "--version=IPv4"
+        ).get_output_in_json()
+        ipv4_prefix_id = ipv4_result["id"]
+
+        ipv6_result = self.cmd(
+            "network public-ip prefix create "
+            "--resource-group={resource_group} "
+            "--name={ipv6_prefix} "
+            "--location={location} "
+            "--length=124 "
+            "--version=IPv6"
+        ).get_output_in_json()
+        ipv6_prefix_id = ipv6_result["id"]
+
+        self.kwargs.update(
+            {
+                "prefix_ids": f"{ipv4_prefix_id},{ipv6_prefix_id}",
+            }
+        )
+
+        # Create cluster with --node-public-ip-prefix-ids
+        # Dual-stack networking (--ip-families IPv4,IPv6) is required when an
+        # IPv6 prefix is supplied.
+        self.cmd(
+            "aks create "
+            "--resource-group={resource_group} "
+            "--name={name} "
+            "--location={location} "
+            "--ssh-key-value={ssh_key_value} "
+            "--nodepool-name={node_pool_name} "
+            "--node-count=1 "
+            "--node-vm-size={node_vm_size} "
+            "--ip-families IPv4,IPv6 "
+            "--node-public-ip-prefix-ids={prefix_ids} "
+            "--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/AKS-EnableDualStack,AKSHTTPCustomFeatures=Microsoft.ContainerService/NodePublicIPv6PrefixPreview",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.ipFamilies", ["IPv4", "IPv6"]),
+                self.check("agentPoolProfiles[0].enableNodePublicIp", True),
+                self.check(
+                    "agentPoolProfiles[0].networkProfile.nodePublicIpPrefixIDs[0]",
+                    ipv4_prefix_id,
+                ),
+                self.check(
+                    "agentPoolProfiles[0].networkProfile.nodePublicIpPrefixIDs[1]",
+                    ipv6_prefix_id,
+                ),
+            ],
+        )
+
+        # Add nodepool with --node-public-ip-prefix-ids
+        self.kwargs.update(
+            {
+                "node_pool_name": nodepool_name_1,
+            }
+        )
+
+        self.cmd(
+            "aks nodepool add "
+            "--resource-group={resource_group} "
+            "--cluster-name={name} "
+            "--name={node_pool_name} "
+            "--node-count=1 "
+            "--node-vm-size={node_vm_size} "
+            "--node-public-ip-prefix-ids={prefix_ids} "
+            "--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/NodePublicIPv6PrefixPreview",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("enableNodePublicIp", True),
+                self.check(
+                    "networkProfile.nodePublicIpPrefixIDs[0]",
+                    ipv4_prefix_id,
+                ),
+                self.check(
+                    "networkProfile.nodePublicIpPrefixIDs[1]",
+                    ipv6_prefix_id,
+                ),
+            ],
+        )
+
+        # delete
+        self.cmd(
+            "aks delete --resource-group={resource_group} --name={name} --yes --no-wait",
+            checks=[
+                self.is_empty(),
+            ],
+        )
+
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="westus2"
