@@ -7164,8 +7164,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(
             "aks create --resource-group={resource_group} --name={name} "
             "--location={location} --kubernetes-version 1.34 "
-            "--enable-fips --ssh-key-value={ssh_key_value} "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableFIPSPreview",
+            "--enable-fips --ssh-key-value={ssh_key_value}",
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("enableFips", True),
@@ -7200,8 +7199,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(
             "aks create --resource-group={resource_group} --name={name} "
             "--location={location} --kubernetes-version 1.34 "
-            "--enable-fips-image --ssh-key-value={ssh_key_value} "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableFIPSPreview",
+            "--enable-fips-image --ssh-key-value={ssh_key_value}",
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("agentPoolProfiles[0].enableFips", True),
@@ -7210,8 +7208,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         self.cmd(
             "aks update --resource-group={resource_group} --name={name} "
-            "--enable-fips "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableFIPSPreview",
+            "--enable-fips",
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("enableFips", True),
@@ -7221,8 +7218,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         self.cmd(
             "aks update --resource-group={resource_group} --name={name} "
-            "--disable-fips "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableFIPSPreview",
+            "--disable-fips",
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("enableFips", False),
