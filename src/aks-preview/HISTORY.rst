@@ -12,6 +12,8 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+* `az aks create/update`: Add `--enable-fips` (preview) to enable FIPS mode at the cluster level and `az aks update --disable-fips` to disable it. Requires Kubernetes version 1.34 or later and AFEC registration `Microsoft.ContainerService/EnableFIPSPreview`.
+
 21.0.0b1
 ++++++
 * [BREAKING CHANGE] `az aks create/update`: Remove `--disk-driver-version` option as the `version` field has been removed from the API spec for `ManagedClusterStorageProfileDiskCSIDriver`.
@@ -32,7 +34,6 @@ Pending
 * Vendor new SDK and bump API version to 2026-03-02-preview.
 * Update the minimum required cli core version to `2.76.0` (actually since `20.0.0b3`).
 * `az aks upgrade`: Add `--k8s-support-plan` and `--tier` flag support to allow cluster support plan and tier configuration during cluster upgrade.
-* `az aks create/update`: Add `--enable-fips` (preview) to enable FIPS mode at the cluster level and `az aks update --disable-fips` to disable it. Requires Kubernetes version 1.34 or later and AFEC registration `Microsoft.ContainerService/EnableFIPSPreview`.
 
 20.0.0b6
 ++++++
