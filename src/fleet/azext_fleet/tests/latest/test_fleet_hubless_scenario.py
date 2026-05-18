@@ -198,7 +198,7 @@ class FleetHublessScenarioTest(ScenarioTest):
             self.check('length([])', 1)
         ])
 
-        self.cmd('fleet gate list -g {rg} -f {fleet_name}', checks=[
+        self.cmd('fleet gate list -g {rg} -f {fleet_name} --gate-type Approval', checks=[
             self.check('length([])', 1)
         ])
 
