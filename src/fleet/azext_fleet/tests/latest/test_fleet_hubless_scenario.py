@@ -55,6 +55,7 @@ class FleetHublessScenarioTest(ScenarioTest):
             'autoupgradeprofile_name': self.create_random_name(prefix='aup-', length=10),
             'autoupgradeprofile_name_TKV': self.create_random_name(prefix='aup-', length=10),
             'ssh_key_value': self.generate_ssh_keys(),
+            'vm_size': 'Standard_D2s_v3',
             'stages_file': _get_test_data_file('stages.json'),
             'kubernetes_version': '1.33.0',
             'target_kubernetes_version': '1.30',
@@ -100,7 +101,7 @@ class FleetHublessScenarioTest(ScenarioTest):
             self.greater_than('length([])', 0)
         ])
 
-        mc_id = self.cmd('aks create -g {rg} -n {member_name} --ssh-key-value={ssh_key_value}', checks=[
+        mc_id = self.cmd('aks create -g {rg} -n {member_name} --ssh-key-value={ssh_key_value} --node-vm-size {vm_size}', checks=[
             self.check('name', '{member_name}')
         ]).get_output_in_json()['id']
 
