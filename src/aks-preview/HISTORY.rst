@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* `az aks create` and `az aks nodepool add`: Add `--enable-osdisk-full-caching` (preview) to enable the full-cache ephemeral OS disk feature for a node pool. Requires AFEC registration `Microsoft.ContainerService/FullCachePreview`. Property is immutable after node pool creation.
 
 21.0.0b1
 ++++++
