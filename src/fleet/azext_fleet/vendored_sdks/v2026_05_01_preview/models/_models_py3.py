@@ -225,7 +225,7 @@ class AutoUpgradeProfile(ProxyResource):
     :ivar target_kubernetes_version: This is the target Kubernetes version for auto-upgrade. The
      format must be ``{major version}.{minor version}``. For example, "1.30". By default, this is
      empty. If upgrade channel is set to TargetKubernetesVersion, this field must not be empty. If
-     upgrade channel is not TargetKubernetesVersion, this field must be empty.
+     upgrade channel is Rapid, Stable or NodeImage, this field must be empty.
     :vartype target_kubernetes_version: str
     :ivar long_term_support: If upgrade channel is not TargetKubernetesVersion, this field must be
      False. If set to True: Fleet auto upgrade will continue generate update runs for patches of
@@ -298,7 +298,7 @@ class AutoUpgradeProfile(ProxyResource):
         :keyword target_kubernetes_version: This is the target Kubernetes version for auto-upgrade. The
          format must be ``{major version}.{minor version}``. For example, "1.30". By default, this is
          empty. If upgrade channel is set to TargetKubernetesVersion, this field must not be empty. If
-         upgrade channel is not TargetKubernetesVersion, this field must be empty.
+         upgrade channel is Rapid, Stable or NodeImage, this field must be empty.
         :paramtype target_kubernetes_version: str
         :keyword long_term_support: If upgrade channel is not TargetKubernetesVersion, this field must
          be False. If set to True: Fleet auto upgrade will continue generate update runs for patches of
