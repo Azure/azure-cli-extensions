@@ -192,15 +192,6 @@ def _get_monitoring_addon_key_from_consts(addon_profiles, addon_consts):
     )
 
 
-def _set_enable_fips_on_mc(models, mc: ManagedCluster, value: bool) -> None:
-    if hasattr(mc, "enable_fips"):
-        mc.enable_fips = value
-        return
-    if mc.properties is None:
-        mc.properties = models.ManagedClusterProperties()
-    mc.properties["enableFIPS"] = value
-
-
 # pylint: disable=too-few-public-methods
 class AKSPreviewManagedClusterModels(AKSManagedClusterModels):
     """Store the models used in aks series of commands.
@@ -4351,7 +4342,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         self._ensure_mc(mc)
 
         if self.context.get_enable_fips():
-            _set_enable_fips_on_mc(self.models, mc, True)
+            mc.enable_fips = True
             if mc.agent_pool_profiles:
                 for agentpool in mc.agent_pool_profiles:
                     agentpool.enable_fips = True
@@ -6766,7 +6757,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         self._ensure_mc(mc)
 
         if self.context.get_disable_fips():
-            _set_enable_fips_on_mc(self.models, mc, False)
+            mc.enable_fips = False
             return mc
 
         if not self.context.get_enable_fips():
@@ -6783,7 +6774,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 "Enable FIPS on these node pools first: {}.".format(", ".join(non_fips_nodepools))
             )
 
-        _set_enable_fips_on_mc(self.models, mc, True)
+        mc.enable_fips = True
         return mc
 
     def update_service_account_image_pull(self, mc: ManagedCluster) -> ManagedCluster:
