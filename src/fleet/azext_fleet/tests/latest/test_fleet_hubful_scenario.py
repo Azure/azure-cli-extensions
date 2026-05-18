@@ -46,7 +46,7 @@ class FleetHubfulScenarioTest(ScenarioTest):
             'member_name': self.create_random_name(prefix='flmc-', length=9),
             'namespace_name': self.create_random_name(prefix='flns-', length=9),
             'ssh_key_value': self.generate_ssh_keys(),
-            'vm_size': 'Standard_A8_v2',
+            'vm_size': 'Standard_D2s_v3',
             'location': 'westcentralus'
 
         })
@@ -59,7 +59,7 @@ class FleetHubfulScenarioTest(ScenarioTest):
 
         self.cmd('fleet get-credentials -g {rg} -n {fleet_name} --context fleet-{fleet_name} --overwrite-existing')
 
-        mc_id = self.cmd('aks create -g {rg} -n {member_name} --ssh-key-value={ssh_key_value}', checks=[
+        mc_id = self.cmd('aks create -g {rg} -n {member_name} --ssh-key-value={ssh_key_value} --node-vm-size {vm_size}', checks=[
             self.check('name', '{member_name}')
         ]).get_output_in_json()['id']
 
