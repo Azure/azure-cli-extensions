@@ -5909,7 +5909,6 @@ class ManagedCluster(TrackedResource):
         "health_monitor_profile",
         "control_plane_scaling_profile",
         "node_disruption_profile",
-        "enable_fips",
         "status",
     ]
 
@@ -9532,8 +9531,6 @@ class ManagedClusterProperties(_Model):
      ~azure.mgmt.containerservice.models.ManagedClusterControlPlaneScalingProfile
     :ivar node_disruption_profile: Node disruption profile for a managed cluster.
     :vartype node_disruption_profile: ~azure.mgmt.containerservice.models.NodeDisruptionProfile
-    :ivar enable_fips: Whether to enable FIPS mode at the cluster level.
-    :vartype enable_fips: bool
     :ivar status: Contains read-only information about the Managed Cluster.
     :vartype status: ~azure.mgmt.containerservice.models.ManagedClusterStatus
     """
@@ -9769,10 +9766,6 @@ class ManagedClusterProperties(_Model):
         name="nodeDisruptionProfile", visibility=["read", "create", "update", "delete", "query"]
     )
     """Node disruption profile for a managed cluster."""
-    enable_fips: Optional[bool] = rest_field(
-        name="enableFIPS", visibility=["read", "create", "update", "delete", "query"]
-    )
-    """Whether to enable FIPS mode at the cluster level."""
     status: Optional["_models.ManagedClusterStatus"] = rest_field(
         visibility=["read", "create", "update", "delete", "query"]
     )
