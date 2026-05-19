@@ -1005,7 +1005,11 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
                 "--secondary-network-interfaces must be a JSON array."
             )
         result = []
-        for item in data:
+        for idx, item in enumerate(data):
+            if not isinstance(item, dict):
+                raise InvalidArgumentValueError(
+                    f"--secondary-network-interfaces: element at index {idx} must be a JSON object, got {type(item).__name__}."
+                )
             result.append(self.models.AgentPoolNetworkInterface(
                 type=item.get("type"),
                 vnet_subnet_id=item.get("vnetSubnetId"),

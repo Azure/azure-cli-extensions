@@ -1258,6 +1258,46 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
         with self.assertRaises(InvalidArgumentValueError):
             ctx_3.get_secondary_network_interfaces()
 
+        # invalid JSON - array element is not a dict
+        ctx_4 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({
+                "secondary_network_interfaces": '[null]'
+            }),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        with self.assertRaises(InvalidArgumentValueError):
+            ctx_4.get_secondary_network_interfaces()
+
+        # @file input
+        import tempfile
+        import json
+        nics_data = [{"type": "Dynamic"}, {"type": "Standard", "vnetSubnetId": "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Network/virtualNetworks/vnet1/subnets/subnet1"}]
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
+            json.dump(nics_data, f)
+            tmp_path = f.name
+        try:
+            ctx_5 = AKSPreviewAgentPoolContext(
+                self.cmd,
+                AKSAgentPoolParamDict({
+                    "secondary_network_interfaces": f"@{tmp_path}"
+                }),
+                self.models,
+                DecoratorMode.CREATE,
+                self.agentpool_decorator_mode,
+            )
+            result = ctx_5.get_secondary_network_interfaces()
+            self.assertEqual(len(result), 2)
+            self.assertEqual(result[0].type, "Dynamic")
+            self.assertIsNone(result[0].vnet_subnet_id)
+            self.assertEqual(result[1].type, "Standard")
+            self.assertEqual(result[1].vnet_subnet_id, "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Network/virtualNetworks/vnet1/subnets/subnet1")
+        finally:
+            import os
+            os.unlink(tmp_path)
+
 
 class AKSPreviewAgentPoolContextStandaloneModeTestCase(
     AKSPreviewAgentPoolContextCommonTestCase
