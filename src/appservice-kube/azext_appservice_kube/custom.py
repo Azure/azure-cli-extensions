@@ -23,7 +23,6 @@ from azure.cli.command_modules.appservice.custom import (
     _format_fx_version,
     _get_extension_version_functionapp,
     _validate_app_service_environment_id,
-    _get_location_from_webapp,
     validate_and_convert_to_int,
     validate_range_of_int_flag,
     get_app_settings,
@@ -49,7 +48,7 @@ from azure.cli.command_modules.appservice.custom import (
     _get_content_share_name,
     get_app_service_plan_from_webapp)
 from azure.cli.command_modules.appservice._constants import LINUX_OS_NAME, FUNCTIONS_NO_V2_REGIONS
-from azure.cli.command_modules.appservice.utils import retryable_method, get_sku_tier
+from azure.cli.command_modules.appservice.utils import retryable_method, get_sku_tier, _get_location_from_webapp
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.commands import LongRunningOperation
 from azure.mgmt.applicationinsights import ApplicationInsightsManagementClient
