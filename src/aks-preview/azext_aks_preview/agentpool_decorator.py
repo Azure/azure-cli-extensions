@@ -1008,7 +1008,8 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         for idx, item in enumerate(data):
             if not isinstance(item, dict):
                 raise InvalidArgumentValueError(
-                    f"--secondary-network-interfaces: element at index {idx} must be a JSON object, got {type(item).__name__}."
+                    f"--secondary-network-interfaces: element at index {idx} "
+                    f"must be a JSON object, got {type(item).__name__}."
                 )
             result.append(self.models.AgentPoolNetworkInterface(
                 type=item.get("type"),
