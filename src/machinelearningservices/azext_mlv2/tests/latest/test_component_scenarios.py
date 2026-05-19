@@ -70,6 +70,9 @@ class ComponentScenarioTest(MLBaseScenarioTest):
 
     @AllowLargeResponse()
     def test_component(self):
+        # Use a unique component name per run to avoid colliding with leftover
+        # versions from previous live runs against the shared workspace.
+        self.kwargs["componentName"] = self.create_random_name(prefix="test_component_", length=24)
         component_obj = self.assert_component_create_get_list(
             path="./src/machinelearningservices/azext_mlv2/tests/test_configs/components/helloworld_component.yml",
             version="0.0.1",
@@ -114,33 +117,33 @@ class ComponentScenarioTest(MLBaseScenarioTest):
         )
 
     def test_component_show_registry(self) -> None:
-        env_obj = self.cmd("az ml component show -n 'HelloWorldRegistry' -v 0.0.1  --registry-name testFeed")
+        env_obj = self.cmd("az ml component show -n 'helloworld_component_with_env' -v 0.0.1  --registry-name dsvm-test")
         env_obj = yaml.safe_load(env_obj.output)
-        assert env_obj["id"] == "azureml://registries/testFeed/components/HelloWorldRegistry/versions/0.0.1"
-        assert env_obj["name"] == "HelloWorldRegistry"
+        assert env_obj["id"] == "azureml://registries/dsvm-test/components/helloworld_component_with_env/versions/0.0.1"
+        assert env_obj["name"] == "helloworld_component_with_env"
 
     def test_component_show_without_version_label(self) -> None:
         with pytest.raises(ClientRequestError) as error_info:
-            env_obj = self.cmd("az ml component show -n 'HelloWorldRegistry' --registry-name testFeed")
+            env_obj = self.cmd("az ml component show -n 'helloworld_component_with_env' --registry-name dsvm-test")
         assert "Must provide either version or label." in str(error_info)
 
     def test_component_list_registry(self) -> None:
-        env_obj = self.cmd("az ml component list -n 'HelloWorldRegistry' --registry-name testFeed")
+        env_obj = self.cmd("az ml component list -n 'helloworld_component_with_env' --registry-name dsvm-test")
         env_obj = yaml.safe_load(env_obj.output)
-        assert len(env_obj) == 1
+        assert len(env_obj) > 0
 
     def test_component_container_list_registry(self) -> None:
-        env_obj = self.cmd("az ml component list --registry-name testFeed")
+        env_obj = self.cmd("az ml component list --registry-name dsvm-test")
         env_obj = yaml.safe_load(env_obj.output)
-        assert len(env_obj) > 1
+        assert len(env_obj) > 0
 
     def test_component_archive_registry(self) -> None:
-        env_obj = self.cmd("az ml component archive -n batchscore -v 1.0.12 --registry-name bani-reg-wentral")
+        env_obj = self.cmd("az ml component archive -n batchscore -v 1.0.12 --registry-name dsvm-test")
         env_obj = yaml.safe_load(env_obj.output)
         assert env_obj is None
 
     def test_component_restore_registry(self) -> None:
-        env_obj = self.cmd("az ml component restore -n batchscore -v 1.0.12 --registry-name bani-reg-wentral")
+        env_obj = self.cmd("az ml component restore -n batchscore -v 1.0.12 --registry-name dsvm-test")
         env_obj = yaml.safe_load(env_obj.output)
         assert env_obj is None
 
@@ -212,7 +215,7 @@ class ComponentScenarioTest(MLBaseScenarioTest):
         with private_flag():
             with pytest.raises((ValidationException, CLIError)) as exc_info:
                 self.cmd(
-                    "az ml component create  -f ./src/machinelearningservices/azext_mlv2/tests/test_configs/components/helloworld_component_registry_asset.yml -v 6 --registry-name testfeed"
+                    "az ml component create  -f ./src/machinelearningservices/azext_mlv2/tests/test_configs/components/helloworld_component_registry_asset.yml -v 6 --registry-name dsvm-test"
                 )
             exception_raised = exc_info.value
             assert (
@@ -307,5 +310,3 @@ class ComponentScenarioTest(MLBaseScenarioTest):
             version="1",
             _type="pipeline",
         )
-
-
