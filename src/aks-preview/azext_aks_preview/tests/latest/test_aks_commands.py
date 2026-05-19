@@ -21578,7 +21578,7 @@ spec:
         )
 
     @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus2')
     def test_aks_check_network(self, resource_group, resource_group_location):
         # reset the count so in replay mode the random names will start with 0
         self.test_resources_count = 0
@@ -21594,7 +21594,7 @@ spec:
 
         # create
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
-                     '--ssh-key-value={ssh_key_value} --node-count=2 --os-sku Ubuntu'
+                     '--ssh-key-value={ssh_key_value} --node-count=2 --os-sku Ubuntu --node-vm-size Standard_D2s_v3'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded')
         ])
