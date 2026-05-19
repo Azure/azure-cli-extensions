@@ -112,6 +112,8 @@ helps['dataprotection backup-policy retention-rule create-lifecycle'] = """
 helps['dataprotection backup-policy retention-rule set'] = """
     type: command
     short-summary: Add new retention rule or update existing retention rule.
+    examples:
+      - name: Add retention rule
         text: az dataprotection backup-policy retention-rule set --lifecycles dailylifecycle.json --name Daily --policy policy.json
       - name: Add AzureBlob OperationalStore default retention rule
         text: az dataprotection backup-policy retention-rule set --lifecycles oplifecycle.json --name Default_OperationalStore --policy policy.json
