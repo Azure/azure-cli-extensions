@@ -905,6 +905,12 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         """
         return self.raw_param.get("if_none_match")
 
+    def get_prepared_image_specification_id(self) -> Union[str, None]:
+        """Obtain the value of prepared_image_specification_id.
+        :return: str or None
+        """
+        return self.raw_param.get('prepared_image_specification_id')
+
     def get_gateway_prefix_size(self) -> Union[int, None]:
         """Obtain the value of gateway_prefix_size.
         :return: int or None
@@ -1660,6 +1666,18 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         self._ensure_agentpool(agentpool)
         return self.context.build_localdns_profile(agentpool)
 
+    def set_up_prepared_image_specification(self, agentpool: AgentPool) -> AgentPool:
+        """Set up prepared image specification profile for the AgentPool object."""
+        self._ensure_agentpool(agentpool)
+
+        prepared_image_specification_id = self.context.get_prepared_image_specification_id()
+        if prepared_image_specification_id is not None:
+            agentpool.prepared_image_specification_profile = self.models.PreparedImageSpecificationProfile(  # pylint: disable=no-member
+                prepared_image_specification_id=prepared_image_specification_id,
+            )
+
+        return agentpool
+
     def construct_agentpool_profile_preview(self) -> AgentPool:
         """The overall controller used to construct the preview AgentPool profile.
 
@@ -1723,6 +1741,8 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool = self.set_up_upgrade_strategy(agentpool)
         # set up blue green upgrade settings
         agentpool = self.set_up_blue_green_upgrade_settings(agentpool)
+        # set up prepared image specification
+        agentpool = self.set_up_prepared_image_specification(agentpool)
         # DO NOT MOVE: keep this at the bottom, restore defaults
         agentpool = self._restore_defaults_in_agentpool(agentpool)
         return agentpool
@@ -2071,6 +2091,21 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
 
         return agentpool
 
+    def update_prepared_image_specification(self, agentpool: AgentPool) -> AgentPool:
+        """Update prepared image specification profile for the AgentPool object."""
+        self._ensure_agentpool(agentpool)
+
+        prepared_image_specification_id = self.context.get_prepared_image_specification_id()
+        if prepared_image_specification_id is not None:
+            if prepared_image_specification_id == "":
+                prepared_image_specification_id = None
+
+            agentpool.prepared_image_specification_profile = self.models.PreparedImageSpecificationProfile(  # pylint: disable=no-member
+                prepared_image_specification_id=prepared_image_specification_id,
+            )
+
+        return agentpool
+
     def update_agentpool_profile_preview(self, agentpools: List[AgentPool] = None) -> AgentPool:
         """The overall controller used to update the preview AgentPool profile.
 
@@ -2138,6 +2173,9 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
 
         # update crg id
         agentpool = self.update_crg(agentpool)
+
+        # update prepared image specification
+        agentpool = self.update_prepared_image_specification(agentpool)
 
         return agentpool
 
