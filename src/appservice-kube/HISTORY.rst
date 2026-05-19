@@ -2,9 +2,9 @@
 
 Release History
 ===============
-0.1.12
+1.0.0b1
 ++++++
-* Import _get_location_from_webapp from azure.cli.command_modules.appservice.utils
+* Fix compatibility with newer Azure CLI App Service module versions
 
 0.1.11
 ++++++
