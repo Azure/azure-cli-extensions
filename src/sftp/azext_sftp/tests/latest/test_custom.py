@@ -83,7 +83,7 @@ class SftpCustomCommandTest(unittest.TestCase):
 
         custom.sftp_cert(cmd, "cert", "pubkey")
 
-        mock_get_keys.assert_called_once_with('/pubkey/path', None, None, None)
+        mock_get_keys.assert_called_once_with('/pubkey/path', None, None, None, yes_without_prompt=False)
         mock_write_cert.assert_called_once_with(cmd, 'pubkey', '/cert/path', None)
 
     @mock.patch('azext_sftp.custom._do_sftp_op')
@@ -181,7 +181,7 @@ class SftpCustomCommandTest(unittest.TestCase):
                 )
                 
                 # Verify function calls
-                mock_create_keys.assert_called_once_with(*expected_create_keys_args)
+                mock_create_keys.assert_called_once_with(*expected_create_keys_args, yes_without_prompt=False)
                 mock_gen_cert.assert_called_once()
                 mock_do_sftp.assert_called_once()
 
@@ -463,7 +463,7 @@ class SftpCustomCommandTest(unittest.TestCase):
                 
                 # Verify calls
                 expected_keys_dir = os.path.dirname(cert_path) if expected_keys_folder == "cert_dir" else expected_keys_folder
-                mock_check_files.assert_called_once_with(public_key_file, None, expected_keys_dir, ssh_client_folder)
+                mock_check_files.assert_called_once_with(public_key_file, None, expected_keys_dir, ssh_client_folder, yes_without_prompt=False)
                 mock_write_cert.assert_called_once_with(cmd, effective_public_key, cert_path, ssh_client_folder)
 
     def test_sftp_cert_error_cases(self):
@@ -551,7 +551,7 @@ class SftpCustomCommandTest(unittest.TestCase):
             custom.sftp_cert(cmd, public_key_file="pubkey.pub")
             
             # Verify function was called correctly
-            mock_check_files.assert_called_once_with("pubkey.pub", None, None, None)
+            mock_check_files.assert_called_once_with("pubkey.pub", None, None, None, yes_without_prompt=False)
 
     # Additional tests for private helper functions
 

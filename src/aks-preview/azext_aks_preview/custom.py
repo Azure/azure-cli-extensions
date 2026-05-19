@@ -57,6 +57,7 @@ from azext_aks_preview._consts import (
     CONST_ARTIFACT_SOURCE_DIRECT,
     CONST_K8S_EXTENSION_CUSTOM_MOD_NAME,
     CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME,
+    CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM,
 )
 from azext_aks_preview._helpers import (
     check_is_private_link_cluster,
@@ -172,6 +173,7 @@ from azure.core.exceptions import (
     ResourceNotFoundError,
     HttpResponseError,
 )
+from azure.mgmt.containerservice.models import KubernetesSupportPlan
 from dateutil.parser import parse
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
@@ -1005,7 +1007,6 @@ def aks_create(
     nrg_lockdown_restriction_level=None,
     enable_defender=False,
     defender_config=None,
-    disk_driver_version=None,
     disable_disk_driver=False,
     disable_file_driver=False,
     enable_blob_driver=None,
@@ -1060,6 +1061,7 @@ def aks_create(
     nodepool_initialization_taints=None,
     node_osdisk_type=None,
     node_osdisk_size=0,
+    enable_os_disk_full_caching=False,
     vm_set_type=None,
     zones=None,
     ppg=None,
@@ -1273,7 +1275,6 @@ def aks_update(
     disable_defender=False,
     defender_config=None,
     enable_disk_driver=False,
-    disk_driver_version=None,
     disable_disk_driver=False,
     enable_file_driver=False,
     disable_file_driver=False,
@@ -1682,6 +1683,8 @@ def aks_upgrade(cmd,
                 enable_force_upgrade=False,
                 disable_force_upgrade=False,
                 upgrade_override_until=None,
+                tier=None,
+                k8s_support_plan=None,
                 yes=False,
                 if_match=None,
                 if_none_match=None):
@@ -1739,6 +1742,18 @@ def aks_upgrade(cmd,
         disable_force_upgrade=disable_force_upgrade,
         upgrade_override_until=upgrade_override_until)
 
+    if tier is not None:
+        instance.sku.tier = tier
+
+    if k8s_support_plan is not None:
+        instance.support_plan = k8s_support_plan
+
+    if (
+        instance.support_plan == KubernetesSupportPlan.AKS_LONG_TERM_SUPPORT
+        and instance.sku.tier is not None
+        and instance.sku.tier.lower() != CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM.lower()
+    ):
+        raise CLIError("AKS Long Term Support is only available for Premium tier clusters.")
     if instance.kubernetes_version == kubernetes_version:
         if instance.provisioning_state == "Succeeded":
             logger.warning("The cluster is already on version %s and is not in a failed state. No operations "
@@ -1916,6 +1931,7 @@ def aks_agentpool_add(
     node_taints=None,
     node_osdisk_type=None,
     node_osdisk_size=0,
+    enable_os_disk_full_caching=False,
     max_surge=None,
     drain_timeout=None,
     node_soak_duration=None,
@@ -2048,6 +2064,8 @@ def aks_agentpool_update(
     node_vm_size=None,
     gpu_driver=None,
     gpu_mig_strategy=None,
+    # crg
+    crg_id=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -2701,6 +2719,119 @@ def aks_agentpool_manual_scale_delete(cmd,    # pylint: disable=unused-argument
     if not manual_exists:
         raise InvalidArgumentValueError(
             f"Manual with size {current_vm_sizes[0]} doesn't exist in node pool {nodepool_name}"
+        )
+
+    return sdk_no_wait(
+        no_wait,
+        client.begin_create_or_update,
+        resource_group_name,
+        cluster_name,
+        nodepool_name,
+        instance
+    )
+
+
+def aks_agentpool_auto_scale_add(cmd,
+                                 client,
+                                 resource_group_name,
+                                 cluster_name,
+                                 nodepool_name,
+                                 node_vm_size,
+                                 min_count,
+                                 max_count,
+                                 no_wait=False):
+    instance = client.get(resource_group_name, cluster_name, nodepool_name)
+    if instance.type_properties_type != CONST_VIRTUAL_MACHINES:
+        raise ClientRequestError("Cannot add autoscale profile to a non-virtualmachines node pool.")
+    AutoScaleProfile = cmd.get_models(
+        "AutoScaleProfile",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="managed_clusters",
+    )
+    new_autoscale_profile = AutoScaleProfile(
+        size=node_vm_size,
+        min_count=int(min_count),
+        max_count=int(max_count),
+    )
+    if instance.virtual_machines_profile.scale.autoscale is None:
+        instance.virtual_machines_profile.scale.autoscale = []
+    instance.virtual_machines_profile.scale.autoscale.append(new_autoscale_profile)
+
+    return sdk_no_wait(
+        no_wait,
+        client.begin_create_or_update,
+        resource_group_name,
+        cluster_name,
+        nodepool_name,
+        instance
+    )
+
+
+def aks_agentpool_auto_scale_update(cmd,    # pylint: disable=unused-argument
+                                    client,
+                                    resource_group_name,
+                                    cluster_name,
+                                    nodepool_name,
+                                    current_node_vm_size,
+                                    node_vm_size=None,
+                                    min_count=None,
+                                    max_count=None,
+                                    no_wait=False):
+    if node_vm_size is None and min_count is None and max_count is None:
+        raise RequiredArgumentMissingError(
+            "specify --node-vm-size, --min-count, or --max-count (or a combination)."
+        )
+
+    instance = client.get(resource_group_name, cluster_name, nodepool_name)
+    if instance.type_properties_type != CONST_VIRTUAL_MACHINES:
+        raise ClientRequestError("Cannot update autoscale profile in a non-virtualmachines node pool.")
+
+    autoscale_exists = False
+    for a in instance.virtual_machines_profile.scale.autoscale:
+        if a.size == current_node_vm_size:
+            autoscale_exists = True
+            if node_vm_size is not None:
+                a.size = node_vm_size
+            if min_count is not None:
+                a.min_count = int(min_count)
+            if max_count is not None:
+                a.max_count = int(max_count)
+            break
+    if not autoscale_exists:
+        raise InvalidArgumentValueError(
+            f"Autoscale profile with size {current_node_vm_size} doesn't exist in node pool {nodepool_name}"
+        )
+
+    return sdk_no_wait(
+        no_wait,
+        client.begin_create_or_update,
+        resource_group_name,
+        cluster_name,
+        nodepool_name,
+        instance
+    )
+
+
+def aks_agentpool_auto_scale_delete(cmd,    # pylint: disable=unused-argument
+                                    client,
+                                    resource_group_name,
+                                    cluster_name,
+                                    nodepool_name,
+                                    current_node_vm_size,
+                                    no_wait=False):
+    instance = client.get(resource_group_name, cluster_name, nodepool_name)
+    if instance.type_properties_type != CONST_VIRTUAL_MACHINES:
+        raise ClientRequestError("Cannot delete autoscale profile from a non-virtualmachines node pool.")
+
+    autoscale_exists = False
+    for a in instance.virtual_machines_profile.scale.autoscale:
+        if a.size == current_node_vm_size:
+            autoscale_exists = True
+            instance.virtual_machines_profile.scale.autoscale.remove(a)
+            break
+    if not autoscale_exists:
+        raise InvalidArgumentValueError(
+            f"Autoscale profile with size {current_node_vm_size} doesn't exist in node pool {nodepool_name}"
         )
 
     return sdk_no_wait(

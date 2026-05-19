@@ -142,7 +142,7 @@ interactions:
       - AZURECLI/2.77.0 azsdk-python-core/1.35.1 Python/3.13.7 (Windows-11-10.0.26100-SP0)
         az-cli-ext/1.0.0b8
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Quantum/locations/eastus/offerings?api-version=2023-11-13-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Quantum/locations/eastus/offerings?api-version=2025-12-15-preview
   response:
     body:
       string: "{\"value\":[{\"id\":\"ionq\",\"name\":\"IonQ\",\"properties\":{\"description\":\"IonQ\u2019s
@@ -1127,7 +1127,7 @@ interactions:
       User-Agent:
       - azsdk-python-quantum/0.0.1 Python/3.13.7 (Windows-11-10.0.26100-SP0)
     method: GET
-    uri: https://eastus.quantum.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9574871/providerStatus?api-version=2024-10-01-preview
+    uri: https://eastus.quantum.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9574871/providerStatus?api-version=2026-01-15-preview
   response:
     body:
       string: '{"value":[{"id":"quantinuum","currentAvailability":"Available","targets":[{"id":"quantinuum.sim.h1-1sc","currentAvailability":"Available","averageQueueTime":316,"statusPage":"https://calendar.qapi.quantinuum.com/?target=H1-1SC&key=j3d5KDvXAf3JjgRARl9OcG67y81RTZmiqi4yCOoYywohh8ARLZ"},{"id":"quantinuum.sim.h1-1e","currentAvailability":"Available","averageQueueTime":9,"statusPage":"https://calendar.qapi.quantinuum.com/?target=H1-1E&key=7zHFF9hnwqIlfA3Uq2szgIVLxAF6Ja29Iy4Bw9F4IFOKbaEjku"}]},{"id":"rigetti","currentAvailability":"Available","targets":[{"id":"rigetti.sim.qvm","currentAvailability":"Available","averageQueueTime":5,"statusPage":"https://rigetti.statuspage.io/"}]}],"nextLink":null}'
@@ -1175,7 +1175,7 @@ interactions:
       User-Agent:
       - azsdk-python-quantum/0.0.1 Python/3.13.7 (Windows-11-10.0.26100-SP0)
     method: GET
-    uri: https://eastus.quantum.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9574871/providerStatus?api-version=2024-10-01-preview
+    uri: https://eastus.quantum.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9574871/providerStatus?api-version=2026-01-15-preview
   response:
     body:
       string: '{"value":[{"id":"quantinuum","currentAvailability":"Available","targets":[{"id":"quantinuum.sim.h1-1sc","currentAvailability":"Available","averageQueueTime":316,"statusPage":"https://calendar.qapi.quantinuum.com/?target=H1-1SC&key=j3d5KDvXAf3JjgRARl9OcG67y81RTZmiqi4yCOoYywohh8ARLZ"},{"id":"quantinuum.sim.h1-1e","currentAvailability":"Available","averageQueueTime":9,"statusPage":"https://calendar.qapi.quantinuum.com/?target=H1-1E&key=7zHFF9hnwqIlfA3Uq2szgIVLxAF6Ja29Iy4Bw9F4IFOKbaEjku"}]},{"id":"rigetti","currentAvailability":"Available","targets":[{"id":"rigetti.sim.qvm","currentAvailability":"Available","averageQueueTime":5,"statusPage":"https://rigetti.statuspage.io/"}]}],"nextLink":null}'
@@ -1230,13 +1230,13 @@ interactions:
       - AZURECLI/2.77.0 azsdk-python-core/1.35.1 Python/3.13.7 (Windows-11-10.0.26100-SP0)
         az-cli-ext/1.0.0b8
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9574871?api-version=2023-11-13-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9574871?api-version=2025-12-15-preview
   response:
     body:
       string: 'null'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/providers/Microsoft.Quantum/locations/EASTUS/operationStatuses/3fce7f56-714e-4fb2-b9b0-ea18cf5fc01b*A9C2D16DDFCBC75B248D2E4D4E5DD06AB46A6880510B41FFA1D902E74551FF2E?api-version=2023-11-13-preview&t=638947860132075196&c=REDACTED&s=REDACTED&h=N-QMefzs7Xh5vFSCIOl5KdtchMRSgqfq6YYr0e23LCk
+      - https://management.azure.com/providers/Microsoft.Quantum/locations/EASTUS/operationStatuses/3fce7f56-714e-4fb2-b9b0-ea18cf5fc01b*A9C2D16DDFCBC75B248D2E4D4E5DD06AB46A6880510B41FFA1D902E74551FF2E?api-version=2025-12-15-preview&t=638947860132075196&c=REDACTED&s=REDACTED&h=N-QMefzs7Xh5vFSCIOl5KdtchMRSgqfq6YYr0e23LCk
       cache-control:
       - no-cache
       content-length:
@@ -1250,7 +1250,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/providers/Microsoft.Quantum/locations/EASTUS/operationStatuses/3fce7f56-714e-4fb2-b9b0-ea18cf5fc01b*A9C2D16DDFCBC75B248D2E4D4E5DD06AB46A6880510B41FFA1D902E74551FF2E?api-version=2023-11-13-preview&t=638947860132231501&c=REDACTED&s=REDACTED&h=Kq47rM4LVDja0U_OCLOelQRYmoSoFsg2fU8n8vmBS9I
+      - https://management.azure.com/providers/Microsoft.Quantum/locations/EASTUS/operationStatuses/3fce7f56-714e-4fb2-b9b0-ea18cf5fc01b*A9C2D16DDFCBC75B248D2E4D4E5DD06AB46A6880510B41FFA1D902E74551FF2E?api-version=2025-12-15-preview&t=638947860132231501&c=REDACTED&s=REDACTED&h=Kq47rM4LVDja0U_OCLOelQRYmoSoFsg2fU8n8vmBS9I
       pragma:
       - no-cache
       strict-transport-security:
@@ -1289,7 +1289,7 @@ interactions:
       - AZURECLI/2.77.0 azsdk-python-core/1.35.1 Python/3.13.7 (Windows-11-10.0.26100-SP0)
         az-cli-ext/1.0.0b8
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9574871?api-version=2023-11-13-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9574871?api-version=2025-12-15-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w9574871","name":"e2e-test-w9574871","type":"microsoft.quantum/workspaces","location":"eastus","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2025-09-29T23:36:32.3374571Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2025-09-29T23:36:32.3374571Z"},"identity":{"principalId":"51689f2e-6c20-49a5-b5c8-41b99323ee3a","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"providers":[{"providerId":"quantinuum","providerSku":"basic1","applicationName":"e2e-test-w9574871-quantinuum","provisioningState":"Succeeded","resourceUsageId":"f3bcaaa6-569d-4511-bbc9-dfb038d13492"},{"providerId":"rigetti","providerSku":"azure-basic-qvm-only-unlimited","applicationName":"e2e-test-w9574871-rigetti","provisioningState":"Succeeded","resourceUsageId":"4ce95993-11ab-45f7-b99a-7decb3396b18"}],"provisioningState":"Deleting","usable":"Yes","storageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/qwe2etestswus2","apiKeyEnabled":REDACTED,"endpointUri":"https://e2e-test-w9574871.eastus.quantum.azure.com"}}'

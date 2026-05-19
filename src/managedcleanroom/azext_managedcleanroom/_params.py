@@ -204,6 +204,10 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
             'kek_maa_url',
             options_list=['--kek-maa-url'],
             help='MAA URL for KEK (CPK mode only)')
+        c.argument(
+            'subdirectory',
+            options_list=['--subdirectory'],
+            help='Optional subdirectory/prefix inside the storage container to mount.')
 
     # Dataset queries context
     with self.argument_context('managedcleanroom frontend analytics dataset queries') as c:
