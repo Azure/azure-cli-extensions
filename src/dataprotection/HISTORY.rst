@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.11.0
++++++
+* Added dataprotection support for AzureCosmosDB workload: new manifest (Microsoft.DocumentDB/databaseAccounts), registration in supported datasource types, datasource map, and permission help text. Added end-to-end backup/restore scenario test, unit tests for default policy template, backup-instance initialize, and restore initialize, and an update-msi-permissions live test that grants Reader/Cosmos DB Operator on the data source RG / account.
+
 1.10.0
 ++++++
 * Bumped API version to 2026-03-01 for backup-instance create, update, validate-for-backup, and validate-for-update commands.
