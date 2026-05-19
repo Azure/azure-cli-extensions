@@ -112,14 +112,16 @@ helps['dataprotection backup-policy retention-rule create-lifecycle'] = """
 helps['dataprotection backup-policy retention-rule set'] = """
     type: command
     short-summary: Add new retention rule or update existing retention rule.
-    examples:
-      - name: Add daily retention rule
         text: az dataprotection backup-policy retention-rule set --lifecycles dailylifecycle.json --name Daily --policy policy.json
+      - name: Add AzureBlob OperationalStore default retention rule
+        text: az dataprotection backup-policy retention-rule set --lifecycles oplifecycle.json --name Default_OperationalStore --policy policy.json
+      - name: Add AzureBlob VaultStore default retention rule
+        text: az dataprotection backup-policy retention-rule set --lifecycles vaultlifecycle.json --name Default --policy policy.json
 """
 
 helps['dataprotection backup-policy retention-rule remove'] = """
     type: command
-    short-summary: remove existing retention rule in a backup policy
+    short-summary: Remove existing retention rule in a backup policy. The Default retention rule is reserved and cannot be removed; on AzureBlob, Default_OperationalStore is removable.
     examples:
       - name: Remove retention rule
         text: az dataprotection backup-policy retention-rule remove --name Daily --policy policy.json

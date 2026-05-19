@@ -25,7 +25,7 @@ def get_copy_option_values():
 
 
 def get_retention_rule_name_values():
-    return ['Default', 'Daily', 'Weekly', 'Monthly', 'Yearly']
+    return ['Default', 'Daily', 'Weekly', 'Monthly', 'Yearly', 'Default_OperationalStore']
 
 
 def get_tag_name_values():

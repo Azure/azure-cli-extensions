@@ -772,8 +772,59 @@ def get_backup_frequency_from_time_interval(repeating_time_intervals):
 
 
 def get_tagging_priority(name):
-    priorityMap = {"Default": 99, "Daily": 25, "Weekly": 20, "Monthly": 15, "Yearly": 10}
+    priorityMap = {"Default": 99, "Default_OperationalStore": 99, "Daily": 25, "Weekly": 20, "Monthly": 15, "Yearly": 10}
     return priorityMap[name]
+
+
+def validate_retention_rule_matches_mapped_store(name, default_retention_mapping, lifecycles, datasource_type):
+    """If `name` is one of the manifest's mapped default rule names (e.g. ``Default_OperationalStore``),
+    every lifecycle in ``lifecycles`` must have a ``sourceDataStore.dataStoreType`` matching the mapped
+    source store for that name. Raises ``InvalidArgumentValueError`` on mismatch.
+
+    Returns the list of mapped default rule names declared by the manifest so callers can also use it
+    for downstream "is this a default rule" checks.
+    """
+    mapped_default_names = list(default_retention_mapping.values()) if default_retention_mapping else []
+    if name in mapped_default_names:
+        for lc in lifecycles:
+            store = lc.get("sourceDataStore", {}).get("dataStoreType")
+            if store is None:
+                continue
+            expected_name = default_retention_mapping.get(store)
+            if expected_name is not None and expected_name != name:
+                reserved_stores = [s for s, n in default_retention_mapping.items() if n == name]
+                reserved_for = ", ".join(reserved_stores)
+                raise InvalidArgumentValueError(
+                    "Retention rule '" + name + "' is reserved for source store '" + reserved_for +
+                    "' on datasource type " + datasource_type + ". For source store '" + store +
+                    "' use --name " + expected_name + "."
+                )
+    return mapped_default_names
+
+
+def validate_exclusive_source_store_assignment(name, manifest, default_retention_mapping, lifecycles, datasource_type):
+    """For each source store declared as exclusive in
+    ``manifest.policySettings.exclusiveSourceDataStores`` (e.g. ``OperationalStore`` on AzureBlob),
+    only the manifest's mapped default rule for that store (e.g. ``Default_OperationalStore``) is
+    allowed to carry a lifecycle whose source store is that exclusive store. Any other rule name
+    paired with that exclusive store raises ``InvalidArgumentValueError``.
+    """
+    policy_settings = manifest.get("policySettings", {}) if manifest else {}
+    exclusive_stores = policy_settings.get("exclusiveSourceDataStores", []) or []
+    if not exclusive_stores:
+        return
+    for lc in lifecycles:
+        store = lc.get("sourceDataStore", {}).get("dataStoreType")
+        if store is None or store not in exclusive_stores:
+            continue
+        expected_name = default_retention_mapping.get(store) if default_retention_mapping else None
+        if expected_name is not None and expected_name != name:
+            raise InvalidArgumentValueError(
+                "Source store '" + store + "' on datasource type " + datasource_type +
+                " is exclusive: only the '" + expected_name + "' retention rule may carry an " +
+                store + " lifecycle. Use --name " + expected_name + " instead of --name " + name +
+                ", or remove the " + store + " lifecycle from --lifecycles."
+            )
 
 
 def truncate_id_using_scope(arm_id, scope):
