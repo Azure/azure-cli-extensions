@@ -212,7 +212,7 @@ class ResetOs(AAZCommand):
                             "osName": "AzureLinux",
                             "osType": "AzureLinuxROE",
                             "osVersion": "3.0",
-                            "osImageLocation": "https://aka.ms/aep/installeros/2602.reset"
+                            "osImageLocation": "https://aka.ms/aep/installeros/2604.reset"
                         },
                         "deviceConfiguration": {}
                     }
