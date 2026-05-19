@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.1.12
+++++++
+* Import _get_location_from_webapp from azure.cli.command_modules.appservice.utils
+
 0.1.11
 ++++++
 * Remove msrestazure dependency
