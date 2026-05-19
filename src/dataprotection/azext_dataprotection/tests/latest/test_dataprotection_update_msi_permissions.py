@@ -147,6 +147,45 @@ class UpdateMSIPermissionsScenarioTest(ScenarioTest):
                  '--keyvault-id "{keyVaultId}" --yes')
         # time.sleep(10)
 
+    # Uses persistent Cosmos DB accounts pre-provisioned in cosmos-bugbash-CLIrg-6 (subscription
+    # 97cda027-4279-4cde-b4ff-19afa0021d87). The test provisions a fresh backup vault in a
+    # ResourceGroupPreparer-managed RG and exercises update-msi-permissions for the AzureCosmosDB
+    # workload, which assigns Reader on the data source RG and Cosmos DB Operator on the data source
+    # (see Manifests/AzureCosmosDB.py::backupVaultPermissions).
+    @live_only()
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix='clitest-dpp-updatemsipermissions-', location='eastus2euap')
+    def test_dataprotection_update_msi_permissions_cosmosdb(test):
+        test.kwargs.update({
+            'location': 'eastus2euap',
+            'vaultName': 'clitest-bkp-vault',
+            'policyName': 'cosmospolicy',
+            'dataSourceType': 'AzureCosmosDB',
+            'operation': 'Backup',
+            'permissionsScope': 'ResourceGroup',
+            'cosmosDbName': 'cosmosbugbash-cli6-src',
+            'cosmosDbId': '/subscriptions/97cda027-4279-4cde-b4ff-19afa0021d87/resourceGroups/cosmos-bugbash-CLIrg-6/providers/Microsoft.DocumentDB/databaseAccounts/cosmosbugbash-cli6-src',
+        })
+        create_vault_and_policy(test)
+
+        backup_instance_guid = "faec6818-0720-11ec-bd1b-c8f750f92764"
+        backup_instance_json = test.cmd('az dataprotection backup-instance initialize --datasource-type "{dataSourceType}" '
+                                        '-l "{location}" --policy-id "{policyId}" --datasource-id "{cosmosDbId}"').get_output_in_json()
+        backup_instance_json["backup_instance_name"] = (test.kwargs['cosmosDbName'] + "-" +
+                                                       test.kwargs['cosmosDbName'] + "-" +
+                                                       backup_instance_guid)
+        test.kwargs.update({
+            "backupInstance": backup_instance_json,
+        })
+
+        test.cmd('az dataprotection backup-instance update-msi-permissions '
+                 '-g "{rg}" --vault-name "{vaultName}" '
+                 '--datasource-type "{dataSourceType}" '
+                 '--operation "{operation}" '
+                 '--permissions-scope "{permissionsScope}" '
+                 '--backup-instance "{backupInstance}" --yes')
+        # time.sleep(10)
+
     @live_only()
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='clitest-dpp-updatemsipermissions-', location='eastus2euap')
