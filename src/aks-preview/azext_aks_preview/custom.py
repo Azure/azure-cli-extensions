@@ -1995,6 +1995,8 @@ def aks_agentpool_add(
     vm_sizes=None,
     # local DNS
     localdns_config=None,
+    # secondary network interfaces
+    secondary_network_interfaces=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()

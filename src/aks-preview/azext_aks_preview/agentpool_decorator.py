@@ -28,6 +28,7 @@ from azure.cli.core.profiles import ResourceType
 from azure.cli.core.util import (
     read_file_content,
     sdk_no_wait,
+    shell_safe_json_parse,
 )
 from azure.core import MatchConditions
 from knack.log import get_logger
@@ -984,6 +985,34 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
             return profile
         return None
 
+    def get_secondary_network_interfaces(self):
+        """Obtain the value of secondary_network_interfaces.
+
+        Parse inline JSON or @file reference into a list of AgentPoolNetworkInterface models.
+        """
+        raw = self.raw_param.get("secondary_network_interfaces")
+        if raw is None:
+            return None
+        if isinstance(raw, str):
+            if raw.startswith("@"):
+                data = get_file_json(raw[1:])
+            else:
+                data = shell_safe_json_parse(raw)
+        else:
+            data = raw
+        if not isinstance(data, list):
+            raise InvalidArgumentValueError(
+                "--secondary-network-interfaces must be a JSON array."
+            )
+        result = []
+        for item in data:
+            result.append(self.models.AgentPoolNetworkInterface(
+                type=item.get("type"),
+                vnet_subnet_id=item.get("vnetSubnetId"),
+                enable_accelerated_networking=item.get("enableAcceleratedNetworking"),
+            ))
+        return result
+
     def build_localdns_profile(self, agentpool: AgentPool) -> AgentPool:
         """Build local DNS profile for the AgentPool object if provided via --localdns-config."""
         localdns_profile = self.get_localdns_profile()
@@ -1331,6 +1360,10 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         if node_public_ip_prefix_ids:
             agentpool.network_profile.node_public_ip_prefix_i_ds = node_public_ip_prefix_ids
             agentpool.enable_node_public_ip = True
+
+        secondary_nics = self.context.get_secondary_network_interfaces()
+        if secondary_nics is not None:
+            agentpool.network_profile.secondary_network_interfaces = secondary_nics
 
         return agentpool
 

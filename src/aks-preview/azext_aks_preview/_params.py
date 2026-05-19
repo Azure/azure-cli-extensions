@@ -2228,6 +2228,13 @@ def load_arguments(self, _):
             'localdns_config',
             help='Path to a JSON file to configure the local DNS profile for a new nodepool.'
         )
+        # secondary network interfaces
+        c.argument(
+            'secondary_network_interfaces',
+            help='Secondary network interface configurations as a JSON string or @<filename> to load from a file. '
+                 'Example: \'[{"type":"Standard","vnetSubnetId":"/subscriptions/.../subnets/mysubnet"}]\'',
+            is_preview=True,
+        )
 
     with self.argument_context("aks nodepool update") as c:
         c.argument(
