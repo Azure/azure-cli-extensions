@@ -12,16 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "storage-mover project list",
+    "storage-mover connection list",
 )
 class List(AAZCommand):
-    """List all Projects in a Storage Mover.
+    """List all Connections in a Storage Mover.
     """
 
     _aaz_info = {
         "version": "2025-12-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/projects", "2025-12-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/connections", "2025-12-01"],
         ]
     }
 
@@ -57,7 +57,7 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ProjectsList(ctx=self.ctx)()
+        self.ConnectionsList(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -73,7 +73,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class ProjectsList(AAZHttpOperation):
+    class ConnectionsList(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -87,7 +87,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.StorageMover/storageMovers/{storageMoverName}/projects",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.StorageMover/storageMovers/{storageMoverName}/connections",
                 **self.url_parameters
             )
 
@@ -172,7 +172,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
+                flags={"required": True},
             )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -183,11 +183,33 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
+            properties.connection_status = AAZStrType(
+                serialized_name="connectionStatus",
+                flags={"read_only": True},
+            )
             properties.description = AAZStrType()
+            properties.job_list = AAZListType(
+                serialized_name="jobList",
+            )
+            properties.private_endpoint_name = AAZStrType(
+                serialized_name="privateEndpointName",
+                flags={"read_only": True},
+            )
+            properties.private_endpoint_resource_id = AAZStrType(
+                serialized_name="privateEndpointResourceId",
+                flags={"read_only": True},
+            )
+            properties.private_link_service_id = AAZStrType(
+                serialized_name="privateLinkServiceId",
+                flags={"required": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+
+            job_list = cls._schema_on_200.value.Element.properties.job_list
+            job_list.Element = AAZStrType()
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(

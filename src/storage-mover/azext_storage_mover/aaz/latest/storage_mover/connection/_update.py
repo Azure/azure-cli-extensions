@@ -12,16 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "storage-mover update",
+    "storage-mover connection update",
 )
 class Update(AAZCommand):
-    """Update a top-level Storage Mover resource.
+    """Update a Connection resource.
+
+    :example: connection update
+        az storage-mover connection update -g {rg} --storage-mover-name {mover_name} -n {connection_name} --description ConnectionDescUpdate
     """
 
     _aaz_info = {
         "version": "2025-12-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}", "2025-12-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/connections/{}", "2025-12-01"],
         ]
     }
 
@@ -43,11 +46,20 @@ class Update(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.connection_name = AAZStrArg(
+            options=["-n", "--name", "--connection-name"],
+            help="The name of the Connection resource.",
+            required=True,
+            id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^[A-Za-z0-9][A-Za-z0-9_-]{0,20}",
+            ),
+        )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
         _args_schema.storage_mover_name = AAZStrArg(
-            options=["-n", "--name", "--storage-mover-name"],
+            options=["--storage-mover-name"],
             help="The name of the Storage Mover resource.",
             required=True,
             id_part="name",
@@ -62,34 +74,35 @@ class Update(AAZCommand):
         _args_schema.description = AAZStrArg(
             options=["--description"],
             arg_group="Properties",
-            help="A description for the Storage Mover.",
+            help="A description for the Connection.",
             nullable=True,
         )
-
-        # define Arg Group "StorageMover"
-
-        _args_schema = cls._args_schema
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="StorageMover",
-            help="Resource tags.",
+        _args_schema.job_list = AAZListArg(
+            options=["--job-list"],
+            arg_group="Properties",
+            help="List of job definitions associated with this connection.",
             nullable=True,
         )
+        _args_schema.private_link_service_id = AAZResourceIdArg(
+            options=["--private-link-service-id", "--pls-id"],
+            arg_group="Properties",
+            help="The PrivateLinkServiceId for the connection.",
+        )
 
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg(
+        job_list = cls._args_schema.job_list
+        job_list.Element = AAZResourceIdArg(
             nullable=True,
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.StorageMoversGet(ctx=self.ctx)()
+        self.ConnectionsGet(ctx=self.ctx)()
         self.pre_instance_update(self.ctx.vars.instance)
         self.InstanceUpdateByJson(ctx=self.ctx)()
         self.InstanceUpdateByGeneric(ctx=self.ctx)()
         self.post_instance_update(self.ctx.vars.instance)
-        self.StorageMoversCreateOrUpdate(ctx=self.ctx)()
+        self.ConnectionsCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -112,7 +125,7 @@ class Update(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class StorageMoversGet(AAZHttpOperation):
+    class ConnectionsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -126,7 +139,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.StorageMover/storageMovers/{storageMoverName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.StorageMover/storageMovers/{storageMoverName}/connections/{connectionName}",
                 **self.url_parameters
             )
 
@@ -141,6 +154,10 @@ class Update(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
+                **self.serialize_url_param(
+                    "connectionName", self.ctx.args.connection_name,
+                    required=True,
+                ),
                 **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
                     required=True,
@@ -191,25 +208,25 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_storage_mover_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_connection_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
-    class StorageMoversCreateOrUpdate(AAZHttpOperation):
+    class ConnectionsCreateOrUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200]:
-                return self.on_200(session)
+            if session.http_response.status_code in [200, 201]:
+                return self.on_200_201(session)
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.StorageMover/storageMovers/{storageMoverName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.StorageMover/storageMovers/{storageMoverName}/connections/{connectionName}",
                 **self.url_parameters
             )
 
@@ -224,6 +241,10 @@ class Update(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
+                **self.serialize_url_param(
+                    "connectionName", self.ctx.args.connection_name,
+                    required=True,
+                ),
                 **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
                     required=True,
@@ -270,25 +291,25 @@ class Update(AAZCommand):
 
             return self.serialize_content(_content_value)
 
-        def on_200(self, session):
+        def on_200_201(self, session):
             data = self.deserialize_http_content(session)
             self.ctx.set_var(
                 "instance",
                 data,
-                schema_builder=self._build_schema_on_200
+                schema_builder=self._build_schema_on_200_201
             )
 
-        _schema_on_200 = None
+        _schema_on_200_201 = None
 
         @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
+        def _build_schema_on_200_201(cls):
+            if cls._schema_on_200_201 is not None:
+                return cls._schema_on_200_201
 
-            cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_storage_mover_read(cls._schema_on_200)
+            cls._schema_on_200_201 = AAZObjectType()
+            _UpdateHelper._build_schema_connection_read(cls._schema_on_200_201)
 
-            return cls._schema_on_200
+            return cls._schema_on_200_201
 
     class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
 
@@ -301,16 +322,17 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
-            _builder.set_prop("tags", AAZDictType, ".tags")
+            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
 
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("description", AAZStrType, ".description")
+                properties.set_prop("jobList", AAZListType, ".job_list")
+                properties.set_prop("privateLinkServiceId", AAZStrType, ".private_link_service_id", typ_kwargs={"flags": {"required": True}})
 
-            tags = _builder.get(".tags")
-            if tags is not None:
-                tags.set_elements(AAZStrType, ".")
+            job_list = _builder.get(".properties.jobList")
+            if job_list is not None:
+                job_list.set_elements(AAZStrType, ".")
 
             return _instance_value
 
@@ -326,52 +348,68 @@ class Update(AAZCommand):
 class _UpdateHelper:
     """Helper class for Update"""
 
-    _schema_storage_mover_read = None
+    _schema_connection_read = None
 
     @classmethod
-    def _build_schema_storage_mover_read(cls, _schema):
-        if cls._schema_storage_mover_read is not None:
-            _schema.id = cls._schema_storage_mover_read.id
-            _schema.location = cls._schema_storage_mover_read.location
-            _schema.name = cls._schema_storage_mover_read.name
-            _schema.properties = cls._schema_storage_mover_read.properties
-            _schema.system_data = cls._schema_storage_mover_read.system_data
-            _schema.tags = cls._schema_storage_mover_read.tags
-            _schema.type = cls._schema_storage_mover_read.type
+    def _build_schema_connection_read(cls, _schema):
+        if cls._schema_connection_read is not None:
+            _schema.id = cls._schema_connection_read.id
+            _schema.name = cls._schema_connection_read.name
+            _schema.properties = cls._schema_connection_read.properties
+            _schema.system_data = cls._schema_connection_read.system_data
+            _schema.type = cls._schema_connection_read.type
             return
 
-        cls._schema_storage_mover_read = _schema_storage_mover_read = AAZObjectType()
+        cls._schema_connection_read = _schema_connection_read = AAZObjectType()
 
-        storage_mover_read = _schema_storage_mover_read
-        storage_mover_read.id = AAZStrType(
+        connection_read = _schema_connection_read
+        connection_read.id = AAZStrType(
             flags={"read_only": True},
         )
-        storage_mover_read.location = AAZStrType(
+        connection_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        connection_read.properties = AAZObjectType(
             flags={"required": True},
         )
-        storage_mover_read.name = AAZStrType(
-            flags={"read_only": True},
-        )
-        storage_mover_read.properties = AAZObjectType(
-            flags={"client_flatten": True},
-        )
-        storage_mover_read.system_data = AAZObjectType(
+        connection_read.system_data = AAZObjectType(
             serialized_name="systemData",
             flags={"read_only": True},
         )
-        storage_mover_read.tags = AAZDictType()
-        storage_mover_read.type = AAZStrType(
+        connection_read.type = AAZStrType(
             flags={"read_only": True},
         )
 
-        properties = _schema_storage_mover_read.properties
+        properties = _schema_connection_read.properties
+        properties.connection_status = AAZStrType(
+            serialized_name="connectionStatus",
+            flags={"read_only": True},
+        )
         properties.description = AAZStrType()
+        properties.job_list = AAZListType(
+            serialized_name="jobList",
+        )
+        properties.private_endpoint_name = AAZStrType(
+            serialized_name="privateEndpointName",
+            flags={"read_only": True},
+        )
+        properties.private_endpoint_resource_id = AAZStrType(
+            serialized_name="privateEndpointResourceId",
+            flags={"read_only": True},
+        )
+        properties.private_link_service_id = AAZStrType(
+            serialized_name="privateLinkServiceId",
+            flags={"required": True},
+        )
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
             flags={"read_only": True},
         )
 
-        system_data = _schema_storage_mover_read.system_data
+        job_list = _schema_connection_read.properties.job_list
+        job_list.Element = AAZStrType()
+
+        system_data = _schema_connection_read.system_data
         system_data.created_at = AAZStrType(
             serialized_name="createdAt",
         )
@@ -391,16 +429,11 @@ class _UpdateHelper:
             serialized_name="lastModifiedByType",
         )
 
-        tags = _schema_storage_mover_read.tags
-        tags.Element = AAZStrType()
-
-        _schema.id = cls._schema_storage_mover_read.id
-        _schema.location = cls._schema_storage_mover_read.location
-        _schema.name = cls._schema_storage_mover_read.name
-        _schema.properties = cls._schema_storage_mover_read.properties
-        _schema.system_data = cls._schema_storage_mover_read.system_data
-        _schema.tags = cls._schema_storage_mover_read.tags
-        _schema.type = cls._schema_storage_mover_read.type
+        _schema.id = cls._schema_connection_read.id
+        _schema.name = cls._schema_connection_read.name
+        _schema.properties = cls._schema_connection_read.properties
+        _schema.system_data = cls._schema_connection_read.system_data
+        _schema.type = cls._schema_connection_read.type
 
 
 __all__ = ["Update"]
