@@ -33,14 +33,9 @@ class BaseScenario(ScenarioTest):
             "aks_name": aks_cluster_name,
             "location": self.location
         })
-        # aks-preview is required for --enable-gateway-api, which is a prerequisite
-        # for joining a managed mesh (AppLink). The AKS RP rejects mesh membership
-        # creation if the Managed Gateway API addon is not enabled on the cluster.
-        # See https://aka.ms/managed-gateway-api
-        # Tests that exercise this path are marked @live_only() because the
-        # recorded api-version depends on which aks-preview build is installed,
-        # matching how connectedk8s, k8s-runtime, fleet, vme, and others handle
-        # AKS-creating tests.
+        # aks-preview is required for --enable-gateway-api, which this helper
+        # always enables. The Managed Gateway API addon is a prerequisite for
+        # joining a managed mesh (AppLink). See https://aka.ms/managed-gateway-api
         cluster = self.cmd('aks create \
                  --resource-group {rg} --name {aks_name} \
                  --enable-oidc-issuer --enable-workload-identity --enable-aad --enable-gateway-api \
