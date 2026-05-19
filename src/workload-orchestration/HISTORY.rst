@@ -2,6 +2,42 @@
 
 Release History
 ===============
+5.2.0
+++++++
+* **CLI Onboarding Simplification** — reduces onboarding from 11 commands to 4:
+* Added ``az workload-orchestration cluster init`` command:
+  * Prepares Arc-connected clusters for WO (cert-manager, trust-manager, extension, custom location)
+  * Idempotent — safely skips components already installed
+  * Supports ``--release-train``, ``--extension-version``, ``--custom-location-name``
+* Added ``az workload-orchestration hierarchy create`` command:
+  * Creates full hierarchy stack (Site + Configuration + ConfigurationReference) in one command
+  * Supports ResourceGroup (shorthand or YAML) and ServiceGroup (up to 3 levels, recursive)
+  * Handles RBAC propagation waits for ServiceGroup hierarchies
+* Enhanced ``az workload-orchestration context create``:
+  * Added ``--site-id`` argument to auto-create site-reference after context creation
+* Enhanced ``az workload-orchestration target create``:
+  * Added ``--service-group`` argument to auto-link target to a Service Group after creation
+* Enhanced ``az workload-orchestration target install``:
+  * Added ``--solution-template-name``, ``--solution-template-version`` (alias ``-v``), and ``--solution-template-rg`` for full deploy chain (review → publish → install)
+  * Added ``--configuration`` to set config values before review (auto-derives config template args)
+  * Existing ``--solution-version-id`` direct install flow unchanged
+
+5.1.1
+++++++
+* Resolved solution template name to uniqueIdentifier for ``az workload-orchestration target solution-revision-list`` and ``az workload-orchestration target solution-instance-list``
+* Added shared ``_target_helper.py`` for reusable solution template resolution logic
+* Added ``az workload-orchestration support create-bundle`` command for troubleshooting Day 0 (installation) and Day N (runtime) issues on 3rd-party Kubernetes clusters:
+  * Collects cluster info, node details, pod/deployment/service/event descriptions across configurable namespaces
+  * Collects container logs (current + previous for crash-looping pods) with configurable tail lines
+  * Runs prerequisite validation checks across 10 categories
+  * Generates a zip bundle for sharing with Microsoft support
+  * Includes retry with exponential backoff and per-call timeout for resilient K8s API access
+
+5.1.0
+++++++
+* Added new target solution management command:
+  * ``az workload-orchestration target unstage`` - Unstage a solution version from a target
+* Added double confirmation before ``az workload-orchestration target remove-revision`` to prevent accidental deletions
 
 5.0.0
 ++++++

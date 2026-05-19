@@ -66,12 +66,12 @@ class QuantumTargetsScenarioTest(ScenarioTest):
 
         test_target = get_test_target_target()
         test_expected_provider = get_test_target_provider()
-        test_returned_provider = get_provider(self, test_target, test_resource_group, test_workspace_temp, test_location)
+        test_returned_provider = get_provider(self, test_target, test_resource_group, test_workspace_temp)
         assert test_returned_provider == test_expected_provider
 
         test_target = "nonexistant.target"
         test_expected_provider = None
-        test_returned_provider = get_provider(self, test_target, test_resource_group, test_workspace_temp, test_location)
+        test_returned_provider = get_provider(self, test_target, test_resource_group, test_workspace_temp)
         assert test_returned_provider == test_expected_provider
 
         self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp}')

@@ -3,6 +3,26 @@
 Release History
 ===============
 
+1.0.0b14
++++++++++++++++
+* Updated control plane related commands to use latest API version 2025-12-15-preview
+* Updated data plane related commands to use latest API version 2026-01-15-preview
+* Fixed bug where storage variable is initialized and not used in job submission command
+
+1.0.0b13
++++++++++++++++
+* Updated workspace create command to support job submissions with disabled access keys on linked storage account
+* Updated new storage account to be v2 in workspace creation because of the retirement of General-Purpose v1 (GPv1) storage accounts on October 13, 2026
+
+1.0.0b12
++++++++++++++++
+* Added support for Data Plane v2 including specifying priority parameter as part of job params when submitting a job
+* Removed container creation logic when retrieving linked storage account from the service
+
+1.0.0b11
++++++++++++++++
+* Remove `__import__('pkg_resources').declare_namespace(__name__)` to fix the namespace package issue.
+
 1.0.0b10
 ++++++
 * Fixed broken dependency on blob_data_service_factory and replaced with vendored_sdk for azure_storage_blob

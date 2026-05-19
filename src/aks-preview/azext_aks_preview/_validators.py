@@ -21,7 +21,8 @@ from azext_aks_preview._consts import (
     CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD,
     CONST_NETWORK_POD_IP_ALLOCATION_MODE_DYNAMIC_INDIVIDUAL,
     CONST_NETWORK_POD_IP_ALLOCATION_MODE_STATIC_BLOCK,
-    CONST_NODEPOOL_MODE_GATEWAY, CONST_OS_SKU_AZURELINUX,
+    CONST_NODEPOOL_MODE_GATEWAY, CONST_OS_DISK_TYPE_MANAGED,
+    CONST_OS_SKU_AZURELINUX,
     CONST_OS_SKU_CBLMARINER, CONST_OS_SKU_MARINER)
 from azext_aks_preview._helpers import _fuzzy_match
 from azure.cli.core import keys
@@ -953,11 +954,37 @@ def validate_asm_egress_name(namespace):
         )
 
 
+def validate_os_disk_full_caching(namespace):
+    """Reject --enable-osdisk-full-caching when OS disk type is explicitly Managed.
+
+    Full-cache OS disk requires Ephemeral storage; failing fast at the CLI gives
+    a clearer error than waiting for an ARM round-trip.
+    """
+    if not getattr(namespace, "enable_os_disk_full_caching", False):
+        return
+    node_osdisk_type = getattr(namespace, "node_osdisk_type", None)
+    if node_osdisk_type == CONST_OS_DISK_TYPE_MANAGED:
+        raise ArgumentUsageError(
+            "--enable-osdisk-full-caching requires Ephemeral OS disk; "
+            "it cannot be used with --node-osdisk-type Managed."
+        )
+
+
 def validate_artifact_streaming(namespace):
-    """Validates that artifact streaming enablement can only be used on Linux."""
-    if namespace.enable_artifact_streaming:
-        if hasattr(namespace, 'os_type') and str(namespace.os_type).lower() == "windows":
+    """Validates artifact streaming flags for mutual exclusivity and OS support."""
+    enable_artifact_streaming = getattr(namespace, "enable_artifact_streaming", False)
+    disable_artifact_streaming = getattr(namespace, "disable_artifact_streaming", False)
+
+    if enable_artifact_streaming and disable_artifact_streaming:
+        raise MutuallyExclusiveArgumentError(
+            "Cannot specify both --enable-artifact-streaming and --disable-artifact-streaming at the same time."
+        )
+
+    if hasattr(namespace, "os_type") and str(namespace.os_type).lower() == "windows":
+        if enable_artifact_streaming:
             raise ArgumentUsageError('--enable-artifact-streaming can only be set for Linux nodepools')
+        if disable_artifact_streaming:
+            raise ArgumentUsageError('--disable-artifact-streaming can only be set for Linux nodepools')
 
 
 def validate_custom_endpoints(namespace):
@@ -1144,3 +1171,36 @@ def validate_azure_monitor_logs_enable_disable(namespace):
             "Cannot specify both '--enable-azure-monitor-logs' and '--disable-azure-monitor-logs'. "
             "Use either '--enable-azure-monitor-logs' or '--disable-azure-monitor-logs'."
         )
+
+
+def validate_nat_gateway_managed_outbound_ipv6_count(namespace):
+    """validate NAT gateway profile managed outbound IPv6 count"""
+    if namespace.nat_gateway_managed_outbound_ipv6_count is not None:
+        if (namespace.nat_gateway_managed_outbound_ipv6_count < 1 or
+                namespace.nat_gateway_managed_outbound_ipv6_count > 16):
+            raise InvalidArgumentValueError(
+                "--nat-gateway-managed-outbound-ipv6-count "
+                "must be in the range [1,16]"
+            )
+
+
+def validate_nat_gateway_v2_params(namespace):
+    """Validate that V2-only NAT gateway params require managedNATGatewayV2.
+
+    On update, --outbound-type may not be specified if the cluster is already V2.
+    Only reject when --outbound-type is explicitly set to a non-V2 value.
+    """
+    v2_params = [
+        getattr(namespace, 'nat_gateway_managed_outbound_ipv6_count', None),
+        getattr(namespace, 'nat_gateway_outbound_ip_ids', None),
+        getattr(namespace, 'nat_gateway_outbound_ip_prefix_ids', None),
+    ]
+    if any(p is not None for p in v2_params):
+        outbound_type = getattr(namespace, 'outbound_type', None)
+        if outbound_type is not None and outbound_type != 'managedNATGatewayV2':
+            raise InvalidArgumentValueError(
+                "--nat-gateway-managed-outbound-ipv6-count, "
+                "--nat-gateway-outbound-ips, and "
+                "--nat-gateway-outbound-ip-prefixes are only "
+                "valid with --outbound-type managedNATGatewayV2."
+            )

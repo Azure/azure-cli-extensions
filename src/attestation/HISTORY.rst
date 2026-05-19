@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.1
+++++++
+* Bump PyJWT from `2.4.0` to `2.12.0`.
+
 1.0.0
 ++++++
 * `az attestation `: Remove sdk

@@ -9,6 +9,8 @@
 # flake8: noqa
 
 from azure.cli.core.aaz import *
+from azext_workload_orchestration.aaz.latest.workload_orchestration._resource_validator import ValidateResourceExists
+
 
 @register_command(
     "workload-orchestration config-template link",
@@ -71,6 +73,9 @@ class Link(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
+        if has_value(self.ctx.args.hierarchy_ids):
+            for hierarchy_id in self.ctx.args.hierarchy_ids:
+                ValidateResourceExists(ctx=self.ctx, resource_id=hierarchy_id, resource_label="Hierarchy")()
         yield self.ConfigTemplatesLinkToHierarchies(ctx=self.ctx)()
         self.post_operations()
 

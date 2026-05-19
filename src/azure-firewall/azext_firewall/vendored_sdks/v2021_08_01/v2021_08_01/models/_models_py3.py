@@ -5256,6 +5256,8 @@ class AzureFirewall(Resource):
     :vartype location: str
     :ivar tags: A set of tags. Resource tags.
     :vartype tags: dict[str, str]
+    :ivar extended_location: The extended location of type local virtual network gateway.
+    :vartype extended_location: ~azure.mgmt.network.models.ExtendedLocation
     :ivar zones: A list of availability zones denoting where the resource needs to come from.
     :vartype zones: list[str]
     :ivar etag: A unique read-only string that changes whenever the resource is updated.
@@ -5313,6 +5315,7 @@ class AzureFirewall(Resource):
         'type': {'key': 'type', 'type': 'str'},
         'location': {'key': 'location', 'type': 'str'},
         'tags': {'key': 'tags', 'type': '{str}'},
+        'extended_location': {'key': 'extendedLocation', 'type': 'ExtendedLocation'},
         'zones': {'key': 'zones', 'type': '[str]'},
         'etag': {'key': 'etag', 'type': 'str'},
         'application_rule_collections': {'key': 'properties.applicationRuleCollections', 'type': '[AzureFirewallApplicationRuleCollection]'},
@@ -5336,6 +5339,7 @@ class AzureFirewall(Resource):
         id: Optional[str] = None,
         location: Optional[str] = None,
         tags: Optional[Dict[str, str]] = None,
+        extended_location: Optional["ExtendedLocation"] = None,
         zones: Optional[List[str]] = None,
         application_rule_collections: Optional[List["AzureFirewallApplicationRuleCollection"]] = None,
         nat_rule_collections: Optional[List["AzureFirewallNatRuleCollection"]] = None,
@@ -5357,6 +5361,8 @@ class AzureFirewall(Resource):
         :paramtype location: str
         :keyword tags: A set of tags. Resource tags.
         :paramtype tags: dict[str, str]
+        :keyword extended_location: The extended location of type local virtual network gateway.
+        :paramtype extended_location: ~azure.mgmt.network.models.ExtendedLocation
         :keyword zones: A list of availability zones denoting where the resource needs to come from.
         :paramtype zones: list[str]
         :keyword application_rule_collections: Collection of application rule collections used by Azure
@@ -5394,6 +5400,7 @@ class AzureFirewall(Resource):
         :paramtype additional_properties: dict[str, str]
         """
         super(AzureFirewall, self).__init__(id=id, location=location, tags=tags, **kwargs)
+        self.extended_location = extended_location
         self.zones = zones
         self.etag = None
         self.application_rule_collections = application_rule_collections

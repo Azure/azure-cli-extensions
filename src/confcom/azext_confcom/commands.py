@@ -19,4 +19,5 @@ def load_command_table(self, _):
         pass
 
     with self.command_group("confcom containers") as g:
+        g.custom_command("from_vn2", "containers_from_vn2")
         g.custom_command("from_image", "containers_from_image")

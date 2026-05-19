@@ -2,6 +2,14 @@
 
 Release History
 ===============
+2.0.0
++++++++
+* Add: Breaking change for new required parameter --storage-access-mode for acr export-pipeline create and acr import-pipeline create commands.
+
+1.1.1b1
++++++++
+* Add: Breaking change announcement for new required parameter --storage-access-mode for acr export-pipeline create and acr import-pipeline create commands.
+
 1.1.0
 ++++++
 * Add: New command acr pipeline-run clean - Bulk deletes failed pipeline-runs.

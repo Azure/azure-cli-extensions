@@ -6,6 +6,7 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, StorageAccou
                                api_version_constraint)
 from azure.cli.testsdk.scenario_tests.decorators import AllowLargeResponse
 from azure.cli.core.azclierror import ValidationError, CLIError
+from azure.cli.testsdk import live_only
 
 
 class AzureFirewallScenario(ScenarioTest):
@@ -61,7 +62,9 @@ class AzureFirewallScenario(ScenarioTest):
         self.kwargs.update({
             'pubip': 'pubip',
             'vnet': 'vnet',
-            'firewall': 'firewall'
+            'firewall': 'firewall',
+            'coll': 'rc1',
+            'network_rule1': 'network-rule1',
         })
 
         self.cmd('network public-ip create -g {rg} -n {pubip} --allocation-method Static --sku Standard --edge-zone losangeles')
@@ -70,6 +73,8 @@ class AzureFirewallScenario(ScenarioTest):
             self.check('extendedLocation.type', 'EdgeZone'),
             self.check('extendedLocation.name', 'losangeles')
         ])
+        self.cmd('network firewall network-rule create -g {rg} -f {firewall} -n {network_rule1} -c {coll} --priority 100 --action Allow --source-addresses 10.0.0.1 --protocols TCP --destination-addresses 111.1.0.0/20 --destination-ports 80')
+        self.cmd('network firewall network-rule collection delete -g {rg} -f {firewall} -c {coll}')
 
     @ResourceGroupPreparer(name_prefix="cli_test_firewall_with_additional_log_", location="westus")
     def test_firewall_with_additional_log(self):
@@ -940,7 +945,107 @@ class AzureFirewallScenario(ScenarioTest):
 
         self.cmd('network firewall policy delete -g {rg} --name {policy}')
 
-    # removed explicit proxy test as it requires a non static sas url which fails other tests 100% of the time
+    @live_only()
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix='test_azure_firewall_policy_explicit_proxy', location='centraluseuap')
+    def test_azure_firewall_policy_explicit_proxy(self, resource_group):
+        self.kwargs.update({
+            'policy_name': 'testFirewallPolicy',
+            'url': "https://teststgeproxywithrbacfix.blob.core.windows.net/pacfile/proxy.pac",
+            "identity" : "/subscriptions/e7eb2257-46e4-4826-94df-153853fea38f/resourceGroups/newrgeproxy/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PacFileMSI-testmsirbacfix"
+        })
+
+        self.cmd('network firewall policy create -g {rg} -n {policy_name} --sku Premium '
+                 '--explicit-proxy enable-explicit-proxy=true http-port=85 enable-pac-file=true pac-file-port=122 pac-file={url} '
+                 '--identity "{identity}"',
+                 checks=[
+                     self.check('name', '{policy_name}'),
+                     self.check('explicitProxy.enableExplicitProxy', True),
+                     self.check('explicitProxy.enablePacFile', True),
+                     self.check('explicitProxy.httpPort', 85),
+                     self.check('explicitProxy.pacFile', '{url}'),
+                     self.check('explicitProxy.pacFilePort', 122),
+                     self.check('identity.type', 'UserAssigned'),
+                    self.check('identity.userAssignedIdentities | keys(@)[0]', '{identity}')
+                 ])
+        
+        self.cmd('network firewall policy create -g {rg} -n {policy_name} --sku Premium '
+                 '--explicit-proxy enable-explicit-proxy=true http-port=86 enable-pac-file=true pac-file-port=122 pac-file={url} '
+                 '--identity [{identity}]',
+                 checks=[
+                     self.check('name', '{policy_name}'),
+                     self.check('explicitProxy.enableExplicitProxy', True),
+                     self.check('explicitProxy.enablePacFile', True),
+                     self.check('explicitProxy.httpPort', 86),
+                     self.check('explicitProxy.pacFile', '{url}'),
+                     self.check('explicitProxy.pacFilePort', 122),
+                     self.check('identity.type', 'UserAssigned'),
+                    self.check('identity.userAssignedIdentities | keys(@)[0]', '{identity}')
+                 ])
+
+
+    @live_only()
+    @ResourceGroupPreparer(name_prefix='test_azure_firewall_policy_configure_multipleMSI', location='centraluseuap')
+    def test_azure_firewall_policy_configure_multipleMSI(self, resource_group):
+        self.kwargs.update({
+            'policy_name': 'testFirewallPolicy',
+            'url': "https://teststgeproxywithrbacfix.blob.core.windows.net/pacfile/proxy.pac",
+            "explicit_proxy_identity" : "/subscriptions/e7eb2257-46e4-4826-94df-153853fea38f/resourceGroups/newrgeproxy/providers/Microsoft.ManagedIdentity/userAssignedIdentities/PacFileMSI-testmsirbacfix",
+            "tls_identity" : "/subscriptions/e7eb2257-46e4-4826-94df-153853fea38f/resourcegroups/ExplicitProxyCLIPSTestResource/providers/Microsoft.ManagedIdentity/userAssignedIdentities/ExplicitProxy_tlsidentity",
+            "certificate_name" : "cert",
+            "key_vault_url" : "https://eproxyclipskv.vault.azure.net/secrets/cert/a0497e639d04459aa880901be337c52d"
+        })        
+
+        self.cmd('network firewall policy create -g {rg} -n {policy_name} --sku Premium --threat-intel-mode Alert',
+                 checks=[
+                     self.check('name', '{policy_name}'),
+                     self.check('threatIntelMode', 'Alert')
+                 ])
+        
+        self.cmd('network firewall policy update -g {rg} -n {policy_name} --sku Premium '
+                 '--explicit-proxy enable-explicit-proxy=true http-port=85 enable-pac-file=true pac-file-port=122 pac-file={url} '
+                 '--cert-name {certificate_name} --key-vault-secret-id {key_vault_url} '
+                 '--identity {explicit_proxy_identity} {tls_identity}',
+                 checks=[
+                     self.check('name', '{policy_name}'),
+                     self.check('explicitProxy.enableExplicitProxy', True),
+                     self.check('explicitProxy.enablePacFile', True),
+                     self.check('explicitProxy.httpPort', 85),
+                     self.check('explicitProxy.pacFile', '{url}'),
+                     self.check('explicitProxy.pacFilePort', 122),
+                     self.check('identity.type', 'UserAssigned'),
+                     self.check('length(identity.userAssignedIdentities)', 2)
+                    ])
+        
+        self.cmd('network firewall policy update -g {rg} -n {policy_name} --sku Premium '
+                 '--explicit-proxy enable-explicit-proxy=true http-port=85 enable-pac-file=true pac-file-port=122 pac-file={url} '
+                 '--identity {explicit_proxy_identity}',
+                 checks=[
+                     self.check('name', '{policy_name}'),
+                     self.check('explicitProxy.enableExplicitProxy', True),
+                     self.check('explicitProxy.enablePacFile', True),
+                     self.check('explicitProxy.httpPort', 85),
+                     self.check('explicitProxy.pacFile', '{url}'),
+                     self.check('explicitProxy.pacFilePort', 122),
+                     self.check('identity.type', 'UserAssigned'),
+                     self.check('length(identity.userAssignedIdentities)', 1)
+                    ])
+
+        self.cmd('network firewall policy update -g {rg} -n {policy_name} --sku Premium '
+                 '--explicit-proxy enable-explicit-proxy=true http-port=85 enable-pac-file=true pac-file-port=122 pac-file={url} '
+                 '--cert-name {certificate_name} --key-vault-secret-id {key_vault_url} '
+                 '--identity [{explicit_proxy_identity}]',
+                 checks=[
+                     self.check('name', '{policy_name}'),
+                     self.check('explicitProxy.enableExplicitProxy', True),
+                     self.check('explicitProxy.enablePacFile', True),
+                     self.check('explicitProxy.httpPort', 85),
+                     self.check('explicitProxy.pacFile', '{url}'),
+                     self.check('explicitProxy.pacFilePort', 122),
+                     self.check('identity.type', 'UserAssigned'),
+                     self.check('length(identity.userAssignedIdentities)', 1)
+                    ])
+
 
     @ResourceGroupPreparer(name_prefix='test_firewall_with_dns_proxy_')
     def test_firewall_with_dns_proxy(self, resource_group):
@@ -1494,29 +1599,36 @@ class AzureFirewallScenario(ScenarioTest):
         ])
 
         # add idps mode and profile to policy        
-        self.cmd('network firewall policy update -g {rg} -n {policy_name_1} --idps-mode Alert --idps-profile Advanced',
+        self.cmd('network firewall policy update -g {rg} -n {policy_name_1} --idps-mode Alert --idps-profile Off',
                  checks=[
                      self.check('intrusionDetection.mode', 'Alert'),
-                     self.check('intrusionDetection.profile', 'Advanced')
+                     self.check('intrusionDetection.profile', 'Off')
                  ])
         
         # delete policy 1
         self.cmd('network firewall policy delete -g {rg} --name {policy_name_1}')
 
         # create policy 2 with idps profile        
-        self.cmd('network firewall policy create -g {rg} -n {policy_name_2} -l {location} --sku Premium --idps-mode Deny --idps-profile Standard',
+        self.cmd('network firewall policy create -g {rg} -n {policy_name_2} -l {location} --sku Premium --idps-mode Deny --idps-profile Emerging',
                  checks=[
                      self.check('type', 'Microsoft.Network/FirewallPolicies'),
                      self.check('name', '{policy_name_2}'),
                      self.check('intrusionDetection.mode', 'Deny'),
-                     self.check('intrusionDetection.profile', 'Standard')
+                     self.check('intrusionDetection.profile', 'Emerging')
         ])
 
         # change idps profile in policy 2
-        self.cmd('network firewall policy update -g {rg} -n {policy_name_2} --idps-mode Deny --idps-profile Basic',
+        self.cmd('network firewall policy update -g {rg} -n {policy_name_2} --idps-mode Deny --idps-profile Core',
                  checks=[
                      self.check('intrusionDetection.mode', 'Deny'),
-                     self.check('intrusionDetection.profile', 'Basic')
+                     self.check('intrusionDetection.profile', 'Core')
+        ])  
+
+        # change idps profile in policy 2
+        self.cmd('network firewall policy update -g {rg} -n {policy_name_2} --idps-mode Deny --idps-profile Extended',
+                 checks=[
+                     self.check('intrusionDetection.mode', 'Deny'),
+                     self.check('intrusionDetection.profile', 'Extended')
         ])  
 
         # delete policy 2

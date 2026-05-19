@@ -695,6 +695,15 @@ class AddOverrideAzureManagedRuleSet(_WafPolicyUpdate):
             options=['--disabled'],
             help='Whether to disable the rule.',
         )
+        args_schema.sensitivity = AAZStrArg(
+            options=['--sensitivity'],
+            help='Describes the override sensitivity to be applied when rule matches.',
+            enum={
+                'High': 'High',
+                'Medium': 'Medium',
+                'Low': 'Low'
+            },
+        )
 
         # Hide unrelated arguments
         args_schema.managed_rules._registered = False
@@ -726,6 +735,8 @@ class AddOverrideAzureManagedRuleSet(_WafPolicyUpdate):
                   if hasattr(args, 'action') and args.action else None)
         disabled = (args.disabled.to_serialized_data()
                     if hasattr(args, 'disabled') and args.disabled else None)
+        sensitivity = (args.sensitivity.to_serialized_data()
+                       if hasattr(args, 'sensitivity') and args.sensitivity else None)
 
         override = {
             'ruleId': rule_id,
@@ -733,6 +744,8 @@ class AddOverrideAzureManagedRuleSet(_WafPolicyUpdate):
         }
         if action:
             override['action'] = action
+        if sensitivity:
+            override['sensitivity'] = sensitivity
 
         managed_rules = instance.properties.managed_rules
         if managed_rules is None or managed_rules.managed_rule_sets is None:

@@ -36,9 +36,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-10-01-preview",
+        "version": "2026-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.databricks/workspaces/{}", "2025-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.databricks/workspaces/{}", "2026-01-01"],
         ]
     }
 
@@ -214,8 +214,7 @@ class Create(AAZCommand):
         _args_schema.compliance_standards.Element = AAZStrArg(
             nullable=True,
             arg_group="Enhanced Security Compliance",
-            help="Compliance standards, allowed values: NONE, HIPAA, PCI_DSS, CYBER_ESSENTIAL_PLUS, FEDRAMP_HIGH, CANADA_PROTECTED_B, IRAP_PROTECTED, ISMAP, HITRUST, K_FSI, GERMANY_C5, GERMANY_TISAX.",
-            enum={"HIPAA": "HIPAA", "NONE": "NONE", "PCI_DSS": "PCI_DSS", "CYBER_ESSENTIAL_PLUS": "CYBER_ESSENTIAL_PLUS", "FEDRAMP_HIGH": "FEDRAMP_HIGH", "CANADA_PROTECTED_B": "CANADA_PROTECTED_B", "IRAP_PROTECTED": "IRAP_PROTECTED", "ISMAP": "ISMAP", "HITRUST": "HITRUST", "K_FSI": "K_FSI", "GERMANY_C5": "GERMANY_C5", "GERMANY_TISAX": "GERMANY_TISAX"},
+            help="Compliance standards associated with the workspace.",
         )
         _args_schema.enable_compliance_security_profile = AAZBoolArg(
             options=["--enable-compliance-security-profile", "--enable-csp"],
@@ -327,9 +326,7 @@ class Create(AAZCommand):
         )
 
         compliance_standards = cls._args_schema.enhanced_security_compliance.compliance_security_profile.compliance_standards
-        compliance_standards.Element = AAZStrArg(
-            enum={"HIPAA": "HIPAA", "NONE": "NONE", "PCI_DSS": "PCI_DSS", "CYBER_ESSENTIAL_PLUS": "CYBER_ESSENTIAL_PLUS", "FEDRAMP_HIGH": "FEDRAMP_HIGH", "CANADA_PROTECTED_B": "CANADA_PROTECTED_B", "IRAP_PROTECTED": "IRAP_PROTECTED", "ISMAP": "ISMAP", "HITRUST": "HITRUST", "K_FSI": "K_FSI", "GERMANY_C5": "GERMANY_C5", "GERMANY_TISAX": "GERMANY_TISAX"},
-        )
+        compliance_standards.Element = AAZStrArg()
 
         enhanced_security_monitoring = cls._args_schema.enhanced_security_compliance.enhanced_security_monitoring
         enhanced_security_monitoring.value = AAZStrArg(
@@ -440,7 +437,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-10-01-preview",
+                    "api-version", "2026-01-01",
                     required=True,
                 ),
             }
@@ -628,8 +625,14 @@ class Create(AAZCommand):
             if require_infrastructure_encryption is not None:
                 require_infrastructure_encryption.set_prop("value", AAZBoolType, ".require_infrastructure_encryption", typ_kwargs={"flags": {"required": True}})
 
+            # Set sku.name to 'premium' if sku is not set and compute_mode is 'Serverless'
             sku = _builder.get(".sku")
-            if sku is not None:
+            compute_mode = args.get("compute_mode", None)
+            sku_value = args.get("sku", None)
+            if (not sku_value or sku_value == "") and compute_mode and compute_mode.lower() == "serverless":
+                if sku is not None:
+                    sku.set_const("name", "premium", AAZStrType)
+            elif sku is not None:
                 sku.set_prop("name", AAZStrType, ".sku", typ_kwargs={"flags": {"required": True}})
 
             tags = _builder.get(".tags")

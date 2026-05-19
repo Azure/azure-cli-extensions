@@ -40,9 +40,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-10-01-preview",
+        "version": "2026-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.databricks/workspaces/{}", "2025-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.databricks/workspaces/{}", "2026-01-01"],
         ]
     }
 
@@ -252,8 +252,7 @@ class Update(AAZCommand):
         _args_schema.compliance_standards.Element = AAZStrArg(
             nullable=True,
             arg_group="Enhanced Security Compliance",
-            help="Compliance standards, allowed values: NONE, HIPAA, PCI_DSS, CYBER_ESSENTIAL_PLUS, FEDRAMP_HIGH, CANADA_PROTECTED_B, IRAP_PROTECTED, ISMAP, HITRUST, K_FSI, GERMANY_C5, GERMANY_TISAX.",
-            enum={"HIPAA": "HIPAA", "NONE": "NONE", "PCI_DSS": "PCI_DSS", "CYBER_ESSENTIAL_PLUS": "CYBER_ESSENTIAL_PLUS", "FEDRAMP_HIGH": "FEDRAMP_HIGH", "CANADA_PROTECTED_B": "CANADA_PROTECTED_B", "IRAP_PROTECTED": "IRAP_PROTECTED", "ISMAP": "ISMAP", "HITRUST": "HITRUST", "K_FSI": "K_FSI", "GERMANY_C5": "GERMANY_C5", "GERMANY_TISAX": "GERMANY_TISAX"},
+            help="Compliance standards associated with the workspace.",
         )
         _args_schema.enable_compliance_security_profile = AAZBoolArg(
             options=["--enable-compliance-security-profile", "--enable-csp"],
@@ -352,7 +351,6 @@ class Update(AAZCommand):
         compliance_standards = cls._args_schema.enhanced_security_compliance.compliance_security_profile.compliance_standards
         compliance_standards.Element = AAZStrArg(
             nullable=True,
-            enum={"HIPAA": "HIPAA", "NONE": "NONE", "PCI_DSS": "PCI_DSS", "CYBER_ESSENTIAL_PLUS": "CYBER_ESSENTIAL_PLUS", "FEDRAMP_HIGH": "FEDRAMP_HIGH", "CANADA_PROTECTED_B": "CANADA_PROTECTED_B", "IRAP_PROTECTED": "IRAP_PROTECTED", "ISMAP": "ISMAP", "HITRUST": "HITRUST", "K_FSI": "K_FSI", "GERMANY_C5": "GERMANY_C5", "GERMANY_TISAX": "GERMANY_TISAX"},
         )
 
         enhanced_security_monitoring = cls._args_schema.enhanced_security_compliance.enhanced_security_monitoring
@@ -483,7 +481,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-10-01-preview",
+                    "api-version", "2026-01-01",
                     required=True,
                 ),
             }
@@ -582,7 +580,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-10-01-preview",
+                    "api-version", "2026-01-01",
                     required=True,
                 ),
             }

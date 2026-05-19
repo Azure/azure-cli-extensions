@@ -25,9 +25,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-07-15",
+        "version": "2026-01-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l3isolationdomains/{}", "2025-07-15"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l3isolationdomains/{}", "2026-01-15-preview"],
         ]
     }
 
@@ -59,6 +59,26 @@ class Create(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
+
+        # define Arg Group "Body"
+
+        _args_schema = cls._args_schema
+        _args_schema.location = AAZResourceLocationArg(
+            arg_group="Body",
+            help="The geo-location where the resource lives",
+            required=True,
+            fmt=AAZResourceLocationArgFormat(
+                resource_group_arg="resource_group",
+            ),
+        )
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Body",
+            help="Resource tags.",
+        )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg()
 
         # define Arg Group "Identity"
 
@@ -97,8 +117,8 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="Connected Subnet RoutePolicy",
         )
-        _args_schema.export_policy_config = AAZObjectArg(
-            options=["--export-policy-config"],
+        _args_schema.export_policy_configuration = AAZObjectArg(
+            options=["--export-policy-config", "--export-policy-configuration"],
             arg_group="Properties",
             help="BMP Export Policy configuration.",
         )
@@ -183,8 +203,8 @@ class Create(AAZCommand):
             nullable=True,
         )
 
-        export_policy_config = cls._args_schema.export_policy_config
-        export_policy_config.export_policies = AAZListArg(
+        export_policy_configuration = cls._args_schema.export_policy_configuration
+        export_policy_configuration.export_policies = AAZListArg(
             options=["export-policies"],
             help="Export Policy for the BGP Monitoring Protocol (BMP) Configuration.",
             fmt=AAZListArgFormat(
@@ -192,7 +212,7 @@ class Create(AAZCommand):
             ),
         )
 
-        export_policies = cls._args_schema.export_policy_config.export_policies
+        export_policies = cls._args_schema.export_policy_configuration.export_policies
         export_policies.Element = AAZStrArg(
             enum={"All": "All", "LocalRib": "LocalRib", "Post-Policy": "Post-Policy", "Pre-Policy": "Pre-Policy"},
         )
@@ -203,26 +223,6 @@ class Create(AAZCommand):
             help="Array of ARM Resource ID of the RoutePolicies.",
         )
         cls._build_args_l3_export_route_policy_create(static_route_route_policy.export_route_policy)
-
-        # define Arg Group "Resource"
-
-        _args_schema = cls._args_schema
-        _args_schema.location = AAZResourceLocationArg(
-            arg_group="Resource",
-            help="The geo-location where the resource lives",
-            required=True,
-            fmt=AAZResourceLocationArgFormat(
-                resource_group_arg="resource_group",
-            ),
-        )
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Resource",
-            help="Resource tags.",
-        )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
         return cls._args_schema
 
     _args_aggregate_route_create = None
@@ -378,7 +378,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-15",
+                    "api-version", "2026-01-15-preview",
                     required=True,
                 ),
             }
@@ -422,7 +422,7 @@ class Create(AAZCommand):
                 properties.set_prop("aggregateRouteConfiguration", AAZObjectType, ".aggregate_route_configuration")
                 properties.set_prop("annotation", AAZStrType, ".annotation")
                 properties.set_prop("connectedSubnetRoutePolicy", AAZObjectType, ".connected_subnet_route_policy")
-                properties.set_prop("exportPolicyConfiguration", AAZObjectType, ".export_policy_config")
+                properties.set_prop("exportPolicyConfiguration", AAZObjectType, ".export_policy_configuration")
                 properties.set_prop("networkFabricId", AAZStrType, ".network_fabric_id", typ_kwargs={"flags": {"required": True}, "nullable": True})
                 properties.set_prop("redistributeConnectedSubnets", AAZStrType, ".redistribute_connected_subnets")
                 properties.set_prop("redistributeStaticRoutes", AAZStrType, ".redistribute_static_routes")

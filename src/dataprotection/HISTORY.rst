@@ -2,9 +2,19 @@
 
 Release History
 ===============
+1.10.0
+++++++
+* Bumped API version to 2026-03-01 for backup-instance create, update, validate-for-backup, and validate-for-update commands.
+* `az dataprotection backup-instance initialize-backupconfig`: New parameters `--auto-protection` and `--exclusion-prefixes` to enable automatic protection of new blob containers for AzureBlob and AzureDataLakeStorage datasource types, with optional exclusion rules by container name prefix.
+
 1.9.0
 +++++
-* Added dataprotection support for AzureCosmosDB workload: new manifest (Microsoft.DocumentDB/databaseAccounts), registration in supported datasource types, datasource map, and permission help text. Added end-to-end backup/restore scenario test, unit tests for default policy template, backup-instance initialize, and restore initialize, and an update-msi-permissions live test that grants Reader/Cosmos DB Operator on the data source RG / account.
+* `az dataprotection enable-backup trigger`: New command to enable backup for AKS clusters with a single command. Supports preset backup strategies (Week, Month, DisasterRecovery) and Custom strategy with user-provided configuration.
+* Added vendored SDKs: `azure-mgmt-containerservice` (40.2.0), `azure-mgmt-kubernetesconfiguration` (3.1.0), `azure-mgmt-resourcegraph` (8.0.0).
+
+1.8.1
++++++
+* Documentation update for `initialize-backupconfig` and `initialize-restoreconfig` commands to clarify that the generated JSON is meant for use with other CLI commands, and may not work as an input for non-CLI scenarios without modification.
 
 1.8.0
 +++++

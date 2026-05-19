@@ -55,6 +55,14 @@ helps['aks create'] = f"""
         - name: --node-osdisk-type
           type: string
           short-summary: OS disk type to be used for machines in a given agent pool. Defaults to 'Ephemeral' when possible in conjunction with VM size and OS disk size. May not be changed for this pool after creation. ('Ephemeral' or 'Managed')
+        - name: --enable-osdisk-fc --enable-osdisk-full-caching
+          type: bool
+          short-summary: Enable the full-cache ephemeral OS disk feature for the default node pool.
+          long-summary: |-
+            When enabled, the entire operating system is cached on the local
+            ephemeral OS disk to mitigate E17 events caused by network failures.
+            Requires Ephemeral OS disk and a VM size with sufficient cache.
+            This property is immutable after the node pool is created.
         - name: --node-osdisk-diskencryptionset-id -d
           type: string
           short-summary: ResourceId of the disk encryption set to use for enabling encryption at rest on agent node os disk.
@@ -158,15 +166,15 @@ helps['aks create'] = f"""
         - name: --nat-gateway-managed-outbound-ip-count
           type: int
           short-summary: NAT gateway managed outbound IP count.
-          long-summary: Desired number of managed outbound IPs for NAT gateway outbound connection. Please specify a value in the range of [1, 16]. Valid for Standard SKU load balancer cluster with managedNATGateway outbound type only.
+          long-summary: Desired number of managed outbound IPs for NAT gateway outbound connection. Please specify a value in the range of [1, 16]. Valid for Standard SKU load balancer cluster with managedNATGateway or managedNATGatewayV2 outbound type only.
         - name: --nat-gateway-idle-timeout
           type: int
           short-summary: NAT gateway idle timeout in minutes.
-          long-summary: Desired idle timeout for NAT gateway outbound flows, default is 4 minutes. Please specify a value in the range of [4, 120]. Valid for Standard SKU load balancer cluster with managedNATGateway outbound type only.
+          long-summary: Desired idle timeout for NAT gateway outbound flows, default is 4 minutes. Please specify a value in the range of [4, 120]. Valid for Standard SKU load balancer cluster with managedNATGateway or managedNATGatewayV2 outbound type only.
         - name: --outbound-type
           type: string
           short-summary: How outbound traffic will be configured for a cluster.
-          long-summary: Select between loadBalancer, userDefinedRouting, managedNATGateway, userAssignedNATGateway, none and block. If not set, defaults to type loadBalancer. Requires --vnet-subnet-id to be provided with a preconfigured route table and --load-balancer-sku to be Standard.
+          long-summary: Select between loadBalancer, userDefinedRouting, managedNATGateway, managedNATGatewayV2, userAssignedNATGateway, none and block. If not set, defaults to type loadBalancer. managedNATGatewayV2 uses Azure NAT Gateway Standard V2 SKU and supports IPv6, user-provided public IPs, and user-provided IP prefixes.
         - name: --enable-addons -a
           type: string
           short-summary: Enable the Kubernetes addons in a comma-separated list.
@@ -243,7 +251,7 @@ helps['aks create'] = f"""
           short-summary: Enable advanced network flow log collection functionalities on a cluster. This flag is deprecated in favor of --enable-container-network-logs.
         - name: --enable-container-network-logs
           type: bool
-          short-summary: Enable container network log collection functionalities on a cluster.
+          short-summary: Enable container network log collection functionalities on a cluster. Automatically enables --enable-high-log-scale-mode.
         - name: --no-ssh-key -x
           type: string
           short-summary: Do not use or create a local SSH key.
@@ -279,7 +287,7 @@ helps['aks create'] = f"""
           short-summary: The ID of a PPG.
         - name: --os-sku
           type: string
-          short-summary: The os-sku of the agent node pool. Ubuntu, Ubuntu2204, Ubuntu2404, CBLMariner, AzureLinux, AzureLinux3, AzureLinuxOSGuard, AzureLinux3OSGuard, or Flatcar when os-type is Linux, default is Ubuntu if not set; Windows2019, Windows2022, Windows2025, or WindowsAnnual when os-type is Windows, the current default is Windows2022 if not set.
+          short-summary: The os-sku of the agent node pool. Ubuntu, Ubuntu2204, Ubuntu2404, CBLMariner, AzureLinux, AzureLinux3, AzureLinuxOSGuard, AzureLinux3OSGuard, AzureContainerLinux, or Flatcar when os-type is Linux, default is Ubuntu if not set; Windows2019, Windows2022, Windows2025, or WindowsAnnual when os-type is Windows, the current default is Windows2022 if not set.
         - name: --enable-fips-image
           type: bool
           short-summary: Use FIPS-enabled OS on agent nodes.
@@ -297,7 +305,7 @@ helps['aks create'] = f"""
           short-summary: Path to JSON file containing data collection settings for Monitoring addon.
         - name: --enable-high-log-scale-mode
           type: bool
-          short-summary: Enable High Log Scale Mode for Container Logs.
+          short-summary: Enable High Log Scale Mode for Container Logs. Auto-enabled when --enable-container-network-logs is specified.
         - name: --ampls-resource-id
           type: string
           short-summary: Resource ID of Azure Monitor Private Link scope for Monitoring Addon.
@@ -421,9 +429,6 @@ helps['aks create'] = f"""
         - name: --disable-disk-driver
           type: bool
           short-summary: Disable AzureDisk CSI Driver.
-        - name: --disk-driver-version
-          type: string
-          short-summary: Specify AzureDisk CSI Driver version.
         - name: --disable-file-driver
           type: bool
           short-summary: Disable AzureFile CSI Driver.
@@ -519,6 +524,12 @@ helps['aks create'] = f"""
         - name: --enable-image-integrity
           type: bool
           short-summary: Enable ImageIntegrity Service.
+        - name: --enable-service-account-image-pull
+          type: bool
+          short-summary: Enable service account based image pull. For more information, see https://aka.ms/aks/identity-binding/acr-image-pull/docs.
+        - name: --service-account-image-pull-default-managed-identity-id
+          type: string
+          short-summary: The default managed identity resource ID used for image pulls at the cluster level.
         - name: --dns-zone-resource-id
           type: string
           short-summary: The resource ID of the DNS zone resource to use with the App Routing addon.
@@ -645,6 +656,9 @@ helps['aks create'] = f"""
         - name: --app-routing-default-nginx-controller --ardnc
           type: string
           short-summary: Configure default nginx ingress controller type. Valid values are annotationControlled (default behavior), external, internal, or none.
+        - name: --enable-default-domain
+          type: bool
+          short-summary: Enable default domain for Application Routing addon.
         - name: --enable-ai-toolchain-operator
           type: bool
           short-summary: Enable AI toolchain operator to the cluster.
@@ -696,9 +710,23 @@ helps['aks create'] = f"""
         - name: --enable-gateway-api
           type: bool
           short-summary: Enable managed installation of Gateway API CRDs from the standard release channel.
+        - name: --enable-app-routing-istio --enable-ari
+          type: bool
+          short-summary: Enable Gateway API based ingress on App Routing via Istio without service mesh functionality.
+          long-summary: |
+              This enables an ingress-only version of Istio that reconciles Gateway API resources for App Routing.
+              It does not provide service mesh functionality (e.g. mTLS, traffic management between services).
+              Cannot be used simultaneously with the Istio service mesh add-on (--enable-azure-service-mesh).
         - name: --enable-hosted-system
           type: bool
           short-summary: Create a cluster with fully hosted system components. This applies only when creating a new automatic cluster.
+        - name: --control-plane-scaling-size --cp-scaling-size
+          type: string
+          short-summary: (PREVIEW) The control plane scaling size for the cluster.
+          long-summary: |
+              Provides scaled and performance-guaranteed control plane capacity for AKS clusters.
+              Enables customers to select a control plane scaling size that delivers higher API server throughput,
+              increased etcd capacity, and faster pod scheduling rates. Available values are 'H2', 'H4', and 'H8'.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -790,9 +818,30 @@ helps['aks create'] = f"""
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-managed-system-pool
         - name: Create a kubernetes cluster with a managed installation of Gateway API CRDs from the standard release channel.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-gateway-api
+        - name: Create a kubernetes cluster with control plane scaling size H4.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --control-plane-scaling-size H4
         - name: Create an automatic cluster with hosted system components enabled.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --sku automatic --enable-hosted-system
 
+"""
+
+helps['aks delete'] = """
+    type: command
+    short-summary: Delete a managed Kubernetes cluster.
+    parameters:
+        - name: --if-match
+          type: string
+          short-summary: The value provided will be compared to the ETag of the managed cluster, if it matches the operation will proceed. If it does not match, the request will be rejected to prevent accidental overwrites.
+        - name: --if-none-match
+          type: string
+          short-summary: Not applicable for delete operations. This option will be ignored if provided.
+        - name: --ignore-pod-disruption-budget
+          type: bool
+          short-summary: Delete those pods on a node without considering Pod Disruption Budget.
+    examples:
+        - name: Delete a managed Kubernetes cluster.
+          text: az aks delete --name MyManagedCluster --resource-group MyResourceGroup
+          crafted: true
 """
 
 helps['aks scale'] = """
@@ -849,6 +898,12 @@ helps['aks upgrade'] = """
           type: string
           short-summary: Until when the cluster upgradeSettings overrides are effective.
           long-summary: It needs to be in a valid date-time format that's within the next 30 days. For example, 2023-04-01T13:00:00Z. Note that if --force-upgrade is set to true and --upgrade-override-until is not set, by default it will be set to 3 days from now.
+        - name: --k8s-support-plan
+          type: string
+          short-summary: Choose from "KubernetesOfficial" or "AKSLongTermSupport". With "AKSLongTermSupport" you get 1 extra year of CVE patches.
+        - name: --tier
+          type: string
+          short-summary: Specify SKU tier for managed clusters. '--tier standard' enables a standard managed cluster service with a financially backed SLA. '--tier free' does not have a financially backed SLA. '--tier premium' is required for '--k8s-support-plan AKSLongTermSupport'.
         - name: --if-match
           type: string
           short-summary: The value provided will be compared to the ETag of the managed cluster, if it matches the operation will proceed. If it does not match, the request will be rejected to prevent accidental overwrites. This must not be specified when creating a new cluster.
@@ -867,13 +922,13 @@ helps['aks update'] = """
     parameters:
         - name: --enable-cluster-autoscaler -e
           type: bool
-          short-summary: Enable cluster autoscaler.
+          short-summary: Enable cluster autoscaler. For VirtualMachines pools, converts all manual scale profiles to autoscale profiles using the same min/max counts.
         - name: --disable-cluster-autoscaler -d
           type: bool
-          short-summary: Disable cluster autoscaler.
+          short-summary: Disable cluster autoscaler. For VirtualMachines pools, converts all autoscale profiles back to manual scale profiles.
         - name: --update-cluster-autoscaler -u
           type: bool
-          short-summary: Update min-count or max-count for cluster autoscaler.
+          short-summary: Update min-count or max-count for cluster autoscaler. Not supported for VirtualMachines pools; use 'az aks nodepool auto-scale update' instead.
         - name: --min-count
           type: int
           short-summary: Minimun nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 1000]
@@ -925,15 +980,15 @@ helps['aks update'] = """
         - name: --nat-gateway-managed-outbound-ip-count
           type: int
           short-summary: NAT gateway managed outbound IP count.
-          long-summary: Desired number of managed outbound IPs for NAT gateway outbound connection. Please specify a value in the range of [1, 16]. Valid for Standard SKU load balancer cluster with managedNATGateway outbound type only.
+          long-summary: Desired number of managed outbound IPs for NAT gateway outbound connection. Please specify a value in the range of [1, 16]. Valid for Standard SKU load balancer cluster with managedNATGateway or managedNATGatewayV2 outbound type only.
         - name: --nat-gateway-idle-timeout
           type: int
           short-summary: NAT gateway idle timeout in minutes.
-          long-summary: Desired idle timeout for NAT gateway outbound flows, default is 4 minutes. Please specify a value in the range of [4, 120]. Valid for Standard SKU load balancer cluster with managedNATGateway outbound type only.
+          long-summary: Desired idle timeout for NAT gateway outbound flows, default is 4 minutes. Please specify a value in the range of [4, 120]. Valid for Standard SKU load balancer cluster with managedNATGateway or managedNATGatewayV2 outbound type only.
         - name: --outbound-type
           type: string
           short-summary: How outbound traffic will be configured for a cluster.
-          long-summary: This option will change the way how the outbound connections are managed in the AKS cluster. Available options are loadbalancer, managedNATGateway, userAssignedNATGateway, userDefinedRouting, none and block. For custom vnet, loadbalancer, userAssignedNATGateway and userDefinedRouting are supported. For aks managed vnet, loadbalancer, managedNATGateway and userDefinedRouting are supported.
+          long-summary: This option will change the way how the outbound connections are managed in the AKS cluster. Available options are loadbalancer, managedNATGateway, managedNATGatewayV2, userAssignedNATGateway, userDefinedRouting, none and block. For clusters using a custom virtual network, supported values are loadbalancer, userAssignedNATGateway and userDefinedRouting. For clusters using an AKS-managed virtual network, supported values are loadbalancer, managedNATGateway, managedNATGatewayV2 and userDefinedRouting.
         - name: --nrg-lockdown-restriction-level
           type: string
           short-summary: Restriction level on the managed node resource.
@@ -1032,7 +1087,7 @@ helps['aks update'] = """
           short-summary: Path to JSON file containing data collection settings for Monitoring addon.
         - name: --enable-high-log-scale-mode
           type: bool
-          short-summary: Enable High Log Scale Mode for Container Logs.
+          short-summary: Enable High Log Scale Mode for Container Logs. Auto-enabled when --enable-container-network-logs is specified.
         - name: --ampls-resource-id
           type: string
           short-summary: Resource ID of Azure Monitor Private Link scope for Monitoring Addon.
@@ -1081,9 +1136,6 @@ helps['aks update'] = """
           long-summary: |
               Network dataplane used in the Kubernetes cluster.
               Specify "azure" to use the Azure dataplane (default) or "cilium" to enable Cilium dataplane.
-        - name: --disk-driver-version
-          type: string
-          short-summary: Specify AzureDisk CSI Driver version.
         - name: --disable-disk-driver
           type: bool
           short-summary: Disable AzureDisk CSI Driver.
@@ -1199,6 +1251,15 @@ helps['aks update'] = """
         - name: --disable-image-integrity
           type: bool
           short-summary: Disable ImageIntegrity Service.
+        - name: --enable-service-account-image-pull
+          type: bool
+          short-summary: Enable service account based image pull. For more information, see https://aka.ms/aks/identity-binding/acr-image-pull/docs.
+        - name: --disable-service-account-image-pull
+          type: bool
+          short-summary: Disable service account based image pull.
+        - name: --service-account-image-pull-default-managed-identity-id
+          type: string
+          short-summary: The default managed identity resource ID used for image pulls at the cluster level.
         - name: --enable-apiserver-vnet-integration
           type: bool
           short-summary: Enable integration of user vnet with control plane apiserver pods.
@@ -1347,7 +1408,7 @@ helps['aks update'] = """
           short-summary: Enable advanced network flow log collection functionalities on a cluster. This flag is deprecated in favor of --enable-container-network-logs.
         - name: --enable-container-network-logs
           type: bool
-          short-summary: Enable container network log collection functionalities on a cluster.
+          short-summary: Enable container network log collection functionalities on a cluster. Automatically enables --enable-high-log-scale-mode.
         - name: --disable-retina-flow-logs
           type: bool
           short-summary: Disable advanced network flow log collection functionalities on a cluster. This flag is deprecated in favor of --disable-container-network-logs.
@@ -1421,6 +1482,16 @@ helps['aks update'] = """
         - name: --disable-gateway-api
           type: bool
           short-summary: Disable managed installation of Gateway API CRDs.
+        - name: --enable-app-routing-istio --enable-ari
+          type: bool
+          short-summary: Enable Gateway API based ingress on App Routing via Istio without service mesh functionality.
+          long-summary: |
+              This enables an ingress-only version of Istio that reconciles Gateway API resources for App Routing.
+              It does not provide service mesh functionality (e.g. mTLS, traffic management between services).
+              Cannot be used simultaneously with the Istio service mesh add-on (--enable-azure-service-mesh).
+        - name: --disable-app-routing-istio --disable-ari
+          type: bool
+          short-summary: Disable Gateway API based ingress on App Routing via Istio.
         - name: --enable-application-load-balancer
           type: bool
           short-summary: Enable Application Load Balancer (Application Gateway for Containers) addon.
@@ -2037,6 +2108,14 @@ helps['aks nodepool add'] = """
         - name: --node-osdisk-type
           type: string
           short-summary: OS disk type to be used for machines in a given agent pool. Defaults to 'Ephemeral' when possible in conjunction with VM size and OS disk size. May not be changed for this pool after creation. ('Ephemeral' or 'Managed')
+        - name: --enable-osdisk-fc --enable-osdisk-full-caching
+          type: bool
+          short-summary: Enable the full-cache ephemeral OS disk feature for the node pool.
+          long-summary: |-
+            When enabled, the entire operating system is cached on the local
+            ephemeral OS disk to mitigate E17 events caused by network failures.
+            Requires Ephemeral OS disk and a VM size with sufficient cache.
+            This property is immutable after the node pool is created.
         - name: --max-pods -m
           type: int
           short-summary: The maximum number of pods deployable to a node.
@@ -2058,7 +2137,7 @@ helps['aks nodepool add'] = """
           short-summary: The OS Type. Linux or Windows. Windows not supported yet for "VirtualMachines" VM set type.
         - name: --os-sku
           type: string
-          short-summary: The os-sku of the agent node pool. Ubuntu, Ubuntu2204, Ubuntu2404, CBLMariner, AzureLinux, AzureLinux3, AzureLinuxOSGuard, AzureLinux3OSGuard, or Flatcar when os-type is Linux, default is Ubuntu if not set; Windows2019, Windows2022, Windows2025, or WindowsAnnual when os-type is Windows, the current default is Windows2022 if not set.
+          short-summary: The os-sku of the agent node pool. Ubuntu, Ubuntu2204, Ubuntu2404, CBLMariner, AzureLinux, AzureLinux3, AzureLinuxOSGuard, AzureLinux3OSGuard, AzureContainerLinux, or Flatcar when os-type is Linux, default is Ubuntu if not set; Windows2019, Windows2022, Windows2025, or WindowsAnnual when os-type is Windows, the current default is Windows2022 if not set.
         - name: --enable-fips-image
           type: bool
           short-summary: Use FIPS-enabled OS on agent nodes.
@@ -2164,6 +2243,9 @@ helps['aks nodepool add'] = """
         - name: --enable-artifact-streaming
           type: bool
           short-summary: Enable artifact streaming for VirtualMachineScaleSets managed by a node pool, to speed up the cold-start of containers on a node through on-demand image loading. To use this feature, container images must also enable artifact streaming on ACR. If not specified, the default is false.
+        - name: --enable-managed-gpu
+          type: bool
+          short-summary: Enable the Managed GPU experience, which installs additional components like DCGM metrics for monitoring on top of the GPU driver. For more details, visit aka.ms/aks/managed-gpu.
         - name: --skip-gpu-driver-install
           type: bool
           short-summary: To skip GPU driver auto installation by AKS on a nodepool using GPU vm size if customers want to manage GPU driver installation by their own. If not specified, the default is false.
@@ -2173,6 +2255,9 @@ helps['aks nodepool add'] = """
         - name: --driver-type
           type: string
           short-summary: Specify the type of GPU driver to install when creating Windows agent pools. Valid values are "GRID" and "CUDA". If not provided, AKS selects the driver based on system compatibility. This option cannot be changed once the AgentPool has been created. The default is system selected.
+        - name: --gpu-mig-strategy
+          type: string
+          short-summary: Specify the MIG (Multi-Instance GPU) strategy for managed MIG support. Valid values are "Single" and "Mixed". When not specified, managed MIG is disabled.
         - name: --ssh-access
           type: string
           short-summary: Configure SSH setting for the node pool. Use "disabled" to disable SSH access, "localuser" to enable SSH access using private key.
@@ -2328,13 +2413,13 @@ helps['aks nodepool update'] = """
     parameters:
         - name: --enable-cluster-autoscaler -e
           type: bool
-          short-summary: Enable cluster autoscaler. Must use VMSS agent pool type.
+          short-summary: Enable cluster autoscaler. For VMSS pools, enables autoscaler on the pool. For VirtualMachines pools, converts all manual scale profiles to autoscale profiles using the same min/max counts.
         - name: --disable-cluster-autoscaler -d
           type: bool
-          short-summary: Disable cluster autoscaler.
+          short-summary: Disable cluster autoscaler. For VirtualMachines pools, converts all autoscale profiles back to manual scale profiles.
         - name: --update-cluster-autoscaler -u
           type: bool
-          short-summary: Update min-count or max-count for cluster autoscaler.
+          short-summary: Update min-count or max-count for cluster autoscaler. Not supported for VirtualMachines pools; use 'az aks nodepool auto-scale update' instead.
         - name: --min-count
           type: int
           short-summary: Minimun nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [0, 1000] for user nodepool, and [1,1000] for system nodepool.
@@ -2380,6 +2465,12 @@ helps['aks nodepool update'] = """
         - name: --enable-artifact-streaming
           type: bool
           short-summary: Enable artifact streaming for VirtualMachineScaleSets managed by a node pool, to speed up the cold-start of containers on a node through on-demand image loading. To use this feature, container images must also enable artifact streaming on ACR. If not specified, the default is false.
+        - name: --disable-artifact-streaming
+          type: bool
+          short-summary: Disable artifact streaming for VirtualMachineScaleSets managed by a node pool.
+        - name: --enable-managed-gpu
+          type: bool
+          short-summary: Enable the Managed GPU experience, which installs additional components like DCGM metrics for monitoring on top of the GPU driver. For more details, visit aka.ms/aks/managed-gpu.
         - name: --os-sku
           type: string
           short-summary: The os-sku of the agent node pool.
@@ -2418,7 +2509,7 @@ helps['aks nodepool update'] = """
           short-summary: Set the localDNS Profile for a nodepool with a JSON config file.
         - name: --node-vm-size -s
           type: string
-          short-summary: VM size for Kubernetes nodes. Only configurable when updating the autoscale settings of a VirtualMachines node pool.
+          short-summary: VM size for Kubernetes nodes. For VMSS pools, changing this triggers a rolling upgrade to replace nodes with the new size (preview). For VirtualMachines pools, only configurable when updating autoscale settings.
         - name: --upgrade-strategy
           type: string
           short-summary: Upgrade strategy for the node pool. Allowed values are "Rolling" or "BlueGreen". Default is "Rolling".
@@ -2440,6 +2531,9 @@ helps['aks nodepool update'] = """
         - name: --gpu-driver
           type: string
           short-summary: Whether to install driver for GPU node pool. Possible values are "Install" or "None".
+        - name: --crg-id
+          type: string
+          short-summary: The Capacity Reservation Group (CRG) ID used to associate the existing nodepool with the existing Capacity Reservation Group resource.
     examples:
       - name: Reconcile the nodepool back to its current state.
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
@@ -2453,8 +2547,12 @@ helps['aks nodepool update'] = """
         text: az aks nodepool update --mode System -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
       - name: Update cluster autoscaler vm size, min-count and max-count for virtual machines node pool
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --update-cluster-autoscaler --node-vm-size "Standard_D2s_v3" --min-count 2 --max-count 4
+      - name: Resize VM size for a VMSS node pool (preview, requires AFEC registration)
+        text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-vm-size Standard_D4s_v3
       - name: Update a node pool with blue-green upgrade settings
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --drain-batch-size 50% --drain-timeout-bg 5 --batch-soak-duration 10 --final-soak-duration 10
+      - name: Update a nodepool with a Capacity Reservation Group(CRG) ID.
+        text: az aks nodepool update -g MyResourceGroup -n MyNodePool --cluster-name MyMC --node-vm-size VMSize --crg-id "/subscriptions/SubID/resourceGroups/ResourceGroupName/providers/Microsoft.Compute/CapacityReservationGroups/MyCRGID"
 """
 
 helps['aks nodepool get-upgrades'] = """
@@ -2605,6 +2703,62 @@ helps['aks nodepool manual-scale delete'] = """
           short-summary: Comma-separated list of sizes in the manual to be deleted.
 """
 
+helps['aks nodepool auto-scale'] = """
+    type: group
+    short-summary: Commands to manage nodepool virtualMachineProfile.scale.autoscale.
+"""
+
+helps['aks nodepool auto-scale add'] = """
+    type: command
+    short-summary: Add a new autoscale profile to a VirtualMachines agentpool in the managed Kubernetes cluster.
+    parameters:
+        - name: --node-vm-size
+          type: string
+          short-summary: VM size for the autoscale profile.
+        - name: --min-count
+          type: int
+          short-summary: Minimum number of nodes for autoscaling.
+        - name: --max-count
+          type: int
+          short-summary: Maximum number of nodes for autoscaling.
+    examples:
+        - name: Add an autoscale profile to a VirtualMachines agentpool
+          text: az aks nodepool auto-scale add -g MyResourceGroup --cluster-name MyMC --name MyNodePool --node-vm-size Standard_D2s_v3 --min-count 3 --max-count 5
+"""
+
+helps['aks nodepool auto-scale update'] = """
+    type: command
+    short-summary: Update an existing autoscale profile of a VirtualMachines agentpool in the managed Kubernetes cluster.
+    parameters:
+        - name: --current-node-vm-size
+          type: string
+          short-summary: The current VM size of the autoscale profile to be updated.
+        - name: --node-vm-size
+          type: string
+          short-summary: The new VM size for the autoscale profile.
+        - name: --min-count
+          type: int
+          short-summary: Minimum number of nodes for autoscaling.
+        - name: --max-count
+          type: int
+          short-summary: Maximum number of nodes for autoscaling.
+    examples:
+        - name: Update an existing autoscale profile in a VirtualMachines agentpool
+          text: az aks nodepool auto-scale update -g MyResourceGroup --cluster-name MyMC --name MyNodePool --current-node-vm-size Standard_D2s_v3 --node-vm-size Standard_D8s_v3 --min-count 2 --max-count 4
+"""
+
+helps['aks nodepool auto-scale delete'] = """
+    type: command
+    short-summary: Delete an existing autoscale profile from a VirtualMachines agentpool in the managed Kubernetes cluster.
+    parameters:
+        - name: --current-node-vm-size
+          type: string
+          short-summary: The VM size of the autoscale profile to be deleted.
+    examples:
+        - name: Delete an autoscale profile from a VirtualMachines agentpool
+          text: az aks nodepool auto-scale delete -g MyResourceGroup --cluster-name MyMC --name MyNodePool --current-node-vm-size Standard_D2s_v3
+"""
+
 helps['aks machine'] = """
    type: group
    short-summary: Get information about machines in a nodepool of a managed clusters
@@ -2665,6 +2819,15 @@ helps['aks machine add'] = """
        - name: --node-public-ip-tags
          type: string
          short-summary: The ipTags of the machine public IPs.
+       - name: --spot-max-price
+         type: number
+         short-summary: The max price (in US Dollars) you are willing to pay for spot instances.
+       - name: --enable-ultra-ssd
+         type: bool
+         short-summary: Whether to enable UltraSSD.
+       - name: --eviction-policy
+         type: string
+         short-summary: The eviction policy for machine. This cannot be specified unless the priority is 'Spot'. If not specified, the default is 'Delete'.
 """
 
 helps['aks machine update'] = """
@@ -2850,7 +3013,7 @@ parameters:
     short-summary: Path to JSON file containing data collection settings for Monitoring addon.
   - name: --enable-high-log-scale-mode
     type: bool
-    short-summary: Enable High Log Scale Mode for Container Logs.
+    short-summary: Enable High Log Scale Mode for Container Logs. Auto-enabled when --enable-container-network-logs is specified.
   - name: --ampls-resource-id
     type: string
     short-summary: Resource ID of Azure Monitor Private Link scope for Monitoring Addon.
@@ -2923,7 +3086,7 @@ parameters:
     short-summary: Path to JSON file containing data collection settings for Monitoring addon.
   - name: --enable-high-log-scale-mode
     type: bool
-    short-summary: Enable High Log Scale Mode for Container Logs.
+    short-summary: Enable High Log Scale Mode for Container Logs. Auto-enabled when --enable-container-network-logs is specified.
   - name: --ampls-resource-id
     type: string
     short-summary: Resource ID of Azure Monitor Private Link scope for Monitoring Addon.
@@ -3011,7 +3174,7 @@ parameters:
     short-summary: Path to JSON file containing data collection settings for Monitoring addon.
   - name: --enable-high-log-scale-mode
     type: bool
-    short-summary: Enable High Log Scale Mode for Container Logs.
+    short-summary: Enable High Log Scale Mode for Container Logs. Auto-enabled when --enable-container-network-logs is specified.
   - name: --ampls-resource-id
     type: string
     short-summary: Resource ID of Azure Monitor Private Link scope for Monitoring Addon.
@@ -3708,6 +3871,9 @@ helps['aks approuting enable'] = """
         type: string
         short-summary: Configure default NginxIngressController resource
         long-summary: Configure default nginx ingress controller type. Valid values are annotationControlled (default behavior), external, internal, or none.
+      - name: --enable-default-domain
+        type: bool
+        short-summary: Enable default domain for Application Routing addon.
 """
 
 helps['aks approuting disable'] = """
@@ -3733,6 +3899,12 @@ helps['aks approuting update'] = """
         type: string
         short-summary: Configure default NginxIngressController resource
         long-summary: Configure default nginx ingress controller type. Valid values are annotationControlled (default behavior), external, internal, or none.
+      - name: --enable-default-domain
+        type: bool
+        short-summary: Enable default domain for Application Routing addon.
+      - name: --disable-default-domain
+        type: bool
+        short-summary: Disable default domain for Application Routing addon.
 """
 
 helps['aks approuting zone'] = """
@@ -3784,6 +3956,64 @@ helps['aks approuting zone list'] = """
     type: command
     short-summary: List DNS Zone IDs in App Routing.
     long-summary: This command lists the DNS zone resources used in App Routing.
+"""
+
+helps['aks approuting defaultdomain'] = """
+    type: group
+    short-summary: Commands to manage App Routing Default Domain.
+    long-summary: A group of commands to manage App Routing Default Domain in given cluster.
+"""
+
+helps['aks approuting defaultdomain show'] = """
+    type: command
+    short-summary: Show the Default Domain configuration for App Routing.
+    long-summary: This command shows the Default Domain configuration including the domain name assigned to the cluster.
+    examples:
+      - name: Show the default domain for a cluster.
+        text: az aks approuting defaultdomain show --resource-group MyResourceGroup --name MyManagedCluster
+"""
+
+helps['aks approuting gateway'] = """
+    type: group
+    short-summary: Commands to manage App Routing Gateway API implementations.
+    long-summary: A group of commands to manage Gateway API implementations for App Routing in a given cluster.
+"""
+
+helps['aks approuting gateway istio'] = """
+    type: group
+    short-summary: Commands to manage the Istio Gateway API implementation for App Routing.
+    long-summary: A group of commands to manage the Istio-based Gateway API implementation for App Routing in a given cluster.
+"""
+
+helps['aks approuting gateway istio enable'] = """
+    type: command
+    short-summary: Enable Gateway API based ingress on App Routing via Istio without service mesh functionality.
+    long-summary: |
+        This command enables an ingress-only version of Istio as a Gateway API implementation for App Routing
+        in the given cluster. This Istio instance only reconciles Gateway API resources and does not provide
+        service mesh functionality (e.g. mTLS, traffic management between services). Cannot be used
+        simultaneously with Azure Service Mesh (az aks mesh enable).
+    parameters:
+      - name: --aks-custom-headers
+        type: string
+        short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2. Use AKSHTTPCustomFeatures=Microsoft.ContainerService/AppRoutingIstioGatewayAPIPreview to enable the preview feature flag after registering your subscription to use it.
+    examples:
+      - name: Enable Istio Gateway API implementation for App Routing.
+        text: az aks approuting gateway istio enable --resource-group MyResourceGroup --name MyManagedCluster
+"""
+
+helps['aks approuting gateway istio disable'] = """
+    type: command
+    short-summary: Disable Gateway API based ingress on App Routing via Istio.
+    long-summary: |
+        This command disables the ingress-only Istio Gateway API implementation for App Routing in the given cluster.
+    parameters:
+      - name: --aks-custom-headers
+        type: string
+        short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2. Use AKSHTTPCustomFeatures=Microsoft.ContainerService/AppRoutingIstioGatewayAPIPreview to enable the preview feature flag after registering your subscription to use it.
+    examples:
+      - name: Disable Istio Gateway API implementation for App Routing.
+        text: az aks approuting gateway istio disable --resource-group MyResourceGroup --name MyManagedCluster
 """
 
 helps['aks check-network'] = """
