@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.9.0
++++++
+* Added dataprotection support for AzureCosmosDB workload: new manifest (Microsoft.DocumentDB/databaseAccounts), registration in supported datasource types, datasource map, and permission help text. Added end-to-end backup/restore scenario test, unit tests for default policy template, backup-instance initialize, and restore initialize, and an update-msi-permissions live test that grants Reader/Cosmos DB Operator on the data source RG / account.
+
 1.8.0
 +++++
 * `az dataprotection backup-instance update`: New parameter: `--backup-configuration` to update AKS datasource parameters.

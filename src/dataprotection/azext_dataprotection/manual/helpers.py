@@ -923,6 +923,8 @@ def get_help_word_from_permission_type(permission_type, datasource_type):
             helptext_dsname = "Postgres flexible server"
         if datasource_type == 'AzureDatabaseForMySQL':
             helptext_dsname = "MySQL server"
+        if datasource_type == 'AzureCosmosDB':
+            helptext_dsname = "Cosmos DB account"
 
         return helptext_dsname
 
