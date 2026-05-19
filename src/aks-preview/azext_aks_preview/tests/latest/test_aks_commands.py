@@ -16904,6 +16904,112 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="eastus"
     )
+    def test_aks_nodepool_add_with_secondary_network_interfaces(
+        self, resource_group, resource_group_location
+    ):
+        aks_name = self.create_random_name("cliakstest", 16)
+        nodepool_name = self.create_random_name("n", 6)
+
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "node_pool_name": nodepool_name,
+                "node_vm_size": "standard_d8s_v3",
+            }
+        )
+
+        # Create a VNet with subnets for nodes and secondary NICs
+        self.cmd(
+            "network vnet create "
+            "--resource-group={resource_group} "
+            "--name=testvnet "
+            "--address-prefix 10.0.0.0/16",
+        )
+        self.cmd(
+            "network vnet subnet create "
+            "--resource-group={resource_group} "
+            "--vnet-name=testvnet "
+            "--name=nodesubnet "
+            "--address-prefix 10.0.0.0/24",
+        )
+        subnet = self.cmd(
+            "network vnet subnet create "
+            "--resource-group={resource_group} "
+            "--vnet-name=testvnet "
+            "--name=secondarysubnet "
+            "--address-prefix 10.0.1.0/24",
+        ).get_output_in_json()
+
+        node_subnet_id = (
+            f"/subscriptions/{self.get_subscription_id()}"
+            f"/resourceGroups/{resource_group}"
+            "/providers/Microsoft.Network/virtualNetworks/testvnet/subnets/nodesubnet"
+        )
+        secondary_subnet_id = subnet["id"]
+
+        self.kwargs.update(
+            {
+                "node_subnet_id": node_subnet_id,
+                "secondary_nics": f'[{{"type":"Standard","vnetSubnetId":"{secondary_subnet_id}"}}]',
+            }
+        )
+
+        # Create the cluster
+        self.cmd(
+            "aks create "
+            "--resource-group={resource_group} "
+            "--name={name} "
+            "--location={location} "
+            "--ssh-key-value={ssh_key_value} "
+            "--node-count=1 "
+            "--node-vm-size={node_vm_size} "
+            "--vnet-subnet-id={node_subnet_id} ",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+            ],
+        )
+
+        # Add nodepool with secondary network interfaces
+        self.cmd(
+            "aks nodepool add "
+            "--resource-group={resource_group} "
+            "--cluster-name={name} "
+            "--name={node_pool_name} "
+            "--node-vm-size={node_vm_size} "
+            "--node-count=1 "
+            "--vnet-subnet-id={node_subnet_id} "
+            "--secondary-network-interfaces '{secondary_nics}' ",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check(
+                    "networkProfile.secondaryNetworkInterfaces[0].vnetSubnetId",
+                    secondary_subnet_id,
+                ),
+                self.check(
+                    "networkProfile.secondaryNetworkInterfaces[0].type",
+                    "Standard",
+                ),
+            ],
+        )
+
+        # delete
+        cmd = (
+            "aks delete --resource-group={resource_group} --name={name} --yes --no-wait"
+        )
+        self.cmd(
+            cmd,
+            checks=[
+                self.is_empty(),
+            ],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="eastus"
+    )
     def test_aks_nodepool_update_with_nsg_control(
         self, resource_group, resource_group_location
     ):

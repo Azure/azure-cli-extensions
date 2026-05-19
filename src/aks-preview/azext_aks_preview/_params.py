@@ -2231,7 +2231,8 @@ def load_arguments(self, _):
         # secondary network interfaces
         c.argument(
             'secondary_network_interfaces',
-            help='Secondary network interface configurations as a JSON string or @<filename> to load from a file. '
+            options_list=['--secondary-network-interfaces', '--secondary-nics'],
+            help='Secondary network interface configurations as a JSON string or `@filename` to load from a file. '
                  'Example: \'[{"type":"Standard","vnetSubnetId":"/subscriptions/.../subnets/mysubnet"}]\'',
             is_preview=True,
         )
