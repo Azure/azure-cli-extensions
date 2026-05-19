@@ -12,29 +12,32 @@ interactions:
       - azureml-cli-v2/2.38.1 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.11.9
         (Windows-10-10.0.26200-SP0)
     method: GET
-    uri: https://eastus.api.azureml.ms/registrymanagement/v1.0/registries/testfeed/discovery
+    uri: https://eastus.api.azureml.ms/registrymanagement/v1.0/registries/kchawla-reg/discovery
   response:
     body:
-      string: '{"registryId": "3b513a6b-f110-4e7f-9ce3-472b5aa28170", "registryName":
-        "testfeed", "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47", "primaryRegion":
-        "centraluseuap", "regions": ["centraluseuap"], "subscriptionId": "00000000-0000-0000-0000-000000000000",
-        "resourceGroup": "test-registries", "workspaceName": null, "primaryRegionResourceProviderUri":
-        "https://cert-int.experiments.azureml-test.net/", "registryFqdns": {"centraluseuap":
-        {"uri": "https://int.api.azureml-test.ms"}, "int": {"uri": "https://int.api.azureml-test.ms"}},
-        "intellectualPropertyPublisher": null, "isTradeRestricted": false}'
+      string: '{"registryId": "fc94ce00-c9bb-4361-8e70-25612d497721", "registryName":
+        "kchawla-reg", "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47", "primaryRegion":
+        "eastus2", "regions": ["eastus2", "centraluseuap", "westcentralus", "ukwest"],
+        "subscriptionId": "00000000-0000-0000-0000-000000000000", "resourceGroup":
+        "kchawla-rg", "workspaceName": null, "primaryRegionResourceProviderUri": "https://cert-eastus2.experiments.azureml.net/",
+        "registryFqdns": {"eastus2": {"uri": "https://eastus2.api.azureml.ms"}, "centraluseuap":
+        {"uri": "https://int.api.azureml-test.ms"}, "int": {"uri": "https://int.api.azureml-test.ms"},
+        "westcentralus": {"uri": "https://westcentralus.api.azureml.ms"}, "ukwest":
+        {"uri": "https://ukwest.api.azureml.ms"}}, "intellectualPropertyPublisher":
+        null, "isTradeRestricted": false}'
     headers:
       azureml-served-by-cluster:
       - vienna-eastus-02
       connection:
       - keep-alive
       content-length:
-      - '599'
+      - '800'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 19 May 2026 07:04:23 GMT
+      - Tue, 19 May 2026 09:01:17 GMT
       mise-correlation-id:
-      - 9a5e8839-bf04-47d6-8935-d441f8a9e464
+      - 5187a1e4-c48d-4c63-b80f-994ab6a4a7ad
       request-context:
       - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
       strict-transport-security:
@@ -48,7 +51,7 @@ interactions:
       x-ms-response-type:
       - standard
       x-request-time:
-      - '0.023'
+      - '0.021'
     status:
       code: 200
       message: OK
@@ -65,119 +68,35 @@ interactions:
       - azureml-cli-v2/2.38.1 azsdk-python-mgmt-machinelearningservices/0.1.0 Python/3.11.9
         (Windows-10-10.0.26200-SP0)
     method: GET
-    uri: https://cert-int.experiments.azureml-test.net/mferp/managementfrontend/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/testfeed/environments/000000000000000/versions/93435847-704b-4280-83f3-f735d8b5eff7?api-version=0000-00-00
+    uri: https://cert-eastus2.experiments.azureml.net/mferp/managementfrontend/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/kchawla-reg/environments/kchawla-env/versions/1?api-version=0000-00-00
   response:
     body:
-      string: '{"error": {"code": "UserError", "message": "Could not find asset with
-        ID: azureml://registries/testfeed/environments/4c99f460-20cd-4821-8745-202aa7555604/versions/93435847-704b-4280-83f3-f735d8b5eff7",
-        "details": [], "additionalInfo": [{"type": "ComponentName", "info": {"value":
-        "managementfrontend"}}, {"type": "Correlation", "info": {"value": {"operation":
-        "c7561a3007e6b28110307fff09a5e1dc", "request": "81db548caa9bf871"}}}, {"type":
-        "Environment", "info": {"value": "int"}}, {"type": "Location", "info": {"value":
-        "westus3"}}, {"type": "Time", "info": {"value": "2026-05-19T07:04:25.2605144+00:00"}},
-        {"type": "DebugInfo", "info": {"value": {"type": "Microsoft.MachineLearning.Common.Core.ServiceInvocationException",
-        "message": "Service invocation failed!\r\nRequest: GET environment-management.vienna-int.svc/environment/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/testfeed/MFE/versions/environments/4c99f460-20cd-4821-8745-202aa7555604/versions/93435847-704b-4280-83f3-f735d8b5eff7\r\nStatus
-        Code: 404 NotFound\r\nError Code: UserError/NotFoundError\r\nReason Phrase:
-        Could not find asset with ID: azureml://registries/testfeed/environments/4c99f460-20cd-4821-8745-202\r\nResponse
-        Body: {\n  \"error\": {\n    \"code\": \"UserError\",\n    \"severity\": null,\n    \"message\":
-        \"Could not find asset with ID: azureml://registries/testfeed/environments/4c99f460-20cd-4821-8745-202aa7555604/versions/93435847-704b-4280-83f3-f735d8b5eff7\",\n    \"messageFormat\":
-        null,\n    \"messageParameters\": null,\n    \"referenceCode\": null,\n    \"detailsUri\":
-        null,\n    \"target\": null,\n    \"details\": [],\n    \"innerError\": {\n      \"code\":
-        \"NotFoundError\",\n      \"innerError\": null\n    },\n    \"debugInfo\":
-        {\n      \"type\": \"Common.WebApi.Exceptions.ResourceNotFoundException\",\n      \"message\":
-        \"Could not find asset with ID: azureml://registries/testfeed/environments/4c99f460-20cd-4821-8745-202aa7555604/versions/93435847-704b-4280-83f3-f735d8b5eff7\",\n      \"stackTrace\":
-        \"   at Microsoft.MachineLearning.EnvironmentManagement.Services.EnvironmentVersionService.Get(HttpContext
-        httpContext, ControllerContext controllerContext, RegistryContext registry,
-        String name, String version) in /mnt/vss/_work/1/s/src/azureml-api/src/EnvironmentManagement/Services/EnvironmentVersionService.cs:line
-        208\\n   at Microsoft.MachineLearning.EnvironmentManagement.EntryPoints.Api.Controllers.MFE.EnvironmentResourceVersionController.GetEnvironmentVersionFromRegistry(RegistryContext
-        registryContext, String environmentName, String environmentVersion) in /mnt/vss/_work/1/s/src/azureml-api/src/EnvironmentManagement/EntryPoints/Api/Controllers/MFE/EnvironmentResourceVersionController.cs:line
-        90\\n   at lambda_method1805(Closure, Object)\\n   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext
-        actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor,
-        Object controller, Object[] arguments)\\n   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Logged|12_1(ControllerActionInvoker
-        invoker)\\n   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker
-        invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)\\n   at
-        Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed
-        context)\\n   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State&
-        next, Scope& scope, Object& state, Boolean& isCompleted)\\n   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker
-        invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)\\n   at
-        Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextExceptionFilterAsync>g__Awaited|26_0(ResourceInvoker
-        invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)\",\n      \"innerException\":
-        null,\n      \"data\": {},\n      \"errorResponse\": null\n    },\n    \"additionalInfo\":
-        null\n  },\n  \"correlation\": {\n    \"operation\": \"c7561a3007e6b28110307fff09a5e1dc\",\n    \"request\":
-        \"5ed4511d450c2191\"\n  },\n  \"environment\": \"int\",\n  \"location\": \"westus3\",\n  \"time\":
-        \"2026-05-19T07:04:25.2363141+00:00\",\n  \"componentName\": \"environment-management\",\n  \"statusCode\":
-        404\n}", "stackTrace": "   at Microsoft.MachineLearning.Common.WebApi.Client.ServiceInvoker._MakeRequest(UriBuilder
-        builder, MethodDetails details, CancellationToken cancellationToken, Nullable`1
-        initialStreamPosition, Uri fallbackServiceAddress, Object[] parameters) in
-        /mnt/vss/_work/1/s/src/azureml-api/src/Common/WebApi.Client/ServiceInvoker.cs:line
-        935\n   at Polly.Retry.AsyncRetryEngine.ImplementationAsync[TResult](Func`3
-        action, Context context, CancellationToken cancellationToken, ExceptionPredicates
-        shouldRetryExceptionPredicates, ResultPredicates`1 shouldRetryResultPredicates,
-        Func`5 onRetryAsync, Int32 permittedRetryCount, IEnumerable`1 sleepDurationsEnumerable,
-        Func`4 sleepDurationProvider, Boolean continueOnCapturedContext)\n   at Polly.AsyncPolicy.ExecuteAsync[TResult](Func`3
-        action, Context context, CancellationToken cancellationToken, Boolean continueOnCapturedContext)\n   at
-        Microsoft.MachineLearning.Common.WebApi.Client.ServiceInvoker._Invoke[T](String
-        methodId, Object[] parameters) in /mnt/vss/_work/1/s/src/azureml-api/src/Common/WebApi.Client/ServiceInvoker.cs:line
-        275\n   at Microsoft.MachineLearning.ManagementFrontEnd.Services.Services.EnvironmentSpecificationService.GetEntity(RegistryContext
-        registry, String name, String version) in /mnt/vss/_work/1/s/src/azureml-api/src/ManagementFrontEnd/Services/Services/EnvironmentSpecificationService.cs:line
-        175\n   at Microsoft.MachineLearning.ManagementFrontEnd.EntryPoints.Api.V20211001Dataplane.Controllers.ResourceVersionControllerBase`2.GetEntity(RegistryContext
-        registryContext, String name, String version, String apiVersion) in /mnt/vss/_work/1/s/src/azureml-api/src/ManagementFrontEnd/EntryPoints/Api/V20211001Dataplane/Controllers/ResourceVersionControllerBase.cs:line
-        102\n   at Microsoft.MachineLearning.ManagementFrontEnd.EntryPoints.Api.V20211001Dataplane.Controllers.EnvironmentVersionController.GetEntity(RegistryContext
-        registryContext, String name, String version, String apiVersion) in /mnt/vss/_work/1/s/src/azureml-api/src/ManagementFrontEnd/EntryPoints/Api/V20211001Dataplane/Controllers/EnvironmentVersionController.cs:line
-        73\n   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext
-        actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor,
-        Object controller, Object[] arguments)\n   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Logged|12_1(ControllerActionInvoker
-        invoker)\n   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker
-        invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)\n   at
-        Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed
-        context)\n   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State&
-        next, Scope& scope, Object& state, Boolean& isCompleted)\n   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker
-        invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)\n   at
-        Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextExceptionFilterAsync>g__Awaited|26_0(ResourceInvoker
-        invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)",
-        "innerException": null, "data": {}, "errorResponse": {"error": {"code": "UserError",
-        "severity": null, "message": "Could not find asset with ID: azureml://registries/testfeed/environments/4c99f460-20cd-4821-8745-202aa7555604/versions/93435847-704b-4280-83f3-f735d8b5eff7",
-        "messageFormat": null, "messageParameters": null, "referenceCode": null, "detailsUri":
-        null, "target": null, "details": [], "innerError": {"code": "NotFoundError",
-        "innerError": null}, "debugInfo": {"type": "Common.WebApi.Exceptions.ResourceNotFoundException",
-        "message": "Could not find asset with ID: azureml://registries/testfeed/environments/4c99f460-20cd-4821-8745-202aa7555604/versions/93435847-704b-4280-83f3-f735d8b5eff7",
-        "stackTrace": "   at Microsoft.MachineLearning.EnvironmentManagement.Services.EnvironmentVersionService.Get(HttpContext
-        httpContext, ControllerContext controllerContext, RegistryContext registry,
-        String name, String version) in /mnt/vss/_work/1/s/src/azureml-api/src/EnvironmentManagement/Services/EnvironmentVersionService.cs:line
-        208\n   at Microsoft.MachineLearning.EnvironmentManagement.EntryPoints.Api.Controllers.MFE.EnvironmentResourceVersionController.GetEnvironmentVersionFromRegistry(RegistryContext
-        registryContext, String environmentName, String environmentVersion) in /mnt/vss/_work/1/s/src/azureml-api/src/EnvironmentManagement/EntryPoints/Api/Controllers/MFE/EnvironmentResourceVersionController.cs:line
-        90\n   at lambda_method1805(Closure, Object)\n   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext
-        actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor,
-        Object controller, Object[] arguments)\n   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Logged|12_1(ControllerActionInvoker
-        invoker)\n   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker
-        invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)\n   at
-        Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed
-        context)\n   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State&
-        next, Scope& scope, Object& state, Boolean& isCompleted)\n   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker
-        invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)\n   at
-        Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextExceptionFilterAsync>g__Awaited|26_0(ResourceInvoker
-        invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)",
-        "innerException": null, "data": {}, "errorResponse": null}, "additionalInfo":
-        null}, "correlation": {"operation": "c7561a3007e6b28110307fff09a5e1dc", "request":
-        "5ed4511d450c2191"}, "environment": "int", "location": "westus3", "time":
-        "2026-05-19T07:04:25.2363141+00:00", "componentName": "environment-management",
-        "statusCode": 404}}}}, {"type": "InnerError", "info": {"value": {"code": "NotFoundError",
-        "innerError": null}}}]}}'
+      string: '{"id": "azureml://registries/kchawla-reg/environments/kchawla-env/versions/1",
+        "name": "1", "type": "environments", "properties": {"description": "Environment
+        created in kchawla-reg registry.", "tags": {}, "properties": {"azureml.labels":
+        "default,latest,invisibleLatest"}, "isArchived": true, "isAnonymous": false,
+        "environmentType": "UserCreated", "image": "mcr.microsoft.com/azureml/openmpi4.1.0-ubuntu22.04:latest",
+        "condaFile": "{\n  \"channels\": [\n    \"conda-forge\"\n  ],\n  \"dependencies\":
+        [\n    \"python=3.10\",\n    \"pip\",\n    {\n      \"pip\": [\n        \"azure-ai-ml\",\n        \"azure-identity\",\n        \"mlflow\",\n        \"scikit-learn\",\n        \"pandas\",\n        \"numpy\"\n      ]\n    }\n  ],\n  \"name\":
+        \"kchawla-env\"\n}", "osType": "Linux", "stage": "Archived", "intellectualProperty":
+        null}, "systemData": {"createdAt": "2026-05-18T17:52:59.2719411+00:00", "createdBy":
+        "Kshitij Chawla", "createdByType": "User", "lastModifiedAt": "2026-05-18T17:52:59.2719411+00:00",
+        "lastModifiedBy": "Kshitij Chawla", "lastModifiedByType": "User"}}'
     headers:
       azureml-served-by-cluster:
-      - int-01
+      - vienna-eastus2-02
       connection:
       - keep-alive
       content-length:
-      - '11208'
+      - '1078'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 19 May 2026 07:04:25 GMT
+      - Tue, 19 May 2026 09:01:19 GMT
       mise-correlation-id:
-      - 992f474f-5e4a-48a2-bf34-b1f74190700b
+      - 32b86488-c3c4-42f8-a231-90ed28ee23dd
       request-context:
-      - appId=
+      - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
       strict-transport-security:
       - max-age=31536000; includeSubDomains; preload
       transfer-encoding:
@@ -186,13 +105,11 @@ interactions:
       - Accept-Encoding
       x-content-type-options:
       - nosniff
-      x-envoy-upstream-service-time:
-      - '652'
       x-ms-response-type:
-      - error
+      - standard
       x-request-time:
-      - '0.655'
+      - '0.521'
     status:
-      code: 404
-      message: Not Found
+      code: 200
+      message: OK
 version: 1
