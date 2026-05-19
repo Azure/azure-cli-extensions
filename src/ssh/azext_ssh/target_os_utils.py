@@ -51,7 +51,7 @@ def handle_target_os_type(cmd, op_info):
 
 
 def _get_azure_vm_os(cmd, resource_group_name, vm_name):
-    from azure.cli.command_modules.vm.aaz.latest.vm import Show as VMShow
+    from azure.cli.command_modules.vm.operations.vm import VMShow
     os_type = None
     # pylint: disable=broad-except
     try:

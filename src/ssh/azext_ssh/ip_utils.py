@@ -13,7 +13,7 @@ logger = log.get_logger(__name__)
 def get_ssh_ip(cmd, resource_group, vm_name, use_private_ip):
     from .aaz.latest.network.public_ip import Show as PublicIpShow
     from .aaz.latest.network.nic import Show as InterfaceShow
-    from azure.cli.command_modules.vm.aaz.latest.vm import Show as VMShow
+    from azure.cli.command_modules.vm.operations.vm import VMShow
 
     command_args = {
         'resource_group': resource_group,
