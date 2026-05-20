@@ -201,7 +201,7 @@ def load_arguments(self, _):
         c.argument('delete_policy', help='Delete policy for the namespace.', arg_type=get_enum_type(['Keep', 'Delete']), default='Keep')
         c.argument('adoption_policy', help='Adoption policy for the namespace.', arg_type=get_enum_type(['Always', 'IfIdentical', 'Never']), default='Never')
         c.argument('member_cluster_names', nargs='*', validator=validate_member_cluster_names, help='Space-separated list of member cluster names to apply the namespace to.')
-        c.argument('cluster_update_strategy', help='Name of an existing cluster staged update strategy. When specified, rollout strategy is automatically set to External; otherwise defaults to RollingUpdate.', is_preview=True)
+        c.argument('rollout_update_strategy', help='Name of an existing cluster staged update strategy. When specified, rollout strategy is automatically set to External; otherwise defaults to RollingUpdate.', is_preview=True)
 
     with self.argument_context('fleet namespace update') as c:
         c.argument('tags', tags_type)
@@ -216,7 +216,7 @@ def load_arguments(self, _):
         c.argument('delete_policy', help='Delete policy for the namespace.', arg_type=get_enum_type(['Keep', 'Delete']))
         c.argument('adoption_policy', help='Adoption policy for the namespace.', arg_type=get_enum_type(['Always', 'IfIdentical', 'Never']))
         c.argument('member_cluster_names', nargs='*', validator=validate_member_cluster_names, help='Space-separated list of member cluster names to apply the namespace to.')
-        c.argument('cluster_update_strategy', help='Name of the cluster update strategy. When specified, rollout strategy is automatically set to External; otherwise defaults to RollingUpdate.', is_preview=True)
+        c.argument('rollout_update_strategy', help='Name of the cluster update strategy. When specified, rollout strategy is automatically set to External; otherwise defaults to RollingUpdate.', is_preview=True)
 
     with self.argument_context('fleet namespace get-credentials') as c:
         c.argument('managed_namespace_name', options_list=['--name', '-n'], help='Specify the managed namespace name.')

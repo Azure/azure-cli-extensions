@@ -549,7 +549,7 @@ helps['fleet namespace create'] = """
         - name: Create a fleet managed namespace on specific member clusters.
           text: az fleet namespace create -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --member-cluster-names team-01 team-02 team-03 team-04
         - name: Create a fleet managed namespace with an external rollout strategy.
-          text: az fleet namespace create -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --member-cluster-names team-01 team-02 --cluster-update-strategy MyUpdateStrategy
+          text: az fleet namespace create -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --member-cluster-names team-01 team-02 --rollout-update-strategy MyUpdateStrategy
 """
 
 helps['fleet namespace update'] = """
@@ -566,8 +566,8 @@ helps['fleet namespace update'] = """
           text: az fleet namespace update -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --ingress-policy AllowAll --egress-policy DenyAll --adoption-policy IfIdentical --delete-policy Delete
         - name: Update member cluster placement.
           text: az fleet namespace update -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --member-cluster-names team-01 team-02 team-03
-        - name: Update the rollout strategy to external with a cluster update strategy.
-          text: az fleet namespace update -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --cluster-update-strategy my-update-strategy
+        - name: Update the rollout strategy to external with an update strategy.
+          text: az fleet namespace update -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --rollout-update-strategy my-update-strategy
 """
 
 helps['fleet namespace list'] = """

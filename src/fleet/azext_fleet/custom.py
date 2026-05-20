@@ -967,19 +967,19 @@ def _build_network_policy(cmd, ingress_policy, egress_policy):
     return network_policy_model(**network_policies)
 
 
-def _build_propagation_policy(member_cluster_names, cluster_update_strategy=None):
+def _build_propagation_policy(member_cluster_names, rollout_update_strategy=None):
     rollout_strategy_obj = None
-    if cluster_update_strategy:
+    if rollout_update_strategy:
         rollout_strategy_obj = PlacementV1RolloutStrategy(
             type=RolloutStrategyType.EXTERNAL.value,
-            cluster_update_strategy=PlacementV1ClusterUpdateStrategyReference(name=cluster_update_strategy)
+            cluster_update_strategy=PlacementV1ClusterUpdateStrategyReference(name=rollout_update_strategy)
         )
     else:
         rollout_strategy_obj = PlacementV1RolloutStrategy(
             type=RolloutStrategyType.ROLLING_UPDATE.value
         )
 
-    if not (member_cluster_names or cluster_update_strategy):
+    if not (member_cluster_names or rollout_update_strategy):
         return None
 
     placement_policy = None
@@ -1018,7 +1018,7 @@ def create_managed_namespace(cmd,
                              delete_policy=None,
                              adoption_policy=None,
                              member_cluster_names=None,
-                             cluster_update_strategy=None,
+                             rollout_update_strategy=None,
                              no_wait=False):
 
     managed_namespace_model = cmd.get_models(
@@ -1049,7 +1049,7 @@ def create_managed_namespace(cmd,
         default_network_policy=_build_network_policy(cmd, ingress_policy, egress_policy)
     )
 
-    propagation_policy = _build_propagation_policy(member_cluster_names, cluster_update_strategy)
+    propagation_policy = _build_propagation_policy(member_cluster_names, rollout_update_strategy)
     if not member_cluster_names:
         logger.warning("--member-cluster-names was empty; namespace will not be placed on any member clusters")
 
@@ -1094,7 +1094,7 @@ def update_managed_namespace(cmd,
                              delete_policy=None,
                              adoption_policy=None,
                              member_cluster_names=None,
-                             cluster_update_strategy=None,
+                             rollout_update_strategy=None,
                              no_wait=False):
     fleet_managed_namespace_patch_model = cmd.get_models(
         "FleetManagedNamespacePatch",
@@ -1129,7 +1129,7 @@ def update_managed_namespace(cmd,
         managed_namespace_properties=managed_namespace_props,
         adoption_policy=adoption_policy,
         delete_policy=delete_policy,
-        propagation_policy=_build_propagation_policy(member_cluster_names, cluster_update_strategy)
+        propagation_policy=_build_propagation_policy(member_cluster_names, rollout_update_strategy)
     )
 
     patch = fleet_managed_namespace_patch_model(
