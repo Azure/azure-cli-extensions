@@ -138,7 +138,9 @@ class VMAEM(ScenarioTest):
             'subnet': 'subnet'
         })
 
-        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image RedHat:RHEL:8.2:latest --generate-ssh-keys --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE --size Standard_D2s_v3')
+        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image Canonical:UbuntuServer:16.04-LTS:latest '
+                 '--admin-password thisisaTest!@ --generate-ssh-keys --subnet {subnet} --vnet-name {vnet} '
+                 '--nsg-rule NONE --size Standard_D2s_v3')
         self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet} --default-outbound-access false')
 
         with self.assertRaises(CLIError) as cm:
@@ -171,7 +173,9 @@ class VMAEM(ScenarioTest):
             'subnet': 'subnet'
         })
 
-        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image RedHat:RHEL:7.8:latest --generate-ssh-keys --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE --size Standard_D2s_v3')
+        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image Canonical:UbuntuServer:16.04-LTS:latest '
+                 '--admin-password thisisaTest!@ --generate-ssh-keys --subnet {subnet} --vnet-name {vnet} '
+                 '--nsg-rule NONE --size Standard_D2s_v3')
         self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet} --default-outbound-access false')
 
         with self.assertRaises(CLIError) as cm:
@@ -207,7 +211,9 @@ class VMAEM(ScenarioTest):
             'subnet': 'subnet'
         })
 
-        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image SUSE:sles-15-sp2:gen2:latest --generate-ssh-keys --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE --size Standard_D2s_v3')
+        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image Canonical:UbuntuServer:16.04-LTS:latest '
+                 '--admin-password thisisaTest!@ --generate-ssh-keys --subnet {subnet} --vnet-name {vnet} '
+                 '--nsg-rule NONE --size Standard_D2s_v3')
         self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet} --default-outbound-access false')
 
         with self.assertRaises(CLIError) as cm:
