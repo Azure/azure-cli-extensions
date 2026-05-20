@@ -967,16 +967,16 @@ def _build_network_policy(cmd, ingress_policy, egress_policy):
     return network_policy_model(**network_policies)
 
 
-def _build_propagation_policy(member_cluster_names, rollout_update_strategy=None):
+def _build_propagation_policy(member_cluster_names, rollout_update_strategy=None, default_rollout_type=None):
     rollout_strategy_obj = None
     if rollout_update_strategy:
         rollout_strategy_obj = PlacementV1RolloutStrategy(
             type=RolloutStrategyType.EXTERNAL.value,
             cluster_update_strategy=PlacementV1ClusterUpdateStrategyReference(name=rollout_update_strategy)
         )
-    else:
+    elif default_rollout_type:
         rollout_strategy_obj = PlacementV1RolloutStrategy(
-            type=RolloutStrategyType.ROLLING_UPDATE.value
+            type=default_rollout_type
         )
 
     if not (member_cluster_names or rollout_update_strategy):
@@ -1049,7 +1049,10 @@ def create_managed_namespace(cmd,
         default_network_policy=_build_network_policy(cmd, ingress_policy, egress_policy)
     )
 
-    propagation_policy = _build_propagation_policy(member_cluster_names, rollout_update_strategy)
+    propagation_policy = _build_propagation_policy(
+        member_cluster_names, rollout_update_strategy,
+        default_rollout_type=RolloutStrategyType.ROLLING_UPDATE.value
+    )
     if not member_cluster_names:
         logger.warning("--member-cluster-names was empty; namespace will not be placed on any member clusters")
 
