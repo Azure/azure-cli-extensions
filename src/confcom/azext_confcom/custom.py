@@ -42,6 +42,7 @@ def acipolicygen_confcom(
     virtual_node_yaml_path: str,
     infrastructure_svn: str,
     tar_mapping_location: str,
+    platform: str = "linux/amd64",
     container_definitions: Optional[list] = None,
     approve_wildcards: str = False,
     outraw: bool = False,
@@ -120,6 +121,7 @@ def acipolicygen_confcom(
         if output_type == security_policy.OutputType.DEFAULT
         else "clear text",
     )
+    logger.warning("Using platform: %s", platform)
     # error checking for making sure an input is provided is above
     if input_path:
         container_group_policies = security_policy.load_policy_from_json_file(
@@ -128,6 +130,8 @@ def acipolicygen_confcom(
             infrastructure_svn=infrastructure_svn,
             disable_stdio=(not stdio_enabled),
             exclude_default_fragments=exclude_default_fragments,
+            platform=platform,
+            tar_mapping=tar_mapping,
         )
     elif arm_template:
         container_group_policies = security_policy.load_policy_from_arm_template_file(
@@ -140,10 +144,13 @@ def acipolicygen_confcom(
             diff_mode=diff,
             rego_imports=fragments_list,
             exclude_default_fragments=exclude_default_fragments,
+            platform=platform,
+            tar_mapping=tar_mapping,
         )
     elif image_name:
         container_group_policies = security_policy.load_policy_from_image_name(
-            image_name, debug_mode=debug_mode, disable_stdio=(not stdio_enabled)
+            image_name, debug_mode=debug_mode, disable_stdio=(not stdio_enabled),
+            platform=platform, tar_mapping=tar_mapping,
         )
     elif virtual_node_yaml_path:
         container_group_policies = security_policy.load_policy_from_virtual_node_yaml_file(
@@ -155,6 +162,8 @@ def acipolicygen_confcom(
             rego_imports=fragments_list,
             exclude_default_fragments=exclude_default_fragments,
             infrastructure_svn=infrastructure_svn,
+            platform=platform,
+            tar_mapping=tar_mapping,
         )
     elif container_definitions:
         container_group_policies = AciPolicy(
@@ -193,7 +202,6 @@ def acipolicygen_confcom(
             policy.set_fragment_contents(fragment_policy_list)
 
     for count, policy in enumerate(container_group_policies):
-        # this is where parameters and variables are populated
         policy.populate_policy_content_for_all_images(
             individual_image=bool(image_name), tar_mapping=tar_mapping, faster_hashing=faster_hashing
         )
@@ -320,14 +328,16 @@ def acifragmentgen_confcom(
 
     if image_name:
         policy = security_policy.load_policy_from_image_name(
-            image_name, debug_mode=debug_mode, disable_stdio=(not stdio_enabled)
+            image_name, debug_mode=debug_mode, disable_stdio=(not stdio_enabled),
+            tar_mapping=tar_mapping,
         )
     elif input_path:
         # this is using --input
         if not tar_mapping:
             tar_mapping = os_util.load_tar_mapping_from_config_file(input_path)
         policy = security_policy.load_policy_from_json_file(
-            input_path, debug_mode=debug_mode, disable_stdio=(not stdio_enabled)
+            input_path, debug_mode=debug_mode, disable_stdio=(not stdio_enabled),
+            tar_mapping=tar_mapping,
         )
     elif container_definitions:
         policy = AciPolicy(
@@ -581,7 +591,7 @@ def containers_from_image(
 ) -> None:
     _containers_from_image(
         image=image,
-        platform=platform,
+        aci_or_vn2=platform,
     )
 
 

@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "monitor pipeline-group",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Pipeline Groups
+    """Manage Azure Monitor Pipelines
     """
     pass
 

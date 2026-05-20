@@ -30,9 +30,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-07-15",
+        "version": "2026-01-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics/{}", "2025-07-15"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics/{}", "2026-01-15-preview"],
         ]
     }
 
@@ -184,6 +184,12 @@ class Update(AAZCommand):
                 minimum=1,
             ),
         )
+        _args_schema.secret_archive_settings = AAZObjectArg(
+            options=["--archive-settings", "--secret-archive-settings"],
+            arg_group="Properties",
+            help="The settings for a customer secret archive that may be used to hold copies of credentials for the Network Fabric.",
+            nullable=True,
+        )
         _args_schema.server_count_per_rack = AAZIntArg(
             options=["--server-count-per-rack"],
             arg_group="Properties",
@@ -216,6 +222,12 @@ class Update(AAZCommand):
             options=["--unique-rd-config", "--unique-rd-configuration"],
             arg_group="Properties",
             help="Unique Route Distinguisher configuration",
+            nullable=True,
+        )
+        _args_schema.upgrade_profile = AAZListArg(
+            options=["--upgrade-profile"],
+            arg_group="Properties",
+            help="The upgrade profile to be used by devices in the network fabric during device operations",
             nullable=True,
         )
 
@@ -264,6 +276,17 @@ class Update(AAZCommand):
             options=["qos-configuration-state"],
             help="QoS configuration state. Default is Disabled.",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
+
+        secret_archive_settings = cls._args_schema.secret_archive_settings
+        secret_archive_settings.associated_identity = AAZObjectArg(
+            options=["associated-identity"],
+            help="The selection of the managed identity to use with this vault URI. The identity type must be either system assigned or user assigned.",
+        )
+        cls._build_args_identity_selector_patch_update(secret_archive_settings.associated_identity)
+        secret_archive_settings.vault_uri = AAZStrArg(
+            options=["vault-uri"],
+            help="The URI for the key vault used as the secret archive.",
         )
 
         storage_account_configuration = cls._args_schema.storage_account_configuration
@@ -347,7 +370,62 @@ class Update(AAZCommand):
             help="Unique Route Distinguisher configuration state. Default is Enabled.",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
+
+        upgrade_profile = cls._args_schema.upgrade_profile
+        upgrade_profile.Element = AAZObjectArg()
+
+        _element = cls._args_schema.upgrade_profile.Element
+        _element.post_upgrade_profile = AAZObjectArg(
+            options=["post-upgrade-profile"],
+            help="The post-upgrade configuration parameters to be used by devices in the network fabric during device upgrade operations",
+        )
+        _element.pre_upgrade_profile = AAZObjectArg(
+            options=["pre-upgrade-profile"],
+            help="The pre-upgrade configuration parameters to be used by devices in the network fabric during device upgrade operations",
+        )
+
+        post_upgrade_profile = cls._args_schema.upgrade_profile.Element.post_upgrade_profile
+        post_upgrade_profile.max_exiting_maintenance_timeout_in_seconds = AAZIntArg(
+            options=["max-exiting-maintenance-timeout-in-seconds"],
+            help="Maximum wait time in seconds for during the post-upgrade process for devices in the network fabric to successfully move out of maintenance mode.",
+        )
+        post_upgrade_profile.mlag_reload_delay_timeout_in_seconds = AAZIntArg(
+            options=["mlag-reload-delay-timeout-in-seconds"],
+            help="Maximum time in seconds to wait for MLAG reload delay on devices in the network fabric.",
+        )
+
+        pre_upgrade_profile = cls._args_schema.upgrade_profile.Element.pre_upgrade_profile
+        pre_upgrade_profile.max_entering_maintenance_timeout_in_seconds = AAZIntArg(
+            options=["max-entering-maintenance-timeout-in-seconds"],
+            help="Maximum wait time in seconds for during the pre-upgrade process for devices in the network fabric to successfully move into maintenance mode.",
+        )
         return cls._args_schema
+
+    _args_identity_selector_patch_update = None
+
+    @classmethod
+    def _build_args_identity_selector_patch_update(cls, _schema):
+        if cls._args_identity_selector_patch_update is not None:
+            _schema.identity_type = cls._args_identity_selector_patch_update.identity_type
+            _schema.user_assigned_identity_resource_id = cls._args_identity_selector_patch_update.user_assigned_identity_resource_id
+            return
+
+        cls._args_identity_selector_patch_update = AAZObjectArg()
+
+        identity_selector_patch_update = cls._args_identity_selector_patch_update
+        identity_selector_patch_update.identity_type = AAZStrArg(
+            options=["identity-type"],
+            help="The type of managed identity that is being selected.",
+            enum={"SystemAssignedIdentity": "SystemAssignedIdentity", "UserAssignedIdentity": "UserAssignedIdentity"},
+        )
+        identity_selector_patch_update.user_assigned_identity_resource_id = AAZResourceIdArg(
+            options=["user-assigned-identity-resource-id"],
+            help="The user assigned managed identity resource ID to use. Mutually exclusive with a system assigned identity type.",
+            nullable=True,
+        )
+
+        _schema.identity_type = cls._args_identity_selector_patch_update.identity_type
+        _schema.user_assigned_identity_resource_id = cls._args_identity_selector_patch_update.user_assigned_identity_resource_id
 
     _args_vpn_configuration_patchable_properties_update = None
 
@@ -574,7 +652,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-15",
+                    "api-version", "2026-01-15-preview",
                     required=True,
                 ),
             }
@@ -625,11 +703,13 @@ class Update(AAZCommand):
                 properties.set_prop("managementNetworkConfiguration", AAZObjectType, ".management_network_configuration", typ_kwargs={"nullable": True})
                 properties.set_prop("qosConfiguration", AAZObjectType, ".qos_configuration", typ_kwargs={"nullable": True})
                 properties.set_prop("rackCount", AAZIntType, ".rack_count", typ_kwargs={"nullable": True})
+                properties.set_prop("secretArchiveSettings", AAZObjectType, ".secret_archive_settings", typ_kwargs={"nullable": True})
                 properties.set_prop("serverCountPerRack", AAZIntType, ".server_count_per_rack", typ_kwargs={"nullable": True})
                 properties.set_prop("storageAccountConfiguration", AAZObjectType, ".storage_account_configuration", typ_kwargs={"nullable": True})
                 properties.set_prop("terminalServerConfiguration", AAZObjectType, ".terminal_server_configuration", typ_kwargs={"nullable": True})
                 properties.set_prop("trustedIpPrefixes", AAZListType, ".trusted_ip_prefixes", typ_kwargs={"nullable": True})
                 properties.set_prop("uniqueRdConfiguration", AAZObjectType, ".unique_rd_configuration", typ_kwargs={"nullable": True})
+                properties.set_prop("upgradeProfile", AAZListType, ".upgrade_profile", typ_kwargs={"nullable": True})
 
             authorized_transceiver = _builder.get(".properties.authorizedTransceiver")
             if authorized_transceiver is not None:
@@ -657,6 +737,11 @@ class Update(AAZCommand):
             qos_configuration = _builder.get(".properties.qosConfiguration")
             if qos_configuration is not None:
                 qos_configuration.set_prop("qosConfigurationState", AAZStrType, ".qos_configuration_state")
+
+            secret_archive_settings = _builder.get(".properties.secretArchiveSettings")
+            if secret_archive_settings is not None:
+                _UpdateHelper._build_schema_identity_selector_patch_update(secret_archive_settings.set_prop("associatedIdentity", AAZObjectType, ".associated_identity"))
+                secret_archive_settings.set_prop("vaultUri", AAZStrType, ".vault_uri")
 
             storage_account_configuration = _builder.get(".properties.storageAccountConfiguration")
             if storage_account_configuration is not None:
@@ -686,6 +771,24 @@ class Update(AAZCommand):
             if unique_rd_configuration is not None:
                 unique_rd_configuration.set_prop("nniDerivedUniqueRdConfigurationState", AAZStrType, ".nni_derived_unique_rd_configuration_state")
                 unique_rd_configuration.set_prop("uniqueRdConfigurationState", AAZStrType, ".unique_rd_configuration_state")
+
+            upgrade_profile = _builder.get(".properties.upgradeProfile")
+            if upgrade_profile is not None:
+                upgrade_profile.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.upgradeProfile[]")
+            if _elements is not None:
+                _elements.set_prop("postUpgradeProfile", AAZObjectType, ".post_upgrade_profile")
+                _elements.set_prop("preUpgradeProfile", AAZObjectType, ".pre_upgrade_profile")
+
+            post_upgrade_profile = _builder.get(".properties.upgradeProfile[].postUpgradeProfile")
+            if post_upgrade_profile is not None:
+                post_upgrade_profile.set_prop("maxExitingMaintenanceTimeoutInSeconds", AAZIntType, ".max_exiting_maintenance_timeout_in_seconds")
+                post_upgrade_profile.set_prop("mlagReloadDelayTimeoutInSeconds", AAZIntType, ".mlag_reload_delay_timeout_in_seconds")
+
+            pre_upgrade_profile = _builder.get(".properties.upgradeProfile[].preUpgradeProfile")
+            if pre_upgrade_profile is not None:
+                pre_upgrade_profile.set_prop("maxEnteringMaintenanceTimeoutInSeconds", AAZIntType, ".max_entering_maintenance_timeout_in_seconds")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -824,6 +927,11 @@ class Update(AAZCommand):
                 serialized_name="managementNetworkConfiguration",
                 flags={"required": True},
             )
+            properties.network_bootstrap_device_id = AAZStrType(
+                serialized_name="networkBootstrapDeviceId",
+                nullable=True,
+                flags={"read_only": True},
+            )
             properties.network_fabric_controller_id = AAZStrType(
                 serialized_name="networkFabricControllerId",
                 flags={"required": True},
@@ -832,6 +940,10 @@ class Update(AAZCommand):
             properties.network_fabric_sku = AAZStrType(
                 serialized_name="networkFabricSku",
                 flags={"required": True},
+            )
+            properties.operational_state = AAZStrType(
+                serialized_name="operationalState",
+                flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -849,6 +961,9 @@ class Update(AAZCommand):
             properties.router_ids = AAZListType(
                 serialized_name="routerIds",
                 flags={"read_only": True},
+            )
+            properties.secret_archive_settings = AAZObjectType(
+                serialized_name="secretArchiveSettings",
             )
             properties.secret_rotation_summary = AAZObjectType(
                 serialized_name="secretRotationSummary",
@@ -873,6 +988,9 @@ class Update(AAZCommand):
             )
             properties.unique_rd_configuration = AAZObjectType(
                 serialized_name="uniqueRdConfiguration",
+            )
+            properties.upgrade_profile = AAZListType(
+                serialized_name="upgradeProfile",
             )
 
             active_commit_batches = cls._schema_on_200.properties.active_commit_batches
@@ -943,6 +1061,17 @@ class Update(AAZCommand):
             router_ids = cls._schema_on_200.properties.router_ids
             router_ids.Element = AAZStrType()
 
+            secret_archive_settings = cls._schema_on_200.properties.secret_archive_settings
+            secret_archive_settings.associated_identity = AAZObjectType(
+                serialized_name="associatedIdentity",
+                flags={"required": True},
+            )
+            _UpdateHelper._build_schema_identity_selector_read(secret_archive_settings.associated_identity)
+            secret_archive_settings.vault_uri = AAZStrType(
+                serialized_name="vaultUri",
+                flags={"required": True},
+            )
+
             secret_rotation_summary = cls._schema_on_200.properties.secret_rotation_summary
             secret_rotation_summary.active_password_set_count = AAZIntType(
                 serialized_name="activePasswordSetCount",
@@ -957,16 +1086,7 @@ class Update(AAZCommand):
             storage_account_configuration.storage_account_identity = AAZObjectType(
                 serialized_name="storageAccountIdentity",
             )
-
-            storage_account_identity = cls._schema_on_200.properties.storage_account_configuration.storage_account_identity
-            storage_account_identity.identity_type = AAZStrType(
-                serialized_name="identityType",
-                flags={"required": True},
-            )
-            storage_account_identity.user_assigned_identity_resource_id = AAZStrType(
-                serialized_name="userAssignedIdentityResourceId",
-                nullable=True,
-            )
+            _UpdateHelper._build_schema_identity_selector_read(storage_account_configuration.storage_account_identity)
 
             terminal_server_configuration = cls._schema_on_200.properties.terminal_server_configuration
             terminal_server_configuration.network_device_id = AAZStrType(
@@ -1061,6 +1181,30 @@ class Update(AAZCommand):
             unique_rds = cls._schema_on_200.properties.unique_rd_configuration.unique_rds
             unique_rds.Element = AAZStrType()
 
+            upgrade_profile = cls._schema_on_200.properties.upgrade_profile
+            upgrade_profile.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.upgrade_profile.Element
+            _element.post_upgrade_profile = AAZObjectType(
+                serialized_name="postUpgradeProfile",
+            )
+            _element.pre_upgrade_profile = AAZObjectType(
+                serialized_name="preUpgradeProfile",
+            )
+
+            post_upgrade_profile = cls._schema_on_200.properties.upgrade_profile.Element.post_upgrade_profile
+            post_upgrade_profile.max_exiting_maintenance_timeout_in_seconds = AAZIntType(
+                serialized_name="maxExitingMaintenanceTimeoutInSeconds",
+            )
+            post_upgrade_profile.mlag_reload_delay_timeout_in_seconds = AAZIntType(
+                serialized_name="mlagReloadDelayTimeoutInSeconds",
+            )
+
+            pre_upgrade_profile = cls._schema_on_200.properties.upgrade_profile.Element.pre_upgrade_profile
+            pre_upgrade_profile.max_entering_maintenance_timeout_in_seconds = AAZIntType(
+                serialized_name="maxEnteringMaintenanceTimeoutInSeconds",
+            )
+
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
@@ -1089,6 +1233,13 @@ class Update(AAZCommand):
 
 class _UpdateHelper:
     """Helper class for Update"""
+
+    @classmethod
+    def _build_schema_identity_selector_patch_update(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("identityType", AAZStrType, ".identity_type")
+        _builder.set_prop("userAssignedIdentityResourceId", AAZStrType, ".user_assigned_identity_resource_id", typ_kwargs={"nullable": True})
 
     @classmethod
     def _build_schema_vpn_configuration_patchable_properties_update(cls, _builder):
@@ -1151,6 +1302,30 @@ class _UpdateHelper:
         import_ipv6_route_targets = _builder.get(".optionBProperties.routeTargets.importIpv6RouteTargets")
         if import_ipv6_route_targets is not None:
             import_ipv6_route_targets.set_elements(AAZStrType, ".")
+
+    _schema_identity_selector_read = None
+
+    @classmethod
+    def _build_schema_identity_selector_read(cls, _schema):
+        if cls._schema_identity_selector_read is not None:
+            _schema.identity_type = cls._schema_identity_selector_read.identity_type
+            _schema.user_assigned_identity_resource_id = cls._schema_identity_selector_read.user_assigned_identity_resource_id
+            return
+
+        cls._schema_identity_selector_read = _schema_identity_selector_read = AAZObjectType()
+
+        identity_selector_read = _schema_identity_selector_read
+        identity_selector_read.identity_type = AAZStrType(
+            serialized_name="identityType",
+            flags={"required": True},
+        )
+        identity_selector_read.user_assigned_identity_resource_id = AAZStrType(
+            serialized_name="userAssignedIdentityResourceId",
+            nullable=True,
+        )
+
+        _schema.identity_type = cls._schema_identity_selector_read.identity_type
+        _schema.user_assigned_identity_resource_id = cls._schema_identity_selector_read.user_assigned_identity_resource_id
 
     _schema_vpn_configuration_properties_read = None
 
