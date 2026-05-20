@@ -157,7 +157,7 @@ Release History
 ++++++
 * `az grafana create`: block creation for resources of Essential SKU tier
 
-2.9.0
+3.0.0
 ++++++
 * `az grafana notification-channel`: remove deprecated command group due to Grafana legacy alerting deprecation
 * `az grafana api-key`: remove deprecated command group; use `az grafana service-account` instead
