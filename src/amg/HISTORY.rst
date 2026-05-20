@@ -156,3 +156,13 @@ Release History
 2.8.1
 ++++++
 * `az grafana create`: block creation for resources of Essential SKU tier
+
+2.9.0
+++++++
+* `az grafana notification-channel`: remove deprecated command group due to Grafana legacy alerting deprecation
+* `az grafana api-key`: remove deprecated command group; use `az grafana service-account` instead
+* `az grafana backup`: GA
+* `az grafana restore`: GA
+* `az grafana integrations monitor`: GA
+* `az grafana data-source update`: switch to UID-based endpoint due to deprecated API
+* `az grafana data-source show`: remove data source lookup by id due to deprecated API

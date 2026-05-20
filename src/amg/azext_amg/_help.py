@@ -177,53 +177,6 @@ helps['grafana data-source query'] = """
     short-summary: Query a data source having backend implementation
 """
 
-helps['grafana notification-channel'] = """
-    type: group
-    short-summary: Commands to manage notification channels of an instance.
-    long-summary: As part of Grafana legacy alerting, this command group only works with Grafana 10 and below.
-"""
-
-helps['grafana notification-channel list'] = """
-    type: command
-    short-summary: List all notification channels of an instance.
-"""
-
-helps['grafana notification-channel show'] = """
-    type: command
-    short-summary: Get the details of a notification channel
-"""
-
-helps['grafana notification-channel create'] = """
-    type: command
-    short-summary: Create a notification channel.
-    examples:
-        - name: create a notification channel for Teams
-          text: |
-            az grafana notification-channel create -n MyGrafana --definition '{
-              "name": "Teams",
-              "settings": {
-                "uploadImage": true,
-                "url": "https://webhook.office.com/IncomingWebhook/"
-               },
-              "type": "teams"
-            }'
-"""
-
-helps['grafana notification-channel update'] = """
-    type: command
-    short-summary: Update a notification channel.
-"""
-
-helps['grafana notification-channel delete'] = """
-    type: command
-    short-summary: Delete a notification channel.
-"""
-
-helps['grafana notification-channel test'] = """
-    type: command
-    short-summary: Test a notification channel.
-"""
-
 helps['grafana dashboard'] = """
     type: group
     short-summary: Commands to manage dashboards of an instance.
@@ -364,30 +317,6 @@ helps['grafana user list'] = """
 helps['grafana user show'] = """
     type: command
     short-summary: Get the details of a user.
-"""
-
-helps['grafana api-key'] = """
-    type: group
-    short-summary: Commands to manage API keys.
-    long-summary: API keys are deprecated by Grafana Labs and will not be supported in Grafana 12 and above. Please use service accounts instead.
-"""
-
-helps['grafana api-key create'] = """
-    type: command
-    short-summary: Create a new API key.
-    examples:
-        - name: Create a new API key.
-          text: az grafana api-key create -g myResourceGroup -n myGrafana --key myKey
-"""
-
-helps['grafana api-key list'] = """
-    type: command
-    short-summary: List existing API keys.
-"""
-
-helps['grafana api-key delete'] = """
-    type: command
-    short-summary: Delete an API key.
 """
 
 helps['grafana service-account'] = """
