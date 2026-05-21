@@ -3762,7 +3762,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """Obtain the value of node_provisioning_mode.
         """
         return self.raw_param.get("node_provisioning_mode")
-    
+
     def get_node_disruption_policy(self) -> Union[str, None]:
         """Obtain the value of node_disruption_policy.
         """
@@ -7323,7 +7323,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             mc.node_provisioning_profile.mode = mode
 
         return mc
-    
+
     def update_node_disruption_policy(self, mc: ManagedCluster) -> ManagedCluster:
         self._ensure_mc(mc)
 
@@ -7648,7 +7648,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_node_provisioning_default_pools(mc)
 
         return mc
-    
+
     def update_node_disruption_policy(self, mc: ManagedCluster) -> ManagedCluster:
         """Updates the nodeDisruptionPolicy field of the managed cluster
 
