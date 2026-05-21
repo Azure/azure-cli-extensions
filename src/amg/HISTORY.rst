@@ -163,6 +163,8 @@ Release History
 * `az grafana api-key`: remove deprecated command group; use `az grafana service-account` instead
 * `az grafana backup`: GA
 * `az grafana restore`: GA
-* `az grafana integrations monitor`: GA
+* `az grafana mpe`: rename to `az grafana managed-private-endpoint`
+* `az grafana list-available-plugin`: rename to `az grafana plugin list`
+* `az grafana integrations monitor`: rename to `az grafana integration monitor`
 * `az grafana data-source update`: switch to UID-based endpoint due to deprecated API
 * `az grafana data-source show`: remove data source lookup by id due to deprecated API

@@ -109,7 +109,7 @@ def load_arguments(self, _):
     with self.argument_context("grafana service-account token create") as c:
         c.argument("token", help="name of the new service account token")
 
-    with self.argument_context("grafana integrations monitor") as c:
+    with self.argument_context("grafana integration monitor") as c:
         c.argument("monitor_name", help="name of the Azure Monitor workspace")
         c.argument("monitor_resource_group_name", options_list=["--monitor-resource-group-name", "--monitor-rg-name"], help="name of the resource group of the Azure Monitor workspace")
         c.argument("monitor_subscription_id", options_list=["--monitor-subscription-id", "--monitor-sub-id"], help="subscription id of the Azure Monitor workspace. Uses the current subscription id if not specified")

@@ -381,30 +381,30 @@ helps['grafana service-account token delete'] = """
     short-summary: Delete a service account token.
 """
 
-helps['grafana integrations'] = """
+helps['grafana integration'] = """
     type: group
     short-summary: Commands to manage integrations of a Grafana instance.
 """
 
-helps['grafana integrations monitor'] = """
+helps['grafana integration monitor'] = """
     type: group
     short-summary: Commands to manage Azure Monitor workspace integrations of a Grafana instance.
 """
 
-helps['grafana integrations monitor add'] = """
+helps['grafana integration monitor add'] = """
     type: command
     short-summary: Link an Azure Monitor workspace to a Grafana instance.
     examples:
         - name: Link an Azure Monitor workspace to a Grafana instance.
-          text: az grafana integrations monitor add -g MyResourceGroup -n MyGrafana --monitor-rg-name MyMonitorResourceGroup --monitor-name MyMonitor
+          text: az grafana integration monitor add -g MyResourceGroup -n MyGrafana --monitor-rg-name MyMonitorResourceGroup --monitor-name MyMonitor
 """
 
-helps['grafana integrations monitor list'] = """
+helps['grafana integration monitor list'] = """
     type: command
     short-summary: List all Azure Monitor workspaces linked to a Grafana instance.
 """
 
-helps['grafana integrations monitor delete'] = """
+helps['grafana integration monitor delete'] = """
     type: command
     short-summary: Unlink an Azure Monitor workspace from a Grafana instance.
 """
