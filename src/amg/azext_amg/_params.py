@@ -73,7 +73,7 @@ def load_arguments(self, _):
         c.argument("dashboards_to_exclude", nargs='+', help="Space separated titles of dashboards to exclude in sync. Pair with --folders-to-exclude for folders specific")
 
     with self.argument_context("grafana data-source") as c:
-        c.argument("data_source", help="name or uid which can identify a data source. CLI will search in the order of name and uid, till finds a match")
+        c.argument("data_source", help="name or UID that identifies a data source. CLI will search by name first, then by UID, and use the first match.")
         c.argument("definition", type=validate_file_or_dict, help="json string with data source definition, or a path to a file with such content")
 
     with self.argument_context("grafana data-source query") as c:

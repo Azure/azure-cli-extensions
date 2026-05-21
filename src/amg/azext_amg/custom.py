@@ -783,22 +783,25 @@ def list_monitors(cmd, grafana_name, resource_group_name=None):
 
 
 def _find_data_source(cmd, resource_group_name, grafana_name, data_source, api_key_or_token=None):
-    # Numeric data source IDs are not supported: the /api/datasources/{id} endpoints
-    # were deprecated in Grafana 9 and are disabled by default in Grafana 13.
-    if data_source.isdigit():
-        raise ArgumentUsageError(
-            f"Numeric data source IDs ({data_source}) are not supported. "
-            "Use the data source name or UID instead.")
-
+    last_response = None
     for path in (f"/api/datasources/name/{data_source}",
                  f"/api/datasources/uid/{data_source}"):
         response = _send_request(cmd, resource_group_name, grafana_name, "get", path,
                                  raise_for_error_status=False, api_key_or_token=api_key_or_token)
         if response.status_code < 400:
             return json.loads(response.content)
+        last_response = response
 
-    raise ArgumentUsageError(
-        f"Couldn't find data source {data_source}. Ex: {response.status_code}")
+    # Both name and UID lookups failed. If the input is numeric, the user may be passing a
+    # legacy data source ID -- those endpoints (/api/datasources/{id}) were deprecated in
+    # Grafana 9 and are disabled by default in Grafana 13, so add a hint to the error.
+    message = f"Couldn't find data source {data_source} by name or UID."
+    if data_source.isdigit():
+        message += (" Numeric data source IDs are no longer supported. "
+                    "Pass the data source name or UID instead.")
+    if last_response is not None:
+        message += f" (last status code: {last_response.status_code})"
+    raise ArgumentUsageError(message)
 
 
 # For UX: we accept a file path for complex payload such as dashboard/data-source definition

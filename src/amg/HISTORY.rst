@@ -165,6 +165,5 @@ Release History
 * `az grafana restore`: GA
 * `az grafana mpe`: rename to `az grafana managed-private-endpoint`
 * `az grafana list-available-plugin`: rename to `az grafana plugin list`
-* `az grafana integrations monitor`: rename to `az grafana integration monitor`
-* `az grafana data-source update`: switch to UID-based endpoint due to deprecated API
-* `az grafana data-source show`: remove data source lookup by id due to deprecated API
+* `az grafana integrations`: rename to `az grafana integration`
+* `az grafana data-source`: drop lookup by numeric ID and switch to UID-based endpoints due to deprecated Grafana API

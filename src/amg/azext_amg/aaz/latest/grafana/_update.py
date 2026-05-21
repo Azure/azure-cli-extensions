@@ -112,12 +112,12 @@ class Update(AAZCommand):
         _args_schema.from_address = AAZStrArg(
             options=["--from-address"],
             arg_group="Smtp",
-            help="Address used when sending out emails https://pkg.go.dev/net/mail#Address",
+            help="Address used when sending out emails https://pkg.go.dev/net/mail#Address",
         )
         _args_schema.from_name = AAZStrArg(
             options=["--from-name"],
             arg_group="Smtp",
-            help="Name to be used when sending out emails. Default is \"Azure Managed Grafana Notification\" https://pkg.go.dev/net/mail#Address",
+            help="Name to be used when sending out emails. Default is \"Azure Managed Grafana Notification\" https://pkg.go.dev/net/mail#Address",
         )
         _args_schema.host = AAZStrArg(
             options=["--host"],
@@ -132,12 +132,12 @@ class Update(AAZCommand):
         _args_schema.skip_verify = AAZBoolArg(
             options=["--skip-verify"],
             arg_group="Smtp",
-            help="Verify SSL for SMTP server. Default is false https://pkg.go.dev/crypto/tls#Config",
+            help="Verify SSL for SMTP server. Default is false https://pkg.go.dev/crypto/tls#Config",
         )
         _args_schema.start_tls_policy = AAZStrArg(
             options=["--start-tls-policy"],
             arg_group="Smtp",
-            help="The StartTLSPolicy setting of the SMTP configuration https://pkg.go.dev/github.com/go-mail/mail#StartTLSPolicy",
+            help="The StartTLSPolicy setting of the SMTP configuration https://pkg.go.dev/github.com/go-mail/mail#StartTLSPolicy",
             enum={"MandatoryStartTLS": "MandatoryStartTLS", "NoStartTLS": "NoStartTLS", "OpportunisticStartTLS": "OpportunisticStartTLS"},
         )
         _args_schema.user = AAZStrArg(
