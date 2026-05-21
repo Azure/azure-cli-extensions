@@ -7324,21 +7324,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
-    def update_node_disruption_policy(self, mc: ManagedCluster) -> ManagedCluster:
-        self._ensure_mc(mc)
-
-        policy = self.context.get_node_disruption_policy()
-        if policy is not None:
-            if mc.node_disruption_profile is None:
-                mc.node_disruption_profile = (
-                    self.models.NodeDisruptionProfile()  # pylint: disable=no-member
-                )
-
-            # set policy
-            mc.node_disruption_profile.policy = policy
-
-        return mc
-
     def update_node_provisioning_default_pools(self, mc: ManagedCluster) -> ManagedCluster:
         self._ensure_mc(mc)
 
@@ -7656,8 +7641,15 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         """
         self._ensure_mc(mc)
 
-        mc = self.update_node_provisioning_mode(mc)
-        mc = self.update_node_provisioning_default_pools(mc)
+        policy = self.context.get_node_disruption_policy()
+        if policy is not None:
+            if mc.node_disruption_profile is None:
+                mc.node_disruption_profile = (
+                    self.models.NodeDisruptionProfile()  # pylint: disable=no-member
+                )
+
+            # set policy
+            mc.node_disruption_profile.policy = policy
 
         return mc
 
