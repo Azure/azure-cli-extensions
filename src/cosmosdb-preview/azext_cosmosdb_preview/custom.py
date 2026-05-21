@@ -53,7 +53,7 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     ResourceIdentityType,
     ManagedServiceIdentity,
     AnalyticalStorageConfiguration,
-    ManagedServiceIdentityUserAssignedIdentity,
+    ManagedServiceIdentityUserAssignedIdentities,
     CosmosCassandraDataTransferDataSourceSink,
     CosmosSqlDataTransferDataSourceSink,
     CosmosMongoDataTransferDataSourceSink,
@@ -1210,6 +1210,21 @@ def _create_database_account(client,
     if not locations:
         locations = []
         locations.append(Location(location_name=arm_location, failover_priority=0, is_zone_redundant=False))
+    else:
+        # CreateLocation parser action (from azure.cli.command_modules.cosmosdb.actions) returns
+        # Location objects from the bundled azure-mgmt-cosmosdb package, which the new vendored
+        # SDK's encoder cannot serialize. Convert them to our vendored Location model.
+        converted_locations = []
+        for loc in locations:
+            if isinstance(loc, Location):
+                converted_locations.append(loc)
+            else:
+                converted_locations.append(Location(
+                    location_name=getattr(loc, 'location_name', None),
+                    failover_priority=getattr(loc, 'failover_priority', 0),
+                    is_zone_redundant=getattr(loc, 'is_zone_redundant', False),
+                ))
+        locations = converted_locations
 
     managed_service_identity = None
     SYSTEM_ID = '[system]'
@@ -1222,7 +1237,7 @@ def _create_database_account(client,
             user_identities = {}
             for x in assign_identity:
                 if x != SYSTEM_ID:
-                    user_identities[x] = ManagedServiceIdentityUserAssignedIdentity()  # pylint: disable=line-too-long
+                    user_identities[x] = ManagedServiceIdentityUserAssignedIdentities()  # pylint: disable=line-too-long
                 else:
                     enable_system = True
             if enable_system:
@@ -3392,3 +3407,121 @@ def cli_cosmosdb_fleetspace_account_create(client,
         fleetspace_account_name=fleetspace_account_name,
         body=fleetspace_account_body
     )
+
+
+# Soft-deleted Account operations
+def cli_cosmosdb_sql_softdeleted_account_list(client, location, resource_group_name=None):
+    """List soft-deleted Cosmos DB accounts by location, optionally filtered by resource group."""
+    if resource_group_name:
+        result = client.list_by_resource_group_and_location(resource_group_name, location)
+    else:
+        result = client.list_by_location(location)
+    return result.value if hasattr(result, 'value') else result
+
+
+def cli_cosmosdb_sql_softdeleted_account_show(client,
+                                              resource_group,
+                                              location,
+                                              account_name):
+    """Get a soft-deleted Cosmos DB account."""
+    return client.get(resource_group, location, account_name)
+
+
+def cli_cosmosdb_sql_softdeleted_account_delete(client,
+                                                resource_group,
+                                                location,
+                                                account_name):
+    """Purge a soft-deleted Cosmos DB account."""
+    from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import SoftDeleteActionKind
+    return client.begin_purge(resource_group, location, account_name, soft_delete_action_kind=SoftDeleteActionKind.PERMANENT_DELETE_RESOURCE)
+
+
+def cli_cosmosdb_sql_softdeleted_account_recover(client,
+                                                 resource_group,
+                                                 location,
+                                                 account_name):
+    """Recover a soft-deleted Cosmos DB account."""
+    from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import SoftDeleteActionKind
+    return client.begin_restore(resource_group, location, account_name, soft_delete_action_kind=SoftDeleteActionKind.RESTORE_SOFT_DELETED_RESOURCE)
+
+
+# Soft-deleted Database operations
+def cli_cosmosdb_sql_softdeleted_database_list(client,
+                                               resource_group,
+                                               location,
+                                               account_name):
+    """List soft-deleted databases in a Cosmos DB account."""
+    result = client.list(resource_group, location, account_name)
+    return result.value if hasattr(result, 'value') else result
+
+
+def cli_cosmosdb_sql_softdeleted_database_show(client,
+                                               resource_group,
+                                               location,
+                                               account_name,
+                                               database_name):
+    """Get a soft-deleted database."""
+    return client.get(resource_group, location, account_name, database_name)
+
+
+def cli_cosmosdb_sql_softdeleted_database_delete(client,
+                                                 resource_group,
+                                                 location,
+                                                 account_name,
+                                                 database_name):
+    """Purge a soft-deleted database."""
+    from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import SoftDeleteActionKind
+    return client.begin_purge(resource_group, location, account_name, database_name, soft_delete_action_kind=SoftDeleteActionKind.PERMANENT_DELETE_RESOURCE)
+
+
+def cli_cosmosdb_sql_softdeleted_database_recover(client,
+                                                  resource_group,
+                                                  location,
+                                                  account_name,
+                                                  database_name):
+    """Recover a soft-deleted database."""
+    from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import SoftDeleteActionKind
+    return client.begin_restore(resource_group, location, account_name, database_name, soft_delete_action_kind=SoftDeleteActionKind.RESTORE_SOFT_DELETED_RESOURCE)
+
+
+# Soft-deleted Collection operations
+def cli_cosmosdb_sql_softdeleted_container_list(client,
+                                                 resource_group,
+                                                 location,
+                                                 account_name,
+                                                 database_name):
+    """List soft-deleted containers in a database."""
+    result = client.list(resource_group, location, account_name, database_name)
+    return result.value if hasattr(result, 'value') else result
+
+
+def cli_cosmosdb_sql_softdeleted_container_show(client,
+                                                 resource_group,
+                                                 location,
+                                                 account_name,
+                                                 database_name,
+                                                 container_name):
+    """Get a soft-deleted container."""
+    return client.get(resource_group, location, account_name, database_name, container_name)
+
+
+def cli_cosmosdb_sql_softdeleted_container_delete(client,
+                                                   resource_group,
+                                                   location,
+                                                   account_name,
+                                                   database_name,
+                                                   container_name):
+    """Purge a soft-deleted container."""
+    from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import SoftDeleteActionKind
+    return client.begin_purge(resource_group, location, account_name, database_name, container_name, soft_delete_action_kind=SoftDeleteActionKind.PERMANENT_DELETE_RESOURCE)
+
+
+def cli_cosmosdb_sql_softdeleted_container_recover(client,
+                                                    resource_group,
+                                                    location,
+                                                    account_name,
+                                                    database_name,
+                                                    container_name):
+    """Recover a soft-deleted container."""
+    from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import SoftDeleteActionKind
+    return client.begin_restore(resource_group, location, account_name, database_name, container_name, soft_delete_action_kind=SoftDeleteActionKind.RESTORE_SOFT_DELETED_RESOURCE)
