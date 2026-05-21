@@ -89,8 +89,8 @@ class WebappBasicE2EKubeTest(ScenarioTest):
         self.assertTrue(any(item.get('config', '').lower() == 'node|22-lts' for item in r))
         self.assertFalse(any(item.get('os', '').lower() == 'linux'
                              and item.get('config', '').lower() == 'node|14-lts' for item in r))
-        # `--is-kube` still uses the old dict-of-strings shape.
-        # {"linux": [...], "windows": [...]}
+        # `--is-kube` returns a flat list of stack strings
+        # (for example, ["NODE:14-lts", ...]), not linux/windows-keyed output.
         r = self.cmd('webapp list-runtimes --is-kube',
                      checks=[JMESPathCheckNotExists("linux"), StringContainCheckIgnoreCase('NODE:14-lts')])\
             .get_output_in_json()
