@@ -24323,6 +24323,6 @@ spec:
 
         # delete
         self.cmd(
-            "aks delete -g {resource_group} -n {name} --yes --no-wait --if-match={if_match}",
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
             checks=[self.is_empty()],
         )
