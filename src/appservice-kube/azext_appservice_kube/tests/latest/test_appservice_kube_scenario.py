@@ -60,7 +60,7 @@ class WebappBasicE2EKubeTest(ScenarioTest):
         webapp_name_2 = self.create_random_name(prefix='webapp-quick', length=24)
         plan = self.create_random_name(prefix='plan-quick', length=24)
         self.cmd('appservice plan create -g {} -n {}'.format(resource_group, plan))
-        r = self.cmd('webapp create -g {} -n {} --plan {} --deployment-local-git -r "node|20LTS"'.format(
+        r = self.cmd('webapp create -g {} -n {} --plan {} --deployment-local-git -r "node|22LTS"'.format(
             resource_group, webapp_name, plan)).get_output_in_json()
         self.assertTrue(r['ftpPublishingUrl'].startswith('ftps://'))
         self.cmd('webapp config appsettings list -g {} -n {}'.format(resource_group, webapp_name), checks=[
@@ -77,9 +77,20 @@ class WebappBasicE2EKubeTest(ScenarioTest):
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix="clitest", random_name_length=24, location="eastus")
     def test_list_runtimes(self, resource_group):
-        r = self.cmd('webapp list-runtimes', checks=[JMESPathCheckExists("linux"), JMESPathCheckExists("windows"),
-                                                     StringContainCheckIgnoreCase('NODE:20-lts')]).get_output_in_json()
-        self.assertFalse('NODE:14-lts' in r['linux'])
+        # `webapp list-runtimes` now returns a flat list of dicts
+        # (e.g. [{"os": "Linux", "config": "NODE|22-lts", ...}, ...])
+        # instead of the previous {"linux": [...], "windows": [...]} shape,
+        # so we iterate the list and compare fields case-insensitively
+        # rather than using JMESPathCheckExists and StringContainCheckIgnoreCase
+        # checks against the old structure.
+        r = self.cmd('webapp list-runtimes').get_output_in_json()
+        self.assertTrue(any(item.get('os', '').lower() == 'linux' for item in r))
+        self.assertTrue(any(item.get('os', '').lower() == 'windows' for item in r))
+        self.assertTrue(any(item.get('config', '').lower() == 'node|22-lts' for item in r))
+        self.assertFalse(any(item.get('os', '').lower() == 'linux'
+                             and item.get('config', '').lower() == 'node|14-lts' for item in r))
+        # `--is-kube` still uses the old dict-of-strings shape.
+        # {"linux": [...], "windows": [...]}
         r = self.cmd('webapp list-runtimes --is-kube',
                      checks=[JMESPathCheckNotExists("linux"), StringContainCheckIgnoreCase('NODE:14-lts')])\
             .get_output_in_json()
