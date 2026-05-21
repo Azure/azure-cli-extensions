@@ -166,4 +166,5 @@ Release History
 * `az grafana mpe`: rename to `az grafana managed-private-endpoint`
 * `az grafana list-available-plugin`: rename to `az grafana plugin list`
 * `az grafana integrations`: rename to `az grafana integration`
+* `az grafana integration monitor`: drop `--monitor-resource-group-name` option; use `--monitor-rg-name` instead
 * `az grafana data-source`: drop lookup by numeric ID and switch to UID-based endpoints due to deprecated Grafana API
