@@ -24256,7 +24256,6 @@ spec:
     def test_aks_update_node_disruption_policy(self, resource_group, resource_group_location):
         aks_name = self.create_random_name("cliakstest", 16)
         nodepool_name = self.create_random_name("c", 6)
-        nodepool2_name = self.create_random_name("c", 6)
         self.kwargs.update(
             {
                 "resource_group": resource_group,
@@ -24265,14 +24264,13 @@ spec:
                 "ssh_key_value": self.generate_ssh_keys(),
                 "resource_type": "Microsoft.ContainerService/ManagedClusters",
                 "nodepool_name": nodepool_name,
-                "nodepool2_name": nodepool2_name,
                 "vm_size": "Standard_D4s_v3",
                 "network_plugin": "azure",
                 "network_plugin_mode": "overlay",
             }
         )
 
-       # create aks cluster with Azure network plugin
+        # create aks cluster with Azure network plugin
         self.cmd(
             "aks create "
             "--resource-group={resource_group} "
@@ -24291,7 +24289,7 @@ spec:
             "aks nodepool add "
             "--resource-group={resource_group}"
             " --cluster-name={name} "
-            "--name={nodepool2_name}",
+            "--name={nodepool_name}",
             checks=[
                 self.check("provisioningState", "Succeeded"),
             ],
@@ -24315,7 +24313,7 @@ spec:
 
         # attempt to change ssh access which should be allowed despite node disruption policy
         self.cmd(
-            "aks nodepool update --resource-group={resource_group} --cluster-name={name} --name={nodepool2_name} --ssh-access disabled",
+            "aks nodepool update --resource-group={resource_group} --cluster-name={name} --name={nodepool_name} --ssh-access disabled",
             checks=[
                 self.check("provisioningState", "Succeeded"),
             ],

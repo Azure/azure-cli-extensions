@@ -1931,7 +1931,7 @@ def load_arguments(self, _):
             "node_disruption_policy",
             arg_type=get_enum_type(node_disruption_policies),
             is_preview=True,
-            help="Set the node disruption profile for the cluster.",
+            help="Set the node disruption policy for the cluster.",
         )
 
     with self.argument_context("aks delete") as c:
