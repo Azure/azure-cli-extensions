@@ -25,9 +25,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-07-15",
+        "version": "2026-01-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabriccontrollers/{}", "2025-07-15"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabriccontrollers/{}", "2026-01-15-preview"],
         ]
     }
 
@@ -149,6 +149,11 @@ class Create(AAZCommand):
             default="Standard",
             enum={"Basic": "Basic", "HighPerformance": "HighPerformance", "Standard": "Standard"},
         )
+        _args_schema.vm_profile = AAZObjectArg(
+            options=["--vm-profile"],
+            arg_group="Properties",
+            help="The VM profile configuration for the NFC's associated compute (VM) resources.",
+        )
         _args_schema.workload_express_route_connections = AAZListArg(
             options=["--wl-er-connections", "--workload-er-connections", "--workload-express-route-connections"],
             arg_group="Properties",
@@ -167,6 +172,13 @@ class Create(AAZCommand):
         managed_resource_group_configuration.name = AAZStrArg(
             options=["name"],
             help="The NFC service will be hosted in a Managed resource group.",
+        )
+
+        vm_profile = cls._args_schema.vm_profile
+        vm_profile.vm_sku_name = AAZStrArg(
+            options=["vm-sku-name"],
+            help="The SKU that will be used for creating the VMS for AKS cluster.",
+            required=True,
         )
 
         workload_express_route_connections = cls._args_schema.workload_express_route_connections
@@ -282,7 +294,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-15",
+                    "api-version", "2026-01-15-preview",
                     required=True,
                 ),
             }
@@ -330,6 +342,7 @@ class Create(AAZCommand):
                 properties.set_prop("isWorkloadManagementNetworkEnabled", AAZStrType, ".is_workload_management_network_enabled")
                 properties.set_prop("managedResourceGroupConfiguration", AAZObjectType, ".managed_resource_group_configuration")
                 properties.set_prop("nfcSku", AAZStrType, ".nfc_sku")
+                properties.set_prop("vmProfile", AAZObjectType, ".vm_profile")
                 properties.set_prop("workloadExpressRouteConnections", AAZListType, ".workload_express_route_connections")
 
             infrastructure_express_route_connections = _builder.get(".properties.infrastructureExpressRouteConnections")
@@ -340,6 +353,10 @@ class Create(AAZCommand):
             if managed_resource_group_configuration is not None:
                 managed_resource_group_configuration.set_prop("location", AAZStrType, ".location")
                 managed_resource_group_configuration.set_prop("name", AAZStrType, ".name")
+
+            vm_profile = _builder.get(".properties.vmProfile")
+            if vm_profile is not None:
+                vm_profile.set_prop("vmSkuName", AAZStrType, ".vm_sku_name", typ_kwargs={"flags": {"required": True}})
 
             workload_express_route_connections = _builder.get(".properties.workloadExpressRouteConnections")
             if workload_express_route_connections is not None:
@@ -455,6 +472,10 @@ class Create(AAZCommand):
             properties.nfc_sku = AAZStrType(
                 serialized_name="nfcSku",
             )
+            properties.operational_state = AAZStrType(
+                serialized_name="operationalState",
+                flags={"read_only": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
@@ -462,6 +483,9 @@ class Create(AAZCommand):
             properties.tenant_internet_gateway_ids = AAZListType(
                 serialized_name="tenantInternetGatewayIds",
                 flags={"read_only": True},
+            )
+            properties.vm_profile = AAZObjectType(
+                serialized_name="vmProfile",
             )
             properties.workload_express_route_connections = AAZListType(
                 serialized_name="workloadExpressRouteConnections",
@@ -493,6 +517,12 @@ class Create(AAZCommand):
             tenant_internet_gateway_ids = cls._schema_on_200_201.properties.tenant_internet_gateway_ids
             tenant_internet_gateway_ids.Element = AAZStrType(
                 nullable=True,
+            )
+
+            vm_profile = cls._schema_on_200_201.properties.vm_profile
+            vm_profile.vm_sku_name = AAZStrType(
+                serialized_name="vmSkuName",
+                flags={"required": True},
             )
 
             workload_express_route_connections = cls._schema_on_200_201.properties.workload_express_route_connections

@@ -103,6 +103,12 @@ def load_arguments(self, _):
                    type=namespaced_name_resource_type,
                    options_list=['--backup-hook-references', '--backup-hook-refs'],
                    help='Property sets the hook reference to be executed during backup.')
+        c.argument('auto_protection', arg_type=get_three_state_flag(),
+                   help='Enable auto-protection for new containers. When enabled, new containers will be automatically protected. '
+                        'Use this parameter for DatasourceType AzureBlob or AzureDataLakeStorage.')
+        c.argument('auto_protection_exclusion_prefixes', type=str, nargs='+',
+                   options_list=['--auto-protection-exclusion-prefixes', '--exclusion-prefixes'],
+                   help='List of container name prefixes to exclude from auto-protection. Requires --auto-protection to be enabled.')
 
     with self.argument_context('dataprotection backup-instance initialize') as c:
         c.argument('datasource_type', arg_type=get_enum_type(get_datasource_types()), help="Specify the datasource type of the resource to be backed up")
