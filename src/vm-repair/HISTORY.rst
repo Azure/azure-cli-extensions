@@ -2,7 +2,7 @@
 Release History
 ===============
 
-2.3.0
+2.2.1
 ++++++
 Migrating telemetry from Application Insights SDK to azure.cli.core telemetry pipeline
 Adding PII scrubbing for error messages and stack traces
