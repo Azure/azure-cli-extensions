@@ -105,6 +105,10 @@ helps[
           type: boolean
           short-summary: 'When enabled, the default fragments are not included in the generated policy. This includes containers needed to mount azure files, mount secrets, mount git repos, and other common ACI features'
 
+        - name: --platform
+          type: string
+          short-summary: 'Target platform for policy generation (linux/amd64 or windows/amd64). Defaults to linux/amd64. Docker Desktop must be running in the matching container mode to produce correct layer hashes.'
+
     examples:
         - name: Input an ARM Template file to inject a base64 encoded Confidential Container Security Policy into the ARM Template
           text: az confcom acipolicygen --template-file "./template.json"
@@ -116,6 +120,8 @@ helps[
           text: az confcom acipolicygen --template-file "./template.json" --tar "./image.tar"
         - name: Input an ARM Template file and use a fragments JSON file to generate a policy
           text: az confcom acipolicygen --template-file "./template.json" --fragments-json "./fragments.json" --include-fragments
+        - name: Generate a Windows container policy (requires Docker Desktop in Windows containers mode)
+          text: az confcom acipolicygen --template-file "./template.json" --platform windows/amd64 --outraw-pretty-print
 """
 
 helps[
@@ -340,7 +346,7 @@ helps[
     parameters:
         - name: --platform
           type: str
-          short-summary: 'The name of the platform the container definition will run on'
+          short-summary: 'The name of the platform the container definition will run on. Must be either "aci" or "vn2".'
 
 
     examples:

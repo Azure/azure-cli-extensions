@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0b3
++++++++
+* Prompt the user before overwriting an existing SSH key pair when generating new keys for ``az sftp cert`` and ``az sftp connect``. Add ``--yes/-y`` to skip the prompt and overwrite without confirmation.
+
 1.0.0b2
 +++++++
 * Add ``--buffer-size`` parameter to ``az sftp connect`` for configuring SFTP transfer buffer size.

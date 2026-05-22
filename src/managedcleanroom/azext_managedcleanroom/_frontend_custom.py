@@ -253,6 +253,7 @@ def frontend_collaboration_dataset_publish(
     kek_keyvault_url=None,
     kek_secret_id=None,
     kek_maa_url=None,
+    subdirectory=None,
     api_version=None,
 ):
     """Publish a dataset
@@ -278,6 +279,7 @@ def frontend_collaboration_dataset_publish(
     :param kek_keyvault_url: KEK Key Vault URL (CPK mode)
     :param kek_secret_id: KEK secret ID (CPK mode)
     :param kek_maa_url: KEK MAA URL (CPK mode)
+    :param subdirectory: Optional subdirectory/prefix inside the storage container
     :param api_version: API version to use for this request
     :return: Publish result
     """
@@ -402,6 +404,8 @@ def frontend_collaboration_dataset_publish(
         "storageAccountType": storage_account_type,
         "encryptionMode": encryption_mode,
     }
+    if subdirectory:
+        store["subdirectory"] = subdirectory
 
     # Build identity
     identity = {

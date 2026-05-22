@@ -15,6 +15,7 @@ import threading
 import time
 import webbrowser
 import subprocess
+from math import isnan
 
 from azext_aks_preview._client_factory import (
     CUSTOM_MGMT_AKS_PREVIEW,
@@ -60,11 +61,13 @@ from azext_aks_preview._consts import (
     CONST_ARTIFACT_SOURCE_DIRECT,
     CONST_K8S_EXTENSION_CUSTOM_MOD_NAME,
     CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME,
+    CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM,
 )
 from azext_aks_preview._helpers import (
     check_is_private_link_cluster,
     get_cluster_snapshot_by_snapshot_id,
     get_k8s_extension_module,
+    get_monitoring_addon_key,
     get_nodepool_snapshot_by_snapshot_id,
     print_or_merge_credentials,
     process_message_for_run_command,
@@ -169,10 +172,12 @@ from azure.cli.core.util import (
     send_raw_request,
     shell_safe_json_parse,
 )
+from azure.core import MatchConditions
 from azure.core.exceptions import (
     ResourceNotFoundError,
     HttpResponseError,
 )
+from azure.mgmt.containerservice.models import KubernetesSupportPlan
 from dateutil.parser import parse
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
@@ -181,6 +186,15 @@ from six.moves.urllib.error import URLError
 from six.moves.urllib.request import urlopen
 
 logger = get_logger(__name__)
+
+
+def _get_etag_match_condition(if_match, if_none_match):
+    """Convert if_match/if_none_match to etag/match_condition for the new SDK."""
+    if if_match is not None:
+        return if_match, MatchConditions.IfNotModified
+    if if_none_match is not None:
+        return if_none_match, MatchConditions.IfMissing
+    return None, None
 
 
 def wait_then_open(url):
@@ -567,7 +581,7 @@ def ensure_container_insights_for_monitoring_preview(
                         )
                     error = None
                     break
-                except CLIError as e:
+                except (CLIError, HttpResponseError) as e:
                     error = e
             else:
                 raise error
@@ -997,7 +1011,6 @@ def aks_create(
     nrg_lockdown_restriction_level=None,
     enable_defender=False,
     defender_config=None,
-    disk_driver_version=None,
     disable_disk_driver=False,
     disable_file_driver=False,
     enable_blob_driver=None,
@@ -1052,6 +1065,7 @@ def aks_create(
     nodepool_initialization_taints=None,
     node_osdisk_type=None,
     node_osdisk_size=0,
+    enable_os_disk_full_caching=False,
     vm_set_type=None,
     zones=None,
     ppg=None,
@@ -1168,6 +1182,7 @@ def aks_create(
     # app routing istio
     enable_app_routing_istio=False,
     enable_hosted_system=False,
+    control_plane_scaling_size=None,
     # health monitor
     enable_continuous_control_plane_and_addon_monitor=False,
 ):
@@ -1264,7 +1279,6 @@ def aks_update(
     disable_defender=False,
     defender_config=None,
     enable_disk_driver=False,
-    disk_driver_version=None,
     disable_disk_driver=False,
     enable_file_driver=False,
     disable_file_driver=False,
@@ -1462,12 +1476,15 @@ def aks_delete(cmd, client, resource_group_name, name, no_wait=False,
         logger.warning(
             "The '--if-none-match' option is not applicable to delete operations and will be ignored."
         )
+    etag = if_match
+    match_condition = MatchConditions.IfNotModified if if_match is not None else None
     return sdk_no_wait(
         no_wait,
         client.begin_delete,
         resource_group_name,
         name,
-        if_match=if_match,
+        etag=etag,
+        match_condition=match_condition,
         ignore_pod_disruption_budget=ignore_pod_disruption_budget,
     )
 
@@ -1494,6 +1511,7 @@ def aks_list(cmd, client, resource_group_name=None):
     return _remove_nulls(list(managed_clusters))
 
 
+# pylint: disable=too-many-nested-blocks
 def _remove_nulls(managed_clusters):
     """
     Remove some often-empty fields from a list of ManagedClusters, so the JSON representation
@@ -1508,15 +1526,24 @@ def _remove_nulls(managed_clusters):
     for managed_cluster in managed_clusters:
         for attr in attrs:
             if getattr(managed_cluster, attr, None) is None:
-                delattr(managed_cluster, attr)
+                try:
+                    delattr(managed_cluster, attr)
+                except AttributeError:
+                    pass
         if managed_cluster.agent_pool_profiles is not None:
             for ap_profile in managed_cluster.agent_pool_profiles:
                 for attr in ap_attrs:
                     if getattr(ap_profile, attr, None) is None:
-                        delattr(ap_profile, attr)
+                        try:
+                            delattr(ap_profile, attr)
+                        except AttributeError:
+                            pass
         for attr in sp_attrs:
             if getattr(managed_cluster.service_principal_profile, attr, None) is None:
-                delattr(managed_cluster.service_principal_profile, attr)
+                try:
+                    delattr(managed_cluster.service_principal_profile, attr)
+                except AttributeError:
+                    pass
     return managed_clusters
 
 
@@ -1545,14 +1572,14 @@ def aks_get_credentials(
             raise InvalidArgumentValueError("--format can only be specified when requesting clusterUser credential.")
     if admin:
         credentialResults = client.list_cluster_admin_credentials(
-            resource_group_name, name, serverType, headers=headers)
+            resource_group_name, name, server_fqdn=serverType, headers=headers)
     else:
         if user.lower() == 'clusteruser':
             credentialResults = client.list_cluster_user_credentials(
-                resource_group_name, name, serverType, credential_format, headers=headers)
+                resource_group_name, name, server_fqdn=serverType, format=credential_format, headers=headers)
         elif user.lower() == 'clustermonitoringuser':
             credentialResults = client.list_cluster_monitoring_user_credentials(
-                resource_group_name, name, serverType, headers=headers)
+                resource_group_name, name, server_fqdn=serverType, headers=headers)
         else:
             raise InvalidArgumentValueError("The value of option --user is invalid.")
 
@@ -1660,6 +1687,8 @@ def aks_upgrade(cmd,
                 enable_force_upgrade=False,
                 disable_force_upgrade=False,
                 upgrade_override_until=None,
+                tier=None,
+                k8s_support_plan=None,
                 yes=False,
                 if_match=None,
                 if_none_match=None):
@@ -1717,6 +1746,18 @@ def aks_upgrade(cmd,
         disable_force_upgrade=disable_force_upgrade,
         upgrade_override_until=upgrade_override_until)
 
+    if tier is not None:
+        instance.sku.tier = tier
+
+    if k8s_support_plan is not None:
+        instance.support_plan = k8s_support_plan
+
+    if (
+        instance.support_plan == KubernetesSupportPlan.AKS_LONG_TERM_SUPPORT
+        and instance.sku.tier is not None
+        and instance.sku.tier.lower() != CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM.lower()
+    ):
+        raise CLIError("AKS Long Term Support is only available for Premium tier clusters.")
     if instance.kubernetes_version == kubernetes_version:
         if instance.provisioning_state == "Succeeded":
             logger.warning("The cluster is already on version %s and is not in a failed state. No operations "
@@ -1768,6 +1809,7 @@ def aks_upgrade(cmd,
 
     headers = get_aks_custom_headers(aks_custom_headers)
 
+    etag, match_condition = _get_etag_match_condition(if_match, if_none_match)
     return sdk_no_wait(
         no_wait,
         client.begin_create_or_update,
@@ -1775,8 +1817,8 @@ def aks_upgrade(cmd,
         name,
         instance,
         headers=headers,
-        if_match=if_match,
-        if_none_match=if_none_match)
+        etag=etag,
+        match_condition=match_condition)
 
 
 def _update_upgrade_settings(cmd, instance,
@@ -1893,6 +1935,7 @@ def aks_agentpool_add(
     node_taints=None,
     node_osdisk_type=None,
     node_osdisk_size=0,
+    enable_os_disk_full_caching=False,
     max_surge=None,
     drain_timeout=None,
     node_soak_duration=None,
@@ -2025,6 +2068,8 @@ def aks_agentpool_update(
     node_vm_size=None,
     gpu_driver=None,
     gpu_mig_strategy=None,
+    # crg
+    crg_id=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -2244,6 +2289,7 @@ def aks_agentpool_upgrade(cmd,
         allow_appending_values_to_same_key=True,
     )
 
+    etag, match_condition = _get_etag_match_condition(if_match, if_none_match)
     return sdk_no_wait(
         no_wait,
         client.begin_create_or_update,
@@ -2252,8 +2298,8 @@ def aks_agentpool_upgrade(cmd,
         nodepool_name,
         instance,
         headers=aks_custom_headers,
-        if_match=if_match,
-        if_none_match=if_none_match,
+        etag=etag,
+        match_condition=match_condition,
     )
 
 
@@ -2480,13 +2526,16 @@ def aks_agentpool_delete(cmd,   # pylint: disable=unused-argument
             "use 'aks nodepool list' to get current node pool list"
         )
 
+    etag = if_match
+    match_condition = MatchConditions.IfNotModified if if_match is not None else None
     return sdk_no_wait(
         no_wait,
         client.begin_delete,
         resource_group_name,
         cluster_name,
         nodepool_name,
-        if_match=if_match,
+        etag=etag,
+        match_condition=match_condition,
         ignore_pod_disruption_budget=ignore_pod_disruption_budget,
     )
 
@@ -2686,6 +2735,119 @@ def aks_agentpool_manual_scale_delete(cmd,    # pylint: disable=unused-argument
     )
 
 
+def aks_agentpool_auto_scale_add(cmd,
+                                 client,
+                                 resource_group_name,
+                                 cluster_name,
+                                 nodepool_name,
+                                 node_vm_size,
+                                 min_count,
+                                 max_count,
+                                 no_wait=False):
+    instance = client.get(resource_group_name, cluster_name, nodepool_name)
+    if instance.type_properties_type != CONST_VIRTUAL_MACHINES:
+        raise ClientRequestError("Cannot add autoscale profile to a non-virtualmachines node pool.")
+    AutoScaleProfile = cmd.get_models(
+        "AutoScaleProfile",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="managed_clusters",
+    )
+    new_autoscale_profile = AutoScaleProfile(
+        size=node_vm_size,
+        min_count=int(min_count),
+        max_count=int(max_count),
+    )
+    if instance.virtual_machines_profile.scale.autoscale is None:
+        instance.virtual_machines_profile.scale.autoscale = []
+    instance.virtual_machines_profile.scale.autoscale.append(new_autoscale_profile)
+
+    return sdk_no_wait(
+        no_wait,
+        client.begin_create_or_update,
+        resource_group_name,
+        cluster_name,
+        nodepool_name,
+        instance
+    )
+
+
+def aks_agentpool_auto_scale_update(cmd,    # pylint: disable=unused-argument
+                                    client,
+                                    resource_group_name,
+                                    cluster_name,
+                                    nodepool_name,
+                                    current_node_vm_size,
+                                    node_vm_size=None,
+                                    min_count=None,
+                                    max_count=None,
+                                    no_wait=False):
+    if node_vm_size is None and min_count is None and max_count is None:
+        raise RequiredArgumentMissingError(
+            "specify --node-vm-size, --min-count, or --max-count (or a combination)."
+        )
+
+    instance = client.get(resource_group_name, cluster_name, nodepool_name)
+    if instance.type_properties_type != CONST_VIRTUAL_MACHINES:
+        raise ClientRequestError("Cannot update autoscale profile in a non-virtualmachines node pool.")
+
+    autoscale_exists = False
+    for a in instance.virtual_machines_profile.scale.autoscale:
+        if a.size == current_node_vm_size:
+            autoscale_exists = True
+            if node_vm_size is not None:
+                a.size = node_vm_size
+            if min_count is not None:
+                a.min_count = int(min_count)
+            if max_count is not None:
+                a.max_count = int(max_count)
+            break
+    if not autoscale_exists:
+        raise InvalidArgumentValueError(
+            f"Autoscale profile with size {current_node_vm_size} doesn't exist in node pool {nodepool_name}"
+        )
+
+    return sdk_no_wait(
+        no_wait,
+        client.begin_create_or_update,
+        resource_group_name,
+        cluster_name,
+        nodepool_name,
+        instance
+    )
+
+
+def aks_agentpool_auto_scale_delete(cmd,    # pylint: disable=unused-argument
+                                    client,
+                                    resource_group_name,
+                                    cluster_name,
+                                    nodepool_name,
+                                    current_node_vm_size,
+                                    no_wait=False):
+    instance = client.get(resource_group_name, cluster_name, nodepool_name)
+    if instance.type_properties_type != CONST_VIRTUAL_MACHINES:
+        raise ClientRequestError("Cannot delete autoscale profile from a non-virtualmachines node pool.")
+
+    autoscale_exists = False
+    for a in instance.virtual_machines_profile.scale.autoscale:
+        if a.size == current_node_vm_size:
+            autoscale_exists = True
+            instance.virtual_machines_profile.scale.autoscale.remove(a)
+            break
+    if not autoscale_exists:
+        raise InvalidArgumentValueError(
+            f"Autoscale profile with size {current_node_vm_size} doesn't exist in node pool {nodepool_name}"
+        )
+
+    return sdk_no_wait(
+        no_wait,
+        client.begin_create_or_update,
+        resource_group_name,
+        cluster_name,
+        nodepool_name,
+        instance
+    )
+
+
 def aks_operation_show(cmd,
                        client,
                        resource_group_name,
@@ -2761,6 +2923,9 @@ def aks_machine_add(
     vm_size=None,
     kubernetes_version=None,
     no_wait=False,
+    spot_max_price=float("nan"),
+    enable_ultra_ssd=False,
+    eviction_policy=None,
 ):
     existedMachine = None
     try:
@@ -2772,6 +2937,9 @@ def aks_machine_add(
         raise ClientRequestError(
             f"Machine '{machine_name}' already exists. Please use 'az aks machine update' to update it."
         )
+
+    if isnan(spot_max_price):
+        spot_max_price = -1
 
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -3038,14 +3206,16 @@ def aks_disable_addons(cmd, client, resource_group_name, name, addons, no_wait=F
     subscription_id = get_subscription_id(cmd.cli_ctx)
 
     try:
+        addon_profiles = instance.addon_profiles or {}
+        monitoring_addon_key = get_monitoring_addon_key(addon_profiles, CONST_MONITORING_ADDON_NAME)
         if (
             addons == "monitoring" and
-            CONST_MONITORING_ADDON_NAME in instance.addon_profiles and
-            instance.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled and
+            monitoring_addon_key in addon_profiles and
+            addon_profiles[monitoring_addon_key].enabled and
             CONST_MONITORING_USING_AAD_MSI_AUTH in
-            instance.addon_profiles[CONST_MONITORING_ADDON_NAME].config and
+            addon_profiles[monitoring_addon_key].config and
             str(
-                instance.addon_profiles[CONST_MONITORING_ADDON_NAME].config[
+                addon_profiles[monitoring_addon_key].config[
                     CONST_MONITORING_USING_AAD_MSI_AUTH
                 ]
             ).lower() == "true"
@@ -3053,7 +3223,7 @@ def aks_disable_addons(cmd, client, resource_group_name, name, addons, no_wait=F
             # remove the DCR association because otherwise the DCR can't be deleted
             ensure_container_insights_for_monitoring(
                 cmd,
-                instance.addon_profiles[CONST_MONITORING_ADDON_NAME],
+                addon_profiles[monitoring_addon_key],
                 subscription_id,
                 resource_group_name,
                 name,
@@ -3156,11 +3326,13 @@ def aks_enable_addons(
     if (
         is_monitoring_addon_enabled
     ):
+        addon_profiles = instance.addon_profiles or {}
+        monitoring_addon_key = get_monitoring_addon_key(addon_profiles, CONST_MONITORING_ADDON_NAME)
         if (
             CONST_MONITORING_USING_AAD_MSI_AUTH in
-            instance.addon_profiles[CONST_MONITORING_ADDON_NAME].config and
+            addon_profiles[monitoring_addon_key].config and
             str(
-                instance.addon_profiles[CONST_MONITORING_ADDON_NAME].config[
+                addon_profiles[monitoring_addon_key].config[
                     CONST_MONITORING_USING_AAD_MSI_AUTH
                 ]
             ).lower() == "true"
@@ -3168,10 +3340,15 @@ def aks_enable_addons(
             if not msi_auth:
                 raise ArgumentUsageError(
                     "--enable-msi-auth-for-monitoring can not be used on clusters with service principal auth.")
+            # Auto-enable HLSM when CNL is active and HLSM wasn't explicitly set
+            if enable_high_log_scale_mode is None and \
+               (addon_profiles[monitoring_addon_key].config or {}).get(
+                   "enableRetinaNetworkFlags", "").lower() == "true":
+                enable_high_log_scale_mode = True
             # create a Data Collection Rule (DCR) and associate it with the cluster
             ensure_container_insights_for_monitoring(
                 cmd,
-                instance.addon_profiles[CONST_MONITORING_ADDON_NAME],
+                addon_profiles[monitoring_addon_key],
                 subscription_id,
                 resource_group_name,
                 name,
@@ -3199,7 +3376,7 @@ def aks_enable_addons(
                 raise ArgumentUsageError("--ampls-resource-id can not be used without MSI auth.")
             ensure_container_insights_for_monitoring(
                 cmd,
-                instance.addon_profiles[CONST_MONITORING_ADDON_NAME],
+                addon_profiles[monitoring_addon_key],
                 subscription_id,
                 resource_group_name,
                 name,

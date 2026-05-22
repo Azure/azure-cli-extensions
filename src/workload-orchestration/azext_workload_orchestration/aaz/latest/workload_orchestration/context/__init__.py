@@ -9,6 +9,7 @@
 # flake8: noqa
 
 from .__cmd_group import *
+from . import capability  # NOTE: code organization only - commands are flat (context add-capability, etc.)
 from ._create import *
 from ._delete import *
 # from ._execute import *

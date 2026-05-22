@@ -11,6 +11,63 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* `az aks create` and `az aks nodepool add`: Add `--enable-osdisk-full-caching` (preview) to enable the full-cache ephemeral OS disk feature for a node pool. Requires AFEC registration `Microsoft.ContainerService/FullCachePreview`. Property is immutable after node pool creation.
+
+21.0.0b1
+++++++
+* [BREAKING CHANGE] `az aks create/update`: Remove `--disk-driver-version` option as the `version` field has been removed from the API spec for `ManagedClusterStorageProfileDiskCSIDriver`.
+* Vendor new SDK and bump API version to 2026-03-02-preview.
+
+20.0.0b8
++++++++
+* `az aks nodepool update`: Support `--enable-cluster-autoscaler` for VirtualMachines pools to convert all manual scale profiles to autoscale profiles.
+* `az aks nodepool update`: Support `--disable-cluster-autoscaler` for VirtualMachines pools to convert all autoscale profiles back to manual scale profiles.
+* `az aks nodepool update`: Block `--update-cluster-autoscaler` for VirtualMachines pools; use `az aks nodepool auto-scale update` instead.
+* `az aks nodepool auto-scale add`: New command to add an autoscale profile to a VirtualMachines agent pool.
+* `az aks nodepool auto-scale update`: New command to update an existing autoscale profile of a VirtualMachines agent pool.
+* `az aks nodepool auto-scale delete`: New command to delete an existing autoscale profile from a VirtualMachines agent pool.
+
+20.0.0b7
+++++++
+* `az aks nodepool update --crg-id`: Allow updating `--crg-id` to associate an existing Capacity Reservation Group with a nodepool not currently associated with one.
+* Vendor new SDK and bump API version to 2026-03-02-preview.
+* Update the minimum required cli core version to `2.76.0` (actually since `20.0.0b3`).
+* `az aks upgrade`: Add `--k8s-support-plan` and `--tier` flag support to allow cluster support plan and tier configuration during cluster upgrade.
+
+20.0.0b6
+++++++
+* `az aks loadbalancer update`: Allow updating `--primary-agent-pool-name` for load balancer configurations.
+
+20.0.0b5
++++++++
+* `az aks update`: Fix acceleration mode getting wiped out when modifying unrelated parameters in an ACNS enabled cluster.
+* `az aks create`: Add `--control-plane-scaling-size` parameter to configure control plane scaling profile with available sizes 'H2', 'H4', and 'H8'.
+
+20.0.0b4
++++++++
+* `az aks nodepool update`: Support `--node-vm-size` to resize VM size of an existing VMSS-based agent pool (preview). Requires AFEC registration `Microsoft.ContainerService/AgentPoolVMSSResize`.
+* `az aks create/update`: Fix DCR not being created or updated when `--enable-container-network-logs`, `--enable-retina-flow-logs`, or `--enable-high-log-scale-mode` flags are used, ensuring the Data Collection Rule streams (e.g. `Microsoft-ContainerLogV2-HighScale`) are kept in sync.
+* `az aks update`: Add validation for `--enable-high-log-scale-mode` on the update path requiring the monitoring addon with MSI authentication to be enabled
+
+20.0.0b3
+++++++
+* Vendor new SDK and bump API version to 2026-02-02-preview.
+
+20.0.0b2
++++++++
+* `az aks nodepool update`: clean up some useless code in the update managed gpu function. 
+* `az aks machine add`: Add `--spot-max-price` flag support to set the max price (in US Dollars) you are willing to pay for spot instances on a machine.
+* `az aks machine add`: Add `--eviction-policy` flag support to set the eviction policy for a machine.
+* `az aks machine add`: Add `--enable-ultra-ssd` flag support to enable ultra ssd on a machine.
+* `az aks update`: Fix V2-only NAT gateway params (e.g. `--nat-gateway-managed-outbound-ipv6-count`) being rejected on update when `--outbound-type` is not re-specified for an already-V2 cluster.
+
+20.0.0b1
++++++++
+* [Breaking Change] `az aks create/update`: Change `--nat-gateway-outbound-ips` and `--nat-gateway-outbound-ip-prefixes` to use comma-separated values, consistent with load balancer outbound IP parameters.
+
+19.0.0b30
++++++++
+* Add option `AzureContainerLinux` to `--os-sku` for `az aks create`, `az aks nodepool add`, and `az aks nodepool update`.
 
 19.0.0b29
 +++++++
@@ -22,7 +79,7 @@ Pending
 19.0.0b28
 +++++++
 * Fix `match_condition` kwarg leaking to HTTP transport by overriding `put_mc` and `add_agentpool` to pass `if_match` / `if_none_match` directly to the vendored SDK. This change fixes the compatibility issue as azure-cli/acs module adopts TypeSpec emitted SDKs while azure-cli-extensions/aks-preview still uses the autorest emitted SDK.
-+ `az aks list-vm-skus`: New command to list available VM SKUs for AKS clusters in a given region.
+* `az aks list-vm-skus`: New command to list available VM SKUs for AKS clusters in a given region.
 * `az aks create/update`: Add `--enable-service-account-image-pull`, `--disable-service-account-image-pull`, and `--service-account-image-pull-default-managed-identity-id` parameters to manage service account based image pull settings.
 * `az aks list-vm-skus`: New command to list available VM SKUs for AKS clusters in a given region.
 * Add managed GPU enablement option to node pool property in `az aks nodepool add` and `az aks nodepool update`.

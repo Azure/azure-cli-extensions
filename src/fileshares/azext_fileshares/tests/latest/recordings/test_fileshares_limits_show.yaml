@@ -1,0 +1,54 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - fileshare limits-show
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --location
+      User-Agent:
+      - AZURECLI/2.84.0 azsdk-python-core/1.38.0 Python/3.13.5 (Windows-2022Server-10.0.20348-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.FileShares/locations/eastus/getLimits?api-version=2025-09-01-preview
+  response:
+    body:
+      string: '{"properties":{"limits":{"maxFileShares":1000,"maxFileShareSnapshots":200,"maxFileShareSubnets":400,"maxFileSharePrivateEndpointConnections":100,"minProvisionedStorageGiB":32,"maxProvisionedStorageGiB":262144,"minProvisionedIOPerSec":3000,"maxProvisionedIOPerSec":102400,"minProvisionedThroughputMiBPerSec":100,"maxProvisionedThroughputMiBPerSec":10340},"provisioningConstants":{"baseIOPerSec":3000,"scalarIOPerSec":1.0,"baseThroughputMiBPerSec":100,"scalarThroughputMiBPerSec":0.1,"guardrailIOPerSecScalar":5.0,"guardrailThroughputScalar":5.0}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '546'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 23 Apr 2026 06:07:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=e4085597-5700-4c80-aa18-78669a90a2b1/westus2/84585f5a-02b5-49ea-8957-b0bbd3e4cbdc
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: E3F2700D21544616A8F683DD58289976 Ref B: CO6AA3150217047 Ref C: 2026-04-23T06:07:47Z'
+    status:
+      code: 200
+      message: OK
+version: 1
