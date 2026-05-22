@@ -16903,7 +16903,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @live_only()
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="eastus"
+        random_name_length=17, name_prefix="clitest", location="westus2"
     )
     def test_aks_nodepool_add_with_secondary_network_interfaces(
         self, resource_group, resource_group_location
@@ -16918,7 +16918,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "location": resource_group_location,
                 "ssh_key_value": self.generate_ssh_keys(),
                 "node_pool_name": nodepool_name,
-                "node_vm_size": "standard_d8s_v3",
+                "node_vm_size": "standard_d4s_v3",
             }
         )
 
@@ -16927,21 +16927,21 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "network vnet create "
             "--resource-group={resource_group} "
             "--name=testvnet "
-            "--address-prefix 10.0.0.0/16",
+            "--address-prefix 192.168.0.0/16",
         )
         self.cmd(
             "network vnet subnet create "
             "--resource-group={resource_group} "
             "--vnet-name=testvnet "
             "--name=nodesubnet "
-            "--address-prefix 10.0.0.0/24",
+            "--address-prefix 192.168.0.0/24",
         )
         subnet = self.cmd(
             "network vnet subnet create "
             "--resource-group={resource_group} "
             "--vnet-name=testvnet "
             "--name=secondarysubnet "
-            "--address-prefix 10.0.1.0/24",
+            "--address-prefix 192.168.1.0/24",
         ).get_output_in_json()
 
         node_subnet_id = (
