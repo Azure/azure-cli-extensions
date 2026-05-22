@@ -114,7 +114,6 @@ class Create(AAZCommand):
             options=["--target-specification"],
             arg_group="Properties",
             help="Specifies that we are using Helm charts for the k8s deployment",
-            required=True,
         )
 
         _args_schema.service_group = AAZStrArg(
@@ -341,7 +340,7 @@ class Create(AAZCommand):
                 properties.set_prop("hierarchyLevel", AAZStrType, ".hierarchy_level", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("solutionScope", AAZStrType, ".solution_scope")
                 properties.set_prop("state", AAZStrType, ".state")
-                properties.set_prop("targetSpecification", AAZFreeFormDictType, ".target_specification", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("targetSpecification", AAZFreeFormDictType, ".target_specification")
 
             capabilities = _builder.get(".properties.capabilities")
             if capabilities is not None:
@@ -441,7 +440,6 @@ class Create(AAZCommand):
             )
             properties.target_specification = AAZFreeFormDictType(
                 serialized_name="targetSpecification",
-                flags={"required": True},
             )
 
             capabilities = cls._schema_on_200_201.properties.capabilities

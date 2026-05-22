@@ -371,7 +371,7 @@ class Update(AAZCommand):
                 properties.set_prop("hierarchyLevel", AAZStrType, ".hierarchy_level", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("solutionScope", AAZStrType, ".solution_scope")
                 properties.set_prop("state", AAZStrType, ".state")
-                properties.set_prop("targetSpecification", AAZFreeFormDictType, ".target_specification", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("targetSpecification", AAZFreeFormDictType, ".target_specification")
 
             capabilities = _builder.get(".properties.capabilities")
             if capabilities is not None:
@@ -484,7 +484,6 @@ class _UpdateHelper:
         )
         properties.target_specification = AAZFreeFormDictType(
             serialized_name="targetSpecification",
-            flags={"required": True},
         )
 
         capabilities = _schema_target_read.properties.capabilities

@@ -212,7 +212,6 @@ class ListUntitled1(AAZCommand):
             )
             properties.target_specification = AAZFreeFormDictType(
                 serialized_name="targetSpecification",
-                flags={"required": True},
             )
 
             capabilities = cls._schema_on_200.value.Element.properties.capabilities

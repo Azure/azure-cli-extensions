@@ -222,7 +222,6 @@ class Show(AAZCommand):
             )
             properties.target_specification = AAZFreeFormDictType(
                 serialized_name="targetSpecification",
-                flags={"required": True},
             )
 
             capabilities = cls._schema_on_200.properties.capabilities

@@ -186,9 +186,7 @@ class Show(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
-            properties.configurations = AAZStrType(
-                flags={"required": True},
-            )
+            properties.configurations = AAZFreeFormDictType()
             properties.orchestrator_type = AAZStrType(
                 serialized_name="orchestratorType",
                 flags={"required": True},

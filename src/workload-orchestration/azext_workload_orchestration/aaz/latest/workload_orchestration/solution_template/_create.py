@@ -93,7 +93,6 @@ class Create(AAZCommand):
         _args_schema.configurations = AAZFileArg(
             options=["--config-template-file","--configuration-template-file","-f"],
             help="Link to File containing Config expressions  for this solution version",
-            required=True,
         )
     
         _args_schema.specification = AAZFreeFormDictArg(
@@ -200,15 +199,19 @@ class Create(AAZCommand):
         @property
         def url_parameters(self):
             solutionTemplateName = str(self.ctx.args.solution_template_name)
-            solutionTemplateValue = object()
+            solutionTemplateValue = {}
 
-            try:
-                solutionTemplateValue = yaml.safe_load(str(self.ctx.args.configurations))
-            except Exception as e:
-                raise ValidationError("Invalid YAML passed or error in parsing yaml")
-            
-            if type(solutionTemplateValue) == "string":
-                raise ValidationError("Invalid YAML passed")
+            if self.ctx.args.configurations:
+                try:
+                    solutionTemplateValue = yaml.safe_load(str(self.ctx.args.configurations))
+                except Exception as e:
+                    raise ValidationError("Invalid YAML passed or error in parsing yaml")
+                
+                if type(solutionTemplateValue) == "string":
+                    raise ValidationError("Invalid YAML passed")
+
+                if not isinstance(solutionTemplateValue, dict):
+                    solutionTemplateValue = {}
             
             if solutionTemplateName == "Undefined" and solutionTemplateValue.get("metadata", {}).get("name") is None:
                 raise ValidationError("No name input detected. One of following input is required: \n1. Name in command argument\n2. Name in file under metadata")
@@ -422,15 +425,19 @@ class Create(AAZCommand):
         @property
         def url_parameters(self):
             solutionTemplateName = str(self.ctx.args.solution_template_name)
-            solutionTemplateValue = object()
+            solutionTemplateValue = {}
 
-            try:
-                solutionTemplateValue = yaml.safe_load(str(self.ctx.args.configurations))
-            except Exception as e:
-                raise ValidationError("Invalid YAML passed or error in parsing yaml")
-            
-            if type(solutionTemplateValue) == "string":
-                raise ValidationError("Invalid YAML passed")
+            if self.ctx.args.configurations:
+                try:
+                    solutionTemplateValue = yaml.safe_load(str(self.ctx.args.configurations))
+                except Exception as e:
+                    raise ValidationError("Invalid YAML passed or error in parsing yaml")
+                
+                if type(solutionTemplateValue) == "string":
+                    raise ValidationError("Invalid YAML passed")
+
+                if not isinstance(solutionTemplateValue, dict):
+                    solutionTemplateValue = {}
             
             if solutionTemplateName == "Undefined" and solutionTemplateValue.get("metadata", {}).get("name") is None:
                 raise ValidationError("Solution Template name needs to be passed either as argument in --schema-name or in schema yaml in the metadata")
@@ -495,7 +502,6 @@ class Create(AAZCommand):
 
             properties = _builder.get(".solutionTemplateVersion.properties")
             if properties is not None:
-                properties.set_prop("configurations", AAZStrType, ".configurations", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("specification", AAZFreeFormDictType, ".specification", typ_kwargs={"flags": {"required": True}})
 
             specification = _builder.get(".solutionTemplateVersion.properties.specification")
@@ -504,6 +510,17 @@ class Create(AAZCommand):
             
             data = self.serialize_content(_content_value)    
             data["solutionTemplateVersion"]["properties"]["orchestratorType"] = "TO"
+
+            # configurations can be a string or JSON object; parse from file arg if provided
+            if self.ctx.args.configurations:
+                try:
+                    parsed_configurations = yaml.safe_load(str(self.ctx.args.configurations))
+                    if isinstance(parsed_configurations, dict):
+                        data["solutionTemplateVersion"]["properties"]["configurations"] = parsed_configurations
+                    else:
+                        data["solutionTemplateVersion"]["properties"]["configurations"] = str(self.ctx.args.configurations)
+                except Exception:
+                    data["solutionTemplateVersion"]["properties"]["configurations"] = str(self.ctx.args.configurations)
         
             return data
 
