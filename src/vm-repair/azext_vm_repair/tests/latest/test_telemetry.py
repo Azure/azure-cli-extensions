@@ -160,17 +160,6 @@ class TestTrackRepairAndRestore(unittest.TestCase):
 class TestGenerateUserHash(unittest.TestCase):
     """Tests for the _generate_user_hash pseudonymous identifier."""
 
-    def _make_cmd_with_profile(self, sub_id, user_name):
-        """Create a mock cmd whose cli_ctx Profile returns the given subscription."""
-        cmd = MagicMock()
-        mock_profile = MagicMock()
-        mock_profile.get_subscription.return_value = {
-            'id': sub_id,
-            'user': {'name': user_name}
-        }
-        # Patch the Profile class at the module level so the local import finds it
-        return cmd, mock_profile
-
     @patch('azure.cli.core._profile.Profile')
     def test_returns_16_char_hex(self, mock_profile_cls):
         cmd = MagicMock()

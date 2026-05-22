@@ -29,7 +29,7 @@ def _scrub_pii(value):
 def _generate_user_hash(cmd):
     """Generate a one-way pseudonymous identifier for the current caller.
 
-    Combines subscription_id + user principal with a static salt, then
+    Combines subscription_id + user principal with a namespace prefix, then
     SHA-256 hashes it.  The 16-hex-char result is deterministic (same
     user = same hash across sessions) but irreversible.
     """
