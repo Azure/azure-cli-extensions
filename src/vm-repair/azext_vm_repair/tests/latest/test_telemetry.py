@@ -53,6 +53,21 @@ class TestScrubPii(unittest.TestCase):
         assert '[REDACTED_PATH]' in result
         assert 'johndoe' not in result
 
+    def test_macos_home_path_redacted(self):
+        result = _scrub_pii('Error at /Users/alice/script.py')
+        assert '[REDACTED_PATH]' in result
+        assert 'alice' not in result
+
+    def test_other_drive_windows_path_redacted(self):
+        result = _scrub_pii('Log at D:\\Users\\bob\\logs')
+        assert '[REDACTED_PATH]' in result
+        assert 'bob' not in result
+
+    def test_lowercase_windows_path_redacted(self):
+        result = _scrub_pii('File c:\\users\\carol\\data.txt')
+        assert '[REDACTED_PATH]' in result
+        assert 'carol' not in result
+
     def test_no_pii_unchanged(self):
         msg = 'Disk swap completed successfully'
         assert _scrub_pii(msg) == msg

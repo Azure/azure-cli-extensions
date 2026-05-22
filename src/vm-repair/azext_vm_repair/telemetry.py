@@ -14,7 +14,7 @@ EXTENSION_NAME = 'vm-repair'
 
 # Patterns for scrubbing PII from error messages and stack traces
 _EMAIL_RE = re.compile(r'[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+')
-_HOME_DIR_RE = re.compile(r'(?:/home/|C:\\Users\\)[^\s/\\]+')
+_HOME_DIR_RE = re.compile(r'(?:/(?:home|Users)/|[A-Za-z]:\\Users\\)[^\s/\\]+', re.IGNORECASE)
 
 
 def _scrub_pii(value):
@@ -27,7 +27,11 @@ def _scrub_pii(value):
 
 
 def _hash_value(value):
-    """One-way hash a single value, preserving type for non-strings."""
+    """One-way hash a single value.
+
+    Returns None and empty string unchanged. Any other value is converted to a
+    string, SHA-256 hashed, and truncated to a 16-character hexadecimal digest.
+    """
     if value is None or value == '':
         return value
     return hashlib.sha256(str(value).encode('utf-8')).hexdigest()[:16]
