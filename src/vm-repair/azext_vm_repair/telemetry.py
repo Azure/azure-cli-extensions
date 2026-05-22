@@ -26,6 +26,53 @@ def _scrub_pii(value):
     return value
 
 
+def _hash_value(value):
+    """One-way hash a single value, preserving type for non-strings."""
+    if value is None or value == '':
+        return value
+    return hashlib.sha256(str(value).encode('utf-8')).hexdigest()[:16]
+
+
+# Parameter keys whose values are Azure resource identifiers and should be
+# hashed rather than sent in cleartext.  Keys not in this set are kept as-is
+# (booleans, enums, flags, etc.).
+_RESOURCE_ID_KEYS = frozenset([
+    'vm_name', 'resource_group_name', 'subscription_id',
+    'repair_vm_name', 'repair_group_name', 'copy_disk_name',
+    'disk_name', 'repair_vm_id',
+])
+
+
+def _hash_resource_params(parameters):
+    """Return a copy of *parameters* with resource identifiers hashed."""
+    if not isinstance(parameters, dict):
+        return parameters
+    sanitized = {}
+    for key, value in parameters.items():
+        if key in _RESOURCE_ID_KEYS and value and value != '********':
+            sanitized[key] = _hash_value(value)
+        else:
+            sanitized[key] = value
+    return sanitized
+
+
+def _hash_result_json(result_json):
+    """Return a copy of *result_json* with known resource fields hashed."""
+    if not isinstance(result_json, dict):
+        return result_json
+    _result_resource_keys = {
+        'repair_vm_name', 'copied_disk_name', 'copied_disk_uri',
+        'repair_resource_group', 'repair_vm_id',
+    }
+    sanitized = {}
+    for key, value in result_json.items():
+        if key in _result_resource_keys and isinstance(value, str) and value:
+            sanitized[key] = _hash_value(value)
+        else:
+            sanitized[key] = value
+    return sanitized
+
+
 def _generate_user_hash(cmd):
     """Generate a one-way pseudonymous identifier for the current caller.
 
@@ -63,15 +110,15 @@ def _build_base_properties(command_name, status, message, error_message, error_s
 
 def _track_command_telemetry(logger, command_name, parameters, status, message, error_message, error_stack_trace, duration, result_json, context=None):  # pylint: disable=unused-argument
     properties = _build_base_properties(command_name, status, message, error_message, error_stack_trace, duration, context)
-    properties['Context.Default.AzureCLI.VmRepairParameters'] = _scrub_pii(json.dumps(parameters))
-    properties['Context.Default.AzureCLI.VmRepairResultJson'] = _scrub_pii(json.dumps(result_json))
+    properties['Context.Default.AzureCLI.VmRepairParameters'] = json.dumps(_hash_resource_params(parameters))
+    properties['Context.Default.AzureCLI.VmRepairResultJson'] = json.dumps(_hash_result_json(result_json))
     telemetry_core.add_extension_event(EXTENSION_NAME, properties)
 
 
 def _track_run_command_telemetry(logger, command_name, parameters, status, message, error_message, error_stack_trace, duration, result_json, script_run_id, script_status, script_output, script_duration, context=None):  # pylint: disable=unused-argument
     properties = _build_base_properties(command_name, status, message, error_message, error_stack_trace, duration, context)
-    properties['Context.Default.AzureCLI.VmRepairParameters'] = _scrub_pii(json.dumps(parameters))
-    properties['Context.Default.AzureCLI.VmRepairResultJson'] = _scrub_pii(json.dumps(result_json))
+    properties['Context.Default.AzureCLI.VmRepairParameters'] = json.dumps(_hash_resource_params(parameters))
+    properties['Context.Default.AzureCLI.VmRepairResultJson'] = json.dumps(_hash_result_json(result_json))
     properties['Context.Default.AzureCLI.VmRepairScriptRunId'] = script_run_id
     properties['Context.Default.AzureCLI.VmRepairScriptStatus'] = script_status
     properties['Context.Default.AzureCLI.VmRepairScriptOutput'] = _scrub_pii(script_output)

@@ -8,6 +8,9 @@ from unittest.mock import patch, MagicMock
 
 from azext_vm_repair.telemetry import (
     _scrub_pii,
+    _hash_value,
+    _hash_resource_params,
+    _hash_result_json,
     _generate_user_hash,
     _build_base_properties,
     _track_command_telemetry,
@@ -67,6 +70,47 @@ class TestScrubPii(unittest.TestCase):
         assert '[REDACTED_EMAIL]' in result
 
 
+class TestHashFunctions(unittest.TestCase):
+    """Tests for _hash_value, _hash_resource_params, and _hash_result_json."""
+
+    def test_hash_value_deterministic(self):
+        assert _hash_value('my-vm') == _hash_value('my-vm')
+
+    def test_hash_value_irreversible(self):
+        result = _hash_value('my-secret-vm')
+        assert 'my-secret-vm' not in result
+        assert len(result) == 16
+
+    def test_hash_value_none_passthrough(self):
+        assert _hash_value(None) is None
+        assert _hash_value('') == ''
+
+    def test_hash_resource_params_hashes_resource_keys(self):
+        params = {'vm_name': 'myvm', 'resource_group_name': 'myrg', 'yes': True, 'size': 'Standard_D2s_v3'}
+        result = _hash_resource_params(params)
+        assert result['vm_name'] != 'myvm'
+        assert result['resource_group_name'] != 'myrg'
+        assert result['yes'] is True
+        assert result['size'] == 'Standard_D2s_v3'
+
+    def test_hash_resource_params_skips_redacted(self):
+        params = {'repair_password': '********'}
+        result = _hash_resource_params(params)
+        assert result['repair_password'] == '********'
+
+    def test_hash_result_json_hashes_resource_fields(self):
+        result = {'repair_vm_name': 'rep-vm', 'status': 'SUCCESS', 'message': 'ok'}
+        hashed = _hash_result_json(result)
+        assert hashed['repair_vm_name'] != 'rep-vm'
+        assert len(hashed['repair_vm_name']) == 16
+        assert hashed['status'] == 'SUCCESS'
+        assert hashed['message'] == 'ok'
+
+    def test_hash_result_json_non_dict_passthrough(self):
+        assert _hash_result_json([1, 2]) == [1, 2]
+        assert _hash_result_json(None) is None
+
+
 class TestTrackCommandTelemetry(unittest.TestCase):
     """Tests that _track_command_telemetry sends properly structured events."""
 
@@ -100,16 +144,29 @@ class TestTrackCommandTelemetry(unittest.TestCase):
         assert 'alice' not in props['Context.Default.AzureCLI.VmRepairErrorStackTrace']
 
     @patch('azext_vm_repair.telemetry.telemetry_core')
-    def test_scrubs_pii_in_parameters_and_result(self, mock_telemetry_core):
+    def test_hashes_resource_params_and_result(self, mock_telemetry_core):
         logger = MagicMock()
+        params = {'vm_name': 'my-secret-vm', 'resource_group_name': 'my-rg', 'yes': True}
+        result = {'repair_vm_name': 'repair-abc', 'status': 'SUCCESS', 'message': 'ok'}
         _track_command_telemetry(
-            logger, 'test', {'vm_name': 'admin@corp.com-vm'}, 'SUCCESS',
-            '', '', '', 0, {'path': '/home/alice/disk'}
+            logger, 'test', params, 'SUCCESS', '', '', '', 0, result
         )
 
         props = mock_telemetry_core.add_extension_event.call_args[0][1]
-        assert 'admin@corp.com' not in props['Context.Default.AzureCLI.VmRepairParameters']
-        assert 'alice' not in props['Context.Default.AzureCLI.VmRepairResultJson']
+        import json as _json
+        sent_params = _json.loads(props['Context.Default.AzureCLI.VmRepairParameters'])
+        sent_result = _json.loads(props['Context.Default.AzureCLI.VmRepairResultJson'])
+        # Resource names should be hashed (16-char hex)
+        assert sent_params['vm_name'] != 'my-secret-vm'
+        assert len(sent_params['vm_name']) == 16
+        assert sent_params['resource_group_name'] != 'my-rg'
+        # Non-resource fields kept as-is
+        assert sent_params['yes'] is True
+        # Result resource fields hashed
+        assert sent_result['repair_vm_name'] != 'repair-abc'
+        assert len(sent_result['repair_vm_name']) == 16
+        # Non-resource result fields kept
+        assert sent_result['status'] == 'SUCCESS'
 
 
 class TestTrackRunCommandTelemetry(unittest.TestCase):
