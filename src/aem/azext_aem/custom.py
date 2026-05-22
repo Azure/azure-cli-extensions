@@ -158,7 +158,7 @@ class EnhancedMonitoring:  # pylint: disable=too-many-instance-attributes
             user_assigned = []
 
         if new_identity is not None:
-            from azure.cli.command_modules.vm.aaz.latest.vm import Patch as VMPatch
+            from azure.cli.command_modules.vm.operations.vm import VMPatch
             command_args = {
                 'resource_group': self._resource_group,
                 'vm_name': self._vm['name'],
