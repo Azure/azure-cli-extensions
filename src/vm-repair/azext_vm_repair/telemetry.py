@@ -61,17 +61,17 @@ def _build_base_properties(command_name, status, message, error_message, error_s
     return props
 
 
-def _track_command_telemetry(logger, command_name, parameters, status, message, error_message, error_stack_trace, duration, subscription_id, result_json, context=None):  # pylint: disable=unused-argument
+def _track_command_telemetry(logger, command_name, parameters, status, message, error_message, error_stack_trace, duration, result_json, context=None):  # pylint: disable=unused-argument
     properties = _build_base_properties(command_name, status, message, error_message, error_stack_trace, duration, context)
-    properties['Context.Default.AzureCLI.VmRepairParameters'] = json.dumps(parameters)
-    properties['Context.Default.AzureCLI.VmRepairResultJson'] = json.dumps(result_json)
+    properties['Context.Default.AzureCLI.VmRepairParameters'] = _scrub_pii(json.dumps(parameters))
+    properties['Context.Default.AzureCLI.VmRepairResultJson'] = _scrub_pii(json.dumps(result_json))
     telemetry_core.add_extension_event(EXTENSION_NAME, properties)
 
 
-def _track_run_command_telemetry(logger, command_name, parameters, status, message, error_message, error_stack_trace, duration, subscription_id, result_json, script_run_id, script_status, script_output, script_duration, context=None):  # pylint: disable=unused-argument
+def _track_run_command_telemetry(logger, command_name, parameters, status, message, error_message, error_stack_trace, duration, result_json, script_run_id, script_status, script_output, script_duration, context=None):  # pylint: disable=unused-argument
     properties = _build_base_properties(command_name, status, message, error_message, error_stack_trace, duration, context)
-    properties['Context.Default.AzureCLI.VmRepairParameters'] = json.dumps(parameters)
-    properties['Context.Default.AzureCLI.VmRepairResultJson'] = json.dumps(result_json)
+    properties['Context.Default.AzureCLI.VmRepairParameters'] = _scrub_pii(json.dumps(parameters))
+    properties['Context.Default.AzureCLI.VmRepairResultJson'] = _scrub_pii(json.dumps(result_json))
     properties['Context.Default.AzureCLI.VmRepairScriptRunId'] = script_run_id
     properties['Context.Default.AzureCLI.VmRepairScriptStatus'] = script_status
     properties['Context.Default.AzureCLI.VmRepairScriptOutput'] = _scrub_pii(script_output)
@@ -79,6 +79,6 @@ def _track_run_command_telemetry(logger, command_name, parameters, status, messa
     telemetry_core.add_extension_event(EXTENSION_NAME, properties)
 
 
-def _track_command_telemetry_repair_and_restore(logger, command_name, status, message, error_message, error_stack_trace, duration, subscription_id, context=None):  # pylint: disable=unused-argument
+def _track_command_telemetry_repair_and_restore(logger, command_name, status, message, error_message, error_stack_trace, duration, context=None):  # pylint: disable=unused-argument
     properties = _build_base_properties(command_name, status, message, error_message, error_stack_trace, duration, context)
     telemetry_core.add_extension_event(EXTENSION_NAME, properties)

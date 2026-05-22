@@ -75,7 +75,7 @@ class TestTrackCommandTelemetry(unittest.TestCase):
         logger = MagicMock()
         _track_command_telemetry(
             logger, 'vm repair create', {'verbose': True}, 'SUCCESS',
-            'ok', '', '', 1.5, 'sub-id-123', {'status': 'SUCCESS'}
+            'ok', '', '', 1.5, {'status': 'SUCCESS'}
         )
 
         mock_telemetry_core.add_extension_event.assert_called_once()
@@ -92,7 +92,7 @@ class TestTrackCommandTelemetry(unittest.TestCase):
         _track_command_telemetry(
             logger, 'vm repair create', {}, 'ERROR',
             'msg', 'auth failed for user@corp.com', 'at /home/alice/script.py',
-            2.0, 'sub-id', {}
+            2.0, {}
         )
 
         props = mock_telemetry_core.add_extension_event.call_args[0][1]
@@ -100,16 +100,16 @@ class TestTrackCommandTelemetry(unittest.TestCase):
         assert 'alice' not in props['Context.Default.AzureCLI.VmRepairErrorStackTrace']
 
     @patch('azext_vm_repair.telemetry.telemetry_core')
-    def test_subscription_id_not_in_properties(self, mock_telemetry_core):
+    def test_scrubs_pii_in_parameters_and_result(self, mock_telemetry_core):
         logger = MagicMock()
         _track_command_telemetry(
-            logger, 'test', {}, 'SUCCESS', '', '', '', 0, 'secret-sub-id', {}
+            logger, 'test', {'vm_name': 'admin@corp.com-vm'}, 'SUCCESS',
+            '', '', '', 0, {'path': '/home/alice/disk'}
         )
 
         props = mock_telemetry_core.add_extension_event.call_args[0][1]
-        for v in props.values():
-            if isinstance(v, str):
-                assert 'secret-sub-id' not in v
+        assert 'admin@corp.com' not in props['Context.Default.AzureCLI.VmRepairParameters']
+        assert 'alice' not in props['Context.Default.AzureCLI.VmRepairResultJson']
 
 
 class TestTrackRunCommandTelemetry(unittest.TestCase):
@@ -119,7 +119,7 @@ class TestTrackRunCommandTelemetry(unittest.TestCase):
         logger = MagicMock()
         _track_run_command_telemetry(
             logger, 'vm repair run', {}, 'SUCCESS', 'ok', '', '',
-            3.0, 'sub-id', {}, 'run-123', 'Succeeded', 'script output', 1.5
+            3.0, {}, 'run-123', 'Succeeded', 'script output', 1.5
         )
 
         props = mock_telemetry_core.add_extension_event.call_args[0][1]
@@ -132,7 +132,7 @@ class TestTrackRunCommandTelemetry(unittest.TestCase):
         logger = MagicMock()
         _track_run_command_telemetry(
             logger, 'vm repair run', {}, 'ERROR', '', '', '',
-            1.0, 'sub', {}, 'run-1', 'Failed',
+            1.0, {}, 'run-1', 'Failed',
             'Error for admin@company.com at /home/bob/run.sh', 0.5
         )
 
@@ -147,7 +147,7 @@ class TestTrackRepairAndRestore(unittest.TestCase):
     def test_minimal_properties(self, mock_telemetry_core):
         logger = MagicMock()
         _track_command_telemetry_repair_and_restore(
-            logger, 'vm repair repair-and-restore', 'SUCCESS', 'done', '', '', 4.2, 'sub'
+            logger, 'vm repair repair-and-restore', 'SUCCESS', 'done', '', '', 4.2
         )
 
         props = mock_telemetry_core.add_extension_event.call_args[0][1]
@@ -238,7 +238,7 @@ class TestContextPassthrough(unittest.TestCase):
     def test_command_telemetry_with_context(self, mock_telemetry_core):
         ctx = {'OsType': 'Linux', 'UserHash': 'deadbeef12345678'}
         _track_command_telemetry(
-            MagicMock(), 'create', {}, 'SUCCESS', '', '', '', 1.0, 'sub', {}, context=ctx
+            MagicMock(), 'create', {}, 'SUCCESS', '', '', '', 1.0, {}, context=ctx
         )
         props = mock_telemetry_core.add_extension_event.call_args[0][1]
         assert props['Context.Default.AzureCLI.VmRepairOsType'] == 'Linux'
@@ -248,7 +248,7 @@ class TestContextPassthrough(unittest.TestCase):
     def test_run_telemetry_with_context(self, mock_telemetry_core):
         ctx = {'ExceptionType': 'AzCommandError'}
         _track_run_command_telemetry(
-            MagicMock(), 'run', {}, 'ERROR', '', 'err', '', 1.0, 'sub', {},
+            MagicMock(), 'run', {}, 'ERROR', '', 'err', '', 1.0, {},
             'run-1', 'Failed', 'output', 0.5, context=ctx
         )
         props = mock_telemetry_core.add_extension_event.call_args[0][1]
@@ -258,7 +258,7 @@ class TestContextPassthrough(unittest.TestCase):
     def test_repair_and_restore_with_context(self, mock_telemetry_core):
         ctx = {'UserHash': 'abc123'}
         _track_command_telemetry_repair_and_restore(
-            MagicMock(), 'repair-and-restore', 'SUCCESS', '', '', '', 1.0, 'sub', context=ctx
+            MagicMock(), 'repair-and-restore', 'SUCCESS', '', '', '', 1.0, context=ctx
         )
         props = mock_telemetry_core.add_extension_event.call_args[0][1]
         assert props['Context.Default.AzureCLI.VmRepairUserHash'] == 'abc123'
