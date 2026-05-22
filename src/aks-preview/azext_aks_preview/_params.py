@@ -1094,6 +1094,7 @@ def load_arguments(self, _):
             ),
         )
         c.argument("enable_azure_monitor_metrics", action="store_true")
+        c.argument("disable_azure_monitor_metrics", action="store_true")
         c.argument(
             "azure_monitor_workspace_resource_id",
             validator=validate_azuremonitorworkspaceresourceid,
@@ -1589,6 +1590,7 @@ def load_arguments(self, _):
             ),
         )
         c.argument("enable_azure_monitor_metrics", action="store_true")
+        c.argument("disable_azure_monitor_metrics", action="store_true")
         c.argument(
             "azure_monitor_workspace_resource_id",
             validator=validate_azuremonitorworkspaceresourceid,

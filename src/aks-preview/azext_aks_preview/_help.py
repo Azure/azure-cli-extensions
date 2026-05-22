@@ -580,6 +580,9 @@ helps['aks create'] = f"""
         - name: --enable-azure-monitor-metrics
           type: bool
           short-summary: Enable Azure Monitor Metrics Profile
+        - name: --disable-azure-monitor-metrics
+          type: bool
+          short-summary: Disable Azure Monitor Metrics Profile
         - name: --enable-control-plane-metrics --enable-cp-metrics
           type: bool
           short-summary: Enable collection of Azure Monitor managed Prometheus control plane metrics for managed cluster components (kube-apiserver, etcd, etc). Requires Azure Monitor metrics to be enabled (already enabled or via --enable-azure-monitor-metrics). See aka.ms/aks/controlplane-metrics.
@@ -1288,6 +1291,9 @@ helps['aks update'] = """
         - name: --enable-azure-monitor-metrics
           type: bool
           short-summary: Enable Azure Monitor Metrics Profile
+        - name: --disable-azure-monitor-metrics
+          type: bool
+          short-summary: Disable Azure Monitor Metrics Profile
         - name: --enable-control-plane-metrics --enable-cp-metrics
           type: bool
           short-summary: Enable collection of Azure Monitor managed Prometheus control plane metrics for managed cluster components (kube-apiserver, etcd, etc). Requires Azure Monitor metrics to be enabled (already enabled or via --enable-azure-monitor-metrics). See aka.ms/aks/controlplane-metrics.
