@@ -488,7 +488,7 @@ def _write_extended_location_file(extended_location):
 # target_deploy
 # ===========================================================================
 
-API_VERSION = "2025-08-01"
+API_VERSION = "2026-05-01-preview"
 
 
 def target_deploy_pre_install(
