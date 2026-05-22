@@ -22,9 +22,9 @@ class UpdateCapabilities(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-05-01-preview",
+        "version": "2025-08-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.Edge/solutiontemplates/{}", "2026-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/Microsoft.Edge/solutiontemplates/{}", "2025-08-01"],
         ]
     }
 
@@ -163,7 +163,7 @@ class UpdateCapabilities(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-05-01-preview",
+                    "api-version", "2025-08-01",
                     required=True,
                 ),
             }

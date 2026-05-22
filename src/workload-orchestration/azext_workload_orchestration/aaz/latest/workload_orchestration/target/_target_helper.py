@@ -34,7 +34,7 @@ class TargetHelper:
             solutionTemplateId=solution_template_resource_id
         )
         request = client._request("GET", template_url, {
-            "api-version": "2026-05-01-preview"
+            "api-version": "2025-08-01"
         }, {
             "Accept": "application/json"
         }, None, {}, None)
