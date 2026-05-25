@@ -30,7 +30,7 @@ helps['vm repair create'] = """
             az vm repair create -g MyResourceGroup -n myVM --repair-username username --repair-password password!234 --verbose
         - name: Create a repair VM of a specific distro or a specific URN could also be provided
           text: >
-            az vm repair create -g MyResourceGroup -n myVM --distro 'rhel7|sles12|ubuntu20|centos6|oracle8|sles15'
+            az vm repair create -g MyResourceGroup -n myVM --distro 'rhel7|rhel8|rhel9|rhel10|ubuntu20|ubuntu22|ubuntu24|centos6|centos7|centos8|oracle7|oracle8|oracle9|oracle10|sles12|sles15'
         - name: Create a repair VM with a Private IP address
           text: >
             az vm repair create -g MyResourceGroup -n myVM --repair-username <username> --repair-password <password>
