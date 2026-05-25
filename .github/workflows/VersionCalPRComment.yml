@@ -2,7 +2,7 @@ name: Release Version Calculation
 
 on:
   workflow_dispatch:
-  pull_request_target:
+  pull_request:
       types: [opened, labeled, unlabeled, synchronize]
       branches:
         - main
