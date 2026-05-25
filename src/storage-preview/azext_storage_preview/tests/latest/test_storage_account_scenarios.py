@@ -271,33 +271,34 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
         self.assertEqual(activeDirectoryProperties['netBiosDomainName'], self.kwargs['net_bios_domain_name'])
 
     @ResourceGroupPreparer(location='eastus2', random_name_length=24)
-    @record_only()
+    # @record_only()
     def test_storage_account_task_assignment(self, resource_group):
         self.kwargs.update({
             'sa': self.create_random_name('sataskassignment', 24),
             "task_name": self.create_random_name('task', 18),
             "task_assignment_name": self.create_random_name('taskassignment', 24),
-            "task_assignment_name_2": self.create_random_name('taskassignment', 24)
+            "task_assignment_name_2": self.create_random_name('taskassignment', 24),
+            "task_assignment_name_3": self.create_random_name('taskassignment', 24)
         })
         self.cmd('az storage account create -n {sa} -g {rg} -l eastus2')
 
         # need to create storage-actions task manually
-        # task_id = self.cmd("az storage-actions task create -g {rg} -n {task_name} -l eastus2 "
-        #                    "--identity {{type:SystemAssigned}} "
-        #                    "--tags {{key1:value1}} --action {{if:{{condition:\\'[[equals(AccessTier,\\'/Cool\\'/)]]\\',"
-        #                    "operations:[{{name:'SetBlobTier',parameters:{{tier:'Hot'}},"
-        #                    "onSuccess:'continue',onFailure:'break'}}]}},"
-        #                    "else:{{operations:[{{name:'DeleteBlob',onSuccess:'continue',onFailure:'break'}}]}}}} "
-        #                    "--description StorageTask1 --enabled false").get_output_in_json()["id"]
-        task_id = 'taskid'
+        task_id = self.cmd("az storage-actions task create -g {rg} -n {task_name} -l eastus2 "
+                           "--identity {{type:SystemAssigned}} "
+                           "--tags {{key1:value1}} --action {{if:{{condition:\\'[[equals(AccessTier,\\'/Cool\\'/)]]\\',"
+                           "operations:[{{name:'SetBlobTier',parameters:{{tier:'Hot'}},"
+                           "onSuccess:'continue',onFailure:'break'}}]}},"
+                           "else:{{operations:[{{name:'DeleteBlob',onSuccess:'continue',onFailure:'break'}}]}}}} "
+                           "--description StorageTask1 --enabled false").get_output_in_json()["id"]
+        # task_id = 'taskid'
         self.kwargs.update({"task_id": task_id})
         # service would not work if request is directed to euap
         self.cmd("az storage account task-assignment create -g {rg} -n {task_assignment_name} --account-name {sa} "
                  "--description 'My Storage task assignment' --enabled false --task-id '{task_id}' "
                  "--report {{prefix:container1}} "
                  "--execution-context {{trigger:{{type:OnSchedule,parameters:"
-                 "{{start-from:\\'2025-08-14T21:52:47Z\\',"
-                 "end-by:\\'2025-09-04T21:52:47.203074Z\\',interval:10,interval-unit:Days}}}},"
+                 "{{start-from:\\'2026-08-14T21:52:47Z\\',"
+                 "end-by:\\'2026-09-04T21:52:47.203074Z\\',interval:10,interval-unit:Days}}}},"
                  "target:{{prefix:[prefix1,prefix2],exclude-prefix:[prefix3]}}}}",
                  checks=[JMESPathCheck('properties.taskId', task_id),
                          JMESPathCheck('properties.enabled', False),
@@ -305,9 +306,9 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
                          JMESPathCheck('properties.report.prefix', 'container1'),
                          JMESPathCheck('properties.executionContext.trigger.type', 'OnSchedule'),
                          JMESPathCheck('properties.executionContext.trigger.parameters.startFrom',
-                                       '2025-08-14T21:52:47Z'),
+                                       '2026-08-14T21:52:47Z'),
                          JMESPathCheck('properties.executionContext.trigger.parameters.endBy',
-                                       '2025-09-04T21:52:47Z'),
+                                       '2026-09-04T21:52:47Z'),
                          JMESPathCheck('properties.executionContext.trigger.parameters.interval', 10),
                          JMESPathCheck('properties.executionContext.trigger.parameters.intervalUnit', 'Days'),
                          JMESPathCheck('properties.executionContext.target.prefix', ['prefix1', 'prefix2']),
@@ -317,7 +318,7 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
                  "--description 'My Storage task assignment 2' --enabled false --task-id '{task_id}'"
                  " --report {{prefix:container2}} "
                  "--execution-context {{trigger:{{type:RunOnce,parameters:"
-                 "{{start-on:\\'2025-09-15T21:52:47Z\\'}}}},"
+                 "{{start-on:\\'2026-09-15T21:52:47Z\\'}}}},"
                  "target:{{prefix:[prefix2,prefix3],exclude-prefix:[prefix4]}}}}",
                  checks=[JMESPathCheck('properties.taskId', task_id),
                          JMESPathCheck('properties.enabled', False),
@@ -325,7 +326,23 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
                          JMESPathCheck('properties.report.prefix', 'container2'),
                          JMESPathCheck('properties.executionContext.trigger.type', 'RunOnce'),
                          JMESPathCheck('properties.executionContext.trigger.parameters.startOn',
-                                       '2025-09-15T21:52:47Z'),
+                                       '2026-09-15T21:52:47Z'),
+                         JMESPathCheck('properties.executionContext.target.prefix', ['prefix2', 'prefix3']),
+                         JMESPathCheck('properties.executionContext.target.excludePrefix', ['prefix4'])])
+
+        self.cmd("az storage account task-assignment create -g {rg} -n {task_assignment_name_3} --account-name {sa} "
+                 "--description 'My Storage task assignment 3' --enabled false --task-id '{task_id}'"
+                 " --report {{prefix:container2}} "
+                 "--execution-context {{trigger:{{type:MockRun,parameters:"
+                 "{{start-on:\\'2026-09-15T21:52:47Z\\'}}}},"
+                 "target:{{prefix:[prefix2,prefix3],exclude-prefix:[prefix4]}}}}",
+                 checks=[JMESPathCheck('properties.taskId', task_id),
+                         JMESPathCheck('properties.enabled', False),
+                         JMESPathCheck('properties.description', 'My Storage task assignment 3'),
+                         JMESPathCheck('properties.report.prefix', 'container2'),
+                         JMESPathCheck('properties.executionContext.trigger.type', 'MockRun'),
+                         JMESPathCheck('properties.executionContext.trigger.parameters.startOn',
+                                       '2026-09-15T21:52:47Z'),
                          JMESPathCheck('properties.executionContext.target.prefix', ['prefix2', 'prefix3']),
                          JMESPathCheck('properties.executionContext.target.excludePrefix', ['prefix4'])])
 
@@ -333,7 +350,7 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
                  "--description 'My Storage task assignment 3' --enabled true --task-id '{task_id}'"
                  " --report {{prefix:container3}} "
                  "--execution-context {{trigger:{{type:RunOnce,parameters:"
-                 "{{start-on:\\'2025-10-15T21:52:47Z\\'}}}},"
+                 "{{start-on:\\'2026-10-15T21:52:47Z\\'}}}},"
                  "target:{{prefix:[prefix3,prefix4],exclude-prefix:[prefix5]}}}}",
                  checks=[JMESPathCheck('properties.taskId', task_id),
                          JMESPathCheck('properties.enabled', True),
@@ -341,7 +358,7 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
                          JMESPathCheck('properties.report.prefix', 'container3'),
                          JMESPathCheck('properties.executionContext.trigger.type', 'RunOnce'),
                          JMESPathCheck('properties.executionContext.trigger.parameters.startOn',
-                                       '2025-10-15T21:52:47Z'), # service adding trailing zeros
+                                       '2026-10-15T21:52:47Z'), # service adding trailing zeros
                          JMESPathCheck('properties.executionContext.target.prefix', ['prefix3', 'prefix4']),
                          JMESPathCheck('properties.executionContext.target.excludePrefix', ['prefix5'])])
 
@@ -352,21 +369,21 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
                                  JMESPathCheck('properties.report.prefix', 'container1'),
                                  JMESPathCheck('properties.executionContext.trigger.type', 'OnSchedule'),
                                  JMESPathCheck('properties.executionContext.trigger.parameters.startFrom',
-                                               '2025-08-14T21:52:47Z'),
+                                               '2026-08-14T21:52:47Z'),
                                  JMESPathCheck('properties.executionContext.trigger.parameters.endBy',
-                                               '2025-09-04T21:52:47Z'),
+                                               '2026-09-04T21:52:47Z'),
                                  JMESPathCheck('properties.executionContext.trigger.parameters.interval', 10),
                                  JMESPathCheck('properties.executionContext.trigger.parameters.intervalUnit', 'Days'),
                                  JMESPathCheck('properties.executionContext.target.prefix', ['prefix1', 'prefix2']),
                                  JMESPathCheck('properties.executionContext.target.excludePrefix', ['prefix3'])])
 
         self.cmd("az storage account task-assignment list -g {rg} --account-name {sa}",
-                 checks=[JMESPathCheck('length(@)', 2)])
+                 checks=[JMESPathCheck('length(@)', 3)])
         self.cmd("az storage account task-assignment list-report -g {rg} -n {task_assignment_name} --account-name {sa}")
         self.cmd("az storage account task-assignment delete -g {rg} -n {task_assignment_name} --account-name {sa} "
                  "-y")
         self.cmd("az storage account task-assignment list -g {rg} --account-name {sa}",
-                 checks=[JMESPathCheck('length(@)', 1)])
+                 checks=[JMESPathCheck('length(@)', 2)])
 
 
 class StorageAccountLocalUserTests(StorageScenarioMixin, ScenarioTest):
