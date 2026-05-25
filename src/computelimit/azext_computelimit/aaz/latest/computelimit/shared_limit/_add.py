@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "computelimit shared-limit add",
-    is_preview=True,
 )
 class Add(AAZCommand):
     """Enable a compute limit to be shared by the host subscription with its guest subscriptions.

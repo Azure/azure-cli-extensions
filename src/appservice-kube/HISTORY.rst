@@ -2,9 +2,13 @@
 
 Release History
 ===============
-0.1.12
+1.0.0b2
 ++++++
 * Remove unused compute SDK client factory and completers
+
+1.0.0b1
+++++++
+* Fix compatibility with newer Azure CLI App Service module versions
 
 0.1.11
 ++++++

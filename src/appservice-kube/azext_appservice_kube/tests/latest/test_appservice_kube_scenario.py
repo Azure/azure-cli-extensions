@@ -36,8 +36,8 @@ class WebappBasicE2EKubeTest(ScenarioTest):
         self.cmd('webapp update -g {} -n {} --https-only true'.format(resource_group, webapp_name), checks=[JMESPathCheck("httpsOnly", True)])
         self.cmd('webapp update -g {} -n {} --https-only false'.format(resource_group, webapp_name), checks=[JMESPathCheck("httpsOnly", False)])
 
-    @AllowLargeResponse()
-    @ResourceGroupPreparer(location="malaysiawest")
+    @ResourceGroupPreparer(location="eastus")
+    @AllowLargeResponse
     def test_win_webapp_quick_create_kube(self, resource_group):
         webapp_name = self.create_random_name(prefix='webapp-quick', length=24)
         plan = self.create_random_name(prefix='plan-quick', length=24)
@@ -47,50 +47,39 @@ class WebappBasicE2EKubeTest(ScenarioTest):
         self.assertTrue(r['ftpPublishingUrl'].startswith('ftps://'))
         self.cmd('webapp config appsettings list -g {} -n {}'.format(resource_group, webapp_name), checks=[
             JMESPathCheck('[0].name', 'WEBSITE_NODE_DEFAULT_VERSION'),
-            JMESPathCheck('[0].value', '~20'),
+            JMESPathCheck('[0].value', '~16'),
         ])
 
         self.cmd('webapp update -g {} -n {} --https-only true'.format(resource_group, webapp_name), checks=[JMESPathCheck("httpsOnly", True)])
         self.cmd('webapp update -g {} -n {} --https-only false'.format(resource_group, webapp_name), checks=[JMESPathCheck("httpsOnly", False)])
 
-    @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix="clitest", random_name_length=24, location="malaysiawest")
+    @ResourceGroupPreparer(name_prefix="clitest", random_name_length=24, location="eastus")
+    @AllowLargeResponse
     def test_win_webapp_quick_create_runtime_kube(self, resource_group):
         webapp_name = self.create_random_name(prefix='webapp-quick', length=24)
         webapp_name_2 = self.create_random_name(prefix='webapp-quick', length=24)
         plan = self.create_random_name(prefix='plan-quick', length=24)
         self.cmd('appservice plan create -g {} -n {}'.format(resource_group, plan))
-        r = self.cmd('webapp create -g {} -n {} --plan {} --deployment-local-git -r "node|22LTS"'.format(
+        r = self.cmd('webapp create -g {} -n {} --plan {} --deployment-local-git -r "node|20LTS"'.format(
             resource_group, webapp_name, plan)).get_output_in_json()
         self.assertTrue(r['ftpPublishingUrl'].startswith('ftps://'))
         self.cmd('webapp config appsettings list -g {} -n {}'.format(resource_group, webapp_name), checks=[
             JMESPathCheck('[0].name', 'WEBSITE_NODE_DEFAULT_VERSION'),
             JMESPathCheck('[0].value', '~20'),
         ])
-        r = self.cmd('webapp create -g {} -n {} --plan {} --deployment-local-git -r "dotnet:8"'.format(
+        r = self.cmd('webapp create -g {} -n {} --plan {} --deployment-local-git -r "dotnet:7"'.format(
             resource_group, webapp_name_2, plan)).get_output_in_json()
         self.assertTrue(r['ftpPublishingUrl'].startswith('ftps://'))
 
         self.cmd('webapp update -g {} -n {} --https-only true'.format(resource_group, webapp_name), checks=[JMESPathCheck("httpsOnly", True)])
         self.cmd('webapp update -g {} -n {} --https-only false'.format(resource_group, webapp_name), checks=[JMESPathCheck("httpsOnly", False)])
 
-    @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix="clitest", random_name_length=24, location="eastus")
+    @AllowLargeResponse
     def test_list_runtimes(self, resource_group):
-        # `webapp list-runtimes` now returns a flat list of dicts
-        # (e.g. [{"os": "Linux", "config": "NODE|22-lts", ...}, ...])
-        # instead of the previous {"linux": [...], "windows": [...]} shape,
-        # so we iterate the list and compare fields case-insensitively
-        # rather than using JMESPathCheckExists and StringContainCheckIgnoreCase
-        # checks against the old structure.
-        r = self.cmd('webapp list-runtimes').get_output_in_json()
-        self.assertTrue(any(item.get('os', '').lower() == 'linux' for item in r))
-        self.assertTrue(any(item.get('os', '').lower() == 'windows' for item in r))
-        self.assertTrue(any(item.get('config', '').lower() == 'node|22-lts' for item in r))
-        self.assertFalse(any(item.get('os', '').lower() == 'linux'
-                             and item.get('config', '').lower() == 'node|14-lts' for item in r))
-        # `--is-kube` returns a flat list of stack strings
-        # (for example, ["NODE:14-lts", ...]), not linux/windows-keyed output.
+        r = self.cmd('webapp list-runtimes', checks=[JMESPathCheckExists("linux"), JMESPathCheckExists("windows"),
+                                                     StringContainCheckIgnoreCase('NODE:20-lts')]).get_output_in_json()
+        self.assertFalse('NODE:14-lts' in r['linux'])
         r = self.cmd('webapp list-runtimes --is-kube',
                      checks=[JMESPathCheckNotExists("linux"), StringContainCheckIgnoreCase('NODE:14-lts')])\
             .get_output_in_json()
