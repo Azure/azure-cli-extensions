@@ -58,8 +58,8 @@ class List(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.top = AAZIntArg(
-            options=["--top"],
+        _args_schema.maxpagesize = AAZIntArg(
+            options=["--maxpagesize"],
             help="Optional, specifies the maximum number of storage task assignment Ids to be included in the list response.",
         )
         return cls._args_schema
@@ -130,7 +130,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "$top", self.ctx.args.top,
+                    "$top", self.ctx.args.maxpagesize,
                 ),
                 **self.serialize_query_param(
                     "api-version", "2025-08-01",
