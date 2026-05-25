@@ -1291,6 +1291,7 @@ def load_arguments(self, _):
         )
         c.argument(
             "backup_strategy",
+            # NOTE: must mirror CONST_AKS_BACKUP_STRATEGIES in azext_dataprotection.manual._consts.
             arg_type=get_enum_type(["Week", "Month", "DisasterRecovery", "Custom"]),
             is_preview=True,
             help="Backup strategy preset. Week (default, 7-day operational retention), Month "
@@ -1957,6 +1958,7 @@ def load_arguments(self, _):
         )
         c.argument(
             "backup_strategy",
+            # NOTE: must mirror CONST_AKS_BACKUP_STRATEGIES in azext_dataprotection.manual._consts.
             arg_type=get_enum_type(["Week", "Month", "DisasterRecovery", "Custom"]),
             is_preview=True,
             help="Backup strategy preset. Week (default, 7-day operational retention), Month "
