@@ -18,8 +18,8 @@ from azure.cli.core.azclierror import UnknownError
 from azure.cli.core.commands.client_factory import get_subscription_id
 
 
-def enable_aks_backup(cmd, resource_group_name, cluster_name,
-                     backup_strategy, backup_configuration_file, yes):
+def enable_aks_backup(cmd, resource_group_name, cluster_name,  # pylint: disable=too-many-positional-arguments
+                      backup_strategy, backup_configuration_file, yes):
     """Enable Azure Backup for an AKS cluster by delegating to the
     ``dataprotection`` extension.
 
