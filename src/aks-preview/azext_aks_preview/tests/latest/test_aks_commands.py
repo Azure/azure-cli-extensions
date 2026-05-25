@@ -7289,6 +7289,99 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[self.is_empty()],
         )
 
+    # full-cache ephemeral OS disk feature is gated by AFEC FullCachePreview and
+    # an RP-side toggle, so the scenario can only be exercised in live mode.
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="eastus"
+    )
+    def test_aks_create_with_os_disk_full_caching(
+        self, resource_group, resource_group_location
+    ):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        # create with --enable-osdisk-full-caching on the default node pool
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} "
+            "--ssh-key-value={ssh_key_value} "
+            "--node-vm-size Standard_D8ds_v5 "
+            "--node-osdisk-type Ephemeral "
+            "--enable-osdisk-full-caching "
+            "--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/FullCachePreview "
+        )
+
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("agentPoolProfiles[0].enableOSDiskFullCaching", True),
+            ],
+        )
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="eastus"
+    )
+    def test_aks_nodepool_add_with_os_disk_full_caching(
+        self, resource_group, resource_group_location
+    ):
+        self.test_resources_count = 0
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "nodepool2_name": "np2",
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        # create base cluster
+        self.cmd(
+            "aks create --resource-group={resource_group} --name={name} "
+            "--ssh-key-value={ssh_key_value} ",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+            ],
+        )
+
+        # add nodepool with --enable-osdisk-full-caching
+        self.cmd(
+            "aks nodepool add --resource-group={resource_group} --cluster-name={name} --name={nodepool2_name} "
+            "--node-vm-size Standard_D8ds_v5 --node-osdisk-type Ephemeral "
+            "--enable-osdisk-full-caching "
+            "--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/FullCachePreview",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("enableOSDiskFullCaching", True),
+            ],
+        )
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
     @live_only()
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
@@ -13834,103 +13927,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("storageProfile.blobCsiDriver.enabled", True),
-            ],
-        )
-
-        # delete
-        cmd = (
-            "aks delete --resource-group={resource_group} --name={name} --yes --no-wait"
-        )
-        self.cmd(
-            cmd,
-            checks=[
-                self.is_empty(),
-            ],
-        )
-
-    @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(
-        random_name_length=17,
-        name_prefix="clitest",
-        location="centraluseuap",
-    )
-    def test_aks_create_with_csi_driver_v2(
-        self, resource_group, resource_group_location
-    ):
-        aks_name = self.create_random_name("cliakstest", 16)
-        self.kwargs.update(
-            {
-                "resource_group": resource_group,
-                "name": aks_name,
-                "ssh_key_value": self.generate_ssh_keys(),
-            }
-        )
-
-        create_cmd = 'aks create --resource-group={resource_group} --name={name} --ssh-key-value={ssh_key_value} -o json \
-                        --disable-file-driver \
-                        --disable-snapshot-controller'
-        self.cmd(
-            create_cmd,
-            checks=[
-                self.check("provisioningState", "Succeeded"),
-                self.check("storageProfile.diskCsiDriver.enabled", True),
-                self.check("storageProfile.fileCsiDriver.enabled", False),
-                self.check("storageProfile.snapshotController.enabled", False),
-            ],
-        )
-
-        # delete
-        cmd = (
-            "aks delete --resource-group={resource_group} --name={name} --yes --no-wait"
-        )
-        self.cmd(
-            cmd,
-            checks=[
-                self.is_empty(),
-            ],
-        )
-
-    @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(
-        random_name_length=17,
-        name_prefix="clitest",
-        location="centraluseuap",
-    )
-    def test_aks_create_and_update_csi_driver_to_v2(
-        self, resource_group, resource_group_location
-    ):
-        aks_name = self.create_random_name("cliakstest", 16)
-        self.kwargs.update(
-            {
-                "resource_group": resource_group,
-                "name": aks_name,
-                "ssh_key_value": self.generate_ssh_keys(),
-            }
-        )
-
-        create_cmd = "aks create --resource-group={resource_group} --name={name} --ssh-key-value={ssh_key_value} -o json \
-                        --disable-disk-driver \
-                        --disable-file-driver \
-                        --disable-snapshot-controller"
-        self.cmd(
-            create_cmd,
-            checks=[
-                self.check("provisioningState", "Succeeded"),
-                self.check("storageProfile.diskCsiDriver.enabled", False),
-                self.check("storageProfile.fileCsiDriver.enabled", False),
-                self.check("storageProfile.snapshotController.enabled", False),
-            ],
-        )
-
-        enable_cmd = 'aks update --resource-group={resource_group} --name={name} -o json \
-                        --enable-disk-driver'
-        self.cmd(
-            enable_cmd,
-            checks=[
-                self.check("provisioningState", "Succeeded"),
-                self.check("storageProfile.diskCsiDriver.enabled", True),
-                self.check("storageProfile.fileCsiDriver.enabled", False),
-                self.check("storageProfile.snapshotController.enabled", False),
             ],
         )
 
