@@ -16,6 +16,17 @@ datatime_format = "%Y-%m-%dT%H:%M:%S.%fZ"
 
 
 class TaskAssignmentCreate(_TaskAssignmentCreate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.description._required = True
+        args_schema.enabled._required = True
+        args_schema.execution_context._required = True
+        args_schema.report._required = True
+        args_schema.task_id._required = True
+        return args_schema
+
+
     def pre_operations(self):
         args = self.ctx.args
         try:

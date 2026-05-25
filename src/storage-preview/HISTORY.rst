@@ -5,7 +5,7 @@ Release History
 
 1.0.0b8
 +++++++
-* `az storage account task-assignment`: Add `MockRun` to as a triggerType
+* `az storage account task-assignment`: Add `MockRun` as a triggerType
 
 1.0.0b7
 +++++++
