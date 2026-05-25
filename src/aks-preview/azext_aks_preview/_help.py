@@ -1568,7 +1568,7 @@ helps['aks update'] = """
       - name: Enable Azure Backup for a kubernetes cluster (default Week strategy). Requires the 'dataprotection' extension.
         text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-backup --yes
       - name: Enable Azure Backup with a custom strategy using an existing vault and policy
-        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-backup --backup-strategy Custom --backup-configuration-file @config.json --yes
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-backup --backup-strategy Custom --backup-configuration @config.json --yes
       - name: Disable Azure Monitor logs for a kubernetes cluster
         text: az aks update -g MyResourceGroup -n MyManagedCluster --disable-azure-monitor-logs
       - name: Update a kubernetes cluster to clear any namespaces excluded from safeguards. Assumes azure policy addon is already enabled

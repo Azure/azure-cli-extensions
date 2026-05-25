@@ -1296,15 +1296,15 @@ def load_arguments(self, _):
             is_preview=True,
             help="Backup strategy preset. Week (default, 7-day operational retention), Month "
                  "(30-day operational retention), DisasterRecovery (7-day operational + 90-day vault "
-                 "retention), Custom (bring your own vault and policy via --backup-configuration-file). "
+                 "retention), Custom (bring your own vault and policy via --backup-configuration). "
                  "Only valid with --enable-backup.",
         )
         c.argument(
             "backup_configuration_file",
-            options_list=["--backup-configuration-file"],
+            options_list=["--backup-configuration"],
             type=validate_file_or_dict,
             is_preview=True,
-            help="Path to a JSON backup configuration file (@file.json) or inline JSON string. "
+            help="Backup configuration as inline JSON string or @file.json. "
                  "Supports storageAccountResourceId, blobContainerName, backupResourceGroupId, "
                  "backupVaultId, backupPolicyId, tags. backupVaultId and backupPolicyId are required "
                  "for Custom strategy. Only valid with --enable-backup.",
@@ -1963,15 +1963,15 @@ def load_arguments(self, _):
             is_preview=True,
             help="Backup strategy preset. Week (default, 7-day operational retention), Month "
                  "(30-day operational retention), DisasterRecovery (7-day operational + 90-day vault "
-                 "retention), Custom (bring your own vault and policy via --backup-configuration-file). "
+                 "retention), Custom (bring your own vault and policy via --backup-configuration). "
                  "Only valid with --enable-backup.",
         )
         c.argument(
             "backup_configuration_file",
-            options_list=["--backup-configuration-file"],
+            options_list=["--backup-configuration"],
             type=validate_file_or_dict,
             is_preview=True,
-            help="Path to a JSON backup configuration file (@file.json) or inline JSON string. "
+            help="Backup configuration as inline JSON string or @file.json. "
                  "Supports storageAccountResourceId, blobContainerName, backupResourceGroupId, "
                  "backupVaultId, backupPolicyId, tags. backupVaultId and backupPolicyId are required "
                  "for Custom strategy. Only valid with --enable-backup.",

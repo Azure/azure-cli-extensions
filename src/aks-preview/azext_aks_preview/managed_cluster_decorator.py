@@ -8209,6 +8209,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             )
             enable_backup = self.context.raw_param.get("enable_backup", False)
             # Note: monitoring_addon_disable_postprocessing_required is no longer used - cleanup is done upfront
+            # pylint: disable=too-many-boolean-expressions
             if (enable_azure_container_storage or disable_azure_container_storage) or \
                (keyvault_id and enable_azure_keyvault_secrets_provider_addon) or \
                (monitoring_addon_postprocessing_required) or \
