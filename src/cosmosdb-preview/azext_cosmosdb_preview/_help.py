@@ -569,6 +569,8 @@ examples:
     text: az cosmosdb update --capabilities EnableGremlin --name MyCosmosDBDatabaseAccount --resource-group MyResourceGroup
   - name: Update an Azure Cosmos DB database account to enable materialized views.
     text: az cosmosdb update --name MyCosmosDBDatabaseAccount --resource-group MyResourceGroup --enable-materialized-views true
+  - name: Enable soft deletion with 1440 minutes (24 hours) retention.
+    text: az cosmosdb update --name MyCosmosDBDatabaseAccount --resource-group MyResourceGroup --soft-deletion-enabled true --sd-retention 1440 --min-purge-minutes 60
 """
 
 # restore account
