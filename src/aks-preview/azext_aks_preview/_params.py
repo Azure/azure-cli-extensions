@@ -562,6 +562,10 @@ upgrade_strategies = [
     CONST_UPGRADE_STRATEGY_BLUE_GREEN,
 ]
 
+# AKS backup strategy presets exposed by --backup-strategy.
+# NOTE: must mirror CONST_AKS_BACKUP_STRATEGIES in azext_dataprotection.manual._consts.
+aks_backup_strategies = ["Week", "Month", "DisasterRecovery", "Custom"]
+
 
 def load_arguments(self, _):
     acr_arg_type = CLIArgumentType(metavar="ACR_NAME_OR_RESOURCE_ID")
@@ -1291,8 +1295,7 @@ def load_arguments(self, _):
         )
         c.argument(
             "backup_strategy",
-            # NOTE: must mirror CONST_AKS_BACKUP_STRATEGIES in azext_dataprotection.manual._consts.
-            arg_type=get_enum_type(["Week", "Month", "DisasterRecovery", "Custom"]),
+            arg_type=get_enum_type(aks_backup_strategies),
             is_preview=True,
             help="Backup strategy preset. Week (default, 7-day operational retention), Month "
                  "(30-day operational retention), DisasterRecovery (7-day operational + 90-day vault "
@@ -1958,8 +1961,7 @@ def load_arguments(self, _):
         )
         c.argument(
             "backup_strategy",
-            # NOTE: must mirror CONST_AKS_BACKUP_STRATEGIES in azext_dataprotection.manual._consts.
-            arg_type=get_enum_type(["Week", "Month", "DisasterRecovery", "Custom"]),
+            arg_type=get_enum_type(aks_backup_strategies),
             is_preview=True,
             help="Backup strategy preset. Week (default, 7-day operational retention), Month "
                  "(30-day operational retention), DisasterRecovery (7-day operational + 90-day vault "
