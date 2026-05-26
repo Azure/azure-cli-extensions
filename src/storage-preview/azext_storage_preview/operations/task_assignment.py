@@ -3,6 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+# pylint: disable=protected-access
+
 from knack.log import get_logger
 from datetime import datetime
 from azure.cli.core.aaz import has_value
