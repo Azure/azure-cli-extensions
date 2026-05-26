@@ -369,6 +369,72 @@ class TestAKSAgentManagerClient(unittest.TestCase):
         expected = f"-n {self.cluster_name} -g {self.resource_group}"
         self.assertEqual(result, expected)
 
+    def _make_client_manager(self, model_list):
+        """Helper: create an AKSAgentManagerClient with a mocked llm_config_manager and config_dir."""
+        manager = AKSAgentManagerClient(
+            resource_group_name=self.resource_group,
+            cluster_name=self.cluster_name,
+            subscription_id=self.subscription_id,
+            kubeconfig_path=self.kubeconfig_path,
+        )
+        manager.llm_config_manager = MagicMock()
+        manager.llm_config_manager.model_list = model_list
+
+        # Make config_dir look like it exists and contains the required files
+        mock_config_dir = MagicMock()
+        mock_config_dir.exists.return_value = True
+        mock_file = MagicMock()
+        mock_file.exists.return_value = True
+        mock_config_dir.__truediv__ = lambda self, other: mock_file
+        manager.config_dir = mock_config_dir
+
+        return manager
+
+    @patch("subprocess.run")
+    @patch("os.path.exists", return_value=False)
+    def test_exec_aks_agent_sets_azure_ad_token_auth_when_no_api_key(self, _mock_exists, mock_run):
+        """AZURE_AD_TOKEN_AUTH=True must be injected when an azure/ model has no api_key."""
+        mock_run.return_value = MagicMock(returncode=0)
+
+        manager = self._make_client_manager({
+            "azure/gpt-4o": {"model": "azure/gpt-4o"}  # no api_key
+        })
+
+        manager.exec_aks_agent("")
+
+        docker_cmd = mock_run.call_args[0][0]
+        self.assertIn("AZURE_AD_TOKEN_AUTH=True", docker_cmd)
+
+    @patch("subprocess.run")
+    @patch("os.path.exists", return_value=False)
+    def test_exec_aks_agent_sets_azure_ad_token_auth_when_api_key_is_whitespace(self, _mock_exists, mock_run):
+        """AZURE_AD_TOKEN_AUTH=True must be injected when api_key is whitespace-only."""
+        mock_run.return_value = MagicMock(returncode=0)
+
+        manager = self._make_client_manager({
+            "azure/gpt-4o": {"model": "azure/gpt-4o", "api_key": "   "}
+        })
+
+        manager.exec_aks_agent("")
+
+        docker_cmd = mock_run.call_args[0][0]
+        self.assertIn("AZURE_AD_TOKEN_AUTH=True", docker_cmd)
+
+    @patch("subprocess.run")
+    @patch("os.path.exists", return_value=False)
+    def test_exec_aks_agent_omits_azure_ad_token_auth_when_api_key_present(self, _mock_exists, mock_run):
+        """AZURE_AD_TOKEN_AUTH must NOT be injected when a valid api_key is configured."""
+        mock_run.return_value = MagicMock(returncode=0)
+
+        manager = self._make_client_manager({
+            "azure/gpt-4o": {"model": "azure/gpt-4o", "api_key": "my-secret-key"}
+        })
+
+        manager.exec_aks_agent("")
+
+        docker_cmd = mock_run.call_args[0][0]
+        self.assertNotIn("AZURE_AD_TOKEN_AUTH=True", docker_cmd)
+
 
 if __name__ == '__main__':
     unittest.main()

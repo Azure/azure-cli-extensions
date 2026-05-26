@@ -27,7 +27,6 @@ from azext_aks_preview._consts import (
     CONST_MANAGED_CLUSTER_SKU_TIER_FREE,
     CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM,
     CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD,
-    CONST_MONITORING_ADDON_NAME_CAMELCASE,
     CONST_NETWORK_DATAPLANE_CILIUM,
     CONST_NETWORK_PLUGIN_AZURE,
     CONST_NETWORK_PLUGIN_MODE_OVERLAY,
@@ -55,6 +54,7 @@ from azext_aks_preview._consts import (
     CONST_ACNS_DATAPATH_ACCELERATION_MODE_NONE,
     CONST_TRANSIT_ENCRYPTION_TYPE_MTLS,
     CONST_ADVANCED_NETWORKPOLICIES_L7,
+    CONST_MONITORING_ADDON_NAME_CAMELCASE,
 )
 from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_ACSTOR_EXT_INSTALLATION_NAME,
@@ -66,6 +66,7 @@ from azext_aks_preview._helpers import (
     check_is_azure_cli_core_editable_installed,
     check_is_private_cluster,
     get_cluster_snapshot_by_snapshot_id,
+    get_monitoring_addon_key,
     filter_hard_taints,
 )
 from azext_aks_preview._loadbalancer import create_load_balancer_profile
@@ -181,6 +182,14 @@ ManagedClusterWorkloadProfileVerticalPodAutoscaler = TypeVar("ManagedClusterWork
 ManagedClusterLoadBalancerProfile = TypeVar("ManagedClusterLoadBalancerProfile")
 ServiceMeshProfile = TypeVar("ServiceMeshProfile")
 ResourceReference = TypeVar("ResourceReference")
+
+
+def _get_monitoring_addon_key_from_consts(addon_profiles, addon_consts):
+    """Thin wrapper around get_monitoring_addon_key that unpacks addon_consts dict."""
+    return get_monitoring_addon_key(
+        addon_profiles,
+        addon_consts.get("CONST_MONITORING_ADDON_NAME"),
+    )
 
 
 # pylint: disable=too-few-public-methods
@@ -439,7 +448,22 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         elif enable_azure_monitor_logs:
             result = True
         elif enable_msi_auth_for_monitoring is False:
-            result = False
+            # The base class returns False when service_principal_profile.client_id is not None,
+            # but MSI-based clusters set client_id to "msi". Check if the monitoring addon
+            # already has useAADAuth=true, which indicates MSI auth is actually in use.
+            addon_consts = self.get_addon_consts()
+            CONST_MONITORING_USING_AAD_MSI_AUTH = addon_consts.get("CONST_MONITORING_USING_AAD_MSI_AUTH")
+            if self.mc and self.mc.addon_profiles:
+                monitoring_addon_key = _get_monitoring_addon_key_from_consts(
+                    self.mc.addon_profiles, addon_consts)
+                monitoring_profile = self.mc.addon_profiles.get(monitoring_addon_key)
+                result = bool(
+                    monitoring_profile and monitoring_profile.config and
+                    str(monitoring_profile.config.get(
+                        CONST_MONITORING_USING_AAD_MSI_AUTH, "")).lower() == "true"
+                )
+            else:
+                result = False
         elif enable_msi_auth_for_monitoring is None and not disable_msi_auth and not enable_msi_auth:
             result = True
         else:
@@ -864,13 +888,13 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
     def get_acns_enablement(self) -> Tuple[
         Union[bool, None],
         Union[bool, None],
+        Union[bool, None],
         Union[bool, None]
     ]:
-        """Get the enablement of acns (not including the performance suite)
-        :return: Tuple of 3 elements which can be bool or None
+        """Get the enablement of acns
+        :return: Tuple of 4 elements which can be bool or None
         """
-        enable_acns, enable_acns_observability, enable_acns_security, _ = self.get_acns_enablement_with_perf()
-        return enable_acns, enable_acns_observability, enable_acns_security
+        return self.get_acns_enablement_with_perf()
 
     def get_acns_enablement_with_perf(self) -> Tuple[
         Union[bool, None],
@@ -1049,11 +1073,13 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 "monitoring" in enable_addons or
                 bool(self.raw_param.get("enable_azure_monitor_logs"))
             )
-            monitoring_already_enabled = (
-                mc.addon_profiles and
-                mc.addon_profiles.get("omsagent") and
-                mc.addon_profiles["omsagent"].enabled
-            )
+            monitoring_already_enabled = False
+            if mc.addon_profiles:
+                addon_consts = self.get_addon_consts()
+                mk = _get_monitoring_addon_key_from_consts(mc.addon_profiles, addon_consts)
+                monitoring_already_enabled = bool(
+                    mc.addon_profiles.get(mk) and mc.addon_profiles[mk].enabled
+                )
             monitoring_enabled = monitoring_being_enabled or monitoring_already_enabled
             if not acns_enabled or not monitoring_enabled:
                 raise InvalidArgumentValueError(
@@ -1795,6 +1821,61 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self._get_kubernetes_version(read_only=False)
 
+    def _validate_enable_fips_kubernetes_version(self) -> None:
+        kubernetes_version = self._get_kubernetes_version(read_only=True)
+        if not kubernetes_version:
+            return
+
+        version_parts = str(kubernetes_version).lstrip("v").split(".")
+        if len(version_parts) < 2:
+            return
+        try:
+            major = int(version_parts[0])
+            minor = int(version_parts[1].split("-")[0])
+        except ValueError:
+            return
+        if (major, minor) < (1, 34):
+            raise InvalidArgumentValueError("--enable-fips requires Kubernetes version 1.34 or later.")
+
+    def _get_enable_fips_from_mc(self) -> Optional[bool]:
+        if not self.mc:
+            return None
+        if hasattr(self.mc, "enable_fips") and self.mc.enable_fips is not None:
+            return self.mc.enable_fips
+        properties = getattr(self.mc, "properties", None)
+        if properties is not None:
+            return properties.get("enableFIPS")
+        return None
+
+    def get_enable_fips(self) -> bool:
+        """Obtain the value of enable_fips.
+        :return: bool
+        """
+        enable_fips = self.raw_param.get("enable_fips", False)
+        if enable_fips and self.get_disable_fips():
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-fips and --disable-fips at the same time."
+            )
+        if self.decorator_mode == DecoratorMode.CREATE:
+            value_obtained_from_mc = self._get_enable_fips_from_mc()
+            if value_obtained_from_mc is not None:
+                enable_fips = value_obtained_from_mc
+
+        if enable_fips:
+            self._validate_enable_fips_kubernetes_version()
+        return bool(enable_fips)
+
+    def get_disable_fips(self) -> bool:
+        """Obtain the value of disable_fips.
+        :return: bool
+        """
+        disable_fips = self.raw_param.get("disable_fips", False)
+        if disable_fips and self.raw_param.get("enable_fips", False):
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-fips and --disable-fips at the same time."
+            )
+        return bool(disable_fips)
+
     def get_disk_driver(self) -> Optional[ManagedClusterStorageProfileDiskCSIDriver]:
         """Obtain the value of storage_profile.disk_csi_driver
 
@@ -1802,9 +1883,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         enable_disk_driver = self.raw_param.get("enable_disk_driver")
         disable_disk_driver = self.raw_param.get("disable_disk_driver")
-        disk_driver_version = self.raw_param.get("disk_driver_version")
 
-        if not enable_disk_driver and not disable_disk_driver and not disk_driver_version:
+        if not enable_disk_driver and not disable_disk_driver:
             return None
         profile = self.models.ManagedClusterStorageProfileDiskCSIDriver()  # pylint: disable=no-member
 
@@ -1814,29 +1894,15 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 "--disable-disk-driver at the same time."
             )
 
-        if disable_disk_driver and disk_driver_version:
-            raise ArgumentUsageError(
-                "The parameter --disable-disk-driver cannot be used "
-                "when --disk-driver-version is specified.")
-
-        if self.decorator_mode == DecoratorMode.UPDATE and disk_driver_version and not enable_disk_driver:
-            raise ArgumentUsageError(
-                "Parameter --enable-disk-driver is required "
-                "when --disk-driver-version is specified during update.")
-
         if self.decorator_mode == DecoratorMode.CREATE:
             if disable_disk_driver:
                 profile.enabled = False
             else:
                 profile.enabled = True
-                if disk_driver_version:
-                    profile.version = disk_driver_version
 
         if self.decorator_mode == DecoratorMode.UPDATE:
             if enable_disk_driver:
                 profile.enabled = True
-                if disk_driver_version:
-                    profile.version = disk_driver_version
             elif disable_disk_driver:
                 msg = (
                     "Please make sure there are no existing PVs and PVCs "
@@ -2842,7 +2908,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 # 1. New API: azureMonitorProfile.containerInsights.enabled
                 # 2. Legacy: addonProfiles.omsagent.enabled (or omsAgent with camelCase)
                 addon_consts = self.get_addon_consts()
-                CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
 
                 # Check new API location
                 container_insights_enabled = (
@@ -2851,15 +2916,13 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                     self.mc.azure_monitor_profile.container_insights.enabled
                 )
 
-                # Check legacy addon location (try both lowercase and camelCase)
+                # Check legacy addon location
                 monitoring_addon_enabled = False
                 if self.mc.addon_profiles:
-                    # Try lowercase first (constant value)
-                    if CONST_MONITORING_ADDON_NAME in self.mc.addon_profiles:
-                        monitoring_addon_enabled = self.mc.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled
-                    # Try camelCase variant (what Azure actually returns)
-                    elif CONST_MONITORING_ADDON_NAME_CAMELCASE in self.mc.addon_profiles:
-                        monitoring_addon_enabled = self.mc.addon_profiles[CONST_MONITORING_ADDON_NAME_CAMELCASE].enabled
+                    addon_consts = self.get_addon_consts()
+                    mk = _get_monitoring_addon_key_from_consts(self.mc.addon_profiles, addon_consts)
+                    if mk in self.mc.addon_profiles:
+                        monitoring_addon_enabled = self.mc.addon_profiles[mk].enabled
 
                 monitoring_addon_currently_enabled = container_insights_enabled or monitoring_addon_enabled
 
@@ -2996,7 +3059,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
             # Validate that monitoring addon is enabled (either being enabled now or already enabled in cluster)
             addon_consts = self.get_addon_consts()
-            CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
 
             # Check if monitoring is being enabled in the command
             enable_addons = self.raw_param.get("enable_addons")
@@ -3008,10 +3070,9 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             # Check if monitoring addon is already enabled in the cluster
             monitoring_addon_enabled = False
             if self.mc and self.mc.addon_profiles:
-                if CONST_MONITORING_ADDON_NAME in self.mc.addon_profiles:
-                    monitoring_addon_enabled = self.mc.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled
-                elif CONST_MONITORING_ADDON_NAME_CAMELCASE in self.mc.addon_profiles:
-                    monitoring_addon_enabled = self.mc.addon_profiles[CONST_MONITORING_ADDON_NAME_CAMELCASE].enabled
+                mk = _get_monitoring_addon_key_from_consts(self.mc.addon_profiles, addon_consts)
+                if mk in self.mc.addon_profiles:
+                    monitoring_addon_enabled = self.mc.addon_profiles[mk].enabled
 
             if not monitoring_being_enabled and not enable_azure_monitor_logs and not monitoring_addon_enabled:
                 raise RequiredArgumentMissingError(
@@ -3022,10 +3083,25 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             # Auto-enable high log scale mode
             return True
 
+        # If user explicitly disables HLSM, check if CNL is already enabled on the cluster
+        if enable_high_log_scale_mode is False:
+            cnl_already_enabled = False
+            if self.mc and self.mc.addon_profiles:
+                addon_consts = self.get_addon_consts()
+                mk = _get_monitoring_addon_key_from_consts(self.mc.addon_profiles, addon_consts)
+                monitoring_profile = self.mc.addon_profiles.get(mk)
+                if monitoring_profile and monitoring_profile.config:
+                    cnl_already_enabled = str(
+                        monitoring_profile.config.get("enableRetinaNetworkFlags", "")
+                    ).lower() == "true"
+            if cnl_already_enabled:
+                raise MutuallyExclusiveArgumentError(
+                    "Cannot explicitly disable --enable-high-log-scale-mode while "
+                    "container network logs are enabled on the cluster. "
+                    "Please disable container network logs first with --disable-container-network-logs."
+                )
+
         # If container network logs are not being enabled, return the original value
-        # Return False if not explicitly set to maintain backward compatibility with base class
-        if enable_high_log_scale_mode is None:
-            return False
         return enable_high_log_scale_mode
 
     def _get_enable_vpa(self, enable_validation: bool = False) -> bool:
@@ -3934,6 +4010,13 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             raise RequiredArgumentMissingError('"--enable-hosted-system" requires "--sku automatic".')
         return enable_hosted_system
 
+    def get_control_plane_scaling_size(self) -> Union[str, None]:
+        """Obtain the value of control_plane_scaling_size.
+
+        :return: str or None
+        """
+        return self.raw_param.get("control_plane_scaling_size")
+
     def get_enable_continuous_control_plane_and_addon_monitor(self) -> bool:
         """Obtain the value of enable_continuous_control_plane_and_addon_monitor.
 
@@ -4079,7 +4162,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             network_profile.network_dataplane = self.context.get_network_dataplane()
 
         acns = None
-        (acns_enabled, acns_observability_enabled, acns_security_enabled) = self.context.get_acns_enablement()
+        (acns_enabled, acns_observability_enabled, acns_security_enabled, _) = self.context.get_acns_enablement()
         acns_advanced_networkpolicies = self.context.get_acns_advanced_networkpolicies()
         acns_transit_encryption_type = self.context.get_acns_transit_encryption_type()
         acns_datapath_acceleration_mode = self.context.get_acns_datapath_acceleration_mode()
@@ -4252,6 +4335,17 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 )
             )
 
+        return mc
+
+    def set_up_enable_fips(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up FIPS mode at the cluster level for the ManagedCluster object."""
+        self._ensure_mc(mc)
+
+        if self.context.get_enable_fips():
+            mc.enable_fips = True
+            if mc.agent_pool_profiles:
+                for agentpool in mc.agent_pool_profiles:
+                    agentpool.enable_fips = True
         return mc
 
     def set_up_service_account_image_pull(self, mc: ManagedCluster) -> ManagedCluster:
@@ -4654,16 +4748,10 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         }
         mc.addon_profiles[CONST_MONITORING_ADDON_NAME] = addon_profile
 
+        # DCR and DCRA creation is deferred to postprocessing_after_mc_created
+        # so that all flags are finalized and the cluster exists.
+        # Only MSI clusters need a DCR.
         self.context.set_intermediate("monitoring_addon_enabled", True, overwrite_exists=True)
-
-        # Call ensure_container_insights_for_monitoring with all parameters (similar to postprocessing)
-        CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
-        if (mc.addon_profiles and
-                CONST_MONITORING_ADDON_NAME in mc.addon_profiles and
-                mc.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled):
-
-            # Set intermediate value to trigger postprocessing
-            self.context.set_intermediate("monitoring_addon_postprocessing_required", True, overwrite_exists=True)
 
     def _setup_opentelemetry_metrics(self, mc: ManagedCluster) -> None:
         """Set up OpenTelemetry metrics configuration."""
@@ -5039,6 +5127,23 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         return mc
 
+    def set_up_control_plane_scaling_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up the control plane scaling profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        control_plane_scaling_size = self.context.get_control_plane_scaling_size()
+        if control_plane_scaling_size is not None:
+            mc.control_plane_scaling_profile = (
+                self.models.ManagedClusterControlPlaneScalingProfile(  # pylint: disable=no-member
+                    scaling_size=control_plane_scaling_size,
+                )
+            )
+
+        return mc
+
     def set_up_health_monitor_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up health monitor profile for the ManagedCluster object.
 
@@ -5135,6 +5240,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_image_cleaner(mc)
         # set up image integrity
         mc = self.set_up_image_integrity(mc)
+        # set up FIPS mode at the cluster level
+        mc = self.set_up_enable_fips(mc)
         # set up service account image pull
         mc = self.set_up_service_account_image_pull(mc)
         # set up KMS infrastructure encryption
@@ -5181,6 +5288,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_agentpool_profile_ssh_access(mc)
         # set up bootstrap profile
         mc = self.set_up_bootstrap_profile(mc)
+        # set up control plane scaling profile
+        mc = self.set_up_control_plane_scaling_profile(mc)
         # set up static egress gateway profile
         mc = self.set_up_static_egress_gateway(mc)
         # set up health monitor profile
@@ -5317,21 +5426,23 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                     self.context.external_functions.add_monitoring_role_assignment(
                         cluster, cluster_resource_id, self.cmd
                     )
-            elif (self.context.raw_param.get("enable_addons") is not None or
-                  self.context.raw_param.get("enable-azure-monitor-logs") is not None):
-                # Create the DCR Association here
+            elif self._should_create_dcra():
                 addon_consts = self.context.get_addon_consts()
-                CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
+                monitoring_addon_key = (
+                    _get_monitoring_addon_key_from_consts(cluster.addon_profiles, addon_consts)
+                    if cluster.addon_profiles
+                    else addon_consts.get("CONST_MONITORING_ADDON_NAME")
+                )
                 self.context.external_functions.ensure_container_insights_for_monitoring(
                     self.cmd,
-                    cluster.addon_profiles[CONST_MONITORING_ADDON_NAME],
+                    cluster.addon_profiles[monitoring_addon_key],
                     self.context.get_subscription_id(),
                     self.context.get_resource_group_name(),
                     self.context.get_name(),
                     self.context.get_location(),
                     remove_monitoring=False,
                     aad_route=self.context.get_enable_msi_auth_for_monitoring(),
-                    create_dcr=False,
+                    create_dcr=True,
                     create_dcra=True,
                     enable_syslog=self.context.get_enable_syslog(),
                     data_collection_settings=self.context.get_data_collection_settings(),
@@ -5355,10 +5466,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             if (current_cluster.addon_profiles and
                     CONST_MONITORING_ADDON_NAME in current_cluster.addon_profiles):
 
-                # Use the current cluster addon profile for cleanup
                 addon_profile = current_cluster.addon_profiles[CONST_MONITORING_ADDON_NAME]
 
-                # Call ensure_container_insights_for_monitoring with remove_monitoring=True (same as aks_disable_addons)
                 try:
                     self.context.external_functions.ensure_container_insights_for_monitoring(
                         self.cmd,
@@ -5377,7 +5486,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                         enable_high_log_scale_mode=False
                     )
                 except TypeError:
-                    # Ignore TypeError just like aks_disable_addons does
                     pass
 
         # ingress appgw addon
@@ -5551,6 +5659,24 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             )
         return cluster
 
+    def _should_create_dcra(self) -> bool:
+        """Return True if any flag that triggers a DCRA/DCR create or update was provided."""
+        params = self.context.raw_param
+        return (
+            params.get("enable_addons") is not None or
+            params.get("enable_azure_monitor_logs") is not None or
+            self._is_cnl_or_hlsm_changing()
+        )
+
+    def _is_cnl_or_hlsm_changing(self) -> bool:
+        """Return True if any CNL or High Log Scale Mode enable flag was provided."""
+        params = self.context.raw_param
+        return (
+            params.get("enable_container_network_logs") is not None or
+            params.get("enable_retina_flow_logs") is not None or
+            params.get("enable_high_log_scale_mode") is not None
+        )
+
 
 class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
     def __init__(
@@ -5640,6 +5766,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             (self.context.get_nat_gateway_managed_outbound_ipv6_count(), None),
             (self.context.get_nat_gateway_outbound_ip_ids(), None),
             (self.context.get_nat_gateway_outbound_ip_prefix_ids(), None),
+            (self.context.raw_param.get("enable_high_log_scale_mode"), None),
         ]
 
     def check_raw_parameters(self):
@@ -5779,7 +5906,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         self._ensure_mc(mc)
 
         acns = None
-        (acns_enabled, acns_observability_enabled, acns_security_enabled) = self.context.get_acns_enablement()
+        (acns_enabled, acns_observability_enabled,
+            acns_security_enabled, acns_perf_enabled) = self.context.get_acns_enablement()
         acns_advanced_networkpolicies = self.context.get_acns_advanced_networkpolicies()
         acns_transit_encryption_type = self.context.get_acns_transit_encryption_type()
         acns_datapath_acceleration_mode = self.context.get_acns_datapath_acceleration_mode()
@@ -5808,10 +5936,16 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 if acns.security.transit_encryption is None:
                     acns.security.transit_encryption = self.models.AdvancedNetworkingSecurityTransitEncryption()
                 acns.security.transit_encryption.type = acns_transit_encryption_type
-            if acns_datapath_acceleration_mode is not None:
-                if acns.performance is None:
-                    acns.performance = self.models.AdvancedNetworkingPerformance()
-                acns.performance.acceleration_mode = acns_datapath_acceleration_mode
+            if acns_perf_enabled is not None:
+                acns.performance = self.models.AdvancedNetworkingPerformance(
+                    acceleration_mode=acns_datapath_acceleration_mode,
+                )
+            elif not acns_enabled:
+                acns.performance = self.models.AdvancedNetworkingPerformance(
+                    acceleration_mode=CONST_ACNS_DATAPATH_ACCELERATION_MODE_NONE,
+                )
+            elif mc.network_profile.advanced_networking is not None:
+                acns.performance = mc.network_profile.advanced_networking.performance
             mc.network_profile.advanced_networking = acns
         return mc
 
@@ -5821,6 +5955,9 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         :return: the ManagedCluster object
         """
         self._ensure_mc(mc)
+
+        # Do not call super() — the base class HLSM validation does not handle
+        # preview-specific flags (--enable-azure-monitor-logs, --enable-addons monitoring).
 
         # Trigger validation for high log scale mode when container network logs are enabled.
         # This ensures proper error messages are raised before cluster update if the user
@@ -5833,12 +5970,81 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         if container_network_logs_enabled is not None:
             if mc.addon_profiles:
                 addon_consts = self.context.get_addon_consts()
-                CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
-                monitoring_addon_profile = mc.addon_profiles.get(CONST_MONITORING_ADDON_NAME)
+                monitoring_addon_key = _get_monitoring_addon_key_from_consts(mc.addon_profiles, addon_consts)
+                monitoring_addon_profile = mc.addon_profiles.get(monitoring_addon_key)
                 if monitoring_addon_profile:
                     config = monitoring_addon_profile.config or {}
                     config["enableRetinaNetworkFlags"] = str(container_network_logs_enabled)
-                    mc.addon_profiles[CONST_MONITORING_ADDON_NAME].config = config
+                    mc.addon_profiles[monitoring_addon_key].config = config
+
+        # When enabling CNL, the DCR must be updated to add the high-scale stream.
+        # Set the postprocessing intermediate so that the update path calls ensure_container_insights.
+        if self.context.raw_param.get("enable_container_network_logs") or \
+           self.context.raw_param.get("enable_retina_flow_logs"):
+            self.context.set_intermediate("monitoring_addon_postprocessing_required", True, overwrite_exists=True)
+
+        # When --enable-high-log-scale-mode is passed standalone on the update path, validate that
+        # monitoring with MSI auth is already enabled, then trigger the DCR update via postprocessing.
+        enable_high_log_scale_mode = self.context.raw_param.get("enable_high_log_scale_mode")
+        if enable_high_log_scale_mode is True:
+            # Check if monitoring is being enabled in the same command
+            enable_azure_monitor_logs = self.context.raw_param.get("enable_azure_monitor_logs")
+            enable_addons = self.context.raw_param.get("enable_addons")
+            monitoring_being_enabled = (
+                enable_azure_monitor_logs or
+                (enable_addons and "monitoring" in enable_addons)
+            )
+
+            if not monitoring_being_enabled:
+                # Only validate existing addon state when not enabling monitoring simultaneously
+                addon_consts = self.context.get_addon_consts()
+                CONST_MONITORING_USING_AAD_MSI_AUTH = addon_consts.get("CONST_MONITORING_USING_AAD_MSI_AUTH")
+
+                # Resolve the addon profile, normalizing non-standard key casing.
+                monitoring_addon_profile = None
+                if mc.addon_profiles:
+                    mk = _get_monitoring_addon_key_from_consts(mc.addon_profiles, addon_consts)
+                    monitoring_addon_profile = mc.addon_profiles.get(mk)
+
+                if not monitoring_addon_profile or not monitoring_addon_profile.enabled:
+                    raise RequiredArgumentMissingError(
+                        "--enable-high-log-scale-mode requires the Azure Monitor logs addon (omsagent) "
+                        "to be enabled on the cluster. Please enable it first with "
+                        "--enable-addons monitoring or --enable-azure-monitor-logs."
+                    )
+
+                addon_config = monitoring_addon_profile.config or {}
+                msi_auth_enabled = (
+                    CONST_MONITORING_USING_AAD_MSI_AUTH in addon_config and
+                    str(addon_config[CONST_MONITORING_USING_AAD_MSI_AUTH]).lower() == "true"
+                )
+                if not msi_auth_enabled:
+                    raise RequiredArgumentMissingError(
+                        "--enable-high-log-scale-mode requires MSI authentication to be enabled "
+                        "for the monitoring addon. Please enable it with --enable-msi-auth-for-monitoring."
+                    )
+
+            self.context.set_intermediate("monitoring_addon_postprocessing_required", True, overwrite_exists=True)
+
+        elif enable_high_log_scale_mode is False:
+            # Check if CNL is already enabled on the cluster — cannot disable HLSM while CNL is on
+            cnl_already_enabled = False
+            if mc.addon_profiles:
+                addon_consts = self.context.get_addon_consts()
+                mk = _get_monitoring_addon_key_from_consts(mc.addon_profiles, addon_consts)
+                monitoring_profile = mc.addon_profiles.get(mk)
+                if monitoring_profile and monitoring_profile.config:
+                    cnl_already_enabled = str(
+                        monitoring_profile.config.get("enableRetinaNetworkFlags", "")
+                    ).lower() == "true"
+            if cnl_already_enabled:
+                raise MutuallyExclusiveArgumentError(
+                    "Cannot explicitly disable --enable-high-log-scale-mode while "
+                    "container network logs are enabled on the cluster. "
+                    "Please disable container network logs first with --disable-container-network-logs."
+                )
+            self.context.set_intermediate("monitoring_addon_postprocessing_required", True, overwrite_exists=True)
+
         return mc
 
     # pylint: disable=too-many-statements,too-many-locals,too-many-branches
@@ -6544,6 +6750,31 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         image_integrity_profile.enabled = shouldEnable_image_integrity
 
+        return mc
+
+    def update_enable_fips(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update FIPS mode at the cluster level for the ManagedCluster object."""
+        self._ensure_mc(mc)
+
+        if self.context.get_disable_fips():
+            mc.enable_fips = False
+            return mc
+
+        if not self.context.get_enable_fips():
+            return mc
+
+        non_fips_nodepools = [
+            agentpool.name
+            for agentpool in (mc.agent_pool_profiles or [])
+            if agentpool.enable_fips is not True
+        ]
+        if non_fips_nodepools:
+            raise InvalidArgumentValueError(
+                "--enable-fips requires all node pools in the cluster to be FIPS-enabled. "
+                "Enable FIPS on these node pools first: {}.".format(", ".join(non_fips_nodepools))
+            )
+
+        mc.enable_fips = True
         return mc
 
     def update_service_account_image_pull(self, mc: ManagedCluster) -> ManagedCluster:
@@ -7749,6 +7980,13 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         if existing_key:
             addon_profile = mc.addon_profiles[existing_key]
+            # Detect workspace change: if the workspace is different from the existing one,
+            # trigger DCR postprocessing so the DCR destination gets updated.
+            old_config = addon_profile.config or {}
+            old_workspace = old_config.get(CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID, "")
+            if old_workspace and old_workspace.lower() != workspace_resource_id.lower():
+                self.context.set_intermediate(
+                    "monitoring_addon_postprocessing_required", True, overwrite_exists=True)
         else:
             addon_profile = self.models.ManagedClusterAddonProfile(enabled=False)
             existing_key = CONST_MONITORING_ADDON_NAME
@@ -7760,32 +7998,30 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             CONST_MONITORING_USING_AAD_MSI_AUTH: enable_msi_auth
         }
 
+        # Also set enableRetinaNetworkFlags if container network logs are being enabled
+        # in the same command. This must be done here because update_monitoring_profile_flow_logs
+        # may run before update_addon_profiles when the base class calls it first.
+        container_network_logs_enabled = self.context.get_container_network_logs(mc)
+        if container_network_logs_enabled is not None:
+            new_config["enableRetinaNetworkFlags"] = str(container_network_logs_enabled)
+
         # Replace the entire config, not just individual keys
         addon_profile.config = new_config
 
         mc.addon_profiles[existing_key] = addon_profile
         self.context.set_intermediate("monitoring_addon_enabled", True, overwrite_exists=True)
-        # Call ensure_container_insights_for_monitoring with all parameters (similar to postprocessing)
-        if (mc.addon_profiles and
-                existing_key in mc.addon_profiles and
-                mc.addon_profiles[existing_key].enabled):
-
-            # Set intermediate value to trigger postprocessing
-            self.context.set_intermediate("monitoring_addon_postprocessing_required", True, overwrite_exists=True)
 
     def _disable_azure_monitor_logs(self, mc: ManagedCluster) -> None:
         """Disable Azure Monitor logs configuration."""
         addon_consts = self.context.get_addon_consts()
-        CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
         CONST_MONITORING_USING_AAD_MSI_AUTH = addon_consts.get("CONST_MONITORING_USING_AAD_MSI_AUTH")
 
-        # Check if the addon profile exists (check both lowercase and camelCase)
+        # Normalize the addon key (handles any casing variant)
         addon_key = None
         if mc.addon_profiles:
-            if CONST_MONITORING_ADDON_NAME in mc.addon_profiles:
-                addon_key = CONST_MONITORING_ADDON_NAME
-            elif CONST_MONITORING_ADDON_NAME_CAMELCASE in mc.addon_profiles:
-                addon_key = CONST_MONITORING_ADDON_NAME_CAMELCASE
+            addon_key = _get_monitoring_addon_key_from_consts(mc.addon_profiles, addon_consts)
+            if addon_key not in mc.addon_profiles:
+                addon_key = None
 
         # If the addon profile doesn't exist at all, there's nothing to disable
         if not addon_key:
@@ -7821,15 +8057,12 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             # Fetch the current cluster state from Azure (same as aks_disable_addons line 2791)
             current_cluster = self.client.get(self.context.get_resource_group_name(), self.context.get_name())
 
-            # Find the addon key in current_cluster (it may have different casing)
-            current_addon_key = None
-            if current_cluster.addon_profiles:
-                if CONST_MONITORING_ADDON_NAME in current_cluster.addon_profiles:
-                    current_addon_key = CONST_MONITORING_ADDON_NAME
-                elif CONST_MONITORING_ADDON_NAME_CAMELCASE in current_cluster.addon_profiles:
-                    current_addon_key = CONST_MONITORING_ADDON_NAME_CAMELCASE
+            # Find the addon key in current_cluster (normalize casing)
+            current_addon_key = _get_monitoring_addon_key_from_consts(
+                current_cluster.addon_profiles, addon_consts) if current_cluster.addon_profiles else None
+            has_addon = current_addon_key and current_addon_key in (current_cluster.addon_profiles or {})
 
-            if current_addon_key:
+            if has_addon:
                 try:
                     # Use the current cluster's addon profile for cleanup (not the modified mc object)
                     self.context.external_functions.ensure_container_insights_for_monitoring(
@@ -7854,9 +8087,14 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         # Now disable the addon and clear configuration
         mc.addon_profiles[addon_key].enabled = False
-
-        # Clear the config to remove old workspace resource ID and other settings
         mc.addon_profiles[addon_key].config = None
+
+        # Also disable azureMonitorProfile.containerInsights (the new API surface)
+        # The RP uses containerInsights.enabled as the source of truth; if it remains
+        # true while the legacy addon is disabled, the RP re-enables the addon.
+        if (mc.azure_monitor_profile and
+                mc.azure_monitor_profile.container_insights):
+            mc.azure_monitor_profile.container_insights.enabled = False
 
         # Also disable OpenTelemetry logs when disabling Azure Monitor logs
         if opentelemetry_logs_enabled:
@@ -7946,6 +8184,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_image_cleaner(mc)
         # update image integrity
         mc = self.update_image_integrity(mc)
+        # update FIPS mode at the cluster level
+        mc = self.update_enable_fips(mc)
         # update service account image pull
         mc = self.update_service_account_image_pull(mc)
         # update KMS infrastructure encryption
@@ -7995,7 +8235,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         # update acns in network_profile
         mc = self.update_acns_in_network_profile(mc)
         # update update_monitoring_profile_flow_logs
-        mc = self.update_monitoring_profile_flow_logs(mc)
+        # Only call here if the base class doesn't already call it in update_mc_profile_default
+        # (CLI >= 2.84.0 added this call to the base class)
+        if not hasattr(super(), 'update_monitoring_profile_flow_logs'):
+            mc = self.update_monitoring_profile_flow_logs(mc)
         # update kubernetes support plan
         mc = self.update_k8s_support_plan(mc)
         # update AI toolchain operator
@@ -8065,17 +8308,22 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         )
         if monitoring_addon_postprocessing_required:
             addon_consts = self.context.get_addon_consts()
-            CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
             CONST_MONITORING_USING_AAD_MSI_AUTH = addon_consts.get("CONST_MONITORING_USING_AAD_MSI_AUTH")
 
+            monitoring_addon_key = (
+                _get_monitoring_addon_key_from_consts(cluster.addon_profiles, addon_consts)
+                if cluster.addon_profiles
+                else addon_consts.get("CONST_MONITORING_ADDON_NAME")
+            )
+
             if (cluster.addon_profiles and
-                    CONST_MONITORING_ADDON_NAME in cluster.addon_profiles and
-                    cluster.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled):
+                    monitoring_addon_key in cluster.addon_profiles and
+                    cluster.addon_profiles[monitoring_addon_key].enabled):
 
                 # Check if MSI auth is enabled
                 if (CONST_MONITORING_USING_AAD_MSI_AUTH in
-                    cluster.addon_profiles[CONST_MONITORING_ADDON_NAME].config and
-                    str(cluster.addon_profiles[CONST_MONITORING_ADDON_NAME].config[
+                    cluster.addon_profiles[monitoring_addon_key].config and
+                    str(cluster.addon_profiles[monitoring_addon_key].config[
                         CONST_MONITORING_USING_AAD_MSI_AUTH]).lower() == "true"):
 
                     # Check parameter sizes to identify what might be causing large headers
@@ -8090,7 +8338,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
                     self.context.external_functions.ensure_container_insights_for_monitoring(
                         self.cmd,
-                        cluster.addon_profiles[CONST_MONITORING_ADDON_NAME],
+                        cluster.addon_profiles[monitoring_addon_key],
                         self.context.get_subscription_id(),
                         self.context.get_resource_group_name(),
                         self.context.get_name(),

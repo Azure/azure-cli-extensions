@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.3.2
++++++
+* Setting the ESC values to be a string list instead of enums
+
 1.3.1
 +++++
 * Upgrading to 2026-01-01 API version

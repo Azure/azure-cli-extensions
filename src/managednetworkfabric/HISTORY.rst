@@ -3,6 +3,10 @@
 Release History
 ===============
 
+10.0.0b1
+++++++++
+* New preview CLI version for latest api 2026-01-15-preview.
+
 9.1.1
 ++++++
 * Fix CLI output formatting for `fabric` and `device` `resync-password` and `fabric` `rotate-certificate` commands to prevent duplicated nested error details in both successful and partial-success responses.
@@ -11,8 +15,8 @@ Release History
 ++++++
 * Enables the following previously removed command/command groups:
 *  - `bootstrapdevice` and `bootstrapinterface` command groups that both support `list` and `show` operations.
-*  - `fabric` commands `resync-certificate` and `rotate-certificate` to support certificate resync and rotation operations on the fabric resource.
-*  - `device` command `resync-certificate` to support resync operations for certificates on the device resource.
+*  - `fabric` commands `resync-certificate` and `rotate-certificate` to support certificate operations on the fabric resource.
+*  - `device` command `resync-certificate` to support certificate resync on the device resource.
 
 9.0.0
 ++++++

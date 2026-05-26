@@ -20,12 +20,11 @@ from azure.mgmt.resource.deployments.models import DeploymentMode
 from azure.cli.core.azclierror import (InvalidArgumentValueError, AzureInternalError,
                                        RequiredArgumentMissingError, ResourceNotFoundError)
 
-from .._client_factory import cf_workspaces, cf_quotas, cf_workspace, cf_offerings, _get_data_credentials
+from .._client_factory import cf_workspaces, cf_quotas, cf_offerings, _get_data_credentials
 from .._list_helper import repack_response_json
 from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspace
-from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspaceIdentity
-from ..vendored_sdks.azure_mgmt_quantum.models import Provider, APIKeys, WorkspaceResourceProperties
-from ..vendored_sdks.azure_mgmt_quantum.models._enums import KeyType
+from ..vendored_sdks.azure_mgmt_quantum.models import ManagedServiceIdentity
+from ..vendored_sdks.azure_mgmt_quantum.models import Provider, ApiKeys, WorkspaceResourceProperties, KeyType
 from .offerings import accept_terms, _get_publisher_and_offer_from_provider_id, _get_terms_from_marketplace, OFFER_NOT_AVAILABLE, PUBLISHER_NOT_AVAILABLE
 
 DEFAULT_WORKSPACE_LOCATION = 'westus'
@@ -97,11 +96,12 @@ def _get_storage_account_path(workspaceInfo, storage_account_name):
 
 def _get_basic_quantum_workspace(location, info, storage_account):
     qw = QuantumWorkspace(location=location)
-    qw.providers = []
     # Allow the system to assign the workspace identity
-    qw.identity = QuantumWorkspaceIdentity()
-    qw.identity.type = "SystemAssigned"
-    qw.storage_account = _get_storage_account_path(info, storage_account)
+    qw.identity = ManagedServiceIdentity(type="SystemAssigned")
+    qw.properties = WorkspaceResourceProperties(
+        storage_account=_get_storage_account_path(info, storage_account),
+        providers=[],
+    )
     return qw
 
 
@@ -383,7 +383,7 @@ def list_keys(cmd, resource_group_name=None, workspace_name=None):
     """
     List Azure Quantum workspace api keys.
     """
-    client = cf_workspace(cmd.cli_ctx)
+    client = cf_workspaces(cmd.cli_ctx)
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     if (not info.resource_group) or (not info.name):
         raise ResourceNotFoundError("Please run 'az quantum workspace set' first to select a default Quantum Workspace.")
@@ -396,7 +396,7 @@ def regenerate_keys(cmd, resource_group_name=None, workspace_name=None, key_type
     """
     Regenerate Azure Quantum workspace api keys.
     """
-    client = cf_workspace(cmd.cli_ctx)
+    client = cf_workspaces(cmd.cli_ctx)
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     if (not info.resource_group) or (not info.name):
         raise ResourceNotFoundError("Please run 'az quantum workspace set' first to select a default Quantum Workspace.")
@@ -407,10 +407,10 @@ def regenerate_keys(cmd, resource_group_name=None, workspace_name=None, key_type
     keys = []
     if key_type is not None:
         for key in key_type.split(','):
-            keys.append(KeyType[key])
+            keys.append(KeyType[key.strip()])
 
-    key_specification = APIKeys(keys=keys)
-    response = client.regenerate_keys(resource_group_name=info.resource_group, workspace_name=info.name, key_specification=key_specification)
+    api_keys = ApiKeys(keys=keys)
+    response = client.regenerate_keys(resource_group_name=info.resource_group, workspace_name=info.name, body=api_keys)
     return response
 
 

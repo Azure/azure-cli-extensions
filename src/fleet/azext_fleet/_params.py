@@ -90,6 +90,10 @@ def load_arguments(self, _):
             help='Space-separated labels in key=value format. Example: env=production region=us-west team=devops'
         )
 
+    with self.argument_context('fleet member list') as c:
+        c.argument('cluster_mesh_profile', options_list=['--cluster-mesh-profile'],
+                   help='Filter members by cluster mesh profile name.')
+
     with self.argument_context('fleet updaterun') as c:
         c.argument('name', options_list=['--name', '-n'], help='Specify name for the update run.')
         c.argument('fleet_name', options_list=['--fleet-name', '-f'], help='Specify the fleet name.')
@@ -207,3 +211,24 @@ def load_arguments(self, _):
         c.argument('overwrite_existing', help='Overwrite any existing cluster entry with the same name.')
         c.argument('path', options_list=['--file'], type=file_type, completer=FilesCompleter(),
                    default=os.path.join(os.path.expanduser('~'), '.kube', 'config'))
+
+    with self.argument_context('fleet clustermeshprofile') as c:
+        c.argument('name', options_list=['--name', '-n'], help='Specify name for the cluster mesh profile.')
+        c.argument('fleet_name', options_list=['--fleet-name', '-f'], help='Specify the fleet name.')
+
+    with self.argument_context('fleet clustermeshprofile wait') as c:
+        c.argument('cluster_mesh_profile_name', options_list=['--cluster-mesh-profile-name', '--name', '-n'],
+                   help='Specify name for the cluster mesh profile.')
+
+    with self.argument_context('fleet clustermeshprofile create') as c:
+        c.argument('member_selector', options_list=['--member-selector', '--selector', '-s'],
+                   help='Kubernetes-style label selector for selecting Fleet members, e.g. "env=production".')
+
+    with self.argument_context('fleet clustermeshprofile apply') as c:
+        c.argument('what_if', action='store_true', options_list=['--what-if'],
+                   help='Show what changes would be made by the apply operation without actually performing it.')
+
+    with self.argument_context('fleet clustermeshprofile list-members') as c:
+        c.argument('selector', action='store_true', options_list=['--selector'],
+                   help='Filter by the profile\'s label selector (members that would match after apply) '
+                        'instead of currently applied members.')
