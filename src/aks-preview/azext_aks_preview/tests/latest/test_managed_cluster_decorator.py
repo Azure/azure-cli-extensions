@@ -5930,6 +5930,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
                 "pod_ip_allocation_mode": "DynamicIndividual",
                 "enable_node_public_ip": True,
                 "node_public_ip_prefix_id": "test_node_public_ip_prefix_id",
+                "node_public_ip_prefix_ids": None,
                 "enable_cluster_autoscaler": True,
                 "min_count": 5,
                 "max_count": 20,
