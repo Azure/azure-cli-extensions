@@ -24307,7 +24307,7 @@ spec:
         self.cmd(
             "aks update --resource-group={resource_group} --name={name} --network-policy azure",
             checks=[
-                self.check("provisioningState", "Failed"),
+                self.check("provisioningState", "Succeeded"),
             ],
         )
 
