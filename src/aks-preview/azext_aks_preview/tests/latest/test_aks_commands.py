@@ -24316,7 +24316,7 @@ spec:
 
         # attempt to change ssh access which should be allowed despite node disruption policy
         self.cmd(
-            "aks nodepool update --resource-group={resource_group} --cluster-name={name} --name={nodepool_name} --ssh-access disabled",
+            "aks nodepool update --resource-group={resource_group} --cluster-name={name} --name={nodepool_name} --ssh-access disabled --yes",
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("securityProfile.sshAccess", "Disabled"),
