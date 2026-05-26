@@ -14,6 +14,8 @@ Pending
 * `az aks create` and `az aks nodepool add`: Add `--enable-osdisk-full-caching` (preview) to enable the full-cache ephemeral OS disk feature for a node pool. Requires AFEC registration `Microsoft.ContainerService/FullCachePreview`. Property is immutable after node pool creation.
 * Clean up unused disk driver version constants and remove obsolete CSI driver v2 tests following the removal of `--disk-driver-version` in 21.0.0b1.
 
+* `az aks create/update`: Add `--enable-fips` (preview) to enable FIPS mode at the cluster level and `az aks update --disable-fips` to disable it. Requires Kubernetes version 1.34 or later and AFEC registration `Microsoft.ContainerService/EnableFIPSPreview`.
+
 21.0.0b1
 ++++++
 * [BREAKING CHANGE] `az aks create/update`: Remove `--disk-driver-version` option as the `version` field has been removed from the API spec for `ManagedClusterStorageProfileDiskCSIDriver`.
