@@ -26,7 +26,6 @@ class TaskAssignmentCreate(_TaskAssignmentCreate):
         args_schema.task_id._required = True
         return args_schema
 
-
     def pre_operations(self):
         args = self.ctx.args
         try:
