@@ -64,7 +64,9 @@ PROVISIONED_MACHINE_ROLES = {
 # Each role defines which certificate types it can generate and what
 # capabilities the device should grant.
 #
-# Reader      - View-only in portal; NO SSH access, NO certificate generation.
+# Certificates are generated for ALL roles. Access restrictions are enforced
+# on the device side, not by the CLI.
+# Reader      - View-only in portal; device blocks SSH access.
 # Contributor - Config app + SSH (non-sudo).
 # Owner       - Config app + SSH (non-sudo) + SSH (sudo).
 ROLE_PERMISSIONS = {
@@ -327,15 +329,6 @@ def resolve_user_role(cmd, resource_id):
             f"the current user on resource '{resource_id}'. Ensure PIM-based "
             f"JIT access has been activated and the role is scoped to the "
             f"ProvisionedMachine resource."
-        )
-
-    # Reader role has no SSH access — block certificate generation.
-    if best_role == "Reader":
-        raise azclierror.AuthenticationError(
-            f"Your highest role on '{resource_id}' is Reader. "
-            f"Reader role does not have SSH access and cannot generate certificates. "
-            f"You need at least Contributor role for SSH (non-sudo) access, "
-            f"or Owner role for SSH (sudo) access."
         )
 
     logger.info("Resolved role '%s' for user '%s' on resource '%s'.",

@@ -434,6 +434,7 @@ class TestResolveUserRole(unittest.TestCase):
     @mock.patch('azext_ssh.provisioned_machine_utils._get_current_user_object_id')
     @mock.patch('azure.cli.core.commands.client_factory.get_mgmt_service_client')
     def test_resolves_reader(self, mock_client_factory, mock_oid):
+        """Reader role should now succeed — restriction is device-side."""
         cmd = mock.Mock()
         mock_oid.return_value = "oid-123"
 
@@ -446,10 +447,8 @@ class TestResolveUserRole(unittest.TestCase):
             "Provisioned Machine Reader"
         )
 
-        with self.assertRaises(azclierror.AuthenticationError) as ctx:
-            pm.resolve_user_role(cmd, "/subscriptions/sub/resourceGroups/rg/providers/X/Y/Z")
-        self.assertIn("Reader", str(ctx.exception))
-        self.assertIn("does not have SSH access", str(ctx.exception))
+        result = pm.resolve_user_role(cmd, "/subscriptions/sub/resourceGroups/rg/providers/X/Y/Z")
+        self.assertEqual(result, "Reader")
 
     @mock.patch('azext_ssh.provisioned_machine_utils._get_current_user_object_id')
     @mock.patch('azure.cli.core.commands.client_factory.get_mgmt_service_client')
