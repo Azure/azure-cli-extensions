@@ -248,18 +248,21 @@ def check_pim_eligibility(cmd, resource_id):
             "Cannot determine certificate expiry."
         )
 
-    remaining_hours = (latest_end - now_utc).total_seconds() / 3600.0
-    if remaining_hours <= 0:
+    if latest_end <= now_utc:
         raise azclierror.AuthenticationError(
             f"Your PIM activation has expired (ended {latest_end.isoformat()}). "
             f"Please re-activate your PIM-eligible role and retry."
         )
 
+    start_time = now_utc.strftime("%Y-%m-%dT%H:%M:%SZ")
+    end_time = latest_end.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+    remaining_hours = (latest_end - now_utc).total_seconds() / 3600.0
     logger.info("Found %d PIM-activated assignment(s) for user '%s' on '%s'. "
                 "Remaining: %.2f hours (until %s).",
                 len(pim_activated), user_object_id, resource_id,
                 remaining_hours, latest_end.isoformat())
-    return pim_activated, remaining_hours
+    return pim_activated, start_time, end_time
 
 
 def resolve_user_role(cmd, resource_id):
@@ -398,10 +401,10 @@ def cleanup_ephemeral_files(*file_paths):
             logger.debug("Failed to clean up '%s'.", path)
 
 
-def sign_certificate_metadata(cmd, keyvault_name, metadata, resource_id):
+def sign_certificate_metadata(cmd, keyvault_name, metadata):
     """Sign the certificate metadata with the CA private key in Key Vault.
 
-    Metadata shape:  { userPublicKey, username, role, expiry }
+    Metadata shape:  { userPublicKey, username, role, startTime, endTime }
 
     The Key Vault hosts a non-exportable CA private key (named ``ssh-ca``).
     AZ CLI sends the signing request using the az login context.
@@ -409,18 +412,16 @@ def sign_certificate_metadata(cmd, keyvault_name, metadata, resource_id):
 
     Returns a dict with ``signedCertificate`` and ``certificatePath``.
     """
-    expiry_hours = metadata["expiry"]
-
     signing_payload = {
         "userPublicKey": metadata["userPublicKey"],
         "username": metadata["username"],
         "role": metadata["role"],
-        "expiry": expiry_hours,
-        "resourceId": resource_id,
+        "startTime": metadata["startTime"],
+        "endTime": metadata["endTime"],
     }
 
-    logger.info("Sending signing request to Key Vault '%s' (expiry %.2f hours) ...",
-                keyvault_name, expiry_hours)
+    logger.info("Sending signing request to Key Vault '%s' (valid %s to %s) ...",
+                keyvault_name, metadata["startTime"], metadata["endTime"])
 
     # Sign via Key Vault - CA private key never leaves the vault.
     _signature, cert_data = _call_keyvault_sign(cmd, keyvault_name, signing_payload)
@@ -432,11 +433,11 @@ def sign_certificate_metadata(cmd, keyvault_name, metadata, resource_id):
         f.write(cert_data)
     oschmod.set_mode(cert_path, stat.S_IRUSR | stat.S_IWUSR)  # 0600
 
-    # Write the signing payload metadata alongside the cert for verification.
-    metadata_path = os.path.join(cert_dir, "metadata.json")
-    with open(metadata_path, "w", encoding="utf-8") as f:
-        json.dump(signing_payload, f, indent=2)
-    logger.info("Signing metadata written to %s", metadata_path)
+    # Uncomment below to write signing payload metadata for debugging/verification.
+    # metadata_path = os.path.join(cert_dir, "metadata.json")
+    # with open(metadata_path, "w", encoding="utf-8") as f:
+    #     json.dump(signing_payload, f, indent=2)
+    # logger.info("Signing metadata written to %s", metadata_path)
 
     logger.info("Signed SSH user certificate written to %s", cert_path)
     return {

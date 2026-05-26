@@ -94,7 +94,8 @@ class TestSshCertCreateHappyPath(unittest.TestCase):
         cmd = _make_cmd()
 
         mock_user.return_value = "user@contoso.com"
-        mock_pim.return_value = ([{"properties": {"assignmentType": "Activated"}}], 4.0)
+        mock_pim.return_value = ([{"properties": {"assignmentType": "Activated"}}],
+                                 "2026-05-26T10:00:00Z", "2026-05-26T14:00:00Z")
         mock_role.return_value = "Contributor"
         mock_keygen.return_value = (self.priv_path, self.pub_path)
         mock_sign.return_value = {
@@ -116,8 +117,9 @@ class TestSshCertCreateHappyPath(unittest.TestCase):
         metadata = mock_sign.call_args[0][2]
         self.assertEqual(metadata["username"], "user@contoso.com")
         self.assertEqual(metadata["role"], "Contributor")
-        # Expiry should come from PIM (4.0 hours remaining)
-        self.assertEqual(metadata["expiry"], 4.0)
+        # startTime/endTime should come from PIM
+        self.assertEqual(metadata["startTime"], "2026-05-26T10:00:00Z")
+        self.assertEqual(metadata["endTime"], "2026-05-26T14:00:00Z")
         self.assertIn("ssh-rsa AAAAFAKEPUBLICKEY", metadata["userPublicKey"])
 
     @mock.patch('azext_ssh.provisioned_machine_utils.sign_certificate_metadata')
@@ -129,12 +131,13 @@ class TestSshCertCreateHappyPath(unittest.TestCase):
     @mock.patch('azext_ssh.provisioned_machine_utils.validate_resource_id')
     def test_expiry_from_pim_short(self, mock_rid, mock_vn, mock_user, mock_pim, mock_role,
                                     mock_keygen, mock_sign):
-        """Expiry should match the remaining PIM duration (1.5h)."""
+        """startTime/endTime should reflect a short PIM window (1.5h)."""
         self._setup_mocks()
         cmd = _make_cmd()
 
         mock_user.return_value = "user@contoso.com"
-        mock_pim.return_value = ([{"properties": {"assignmentType": "Activated"}}], 1.5)
+        mock_pim.return_value = ([{"properties": {"assignmentType": "Activated"}}],
+                                 "2026-05-26T10:00:00Z", "2026-05-26T11:30:00Z")
         mock_role.return_value = "Owner"
         mock_keygen.return_value = (self.priv_path, self.pub_path)
         mock_sign.return_value = {
@@ -145,7 +148,8 @@ class TestSshCertCreateHappyPath(unittest.TestCase):
         custom.ssh_cert_create(cmd, _VALID_VAULT, _VALID_RESOURCE_ID)
 
         metadata = mock_sign.call_args[0][2]
-        self.assertEqual(metadata["expiry"], 1.5)
+        self.assertEqual(metadata["startTime"], "2026-05-26T10:00:00Z")
+        self.assertEqual(metadata["endTime"], "2026-05-26T11:30:00Z")
 
     @mock.patch('azext_ssh.provisioned_machine_utils.sign_certificate_metadata')
     @mock.patch('azext_ssh.provisioned_machine_utils.generate_ephemeral_keypair')
@@ -161,7 +165,8 @@ class TestSshCertCreateHappyPath(unittest.TestCase):
         cmd = _make_cmd()
 
         mock_user.return_value = "user@contoso.com"
-        mock_pim.return_value = ([{"properties": {"assignmentType": "Activated"}}], 7.25)
+        mock_pim.return_value = ([{"properties": {"assignmentType": "Activated"}}],
+                                 "2026-05-26T10:00:00Z", "2026-05-26T17:15:00Z")
         mock_role.return_value = "Contributor"
         mock_keygen.return_value = (self.priv_path, self.pub_path)
         mock_sign.return_value = {
@@ -172,7 +177,8 @@ class TestSshCertCreateHappyPath(unittest.TestCase):
         custom.ssh_cert_create(cmd, _VALID_VAULT, _VALID_RESOURCE_ID)
 
         metadata = mock_sign.call_args[0][2]
-        self.assertEqual(metadata["expiry"], 7.25)
+        self.assertEqual(metadata["startTime"], "2026-05-26T10:00:00Z")
+        self.assertEqual(metadata["endTime"], "2026-05-26T17:15:00Z")
 
 
 class TestSshCertCreateCleanupOnFailure(unittest.TestCase):
@@ -198,7 +204,8 @@ class TestSshCertCreateCleanupOnFailure(unittest.TestCase):
                 f.write("key-content")
 
         mock_user.return_value = "user@contoso.com"
-        mock_pim.return_value = ([{"properties": {"assignmentType": "Activated"}}], 4.0)
+        mock_pim.return_value = ([{"properties": {"assignmentType": "Activated"}}],
+                                 "2026-05-26T10:00:00Z", "2026-05-26T14:00:00Z")
         mock_role.return_value = "Owner"
         mock_keygen.return_value = (priv, pub)
         mock_sign.side_effect = azclierror.CLIInternalError("KV failed")
@@ -224,7 +231,8 @@ class TestSshCertCreateCleanupOnFailure(unittest.TestCase):
         cmd = _make_cmd()
 
         mock_user.return_value = "user@contoso.com"
-        mock_pim.return_value = ([{"properties": {"assignmentType": "Activated"}}], 4.0)
+        mock_pim.return_value = ([{"properties": {"assignmentType": "Activated"}}],
+                                 "2026-05-26T10:00:00Z", "2026-05-26T14:00:00Z")
         mock_role.side_effect = azclierror.AuthenticationError("no role")
 
         with self.assertRaises(azclierror.AuthenticationError):
@@ -269,7 +277,8 @@ class TestSshCertCreateRoleDerivation(unittest.TestCase):
         cmd = _make_cmd()
 
         mock_user.return_value = "admin@contoso.com"
-        mock_pim.return_value = ([{"properties": {"assignmentType": "Activated"}}], 6.0)
+        mock_pim.return_value = ([{"properties": {"assignmentType": "Activated"}}],
+                                 "2026-05-26T10:00:00Z", "2026-05-26T16:00:00Z")
         mock_role.return_value = "Owner"
         mock_keygen.return_value = (self.priv_path, self.pub_path)
         mock_sign.return_value = {
@@ -282,7 +291,7 @@ class TestSshCertCreateRoleDerivation(unittest.TestCase):
         metadata = mock_sign.call_args[0][2]
         self.assertEqual(metadata["role"], "Owner")
         self.assertEqual(metadata["username"], "admin@contoso.com")
-        self.assertEqual(metadata["expiry"], 6.0)
+        self.assertEqual(metadata["startTime"], "2026-05-26T10:00:00Z")
 
     @mock.patch('azext_ssh.provisioned_machine_utils.sign_certificate_metadata')
     @mock.patch('azext_ssh.provisioned_machine_utils.generate_ephemeral_keypair')
@@ -297,7 +306,8 @@ class TestSshCertCreateRoleDerivation(unittest.TestCase):
         cmd = _make_cmd()
 
         mock_user.return_value = "dev@contoso.com"
-        mock_pim.return_value = ([{"properties": {"assignmentType": "Activated"}}], 2.0)
+        mock_pim.return_value = ([{"properties": {"assignmentType": "Activated"}}],
+                                 "2026-05-26T10:00:00Z", "2026-05-26T12:00:00Z")
         mock_role.return_value = "Contributor"
         mock_keygen.return_value = (self.priv_path, self.pub_path)
         mock_sign.return_value = {
@@ -309,7 +319,8 @@ class TestSshCertCreateRoleDerivation(unittest.TestCase):
 
         metadata = mock_sign.call_args[0][2]
         self.assertEqual(metadata["role"], "Contributor")
-        self.assertEqual(metadata["expiry"], 2.0)
+        self.assertEqual(metadata["startTime"], "2026-05-26T10:00:00Z")
+        self.assertEqual(metadata["endTime"], "2026-05-26T12:00:00Z")
         self.assertEqual(result["privateKeyPath"], self.priv_path)
         self.assertEqual(result["certificatePath"], self.cert_path)
 

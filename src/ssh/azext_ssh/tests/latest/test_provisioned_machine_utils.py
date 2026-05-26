@@ -313,9 +313,10 @@ class TestCheckPimEligibility(unittest.TestCase):
             }}]
         })
 
-        instances, expiry_hours = pm.check_pim_eligibility(cmd, self._RESOURCE_ID)
+        instances, start_time, end_time = pm.check_pim_eligibility(cmd, self._RESOURCE_ID)
         self.assertEqual(len(instances), 1)
-        self.assertGreater(expiry_hours, 0)
+        self.assertIn("T", start_time)
+        self.assertIn("T", end_time)
 
     @mock.patch('azext_ssh.provisioned_machine_utils.requests.get')
     @mock.patch('azext_ssh.provisioned_machine_utils._get_current_user_object_id')
@@ -377,9 +378,10 @@ class TestCheckPimEligibility(unittest.TestCase):
             ]
         })
 
-        instances, expiry_hours = pm.check_pim_eligibility(cmd, self._RESOURCE_ID)
+        instances, start_time, end_time = pm.check_pim_eligibility(cmd, self._RESOURCE_ID)
         self.assertEqual(len(instances), 1)
-        self.assertGreater(expiry_hours, 0)
+        self.assertIn("T", start_time)
+        self.assertIn("T", end_time)
 
 
 class TestResolveUserRole(unittest.TestCase):
@@ -753,12 +755,12 @@ class TestSignCertificateMetadata(unittest.TestCase):
             "userPublicKey": "ssh-rsa AAAA",
             "username": "user@contoso.com",
             "role": "Owner",
-            "expiry": 4.0,
+            "startTime": "2026-05-26T10:00:00Z",
+            "endTime": "2026-05-26T14:00:00Z",
         }
 
         result = pm.sign_certificate_metadata(
-            cmd, "myVault", metadata,
-            "/subscriptions/sub/resourceGroups/rg/providers/X/Y/Z"
+            cmd, "myVault", metadata
         )
 
         self.assertEqual(result["signedCertificate"], "cert-content-here")

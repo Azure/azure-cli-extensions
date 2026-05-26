@@ -184,10 +184,10 @@ def ssh_cert_create(cmd, vault_name, resource_id):
         logger.info("Derived username: %s", username)
 
         # Verify the user has an active PIM assignment (JIT activated).
-        # Expiry is derived from the PIM activation's remaining duration.
-        _pim_instances, expiry = pm.check_pim_eligibility(cmd, resource_id)
-        logger.info("PIM eligibility confirmed for resource: %s (%.2f hours remaining)",
-                    resource_id, expiry)
+        # startTime/endTime are derived from the PIM activation window.
+        _pim_instances, start_time, end_time = pm.check_pim_eligibility(cmd, resource_id)
+        logger.info("PIM eligibility confirmed for resource: %s (valid %s to %s)",
+                    resource_id, start_time, end_time)
 
         # Resolve role from PIM assignment on the ProvisionedMachine resource.
         # Reader role is blocked — only Contributor and Administrator can
@@ -209,14 +209,15 @@ def ssh_cert_create(cmd, vault_name, resource_id):
             "userPublicKey": user_public_key,
             "username": username,
             "role": role,
-            "expiry": expiry,
+            "startTime": start_time,
+            "endTime": end_time,
         }
 
         # -- Step 2: Sign via Key Vault ------------------------------------
         # AZ CLI sends signing request using az login context.
         # CA private key never leaves Key Vault.
         signed_certificate = pm.sign_certificate_metadata(
-            cmd, vault_name, certificate_metadata, resource_id
+            cmd, vault_name, certificate_metadata
         )
         cert_path = signed_certificate["certificatePath"]
 
