@@ -24278,6 +24278,7 @@ spec:
             "--ssh-key-value={ssh_key_value} "
             "--network-plugin={network_plugin} "
             "--network-plugin-mode={network_plugin_mode} "
+            "--network-policy=none "
             "--node-count=3",
             checks=[
                 self.check("provisioningState", "Succeeded"),
@@ -24292,6 +24293,7 @@ spec:
             "--name={nodepool_name}",
             checks=[
                 self.check("provisioningState", "Succeeded"),
+                self.check("securityProfile.sshAccess", "LocalUser"),
             ],
         )
 
@@ -24308,6 +24310,7 @@ spec:
             "aks update --resource-group={resource_group} --name={name} --network-policy azure",
             checks=[
                 self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.networkPolicy", "None"),  # network policy should remain unchanged
             ],
         )
 
@@ -24316,6 +24319,7 @@ spec:
             "aks nodepool update --resource-group={resource_group} --cluster-name={name} --name={nodepool_name} --ssh-access disabled",
             checks=[
                 self.check("provisioningState", "Succeeded"),
+                self.check("securityProfile.sshAccess", "Disabled"),
             ],
         )
 
