@@ -93,7 +93,6 @@ class Create(AAZCommand):
         _args_schema.configurations = AAZFileArg(
             options=["--config-template-file","--configuration-template-file","-f"],
             help="Link to File containing Config expressions  for this solution version",
-            required=True,
         )
     
         _args_schema.specification = AAZFreeFormDictArg(
@@ -495,7 +494,7 @@ class Create(AAZCommand):
 
             properties = _builder.get(".solutionTemplateVersion.properties")
             if properties is not None:
-                properties.set_prop("configurations", AAZStrType, ".configurations", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("configurations", AAZAnyType, ".configurations")
                 properties.set_prop("specification", AAZFreeFormDictType, ".specification", typ_kwargs={"flags": {"required": True}})
 
             specification = _builder.get(".solutionTemplateVersion.properties.specification")
