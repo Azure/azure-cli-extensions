@@ -2,6 +2,21 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+#
+# NOTE: After regenerating aaz commands with aaz-dev-tools, re-add the following to each
+# command file in aaz/latest/site/key/ (_create.py, _delete.py, _download.py, _list.py, _show.py):
+#
+#   1. Import: from azext_site._error_handler import handle_sitekey_error
+#   2. Override _handler to wrap _execute_operations() in try/except:
+#        def _handler(self, command_args):
+#            super()._handler(command_args)
+#            try:
+#                self._execute_operations()
+#            except Exception as ex:
+#                handle_sitekey_error(ex)
+#                raise
+#            return self._output()
+#
 
 import re
 from azure.cli.core.azclierror import ValidationError, ResourceNotFoundError

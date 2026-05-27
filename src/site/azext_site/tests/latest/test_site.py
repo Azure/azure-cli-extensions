@@ -178,16 +178,17 @@ class SiteKeyScenario(ScenarioTest):
 
         # Download the site key token
         token_file = os.path.join(tempfile.gettempdir(), "test-token.SiteKey")
-        self.cmd(
-            "az site key download --name TestSiteKey --resource-group {{rg}} --file {f}".format(f=token_file),
-            checks=[
-                self.exists("filePath"),
-                self.check("message", "Token saved successfully"),
-            ]
-        )
-        # Clean up token file
-        if os.path.exists(token_file):
-            os.remove(token_file)
+        try:
+            self.cmd(
+                "az site key download --name TestSiteKey --resource-group {{rg}} --file {f}".format(f=token_file),
+                checks=[
+                    self.exists("filePath"),
+                    self.check("message", "Token saved successfully"),
+                ]
+            )
+        finally:
+            if os.path.exists(token_file):
+                os.remove(token_file)
 
         # Delete the site key
         self.cmd("az site key delete --name TestSiteKey --resource-group {rg} --yes")
