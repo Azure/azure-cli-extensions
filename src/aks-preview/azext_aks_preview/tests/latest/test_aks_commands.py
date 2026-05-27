@@ -24300,7 +24300,7 @@ spec:
 
         # update node disruption policy to "Block"
         self.cmd(
-            "aks update --resource-group={resource_group} --name={name} --node-disruption-policy Block",
+            "aks update --resource-group={resource_group} --name={name} --node-disruption-policy=Block",
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("nodeDisruptionProfile.nodeDisruptionPolicy", "Block"),
