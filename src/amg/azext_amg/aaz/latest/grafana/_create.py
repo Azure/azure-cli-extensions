@@ -238,7 +238,7 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("identity", AAZObjectType, ".identity")
+            _builder.set_prop("identity", AAZIdentityObjectType, ".identity")
             _builder.set_prop("location", AAZStrType, ".location")
             _builder.set_prop("properties", AAZObjectType)
             _builder.set_prop("sku", AAZObjectType)
@@ -292,7 +292,7 @@ class Create(AAZCommand):
             _schema_on_200_201.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.identity = AAZObjectType()
+            _schema_on_200_201.identity = AAZIdentityObjectType()
             _schema_on_200_201.location = AAZStrType()
             _schema_on_200_201.name = AAZStrType(
                 flags={"read_only": True},
