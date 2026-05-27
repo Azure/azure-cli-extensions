@@ -10,7 +10,7 @@
 
 from azure.cli.core.aaz import *
 
-from ._error_handler import handle_sitekey_error
+from azext_site._error_handler import handle_sitekey_error
 
 
 @register_command(

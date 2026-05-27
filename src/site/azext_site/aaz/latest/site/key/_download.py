@@ -12,7 +12,7 @@ import os
 from azure.cli.core.aaz import *
 from knack.log import get_logger
 
-from ._error_handler import handle_sitekey_error
+from azext_site._error_handler import handle_sitekey_error
 
 logger = get_logger(__name__)
 
@@ -30,7 +30,7 @@ class Download(AAZCommand):
         az site key download --name TestSiteKeyName --resource-group TestRGName
 
     :example: Download a site key token to a specific file
-        az site key download --name TestSiteKeyName --resource-group TestRGName --file ./my-token.txt
+        az site key download --name TestSiteKeyName --resource-group TestRGName --file ./my-token.SiteKey
     """
 
     _aaz_info = {
