@@ -16958,6 +16958,27 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             }
         )
 
+        # Register the preview feature required for secondary NICs
+        self.cmd(
+            "feature register "
+            "--namespace Microsoft.ContainerService "
+            "--name NetworkingMultiNICPreview"
+        )
+
+        # Wait until the feature is registered
+        while True:
+            result = self.cmd(
+                "feature show "
+                "--namespace Microsoft.ContainerService "
+                "--name NetworkingMultiNICPreview"
+            ).get_output_in_json()
+            if result["properties"]["state"] == "Registered":
+                break
+            time.sleep(30)
+
+        # Propagate the registration
+        self.cmd("provider register --namespace Microsoft.ContainerService")
+
         # Create the cluster
         self.cmd(
             "aks create "
