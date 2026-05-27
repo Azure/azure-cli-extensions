@@ -24,7 +24,7 @@ class Download(AAZCommand):
     """Download the token for a site key.
 
     Downloads the site key token and saves it to a file. If --file is not specified,
-    the token is saved to <key-name>.SiteKey in the current directory.
+    the token is saved to `<key-name>.SiteKey` in the current directory.
 
     :example: Download a site key token
         az site key download --name TestSiteKeyName --resource-group TestRGName
@@ -72,7 +72,7 @@ class Download(AAZCommand):
         )
         _args_schema.file_path = AAZStrArg(
             options=["-f", "--file"],
-            help="Output file path for the downloaded token. Defaults to <key-name>.SiteKey in the current directory.",
+            help="Output file path for the downloaded token. Defaults to `<key-name>.SiteKey` in the current directory.",
         )
         return cls._args_schema
 
