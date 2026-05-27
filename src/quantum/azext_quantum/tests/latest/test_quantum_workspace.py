@@ -78,7 +78,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         ])
 
         # set
-        self.cmd(f'az quantum workspace set -g {test_resource_group} -w {test_workspace} -l {test_location} -o json', checks=[
+        self.cmd(f'az quantum workspace set -g {test_resource_group} -w {test_workspace} -o json', checks=[
             self.check("name", test_workspace)
         ])
 
@@ -108,7 +108,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
             ])
 
             # set
-            self.cmd(f'az quantum workspace set -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -o json', checks=[
+            self.cmd(f'az quantum workspace set -g {test_resource_group} -w {test_workspace_temp} -o json', checks=[
                 self.check("name", test_workspace_temp)
             ])
 
@@ -204,7 +204,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         ])
 
         # set
-        self.cmd(f'az quantum workspace set -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -o json', checks=[
+        self.cmd(f'az quantum workspace set -g {test_resource_group} -w {test_workspace_temp} -o json', checks=[
             self.check("name", test_workspace_temp)
         ])
 

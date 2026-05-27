@@ -23,7 +23,7 @@ class QuantumTargetsScenarioTest(ScenarioTest):
     @live_only()
     def test_targets(self):
         # set current workspace:
-        self.cmd(f'az quantum workspace set -g {get_test_resource_group()} -w {get_test_workspace()} -l {get_test_workspace_location()}')
+        self.cmd(f'az quantum workspace set -g {get_test_resource_group()} -w {get_test_workspace()}')
 
         # clear current target
         self.cmd('az quantum target clear')

@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0b15
++++++++++++++++
+* Removed deprecated ``--location``/``-l`` parameter from ``quantum execute``, ``quantum run``, ``quantum job submit``, ``quantum job cancel``, ``quantum job list``, ``quantum job output``, ``quantum job show``, ``quantum job wait``, ``quantum target list``, ``quantum workspace set``, and ``quantum workspace quotas`` commands.
+
 1.0.0b14
 +++++++++++++++
 * Updated control plane related commands to use latest API version 2025-12-15-preview
