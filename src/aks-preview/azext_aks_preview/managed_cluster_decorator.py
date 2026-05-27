@@ -7649,7 +7649,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 )
 
             # set policy
-            mc.node_disruption_profile.policy = policy
+            mc.node_disruption_profile.node_disruption_policy = policy
 
         return mc
 
