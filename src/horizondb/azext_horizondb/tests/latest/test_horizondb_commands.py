@@ -9,7 +9,7 @@ from azure.cli.testsdk import (
     NoneCheck,
     ResourceGroupPreparer,
     ScenarioTest)
-from .constants import DEFAULT_LOCATION, CLUSTER_NAME_PREFIX, CLUSTER_NAME_MAX_LENGTH
+from .constants import DEFAULT_LOCATION, CLUSTER_NAME_PREFIX, CLUSTER_NAME_MAX_LENGTH, PASSWORD_PREFIX
 
 
 class HorizonDBClusterMgmtScenarioTest(ScenarioTest):
@@ -26,7 +26,7 @@ class HorizonDBClusterMgmtScenarioTest(ScenarioTest):
         location = self.location
         cluster_name = self.create_random_name(CLUSTER_NAME_PREFIX, CLUSTER_NAME_MAX_LENGTH)
         admin_user = 'horizonadmin'
-        admin_password = 'H0riz0nP@ssw0rd!'
+        admin_password = self.create_random_name(PASSWORD_PREFIX, 20)
         version = '17'
         v_cores = 4
         replica_count = 3
