@@ -28,13 +28,13 @@ _binaries_dir = get_binaries_dir()
 _dmverity_vhd_binaries = {
     "Linux": {
         "path": _binaries_dir / "dmverity-vhd",
-        "url": "https://github.com/microsoft/integrity-vhd/releases/download/v2.0/dmverity-vhd",
-        "sha256": "e7ad858fef018acd7d8a4ccb74f1b7a9cc1b3d6db5a7f8da5a259f71b26c12ea",
+        "url": "https://github.com/microsoft/integrity-vhd/releases/download/v2.1/dmverity-vhd",
+        "sha256": "a75eb11f3ad3058bfdef0b5cf0bf64c1bef714a2afa054f3e242932d25d9e57d",
     },
     "Windows": {
         "path": _binaries_dir / "dmverity-vhd.exe",
-        "url": "https://github.com/microsoft/integrity-vhd/releases/download/v2.0/dmverity-vhd.exe",
-        "sha256": "6ef425c4bd07739d9cc90e57488985c1fca41f8d106fc816123b95b6305ee0af",
+        "url": "https://github.com/microsoft/integrity-vhd/releases/download/v2.1/dmverity-vhd.exe",
+        "sha256": "5e371f86a2b552e5e69759421a81a26a07450dc404c1c88a08a4f983322598a2",
     },
 }
 

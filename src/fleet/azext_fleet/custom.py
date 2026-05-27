@@ -30,13 +30,13 @@ from azext_fleet.constants import UPGRADE_TYPE_ERROR_MESSAGES
 from azext_fleet.constants import SUPPORTED_GATE_STATES_FILTERS
 from azext_fleet.constants import SUPPORTED_GATE_STATES_PATCH
 from azext_fleet.constants import FLEET_1P_APP_ID
-from azext_fleet.vendored_sdks.v2026_02_01_preview.models import (
+from azext_fleet.vendored_sdks.v2026_03_02_preview.models import (
     PropagationPolicy,
     PlacementProfile,
     PlacementV1ClusterResourcePlacementSpec,
     PlacementV1PlacementPolicy,
     PropagationType,
-    PlacementType
+    PlacementType,
 )
 
 logger = get_logger(__name__)
@@ -381,8 +381,12 @@ def update_fleet_member(cmd,
 def list_fleet_member(cmd,  # pylint: disable=unused-argument
                       client,
                       resource_group_name,
-                      fleet_name):
-    return client.list_by_fleet(resource_group_name, fleet_name)
+                      fleet_name,
+                      cluster_mesh_profile=None):
+    filter_expr = None
+    if cluster_mesh_profile:
+        filter_expr = f"clusterMeshProfile eq {cluster_mesh_profile}"
+    return client.list_by_fleet(resource_group_name, fleet_name, filter=filter_expr)
 
 
 def show_fleet_member(cmd,  # pylint: disable=unused-argument
@@ -1066,3 +1070,186 @@ def get_namespace_credentials(cmd,
 
         # Apply kubelogin conversion to the final file after namespace modification
         _convert_kubeconfig_to_azurecli(path)
+
+
+def create_cluster_mesh_profile(cmd,
+                                client,
+                                resource_group_name,
+                                fleet_name,
+                                name,
+                                member_selector=None,
+                                no_wait=False):
+    cluster_mesh_profile_model = cmd.get_models(
+        "ClusterMeshProfile",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="cluster_mesh_profiles"
+    )
+    cluster_mesh_profile_properties_model = cmd.get_models(
+        "ClusterMeshProfileProperties",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="cluster_mesh_profiles"
+    )
+    member_selector_model = cmd.get_models(
+        "MemberSelector",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="cluster_mesh_profiles"
+    )
+
+    selector = None
+    if member_selector is not None:
+        selector = member_selector_model(by_label=member_selector)
+
+    properties = cluster_mesh_profile_properties_model(member_selector=selector)
+    profile = cluster_mesh_profile_model(properties=properties)
+
+    return sdk_no_wait(
+        no_wait,
+        client.begin_create_or_update,
+        resource_group_name,
+        fleet_name,
+        name,
+        profile
+    )
+
+
+def show_cluster_mesh_profile(cmd,  # pylint: disable=unused-argument
+                              client,
+                              resource_group_name,
+                              fleet_name,
+                              name):
+    return client.get(resource_group_name, fleet_name, name)
+
+
+def list_cluster_mesh_profiles(cmd,  # pylint: disable=unused-argument
+                               client,
+                               resource_group_name,
+                               fleet_name):
+    return client.list_by_fleet(resource_group_name, fleet_name)
+
+
+def delete_cluster_mesh_profile(cmd,  # pylint: disable=unused-argument
+                                client,
+                                resource_group_name,
+                                fleet_name,
+                                name,
+                                no_wait=False):
+    return sdk_no_wait(no_wait, client.begin_delete, resource_group_name, fleet_name, name)
+
+
+def apply_cluster_mesh_profile(cmd,
+                               client,
+                               resource_group_name,
+                               fleet_name,
+                               name,
+                               what_if=False,
+                               no_wait=False):
+    if what_if:
+        return _apply_cluster_mesh_what_if(cmd, resource_group_name, fleet_name, name)
+
+    return sdk_no_wait(no_wait, client.begin_apply, resource_group_name, fleet_name, name)
+
+
+def list_cluster_mesh_profile_members(cmd,
+                                      client,  # pylint: disable=unused-argument
+                                      resource_group_name,
+                                      fleet_name,
+                                      name,
+                                      selector=False):
+    """List fleet members for a cluster mesh profile.
+
+    Modes:
+      --name cmp-1              members currently applied to the mesh
+                                  (server-side: $filter=clusterMeshProfile eq cmp-1)
+      --name cmp-1 --selector   members matching the profile's label selector
+                                  (server-side: $filter=clusterMeshProfile.Selector eq cmp-1)
+    """
+    members_client = cf_fleet_members(cmd.cli_ctx)
+    if selector:
+        filter_expr = f"clusterMeshProfile.Selector eq {name}"
+    else:
+        filter_expr = f"clusterMeshProfile eq {name}"
+    return members_client.list_by_fleet(resource_group_name, fleet_name, filter=filter_expr)
+
+
+def _apply_cluster_mesh_what_if(cmd, resource_group_name, fleet_name, name):
+    """Simulate apply by comparing currently-applied members vs selector-matched members.
+
+    Uses the server-side selector filter to find members that match the
+    profile's label selector, including members already assigned to a
+    different mesh profile (conflict detection).
+    """
+    members_client = cf_fleet_members(cmd.cli_ctx)
+
+    sub_id = get_subscription_id(cmd.cli_ctx)
+    this_profile_id = (
+        f"/subscriptions/{sub_id}/resourceGroups/{resource_group_name}"
+        f"/providers/Microsoft.ContainerService/fleets/{fleet_name}"
+        f"/clusterMeshProfiles/{name}"
+    )
+
+    # Members currently in the mesh (already applied to THIS profile)
+    current_filter = f"clusterMeshProfile eq {name}"
+    current_members = {
+        m.name: m for m in members_client.list_by_fleet(
+            resource_group_name, fleet_name, filter=current_filter
+        )
+    }
+
+    # Members matching the profile's selector (server-side filter includes
+    # members assigned to other CMPs, enabling conflict detection).
+    selector_filter = f"clusterMeshProfile.Selector eq {name}"
+    desired_members = {
+        m.name: m for m in members_client.list_by_fleet(
+            resource_group_name, fleet_name, filter=selector_filter
+        )
+    }
+
+    results = []
+    all_names = set(current_members.keys()) | set(desired_members.keys())
+
+    for member_name in sorted(all_names):
+        in_current = member_name in current_members
+        in_desired = member_name in desired_members
+
+        member = desired_members.get(member_name) or current_members.get(member_name)
+
+        mesh_state = None
+        if member.mesh_properties and member.mesh_properties.status:
+            mesh_state = member.mesh_properties.status.state
+
+        action = None
+        error_message = None
+
+        if in_desired and not in_current:
+            # Check if this member already belongs to a different mesh profile
+            existing_profile_id = (
+                member.mesh_properties.cluster_mesh_profile_resource_id
+                if member.mesh_properties else None
+            )
+            if existing_profile_id and existing_profile_id.lower() != this_profile_id.lower():
+                other_name = existing_profile_id.rsplit("/", 1)[-1]
+                action = "Error"
+                error_message = (
+                    f'This member is part of a different clusterMeshProfile "{other_name}". '
+                    f"Remove it from that profile first."
+                )
+            else:
+                action = "Add"
+        elif in_current and not in_desired:
+            action = "Remove"
+        else:
+            action = "-"
+
+        entry = {
+            "Action": action,
+            "ClusterResourceId": member.cluster_resource_id,
+            "ETag": member.e_tag,
+            "MeshMembershipState": mesh_state or "-",
+            "Name": member.name,
+        }
+        if error_message:
+            entry["ErrorMessage"] = error_message
+
+        results.append(entry)
+
+    return results

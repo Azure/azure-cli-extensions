@@ -107,11 +107,6 @@ def get_image_info(progress, message_queue, tar_mapping, image):
             with tarfile.open(tar_location) as tar_file:
                 # get all the info out of the tarfile
                 try:
-                    logger.info("using backwards compatibility tar file")
-                    image_info = os_util.map_image_from_tar_backwards_compatibility(
-                        image_name, tar_file, tar_location
-                    )
-                except IndexError:
                     logger.info("using docker formatted tar file")
                     image_info = os_util.map_image_from_tar(
                         image_name, tar_file, tar_location

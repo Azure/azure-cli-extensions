@@ -3,6 +3,12 @@
 Release History
 ===============
 
+1.0.0b14
++++++++++++++++
+* Updated control plane related commands to use latest API version 2025-12-15-preview
+* Updated data plane related commands to use latest API version 2026-01-15-preview
+* Fixed bug where storage variable is initialized and not used in job submission command
+
 1.0.0b13
 +++++++++++++++
 * Updated workspace create command to support job submissions with disabled access keys on linked storage account
