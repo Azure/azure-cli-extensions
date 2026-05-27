@@ -24282,6 +24282,7 @@ spec:
             "--node-count=3",
             checks=[
                 self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.networkPolicy", "none"),
             ],
         )
 
@@ -24302,15 +24303,16 @@ spec:
             "aks update --resource-group={resource_group} --name={name} --node-disruption-policy Block",
             checks=[
                 self.check("provisioningState", "Succeeded"),
+                self.check("nodeDisruptionProfile.nodeDisruptionPolicy", "Block"),
             ],
         )
 
         # attempt to change network policy which should be blocked by node disruption policy
         self.cmd(
-            "aks update --resource-group={resource_group} --name={name} --network-policy azure",
+            "aks update --resource-group={resource_group} --name={name} --network-policy=azure",
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("networkProfile.networkPolicy", "None"),  # network policy should remain unchanged
+                self.check("networkProfile.networkPolicy", "none"),  # network policy should remain unchanged
             ],
         )
 
