@@ -24309,7 +24309,7 @@ spec:
 
         # attempt to change network policy which should be blocked by node disruption policy
         self.cmd(
-            "aks update --resource-group={resource_group} --name={name} --network-policy=azure",
+            "aks update --resource-group={resource_group} --name={name} --network-policy=azure", expect_failure=True,
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("networkProfile.networkPolicy", "none"),  # network policy should remain unchanged
