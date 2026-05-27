@@ -54,6 +54,11 @@ class CheckNameAvailability(AAZCommand):
             arg_group="Body",
             help="The name of the resource for which availability needs to be checked.",
         )
+        _args_schema.type = AAZStrArg(
+            options=["--type"],
+            arg_group="Body",
+            help="The resource type.",
+        )
         return cls._args_schema
 
     def _execute_operations(self):
@@ -143,6 +148,7 @@ class CheckNameAvailability(AAZCommand):
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("name", AAZStrType, ".name")
+            _builder.set_prop("type", AAZStrType, ".type")
 
             return self.serialize_content(_content_value)
 

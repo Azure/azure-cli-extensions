@@ -12,4 +12,10 @@
 
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
-    pass
+    with self.command_group('fileshare'):
+        from .custom import CheckNameAvailability
+        self.command_table['fileshare check-name-availability'] = CheckNameAvailability(loader=self)
+
+    with self.command_group('fileshare snapshot'):
+        from .custom import SnapshotCreate
+        self.command_table['fileshare snapshot create'] = SnapshotCreate(loader=self)
