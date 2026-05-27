@@ -7,6 +7,8 @@
 
 from azure.cli.testsdk import *
 import time
+import unittest
+from datetime import datetime, timedelta, timezone
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 
@@ -32,7 +34,6 @@ class StorageMoverScenario(ScenarioTest):
         self.cmd('az storage-mover list -g {rg}', checks=[JMESPathCheck('length(@)', 0)])
 
     # agent scenarios require a physically registered agent - cannot be created dynamically
-    @record_only()
     # need to manually register agent, first create the rg and the storagemover
     # tenant id 54826b22-38d6-4fb2-bad9-b7b93a3e9c5a
     # subscription id 0b1f6471-1bf0-4dda-aec3-cb9272f09590
@@ -55,13 +56,10 @@ class StorageMoverScenario(ScenarioTest):
         self.cmd('az storage-mover agent list -g {rg} --storage-mover-name {mover_name}',
                  checks=[JMESPathCheck('length(@)', 0)])
 
-    # need to manually register agent, first create the rg and the storagemover
-    # tenant id 54826b22-38d6-4fb2-bad9-b7b93a3e9c5a
-    # subscription id 0b1f6471-1bf0-4dda-aec3-cb9272f09590
-    # az group create -n test-storagemover-rg2 -l westcentralus
-    # az storage-mover create -n teststoragemover2 -g test-storagemover-rg2
-    # register agent
-    @record_only()
+    # Agent upload-limit scheduling requires a registered Storage Mover agent VM which
+    # cannot be provisioned by the RP. Skipped until live test infra with a registered
+    # agent is available. Mirrors the corresponding skip in the cross-language playbook.
+    @unittest.skip("requires registered Storage Mover agent VM (cannot be provisioned by the RP)")
     def test_storage_mover_agent_upload_limit_schedule_scenarios(self):
         self.kwargs.update({
             "rg": "test-storagemover-rg2",
@@ -296,9 +294,43 @@ class StorageMoverScenario(ScenarioTest):
                      '-n invalidep --container-name {container_name} --storage-account-id {account_id} '
                      '--endpoint-kind InvalidKind --description test')
         self.assertEqual(cm.exception.code, 2)
+
+        # Wire-level negatives — RP rejects invalid endpoint-kind combinations.
+        # Mirrors .NET EndpointTests #25, #26, #28, #29 (#27 MultiCloudConnector covered
+        # in test_storage_mover_endpoint_multi_cloud_connector_scenarios).
+        # #25 NfsMountEndpointKindTarget_Fails — NfsMount is Source-only.
+        self.kwargs.update({"endpoint_nfs_tgt_fail": self.create_random_name('nfs-tgt', 24)})
+        self.cmd('az storage-mover endpoint create-for-nfs -g {rg} --storage-mover-name {mover_name} '
+                 '-n {endpoint_nfs_tgt_fail} --export / --nfs-version NFSv4 --host ' + vm_ip +
+                 ' --endpoint-kind Target --description nfsTargetShouldFail',
+                 expect_failure=True)
+        # #26 SmbMountEndpointKindTarget_Fails — SmbMount is Source-only.
+        self.kwargs.update({"endpoint_smb_tgt_fail": self.create_random_name('smb-tgt', 24)})
+        self.cmd('az storage-mover endpoint create-for-smb -g {rg} --storage-mover-name {mover_name} '
+                 '-n {endpoint_smb_tgt_fail} --share-name {smb_share_name} --host ' + vm_smb_ip +
+                 ' --username-uri "https://smb-demo-kv.vault.azure.net/secrets/username" '
+                 '--password-uri "https://smb-demo-kv.vault.azure.net/secrets/password" '
+                 '--endpoint-kind Target --description smbTargetShouldFail',
+                 expect_failure=True)
+        # #28 SmbFileShareEndpointKindSource_Fails — SmbFileShare is Target-only.
+        self.kwargs.update({"endpoint_smbfs_src_fail": self.create_random_name('smbfs-src', 24)})
+        self.cmd('az storage-mover endpoint create-for-storage-smb-file-share -g {rg} '
+                 '--storage-mover-name {mover_name} -n {endpoint_smbfs_src_fail} '
+                 '--file-share-name {file_share_name} --storage-account-id {account_id} '
+                 '--endpoint-kind Source --description smbFileShareSourceShouldFail',
+                 expect_failure=True)
+        # #29 NfsFileShareEndpointKindSource_Fails — NfsFileShare is Target-only.
+        self.kwargs.update({"endpoint_nfsfs_src_fail": self.create_random_name('nfsfs-src', 24)})
+        self.cmd('az storage-mover endpoint create-for-storage-nfs-file-share -g {rg} '
+                 '--storage-mover-name {mover_name} -n {endpoint_nfsfs_src_fail} '
+                 '--file-share-name {file_share_name} --storage-account-id {account_id} '
+                 '--endpoint-kind Source --description nfsFileShareSourceShouldFail',
+                 expect_failure=True)
         
-    # Multi-cloud connector requires cross-subscription resources
-    @record_only()
+    # Multi-cloud connector requires cross-subscription resources.
+    # @record_only: AAZResourceIdArg adds the cross-sub MCC/S3 IDs to aux_subscriptions,
+    # which then fails playback profile lookup (testsdk mocks the profile to a single sub).
+    @live_only()
     @ResourceGroupPreparer(location='westcentralus')
     def test_storage_mover_endpoint_multi_cloud_connector_scenarios(self, resource_group):
         self.kwargs.update({
@@ -340,6 +372,16 @@ class StorageMoverScenario(ScenarioTest):
                          JMESPathCheckExists('properties.endpointKind')])
         self.cmd('az storage-mover endpoint delete -g {rg} --storage-mover-name {mover_name} '
                  '-n {endpoint_mcc_no_kind} -y')
+
+        # Wire-level negative — RP rejects MultiCloudConnector with Target kind.
+        # Mirrors .NET EndpointTests #27 MultiCloudConnectorEndpointKindTarget_Fails — MCC is Source-only.
+        self.kwargs.update({"endpoint_mcc_tgt_fail": self.create_random_name('mcc-tgt', 24)})
+        self.cmd('az storage-mover endpoint create-for-multi-cloud-connector -g {rg} '
+                 '--name {endpoint_mcc_tgt_fail} --storage-mover-name {mover_name} '
+                 '--multi-cloud-connector-id {multi_cloud_connector_id} '
+                 '--aws-s3-bucket-id {aws_s3_bucket_id} --endpoint-kind Target '
+                 '--description mccTargetShouldFail',
+                 expect_failure=True)
 
 
     @ResourceGroupPreparer(location='westcentralus')
@@ -428,8 +470,10 @@ class StorageMoverScenario(ScenarioTest):
         self.cmd('az storage-mover project list -g {rg} --storage-mover-name {mover_name}',
                  checks=[JMESPathCheck('length(@)', 0)])
 
-    # Connection requires cross-subscription Private Link Service
-    @record_only()
+    # Connection requires cross-subscription Private Link Service.
+    # @record_only: AAZResourceIdArg adds the cross-sub PLS ID to aux_subscriptions,
+    # which then fails playback profile lookup (testsdk mocks the profile to a single sub).
+    @live_only()
     @ResourceGroupPreparer(location='westcentralus')
     def test_storage_mover_connection_scenarios(self, resource_group):
         self.kwargs.update({
@@ -457,22 +501,22 @@ class StorageMoverScenario(ScenarioTest):
         self.cmd('az storage-mover connection delete -g {rg} --storage-mover-name {mover_name} '
                  '-n {connection_name} -y')
 
-    # Prerequisites:
-    # az group create -n test-storagemover-rg2 -l westcentralus
-    # az storage-mover create -n teststoragemover2 -g test-storagemover-rg2
-    # Create a Key Vault with access-key and secret-key secrets for HMAC credentials
-    # S3WithHMAC endpoint type requires feature enablement - not available in all subscriptions
-    @record_only()
-    def test_storage_mover_endpoint_s3_with_hmac_scenarios(self):
+    # Mirrors .NET EndpointTests.S3WithHmacEndpointCreateGetDeleteTest.
+    # S3WithHMAC accepts placeholder URIs at metadata level (RP doesn't validate the
+    # source URI or Key Vault secret URIs at create time), so the test self-provisions
+    # mover + RG dynamically instead of relying on shared pre-existing infra.
+    @ResourceGroupPreparer(location='westcentralus')
+    def test_storage_mover_endpoint_s3_with_hmac_scenarios(self, resource_group):
         self.kwargs.update({
-            "rg": "test-storagemover-rg2",
-            "mover_name": "teststoragemover2",
-            "endpoint_s3": "test-ep-s3hmac1",
+            "mover_name": self.create_random_name('storage-mover', 24),
+            "endpoint_s3": self.create_random_name('test-ep-s3hmac', 32),
+            "endpoint_s3_no_kind": self.create_random_name('test-ep-s3nk', 32),
             "source_uri": "https://s3.example.com/bucket",
             "source_type": "MINIO",
             "access_key_uri": "https://smb-demo-kv.vault.azure.net/secrets/s3-access-key",
             "secret_key_uri": "https://smb-demo-kv.vault.azure.net/secrets/s3-secret-key"
         })
+        self.cmd('az storage-mover create -g {rg} -n {mover_name} -l westcentralus --description MoverDesc')
         # create
         self.cmd('az storage-mover endpoint create-for-s3-with-hmac -g {rg} '
                  '--storage-mover-name {mover_name} -n {endpoint_s3} '
@@ -503,7 +547,6 @@ class StorageMoverScenario(ScenarioTest):
                  '-n {endpoint_s3} -y')
 
         # create without endpoint-kind (optional param - should succeed)
-        self.kwargs.update({"endpoint_s3_no_kind": "test-ep-s3nk1"})
         self.cmd('az storage-mover endpoint create-for-s3-with-hmac -g {rg} '
                  '--storage-mover-name {mover_name} -n {endpoint_s3_no_kind} '
                  '--source-uri {source_uri} --source-type {source_type} '
@@ -521,10 +564,15 @@ class StorageMoverScenario(ScenarioTest):
                  '-n nonexistentendpoint',
                  expect_failure=True)
 
-    # Schedule test uses cross-subscription storage account
-    @record_only()
+    # Schedule test uses cross-subscription storage account.
+    # Schedule dates are computed dynamically (now+1d / now+30d) to mirror .NET's
+    # `Recording.Now.AddDays(1)` and avoid stale `start-date` rejections over time.
+    # @record_only: AAZResourceIdArg adds the cross-sub storage account ID to aux_subscriptions,
+    # which then fails playback profile lookup (testsdk mocks the profile to a single sub).
+    @live_only()
     @ResourceGroupPreparer(location='westcentralus')
     def test_storage_mover_job_definition_schedule_scenarios(self, resource_group):
+        now = datetime.now(timezone.utc).replace(microsecond=0)
         self.kwargs.update({
             "mover_name": self.create_random_name('storage-mover', 24),
             "project_name": self.create_random_name('project', 24),
@@ -534,6 +582,8 @@ class StorageMoverScenario(ScenarioTest):
             "target_container": self.create_random_name('tgtcontainer', 24),
             "source_endpoint": self.create_random_name('test-srcep', 24),
             "target_endpoint": self.create_random_name('test-tgtep', 24),
+            "start_date": (now + timedelta(days=1)).strftime('%Y-%m-%dT09:00:00Z'),
+            "end_date": (now + timedelta(days=30)).strftime('%Y-%m-%dT00:00:00Z'),
         })
         self.cmd('az storage-mover create -g {rg} -n {mover_name} -l westcentralus --description MoverDesc')
         self.cmd('az storage-mover project create -g {rg} --storage-mover-name {mover_name} -n {project_name} '
@@ -557,7 +607,7 @@ class StorageMoverScenario(ScenarioTest):
                  '--copy-mode Additive --source-name {source_endpoint} --target-name {target_endpoint} '
                  '--description JobDefWithSchedule --job-type CloudToCloud '
                  "--source-subpath / --target-subpath / "
-                 "--schedule \"{{frequency:Weekly,is-active:True,start-date:'2026-04-12T00:00:00Z',end-date:'2026-12-31T00:00:00Z',execution-time:{{hour:9,minute:0}},days-of-week:[Monday,Wednesday,Friday]}}\"")
+                 "--schedule \"{{frequency:Weekly,is-active:True,start-date:'{start_date}',end-date:'{end_date}',execution-time:{{hour:9,minute:0}},days-of-week:[Monday,Wednesday,Friday]}}\"")
         # verify schedule in show
         self.cmd('az storage-mover job-definition show -g {rg} -n {job_definition} '
                  '--project-name {project_name} --storage-mover-name {mover_name}',
@@ -575,4 +625,427 @@ class StorageMoverScenario(ScenarioTest):
         self.cmd('az storage-mover job-definition delete -g {rg} -n {job_definition} '
                  '--project-name {project_name} --storage-mover-name {mover_name} -y')
 
+    # Mirrors .NET CreateJobDefinitionWithDailyScheduleAndPreservePermissionsTest.
+    # Uses cross-subscription storage account, same as the weekly schedule test above.
+    # Schedule dates are computed dynamically (now+1d / now+30d) to mirror .NET's
+    # `Recording.Now.AddDays(1)` and avoid the RP's "endDate must not exceed one year
+    # from current Date" constraint as the codebase ages.
+    # @record_only: AAZResourceIdArg adds the cross-sub storage account ID to aux_subscriptions,
+    # which then fails playback profile lookup (testsdk mocks the profile to a single sub).
+    @live_only()
+    @ResourceGroupPreparer(location='westcentralus')
+    def test_storage_mover_job_definition_daily_schedule_scenarios(self, resource_group):
+        now = datetime.now(timezone.utc).replace(microsecond=0)
+        self.kwargs.update({
+            "mover_name": self.create_random_name('storage-mover', 24),
+            "project_name": self.create_random_name('project', 24),
+            "job_definition": self.create_random_name('jobdefdaily', 24),
+            "account_id": "/subscriptions/b6b34ad8-ca89-4f85-beb7-c2ec13702dac/resourceGroups/CP_Mover_IN_WCUS/providers/Microsoft.Storage/storageAccounts/cpmoveraccount",
+            "source_container": self.create_random_name('srccontainer', 24),
+            "target_container": self.create_random_name('tgtcontainer', 24),
+            "source_endpoint": self.create_random_name('test-srcep', 24),
+            "target_endpoint": self.create_random_name('test-tgtep', 24),
+            "start_date": (now + timedelta(days=1)).strftime('%Y-%m-%dT00:00:00Z'),
+            "end_date": (now + timedelta(days=30)).strftime('%Y-%m-%dT00:00:00Z'),
+        })
+        self.cmd('az storage-mover create -g {rg} -n {mover_name} -l westcentralus --description MoverDesc')
+        self.cmd('az storage-mover project create -g {rg} --storage-mover-name {mover_name} -n {project_name} '
+                 '--description ProjectDesc')
+
+        # create source and target containers using pre-existing storage account
+        self.cmd('az storage container create -n {source_container} --account-name cpmoveraccount --auth-mode login')
+        self.cmd('az storage container create -n {target_container} --account-name cpmoveraccount --auth-mode login')
+
+        # create source and target endpoints (both blob containers for cloud-to-cloud)
+        self.cmd('az storage-mover endpoint create-for-storage-container -g {rg} --storage-mover-name {mover_name} '
+                 '-n {source_endpoint} --container-name {source_container} --storage-account-id {account_id} '
+                 '--endpoint-kind Source --description srcEndpointDesc')
+        self.cmd('az storage-mover endpoint create-for-storage-container -g {rg} --storage-mover-name {mover_name} '
+                 '-n {target_endpoint} --container-name {target_container} --storage-account-id {account_id} '
+                 '--endpoint-kind Target --description tgtEndpointDesc')
+
+        # create cloud-to-cloud job definition with Mirror copy-mode, preserve-permissions, daily schedule.
+        # Daily frequency has no days-of-week (omitted per AAZ schema and .NET reference).
+        # Note: RP does not echo `preservePermissions` or `dataIntegrityValidation` in the show
+        # response for CloudToCloud (blob→blob) jobs — those fields apply to filesystem sources
+        # (NFS/SMB → Blob, as in the .NET reference). The create-arg surface is still exercised.
+        self.cmd('az storage-mover job-definition create -g {rg} -n {job_definition} '
+                 '--project-name {project_name} --storage-mover-name {mover_name} '
+                 '--copy-mode Mirror --source-name {source_endpoint} --target-name {target_endpoint} '
+                 '--description JobDefDailySchedule --job-type CloudToCloud '
+                 '--source-subpath / --target-subpath / '
+                 '--preserve-permissions true --data-integrity-validation None '
+                 "--schedule \"{{frequency:Daily,is-active:True,start-date:'{start_date}',end-date:'{end_date}',execution-time:{{hour:0,minute:0}}}}\"")
+        self.cmd('az storage-mover job-definition show -g {rg} -n {job_definition} '
+                 '--project-name {project_name} --storage-mover-name {mover_name}',
+                 checks=[JMESPathCheck('copyMode', 'Mirror'),
+                         JMESPathCheck('schedule.frequency', 'Daily'),
+                         JMESPathCheck('schedule.isActive', True),
+                         JMESPathCheck('schedule.executionTime.hour', 0),
+                         JMESPathCheck('schedule.executionTime.minute', 0)])
+        # cleanup
+        self.cmd('az storage-mover job-definition delete -g {rg} -n {job_definition} '
+                 '--project-name {project_name} --storage-mover-name {mover_name} -y')
+
+    # Mirrors .NET CreateJobDefinitionWithOnetimeScheduleTest.
+    # Uses cross-subscription storage account, same as the weekly schedule test above.
+    # Schedule start-date is computed dynamically (now+1d) to mirror .NET's
+    # `Recording.Now.AddDays(1)`.
+    # @record_only: AAZResourceIdArg adds the cross-sub storage account ID to aux_subscriptions,
+    # which then fails playback profile lookup (testsdk mocks the profile to a single sub).
+    @live_only()
+    @ResourceGroupPreparer(location='westcentralus')
+    def test_storage_mover_job_definition_onetime_schedule_scenarios(self, resource_group):
+        now = datetime.now(timezone.utc).replace(microsecond=0)
+        self.kwargs.update({
+            "mover_name": self.create_random_name('storage-mover', 24),
+            "project_name": self.create_random_name('project', 24),
+            "job_definition": self.create_random_name('jobdefonce', 24),
+            "account_id": "/subscriptions/b6b34ad8-ca89-4f85-beb7-c2ec13702dac/resourceGroups/CP_Mover_IN_WCUS/providers/Microsoft.Storage/storageAccounts/cpmoveraccount",
+            "source_container": self.create_random_name('srccontainer', 24),
+            "target_container": self.create_random_name('tgtcontainer', 24),
+            "source_endpoint": self.create_random_name('test-srcep', 24),
+            "target_endpoint": self.create_random_name('test-tgtep', 24),
+            "start_date": (now + timedelta(days=1)).strftime('%Y-%m-%dT10:00:00Z'),
+        })
+        self.cmd('az storage-mover create -g {rg} -n {mover_name} -l westcentralus --description MoverDesc')
+        self.cmd('az storage-mover project create -g {rg} --storage-mover-name {mover_name} -n {project_name} '
+                 '--description ProjectDesc')
+
+        # create source and target containers using pre-existing storage account
+        self.cmd('az storage container create -n {source_container} --account-name cpmoveraccount --auth-mode login')
+        self.cmd('az storage container create -n {target_container} --account-name cpmoveraccount --auth-mode login')
+
+        # create source and target endpoints (both blob containers for cloud-to-cloud)
+        self.cmd('az storage-mover endpoint create-for-storage-container -g {rg} --storage-mover-name {mover_name} '
+                 '-n {source_endpoint} --container-name {source_container} --storage-account-id {account_id} '
+                 '--endpoint-kind Source --description srcEndpointDesc')
+        self.cmd('az storage-mover endpoint create-for-storage-container -g {rg} --storage-mover-name {mover_name} '
+                 '-n {target_endpoint} --container-name {target_container} --storage-account-id {account_id} '
+                 '--endpoint-kind Target --description tgtEndpointDesc')
+
+        # create cloud-to-cloud job definition with one-time schedule.
+        # Onetime frequency: only start-date is supplied (no end-date, no days-of-week) per .NET reference.
+        self.cmd('az storage-mover job-definition create -g {rg} -n {job_definition} '
+                 '--project-name {project_name} --storage-mover-name {mover_name} '
+                 '--copy-mode Additive --source-name {source_endpoint} --target-name {target_endpoint} '
+                 '--description JobDefOnetimeSchedule --job-type CloudToCloud '
+                 '--source-subpath / --target-subpath / '
+                 "--schedule \"{{frequency:Onetime,is-active:True,start-date:'{start_date}',execution-time:{{hour:10,minute:0}}}}\"")
+        self.cmd('az storage-mover job-definition show -g {rg} -n {job_definition} '
+                 '--project-name {project_name} --storage-mover-name {mover_name}',
+                 checks=[JMESPathCheck('schedule.frequency', 'Onetime'),
+                         JMESPathCheck('schedule.isActive', True),
+                         JMESPathCheck('schedule.executionTime.hour', 10),
+                         JMESPathCheck('schedule.executionTime.minute', 0)])
+        # cleanup
+        self.cmd('az storage-mover job-definition delete -g {rg} -n {job_definition} '
+                 '--project-name {project_name} --storage-mover-name {mover_name} -y')
+
+    # Mirrors .NET StorageMoverResourceTests.UpdateAddSetRemoveTagDeletTest.
+    # Note: `az storage-mover update --tags` is MERGE semantics (verified live 2026-05-19):
+    # newly supplied tags are added to the existing set rather than replacing it. To remove
+    # a tag, use the generic-update form `--remove tags.<key>` (AZ_SUPPORT_GENERIC_UPDATE = True).
+    # Subscriptions with tag policies (e.g. `Mover`, `team` auto-applied) may show extra keys;
+    # assertions therefore check only the keys we own, not `length(tags)`.
+    @ResourceGroupPreparer(location='westcentralus')
+    def test_storage_mover_tag_lifecycle_scenarios(self, resource_group):
+        self.kwargs.update({"mover_name": self.create_random_name('storage-mover', 24)})
+        # create with no user-supplied tags
+        self.cmd('az storage-mover create -g {rg} -n {mover_name} -l westcentralus --description MoverDesc',
+                 checks=[JMESPathCheck('description', 'MoverDesc')])
+        # add first tag via --tags
+        self.cmd('az storage-mover update -g {rg} -n {mover_name} --tags tag1=val1',
+                 checks=[JMESPathCheck('tags.tag1', 'val1')])
+        # add more tags via --tags — merge semantics: tag1 stays, tag2/tag3 added
+        self.cmd('az storage-mover update -g {rg} -n {mover_name} --tags tag2=val2 tag3=val3',
+                 checks=[JMESPathCheck('tags.tag1', 'val1'),
+                         JMESPathCheck('tags.tag2', 'val2'),
+                         JMESPathCheck('tags.tag3', 'val3')])
+        # remove a tag via generic update
+        self.cmd('az storage-mover update -g {rg} -n {mover_name} --remove tags.tag2',
+                 checks=[JMESPathCheckNotExists('tags.tag2'),
+                         JMESPathCheck('tags.tag1', 'val1'),
+                         JMESPathCheck('tags.tag3', 'val3')])
+        # delete
+        self.cmd('az storage-mover delete -g {rg} -n {mover_name} -y')
+
+    # Mirrors .NET JobDefinitionJobRunTests.JobDefinitionJobRunTest + JobRunTests.GetExistTest.
+    # Uses CloudToCloud (MultiCloudConnector source → Blob container target) so no on-prem
+    # agent is required. Everything is provisioned dynamically per-run (matching .NET's
+    # `Recording.GenerateAssetName` pattern). Cross-sub MCC + S3 bucket IDs match
+    # test_storage_mover_endpoint_multi_cloud_connector_scenarios; target storage account
+    # uses the shared `cpmoveraccount` (matches the schedule tests pattern).
+    # @record_only: AAZResourceIdArg adds the cross-sub MCC/S3/storage-account IDs to
+    # aux_subscriptions, which then fails playback profile lookup (testsdk mocks the profile
+    # to a single sub).
+    @live_only()
+
+    @ResourceGroupPreparer(location='westcentralus')
+    def test_storage_mover_job_run_scenarios(self, resource_group):
+        self.kwargs.update({
+            "mover_name": self.create_random_name('storage-mover', 24),
+            "project_name": self.create_random_name('project', 24),
+            "job_definition": self.create_random_name('jobdef', 24),
+            "source_endpoint": self.create_random_name('test-srcep-mcc', 32),
+            "target_endpoint": self.create_random_name('test-tgtep-blob', 32),
+            "target_container": self.create_random_name('tgtcontainer', 24),
+            "account_id": "/subscriptions/b6b34ad8-ca89-4f85-beb7-c2ec13702dac/resourceGroups/CP_Mover_IN_WCUS/providers/Microsoft.Storage/storageAccounts/cpmoveraccount",
+            "multi_cloud_connector_id": "/subscriptions/b6b34ad8-ca89-4f85-beb7-c2ec13702dac/resourceGroups/E2E-Management-RGsyn/providers/Microsoft.HybridConnectivity/publicCloudConnectors/e2e-sm-rp-connector",
+            "aws_s3_bucket_id": "/subscriptions/b6b34ad8-ca89-4f85-beb7-c2ec13702dac/resourceGroups/aws_640698235822/providers/Microsoft.AWSConnector/s3Buckets/e2e-sm-rp-bucket",
+        })
+        self.cmd('az storage-mover create -g {rg} -n {mover_name} -l westcentralus --description MoverDesc')
+        self.cmd('az storage-mover project create -g {rg} --storage-mover-name {mover_name} -n {project_name} '
+                 '--description ProjectDesc')
+
+        # source: MultiCloudConnector endpoint (cross-sub MCC + AWS S3 IDs)
+        self.cmd('az storage-mover endpoint create-for-multi-cloud-connector -g {rg} '
+                 '--storage-mover-name {mover_name} -n {source_endpoint} '
+                 '--multi-cloud-connector-id {multi_cloud_connector_id} '
+                 '--aws-s3-bucket-id {aws_s3_bucket_id} --endpoint-kind Source '
+                 '--description mccSourceForJobRun')
+
+        # target: dynamically created blob container under the shared cpmoveraccount.
+        # Grant the target endpoint's system-assigned MSI Storage Blob Data Contributor
+        # on the target container — the data-plane copy writes as that MSI (mirrors the
+        # .NET E2E `AssignBlobDataContributor*` helpers in StorageMoverHelper.cs).
+        self.cmd('az storage container create -n {target_container} --account-name cpmoveraccount --auth-mode login')
+        target_endpoint_create = self.cmd('az storage-mover endpoint create-for-storage-container -g {rg} '
+                                          '--storage-mover-name {mover_name} -n {target_endpoint} '
+                                          '--container-name {target_container} --storage-account-id {account_id} '
+                                          '--endpoint-kind Target --description blobTargetForJobRun').get_output_in_json()
+        target_msi_principal_id = target_endpoint_create['identity']['principalId']
+        target_container_scope = '{}/blobServices/default/containers/{}'.format(
+            self.kwargs['account_id'], self.kwargs['target_container'])
+        self.cmd('az role assignment create '
+                 '--assignee-object-id ' + target_msi_principal_id + ' '
+                 '--assignee-principal-type ServicePrincipal '
+                 '--role "Storage Blob Data Contributor" '
+                 '--scope "' + target_container_scope + '"')
+
+        # CloudToCloud job definition — no agent needed
+        self.cmd('az storage-mover job-definition create -g {rg} -n {job_definition} '
+                 '--project-name {project_name} --storage-mover-name {mover_name} '
+                 '--source-name {source_endpoint} --target-name {target_endpoint} '
+                 '--copy-mode Additive --job-type CloudToCloud '
+                 '--source-subpath / --target-subpath / --description JobDefForJobRunTest',
+                 checks=[JMESPathCheck('name', self.kwargs.get('job_definition', '')),
+                         JMESPathCheck('sourceName', self.kwargs.get('source_endpoint', '')),
+                         JMESPathCheck('targetName', self.kwargs.get('target_endpoint', '')),
+                         JMESPathCheck('copyMode', 'Additive'),
+                         JMESPathCheck('jobType', 'CloudToCloud')])
+
+        # start a job run — RP returns the full resource id under jobRunResourceId
+        start_result = self.cmd('az storage-mover job-definition start-job -g {rg} '
+                                '--storage-mover-name {mover_name} --project-name {project_name} '
+                                '--job-definition-name {job_definition}',
+                                checks=[JMESPathCheckExists('jobRunResourceId')]).get_output_in_json()
+        self.kwargs['job_run_name'] = start_result['jobRunResourceId'].rstrip('/').split('/')[-1]
+
+        # list job runs — expect at least 1
+        self.cmd('az storage-mover job-run list -g {rg} --storage-mover-name {mover_name} '
+                 '--project-name {project_name} --job-definition-name {job_definition}',
+                 checks=[JMESPathCheckExists('[0].id')])
+        # show the started run
+        self.cmd('az storage-mover job-run show -g {rg} --storage-mover-name {mover_name} '
+                 '--project-name {project_name} --job-definition-name {job_definition} '
+                 '-n {job_run_name}',
+                 checks=[JMESPathCheck('name', self.kwargs.get('job_run_name', ''))])
+
+        # poll job-run show until terminal state.
+        # StorageMover RP terminal status values: Succeeded, Failed, Cancelled, PartialSucceeded.
+        # Non-terminal: Queued, Running, CancelRequested.
+        # Public bucket + target MSI RBAC is sufficient for data-plane success.
+        terminal_states = {'Succeeded', 'Failed', 'Cancelled', 'PartialSucceeded'}
+        poll_interval_sec = 30
+        max_wait_sec = 30 * 60
+        elapsed = 0
+        final_status = None
+        while elapsed < max_wait_sec:
+            show_out = self.cmd('az storage-mover job-run show -g {rg} --storage-mover-name {mover_name} '
+                                '--project-name {project_name} --job-definition-name {job_definition} '
+                                '-n {job_run_name}').get_output_in_json()
+            current_status = show_out.get('status')
+            if current_status in terminal_states:
+                final_status = current_status
+                break
+            time.sleep(poll_interval_sec)
+            elapsed += poll_interval_sec
+
+        self.assertIsNotNone(final_status,
+                             "Job run did not reach a terminal state within {}s".format(max_wait_sec))
+        self.assertEqual(final_status, 'Succeeded',
+                         "Expected job-run to Succeed with public bucket + target MSI RBAC, "
+                         "got: {}".format(final_status))
+
+        # cleanup the dynamically-created job definition
+        self.cmd('az storage-mover job-definition delete -g {rg} -n {job_definition} '
+                 '--project-name {project_name} --storage-mover-name {mover_name} -y')
+
+    # End-to-end CloudToCloud transfer using a **private** AWS S3 source — mirrors the .NET
+    # E2E `StartC2CJobWithPrivateSourceAsyncSuccessPathTest` flow:
+    #   1. Create a Storage Mover `Connection` referencing the pre-existing PrivateLinkService
+    #      `test-pls-wcs` in the cross-sub `b6b34ad8` (RG `E2E-Management-RGsyn`). The RP
+    #      auto-provisions a private endpoint on the PLS in `Pending` state.
+    #   2. Wait for the auto-generated private-endpoint-connection to appear on the PLS, then
+    #      approve it via `az network private-endpoint-connection approve`. Then poll the
+    #      Storage Mover `Connection.properties.connectionStatus` until it transitions to
+    #      `Approved` (mirrors the PLS-side state, up to ~5 min delay).
+    #   3. Create a CloudToCloud job-definition wired to the connection via `--connections`,
+    #      with source = MCC endpoint over the private bucket, target = blob container under
+    #      the shared `cpmoveraccount`.
+    #   4. Start the job and poll `job-run show` until terminal (Succeeded expected).
+    # @live_only: requires real cross-sub MCC + AWS + PLS network operations + polling on
+    # 30s cadence for up to 30 minutes — impractical to record.
+    @live_only()
+    @ResourceGroupPreparer(location='westcentralus')
+    def test_storage_mover_job_run_with_wait_scenarios(self, resource_group):
+        self.kwargs.update({
+            "mover_name": self.create_random_name('storage-mover', 24),
+            "project_name": self.create_random_name('project', 24),
+            "job_definition": self.create_random_name('jobdefwait', 24),
+            "connection_name": self.create_random_name('tc-pvt', 20),
+            "source_endpoint": self.create_random_name('test-srcep-pvtmcc', 32),
+            "target_endpoint": self.create_random_name('test-tgtep-blob', 32),
+            "target_container": self.create_random_name('tgtcontainer', 24),
+            "account_id": "/subscriptions/b6b34ad8-ca89-4f85-beb7-c2ec13702dac/resourceGroups/CP_Mover_IN_WCUS/providers/Microsoft.Storage/storageAccounts/cpmoveraccount",
+            "multi_cloud_connector_id": "/subscriptions/b6b34ad8-ca89-4f85-beb7-c2ec13702dac/resourceGroups/E2E-Management-RGsyn/providers/Microsoft.HybridConnectivity/publicCloudConnectors/e2e-sm-rp-connector",
+            "aws_s3_bucket_id": "/subscriptions/b6b34ad8-ca89-4f85-beb7-c2ec13702dac/resourceGroups/aws_640698235822/providers/Microsoft.AWSConnector/s3Buckets/e2e-sm-rp-private-bucket",
+            "private_link_service_id": "/subscriptions/b6b34ad8-ca89-4f85-beb7-c2ec13702dac/resourceGroups/E2E-Management-RGsyn/providers/Microsoft.Network/privateLinkServices/test-pls-wcs",
+            "pls_subscription": "b6b34ad8-ca89-4f85-beb7-c2ec13702dac",
+            "pls_resource_group": "E2E-Management-RGsyn",
+            "pls_name": "test-pls-wcs",
+        })
+        self.cmd('az storage-mover create -g {rg} -n {mover_name} -l westcentralus --description MoverDesc')
+        self.cmd('az storage-mover project create -g {rg} --storage-mover-name {mover_name} -n {project_name} '
+                 '--description ProjectDesc')
+
+        # 1. Create Storage Mover Connection (provisions a Pending private endpoint on the PLS)
+        connection_create = self.cmd('az storage-mover connection create -g {rg} '
+                                     '--storage-mover-name {mover_name} -n {connection_name} '
+                                     '--private-link-service-id {private_link_service_id} '
+                                     '--description ConnectionForPrivateBucketJobRun').get_output_in_json()
+        self.kwargs['connection_id'] = connection_create['id']
+        private_endpoint_resource_id = connection_create['properties']['privateEndpointResourceId']
+
+        # 2a. Poll the PLS until our auto-generated private-endpoint-connection appears
+        pe_lookup_max_attempts = 10
+        pe_lookup_backoff_sec = 15
+        pe_connection_name = None
+        for attempt in range(pe_lookup_max_attempts):
+            pec_list = self.cmd('az network private-endpoint-connection list '
+                                '--id {private_link_service_id} '
+                                '--subscription {pls_subscription}').get_output_in_json()
+            for pec in pec_list:
+                pec_pe_id = pec.get('properties', {}).get('privateEndpoint', {}).get('id', '')
+                if pec_pe_id.lower() == private_endpoint_resource_id.lower():
+                    pe_connection_name = pec['name']
+                    break
+            if pe_connection_name:
+                break
+            time.sleep(pe_lookup_backoff_sec)
+        self.assertIsNotNone(pe_connection_name,
+                             "Private endpoint connection for {} did not appear on PLS {} within {}s"
+                             .format(private_endpoint_resource_id, self.kwargs['pls_name'],
+                                     pe_lookup_max_attempts * pe_lookup_backoff_sec))
+        self.kwargs['pe_connection_name'] = pe_connection_name
+
+        # 2b. Approve the PE connection on the PLS side
+        self.cmd('az network private-endpoint-connection approve '
+                 '--resource-group {pls_resource_group} --name {pe_connection_name} '
+                 '--resource-name {pls_name} --type Microsoft.Network/privateLinkServices '
+                 '--subscription {pls_subscription} '
+                 '--description "approved by storage-mover CLI live test"')
+
+        # 2c. Poll the Storage Mover Connection until properties.connectionStatus == "Approved"
+        approval_max_attempts = 10
+        approval_backoff_sec = 30
+        approved = False
+        for attempt in range(approval_max_attempts):
+            conn_show = self.cmd('az storage-mover connection show -g {rg} '
+                                 '--storage-mover-name {mover_name} '
+                                 '-n {connection_name}').get_output_in_json()
+            if conn_show.get('properties', {}).get('connectionStatus') == 'Approved':
+                approved = True
+                break
+            time.sleep(approval_backoff_sec)
+        self.assertTrue(approved,
+                        "Storage Mover Connection did not reach Approved within {}s"
+                        .format(approval_max_attempts * approval_backoff_sec))
+
+        # 3a. Source: MCC endpoint pointing at the PRIVATE AWS S3 bucket
+        self.cmd('az storage-mover endpoint create-for-multi-cloud-connector -g {rg} '
+                 '--storage-mover-name {mover_name} -n {source_endpoint} '
+                 '--multi-cloud-connector-id {multi_cloud_connector_id} '
+                 '--aws-s3-bucket-id {aws_s3_bucket_id} --endpoint-kind Source '
+                 '--description privateMccSourceForJobRunWait')
+
+        # 3b. Target: dynamically created blob container under the shared cpmoveraccount
+        self.cmd('az storage container create -n {target_container} --account-name cpmoveraccount --auth-mode login')
+        target_endpoint_create = self.cmd('az storage-mover endpoint create-for-storage-container -g {rg} '
+                                          '--storage-mover-name {mover_name} -n {target_endpoint} '
+                                          '--container-name {target_container} --storage-account-id {account_id} '
+                                          '--endpoint-kind Target --description blobTargetForJobRunWait').get_output_in_json()
+        # The endpoint gets a SystemAssigned identity at create time. The data-plane copy
+        # writes to the target container as that MSI, so we must grant it Storage Blob Data
+        # Contributor on the target container scope (mirrors the .NET E2E
+        # `AssignBlobDataContributor*` helpers in StorageMoverHelper.cs).
+        target_msi_principal_id = target_endpoint_create['identity']['principalId']
+        target_container_scope = '{}/blobServices/default/containers/{}'.format(
+            self.kwargs['account_id'], self.kwargs['target_container'])
+        self.cmd('az role assignment create '
+                 '--assignee-object-id ' + target_msi_principal_id + ' '
+                 '--assignee-principal-type ServicePrincipal '
+                 '--role "Storage Blob Data Contributor" '
+                 '--scope "' + target_container_scope + '"')
+
+        # 3c. CloudToCloud job definition wired to the approved Connection via --connections
+        self.cmd('az storage-mover job-definition create -g {rg} -n {job_definition} '
+                 '--project-name {project_name} --storage-mover-name {mover_name} '
+                 '--source-name {source_endpoint} --target-name {target_endpoint} '
+                 '--copy-mode Additive --job-type CloudToCloud '
+                 '--source-subpath / --target-subpath / '
+                 '--connections {connection_id} '
+                 '--description JobDefForJobRunWaitTest',
+                 checks=[JMESPathCheck('name', self.kwargs.get('job_definition', '')),
+                         JMESPathCheck('jobType', 'CloudToCloud'),
+                         JMESPathCheck('length(connections)', 1)])
+
+        # 4a. Start the run
+        start_result = self.cmd('az storage-mover job-definition start-job -g {rg} '
+                                '--storage-mover-name {mover_name} --project-name {project_name} '
+                                '--job-definition-name {job_definition}',
+                                checks=[JMESPathCheckExists('jobRunResourceId')]).get_output_in_json()
+        self.kwargs['job_run_name'] = start_result['jobRunResourceId'].rstrip('/').split('/')[-1]
+
+        # 4b. Poll job-run show until terminal state.
+        # StorageMover RP terminal status values: Succeeded, Failed, Cancelled, PartialSucceeded.
+        # Non-terminal: Queued, Running, CancelRequested.
+        terminal_states = {'Succeeded', 'Failed', 'Cancelled', 'PartialSucceeded'}
+        poll_interval_sec = 30
+        max_wait_sec = 30 * 60
+        elapsed = 0
+        final_status = None
+        while elapsed < max_wait_sec:
+            show_out = self.cmd('az storage-mover job-run show -g {rg} --storage-mover-name {mover_name} '
+                                '--project-name {project_name} --job-definition-name {job_definition} '
+                                '-n {job_run_name}').get_output_in_json()
+            current_status = show_out.get('status')
+            if current_status in terminal_states:
+                final_status = current_status
+                break
+            time.sleep(poll_interval_sec)
+            elapsed += poll_interval_sec
+
+        self.assertIsNotNone(final_status,
+                             "Job run did not reach a terminal state within {}s".format(max_wait_sec))
+        self.assertEqual(final_status, 'Succeeded',
+                         "Expected job-run to Succeed with approved connection + target MSI RBAC, "
+                         "got: {}".format(final_status))
+
+        # cleanup
+        self.cmd('az storage-mover job-definition delete -g {rg} -n {job_definition} '
+                 '--project-name {project_name} --storage-mover-name {mover_name} -y')
+        self.cmd('az storage-mover connection delete -g {rg} --storage-mover-name {mover_name} '
+                 '-n {connection_name} -y')
 
