@@ -56,8 +56,10 @@ def handle_sitekey_error(ex):
                     (
                         "Site key token expiry date exceeds the allowed maximum.",
                         [
-                            "Set the --token-expiry-date value to a date no more than 7 days from the current UTC time.",
-                            "Alternatively, remove the --token-expiry-date parameter to use the default (7 days from now).",
+                            "Set the --token-expiry-date value to a date no more than "
+                            "7 days from the current UTC time.",
+                            "Alternatively, remove the --token-expiry-date parameter "
+                            "to use the default (7 days from now).",
                             "Rerun the create command.",
                         ],
                     ),
@@ -132,4 +134,3 @@ def handle_sitekey_error(ex):
         )
 
     # Not a recognized error — caller should re-raise the original
-    return None
