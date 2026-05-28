@@ -17,7 +17,15 @@ class FilesharesScenario(ScenarioTest):
         self.kwargs.update({
             'name': self.create_random_name('share', 24),
             'location': 'eastus',
+            'vnet': self.create_random_name('cli-vnet-', 24),
+            'subnet': self.create_random_name('cli-subnet-', 24),
         })
+        self.cmd('network vnet create -n {vnet} -g {rg} -l {location} ')
+        subnet_id = self.cmd('network vnet subnet create -g {rg} --vnet-name {vnet} --name {subnet} '
+                             '--address-prefixes 10.0.1.0/24 '
+                             '--default-outbound false '
+                             '--service-endpoints Microsoft.Storage').get_output_in_json()['id']
+        self.kwargs['subnet_id'] = subnet_id
 
         # Create a file share
         self.cmd(
@@ -29,12 +37,19 @@ class FilesharesScenario(ScenarioTest):
             '--provisioned-storage-gib 100 '
             '--provisioned-iops 3000 '
             '--provisioned-throughput-mib 125 '
-            '--redundancy Local',
+            '--redundancy Local '
+            '--encryption-in-transit-required Enabled '
+            '--root-squash AllSquash '
+            '--allowed-subnets {subnet_id}',
             checks=[
                 self.check('name', '{name}'),
                 self.check('properties.protocol', 'NFS'),
                 self.check('properties.provisionedStorageGiB', 100),
                 self.check('properties.provisionedThroughputMiBPerSec', 125),
+                self.check('properties.redundancy', 'Local'),
+                self.check('properties.nfsProtocolProperties.encryptionInTransitRequired', 'Enabled'),
+                self.check('properties.nfsProtocolProperties.rootSquash', 'AllSquash'),
+                self.check('properties.publicAccessProperties.allowedSubnets', [subnet_id])
             ]
         )
 
@@ -154,15 +169,20 @@ class FilesharesScenario(ScenarioTest):
             '--redundancy Local'
         )
 
+        logged_in_user = self.cmd('ad signed-in-user show').get_output_in_json()
+        self.kwargs['logged_in_user'] = logged_in_user["id"] if logged_in_user is not None \
+            else "2146abed-b993-4a81-a6af-eda7b4524c5e"
         # Create a snapshot
         self.cmd(
             'fileshare snapshot create '
             '--resource-group {rg} '
             '--resource-name {share_name} '
             '--name {snap_name} '
-            '--metadata key1=value1 key2=value2',
+            '--metadata key1=value1 key2=value2 '
+            '--initiator-id {logged_in_user}',
             checks=[
                 self.check('name', '{snap_name}'),
+                self.check('properties.initiatorId', '{logged_in_user}'),
             ]
         )
 

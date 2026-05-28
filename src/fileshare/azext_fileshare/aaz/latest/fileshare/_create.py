@@ -60,6 +60,22 @@ class Create(AAZCommand):
             ),
         )
 
+        # define Arg Group "NfsProtocolProperties"
+
+        _args_schema = cls._args_schema
+        _args_schema.encryption_in_transit_required = AAZStrArg(
+            options=["--encryption-in-transit-required"],
+            arg_group="NfsProtocolProperties",
+            help="Encryption in transit defines whether data is encrypted for NFS shares.",
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
+        _args_schema.root_squash = AAZStrArg(
+            options=["--root-squash"],
+            arg_group="NfsProtocolProperties",
+            help="Root squash defines how root users on clients are mapped to the NFS share.",
+            enum={"AllSquash": "AllSquash", "NoRootSquash": "NoRootSquash", "RootSquash": "RootSquash"},
+        )
+
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
@@ -73,11 +89,6 @@ class Create(AAZCommand):
             options=["--mount-name"],
             arg_group="Properties",
             help="The name of the file share as seen by the end user when mounting the share, such as in a URI or UNC format in their operating system.",
-        )
-        _args_schema.nfs_protocol_properties = AAZObjectArg(
-            options=["--nfs-protocol-properties"],
-            arg_group="Properties",
-            help="Protocol settings specific NFS.",
         )
         _args_schema.protocol = AAZStrArg(
             options=["--protocol"],
@@ -100,11 +111,6 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="The provisioned throughput / sec of the share.",
         )
-        _args_schema.public_access_properties = AAZObjectArg(
-            options=["--public-access-properties"],
-            arg_group="Properties",
-            help="The set of properties for control public access.",
-        )
         _args_schema.public_network_access = AAZStrArg(
             options=["--public-network-access"],
             arg_group="Properties",
@@ -118,25 +124,16 @@ class Create(AAZCommand):
             enum={"Local": "Local", "Zone": "Zone"},
         )
 
-        nfs_protocol_properties = cls._args_schema.nfs_protocol_properties
-        nfs_protocol_properties.encryption_in_transit_required = AAZStrArg(
-            options=["encryption-in-transit-required"],
-            help="Encryption in transit defines whether data is encrypted for NFS shares.",
-            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
-        )
-        nfs_protocol_properties.root_squash = AAZStrArg(
-            options=["root-squash"],
-            help="Root squash defines how root users on clients are mapped to the NFS share.",
-            enum={"AllSquash": "AllSquash", "NoRootSquash": "NoRootSquash", "RootSquash": "RootSquash"},
-        )
+        # define Arg Group "PublicAccessProperties"
 
-        public_access_properties = cls._args_schema.public_access_properties
-        public_access_properties.allowed_subnets = AAZListArg(
-            options=["allowed-subnets"],
+        _args_schema = cls._args_schema
+        _args_schema.allowed_subnets = AAZListArg(
+            options=["--allowed-subnets"],
+            arg_group="PublicAccessProperties",
             help="The allowed set of subnets when access is restricted.",
         )
 
-        allowed_subnets = cls._args_schema.public_access_properties.allowed_subnets
+        allowed_subnets = cls._args_schema.allowed_subnets
         allowed_subnets.Element = AAZStrArg()
 
         # define Arg Group "Resource"
@@ -274,12 +271,12 @@ class Create(AAZCommand):
             if properties is not None:
                 properties.set_prop("mediaTier", AAZStrType, ".media_tier")
                 properties.set_prop("mountName", AAZStrType, ".mount_name")
-                properties.set_prop("nfsProtocolProperties", AAZObjectType, ".nfs_protocol_properties")
+                properties.set_prop("nfsProtocolProperties", AAZObjectType)
                 properties.set_prop("protocol", AAZStrType, ".protocol")
                 properties.set_prop("provisionedIOPerSec", AAZIntType, ".provisioned_io_per_sec")
                 properties.set_prop("provisionedStorageGiB", AAZIntType, ".provisioned_storage_gi_b")
                 properties.set_prop("provisionedThroughputMiBPerSec", AAZIntType, ".provisioned_throughput_mi_b_per_sec")
-                properties.set_prop("publicAccessProperties", AAZObjectType, ".public_access_properties")
+                properties.set_prop("publicAccessProperties", AAZObjectType)
                 properties.set_prop("publicNetworkAccess", AAZStrType, ".public_network_access")
                 properties.set_prop("redundancy", AAZStrType, ".redundancy")
 
