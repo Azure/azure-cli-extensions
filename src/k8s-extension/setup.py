@@ -31,11 +31,11 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = [
-    "kubernetes==24.2.0",
-    "oras==0.2.25",
+    "kubernetes>=24.2.0,<=35.0.0",
+    "oras>=0.2.25,<=0.2.42",
 ]
 
-VERSION = "1.7.0"
+VERSION = "1.7.1"
 
 with open("README.rst", "r", encoding="utf-8") as f:
     README = f.read()
