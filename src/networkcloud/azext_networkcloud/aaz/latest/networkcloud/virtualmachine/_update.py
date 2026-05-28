@@ -23,9 +23,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-01-01-preview",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/virtualmachines/{}", "2026-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/virtualmachines/{}", "2026-05-01-preview"],
         ]
     }
 
@@ -96,7 +96,7 @@ class Update(AAZCommand):
         )
 
         vm_image_repository_credentials = cls._args_schema.vm_image_repository_credentials
-        vm_image_repository_credentials.password = AAZStrArg(
+        vm_image_repository_credentials.password = AAZPasswordArg(
             options=["password"],
             help="The password or token used to access an image in the target repository.",
             required=True,
@@ -212,7 +212,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-01-preview",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -297,7 +297,6 @@ class Update(AAZCommand):
                 serialized_name="extendedLocation",
                 flags={"required": True},
             )
-            _UpdateHelper._build_schema_extended_location_read(_schema_on_200.extended_location)
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
@@ -318,6 +317,14 @@ class Update(AAZCommand):
             _schema_on_200.tags = AAZDictType()
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
+            )
+
+            extended_location = cls._schema_on_200.extended_location
+            extended_location.name = AAZStrType(
+                flags={"required": True},
+            )
+            extended_location.type = AAZStrType(
+                flags={"required": True},
             )
 
             identity = cls._schema_on_200.identity
@@ -378,7 +385,6 @@ class Update(AAZCommand):
             properties.console_extended_location = AAZObjectType(
                 serialized_name="consoleExtendedLocation",
             )
-            _UpdateHelper._build_schema_extended_location_read(properties.console_extended_location)
             properties.cpu_cores = AAZIntType(
                 serialized_name="cpuCores",
                 flags={"required": True},
@@ -474,6 +480,14 @@ class Update(AAZCommand):
             )
             cloud_services_network_attachment.network_attachment_name = AAZStrType(
                 serialized_name="networkAttachmentName",
+            )
+
+            console_extended_location = cls._schema_on_200.properties.console_extended_location
+            console_extended_location.name = AAZStrType(
+                flags={"required": True},
+            )
+            console_extended_location.type = AAZStrType(
+                flags={"required": True},
             )
 
             network_attachments = cls._schema_on_200.properties.network_attachments
@@ -601,28 +615,6 @@ class Update(AAZCommand):
 
 class _UpdateHelper:
     """Helper class for Update"""
-
-    _schema_extended_location_read = None
-
-    @classmethod
-    def _build_schema_extended_location_read(cls, _schema):
-        if cls._schema_extended_location_read is not None:
-            _schema.name = cls._schema_extended_location_read.name
-            _schema.type = cls._schema_extended_location_read.type
-            return
-
-        cls._schema_extended_location_read = _schema_extended_location_read = AAZObjectType()
-
-        extended_location_read = _schema_extended_location_read
-        extended_location_read.name = AAZStrType(
-            flags={"required": True},
-        )
-        extended_location_read.type = AAZStrType(
-            flags={"required": True},
-        )
-
-        _schema.name = cls._schema_extended_location_read.name
-        _schema.type = cls._schema_extended_location_read.type
 
 
 __all__ = ["Update"]
