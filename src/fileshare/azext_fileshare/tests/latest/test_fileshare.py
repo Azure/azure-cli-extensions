@@ -131,6 +131,7 @@ class FilesharesScenario(ScenarioTest):
             ]
         )
 
+    @live_only()
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_fileshares_snap')
     def test_fileshares_snapshot(self, resource_group):
