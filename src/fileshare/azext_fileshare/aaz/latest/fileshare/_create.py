@@ -16,6 +16,12 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a file share.
+
+    :example: Create a file share with NFS protocol
+        az fileshare create --name MyFileShare --resource-group MyRG --location eastus --provisioned-storage-gib 1024 --provisioned-iops 3000 --provisioned-throughput-mib 125 --protocol NFS --redundancy Local
+
+    :example: Create a file share with root squash and subnet access
+        az fileshare create --name MyFileShare --resource-group MyRG --location eastus --provisioned-storage-gib 1024 --provisioned-iops 3000  --provisioned-throughput-mib 125 --protocol NFS --redundancy Local --root-squash RootSquash --public-network-access Enabled --allowed-subnets /subscriptions/sub-id/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/vnet/subnets/subnet1
     """
 
     _aaz_info = {

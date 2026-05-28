@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class CheckNameAvailability(AAZCommand):
     """Check if a file share name is available.
+
+    :example: Check name availability for a file share
+        az fileshare check-name-availability --location eastus --name MyFileShare
     """
 
     _aaz_info = {

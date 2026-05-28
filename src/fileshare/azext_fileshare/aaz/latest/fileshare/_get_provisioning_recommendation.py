@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class GetProvisioningRecommendation(AAZCommand):
     """Get provisioning recommendations for a file share.
+
+    :example: Get provisioning recommendations for a file share
+        az fileshare get-provisioning-recommendation --location eastus --provisioned-storage-gib 1024
     """
 
     _aaz_info = {

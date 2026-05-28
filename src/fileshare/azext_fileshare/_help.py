@@ -9,3 +9,21 @@
 # pylint: disable=too-many-lines
 
 from knack.help_files import helps  # pylint: disable=unused-import
+
+helps['fileshare private-endpoint-connection approve'] = """
+type: command
+short-summary: Approve a private endpoint connection for a file share.
+examples:
+  - name: Approve a private endpoint connection
+    text: |
+      az fileshare private-endpoint-connection approve --name MyConnection --resource-group MyRG --resource-name MyFileShare --description "Approved by admin"
+"""
+
+helps['fileshare private-endpoint-connection reject'] = """
+type: command
+short-summary: Reject a private endpoint connection for a file share.
+examples:
+  - name: Reject a private endpoint connection
+    text: |
+      az fileshare private-endpoint-connection reject --name MyConnection --resource-group MyRG --resource-name MyFileShare --description "Policy violation"
+"""

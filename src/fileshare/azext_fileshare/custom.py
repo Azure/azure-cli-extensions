@@ -14,10 +14,13 @@ from knack.log import get_logger
 from azure.cli.core.aaz import (
     AAZObjectType,
     AAZStrType,
-    AAZDictType
+    AAZDictType,
+    AAZStrArg,
+    has_value
 )
 from .aaz.latest.fileshare import CheckNameAvailability as _CheckNameAvailability
 from .aaz.latest.fileshare.snapshot import Create as _SnapshotCreate
+from .aaz.latest.fileshare.private_endpoint_connection import Create as _PrivateEndpointConnectionCreate
 
 logger = get_logger(__name__)
 
@@ -126,3 +129,43 @@ class SnapshotCreate(_SnapshotCreate):
             )
 
             return cls._schema_on_200_201
+
+class PrivateEndpointConnectionApprove(_PrivateEndpointConnectionCreate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.private_link_service_connection_state._registered = False
+        args_schema.description = AAZStrArg(
+            options=["--description"],
+            help="Comments for the approval.",
+        )
+        return args_schema
+
+    def pre_operations(self):
+        args = self.ctx.args
+        connection_state = {"status": "Approved"}
+        if has_value(args.description):
+            connection_state["description"] = args.description.to_serialized_data()
+        args.private_link_service_connection_state = connection_state
+
+PrivateEndpointConnectionApprove.AZ_HELP = None
+
+class PrivateEndpointConnectionReject(_PrivateEndpointConnectionCreate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.private_link_service_connection_state._registered = False
+        args_schema.description = AAZStrArg(
+            options=["--description"],
+            help="Comments for the rejection.",
+        )
+        return args_schema
+
+    def pre_operations(self):
+        args = self.ctx.args
+        connection_state = {"status": "Rejected"}
+        if has_value(args.description):
+            connection_state["description"] = args.description.to_serialized_data()
+        args.private_link_service_connection_state = connection_state
+
+PrivateEndpointConnectionReject.AZ_HELP = None

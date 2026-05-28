@@ -19,3 +19,8 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
     with self.command_group('fileshare snapshot'):
         from .custom import SnapshotCreate
         self.command_table['fileshare snapshot create'] = SnapshotCreate(loader=self)
+
+    with self.command_group('fileshare private-endpoint-connection'):
+        from .custom import PrivateEndpointConnectionApprove, PrivateEndpointConnectionReject
+        self.command_table['fileshare private-endpoint-connection approve'] = PrivateEndpointConnectionApprove(loader=self)
+        self.command_table['fileshare private-endpoint-connection reject'] = PrivateEndpointConnectionReject(loader=self)

@@ -16,6 +16,12 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a file share.
+
+    :example: Update the provisioned storage of a file share
+        az fileshare update --name MyFileShare --resource-group MyRG --provisioned-storage-gib 2048
+
+    :example: Update root squash setting
+        az fileshare update --name MyFileShare --resource-group MyRG --root-squash AllSquash
     """
 
     _aaz_info = {
