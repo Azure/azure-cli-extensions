@@ -24,6 +24,7 @@ from .aaz.latest.fileshare.private_endpoint_connection import Create as _Private
 
 logger = get_logger(__name__)
 
+
 class CheckNameAvailability(_CheckNameAvailability):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
@@ -34,6 +35,7 @@ class CheckNameAvailability(_CheckNameAvailability):
     def pre_operations(self):
         args = self.ctx.args
         args.type = "Microsoft.FileShares/fileShares"
+
 
 class SnapshotCreate(_SnapshotCreate):
 
@@ -130,6 +132,7 @@ class SnapshotCreate(_SnapshotCreate):
 
             return cls._schema_on_200_201
 
+
 class PrivateEndpointConnectionApprove(_PrivateEndpointConnectionCreate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
@@ -148,7 +151,9 @@ class PrivateEndpointConnectionApprove(_PrivateEndpointConnectionCreate):
             connection_state["description"] = args.description.to_serialized_data()
         args.private_link_service_connection_state = connection_state
 
+
 PrivateEndpointConnectionApprove.AZ_HELP = None
+
 
 class PrivateEndpointConnectionReject(_PrivateEndpointConnectionCreate):
     @classmethod
@@ -167,5 +172,6 @@ class PrivateEndpointConnectionReject(_PrivateEndpointConnectionCreate):
         if has_value(args.description):
             connection_state["description"] = args.description.to_serialized_data()
         args.private_link_service_connection_state = connection_state
+
 
 PrivateEndpointConnectionReject.AZ_HELP = None

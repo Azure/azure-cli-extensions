@@ -16,7 +16,7 @@ short-summary: Approve a private endpoint connection for a file share.
 examples:
   - name: Approve a private endpoint connection
     text: |
-      az fileshare private-endpoint-connection approve --name MyConnection --resource-group MyRG --resource-name MyFileShare --description "Approved by admin"
+      az fileshare private-endpoint-connection approve --name MyConnection --resource-group MyRG --resource-name MyFileShare --description 'Approved by admin'
 """
 
 helps['fileshare private-endpoint-connection reject'] = """
@@ -25,5 +25,5 @@ short-summary: Reject a private endpoint connection for a file share.
 examples:
   - name: Reject a private endpoint connection
     text: |
-      az fileshare private-endpoint-connection reject --name MyConnection --resource-group MyRG --resource-name MyFileShare --description "Policy violation"
+      az fileshare private-endpoint-connection reject --name MyConnection --resource-group MyRG --resource-name MyFileShare --description 'Policy violation'
 """
