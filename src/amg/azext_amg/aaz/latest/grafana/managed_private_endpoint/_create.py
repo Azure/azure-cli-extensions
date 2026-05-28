@@ -12,22 +12,27 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "grafana mpe wait",
+    "grafana managed-private-endpoint create",
 )
-class Wait(AAZWaitCommand):
-    """Place the CLI in a waiting state until a condition is met.
+class Create(AAZCommand):
+    """Create a managed private endpoint.
+
+    :example: connect to an Azure SQL Server by resource ID
+        az grafana managed-private-endpoint create -n MyManagedPrivateEndpoint -g MyResourceGroup --workspace-name MyGrafana --group-ids sqlServer --private-link-resource-id /subscriptions/3a7edf7d-1488-4017-a908-111111111111/resourceGroups/MyResourceGroup/providers/Microsoft.Sql/servers/MySQLServer
     """
 
     _aaz_info = {
+        "version": "2023-09-01",
         "resources": [
             ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dashboard/grafana/{}/managedprivateendpoints/{}", "2023-09-01"],
         ]
     }
 
+    AZ_SUPPORT_NO_WAIT = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_lro_poller(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -44,7 +49,6 @@ class Wait(AAZWaitCommand):
             options=["-n", "--name", "--managed-private-endpoint-name"],
             help="The managed private endpoint name of Azure Managed Grafana.",
             required=True,
-            id_part="child_name_1",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -53,13 +57,64 @@ class Wait(AAZWaitCommand):
             options=["--workspace-name"],
             help="The workspace name of Azure Managed Grafana.",
             required=True,
-            id_part="name",
         )
+
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.group_ids = AAZListArg(
+            options=["--group-ids"],
+            arg_group="Properties",
+            help="The group Ids of the managed private endpoint.",
+        )
+        _args_schema.private_link_resource_id = AAZStrArg(
+            options=["--pl-resource-id", "--private-link-resource-id"],
+            arg_group="Properties",
+            help="The ARM resource ID of the resource for which the managed private endpoint is pointing to.",
+        )
+        _args_schema.private_link_resource_region = AAZStrArg(
+            options=["--pl-resource-region", "--private-link-resource-region"],
+            arg_group="Properties",
+            help="The region of the resource to which the managed private endpoint is pointing to.",
+        )
+        _args_schema.private_link_service_url = AAZStrArg(
+            options=["--pl-service-url", "--private-link-service-url"],
+            arg_group="Properties",
+            help="The URL of the data store behind the private link service. It would be the URL in the Grafana data source configuration page without the protocol and port.",
+        )
+        _args_schema.request_message = AAZStrArg(
+            options=["--request-message"],
+            arg_group="Properties",
+            help="User input request message of the managed private endpoint.",
+        )
+
+        group_ids = cls._args_schema.group_ids
+        group_ids.Element = AAZStrArg()
+
+        # define Arg Group "RequestBodyParameters"
+
+        _args_schema = cls._args_schema
+        _args_schema.location = AAZResourceLocationArg(
+            arg_group="RequestBodyParameters",
+            help="The geo-location where the resource lives",
+            required=True,
+            fmt=AAZResourceLocationArgFormat(
+                resource_group_arg="resource_group",
+            ),
+        )
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="RequestBodyParameters",
+            help="Resource tags.",
+        )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ManagedPrivateEndpointsGet(ctx=self.ctx)()
+        yield self.ManagedPrivateEndpointsCreate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -71,17 +126,33 @@ class Wait(AAZWaitCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class ManagedPrivateEndpointsGet(AAZHttpOperation):
+    class ManagedPrivateEndpointsCreate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200]:
-                return self.on_200(session)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200_201,
+                    self.on_error,
+                    lro_options={"final-state-via": "original-uri"},
+                    path_format_arguments=self.url_parameters,
+                )
+            if session.http_response.status_code in [200, 201]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200_201,
+                    self.on_error,
+                    lro_options={"final-state-via": "original-uri"},
+                    path_format_arguments=self.url_parameters,
+                )
 
             return self.on_error(session.http_response)
 
@@ -94,7 +165,7 @@ class Wait(AAZWaitCommand):
 
         @property
         def method(self):
-            return "GET"
+            return "PUT"
 
         @property
         def error_format(self):
@@ -136,51 +207,83 @@ class Wait(AAZWaitCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
 
-        def on_200(self, session):
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+            )
+            _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("tags", AAZDictType, ".tags")
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("groupIds", AAZListType, ".group_ids")
+                properties.set_prop("privateLinkResourceId", AAZStrType, ".private_link_resource_id")
+                properties.set_prop("privateLinkResourceRegion", AAZStrType, ".private_link_resource_region")
+                properties.set_prop("privateLinkServiceUrl", AAZStrType, ".private_link_service_url")
+                properties.set_prop("requestMessage", AAZStrType, ".request_message")
+
+            group_ids = _builder.get(".properties.groupIds")
+            if group_ids is not None:
+                group_ids.set_elements(AAZStrType, ".")
+
+            tags = _builder.get(".tags")
+            if tags is not None:
+                tags.set_elements(AAZStrType, ".")
+
+            return self.serialize_content(_content_value)
+
+        def on_200_201(self, session):
             data = self.deserialize_http_content(session)
             self.ctx.set_var(
                 "instance",
                 data,
-                schema_builder=self._build_schema_on_200
+                schema_builder=self._build_schema_on_200_201
             )
 
-        _schema_on_200 = None
+        _schema_on_200_201 = None
 
         @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
+        def _build_schema_on_200_201(cls):
+            if cls._schema_on_200_201 is not None:
+                return cls._schema_on_200_201
 
-            cls._schema_on_200 = AAZObjectType()
+            cls._schema_on_200_201 = AAZObjectType()
 
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
+            _schema_on_200_201 = cls._schema_on_200_201
+            _schema_on_200_201.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.location = AAZStrType(
+            _schema_on_200_201.location = AAZStrType(
                 flags={"required": True},
             )
-            _schema_on_200.name = AAZStrType(
+            _schema_on_200_201.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType(
+            _schema_on_200_201.properties = AAZObjectType(
                 flags={"client_flatten": True},
             )
-            _schema_on_200.system_data = AAZObjectType(
+            _schema_on_200_201.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200.tags = AAZDictType()
-            _schema_on_200.type = AAZStrType(
+            _schema_on_200_201.tags = AAZDictType()
+            _schema_on_200_201.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.properties
+            properties = cls._schema_on_200_201.properties
             properties.connection_state = AAZObjectType(
                 serialized_name="connectionState",
                 flags={"read_only": True},
@@ -209,7 +312,7 @@ class Wait(AAZWaitCommand):
                 serialized_name="requestMessage",
             )
 
-            connection_state = cls._schema_on_200.properties.connection_state
+            connection_state = cls._schema_on_200_201.properties.connection_state
             connection_state.description = AAZStrType(
                 flags={"read_only": True},
             )
@@ -217,10 +320,10 @@ class Wait(AAZWaitCommand):
                 flags={"read_only": True},
             )
 
-            group_ids = cls._schema_on_200.properties.group_ids
+            group_ids = cls._schema_on_200_201.properties.group_ids
             group_ids.Element = AAZStrType()
 
-            system_data = cls._schema_on_200.system_data
+            system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -240,14 +343,14 @@ class Wait(AAZWaitCommand):
                 serialized_name="lastModifiedByType",
             )
 
-            tags = cls._schema_on_200.tags
+            tags = cls._schema_on_200_201.tags
             tags.Element = AAZStrType()
 
-            return cls._schema_on_200
+            return cls._schema_on_200_201
 
 
-class _WaitHelper:
-    """Helper class for Wait"""
+class _CreateHelper:
+    """Helper class for Create"""
 
 
-__all__ = ["Wait"]
+__all__ = ["Create"]

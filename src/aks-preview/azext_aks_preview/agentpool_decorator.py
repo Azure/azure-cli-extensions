@@ -338,6 +338,29 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
                 ))
         return res
 
+    def get_node_public_ip_prefix_ids(self) -> Union[List[str], None]:
+        """Obtain the value of node_public_ip_prefix_ids.
+
+        Parse the comma-separated string into a list of resource IDs.
+
+        :return: list of strings or None
+        """
+        node_public_ip_prefix_ids = self.raw_param.get("node_public_ip_prefix_ids")
+        if node_public_ip_prefix_ids is None:
+            return None
+        if isinstance(node_public_ip_prefix_ids, str):
+            parsed = [x.strip() for x in node_public_ip_prefix_ids.split(",") if x.strip()]
+            if not parsed:
+                raise InvalidArgumentValueError(
+                    "--node-public-ip-prefix-ids must contain at least one public IP prefix resource ID."
+                )
+            return parsed
+        if isinstance(node_public_ip_prefix_ids, list) and not node_public_ip_prefix_ids:
+            raise InvalidArgumentValueError(
+                "--node-public-ip-prefix-ids must contain at least one public IP prefix resource ID."
+            )
+        return node_public_ip_prefix_ids
+
     def get_node_taints(self) -> Union[List[str], None]:
         """Obtain the value of node_taints.
 
@@ -1303,6 +1326,11 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         ip_tags = self.context.get_ip_tags()
         if ip_tags:
             agentpool.network_profile.node_public_ip_tags = ip_tags
+
+        node_public_ip_prefix_ids = self.context.get_node_public_ip_prefix_ids()
+        if node_public_ip_prefix_ids:
+            agentpool.network_profile.node_public_ip_prefix_i_ds = node_public_ip_prefix_ids
+            agentpool.enable_node_public_ip = True
 
         return agentpool
 

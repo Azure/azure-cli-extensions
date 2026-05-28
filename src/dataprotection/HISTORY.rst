@@ -2,6 +2,14 @@
 
 Release History
 ===============
+1.11.1
+++++++
+* Fixed `az dataprotection backup-instance update-msi-permissions --datasource-type AzureCosmosDB --operation Restore` erroring with "Set permissions for restore is currently not supported for given DataSourceType". The command now correctly assigns `Cosmos DB Operator` on the target Cosmos DB account to the backup vault's managed identity. Added live regression test `test_dataprotection_update_msi_permissions_cosmosdb_restore`.
+
+1.11.0
+++++++
+* Added dataprotection support for AzureCosmosDB workload: new manifest (Microsoft.DocumentDB/databaseAccounts), registration in supported datasource types, datasource map, and permission help text. Added end-to-end backup/restore scenario test, unit tests for default policy template, backup-instance initialize, and restore initialize, and an update-msi-permissions live test that grants Reader/Cosmos DB Operator on the data source RG / account.
+
 1.10.0
 ++++++
 * Bumped API version to 2026-03-01 for backup-instance create, update, validate-for-backup, and validate-for-update commands.

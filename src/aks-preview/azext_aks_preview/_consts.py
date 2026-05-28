@@ -169,10 +169,6 @@ CONST_ACNS_DATAPATH_ACCELERATION_MODE_BPFVETH = "BpfVeth"
 CONST_NETWORK_POD_IP_ALLOCATION_MODE_DYNAMIC_INDIVIDUAL = "DynamicIndividual"
 CONST_NETWORK_POD_IP_ALLOCATION_MODE_STATIC_BLOCK = "StaticBlock"
 
-# disk driver versions
-CONST_DISK_DRIVER_V1 = "v1"
-CONST_DISK_DRIVER_V2 = "v2"
-
 # consts for addons
 # application load balancer (Application Gateway for Containers)
 CONST_APPLICATION_LOAD_BALANCER_ADDON_NAME = "applicationLoadBalancer"
