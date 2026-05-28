@@ -12,20 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "networkcloud baremetalmachine reimage",
-    is_preview=True,
+    "networkcloud cluster rotate-credential",
 )
-class Reimage(AAZCommand):
-    """Reimage the provided bare metal machine.
+class RotateCredential(AAZCommand):
+    """Rotate the specified cluster credential.
 
-    :example: Reimage bare metal machine
-        az networkcloud baremetalmachine reimage --bare-metal-machine-name "bareMetalMachineName" --resource-group "resourceGroupName"
+    :example: Rotate one or more managed credentials
+        az networkcloud cluster rotate-credential --resource-group resourceGroupName --cluster-name clusterName --credentials "['BMC Credential']"
     """
 
     _aaz_info = {
         "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/baremetalmachines/{}/reimage", "2026-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}/rotatecredential", "2026-05-01-preview"],
         ]
     }
 
@@ -46,13 +45,13 @@ class Reimage(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.bare_metal_machine_name = AAZStrArg(
-            options=["-n", "--name", "--bare-metal-machine-name"],
-            help="The name of the bare metal machine.",
+        _args_schema.cluster_name = AAZStrArg(
+            options=["-n", "--name", "--cluster-name"],
+            help="The name of the cluster.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^([a-zA-Z0-9][a-zA-Z0-9]{0,62}[a-zA-Z0-9])$",
+                pattern="^([a-zA-Z0-9][a-zA-Z0-9-_]{0,28}[a-zA-Z0-9])$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -62,17 +61,20 @@ class Reimage(AAZCommand):
         # define Arg Group "Body"
 
         _args_schema = cls._args_schema
-        _args_schema.safeguard_mode = AAZStrArg(
-            options=["--safeguard-mode"],
+        _args_schema.credentials = AAZListArg(
+            options=["--credentials"],
             arg_group="Body",
-            help="The safeguard mode to use for the reimage action, where None indicates to bypass safeguards and All indicates to utilize all safeguards. If not specified, the default is All.",
-            enum={"All": "All", "None": "None"},
+            help="The list of credential names for the credentials to rotate.",
+            required=True,
         )
+
+        credentials = cls._args_schema.credentials
+        credentials.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.BareMetalMachinesReimage(ctx=self.ctx)()
+        yield self.ClustersRotateCredential(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -87,7 +89,7 @@ class Reimage(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class BareMetalMachinesReimage(AAZHttpOperation):
+    class ClustersRotateCredential(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -117,7 +119,7 @@ class Reimage(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.NetworkCloud/bareMetalMachines/{bareMetalMachineName}/reimage",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.NetworkCloud/clusters/{clusterName}/rotateCredential",
                 **self.url_parameters
             )
 
@@ -133,7 +135,7 @@ class Reimage(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "bareMetalMachineName", self.ctx.args.bare_metal_machine_name,
+                    "clusterName", self.ctx.args.cluster_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -174,9 +176,13 @@ class Reimage(AAZCommand):
             _content_value, _builder = self.new_content_builder(
                 self.ctx.args,
                 typ=AAZObjectType,
-                typ_kwargs={"flags": {"client_flatten": True}}
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("safeguardMode", AAZStrType, ".safeguard_mode")
+            _builder.set_prop("credentials", AAZListType, ".credentials", typ_kwargs={"flags": {"required": True}})
+
+            credentials = _builder.get(".credentials")
+            if credentials is not None:
+                credentials.set_elements(AAZStrType, ".")
 
             return self.serialize_content(_content_value)
 
@@ -196,13 +202,13 @@ class Reimage(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-            _ReimageHelper._build_schema_operation_status_result_read(cls._schema_on_200_201)
+            _RotateCredentialHelper._build_schema_operation_status_result_read(cls._schema_on_200_201)
 
             return cls._schema_on_200_201
 
 
-class _ReimageHelper:
-    """Helper class for Reimage"""
+class _RotateCredentialHelper:
+    """Helper class for RotateCredential"""
 
     _schema_error_detail_read = None
 
@@ -352,4 +358,4 @@ class _ReimageHelper:
         _schema.status = cls._schema_operation_status_result_read.status
 
 
-__all__ = ["Reimage"]
+__all__ = ["RotateCredential"]

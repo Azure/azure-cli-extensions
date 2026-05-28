@@ -32,9 +32,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-01-01-preview",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clustermanagers/{}", "2026-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clustermanagers/{}", "2026-05-01-preview"],
         ]
     }
 
@@ -88,6 +88,9 @@ class Create(AAZCommand):
             arg_group="ClusterManagerParameters",
             help="The kind of the cluster manager.",
             enum={"AzureLocal": "AzureLocal", "Nexus": "Nexus"},
+            fmt=AAZStrArgFormat(
+                pattern="^[-\\w\\._,\\(\\\\\\)]+$",
+            ),
         )
         _args_schema.location = AAZResourceLocationArg(
             arg_group="ClusterManagerParameters",
@@ -265,7 +268,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-01-preview",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
