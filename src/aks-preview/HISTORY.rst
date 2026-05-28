@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+21.0.0b3
++++++++
+* Migrate code from Azure SDK to AAZ based commands for compute operations (VM).
+
 21.0.0b2
 ++++++++
 * `az aks create`: Add `--node-public-ip-prefix-ids` parameter for specifying dual-stack (IPv4/IPv6) public IP prefixes for instance-level public IPs.
@@ -59,10 +63,6 @@ Pending
 20.0.0b3
 ++++++
 * Vendor new SDK and bump API version to 2026-02-02-preview.
-
-20.0.0b3
-+++++++
-* Migrate code from Azure SDK to AAZ based commands for compute operations (VM).
 
 20.0.0b2
 +++++++
