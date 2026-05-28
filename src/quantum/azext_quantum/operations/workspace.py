@@ -362,8 +362,14 @@ def set(cmd, workspace_name, resource_group_name, location=None):
     client = cf_workspaces(cmd.cli_ctx)
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     ws = client.get(info.resource_group, info.name)
-    if ws:
-        info.save(cmd, ws.properties.endpoint_uri)
+    if not ws or not ws.properties.endpoint_uri:
+        provisioning_state = ws.properties.provisioning_state if ws and ws.properties else 'unknown'
+        raise InvalidArgumentValueError(
+            f"Workspace '{workspace_name}' is not ready (current state: '{provisioning_state}'). "
+            "Only workspaces in 'Succeeded' state can be set as default. "
+            "Please wait for the workspace to finish provisioning and try again."
+        )
+    info.save(cmd, ws.properties.endpoint_uri)
     return ws
 
 
