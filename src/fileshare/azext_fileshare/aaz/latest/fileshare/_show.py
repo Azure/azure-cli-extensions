@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get details of a file share.
+
+    :example: Show fileshare properties
+        az fileshare show --resource-group rgfileshares --resource-name fileshare
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List file share snapshots.
+
+    :example: List fileshare snapshots
+        az fileshare snapshot list --resource-group rgfileshares --resource-name fileshare
     """
 
     _aaz_info = {

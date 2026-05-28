@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a file share
+
+    :example: Delete a fileshare
+        az fileshare delete --resource-group MyRG --name MyFileShare
     """
 
     _aaz_info = {

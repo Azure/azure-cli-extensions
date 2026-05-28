@@ -112,6 +112,15 @@ class FilesharesScenario(ScenarioTest):
         )
 
     @AllowLargeResponse()
+    def test_fileshares_usage_show(self):
+        self.cmd(
+            'fileshare usage-show --location eastus',
+            checks=[
+                self.exists('properties'),
+            ]
+        )
+
+    @AllowLargeResponse()
     def test_fileshares_get_provisioning_recommendation(self):
         self.cmd(
             'fileshare get-provisioning-recommendation '
@@ -193,3 +202,96 @@ class FilesharesScenario(ScenarioTest):
             '--name {share_name} '
             '--yes'
         )
+
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix='cli_test_fileshares_private_link_resource')
+    def test_fileshares_private_link_resource(self, resource_group):
+        self.kwargs.update({
+            'name': self.create_random_name('share', 24),
+            'location': 'eastus',
+        })
+
+        self.cmd(
+            'fileshare create '
+            '--resource-group {rg} '
+            '--name {name} '
+            '--location {location} '
+            '--protocol NFS '
+            '--provisioned-storage-gib 100 '
+            '--provisioned-iops 3000 '
+            '--provisioned-throughput-mib 125 '
+            '--redundancy Local')
+
+        self.cmd('fileshare private-link-resource list --resource-group {rg} --resource-name {name}')
+
+        self.cmd('fileshare private-link-resource show --resource-group {rg} --resource-name {name} '
+                 '--private-link-resource-name fileshare')
+
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix='cli_test_fileshares_private_endpoint_connection')
+    def test_fileshares_private_endpoint_connection(self, resource_group):
+        self.kwargs.update({
+            'share': self.create_random_name('share', 24),
+            'loc': 'eastus',
+            'vnet': self.create_random_name('cli-vnet-', 24),
+            'subnet': self.create_random_name('cli-subnet-', 24),
+            'pe': self.create_random_name('cli-pe-', 24),
+            'pe_connection': self.create_random_name('cli-pec-', 24)
+        })
+
+        self.kwargs['share_id']=self.cmd(
+            'fileshare create '
+            '--resource-group {rg} '
+            '--name {share} '
+            '--location {loc} '
+            '--protocol NFS '
+            '--provisioned-storage-gib 100 '
+            '--provisioned-iops 3000 '
+            '--provisioned-throughput-mib 125 '
+            '--redundancy Local').get_output_in_json()['id']
+
+        # Prepare vault and network
+        self.cmd('network vnet create -n {vnet} -g {rg} -l {loc}')
+        self.kwargs['subnet_id'] = self.cmd('network vnet subnet create -g {rg} --vnet-name {vnet} --name {subnet} '
+                                            '--address-prefixes 10.0.1.0/24 '
+                                            '--default-outbound false').get_output_in_json()['id']
+
+        # Create a private endpoint connection
+        self.kwargs['pe_id'] = self.cmd('network private-endpoint create -g {rg} -n {pe} --vnet-name {vnet} '
+                                        '--subnet {subnet} -l {loc} --connection-name {pe_connection} '
+                                        '--private-connection-resource-id {share_id} '
+                                        '--group-id fileshare').get_output_in_json()['id']
+
+        share = self.cmd('fileshare show -n {share} -g {rg}', checks=self.check(
+            'length(properties.privateEndpointConnections)', 1)).get_output_in_json()
+        self.kwargs['share_pec_id'] = share['properties']['privateEndpointConnections'][0]['id']
+        self.cmd('fileshare private-endpoint-connection show --id {share_pec_id}',
+                 checks=self.check('id', '{share_pec_id}'))
+        self.kwargs['share_pec_name'] = self.kwargs['share_pec_id'].split('/')[-1]
+        self.cmd('fileshare private-endpoint-connection show -g {rg} --resource-name {share} '
+                 '--name {share_pec_name}',
+                 checks=self.check('name', '{share_pec_name}'))
+
+        # Test approval/rejection
+        self.kwargs.update({
+            'approval_desc': 'You are approved!',
+            'rejection_desc': 'You are rejected!'
+        })
+        self.cmd('fileshare private-endpoint-connection reject -g {rg} --resource-name {share} '
+                 '--name {share_pec_name} --description "{rejection_desc}"', checks=[
+            self.check('privateLinkServiceConnectionState.status', 'Rejected'),
+            self.check('privateLinkServiceConnectionState.description', '{rejection_desc}'),
+            self.check('provisioningState', 'Succeeded')
+        ])
+
+        self.cmd('fileshare private-endpoint-connection approve -g {rg} --resource-name {share} '
+                 '--name {share_pec_name} --description "{approval_desc}"', checks=[
+            self.check('privateLinkServiceConnectionState.status', 'Approved'),
+            self.check('privateLinkServiceConnectionState.description', '{approval_desc}'),
+            self.check('provisioningState', 'Succeeded')
+        ])
+
+        self.cmd('fileshare private-endpoint-connection delete -g {rg} --resource-name {share} '
+                 '--name {share_pec_name} --yes')
+        self.cmd('fileshare private-endpoint-connection list -g {rg} --resource-name {share}',
+                 checks=[self.check('length(@)', 0)])

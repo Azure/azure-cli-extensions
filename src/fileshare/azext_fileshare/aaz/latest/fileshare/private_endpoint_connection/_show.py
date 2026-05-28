@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get the specified private endpoint connection associated with the file share.
+
+    :example: Show private endpoint connection
+        az fileshare private-endpoint-connection show --resource-group rgfileshares --resource-name fileshare --private-endpoint-connection-name privateEndpointConnection1
     """
 
     _aaz_info = {

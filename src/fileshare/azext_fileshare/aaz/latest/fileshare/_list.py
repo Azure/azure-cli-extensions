@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List file shares in a resource group.
+
+    :example: List file share
+        az fileshare list
     """
 
     _aaz_info = {

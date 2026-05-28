@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List private endpoint connections for a file share.
+
+    :example: List private endpoint connections
+        az fileshare private-endpoint-connection list --resource-group rgfileshares --resource-name fileshare
     """
 
     _aaz_info = {

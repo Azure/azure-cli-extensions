@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class LimitsShow(AAZCommand):
     """Get file share limits and provisioning constants.
+
+    :example: Show limits for fileshare in the location
+        az fileshare limits-show --location westus
     """
 
     _aaz_info = {

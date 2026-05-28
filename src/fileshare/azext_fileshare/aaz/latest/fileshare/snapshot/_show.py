@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a file share snapshot.
+
+    :example: Show fileshare snapshots
+        az fileshare snapshot show --resource-group rgfileshares --resource-name fileshare --name testfilesharesnapshot
     """
 
     _aaz_info = {

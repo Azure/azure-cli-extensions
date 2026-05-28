@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a file share snapshot.
+
+    :example: Delete fileshare snapshot
+        az fileshare snapshot delete --resource-group rgfileshares --resource-name fileshare --name testfilesharesnapshot
     """
 
     _aaz_info = {

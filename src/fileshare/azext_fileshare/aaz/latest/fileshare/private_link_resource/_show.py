@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get the private link resources that need to be created for a file share.
+
+    :example: Get private link resource
+        az fileshare private-link-resource show --resource-group rgfileshare --resource-name testfileshare01 --private-link-resource-name fileshare
     """
 
     _aaz_info = {

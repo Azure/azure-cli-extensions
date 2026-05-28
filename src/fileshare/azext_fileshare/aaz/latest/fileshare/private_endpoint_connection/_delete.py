@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete the specified private endpoint connection associated with the file share.
+
+    :example: Delete private endpoint connection
+        az fileshare private-endpoint-connection delete --resource-group rgfileshares --resource-name fileshare --private-endpoint-connection-name privateEndpointConnection1
     """
 
     _aaz_info = {
