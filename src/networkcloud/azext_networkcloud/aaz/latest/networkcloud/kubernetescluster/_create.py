@@ -23,9 +23,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-01-01-preview",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/kubernetesclusters/{}", "2026-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/kubernetesclusters/{}", "2026-05-01-preview"],
         ]
     }
 
@@ -117,6 +117,7 @@ class Create(AAZCommand):
             options=["type"],
             help="The extended location type, for example, CustomLocation.",
             required=True,
+            enum={"CustomLocation": "CustomLocation", "EdgeZone": "EdgeZone"},
         )
 
         tags = cls._args_schema.tags
@@ -512,12 +513,15 @@ class Create(AAZCommand):
                 pattern="^[a-z0-9]([a-z0-9.-]{0,61}[a-z0-9]){0,1}$",
             ),
         )
-        _element.password = AAZStrArg(
+        _element.password = AAZPasswordArg(
             options=["password"],
             help="The authentication password for routers enforcing TCP MD5 authenticated sessions.",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9]{0,80}$",
                 max_length=80,
+            ),
+            blank=AAZPromptPasswordInput(
+                msg="Password:",
             ),
         )
         _element.peer_address = AAZStrArg(
@@ -856,7 +860,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-01-preview",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }

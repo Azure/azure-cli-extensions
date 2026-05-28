@@ -12,14 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "grafana mpe show",
+    "grafana managed-private-endpoint wait",
 )
-class Show(AAZCommand):
-    """Get a specific managed private endpoint.
+class Wait(AAZWaitCommand):
+    """Place the CLI in a waiting state until a condition is met.
     """
 
     _aaz_info = {
-        "version": "2023-09-01",
         "resources": [
             ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dashboard/grafana/{}/managedprivateendpoints/{}", "2023-09-01"],
         ]
@@ -72,7 +71,7 @@ class Show(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
         return result
 
     class ManagedPrivateEndpointsGet(AAZHttpOperation):
@@ -247,8 +246,8 @@ class Show(AAZCommand):
             return cls._schema_on_200
 
 
-class _ShowHelper:
-    """Helper class for Show"""
+class _WaitHelper:
+    """Helper class for Wait"""
 
 
-__all__ = ["Show"]
+__all__ = ["Wait"]
