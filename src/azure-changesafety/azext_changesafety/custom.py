@@ -156,7 +156,7 @@ def _inject_additional_data_into_content(content, ctx):
         return content
 
     additional_data = additional_data_value.to_serialized_data()
-    if not additional_data:
+    if additional_data is None:
         return content
 
     if content is None:
@@ -384,7 +384,7 @@ class ChangeRecordCreate(_ChangeRecordCreate):
         additional_data_arg = getattr(self.ctx.args, "additional_data", None)
         if has_value(additional_data_arg):
             additional_data = additional_data_arg.to_serialized_data()
-            if additional_data:
+            if additional_data is not None:
                 self.ctx.set_var(
                     'additional_data',
                     additional_data,
@@ -582,7 +582,7 @@ class ChangeRecordUpdate(_ChangeRecordUpdate):
         additional_data_arg = getattr(self.ctx.args, "additional_data", None)
         if has_value(additional_data_arg):
             additional_data = additional_data_arg.to_serialized_data()
-            if additional_data:
+            if additional_data is not None:
                 self.ctx.set_var(
                     'additional_data',
                     additional_data,
