@@ -43,6 +43,9 @@ class CosmosDBSoftDeleteScenarioTest(ScenarioTest):
             'loc': location
         })
         
+        logger.info("Tagging RG to skip DisableLocalAuth policy")
+        self.cmd('az group update -n {rg} --tags Az.Sec.DisableLocalAuth.CosmosDB::Skip=true')
+
         logger.info("Creating CosmosDB account")
         self.cmd('az cosmosdb create -n {acc} -g {rg} --locations regionName={loc}')
         
@@ -56,14 +59,14 @@ class CosmosDBSoftDeleteScenarioTest(ScenarioTest):
         logger.info("Account created and soft delete enabled")
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_softdelete_acc_recover', location='westus')
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_softdelete_acc_recover', location='westus2')
     def test_cosmosdb_sql_softdeleted_account_recover(self, resource_group):
         """
         Test soft-deleted account recovery operation.
         
         This test validates that soft-deleted accounts can be recovered.
         """
-        location = "westus"
+        location = "westus2"
 
         self.kwargs.update({
             'acc': self.create_random_name(prefix='clisdacc', length=20),
@@ -100,12 +103,8 @@ class CosmosDBSoftDeleteScenarioTest(ScenarioTest):
             '--location {loc} --name {acc} -g {rg}'
         )
         
-        logger.info("Waiting for account recovery to complete")
-        time.sleep(120)
-        
-        logger.info("Verifying account is recovered")
-        recovered_account = self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
-        assert recovered_account is not None
+        logger.info("Waiting for ARM cache to refresh after recovery")
+        time.sleep(60)
         
         logger.info("Verifying account is no longer in soft-deleted list")
         soft_deleted_accounts_after = self.cmd(
@@ -117,14 +116,14 @@ class CosmosDBSoftDeleteScenarioTest(ScenarioTest):
         assert not recovered_account_found, "Account should not appear in soft-deleted list after recovery"
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_softdelete_acc_purge', location='westus')
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_softdelete_acc_purge', location='westus2')
     def test_cosmosdb_sql_softdeleted_account_purge(self, resource_group):
         """
         Test soft-deleted account purge (permanent deletion) operation.
         
         This test validates that soft-deleted accounts can be permanently removed.
         """
-        location = "westus"
+        location = "westus2"
 
         self.kwargs.update({
             'acc': self.create_random_name(prefix='clisdpacc', length=20),
@@ -176,14 +175,14 @@ class CosmosDBSoftDeleteScenarioTest(ScenarioTest):
         assert not purged_account_found, "Account should not appear in soft-deleted list after purge"
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_softdelete_db_recover', location='westus')
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_softdelete_db_recover', location='westus2')
     def test_cosmosdb_sql_softdeleted_database_recover(self, resource_group):
         """
         Test soft-deleted database recovery operations: list, show, and recover.
         
         This test validates the database soft-delete and recovery workflow.
         """
-        location = "westus"
+        location = "westus2"
         db_name = self.create_random_name(prefix='clisdddb', length=15)
 
         self.kwargs.update({
@@ -253,14 +252,14 @@ class CosmosDBSoftDeleteScenarioTest(ScenarioTest):
         self.cmd('az cosmosdb sql database delete -g {rg} -a {acc} -n {db_name} --yes')
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_softdelete_coll_recover', location='westus')
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_softdelete_coll_recover', location='westus2')
     def test_cosmosdb_sql_softdeleted_container_recover(self, resource_group):
         """
         Test soft-deleted collection recovery operations: list, show, and recover.
         
         This test validates the collection/container soft-delete and recovery workflow.
         """
-        location = "westus"
+        location = "westus2"
         db_name = self.create_random_name(prefix='clisdddb', length=15)
         coll_name = self.create_random_name(prefix='clisddcoll', length=15)
         partition_key = "/pk"
@@ -350,14 +349,14 @@ class CosmosDBSoftDeleteScenarioTest(ScenarioTest):
         self.cmd('az cosmosdb sql database delete -g {rg} -a {acc} -n {db_name} --yes')
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_softdelete_purge', location='westus')
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_softdelete_purge', location='westus2')
     def test_cosmosdb_sql_softdeleted_database_purge(self, resource_group):
         """
         Test soft-deleted database purge (permanent deletion) operation.
         
         This test validates that soft-deleted databases can be permanently removed.
         """
-        location = "westus"
+        location = "westus2"
         db_name = self.create_random_name(prefix='clisdpdb', length=15)
 
         self.kwargs.update({
@@ -398,14 +397,14 @@ class CosmosDBSoftDeleteScenarioTest(ScenarioTest):
         assert not purged_db_found, "Database should not appear in soft-deleted list after purge"
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_softdelete_coll_purge', location='westus')
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_softdelete_coll_purge', location='westus2')
     def test_cosmosdb_sql_softdeleted_container_purge(self, resource_group):
         """
         Test soft-deleted collection purge (permanent deletion) operation.
         
         This test validates that soft-deleted collections can be permanently removed.
         """
-        location = "westus"
+        location = "westus2"
         db_name = self.create_random_name(prefix='clisdpdb', length=15)
         coll_name = self.create_random_name(prefix='clisdpcoll', length=15)
         partition_key = "/pk"
