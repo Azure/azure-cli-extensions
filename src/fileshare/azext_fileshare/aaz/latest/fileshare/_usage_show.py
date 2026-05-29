@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class UsageShow(AAZCommand):
     """Get file share usage data.
+
+    :example: Show usage of fileshare
+        az fileshare usage-show --location westus
     """
 
     _aaz_info = {

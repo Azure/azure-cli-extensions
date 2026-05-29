@@ -64,7 +64,7 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.encryption_in_transit_required = AAZStrArg(
-            options=["--encryption-in-transit-required"],
+            options=["--encryption-in-transit", "--encryption-in-transit-required"],
             arg_group="NfsProtocolProperties",
             help="Encryption in transit defines whether data is encrypted for NFS shares.",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
