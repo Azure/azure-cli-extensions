@@ -64,8 +64,6 @@ class OpenServiceMesh(DefaultExtension):
             scope=ext_scope,
             configuration_settings=configuration_settings,
             configuration_protected_settings=configuration_protected_settings,
-            identity=None,
-            location=""
         )
         return extension, name, create_identity
 
