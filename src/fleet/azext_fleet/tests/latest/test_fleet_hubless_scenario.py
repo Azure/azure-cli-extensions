@@ -161,12 +161,18 @@ class FleetHublessScenarioTest(ScenarioTest):
             self.check('strategy.stages[0].maxConcurrency', '{strategy_stage_max_concurrency}'),
             self.check('strategy.stages[0].maxAllowedFailures', '{strategy_stage_max_allowed_failures}'),
             self.check('strategy.stages[0].memberSelector.byLabel', 'team=fleet'),
+            self.check('strategy.stages[0].beforeGates[0].type', 'ScheduledStart'),
+            self.check('strategy.stages[0].afterGates[0].type', 'Approval'),
             self.check('strategy.stages[0].groups[0].maxConcurrency', '{strategy_group1_max_concurrency}'),
             self.check('strategy.stages[0].groups[0].maxAllowedFailures', '{strategy_group1_max_allowed_failures}'),
             self.check('strategy.stages[0].groups[0].memberSelector', None),
+            self.check('strategy.stages[0].groups[0].beforeGates[0].type', 'ScheduledStart'),
+            self.check('strategy.stages[0].groups[0].afterGates[0].type', 'Approval'),
             self.check('strategy.stages[0].groups[1].maxConcurrency', '{strategy_group2_max_concurrency}'),
             self.check('strategy.stages[0].groups[1].maxAllowedFailures', '{strategy_group2_max_allowed_failures}'),
-            self.check('strategy.stages[0].groups[1].memberSelector.byLabel', 'team=fleet')
+            self.check('strategy.stages[0].groups[1].memberSelector.byLabel', 'team=fleet'),
+            self.check('strategy.stages[0].groups[1].beforeGates[0].type', 'Approval'),
+            self.check('strategy.stages[0].groups[1].afterGates[0].type', 'Approval')
         ])
 
         self.cmd('fleet updatestrategy list -g {rg} -f {fleet_name}', checks=[
@@ -203,7 +209,7 @@ class FleetHublessScenarioTest(ScenarioTest):
             self.check('length([])', 1)
         ])
 
-        self.cmd('fleet gate list -g {rg} -f {fleet_name} --gate-type Approval', checks=[
+        self.cmd('fleet gate list -g {rg} -f {fleet_name} --gate-type ScheduledStart', checks=[
             self.check('length([])', 1)
         ])
 
@@ -220,7 +226,11 @@ class FleetHublessScenarioTest(ScenarioTest):
         })
 
         self.cmd('fleet gate show -g {rg} -f {fleet_name} -n {gate_name}', checks=[
-            self.check('name', '{gate_name}')
+            self.check('name', '{gate_name}'),
+            self.check('gateType', 'ScheduledStart'),
+            self.check('scheduledStartProperties.startDay', 'Monday'),
+            self.check('scheduledStartProperties.startTime', '03:00'),
+            self.check('scheduledStartProperties.utcOffset', '+00:00')
         ])
 
         self.cmd('fleet gate approve -g {rg} -f {fleet_name} -n {gate_name}', checks=[
