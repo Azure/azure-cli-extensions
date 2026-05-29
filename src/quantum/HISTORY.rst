@@ -3,7 +3,7 @@
 Release History
 ===============
 
-1.0.0b15
+1.0.0b16
 +++++++++++++++
 * Removed deprecated ``--location``/``-l`` parameter from ``quantum execute``, ``quantum run``, ``quantum job submit``, ``quantum job cancel``, ``quantum job list``, ``quantum job output``, ``quantum job show``, ``quantum job wait``, ``quantum target list``, ``quantum workspace set``, and ``quantum workspace quotas`` commands.
 
