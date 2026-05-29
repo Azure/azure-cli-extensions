@@ -93,9 +93,12 @@ class ChangeRecordScenario(ScenarioTest):
             change_definition=None,
             stage_map=None,
             anticipated_start_time=None,
-            anticipated_end_time=None):
+            anticipated_end_time=None,
+            additional_data=None,
+            links=None,
+            orchestration_tool=None):
         """Build a mock ChangeRecord instance."""
-        return {
+        instance = {
             "id": f"/subscriptions/{subscription_id}/resourceGroups/{resource_group}/providers/Microsoft.ChangeSafety/changeRecords/{name}",
             "name": name,
             "type": "Microsoft.ChangeSafety/changeRecords",
@@ -116,6 +119,13 @@ class ChangeRecordScenario(ScenarioTest):
                 }
             }
         }
+        if additional_data is not None:
+            instance["properties"]["additionalData"] = additional_data
+        if links is not None:
+            instance["properties"]["links"] = links
+        if orchestration_tool is not None:
+            instance["properties"]["orchestrationTool"] = orchestration_tool
+        return instance
 
     @staticmethod
     def _mock_create_execute(cmd):
@@ -128,6 +138,9 @@ class ChangeRecordScenario(ScenarioTest):
         change_type = cls._get_arg_value(cmd, "change_type", "ManualTouch")
         rollout_type = cls._get_arg_value(cmd, "rollout_type", "Normal")
         comments = cls._get_arg_value(cmd, "comments")
+        additional_data = cls._get_arg_value(cmd, "additional_data")
+        links = cls._get_arg_value(cmd, "links")
+        orchestration_tool = cls._get_arg_value(cmd, "orchestration_tool")
         targets = copy.deepcopy(cmd._parsed_targets or [])
         change_definition_var = getattr(cmd.ctx.vars, "change_definition", None)
         change_definition_value = change_definition_var.to_serialized_data() if change_definition_var else None
@@ -155,6 +168,9 @@ class ChangeRecordScenario(ScenarioTest):
             stage_map=stage_map_value,
             anticipated_start_time=start_time,
             anticipated_end_time=end_time,
+            additional_data=additional_data,
+            links=links,
+            orchestration_tool=orchestration_tool,
         )
         cls._SCENARIO_STATE["instance"] = copy.deepcopy(instance)
         cmd.ctx.set_var("instance", copy.deepcopy(instance), schema_builder=lambda: AAZAnyType())
@@ -453,6 +469,143 @@ class ChangeRecordScenario(ScenarioTest):
         # Delete
         self.cmd('az changesafety changerecord delete -g {rg} -n {name} -y')
         self.assertNotIn("instance", type(self)._SCENARIO_STATE)
+
+    def test_additional_data_with_safefly_payload(self):
+        """Test --additional-data accepts nested SafeFly JSON and round-trips correctly."""
+        resource_group = "rgAdditionalData"
+        change_record_name = self.create_random_name('chg', 12)
+        target_resource = (
+            f"/subscriptions/{self.FAKE_SUBSCRIPTION_ID}/resourceGroups/{resource_group}/"
+            "providers/Microsoft.Network/trafficManagerProfiles/tm-test"
+        )
+        self.kwargs.update({
+            "rg": resource_group,
+            "name": change_record_name,
+            "change_type": "ManualTouch",
+            "rollout_type": "Normal",
+            "targets": f"resourceId={target_resource},operation=DELETE",
+            "additional_data": '{"safeFly":{"riskLevel":"Low","isLiveSiteMitigation":false,'
+                               '"rollbackTested":"NA","productionTouchTool":"Other","icmId":"123456789"}}',
+        })
+
+        result = self.cmd(
+            'az changesafety changerecord create -g {rg} -n {name} '
+            '--change-type {change_type} --rollout-type {rollout_type} '
+            '--targets "{targets}" '
+            "--additional-data '{additional_data}'",
+            checks=[
+                JMESPathCheck('properties.additionalData.safeFly.riskLevel', 'Low'),
+                JMESPathCheck('properties.additionalData.safeFly.isLiveSiteMitigation', False),
+                JMESPathCheck('properties.additionalData.safeFly.rollbackTested', 'NA'),
+                JMESPathCheck('properties.additionalData.safeFly.productionTouchTool', 'Other'),
+                JMESPathCheck('properties.additionalData.safeFly.icmId', '123456789'),
+            ],
+        ).get_output_in_json()
+
+        # Verify the full nested structure is preserved
+        safe_fly = result["properties"]["additionalData"]["safeFly"]
+        self.assertEqual(safe_fly["riskLevel"], "Low")
+        self.assertFalse(safe_fly["isLiveSiteMitigation"])
+        self.assertEqual(safe_fly["icmId"], "123456789")
+
+    def test_create_with_links_and_orchestration_tool(self):
+        """Test --links and --orchestration-tool arguments."""
+        resource_group = "rgLinksTest"
+        change_record_name = self.create_random_name('chg', 12)
+        target_resource = (
+            f"/subscriptions/{self.FAKE_SUBSCRIPTION_ID}/resourceGroups/{resource_group}/"
+            "providers/Microsoft.Storage/storageAccounts/demo"
+        )
+        self.kwargs.update({
+            "rg": resource_group,
+            "name": change_record_name,
+            "change_type": "ManualTouch",
+            "rollout_type": "Normal",
+            "targets": f"resourceId={target_resource},operation=DELETE",
+            "orchestration_tool": "Azure Portal",
+            "links": '[{"name":"serviceCatalogEntry","uri":"https://microsoftservicetree.com/services/test-guid"}]',
+        })
+
+        result = self.cmd(
+            'az changesafety changerecord create -g {rg} -n {name} '
+            '--change-type {change_type} --rollout-type {rollout_type} '
+            '--targets "{targets}" '
+            '--orchestration-tool "{orchestration_tool}" '
+            "--links '{links}'",
+            checks=[
+                JMESPathCheck('properties.orchestrationTool', 'Azure Portal'),
+                JMESPathCheck('properties.links[0].name', 'serviceCatalogEntry'),
+                JMESPathCheck('properties.links[0].uri', 'https://microsoftservicetree.com/services/test-guid'),
+            ],
+        ).get_output_in_json()
+
+        self.assertEqual(result["properties"]["orchestrationTool"], "Azure Portal")
+
+    def test_safefly_full_scenario(self):
+        """Test the full SafeFly manual touch scenario from the bug report.
+
+        Exercises: --additional-data, --links, --orchestration-tool, and --targets
+        together in a single create command.
+        """
+        resource_group = "rgSafeFlyE2E"
+        change_record_name = self.create_random_name('chg', 12)
+        sub_id = self.FAKE_SUBSCRIPTION_ID
+        target_resource = (
+            f"/subscriptions/{sub_id}/resourceGroups/{resource_group}/"
+            "providers/Microsoft.Storage/storageAccounts/mystorageacct1"
+        )
+        additional_data_json = (
+            '{"safeFly":{"riskLevel":"Low","isLiveSiteMitigation":false,'
+            '"rollbackTested":"NA","productionTouchTool":"Other","icmId":"123456789"}}'
+        )
+        links_json = (
+            '[{"name":"serviceCatalogEntry",'
+            '"uri":"https://microsoftservicetree.com/services/91949edc-8cae-421f-b8d5-f779ba3d52d3"}]'
+        )
+        self.kwargs.update({
+            "rg": resource_group,
+            "name": change_record_name,
+            "change_type": "ManualTouch",
+            "rollout_type": "Normal",
+            "description": "Delete ARM Resource using ChangeSafety and SafeFly",
+            "orchestration_tool": "Azure Portal",
+            "targets": f"resourceId={target_resource},operation=DELETE",
+            "additional_data": additional_data_json,
+            "links": links_json,
+        })
+
+        result = self.cmd(
+            'az changesafety changerecord create -g {rg} -n {name} '
+            '--description "{description}" '
+            '--change-type {change_type} --rollout-type {rollout_type} '
+            '--orchestration-tool "{orchestration_tool}" '
+            "--links '{links}' "
+            "--additional-data '{additional_data}' "
+            '--targets "{targets}"',
+            checks=[
+                JMESPathCheck('name', change_record_name),
+                JMESPathCheck('properties.changeType', 'ManualTouch'),
+                JMESPathCheck('properties.rolloutType', 'Normal'),
+                JMESPathCheck('properties.orchestrationTool', 'Azure Portal'),
+                # SafeFly additional data
+                JMESPathCheck('properties.additionalData.safeFly.riskLevel', 'Low'),
+                JMESPathCheck('properties.additionalData.safeFly.isLiveSiteMitigation', False),
+                JMESPathCheck('properties.additionalData.safeFly.icmId', '123456789'),
+                # Targets
+                JMESPathCheck('properties.changeDefinition.details.targets[0].resourceId', target_resource),
+                JMESPathCheck('properties.changeDefinition.details.targets[0].httpMethod', 'DELETE'),
+                # Links
+                JMESPathCheck('properties.links[0].name', 'serviceCatalogEntry'),
+            ],
+        ).get_output_in_json()
+
+        # Full structure verification
+        props = result["properties"]
+        self.assertEqual(props["additionalData"]["safeFly"]["riskLevel"], "Low")
+        self.assertEqual(props["additionalData"]["safeFly"]["icmId"], "123456789")
+        self.assertFalse(props["additionalData"]["safeFly"]["isLiveSiteMitigation"])
+        self.assertEqual(props["orchestrationTool"], "Azure Portal")
+        self.assertEqual(props["links"][0]["name"], "serviceCatalogEntry")
 
 
 # =============================================================================
