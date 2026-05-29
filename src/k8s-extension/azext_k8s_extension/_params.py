@@ -44,6 +44,11 @@ def load_arguments(self, _: CLICommand) -> None:
                    options_list=['--auto-upgrade-minor-version', '--auto-upgrade'],
                    arg_type=get_three_state_flag(),
                    help='Automatically upgrade minor version of the extension instance.')
+        c.argument('auto_upgrade_mode',
+               arg_group="Version",
+               options_list=['--auto-upgrade-mode'],
+               arg_type=get_enum_type(['none', 'patch', 'compatible']),
+               help='Automatically upgrade mode of the extension instance.')
         c.argument('version',
                    arg_group="Version",
                    help='Specify the version to install for the extension instance if'

@@ -128,6 +128,7 @@ def create_k8s_extension(
     cluster_resource_provider=None,
     scope=None,
     auto_upgrade_minor_version=None,
+    auto_upgrade_mode=None,
     release_train=None,
     version=None,
     target_namespace=None,
@@ -205,6 +206,7 @@ def create_k8s_extension(
         extension_type_lower,
         scope,
         auto_upgrade_minor_version,
+        auto_upgrade_mode,
         release_train,
         version,
         target_namespace,
@@ -220,7 +222,14 @@ def create_k8s_extension(
 
     # Common validations
     __validate_version_and_auto_upgrade(
-        extension_instance.version, extension_instance.auto_upgrade_minor_version
+        extension_instance.version,
+        extension_instance.auto_upgrade_minor_version,
+        extension_instance.auto_upgrade_mode,
+    )
+    __validate_auto_upgrade_mode(
+        extension_instance.version,
+        extension_instance.auto_upgrade_minor_version,
+        extension_instance.auto_upgrade_mode,
     )
     __validate_scope_after_customization(extension_instance.scope)
 
@@ -266,6 +275,7 @@ def update_k8s_extension(
     cluster_type,
     cluster_resource_provider=None,
     auto_upgrade_minor_version=None,
+    auto_upgrade_mode=None,
     release_train=None,
     version=None,
     configuration_settings=None,
@@ -330,12 +340,19 @@ def update_k8s_extension(
         resource_group_name,
         cluster_name,
         auto_upgrade_minor_version,
+        auto_upgrade_mode,
         release_train,
         version,
         config_settings,
         config_protected_settings,
         extension,
         yes,
+    )
+
+    __validate_auto_upgrade_mode(
+        upd_extension.version,
+        upd_extension.auto_upgrade_minor_version,
+        upd_extension.auto_upgrade_mode,
     )
 
     return sdk_no_wait(
@@ -924,10 +941,42 @@ def __validate_scope_after_customization(scope_obj: Scope):
         raise RequiredArgumentMissingError(message)
 
 
-def __validate_version_and_auto_upgrade(version, auto_upgrade_minor_version):
+def __validate_version_and_auto_upgrade(version, auto_upgrade_minor_version, auto_upgrade_mode=None):
     if version is not None:
         if auto_upgrade_minor_version:
             message = "To pin to specific version, auto-upgrade-minor-version must be set to 'false'."
             raise MutuallyExclusiveArgumentError(message)
 
         auto_upgrade_minor_version = False
+
+    if auto_upgrade_minor_version is not None and auto_upgrade_mode is not None:
+        message = "auto-upgrade-mode cannot be specified together with auto-upgrade-minor-version."
+        raise MutuallyExclusiveArgumentError(message)
+
+
+def __validate_auto_upgrade_mode(version, auto_upgrade_minor_version, auto_upgrade_mode):
+    if version is not None and auto_upgrade_mode is not None:
+        message = "To pin to specific version, auto-upgrade-mode must not be provided."
+        raise MutuallyExclusiveArgumentError(message)
+
+    if auto_upgrade_minor_version is not None and auto_upgrade_mode is not None:
+        message = "auto-upgrade-mode cannot be specified together with auto-upgrade-minor-version."
+        raise MutuallyExclusiveArgumentError(message)
+
+    if auto_upgrade_mode is None:
+        return
+
+    normalized_auto_upgrade_mode = auto_upgrade_mode
+    if hasattr(normalized_auto_upgrade_mode, "value"):
+        normalized_auto_upgrade_mode = normalized_auto_upgrade_mode.value
+    normalized_auto_upgrade_mode = str(normalized_auto_upgrade_mode).strip().lower()
+    if "." in normalized_auto_upgrade_mode:
+        normalized_auto_upgrade_mode = normalized_auto_upgrade_mode.split(".")[-1]
+
+    allowed_auto_upgrade_modes = {"none", "patch", "compatible"}
+    if normalized_auto_upgrade_mode not in allowed_auto_upgrade_modes:
+        message = (
+            "Invalid value for auto-upgrade-mode. "
+            "Allowed values are: none, patch, compatible."
+        )
+        raise ClientRequestError(message)
