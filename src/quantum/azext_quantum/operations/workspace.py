@@ -140,7 +140,7 @@ def _autoadd_providers(cmd, providers_in_region, providers_selected, workspace_l
                     providers_selected.append(provider_selected)
 
 
-def _add_quantum_providers(cmd, workspace, providers, auto_accept, skip_autoadd):
+def _add_quantum_providers(cmd, workspace: QuantumWorkspace, providers, auto_accept, skip_autoadd):
     providers_in_region_paged = cf_offerings(cmd.cli_ctx).list(location_name=workspace.location)
     providers_in_region = [item for item in providers_in_region_paged]
     providers_selected = []
@@ -183,7 +183,7 @@ def _add_quantum_providers(cmd, workspace, providers, auto_accept, skip_autoadd)
         p = Provider()
         p.provider_id = provider['provider_id']
         p.provider_sku = provider['sku']
-        workspace.providers.append(p)
+        workspace.properties.providers.append(p)
 
 
 def _validate_storage_account(tier_or_kind_msg_text, tier_or_kind, supported_tiers_or_kinds):
@@ -209,15 +209,12 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account, 
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     if not info.resource_group:
         raise ResourceNotFoundError("Please run 'az quantum workspace set' first to select a default resource group.")
-    quantum_workspace = _get_basic_quantum_workspace(location, info, storage_account)
+    quantum_workspace: QuantumWorkspace = _get_basic_quantum_workspace(location, info, storage_account)
 
     # Until the "--skip-role-assignment" parameter is deprecated, use the old non-ARM code to create a workspace without doing a role assignment
     if skip_role_assignment:
         _add_quantum_providers(cmd, quantum_workspace, provider_sku_list, auto_accept, skip_autoadd)
-        properties = WorkspaceResourceProperties()
-        properties.providers = quantum_workspace.providers
-        properties.api_key_enabled = True
-        quantum_workspace.properties = properties
+        quantum_workspace.properties.api_key_enabled = True
         poller = client.begin_create_or_update(info.resource_group, info.name, quantum_workspace, polling=False)
         while not poller.done():
             time.sleep(POLLING_TIME_DURATION)
@@ -232,7 +229,7 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account, 
 
     _add_quantum_providers(cmd, quantum_workspace, provider_sku_list, auto_accept, skip_autoadd)
     validated_providers = []
-    for provider in quantum_workspace.providers:
+    for provider in quantum_workspace.properties.providers:
         validated_providers.append({"providerId": provider.provider_id, "providerSku": provider.provider_sku})
 
     # Set default storage account parameters in case the storage account does not exist yet
@@ -365,8 +362,14 @@ def set(cmd, workspace_name, resource_group_name):
     client = cf_workspaces(cmd.cli_ctx)
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
     ws = client.get(info.resource_group, info.name)
-    if ws:
-        info.save(cmd, ws.properties.endpoint_uri)
+    if not ws or not ws.properties.endpoint_uri:
+        provisioning_state = ws.properties.provisioning_state if ws and ws.properties else 'unknown'
+        raise InvalidArgumentValueError(
+            f"Workspace '{workspace_name}' is not ready (current state: '{provisioning_state}'). "
+            "Only workspaces in 'Succeeded' state can be set as default. "
+            "Please wait for the workspace to finish provisioning and try again."
+        )
+    info.save(cmd, ws.properties.endpoint_uri)
     return ws
 
 
