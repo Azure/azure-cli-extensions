@@ -85,7 +85,7 @@ class FleetHubfulScenarioTest(ScenarioTest):
 
         self.cmd('fleet namespace create -g {rg} --fleet-name {fleet_name} -n {namespace_name} '
                  '--adoption-policy Always --delete-policy Delete '
-                 '--member-cluster-names {member_name} --rollout-strategy RollingUpdate',
+                 '--member-cluster-names {member_name}',
                  checks=[
                      self.check('name', '{namespace_name}'),
                      self.check('properties.adoptionPolicy', 'Always'),

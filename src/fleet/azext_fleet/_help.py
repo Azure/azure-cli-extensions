@@ -548,10 +548,8 @@ helps['fleet namespace create'] = """
           text: az fleet namespace create -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --annotations key=value --labels key=value --cpu-requests 1m --cpu-limits 4m --memory-requests 1Mi --memory-limits 4Mi --ingress-policy AllowAll --egress-policy DenyAll --delete-policy Keep --adoption-policy Never
         - name: Create a fleet managed namespace on specific member clusters.
           text: az fleet namespace create -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --member-cluster-names team-01 team-02 team-03 team-04
-        - name: Create a fleet managed namespace with a rolling update rollout strategy.
-          text: az fleet namespace create -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --member-cluster-names team-01 team-02 --rollout-strategy RollingUpdate
-        - name: Create a fleet managed namespace with an external rollout strategy.
-          text: az fleet namespace create -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --member-cluster-names team-01 team-02 --rollout-strategy External --cluster-update-strategy MyUpdateStrategy
+        - name: Create a fleet managed namespace with a rollout update strategy.
+          text: az fleet namespace create -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --member-cluster-names team-01 team-02 --rollout-update-strategy MyUpdateStrategy
 """
 
 helps['fleet namespace update'] = """
@@ -568,10 +566,8 @@ helps['fleet namespace update'] = """
           text: az fleet namespace update -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --ingress-policy AllowAll --egress-policy DenyAll --adoption-policy IfIdentical --delete-policy Delete
         - name: Update member cluster placement.
           text: az fleet namespace update -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --member-cluster-names team-01 team-02 team-03
-        - name: Update the rollout strategy to rolling update.
-          text: az fleet namespace update -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --rollout-strategy RollingUpdate
-        - name: Update the rollout strategy to external with a cluster update strategy.
-          text: az fleet namespace update -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --rollout-strategy External --cluster-update-strategy my-update-strategy
+        - name: Update with a rollout update strategy.
+          text: az fleet namespace update -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --rollout-update-strategy my-update-strategy
 """
 
 helps['fleet namespace list'] = """
