@@ -10,7 +10,12 @@
       "beforeGates": [
         {
           "displayName": "stage before gate",
-          "type": "Approval"
+          "type": "ScheduledStart",
+          "scheduledStartConfiguration": {
+            "startDay": "Monday",
+            "startTime": "03:00",
+            "utcOffset": "+00:00"
+          }
         }
       ],
       "afterGates": [
@@ -27,7 +32,12 @@
           "beforeGates": [
             {
               "displayName": "group before gate",
-              "type": "Approval"
+              "type": "ScheduledStart",
+              "scheduledStartConfiguration": {
+                "startDay": "Tuesday",
+                "startTime": "08:00",
+                "utcOffset": "+00:00"
+              }
             }
           ],
           "afterGates": [
