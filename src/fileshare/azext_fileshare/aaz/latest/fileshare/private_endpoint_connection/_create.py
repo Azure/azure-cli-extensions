@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create the state of specified private endpoint connection associated with the file share.
+
+    :example: Create private endpoint connection
+        az fileshare private-endpoint-connection create --resource-group rgfileshares --resource-name fileshare --private-endpoint-connection-name privateEndpointConnection1 --private-link-service-connection-state "{status:Approved,description:'Approved by admin'}"
     """
 
     _aaz_info = {
