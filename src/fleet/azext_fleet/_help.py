@@ -559,7 +559,7 @@ helps['fleet namespace update'] = """
         - name: Update tags for a fleet managed namespace.
           text: az fleet namespace update -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --tags environment=production
         - name: Update labels and annotations.
-          text: az fleet namespace update -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --labels env=production team=devops --annotations owner=team-a
+          text: az fleet namespace update -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --labels "env=production team=devops" --annotations "owner=team-a"
         - name: Update resource quotas.
           text: az fleet namespace update -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --cpu-requests 1m --cpu-limits 4m --memory-requests 1Mi --memory-limits 4Mi
         - name: Update network and lifecycle policies.
