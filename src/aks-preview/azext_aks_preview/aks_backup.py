@@ -18,7 +18,7 @@ trusted access, role assignments, backup instance) lives in the
 from knack.log import get_logger
 from knack.prompting import prompt_y_n, NoTTYException
 
-from azure.cli.core.azclierror import UnknownError
+from azure.cli.core.azclierror import RequiredArgumentMissingError
 
 DATAPROTECTION_EXTENSION_NAME = "dataprotection"
 
@@ -30,7 +30,7 @@ def _ensure_dataprotection_extension(cmd, yes):
 
     If the ``dataprotection`` extension is not installed, prompt the user to
     install it (or install silently when ``yes`` is True). Raises
-    ``UnknownError`` if the user declines or the install fails.
+    ``RequiredArgumentMissingError`` if the user declines or the install fails.
     """
     from azure.cli.core.extension.operations import add_extension_to_path
 
@@ -54,7 +54,7 @@ def _ensure_dataprotection_extension(cmd, yes):
         except NoTTYException:
             proceed = False
     if not proceed:
-        raise UnknownError(
+        raise RequiredArgumentMissingError(
             f"The '{DATAPROTECTION_EXTENSION_NAME}' extension is required for "
             "--enable-backup with 'az aks create' / 'az aks update'.\n"
             f"Run `az extension add --name {DATAPROTECTION_EXTENSION_NAME}` "
@@ -76,7 +76,7 @@ def enable_aks_backup(cmd, resource_group_name, cluster_name,  # pylint: disable
 
     _ensure_dataprotection_extension(cmd, yes)
 
-    from azext_dataprotection.manual.aks.aks_helper import (
+    from azext_dataprotection.manual.aks.aks_helper import (  # pylint: disable=import-error
         dataprotection_enable_backup_helper,
     )
 
