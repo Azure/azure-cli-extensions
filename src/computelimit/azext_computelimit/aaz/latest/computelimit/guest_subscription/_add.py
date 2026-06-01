@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "computelimit guest-subscription add",
-    is_preview=True,
 )
 class Add(AAZCommand):
     """Add a subscription as a guest to consume the compute limits shared by the host subscription.

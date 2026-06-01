@@ -72,25 +72,9 @@ def load_arguments(self, _):
         c.argument("dashboards_to_include", nargs='+', help="Space separated titles of dashboards to include in sync. Pair with --folders-to-include for folders specific")
         c.argument("dashboards_to_exclude", nargs='+', help="Space separated titles of dashboards to exclude in sync. Pair with --folders-to-exclude for folders specific")
 
-    with self.argument_context("grafana api-key") as c:
-        c.argument("key_name", help="api key name")
-        c.argument("role", grafana_role_type, default="Viewer")
-        c.argument("time_to_live", default="1d", help="The API key life duration. For example, 1d if your key is going to last fr one day. Supported units are: s,m,h,d,w,M,y")
-
-    with self.argument_context("grafana api-key create") as c:
-        c.argument("key", help="api key name")
-
-    with self.argument_context("grafana api-key delete") as c:
-        c.argument("key", help="id or name that identify an api-key to delete")
-
     with self.argument_context("grafana data-source") as c:
-        c.argument("data_source", help="name, id, uid which can identify a data source. CLI will search in the order of name, id, and uid, till finds a match")
+        c.argument("data_source", help="name or UID that identifies a data source. CLI will search by name first, then by UID, and use the first match.")
         c.argument("definition", type=validate_file_or_dict, help="json string with data source definition, or a path to a file with such content")
-
-    with self.argument_context("grafana notification-channel") as c:
-        c.argument("notification_channel", help="id, uid which can identify a data source. CLI will search in the order of id, and uid, till finds a match")
-        c.argument("definition", type=validate_file_or_dict, help="json string with notification channel definition, or a path to a file with such content")
-        c.argument("short", action='store_true', help="list notification channels in short format.")
 
     with self.argument_context("grafana data-source query") as c:
         c.argument("conditions", nargs="+", help="space-separated condition in a format of `<name>=<value>`")
@@ -125,8 +109,8 @@ def load_arguments(self, _):
     with self.argument_context("grafana service-account token create") as c:
         c.argument("token", help="name of the new service account token")
 
-    with self.argument_context("grafana integrations monitor") as c:
+    with self.argument_context("grafana integration monitor") as c:
         c.argument("monitor_name", help="name of the Azure Monitor workspace")
-        c.argument("monitor_resource_group_name", options_list=["--monitor-resource-group-name", "--monitor-rg-name"], help="name of the resource group of the Azure Monitor workspace")
+        c.argument("monitor_resource_group_name", options_list=["--monitor-rg-name"], help="name of the resource group of the Azure Monitor workspace")
         c.argument("monitor_subscription_id", options_list=["--monitor-subscription-id", "--monitor-sub-id"], help="subscription id of the Azure Monitor workspace. Uses the current subscription id if not specified")
         c.argument("skip_role_assignments", options_list=["-s", "--skip-role-assignments"], arg_type=get_three_state_flag(), help="skip assigning the appropriate role on the Azure Monitor workspace to let Grafana read data from it. Default: false")
