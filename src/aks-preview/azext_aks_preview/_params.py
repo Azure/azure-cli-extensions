@@ -1310,7 +1310,6 @@ def load_arguments(self, _):
             help="Enable Gateway API based ingress on App Routing via Istio"
         )
         c.argument("enable_hosted_system", action="store_true", is_preview=True)
-        c.argument("disable_hosted_system", action="store_true", is_preview=True)
         c.argument(
             "system_node_subnet_id",
             options_list=["--system-node-subnet-id", "--sys-node-subnet-id"],

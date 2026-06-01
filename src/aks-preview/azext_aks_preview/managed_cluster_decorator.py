@@ -548,6 +548,31 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                     )
         return disable_local_accounts
 
+    @staticmethod
+    def _raise_missing_vnet_subnet_for_outbound_type(outbound_type: str, sku_name: str) -> None:
+        if outbound_type == CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING:
+            subnet_requirement = "a route table with egress rules"
+        else:
+            subnet_requirement = "a NAT gateway with outbound ips"
+
+        if sku_name == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
+            raise RequiredArgumentMissingError(
+                "For an Automatic cluster using Managed System Pool BYO VNet, --system-node-subnet-id, "
+                "--node-subnet-id and --apiserver-subnet-id must be specified for {outbound_type}. "
+                "For other BYO VNet clusters, specify --vnet-subnet-id. The subnet must be "
+                "pre-configured with {requirement}".format(
+                    outbound_type=outbound_type,
+                    requirement=subnet_requirement,
+                )
+            )
+        raise RequiredArgumentMissingError(
+            "--vnet-subnet-id must be specified for {outbound_type} and it must "
+            "be pre-configured with {requirement}".format(
+                outbound_type=outbound_type,
+                requirement=subnet_requirement,
+            )
+        )
+
     # pylint: disable=too-many-branches
     def _get_outbound_type(
         self,
@@ -606,9 +631,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 CONST_OUTBOUND_TYPE_NONE,
                 CONST_OUTBOUND_TYPE_BLOCK,]
         ):
-            # Preserve the user's explicit --outbound-type (if any) before default-completion
-            # overwrites it with CONST_OUTBOUND_TYPE_LOAD_BALANCER below.
-            user_supplied_outbound_type = self.raw_param.get("outbound_type")
             outbound_type = CONST_OUTBOUND_TYPE_LOAD_BALANCER
             sku_name = self.get_sku_name()
             is_vnet_subnet_id_empty = self.get_vnet_subnet_id() in ["", None]
@@ -620,10 +642,9 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 is_vnet_subnet_id_empty
             ):
                 # Default outbound for Automatic SKU without a VNet is managedNATGateway.
-                # For BYO HOBO, only apply this default when the user did NOT explicitly pass
-                # --outbound-type; otherwise we would silently overwrite a user's explicit
-                # --outbound-type loadBalancer (regression seen in BYO SLB scenario).
-                if not (hobo_byo_subnets and user_supplied_outbound_type):
+                # For BYO HOBO, keep the loadBalancer default because managedNATGateway
+                # is not supported with custom VNet subnets.
+                if not hobo_byo_subnets:
                     outbound_type = CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY
 
         # validation
@@ -649,20 +670,27 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                     # --system-node-subnet-id / --node-subnet-id
                     # instead of --vnet-subnet-id.
                     if (
+                        not read_from_mc and
                         self.get_vnet_subnet_id() in ["", None] and
-                        not self.has_byo_hobo_subnets()
+                        not self.has_byo_hobo_subnets_configured()
                     ):
-                        if self.decorator_mode == DecoratorMode.CREATE:
-                            raise RequiredArgumentMissingError(
-                                "--vnet-subnet-id must be specified for userDefinedRouting and it must "
-                                "be pre-configured with a route table with egress rules"
+                        if self.decorator_mode == DecoratorMode.UPDATE:
+                            raise InvalidArgumentValueError(
+                                f"Updating outbound type to {outbound_type} is only supported for "
+                                "clusters using a custom (BYO) virtual network. Managed VNet clusters "
+                                f"cannot be updated to {outbound_type}. Please refer to "
+                                "https://learn.microsoft.com/en-us/azure/aks/egress-outboundtype"
+                                "#updating-outboundtype-after-cluster-creation for supported migration paths."
                             )
+                        self._raise_missing_vnet_subnet_for_outbound_type(
+                            outbound_type,
+                            self.get_sku_name(),
+                        )
+                if outbound_type == CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY:
+                    if self.get_vnet_subnet_id() not in ["", None] or self.has_byo_hobo_subnets():
                         raise InvalidArgumentValueError(
-                            f"Updating outbound type to {outbound_type} is only supported for "
-                            "clusters using a custom (BYO) virtual network. Managed VNet clusters "
-                            f"cannot be updated to {outbound_type}. Please refer to "
-                            "https://learn.microsoft.com/en-us/azure/aks/egress-outboundtype"
-                            "#updating-outboundtype-after-cluster-creation for supported migration paths."
+                            "--vnet-subnet-id, --system-node-subnet-id and --node-subnet-id "
+                            "cannot be specified for managedNATGateway"
                         )
 
                 if (
@@ -2011,9 +2039,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # validation
         if enable_validation:
             if self.decorator_mode == DecoratorMode.CREATE:
-                # Cross-validate the BYO VNet HOBO subnet trio on every CREATE so misuse
-                # (e.g. passing --system-node-subnet-id without --enable-hosted-system)
-                # is rejected up front rather than silently dropped.
+                # Cross-validate the BYO VNet HOBO subnet trio on every CREATE so partial
+                # subnet trios are rejected up front rather than silently dropped.
                 self.validate_byo_hobo_subnet_trio()
                 vnet_subnet_id = self.get_vnet_subnet_id()
                 # For BYO VNet HOBO automatic clusters, --system-node-subnet-id and
@@ -4154,37 +4181,25 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         :return: bool
         """
-        enable_hosted_system = self.raw_param.get("enable_hosted_system")
-        disable_hosted_system = self.raw_param.get("disable_hosted_system")
-        if enable_hosted_system and disable_hosted_system:
-            raise MutuallyExclusiveArgumentError(
-                'Cannot specify "--enable-hosted-system" and "--disable-hosted-system" at the same time.'
-            )
-        if enable_hosted_system and self.get_sku_name() != CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
+        if self.decorator_mode != DecoratorMode.CREATE:
+            return False
+        explicit = bool(self.raw_param.get("enable_hosted_system"))
+        implicit = all(
+            [
+                self.raw_param.get("system_node_subnet_id"),
+                self.raw_param.get("node_subnet_id"),
+                self.raw_param.get("apiserver_subnet_id"),
+            ]
+        )
+        if (explicit or implicit) and self.get_sku_name() != CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
             raise RequiredArgumentMissingError('"--enable-hosted-system" requires "--sku automatic".')
-        return enable_hosted_system
-
-    def get_disable_hosted_system(self) -> bool:
-        """Obtain the value of disable_hosted_system.
-
-        :return: bool
-        """
-        disable_hosted_system = self.raw_param.get("disable_hosted_system")
-        enable_hosted_system = self.raw_param.get("enable_hosted_system")
-        if disable_hosted_system and enable_hosted_system:
-            raise MutuallyExclusiveArgumentError(
-                'Cannot specify "--enable-hosted-system" and "--disable-hosted-system" at the same time.'
-            )
-        if disable_hosted_system and self.get_sku_name() != CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
-            raise RequiredArgumentMissingError('"--disable-hosted-system" requires "--sku automatic".')
-        return disable_hosted_system
+        return explicit or implicit
 
     def get_system_node_subnet_id(self) -> Union[str, None]:
         """Obtain the value of system_node_subnet_id.
 
-        Validates that BYO VNet subnet flags are used together with
-        --enable-hosted-system and that the full triple
-        (system-node / node / apiserver) is provided.
+        Validates that BYO VNet subnet flags are used as a full triple
+        (system-node / node / apiserver).
 
         :return: str or None
         """
@@ -4213,32 +4228,38 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             self.raw_param.get("node_subnet_id")
         )
 
+    def has_existing_byo_hobo_subnets(self) -> bool:
+        """Return True when an update target already has BYO HOBO node subnets."""
+        hosted_system_profile = getattr(self.mc, "hosted_system_profile", None) if self.mc else None
+        return bool(
+            self.decorator_mode == DecoratorMode.UPDATE and
+            hosted_system_profile and
+            (
+                getattr(hosted_system_profile, "system_node_subnet_id", None) or
+                getattr(hosted_system_profile, "node_subnet_id", None)
+            )
+        )
+
+    def has_byo_hobo_subnets_configured(self) -> bool:
+        """Return True for BYO HOBO subnets set in this request or already on the cluster."""
+        return self.has_byo_hobo_subnets() or self.has_existing_byo_hobo_subnets()
+
     def validate_byo_hobo_subnet_trio(self) -> None:
         """Cross-validate the BYO VNet HOBO subnet flags.
 
-        Rule: if any of --system-node-subnet-id, --node-subnet-id, or
-        --apiserver-subnet-id is set together with --enable-hosted-system, then
-        all three must be set (SDK requires all three subnets to share a VNet).
-        Any of these flags set without --enable-hosted-system is flagged so
-        the user doesn't silently get a non-HOBO cluster with the wrong shape.
+        Rule: if either --system-node-subnet-id or --node-subnet-id is set, the
+        full BYO trio must be set and --sku must be automatic. A complete trio
+        implies hosted-system enablement.
         """
         system_node_subnet_id = self.raw_param.get("system_node_subnet_id")
         node_subnet_id = self.raw_param.get("node_subnet_id")
         apiserver_subnet_id = self.raw_param.get("apiserver_subnet_id")
-        enable_hosted_system = self.raw_param.get("enable_hosted_system")
+        enable_hosted_system = bool(self.raw_param.get("enable_hosted_system"))
 
-        # The HOBO-specific flags only make sense with --enable-hosted-system.
-        # --apiserver-subnet-id is a general VNet-integration flag, so only
-        # require HOBO on it when one of the other two is also set.
-        if self.has_byo_hobo_subnets() and not enable_hosted_system:
-            raise RequiredArgumentMissingError(
-                '"--system-node-subnet-id" and "--node-subnet-id" '
-                'require "--enable-hosted-system".'
-            )
+        if enable_hosted_system and self.get_sku_name() != CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
+            raise RequiredArgumentMissingError('"--enable-hosted-system" requires "--sku automatic".')
 
-        if enable_hosted_system and (
-            system_node_subnet_id or node_subnet_id or apiserver_subnet_id
-        ):
+        if self.has_byo_hobo_subnets():
             missing = []
             if not system_node_subnet_id:
                 missing.append("--system-node-subnet-id")
@@ -4252,6 +4273,10 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                     "--system-node-subnet-id, --node-subnet-id, and "
                     "--apiserver-subnet-id to be provided together. "
                     f"Missing: {', '.join(missing)}."
+                )
+            if self.get_sku_name() != CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
+                raise RequiredArgumentMissingError(
+                    '"--system-node-subnet-id" and "--node-subnet-id" require "--sku automatic".'
                 )
 
     def get_control_plane_scaling_size(self) -> Union[str, None]:
@@ -4514,6 +4539,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 # pylint: disable=no-member
                 api_server_access_profile = self.models.ManagedClusterAPIServerAccessProfile()
             api_server_access_profile.subnet_id = self.context.get_apiserver_subnet_id()
+            if self.context.has_byo_hobo_subnets():
+                api_server_access_profile.enable_vnet_integration = True
         mc.api_server_access_profile = api_server_access_profile
 
         mc.fqdn_subdomain = self.context.get_fqdn_subdomain()
@@ -5523,8 +5550,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
     def set_up_enable_hosted_components(self, mc: ManagedCluster) -> ManagedCluster:
         self._ensure_mc(mc)
 
+        self.context.validate_byo_hobo_subnet_trio()
         enable_hosted_components = self.context.get_enable_hosted_system()
-        disable_hosted_components = self.context.get_disable_hosted_system()
         if enable_hosted_components:
             if mc.hosted_system_profile is None:
                 mc.hosted_system_profile = self.models.ManagedClusterHostedSystemProfile()  # pylint: disable=no-member
@@ -5543,12 +5570,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             # Remove default agent pool profiles when hosted system profile is enabled
             if mc.agent_pool_profiles is not None:
                 mc.agent_pool_profiles = None
-        elif disable_hosted_components:
-            # Deterministic opt-out: explicitly set enabled=False so customers
-            # don't get HOBO once the server flips the default in their region.
-            if mc.hosted_system_profile is None:
-                mc.hosted_system_profile = self.models.ManagedClusterHostedSystemProfile()  # pylint: disable=no-member
-            mc.hosted_system_profile.enabled = False
 
         return mc
 
@@ -5567,9 +5588,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         for each. Skipping is honored via ``--skip-subnet-role-assignment``.
         """
         # Fail-fast validation BEFORE any role assignment runs, so a malformed BYO HOBO
-        # create (e.g. partial subnet trio, --system-node-subnet-id without
-        # --enable-hosted-system) cannot leave residual Network Contributor grants on
-        # customer subnets. Trio validation is otherwise invoked later through
+        # create (e.g. partial subnet trio) cannot leave residual Network Contributor
+        # grants on customer subnets. Trio validation is otherwise invoked later through
         # set_up_api_server_access_profile, which executes AFTER this method in the base
         # construct_mc_profile_default flow.
         self.context.validate_byo_hobo_subnet_trio()

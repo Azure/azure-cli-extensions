@@ -6244,45 +6244,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
-    @live_only()
-    @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="eastus2euap"
-    )
-    def test_aks_automatic_sku_with_hosted_system_disabled(self, resource_group, resource_group_location):
-        # reset the count so in replay mode the random names will start with 0
-        self.test_resources_count = 0
-        aks_name = self.create_random_name("cliakstest", 16)
-        self.kwargs.update(
-            {
-                "resource_group": resource_group,
-                "name": aks_name,
-                "location": resource_group_location,
-                "ssh_key_value": self.generate_ssh_keys(),
-            }
-        )
-
-        # opt out of HOBO even if the region defaults to it
-        create_cmd = (
-            "aks create --resource-group={resource_group} --name={name} --location={location} "
-            "--sku automatic --disable-hosted-system --workspace-resource-id=/subscriptions/feb5b150-60fe-4441-be73-8c02a524f55a/resourceGroups/hobo-test-la-rg/providers/Microsoft.OperationalInsights/workspaces/hobo-test-la-ws "
-            "--ssh-key-value={ssh_key_value}"
-        )
-        self.cmd(
-            create_cmd,
-            checks=[
-                self.check("provisioningState", "Succeeded"),
-                self.check("sku.name", "Automatic"),
-                self.check("hostedSystemProfile.enabled", False),
-            ],
-        )
-
-        # agent pool profiles should be present (non-HOBO automatic)
-        self.cmd(
-            "aks show --resource-group={resource_group} --name={name}",
-            checks=[self.greater_than("length(agentPoolProfiles)", 0)],
-        )
-
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="westus2"
