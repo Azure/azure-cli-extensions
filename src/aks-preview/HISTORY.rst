@@ -15,7 +15,7 @@ Pending
 21.0.0b3
 +++++++
 * Migrate code from Azure SDK to AAZ based commands for compute operations (VM).
-* `az aks create` and `az aks update`: Add `--enable-backup` (preview) to configure Azure Backup for the AKS cluster in a single command. Supports `--backup-strategy` presets (Week, Month, DisasterRecovery, Custom) and an optional `--backup-configuration-file` for bring-your-own vault/policy/storage. Requires the `dataprotection` CLI extension.
+* `az aks create` and `az aks update`: Add `--enable-backup` (preview) to configure Azure Backup for the AKS cluster in a single command. Supports `--backup-strategy` presets (Week, Month, DisasterRecovery, Custom) and an optional `--backup-configuration` for bring-your-own vault/policy/storage. Requires the `dataprotection` CLI extension.
 
 21.0.0b2
 ++++++++
