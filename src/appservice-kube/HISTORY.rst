@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.0.0b1
+++++++
+* Fix compatibility with newer Azure CLI App Service module versions
+
 0.1.11
 ++++++
 * Remove msrestazure dependency

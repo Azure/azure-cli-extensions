@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "computelimit shared-limit list",
-    is_preview=True,
 )
 class List(AAZCommand):
     """List all compute limits shared by the host subscription with its guest subscriptions.

@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.0.0b15
++++++++++++++++
+* Fixed bug where workspace providers were appended to wrong property causing workspace creation to fail
+* Improved error handling for `az quantum workspace set` to provide a clear error message when a workspace is not yet fully provisioned
+
 1.0.0b14
 +++++++++++++++
 * Updated control plane related commands to use latest API version 2025-12-15-preview
