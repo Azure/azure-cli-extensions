@@ -40,7 +40,7 @@ def _ensure_dataprotection_extension(cmd, yes):
             dataprotection_enable_backup_helper,
         )
         return
-    except ImportError:
+    except Exception:  # pylint: disable=broad-except
         pass
 
     install_msg = (
