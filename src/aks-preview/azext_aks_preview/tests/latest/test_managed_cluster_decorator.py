@@ -102,6 +102,8 @@ from azure.cli.core.util import todict
 from azure.cli.command_modules.acs._consts import (
     CONST_OUTBOUND_TYPE_LOAD_BALANCER,
     CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
+    CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
+    CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
     DecoratorEarlyExitException,
     DecoratorMode,
 )
@@ -4891,6 +4893,96 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             outbound_type_5,
             CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY_V2,
         )
+
+    def test_get_outbound_type_update_udr_byo_vnet(self):
+        """Test that updating to UDR succeeds when the cluster has a BYO VNet (vnet_subnet_id is set on agentpool)."""
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"outbound_type": "userDefinedRouting"}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.create_attach_agentpool_context(ctx)
+        # Simulate a BYO VNet cluster: agentpool has vnet_subnet_id set
+        agentpool = self.models.ManagedClusterAgentPoolProfile(
+            name="nodepool1",
+            vnet_subnet_id="/subscriptions/test/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/vnet/subnets/subnet",
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            agent_pool_profiles=[agentpool],
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                load_balancer_sku="standard",
+            ),
+        )
+        ctx.attach_mc(mc)
+        ctx.agentpool_context.attach_agentpool(agentpool)
+        # Should succeed — BYO VNet cluster can update to UDR
+        outbound_type = ctx._get_outbound_type(enable_validation=True)
+        self.assertEqual(outbound_type, CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING)
+
+    def test_get_outbound_type_update_udr_managed_vnet(self):
+        """Test that updating to UDR fails with clear error when the cluster uses managed VNet (no vnet_subnet_id)."""
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"outbound_type": "userDefinedRouting"}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.create_attach_agentpool_context(ctx)
+        # Simulate a managed VNet cluster: agentpool has no vnet_subnet_id
+        agentpool = self.models.ManagedClusterAgentPoolProfile(
+            name="nodepool1",
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            agent_pool_profiles=[agentpool],
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                load_balancer_sku="standard",
+            ),
+        )
+        ctx.attach_mc(mc)
+        ctx.agentpool_context.attach_agentpool(agentpool)
+        # Should fail with InvalidArgumentValueError for managed VNet clusters
+        with self.assertRaises(InvalidArgumentValueError):
+            ctx._get_outbound_type(enable_validation=True)
+
+    def test_get_outbound_type_update_user_assigned_nat_gw_managed_vnet(self):
+        """Test that updating to userAssignedNATGateway fails with clear error when using managed VNet."""
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"outbound_type": "userAssignedNATGateway"}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.create_attach_agentpool_context(ctx)
+        agentpool = self.models.ManagedClusterAgentPoolProfile(
+            name="nodepool1",
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            agent_pool_profiles=[agentpool],
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                load_balancer_sku="standard",
+            ),
+        )
+        ctx.attach_mc(mc)
+        ctx.agentpool_context.attach_agentpool(agentpool)
+        with self.assertRaises(InvalidArgumentValueError):
+            ctx._get_outbound_type(enable_validation=True)
+
+    def test_get_outbound_type_create_udr_no_subnet(self):
+        """Test that creating with UDR but no vnet_subnet_id raises RequiredArgumentMissingError."""
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"outbound_type": "userDefinedRouting"}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.create_attach_agentpool_context(ctx)
+        # Should fail with RequiredArgumentMissingError during create
+        with self.assertRaises(RequiredArgumentMissingError):
+            ctx._get_outbound_type(enable_validation=True)
 
     def test_get_enable_gateway_api(self):
         # default value

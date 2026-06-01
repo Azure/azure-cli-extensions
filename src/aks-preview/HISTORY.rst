@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* `az aks update`: Fix misleading error when updating outbound type to `userDefinedRouting` or `userAssignedNATGateway`. For managed VNet clusters (unsupported), a clear error message is now shown instead of asking for `--vnet-subnet-id`. For BYO VNet clusters, the update works correctly without requiring the user to re-specify the subnet.
 
 21.0.0b3
 +++++++
