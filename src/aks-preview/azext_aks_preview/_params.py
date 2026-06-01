@@ -210,6 +210,7 @@ from azext_aks_preview._validators import (
     validate_load_balancer_sku,
     validate_max_surge,
     validate_message_of_the_day,
+    validate_node_public_ip_prefix_ids,
     validate_node_public_ip_tags,
     validate_nodepool_id,
     validate_nodepool_labels,
@@ -870,6 +871,14 @@ def load_arguments(self, _):
         )
         c.argument("enable_node_public_ip", action="store_true")
         c.argument("node_public_ip_prefix_id")
+        c.argument(
+            "node_public_ip_prefix_ids",
+            validator=validate_node_public_ip_prefix_ids,
+            help="Comma-separated list of public IP prefix resource IDs for dual-stack node public IPs "
+                 "(IPv4 and/or IPv6). At most one IPv4 and one IPv6 prefix may be specified. "
+                 "Automatically enables --enable-node-public-ip. Cannot be used with --node-public-ip-prefix-id. "
+                 "Requires the NodePublicIPv6PrefixPreview feature flag to be registered.",
+        )
         c.argument("enable_cluster_autoscaler", action="store_true")
         c.argument("min_count", type=int, validator=validate_nodes_count)
         c.argument("max_count", type=int, validator=validate_nodes_count)
@@ -926,6 +935,7 @@ def load_arguments(self, _):
         c.argument("enable_encryption_at_host", action="store_true")
         c.argument("enable_ultra_ssd", action="store_true")
         c.argument("enable_fips_image", action="store_true")
+        c.argument("enable_fips", action="store_true", is_preview=True)
         c.argument("kubelet_config")
         c.argument("linux_os_config")
         c.argument("host_group_id", validator=validate_host_group_id)
@@ -1582,6 +1592,8 @@ def load_arguments(self, _):
         )
         c.argument("image_cleaner_interval_hours", type=int)
         c.argument("disable_image_integrity", action="store_true", is_preview=True)
+        c.argument("enable_fips", action="store_true", is_preview=True)
+        c.argument("disable_fips", action="store_true", is_preview=True)
         c.argument("enable_service_account_image_pull", action="store_true", is_preview=True)
         c.argument("disable_service_account_image_pull", action="store_true", is_preview=True)
         c.argument("service_account_image_pull_default_managed_identity_id", is_preview=True)
@@ -2107,6 +2119,14 @@ def load_arguments(self, _):
         )
         c.argument("enable_node_public_ip", action="store_true")
         c.argument("node_public_ip_prefix_id")
+        c.argument(
+            "node_public_ip_prefix_ids",
+            validator=validate_node_public_ip_prefix_ids,
+            help="Comma-separated list of public IP prefix resource IDs for dual-stack node public IPs "
+                 "(IPv4 and/or IPv6). At most one IPv4 and one IPv6 prefix may be specified. "
+                 "Automatically enables --enable-node-public-ip. Cannot be used with --node-public-ip-prefix-id. "
+                 "Requires the NodePublicIPv6PrefixPreview feature flag to be registered.",
+        )
         c.argument(
             "enable_cluster_autoscaler",
             options_list=["--enable-cluster-autoscaler", "-e"],

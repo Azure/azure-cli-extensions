@@ -4,16 +4,26 @@ Release History
 ===============
 
 Guidance
-++++++++
++++++++
 If there is no rush to release a new version, please just add a description of the modification under the *Pending* section.
 
 To release a new version, please select a new version number (usually plus 1 to last patch version, X.Y.Z -> Major.Minor.Patch, more details in `\doc <https://semver.org/>`_), and then add a new section named as the new version number in this file, the content should include the new modifications and everything from the *Pending* section. Finally, update the `VERSION` variable in `setup.py` with this new version number.
 
 Pending
 +++++++
+
+21.0.0b3
++++++++
+* Migrate code from Azure SDK to AAZ based commands for compute operations (VM).
+* `az aks create` and `az aks update`: Add `--enable-backup` (preview) to configure Azure Backup for the AKS cluster in a single command. Supports `--backup-strategy` presets (Week, Month, DisasterRecovery, Custom) and an optional `--backup-configuration-file` for bring-your-own vault/policy/storage. Requires the `dataprotection` CLI extension.
+
+21.0.0b2
+++++++++
+* `az aks create`: Add `--node-public-ip-prefix-ids` parameter for specifying dual-stack (IPv4/IPv6) public IP prefixes for instance-level public IPs.
+* `az aks nodepool add`: Add `--node-public-ip-prefix-ids` parameter for specifying dual-stack (IPv4/IPv6) public IP prefixes for instance-level public IPs.
 * `az aks create` and `az aks nodepool add`: Add `--enable-osdisk-full-caching` (preview) to enable the full-cache ephemeral OS disk feature for a node pool. Requires AFEC registration `Microsoft.ContainerService/FullCachePreview`. Property is immutable after node pool creation.
 * Clean up unused disk driver version constants and remove obsolete CSI driver v2 tests following the removal of `--disk-driver-version` in 21.0.0b1.
-* `az aks create` and `az aks update`: Add `--enable-backup` (preview) to configure Azure Backup for the AKS cluster in a single command. Supports `--backup-strategy` presets (Week, Month, DisasterRecovery, Custom) and an optional `--backup-configuration-file` for bring-your-own vault/policy/storage. Requires the `dataprotection` CLI extension.
+* `az aks create/update`: Add `--enable-fips` (preview) to enable FIPS mode at the cluster level and `az aks update --disable-fips` to disable it. Requires Kubernetes version 1.34 or later and AFEC registration `Microsoft.ContainerService/EnableFIPSPreview`.
 
 21.0.0b1
 ++++++
