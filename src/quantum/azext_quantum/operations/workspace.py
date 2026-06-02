@@ -345,7 +345,7 @@ def get(cmd, resource_group_name=None, workspace_name=None):
     return ws
 
 
-def quotas(cmd, resource_group_name, workspace_name, location=None):
+def quotas(cmd, resource_group_name, workspace_name):
     """
     List the quotas for the given (or current) Azure Quantum workspace.
     """
@@ -355,7 +355,7 @@ def quotas(cmd, resource_group_name, workspace_name, location=None):
     return repack_response_json(response)
 
 
-def set(cmd, workspace_name, resource_group_name, location=None):
+def set(cmd, workspace_name, resource_group_name):
     """
     Set the default Azure Quantum workspace.
     """

@@ -33,7 +33,7 @@ class QuantumJobsScenarioTest(ScenarioTest):
     @live_only()
     def test_jobs(self):
         # set current workspace:
-        self.cmd(f'az quantum workspace set -g {get_test_resource_group()} -w {get_test_workspace()} -l {get_test_workspace_location()}')
+        self.cmd(f'az quantum workspace set -g {get_test_resource_group()} -w {get_test_workspace()}')
 
         # list
         targets = self.cmd('az quantum target list -o json').get_output_in_json()
@@ -45,10 +45,10 @@ class QuantumJobsScenarioTest(ScenarioTest):
     # # See "TODO" in issue_cmd_with_param_missing un utils.py
 
     def test_job_errors(self):
-        issue_cmd_with_param_missing(self, "az quantum job cancel", "az quantum job cancel -g MyResourceGroup -w MyWorkspace -l MyLocation -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy\nCancel an Azure Quantum job by id.")
-        issue_cmd_with_param_missing(self, "az quantum job output", "az quantum job output -g MyResourceGroup -w MyWorkspace -l MyLocation -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy -o table\nPrint the results of a successful Azure Quantum job.")
-        issue_cmd_with_param_missing(self, "az quantum job show", "az quantum job show -g MyResourceGroup -w MyWorkspace -l MyLocation -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy --query status\nGet the status of an Azure Quantum job.")
-        issue_cmd_with_param_missing(self, "az quantum job wait", "az quantum job wait -g MyResourceGroup -w MyWorkspace -l MyLocation -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy --max-poll-wait-secs 60 -o table\nWait for completion of a job, check at 60 second intervals.")
+        issue_cmd_with_param_missing(self, "az quantum job cancel", "az quantum job cancel -g MyResourceGroup -w MyWorkspace -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy\nCancel an Azure Quantum job by id.")
+        issue_cmd_with_param_missing(self, "az quantum job output", "az quantum job output -g MyResourceGroup -w MyWorkspace -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy -o table\nPrint the results of a successful Azure Quantum job.")
+        issue_cmd_with_param_missing(self, "az quantum job show", "az quantum job show -g MyResourceGroup -w MyWorkspace -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy --query status\nGet the status of an Azure Quantum job.")
+        issue_cmd_with_param_missing(self, "az quantum job wait", "az quantum job wait -g MyResourceGroup -w MyWorkspace -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy --max-poll-wait-secs 60 -o table\nWait for completion of a job, check at 60 second intervals.")
 
     def test_transform_output(self):
         # Call with a good histogram
@@ -203,7 +203,7 @@ class QuantumJobsScenarioTest(ScenarioTest):
         # Wait for role assignments to propagate so the new workspace can access the storage account
         time.sleep(60)
         
-        self.cmd(f"az quantum workspace set -g {test_resource_group} -w {test_workspace_temp} -l {test_location}")
+        self.cmd(f"az quantum workspace set -g {test_resource_group} -w {test_workspace_temp}")
 
         # Submit a job to Rigetti and look for SAS tokens in URIs in the output
         results = self.cmd("az quantum job submit -t rigetti.sim.qvm --job-input-format rigetti.quil.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/bell-state.quil --job-output-format rigetti.quil-results.v1 -o json").get_output_in_json()
@@ -267,7 +267,7 @@ class QuantumJobsScenarioTest(ScenarioTest):
         storage_info = self.cmd(f"az storage account show -g {test_resource_group} -n {test_storage_temp} -o json").get_output_in_json()
         self.assertFalse(storage_info["allowSharedKeyAccess"], "Access keys should be disabled on the newly created storage account for new workspace")
 
-        self.cmd(f"az quantum workspace set -g {test_resource_group} -w {test_workspace_temp} -l {test_location}")
+        self.cmd(f"az quantum workspace set -g {test_resource_group} -w {test_workspace_temp}")
         time.sleep(60) # wait for role assignments to propagate so the new workspace can access the storage account
 
         # Test that job submission works with disabled access keys on linked storage (/sasUri returns user delegation SAS)

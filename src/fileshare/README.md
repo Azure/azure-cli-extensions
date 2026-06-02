@@ -1,6 +1,6 @@
 # Azure CLI Fileshares Extension
 
-Manage Azure File Shares resources (API version `2025-09-01-preview`).
+Manage Azure File Shares resources (API version `2026-06-01`).
 
 ## Install
 

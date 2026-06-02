@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0b16
++++++++++++++++
+* Removed deprecated ``--location``/``-l`` parameter from ``quantum execute``, ``quantum run``, ``quantum job submit``, ``quantum job cancel``, ``quantum job list``, ``quantum job output``, ``quantum job show``, ``quantum job wait``, ``quantum target list``, ``quantum workspace set``, and ``quantum workspace quotas`` commands.
+
 1.0.0b15
 +++++++++++++++
 * Fixed bug where workspace providers were appended to wrong property causing workspace creation to fail
