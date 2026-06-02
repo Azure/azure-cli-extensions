@@ -36,7 +36,7 @@ def _ensure_dataprotection_extension(cmd, yes):
 
     try:
         add_extension_to_path(DATAPROTECTION_EXTENSION_NAME)
-        from azext_dataprotection.manual.aks.aks_helper import (  # pylint: disable=unused-import
+        from azext_dataprotection.manual.aks.aks_helper import (  # pylint: disable=unused-import,import-error
             dataprotection_enable_backup_helper,
         )
         return
