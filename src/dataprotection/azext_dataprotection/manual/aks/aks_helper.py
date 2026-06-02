@@ -1055,7 +1055,6 @@ def _show_plan_and_confirm(cluster_subscription_id, cluster_name,
     logger.warning("  RBAC role assignments listed above.")
     logger.warning("")
 
-    from knack.prompting import prompt_y_n
     return prompt_y_n("Do you want to proceed?", default='y')
 
 
