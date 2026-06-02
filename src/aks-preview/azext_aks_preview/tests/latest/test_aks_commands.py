@@ -15812,25 +15812,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
         self.cmd(create_missing_parent, expect_failure=True)
 
-        # negative: --enable-control-plane-metrics with --disable-azure-monitor-metrics on create
-        create_conflicting = (
-            "aks create --resource-group={resource_group} --name={name} --location={location} "
-            "--ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} --enable-managed-identity "
-            "--enable-azure-monitor-metrics --enable-control-plane-metrics "
-            "--disable-azure-monitor-metrics --output=json"
-        )
-        self.cmd(create_conflicting, expect_failure=True)
-
-        # negative: both --enable-control-plane-metrics and --disable-control-plane-metrics
-        create_both = (
-            "aks create --resource-group={resource_group} --name={name} --location={location} "
-            "--ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} --enable-managed-identity "
-            "--enable-azure-monitor-metrics --enable-control-plane-metrics "
-            "--disable-control-plane-metrics --output=json"
-        )
-        self.cmd(create_both, expect_failure=True)
-
-        # create a baseline cluster (no AM metrics) so we can exercise the update-time negative
+        # create a baseline cluster (no AM metrics) so we can exercise the update-time negatives
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --location={location} "
             "--ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} --enable-managed-identity "
@@ -15850,6 +15832,20 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--enable-control-plane-metrics"
         )
         self.cmd(update_missing_parent, expect_failure=True)
+
+        # negative: --enable-control-plane-metrics with --disable-azure-monitor-metrics on update
+        update_conflicting = (
+            "aks update --resource-group={resource_group} --name={name} --yes --output=json "
+            "--enable-azure-monitor-metrics --enable-control-plane-metrics --disable-azure-monitor-metrics"
+        )
+        self.cmd(update_conflicting, expect_failure=True)
+
+        # negative: both --enable-control-plane-metrics and --disable-control-plane-metrics on update
+        update_both = (
+            "aks update --resource-group={resource_group} --name={name} --yes --output=json "
+            "--enable-azure-monitor-metrics --enable-control-plane-metrics --disable-control-plane-metrics"
+        )
+        self.cmd(update_both, expect_failure=True)
 
         # delete
         self.cmd(
