@@ -1,0 +1,52 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - fileshare limits-show
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --location
+      User-Agent:
+      - AZURECLI/2.87.0 azsdk-python-core/1.39.0 Python/3.12.10 (Windows-10-10.0.19045-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.FileShares/locations/eastus/getLimits?api-version=2026-06-01
+  response:
+    body:
+      string: '{"properties":{"limits":{"maxFileShares":10000,"maxFileShareSnapshots":200,"maxFileShareSubnets":400,"maxFileSharePrivateEndpointConnections":100,"minProvisionedStorageGiB":32,"maxProvisionedStorageGiB":262144,"minProvisionedIOPerSec":3000,"maxProvisionedIOPerSec":102400,"minProvisionedThroughputMiBPerSec":100,"maxProvisionedThroughputMiBPerSec":10340},"provisioningConstants":{"baseIOPerSec":3000,"scalarIOPerSec":1.0,"baseThroughputMiBPerSec":100,"scalarThroughputMiBPerSec":0.1,"guardrailIOPerSecScalar":5.0,"guardrailThroughputScalar":5.0}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '547'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 27 May 2026 07:10:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=544a7a2e-697f-487c-b2b0-a13df7f346b6,objectId=7c1fae93-9490-4ea9-ad13-1c6792d577ec/eastus2euap/a375ed7c-35d2-4884-94bc-e124e480d2f0
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-ms-throttling-version:
+      - v2
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -4,14 +4,19 @@ Release History
 ===============
 
 Guidance
-++++++++
++++++++
 If there is no rush to release a new version, please just add a description of the modification under the *Pending* section.
 
 To release a new version, please select a new version number (usually plus 1 to last patch version, X.Y.Z -> Major.Minor.Patch, more details in `\doc <https://semver.org/>`_), and then add a new section named as the new version number in this file, the content should include the new modifications and everything from the *Pending* section. Finally, update the `VERSION` variable in `setup.py` with this new version number.
 
 Pending
 +++++++
+* `az aks bastion`: Fix `--subscription` not being passed to internal `az network bastion tunnel` and bastion discovery commands.
 * `az aks update`: Add `--node-disruption-policy` (preview) to update the node disruption policy for a cluster. Requires AFEC registration `Microsoft.ContainerService/NodeDisruptionProfile`. This is a cluster-level property that applies to all node pools in the cluster.
+
+21.0.0b3
++++++++
+* Migrate code from Azure SDK to AAZ based commands for compute operations (VM).
 
 21.0.0b2
 ++++++++
