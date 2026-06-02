@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.1
+++++++
+* Fix version
+
 1.0.0
 ++++++
 * GA release.
