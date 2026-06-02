@@ -2,6 +2,15 @@
 
 Release History
 ===============
+
+2.0.1
++++++
+* Fix accidental docker dependency even when using tar
+
+2.0.0
++++++
+* Fix path traversal when generating policies from untrusted image tar files
+
 2.0.0b2
 +++++++
 * Fix default working directory for Windows containers being set to C:\\ if the image doesn't specify one.

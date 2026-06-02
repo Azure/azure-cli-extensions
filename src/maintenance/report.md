@@ -14,6 +14,7 @@
 |az maintenance configuration|MaintenanceConfigurations|[commands](#CommandsInMaintenanceConfigurations)|
 |az maintenance public-configuration|PublicMaintenanceConfigurations|[commands](#CommandsInPublicMaintenanceConfigurations)|
 |az maintenance update|Updates|[commands](#CommandsInUpdates)|
+|az maintenance scheduledevents|ScheduledEvents|[commands](#CommandsInScheduledEvents)|
 
 ## COMMANDS
 ### <a name="CommandsInApplyUpdates">Commands in `az maintenance applyupdate` group</a>
@@ -59,6 +60,11 @@
 |[az maintenance update list](#UpdatesList)|List|[Parameters](#ParametersUpdatesList)|[Example](#ExamplesUpdatesList)|
 |[az maintenance update list-parent](#UpdatesListParent)|ListParent|[Parameters](#ParametersUpdatesListParent)|[Example](#ExamplesUpdatesListParent)|
 
+### <a name="CommandsInScheduledEvents">Commands in `az maintenance scheduledevents` group</a>
+|CLI Command|Operation Swagger name|Parameters|Examples|
+|---------|------------|--------|-----------|
+|[az maintenance scheduledevents acknowledge](#ScheduledEventsAcknowledge)|Acknowledge|[Parameters](#ParametersScheduledEventsAcknowledge)|[Example](#ExamplesScheduledEventsAcknowledge)|
+|[az maintenance scheduledevents list acknowledge](#ScheduledEventsListAcknowledge)|AcknowledgeList|[Parameters](#ParametersScheduledEventsListAcknowledge)|[Example](#ExamplesScheduledEventsListAcknowledge)|
 
 ## COMMAND DETAILS
 ### group `az maintenance applyupdate`
@@ -458,3 +464,35 @@ az maintenance update list-parent --provider-name "Microsoft.Compute" --resource
 |**--resource-parent-name**|string|Resource parent identifier|resource_parent_name|resourceParentName|
 |**--resource-type**|string|Resource type|resource_type|resourceType|
 |**--resource-name**|string|Resource identifier|resource_name|resourceName|
+
+#### <a name="ScheduledEventsAcknowledge">Command `az maintenance scheduledevents acknowledge`</a>
+
+##### <a name="ExamplesScheduledEventsAcknowledge">Example</a>
+```
+az maintenance scheduledevents acknowledge --resource-group "examplerg"  --resource-type "virtualMachinesScaleSets" \
+ --resource-name "exampleres" --subscription "examplesubid" --scheduled-events-id "eventid"
+```
+##### <a name="ParametersScheduledEventsAcknowledge">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--subscription**|string|Subscription|subscription_id|subscriptionId|
+|**--resource-group**|string|Resource group name|resource_group_name|resourceGroupName|
+|**--resource-type**|string|Resource type|resource_type|resourceType|
+|**--resource-name**|string|Resource identifier|resource_name|resourceName|
+|**--scheduled-events-id**|string|ScheduledEvents Id|scheduled_events_id|scheduledEventId|
+
+#### <a name="ScheduledEventsListAcknowledge">Command `az maintenance scheduledevents list acknowledge`</a>
+
+##### <a name="ExamplesScheduledEventsListAcknowledge">Example</a>
+```
+az maintenance scheduledevents list acknowledge --resource-group "examplerg"  --resource-type "virtualMachinesScaleSets" \
+ --resource-name "exampleres" --subscription "examplesubid" --value ["eventid1", "eventid2"]
+```
+##### <a name="ParametersScheduledEventsListAcknowledge">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--subscription**|string|Subscription|subscription_id|subscriptionId|
+|**--resource-group**|string|Resource group name|resource_group_name|resourceGroupName|
+|**--resource-type**|string|Resource type|resource_type|resourceType|
+|**--resource-name**|string|Resource identifier|resource_name|resourceName|
+|**--value**|array|List of ScheduledEvents|value|value|

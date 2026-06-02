@@ -258,6 +258,61 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
         ctx_2.attach_agentpool(agentpool_2)
         self.assertEqual(ctx_2.get_enable_artifact_streaming(), None)
 
+    def common_get_enable_os_disk_full_caching(self):
+        # default: store_true flag not provided -> raw is False
+        ctx_1 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"enable_os_disk_full_caching": False}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_1.get_enable_os_disk_full_caching(), False)
+        # CREATE: value on attached agentpool overrides default False
+        agentpool_1 = self.create_initialized_agentpool_instance(
+            enable_os_disk_full_caching=True
+        )
+        ctx_1.attach_agentpool(agentpool_1)
+        self.assertEqual(ctx_1.get_enable_os_disk_full_caching(), True)
+
+        # explicit True from raw param, no attached agentpool
+        ctx_2 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"enable_os_disk_full_caching": True}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_2.get_enable_os_disk_full_caching(), True)
+
+        # priority: raw True is overridden by attached agentpool False in CREATE mode
+        ctx_3 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"enable_os_disk_full_caching": True}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        agentpool_3 = self.create_initialized_agentpool_instance(
+            enable_os_disk_full_caching=False
+        )
+        ctx_3.attach_agentpool(agentpool_3)
+        self.assertEqual(ctx_3.get_enable_os_disk_full_caching(), False)
+
+        # UPDATE mode gate: attached agentpool MUST NOT override raw_param
+        ctx_4 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"enable_os_disk_full_caching": False}),
+            self.models,
+            DecoratorMode.UPDATE,
+            self.agentpool_decorator_mode,
+        )
+        agentpool_4 = self.create_initialized_agentpool_instance(
+            enable_os_disk_full_caching=True
+        )
+        ctx_4.attach_agentpool(agentpool_4)
+        self.assertEqual(ctx_4.get_enable_os_disk_full_caching(), False)
+
     def common_get_disable_artifact_streaming(self):
         # default
         ctx_1 = AKSPreviewAgentPoolContext(
@@ -345,6 +400,47 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
         )
         ctx_2.attach_agentpool(agentpool_2)
         self.assertEqual(ctx_2.get_pod_ip_allocation_mode(), "StaticBlock")
+
+    def common_get_node_public_ip_prefix_ids(self):
+        # default - None
+        ctx_1 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"node_public_ip_prefix_ids": None}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_1.get_node_public_ip_prefix_ids(), None)
+
+        # comma-separated string
+        ctx_2 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({
+                "node_public_ip_prefix_ids": "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Network/publicIPPrefixes/ipv4-prefix,"
+                "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Network/publicIPPrefixes/ipv6-prefix"
+            }),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(
+            ctx_2.get_node_public_ip_prefix_ids(),
+            [
+                "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Network/publicIPPrefixes/ipv4-prefix",
+                "/subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.Network/publicIPPrefixes/ipv6-prefix",
+            ],
+        )
+
+        # empty string should raise error
+        ctx_3 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"node_public_ip_prefix_ids": ""}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        with self.assertRaises(InvalidArgumentValueError):
+            ctx_3.get_node_public_ip_prefix_ids()
 
     def common_get_skip_gpu_driver_install(self):
         # default
@@ -1155,6 +1251,9 @@ class AKSPreviewAgentPoolContextStandaloneModeTestCase(
     def test_get_enable_artifact_streaming(self):
         self.common_get_enable_artifact_streaming()
 
+    def test_get_enable_os_disk_full_caching(self):
+        self.common_get_enable_os_disk_full_caching()
+
     def test_get_disable_artifact_streaming(self):
         self.common_get_disable_artifact_streaming()
 
@@ -1163,6 +1262,9 @@ class AKSPreviewAgentPoolContextStandaloneModeTestCase(
 
     def test_get_pod_ip_allocation_mode(self):
         self.common_get_pod_ip_allocation_mode()
+
+    def test_get_node_public_ip_prefix_ids(self):
+        self.common_get_node_public_ip_prefix_ids()
 
     def test_get_os_sku(self):
         self.common_get_os_sku()
@@ -1257,12 +1359,18 @@ class AKSPreviewAgentPoolContextManagedClusterModeTestCase(
 
     def test_get_enable_artifact_streaming(self):
         self.common_get_enable_artifact_streaming()
-    
+
+    def test_get_enable_os_disk_full_caching(self):
+        self.common_get_enable_os_disk_full_caching()
+
     def test_get_enable_managed_gpu(self):
         self.common_get_enable_managed_gpu()
 
     def test_get_pod_ip_allocation_mode(self):
         self.common_get_pod_ip_allocation_mode()
+
+    def test_get_node_public_ip_prefix_ids(self):
+        self.common_get_node_public_ip_prefix_ids()
 
     def test_get_os_sku(self):
         self.common_get_os_sku()
@@ -1582,6 +1690,41 @@ class AKSPreviewAgentPoolAddDecoratorCommonTestCase(unittest.TestCase):
             )
         )
         self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
+
+    def common_set_up_os_disk_full_caching(self):
+        # default: store_true flag not provided -> raw is False -> field stays unset
+        dec_default = AKSPreviewAgentPoolAddDecorator(
+            self.cmd,
+            self.client,
+            {"enable_os_disk_full_caching": False},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        with self.assertRaises(CLIInternalError):
+            dec_default.set_up_os_disk_full_caching(None)
+        agentpool_default = self.create_initialized_agentpool_instance(restore_defaults=False)
+        dec_default.context.attach_agentpool(agentpool_default)
+        dec_agentpool_default = dec_default.set_up_os_disk_full_caching(agentpool_default)
+        dec_agentpool_default = self._restore_defaults_in_agentpool(dec_agentpool_default)
+        ground_truth_default = self.create_initialized_agentpool_instance()
+        self.assertEqual(dec_agentpool_default, ground_truth_default)
+
+        # explicit True -> field set to True
+        dec_true = AKSPreviewAgentPoolAddDecorator(
+            self.cmd,
+            self.client,
+            {"enable_os_disk_full_caching": True},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        agentpool_true = self.create_initialized_agentpool_instance(restore_defaults=False)
+        dec_true.context.attach_agentpool(agentpool_true)
+        dec_agentpool_true = dec_true.set_up_os_disk_full_caching(agentpool_true)
+        dec_agentpool_true = self._restore_defaults_in_agentpool(dec_agentpool_true)
+        ground_truth_true = self.create_initialized_agentpool_instance(
+            enable_os_disk_full_caching=True
+        )
+        self.assertEqual(dec_agentpool_true, ground_truth_true)
 
     def common_set_up_managed_gpu(self):
         dec_1 = AKSPreviewAgentPoolAddDecorator(
@@ -2157,6 +2300,9 @@ class AKSPreviewAgentPoolAddDecoratorStandaloneModeTestCase(
     def test_set_up_artifact_streaming(self):
         self.common_set_up_artifact_streaming()
 
+    def test_set_up_os_disk_full_caching(self):
+        self.common_set_up_os_disk_full_caching()
+
     def test_set_up_managed_gpu(self):
         self.common_set_up_managed_gpu()
 
@@ -2305,7 +2451,10 @@ class AKSPreviewAgentPoolAddDecoratorManagedClusterModeTestCase(
 
     def test_set_up_artifact_streaming(self):
         self.common_set_up_artifact_streaming()
-    
+
+    def test_set_up_os_disk_full_caching(self):
+        self.common_set_up_os_disk_full_caching()
+
     def test_set_up_managed_gpu(self):
         self.common_set_up_managed_gpu()
 

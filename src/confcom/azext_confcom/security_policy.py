@@ -494,6 +494,18 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
                 logger.info("Processing image: %s", image_name)
                 image_info, tar = get_image_info(progress, message_queue, tar_mapping, image)
 
+                # validate image platform matches --platform
+                if image_info and self._platform:
+                    detected_os = image_info.get("Os") or image_info.get("platform", "").split("/")[0]
+                    detected_arch = image_info.get("Architecture") or image_info.get("platform", "").split("/")[-1]
+                    if detected_os and detected_arch:
+                        detected = f"{detected_os}/{detected_arch}"
+                        if detected != self._platform:
+                            eprint(
+                                f'Image "{image_name}" has platform "{detected}", '
+                                f'which does not match the specified platform "{self._platform}".'
+                            )
+
                 # verify and populate the working directory property
                 if not image.get_working_dir() and image_info:
                     workingDir = image_info.get("WorkingDir")
@@ -679,29 +691,32 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         self._images = images
 
 
-def validate_image_platform(image_name: str, platform: str) -> None:
+def validate_image_platform(image_name: str, platform: str, tar_mapping=None) -> None:
     """Validate that the image's platform matches --platform.
 
-    Checks the local Docker image first, then attempts to pull with the
-    specified platform if not found locally. Verifies the image's
-    Os/Architecture attrs match the requested platform.
+    When tar_mapping is provided and the image is found in the tar,
+    validation is skipped here — it will be performed later in
+    populate_policy_content_for_all_images after the tar config is read.
+    Without tar, checks via Docker (local get or pull).
     """
+    if tar_mapping:
+        tar_location = get_tar_location_from_mapping(tar_mapping, image_name)
+        if tar_location:
+            return
+
     import docker as docker_module
     try:
         client = docker_module.from_env()
     except docker_module.errors.DockerException:
         eprint("Docker is not running. Please start Docker.")
-        return
 
-    image = None
-
-    # Try local image first
+    # Try local first
     try:
         image = client.images.get(image_name)
     except (docker_module.errors.ImageNotFound, docker_module.errors.NullResource):
-        pass
+        image = None
 
-    # If not local, try pulling with the specified platform
+    # Pull with specified platform
     if image is None:
         try:
             image = client.images.pull(image_name, platform=platform)
@@ -726,9 +741,7 @@ def validate_image_platform(image_name: str, platform: str) -> None:
                 )
 
     if image is None:
-        eprint(
-            f'Image "{image_name}" could not be retrieved for platform validation.'
-        )
+        eprint(f'Image "{image_name}" could not be retrieved for platform validation.')
         return
 
     detected = f"{image.attrs.get('Os')}/{image.attrs.get('Architecture')}"
@@ -752,6 +765,7 @@ def load_policy_from_arm_template_str(
     fragment_contents: Any = None,
     exclude_default_fragments: bool = False,
     platform: str = "linux/amd64",
+    tar_mapping=None,
 ) -> List[AciPolicy]:
     """Function that converts ARM template string to an ACI Policy"""
     input_arm_json = os_util.load_json_from_str(template_data)
@@ -902,7 +916,7 @@ def load_policy_from_arm_template_str(
 
             # Resolve ARM parameters/variables to get the real image name for validation
             resolved_image = find_value_in_params_and_vars(all_params, all_vars, image_name)
-            validate_image_platform(resolved_image, platform)
+            validate_image_platform(resolved_image, platform, tar_mapping=tar_mapping)
 
             exec_processes = []
             extract_probe(exec_processes, image_properties, config.ACI_FIELD_CONTAINERS_READINESS_PROBE)
@@ -963,6 +977,7 @@ def load_policy_from_arm_template_file(
     fragment_contents: list = None,
     exclude_default_fragments: bool = False,
     platform: str = "linux/amd64",
+    tar_mapping=None,
 ) -> List[AciPolicy]:
     """Utility function: generate policy object from given arm template and parameter file paths"""
     input_arm_json = os_util.load_str_from_file(template_path)
@@ -981,12 +996,13 @@ def load_policy_from_arm_template_file(
         fragment_contents=fragment_contents,
         exclude_default_fragments=exclude_default_fragments,
         platform=platform,
+        tar_mapping=tar_mapping,
     )
 
 
 def load_policy_from_image_name(
     image_names: Union[List[str], str], debug_mode: bool = False, disable_stdio: bool = False,
-    platform: str = "linux/amd64",
+    platform: str = "linux/amd64", tar_mapping=None,
 ) -> AciPolicy:
     # can either take a list of image names or a single image name
     if isinstance(image_names, str):
@@ -994,7 +1010,7 @@ def load_policy_from_image_name(
 
     containers = []
     for image_name in image_names:
-        validate_image_platform(image_name, platform)
+        validate_image_platform(image_name, platform, tar_mapping=tar_mapping)
 
         container = {}
         # assign just the fields that are expected
@@ -1031,6 +1047,7 @@ def load_policy_from_json_file(
     infrastructure_svn: str = None,
     exclude_default_fragments: bool = False,
     platform: str = "linux/amd64",
+    tar_mapping=None,
 ) -> AciPolicy:
     json_content = os_util.load_str_from_file(data)
     return load_policy_from_json(
@@ -1040,6 +1057,7 @@ def load_policy_from_json_file(
         infrastructure_svn=infrastructure_svn,
         exclude_default_fragments=exclude_default_fragments,
         platform=platform,
+        tar_mapping=tar_mapping,
     )
 
 
@@ -1050,6 +1068,7 @@ def load_policy_from_json(
     infrastructure_svn: str = None,
     exclude_default_fragments: bool = False,
     platform: str = "linux/amd64",
+    tar_mapping=None,
 ) -> AciPolicy:
     output_containers = []
     # 1) Parse incoming string as JSON
@@ -1113,7 +1132,7 @@ def load_policy_from_json(
                 f'Field ["{config.ACI_FIELD_TEMPLATE_IMAGE}"] is empty or cannot be found'
             )
 
-        validate_image_platform(image_name, platform)
+        validate_image_platform(image_name, platform, tar_mapping=tar_mapping)
 
         container_name = case_insensitive_dict_get(
             container, config.ACI_FIELD_CONTAINERS_NAME
@@ -1218,6 +1237,7 @@ def load_policy_from_virtual_node_yaml_file(
         fragment_contents: list = None,
         infrastructure_svn: str = None,
         platform: str = "linux/amd64",
+        tar_mapping=None,
 ) -> List[AciPolicy]:
     yaml_contents_str = os_util.load_str_from_file(virtual_node_yaml_path)
     return load_policy_from_virtual_node_yaml_str(
@@ -1231,6 +1251,7 @@ def load_policy_from_virtual_node_yaml_file(
         fragment_contents=fragment_contents,
         infrastructure_svn=infrastructure_svn,
         platform=platform,
+        tar_mapping=tar_mapping,
     )
 
 
@@ -1246,6 +1267,7 @@ def load_policy_from_virtual_node_yaml_str(
         fragment_contents: Any = None,
         infrastructure_svn: str = None,
         platform: str = "linux/amd64",
+        tar_mapping=None,
 ) -> List[AciPolicy]:
     """
     Load a virtual node yaml file and generate a policy object
@@ -1328,7 +1350,7 @@ def load_policy_from_virtual_node_yaml_str(
             if not image:
                 eprint("Container does not have an image field")
 
-            validate_image_platform(image, platform)
+            validate_image_platform(image, platform, tar_mapping=tar_mapping)
 
             # env vars
             envs = process_env_vars_from_yaml(

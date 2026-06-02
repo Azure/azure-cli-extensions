@@ -171,7 +171,7 @@ class Show(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
-            properties.additional_data = AAZObjectType(
+            properties.additional_data = AAZFreeFormDictType(
                 serialized_name="additionalData",
             )
             properties.anticipated_end_time = AAZStrType(
@@ -220,7 +220,7 @@ class Show(AAZCommand):
             )
 
             change_definition = cls._schema_on_200.properties.change_definition
-            change_definition.details = AAZObjectType(
+            change_definition.details = AAZFreeFormDictType(
                 flags={"required": True},
             )
             change_definition.kind = AAZStrType(
@@ -435,7 +435,7 @@ class Show(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
-            properties.additional_data = AAZObjectType(
+            properties.additional_data = AAZFreeFormDictType(
                 serialized_name="additionalData",
             )
             properties.anticipated_end_time = AAZStrType(
@@ -484,7 +484,7 @@ class Show(AAZCommand):
             )
 
             change_definition = cls._schema_on_200.properties.change_definition
-            change_definition.details = AAZObjectType(
+            change_definition.details = AAZFreeFormDictType(
                 flags={"required": True},
             )
             change_definition.kind = AAZStrType(

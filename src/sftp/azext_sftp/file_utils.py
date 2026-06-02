@@ -13,11 +13,52 @@ from azure.cli.core import azclierror
 from azure.cli.core import telemetry
 from azure.cli.core._profile import Profile
 from knack import log
+from knack.prompting import prompt_y_n, NoTTYException
 
 from . import rsa_parser
 from . import sftp_utils
 
 logger = log.get_logger(__name__)
+
+
+def _should_regenerate_key_pair(private_key_file, public_key_file, yes_without_prompt):
+    """Determine whether to regenerate an SSH key pair when files already exist.
+
+    Returns True if new keys should be generated (no existing keys, --yes specified,
+    or user confirmed overwrite at the prompt). Returns False to reuse existing keys.
+    """
+    private_key_exists = bool(private_key_file) and os.path.isfile(private_key_file)
+    public_key_exists = bool(public_key_file) and os.path.isfile(public_key_file)
+
+    if not private_key_exists and not public_key_exists:
+        return True
+
+    keys_folder = os.path.dirname(private_key_file or public_key_file)
+    if private_key_exists and public_key_exists:
+        existing_files = "private key and public key"
+    elif private_key_exists:
+        existing_files = "private key only"
+    else:
+        existing_files = "public key only"
+
+    logger.debug("Existing SSH key pair detected in '%s' (%s)", keys_folder, existing_files)
+
+    if yes_without_prompt:
+        logger.debug("--yes specified, will overwrite existing key pair")
+        return True
+
+    message = (f"An existing SSH key pair was found in '{keys_folder}' ({existing_files}). "
+               "Selecting 'y' will generate a new key pair and overwrite the existing files. "
+               "Selecting 'n' will use the existing key pair. Overwrite?")
+    try:
+        overwrite = prompt_y_n(message, default='y')
+    except NoTTYException:
+        logger.warning("No TTY available to prompt for key pair overwrite. Reusing existing "
+                       "key pair in '%s'. Use --yes to overwrite without prompting.", keys_folder)
+        return False
+
+    logger.debug("User chose to %s existing key pair", "overwrite" if overwrite else "reuse")
+    return overwrite
 
 
 def delete_file(file_path, message, warning=False):
@@ -33,7 +74,8 @@ def delete_file(file_path, message, warning=False):
                 raise azclierror.FileOperationError(f"{message}Error: {str(e)}") from e
 
 
-def check_or_create_public_private_files(public_key_file, private_key_file, credentials_folder, ssh_client_folder=None):
+def check_or_create_public_private_files(public_key_file, private_key_file, credentials_folder,
+                                         ssh_client_folder=None, yes_without_prompt=False):
     """Check for existing key files or create new ones if needed."""
     delete_keys = False
 
@@ -47,13 +89,14 @@ def check_or_create_public_private_files(public_key_file, private_key_file, cred
         public_key_file = os.path.join(credentials_folder, "id_rsa.pub")
         private_key_file = os.path.join(credentials_folder, "id_rsa")
 
-        # Check if existing keys are present before generating new ones
-        if not (os.path.isfile(public_key_file) and os.path.isfile(private_key_file)):
-            # Only generate new keys if both don't exist
+        if _should_regenerate_key_pair(private_key_file, public_key_file, yes_without_prompt):
+            # Remove existing files so ssh-keygen does not prompt again to overwrite.
+            for stale in (private_key_file, public_key_file):
+                if os.path.isfile(stale):
+                    delete_file(stale, f"Failed to remove existing key file {stale}. ", warning=True)
             sftp_utils.create_ssh_keyfile(private_key_file, ssh_client_folder)
-            # Only set delete_keys to True when we actually create new keys
             delete_keys = True
-        # If existing keys are found, delete_keys remains False
+        # else: existing keys reused, delete_keys stays False
 
     if not public_key_file:
         if private_key_file:
