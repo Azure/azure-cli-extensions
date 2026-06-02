@@ -1989,7 +1989,7 @@ def load_arguments(self, _):
                  "Supports storageAccountResourceId, blobContainerName, backupResourceGroupId, "
                  "backupVaultId, backupPolicyId, tags. backupVaultId and backupPolicyId are required "
                  "for Custom strategy. Only valid with --enable-backup.",
-            )
+        )
         c.argument(
             "control_plane_scaling_size",
             options_list=["--control-plane-scaling-size", "--cp-scaling-size"],
