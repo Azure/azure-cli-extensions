@@ -43,6 +43,22 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             method_name, recording_processors=[KeyReplacer()]
         )
 
+    def _create_log_analytics_workspace(self, resource_group_location):
+        workspace_name = self.create_random_name("clilaw", 16)
+        workspace_location = (
+            "eastus2" if resource_group_location.lower().endswith("euap") else resource_group_location
+        )
+        self.kwargs.update(
+            {
+                "workspace_name": workspace_name,
+                "workspace_location": workspace_location,
+            }
+        )
+        return self.cmd(
+            "monitor log-analytics workspace create -g {resource_group} -n {workspace_name} "
+            "--location {workspace_location} --query id -o tsv"
+        ).output.strip()
+
     def _get_versions(self, location):
         """Return the previous and current Kubernetes minor release versions, such as ("1.11.6", "1.12.4")."""
         supported_versions = self.cmd(
@@ -5978,13 +5994,16 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "ssh_key_value": self.generate_ssh_keys(),
             }
         )
+        self.kwargs.update({
+            "workspace_resource_id": self._create_log_analytics_workspace(resource_group_location),
+        })
 
         # create an Automatic cluster with hosted system enabled
         # hobo pool is fully managed by AKS, not accessible to users, and can only be configured during creation,
         # so we only need to test for cluster creation here
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --location={location} "
-            "--sku automatic --enable-hosted-system --workspace-resource-id=/subscriptions/feb5b150-60fe-4441-be73-8c02a524f55a/resourceGroups/hobo-test-la-rg/providers/Microsoft.OperationalInsights/workspaces/hobo-test-la-ws "
+            "--sku automatic --enable-hosted-system --workspace-resource-id={workspace_resource_id} "
             "--aks-custom-header AKSHTTPCustomFeatures=Microsoft.ContainerService/AutomaticSKUPreview,"
             "AKSHTTPCustomFeatures=Microsoft.ContainerService/AKS-AutomaticHostedSystemProfilePreview "
             "--ssh-key-value={ssh_key_value}"
@@ -6074,12 +6093,13 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "system_node_subnet_id": system_node_subnet_id,
             "node_subnet_id": node_subnet_id,
             "apiserver_subnet_id": apiserver_subnet_id,
+            "workspace_resource_id": self._create_log_analytics_workspace(resource_group_location),
         })
 
         # BYO VNet HOBO automatic cluster with loadBalancer outbound
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --location={location} "
-            "--sku automatic --enable-hosted-system --workspace-resource-id=/subscriptions/feb5b150-60fe-4441-be73-8c02a524f55a/resourceGroups/hobo-test-la-rg/providers/Microsoft.OperationalInsights/workspaces/hobo-test-la-ws "
+            "--sku automatic --enable-hosted-system --workspace-resource-id={workspace_resource_id} "
             "--enable-managed-identity --assign-identity {identity_id} "
             "--system-node-subnet-id={system_node_subnet_id} "
             "--node-subnet-id={node_subnet_id} "
@@ -6218,12 +6238,13 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "system_node_subnet_id": system_node_subnet_id,
             "node_subnet_id": node_subnet_id,
             "apiserver_subnet_id": apiserver_subnet_id,
+            "workspace_resource_id": self._create_log_analytics_workspace(resource_group_location),
         })
 
         # BYO VNet HOBO automatic cluster with userAssignedNATGateway outbound
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --location={location} "
-            "--sku automatic --enable-hosted-system --workspace-resource-id=/subscriptions/feb5b150-60fe-4441-be73-8c02a524f55a/resourceGroups/hobo-test-la-rg/providers/Microsoft.OperationalInsights/workspaces/hobo-test-la-ws "
+            "--sku automatic --enable-hosted-system --workspace-resource-id={workspace_resource_id} "
             "--enable-managed-identity --assign-identity {identity_id} "
             "--system-node-subnet-id={system_node_subnet_id} "
             "--node-subnet-id={node_subnet_id} "
