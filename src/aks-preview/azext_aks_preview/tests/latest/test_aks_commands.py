@@ -15747,6 +15747,10 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
+        # wait for AMW background setup to complete before issuing update
+        wait_cmd = "aks wait --resource-group={resource_group} --name={name} --updated --timeout=1800"
+        self.cmd(wait_cmd, checks=[self.is_empty()])
+
         # update: enable-control-plane-metrics on a cluster that already has AM metrics
         update_cmd = (
             "aks update --resource-group={resource_group} --name={name} --yes --output=json "
