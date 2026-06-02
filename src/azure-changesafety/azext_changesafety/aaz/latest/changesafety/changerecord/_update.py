@@ -60,7 +60,7 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.additional_data = AAZObjectArg(
+        _args_schema.additional_data = AAZFreeFormDictArg(
             options=["--additional-data"],
             arg_group="Properties",
             help="Additional metadata for the change required for various orchestration tools.",
@@ -150,7 +150,7 @@ class Update(AAZCommand):
         )
 
         change_definition = cls._args_schema.change_definition
-        change_definition.details = AAZObjectArg(
+        change_definition.details = AAZFreeFormDictArg(
             options=["details"],
             help="Free form object containing additional details for the change definition.",
             blank={},
@@ -717,7 +717,7 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("additionalData", AAZObjectType, ".additional_data")
+                properties.set_prop("additionalData", AAZFreeFormDictType, ".additional_data")
                 properties.set_prop("anticipatedEndTime", AAZStrType, ".anticipated_end_time", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("anticipatedStartTime", AAZStrType, ".anticipated_start_time", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("changeDefinition", AAZObjectType, ".change_definition", typ_kwargs={"flags": {"required": True}})
@@ -733,7 +733,7 @@ class Update(AAZCommand):
 
             change_definition = _builder.get(".properties.changeDefinition")
             if change_definition is not None:
-                change_definition.set_prop("details", AAZObjectType, ".details", typ_kwargs={"flags": {"required": True}})
+                change_definition.set_prop("details", AAZFreeFormDictType, ".details", typ_kwargs={"flags": {"required": True}})
                 change_definition.set_prop("kind", AAZStrType, ".kind", typ_kwargs={"flags": {"required": True}})
                 change_definition.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
 
@@ -865,7 +865,7 @@ class _UpdateHelper:
         )
 
         properties = _schema_change_record_read.properties
-        properties.additional_data = AAZObjectType(
+        properties.additional_data = AAZFreeFormDictType(
             serialized_name="additionalData",
         )
         properties.anticipated_end_time = AAZStrType(
@@ -914,7 +914,7 @@ class _UpdateHelper:
         )
 
         change_definition = _schema_change_record_read.properties.change_definition
-        change_definition.details = AAZObjectType(
+        change_definition.details = AAZFreeFormDictType(
             flags={"required": True},
         )
         change_definition.kind = AAZStrType(

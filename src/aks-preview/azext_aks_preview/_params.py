@@ -1940,6 +1940,15 @@ def load_arguments(self, _):
             help="Disable continuous control plane and addon monitor for the cluster.",
         )
         c.argument(
+            "control_plane_scaling_size",
+            options_list=["--control-plane-scaling-size", "--cp-scaling-size"],
+            arg_type=get_enum_type(["H2", "H4", "H8"]),
+            is_preview=True,
+            help="The control plane scaling size. Provides scaled and performance-guaranteed control plane capacity. "
+                 "Available values are 'H2', 'H4', and 'H8'. "
+                 "The control plane scaling profile must already be enabled on the cluster.",
+        )
+        c.argument(
             "node_disruption_policy",
             arg_type=get_enum_type(node_disruption_policies),
             is_preview=True,

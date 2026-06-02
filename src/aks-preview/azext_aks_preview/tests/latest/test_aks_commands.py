@@ -10212,6 +10212,32 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
+        # update control plane scaling size from H4 to H8
+        update_cmd = (
+            "aks update --resource-group={resource_group} --name={name} "
+            "--control-plane-scaling-size H8"
+        )
+        self.cmd(
+            update_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("controlPlaneScalingProfile.scalingSize", "H8"),
+            ],
+        )
+
+        # update control plane scaling size from H8 to H2 (downgrade)
+        update_cmd_2 = (
+            "aks update --resource-group={resource_group} --name={name} "
+            "--control-plane-scaling-size H2"
+        )
+        self.cmd(
+            update_cmd_2,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("controlPlaneScalingProfile.scalingSize", "H2"),
+            ],
+        )
+
         # delete
         self.cmd(
             "aks delete -g {resource_group} -n {name} --yes --no-wait",
@@ -21692,7 +21718,7 @@ spec:
         )
 
     @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus2')
     def test_aks_check_network(self, resource_group, resource_group_location):
         # reset the count so in replay mode the random names will start with 0
         self.test_resources_count = 0
@@ -21708,7 +21734,7 @@ spec:
 
         # create
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
-                     '--ssh-key-value={ssh_key_value} --node-count=2 --os-sku Ubuntu'
+                     '--ssh-key-value={ssh_key_value} --node-count=2 --os-sku Ubuntu --node-vm-size Standard_D2s_v3'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded')
         ])
