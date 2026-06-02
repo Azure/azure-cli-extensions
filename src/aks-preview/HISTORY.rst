@@ -12,6 +12,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 * `az aks nodepool add`: Add `--secondary-network-interfaces`/`--secondary-nics` (preview) to configure secondary network interfaces on agent pool nodes. Accepts inline JSON or `@file`. Property is immutable after node pool creation.
+* `az aks update`: Add `--control-plane-scaling-size` parameter to update the control plane scaling size on an existing cluster with available sizes 'H2', 'H4', and 'H8'.
 * `az aks bastion`: Fix `--subscription` not being passed to internal `az network bastion tunnel` and bastion discovery commands.
 
 21.0.0b3

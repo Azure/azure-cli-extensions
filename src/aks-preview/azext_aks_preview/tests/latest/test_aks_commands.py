@@ -10212,6 +10212,32 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
+        # update control plane scaling size from H4 to H8
+        update_cmd = (
+            "aks update --resource-group={resource_group} --name={name} "
+            "--control-plane-scaling-size H8"
+        )
+        self.cmd(
+            update_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("controlPlaneScalingProfile.scalingSize", "H8"),
+            ],
+        )
+
+        # update control plane scaling size from H8 to H2 (downgrade)
+        update_cmd_2 = (
+            "aks update --resource-group={resource_group} --name={name} "
+            "--control-plane-scaling-size H2"
+        )
+        self.cmd(
+            update_cmd_2,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("controlPlaneScalingProfile.scalingSize", "H2"),
+            ],
+        )
+
         # delete
         self.cmd(
             "aks delete -g {resource_group} -n {name} --yes --no-wait",
