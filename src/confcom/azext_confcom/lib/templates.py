@@ -32,13 +32,20 @@ def get_parameters(
     arm_template_parameters: dict,
 ) -> dict:
 
+    def _first_defined(*values):
+        for value in values:
+            if value is not None:
+                return value
+        return None
+
+    template_parameters = arm_template.get("parameters", {})
     return {
-        parameter_key: (
-            arm_template_parameters.get(parameter_key, {}).get("value")
-            or arm_template.get("parameters", {}).get(parameter_key, {}).get("value")
-            or arm_template.get("parameters", {}).get(parameter_key, {}).get("defaultValue")
+        parameter_key: _first_defined(
+            arm_template_parameters.get(parameter_key, {}).get("value"),
+            template_parameters.get(parameter_key, {}).get("value"),
+            template_parameters.get(parameter_key, {}).get("defaultValue"),
         )
-        for parameter_key in arm_template.get("parameters", {}).keys()
+        for parameter_key in template_parameters.keys()
     }
 
 

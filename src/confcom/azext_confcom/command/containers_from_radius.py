@@ -441,11 +441,12 @@ def containers_from_radius(
     # Remove radius extension lines to avoid bicep compilation errors.
     # Uses line-level regex so that 'extension radiusResources' etc. are
     # removed cleanly without leaving stray text.
-    with tempfile.NamedTemporaryFile('w+', delete=True, suffix=".bicep") as temp_template_file:
+    with tempfile.TemporaryDirectory() as temp_dir:
+        temp_template_path = os.path.join(temp_dir, "template.bicep")
         with open(template, 'r') as f:
             content = re.sub(r'^extension\s+\S+.*$', '', f.read(), flags=re.MULTILINE)
-            temp_template_file.write(content)
-        temp_template_file.flush()
+        with open(temp_template_path, 'w') as out:
+            out.write(content)
 
         # Handle parameters file if it's a path
         if len(parameters) > 0 and isinstance(parameters[0][0], str) and os.path.isfile(parameters[0][0]):
@@ -456,18 +457,18 @@ def containers_from_radius(
             # Replace any references to the original template file with the temporary one
             params_content = re.sub(
                 r"using\s+'.*\.bicep'",
-                f"using '{os.path.basename(temp_template_file.name)}'",
+                f"using '{os.path.basename(temp_template_path)}'",
                 params_content
             )
 
-            with tempfile.NamedTemporaryFile('w+', delete=False, suffix=".bicepparam") as temp_params_file:
-                temp_params_file.write(params_content)
-                temp_params_file.flush()
-                parameters = [[temp_params_file.name]]
+            temp_params_path = os.path.join(temp_dir, "params.bicepparam")
+            with open(temp_params_path, 'w') as out:
+                out.write(params_content)
+            parameters = [[temp_params_path]]
 
         parsed_template = parse_deployment_template(
             az_cli_command,
-            temp_template_file.name,
+            temp_template_path,
             parameters,
         )
 
