@@ -3,17 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-"""Helpers that delegate AKS backup enablement to the dataprotection CLI extension.
-
-The actual orchestration (vault, policy, storage account, extension install,
-trusted access, role assignments, backup instance) lives in the
-``dataprotection`` extension. This module is a thin shim that:
-
-* loads that extension's path lazily (so ``az aks`` works without it),
-* offers to install the extension on-demand if it is missing (and installs
-  silently when ``--yes`` is passed),
-* derives the AKS datasource ARM id from the resource group + cluster name.
-"""
+"""Helpers that delegate AKS backup enablement to the dataprotection extension."""
 
 from knack.log import get_logger
 from knack.prompting import prompt_y_n, NoTTYException
