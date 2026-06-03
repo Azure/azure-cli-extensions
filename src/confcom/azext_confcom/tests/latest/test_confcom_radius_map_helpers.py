@@ -132,7 +132,7 @@ def test_connection_env_no_connections():
 def test_connection_env_single():
     result = _map_connection_env_rules({"connections": {"db": {"source": "x"}}})
     assert result == [{
-        "pattern": "CONNECTION_DB_.+=.+", "strategy": "re2", "required": True,
+        "pattern": "CONNECTION_DB_.+=.*", "strategy": "re2", "required": True,
     }]
 
 
@@ -170,30 +170,30 @@ def test_volumes_none():
     assert _map_volume_mounts({}) == []
 
 
-def test_volumes_ephemeral_is_writable():
-    """Ephemeral volumes should be writable by default."""
+def test_volumes_emptydir_is_writable():
+    """emptyDir volumes should be writable by default."""
     result = _map_volume_mounts({"volumes": {
-        "tmp": {"kind": "ephemeral", "mountPath": "/tmp", "managedStore": "memory"},
+        "tmp": {"kind": "emptyDir", "mountPath": "/tmp", "managedStore": "memory"},
     }})
     assert len(result) == 1
     assert "ro" not in result[0]["options"]
     assert result[0]["destination"] == "/tmp"
-    assert result[0]["source"] == "ephemeral://tmp"
+    assert result[0]["source"] == "sandbox:///tmp/atlas/emptydir/.+"
 
 
 def test_volumes_persistent_default_readonly():
     """Persistent volumes default to read-only per the Radius spec."""
     result = _map_volume_mounts({"volumes": {
-        "data": {"kind": "persistent", "mountPath": "/data", "source": "vol.id"},
+        "data": {"kind": "persistentVolume", "mountPath": "/data", "source": "vol.id"},
     }})
     assert "ro" in result[0]["options"]
-    assert result[0]["source"] == "vol.id"
+    assert result[0]["source"] == "sandbox:///tmp/atlas/azureFileVolume/.+"
 
 
 def test_volumes_persistent_permission_write():
     """API reference uses 'permission' field."""
     result = _map_volume_mounts({"volumes": {
-        "data": {"kind": "persistent", "mountPath": "/data", "source": "v", "permission": "write"},
+        "data": {"kind": "persistentVolume", "mountPath": "/data", "source": "v", "permission": "write"},
     }})
     assert "ro" not in result[0]["options"]
 
@@ -201,30 +201,30 @@ def test_volumes_persistent_permission_write():
 def test_volumes_persistent_rbac_write():
     """Human-readable docs use 'rbac' field."""
     result = _map_volume_mounts({"volumes": {
-        "data": {"kind": "persistent", "mountPath": "/data", "source": "v", "rbac": "write"},
+        "data": {"kind": "persistentVolume", "mountPath": "/data", "source": "v", "rbac": "write"},
     }})
     assert "ro" not in result[0]["options"]
 
 
 def test_volumes_persistent_permission_read():
     result = _map_volume_mounts({"volumes": {
-        "cfg": {"kind": "persistent", "mountPath": "/cfg", "source": "v", "permission": "read"},
+        "cfg": {"kind": "persistentVolume", "mountPath": "/cfg", "source": "v", "permission": "read"},
     }})
     assert "ro" in result[0]["options"]
 
 
-def test_volumes_ephemeral_explicit_read():
-    """Ephemeral volume can be explicitly set to read-only."""
+def test_volumes_emptydir_explicit_read():
+    """emptyDir volume can be explicitly set to read-only."""
     result = _map_volume_mounts({"volumes": {
-        "ro_tmp": {"kind": "ephemeral", "mountPath": "/ro", "managedStore": "disk", "permission": "read"},
+        "ro_tmp": {"kind": "emptyDir", "mountPath": "/ro", "managedStore": "disk", "permission": "read"},
     }})
     assert "ro" in result[0]["options"]
 
 
 def test_volumes_multiple():
     result = _map_volume_mounts({"volumes": {
-        "a": {"kind": "ephemeral", "mountPath": "/a", "managedStore": "memory"},
-        "b": {"kind": "persistent", "mountPath": "/b", "source": "vol"},
+        "a": {"kind": "emptyDir", "mountPath": "/a", "managedStore": "memory"},
+        "b": {"kind": "persistentVolume", "mountPath": "/b", "source": "vol"},
     }})
     assert len(result) == 2
 
@@ -331,7 +331,7 @@ def test_normalize_compute_emptydir_volume():
 
     assert "volumes" in result
     assert result["volumes"]["tmp"] == {
-        "kind": "ephemeral",
+        "kind": "emptyDir",
         "mountPath": "/tmp/data",
         "managedStore": "memory",
     }
@@ -358,7 +358,7 @@ def test_normalize_compute_persistent_volume():
     result = _normalize_compute_container(container, resource_volumes)
 
     assert result["volumes"]["data"] == {
-        "kind": "persistent",
+        "kind": "persistentVolume",
         "mountPath": "/data",
         "source": "vol.id",
         "permission": "write",  # ReadWriteOnce default → write
@@ -389,7 +389,7 @@ def test_normalize_compute_secret_volume():
     result = _normalize_compute_container(container, resource_volumes)
 
     assert result["volumes"]["certs"] == {
-        "kind": "persistent",
+        "kind": "secret",
         "mountPath": "/etc/certs",
         "source": "my-tls-secret",
         "permission": "read",

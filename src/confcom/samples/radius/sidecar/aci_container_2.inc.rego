@@ -6,6 +6,7 @@
     "99078a17fc9f1f4e964f4f07056b14ace4f15cf6cce47534f94ce79b90190d5f",
     "2d01b6595212164df2bb77813c093e4a5b7541ec7eb78bdd01c6a88d79a1bfc2"
   ],
+  "platform": "linux/amd64",
   "mounts": [
     {
       "destination": "/etc/resolv.conf",
@@ -25,6 +26,56 @@
     {
       "pattern": "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
       "strategy": "string",
+      "required": false
+    },
+    {
+      "pattern": "TERM=xterm",
+      "strategy": "string",
+      "required": false
+    },
+    {
+      "pattern": "(?i)(FABRIC)_.+=.+",
+      "strategy": "re2",
+      "required": false
+    },
+    {
+      "pattern": "HOSTNAME=.+",
+      "strategy": "re2",
+      "required": false
+    },
+    {
+      "pattern": "T(E)?MP=.+",
+      "strategy": "re2",
+      "required": false
+    },
+    {
+      "pattern": "FabricPackageFileName=.+",
+      "strategy": "re2",
+      "required": false
+    },
+    {
+      "pattern": "HostedServiceName=.+",
+      "strategy": "re2",
+      "required": false
+    },
+    {
+      "pattern": "IDENTITY_API_VERSION=.+",
+      "strategy": "re2",
+      "required": false
+    },
+    {
+      "pattern": "IDENTITY_HEADER=.+",
+      "strategy": "re2",
+      "required": false
+    },
+    {
+      "pattern": "IDENTITY_SERVER_THUMBPRINT=.+",
+      "strategy": "re2",
+      "required": false
+    },
+    {
+      "pattern": "azurecontainerinstance_restarted_by=.+",
+      "strategy": "re2",
       "required": false
     }
   ]

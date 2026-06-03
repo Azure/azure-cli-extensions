@@ -11,6 +11,7 @@
     "c175180cacfc123a931898521e280d53738388e4c95108a28f61339aeca96e32",
     "f07da15381f6470075eb0662d39d693c83c1bc6d5f3dd571b03fe326379fb71f"
   ],
+  "platform": "linux/amd64",
   "mounts": [
     {
       "destination": "/etc/resolv.conf",
@@ -50,6 +51,56 @@
     {
       "pattern": "NJS_RELEASE=3",
       "strategy": "string",
+      "required": false
+    },
+    {
+      "pattern": "TERM=xterm",
+      "strategy": "string",
+      "required": false
+    },
+    {
+      "pattern": "(?i)(FABRIC)_.+=.+",
+      "strategy": "re2",
+      "required": false
+    },
+    {
+      "pattern": "HOSTNAME=.+",
+      "strategy": "re2",
+      "required": false
+    },
+    {
+      "pattern": "T(E)?MP=.+",
+      "strategy": "re2",
+      "required": false
+    },
+    {
+      "pattern": "FabricPackageFileName=.+",
+      "strategy": "re2",
+      "required": false
+    },
+    {
+      "pattern": "HostedServiceName=.+",
+      "strategy": "re2",
+      "required": false
+    },
+    {
+      "pattern": "IDENTITY_API_VERSION=.+",
+      "strategy": "re2",
+      "required": false
+    },
+    {
+      "pattern": "IDENTITY_HEADER=.+",
+      "strategy": "re2",
+      "required": false
+    },
+    {
+      "pattern": "IDENTITY_SERVER_THUMBPRINT=.+",
+      "strategy": "re2",
+      "required": false
+    },
+    {
+      "pattern": "azurecontainerinstance_restarted_by=.+",
+      "strategy": "re2",
       "required": false
     }
   ],

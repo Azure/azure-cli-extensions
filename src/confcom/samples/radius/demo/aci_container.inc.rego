@@ -1,15 +1,17 @@
 {
+  "TODO": "use a stable tag",
   "id": "ghcr.io/radius-project/samples/demo:latest",
   "name": "ghcr.io/radius-project/samples/demo:latest",
   "layers": [
-    "75f76b2620207ef52a83803bb27b3243a51b13304950ee97fd4a2540cd2f465f",
-    "59c31a97dcce2c0ad99f2cf17259d8219e6c4cd124bc1394ab095d06c4ef7f5b",
-    "0f3d7530222006ed59264af03b28095e595766c0b30a93d91468a717dc7616aa",
-    "0d4f8d1e29f9e79bba609429da3cef21f17e57a1be70a03f3831865ee6893897",
-    "7bc9bcba198443ecd416542322e965fdae2217058deba096d1489a309d24e2cf",
-    "a21d4aba807cccaae033de52089054b0cf8c68ad96205205c5a5c631e308173f",
-    "ed09faca596368d6fc491376f8313170615ee85ae8367c339830753f7d284189"
+    "0b5d60458546072c2bbdd10e4f7945269804ad8b9f38681a453c7095bc5e1f16",
+    "dbb256e70a8fb2cdd20474f2c1e8a5eff0c818cc17e795bc1645cda49cb3d7db",
+    "a6da557c1af67b877134b37ce68e0a3c1ea0e90c531b9f009191a51c56eb8511",
+    "101c4d258cab057dd7e23c4315781ec2c36d56074d823f8c2f33021a81877640",
+    "0513f0dc5688c9c527b9faee572f2ece3f115b9ab9691204a8d16fc0fbacac4a",
+    "2a61e3e42c8497e414a574a8f839dab99b258cb215e5edb72344716170577217",
+    "9649c2fcda1caf460e2c6cc82573e493a08964a3891aa00e21360f7997dc9bc2"
   ],
+  "platform": "linux/amd64",
   "mounts": [
     {
       "destination": "/etc/resolv.conf",
@@ -32,7 +34,7 @@
       "required": false
     },
     {
-      "pattern": "NODE_VERSION=22.22.0",
+      "pattern": "NODE_VERSION=22.22.3",
       "strategy": "string",
       "required": false
     },
@@ -47,7 +49,57 @@
       "required": false
     },
     {
-      "pattern": "CONNECTION_REDIS_.+=.+",
+      "pattern": "TERM=xterm",
+      "strategy": "string",
+      "required": false
+    },
+    {
+      "pattern": "(?i)(FABRIC)_.+=.+",
+      "strategy": "re2",
+      "required": false
+    },
+    {
+      "pattern": "HOSTNAME=.+",
+      "strategy": "re2",
+      "required": false
+    },
+    {
+      "pattern": "T(E)?MP=.+",
+      "strategy": "re2",
+      "required": false
+    },
+    {
+      "pattern": "FabricPackageFileName=.+",
+      "strategy": "re2",
+      "required": false
+    },
+    {
+      "pattern": "HostedServiceName=.+",
+      "strategy": "re2",
+      "required": false
+    },
+    {
+      "pattern": "IDENTITY_API_VERSION=.+",
+      "strategy": "re2",
+      "required": false
+    },
+    {
+      "pattern": "IDENTITY_HEADER=.+",
+      "strategy": "re2",
+      "required": false
+    },
+    {
+      "pattern": "IDENTITY_SERVER_THUMBPRINT=.+",
+      "strategy": "re2",
+      "required": false
+    },
+    {
+      "pattern": "azurecontainerinstance_restarted_by=.+",
+      "strategy": "re2",
+      "required": false
+    },
+    {
+      "pattern": "CONNECTION_REDIS_.+=.*",
       "strategy": "re2",
       "required": true
     }
