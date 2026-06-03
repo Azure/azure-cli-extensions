@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.11.2
+++++++
+* `az dataprotection enable-backup trigger`: Auto-install the `k8s-extension` CLI extension when enabling AKS backup if it is not already installed.
+
 1.11.1
 ++++++
 * Fixed `az dataprotection backup-instance update-msi-permissions --datasource-type AzureCosmosDB --operation Restore` erroring with "Set permissions for restore is currently not supported for given DataSourceType". The command now correctly assigns `Cosmos DB Operator` on the target Cosmos DB account to the backup vault's managed identity. Added live regression test `test_dataprotection_update_msi_permissions_cosmosdb_restore`.
