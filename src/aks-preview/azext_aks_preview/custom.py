@@ -1810,6 +1810,10 @@ def aks_upgrade(cmd,
 
     if upgrade_all:
         for agent_profile in (instance.agent_pool_profiles or []):
+            # Skip Machines mode pools to avoid a known client-side error: these pools are containers of individual machines and do not support Kubernetes version upgrade.
+            if agent_profile.mode == CONST_NODEPOOL_MODE_MACHINES:
+                logger.warning("Skipping Kubernetes version upgrade for agent pool '%s': Machines mode pools do not support Kubernetes version upgrade.", agent_profile.name)
+                continue
             agent_profile.orchestrator_version = kubernetes_version
             agent_profile.creation_data = None
 

@@ -96,6 +96,27 @@ class TestCustomCommand(unittest.TestCase):
             self.assertNotIn("machinespool", upgraded_pools)
             self.assertIn("nodepool1", upgraded_pools)
 
+    def test_aks_upgrade_kubernetes_version_skips_machines_mode_pool(self):
+        """Machines mode pools must be skipped during Kubernetes version upgrade to avoid a known client-side error."""
+        machines_pool = self.models.ManagedClusterAgentPoolProfile(name="machinespool", mode="Machines", type="VirtualMachines")
+        vmss_pool = self.models.ManagedClusterAgentPoolProfile(name="nodepool1", mode="User", type="VirtualMachineScaleSets")
+        mc = self.models.ManagedCluster(location="test_location")
+        mc.agent_pool_profiles = [machines_pool, vmss_pool]
+        mc.pod_identity_profile = None
+        mc.kubernetes_version = "1.24.0"
+        mc.provisioning_state = "Succeeded"
+        mc.max_agent_pools = 10
+        mc.service_principal_profile = None
+
+        self.client.get = Mock(return_value=mc)
+        self.client.begin_create_or_update = Mock(return_value=None)
+
+        aks_upgrade(self.cmd, self.client, "rg", "name", kubernetes_version="1.25.0", yes=True)
+
+        # Machines mode pool must not have orchestrator_version set; VMSS pool must be upgraded.
+        self.assertIsNone(machines_pool.orchestrator_version)
+        self.assertEqual(vmss_pool.orchestrator_version, "1.25.0")
+
     def test_aks_upgrade_with_none_agent_pool_profiles(self):
         """Test aks_upgrade handles None agent_pool_profiles gracefully"""
         mc = self.models.ManagedCluster(location="test_location")
