@@ -84,14 +84,18 @@ def constructMachine(cmd, raw_parameters, machine_name):
     )
     tags = raw_parameters.get("tags")
     priority = raw_parameters.get("priority")
+    eviction_policy = raw_parameters.get("eviction_policy")
     machineProperties = MachineProperties(
         tags=tags,
         priority=priority,
+        eviction_policy=eviction_policy,
         network=set_machine_network(cmd, raw_parameters),
         hardware=set_machine_hardware_profile(cmd, raw_parameters),
         kubernetes=set_machine_kubernetes_profile(cmd, raw_parameters),
-        operating_system=set_machine_os_profile(cmd, raw_parameters)
+        operating_system=set_machine_os_profile(cmd, raw_parameters),
+        billing=set_machine_billing_profile(cmd, raw_parameters)
     )
+
     Machine = cmd.get_models(
         "Machine",
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
@@ -106,6 +110,7 @@ def constructMachine(cmd, raw_parameters, machine_name):
 
 
 def set_machine_hardware_profile(cmd, raw_parameters):
+    enable_ultra_ssd = raw_parameters.get("enable_ultra_ssd")
     vm_size = raw_parameters.get("vm_size")
     if vm_size is None:
         raise RequiredArgumentMissingError(
@@ -117,7 +122,8 @@ def set_machine_hardware_profile(cmd, raw_parameters):
         operation_group="machines"
     )
     machine_hardware_profile = MachineHardwareProfile(
-        vm_size=vm_size
+        vm_size=vm_size,
+        ultra_ssd_enabled=enable_ultra_ssd
     )
     return machine_hardware_profile
 
@@ -196,3 +202,16 @@ def set_machine_os_profile(cmd, raw_parameters):
         enable_fips=enable_fips
     )
     return machineOSProfile
+
+
+def set_machine_billing_profile(cmd, raw_parameters):
+    spot_max_price = raw_parameters.get("spot_max_price")
+    MachineBillingProfile = cmd.get_models(
+        "MachineBillingProfile",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="machines"
+    )
+    machineBillingProfile = MachineBillingProfile(
+        spot_max_price=spot_max_price
+    )
+    return machineBillingProfile

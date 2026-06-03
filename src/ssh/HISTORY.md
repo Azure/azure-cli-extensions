@@ -1,5 +1,14 @@
 Release History
 ===============
+2.0.8
+-----
+* Add Entra ID SSH Login support for all clouds
+
+2.0.7
+-----
+* Upgrade Azure Arc SSH Proxy Version to latest (1.3.033291)
+* [Bug Fix] Ensure connection will not crash if logs contain non utf-8 characters
+
 2.0.6
 -----
 * Remove msrestazure dependency

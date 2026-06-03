@@ -13,6 +13,26 @@ from pathlib import Path
 logger = logging.getLogger(__name__)
 
 
+SUPPORTED_PLATFORMS = [
+    "linux/amd64",
+    "windows/amd64",
+]
+
+
+@functools.lru_cache()
+def pull_image(image_reference: str) -> docker.models.images.Image:
+    client = docker.from_env()
+
+    for platform in SUPPORTED_PLATFORMS:
+        try:
+            image = client.images.pull(image_reference, platform=platform)
+            return image
+        except (docker.errors.ImageNotFound, docker.errors.NotFound):
+            continue
+
+    raise ValueError(f"Image '{image_reference}' not found for any supported platform: {SUPPORTED_PLATFORMS}")
+
+
 @functools.lru_cache()
 def get_image(image_ref: str) -> docker.models.images.Image:
 
@@ -27,27 +47,50 @@ def get_image(image_ref: str) -> docker.models.images.Image:
     return image
 
 
-def get_image_layers(image: str) -> list[str]:
+def get_image_platform(image_reference: str) -> str:
+    """Return the platform of the pulled image (e.g. 'linux/amd64')."""
+    return "/".join([
+        pull_image(image_reference).attrs['Os'],
+        pull_image(image_reference).attrs['Architecture']
+    ])
+
+
+def get_image_layers(image: str, platform: str = "linux/amd64") -> list[str]:
 
     binary_path = Path(__file__).parent.parent / "bin" / "dmverity-vhd"
 
     get_image(image)
+
+    arg_list = [binary_path.as_posix(), "-d", "roothash", "-i", image]
+
+    if platform:
+        arg_list += ["--platform", platform]
+
     result = subprocess.run(
-        [binary_path.as_posix(), "-d", "roothash", "-i", image],
+        arg_list,
         stdout=subprocess.PIPE,
         stderr=subprocess.DEVNULL,
         check=True,
         text=True,
     )
 
+    stdout_str = result.stdout.strip()
+
+    # Try JSON output first (newer dmverity-vhd versions)
+    if stdout_str.startswith("{"):
+        try:
+            import json
+            json_output = json.loads(stdout_str)
+            return json_output.get("layers", [])
+        except json.JSONDecodeError:
+            pass
+
+    # Fallback: line-by-line parsing for older versions
     layers = []
-    for line in result.stdout.splitlines():
+    for line in stdout_str.splitlines():
         if "hash: " in line:
             layers.append(line.split("hash: ")[-1])
         else:
-            # dmverity-vhd may print warnings to stdout (e.g. OCI format
-            # parsing errors). Log them so they are visible but don't treat them
-            # as layer hashes.
             logger.warning("Unexpected dmverity-vhd output: %s", line)
 
     return layers
