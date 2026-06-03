@@ -6,8 +6,9 @@
 # pylint: disable=line-too-long
 # pylint: disable=unused-import
 
+import time
 import unittest
-from azure.cli.testsdk import ScenarioTest
+from azure.cli.testsdk import ScenarioTest, live_only
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from datetime import datetime
 from ..utils import track_job_to_completion, wait_for_job_exclusivity_on_datasource
@@ -345,6 +346,118 @@ class BackupAndRestoreScenarioTest(ScenarioTest):
         test.cmd('az dataprotection backup-instance validate-for-restore -g "{rg}" --vault-name "{vaultName}" -n "{backupInstanceName}" --restore-request-object "{restoreRequest}"')
 
         # # Ensure no other jobs running on datasource. Required to avoid operation clashes. Requries dataSourceId kwarg to run.
+        wait_for_job_exclusivity_on_datasource(test)
+
+        restore_trigger_json = test.cmd('az dataprotection backup-instance restore trigger -g "{rg}" --vault-name "{vaultName}" '
+                                        '-n "{backupInstanceName}" --restore-request-object "{restoreRequest}"').get_output_in_json()
+        test.kwargs.update({"jobId": restore_trigger_json["jobId"]})
+
+        test.cmd('az dataprotection job show --ids "{jobId}"', checks=[
+            test.exists('properties.extendedInfo.recoveryDestination')
+        ])
+
+        track_job_to_completion(test)
+
+    # Uses persistent vault, policy, source DS and target DS pre-provisioned in cosmos-bugbash-CLIrg-2.
+    # Marked @live_only() because the persistent Cosmos accounts back live data and replaying a recording
+    # against a different subscription is impractical for this workload.
+    @live_only()
+    @AllowLargeResponse()
+    def test_dataprotection_backup_and_restore_cosmosdb(test):
+        test.kwargs.update({
+            # Persistent Cosmos accounts cosmosbugbash-cli2-src/-tgt live in eastus2euap.
+            'location': 'eastus2euap',
+            'restoreLocation': 'eastus2euap',
+            'rg': 'cosmos-bugbash-CLIrg-2',
+            'vaultName': 'TestCosmosVault',
+            'dataSourceType': 'AzureCosmosDB',
+            'sourceDataStore': 'VaultStore',
+            'permissionsScope': 'ResourceGroup',
+            'operation': 'Backup',
+            'restoreOperation': 'Restore',
+            'cosmosDbName': 'cosmosbugbash-cli2-src',
+            'cosmosDbId': '/subscriptions/97cda027-4279-4cde-b4ff-19afa0021d87/resourceGroups/cosmos-bugbash-CLIrg-2/providers/Microsoft.DocumentDB/databaseAccounts/cosmosbugbash-cli2-src',
+            'targetCosmosDbId': '/subscriptions/97cda027-4279-4cde-b4ff-19afa0021d87/resourceGroups/cosmos-bugbash-CLIrg-2/providers/Microsoft.DocumentDB/databaseAccounts/cosmosbugbash-cli2-tgt',
+            'policyId': '/subscriptions/97cda027-4279-4cde-b4ff-19afa0021d87/resourceGroups/cosmos-bugbash-CLIrg-2/providers/Microsoft.DataProtection/backupVaults/TestCosmosVault/backupPolicies/TestPolicy',
+            'policyRuleName': 'BackupWeekly',
+        })
+        backup_instance_guid = "faec6818-0720-11ec-bd1b-c8f750f92764"
+        backup_instance_json = test.cmd('az dataprotection backup-instance initialize --datasource-type "{dataSourceType}" '
+                                        '-l "{location}" --policy-id "{policyId}" --datasource-id "{cosmosDbId}"').get_output_in_json()
+        backup_instance_json["backup_instance_name"] = test.kwargs['cosmosDbName'] + "-" + test.kwargs['cosmosDbName'] + "-" + backup_instance_guid
+        test.kwargs.update({
+            "backupInstance": backup_instance_json,
+            "backupInstanceName": backup_instance_json["backup_instance_name"]
+        })
+
+        # Uncomment if validate-for-backup fails due to permission error. Only uncomment when running live.
+        # test.cmd('az dataprotection backup-instance update-msi-permissions '
+        #          '-g "{rg}" '
+        #          '--vault-name "{vaultName}" '
+        #          '--backup-instance "{backupInstance}" '
+        #          '--datasource-type "{dataSourceType}" '
+        #          '--permissions-scope "{permissionsScope}" '
+        #          '--operation "{operation}" --yes')
+
+        backup_instance_validate_create(test)
+
+        # Cosmos protection takes ~10-15 minutes to fully configure (well past the 120s used by
+        # backup_instance_validate_create's wait). Poll explicitly until status is stably
+        # ProtectionConfigured before issuing the adhoc backup.
+        deadline = time.time() + 1800  # 30 minutes
+        stable_hits = 0
+        last_status = None
+        while time.time() < deadline:
+            bi = test.cmd('az dataprotection backup-instance show -g "{rg}" --vault-name "{vaultName}" '
+                          '--backup-instance-name "{backupInstanceName}"').get_output_in_json()
+            last_status = bi['properties']['protectionStatus']['status']
+            if last_status == 'ProtectionConfigured':
+                stable_hits += 1
+                if stable_hits >= 2:
+                    break
+            else:
+                stable_hits = 0
+            time.sleep(30)
+        else:
+            raise AssertionError(
+                "Cosmos backup-instance did not reach a stable ProtectionConfigured state within 30 minutes "
+                f"(last status: {last_status})."
+            )
+
+        # Ensure no other jobs running on datasource. Required to avoid operation clashes.
+        wait_for_job_exclusivity_on_datasource(test)
+
+        # Trigger ad-hoc backup and track to completion
+        adhoc_backup_response = test.cmd('az dataprotection backup-instance adhoc-backup '
+                                         '-n {backupInstanceName} -g {rg} --vault-name {vaultName} --rule-name "{policyRuleName}"').get_output_in_json()
+        test.kwargs.update({"jobId": adhoc_backup_response["jobId"]})
+        track_job_to_completion(test)
+
+        recovery_point = test.cmd('az dataprotection recovery-point list --backup-instance-name "{backupInstanceName}" -g "{rg}" --vault-name "{vaultName}"', checks=[
+            test.greater_than('length([])', 0)
+        ]).get_output_in_json()
+        test.kwargs.update({
+            'recoveryPointId': recovery_point[0]['name']
+        })
+
+        # Cosmos restore is AlternateLocation to another Cosmos DB account (manifest allowedRestoreTargetTypes=AlternateLocation)
+        restore_request = test.cmd('az dataprotection backup-instance restore initialize-for-data-recovery '
+                                   '--datasource-type "{dataSourceType}" --restore-location "{restoreLocation}" --source-datastore "{sourceDataStore}" '
+                                   '--recovery-point-id "{recoveryPointId}" --target-resource-id "{targetCosmosDbId}"').get_output_in_json()
+        test.kwargs.update({"restoreRequest": restore_request})
+
+        # Uncomment if validate-for-restore fails due to permission error. Only uncomment when running live.
+        # test.cmd('az dataprotection backup-instance update-msi-permissions '
+        #          '-g "{rg}" '
+        #          '--vault-name "{vaultName}" '
+        #          '--restore-request-object "{restoreRequest}" '
+        #          '--datasource-type "{dataSourceType}" '
+        #          '--permissions-scope "{permissionsScope}" '
+        #          '--operation "{restoreOperation}" --yes')
+
+        test.cmd('az dataprotection backup-instance validate-for-restore -g "{rg}" --vault-name "{vaultName}" -n "{backupInstanceName}" --restore-request-object "{restoreRequest}"')
+
+        # Ensure no other jobs running on datasource. Required to avoid operation clashes.
         wait_for_job_exclusivity_on_datasource(test)
 
         restore_trigger_json = test.cmd('az dataprotection backup-instance restore trigger -g "{rg}" --vault-name "{vaultName}" '

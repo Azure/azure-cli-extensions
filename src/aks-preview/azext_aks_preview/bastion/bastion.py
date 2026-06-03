@@ -36,7 +36,7 @@ class BastionResource:
 
 
 def aks_bastion_parse_bastion_resource(
-    bastion: str, resource_groups: List[str]
+    bastion: str, resource_groups: List[str], subscription_id: str = None
 ) -> BastionResource:
     """Get the bastion resource name from the provided name or node resource group."""
 
@@ -55,18 +55,21 @@ def aks_bastion_parse_bastion_resource(
                     resource_group,
                 )
                 # check if the bastion exists in the provided resource group
+                show_cmd = [
+                    "network",
+                    "bastion",
+                    "show",
+                    "--resource-group",
+                    resource_group,
+                    "--name",
+                    bastion,
+                    "--output",
+                    "json",
+                ]
+                if subscription_id:
+                    show_cmd.extend(["--subscription", subscription_id])
                 result = run_az_cmd(
-                    [
-                        "network",
-                        "bastion",
-                        "show",
-                        "--resource-group",
-                        resource_group,
-                        "--name",
-                        bastion,
-                        "--output",
-                        "json",
-                    ],
+                    show_cmd,
                     out_file=TextIO(),
                 )
                 if result.exit_code != 0:
@@ -92,16 +95,19 @@ def aks_bastion_parse_bastion_resource(
     # list bastions in the provided resource groups
     for resource_group in resource_groups:
         logger.debug("Searching for bastion in resource group '%s'.", resource_group)
+        list_cmd = [
+            "network",
+            "bastion",
+            "list",
+            "--resource-group",
+            resource_group,
+            "--output",
+            "json",
+        ]
+        if subscription_id:
+            list_cmd.extend(["--subscription", subscription_id])
         result = run_az_cmd(
-            [
-                "network",
-                "bastion",
-                "list",
-                "--resource-group",
-                resource_group,
-                "--output",
-                "json",
-            ],
+            list_cmd,
             out_file=TextIO(),
         )
         if result.exit_code != 0:
@@ -243,12 +249,12 @@ def aks_bastion_set_kubeconfig(kubeconfig_path, port, cluster_name=None):
 
 
 async def aks_bastion_runner(
-    bastion_resource, port, mc_id, kubeconfig_path, test_hook=None
+    bastion_resource, port, mc_id, kubeconfig_path, subscription_id=None, test_hook=None
 ):
     """Run the bastion tunnel and subshell in parallel, cancelling the other if one completes."""
 
     task1 = asyncio.create_task(
-        _aks_bastion_launch_tunnel(bastion_resource, port, mc_id)
+        _aks_bastion_launch_tunnel(bastion_resource, port, mc_id, subscription_id)
     )
     if test_hook:
         task2 = asyncio.create_task(
@@ -468,7 +474,7 @@ async def _aks_bastion_launch_subshell(kubeconfig_path, port):
             logger.warning("Subshell was cancelled before it could be launched.")
 
 
-async def _aks_bastion_launch_tunnel(bastion_resource, port, mc_id):
+async def _aks_bastion_launch_tunnel(bastion_resource, port, mc_id, subscription_id=None):
     """Launch the bastion tunnel using the provided parameters."""
 
     tunnel_proces = None
@@ -478,6 +484,8 @@ async def _aks_bastion_launch_tunnel(bastion_resource, port, mc_id):
             f"{az_cmd_name} network bastion tunnel --resource-group {bastion_resource.resource_group} "
             f"--name {bastion_resource.name} --port {port} --target-resource-id {mc_id} --resource-port 443"
         )
+        if subscription_id:
+            cmd += f" --subscription {subscription_id}"
         logger.warning("Creating bastion tunnel with command: '%s'", cmd)
 
         # Use start_new_session on Unix to create a new process group

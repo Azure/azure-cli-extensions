@@ -58,8 +58,6 @@ from azext_aks_preview._consts import (
     CONST_CREDENTIAL_FORMAT_AZURE,
     CONST_CREDENTIAL_FORMAT_EXEC,
     CONST_DAILY_MAINTENANCE_SCHEDULE,
-    CONST_DISK_DRIVER_V1,
-    CONST_DISK_DRIVER_V2,
     CONST_GPU_DRIVER_INSTALL,
     CONST_GPU_DRIVER_NONE,
     CONST_GPU_INSTANCE_PROFILE_MIG1_G,
@@ -102,6 +100,7 @@ from azext_aks_preview._consts import (
     CONST_OS_SKU_MARINER,
     CONST_OS_SKU_AZURELINUXOSGUARD,
     CONST_OS_SKU_AZURELINUX3OSGUARD,
+    CONST_OS_SKU_AZURECONTAINERLINUX,
     CONST_OS_SKU_UBUNTU,
     CONST_OS_SKU_UBUNTU2204,
     CONST_OS_SKU_UBUNTU2404,
@@ -210,6 +209,7 @@ from azext_aks_preview._validators import (
     validate_load_balancer_sku,
     validate_max_surge,
     validate_message_of_the_day,
+    validate_node_public_ip_prefix_ids,
     validate_node_public_ip_tags,
     validate_nodepool_id,
     validate_nodepool_labels,
@@ -239,6 +239,7 @@ from azext_aks_preview._validators import (
     validate_force_upgrade_disable_and_enable_parameters,
     validate_azure_service_mesh_revision,
     validate_artifact_streaming,
+    validate_os_disk_full_caching,
     validate_custom_endpoints,
     validate_bootstrap_container_registry_resource_id,
     validate_gateway_prefix_size,
@@ -302,6 +303,7 @@ node_os_skus_create = [
     CONST_OS_SKU_UBUNTU2404,
     CONST_OS_SKU_AZURELINUXOSGUARD,
     CONST_OS_SKU_AZURELINUX3OSGUARD,
+    CONST_OS_SKU_AZURECONTAINERLINUX,
 ]
 node_os_skus_add = node_os_skus_create + [
     CONST_OS_SKU_WINDOWS2019,
@@ -318,6 +320,7 @@ node_os_skus_update = [
     CONST_OS_SKU_UBUNTU2404,
     CONST_OS_SKU_AZURELINUXOSGUARD,
     CONST_OS_SKU_AZURELINUX3OSGUARD,
+    CONST_OS_SKU_AZURECONTAINERLINUX,
 ]
 scale_down_modes = [CONST_SCALE_DOWN_MODE_DELETE, CONST_SCALE_DOWN_MODE_DEALLOCATE]
 workload_runtimes = [
@@ -375,7 +378,6 @@ acns_datapath_acceleration_modes = [
     CONST_ACNS_DATAPATH_ACCELERATION_MODE_BPFVETH,
 ]
 network_dataplanes = [CONST_NETWORK_DATAPLANE_AZURE, CONST_NETWORK_DATAPLANE_CILIUM]
-disk_driver_versions = [CONST_DISK_DRIVER_V1, CONST_DISK_DRIVER_V2]
 outbound_types = [
     CONST_OUTBOUND_TYPE_LOAD_BALANCER,
     CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
@@ -691,8 +693,7 @@ def load_arguments(self, _):
                 "--nat-gateway-outbound-ips",
                 "--nat-gw-ips",
             ],
-            nargs="+",
-            help="Space-separated public IP resource IDs for the "
+            help="Comma-separated public IP resource IDs for the "
                  "cluster NAT gateway. V2 only.",
         )
         c.argument(
@@ -701,8 +702,7 @@ def load_arguments(self, _):
                 "--nat-gateway-outbound-ip-prefixes",
                 "--nat-gw-prefixes",
             ],
-            nargs="+",
-            help="Space-separated public IP prefix resource IDs "
+            help="Comma-separated public IP prefix resource IDs "
                  "for the cluster NAT gateway. V2 only.",
         )
         c.argument(
@@ -765,7 +765,6 @@ def load_arguments(self, _):
         c.argument("k8s_support_plan", arg_type=get_enum_type(k8s_support_plans))
         c.argument("enable_defender", action="store_true")
         c.argument("defender_config", validator=validate_defender_config_parameter)
-        c.argument("disk_driver_version", arg_type=get_enum_type(disk_driver_versions))
         c.argument("disable_disk_driver", action="store_true")
         c.argument("disable_file_driver", action="store_true")
         c.argument("enable_blob_driver", action="store_true")
@@ -867,6 +866,14 @@ def load_arguments(self, _):
         )
         c.argument("enable_node_public_ip", action="store_true")
         c.argument("node_public_ip_prefix_id")
+        c.argument(
+            "node_public_ip_prefix_ids",
+            validator=validate_node_public_ip_prefix_ids,
+            help="Comma-separated list of public IP prefix resource IDs for dual-stack node public IPs "
+                 "(IPv4 and/or IPv6). At most one IPv4 and one IPv6 prefix may be specified. "
+                 "Automatically enables --enable-node-public-ip. Cannot be used with --node-public-ip-prefix-id. "
+                 "Requires the NodePublicIPv6PrefixPreview feature flag to be registered.",
+        )
         c.argument("enable_cluster_autoscaler", action="store_true")
         c.argument("min_count", type=int, validator=validate_nodes_count)
         c.argument("max_count", type=int, validator=validate_nodes_count)
@@ -898,6 +905,13 @@ def load_arguments(self, _):
         )
         c.argument("node_osdisk_type", arg_type=get_enum_type(node_os_disk_types))
         c.argument("node_osdisk_size", type=int)
+        c.argument(
+            "enable_os_disk_full_caching",
+            options_list=["--enable-osdisk-full-caching", "--enable-osdisk-fc"],
+            action="store_true",
+            validator=validate_os_disk_full_caching,
+            is_preview=True,
+        )
         c.argument("max_pods", type=int, options_list=["--max-pods", "-m"])
         c.argument("vm_set_type", validator=validate_vm_set_type)
         c.argument(
@@ -916,6 +930,7 @@ def load_arguments(self, _):
         c.argument("enable_encryption_at_host", action="store_true")
         c.argument("enable_ultra_ssd", action="store_true")
         c.argument("enable_fips_image", action="store_true")
+        c.argument("enable_fips", action="store_true", is_preview=True)
         c.argument("kubelet_config")
         c.argument("linux_os_config")
         c.argument("host_group_id", validator=validate_host_group_id)
@@ -1261,6 +1276,14 @@ def load_arguments(self, _):
         )
         c.argument("enable_hosted_system", action="store_true", is_preview=True)
         c.argument(
+            "control_plane_scaling_size",
+            options_list=["--control-plane-scaling-size", "--cp-scaling-size"],
+            arg_type=get_enum_type(["H2", "H4", "H8"]),
+            is_preview=True,
+            help="The control plane scaling size. Provides scaled and performance-guaranteed control plane capacity. "
+                 "Available values are 'H2', 'H4', and 'H8'.",
+        )
+        c.argument(
             "enable_continuous_control_plane_and_addon_monitor",
             action="store_true",
             is_preview=True,
@@ -1329,8 +1352,7 @@ def load_arguments(self, _):
                 "--nat-gateway-outbound-ips",
                 "--nat-gw-ips",
             ],
-            nargs="+",
-            help="Space-separated public IP resource IDs for the "
+            help="Comma-separated public IP resource IDs for the "
                  "cluster NAT gateway. V2 only.",
         )
         c.argument(
@@ -1339,8 +1361,7 @@ def load_arguments(self, _):
                 "--nat-gateway-outbound-ip-prefixes",
                 "--nat-gw-prefixes",
             ],
-            nargs="+",
-            help="Space-separated public IP prefix resource IDs "
+            help="Comma-separated public IP prefix resource IDs "
                  "for the cluster NAT gateway. V2 only.",
         )
         c.argument("network_dataplane", arg_type=get_enum_type(network_dataplanes))
@@ -1411,7 +1432,6 @@ def load_arguments(self, _):
         c.argument("enable_defender", action="store_true")
         c.argument("defender_config", validator=validate_defender_config_parameter)
         c.argument("enable_disk_driver", action="store_true")
-        c.argument("disk_driver_version", arg_type=get_enum_type(disk_driver_versions))
         c.argument("disable_disk_driver", action="store_true")
         c.argument("enable_file_driver", action="store_true")
         c.argument("disable_file_driver", action="store_true")
@@ -1539,6 +1559,8 @@ def load_arguments(self, _):
         )
         c.argument("image_cleaner_interval_hours", type=int)
         c.argument("disable_image_integrity", action="store_true", is_preview=True)
+        c.argument("enable_fips", action="store_true", is_preview=True)
+        c.argument("disable_fips", action="store_true", is_preview=True)
         c.argument("enable_service_account_image_pull", action="store_true", is_preview=True)
         c.argument("disable_service_account_image_pull", action="store_true", is_preview=True)
         c.argument("service_account_image_pull_default_managed_identity_id", is_preview=True)
@@ -1908,6 +1930,15 @@ def load_arguments(self, _):
             is_preview=True,
             help="Disable continuous control plane and addon monitor for the cluster.",
         )
+        c.argument(
+            "control_plane_scaling_size",
+            options_list=["--control-plane-scaling-size", "--cp-scaling-size"],
+            arg_type=get_enum_type(["H2", "H4", "H8"]),
+            is_preview=True,
+            help="The control plane scaling size. Provides scaled and performance-guaranteed control plane capacity. "
+                 "Available values are 'H2', 'H4', and 'H8'. "
+                 "The control plane scaling profile must already be enabled on the cluster.",
+        )
 
     with self.argument_context("aks delete") as c:
         c.argument("if_match")
@@ -1933,6 +1964,8 @@ def load_arguments(self, _):
             validator=validate_force_upgrade_disable_and_enable_parameters
         )
         c.argument('upgrade_override_until')
+        c.argument("k8s_support_plan", arg_type=get_enum_type(k8s_support_plans))
+        c.argument("tier", arg_type=get_enum_type(sku_tiers), validator=validate_sku_tier)
 
     with self.argument_context("aks scale") as c:
         c.argument(
@@ -2036,6 +2069,14 @@ def load_arguments(self, _):
         c.argument("enable_node_public_ip", action="store_true")
         c.argument("node_public_ip_prefix_id")
         c.argument(
+            "node_public_ip_prefix_ids",
+            validator=validate_node_public_ip_prefix_ids,
+            help="Comma-separated list of public IP prefix resource IDs for dual-stack node public IPs "
+                 "(IPv4 and/or IPv6). At most one IPv4 and one IPv6 prefix may be specified. "
+                 "Automatically enables --enable-node-public-ip. Cannot be used with --node-public-ip-prefix-id. "
+                 "Requires the NodePublicIPv6PrefixPreview feature flag to be registered.",
+        )
+        c.argument(
             "enable_cluster_autoscaler",
             options_list=["--enable-cluster-autoscaler", "-e"],
             action="store_true",
@@ -2058,6 +2099,13 @@ def load_arguments(self, _):
         c.argument("node_taints", validator=validate_nodepool_taints)
         c.argument("node_osdisk_type", arg_type=get_enum_type(node_os_disk_types))
         c.argument("node_osdisk_size", type=int)
+        c.argument(
+            "enable_os_disk_full_caching",
+            options_list=["--enable-osdisk-full-caching", "--enable-osdisk-fc"],
+            action="store_true",
+            validator=validate_os_disk_full_caching,
+            is_preview=True,
+        )
         # upgrade strategy
         c.argument("upgrade_strategy", arg_type=get_enum_type(upgrade_strategies))
         # rolling upgrade params
@@ -2228,6 +2276,7 @@ def load_arguments(self, _):
         c.argument("mode", arg_type=get_enum_type(node_mode_types))
         c.argument("scale_down_mode", arg_type=get_enum_type(scale_down_modes))
         # extensions
+        c.argument("crg_id", validator=validate_crg_id, is_preview=True)
         c.argument(
             "allowed_host_ports", validator=validate_allowed_host_ports, is_preview=True
         )
@@ -2300,6 +2349,7 @@ def load_arguments(self, _):
             "node_vm_size",
             options_list=["--node-vm-size", "-s"],
             completer=get_vm_size_completion_list,
+            is_preview=True,
         )
         c.argument(
             "gpu_driver",
@@ -2363,6 +2413,20 @@ def load_arguments(self, _):
 
     with self.argument_context("aks nodepool manual-scale delete") as c:
         c.argument("current_vm_sizes", is_preview=True)
+
+    with self.argument_context("aks nodepool auto-scale add") as c:
+        c.argument("node_vm_size", is_preview=True)
+        c.argument("min_count", type=int, is_preview=True)
+        c.argument("max_count", type=int, is_preview=True)
+
+    with self.argument_context("aks nodepool auto-scale update") as c:
+        c.argument("current_node_vm_size", is_preview=True)
+        c.argument("node_vm_size", is_preview=True)
+        c.argument("min_count", type=int, is_preview=True)
+        c.argument("max_count", type=int, is_preview=True)
+
+    with self.argument_context("aks nodepool auto-scale delete") as c:
+        c.argument("current_node_vm_size", is_preview=True)
 
     with self.argument_context("aks nodepool get-rollback-versions") as c:
         pass  # Uses common nodepool parameters
@@ -2438,6 +2502,21 @@ def load_arguments(self, _):
             options_list=["--kubernetes-version"],
             validator=validate_k8s_version,
             help="Version of Kubernetes to use for the machine.",
+        )
+        c.argument(
+            "spot_max_price",
+            type=float,
+            validator=validate_spot_max_price,
+            help="The max price (in US Dollars) you are willing to pay for spot instances."
+        )
+        c.argument(
+            "enable_ultra_ssd",
+            action="store_true"
+        )
+        c.argument(
+            "eviction_policy",
+            arg_type=get_enum_type(node_eviction_policies),
+            validator=validate_eviction_policy,
         )
 
     with self.argument_context("aks machine update") as c:

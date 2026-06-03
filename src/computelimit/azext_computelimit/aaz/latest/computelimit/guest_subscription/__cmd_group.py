@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "computelimit guest-subscription",
-    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage Guest Subscription

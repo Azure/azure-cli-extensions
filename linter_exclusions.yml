@@ -37,6 +37,9 @@ aks create:
     node_public_ip_prefix_id:
       rule_exclusions:
         - option_length_too_long
+    node_public_ip_prefix_ids:
+      rule_exclusions:
+        - option_length_too_long
     enable_private_cluster:
       rule_exclusions:
       - option_length_too_long
@@ -130,6 +133,11 @@ aks create:
     service_account_image_pull_default_managed_identity_id:
       rule_exclusions:
       - option_length_too_long
+aks nodepool add:
+  parameters:
+    node_public_ip_prefix_ids:
+      rule_exclusions:
+        - option_length_too_long
 aks update:
   parameters:
     aad_admin_group_object_ids:
@@ -3588,46 +3596,6 @@ eventgrid namespace topic update:
       rule_exclusions:
       - option_length_too_long
 
-neon postgres endpoint create:
-  rule_exclusions:
-  - missing_command_example
-
-neon postgres neon-role create:
-  rule_exclusions:
-  - missing_command_example
-
-neon postgres neon-database create:
-  rule_exclusions:
-  - missing_command_example
-
-neon postgres get-postgres-version:
-  rule_exclusions:
-  - missing_command_example
-
-neon postgres branch:
-  rule_exclusions:
-  - require_wait_command_if_no_wait
-
-neon postgres endpoint:
-  rule_exclusions:
-  - require_wait_command_if_no_wait
-
-neon postgres neon-database:
-  rule_exclusions:
-  - require_wait_command_if_no_wait
-
-neon postgres neon-role:
-  rule_exclusions:
-  - require_wait_command_if_no_wait
-
-neon postgres organization:
-  rule_exclusions:
-  - require_wait_command_if_no_wait
-
-neon postgres project:
-  rule_exclusions:
-  - require_wait_command_if_no_wait
-
 confcom containers from_vn2:
   parameters:
     template:
@@ -3651,3 +3619,10 @@ confcom containers from_image:
     image:
       rule_exclusions:
         - no_positional_parameters
+
+relationship dependency-of create:
+  rule_exclusions:
+    - missing_command_example
+relationship service-group-member create:
+  rule_exclusions:
+    - missing_command_example

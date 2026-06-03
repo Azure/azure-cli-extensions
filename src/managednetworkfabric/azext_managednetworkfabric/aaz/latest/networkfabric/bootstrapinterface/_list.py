@@ -17,14 +17,17 @@ from azure.cli.core.aaz import *
 class List(AAZCommand):
     """List all the Network Bootstrap Interface resources in a given resource group.
 
-    :example: List the Bootstrap Interfaces in a Resource Group for a specific Subscription
-        az networkfabric bootstrapinterface list --subscription <subscriptionId> --resource-group example-rg --bootstrap-device example-device
+    :example: List the Bootstrap Interfaces by Subscription
+        az networkfabric bootstrapinterface list --subscription <subscriptionId> --bootstrap-device example-device
+
+    :example: List the Bootstrap Interfaces by Resource Group
+        az networkfabric bootstrapinterface list --resource-group example-rg --bootstrap-device example-device
     """
 
     _aaz_info = {
-        "version": "2025-07-15",
+        "version": "2026-01-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkbootstrapdevices/{}/networkbootstrapinterfaces", "2025-07-15"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkbootstrapdevices/{}/networkbootstrapinterfaces", "2026-01-15-preview"],
         ]
     }
 
@@ -124,7 +127,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-07-15",
+                    "api-version", "2026-01-15-preview",
                     required=True,
                 ),
             }
@@ -217,6 +220,10 @@ class List(AAZCommand):
                 serialized_name="ipv6Address",
                 flags={"read_only": True},
             )
+            properties.operational_state = AAZStrType(
+                serialized_name="operationalState",
+                flags={"read_only": True},
+            )
             properties.physical_identifier = AAZStrType(
                 serialized_name="physicalIdentifier",
                 flags={"read_only": True},
@@ -224,9 +231,6 @@ class List(AAZCommand):
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
-            )
-            properties.serial_number = AAZStrType(
-                serialized_name="serialNumber",
             )
 
             system_data = cls._schema_on_200.value.Element.system_data

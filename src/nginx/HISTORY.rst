@@ -3,6 +3,10 @@
 Release History
 ===============
 
+2.0.0
+++++++
+* General Availability for Web Application Firewall (WAF) v2 with static analysis.
+
 2.0.0b11
 ++++++
 * Added support for WAF v2 analysis.

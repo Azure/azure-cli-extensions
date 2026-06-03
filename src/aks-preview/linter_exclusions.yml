@@ -1,5 +1,41 @@
+aks addon:
+  rule_exclusions:
+    - require_wait_command_if_no_wait
+aks extension:
+  rule_exclusions:
+    - require_wait_command_if_no_wait
+aks jwtauthenticator:
+  rule_exclusions:
+    - require_wait_command_if_no_wait
+aks machine:
+  rule_exclusions:
+    - require_wait_command_if_no_wait
+aks mesh upgrade:
+  rule_exclusions:
+    - require_wait_command_if_no_wait
+aks mesh:
+  rule_exclusions:
+    - require_wait_command_if_no_wait
+aks namespace:
+  rule_exclusions:
+    - require_wait_command_if_no_wait
+aks nodepool manual-scale:
+  rule_exclusions:
+    - require_wait_command_if_no_wait
+aks nodepool snapshot:
+  rule_exclusions:
+    - require_wait_command_if_no_wait
+aks nodepool:
+  rule_exclusions:
+    - require_wait_command_if_no_wait
+aks snapshot:
+  rule_exclusions:
+    - require_wait_command_if_no_wait
 aks create:
   parameters:
+    node_resource_group:
+      rule_exclusions:
+        - parameter_should_not_end_in_resource_group
     enable_sgxquotehelper:
       rule_exclusions:
         - option_length_too_long

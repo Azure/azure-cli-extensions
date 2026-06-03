@@ -45,6 +45,7 @@ CONST_OS_SKU_UBUNTU2204 = "Ubuntu2204"
 CONST_OS_SKU_UBUNTU2404 = "Ubuntu2404"
 CONST_OS_SKU_AZURELINUXOSGUARD = "AzureLinuxOSGuard"
 CONST_OS_SKU_AZURELINUX3OSGUARD = "AzureLinux3OSGuard"
+CONST_OS_SKU_AZURECONTAINERLINUX = "AzureContainerLinux"
 
 # vm set type
 CONST_VIRTUAL_MACHINE_SCALE_SETS = "VirtualMachineScaleSets"
@@ -167,10 +168,6 @@ CONST_ACNS_DATAPATH_ACCELERATION_MODE_BPFVETH = "BpfVeth"
 # network pod ip allocation mode
 CONST_NETWORK_POD_IP_ALLOCATION_MODE_DYNAMIC_INDIVIDUAL = "DynamicIndividual"
 CONST_NETWORK_POD_IP_ALLOCATION_MODE_STATIC_BLOCK = "StaticBlock"
-
-# disk driver versions
-CONST_DISK_DRIVER_V1 = "v1"
-CONST_DISK_DRIVER_V2 = "v2"
 
 # consts for addons
 # application load balancer (Application Gateway for Containers)
