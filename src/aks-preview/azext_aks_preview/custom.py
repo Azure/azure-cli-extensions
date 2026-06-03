@@ -1724,7 +1724,7 @@ def aks_upgrade(cmd,
         # nodepools of a cluster. The SDK only support upgrade single nodepool at a time.
         for agent_pool_profile in (instance.agent_pool_profiles or []):
             if vmas_cluster:
-                raise CLIError('This cluster is not using VirtualMachineScaleSets. Node image upgrade only operation '
+                raise CLIError('This cluster is using AvailabilitySet. Node image upgrade only operation '
                                'can only be applied on VirtualMachineScaleSets and VirtualMachines cluster.')
             # Skip Machines mode pools to avoid a known client-side error: these pools are containers of individual machines and do not support node image version upgrade.
             if agent_pool_profile.mode == CONST_NODEPOOL_MODE_MACHINES:

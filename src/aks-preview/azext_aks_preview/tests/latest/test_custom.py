@@ -73,7 +73,7 @@ class TestCustomCommand(unittest.TestCase):
 
     def test_aks_upgrade_node_image_only_skips_machines_mode_pool(self):
         """Machines mode pools must be skipped during --node-image-only to avoid a known client-side error."""
-        machines_pool = self.models.ManagedClusterAgentPoolProfile(name="machinespool", mode="Machines", type="VirtualMachineScaleSets")
+        machines_pool = self.models.ManagedClusterAgentPoolProfile(name="machinespool", mode="Machines", type="VirtualMachines")
         vmss_pool = self.models.ManagedClusterAgentPoolProfile(name="nodepool1", mode="User", type="VirtualMachineScaleSets")
         mc = self.models.ManagedCluster(location="test_location")
         mc.agent_pool_profiles = [machines_pool, vmss_pool]
