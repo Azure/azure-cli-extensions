@@ -3,6 +3,11 @@
 Release History
 ===============
 
+2.0.2
+++++++
+* Fixed autonomous database create discriminator databaseType
+
+
 2.0.1
 ++++++
 * Fixed autonomous database list by Resource group , and list by subscription.
