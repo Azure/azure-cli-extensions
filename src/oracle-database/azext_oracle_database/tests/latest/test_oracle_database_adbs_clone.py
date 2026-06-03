@@ -13,7 +13,7 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only)
 
 
 class OracleDatabaseAdbsCloneScenario(ScenarioTest):
-
+    @live_only()
     @AllowLargeResponse(size_kb=10240)
     @ResourceGroupPreparer(name_prefix='cli_test_odba_rg')
     def test_oracledatabase_adbs_create_clone(self, resource_group):
@@ -65,6 +65,7 @@ class OracleDatabaseAdbsCloneScenario(ScenarioTest):
                  '--resource-group {} --yes --no-wait '.format(clone_name, resource_group_name))
 
 
+    @live_only()
     @AllowLargeResponse(size_kb=10240)
     @ResourceGroupPreparer(name_prefix='cli_test_odba_rg')
     def test_oracledatabase_adbs_create_clone_from_backup_timestamp(self, resource_group):
