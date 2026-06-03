@@ -6,7 +6,7 @@
 import os
 import sys
 import tempfile
-from typing import Optional, BinaryIO
+from typing import Optional
 
 from azext_confcom import oras_proxy, os_util, security_policy
 from azext_confcom._validators import resolve_stdio
@@ -566,7 +566,7 @@ def get_fragment_output_type(outraw):
 
 
 def fragment_attach(
-    signed_fragment: BinaryIO,
+    signed_fragment: Optional[str],
     manifest_tag: str,
     platform: Optional[str] = None,
 ) -> None:
@@ -578,7 +578,7 @@ def fragment_attach(
 
 
 def fragment_push(
-    signed_fragment: BinaryIO,
+    signed_fragment: Optional[str],
     manifest_tag: str,
 ) -> None:
     _fragment_push(

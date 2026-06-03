@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------------
 
 import contextlib
-import io
 import json
 import os
 import subprocess
@@ -186,11 +185,12 @@ def test_acifragmentgen_fragment_push(docker_image, cert_chain, capsysbinary):
     )
 
     signed_fragment = capsysbinary.readouterr()[0]
-    signed_fragment_io = io.BytesIO(signed_fragment)
-    signed_fragment_io.name = "<stdin>"
+    with tempfile.NamedTemporaryFile(delete=False) as signed_fragment_file:
+        signed_fragment_file.write(signed_fragment)
+        signed_fragment_path = signed_fragment_file.name
 
     fragment_push(
-        signed_fragment=signed_fragment_io,
+        signed_fragment=signed_fragment_path,
         manifest_tag=fragment_ref,
     )
 
@@ -429,11 +429,12 @@ def test_acifragmentgen_fragment_attach_with_explicit_platform(
     )
 
     signed_fragment = capsysbinary.readouterr()[0]
-    signed_fragment_io = io.BytesIO(signed_fragment)
-    signed_fragment_io.name = "<stdin>"
+    with tempfile.NamedTemporaryFile(delete=False) as signed_fragment_file:
+        signed_fragment_file.write(signed_fragment)
+        signed_fragment_path = signed_fragment_file.name
 
     fragment_attach(
-        signed_fragment=signed_fragment_io,
+        signed_fragment=signed_fragment_path,
         manifest_tag=image_ref,
         platform="linux/amd64",
     )
@@ -575,11 +576,12 @@ def test_acifragmentgen_fragment_attach_without_platform(docker_image, cert_chai
     )
 
     signed_fragment = capsysbinary.readouterr()[0]
-    signed_fragment_io = io.BytesIO(signed_fragment)
-    signed_fragment_io.name = "<stdin>"
+    with tempfile.NamedTemporaryFile(delete=False) as signed_fragment_file:
+        signed_fragment_file.write(signed_fragment)
+        signed_fragment_path = signed_fragment_file.name
 
     fragment_attach(
-        signed_fragment=signed_fragment_io,
+        signed_fragment=signed_fragment_path,
         manifest_tag=image_ref,
     )
 

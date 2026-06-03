@@ -3,8 +3,9 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import sys
 import tempfile
-from typing import BinaryIO
+from typing import Optional
 from azext_confcom.lib.serialization import policy_deserialize, policy_serialize
 import re
 import base64
@@ -49,18 +50,18 @@ def insert_policy_into_template(
 
 
 def radius_policy_insert(
-    policy_file: BinaryIO,
+    policy_file: Optional[str],
     template_path: str,
     container_index: int,
 ) -> None:
 
-    if policy_file.name == "<stdin>":
+    if policy_file is None:
         with tempfile.NamedTemporaryFile(delete=True) as temp_policy_file:
-            temp_policy_file.write(policy_file.read())
+            temp_policy_file.write(sys.stdin.buffer.read())
             temp_policy_file.flush()
             policy = policy_deserialize(temp_policy_file.name)
     else:
-        policy = policy_deserialize(policy_file.name)
+        policy = policy_deserialize(policy_file)
 
     serialized_policy = policy_serialize(policy)
     encoded_policy = base64.b64encode(serialized_policy.encode()).decode()

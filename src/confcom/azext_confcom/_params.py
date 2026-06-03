@@ -5,8 +5,6 @@
 # pylint: disable=line-too-long
 
 import json
-import argparse
-import sys
 from knack.arguments import CLIArgumentType
 from argcomplete.completers import FilesCompleter
 from azext_confcom._validators import (
@@ -51,9 +49,10 @@ def load_arguments(self, _):
         c.positional(
             "signed_fragment",
             nargs='?',
-            type=argparse.FileType('rb'),
-            default=sys.stdin.buffer,
-            help="Signed fragment to attach",
+            type=str,
+            default=None,
+            completer=FilesCompleter(),
+            help="Path to signed fragment to attach (reads from stdin if not provided)",
         )
         c.argument(
             "manifest_tag",
@@ -70,9 +69,10 @@ def load_arguments(self, _):
         c.positional(
             "signed_fragment",
             nargs='?',
-            type=argparse.FileType('rb'),
-            default=sys.stdin.buffer,
-            help="Signed fragment to push",
+            type=str,
+            default=None,
+            completer=FilesCompleter(),
+            help="Path to signed fragment to push (reads from stdin if not provided)",
         )
         c.argument(
             "manifest_tag",
@@ -555,9 +555,10 @@ def load_arguments(self, _):
         c.positional(
             "policy_file",
             nargs='?',
-            type=argparse.FileType('rb'),
-            default=sys.stdin.buffer,
-            help="Policy file to insert (reads from stdin if not provided)",
+            type=str,
+            default=None,
+            completer=FilesCompleter(),
+            help="Path to policy file to insert (reads from stdin if not provided)",
         )
         c.argument(
             "template_path",
