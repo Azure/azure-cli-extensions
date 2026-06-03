@@ -5,7 +5,7 @@ Release History
 
 2.0.2
 ++++++
-* Fixed autonomous database create discriminator databaseType
+* Fixed autonomous database  discriminator databaseType in create, show and wait
 
 
 2.0.1
