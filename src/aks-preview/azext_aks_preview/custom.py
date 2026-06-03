@@ -1728,6 +1728,7 @@ def aks_upgrade(cmd,
                                'can only be applied on VirtualMachineScaleSets and VirtualMachines cluster.')
             # Skip Machines mode pools to avoid a known client-side error: these pools are containers of individual machines and do not support node image version upgrade.
             if agent_pool_profile.mode == CONST_NODEPOOL_MODE_MACHINES:
+                logger.warning("Skipping node image upgrade for agent pool '%s': Machines mode pools do not support node image version upgrade.", agent_pool_profile.name)
                 continue
             agent_pool_client = cf_agent_pools(cmd.cli_ctx)
             _upgrade_single_nodepool_image_version(
