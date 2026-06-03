@@ -78,6 +78,9 @@ from azext_aks_preview._consts import (
     CONST_NETWORK_PLUGIN_NONE,
     CONST_NETWORK_POD_IP_ALLOCATION_MODE_DYNAMIC_INDIVIDUAL,
     CONST_NETWORK_POD_IP_ALLOCATION_MODE_STATIC_BLOCK,
+    CONST_NODE_DISRUPTION_POLICY_ALLOW,
+    CONST_NODE_DISRUPTION_POLICY_BLOCK,
+    CONST_NODE_DISRUPTION_POLICY_ALLOW_DURING_MAINTENANCE_WINDOW,
     CONST_NODE_IMAGE_UPGRADE_CHANNEL,
     CONST_NODE_OS_CHANNEL_NODE_IMAGE,
     CONST_NODE_OS_CHANNEL_NONE,
@@ -560,6 +563,12 @@ gpu_mig_strategies = [
 upgrade_strategies = [
     CONST_UPGRADE_STRATEGY_ROLLING,
     CONST_UPGRADE_STRATEGY_BLUE_GREEN,
+]
+
+node_disruption_policies = [
+    CONST_NODE_DISRUPTION_POLICY_ALLOW,
+    CONST_NODE_DISRUPTION_POLICY_BLOCK,
+    CONST_NODE_DISRUPTION_POLICY_ALLOW_DURING_MAINTENANCE_WINDOW,
 ]
 
 
@@ -1938,6 +1947,12 @@ def load_arguments(self, _):
             help="The control plane scaling size. Provides scaled and performance-guaranteed control plane capacity. "
                  "Available values are 'H2', 'H4', and 'H8'. "
                  "The control plane scaling profile must already be enabled on the cluster.",
+        )
+        c.argument(
+            "node_disruption_policy",
+            arg_type=get_enum_type(node_disruption_policies),
+            is_preview=True,
+            help="Set the node disruption policy for the cluster.",
         )
 
     with self.argument_context("aks delete") as c:

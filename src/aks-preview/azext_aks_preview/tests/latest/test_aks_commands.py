@@ -24388,3 +24388,82 @@ spec:
                 self.check("vmSize", "Standard_D4s_v3"),
             ],
         )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westus2"
+    )
+    def test_aks_update_node_disruption_policy(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name("cliakstest", 16)
+        nodepool_name = self.create_random_name("c", 6)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "resource_type": "Microsoft.ContainerService/ManagedClusters",
+                "nodepool_name": nodepool_name,
+                "vm_size": "Standard_D4s_v3",
+                "network_plugin": "azure",
+                "network_plugin_mode": "overlay",
+            }
+        )
+
+        # create aks cluster with Azure network plugin
+        self.cmd(
+            "aks create "
+            "--resource-group={resource_group} "
+            "--name={name} "
+            "--ssh-key-value={ssh_key_value} "
+            "--network-plugin={network_plugin} "
+            "--network-plugin-mode={network_plugin_mode} "
+            "--network-policy=none "
+            "--node-count=3",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.networkPolicy", "none"),
+            ],
+        )
+
+        # add nodepool
+        self.cmd(
+            "aks nodepool add "
+            "--resource-group={resource_group}"
+            " --cluster-name={name} "
+            "--name={nodepool_name}",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("securityProfile.sshAccess", "LocalUser"),
+            ],
+        )
+
+        # update node disruption policy to "Block"
+        self.cmd(
+            "aks update --resource-group={resource_group} --name={name} --node-disruption-policy=Block",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("nodeDisruptionProfile.nodeDisruptionPolicy", "Block"),
+            ],
+        )
+
+        # attempt to change network policy which should be blocked by node disruption policy
+        self.cmd(
+            "aks update --resource-group={resource_group} --name={name} --network-policy=azure",
+            expect_failure=True,
+        )
+
+        # attempt to change ssh access which should be allowed despite node disruption policy
+        self.cmd(
+            "aks nodepool update --resource-group={resource_group} --cluster-name={name} --name={nodepool_name} --ssh-access disabled --yes",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("securityProfile.sshAccess", "Disabled"),
+            ],
+        )
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )

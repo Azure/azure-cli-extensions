@@ -1439,6 +1439,8 @@ def aks_update(
     # health monitor
     enable_continuous_control_plane_and_addon_monitor=False,
     disable_continuous_control_plane_and_addon_monitor=False,
+    # node disruption policy
+    node_disruption_policy=None,
     # control plane scaling
     control_plane_scaling_size=None,
 ):

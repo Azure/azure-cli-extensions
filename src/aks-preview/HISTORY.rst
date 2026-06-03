@@ -13,6 +13,7 @@ Pending
 +++++++
 * `az aks update`: Add `--control-plane-scaling-size` parameter to update the control plane scaling size on an existing cluster with available sizes 'H2', 'H4', and 'H8'.
 * `az aks bastion`: Fix `--subscription` not being passed to internal `az network bastion tunnel` and bastion discovery commands.
+* `az aks update`: Add `--node-disruption-policy` (preview) to update the node disruption policy for a cluster. Requires AFEC registration `Microsoft.ContainerService/NodeDisruptionProfile`. This is a cluster-level property that applies to all node pools in the cluster.
 
 21.0.0b3
 +++++++
