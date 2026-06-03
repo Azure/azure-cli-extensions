@@ -548,7 +548,7 @@ def load_arguments(self, _):
             required=False,
             default="aci",
             type=str,
-            help="Platform to create container definition for",
+            help="Platform to create container definition for (aci or vn2)",
         )
 
     with self.argument_context("confcom radius policy_insert") as c:

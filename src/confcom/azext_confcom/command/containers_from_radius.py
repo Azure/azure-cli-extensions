@@ -368,7 +368,7 @@ def _collect_radius_compute_containers(resource: dict) -> list[dict]:
 # Container extraction
 # ---------------------------------------------------------------------------
 
-def _extract_container_def(container: dict, resource: dict, platform: str) -> dict:
+def _extract_container_def(container: dict, resource: dict, aci_or_vn2: str = "aci") -> dict:
     """
     Build a policy container definition from a Radius container spec.
 
@@ -380,7 +380,7 @@ def _extract_container_def(container: dict, resource: dict, platform: str) -> di
     if not image:
         raise ValueError("Container must have an image")
 
-    image_def = from_image(image, platform)
+    image_def = from_image(image, aci_or_vn2=aci_or_vn2)
 
     template_def = {}
 
@@ -392,13 +392,13 @@ def _extract_container_def(container: dict, resource: dict, platform: str) -> di
     # defined in the recipe are ignored and the container starts with the
     # image's default working directory.  Therefore, our policygen should ignore
     # it as well.
-
-    # working_dir = _map_working_dir(container)
-    # if working_dir is not None:
-    #     template_def["working_dir"] = working_dir
+    if aci_or_vn2 != "aci":
+        working_dir = _map_working_dir(container)
+        if working_dir is not None:
+            template_def["working_dir"] = working_dir
 
     env_rules = (
-        _platform_env_rules(platform)
+        _platform_env_rules(aci_or_vn2)
         + _map_env_rules(container)
         + _map_connection_env_rules(resource)
     )
@@ -421,7 +421,7 @@ def containers_from_radius(
     template: str,
     parameters: list,
     container_index: int,
-    platform: str,
+    platform: str = "aci",
 ) -> str:
     """
     Extract container definitions from a Radius bicep template.
