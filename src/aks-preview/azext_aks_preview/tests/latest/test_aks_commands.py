@@ -17191,6 +17191,134 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westus2"
+    )
+    def test_aks_nodepool_add_with_secondary_network_interfaces(
+        self, resource_group, resource_group_location
+    ):
+        aks_name = self.create_random_name("cliakstest", 16)
+        nodepool_name = self.create_random_name("n", 6)
+
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "node_pool_name": nodepool_name,
+                "node_vm_size": "standard_d4s_v3",
+            }
+        )
+
+        # Create a VNet with subnets for nodes and secondary NICs
+        self.cmd(
+            "network vnet create "
+            "--resource-group={resource_group} "
+            "--name=testvnet "
+            "--address-prefix 192.168.0.0/16",
+        )
+        self.cmd(
+            "network vnet subnet create "
+            "--resource-group={resource_group} "
+            "--vnet-name=testvnet "
+            "--name=nodesubnet "
+            "--address-prefix 192.168.0.0/24",
+        )
+        subnet = self.cmd(
+            "network vnet subnet create "
+            "--resource-group={resource_group} "
+            "--vnet-name=testvnet "
+            "--name=secondarysubnet "
+            "--address-prefix 192.168.1.0/24",
+        ).get_output_in_json()
+
+        node_subnet_id = (
+            f"/subscriptions/{self.get_subscription_id()}"
+            f"/resourceGroups/{resource_group}"
+            "/providers/Microsoft.Network/virtualNetworks/testvnet/subnets/nodesubnet"
+        )
+        secondary_subnet_id = subnet["id"]
+
+        self.kwargs.update(
+            {
+                "node_subnet_id": node_subnet_id,
+                "secondary_nics": f'[{{"type":"Standard","vnetSubnetId":"{secondary_subnet_id}"}}]',
+            }
+        )
+
+        # Register the preview feature required for secondary NICs
+        self.cmd(
+            "feature register "
+            "--namespace Microsoft.ContainerService "
+            "--name NetworkingMultiNICPreview"
+        )
+
+        # Wait until the feature is registered
+        while True:
+            result = self.cmd(
+                "feature show "
+                "--namespace Microsoft.ContainerService "
+                "--name NetworkingMultiNICPreview"
+            ).get_output_in_json()
+            if result["properties"]["state"] == "Registered":
+                break
+            time.sleep(30)
+
+        # Propagate the registration
+        self.cmd("provider register --namespace Microsoft.ContainerService")
+
+        # Create the cluster
+        self.cmd(
+            "aks create "
+            "--resource-group={resource_group} "
+            "--name={name} "
+            "--location={location} "
+            "--ssh-key-value={ssh_key_value} "
+            "--node-count=1 "
+            "--node-vm-size={node_vm_size} "
+            "--vnet-subnet-id={node_subnet_id} ",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+            ],
+        )
+
+        # Add nodepool with secondary network interfaces
+        self.cmd(
+            "aks nodepool add "
+            "--resource-group={resource_group} "
+            "--cluster-name={name} "
+            "--name={node_pool_name} "
+            "--node-vm-size={node_vm_size} "
+            "--node-count=1 "
+            "--vnet-subnet-id={node_subnet_id} "
+            "--secondary-network-interfaces '{secondary_nics}' ",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check(
+                    "networkProfile.secondaryNetworkInterfaces[0].vnetSubnetId",
+                    secondary_subnet_id,
+                ),
+                self.check(
+                    "networkProfile.secondaryNetworkInterfaces[0].type",
+                    "Standard",
+                ),
+            ],
+        )
+
+        # delete
+        cmd = (
+            "aks delete --resource-group={resource_group} --name={name} --yes --no-wait"
+        )
+        self.cmd(
+            cmd,
+            checks=[
+                self.is_empty(),
+            ],
+        )
+
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="eastus"
@@ -24652,4 +24780,83 @@ spec:
                 self.check("provisioningState", "Succeeded"),
                 self.check("vmSize", "Standard_D4s_v3"),
             ],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westus2"
+    )
+    def test_aks_update_node_disruption_policy(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name("cliakstest", 16)
+        nodepool_name = self.create_random_name("c", 6)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "resource_type": "Microsoft.ContainerService/ManagedClusters",
+                "nodepool_name": nodepool_name,
+                "vm_size": "Standard_D4s_v3",
+                "network_plugin": "azure",
+                "network_plugin_mode": "overlay",
+            }
+        )
+
+        # create aks cluster with Azure network plugin
+        self.cmd(
+            "aks create "
+            "--resource-group={resource_group} "
+            "--name={name} "
+            "--ssh-key-value={ssh_key_value} "
+            "--network-plugin={network_plugin} "
+            "--network-plugin-mode={network_plugin_mode} "
+            "--network-policy=none "
+            "--node-count=3",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.networkPolicy", "none"),
+            ],
+        )
+
+        # add nodepool
+        self.cmd(
+            "aks nodepool add "
+            "--resource-group={resource_group}"
+            " --cluster-name={name} "
+            "--name={nodepool_name}",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("securityProfile.sshAccess", "LocalUser"),
+            ],
+        )
+
+        # update node disruption policy to "Block"
+        self.cmd(
+            "aks update --resource-group={resource_group} --name={name} --node-disruption-policy=Block",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("nodeDisruptionProfile.nodeDisruptionPolicy", "Block"),
+            ],
+        )
+
+        # attempt to change network policy which should be blocked by node disruption policy
+        self.cmd(
+            "aks update --resource-group={resource_group} --name={name} --network-policy=azure",
+            expect_failure=True,
+        )
+
+        # attempt to change ssh access which should be allowed despite node disruption policy
+        self.cmd(
+            "aks nodepool update --resource-group={resource_group} --cluster-name={name} --name={nodepool_name} --ssh-access disabled --yes",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("securityProfile.sshAccess", "Disabled"),
+            ],
+        )
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
         )

@@ -79,6 +79,9 @@ from azext_aks_preview._consts import (
     CONST_NETWORK_PLUGIN_NONE,
     CONST_NETWORK_POD_IP_ALLOCATION_MODE_DYNAMIC_INDIVIDUAL,
     CONST_NETWORK_POD_IP_ALLOCATION_MODE_STATIC_BLOCK,
+    CONST_NODE_DISRUPTION_POLICY_ALLOW,
+    CONST_NODE_DISRUPTION_POLICY_BLOCK,
+    CONST_NODE_DISRUPTION_POLICY_ALLOW_DURING_MAINTENANCE_WINDOW,
     CONST_NODE_IMAGE_UPGRADE_CHANNEL,
     CONST_NODE_OS_CHANNEL_NODE_IMAGE,
     CONST_NODE_OS_CHANNEL_NONE,
@@ -566,6 +569,12 @@ upgrade_strategies = [
 # AKS backup strategy presets exposed by --backup-strategy.
 # NOTE: must mirror CONST_AKS_BACKUP_STRATEGIES in azext_dataprotection.manual._consts.
 aks_backup_strategies = ["Week", "Month", "DisasterRecovery", "Custom"]
+
+node_disruption_policies = [
+    CONST_NODE_DISRUPTION_POLICY_ALLOW,
+    CONST_NODE_DISRUPTION_POLICY_BLOCK,
+    CONST_NODE_DISRUPTION_POLICY_ALLOW_DURING_MAINTENANCE_WINDOW,
+]
 
 
 def load_arguments(self, _):
@@ -1999,6 +2008,12 @@ def load_arguments(self, _):
                  "Available values are 'H2', 'H4', and 'H8'. "
                  "The control plane scaling profile must already be enabled on the cluster.",
         )
+        c.argument(
+            "node_disruption_policy",
+            arg_type=get_enum_type(node_disruption_policies),
+            is_preview=True,
+            help="Set the node disruption policy for the cluster.",
+        )
 
     with self.argument_context("aks delete") as c:
         c.argument("if_match")
@@ -2296,6 +2311,14 @@ def load_arguments(self, _):
         c.argument(
             'localdns_config',
             help='Path to a JSON file to configure the local DNS profile for a new nodepool.'
+        )
+        # secondary network interfaces
+        c.argument(
+            'secondary_network_interfaces',
+            options_list=['--secondary-network-interfaces', '--secondary-nics'],
+            help='Secondary network interface configurations as a JSON string or `@filename` to load from a file. '
+                 'Example: \'[{"type":"Standard","vnetSubnetId":"/subscriptions/.../subnets/mysubnet"}]\'',
+            is_preview=True,
         )
 
     with self.argument_context("aks nodepool update") as c:

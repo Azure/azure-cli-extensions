@@ -2342,6 +2342,13 @@ helps['aks nodepool add'] = """
         - name: --localdns-config
           type: string
           short-summary: Set the localDNS Profile for a nodepool with a JSON config file.
+        - name: --secondary-network-interfaces --secondary-nics
+          type: string
+          short-summary: Secondary network interface configurations as a JSON string or `@filename`.
+          long-summary: |-
+            Specify secondary NICs to attach to each node. Accepts inline JSON or `@filename`.
+            Example: '[{"type":"Standard","vnetSubnetId":"/subscriptions/.../subnets/mysubnet","enableAcceleratedNetworking":true}]'
+            Supported NIC types are "Standard" (requires vnetSubnetId) and "Dynamic".
         - name: --upgrade-strategy
           type: string
           short-summary: Upgrade strategy for the node pool. Allowed values are "Rolling" or "BlueGreen". Default is "Rolling".

@@ -3821,6 +3821,11 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self.raw_param.get("node_provisioning_mode")
 
+    def get_node_disruption_policy(self) -> Union[str, None]:
+        """Obtain the value of node_disruption_policy.
+        """
+        return self.raw_param.get("node_disruption_policy")
+
     def get_node_provisioning_default_pools(self) -> Union[str, None]:
         """Obtain the value of node_provisioning_default_pools.
         """
@@ -7738,6 +7743,25 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
+    def update_node_disruption_policy(self, mc: ManagedCluster) -> ManagedCluster:
+        """Updates the nodeDisruptionPolicy field of the managed cluster
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        policy = self.context.get_node_disruption_policy()
+        if policy is not None:
+            if mc.node_disruption_profile is None:
+                mc.node_disruption_profile = (
+                    self.models.NodeDisruptionProfile()  # pylint: disable=no-member
+                )
+
+            # set policy
+            mc.node_disruption_profile.node_disruption_policy = policy
+
+        return mc
+
     def update_ai_toolchain_operator(self, mc: ManagedCluster) -> ManagedCluster:
         """Updates the aiToolchainOperatorProfile field of the managed cluster
 
@@ -8297,6 +8321,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_http_proxy_enabled(mc)
         # update user-defined scheduler configuration for kube-scheduler upstream
         mc = self.update_upstream_kubescheduler_user_configuration(mc)
+        # update node disruption policy
+        mc = self.update_node_disruption_policy(mc)
         # update control plane scaling profile
         mc = self.update_control_plane_scaling_profile(mc)
         # update ManagedSystem pools, must at end

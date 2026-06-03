@@ -1447,6 +1447,8 @@ def aks_update(
     enable_backup=False,
     backup_strategy=None,
     backup_configuration_file=None,
+    # node disruption policy
+    node_disruption_policy=None,
     # control plane scaling
     control_plane_scaling_size=None,
 ):
@@ -2001,6 +2003,8 @@ def aks_agentpool_add(
     vm_sizes=None,
     # local DNS
     localdns_config=None,
+    # secondary network interfaces
+    secondary_network_interfaces=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
