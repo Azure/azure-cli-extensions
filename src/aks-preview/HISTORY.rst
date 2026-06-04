@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* `az aks upgrade`: Fix `--node-image-only` to skip Machines mode agent pools, which do not support node image version upgrade.
 
 21.0.0b4
 +++++++
