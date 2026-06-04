@@ -16,12 +16,15 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """Get log analytics ranking report for AFD profile
+
+    :example: LogAnalytics_GetLogAnalyticsRankings
+        az afd log-analytic ranking list --resource-group RG --profile-name profile1 --rankings "[url]" --metrics "[clientRequestCount]" --max-ranking 5 --date-time-begin 2020-11-04T06:49:27.554Z --date-time-end 2020-11-04T09:49:27.554Z
     """
 
     _aaz_info = {
-        "version": "2025-06-01",
+        "version": "2025-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/getloganalyticsrankings", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/getloganalyticsrankings", "2025-09-01-preview"],
         ]
     }
 
@@ -45,6 +48,11 @@ class List(AAZCommand):
             options=["--profile-name"],
             help="Name of the Azure Front Door Standard or Azure Front Door Premium profile which is unique within the resource group. which is unique within the resource group.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9]+(-*[a-zA-Z0-9])*$",
+                max_length=260,
+                min_length=1,
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -57,11 +65,17 @@ class List(AAZCommand):
             options=["--date-time-begin"],
             help="The start datetime.",
             required=True,
+            fmt=AAZDateTimeFormat(
+                protocol="iso",
+            ),
         )
         _args_schema.date_time_end = AAZDateTimeArg(
             options=["--date-time-end"],
             help="The end datetime.",
             required=True,
+            fmt=AAZDateTimeFormat(
+                protocol="iso",
+            ),
         )
         _args_schema.max_ranking = AAZIntArg(
             options=["--max-ranking"],
@@ -179,7 +193,7 @@ class List(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2025-09-01-preview",
                     required=True,
                 ),
             }

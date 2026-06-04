@@ -17,14 +17,14 @@ from azure.cli.core.aaz import *
 class ValidateCustomDomain(AAZCommand):
     """Validates the custom domain mapping to ensure it maps to the correct CDN endpoint in DNS.
 
-    :example: Validate domain www.contoso.com to see whether it maps to the correct CDN endpoint in DNS.
-        az cdn endpoint validate-custom-domain -g group -n endpoint --profile-name profile-name --host-name www.contoso.com
+    :example: Endpoints_ValidateCustomDomain
+        az cdn endpoint validate-custom-domain --resource-group RG --profile-name profile1 --endpoint-name endpoint1 --host-name www.someDomain.com
     """
 
     _aaz_info = {
-        "version": "2025-06-01",
+        "version": "2025-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/endpoints/{}/validatecustomdomain", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/endpoints/{}/validatecustomdomain", "2025-09-01-preview"],
         ]
     }
 
@@ -55,6 +55,11 @@ class ValidateCustomDomain(AAZCommand):
             help="Name of the CDN profile which is unique within the resource group.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9]+(-*[a-zA-Z0-9])*$",
+                max_length=260,
+                min_length=1,
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -140,7 +145,7 @@ class ValidateCustomDomain(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2025-09-01-preview",
                     required=True,
                 ),
             }

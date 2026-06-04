@@ -4,8 +4,66 @@
 # --------------------------------------------------------------------------------------------
 
 
+import json
+
+
 def add_tags(command, tags):
     return command + ' --tags {}'.format(tags)
+
+
+def _json_arg(value):
+    if value is None:
+        return 'null'
+    return "'{}'".format(json.dumps(value, separators=(',', ':')))
+
+
+def _parse_http_error_ranges(ranges):
+    parsed = []
+    if not ranges:
+        return parsed
+    for error_range in ranges.split(','):
+        parts = error_range.split('-')
+        begin = int(parts[0])
+        end = int(parts[1]) if len(parts) == 2 else begin
+        parsed.append({'begin': begin, 'end': end})
+    return parsed
+
+
+def _origin_references(subscription_id, group, profile_name, endpoint_name, origins):
+    references = []
+    for origin in str(origins).split(','):
+        origin = origin.strip()
+        if not origin:
+            continue
+        if '/' not in origin:
+            origin = f'/subscriptions/{subscription_id}/resourceGroups/{group}/providers/Microsoft.Cdn' \
+                     f'/profiles/{profile_name}/endpoints/{endpoint_name}/origins/{origin}'
+        references.append({'id': origin})
+    return references
+
+
+def _health_probe_settings(probe_method=None, probe_path=None, probe_protocol=None, probe_interval=None):
+    settings = {}
+    if probe_method:
+        settings['probe-request-type'] = probe_method
+    if probe_path:
+        settings['probe-path'] = probe_path
+    if probe_protocol:
+        settings['probe-protocol'] = probe_protocol
+    if probe_interval:
+        settings['probe-interval-in-seconds'] = int(probe_interval)
+    return settings
+
+
+def _response_error_detection_settings(error_types=None, failover_threshold=None, status_code_ranges=None):
+    settings = {}
+    if error_types:
+        settings['response-based-detected-error-types'] = error_types
+    if failover_threshold:
+        settings['response-based-failover-threshold-percentage'] = int(failover_threshold)
+    if status_code_ranges:
+        settings['http-error-ranges'] = _parse_http_error_ranges(status_code_ranges)
+    return settings
 
 
 # pylint: disable=too-many-public-methods
@@ -253,22 +311,19 @@ class CdnScenarioMixin:
                                 tags=None, checks=None):
 
         cmd = f'cdn origin-group create -g {group} --endpoint-name {endpoint_name} --profile-name {profile_name} ' \
-              f'-n {origin_group_name} --origins={origins}'
+              f'-n {origin_group_name} --formatted-origins ' \
+              f'{_json_arg(_origin_references(self.get_subscription_id(), group, profile_name, endpoint_name, origins))}'
 
-        if probe_method:
-            cmd += f' --probe-method={probe_method}'
-        if response_error_detection_error_types:
-            cmd += f' --error-types={response_error_detection_error_types}'
-        if response_error_detection_failover_threshold:
-            cmd += f' --failover-threshold={response_error_detection_failover_threshold}'
-        if response_error_detection_status_code_ranges:
-            cmd += f' --status-code-ranges={response_error_detection_status_code_ranges}'
-        if probe_path:
-            cmd += f' \'--probe-path={probe_path}\''
-        if probe_protocol:
-            cmd += f' --probe-protocol={probe_protocol}'
-        if probe_interval:
-            cmd += f' --probe-interval={probe_interval}'
+        health_probe_settings = _health_probe_settings(probe_method, probe_path, probe_protocol, probe_interval)
+        if health_probe_settings:
+            cmd += f' --health-probe-settings {_json_arg(health_probe_settings)}'
+
+        response_error_detection_settings = _response_error_detection_settings(
+            response_error_detection_error_types,
+            response_error_detection_failover_threshold,
+            response_error_detection_status_code_ranges)
+        if response_error_detection_settings:
+            cmd += f' --response-based-origin-error-detection-settings {_json_arg(response_error_detection_settings)}'
         if tags:
             cmd = add_tags(cmd, tags)
         return self.cmd(cmd, checks)
@@ -284,22 +339,17 @@ class CdnScenarioMixin:
                                 tags=None, checks=None):
 
         cmd = f'cdn origin-group update -g {group} --endpoint-name {endpoint_name} --profile-name {profile_name} ' \
-              f'-n {origin_group_name} --origins={origins}'
+              f'-n {origin_group_name} --formatted-origins ' \
+              f'{_json_arg(_origin_references(self.get_subscription_id(), group, profile_name, endpoint_name, origins))}'
 
-        if probe_method:
-            cmd += f' --probe-method={probe_method}'
-        if probe_path:
-            cmd += f' --probe-path={probe_path}'
-        if probe_interval:
-            cmd += f' --probe-interval={probe_interval}'
-        if probe_protocol:
-            cmd += f' --probe-protocol={probe_protocol}'
-        if error_types:
-            cmd += f' --response-error-detection-error-types={error_types}'
-        if failover_threshold:
-            cmd += f' --response-error-detection-failover-threshold={failover_threshold}'
-        if status_code_ranges:
-            cmd += f' --response-error-detection-status-code-ranges={status_code_ranges}'
+        health_probe_settings = _health_probe_settings(probe_method, probe_path, probe_protocol, probe_interval)
+        if health_probe_settings:
+            cmd += f' --health-probe-settings {_json_arg(health_probe_settings)}'
+
+        response_error_detection_settings = _response_error_detection_settings(
+            error_types, failover_threshold, status_code_ranges)
+        if response_error_detection_settings:
+            cmd += f' --response-based-origin-error-detection-settings {_json_arg(response_error_detection_settings)}'
         if tags:
             cmd = add_tags(cmd, tags)
         return self.cmd(cmd, checks)
@@ -417,8 +467,8 @@ class CdnScenarioMixin:
         return self.cmd(command, checks)
 
     def cdn_migrate_to_afd(self, resource_group, profile_name, sku, migration_endpoint_mappings=None, checks=None):
-        command = 'cdn profile-migration migrate -g {} --profile-name {} --sku {} --identity-type SystemAssigned'.format(resource_group,
-                                                                                                                         profile_name, sku)
+        command = 'cdn profile-migration migrate -g {} --profile-name {} --sku {}'.format(resource_group,
+                                                  profile_name, sku)
         if migration_endpoint_mappings is not None:
             command += ' --migration-endpoint-mappings {}'.format(migration_endpoint_mappings)
 

@@ -68,12 +68,6 @@ def load_command_table(self, _):
     from .custom.custom_cdn import CDNProfileList
     self.command_table['cdn profile list'] = CDNProfileList(loader=self)
 
-    # from .custom.custom_cdn import CDNEnableHttps
-    # self.command_table['cdn custom-domain enable-https'] = CDNEnableHttps(loader=self)
-
-    # from .custom.custom_cdn import CDNCustomDomainDelete
-    # self.command_table['cdn custom-domain delete'] = CDNCustomDomainDelete(loader=self)
-
     from azext_cdn.aaz.latest.cdn.endpoint import Show
     self.command_table['cdn endpoint rule show'] = Show(loader=self)
     self.command_table['cdn endpoint rule condition show'] = Show(loader=self)
@@ -93,21 +87,6 @@ def load_command_table(self, _):
 
     from .custom.custom_cdn import CDNOriginUpdate
     self.command_table['cdn origin update'] = CDNOriginUpdate(loader=self)
-
-    from .custom.custom_cdn import CDNOriginGroupCreate
-    self.command_table['cdn origin-group create'] = CDNOriginGroupCreate(loader=self)
-
-    from .custom.custom_cdn import CDNOriginGroupUpdate
-    self.command_table['cdn origin-group update'] = CDNOriginGroupUpdate(loader=self)
-
-    from .custom.custom_cdn import CDNEndpointRuleAdd
-    self.command_table['cdn endpoint rule add'] = CDNEndpointRuleAdd(loader=self)
-
-    from .custom.custom_cdn import CDNEndpointRuleRemove
-    self.command_table['cdn endpoint rule remove'] = CDNEndpointRuleRemove(loader=self)
-
-    from .custom.custom_cdn import CdnMigrateToAfd
-    self.command_table['cdn profile-migration migrate'] = CdnMigrateToAfd(loader=self)
 
     with self.command_group('cdn endpoint rule', cdn_endpoints_sdk, is_preview=True) as g:
         g.show_command('show', 'get')
@@ -130,18 +109,6 @@ def load_command_table(self, _):
         g.custom_command('remove', 'remove_action', client_factory=cf_cdn,
                          doc_string_source='azext_cdn.vendored_sdks.models#Endpoint')
 
-    # from .custom.custom_cdn import CDNEndpointRuleConditionAdd
-    # self.command_table['cdn endpoint rule condition add'] = CDNEndpointRuleConditionAdd(loader=self)
-
-    # from .custom.custom_cdn import CDNEndpointRuleConditionRemove
-    # self.command_table['cdn endpoint rule condition remove'] = CDNEndpointRuleConditionRemove(loader=self)
-
-    # from .custom.custom_cdn import CDNEndpointRuleActionAdd
-    # self.command_table['cdn endpoint rule action add'] = CDNEndpointRuleActionAdd(loader=self)
-
-    # from .custom.custom_cdn import CDNEndpointRuleActionRemove
-    # self.command_table['cdn endpoint rule action remove'] = CDNEndpointRuleActionRemove(loader=self)
-
     from .custom.custom_afdx import AFDCustomDomainCreate
     self.command_table['afd custom-domain create'] = AFDCustomDomainCreate(loader=self)
 
@@ -160,23 +127,20 @@ def load_command_table(self, _):
     from .custom.custom_afdx import AFDProfileLogScrubbingShow
     self.command_table['afd profile log-scrubbing show'] = AFDProfileLogScrubbingShow(loader=self)
 
-    from .custom.custom_afdx import AFDEndpointCreate
-    self.command_table['afd endpoint create'] = AFDEndpointCreate(loader=self)
+    from .custom.custom_afdx import AFDRuleCreate
+    self.command_table['afd rule create'] = AFDRuleCreate(loader=self)
 
-    from .custom.custom_afdx import AFDEndpointUpdate
-    self.command_table['afd endpoint update'] = AFDEndpointUpdate(loader=self)
+    from .custom.custom_afdx import AFDRuleActionAdd
+    self.command_table['afd rule action add'] = AFDRuleActionAdd(loader=self)
 
-    from .custom.custom_afdx import AFDOriginCreate
-    self.command_table['afd origin create'] = AFDOriginCreate(loader=self)
-
-    from .custom.custom_afdx import AFDOriginUpdate
-    self.command_table['afd origin update'] = AFDOriginUpdate(loader=self)
-
-    from .custom.custom_afdx import AFDOriginGroupCreate
-    self.command_table['afd origin-group create'] = AFDOriginGroupCreate(loader=self)
+    from .custom.custom_afdx import AFDRuleConditionAdd
+    self.command_table['afd rule condition add'] = AFDRuleConditionAdd(loader=self)
 
     from .custom.custom_afdx import AFDOriginGroupUpdate
     self.command_table['afd origin-group update'] = AFDOriginGroupUpdate(loader=self)
+
+    from .custom.custom_afdx import AFDOriginUpdate
+    self.command_table['afd origin update'] = AFDOriginUpdate(loader=self)
 
     from .custom.custom_afdx import AFDRouteCreate
     self.command_table['afd route create'] = AFDRouteCreate(loader=self)
@@ -184,35 +148,9 @@ def load_command_table(self, _):
     from .custom.custom_afdx import AFDRouteUpdate
     self.command_table['afd route update'] = AFDRouteUpdate(loader=self)
 
-    from .custom.custom_afdx import AFDRuleCreate
-    self.command_table['afd rule create'] = AFDRuleCreate(loader=self)
+    from .custom.custom_afdx import AFDEndpointCreate
+    self.command_table['afd endpoint create'] = AFDEndpointCreate(loader=self)
 
-    from .custom.custom_afdx import AFDRuleConditionShow
-    self.command_table['afd rule condition list'] = AFDRuleConditionShow(loader=self)
+    from .custom.custom_afdx import AFDEndpointUpdate
+    self.command_table['afd endpoint update'] = AFDEndpointUpdate(loader=self)
 
-    from .custom.custom_afdx import AFDRuleconditionAdd
-    self.command_table['afd rule condition add'] = AFDRuleconditionAdd(loader=self)
-
-    from .custom.custom_afdx import AFDRuleconditionRemove
-    self.command_table['afd rule condition remove'] = AFDRuleconditionRemove(loader=self)
-
-    from .custom.custom_afdx import AFDRuleActionShow
-    self.command_table['afd rule action list'] = AFDRuleActionShow(loader=self)
-
-    from .custom.custom_afdx import AFDRuleActionCreate
-    self.command_table['afd rule action add'] = AFDRuleActionCreate(loader=self)
-
-    from .custom.custom_afdx import AFDRuleActionRemove
-    self.command_table['afd rule action remove'] = AFDRuleActionRemove(loader=self)
-
-    from .custom.custom_afdx import AFDSecretCreate
-    self.command_table['afd secret create'] = AFDSecretCreate(loader=self)
-
-    from .custom.custom_afdx import AFDSecretUpdate
-    self.command_table['afd secret update'] = AFDSecretUpdate(loader=self)
-
-    from .custom.custom_afdx import AFDSecurityPolicyCreate
-    self.command_table['afd security-policy create'] = AFDSecurityPolicyCreate(loader=self)
-
-    from .custom.custom_afdx import AFDSecurityPolicyUpdate
-    self.command_table['afd security-policy update'] = AFDSecurityPolicyUpdate(loader=self)

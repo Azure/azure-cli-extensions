@@ -17,14 +17,14 @@ from azure.cli.core.aaz import *
 class Delete(AAZCommand):
     """Delete an existing custom domain within an endpoint.
 
-    :example: Delete the custom domain of a CDN.
-        az cdn custom-domain delete -g group --endpoint-name endpoint --profile-name profile -n customdomain1
+    :example: CustomDomains_Delete
+        az cdn custom-domain delete --resource-group RG --profile-name profile1 --endpoint-name endpoint1 --custom-domain-name www-someDomain-net
     """
 
     _aaz_info = {
-        "version": "2025-06-01",
+        "version": "2025-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/endpoints/{}/customdomains/{}", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/endpoints/{}/customdomains/{}", "2025-09-01-preview"],
         ]
     }
 
@@ -167,7 +167,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2025-09-01-preview",
                     required=True,
                 ),
             }

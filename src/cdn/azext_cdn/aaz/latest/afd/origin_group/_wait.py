@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/origingroups/{}", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/origingroups/{}", "2025-09-01-preview"],
         ]
     }
 
@@ -48,7 +48,7 @@ class Wait(AAZWaitCommand):
         )
         _args_schema.profile_name = AAZStrArg(
             options=["--profile-name"],
-            help="Name of the Azure Front Door Standard or Azure Front Door Premium which is unique within the resource group.",
+            help="Name of the Azure Front Door Standard or Azure Front Door Premium profile which is unique within the resource group.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -131,7 +131,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2025-09-01-preview",
                     required=True,
                 ),
             }
