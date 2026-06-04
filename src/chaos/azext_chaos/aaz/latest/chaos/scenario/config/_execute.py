@@ -50,7 +50,7 @@ class Execute(AAZCommand):
             required=True,
         )
         _args_schema.scenario_configuration_name = AAZStrArg(
-            options=["--scenario-configuration-name"],
+            options=["-n", "--name", "--scenario-configuration-name"],
             help="Name of the scenario definition.",
             required=True,
             id_part="child_name_2",
