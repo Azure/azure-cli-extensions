@@ -16,11 +16,16 @@ Release History
 * Command name changed from plural ``refresh-recommendations`` to singular ``refresh-recommendation``
   to match the aaz-dev convention for verb-noun command naming. The ``evaluate-scenarios`` alias
   retains its current name.
-* Register all hand-written commands (incl. ``ScenarioConfigCreate``) test injects subscription ID
-  via ``self.get_subscription_id()`` in the ``ScenarioTest`` ``self.kwargs.update({...})`` setup
-  helpers so ``{sub}`` substitutions in ``--scopes /subscriptions/{sub}/...`` resolve.
 * Generated ``aaz/`` tree regenerated from spec commit ``f228b86c`` via the
   ``chaos-automation-codegen`` skill family (``aaz-dev cli generate-by-swagger-tag``).
+* Test scaffolding: removed all ``@live_only()`` integration tests (workspace lifecycle,
+  scenario CRUD, scenario_config CRUD, scenario_run, discovered-resource). Their value
+  over the ~140 unit tests + ``azdev linter`` + spec-driven aaz-dev regen was marginal —
+  they exercised service behavior (which Microsoft.Chaos owns) rather than extension
+  behavior. Validation strategy is now: unit tests + ``azdev linter`` + ``azdev style`` +
+  deterministic regen via the codegen skill + developer smoke before release. Matches how
+  many other azure-cli-extensions packages validate (zero ScenarioTest coverage is a
+  common, accepted pattern). No ``recordings/`` directory required.
 
 0.1.0
 +++++
