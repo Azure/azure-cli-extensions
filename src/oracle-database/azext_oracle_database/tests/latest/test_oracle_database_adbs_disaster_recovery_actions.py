@@ -6,7 +6,6 @@
 # --------------------------------------------------------------------------------------------
 import os
 import unittest
-import time
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only)
@@ -26,6 +25,7 @@ class OracleDatabaseAdbsDisasterRecoveryActionsScenario(ScenarioTest):
 
         return peer_args
 
+    @live_only()
     @AllowLargeResponse(size_kb=10240)
     @ResourceGroupPreparer(name_prefix='cli_test_odba_rg')
     def test_oracledatabase_adbs_create_cross_region_disaster_recovery(self, resource_group):
@@ -78,6 +78,7 @@ class OracleDatabaseAdbsDisasterRecoveryActionsScenario(ScenarioTest):
                      source_location
                  ))
 
+    @live_only()
     @AllowLargeResponse(size_kb=10240)
     @ResourceGroupPreparer(name_prefix='cli_test_odba_rg')
     def test_oracledatabase_adbs_change_disaster_recovery_configuration(self, resource_group):
@@ -90,6 +91,7 @@ class OracleDatabaseAdbsDisasterRecoveryActionsScenario(ScenarioTest):
                  '--disaster-recovery-type Adg '
                  '--is-replicate-automatic-backups false '.format(resource_group_name, source_database_name))
 
+    @live_only()
     @AllowLargeResponse(size_kb=10240)
     @ResourceGroupPreparer(name_prefix='cli_test_odba_rg')
     def test_oracledatabase_adbs_switchover(self, resource_group):
@@ -105,6 +107,7 @@ class OracleDatabaseAdbsDisasterRecoveryActionsScenario(ScenarioTest):
                  '--autonomousdatabasename {} '
                  '{}'.format(resource_group_name, source_database_name, peer_args))
 
+    @live_only()
     @AllowLargeResponse(size_kb=10240)
     @ResourceGroupPreparer(name_prefix='cli_test_odba_rg')
     def test_oracledatabase_adbs_failover(self, resource_group):

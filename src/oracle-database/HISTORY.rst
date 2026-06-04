@@ -3,6 +3,10 @@
 Release History
 ===============
 
+2.0.3
+++++++
+* Fixed autonomous database  discriminator databaseType in cross region DR related commands
+
 2.0.2
 ++++++
 * Fixed autonomous database  discriminator databaseType in create, show and wait

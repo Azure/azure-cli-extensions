@@ -19,6 +19,7 @@ class OracleDatabaseAdbsRestoreShrinkActionScenario(ScenarioTest):
             os.environ.get('AZURE_ORACLE_DATABASE_ADBS_OPERATION_NAME', 'DNDAdbsTets')
         )
 
+    @live_only()
     @AllowLargeResponse(size_kb=10240)
     @ResourceGroupPreparer(name_prefix='cli_test_odba_rg')
     def test_oracledatabase_adbs_action(self, resource_group):
@@ -40,6 +41,7 @@ class OracleDatabaseAdbsRestoreShrinkActionScenario(ScenarioTest):
                  '--autonomousdatabasename {} '.format(resource_group_name, autonomous_database_name))
 
 
+    @live_only()
     @AllowLargeResponse(size_kb=10240)
     @ResourceGroupPreparer(name_prefix='cli_test_odba_rg')
     def test_oracledatabase_adbs_restore(self, resource_group):
