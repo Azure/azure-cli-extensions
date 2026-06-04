@@ -10,4 +10,12 @@
 
 
 def load_arguments(self, _):  # pylint: disable=unused-argument
-    pass
+    with self.argument_context('provisionedmachine cert-create') as c:
+        c.argument('vault_name', options_list=['--vault-name', '-v'],
+                   help='Name of the Azure Key Vault that holds the private CA signing key (ssh-ca).',
+                   required=True)
+        c.argument('resource_id', options_list=['--resource-id', '-r'],
+                   help='Fully qualified ARM resource ID of the ProvisionedMachine. '
+                        'Used to determine the user\'s RBAC role (Reader/Contributor/Admin) '
+                        'via PIM-based JIT access.',
+                   required=True)

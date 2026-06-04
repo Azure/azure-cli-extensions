@@ -9,3 +9,37 @@
 # pylint: disable=too-many-lines
 
 from knack.help_files import helps  # pylint: disable=unused-import
+
+helps['provisionedmachine'] = """
+    type: group
+    short-summary: Manage provisioned machine resources.
+    long-summary: Commands for managing Azure Provisioned Machine resources including SSH certificate creation.
+"""
+
+helps['provisionedmachine cert-create'] = """
+    type: command
+    short-summary: Create a short-lived SSH certificate signed by a private CA key in Azure Key Vault.
+    long-summary: |
+        Generates an ephemeral SSH key pair, determines the caller's RBAC role
+        on the target ProvisionedMachine resource via PIM-based JIT access, and
+        sends the public key along with metadata (userPublicKey, username, role,
+        expiry) to Key Vault for signing.
+
+        The user's role is NOT taken as input — it is resolved automatically from
+        the RBAC role assignment on the device resource.
+
+        The extension uses the following custom Azure roles:
+          - Provisioned Machine Admin        (full SSH with sudo)
+          - Provisioned Machine Contributor  (SSH without sudo)
+          - Provisioned Machine Reader       (view-only; SSH restricted on device)
+        Certificates are generated for all roles — access restrictions are
+        enforced on the device side, not by the CLI.
+
+        The user identity is derived automatically from the Entra login context.
+        The certificate expiry is derived from the PIM activation's remaining duration.
+        Returns the signed SSH user certificate and the freshly generated private key.
+    examples:
+        - name: Create a certificate (expiry derived from PIM activation)
+          text: |
+            az provisionedmachine cert-create --vault-name myKeyVault --resource-id /subscriptions/.../providers/Microsoft.AzureStackHCI/edgeMachines/myDevice
+"""

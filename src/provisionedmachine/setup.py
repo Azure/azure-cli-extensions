@@ -26,7 +26,11 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = []
+DEPENDENCIES = [
+    'oschmod==0.3.12',
+    'requests',
+    'azure-mgmt-authorization',
+]
 
 with open('README.md', 'r', encoding='utf-8') as f:
     README = f.read()
