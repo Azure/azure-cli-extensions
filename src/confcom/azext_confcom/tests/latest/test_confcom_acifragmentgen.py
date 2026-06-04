@@ -331,11 +331,9 @@ def test_oras_attach_multiarch_error(mock_platforms, mock_run):
     # time for the mocks to work, due to reloading in conftest.py run_on_wheel.
     from azext_confcom.command.fragment_attach import oras_attach
 
-    mock_fragment = MagicMock()
-    mock_fragment.name = "/tmp/fragment.cose"
     with pytest.raises(SystemExit):
         oras_attach(
-            signed_fragment=mock_fragment, manifest_tag="myregistry.io/myimage:latest"
+            signed_fragment_path="/tmp/fragment.cose", manifest_tag="myregistry.io/myimage:latest"
         )
     mock_run.assert_not_called()
 
@@ -349,11 +347,9 @@ def test_oras_attach_detection_failure_error(mock_platforms, mock_run):
     """oras_attach raises SystemExit when platform detection fails (empty list)."""
     from azext_confcom.command.fragment_attach import oras_attach
 
-    mock_fragment = MagicMock()
-    mock_fragment.name = "/tmp/fragment.cose"
     with pytest.raises(SystemExit):
         oras_attach(
-            signed_fragment=mock_fragment, manifest_tag="myregistry.io/myimage:latest"
+            signed_fragment_path="/tmp/fragment.cose", manifest_tag="myregistry.io/myimage:latest"
         )
     mock_run.assert_not_called()
 
@@ -364,11 +360,9 @@ def test_oras_attach_explicit_platform(mock_run):
     from azext_confcom.command.fragment_attach import oras_attach
 
     mock_run.return_value = MagicMock(returncode=0)
-    mock_fragment = MagicMock()
-    mock_fragment.name = "/tmp/fragment.cose"
 
     oras_attach(
-        signed_fragment=mock_fragment,
+        signed_fragment_path="/tmp/fragment.cose",
         manifest_tag="myregistry.io/myimage:latest",
         platform="linux/amd64",
     )
@@ -390,11 +384,9 @@ def test_oras_attach_auto_detected_platform(mock_platforms, mock_run):
     from azext_confcom.command.fragment_attach import oras_attach
 
     mock_run.return_value = MagicMock(returncode=0)
-    mock_fragment = MagicMock()
-    mock_fragment.name = "/tmp/fragment.cose"
 
     oras_attach(
-        signed_fragment=mock_fragment,
+        signed_fragment_path="/tmp/fragment.cose",
         manifest_tag="myregistry.io/myimage:latest",
     )
 
