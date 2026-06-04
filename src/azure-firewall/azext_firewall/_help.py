@@ -134,6 +134,11 @@ helps['network firewall network-rule'] = """
 helps['network firewall network-rule create'] = """
     type: command
     short-summary: Create an Azure Firewall network rule.
+    examples:
+    - name: Create a network rule
+      text: |
+        az network firewall network-rule create -g myrg -n network-rule -c collection --priority --action Allow -f af1 \
+--source-addresses 10.0.0.0 111.1.0.0/24 --protocols UDP TCP ICMP --destination-fqdns www.bing.com --destination-ports 80
 """
 
 helps['network firewall network-rule delete'] = """
@@ -182,6 +187,11 @@ helps['network firewall nat-rule'] = """
 helps['network firewall nat-rule create'] = """
     type: command
     short-summary: Create an Azure Firewall NAT rule.
+    examples:
+    - name: Create a NAT rule
+      text: |
+        az network firewall nat-rule create -g myrg -n natrule -c collection --priority --action Dnat -f af1 \
+--source-addresses 10.0.0.0 111.1.0.0/24 --protocols UDP TCP --translated-fqdn server.test.com --destination-ports 96 --destination-addresses 12.36.22.14 --translated-port 95
 """
 
 helps['network firewall nat-rule delete'] = """
