@@ -50,7 +50,7 @@ class RefreshRecommendation(AAZCommand):
             required=True,
         )
         _args_schema.workspace_name = AAZStrArg(
-            options=["--workspace-name"],
+            options=["-n", "--name", "--workspace-name"],
             help="String that represents a Workspace resource name.",
             required=True,
             id_part="name",

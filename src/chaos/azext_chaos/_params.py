@@ -52,9 +52,9 @@ def load_arguments(self, _):
             help='Do not prompt for confirmation.',
         )
 
-    # evaluate-scenarios alias inherits all args from refresh-recommendations;
+    # evaluate-scenarios alias inherits all args from refresh-recommendation;
     # register the same overrides so short flags resolve correctly.
-    for ctx_name in ('chaos workspace refresh-recommendations',
+    for ctx_name in ('chaos workspace refresh-recommendation',
                      'chaos workspace evaluate-scenarios'):
         with self.argument_context(ctx_name) as c:
             c.argument(

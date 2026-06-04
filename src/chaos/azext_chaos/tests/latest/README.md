@@ -28,7 +28,7 @@ includes `fix-permissions`, `show-permission-fix`, `show-discovery`, and
 
 | File | Epic Task | Commands Covered |
 |------|-----------|-----------------|
-| `test_chaos_workspace.py` | E5-T1 | `workspace create`, `show`, `list`, `update`, `refresh-recommendations`, `evaluate-scenarios`, `show-discovery`, `show-evaluation`, `delete` |
+| `test_chaos_workspace.py` | E5-T1 | `workspace create`, `show`, `list`, `update`, `refresh-recommendation`, `evaluate-scenarios`, `show-discovery`, `show-evaluation`, `delete` |
 | `test_chaos_scenario.py` | E5-T2 | `scenario create`, `show`, `list`, `delete` |
 | `test_chaos_scenario_config.py` | E5-T3 | `scenario config create`, `show`, `list`, `validate`, `show-validation`, `fix-permissions`, `show-permission-fix`, `delete` |
 | `test_chaos_scenario_run.py` | E5-T3a/b/T4 | `scenario run start` (5 modes), `list`, `show`, `cancel` |

@@ -31,7 +31,7 @@ short-summary: Manage Chaos Studio scenarios within a workspace.
 long-summary: |
     Scenarios define the fault-injection actions available in a workspace.
     Catalog scenarios are populated by workspace evaluation (see
-    'az chaos workspace refresh-recommendations'); custom scenarios can be
+    'az chaos workspace refresh-recommendation'); custom scenarios can be
     created directly.
 """
 
@@ -58,7 +58,7 @@ type: group
 short-summary: Browse discovered resources in a Chaos Studio workspace.
 long-summary: |
     Discovered resources are populated by workspace discovery scans
-    (triggered via 'az chaos workspace refresh-recommendations').
+    (triggered via 'az chaos workspace refresh-recommendation').
     Use 'list' to see all discovered resources and 'show' to inspect
     a specific one.
 """
@@ -149,7 +149,7 @@ examples:
         --scopes /subscriptions/SUB/resourceGroups/MyRG/providers/Microsoft.Compute/virtualMachines/MyVM
 """
 
-helps['chaos workspace refresh-recommendations'] = """
+helps['chaos workspace refresh-recommendation'] = """
 type: command
 short-summary: Refresh scenario recommendations and trigger resource discovery for a workspace.
 long-summary: |
@@ -160,22 +160,22 @@ long-summary: |
 examples:
     - name: Refresh recommendations for a workspace
       text: >
-        az chaos workspace refresh-recommendations --name MyWorkspace --resource-group MyRG
+        az chaos workspace refresh-recommendation --name MyWorkspace --resource-group MyRG
     - name: Refresh recommendations without waiting for completion
       text: >
-        az chaos workspace refresh-recommendations --name MyWorkspace --resource-group MyRG --no-wait
+        az chaos workspace refresh-recommendation --name MyWorkspace --resource-group MyRG --no-wait
 """
 
 helps['chaos workspace evaluate-scenarios'] = """
 type: command
 short-summary: >-
-    Alias of `az chaos workspace refresh-recommendations`.
+    Alias of `az chaos workspace refresh-recommendation`.
     Refresh scenario recommendations and trigger resource discovery for a workspace.
 long-summary: |
-    This command is a CLI-side alias for 'az chaos workspace refresh-recommendations'.
+    This command is a CLI-side alias for 'az chaos workspace refresh-recommendation'.
     Both commands invoke the same API operation (Workspaces_RefreshRecommendations)
     with identical arguments and behavior. The canonical command name is
-    'az chaos workspace refresh-recommendations'.
+    'az chaos workspace refresh-recommendation'.
 examples:
     - name: Evaluate scenarios for a workspace
       text: >
@@ -192,7 +192,7 @@ long-summary: |
     Retrieves the latest workspace-scope resource-discovery operation result.
     Returns the discovery operation's state (in-progress, succeeded, failed)
     and any failure details. This is a read-only GET — it does NOT trigger
-    a new discovery. Use 'az chaos workspace refresh-recommendations' to
+    a new discovery. Use 'az chaos workspace refresh-recommendation' to
     trigger a new discovery scan.
 examples:
     - name: Show the latest discovery result
@@ -212,7 +212,7 @@ long-summary: |
     has been evaluated (a prerequisite for 'scenario config validate' and
     'scenario run start' on catalog scenarios). This is a read-only GET — it
     does NOT trigger a new evaluation. Use
-    'az chaos workspace refresh-recommendations' to trigger evaluation.
+    'az chaos workspace refresh-recommendation' to trigger evaluation.
 examples:
     - name: Show the latest evaluation result
       text: >
@@ -230,7 +230,7 @@ short-summary: Create or replace a scenario in a workspace.
 long-summary: |
     Creates a custom scenario. Custom scenarios are authored directly via this
     command and define their own actions and parameters. Catalog scenarios
-    (populated by 'az chaos workspace refresh-recommendations') are not
+    (populated by 'az chaos workspace refresh-recommendation') are not
     created this way.
 
     Use --actions, --parameters, and --description to populate the scenario
@@ -404,7 +404,7 @@ long-summary: |
 
     For non-custom (catalog) scenarios, the workspace must be evaluated before
     validation can succeed. If the workspace has not been evaluated, the command
-    will fail with a hint to run 'az chaos workspace refresh-recommendations'.
+    will fail with a hint to run 'az chaos workspace refresh-recommendation'.
 examples:
     - name: Validate a scenario configuration and display results
       text: >
@@ -579,7 +579,7 @@ type: command
 short-summary: List discovered resources in a workspace.
 long-summary: |
     Lists all resources discovered by workspace discovery scans. Use
-    'az chaos workspace refresh-recommendations' to trigger a new discovery
+    'az chaos workspace refresh-recommendation' to trigger a new discovery
     scan if the list appears stale.
 examples:
     - name: List all discovered resources

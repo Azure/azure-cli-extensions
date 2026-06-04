@@ -6,7 +6,7 @@
 """Integration tests for the ``az chaos workspace`` command group (E5-T1).
 
 Covers the full workspace lifecycle:
-  create → show → list → update → refresh-recommendations →
+  create → show → list → update → refresh-recommendation →
   evaluate-scenarios (alias) → show-discovery → show-evaluation → delete
 
 Re-record when: playback fails OR a spec change merges to
@@ -14,25 +14,27 @@ Re-record when: playback fails OR a spec change merges to
 covered workspace operation.
 """
 
-from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
+from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer, live_only
 
 
+@live_only()
 class TestChaosWorkspaceLifecycle(ScenarioTest):
     """E5-T1: workspace lifecycle — create → show → list → update →
-    refresh-recommendations → evaluate-scenarios → show-discovery →
+    refresh-recommendation → evaluate-scenarios → show-discovery →
     show-evaluation → delete."""
 
-    @ResourceGroupPreparer(name_prefix='cli_test_chaos_ws', location='eastus')
+    @ResourceGroupPreparer(name_prefix='cli_test_chaos_ws', location='westus2')
     def test_workspace_lifecycle(self, resource_group):
         self.kwargs.update({
+            'sub': self.get_subscription_id(),
             'ws': self.create_random_name('ws', 15),
-            'loc': 'eastus',
+            'loc': 'westus2',
         })
 
         # ── create ──────────────────────────────────────────────────────
         self.cmd(
             'chaos workspace create -n {ws} -g {rg} -l {loc} '
-            '--identity-type SystemAssigned '
+            '--mi-system-assigned '
             '--scopes /subscriptions/{sub}/resourceGroups/{rg}',
             checks=[
                 self.check('name', '{ws}'),
@@ -75,9 +77,9 @@ class TestChaosWorkspaceLifecycle(ScenarioTest):
             ],
         )
 
-        # ── refresh-recommendations ─────────────────────────────────────
+        # ── refresh-recommendation ─────────────────────────────────────
         self.cmd(
-            'chaos workspace refresh-recommendations -n {ws} -g {rg}',
+            'chaos workspace refresh-recommendation -n {ws} -g {rg}',
         )
 
         # ── evaluate-scenarios (alias — same handler) ───────────────────

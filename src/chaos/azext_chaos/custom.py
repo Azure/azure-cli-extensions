@@ -12,6 +12,7 @@ from knack.log import get_logger
 from knack.util import CLIError
 
 from .aaz.latest.chaos.scenario.config._create import Create as _ScenarioConfigCreate
+from .aaz.latest.chaos.workspace._refresh_recommendation import RefreshRecommendation as _RefreshRecommendation
 
 logger = get_logger(__name__)
 
@@ -103,10 +104,10 @@ def _poll_location(cmd, poll_url, retry_after):
     raise CLIError(f"Long-running operation timed out after {_LRO_TIMEOUT_SECONDS}s.")
 
 
-def _build_arm_url(cmd, resource_group, workspace, path_suffix):
+def _build_arm_url(cli_ctx, resource_group, workspace, path_suffix):
     """Build a fully qualified ARM URL for a workspace-scoped sub-resource."""
     from azure.cli.core.commands.client_factory import get_subscription_id
-    sub = get_subscription_id(cmd.cli_ctx)
+    sub = get_subscription_id(cli_ctx)
     return (
         f"/subscriptions/{sub}/resourceGroups/{resource_group}"
         f"/providers/Microsoft.Chaos/workspaces/{workspace}"
@@ -126,7 +127,7 @@ def _make_evaluation_hint(workspace, resource_group, context_suffix=""):
     """Build the friendly hint for evaluation-state errors."""
     hint = (
         f"Workspace has not been evaluated. "
-        f"Run `az chaos workspace refresh-recommendations "
+        f"Run `az chaos workspace refresh-recommendation "
         f"--name {workspace} --resource-group {resource_group}` "
         f"(or its alias `az chaos workspace evaluate-scenarios`) "
         f"to (re)trigger evaluation, or "
@@ -150,13 +151,13 @@ _INNER_LRO_FAILURE_HINT = (
     "This commonly happens immediately after a Reader role assignment is "
     "added to the workspace's managed identity: Azure Resource Graph can "
     "lag 1-3 minutes before honoring the new role. Wait ~60-180s and re-run "
-    "'refresh-recommendations'. If it persists, run "
+    "'refresh-recommendation'. If it persists, run "
     "'az chaos workspace show-discovery' / 'show-evaluation' for full error "
     "detail and verify the workspace UAMI has Reader on all in-scope scopes."
 )
 
 
-def _check_inner_lro(cmd, resource_group_name, workspace_name, path_suffix,
+def _check_inner_lro(cli_ctx, resource_group_name, workspace_name, path_suffix,
                      operation_label):
     """Fetch a /latest singleton and raise if its inner status is Failed.
 
@@ -164,9 +165,9 @@ def _check_inner_lro(cmd, resource_group_name, workspace_name, path_suffix,
     yet, or endpoint not reachable). We only flip to non-zero exit when the
     inner result is unambiguously Failed.
     """
-    url = _build_arm_url(cmd, resource_group_name, workspace_name, path_suffix)
+    url = _build_arm_url(cli_ctx, resource_group_name, workspace_name, path_suffix)
     try:
-        response = send_raw_request(cmd.cli_ctx, "GET", url)
+        response = send_raw_request(cli_ctx, "GET", url)
     except Exception:  # pylint: disable=broad-except
         return  # /latest may legitimately 404 on a fresh workspace
     if response.status_code != 200 or not response.text:
@@ -189,50 +190,19 @@ def _check_inner_lro(cmd, resource_group_name, workspace_name, path_suffix,
     else:
         detail = "no error detail returned by the service"
     raise CLIError(
-        f"refresh-recommendations completed but the inner "
+        f"refresh-recommendation completed but the inner "
         f"{operation_label} operation Failed ({detail}). "
         f"{_INNER_LRO_FAILURE_HINT}"
     )
 
 
-def workspace_refresh_recommendations(cmd, resource_group_name, workspace_name,
-                                      no_wait=False):
-    """POST + poll LRO for workspace refresh-recommendations."""
-    url = _build_arm_url(
-        cmd, resource_group_name, workspace_name, "/refreshRecommendations"
-    )
-    response = send_raw_request(cmd.cli_ctx, "POST", url)
-
-    if no_wait:
-        return response.json() if response.text else None
-
-    # Poll to completion
-    _poll_or_return(cmd, response)
-
-    # Even when the outer LRO reports Succeeded, the inner discovery and
-    # evaluation LROs may have failed (typically Azure Resource Graph 403
-    # during propagation lag after a fresh role assignment). Check both
-    # before declaring success.
-    _check_inner_lro(
-        cmd, resource_group_name, workspace_name,
-        "/discoveries/latest", "resource discovery",
-    )
-    _check_inner_lro(
-        cmd, resource_group_name, workspace_name,
-        "/evaluations/latest", "scenario evaluation",
-    )
-
-    logger.warning(
-        "Successfully refreshed recommendations for workspace '%s' "
-        "in resource group '%s'. Workspace evaluation has been refreshed; "
-        "subsequent 'scenario config validate' / 'scenario run start' calls "
-        "(for non-custom scenarios) now have a satisfied evaluation gate.\n"
-        "Run 'az chaos scenario list -w %s -g %s' to see updated "
-        "recommendation statuses.",
-        workspace_name, resource_group_name,
-        workspace_name, resource_group_name,
-    )
-    return None
+# ── workspace refresh-recommendation ────────────────────────────────────
+# The user-facing command is the AAZ-generated `chaos workspace
+# refresh-recommendation`. We override it via the `WorkspaceRefreshRecommendation`
+# subclass at the bottom of this file (registered in commands.py
+# `_register_aaz_subclass_overrides`). The `post_operations` hook calls
+# `_check_inner_lro` for both inner discoveries/latest and evaluations/latest
+# to detect the silent-failure case the framework polling alone misses.
 
 
 # ── scenario config validate ─────────────────────────────────────────────
@@ -242,7 +212,7 @@ def scenario_config_validate(cmd, resource_group_name, workspace_name,  # pylint
                              no_wait=False):
     """POST validate + poll LRO + auto-GET validations/latest."""
     validate_url = _build_arm_url(
-        cmd, resource_group_name, workspace_name,
+        cmd.cli_ctx, resource_group_name, workspace_name,
         f"/scenarios/{scenario_name}"
         f"/configurations/{scenario_configuration_name}/validate"
     )
@@ -263,7 +233,7 @@ def scenario_config_validate(cmd, resource_group_name, workspace_name,  # pylint
 
     # Auto-GET validations/latest
     latest_url = _build_arm_url(
-        cmd, resource_group_name, workspace_name,
+        cmd.cli_ctx, resource_group_name, workspace_name,
         f"/scenarios/{scenario_name}"
         f"/configurations/{scenario_configuration_name}"
         f"/validations/latest"
@@ -311,7 +281,7 @@ def scenario_run_start(cmd, resource_group_name, workspace_name,  # pylint: disa
     # Pre-flight validation (unless --skip-validation)
     if not skip_validation:
         validate_url = _build_arm_url(
-            cmd, resource_group_name, workspace_name,
+            cmd.cli_ctx, resource_group_name, workspace_name,
             f"/scenarios/{scenario_name}"
             f"/configurations/{scenario_configuration_name}/validate"
         )
@@ -322,7 +292,7 @@ def scenario_run_start(cmd, resource_group_name, workspace_name,  # pylint: disa
 
         # GET validations/latest
         latest_url = _build_arm_url(
-            cmd, resource_group_name, workspace_name,
+            cmd.cli_ctx, resource_group_name, workspace_name,
             f"/scenarios/{scenario_name}"
             f"/configurations/{scenario_configuration_name}"
             f"/validations/latest"
@@ -350,7 +320,7 @@ def scenario_run_start(cmd, resource_group_name, workspace_name,  # pylint: disa
 
     # Execute
     execute_url = _build_arm_url(
-        cmd, resource_group_name, workspace_name,
+        cmd.cli_ctx, resource_group_name, workspace_name,
         f"/scenarios/{scenario_name}"
         f"/configurations/{scenario_configuration_name}/execute"
     )
@@ -490,7 +460,7 @@ def _fetch_run_id_from_async_op(cmd, async_op_url):
 def workspace_show_discovery(cmd, resource_group_name, workspace_name):
     """GET the latest workspace-scope resource-discovery operation result."""
     url = _build_arm_url(
-        cmd, resource_group_name, workspace_name, "/discoveries/latest"
+        cmd.cli_ctx, resource_group_name, workspace_name, "/discoveries/latest"
     )
     response = send_raw_request(cmd.cli_ctx, "GET", url)
     return response.json() if response.text else None
@@ -499,7 +469,7 @@ def workspace_show_discovery(cmd, resource_group_name, workspace_name):
 def workspace_show_evaluation(cmd, resource_group_name, workspace_name):
     """GET the latest workspace scenario-evaluation operation result."""
     url = _build_arm_url(
-        cmd, resource_group_name, workspace_name, "/evaluations/latest"
+        cmd.cli_ctx, resource_group_name, workspace_name, "/evaluations/latest"
     )
     response = send_raw_request(cmd.cli_ctx, "GET", url)
     return response.json() if response.text else None
@@ -509,7 +479,7 @@ def scenario_config_show_validation(cmd, resource_group_name, workspace_name,
                                     scenario_name, scenario_configuration_name):
     """GET the latest validation result for a scenario configuration."""
     url = _build_arm_url(
-        cmd, resource_group_name, workspace_name,
+        cmd.cli_ctx, resource_group_name, workspace_name,
         f"/scenarios/{scenario_name}"
         f"/configurations/{scenario_configuration_name}"
         f"/validations/latest"
@@ -529,7 +499,7 @@ def scenario_config_show_permission_fix(cmd, resource_group_name, workspace_name
     `az chaos scenario config fix-permissions --what-if` (POST side).
     """
     url = _build_arm_url(
-        cmd, resource_group_name, workspace_name,
+        cmd.cli_ctx, resource_group_name, workspace_name,
         f"/scenarios/{scenario_name}"
         f"/configurations/{scenario_configuration_name}"
         f"/fixResourcePermissions/latest"
@@ -562,7 +532,7 @@ def scenario_config_fix_permissions(cmd, resource_group_name, workspace_name,  #
         scenario_configuration_name,
     )
     fix_url = _build_arm_url(
-        cmd, resource_group_name, workspace_name,
+        cmd.cli_ctx, resource_group_name, workspace_name,
         f"/scenarios/{scenario_name}"
         f"/configurations/{scenario_configuration_name}/fixResourcePermissions"
     )
@@ -602,7 +572,7 @@ def scenario_run_cancel(cmd, resource_group_name, workspace_name,  # pylint: dis
                         scenario_name, run_id, no_wait=False):
     """POST cancel + poll LRO for a scenario run."""
     url = _build_arm_url(
-        cmd, resource_group_name, workspace_name,
+        cmd.cli_ctx, resource_group_name, workspace_name,
         f"/scenarios/{scenario_name}/runs/{run_id}/cancel"
     )
     response = send_raw_request(cmd.cli_ctx, "POST", url)
@@ -646,3 +616,71 @@ class ScenarioConfigCreate(_ScenarioConfigCreate):
                 f"/workspaces/{args.workspace_name}"
                 f"/scenarios/{args.scenario_name}"
             )
+
+
+class WorkspaceRefreshRecommendation(_RefreshRecommendation):
+    """Override ``chaos workspace refresh-recommendation`` to detect inner-LRO failures.
+
+    Why this exists:
+        The GW orchestrates ``POST /refreshRecommendations`` as a composite
+        DTFx workflow (discover -> evaluate) and overrides the response
+        ``Location`` header to point at ``evaluations/latest``. That
+        passthrough returns HTTP 200 with the real status nested at
+        ``body["properties"]["status"]``. The aaz framework polling uses
+        ``final-state-via: location`` and reads only the root-level status,
+        so it silently returns success when discovery or evaluation
+        actually failed (e.g. ARG propagation lag after a fresh Reader
+        role assignment to the workspace UAMI).
+
+        This ``post_operations`` hook reads the ``properties.status`` on
+        ``discoveries/latest`` and ``evaluations/latest`` to detect the
+        real outcome and raises a ``CLIError`` with ARG-lag guidance when
+        either inner LRO failed.
+
+    Lifecycle:
+        Remove this subclass (and the corresponding ``command_table``
+        registration in ``commands.py``) when the Microsoft.Chaos spec
+        deprecates ``/refreshRecommendations`` in favor of the separate
+        ``/discover`` + ``/evaluate`` ARM ops (planned 2026-08-01-preview;
+        tracked in ``docs/projects/workspace-operations-decoupling/
+        phase-2-public-preview.plan.md``). The replacement ops are
+        straightforward LROs the standard aaz poller handles correctly.
+    """
+
+    def post_operations(self):
+        args = self.ctx.args
+        rg = str(args.resource_group)
+        ws = str(args.workspace_name)
+        _check_inner_lro(
+            self.cli_ctx, rg, ws,
+            "/discoveries/latest", "resource discovery",
+        )
+        _check_inner_lro(
+            self.cli_ctx, rg, ws,
+            "/evaluations/latest", "scenario evaluation",
+        )
+        logger.warning(
+            "Successfully refreshed recommendations for workspace '%s' "
+            "in resource group '%s'. Workspace evaluation has been refreshed; "
+            "subsequent 'scenario config validate' / 'scenario run start' calls "
+            "(for non-custom scenarios) now have a satisfied evaluation gate.\n"
+            "Run 'az chaos scenario list -w %s -g %s' to see updated "
+            "recommendation statuses.",
+            ws, rg, ws, rg,
+        )
+
+
+class WorkspaceEvaluateScenarios(WorkspaceRefreshRecommendation):
+    """Porcelain alias of ``chaos workspace refresh-recommendation``.
+
+    Today this is a thin alias that maps to the same composite LRO. When
+    ``/refreshRecommendations`` is deprecated in favor of separate
+    ``/discover`` + ``/evaluate`` ARM ops (2026-08-01-preview), this
+    command will become a true composite that invokes both in sequence,
+    while ``refresh-recommendation`` retires alongside its parent op.
+
+    The user-facing name (``evaluate-scenarios``) is the human-first verb
+    for "evaluate every scenario in this workspace against the latest
+    discovered resources" -- the same logical workflow this entire LRO
+    performs, just named more conversationally.
+    """

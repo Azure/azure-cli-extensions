@@ -51,16 +51,6 @@ def load_command_table(self, _):
         'chaos workspace',
         operations_tmpl='azext_chaos.custom#{}',
     ) as g:
-        g.custom_command(
-            'refresh-recommendations',
-            'workspace_refresh_recommendations',
-            supports_no_wait=True,
-        )
-        g.custom_command(
-            'evaluate-scenarios',
-            'workspace_refresh_recommendations',
-            supports_no_wait=True,
-        )
         g.custom_show_command(
             'show-discovery',
             'workspace_show_discovery',
@@ -129,7 +119,15 @@ def _register_aaz_subclass_overrides(loader):
     (Knack rejects non-CLI ``cli_ctx``), unit tests that drive ``load_command_table``
     with a ``MagicMock`` loader should ``@patch`` this helper out.
     """
-    from azext_chaos.custom import ScenarioConfigCreate
+    from azext_chaos.custom import ScenarioConfigCreate, WorkspaceRefreshRecommendation, WorkspaceEvaluateScenarios
     from azext_chaos.custom_wait import ScenarioRunWait
     loader.command_table['chaos scenario config create'] = ScenarioConfigCreate(loader=loader)
     loader.command_table['chaos scenario run wait'] = ScenarioRunWait(loader=loader)
+    # Override the AAZ-generated ``chaos workspace refresh-recommendation``
+    # to add inner-LRO failure detection (see WorkspaceRefreshRecommendation
+    # docstring for why this is functionally necessary, not stylistic).
+    loader.command_table['chaos workspace refresh-recommendation'] = WorkspaceRefreshRecommendation(loader=loader)
+    # Register ``chaos workspace evaluate-scenarios`` as a porcelain alias
+    # at a NAME the spec does not define. The subclass instance bears the
+    # alias name; AAZCommand inherits everything from the parent class.
+    loader.command_table['chaos workspace evaluate-scenarios'] = WorkspaceEvaluateScenarios(loader=loader)

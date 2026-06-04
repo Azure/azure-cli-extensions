@@ -434,7 +434,7 @@ class TestHelpEntries(unittest.TestCase):
         'chaos workspace list',
         'chaos workspace delete',
         'chaos workspace update',
-        'chaos workspace refresh-recommendations',
+        'chaos workspace refresh-recommendation',
         'chaos workspace evaluate-scenarios',
         'chaos workspace show-discovery',
         'chaos workspace show-evaluation',
@@ -487,7 +487,7 @@ class TestHelpEntries(unittest.TestCase):
         from azext_chaos._help import helps
         alias_help = helps['chaos workspace evaluate-scenarios']
         self.assertTrue(
-            'Alias of `az chaos workspace refresh-recommendations`'
+            'Alias of `az chaos workspace refresh-recommendation`'
             in alias_help
         )
 

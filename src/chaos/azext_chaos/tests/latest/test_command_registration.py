@@ -36,7 +36,7 @@ class TestHelpEntries(unittest.TestCase):
     def test_alias_help_mentions_canonical_name(self):
         alias_help = helps['chaos workspace evaluate-scenarios']
         self.assertIn(
-            'Alias of `az chaos workspace refresh-recommendations`',
+            'Alias of `az chaos workspace refresh-recommendation`',
             alias_help
         )
 
@@ -53,25 +53,42 @@ class TestCommandRegistration(unittest.TestCase):
             # Should not raise
             load_command_table(mock_loader, None)
 
-    def test_alias_registered_via_custom_command(self):
-        """Both refresh-recommendations and evaluate-scenarios are registered
-        as custom commands pointing to workspace_refresh_recommendations."""
-        from azext_chaos.commands import load_command_table
+    def test_alias_registered_via_subclass(self):
+        """Both ``chaos workspace refresh-recommendation`` and
+        ``chaos workspace evaluate-scenarios`` are registered via
+        ``_register_aaz_subclass_overrides`` (NOT via ``g.custom_command``).
+        Patch out the AAZCommand subclass constructors so the test doesn't
+        depend on real loader infrastructure (convention #2 caveat:
+        AAZCommand requires a real AzCommandsLoader, not a MagicMock).
+        """
+        from azext_chaos.commands import _register_aaz_subclass_overrides
         mock_loader = MagicMock()
         mock_loader.command_table = {}
-        with patch('azext_chaos.commands._register_aaz_subclass_overrides'):
-            load_command_table(mock_loader, None)
-        # Verify command_group was called for 'chaos workspace'
-        call_args = [str(c) for c in mock_loader.command_group.call_args_list]
-        self.assertTrue(any('chaos workspace' in a for a in call_args))
-        # Verify custom_command was called for evaluate-scenarios
-        ctx = mock_loader.command_group.return_value.__enter__.return_value
-        custom_cmd_calls = ctx.custom_command.call_args_list
-        custom_cmd_names = [c.args[0] for c in custom_cmd_calls]
-        self.assertIn('evaluate-scenarios', custom_cmd_names)
-        self.assertIn('workspace_refresh_recommendations',
-                      [c.args[1] for c in custom_cmd_calls
-                       if c.args[0] == 'evaluate-scenarios'])
+        with patch('azext_chaos.custom.ScenarioConfigCreate') as mock_scc, \
+                patch('azext_chaos.custom.WorkspaceRefreshRecommendation') as mock_wrr, \
+                patch('azext_chaos.custom.WorkspaceEvaluateScenarios') as mock_wes, \
+                patch('azext_chaos.custom_wait.ScenarioRunWait') as mock_srw:
+            mock_scc.return_value = 'scc-instance'
+            mock_wrr.return_value = 'wrr-instance'
+            mock_wes.return_value = 'wes-instance'
+            mock_srw.return_value = 'srw-instance'
+            _register_aaz_subclass_overrides(mock_loader)
+        self.assertEqual(
+            mock_loader.command_table.get('chaos workspace refresh-recommendation'),
+            'wrr-instance',
+        )
+        self.assertEqual(
+            mock_loader.command_table.get('chaos workspace evaluate-scenarios'),
+            'wes-instance',
+        )
+        self.assertEqual(
+            mock_loader.command_table.get('chaos scenario config create'),
+            'scc-instance',
+        )
+        self.assertEqual(
+            mock_loader.command_table.get('chaos scenario run wait'),
+            'srw-instance',
+        )
 
 
 class TestParamsLoadable(unittest.TestCase):

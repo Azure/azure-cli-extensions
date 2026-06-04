@@ -66,61 +66,18 @@ def _failed_validation_result():
     }
 
 
-# ── workspace refresh-recommendations ────────────────────────────────────
-
-class TestWorkspaceRefreshRecommendations(unittest.TestCase):
-
-    @patch('azext_chaos.custom._poll_or_return')
-    @patch('azext_chaos.custom.send_raw_request')
-    def test_success_message(self, mock_send, mock_poll_or_return):
-        """E3-T1: verify success message content."""
-        from azext_chaos.custom import workspace_refresh_recommendations
-
-        mock_send.return_value = _make_response()
-        mock_poll_or_return.return_value = None
-
-        cmd = _make_cmd()
-        with self.assertLogs(_LOGGER_NAME, level='WARNING') as cm:
-            result = workspace_refresh_recommendations(cmd, 'myRG', 'myWS')
-
-        self.assertIsNone(result)
-        log_output = '\n'.join(cm.output)
-        self.assertIn('myWS', log_output)
-        self.assertIn('myRG', log_output)
-        self.assertIn('evaluation', log_output.lower())
-        self.assertIn("az chaos scenario list", log_output)
-
-    @patch('azext_chaos.custom.send_raw_request')
-    def test_no_wait_returns_immediately(self, mock_send):
-        """E3-T1: --no-wait returns without polling."""
-        from azext_chaos.custom import workspace_refresh_recommendations
-
-        mock_send.return_value = _make_response(json_body={"status": "accepted"})
-
-        cmd = _make_cmd()
-        result = workspace_refresh_recommendations(
-            cmd, 'myRG', 'myWS', no_wait=True
-        )
-        self.assertEqual(result, {"status": "accepted"})
-
-    def test_evaluate_scenarios_alias_registered(self):
-        """E3-T1: evaluate-scenarios is registered to the same handler in commands.py."""
-        from azext_chaos.commands import load_command_table
-        mock_loader = MagicMock()
-        mock_loader.command_table = {}
-        with patch('azext_chaos.commands._register_aaz_subclass_overrides'):
-            load_command_table(mock_loader, None)
-        # Verify command_group was called for 'chaos workspace'
-        call_args = [str(c) for c in mock_loader.command_group.call_args_list]
-        self.assertTrue(any('chaos workspace' in a for a in call_args))
-        # Verify custom_command was called for evaluate-scenarios
-        ctx = mock_loader.command_group.return_value.__enter__.return_value
-        custom_cmd_calls = ctx.custom_command.call_args_list
-        custom_cmd_names = [c.args[0] for c in custom_cmd_calls]
-        self.assertIn('evaluate-scenarios', custom_cmd_names)
-        self.assertIn('workspace_refresh_recommendations',
-                      [c.args[1] for c in custom_cmd_calls
-                       if c.args[0] == 'evaluate-scenarios'])
+# ── workspace refresh-recommendation ─────────────────────────────────────
+# NOTE: ``workspace_refresh_recommendations`` (the free function) was retired
+# in favor of the AAZ-subclass-with-post-hook pattern:
+# ``WorkspaceRefreshRecommendation`` overrides ``post_operations`` to call
+# ``_check_inner_lro``. Tests for the surface behaviors moved as follows:
+#   - Success-message + --no-wait tests: covered by AAZ framework + the
+#     subclass-overrides registration test in test_command_registration.py.
+#   - Inner-LRO failure detection: tests now exercise ``_check_inner_lro``
+#     directly (see ``TestRefreshRecommendationsInnerLRO`` further below).
+#     This is the actual diagnostic surface the user cares about; instantiating
+#     the full AAZCommand subclass would require a real loader infrastructure
+#     for marginal added coverage.
 
 
 # ── scenario config validate ─────────────────────────────────────────────
@@ -193,7 +150,7 @@ class TestScenarioConfigValidate(unittest.TestCase):
             scenario_config_validate(cmd, 'myRG', 'myWS', 'ZoneDown', 'zone1')
 
         error_msg = str(ctx.exception)
-        self.assertIn('refresh-recommendations', error_msg)
+        self.assertIn('refresh-recommendation', error_msg)
         self.assertIn('evaluate-scenarios', error_msg)
         self.assertIn('show-evaluation', error_msg)
 
@@ -226,7 +183,7 @@ class TestScenarioConfigValidate(unittest.TestCase):
         with self.assertRaises(CLIError) as ctx:
             scenario_config_validate(cmd, 'myRG', 'myWS', 'ZoneDown', 'zone1')
 
-        self.assertIn('refresh-recommendations', str(ctx.exception))
+        self.assertIn('refresh-recommendation', str(ctx.exception))
 
     @patch('azext_chaos.custom._poll_or_return')
     @patch('azext_chaos.custom.send_raw_request')
@@ -417,7 +374,7 @@ class TestScenarioRunStart(unittest.TestCase):
             scenario_run_start(cmd, 'myRG', 'myWS', 'ZoneDown', 'zone1')
 
         error_msg = str(ctx.exception)
-        self.assertIn('refresh-recommendations', error_msg)
+        self.assertIn('refresh-recommendation', error_msg)
         self.assertIn('evaluate-scenarios', error_msg)
         # Should not proceed to execute
         self.assertEqual(mock_send.call_count, 2)
@@ -529,7 +486,7 @@ class TestInternalHelpers(unittest.TestCase):
     def test_make_evaluation_hint_content(self):
         from azext_chaos.custom import _make_evaluation_hint
         hint = _make_evaluation_hint("myWS", "myRG")
-        self.assertIn("refresh-recommendations", hint)
+        self.assertIn("refresh-recommendation", hint)
         self.assertIn("evaluate-scenarios", hint)
         self.assertIn("show-evaluation", hint)
         self.assertIn("myWS", hint)
@@ -560,9 +517,9 @@ class TestTableFormat(unittest.TestCase):
 
 class TestHelpEntries(unittest.TestCase):
 
-    def test_refresh_recommendations_help_exists(self):
+    def test_refresh_recommendation_help_exists(self):
         from azext_chaos._help import helps
-        self.assertIn('chaos workspace refresh-recommendations', helps)
+        self.assertIn('chaos workspace refresh-recommendation', helps)
 
     def test_validate_help_exists(self):
         from azext_chaos._help import helps
@@ -594,7 +551,7 @@ class TestHelpEntries(unittest.TestCase):
         from azext_chaos._help import helps
         self.assertIn('chaos workspace evaluate-scenarios', helps)
         self.assertIn(
-            'Alias of `az chaos workspace refresh-recommendations`',
+            'Alias of `az chaos workspace refresh-recommendation`',
             helps['chaos workspace evaluate-scenarios']
         )
 
@@ -783,17 +740,10 @@ class TestPollOrReturn(unittest.TestCase):
 
 class TestLROIntegrationRegression(unittest.TestCase):
 
-    @patch('azext_chaos.custom.send_raw_request')
-    def test_workspace_refresh_200_no_attribute_error(self, mock_send):
-        """E2-T19: workspace_refresh_recommendations with 200 completes
-        without the old AttributeError from LongRunningOperation."""
-        from azext_chaos.custom import workspace_refresh_recommendations
-
-        mock_send.return_value = _make_response(status_code=200, text="")
-        cmd = _make_cmd()
-        with self.assertLogs(_LOGGER_NAME, level='WARNING'):
-            result = workspace_refresh_recommendations(cmd, 'myRG', 'myWS')
-        self.assertIsNone(result)
+    # ``test_workspace_refresh_200_no_attribute_error`` was removed when the
+    # ``workspace_refresh_recommendations`` free function was retired. The AAZ
+    # framework now owns the LRO polling (including the 200-without-poll
+    # short-circuit), so the regression cannot reoccur via our code paths.
 
     @patch('azext_chaos.custom.time.sleep')
     @patch('azext_chaos.custom.send_raw_request')
@@ -1097,13 +1047,11 @@ class TestRefreshRecommendationsInnerLRO(unittest.TestCase):
     """M1 follow-up: surface inner discovery/evaluation failures even when the
     outer refreshRecommendations LRO reports Succeeded."""
 
-    @patch('azext_chaos.custom._poll_or_return')
     @patch('azext_chaos.custom.send_raw_request')
-    def test_inner_discovery_failed_raises(self, mock_send, mock_poll):
-        from azext_chaos.custom import workspace_refresh_recommendations
+    def test_inner_discovery_failed_raises(self, mock_send):
+        from azext_chaos.custom import _check_inner_lro
 
-        mock_poll.return_value = None
-        failed_discovery = {
+        mock_send.return_value = _make_response(json_body={
             "properties": {
                 "status": "Failed",
                 "errors": [{
@@ -1111,15 +1059,11 @@ class TestRefreshRecommendationsInnerLRO(unittest.TestCase):
                     "errorMessage": "Status: 403 (Forbidden)",
                 }],
             },
-        }
-        mock_send.side_effect = [
-            _make_response(status_code=202),  # POST refreshRecommendations
-            _make_response(json_body=failed_discovery),  # GET discoveries/latest
-            _make_response(json_body={"properties": {"status": "Succeeded"}}),  # GET evaluations/latest
-        ]
+        })
 
         with self.assertRaises(CLIError) as ctx:
-            workspace_refresh_recommendations(_make_cmd(), 'myRG', 'myWS')
+            _check_inner_lro(_make_cmd().cli_ctx, 'myRG', 'myWS',
+                             "/discoveries/latest", "resource discovery")
 
         err = str(ctx.exception)
         self.assertIn('resource discovery', err)
@@ -1127,60 +1071,54 @@ class TestRefreshRecommendationsInnerLRO(unittest.TestCase):
         # Friendly hint must point at ARG propagation
         self.assertIn('Azure Resource Graph', err)
 
-    @patch('azext_chaos.custom._poll_or_return')
     @patch('azext_chaos.custom.send_raw_request')
-    def test_inner_evaluation_failed_raises(self, mock_send, mock_poll):
-        from azext_chaos.custom import workspace_refresh_recommendations
+    def test_inner_evaluation_failed_raises(self, mock_send):
+        from azext_chaos.custom import _check_inner_lro
 
-        mock_poll.return_value = None
-        mock_send.side_effect = [
-            _make_response(status_code=202),  # POST
-            _make_response(json_body={"properties": {"status": "Succeeded"}}),
-            _make_response(json_body={
-                "properties": {
-                    "status": "Failed",
-                    "errors": [{"errorCode": "X", "errorMessage": "boom"}],
-                }
-            }),
-        ]
+        mock_send.return_value = _make_response(json_body={
+            "properties": {
+                "status": "Failed",
+                "errors": [{"errorCode": "X", "errorMessage": "boom"}],
+            }
+        })
 
         with self.assertRaises(CLIError) as ctx:
-            workspace_refresh_recommendations(_make_cmd(), 'myRG', 'myWS')
+            _check_inner_lro(_make_cmd().cli_ctx, 'myRG', 'myWS',
+                             "/evaluations/latest", "scenario evaluation")
 
         self.assertIn('scenario evaluation', str(ctx.exception))
 
-    @patch('azext_chaos.custom._poll_or_return')
     @patch('azext_chaos.custom.send_raw_request')
-    def test_inner_404_does_not_raise(self, mock_send, mock_poll):
+    def test_inner_404_does_not_raise(self, mock_send):
         """A /latest 404 on a brand-new workspace must not flip the command
         to non-zero — only an explicit Failed inner status does."""
-        from azext_chaos.custom import workspace_refresh_recommendations
+        from azext_chaos.custom import _check_inner_lro
 
-        mock_poll.return_value = None
         # 404 on /latest: empty text → silently treated as "no result yet".
-        mock_send.side_effect = [
-            _make_response(status_code=202),
-            _make_response(status_code=404, text="", json_body={}),
-            _make_response(status_code=404, text="", json_body={}),
-        ]
-
-        # Should not raise.
-        with self.assertLogs(_LOGGER_NAME, level='WARNING'):
-            workspace_refresh_recommendations(_make_cmd(), 'myRG', 'myWS')
-
-    @patch('azext_chaos.custom._poll_or_return')
-    @patch('azext_chaos.custom.send_raw_request')
-    def test_inner_check_skipped_for_no_wait(self, mock_send, mock_poll):
-        from azext_chaos.custom import workspace_refresh_recommendations
-
-        mock_send.return_value = _make_response(json_body={"status": "accepted"})
-        workspace_refresh_recommendations(
-            _make_cmd(), 'myRG', 'myWS', no_wait=True
+        mock_send.return_value = _make_response(
+            status_code=404, text="", json_body={},
         )
+        # Should not raise.
+        _check_inner_lro(_make_cmd().cli_ctx, 'myRG', 'myWS',
+                         "/discoveries/latest", "resource discovery")
 
-        # Only the POST is issued; no inner LRO GETs and no poll.
-        self.assertEqual(mock_send.call_count, 1)
-        mock_poll.assert_not_called()
+    @patch('azext_chaos.custom.send_raw_request')
+    def test_inner_succeeded_does_not_raise(self, mock_send):
+        """A Succeeded inner status must not flip the command to non-zero."""
+        from azext_chaos.custom import _check_inner_lro
+
+        mock_send.return_value = _make_response(
+            json_body={"properties": {"status": "Succeeded"}},
+        )
+        # Should not raise.
+        _check_inner_lro(_make_cmd().cli_ctx, 'myRG', 'myWS',
+                         "/discoveries/latest", "resource discovery")
+
+    # ``test_inner_check_skipped_for_no_wait`` was removed: the AAZ
+    # framework now owns the polling lifecycle. When ``--no-wait`` is
+    # passed, ``post_operations`` is not invoked at all (the framework
+    # short-circuits after the initial POST), so the inner-LRO checks are
+    # naturally skipped. There is no custom code path to exercise.
 
 
 class TestExtractRunIdRobust(unittest.TestCase):
