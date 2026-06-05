@@ -647,6 +647,19 @@ class WorkspaceRefreshRecommendation(_RefreshRecommendation):
         straightforward LROs the standard aaz poller handles correctly.
     """
 
+    def _handler(self, command_args):
+        # Override the parent's poller construction. The AAZ-generated
+        # ``WorkspacesRefreshRecommendations.__call__`` passes ``None`` as
+        # the LRO success deserializer to ``build_lro_polling``; the
+        # framework's ``base_polling._parse_resource`` later tries to call
+        # that ``None`` and raises ``TypeError: 'NoneType' object is not
+        # callable``. We provide a no-op deserializer so ``.result()`` on
+        # the poller returns ``None`` cleanly. The actual diagnostic value
+        # is in ``post_operations`` above (which runs during
+        # ``_execute_operations``, before ``.result()`` is called).
+        super()._handler(command_args)
+        return self.build_lro_poller(self._execute_operations, lambda _: None)
+
     def post_operations(self):
         args = self.ctx.args
         rg = str(args.resource_group)

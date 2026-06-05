@@ -3,6 +3,17 @@
 Release History
 ===============
 
+0.1.6
++++++
+* Fix ``'NoneType' object is not callable`` crash on successful ``chaos workspace
+  refresh-recommendation`` (and its alias ``evaluate-scenarios``). Root cause: the
+  AAZ-generated inner operation passes ``None`` as the LRO success deserializer to
+  ``build_lro_polling``; the framework later invokes that ``None`` from
+  ``base_polling._parse_resource`` and raises ``TypeError``. Fixed in the
+  ``WorkspaceRefreshRecommendation`` subclass by overriding ``_handler`` to provide
+  a no-op deserializer (``lambda _: None``). ``post_operations`` (inner-LRO check)
+  is unaffected and still runs.
+
 0.1.5
 +++++
 * Refactor ``chaos workspace refresh-recommendation`` to use the AAZ-subclass + ``post_operations``
