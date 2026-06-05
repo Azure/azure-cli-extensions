@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = '0.1.7'
+VERSION = '1.0.0b1'
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -34,7 +34,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
 setup(
     name='chaos',
     version=VERSION,
-    description='Microsoft Azure Command-Line Tools Chaos Studio Extension',
+    description='Support for Azure Chaos Studio v2 workspaces, scenario configuration, and fault-injection run management.',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
     url='https://github.com/Azure/azure-cli-extensions/tree/main/src/chaos',

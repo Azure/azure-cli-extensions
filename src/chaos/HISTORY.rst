@@ -3,54 +3,36 @@
 Release History
 ===============
 
-0.1.7
-+++++
-* Fix ``'NoneType' object is not callable`` crash on successful
-  ``chaos scenario config execute``. Same AAZ codegen gap as the 0.1.6 fix
-  for ``refresh-recommendation``: the inner operation passes ``None`` as the
-  LRO success deserializer. New ``ScenarioConfigExecute`` subclass injects a
-  no-op deserializer via ``_handler`` override.
+1.0.0b1
++++++++
+* Initial preview release of the ``chaos`` extension. Targets api-version
+  ``2026-05-01-preview`` of ``Microsoft.Chaos``.
 
-  Audit of other AAZ commands with the same pattern confirmed the only other
-  occurrences (``scenario config fix-permissions``, ``scenario config
-  validate``, ``scenario run cancel``) are superseded by hand-written
-  ``send_raw_request``-based custom commands and are not vulnerable.
+  Command surface:
 
-0.1.6
-+++++
-* Fix ``'NoneType' object is not callable`` crash on successful ``chaos workspace
-  refresh-recommendation`` (and its alias ``evaluate-scenarios``). Root cause: the
-  AAZ-generated inner operation passes ``None`` as the LRO success deserializer to
-  ``build_lro_polling``; the framework later invokes that ``None`` from
-  ``base_polling._parse_resource`` and raises ``TypeError``. Fixed in the
-  ``WorkspaceRefreshRecommendation`` subclass by overriding ``_handler`` to provide
-  a no-op deserializer (``lambda _: None``). ``post_operations`` (inner-LRO check)
-  is unaffected and still runs.
+  * ``az chaos workspace`` -- ``create``, ``show``, ``list``, ``update``,
+    ``delete``, ``refresh-recommendation``, ``evaluate-scenarios``,
+    ``show-discovery``, ``show-evaluation``, ``identity`` subgroup.
+  * ``az chaos scenario`` -- ``create``, ``show``, ``list``, ``update``,
+    ``delete``.
+  * ``az chaos scenario config`` -- ``create``, ``show``, ``list``,
+    ``update``, ``delete``, ``validate``, ``fix-permissions``, ``execute``,
+    ``show-validation``, ``show-permission-fix``.
+  * ``az chaos scenario run`` -- ``start``, ``show``, ``list``, ``cancel``,
+    ``wait``.
+  * ``az chaos discovered-resource`` -- ``show``, ``list``.
 
-0.1.5
-+++++
-* Refactor ``chaos workspace refresh-recommendation`` to use the AAZ-subclass + ``post_operations``
-  pattern (``WorkspaceRefreshRecommendation`` overriding the AAZ-generated command). Inner-LRO
-  failure detection (discoveries/latest + evaluations/latest with ``properties.status`` inspection,
-  ARG-propagation-lag hint) preserved; ~30 lines of duplicated POST + outer-LRO polling removed
-  (now handled by the AAZ framework).
-* ``chaos workspace evaluate-scenarios`` re-implemented as a ``WorkspaceEvaluateScenarios`` subclass
-  alias of the same handler. Behavior unchanged today; will become a true composite of
-  ``/discover`` + ``/evaluate`` when those ARM ops land in ``2026-08-01-preview``.
-* Command name changed from plural ``refresh-recommendations`` to singular ``refresh-recommendation``
-  to match the aaz-dev convention for verb-noun command naming. The ``evaluate-scenarios`` alias
-  retains its current name.
-* Generated ``aaz/`` tree regenerated from spec commit ``f228b86c`` via the
-  ``chaos-automation-codegen`` skill family (``aaz-dev cli generate-by-swagger-tag``).
-* Test scaffolding: removed all ``@live_only()`` integration tests (workspace lifecycle,
-  scenario CRUD, scenario_config CRUD, scenario_run, discovered-resource). Their value
-  over the ~140 unit tests + ``azdev linter`` + spec-driven aaz-dev regen was marginal —
-  they exercised service behavior (which Microsoft.Chaos owns) rather than extension
-  behavior. Validation strategy is now: unit tests + ``azdev linter`` + ``azdev style`` +
-  deterministic regen via the codegen skill + developer smoke before release. Matches how
-  many other azure-cli-extensions packages validate (zero ScenarioTest coverage is a
-  common, accepted pattern). No ``recordings/`` directory required.
+  Notable hand-written commands beyond the spec-derived surface:
 
-0.1.0
-+++++
-* Initial scaffolding. Commands will be populated when aaz-dev codegen is complete (pending 2026-05-01-preview spec availability).
+  * ``scenario run start`` (porcelain composite of validate + execute with
+    a satisfied evaluation gate).
+  * ``workspace refresh-recommendation`` / ``evaluate-scenarios`` --
+    AAZ subclass override that adds inner-LRO failure detection
+    (``discoveries/latest`` + ``evaluations/latest`` ``properties.status``
+    inspection) on top of the AAZ-generated outer-LRO polling. Surfaces
+    the silent-failure case (e.g. Azure Resource Graph propagation lag
+    after a fresh Reader role assignment) that the AAZ framework polling
+    alone misses.
+  * ``workspace show-discovery``, ``workspace show-evaluation``,
+    ``scenario config show-validation``, ``scenario config show-permission-fix``
+    -- singleton-latest GETs not exposed by the spec.
