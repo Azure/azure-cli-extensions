@@ -35,8 +35,14 @@ az chaos scenario list -g MyRG --workspace-name my-workspace
 # Create a scenario configuration (--scenario-id is auto-derived)
 az chaos scenario config create -g MyRG --workspace-name my-workspace \
     --scenario-name ZoneDown-1.0 -n my-config \
-    --parameters "[{key:duration,value:PT10M}]" \
-    --filters "{locations:[westus2],zones:[1]}"
+    --parameters '[{"key":"duration","value":"PT10M"}]' \
+    --filters '{"locations":["westus2"],"zones":["1"]}'
+
+# Or pass --parameters from a file:
+az chaos scenario config create -g MyRG --workspace-name my-workspace \
+    --scenario-name ZoneDown-1.0 -n my-config \
+    --parameters @parameters.json \
+    --filters '{"locations":["westus2"],"zones":["1"]}'
 
 # Validate a scenario configuration
 az chaos scenario config validate -g MyRG --workspace-name my-workspace \

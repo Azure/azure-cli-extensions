@@ -5,8 +5,18 @@
 
 import json
 import os
+import re
 
 from knack.util import CLIError
+
+
+# ARM resource IDs start with `/subscriptions/<guid>` and may continue
+# with deeper path segments (resource group, provider, child resources).
+_ARM_SCOPE_PATTERN = re.compile(
+    r'^/subscriptions/'
+    r'[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}'
+    r'(/.*)?$'
+)
 
 
 def validate_scope(namespace):
@@ -19,11 +29,12 @@ def validate_scope(namespace):
     if not scopes:
         return
     for scope in scopes:
-        if not scope or not scope.startswith('/subscriptions/'):
+        if not scope or not _ARM_SCOPE_PATTERN.match(scope):
             raise CLIError(
                 f"Invalid ARM resource ID: '{scope}'. Each scope must be a "
                 "fully qualified ARM resource ID starting with "
-                "'/subscriptions/<subscription-id>'."
+                "'/subscriptions/<subscription-id>', where <subscription-id> "
+                "is a GUID."
             )
 
 

@@ -5,7 +5,6 @@
 
 from azure.cli.core.commands.parameters import (
     get_location_type,
-    resource_group_name_type,
 )
 from azext_chaos._validators import validate_scope, validate_parameters_json
 
@@ -13,10 +12,6 @@ from azext_chaos._validators import validate_scope, validate_parameters_json
 def load_arguments(self, _):
     # ── chaos workspace ──────────────────────────────────────────────
     with self.argument_context('chaos workspace') as c:
-        c.argument(
-            'resource_group_name',
-            resource_group_name_type,
-        )
         # Spec pattern: ^[^<>%&:?#/\\]+$  (minLength: 1)
         c.argument(
             'workspace_name',
@@ -66,10 +61,6 @@ def load_arguments(self, _):
     # ── chaos scenario ───────────────────────────────────────────────
     with self.argument_context('chaos scenario') as c:
         c.argument(
-            'resource_group_name',
-            resource_group_name_type,
-        )
-        c.argument(
             'workspace_name',
             options_list=['--workspace-name'],
             help='Name of the parent Chaos Studio workspace.',
@@ -90,10 +81,6 @@ def load_arguments(self, _):
 
     # ── chaos scenario config ────────────────────────────────────────
     with self.argument_context('chaos scenario config') as c:
-        c.argument(
-            'resource_group_name',
-            resource_group_name_type,
-        )
         c.argument(
             'workspace_name',
             options_list=['--workspace-name'],
@@ -128,10 +115,6 @@ def load_arguments(self, _):
 
     # ── chaos scenario run ───────────────────────────────────────────
     with self.argument_context('chaos scenario run') as c:
-        c.argument(
-            'resource_group_name',
-            resource_group_name_type,
-        )
         c.argument(
             'workspace_name',
             options_list=['--workspace-name'],
@@ -189,10 +172,6 @@ def load_arguments(self, _):
 
     # ── chaos discovered-resource ────────────────────────────────────
     with self.argument_context('chaos discovered-resource') as c:
-        c.argument(
-            'resource_group_name',
-            resource_group_name_type,
-        )
         c.argument(
             'workspace_name',
             options_list=['--workspace-name'],
