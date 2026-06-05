@@ -3,6 +3,10 @@
 Release History
 ===============
 
+Unreleased
+++++++++++
+* Add test for tar-based policy generation working even when Docker is unavailable
+
 2.0.1
 +++++
 * Fix accidental docker dependency even when using tar
