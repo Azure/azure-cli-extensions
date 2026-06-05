@@ -65,10 +65,12 @@ class TestCommandRegistration(unittest.TestCase):
         mock_loader = MagicMock()
         mock_loader.command_table = {}
         with patch('azext_chaos.custom.ScenarioConfigCreate') as mock_scc, \
+                patch('azext_chaos.custom.ScenarioConfigExecute') as mock_sce, \
                 patch('azext_chaos.custom.WorkspaceRefreshRecommendation') as mock_wrr, \
                 patch('azext_chaos.custom.WorkspaceEvaluateScenarios') as mock_wes, \
                 patch('azext_chaos.custom_wait.ScenarioRunWait') as mock_srw:
             mock_scc.return_value = 'scc-instance'
+            mock_sce.return_value = 'sce-instance'
             mock_wrr.return_value = 'wrr-instance'
             mock_wes.return_value = 'wes-instance'
             mock_srw.return_value = 'srw-instance'
@@ -84,6 +86,10 @@ class TestCommandRegistration(unittest.TestCase):
         self.assertEqual(
             mock_loader.command_table.get('chaos scenario config create'),
             'scc-instance',
+        )
+        self.assertEqual(
+            mock_loader.command_table.get('chaos scenario config execute'),
+            'sce-instance',
         )
         self.assertEqual(
             mock_loader.command_table.get('chaos scenario run wait'),

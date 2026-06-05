@@ -12,6 +12,7 @@ from knack.log import get_logger
 from knack.util import CLIError
 
 from .aaz.latest.chaos.scenario.config._create import Create as _ScenarioConfigCreate
+from .aaz.latest.chaos.scenario.config._execute import Execute as _ScenarioConfigExecute
 from .aaz.latest.chaos.workspace._refresh_recommendation import RefreshRecommendation as _RefreshRecommendation
 
 logger = get_logger(__name__)
@@ -697,3 +698,23 @@ class WorkspaceEvaluateScenarios(WorkspaceRefreshRecommendation):
     discovered resources" -- the same logical workflow this entire LRO
     performs, just named more conversationally.
     """
+
+
+class ScenarioConfigExecute(_ScenarioConfigExecute):
+    """Override ``chaos scenario config execute`` to avoid the AAZ-generated
+    ``NoneType`` crash on successful LRO completion.
+
+    The AAZ-generated inner operation passes ``None`` as the LRO success
+    deserializer; the framework's ``base_polling._parse_resource`` later
+    invokes that ``None`` and raises ``TypeError: 'NoneType' object is
+    not callable``. Same fix as ``WorkspaceRefreshRecommendation``: inject
+    a no-op deserializer so ``.result()`` on the poller returns ``None``
+    cleanly. The user-facing porcelain (``chaos scenario run start`` in
+    ``custom.py``) supersedes this command for typical workflows, but
+    ``scenario config execute`` remains the plumbing surface for
+    automation/agents and must not crash.
+    """
+
+    def _handler(self, command_args):
+        super()._handler(command_args)
+        return self.build_lro_poller(self._execute_operations, lambda _: None)

@@ -3,6 +3,19 @@
 Release History
 ===============
 
+0.1.7
++++++
+* Fix ``'NoneType' object is not callable`` crash on successful
+  ``chaos scenario config execute``. Same AAZ codegen gap as the 0.1.6 fix
+  for ``refresh-recommendation``: the inner operation passes ``None`` as the
+  LRO success deserializer. New ``ScenarioConfigExecute`` subclass injects a
+  no-op deserializer via ``_handler`` override.
+
+  Audit of other AAZ commands with the same pattern confirmed the only other
+  occurrences (``scenario config fix-permissions``, ``scenario config
+  validate``, ``scenario run cancel``) are superseded by hand-written
+  ``send_raw_request``-based custom commands and are not vulnerable.
+
 0.1.6
 +++++
 * Fix ``'NoneType' object is not callable`` crash on successful ``chaos workspace
