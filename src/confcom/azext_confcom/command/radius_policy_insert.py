@@ -13,7 +13,7 @@ import base64
 
 # ccePolicy pattern: the 'ccePolicy' key (optionally quoted) followed by a quoted value
 _CCE_POLICY_PATTERN = re.compile(
-    r'["\']?ccePolicy["\']?\s*:\s*["\'][^"\']*["\']',
+    r'(?<!\w)["\']?ccePolicy["\']?\s*:\s*["\'][^"\']*["\']',
     re.IGNORECASE,
 )
 

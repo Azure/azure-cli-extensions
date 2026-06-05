@@ -453,7 +453,7 @@ def containers_from_radius(
     with tempfile.TemporaryDirectory() as temp_dir:
         temp_template_path = os.path.join(temp_dir, "template.bicep")
         with open(template, 'r') as f:
-            content = re.sub(r'^extension\s+\S+.*$', '', f.read(), flags=re.MULTILINE)
+            content = re.sub(r'^\s*extension\s+\S+.*$', '', f.read(), flags=re.MULTILINE)
         with open(temp_template_path, 'w') as out:
             out.write(content)
 
