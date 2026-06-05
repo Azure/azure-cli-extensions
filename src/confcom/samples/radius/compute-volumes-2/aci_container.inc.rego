@@ -1,8 +1,15 @@
 {
-  "id": "alpine:3.19",
-  "name": "alpine:3.19",
+  "id": "mcr.microsoft.com/azuredocs/aci-helloworld",
+  "name": "mcr.microsoft.com/azuredocs/aci-helloworld",
   "layers": [
-    "6f937bc4d3707c87d1207acd64290d97ec90c8b87a7785cb307808afa49ff892"
+    "c870621d92a05fa5231b803218bc333b27a3fe5d4a194a50b8a93c91e8ae2526",
+    "40966b81fe978b1337681321a0edcb96ef6fc4981b11f58f4352a8a3c07a750b",
+    "e10bce5e2275167a28bd408f51acf19c13a922e9e20520dd80909436d330c51d",
+    "f45344b9dc081a4d618986f4aa34f2210ee1e12157d69653994ddf66492d8550",
+    "94f44f275b9e392b7984c3561d2d36dbedc9796d87c648a0ec54c8436bcfe225",
+    "6ebbf71611dc211dc5f2212413210ca54a10d44e55720df50fb6c91f7394342a",
+    "8b4842f06982817534a75bcf71865213b09dfa8313229c384e5201dadbd75e25",
+    "89a85c545a97f322b528f4bf9a119a29107a18e3e444597db53845c88642b82e"
   ],
   "platform": "linux/amd64",
   "mounts": [
@@ -17,17 +24,7 @@
       ]
     },
     {
-      "destination": "/tmp/scratch",
-      "options": [
-        "rbind",
-        "rshared",
-        "rw"
-      ],
-      "source": "sandbox:///tmp/atlas/emptydir/.+",
-      "type": "bind"
-    },
-    {
-      "destination": "/data",
+      "destination": "/app/data",
       "options": [
         "rbind",
         "rshared",
@@ -37,18 +34,20 @@
       "type": "bind"
     },
     {
-      "destination": "/config",
+      "destination": "/tmp/cache",
       "options": [
         "rbind",
         "rshared",
-        "ro"
+        "rw"
       ],
-      "source": "sandbox:///tmp/atlas/(azureFileVolume|secretsVolume)/.+",
+      "source": "sandbox:///tmp/atlas/emptydir/.+",
       "type": "bind"
     }
   ],
   "command": [
-    "/bin/sh"
+    "/bin/sh",
+    "-c",
+    "node /usr/src/app/index.js"
   ],
   "env_rules": [
     {
@@ -105,7 +104,12 @@
       "pattern": "azurecontainerinstance_restarted_by=.+",
       "strategy": "re2",
       "required": false
+    },
+    {
+      "pattern": "CONNECTION_DATA_.+=.*",
+      "strategy": "re2",
+      "required": true
     }
   ],
-  "working_dir": "/"
+  "working_dir": "/usr/src/app"
 }

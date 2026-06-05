@@ -176,14 +176,19 @@ def _map_connection_env_rules(resource: dict) -> list[dict]:
 def _map_volume_mounts(container: dict) -> list[dict]:
     """Template: container.volumes  →  Policy: mounts[]
 
-    Each Radius volume maps to a bind mount:
+    Operates on the Applications.Core volume shape (Radius.Compute volumes
+    are converted first by ``_normalize_compute_container``):
       volumes[name].mountPath   → mount.destination
-      volumes[name].source      → mount.source  (persistent) or ephemeral://<name>
+      volumes[name].kind        → mount.source  (atlas path picked by kind)
       volumes[name].permission  → mount.options  (read-only for persistent unless 'write')
       volumes[name].rbac        → (legacy alias for permission)
 
-    Ephemeral volumes (kind=='ephemeral') are writable by default.
-    Persistent volumes default to read-only per the Radius spec.
+    Ephemeral volumes (kind=='ephemeral') are writable by default and use
+    the emptydir source.  Persistent volumes default to read-only per the
+    Radius spec; a writable persistent volume uses the azureFileVolume
+    source, while a read-only one allows either azureFileVolume or
+    secretsVolume since secret mounts from Radius.Compute normalize to a
+    read-only persistent volume.
     """
     mounts = []
     # this takes the normalized volumes object added to the container object by
@@ -196,15 +201,15 @@ def _map_volume_mounts(container: dict) -> list[dict]:
         access = mount_info.get("permission") or mount_info.get("rbac")
 
         # TODO: these constants are defined in src/confcom/azext_confcom/data/internal_config.json
-        if kind == "emptyDir":
+        if kind == "ephemeral":
             read_only = access == "read"
             source = "sandbox:///tmp/atlas/emptydir/.+"
-        elif kind == "secret":
-            read_only = access != "write"
-            source = "sandbox:///tmp/atlas/secretsVolume/.+"
         else:
             read_only = access != "write"
-            source = "sandbox:///tmp/atlas/azureFileVolume/.+"
+            if read_only:
+                source = "sandbox:///tmp/atlas/(azureFileVolume|secretsVolume)/.+"
+            else:
+                source = "sandbox:///tmp/atlas/azureFileVolume/.+"
 
         options.append("ro" if read_only else "rw")
 
@@ -261,59 +266,63 @@ def _normalize_compute_probe(probe: dict) -> dict | None:
 def _normalize_compute_container(container: dict, resource_volumes: dict) -> dict:
     """Normalize a Radius.Compute/containers entry to canonical internal format.
 
-    Converts:
-      - volumeMounts[] + resource-level volumes → inline volumes dict
-      - Structured probes (exec/httpGet/tcpSocket) → {kind, ...} format
-    All other fields (image, command, args, env, workingDir) are identical.
+    Converts the Radius.Compute representation to the Applications.Core
+    representation so that the ``_map_*`` helpers can be applied uniformly.
+
+    Volumes:
+      - emptyDir          → kind: 'ephemeral'
+      - persistentVolume  → kind: 'persistent' (read/write from accessMode)
+      - secretName        → kind: 'persistent', permission: 'read'
+        (Applications.Core has no dedicated secret kind; secret mounts
+        always become read-only persistent volumes.  ``_map_volume_mounts``
+        emits a source pattern accepting both azureFileVolume and
+        secretsVolume for that case.)
+    Probes:
+      - {exec,httpGet,tcpSocket: ...} → {kind: ..., command/path/port: ...}
+    All other fields (image, command, args, env, workingDir) pass through.
     """
     normalized = dict(container)
 
-    # --- volumeMounts + resource-level volumes → legacy inline volumes ---
-
-    # TODO: refactor this - given that we're processing it already, we should
-    # just turn it into the actual mounts, with the correct source / dest /
-    # options, instead of creating an intermediate format slightly different
-    # from Radius (ReadOnlyMany vs read, emptyDir vs ephemeral etc)
-
+    # --- volumeMounts + resource-level volumes → inline Applications.Core volumes ---
     volume_mounts = container.get("volumeMounts", [])
     if volume_mounts and resource_volumes:
-        old_volumes = {}
+        inline_volumes = {}
         for vm in volume_mounts:
             vol_name = vm["volumeName"]
             vol_def = resource_volumes.get(vol_name, {})
             mount_path = vm["mountPath"]
 
             if "emptyDir" in vol_def:
-                old_volumes[vol_name] = {
-                    "kind": "emptyDir",
+                inline_volumes[vol_name] = {
+                    "kind": "ephemeral",
                     "mountPath": mount_path,
                     "managedStore": vol_def["emptyDir"].get("medium", "disk"),
                 }
             elif "persistentVolume" in vol_def:
                 pv = vol_def["persistentVolume"]
                 access = pv.get("accessMode", "ReadWriteOnce")
-                old_volumes[vol_name] = {
-                    "kind": "persistentVolume",
+                inline_volumes[vol_name] = {
+                    "kind": "persistent",
                     "mountPath": mount_path,
                     "source": pv.get("resourceId", ""),
                     "permission": "read" if access == "ReadOnlyMany" else "write",
                 }
             elif "secretName" in vol_def:
-                old_volumes[vol_name] = {
-                    "kind": "secret",
+                inline_volumes[vol_name] = {
+                    "kind": "persistent",
                     "mountPath": mount_path,
                     "source": vol_def["secretName"],
                     "permission": "read",
                 }
-        normalized["volumes"] = old_volumes
+        normalized["volumes"] = inline_volumes
 
-    # --- probes: structured → legacy ---
+    # --- probes: structured → canonical {kind, ...} ---
     for probe_key in ("livenessProbe", "readinessProbe"):
         probe = container.get(probe_key)
         if probe:
-            legacy = _normalize_compute_probe(probe)
-            if legacy:
-                normalized[probe_key] = legacy
+            canonical = _normalize_compute_probe(probe)
+            if canonical:
+                normalized[probe_key] = canonical
 
     return normalized
 
