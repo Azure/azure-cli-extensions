@@ -8,11 +8,17 @@
 # regenerated.
 # --------------------------------------------------------------------------
 import yaml
+from azure.cli.testsdk.scenario_tests.decorators import record_only
+
 from azext_mlv2.tests.scenario_test_helper import MLBaseScenarioTest
 
 
 class CapabilityHostScenarioTest(MLBaseScenarioTest):
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg' and workspace 'workspace', which only exist in the recorded
+    # cassette. Running live raises ResourceGroupNotFound.
+    @record_only()
     def test_capability_host_in_hub(self) -> None:
 
         self.kwargs["cap_host_name"] = "test_host_hub"
@@ -40,6 +46,10 @@ class CapabilityHostScenarioTest(MLBaseScenarioTest):
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("cap_host_name", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg' and workspace 'workspace', which only exist in the recorded
+    # cassette. Running live raises ResourceGroupNotFound.
+    @record_only()
     def test_capability_host_in_project(self) -> None:
 
         self.kwargs["cap_host_name"] = "test_host_project"
@@ -53,7 +63,7 @@ class CapabilityHostScenarioTest(MLBaseScenarioTest):
             sleep(120)  # This sleep is only required for fresh recording of cassette
 
         capability_host_obj_show = self.cmd(
-            "az ml capability-host show -g tsetrg -w workspacename -n {cap_host_name}"
+            "az ml capability-host show -g testrg -w workspace -n {cap_host_name}"
         )
 
         capability_host_obj_show = yaml.safe_load(capability_host_obj_show.output)

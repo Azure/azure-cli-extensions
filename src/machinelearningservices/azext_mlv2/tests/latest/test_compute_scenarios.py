@@ -11,9 +11,14 @@ import yaml
 import pytest
 from azext_mlv2.tests.scenario_test_helper import MLBaseScenarioTest
 from azure.core.exceptions import HttpResponseError
+from azure.cli.testsdk.scenario_tests.decorators import record_only
 
 
 class ComputeScenarioTest(MLBaseScenarioTest):
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_compute_aml(self) -> None:
         compute_name_suffix = "cc1"
         # Updating dictionary with the job name
@@ -48,6 +53,10 @@ class ComputeScenarioTest(MLBaseScenarioTest):
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("compute_name_1", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_compute_list_nodes(self) -> None:
         compute_name_suffix = "cc2"
         # Updating dictionary with the job name
@@ -63,6 +72,10 @@ class ComputeScenarioTest(MLBaseScenarioTest):
         assert ws_obj["private_ip_address"] == "10.0.0.4"
         assert ws_obj["public_ip_address"] == "20.246.149.32"
         
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_compute_compute_instance(self) -> None:
         compute_name_suffix = "ci3"
         # Updating dictionary with the job name
@@ -90,6 +103,10 @@ class ComputeScenarioTest(MLBaseScenarioTest):
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("compute_name_3", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_compute_compute_instance_with_schedules(self) -> None:
         compute_name_suffix = "ci4"
         # Updating dictionary with the job name
@@ -113,6 +130,10 @@ class ComputeScenarioTest(MLBaseScenarioTest):
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("compute_name_4", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_compute_aml_no_location(self) -> None:
         compute_name_suffix = "cc5"
         # Updating dictionary with the job name
@@ -136,6 +157,10 @@ class ComputeScenarioTest(MLBaseScenarioTest):
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("compute_name_5", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_compute_compute_instance_with_no_public_ip(self) -> None:
         compute_name_suffix = "ci6"
         # Updating dictionary with the job name
@@ -148,11 +173,19 @@ class ComputeScenarioTest(MLBaseScenarioTest):
         # Delete a key regardless of whether it is in the dictionary for the new name
         self.kwargs.pop("compute_name_6", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_compute_list(self) -> None:
         ws_obj_list = self.cmd("az ml compute list -g testrg -w testworkspace")
         ws_obj_list = yaml.safe_load(ws_obj_list.output)
         assert len(ws_obj_list) > 0
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_compute_list_type(self) -> None:
         ws_obj_list = self.cmd("az ml compute list --type AmlCompute -g testrg -w testworkspace")
         ws_obj_list = yaml.safe_load(ws_obj_list.output)

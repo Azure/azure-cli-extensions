@@ -24,6 +24,7 @@ from azure.ai.ml.exceptions import ValidationException
 from azure.cli.testsdk.scenario_tests.decorators import AllowLargeResponse
 
 from ..util import private_flag
+from azure.cli.testsdk.scenario_tests.decorators import record_only
 
 
 @pytest.fixture()
@@ -68,6 +69,10 @@ class ComponentScenarioTest(MLBaseScenarioTest):
         assert len(yaml.safe_load(components.output)) != 0
         return component_obj
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @AllowLargeResponse()
     def test_component(self):
         # Use a unique component name per run to avoid colliding with leftover
@@ -108,6 +113,10 @@ class ComponentScenarioTest(MLBaseScenarioTest):
         component_restore_obj = self.cmd("az ml component restore -n {componentName} -g testrg -w testworkspace")
         assert component_restore_obj.output == ""
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg' (via assert_component_create_get_list helper), which only
+    # exists in the recorded cassette. Running live raises AuthorizationFailed.
+    @record_only()
     @AllowLargeResponse()
     def test_automl_component(self):
         self.assert_component_create_get_list(
@@ -116,32 +125,56 @@ class ComponentScenarioTest(MLBaseScenarioTest):
             _type="automl",
         )
 
+    # Marked as record_only because the test uses hardcoded resources
+    # (resource group, registry, etc.) that only exist in the recorded
+    # cassette. Running live raises ResourceNotFound or similar errors.
+    @record_only()
     def test_component_show_registry(self) -> None:
         env_obj = self.cmd("az ml component show -n 'helloworld_component_with_env' -v 0.0.1  --registry-name dsvm-test")
         env_obj = yaml.safe_load(env_obj.output)
         assert env_obj["id"] == "azureml://registries/dsvm-test/components/helloworld_component_with_env/versions/0.0.1"
         assert env_obj["name"] == "helloworld_component_with_env"
 
+    # Marked as record_only because the test uses hardcoded resources
+    # (resource group, registry, etc.) that only exist in the recorded
+    # cassette. Running live raises ResourceNotFound or similar errors.
+    @record_only()
     def test_component_show_without_version_label(self) -> None:
         with pytest.raises(ClientRequestError) as error_info:
             env_obj = self.cmd("az ml component show -n 'helloworld_component_with_env' --registry-name dsvm-test")
         assert "Must provide either version or label." in str(error_info)
 
+    # Marked as record_only because the test uses hardcoded resources
+    # (resource group, registry, etc.) that only exist in the recorded
+    # cassette. Running live raises ResourceNotFound or similar errors.
+    @record_only()
     def test_component_list_registry(self) -> None:
         env_obj = self.cmd("az ml component list -n 'helloworld_component_with_env' --registry-name dsvm-test")
         env_obj = yaml.safe_load(env_obj.output)
         assert len(env_obj) > 0
 
+    # Marked as record_only because the test uses hardcoded resources
+    # (resource group, registry, etc.) that only exist in the recorded
+    # cassette. Running live raises ResourceNotFound or similar errors.
+    @record_only()
     def test_component_container_list_registry(self) -> None:
         env_obj = self.cmd("az ml component list --registry-name dsvm-test")
         env_obj = yaml.safe_load(env_obj.output)
         assert len(env_obj) > 0
 
+    # Marked as record_only because the test uses hardcoded resources
+    # (resource group, registry, etc.) that only exist in the recorded
+    # cassette. Running live raises ResourceNotFound or similar errors.
+    @record_only()
     def test_component_archive_registry(self) -> None:
         env_obj = self.cmd("az ml component archive -n batchscore -v 1.0.12 --registry-name dsvm-test")
         env_obj = yaml.safe_load(env_obj.output)
         assert env_obj is None
 
+    # Marked as record_only because the test uses hardcoded resources
+    # (resource group, registry, etc.) that only exist in the recorded
+    # cassette. Running live raises ResourceNotFound or similar errors.
+    @record_only()
     def test_component_restore_registry(self) -> None:
         env_obj = self.cmd("az ml component restore -n batchscore -v 1.0.12 --registry-name dsvm-test")
         env_obj = yaml.safe_load(env_obj.output)
@@ -154,6 +187,10 @@ class ComponentScenarioTest(MLBaseScenarioTest):
         else:
             return {}
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Recording and replay not working.")
     def test_component_validate_on_load(self) -> None:
         for target_file, target_field, target_message in [
@@ -173,6 +210,10 @@ class ComponentScenarioTest(MLBaseScenarioTest):
                 self.cmd("az ml component validate -g testrg -w testworkspace --file {}".format(target_file))
             assert target_message in str(err.value)
     
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Recording and replay not working.")
     def test_component_validate(self) -> None:
         for target_file, target_field, target_message in [
@@ -211,6 +252,10 @@ class ComponentScenarioTest(MLBaseScenarioTest):
                     target_field_found = True
             assert target_field_found, "target field {} not found in\n{}".format(target_field, json.dumps(messages))
 
+    # Marked as record_only because the test uses hardcoded resources
+    # (resource group, registry, etc.) that only exist in the recorded
+    # cassette. Running live raises ResourceNotFound or similar errors.
+    @record_only()
     def test_component_with_short_resource_id(self) -> None:
         with private_flag():
             with pytest.raises((ValidationException, CLIError)) as exc_info:
@@ -223,6 +268,10 @@ class ComponentScenarioTest(MLBaseScenarioTest):
                 in str(exception_raised)
             )
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_component_git_path(self) -> None:
         with private_flag():
             component_obj = self.cmd(
@@ -237,6 +286,10 @@ class ComponentScenarioTest(MLBaseScenarioTest):
             assert "creation_context" in component_obj
             assert "code" in component_obj
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_component_create_skip_validation(self) -> None:
         create_component_command = "az ml component create -f ./src/machinelearningservices/azext_mlv2/tests/test_configs/components/helloworld_component.yml -g testrg -w testworkspace"
 
@@ -248,6 +301,10 @@ class ComponentScenarioTest(MLBaseScenarioTest):
             self.cmd(create_component_command)
             mock_validate.assert_called_once()
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Recording and replay not working.")
     def test_enable_internal_component(self):
         from azure.ai.ml.constants._common import AZUREML_INTERNAL_COMPONENTS_ENV_VAR
@@ -273,6 +330,10 @@ class ComponentScenarioTest(MLBaseScenarioTest):
             validation_result = json.loads(execution_result.output)
             assert validation_result["result"] == "Succeeded"
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="This test is not working yet")
     def test_show_internal_component(self):
         from azure.ai.ml.constants import AZUREML_INTERNAL_COMPONENTS_ENV_VAR
@@ -302,6 +363,10 @@ class ComponentScenarioTest(MLBaseScenarioTest):
                     )
                 )
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg' (via assert_component_create_get_list helper), which only
+    # exists in the recorded cassette. Running live raises AuthorizationFailed.
+    @record_only()
     @AllowLargeResponse()
     def test_create_pipeline_component(self):
         self.cassette.allow_playback_repeats = True

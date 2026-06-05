@@ -6,6 +6,7 @@ import pytest
 import yaml
 from azext_mlv2.tests.scenario_test_helper import MLBaseScenarioTest
 from azext_mlv2.tests.util import assert_same
+from azure.cli.testsdk.scenario_tests.decorators import record_only
 
 
 class EnvironmentScenarioTest(MLBaseScenarioTest):
@@ -16,6 +17,10 @@ class EnvironmentScenarioTest(MLBaseScenarioTest):
                 dep_obj = self.cmd(f'{base_command} --workspace-name="" --registry-name=""')
             assert "one the following arguments are required: [--workspace-name/-w, --registry-name]" in str(exp.value)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_environment(self) -> None:
         env_obj = self.cmd(
             "az ml environment create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/environment/environment_conda.yml --name {environmentName} --set version=1 --tags test=test -g testrg -w testworkspace"
@@ -56,6 +61,10 @@ class EnvironmentScenarioTest(MLBaseScenarioTest):
         env_restore_obj = self.cmd("az ml environment restore -g testrg -w testworkspace -n {environmentName}")
         assert env_restore_obj.output == ""
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_environment_list(self) -> None:
         env_list_obj = self.cmd("az ml environment list -g testrg -w testworkspace")
         env_list_obj = yaml.safe_load(env_list_obj.output)
@@ -75,6 +84,10 @@ class EnvironmentScenarioTest(MLBaseScenarioTest):
             assert "id" not in env_name_obj[0]
 
     # This test is not working. TODO: https://dev.azure.com/msdata/Vienna/_workitems/edit/3372868
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Recording and replay not working.")
     def test_environment_with_docker_context(self) -> None:
         env_obj = self.cmd(
@@ -96,6 +109,10 @@ class EnvironmentScenarioTest(MLBaseScenarioTest):
         assert_same(env_obj, env_show_obj, filter=["creation_context"])
 
     # This test is not working. TODO: https://dev.azure.com/msdata/Vienna/_workitems/edit/3372868
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="Recording and replay not working.")
     def test_environment_build_context(self) -> None:
         env_obj = self.cmd(
@@ -112,6 +129,10 @@ class EnvironmentScenarioTest(MLBaseScenarioTest):
 
         assert_same(env_obj, env_show_obj, filter=["creation_context"])
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_environment_with_image(self) -> None:
         env_obj = self.cmd(
             "az ml environment create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/environment/environment_docker_image.yml --name {environmentName} --version 1 --image pytorch.pytorch --conda-file endpoint_conda.yml -g testrg -w testworkspace"
@@ -120,6 +141,10 @@ class EnvironmentScenarioTest(MLBaseScenarioTest):
         assert env_obj["image"] == "pytorch.pytorch"
         assert "conda_file" in env_obj
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_environment_params_override(self) -> None:
         env_obj = self.cmd(
             "az ml environment create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/environment/environment_conda_name_version.yml --name {environmentName} --description bla --os-type windows --version 2 -g testrg -w testworkspace"
@@ -129,6 +154,10 @@ class EnvironmentScenarioTest(MLBaseScenarioTest):
         assert env_obj["os_type"] == "windows"
         assert env_obj["version"] == "2"
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_environment_with_no_file(self) -> None:
         env_obj = self.cmd(
             "az ml environment create --name {environmentName} --version 1 --image pytorch.pytorch --conda-file ./src/machinelearningservices/azext_mlv2/tests/test_configs/environment/endpoint_conda.yml -g testrg -w testworkspace"
@@ -167,6 +196,10 @@ class EnvironmentScenarioTest(MLBaseScenarioTest):
         assert anon_environment[-1] == "10e20cf4ec11a618e87f0dd965ef70b2"
         assert anon_environment[-3] == "CliV2AnonymousEnvironment"
 
+    # Marked as record_only because the test uses hardcoded resources
+    # (resource group, registry, etc.) that only exist in the recorded
+    # cassette. Running live raises ResourceNotFound or similar errors.
+    @record_only()
     def test_environment_show_registry(self) -> None:
         env_obj = self.cmd(
             "az ml environment show -n kchawla-env -v 1 --registry-name kchawla-reg"
@@ -178,12 +211,20 @@ class EnvironmentScenarioTest(MLBaseScenarioTest):
         )
         assert env_obj["name"] == "kchawla-env"
 
+    # Marked as record_only because the test uses hardcoded resources
+    # (resource group, registry, etc.) that only exist in the recorded
+    # cassette. Running live raises ResourceNotFound or similar errors.
+    @record_only()
     def test_environment_list_registry(self) -> None:
         env_obj = self.cmd("az ml environment list --registry-name test-registry-ux-1")
         env_obj = yaml.safe_load(env_obj.output)
 
         assert len(env_obj) > 1
 
+    # Marked as record_only because the test uses hardcoded resources
+    # (resource group, registry, etc.) that only exist in the recorded
+    # cassette. Running live raises ResourceNotFound or similar errors.
+    @record_only()
     def test_environment_create_in_registry(self) -> None:
 
         env_obj = self.cmd(
@@ -197,6 +238,10 @@ class EnvironmentScenarioTest(MLBaseScenarioTest):
         env_obj_1 = yaml.safe_load(env_obj_1.output)
         assert len(env_obj_1) > 1
 
+    # Marked as record_only because the test uses hardcoded resources
+    # (resource group, registry, etc.) that only exist in the recorded
+    # cassette. Running live raises ResourceNotFound or similar errors.
+    @record_only()
     def test_environment_archive_in_registry(self) -> None:
 
         env_archive_obj = self.cmd(
@@ -212,6 +257,10 @@ class EnvironmentScenarioTest(MLBaseScenarioTest):
         )
         assert env_restore_obj.output == ""
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_environment_update(self) -> None:
         env_obj = self.cmd(
             "az ml environment update -n online-endpoint-mir-test -v 3 --set tags.nn=kkk -g testrg -w testworkspace"

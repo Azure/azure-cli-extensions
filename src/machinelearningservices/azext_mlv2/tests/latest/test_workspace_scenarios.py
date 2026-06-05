@@ -10,10 +10,15 @@
 import pytest
 import yaml
 from azext_mlv2.tests.scenario_test_helper import MLBaseScenarioTest
+from azure.cli.testsdk.scenario_tests.decorators import record_only
 
 
 class WorkspaceScenarioTest(MLBaseScenarioTest):
     '''
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_workspace(self) -> None:
         workspaceName = self.kwargs.get("workspaceName", None)
         workspaceName += "_full"
@@ -82,6 +87,10 @@ class WorkspaceScenarioTest(MLBaseScenarioTest):
         assert ws_obj_del.output == ""
         '''
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_workspace_managednetwork_outbound_rule_operations(self) -> None:
         workspaceName = self.kwargs.get("workspaceName", None)
         workspaceName += "_mvnet"
@@ -276,6 +285,10 @@ class WorkspaceScenarioTest(MLBaseScenarioTest):
         assert ws_obj_del.output == ""
 
     '''
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_workspace_managednetwork_provision(self) -> None:
         workspaceName = self.kwargs.get("workspaceName", None)
         workspaceName += "_mvnetprov"

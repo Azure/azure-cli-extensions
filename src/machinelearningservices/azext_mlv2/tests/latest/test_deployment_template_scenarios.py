@@ -1,4 +1,4 @@
-﻿# --------------------------------------------------------------------------
+# --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for
 # license information.
@@ -12,6 +12,7 @@ import time
 import tempfile
 import os
 from azext_mlv2.tests.scenario_test_helper import MLBaseScenarioTest
+from azure.cli.testsdk.scenario_tests.decorators import record_only
 
 
 class DeploymentTemplateScenarioTest(MLBaseScenarioTest):
@@ -79,6 +80,10 @@ replication_locations:
         config_path = os.path.join(tests_dir, "test_configs", "deployment_template", "deployment_template_basic.yaml")
         return os.path.normpath(config_path)
 
+    # Marked as record_only because the test uses class-level hardcoded
+    # resource group/registry (test-cli-rg/test-cli-reg) that only exist
+    # in the recorded cassette. Running live raises ResourceNotFound.
+    @record_only()
     def test_01_deployment_template_create(self) -> None:
         """Test Step 1: Create a deployment template."""
         print(f"\n[TEST 01] Creating deployment template: {self.template_name} v{self.template_version}")
@@ -111,6 +116,10 @@ replication_locations:
         else:
             print(f"[TEST 01] Template created (no output returned)")
 
+    # Marked as record_only because the test uses class-level hardcoded
+    # resource group/registry (test-cli-rg/test-cli-reg) that only exist
+    # in the recorded cassette. Running live raises ResourceNotFound.
+    @record_only()
     def test_02_deployment_template_list(self) -> None:
         """Test Step 2: List deployment templates in the registry."""
         print(f"\n[TEST 02] Listing deployment templates in registry: {self.registry_name}")
@@ -132,6 +141,10 @@ replication_locations:
         else:
             print(f"[TEST 02] List operation completed (no output)")
 
+    # Marked as record_only because the test uses class-level hardcoded
+    # resource group/registry (test-cli-rg/test-cli-reg) that only exist
+    # in the recorded cassette. Running live raises ResourceNotFound.
+    @record_only()
     def test_03_deployment_template_get(self) -> None:
         """Test Step 3: Get the specific deployment template."""
         print(f"\n[TEST 03] Getting deployment template: {self.template_name} v{self.template_version}")
@@ -159,6 +172,10 @@ replication_locations:
         else:
             print(f"[TEST 03] Get operation completed")
 
+    # Marked as record_only because the test uses class-level hardcoded
+    # resource group/registry (test-cli-rg/test-cli-reg) that only exist
+    # in the recorded cassette. Running live raises ResourceNotFound.
+    @record_only()
     def test_04_deployment_template_update(self) -> None:
         """Test Step 4: Update deployment template (description and tags)."""
         print(f"\n[TEST 04] Updating deployment template description and tags")
@@ -188,6 +205,10 @@ replication_locations:
         else:
             print(f"[TEST 04] Update completed")
 
+    # Marked as record_only because the test uses class-level hardcoded
+    # resource group/registry (test-cli-rg/test-cli-reg) that only exist
+    # in the recorded cassette. Running live raises ResourceNotFound.
+    @record_only()
     def test_05_deployment_template_archive(self) -> None:
         """Test Step 5: Archive the deployment template."""
         print(f"\n[TEST 05] Archiving deployment template")
@@ -199,6 +220,10 @@ replication_locations:
         assert archive_result.output == "" or "archived" in archive_result.output.lower()
         print(f"[TEST 05] Template archived successfully")
 
+    # Marked as record_only because the test uses class-level hardcoded
+    # resource group/registry (test-cli-rg/test-cli-reg) that only exist
+    # in the recorded cassette. Running live raises ResourceNotFound.
+    @record_only()
     def test_06_deployment_template_restore(self) -> None:
         """Test Step 6: Restore the deployment template."""
         print(f"\n[TEST 06] Restoring deployment template")
@@ -210,6 +235,10 @@ replication_locations:
         assert restore_result.output == "" or "restored" in restore_result.output.lower()
         print(f"[TEST 06] Template restored successfully")
 
+    # Marked as record_only because the test uses class-level hardcoded
+    # resource group/registry (test-cli-rg/test-cli-reg) that only exist
+    # in the recorded cassette. Running live raises ResourceNotFound.
+    @record_only()
     def test_07_deployment_template_create_with_version(self) -> None:
         """Test: Create a new version of the deployment template."""
         print(f"\n[TEST 07] Creating new version of deployment template")
@@ -253,6 +282,10 @@ replication_locations:
             except:
                 pass
 
+    # Marked as record_only because the test uses class-level hardcoded
+    # resource group/registry (test-cli-rg/test-cli-reg) that only exist
+    # in the recorded cassette. Running live raises ResourceNotFound.
+    @record_only()
     def test_08_deployment_template_list_specific(self) -> None:
         """Test: List all deployment templates and verify list operation works."""
         print(f"\n[TEST 08] Listing deployment templates in registry")
@@ -279,6 +312,10 @@ replication_locations:
         else:
             print(f"[TEST 08] List operation returned no output")
 
+    # Marked as record_only because the test uses class-level hardcoded
+    # resource group/registry (test-cli-rg/test-cli-reg) that only exist
+    # in the recorded cassette. Running live raises ResourceNotFound.
+    @record_only()
     def test_09_deployment_template_get_nonexistent(self) -> None:
         """Test: Try to get a non-existent deployment template (negative test)."""
         print(f"\n[TEST 09] Testing error handling for non-existent template")
@@ -299,6 +336,10 @@ replication_locations:
             assert "does not exist" in str(e).lower() or "not found" in str(e).lower() or \
                    "error" in str(e).lower(), f"Unexpected error message: {e}"
 
+    # Marked as record_only because the test uses class-level hardcoded
+    # resource group/registry (test-cli-rg/test-cli-reg) that only exist
+    # in the recorded cassette. Running live raises ResourceNotFound.
+    @record_only()
     def test_10_deployment_template_update_multiple_tags(self) -> None:
         """Test: Update deployment template with multiple tag changes."""
         print(f"\n[TEST 10] Updating deployment template with multiple tags")
@@ -324,6 +365,10 @@ replication_locations:
         else:
             print(f"[TEST 10] Update completed")
 
+    # Marked as record_only because the test uses class-level hardcoded
+    # resource group/registry (test-cli-rg/test-cli-reg) that only exist
+    # in the recorded cassette. Running live raises ResourceNotFound.
+    @record_only()
     def test_11_deployment_template_archive_restore_cycle(self) -> None:
         """Test: Archive and restore cycle for version 1."""
         print(f"\n[TEST 11] Testing archive-restore cycle for version 1")
@@ -364,6 +409,10 @@ replication_locations:
         assert restore_result.output == "" or "restored" in restore_result.output.lower()
         print(f"[TEST 11] Version {test_version} restored successfully")
 
+    # Marked as record_only because the test uses class-level hardcoded
+    # resource group/registry (test-cli-rg/test-cli-reg) that only exist
+    # in the recorded cassette. Running live raises ResourceNotFound.
+    @record_only()
     def test_12_deployment_template_full_workflow_verification(self) -> None:
         """Test: Final verification - list templates and check we can get our template."""
         print(f"\n[TEST 12] Final verification of deployment template state")

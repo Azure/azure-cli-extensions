@@ -14,9 +14,14 @@ from azext_mlv2.tests.scenario_test_helper import MLBaseScenarioTest
 from azure.ai.ml._scope_dependent_operations import OperationScope
 
 import pytest
+from azure.cli.testsdk.scenario_tests.decorators import record_only
 
 
 class K8SOnlineEndpointScenarioTest(MLBaseScenarioTest):
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_online_endpoint_k8s(self) -> None:
         endpoint_name_suffix = "-k8s"
         self.kwargs["online_endpoint_name"] = "{}{}".format(
@@ -41,6 +46,10 @@ class K8SOnlineEndpointScenarioTest(MLBaseScenarioTest):
         assert cmd_delete.output == ""
         self.kwargs.pop("online_endpoint_name", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     def test_online_endpoint_k8s_set_compute(self) -> None:
         endpoint_name_suffix = "-k8s-2"
         self.kwargs["online_endpoint_name_2"] = "{}{}".format(
@@ -62,6 +71,10 @@ class K8SOnlineEndpointScenarioTest(MLBaseScenarioTest):
         assert cmd_delete.output == ""
         self.kwargs.pop("online_endpoint_name_2", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="AKS legacy compute is not supported for online endpoints or deployments")
     def test_online_endpoint_k8s_deployment_cpu(self) -> None:
         endpoint_name_suffix = "-k8s-cpu"
@@ -188,6 +201,10 @@ class K8SOnlineEndpointScenarioTest(MLBaseScenarioTest):
         self.kwargs.pop("online_endpoint_name_cpu", None)
         self.kwargs.pop("online_deployment_name_cpu", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="AKS legacy compute is not supported for online endpoints or deployments")
     def test_online_endpoint_k8s_deployment_gpu(self) -> None:
         endpoint_name_suffix = "-k8s-gpu"
@@ -263,6 +280,10 @@ class K8SOnlineEndpointScenarioTest(MLBaseScenarioTest):
         self.kwargs.pop("online_endpoint_name_gpu", None)
         self.kwargs.pop("online_deployment_name_gpu", None)
 
+    # Marked as record_only because the test uses hardcoded resource group
+    # 'testrg', which only exists in the recorded cassette. Running live
+    # raises ResourceGroupNotFound or AuthorizationFailed.
+    @record_only()
     @pytest.mark.skip(reason="TODO: 1887461, could not re-record this test due to regression")
     def test_online_endpoint_k8s_deployment_update(self) -> None:
         endpoint_name_suffix = "-k8s-gpu2"
