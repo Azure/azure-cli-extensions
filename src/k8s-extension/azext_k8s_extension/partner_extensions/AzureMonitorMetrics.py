@@ -30,7 +30,7 @@ logger = get_logger(__name__)
 
 class AzureMonitorMetrics(DefaultExtension):
     def Create(self, cmd, client, resource_group_name, cluster_name, name, cluster_type, cluster_rp,
-               extension_type, scope, auto_upgrade_minor_version, release_train, version, target_namespace,
+               extension_type, scope, auto_upgrade_minor_version, auto_upgrade_mode, release_train, version, target_namespace,
                release_namespace, configuration_settings, configuration_protected_settings,
                configuration_settings_file, configuration_protected_settings_file,
                plan_name, plan_publisher, plan_product):
@@ -66,6 +66,7 @@ class AzureMonitorMetrics(DefaultExtension):
         extension = Extension(
             extension_type=extension_type,
             auto_upgrade_minor_version=auto_upgrade_minor_version,
+            auto_upgrade_mode=auto_upgrade_mode,
             release_train=release_train,
             version=version,
             scope=ext_scope,
