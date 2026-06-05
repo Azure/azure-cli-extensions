@@ -19,7 +19,7 @@ class Execute(AAZCommand):
     """Execute the scenario execution with the given scenario configuration.
 
     :example: Execute the scenario execution with the given scenario configuration.
-        az chaos workspace scenario configuration execute --resource-group exampleRG --workspace-name exampleWorkspace --scenario-name 12345678-1234-1234-1234-123456789012 --scenario-configuration-name config-5678-9012-3456-789012345678
+        az chaos scenario config execute --resource-group exampleRG --workspace-name exampleWorkspace --scenario-name 12345678-1234-1234-1234-123456789012 --scenario-configuration-name config-5678-9012-3456-789012345678
     """
 
     _aaz_info = {
