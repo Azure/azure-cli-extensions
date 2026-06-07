@@ -475,121 +475,6 @@ type: group
 short-summary: Manage origin groups of an endpoint.
 """
 
-helps['cdn origin-group create'] = """
-type: command
-short-summary: Create an origin group.
-parameters:
-  - name: --origins
-    type: int
-    short-summary: >
-        The origins load balanced by this origin group, as a comma-separated list of origin names or
-        origin resource IDs.
-  - name: --probe-interval
-    type: int
-    short-summary: >
-        The frequency to perform health probes in seconds.
-  - name: --probe-path
-    type: str
-    short-summary: >
-        The path relative to the origin that is used to determine the health of the origin.
-  - name: --probe-protocol
-    type: string
-    short-summary: >
-        The protocol to use for health probes.
-  - name: --probe-method
-    type: string
-    short-summary: >
-        The request method to use for health probes.
-  # Uncomment this once response error detection support is added in RP:
-  # - name: --response-error-detection-error-types
-  #   type: string
-  #   short-summary: >
-  #       The type of response errors for real user requests for which the origin will be deemed unhealthy.
-  # - name: --response-error-detection-failover-threshold
-  #   type: int
-  #   short-summary: >
-  #       The threshold of failed requests required to trigger failover as a percent of 100.
-  # - name: --response-error-detection-status-code-ranges
-  #   type: string
-  #   short-summary: >
-  #       The HTTP response status codes to count toward the response error detection failover threshold, specified
-  #       as a comma-separated list of ranges.
-examples:
-  - name: Create an origin group
-    text: >
-      az cdn origin-group create -g group --profile-name profile --endpoint-name endpoint -n origin-group
-      --origins origin-0,origin-1
-  - name: Create an origin group with a custom health probe
-    text: >
-      az cdn origin-group create -g group --profile-name profile --endpoint-name endpoint -n origin-group
-      --origins origin-0,origin-1 --probe-path /healthz --probe-interval 90
-      --probe-protocol HTTPS --probe-method GET
-  # Uncomment this once response error detection support is added in RP:
-  # - name: Create an origin group with response error detection
-  #   text: >
-  #     az cdn origin-group create -g group --profile-name profile --endpoint-name endpoint -n origin-group
-  #     --origins origin-0,origin-1 --response-error-detection-error-types TcpErrorsOnly
-  #     --response-error-detection-failover-threshold 5
-  #     --response-error-detection-status-code-ranges 300-399,500-599
-"""
-
-helps['cdn origin-group update'] = """
-type: command
-short-summary: Update an origin group.
-parameters:
-  - name: --origins
-    type: int
-    short-summary: >
-        The origins load balanced by this origin group, as a comma-separated list of origin names from the
-        parent endpoint origin IDs.
-  - name: --probe-interval
-    type: int
-    short-summary: >
-        The frequency to perform health probes in seconds.
-  - name: --probe-path
-    type: str
-    short-summary: >
-        The path relative to the origin that is used to determine the health of the origin.
-  - name: --probe-protocol
-    type: string
-    short-summary: >
-        The protocol to use for health probes.
-  - name: --probe-method
-    type: string
-    short-summary: >
-        The request method to use for health probes.
-  # Uncomment this once response error detection support is added in RP:
-  # - name: --response-error-detection-error-types
-  #   type: string
-  #   short-summary: >
-  #       The type of response errors for real user requests for which the origin will be deemed unhealthy.
-  # - name: --response-error-detection-failover-threshold
-  #   type: int
-  #   short-summary: >
-  #       The threshold of failed requests required to trigger failover as a percent of 100.
-  # - name: --response-error-detection-status-code-ranges
-  #   type: string
-  #   short-summary: >
-  #       The HTTP response status codes to count toward the response error detection failover threshold.
-examples:
-  - name: Update which origins are included in an origin group.
-    text: >
-      az cdn origin-group update -g group --profile-name profile --endpoint-name endpoint -n origin-group
-      --origins origin-0,origin-2
-  - name: Update an origin group with a custom health probe
-    text: >
-      az cdn origin-group update -g group --profile-name profile --endpoint-name endpoint -n origin-group
-      --origins origin-0,origin-1 --probe-path /healthz --probe-interval 90
-      --probe-protocol HTTPS --probe-method GET
-  # Uncomment this once response error detection support is added in RP:
-  # - name: Update an origin group with response error detection
-  #   text: >
-  #     az cdn origin-group update -g group --profile-name profile --endpoint-name endpoint -n origin-group
-  #     --origins origin-0,origin-1 --response-error-detection-error-types TcpErrorsOnly
-  #     --response-error-detection-failover-threshold 5
-  #     --response-error-detection-status-code-ranges 300-399,500-599
-"""
-
 helps['cdn profile delete'] = """
 type: command
 short-summary: Delete a CDN profile.
@@ -733,38 +618,6 @@ short-summary: Manage origins within the specified origin group.
 long-summary: >
     Origins are the application servers where Front Door will route your client requests.
     Utilize any publicly accessible application server, including App Service, Traffic Manager, Private Link, and many others.
-"""
-
-helps['afd origin create'] = """
-type: command
-short-summary: Create an AFD origin.
-examples:
-  - name: Create an regular origin
-    text: >
-      az afd origin create -g group --host-name example.contoso.com --profile-name profile --origin-group-name originGroup
-      --origin-name origin1 --origin-host-header example.contoso.com --priority 1 --weight 500 --enabled-state Enabled
-      --http-port 80 --https-port 443
-  - name: Create a private link origin
-    text: >
-      az afd origin create -g group --host-name example.contoso.com --profile-name profile --origin-group-name originGroup
-      --origin-name origin1 --origin-host-header example.contoso.com --priority 1 --weight 500 --enabled-state Enabled
-      --http-port 80 --https-port 443 --private-link-resource
-      /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group/providers/Microsoft.Storage/storageAccounts/plstest
-      --private-link-location EastUS --private-link-request-message 'Please approve this request' --private-link-sub-resource-type table
-"""
-
-helps['afd origin update'] = """
-type: command
-short-summary: Update the settings of the specified AFD origin.
-examples:
-  - name: Update the host header and priority of the specified origin.
-    text: >
-      az afd origin update -g group --host-name example.contoso.com --profile-name profile --origin-group-name originGroup
-      --origin-name origin1 --origin-host-header example.contoso.com --priority 3
-  - name: Disable private link of the origin.
-    text: >
-      az afd origin update -g group --host-name example.contoso.com --profile-name profile --origin-group-name originGroup
-      --origin-name origin1 --enable-private-link False
 """
 
 helps['afd custom-domain'] = """
@@ -919,70 +772,12 @@ long-summary: >
     A route maps your domains and matching URL path patterns to a specific origin group.
 """
 
-helps['afd route create'] = """
-type: command
-short-summary: Creates a new route within the specified endpoint.
-examples:
-  - name: Creates a route to associate the endpoint's default domain with an origin group for all HTTPS requests.
-    text: >
-        az afd route create -g group --endpoint-name endpoint1 --profile-name profile --route-name route1 --https-redirect Disabled
-        --origin-group og001 --supported-protocols Https --link-to-default-domain Enabled --forwarding-protocol MatchRequest
-  - name: Creates a route to associate the endpoint's default domain with an origin group for all requests and use the specified rule sets to customize the route behavior.
-    text: >
-        az afd route create -g group --endpoint-name endpoint1 --profile-name profile --route-name route1 --rule-sets ruleset1 rulseset2
-        --origin-group og001 --supported-protocols Http Https --link-to-default-domain Enabled --forwarding-protocol MatchRequest --https-redirect Disabled
-  - name: Creates a route to associate the endpoint's default domain and a custom domain with an origin group for all requests with the specified path patterns and redirect all trafic to use Https.
-    text: >
-        az afd route create -g group --endpoint-name endpoint1 --profile-name profile --route-name route1 --patterns-to-match /test1/* /tes2/*
-        --origin-group og001 --supported-protocols Http Https --custom-domains cd001 --forwarding-protocol MatchRequest --https-redirect Enabled --link-to-default-domain Enabled
-"""
-
-helps['afd route update'] = """
-type: command
-short-summary: Update an existing route within the specified endpoint.
-examples:
-  - name: Update a route to accept both Http and Https requests and redirect all trafic to use Https.
-    text: >
-        az afd route update -g group --endpoint-name endpoint1 --profile-name profile --route-name route1
-        --supported-protocols Http Https --https-redirect Enabled
-  - name: Update a route's rule sets settings to customize the route behavior.
-    text: >
-        az afd route update -g group --endpoint-name endpoint1 --profile-name profile --route-name route1 --rule-sets ruleset1 rulseset2
-  - name: Update a route's compression settings to enable compression for the specified content types.
-    text: >
-        az afd route update -g group --endpoint-name endpoint1 --profile-name profile --route-name route1 --query-string-caching-behavior IgnoreQueryString
-        --enable-compression true --content-types-to-compress text/javascript text/plain
-"""
-
 helps['afd security-policy'] = """
 type: group
 short-summary: Manage security policies within the specified profile.
 long-summary: >
     Security policies could be used to apply a web application firewall policy to protect your web applications against OWASP top-10 vulnerabilities and
     block malicious bots.
-"""
-
-helps['afd security-policy create'] = """
-type: command
-short-summary: Creates a new security policy within the specified profile.
-examples:
-  - name: Creates a security policy to apply the specified WAF policy to an endpoint's default domain and a custom domain.
-    text: >
-        az afd security-policy create -g group --profile-name profile --security-policy-name sp1 --domains
-        /subscriptions/sub1/resourcegroups/rg1/providers/Microsoft.Cdn/profiles/profile1/afdEndpoints/endpoint1
-        /subscriptions/sub1/resourcegroups/rg1/providers/Microsoft.Cdn/profiles/profile1/customDomains/customDomain1
-        --waf-policy
-        /subscriptions/sub1/resourcegroups/rg1/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/waf1
-"""
-
-helps['afd security-policy update'] = """
-type: command
-short-summary: Update an existing security policy within the specified profile.
-examples:
-  - name: Update the specified security policy's domain list.
-    text: >
-        az afd security-policy update -g group --security-policy-name sp1 --profile-name profile --domains
-        /subscriptions/sub1/resourcegroups/rg1/providers/Microsoft.Cdn/profiles/profile1/customDomains/customDomain1
 """
 
 helps['afd route delete'] = """
@@ -1000,25 +795,6 @@ short-summary: Manage secrets within the specified profile.
 long-summary: >
     Secrets are used to reference your own certificate stored in Azure Key Vault.
     You must specifiy the secret name when creating custom domain if you want to use your own certificate for TLS encryption.
-"""
-
-helps['afd secret create'] = """
-type: command
-short-summary: Creates a new secret within the specified profile.
-examples:
-  - name: Creates a secret using the specified certificate version.
-    text: >
-        az afd secret create -g group --profile-name profile --secret-name secret1 --secret-version version1
-        --secret-source /subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.KeyVault/vaults/vault1/secrets/cert1
-"""
-
-helps['afd secret update'] = """
-type: command
-short-summary: Update an existing secret within the specified profile.
-examples:
-  - name: Update the specified secret to use the certificate's latest version.
-    text: >
-        az afd secret update -g group --profile-name profile --secret-name secret1 --use-latest-version
 """
 
 helps['afd route delete'] = """

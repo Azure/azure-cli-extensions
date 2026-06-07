@@ -18,11 +18,15 @@ from azext_cdn.aaz.latest.afd.profile import Show as _AFDProfileShow, \
     Create as _AFDProfileCreate, Update as _AFDProfileUpdate
 from azext_cdn.aaz.latest.afd.profile.log_scrubbing import Show as _AFDProfileLogScrubbingShow
 from azext_cdn.aaz.latest.afd.rule import Create as _AFDRuleCreate
-from azext_cdn.aaz.latest.afd.rule.action import Add as _AFDRuleActionAdd
-from azext_cdn.aaz.latest.afd.rule.condition import Add as _AFDRuleConditionAdd
+from azext_cdn.aaz.latest.afd.rule.action import Add as _AFDRuleActionAdd, Remove as _AFDRuleActionRemove, \
+    Show as _AFDRuleActionShow, Update as _AFDRuleActionUpdate
+from azext_cdn.aaz.latest.afd.rule.condition import Add as _AFDRuleConditionAdd, Remove as _AFDRuleConditionRemove, \
+    Show as _AFDRuleConditionShow, Update as _AFDRuleConditionUpdate
 from azext_cdn.aaz.latest.afd.origin_group import Update as _AFDOriginGroupUpdate
-from azext_cdn.aaz.latest.afd.origin import Update as _AFDOriginUpdate
+from azext_cdn.aaz.latest.afd.origin import Create as _AFDOriginCreate, Update as _AFDOriginUpdate
 from azext_cdn.aaz.latest.afd.route import Create as _AFDRouteCreate, Update as _AFDRouteUpdate
+from azext_cdn.aaz.latest.afd.security_policy import Create as _AFDSecurityPolicyCreate, \
+    Update as _AFDSecurityPolicyUpdate
 
 logger = get_logger(__name__)
 
@@ -44,6 +48,20 @@ def _normalize_origin_group_id(cmd):
             args.origin_group = f'/subscriptions/{cmd.ctx.subscription_id}/resourceGroups/{args.resource_group}' \
                                 f'/providers/Microsoft.Cdn/profiles/{args.profile_name}' \
                                 f'/originGroups/{origin_group}'
+
+
+def _add_arg_option(arg, option):
+    if option not in arg._options:
+        arg._options = [option, *arg._options]
+
+
+def _update_action_argument_schema(args_schema):
+    args_schema.action_name._help['short-summary'] = "Name of the action in the delivery rule."
+    _add_arg_option(args_schema.route_configuration_override, "--route-config")
+
+
+def _update_condition_argument_schema(args_schema):
+    args_schema.condition_name._help['short-summary'] = "Name of the condition in the delivery rule."
 
 
 class AFDCustomDomainCreate(_AFDCustomDomainCreate):
@@ -140,6 +158,12 @@ class AFDRuleCreate(_AFDRuleCreate):
 
 
 class AFDRuleActionAdd(_AFDRuleActionAdd):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        _update_action_argument_schema(args_schema)
+        return args_schema
+
     class SubresourceSelector(_AFDRuleActionAdd.SubresourceSelector):
         def _get(self):
             result = self.ctx.vars.instance
@@ -159,7 +183,37 @@ class AFDRuleActionAdd(_AFDRuleActionAdd):
             return
 
 
+class AFDRuleActionRemove(_AFDRuleActionRemove):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.action_name._help['short-summary'] = "Name of the action in the delivery rule."
+        return args_schema
+
+
+class AFDRuleActionShow(_AFDRuleActionShow):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.action_name._help['short-summary'] = "Name of the action in the delivery rule."
+        return args_schema
+
+
+class AFDRuleActionUpdate(_AFDRuleActionUpdate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        _update_action_argument_schema(args_schema)
+        return args_schema
+
+
 class AFDRuleConditionAdd(_AFDRuleConditionAdd):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        _update_condition_argument_schema(args_schema)
+        return args_schema
+
     class SubresourceSelector(_AFDRuleConditionAdd.SubresourceSelector):
         def _get(self):
             result = self.ctx.vars.instance
@@ -177,6 +231,30 @@ class AFDRuleConditionAdd(_AFDRuleConditionAdd):
             result = result.properties.conditions
             result.append(value)
             return
+
+
+class AFDRuleConditionRemove(_AFDRuleConditionRemove):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        _update_condition_argument_schema(args_schema)
+        return args_schema
+
+
+class AFDRuleConditionShow(_AFDRuleConditionShow):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        _update_condition_argument_schema(args_schema)
+        return args_schema
+
+
+class AFDRuleConditionUpdate(_AFDRuleConditionUpdate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        _update_condition_argument_schema(args_schema)
+        return args_schema
 
 
 class AFDOriginGroupUpdate(_AFDOriginGroupUpdate):
@@ -199,8 +277,22 @@ class AFDOriginGroupUpdate(_AFDOriginGroupUpdate):
             return _instance_value
 
 
+class AFDOriginCreate(_AFDOriginCreate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        _add_arg_option(args_schema.origin_capacity_resource, "--origin-capacity")
+        return args_schema
+
+
 class AFDOriginUpdate(_AFDOriginUpdate):
     _SHARED_PRIVATE_LINK_RESOURCE_FIELDS = ("private_link", "private_link_location", "request_message", "status")
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        _add_arg_option(args_schema.origin_capacity_resource, "--origin-capacity")
+        return args_schema
 
     def pre_instance_update(self, instance):
         self._existing_shared_private_link_resource = {}
@@ -236,6 +328,22 @@ class AFDRouteCreate(_AFDRouteCreate):
 class AFDRouteUpdate(_AFDRouteUpdate):
     def pre_operations(self):
         _normalize_origin_group_id(self)
+
+
+class AFDSecurityPolicyCreate(_AFDSecurityPolicyCreate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        _add_arg_option(args_schema.web_application_firewall_embedded, "--waf-embedded")
+        return args_schema
+
+
+class AFDSecurityPolicyUpdate(_AFDSecurityPolicyUpdate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        _add_arg_option(args_schema.web_application_firewall_embedded, "--waf-embedded")
+        return args_schema
 
 
 class AFDEndpointCreate(_AFDEndpointCreate):

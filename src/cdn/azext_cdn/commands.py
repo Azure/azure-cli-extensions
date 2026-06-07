@@ -133,11 +133,32 @@ def load_command_table(self, _):
     from .custom.custom_afdx import AFDRuleActionAdd
     self.command_table['afd rule action add'] = AFDRuleActionAdd(loader=self)
 
+    from .custom.custom_afdx import AFDRuleActionRemove
+    self.command_table['afd rule action remove'] = AFDRuleActionRemove(loader=self)
+
+    from .custom.custom_afdx import AFDRuleActionShow
+    self.command_table['afd rule action show'] = AFDRuleActionShow(loader=self)
+
+    from .custom.custom_afdx import AFDRuleActionUpdate
+    self.command_table['afd rule action update'] = AFDRuleActionUpdate(loader=self)
+
     from .custom.custom_afdx import AFDRuleConditionAdd
     self.command_table['afd rule condition add'] = AFDRuleConditionAdd(loader=self)
 
+    from .custom.custom_afdx import AFDRuleConditionRemove
+    self.command_table['afd rule condition remove'] = AFDRuleConditionRemove(loader=self)
+
+    from .custom.custom_afdx import AFDRuleConditionShow
+    self.command_table['afd rule condition show'] = AFDRuleConditionShow(loader=self)
+
+    from .custom.custom_afdx import AFDRuleConditionUpdate
+    self.command_table['afd rule condition update'] = AFDRuleConditionUpdate(loader=self)
+
     from .custom.custom_afdx import AFDOriginGroupUpdate
     self.command_table['afd origin-group update'] = AFDOriginGroupUpdate(loader=self)
+
+    from .custom.custom_afdx import AFDOriginCreate
+    self.command_table['afd origin create'] = AFDOriginCreate(loader=self)
 
     from .custom.custom_afdx import AFDOriginUpdate
     self.command_table['afd origin update'] = AFDOriginUpdate(loader=self)
@@ -147,6 +168,12 @@ def load_command_table(self, _):
 
     from .custom.custom_afdx import AFDRouteUpdate
     self.command_table['afd route update'] = AFDRouteUpdate(loader=self)
+
+    from .custom.custom_afdx import AFDSecurityPolicyCreate
+    self.command_table['afd security-policy create'] = AFDSecurityPolicyCreate(loader=self)
+
+    from .custom.custom_afdx import AFDSecurityPolicyUpdate
+    self.command_table['afd security-policy update'] = AFDSecurityPolicyUpdate(loader=self)
 
     from .custom.custom_afdx import AFDEndpointCreate
     self.command_table['afd endpoint create'] = AFDEndpointCreate(loader=self)
