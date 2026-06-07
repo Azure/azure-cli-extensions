@@ -180,7 +180,6 @@ class AFDRuleActionAdd(_AFDRuleActionAdd):
             result = self.ctx.vars.instance
             result = result.properties.actions
             result.append(value)
-            return
 
 
 class AFDRuleActionRemove(_AFDRuleActionRemove):
@@ -238,7 +237,6 @@ class AFDRuleConditionAdd(_AFDRuleConditionAdd):
             result = self.ctx.vars.instance
             result = result.properties.conditions
             result.append(value)
-            return
 
 
 class AFDRuleConditionRemove(_AFDRuleConditionRemove):
@@ -284,7 +282,7 @@ class AFDOriginGroupUpdate(_AFDOriginGroupUpdate):
         )
         return args_schema
 
-    class InstanceUpdateByJson(_AFDOriginGroupUpdate.InstanceUpdateByJson):
+    class InstanceUpdateByJson(_AFDOriginGroupUpdate.InstanceUpdateByJson):  # pylint: disable=too-few-public-methods
         def _update_instance(self, instance):
             _instance_value = super()._update_instance(instance)
             if has_value(self.ctx.args.health_probe_settings) and \
@@ -293,7 +291,7 @@ class AFDOriginGroupUpdate(_AFDOriginGroupUpdate):
             return _instance_value
 
 
-class AFDOriginCreate(_AFDOriginCreate):
+class AFDOriginCreate(_AFDOriginCreate):  # pylint: disable=too-few-public-methods
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
@@ -303,6 +301,10 @@ class AFDOriginCreate(_AFDOriginCreate):
 
 class AFDOriginUpdate(_AFDOriginUpdate):
     _SHARED_PRIVATE_LINK_RESOURCE_FIELDS = ("private_link", "private_link_location", "request_message", "status")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._existing_shared_private_link_resource = {}
 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):

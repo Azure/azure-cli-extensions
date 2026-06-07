@@ -6,7 +6,7 @@
 
 import argparse
 
-from azure.cli.core.aaz import AAZStrArg, AAZBoolArg, AAZIntArg, AAZListArg
+from azure.cli.core.aaz import AAZStrArg, AAZBoolArg, AAZListArg
 from azure.cli.core.aaz._base import has_value
 from knack.util import CLIError
 

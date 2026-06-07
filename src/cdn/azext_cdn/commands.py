@@ -180,4 +180,3 @@ def load_command_table(self, _):
 
     from .custom.custom_afdx import AFDEndpointUpdate
     self.command_table['afd endpoint update'] = AFDEndpointUpdate(loader=self)
-
