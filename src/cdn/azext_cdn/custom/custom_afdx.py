@@ -200,6 +200,14 @@ class AFDRuleActionShow(_AFDRuleActionShow):
 
 
 class AFDRuleActionUpdate(_AFDRuleActionUpdate):
+    AZ_HELP = dict(_AFDRuleActionUpdate.AZ_HELP)
+    AZ_HELP["examples"] = [{
+        "name": "Update a cache expiration action.",
+        "text": "az afd rule action update -g group --profile-name profile --rule-set-name ruleset "
+                "--rule-name rule --action-name CacheExpiration --cache-expiration "
+                "\"{parameters:{cache-behavior:BypassCache,cache-type:All}}\""
+    }]
+
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
@@ -250,6 +258,14 @@ class AFDRuleConditionShow(_AFDRuleConditionShow):
 
 
 class AFDRuleConditionUpdate(_AFDRuleConditionUpdate):
+    AZ_HELP = dict(_AFDRuleConditionUpdate.AZ_HELP)
+    AZ_HELP["examples"] = [{
+        "name": "Update a request method condition.",
+        "text": "az afd rule condition update -g group --profile-name profile --rule-set-name ruleset "
+                "--rule-name rule --condition-name RequestMethod --request-method "
+                "\"{parameters:{operator:Equal,match-values:[GET]}}\""
+    }]
+
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
