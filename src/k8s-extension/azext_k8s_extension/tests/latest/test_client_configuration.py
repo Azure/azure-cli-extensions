@@ -7,6 +7,12 @@ import unittest
 
 from azure.core.credentials import AccessToken
 
+try:
+    import aiohttp  # pylint: disable=unused-import
+    HAS_AIOHTTP = True
+except ImportError:
+    HAS_AIOHTTP = False
+
 from azext_k8s_extension.vendored_sdks import SourceControlConfigurationClient
 from azext_k8s_extension.vendored_sdks._configuration import (
     SourceControlConfigurationClientConfiguration as SyncConfiguration,
@@ -63,6 +69,7 @@ class TestSourceControlConfigurationCompatibility(unittest.TestCase):
         self.assertTrue(hasattr(config, "api_version"))
         self.assertTrue(hasattr(config, "polling_interval"))
 
+    @unittest.skipUnless(HAS_AIOHTTP, "aiohttp is required for async client transport")
     def test_async_client_passes_base_url_to_configuration(self):
         client = AsyncSourceControlConfigurationClient(
             credential=DummyAsyncCredential(),
