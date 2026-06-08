@@ -5,7 +5,6 @@
 
 import logging
 import os
-import re
 import shlex
 import json
 import zipfile
@@ -13,14 +12,6 @@ import zipfile
 from subprocess import check_output
 
 logger = logging.getLogger(__name__)
-
-# copy from wheel==0.30.0
-WHEEL_INFO_RE = re.compile(
-    r"""^(?P<namever>(?P<name>.+?)(-(?P<ver>\d.+?))?)
-    ((-(?P<build>\d.*?))?-(?P<pyver>.+?)-(?P<abi>.+?)-(?P<plat>.+?)
-    \.whl|\.dist-info)$""",
-    re.VERBOSE).match
-
 
 def get_repo_root():
     current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -54,27 +45,20 @@ def _get_azext_metadata(ext_dir):
 
 def get_ext_metadata(ext_dir, ext_file, ext_name):
     # Modification of https://github.com/Azure/azure-cli/blob/dev/src/azure-cli-core/azure/cli/core/extension.py#L89
-    WHL_METADATA_FILENAME = 'metadata.json'
-    zip_ref = zipfile.ZipFile(ext_file, 'r')
-    zip_ref.extractall(ext_dir)
-    zip_ref.close()
+    # Read spec-defined wheel metadata via pkginfo so we don't depend on the
+    # legacy wheel-0.30.0 only ``metadata.json`` artifact. Imported lazily so
+    # that modules importing util for unrelated helpers (SRC_PATH, get_repo_root,
+    # get_index_data, ...) do not require azdev to be installed.
+    from azdev.operations.extensions.metadata import pkginfo_to_dict
+    generated_metadata = pkginfo_to_dict(ext_file)
+    with zipfile.ZipFile(ext_file, 'r') as zip_ref:
+        zip_ref.extractall(ext_dir)
     metadata = {}
-    dist_info_dirs = [f for f in os.listdir(ext_dir) if f.endswith('.dist-info')]
 
     azext_metadata = _get_azext_metadata(ext_dir)
-
-    if not azext_metadata:
-        raise ValueError('azext_metadata.json for Extension "{}" Metadata is missing'.format(ext_name))
-
-    metadata.update(azext_metadata)
-
-    for dist_info_dirname in dist_info_dirs:
-        parsed_dist_info_dir = WHEEL_INFO_RE(dist_info_dirname)
-        if parsed_dist_info_dir and parsed_dist_info_dir.groupdict().get('name') == ext_name.replace('-', '_'):
-            whl_metadata_filepath = os.path.join(ext_dir, dist_info_dirname, WHL_METADATA_FILENAME)
-            if os.path.isfile(whl_metadata_filepath):
-                with open(whl_metadata_filepath) as f:
-                    metadata.update(json.load(f))
+    if azext_metadata:
+        metadata.update(azext_metadata)
+    metadata.update(generated_metadata)
     return metadata
 
 
