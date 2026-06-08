@@ -2,6 +2,10 @@
 Release History
 ===============
 
+1.7.0
+++++++
+* Add support for new Continuous 35 Days backup mode (PITR Premium).
+
 1.6.2
 * Added throughput bucketing.
 +++++++
