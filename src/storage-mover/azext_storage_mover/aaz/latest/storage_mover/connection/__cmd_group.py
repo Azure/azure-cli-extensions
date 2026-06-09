@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "storage-mover job-run",
+    "storage-mover connection",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Job Run
+    """Manage Connection
     """
     pass
 

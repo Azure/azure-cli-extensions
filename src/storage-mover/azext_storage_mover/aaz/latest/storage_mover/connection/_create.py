@@ -12,16 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "storage-mover project create",
+    "storage-mover connection create",
 )
 class Create(AAZCommand):
-    """Create a Project resource, which is a logical grouping of related jobs.
+    """Create a Connection resource.
+
+    :example: connection create
+        az storage-mover connection create -g {rg} --storage-mover-name {mover_name} -n {connection_name} --private-link-service-id {pls_resource_id} --description ConnectionDesc
     """
 
     _aaz_info = {
         "version": "2025-12-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/projects/{}", "2025-12-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/connections/{}", "2025-12-01"],
         ]
     }
 
@@ -41,10 +44,13 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.project_name = AAZStrArg(
-            options=["-n", "--name", "--project-name"],
-            help="The name of the Project resource.",
+        _args_schema.connection_name = AAZStrArg(
+            options=["-n", "--name", "--connection-name"],
+            help="The name of the Connection resource.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[A-Za-z0-9][A-Za-z0-9_-]{0,20}",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -64,13 +70,27 @@ class Create(AAZCommand):
         _args_schema.description = AAZStrArg(
             options=["--description"],
             arg_group="Properties",
-            help="A description for the Project.",
+            help="A description for the Connection.",
         )
+        _args_schema.job_list = AAZListArg(
+            options=["--job-list"],
+            arg_group="Properties",
+            help="List of job definitions associated with this connection.",
+        )
+        _args_schema.private_link_service_id = AAZResourceIdArg(
+            options=["--private-link-service-id", "--pls-id"],
+            arg_group="Properties",
+            help="The PrivateLinkServiceId for the connection.",
+            required=True,
+        )
+
+        job_list = cls._args_schema.job_list
+        job_list.Element = AAZResourceIdArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ProjectsCreateOrUpdate(ctx=self.ctx)()
+        self.ConnectionsCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -85,21 +105,21 @@ class Create(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class ProjectsCreateOrUpdate(AAZHttpOperation):
+    class ConnectionsCreateOrUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200]:
-                return self.on_200(session)
+            if session.http_response.status_code in [200, 201]:
+                return self.on_200_201(session)
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.StorageMover/storageMovers/{storageMoverName}/projects/{projectName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.StorageMover/storageMovers/{storageMoverName}/connections/{connectionName}",
                 **self.url_parameters
             )
 
@@ -115,7 +135,7 @@ class Create(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "projectName", self.ctx.args.project_name,
+                    "connectionName", self.ctx.args.connection_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -162,57 +182,85 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
 
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("description", AAZStrType, ".description")
+                properties.set_prop("jobList", AAZListType, ".job_list")
+                properties.set_prop("privateLinkServiceId", AAZStrType, ".private_link_service_id", typ_kwargs={"flags": {"required": True}})
+
+            job_list = _builder.get(".properties.jobList")
+            if job_list is not None:
+                job_list.set_elements(AAZStrType, ".")
 
             return self.serialize_content(_content_value)
 
-        def on_200(self, session):
+        def on_200_201(self, session):
             data = self.deserialize_http_content(session)
             self.ctx.set_var(
                 "instance",
                 data,
-                schema_builder=self._build_schema_on_200
+                schema_builder=self._build_schema_on_200_201
             )
 
-        _schema_on_200 = None
+        _schema_on_200_201 = None
 
         @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
+        def _build_schema_on_200_201(cls):
+            if cls._schema_on_200_201 is not None:
+                return cls._schema_on_200_201
 
-            cls._schema_on_200 = AAZObjectType()
+            cls._schema_on_200_201 = AAZObjectType()
 
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
+            _schema_on_200_201 = cls._schema_on_200_201
+            _schema_on_200_201.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.name = AAZStrType(
+            _schema_on_200_201.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
+            _schema_on_200_201.properties = AAZObjectType(
+                flags={"required": True},
             )
-            _schema_on_200.system_data = AAZObjectType(
+            _schema_on_200_201.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200.type = AAZStrType(
+            _schema_on_200_201.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.properties
+            properties = cls._schema_on_200_201.properties
+            properties.connection_status = AAZStrType(
+                serialized_name="connectionStatus",
+                flags={"read_only": True},
+            )
             properties.description = AAZStrType()
+            properties.job_list = AAZListType(
+                serialized_name="jobList",
+            )
+            properties.private_endpoint_name = AAZStrType(
+                serialized_name="privateEndpointName",
+                flags={"read_only": True},
+            )
+            properties.private_endpoint_resource_id = AAZStrType(
+                serialized_name="privateEndpointResourceId",
+                flags={"read_only": True},
+            )
+            properties.private_link_service_id = AAZStrType(
+                serialized_name="privateLinkServiceId",
+                flags={"required": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
 
-            system_data = cls._schema_on_200.system_data
+            job_list = cls._schema_on_200_201.properties.job_list
+            job_list.Element = AAZStrType()
+
+            system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -232,7 +280,7 @@ class Create(AAZCommand):
                 serialized_name="lastModifiedByType",
             )
 
-            return cls._schema_on_200
+            return cls._schema_on_200_201
 
 
 class _CreateHelper:
