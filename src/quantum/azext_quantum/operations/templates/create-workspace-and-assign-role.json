@@ -69,6 +69,13 @@
             "metadata": {
                 "description": "Whether to allow shared key access on the storage account. Defaults to false (secure) for new accounts; existing accounts should pass their current value to avoid breaking changes."
             }
+        },
+        "workspaceKind": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "The kind of workspace to create: V1 or V2. Empty string means the service default (V1)."
+            }
         }
     },
     "functions": [],
@@ -88,7 +95,8 @@
             },
             "properties": {
                 "providers": "[parameters('providers')]",
-                "storageAccount": "[parameters('storageAccountId')]"
+                "storageAccount": "[parameters('storageAccountId')]",
+                "workspaceKind": "[if(empty(parameters('workspaceKind')), json('null'), parameters('workspaceKind'))]"
             }
         },
         {
