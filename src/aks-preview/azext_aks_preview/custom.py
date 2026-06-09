@@ -2125,6 +2125,9 @@ def aks_agentpool_update(
     except DecoratorEarlyExitException:
         # exit gracefully
         return None
+
+    ensure_pis_managed_identity_permission_for_agentpool(cmd, agentpool, resource_group_name, cluster_name)
+
     # send request to update the real agentpool
     return aks_agentpool_update_decorator.update_agentpool(agentpool)
 
