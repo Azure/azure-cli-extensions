@@ -5,7 +5,7 @@
 # --------------------------------------------------------------------------------------------
 
 import json
-from azure.cli.core.azclierror import InvalidArgumentValueError, RequiredArgumentMissingError
+from azure.cli.core.azclierror import InvalidArgumentValueError, ValidationError
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.mgmt.core.tools import parse_resource_id
 from knack.log import get_logger
@@ -26,7 +26,7 @@ def _ensure_k8s_extension(cmd, yes=False):
 
     If the extension is not installed, prompt the user to install it
     (or install silently when ``yes`` is True). Raises
-    ``RequiredArgumentMissingError`` if the user declines.
+    ``ValidationError`` if the user declines.
     """
     from azure.cli.core.extension.operations import add_extension_to_path
 
@@ -50,7 +50,7 @@ def _ensure_k8s_extension(cmd, yes=False):
         except NoTTYException:
             proceed = False
     if not proceed:
-        raise RequiredArgumentMissingError(
+        raise ValidationError(
             f"The '{K8S_EXTENSION_NAME}' CLI extension is required for "
             "AKS backup operations.\n"
             f"Run `az extension add --name {K8S_EXTENSION_NAME}` "
@@ -1607,7 +1607,7 @@ def _create_backup_extension(
 
     from azure.cli.core.extension.operations import add_extension_to_path
     from importlib import import_module
-    add_extension_to_path("k8s-extension")
+    add_extension_to_path(K8S_EXTENSION_NAME)
     k8s_ext_client_factory = import_module(
         "azext_k8s_extension._client_factory")
     k8s_extension_module = import_module("azext_k8s_extension.custom")
