@@ -481,6 +481,7 @@ def _setup_storage_account(cmd, cluster_subscription_id, storage_account_id,
                            cluster_resource_group_name, resource_tags):
     """Create or use storage account."""
     from azure.mgmt.storage import StorageManagementClient
+    from azure.mgmt.storage.models import Sku, StorageAccountCreateParameters
 
     storage_client = get_mgmt_service_client(
         cmd.cli_ctx, StorageManagementClient,
@@ -520,14 +521,14 @@ def _setup_storage_account(cmd, cluster_subscription_id, storage_account_id,
             if resource_tags:
                 sa_tags.update(resource_tags)
 
-            storage_params = {
-                "location": cluster_location,
-                "kind": "StorageV2",
-                "sku": {"name": "Standard_LRS"},
-                "allow_blob_public_access": False,
-                "allow_shared_key_access": False,
-                "tags": sa_tags
-            }
+            storage_params = StorageAccountCreateParameters(
+                location=cluster_location,
+                kind="StorageV2",
+                sku=Sku(name="Standard_LRS"),
+                allow_blob_public_access=False,
+                allow_shared_key_access=False,
+                tags=sa_tags,
+            )
             backup_storage_account = storage_client.storage_accounts.begin_create(
                 resource_group_name=backup_resource_group_name,
                 account_name=backup_storage_account_name,
