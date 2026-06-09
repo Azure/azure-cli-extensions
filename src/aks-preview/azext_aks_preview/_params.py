@@ -1129,6 +1129,16 @@ def load_arguments(self, _):
         c.argument("ksm_metric_annotations_allow_list")
         c.argument("grafana_resource_id", validator=validate_grafanaresourceid)
         c.argument("enable_windows_recording_rules", action="store_true")
+        c.argument(
+            "enable_control_plane_metrics",
+            options_list=["--enable-control-plane-metrics", "--enable-cp-metrics"],
+            action="store_true",
+            help=(
+                "Enable collection of Azure Monitor managed Prometheus control plane metrics for managed "
+                "cluster components (kube-apiserver, etcd, etc). Requires Azure Monitor metrics to be enabled "
+                "(already enabled or via --enable-azure-monitor-metrics). See aka.ms/aks/controlplane-metrics."
+            ),
+        )
         c.argument("enable_azure_monitor_app_monitoring",
                    is_preview=True,
                    action="store_true"
@@ -1623,6 +1633,26 @@ def load_arguments(self, _):
                 target="--disable-azuremonitormetrics",
                 redirect="--disable-azure-monitor-metrics",
                 hide=True,
+            ),
+        )
+        c.argument("disable_azure_monitor_metrics", action="store_true")
+        c.argument(
+            "enable_control_plane_metrics",
+            options_list=["--enable-control-plane-metrics", "--enable-cp-metrics"],
+            action="store_true",
+            help=(
+                "Enable collection of Azure Monitor managed Prometheus control plane metrics for managed "
+                "cluster components (kube-apiserver, etcd, etc). Requires Azure Monitor metrics to be enabled "
+                "(already enabled or via --enable-azure-monitor-metrics). See aka.ms/aks/controlplane-metrics."
+            ),
+        )
+        c.argument(
+            "disable_control_plane_metrics",
+            options_list=["--disable-control-plane-metrics", "--disable-cp-metrics"],
+            action="store_true",
+            help=(
+                "Disable collection of Azure Monitor managed Prometheus control plane metrics. "
+                "Sets azureMonitorProfile.metrics.controlPlane.enabled=false on the cluster."
             ),
         )
         c.argument("enable_azure_monitor_app_monitoring",
