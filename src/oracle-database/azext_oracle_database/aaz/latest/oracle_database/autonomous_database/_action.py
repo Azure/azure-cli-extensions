@@ -649,6 +649,9 @@ class Action(AAZCommand):
             whitelisted_ips = cls._schema_on_200.properties.whitelisted_ips
             whitelisted_ips.Element = AAZStrType()
 
+            cls._schema_on_200.properties.data_base_type = AAZStrType(
+                serialized_name="dataBaseType",
+            )
             disc_clone = cls._schema_on_200.properties.discriminate_by("data_base_type", "Clone")
             disc_clone.is_reconnect_clone_enabled = AAZBoolType(
                 serialized_name="isReconnectCloneEnabled",
