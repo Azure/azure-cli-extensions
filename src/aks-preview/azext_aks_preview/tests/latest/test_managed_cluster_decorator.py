@@ -6748,6 +6748,57 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
+    def test_set_up_azure_monitor_profile_defers_control_plane_on_create(self):
+        # Greenfield --enable-control-plane-metrics must NOT set control_plane.enabled
+        # on the initial cluster PUT. It is deferred to the addon_put step in
+        # postprocessing (after DCRA creation) so the CCP collector pod is only
+        # scheduled once its DCRA exists.
+        dec = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_azure_monitor_metrics": True,
+                "enable_control_plane_metrics": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            identity=self.models.ManagedClusterIdentity(type="SystemAssigned"),
+        )
+        dec.context.attach_mc(mc)
+        dec_mc = dec.set_up_azure_monitor_profile(mc)
+
+        # Parent AMP metrics is enabled on the initial PUT...
+        self.assertIsNotNone(dec_mc.azure_monitor_profile)
+        self.assertIsNotNone(dec_mc.azure_monitor_profile.metrics)
+        self.assertTrue(dec_mc.azure_monitor_profile.metrics.enabled)
+        # ...but control_plane is deferred and must be None here.
+        self.assertIsNone(dec_mc.azure_monitor_profile.metrics.control_plane)
+        # Intermediate flag still set so postprocessing runs the prereqs/addon_put.
+        self.assertTrue(dec.context.get_intermediate("azuremonitormetrics_addon_enabled"))
+
+    def test_set_up_azure_monitor_profile_create_cp_without_amp_raises(self):
+        # --enable-control-plane-metrics without --enable-azure-monitor-metrics on create
+        # must fail validation early.
+        from azure.cli.core.azclierror import ArgumentUsageError
+
+        dec = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_control_plane_metrics": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc = self.models.ManagedCluster(
+            location="test_location",
+            identity=self.models.ManagedClusterIdentity(type="SystemAssigned"),
+        )
+        dec.context.attach_mc(mc)
+        with self.assertRaises(ArgumentUsageError):
+            dec.set_up_azure_monitor_profile(mc)
+
     def test_set_up_image_cleaner(self):
         dec_0 = AKSPreviewManagedClusterCreateDecorator(
             self.cmd,

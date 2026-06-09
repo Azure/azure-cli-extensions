@@ -4779,11 +4779,16 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             ))
         mc.azure_monitor_profile.metrics.kube_state_metrics = kube_state_metrics
 
-        # Enable control plane metrics if requested.
-        if self.context.get_enable_control_plane_metrics():
-            mc.azure_monitor_profile.metrics.control_plane = (
-                self.models.ManagedClusterAzureMonitorProfileMetricsControlPlane(enabled=True)
-            )
+        # NOTE: control_plane.enabled is intentionally NOT set here on the create flow.
+        # If we set it on this initial PUT, the RP would schedule the control-plane-metrics
+        # collection pod (CCP) before the DCRA (Data Collection Rule Association) has been
+        # created in postprocessing. The CCP would then crash-loop with "DCRA not found"
+        # until the next reconciliation.
+        # Instead, we defer the flip to the addon_put step inside
+        # link_azure_monitor_profile_artifacts (postprocessing_after_mc_created), which
+        # runs *after* DCRA creation. The validator still runs here to surface flag
+        # combination errors early.
+        self.context.get_enable_control_plane_metrics()
 
         self.context.set_intermediate("azuremonitormetrics_addon_enabled", True, overwrite_exists=True)
 
