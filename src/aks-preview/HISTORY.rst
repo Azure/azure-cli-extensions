@@ -11,6 +11,8 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* `az aks upgrade`: Fix `--node-image-only` to skip Machines mode agent pools, which do not support node image version upgrade.
+* `az aks create` and `az aks update`: Add `--enable-backup` (preview) to configure Azure Backup for the AKS cluster in a single command. Supports `--backup-strategy` presets (Week, Month, DisasterRecovery, Custom) and an optional `--backup-configuration` for bring-your-own vault/policy/storage. Requires the `dataprotection` CLI extension.
 
 21.0.0b4
 +++++++
@@ -18,7 +20,7 @@ Pending
 * `az aks update`: Add `--control-plane-scaling-size` parameter to update the control plane scaling size on an existing cluster with available sizes 'H2', 'H4', and 'H8'.
 * `az aks bastion`: Fix `--subscription` not being passed to internal `az network bastion tunnel` and bastion discovery commands.
 * `az aks update`: Add `--node-disruption-policy` (preview) to update the node disruption policy for a cluster. Requires AFEC registration `Microsoft.ContainerService/NodeDisruptionProfile`. This is a cluster-level property that applies to all node pools in the cluster.
-* `az aks create` and `az aks update`: Add `--enable-backup` (preview) to configure Azure Backup for the AKS cluster in a single command. Supports `--backup-strategy` presets (Week, Month, DisasterRecovery, Custom) and an optional `--backup-configuration` for bring-your-own vault/policy/storage. Requires the `dataprotection` CLI extension.
+* Vendor new SDK and bump API version to 2026-04-02-preview.
 
 21.0.0b3
 +++++++
