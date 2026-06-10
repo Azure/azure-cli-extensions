@@ -1052,16 +1052,11 @@ def aks_maintenancewindow_update(
             TagsObject(tags=tags),
         )
 
-    # Full PUT path: location is required by the MaintenanceWindowResource
-    # model (TrackedResource), so fall back to the existing resource's
-    # location if the caller didn't specify one.
+    # Full PUT path: the caller owns the resource body. No refetch / merge —
+    # this is a true PUT, mirroring `aks_maintenancewindow_create`. Default
+    # --location to the RG location when omitted (same fallback as create).
     if location is None:
-        existing = client.get(resource_group_name, maintenance_window_name)
-        raw_parameters["location"] = existing.location
-        if tags is None:
-            # Preserve existing tags on a schedule-only update so we don't
-            # accidentally clear them — PUT replaces the resource.
-            raw_parameters["tags"] = existing.tags
+        raw_parameters["location"] = get_rg_location(cmd.cli_ctx, resource_group_name)
 
     resource = constructMaintenanceWindowResource(cmd, raw_parameters)
     return sdk_no_wait(
