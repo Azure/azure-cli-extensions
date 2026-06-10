@@ -55,6 +55,13 @@ def _add_arg_option(arg, option):
         arg._options = [option, *arg._options]
 
 
+def _get_serialized_value(data, *keys):
+    for key in keys:
+        if key in data:
+            return data[key]
+    return None
+
+
 def _update_action_argument_schema(args_schema):
     args_schema.action_name._help['short-summary'] = "Name of the action in the delivery rule."
     _add_arg_option(args_schema.route_configuration_override, "--route-config")
@@ -362,6 +369,40 @@ class AFDSecurityPolicyUpdate(_AFDSecurityPolicyUpdate):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         _add_arg_option(args_schema.web_application_firewall_embedded, "--waf-embedded")
         return args_schema
+
+    def post_instance_update(self, instance):
+        args = self.ctx.args
+        if has_value(args.web_application_firewall):
+            web_application_firewall = args.web_application_firewall.to_serialized_data()
+            if web_application_firewall is not None:
+                parameters = instance.properties.parameters
+                parameters.type = "WebApplicationFirewall"
+                if "associations" in web_application_firewall:
+                    parameters.associations = web_application_firewall.get("associations")
+                waf_policy = _get_serialized_value(web_application_firewall, "waf_policy", "waf-policy")
+                if waf_policy is not None:
+                    parameters.waf_policy.id = waf_policy
+
+    def _output(self, *args, **kwargs):
+        result = super()._output(*args, **kwargs)
+        ctx_args = self.ctx.args
+        if has_value(ctx_args.web_application_firewall):
+            web_application_firewall = ctx_args.web_application_firewall.to_serialized_data()
+            if web_application_firewall is not None:
+                parameters = result.setdefault("parameters", {})
+                if "associations" in web_application_firewall:
+                    parameters["associations"] = [
+                        {
+                            "domains": association.get("domains"),
+                            "patternsToMatch": _get_serialized_value(
+                                association, "patterns_to_match", "patterns-to-match", "patternsToMatch")
+                        }
+                        for association in web_application_firewall.get("associations") or []
+                    ]
+                waf_policy = _get_serialized_value(web_application_firewall, "waf_policy", "waf-policy")
+                if waf_policy is not None:
+                    parameters["wafPolicy"] = {"id": waf_policy}
+        return result
 
 
 class AFDEndpointCreate(_AFDEndpointCreate):

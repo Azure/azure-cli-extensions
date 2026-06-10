@@ -17,6 +17,50 @@ def _json_arg(value):
     return "'{}'".format(json.dumps(value, separators=(',', ':')))
 
 
+def _escape_format_placeholders(command):
+    def _find_escaped_placeholder_end(start):
+        depth = 0
+        index = start
+        while index + 1 < len(command):
+            token = command[index:index + 2]
+            if token == '{{':
+                depth += 1
+                index += 2
+                continue
+            if token == '}}':
+                depth -= 1
+                index += 2
+                if depth == 0:
+                    return index
+                continue
+            index += 1
+        return None
+
+    escaped = []
+    index = 0
+    while index < len(command):
+        current = command[index]
+        next_char = command[index + 1] if index + 1 < len(command) else None
+        if current == '{' and next_char == '{':
+            end = _find_escaped_placeholder_end(index)
+            if end is not None:
+                escaped.append(command[index:end])
+                index = end
+            else:
+                escaped.append('{{')
+                index += 1
+        elif current == '{':
+            escaped.append('{{')
+            index += 1
+        elif current == '}':
+            escaped.append('}}')
+            index += 1
+        else:
+            escaped.append(current)
+            index += 1
+    return ''.join(escaped)
+
+
 def _parse_http_error_ranges(ranges):
     parsed = []
     if not ranges:
@@ -68,6 +112,9 @@ def _response_error_detection_settings(error_types=None, failover_threshold=None
 
 # pylint: disable=too-many-public-methods
 class CdnScenarioMixin:
+    def cmd(self, command, checks=None, expect_failure=False):
+        return super().cmd(_escape_format_placeholders(command), checks, expect_failure=expect_failure)
+
     def profile_create_cmd(self, group, name, tags=None, checks=None, options=None, sku='STANDARD_MICROSOFT'):
         command = 'cdn profile create -g {} -n {}'.format(group, name)
         if tags:
