@@ -7,7 +7,7 @@
 
 from knack.log import get_logger
 from azure.cli.core.util import sdk_no_wait, user_confirmation
-from azure.cli.core.azclierror import AzCLIError
+from knack.util import CLIError
 
 logger = get_logger(__name__)
 
@@ -40,6 +40,38 @@ def horizondb_cluster_create(client, resource_group_name, cluster_name, location
                        resource_group_name=resource_group_name,
                        cluster_name=cluster_name,
                        resource=resource)
+
+
+def horizondb_cluster_update(client, resource_group_name, cluster_name,
+                                    administrator_login_password=None, tags=None,
+                                    v_cores=None,
+                                    no_wait=False):
+    from azext_horizondb.vendored_sdks.models import (
+        HorizonDbClusterForPatchUpdate,
+        HorizonDbClusterPropertiesForPatchUpdate,
+    )
+
+    cluster_properties = {}
+    if administrator_login_password is not None:
+        cluster_properties["administrator_login_password"] = administrator_login_password
+    if v_cores is not None:
+        cluster_properties["v_cores"] = v_cores
+
+    patch_kwargs = {}
+    if tags is not None:
+        patch_kwargs["tags"] = tags
+    if cluster_properties:
+        patch_kwargs["properties"] = HorizonDbClusterPropertiesForPatchUpdate(**cluster_properties)
+
+    if not patch_kwargs:
+        raise CLIError("Specify at least one updatable field.")
+
+    properties = HorizonDbClusterForPatchUpdate(**patch_kwargs)
+
+    return sdk_no_wait(no_wait, client.begin_update,
+                       resource_group_name=resource_group_name,
+                       cluster_name=cluster_name,
+                       properties=properties)
 
 
 def horizondb_cluster_delete(cmd, client, resource_group_name, cluster_name, no_wait=False, yes=False):
