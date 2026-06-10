@@ -1970,6 +1970,121 @@ helps['aks maintenanceconfiguration update'] = """
                 }
 """
 
+helps['aks maintenancewindow'] = """
+    type: group
+    short-summary: Commands to manage MaintenanceWindow peer ARM resources.
+    long-summary: |
+        MaintenanceWindow is a resource-group-scoped ARM resource that defines a
+        reusable maintenance schedule. Once the `maintenanceWindowId` field is
+        available on maintenanceConfigurations, users can link
+        multiple managedCluster maintenance configurations to a single
+        MaintenanceWindow so the schedule lives in one place.
+
+        Requires the Microsoft.ContainerService/AKSSharedMaintenanceWindowPreview
+        feature to be registered on the subscription. Auto-approval is enabled:
+        `az feature register --namespace Microsoft.ContainerService --name AKSSharedMaintenanceWindowPreview`
+"""
+
+helps['aks maintenancewindow show'] = """
+    type: command
+    short-summary: Show a MaintenanceWindow.
+"""
+
+helps['aks maintenancewindow list'] = """
+    type: command
+    short-summary: List MaintenanceWindows in a resource group, or across the subscription if --resource-group is omitted.
+"""
+
+helps['aks maintenancewindow delete'] = """
+    type: command
+    short-summary: Delete a MaintenanceWindow.
+"""
+
+helps['aks maintenancewindow create'] = """
+    type: command
+    short-summary: Create a MaintenanceWindow.
+    long-summary: |
+        Requires the Microsoft.ContainerService/AKSSharedMaintenanceWindowPreview
+        feature to be registered on the subscription. Register once (auto-approved):
+        `az feature register --namespace Microsoft.ContainerService --name AKSSharedMaintenanceWindowPreview`
+    parameters:
+        - name: --location -l
+          type: string
+          short-summary: Location for the MaintenanceWindow. Defaults to the resource group's location when omitted.
+        - name: --schedule-type
+          type: string
+          short-summary: Recurrence type. One of Daily, Weekly, AbsoluteMonthly or RelativeMonthly.
+        - name: --start-date
+          type: string
+          short-summary: The date the maintenance window activates. e.g. 2026-06-01. If not specified, the window activates immediately.
+        - name: --start-time
+          type: string
+          short-summary: The start time of the maintenance window. Accepted values are from '00:00' to '23:59'. --utc-offset applies to this field.
+        - name: --duration
+          type: int
+          short-summary: The length of the maintenance window in hours. Range 4-24.
+        - name: --utc-offset
+          type: string
+          short-summary: The UTC offset in format +/-HH:mm. For example, '+05:30' for IST or '-07:00' for PST. Default is '+00:00'.
+        - name: --interval-days
+          type: int
+          short-summary: Number of days between occurrences. Daily schedule only.
+        - name: --interval-weeks
+          type: int
+          short-summary: Number of weeks between occurrences. Weekly schedule only.
+        - name: --interval-months
+          type: int
+          short-summary: Number of months between occurrences. AbsoluteMonthly or RelativeMonthly schedules only.
+        - name: --day-of-week
+          type: string
+          short-summary: Day of week the maintenance occurs. e.g. Monday. Weekly or RelativeMonthly schedules only.
+        - name: --day-of-month
+          type: int
+          short-summary: Day of month the maintenance occurs. e.g. 15. AbsoluteMonthly schedule only.
+        - name: --week-index
+          type: string
+          short-summary: Instance of the day-of-week the maintenance occurs (First, Second, Third, Fourth, Last). RelativeMonthly schedule only.
+    examples:
+        - name: Create a weekly Saturday window (the canonical "production weekends" shape).
+          text: |
+            az aks maintenancewindow create -g rg-maintenance -n production-weekends -l eastus \\
+              --schedule-type Weekly --day-of-week Saturday --interval-weeks 1 \\
+              --start-time "02:00" --duration 8 --utc-offset "-07:00" \\
+              --tags environment=production
+        - name: Create a daily window every 2 days from a specific start date.
+          text: |
+            az aks maintenancewindow create -g rg-maintenance -n nightly -l eastus \\
+              --schedule-type Daily --interval-days 2 \\
+              --start-date 2026-06-01 --start-time "00:00" --duration 6 --utc-offset "-08:00"
+        - name: Create an absolute monthly window on the 15th.
+          text: |
+            az aks maintenancewindow create -g rg-maintenance -n monthly-15 -l eastus \\
+              --schedule-type AbsoluteMonthly --day-of-month 15 --interval-months 1 \\
+              --start-time "09:30" --duration 6 --utc-offset "+05:30"
+        - name: Create a relative monthly window on the last Friday.
+          text: |
+            az aks maintenancewindow create -g rg-maintenance -n last-friday -l eastus \\
+              --schedule-type RelativeMonthly --day-of-week Friday --week-index Last --interval-months 1 \\
+              --start-time "01:00" --duration 4 --utc-offset "+00:00"
+"""
+
+helps['aks maintenancewindow update'] = """
+    type: command
+    short-summary: Update tags or the schedule of a MaintenanceWindow.
+    long-summary: |
+        Tags-only updates are a synchronous PATCH (--no-wait is ignored).
+        Updates that include any schedule arg perform a full PUT and support
+        --no-wait.
+    examples:
+        - name: Update tags only (PATCH).
+          text: az aks maintenancewindow update -g rg-maintenance -n production-weekends --tags environment=staging
+        - name: Change the schedule (full PUT; --tags optional, preserved if omitted).
+          text: |
+            az aks maintenancewindow update -g rg-maintenance -n production-weekends \\
+              --schedule-type Weekly --day-of-week Sunday --interval-weeks 1 \\
+              --start-time "03:00" --duration 6 --utc-offset "-07:00"
+"""
+
 helps['aks namespace'] = """
     type: group
     short-summary: Commands to manage namespace in managed Kubernetes cluster.

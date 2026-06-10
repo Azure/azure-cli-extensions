@@ -108,6 +108,10 @@ from azext_aks_preview.bastion.bastion import (
 from azext_aks_preview.maintenanceconfiguration import (
     aks_maintenanceconfiguration_update_internal,
 )
+from azext_aks_preview.maintenancewindow import (
+    constructMaintenanceWindowResource,
+    hasAnyScheduleArg,
+)
 from azext_aks_preview.aks_identity_binding.commands import (
     aks_ib_cmd_create,
     aks_ib_cmd_delete,
@@ -933,6 +937,162 @@ def aks_maintenanceconfiguration_update(
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
     return aks_maintenanceconfiguration_update_internal(cmd, client, raw_parameters)
+
+
+# ---------------------------------------------------------------------------
+# aks maintenancewindow (peer ARM resource, preview API only)
+# ---------------------------------------------------------------------------
+
+def aks_maintenancewindow_list(
+    cmd,  # pylint: disable=unused-argument
+    client,
+    resource_group_name=None,
+):
+    if resource_group_name is None or resource_group_name == "":
+        return client.list_by_subscription()
+    return client.list(resource_group_name)
+
+
+def aks_maintenancewindow_show(
+    cmd,  # pylint: disable=unused-argument
+    client,
+    resource_group_name,
+    maintenance_window_name,
+):
+    return client.get(resource_group_name, maintenance_window_name)
+
+
+# pylint: disable=unused-argument
+def aks_maintenancewindow_create(
+    cmd,
+    client,
+    resource_group_name,
+    maintenance_window_name,
+    location=None,
+    schedule_type=None,
+    interval_days=None,
+    interval_weeks=None,
+    interval_months=None,
+    day_of_week=None,
+    day_of_month=None,
+    week_index=None,
+    duration_hours=None,
+    utc_offset=None,
+    start_date=None,
+    start_time=None,
+    tags=None,
+    no_wait=False,
+):
+    # Mirror aks_nodepool_snapshot_create: default --location to the
+    # resource group's location when the caller doesn't specify one.
+    if location is None:
+        location = get_rg_location(cmd.cli_ctx, resource_group_name)
+    # DO NOT MOVE: get all the original parameters and save them as a dictionary
+    raw_parameters = locals()
+    resource = constructMaintenanceWindowResource(cmd, raw_parameters)
+    return sdk_no_wait(
+        no_wait,
+        client.begin_create_or_update,
+        resource_group_name,
+        maintenance_window_name,
+        resource,
+    )
+
+
+# pylint: disable=unused-argument
+def aks_maintenancewindow_update(
+    cmd,
+    client,
+    resource_group_name,
+    maintenance_window_name,
+    schedule_type=None,
+    interval_days=None,
+    interval_weeks=None,
+    interval_months=None,
+    day_of_week=None,
+    day_of_month=None,
+    week_index=None,
+    duration_hours=None,
+    utc_offset=None,
+    start_date=None,
+    start_time=None,
+    tags=None,
+    location=None,
+    no_wait=False,
+):
+    # DO NOT MOVE: get all the original parameters and save them as a dictionary
+    raw_parameters = locals()
+
+    schedule_args_present = hasAnyScheduleArg(raw_parameters)
+
+    # Tags-only fast path: PATCH via update_tags (sync). The CLI argument
+    # parser accepts --no-wait on every LRO-capable command, but the
+    # tags-only API is synchronous, so honor the flag by warning the user
+    # we ignored it rather than silently dropping it.
+    if not schedule_args_present:
+        if tags is None:
+            raise RequiredArgumentMissingError(
+                "Nothing to update. Provide --tags for a tags-only PATCH, or any of "
+                "--schedule-type / --interval-* / --day-of-week / --day-of-month / "
+                "--week-index / --duration / --utc-offset / --start-date / --start-time "
+                "for a full PUT."
+            )
+        if no_wait:
+            logger.warning(
+                "--no-wait is ignored for tags-only updates; the underlying API is synchronous."
+            )
+        TagsObject = cmd.get_models(
+            "TagsObject",
+            resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+            operation_group="maintenance_windows",
+        )
+        return client.update_tags(
+            resource_group_name,
+            maintenance_window_name,
+            TagsObject(tags=tags),
+        )
+
+    # Full PUT path: location is required by the MaintenanceWindowResource
+    # model (TrackedResource), so fall back to the existing resource's
+    # location if the caller didn't specify one.
+    if location is None:
+        existing = client.get(resource_group_name, maintenance_window_name)
+        raw_parameters["location"] = existing.location
+        if tags is None:
+            # Preserve existing tags on a schedule-only update so we don't
+            # accidentally clear them — PUT replaces the resource.
+            raw_parameters["tags"] = existing.tags
+
+    resource = constructMaintenanceWindowResource(cmd, raw_parameters)
+    return sdk_no_wait(
+        no_wait,
+        client.begin_create_or_update,
+        resource_group_name,
+        maintenance_window_name,
+        resource,
+    )
+
+
+def aks_maintenancewindow_delete(
+    cmd,  # pylint: disable=unused-argument
+    client,
+    resource_group_name,
+    maintenance_window_name,
+    no_wait=False,
+    yes=False,
+):
+    msg = (
+        f'This will delete the maintenance window "{maintenance_window_name}" in '
+        f'resource group "{resource_group_name}".\nAre you sure?'
+    )
+    if not yes and not prompt_y_n(msg, default="n"):
+        return None
+    return sdk_no_wait(
+        no_wait,
+        client.begin_delete,
+        resource_group_name,
+        maintenance_window_name,
+    )
 
 
 # pylint: disable=too-many-locals, unused-argument

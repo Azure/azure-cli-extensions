@@ -2648,6 +2648,85 @@ def load_arguments(self, _):
                 "config_name", options_list=["--name", "-n"], help="The config name."
             )
 
+    # -- aks maintenancewindow (peer ARM resource) -----------------------------
+    # --location/-l is auto-bound by the CLI core to the `location` kwarg on
+    # each handler (same pattern as `aks_nodepool_snapshot_create`), so no
+    # explicit c.argument("location", ...) is needed here.
+    with self.argument_context("aks maintenancewindow") as c:
+        c.argument(
+            "maintenance_window_name",
+            options_list=["--name", "-n"],
+            help="The maintenance window name.",
+        )
+
+    for scope in [
+        "aks maintenancewindow create",
+        "aks maintenancewindow update",
+    ]:
+        with self.argument_context(scope) as c:
+            c.argument("tags", tags_type)
+            c.argument(
+                "schedule_type",
+                arg_type=get_enum_type(schedule_types),
+                help="Recurrence type: Daily, Weekly, AbsoluteMonthly or RelativeMonthly.",
+            )
+            c.argument(
+                "interval_days",
+                type=int,
+                help="The number of days between each set of occurrences for Daily schedule.",
+            )
+            c.argument(
+                "interval_weeks",
+                type=int,
+                help="The number of weeks between each set of occurrences for Weekly schedule.",
+            )
+            c.argument(
+                "interval_months",
+                type=int,
+                help=(
+                    "The number of months between each set of occurrences for AbsoluteMonthly "
+                    "or RelativeMonthly schedule."
+                ),
+            )
+            c.argument(
+                "day_of_week",
+                help="Day of week the maintenance occurs for Weekly or RelativeMonthly schedule.",
+            )
+            c.argument(
+                "day_of_month",
+                type=int,
+                help="Day of month the maintenance occurs for AbsoluteMonthly schedule.",
+            )
+            c.argument(
+                "week_index",
+                arg_type=get_enum_type(week_indexes),
+                help=(
+                    "Instance of the weekday specified in --day-of-week the maintenance occurs "
+                    "for RelativeMonthly schedule."
+                ),
+            )
+            c.argument(
+                "duration_hours",
+                options_list=["--duration"],
+                type=int,
+                help="The length of the maintenance window in hours. Range 4-24.",
+            )
+            c.argument(
+                "utc_offset",
+                validator=validate_utc_offset,
+                help="The UTC offset in format +/-HH:mm. e.g. -08:00 or +05:30.",
+            )
+            c.argument(
+                "start_date",
+                validator=validate_start_date,
+                help="The date the maintenance window activates. e.g. 2026-06-01.",
+            )
+            c.argument(
+                "start_time",
+                validator=validate_start_time,
+                help="The start time of the maintenance window. e.g. 09:30.",
+            )
+
     with self.argument_context("aks addon show") as c:
         c.argument("addon", options_list=["--addon", "-a"], validator=validate_addon)
 
