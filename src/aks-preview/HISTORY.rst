@@ -16,6 +16,7 @@ Pending
 +++++++
 * `az aks prepared-image-specification`: Add new command.
 * `az aks upgrade`: Fix `--node-image-only` to skip Machines mode agent pools, which do not support node image version upgrade.
+* `az aks maintenancewindow`: Add CRUD commands (`create`, `show`, `list`, `update`, `delete`, `wait`) for the new MaintenanceWindow peer ARM resource. Available with API version `2026-04-02-preview`. Requires the `Microsoft.ContainerService/AKSSharedMaintenanceWindowPreview` feature to be registered on the subscription (auto-approval).
 
 21.0.0b4
 +++++++
