@@ -6,8 +6,7 @@
 # pylint: disable=line-too-long, too-many-locals
 
 from knack.log import get_logger
-from azure.cli.core.util import sdk_no_wait, user_confirmation
-from knack.util import CLIError
+from azure.cli.core.util import CLIError, sdk_no_wait, user_confirmation
 
 logger = get_logger(__name__)
 
@@ -43,9 +42,9 @@ def horizondb_cluster_create(client, resource_group_name, cluster_name, location
 
 
 def horizondb_cluster_update(client, resource_group_name, cluster_name,
-                                    administrator_login_password=None, tags=None,
-                                    v_cores=None,
-                                    no_wait=False):
+                             administrator_login_password=None, tags=None,
+                             v_cores=None,
+                             no_wait=False):
     from azext_horizondb.vendored_sdks.models import (
         HorizonDbClusterForPatchUpdate,
         HorizonDbClusterPropertiesForPatchUpdate,
@@ -88,7 +87,7 @@ def horizondb_cluster_delete(cmd, client, resource_group_name, cluster_name, no_
             local_context_file.remove_option('horizondb', 'cluster_name')
     except Exception as ex:  # pylint: disable=broad-except
         logger.error(ex)
-        raise AzCLIError(ex)
+        raise CLIError(ex)
     return result
 
 
