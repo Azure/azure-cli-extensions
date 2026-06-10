@@ -15,6 +15,8 @@ from azure.core.exceptions import HttpResponseError
 import logging
 logger = logging.getLogger(__name__)
 
+API_VERSION = "2026-05-01-preview"
+
 RESOURCE_TYPE_MAP = {
     "microsoft.web/sites": "functionapp",
     "microsoft.app/containerapps": "containerapp",
@@ -85,7 +87,8 @@ def _unset_unused_sku_capacity(scheduler_instance):
     invalid, so the property must be removed when it is not applicable.
     """
     sku = scheduler_instance.properties.sku
-    capacity = sku.capacity.to_serialized_data()
+    capacity_field = getattr(sku, "capacity", None)
+    capacity = capacity_field.to_serialized_data() if capacity_field is not None else None
     if capacity is None or capacity == 0:
         sku.capacity = None
 
@@ -597,7 +600,7 @@ def restart_scheduler(cmd, resource_group_name, scheduler_name):
         )
 
     arm_endpoint = cli_ctx.cloud.endpoints.resource_manager.rstrip('/')
-    url = f"{arm_endpoint}{scheduler_id}/restart?api-version=2026-05-01-preview"
+    url = f"{arm_endpoint}{scheduler_id}/restart?api-version={API_VERSION}"
 
     logger.info("Restarting scheduler '%s'...", scheduler_name)
     send_raw_request(cli_ctx, 'POST', url)
