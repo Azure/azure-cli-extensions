@@ -2072,17 +2072,25 @@ helps['aks maintenancewindow update'] = """
     type: command
     short-summary: Update tags or the schedule of a MaintenanceWindow.
     long-summary: |
-        Tags-only updates are a synchronous PATCH (--no-wait is ignored).
-        Updates that include any schedule arg perform a full PUT and support
-        --no-wait.
+        Two paths:
+          - Tags-only: pass only --tags. Runs as a synchronous PATCH;
+            --no-wait is ignored.
+          - Schedule change: pass any schedule arg. Runs as a full PUT
+            (LRO, supports --no-wait). PUT replaces the resource body,
+            so the caller must supply the COMPLETE new schedule
+            (--schedule-type + --start-time + --duration + per-type fields
+            such as --interval-weeks/--day-of-week, etc.). Tags from the
+            existing resource are NOT preserved on this path — re-pass
+            --tags if you want to keep them.
     examples:
         - name: Update tags only (PATCH).
           text: az aks maintenancewindow update -g rg-maintenance -n production-weekends --tags environment=staging
-        - name: Change the schedule (full PUT; --tags optional, preserved if omitted).
+        - name: Replace the schedule (full PUT; re-pass --tags to keep them).
           text: |
             az aks maintenancewindow update -g rg-maintenance -n production-weekends \\
               --schedule-type Weekly --day-of-week Sunday --interval-weeks 1 \\
-              --start-time "03:00" --duration 6 --utc-offset "-07:00"
+              --start-time "03:00" --duration 6 --utc-offset "-07:00" \\
+              --tags environment=production
 """
 
 helps['aks namespace'] = """
