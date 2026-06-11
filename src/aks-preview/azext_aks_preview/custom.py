@@ -107,10 +107,10 @@ from azext_aks_preview.bastion.bastion import (
 )
 from azext_aks_preview.maintenanceconfiguration import (
     aks_maintenanceconfiguration_update_internal,
+    constructSchedule,
 )
 from azext_aks_preview.maintenancewindow import (
     constructMaintenanceWindowResource,
-    hasAnyScheduleArg,
 )
 from azext_aks_preview.aks_identity_binding.commands import (
     aks_ib_cmd_create,
@@ -168,6 +168,7 @@ from azure.cli.core.commands.client_factory import (
 )
 from azure.cli.core.profiles import ResourceType
 from azure.cli.core.util import (
+    get_file_json,
     in_cloud_console,
     sdk_no_wait,
     send_raw_request,
@@ -981,12 +982,35 @@ def aks_maintenancewindow_create(
     start_date=None,
     start_time=None,
     tags=None,
+    config_file=None,
     no_wait=False,
 ):
     # Mirror aks_nodepool_snapshot_create: default --location to the
     # resource group's location when the caller doesn't specify one.
     if location is None:
         location = get_rg_location(cmd.cli_ctx, resource_group_name)
+
+    # --config-file path (mirrors `aks maintenanceconfiguration add`): when
+    # supplied, the JSON body wholly defines the MaintenanceWindow resource;
+    # individual schedule flags are ignored. This is the only way to express
+    # fields the dedicated flags don't cover (e.g. notAllowedDates / blackout
+    # date ranges) until those get their own flags.
+    if config_file is not None:
+        body = get_file_json(config_file)
+        # Stamp location + tags from CLI args onto the parsed body so the
+        # caller doesn't need to repeat them in the JSON.
+        if isinstance(body, dict):
+            body.setdefault("location", location)
+            if tags is not None:
+                body["tags"] = tags
+        return sdk_no_wait(
+            no_wait,
+            client.begin_create_or_update,
+            resource_group_name,
+            maintenance_window_name,
+            body,
+        )
+
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
     resource = constructMaintenanceWindowResource(cmd, raw_parameters)
@@ -1018,53 +1042,122 @@ def aks_maintenancewindow_update(
     start_time=None,
     tags=None,
     location=None,
+    config_file=None,
     no_wait=False,
 ):
-    # DO NOT MOVE: get all the original parameters and save them as a dictionary
+    """Read-modify-write update for the MaintenanceWindow peer resource.
+
+    Mirrors the CLI convention used by `az aks update`,
+    `az aks nodepool update`, and `az containerapp update`: fetch the
+    existing resource, apply user-supplied changes on top, then PUT.
+    Fields the caller didn't supply are preserved as-is. Tags follow the
+    `aks` family convention — when `--tags` is passed, the whole tags dict
+    is replaced (no additive merge); otherwise existing tags are kept.
+
+    `--config-file` (mirrors MTC's pattern): when supplied, the JSON file's
+    `properties` block replaces existing.properties wholesale (this is the
+    only path that can set/clear notAllowedDates today, until a dedicated
+    flag lands). location + tags from the existing resource are preserved
+    unless overridden by --tags or by `location`/`tags` keys in the JSON.
+
+    `--location` cannot be changed (TrackedResource semantics — ARM rejects
+    location changes with a 400); if supplied it must match the existing
+    location, otherwise it's silently ignored in favor of the existing one.
+    """
+    existing = client.get(resource_group_name, maintenance_window_name)
+    if existing.properties is None:
+        # Defensive — every MW the RP returns must have properties; if it
+        # doesn't, surface a clear local error rather than crashing on a
+        # None attribute access during the merge.
+        raise CLIError(
+            f'Existing MaintenanceWindow "{maintenance_window_name}" in resource group '
+            f'"{resource_group_name}" has no properties; refusing to merge.'
+        )
+
+    # --config-file path: JSON's `properties` (if present) replaces the
+    # whole properties block; remaining individual schedule args are
+    # ignored. Tags + location follow the same precedence rules as the
+    # non-config-file path below.
+    if config_file is not None:
+        body = get_file_json(config_file)
+        if not isinstance(body, dict):
+            raise CLIError(
+                f'--config-file must contain a JSON object (got: {type(body).__name__}).'
+            )
+        if "properties" in body:
+            # Re-marshal the dict into the typed model so the SDK can serialize
+            # it correctly on PUT. Cheapest path is to send the raw dict
+            # directly — the SDK accepts dict bodies for create_or_update.
+            existing_as_dict = existing.as_dict() if hasattr(existing, "as_dict") else dict(existing)
+            existing_as_dict["properties"] = body["properties"]
+            if tags is not None:
+                existing_as_dict["tags"] = tags
+            elif "tags" in body:
+                existing_as_dict["tags"] = body["tags"]
+            # location stays immutable
+            return sdk_no_wait(
+                no_wait,
+                client.begin_create_or_update,
+                resource_group_name,
+                maintenance_window_name,
+                existing_as_dict,
+            )
+
+    # Tags: caller-supplied replaces the whole dict, matching `aks update`
+    # semantics (managed_cluster_decorator.update_tags). Existing tags are
+    # preserved when --tags is omitted.
+    if tags is not None:
+        existing.tags = tags
+
+    # Schedule: if any schedule arg was supplied, the caller is changing the
+    # schedule shape end-to-end (you can't partially specify a Weekly+Daily
+    # mix; constructSchedule rejects cross-type args). Build a fresh
+    # Schedule from the user's args and replace existing.properties.schedule.
+    # Otherwise, leave the existing schedule untouched.
     raw_parameters = locals()
+    schedule_arg_keys = (
+        "schedule_type",
+        "interval_days",
+        "interval_weeks",
+        "interval_months",
+        "day_of_week",
+        "day_of_month",
+        "week_index",
+    )
+    if any(raw_parameters.get(k) is not None for k in schedule_arg_keys):
+        # constructSchedule validates exclusivity (raises on cross-type args)
+        # and requires schedule_type to be one of the four known values.
+        existing.properties.schedule = constructSchedule(cmd, raw_parameters)
 
-    schedule_args_present = hasAnyScheduleArg(raw_parameters)
+    # Per-window scalars: assign only when the caller supplied a value.
+    # `is not None` so passing --start-date "" or --start-time "" still
+    # reaches the validator (which decides whether empty is valid).
+    if duration_hours is not None:
+        existing.properties.duration_hours = duration_hours
+    if utc_offset is not None:
+        existing.properties.utc_offset = utc_offset
+    if start_date is not None:
+        existing.properties.start_date = start_date
+    if start_time is not None:
+        existing.properties.start_time = start_time
 
-    # Tags-only fast path: PATCH via update_tags (sync). The CLI argument
-    # parser accepts --no-wait on every LRO-capable command, but the
-    # tags-only API is synchronous, so honor the flag by warning the user
-    # we ignored it rather than silently dropping it.
-    if not schedule_args_present:
-        if tags is None:
-            raise RequiredArgumentMissingError(
-                "Nothing to update. Provide --tags for a tags-only PATCH, or any of "
-                "--schedule-type / --interval-* / --day-of-week / --day-of-month / "
-                "--week-index / --duration / --utc-offset / --start-date / --start-time "
-                "for a full PUT."
-            )
-        if no_wait:
-            logger.warning(
-                "--no-wait is ignored for tags-only updates; the underlying API is synchronous."
-            )
-        TagsObject = cmd.get_models(
-            "TagsObject",
-            resource_type=CUSTOM_MGMT_AKS_PREVIEW,
-            operation_group="maintenance_windows",
+    # --location is ignored on update by ARM contract; surface a clear
+    # local warning if the caller asked for a mismatching location instead
+    # of letting ARM reject the PUT with an opaque 400.
+    if location is not None and location.lower() != (existing.location or "").lower():
+        logger.warning(
+            "--location cannot be changed on an existing MaintenanceWindow "
+            "(it is immutable post-create). Ignoring --location=%s; keeping "
+            "existing location %s.",
+            location, existing.location,
         )
-        return client.update_tags(
-            resource_group_name,
-            maintenance_window_name,
-            TagsObject(tags=tags),
-        )
 
-    # Full PUT path: the caller owns the resource body. No refetch / merge —
-    # this is a true PUT, mirroring `aks_maintenancewindow_create`. Default
-    # --location to the RG location when omitted (same fallback as create).
-    if location is None:
-        raw_parameters["location"] = get_rg_location(cmd.cli_ctx, resource_group_name)
-
-    resource = constructMaintenanceWindowResource(cmd, raw_parameters)
     return sdk_no_wait(
         no_wait,
         client.begin_create_or_update,
         resource_group_name,
         maintenance_window_name,
-        resource,
+        existing,
     )
 
 
@@ -1074,14 +1167,11 @@ def aks_maintenancewindow_delete(
     resource_group_name,
     maintenance_window_name,
     no_wait=False,
-    yes=False,
 ):
-    msg = (
-        f'This will delete the maintenance window "{maintenance_window_name}" in '
-        f'resource group "{resource_group_name}".\nAre you sure?'
-    )
-    if not yes and not prompt_y_n(msg, default="n"):
-        return None
+    # Confirmation is handled by the CLI core via `confirmation=True` on the
+    # command registration in commands.py (which auto-injects --yes/-y and
+    # respects AZURE_CORE_DISABLE_CONFIRM_PROMPT). No need for a hand-rolled
+    # prompt here — matches `aks delete` / `aks nodepool delete` shape.
     return sdk_no_wait(
         no_wait,
         client.begin_delete,

@@ -1974,11 +1974,11 @@ helps['aks maintenancewindow'] = """
     type: group
     short-summary: Commands to manage MaintenanceWindow peer ARM resources.
     long-summary: |
-        MaintenanceWindow is a resource-group-scoped ARM resource that defines a
-        reusable maintenance schedule. Once the `maintenanceWindowId` field is
-        available on maintenanceConfigurations, users can link
-        multiple managedCluster maintenance configurations to a single
-        MaintenanceWindow so the schedule lives in one place.
+        MaintenanceWindow is a resource-group-scoped ARM resource that defines
+        a reusable maintenance schedule. Users can link this resource to a
+        pre-existing maintenanceConfiguration via `maintenanceWindowId`, so
+        multiple managedCluster maintenance configurations share a single
+        MaintenanceWindow and the schedule lives in one place.
 
         Requires the Microsoft.ContainerService/AKSSharedMaintenanceWindowPreview
         feature to be registered on the subscription. Auto-approval is enabled:
@@ -2044,6 +2044,9 @@ helps['aks maintenancewindow create'] = """
         - name: --week-index
           type: string
           short-summary: Instance of the day-of-week the maintenance occurs (First, Second, Third, Fourth, Last). RelativeMonthly schedule only.
+        - name: --config-file
+          type: string
+          short-summary: Path to a JSON file describing the MaintenanceWindow body. Use when you need to set fields without dedicated flags (e.g. notAllowedDates / blackout date ranges).
     examples:
         - name: Create a weekly Saturday window (the canonical "production weekends" shape).
           text: |
@@ -2066,31 +2069,75 @@ helps['aks maintenancewindow create'] = """
             az aks maintenancewindow create -g rg-maintenance -n last-friday -l eastus \\
               --schedule-type RelativeMonthly --day-of-week Friday --week-index Last --interval-months 1 \\
               --start-time "01:00" --duration 4 --utc-offset "+00:00"
+        - name: Create a weekly window with blackout dates via a config file.
+          text: |
+            az aks maintenancewindow create -g rg-maintenance -n weekly-with-holidays -l eastus \\
+              --config-file ./mw-body.json
+              The contents of mw-body.json:
+              {
+                "properties": {
+                  "schedule": { "weekly": { "intervalWeeks": 1, "dayOfWeek": "Saturday" } },
+                  "startTime": "02:00",
+                  "durationHours": 8,
+                  "utcOffset": "-07:00",
+                  "notAllowedDates": [
+                    { "start": "2026-12-23", "end": "2027-01-05" },
+                    { "start": "2026-07-04", "end": "2026-07-05" }
+                  ]
+                }
+              }
 """
 
 helps['aks maintenancewindow update'] = """
     type: command
-    short-summary: Update tags or the schedule of a MaintenanceWindow.
+    short-summary: Update a MaintenanceWindow.
     long-summary: |
-        Two paths:
-          - Tags-only: pass only --tags. Runs as a synchronous PATCH;
-            --no-wait is ignored.
-          - Schedule change: pass any schedule arg. Runs as a full PUT
-            (LRO, supports --no-wait). PUT replaces the resource body,
-            so the caller must supply the COMPLETE new schedule
-            (--schedule-type + --start-time + --duration + per-type fields
-            such as --interval-weeks/--day-of-week, etc.). Tags from the
-            existing resource are NOT preserved on this path — re-pass
-            --tags if you want to keep them.
+        Read-modify-write semantics matching `az aks update` and
+        `az aks nodepool update`: the existing MW is fetched, your supplied
+        fields are merged onto it, and the resulting body is PUT back.
+        Fields you do not supply are preserved as-is (existing tags,
+        existing schedule scalars, existing blackout dates, etc.).
+
+        When you do supply a schedule arg (--schedule-type / --interval-* /
+        --day-of-week / --day-of-month / --week-index), the schedule shape
+        is re-built end-to-end from your args (you cannot partially mix
+        Daily + Weekly fields — pick one schedule type and supply its
+        required args).
+
+        --tags follows `aks update` convention: passing --tags replaces the
+        whole tags dictionary; omit --tags to keep the existing tags.
+
+        --location cannot be changed (TrackedResource semantics — ARM
+        rejects location changes on PUT). If supplied with a different
+        value than the existing location it is ignored with a warning.
+
+        --config-file: when supplied, the JSON file's `properties` block
+        replaces the existing `properties` wholesale. This is the only
+        way today to mutate notAllowedDates / blackout date ranges.
+        Individual schedule flags are ignored on this path; tags follow
+        the same `--tags` rule as without --config-file.
     examples:
-        - name: Update tags only (PATCH).
+        - name: Update only tags (existing schedule is preserved).
           text: az aks maintenancewindow update -g rg-maintenance -n production-weekends --tags environment=staging
-        - name: Replace the schedule (full PUT; re-pass --tags to keep them).
+        - name: Update only the schedule's day-of-week (existing duration / start-time / tags preserved).
           text: |
             az aks maintenancewindow update -g rg-maintenance -n production-weekends \\
-              --schedule-type Weekly --day-of-week Sunday --interval-weeks 1 \\
-              --start-time "03:00" --duration 6 --utc-offset "-07:00" \\
-              --tags environment=production
+              --schedule-type Weekly --day-of-week Sunday --interval-weeks 1
+        - name: Change duration only (existing schedule shape preserved).
+          text: az aks maintenancewindow update -g rg-maintenance -n production-weekends --duration 6
+        - name: Replace blackout dates via a config file (preserves tags, location).
+          text: |
+            az aks maintenancewindow update -g rg-maintenance -n production-weekends --config-file ./mw-body.json
+              The contents of mw-body.json should include a complete properties block, e.g.:
+              {
+                "properties": {
+                  "schedule": { "weekly": { "intervalWeeks": 1, "dayOfWeek": "Saturday" } },
+                  "startTime": "02:00",
+                  "durationHours": 8,
+                  "utcOffset": "-07:00",
+                  "notAllowedDates": [ { "start": "2026-12-23", "end": "2027-01-05" } ]
+                }
+              }
 """
 
 helps['aks namespace'] = """
