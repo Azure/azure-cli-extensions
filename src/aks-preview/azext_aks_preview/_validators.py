@@ -941,6 +941,21 @@ def validate_start_time(namespace):
         raise InvalidArgumentValueError('--start-time must be in format "HH:mm". For example, "09:30" and "17:00".')
 
 
+def validate_duration_hours(namespace):
+    """Validates --duration for aks maintenancewindow / maintenanceconfiguration commands.
+
+    The RP enforces 4-24 hours; fail locally with a clear argparse error
+    instead of letting the user discover the constraint via an opaque
+    server-side 400.
+    """
+    if namespace.duration_hours is None:
+        return
+    if not isinstance(namespace.duration_hours, int) or namespace.duration_hours < 4 or namespace.duration_hours > 24:
+        raise InvalidArgumentValueError(
+            f'--duration must be an integer between 4 and 24 hours (inclusive). Got: {namespace.duration_hours}.'
+        )
+
+
 def validate_os_sku(namespace):
     os_sku = namespace.os_sku
     if os_sku in [CONST_OS_SKU_MARINER, CONST_OS_SKU_CBLMARINER]:
