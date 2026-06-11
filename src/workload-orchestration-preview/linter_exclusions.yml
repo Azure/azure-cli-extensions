@@ -40,6 +40,24 @@ workload-orchestration sync:
       rule_exclusions:
       - option_length_too_long
 
+workload-orchestration solution-deployment create:
+  parameters:
+    solution_template_subscription:
+      rule_exclusions:
+      - option_length_too_long
+    solution_template_version:
+      rule_exclusions:
+      - option_length_too_long
+
+workload-orchestration solution-deployment update:
+  parameters:
+    solution_template_subscription:
+      rule_exclusions:
+      - option_length_too_long
+    solution_template_version:
+      rule_exclusions:
+      - option_length_too_long
+
 workload-orchestration cluster init:
   parameters:
     extension-dependency-version:
@@ -51,9 +69,11 @@ workload-orchestration cluster init:
     custom-location-resource-group:
       rule_exclusions:
       - option_length_too_long
+      - parameter_should_not_end_in_resource_group
     custom_location_resource_group:
       rule_exclusions:
       - option_length_too_long
+      - parameter_should_not_end_in_resource_group
     custom-location-location:
       rule_exclusions:
       - option_length_too_long
