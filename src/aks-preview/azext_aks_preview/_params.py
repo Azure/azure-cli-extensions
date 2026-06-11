@@ -238,6 +238,7 @@ from azext_aks_preview._validators import (
     validate_start_time,
     validate_user,
     validate_utc_offset,
+    validate_duration_hours,
     validate_vm_set_type,
     validate_vnet_subnet_id,
     validate_force_upgrade_disable_and_enable_parameters,
@@ -2693,6 +2694,16 @@ def load_arguments(self, _):
         with self.argument_context(scope) as c:
             c.argument("tags", tags_type)
             c.argument(
+                "config_file",
+                help=(
+                    "Path to a JSON file describing the MaintenanceWindow body. "
+                    "When supplied, the JSON wholly defines the resource on create, "
+                    "or replaces the existing `properties` block on update. "
+                    "This is the only path that can set fields without dedicated "
+                    "flags (notAllowedDates, etc.)."
+                ),
+            )
+            c.argument(
                 "schedule_type",
                 arg_type=get_enum_type(schedule_types),
                 help="Recurrence type: Daily, Weekly, AbsoluteMonthly or RelativeMonthly.",
@@ -2736,6 +2747,7 @@ def load_arguments(self, _):
                 "duration_hours",
                 options_list=["--duration"],
                 type=int,
+                validator=validate_duration_hours,
                 help="The length of the maintenance window in hours. Range 4-24.",
             )
             c.argument(

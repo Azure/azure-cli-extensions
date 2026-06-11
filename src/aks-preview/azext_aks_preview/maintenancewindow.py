@@ -72,23 +72,3 @@ def constructMaintenanceWindowResource(cmd, raw_parameters):
         tags=tags,
         properties=properties,
     )
-
-
-def hasAnyScheduleArg(raw_parameters):
-    """Return True if any schedule-shaping arg is present. Used by `update`
-    to decide between the sync tags-only PATCH path and the LRO full-PUT path.
-    """
-    keys = (
-        "schedule_type",
-        "interval_days",
-        "interval_weeks",
-        "interval_months",
-        "day_of_week",
-        "day_of_month",
-        "week_index",
-        "duration_hours",
-        "utc_offset",
-        "start_date",
-        "start_time",
-    )
-    return any(raw_parameters.get(k) is not None for k in keys)
