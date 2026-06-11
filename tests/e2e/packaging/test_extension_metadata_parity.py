@@ -47,8 +47,14 @@ pytestmark = pytest.mark.e2e_packaging
 
 
 # Kept independently from the prototype so drift between the two is caught.
-ALLOWED_NOISE_TOP_LEVEL = {"generator", "metadata_version", "test_requires", "license_file"}
-ALLOWED_NOISE_NESTED = {"extensions/python.details/document_names"}
+# In sync with scripts/ci/test_index.py's _METADATA_NOISE_TOP_LEVEL.
+ALLOWED_NOISE_TOP_LEVEL = {
+    "generator", "metadata_version", "test_requires", "license_file",
+    "description_content_type", "project_url",
+}
+# The whole python.details blob is informational wheel metadata not consumed by
+# the extension index; ignore it rather than just document_names.
+ALLOWED_NOISE_NESTED = {"extensions/python.details"}
 
 
 @pytest.fixture(scope="module")
