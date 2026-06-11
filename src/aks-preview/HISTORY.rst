@@ -21,6 +21,10 @@ Pending
 * `az aks update`: Add `--node-disruption-policy` (preview) to update the node disruption policy for a cluster. Requires AFEC registration `Microsoft.ContainerService/NodeDisruptionProfile`. This is a cluster-level property that applies to all node pools in the cluster.
 * Vendor new SDK and bump API version to 2026-04-02-preview.
 
+21.0.0b4
+++++++
+* `az aks create / update`: Add `--enable-control-plane-metrics` and `az aks update`: `--disable-control-plane-metrics` flags to opt clusters into Azure Monitor managed Prometheus control plane metrics (kube-apiserver, etcd, etc.) via the first-class API property in API version `2026-02-02-preview` (replaces the AFEC-gated preview).
+
 21.0.0b3
 +++++++
 * Migrate code from Azure SDK to AAZ based commands for compute operations (VM).
