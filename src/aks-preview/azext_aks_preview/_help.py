@@ -840,6 +840,8 @@ helps['aks create'] = f"""
           text: az aks create -g MyResourceGroup -n MyManagedCluster --control-plane-scaling-size H4
         - name: Create an automatic cluster with hosted system components enabled.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --sku automatic --enable-hosted-system
+        - name: Create a kubernetes cluster with Azure Backup enabled (default Week strategy). Requires the 'dataprotection' extension. Implicitly waits for cluster creation.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --generate-ssh-keys --enable-backup --yes
 
 """
 
@@ -1604,6 +1606,10 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCluster --safeguards-level Warning --safeguards-excluded-ns ns1,ns2
       - name: Enable Azure Monitor logs for a kubernetes cluster
         text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-azure-monitor-logs
+      - name: Enable Azure Backup for a kubernetes cluster (default Week strategy). Requires the 'dataprotection' extension.
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-backup --yes
+      - name: Enable Azure Backup with a custom strategy using an existing vault and policy
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-backup --backup-strategy Custom --backup-configuration @config.json --yes
       - name: Disable Azure Monitor logs for a kubernetes cluster
         text: az aks update -g MyResourceGroup -n MyManagedCluster --disable-azure-monitor-logs
       - name: Update a kubernetes cluster to clear any namespaces excluded from safeguards. Assumes azure policy addon is already enabled

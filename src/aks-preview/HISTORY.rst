@@ -12,6 +12,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 * `az aks upgrade`: Fix `--node-image-only` to skip Machines mode agent pools, which do not support node image version upgrade.
+* `az aks create` and `az aks update`: Add `--enable-backup` (preview) to configure Azure Backup for the AKS cluster in a single command. Supports `--backup-strategy` presets (Week, Month, DisasterRecovery, Custom) and an optional `--backup-configuration` for bring-your-own vault/policy/storage. Requires the `dataprotection` CLI extension.
 
 21.0.0b4
 +++++++
