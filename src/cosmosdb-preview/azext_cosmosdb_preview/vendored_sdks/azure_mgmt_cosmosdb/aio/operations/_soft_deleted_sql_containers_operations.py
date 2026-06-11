@@ -1,3 +1,4 @@
+# pylint: disable=line-too-long,useless-suppression
 # coding=utf-8
 # --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
@@ -6,8 +7,7 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 from collections.abc import MutableMapping
-from io import IOBase
-from typing import Any, AsyncIterator, Callable, IO, Optional, TypeVar, Union, cast, overload
+from typing import Any, AsyncIterator, Callable, Optional, TypeVar, Union, cast
 import urllib.parse
 
 from azure.core import AsyncPipelineClient
@@ -33,11 +33,11 @@ from azure.mgmt.core.polling.async_arm_polling import AsyncARMPolling
 
 from ... import models as _models
 from ..._utils.serialization import Deserializer, Serializer
-from ...operations._graph_resources_operations import (
-    build_create_update_graph_request,
-    build_delete_graph_resource_request,
-    build_get_graph_request,
-    build_list_graphs_request,
+from ...operations._soft_deleted_sql_containers_operations import (
+    build_get_request,
+    build_list_request,
+    build_purge_request,
+    build_restore_request,
 )
 from .._configuration import CosmosDBManagementClientConfiguration
 
@@ -46,14 +46,14 @@ ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T
 List = list
 
 
-class GraphResourcesOperations:
+class SoftDeletedSqlContainersOperations:
     """
     .. warning::
         **DO NOT** instantiate this class directly.
 
         Instead, you should access the following operations through
         :class:`~azure.mgmt.cosmosdb.aio.CosmosDBManagementClient`'s
-        :attr:`graph_resources` attribute.
+        :attr:`soft_deleted_sql_containers` attribute.
     """
 
     models = _models
@@ -66,27 +66,34 @@ class GraphResourcesOperations:
         self._deserialize: Deserializer = input_args.pop(0) if input_args else kwargs.pop("deserializer")
 
     @distributed_trace
-    def list_graphs(
-        self, resource_group_name: str, account_name: str, **kwargs: Any
-    ) -> AsyncItemPaged["_models.GraphResourceGetResults"]:
-        """Lists the graphs under an existing Azure Cosmos DB database account.
+    def list(
+        self, resource_group_name: str, location: str, account_name: str, database_name: str, **kwargs: Any
+    ) -> AsyncItemPaged["_models.SoftDeletedSqlContainerGetResult"]:
+        """Lists all the soft-deleted Azure Cosmos DB SQL containers under a soft-deleted SQL database.
+        This call requires
+        'Microsoft.DocumentDB/locations/softDeletedDatabaseAccounts/softDeletedSqlDatabases/softDeletedSqlContainers/read'
+        permission.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
+        :param location: The name of the Azure region. Required.
+        :type location: str
         :param account_name: Cosmos DB database account name. Required.
         :type account_name: str
-        :return: An iterator like instance of either GraphResourceGetResults or the result of
+        :param database_name: Cosmos DB SQL database name. Required.
+        :type database_name: str
+        :return: An iterator like instance of either SoftDeletedSqlContainerGetResult or the result of
          cls(response)
         :rtype:
-         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.cosmosdb.models.GraphResourceGetResults]
+         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.cosmosdb.models.SoftDeletedSqlContainerGetResult]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[_models.GraphResourcesListResult] = kwargs.pop("cls", None)
+        cls: ClsType[_models.SoftDeletedSqlContainersListResult] = kwargs.pop("cls", None)
 
         error_map: MutableMapping = {
             401: ClientAuthenticationError,
@@ -99,9 +106,11 @@ class GraphResourcesOperations:
         def prepare_request(next_link=None):
             if not next_link:
 
-                _request = build_list_graphs_request(
+                _request = build_list_request(
                     resource_group_name=resource_group_name,
+                    location=location,
                     account_name=account_name,
+                    database_name=database_name,
                     subscription_id=self._config.subscription_id,
                     api_version=api_version,
                     headers=_headers,
@@ -127,7 +136,7 @@ class GraphResourcesOperations:
             return _request
 
         async def extract_data(pipeline_response):
-            deserialized = self._deserialize("GraphResourcesListResult", pipeline_response)
+            deserialized = self._deserialize("SoftDeletedSqlContainersListResult", pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)  # type: ignore
@@ -155,21 +164,32 @@ class GraphResourcesOperations:
         return AsyncItemPaged(get_next, extract_data)
 
     @distributed_trace_async
-    async def get_graph(
-        self, resource_group_name: str, account_name: str, graph_name: str, **kwargs: Any
-    ) -> _models.GraphResourceGetResults:
-        """Gets the Graph resource under an existing Azure Cosmos DB database account with the provided
-        name.
+    async def get(
+        self,
+        resource_group_name: str,
+        location: str,
+        account_name: str,
+        database_name: str,
+        container_name: str,
+        **kwargs: Any
+    ) -> _models.SoftDeletedSqlContainerGetResult:
+        """Retrieves the properties of a soft-deleted Azure Cosmos DB SQL container. This call requires
+        'Microsoft.DocumentDB/locations/softDeletedDatabaseAccounts/softDeletedSqlDatabases/softDeletedSqlContainers/read'
+        permission.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
+        :param location: The name of the Azure region. Required.
+        :type location: str
         :param account_name: Cosmos DB database account name. Required.
         :type account_name: str
-        :param graph_name: Cosmos DB graph resource name. Required.
-        :type graph_name: str
-        :return: GraphResourceGetResults or the result of cls(response)
-        :rtype: ~azure.mgmt.cosmosdb.models.GraphResourceGetResults
+        :param database_name: Cosmos DB SQL database name. Required.
+        :type database_name: str
+        :param container_name: Cosmos DB SQL container name. Required.
+        :type container_name: str
+        :return: SoftDeletedSqlContainerGetResult or the result of cls(response)
+        :rtype: ~azure.mgmt.cosmosdb.models.SoftDeletedSqlContainerGetResult
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         error_map: MutableMapping = {
@@ -184,12 +204,14 @@ class GraphResourcesOperations:
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        cls: ClsType[_models.GraphResourceGetResults] = kwargs.pop("cls", None)
+        cls: ClsType[_models.SoftDeletedSqlContainerGetResult] = kwargs.pop("cls", None)
 
-        _request = build_get_graph_request(
+        _request = build_get_request(
             resource_group_name=resource_group_name,
+            location=location,
             account_name=account_name,
-            graph_name=graph_name,
+            database_name=database_name,
+            container_name=container_name,
             subscription_id=self._config.subscription_id,
             api_version=api_version,
             headers=_headers,
@@ -212,237 +234,22 @@ class GraphResourcesOperations:
             )
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("GraphResourceGetResults", pipeline_response.http_response)
+        deserialized = self._deserialize("SoftDeletedSqlContainerGetResult", pipeline_response.http_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})  # type: ignore
 
         return deserialized  # type: ignore
 
-    async def _create_update_graph_initial(
+    async def _purge_initial(
         self,
         resource_group_name: str,
+        location: str,
         account_name: str,
-        graph_name: str,
-        create_update_graph_parameters: Union[_models.GraphResourceCreateUpdateParameters, IO[bytes]],
+        database_name: str,
+        container_name: str,
+        soft_delete_action_kind: Optional[Union[str, _models.SoftDeleteActionKind]] = None,
         **kwargs: Any
-    ) -> AsyncIterator[bytes]:
-        error_map: MutableMapping = {
-            401: ClientAuthenticationError,
-            404: ResourceNotFoundError,
-            409: ResourceExistsError,
-            304: ResourceNotModifiedError,
-        }
-        error_map.update(kwargs.pop("error_map", {}) or {})
-
-        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
-        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
-
-        content_type = content_type or "application/json"
-        _json = None
-        _content = None
-        if isinstance(create_update_graph_parameters, (IOBase, bytes)):
-            _content = create_update_graph_parameters
-        else:
-            _json = self._serialize.body(create_update_graph_parameters, "GraphResourceCreateUpdateParameters")
-
-        _request = build_create_update_graph_request(
-            resource_group_name=resource_group_name,
-            account_name=account_name,
-            graph_name=graph_name,
-            subscription_id=self._config.subscription_id,
-            api_version=api_version,
-            content_type=content_type,
-            json=_json,
-            content=_content,
-            headers=_headers,
-            params=_params,
-        )
-        _request.url = self._client.format_url(_request.url)
-
-        _decompress = kwargs.pop("decompress", True)
-        _stream = True
-        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            _request, stream=_stream, **kwargs
-        )
-
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200, 202]:
-            try:
-                await response.read()  # Load the body in memory and close the socket
-            except (StreamConsumedError, StreamClosedError):
-                pass
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(
-                _models.ErrorResponse,
-                pipeline_response,
-            )
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
-
-        response_headers = {}
-        if response.status_code == 202:
-            response_headers["Azure-AsyncOperation"] = self._deserialize(
-                "str", response.headers.get("Azure-AsyncOperation")
-            )
-            response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
-            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
-
-        deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
-
-        if cls:
-            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
-
-        return deserialized  # type: ignore
-
-    @overload
-    async def begin_create_update_graph(
-        self,
-        resource_group_name: str,
-        account_name: str,
-        graph_name: str,
-        create_update_graph_parameters: _models.GraphResourceCreateUpdateParameters,
-        *,
-        content_type: str = "application/json",
-        **kwargs: Any
-    ) -> AsyncLROPoller[_models.GraphResourceGetResults]:
-        """Create or update an Azure Cosmos DB Graph.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param account_name: Cosmos DB database account name. Required.
-        :type account_name: str
-        :param graph_name: Cosmos DB graph resource name. Required.
-        :type graph_name: str
-        :param create_update_graph_parameters: The parameters to provide for the current graph.
-         Required.
-        :type create_update_graph_parameters:
-         ~azure.mgmt.cosmosdb.models.GraphResourceCreateUpdateParameters
-        :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
-         Default value is "application/json".
-        :paramtype content_type: str
-        :return: An instance of AsyncLROPoller that returns either GraphResourceGetResults or the
-         result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.cosmosdb.models.GraphResourceGetResults]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-
-    @overload
-    async def begin_create_update_graph(
-        self,
-        resource_group_name: str,
-        account_name: str,
-        graph_name: str,
-        create_update_graph_parameters: IO[bytes],
-        *,
-        content_type: str = "application/json",
-        **kwargs: Any
-    ) -> AsyncLROPoller[_models.GraphResourceGetResults]:
-        """Create or update an Azure Cosmos DB Graph.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param account_name: Cosmos DB database account name. Required.
-        :type account_name: str
-        :param graph_name: Cosmos DB graph resource name. Required.
-        :type graph_name: str
-        :param create_update_graph_parameters: The parameters to provide for the current graph.
-         Required.
-        :type create_update_graph_parameters: IO[bytes]
-        :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
-         Default value is "application/json".
-        :paramtype content_type: str
-        :return: An instance of AsyncLROPoller that returns either GraphResourceGetResults or the
-         result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.cosmosdb.models.GraphResourceGetResults]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-
-    @distributed_trace_async
-    async def begin_create_update_graph(
-        self,
-        resource_group_name: str,
-        account_name: str,
-        graph_name: str,
-        create_update_graph_parameters: Union[_models.GraphResourceCreateUpdateParameters, IO[bytes]],
-        **kwargs: Any
-    ) -> AsyncLROPoller[_models.GraphResourceGetResults]:
-        """Create or update an Azure Cosmos DB Graph.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param account_name: Cosmos DB database account name. Required.
-        :type account_name: str
-        :param graph_name: Cosmos DB graph resource name. Required.
-        :type graph_name: str
-        :param create_update_graph_parameters: The parameters to provide for the current graph. Is
-         either a GraphResourceCreateUpdateParameters type or a IO[bytes] type. Required.
-        :type create_update_graph_parameters:
-         ~azure.mgmt.cosmosdb.models.GraphResourceCreateUpdateParameters or IO[bytes]
-        :return: An instance of AsyncLROPoller that returns either GraphResourceGetResults or the
-         result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.cosmosdb.models.GraphResourceGetResults]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
-        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
-        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[_models.GraphResourceGetResults] = kwargs.pop("cls", None)
-        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
-        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
-        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
-        if cont_token is None:
-            raw_result = await self._create_update_graph_initial(
-                resource_group_name=resource_group_name,
-                account_name=account_name,
-                graph_name=graph_name,
-                create_update_graph_parameters=create_update_graph_parameters,
-                api_version=api_version,
-                content_type=content_type,
-                cls=lambda x, y, z: x,
-                headers=_headers,
-                params=_params,
-                **kwargs
-            )
-            await raw_result.http_response.read()  # type: ignore
-        kwargs.pop("error_map", None)
-
-        def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("GraphResourceGetResults", pipeline_response.http_response)
-            if cls:
-                return cls(pipeline_response, deserialized, {})  # type: ignore
-            return deserialized
-
-        if polling is True:
-            polling_method: AsyncPollingMethod = cast(
-                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
-            )
-        elif polling is False:
-            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
-        else:
-            polling_method = polling
-        if cont_token:
-            return AsyncLROPoller[_models.GraphResourceGetResults].from_continuation_token(
-                polling_method=polling_method,
-                continuation_token=cont_token,
-                client=self._client,
-                deserialization_callback=get_long_running_output,
-            )
-        return AsyncLROPoller[_models.GraphResourceGetResults](
-            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
-        )
-
-    async def _delete_graph_resource_initial(
-        self, resource_group_name: str, account_name: str, graph_name: str, **kwargs: Any
     ) -> AsyncIterator[bytes]:
         error_map: MutableMapping = {
             401: ClientAuthenticationError,
@@ -458,11 +265,14 @@ class GraphResourcesOperations:
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
         cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
 
-        _request = build_delete_graph_resource_request(
+        _request = build_purge_request(
             resource_group_name=resource_group_name,
+            location=location,
             account_name=account_name,
-            graph_name=graph_name,
+            database_name=database_name,
+            container_name=container_name,
             subscription_id=self._config.subscription_id,
+            soft_delete_action_kind=soft_delete_action_kind,
             api_version=api_version,
             headers=_headers,
             params=_params,
@@ -477,7 +287,7 @@ class GraphResourcesOperations:
 
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 202, 204]:
+        if response.status_code not in [202, 204]:
             try:
                 await response.read()  # Load the body in memory and close the socket
             except (StreamConsumedError, StreamClosedError):
@@ -491,10 +301,8 @@ class GraphResourcesOperations:
 
         response_headers = {}
         if response.status_code == 202:
-            response_headers["Azure-AsyncOperation"] = self._deserialize(
-                "str", response.headers.get("Azure-AsyncOperation")
-            )
             response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
 
@@ -504,18 +312,32 @@ class GraphResourcesOperations:
         return deserialized  # type: ignore
 
     @distributed_trace_async
-    async def begin_delete_graph_resource(
-        self, resource_group_name: str, account_name: str, graph_name: str, **kwargs: Any
+    async def begin_purge(
+        self,
+        resource_group_name: str,
+        location: str,
+        account_name: str,
+        database_name: str,
+        container_name: str,
+        soft_delete_action_kind: Optional[Union[str, _models.SoftDeleteActionKind]] = None,
+        **kwargs: Any
     ) -> AsyncLROPoller[None]:
-        """Deletes an existing Azure Cosmos DB Graph Resource.
+        """Permanently deletes a soft-deleted Azure Cosmos DB SQL container.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
+        :param location: The name of the Azure region. Required.
+        :type location: str
         :param account_name: Cosmos DB database account name. Required.
         :type account_name: str
-        :param graph_name: Cosmos DB graph resource name. Required.
-        :type graph_name: str
+        :param database_name: Cosmos DB SQL database name. Required.
+        :type database_name: str
+        :param container_name: Cosmos DB SQL container name. Required.
+        :type container_name: str
+        :param soft_delete_action_kind: The kind of soft delete action to perform. Known values are:
+         "RestoreSoftDeletedResource" and "PermanentDeleteResource". Default value is None.
+        :type soft_delete_action_kind: str or ~azure.mgmt.cosmosdb.models.SoftDeleteActionKind
         :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
         :rtype: ~azure.core.polling.AsyncLROPoller[None]
         :raises ~azure.core.exceptions.HttpResponseError:
@@ -529,10 +351,160 @@ class GraphResourcesOperations:
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
         cont_token: Optional[str] = kwargs.pop("continuation_token", None)
         if cont_token is None:
-            raw_result = await self._delete_graph_resource_initial(
+            raw_result = await self._purge_initial(
                 resource_group_name=resource_group_name,
+                location=location,
                 account_name=account_name,
-                graph_name=graph_name,
+                database_name=database_name,
+                container_name=container_name,
+                soft_delete_action_kind=soft_delete_action_kind,
+                api_version=api_version,
+                cls=lambda x, y, z: x,
+                headers=_headers,
+                params=_params,
+                **kwargs
+            )
+            await raw_result.http_response.read()  # type: ignore
+        kwargs.pop("error_map", None)
+
+        def get_long_running_output(pipeline_response):  # pylint: disable=inconsistent-return-statements
+            if cls:
+                return cls(pipeline_response, None, {})  # type: ignore
+
+        if polling is True:
+            polling_method: AsyncPollingMethod = cast(
+                AsyncPollingMethod, AsyncARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
+        elif polling is False:
+            polling_method = cast(AsyncPollingMethod, AsyncNoPolling())
+        else:
+            polling_method = polling
+        if cont_token:
+            return AsyncLROPoller[None].from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output,
+            )
+        return AsyncLROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+
+    async def _restore_initial(
+        self,
+        resource_group_name: str,
+        location: str,
+        account_name: str,
+        database_name: str,
+        container_name: str,
+        soft_delete_action_kind: Optional[Union[str, _models.SoftDeleteActionKind]] = None,
+        **kwargs: Any
+    ) -> AsyncIterator[bytes]:
+        error_map: MutableMapping = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
+        cls: ClsType[AsyncIterator[bytes]] = kwargs.pop("cls", None)
+
+        _request = build_restore_request(
+            resource_group_name=resource_group_name,
+            location=location,
+            account_name=account_name,
+            database_name=database_name,
+            container_name=container_name,
+            subscription_id=self._config.subscription_id,
+            soft_delete_action_kind=soft_delete_action_kind,
+            api_version=api_version,
+            headers=_headers,
+            params=_params,
+        )
+        _request.url = self._client.format_url(_request.url)
+
+        _decompress = kwargs.pop("decompress", True)
+        _stream = True
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+            _request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [202, 204]:
+            try:
+                await response.read()  # Load the body in memory and close the socket
+            except (StreamConsumedError, StreamClosedError):
+                pass
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(
+                _models.ErrorResponse,
+                pipeline_response,
+            )
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        response_headers = {}
+        if response.status_code == 202:
+            response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
+
+        deserialized = response.stream_download(self._client._pipeline, decompress=_decompress)
+
+        if cls:
+            return cls(pipeline_response, deserialized, response_headers)  # type: ignore
+
+        return deserialized  # type: ignore
+
+    @distributed_trace_async
+    async def begin_restore(
+        self,
+        resource_group_name: str,
+        location: str,
+        account_name: str,
+        database_name: str,
+        container_name: str,
+        soft_delete_action_kind: Optional[Union[str, _models.SoftDeleteActionKind]] = None,
+        **kwargs: Any
+    ) -> AsyncLROPoller[None]:
+        """Restores a soft-deleted Azure Cosmos DB SQL container to active state.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param location: The name of the Azure region. Required.
+        :type location: str
+        :param account_name: Cosmos DB database account name. Required.
+        :type account_name: str
+        :param database_name: Cosmos DB SQL database name. Required.
+        :type database_name: str
+        :param container_name: Cosmos DB SQL container name. Required.
+        :type container_name: str
+        :param soft_delete_action_kind: The kind of soft delete action to perform. Known values are:
+         "RestoreSoftDeletedResource" and "PermanentDeleteResource". Default value is None.
+        :type soft_delete_action_kind: str or ~azure.mgmt.cosmosdb.models.SoftDeleteActionKind
+        :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
+        :rtype: ~azure.core.polling.AsyncLROPoller[None]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
+        cls: ClsType[None] = kwargs.pop("cls", None)
+        polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
+        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
+        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
+        if cont_token is None:
+            raw_result = await self._restore_initial(
+                resource_group_name=resource_group_name,
+                location=location,
+                account_name=account_name,
+                database_name=database_name,
+                container_name=container_name,
+                soft_delete_action_kind=soft_delete_action_kind,
                 api_version=api_version,
                 cls=lambda x, y, z: x,
                 headers=_headers,
