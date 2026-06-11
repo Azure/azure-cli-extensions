@@ -15718,12 +15718,15 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} --enable-managed-identity "
             "--enable-azure-monitor-metrics --enable-control-plane-metrics --output=json"
         )
+        # NOTE: ``--enable-control-plane-metrics`` on create is intentionally deferred to a
+        # postprocessing PUT (after DCRA creation) to avoid scheduling the CCP pod before its
+        # DCRA exists. The create response may therefore reflect the pre-flip state; assert
+        # the final state via ``aks show`` after the cluster settles.
         self.cmd(
             create_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("azureMonitorProfile.metrics.enabled", True),
-                self.check("azureMonitorProfile.metrics.controlPlane.enabled", True),
             ],
         )
 
@@ -15732,6 +15735,15 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--interval 60 --timeout 1800"
         )
         self.cmd(wait_cmd, checks=[self.is_empty()])
+
+        # Verify the deferred control-plane-metrics flip landed on the cluster.
+        self.cmd(
+            "aks show --resource-group={resource_group} --name={name} --output=json",
+            checks=[
+                self.check("azureMonitorProfile.metrics.enabled", True),
+                self.check("azureMonitorProfile.metrics.controlPlane.enabled", True),
+            ],
+        )
 
         # delete
         self.cmd(
