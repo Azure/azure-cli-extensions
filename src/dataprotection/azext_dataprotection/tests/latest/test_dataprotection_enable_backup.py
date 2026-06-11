@@ -26,6 +26,7 @@ from azext_dataprotection.manual.aks.aks_helper import (
     _generate_trusted_access_role_binding_name,
     _generate_arm_id,
     _check_and_assign_role,
+    _setup_storage_account,
     _find_existing_backup_resource_group,
     _find_existing_backup_storage_account,
     _check_existing_backup_instance,
@@ -340,6 +341,56 @@ class TestFindExistingBackupStorageAccount(unittest.TestCase):
         client.storage_accounts.list.return_value = [sa]
         result_sa, _ = _find_existing_backup_storage_account(client, "eastus")
         self.assertIsNone(result_sa)
+
+
+# ---------------------------------------------------------------------------
+# _setup_storage_account
+# ---------------------------------------------------------------------------
+class TestSetupStorageAccount(unittest.TestCase):
+    """Tests for backup storage account setup."""
+
+    @patch("azext_dataprotection.manual.aks.aks_helper._generate_backup_storage_account_name", return_value="aksbkpeastus123")
+    @patch("azext_dataprotection.manual.aks.aks_helper.get_mgmt_service_client")
+    def test_create_storage_account_uses_sdk_model_payload(self, mock_get_client, _):
+        from azure.mgmt.storage.models import StorageAccountCreateParameters
+
+        storage_client = MagicMock()
+        storage_client.storage_accounts.list.return_value = []
+        created_storage_account = MagicMock()
+        created_storage_account.id = (
+            f"/subscriptions/{SUB_ID}/resourceGroups/backup-rg"
+            "/providers/Microsoft.Storage/storageAccounts/aksbkpeastus123"
+        )
+        storage_client.storage_accounts.begin_create.return_value.result.return_value = created_storage_account
+        mock_get_client.return_value = storage_client
+
+        cmd = MagicMock()
+        cmd.cli_ctx = MagicMock()
+
+        result = _setup_storage_account(
+            cmd,
+            SUB_ID,
+            None,
+            None,
+            "backup-rg",
+            "eastus",
+            CLUSTER_NAME,
+            CLUSTER_RG,
+            {"env": "test"},
+        )
+
+        self.assertEqual(result[0], created_storage_account)
+        _, kwargs = storage_client.storage_accounts.begin_create.call_args
+        storage_params = kwargs["parameters"]
+        self.assertIsInstance(storage_params, StorageAccountCreateParameters)
+        self.assertEqual(storage_params.location, "eastus")
+        self.assertEqual(storage_params.kind, "StorageV2")
+        self.assertEqual(storage_params.sku.name, "Standard_LRS")
+        self.assertFalse(storage_params.allow_blob_public_access)
+        self.assertFalse(storage_params.allow_shared_key_access)
+        self.assertEqual(storage_params.tags[AKS_BACKUP_TAG_KEY], "eastus")
+        self.assertEqual(storage_params.tags["env"], "test")
+        storage_client.blob_containers.create.assert_called_once()
 
 
 # ---------------------------------------------------------------------------
