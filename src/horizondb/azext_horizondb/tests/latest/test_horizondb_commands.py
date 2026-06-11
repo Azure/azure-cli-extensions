@@ -66,7 +66,7 @@ class HorizonDBClusterMgmtScenarioTest(ScenarioTest):
         #              checks=[JMESPathCheck("[?name=='{}'] | length(@)".format(cluster_name), 1)])
 
         # Update cluster
-        v_cores_update = 2
+        v_cores_update = v_cores - 2
         show_result = self.cmd('horizondb update -g {} -n {} --v-cores {}'.format(
             resource_group, cluster_name, v_cores_update)).get_output_in_json()
 

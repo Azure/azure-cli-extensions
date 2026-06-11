@@ -6,7 +6,8 @@
 # pylint: disable=line-too-long, too-many-locals
 
 from knack.log import get_logger
-from azure.cli.core.util import CLIError, sdk_no_wait, user_confirmation
+from azure.cli.core.azclierror import ArgumentUsageError, CLIInternalError
+from azure.cli.core.util import sdk_no_wait, user_confirmation
 
 logger = get_logger(__name__)
 
@@ -56,16 +57,16 @@ def horizondb_cluster_update(client, resource_group_name, cluster_name,
     if v_cores is not None:
         cluster_properties["v_cores"] = v_cores
 
-    patch_kwargs = {}
+    patch_properties = {}
     if tags is not None:
-        patch_kwargs["tags"] = tags
+        patch_properties["tags"] = tags
     if cluster_properties:
-        patch_kwargs["properties"] = HorizonDbClusterPropertiesForPatchUpdate(**cluster_properties)
+        patch_properties["properties"] = HorizonDbClusterPropertiesForPatchUpdate(**cluster_properties)
 
-    if not patch_kwargs:
-        raise CLIError("Specify at least one updatable field.")
+    if not patch_properties:
+        raise ArgumentUsageError("Specify at least one argument to update.")
 
-    properties = HorizonDbClusterForPatchUpdate(**patch_kwargs)
+    properties = HorizonDbClusterForPatchUpdate(**patch_properties)
 
     return sdk_no_wait(no_wait, client.begin_update,
                        resource_group_name=resource_group_name,
@@ -87,7 +88,7 @@ def horizondb_cluster_delete(cmd, client, resource_group_name, cluster_name, no_
             local_context_file.remove_option('horizondb', 'cluster_name')
     except Exception as ex:  # pylint: disable=broad-except
         logger.error(ex)
-        raise CLIError(ex)
+        raise CLIInternalError(str(ex)) from ex
     return result
 
 
