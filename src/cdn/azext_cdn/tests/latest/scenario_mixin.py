@@ -17,7 +17,9 @@ def _json_arg(value):
     return "'{}'".format(json.dumps(value, separators=(',', ':')))
 
 
-def _escape_format_placeholders(command):
+def _escape_format_placeholders(command, format_placeholders=None):
+    format_placeholders = format_placeholders or {}
+
     def _find_escaped_placeholder_end(start):
         depth = 0
         index = start
@@ -36,6 +38,21 @@ def _escape_format_placeholders(command):
             index += 1
         return None
 
+    def _find_format_placeholder_end(start):
+        index = start + 1
+        while index < len(command):
+            current = command[index]
+            if current == '{':
+                return None
+            if current == '}':
+                field = command[start + 1:index]
+                field_name = field.split('!', 1)[0].split(':', 1)[0].split('.', 1)[0].split('[', 1)[0]
+                if field_name in format_placeholders:
+                    return index + 1
+                return None
+            index += 1
+        return None
+
     escaped = []
     index = 0
     while index < len(command):
@@ -50,8 +67,13 @@ def _escape_format_placeholders(command):
                 escaped.append('{{')
                 index += 1
         elif current == '{':
-            escaped.append('{{')
-            index += 1
+            end = _find_format_placeholder_end(index)
+            if end is not None:
+                escaped.append(command[index:end])
+                index = end
+            else:
+                escaped.append('{{')
+                index += 1
         elif current == '}':
             escaped.append('}}')
             index += 1
@@ -113,7 +135,8 @@ def _response_error_detection_settings(error_types=None, failover_threshold=None
 # pylint: disable=too-many-public-methods
 class CdnScenarioMixin:
     def cmd(self, command, checks=None, expect_failure=False):
-        return super().cmd(_escape_format_placeholders(command), checks, expect_failure=expect_failure)
+        return super().cmd(_escape_format_placeholders(command, getattr(self, 'kwargs', {})), checks,
+                           expect_failure=expect_failure)
 
     def profile_create_cmd(self, group, name, tags=None, checks=None, options=None, sku='STANDARD_MICROSOFT'):
         command = 'cdn profile create -g {} -n {}'.format(group, name)

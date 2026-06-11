@@ -30,7 +30,9 @@ def _add_paramter_if_needed(command, paramter_name, parameter_value):
     return command
 
 
-def _escape_format_placeholders(command):
+def _escape_format_placeholders(command, format_placeholders=None):
+    format_placeholders = format_placeholders or {}
+
     def _find_escaped_placeholder_end(start):
         depth = 0
         index = start
@@ -49,6 +51,21 @@ def _escape_format_placeholders(command):
             index += 1
         return None
 
+    def _find_format_placeholder_end(start):
+        index = start + 1
+        while index < len(command):
+            current = command[index]
+            if current == '{':
+                return None
+            if current == '}':
+                field = command[start + 1:index]
+                field_name = field.split('!', 1)[0].split(':', 1)[0].split('.', 1)[0].split('[', 1)[0]
+                if field_name in format_placeholders:
+                    return index + 1
+                return None
+            index += 1
+        return None
+
     escaped = []
     index = 0
     while index < len(command):
@@ -63,8 +80,13 @@ def _escape_format_placeholders(command):
                 escaped.append('{{')
                 index += 1
         elif current == '{':
-            escaped.append('{{')
-            index += 1
+            end = _find_format_placeholder_end(index)
+            if end is not None:
+                escaped.append(command[index:end])
+                index = end
+            else:
+                escaped.append('{{')
+                index += 1
         elif current == '}':
             escaped.append('}}')
             index += 1
@@ -77,7 +99,8 @@ def _escape_format_placeholders(command):
 # pylint: disable=too-many-public-methods
 class CdnAfdScenarioMixin:
     def cmd(self, command, checks=None, expect_failure=False):
-        return super().cmd(_escape_format_placeholders(command), checks, expect_failure=expect_failure)
+        return super().cmd(_escape_format_placeholders(command, getattr(self, 'kwargs', {})), checks,
+                           expect_failure=expect_failure)
 
     def afd_profile_create_cmd(self, resource_group_name, profile_name, tags=None, checks=None, options=None,
                                sku="Standard_AzureFrontDoor", expect_failure=False):
