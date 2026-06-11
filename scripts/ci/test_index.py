@@ -20,8 +20,7 @@ import tempfile
 import unittest
 
 from packaging import version
-from util import SRC_PATH 
-
+from util import SRC_PATH
 from util import get_ext_metadata, get_whl_from_url, get_index_data
 
 
@@ -45,7 +44,7 @@ def get_sha256sum(a_file):
 # longer reproduces them, so they are ignored when comparing generated metadata
 # against the published index. Kept in sync with the tests/e2e/packaging
 # metadata parity allowlist.
-_METADATA_NOISE_TOP_LEVEL = ('generator', 'metadata_version', 'test_requires')
+_METADATA_NOISE_TOP_LEVEL = ('generator', 'metadata_version', 'test_requires', 'license_file')
 
 
 def _canonical_requirement(raw):

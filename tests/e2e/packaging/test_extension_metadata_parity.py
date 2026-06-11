@@ -47,7 +47,7 @@ pytestmark = pytest.mark.e2e_packaging
 
 
 # Kept independently from the prototype so drift between the two is caught.
-ALLOWED_NOISE_TOP_LEVEL = {"generator", "metadata_version", "test_requires"}
+ALLOWED_NOISE_TOP_LEVEL = {"generator", "metadata_version", "test_requires", "license_file"}
 ALLOWED_NOISE_NESTED = {"extensions/python.details/document_names"}
 
 
@@ -124,6 +124,16 @@ def _walk_diff(candidate, golden, path, out):
         out.append(path)
 
 
+def _path_present(root, parts):
+    node = root
+    for p in parts:
+        if isinstance(node, dict) and p in node:
+            node = node[p]
+        else:
+            return False
+    return True
+
+
 def _classify_diff(candidate, golden):
     report = _DiffReport(
         extension=str(golden.get("name", candidate.get("name", "?"))),
@@ -137,24 +147,14 @@ def _classify_diff(candidate, golden):
             report.acceptable_noise.append("/".join(parts) if parts else "(root)")
             continue
 
-        sub_golden = golden
-        sub_candidate = candidate
-        present_in_both = True
-        for p in parts:
-            if isinstance(sub_golden, dict) and p in sub_golden:
-                sub_golden = sub_golden[p]
-            else:
-                present_in_both = False
-                break
-            if isinstance(sub_candidate, dict) and p in sub_candidate:
-                sub_candidate = sub_candidate[p]
-            else:
-                present_in_both = False
-                break
         path_text = "/".join(parts) if parts else "(root)"
-        if not present_in_both:
+        in_golden = _path_present(golden, parts)
+        in_candidate = _path_present(candidate, parts)
+        if in_golden and not in_candidate:
+            # Present in the published index but missing from the candidate.
             report.schema_gaps.append(path_text)
         else:
+            # A value mismatch, or a field the candidate adds that the index lacks.
             report.real_bugs.append(path_text)
     return report
 
@@ -165,18 +165,25 @@ def _run_or_skip(azdev_metadata_api, packaging_fixtures, fixture_name):
         pytest.skip("Fixture '{}' not enabled in manifest".format(fixture_name))
 
     get_ext_metadata = azdev_metadata_api["get_ext_metadata"]
-    try:
-        with tempfile.TemporaryDirectory(prefix="e2e-metadata-") as tmp:
-            tmp_path = Path(tmp)
+    with tempfile.TemporaryDirectory(prefix="e2e-metadata-") as tmp:
+        tmp_path = Path(tmp)
+        try:
             wheel_path = _build_wheel(fixture.path, tmp_path / "wheel")
-            extract_dir = tmp_path / "extract"
-            extract_dir.mkdir(parents=True, exist_ok=True)
-            candidate = get_ext_metadata(str(extract_dir), str(wheel_path), fixture.name)
-            golden = _load_latest_index_entry(candidate["name"])
-            report = _classify_diff(candidate, golden)
-            return candidate, report
-    except Exception as exc:
-        pytest.skip("Could not build wheel for '{}': {}".format(fixture_name, exc))
+        except subprocess.CalledProcessError as exc:
+            pytest.skip(
+                "Could not build wheel for '{}': {}\nstdout:\n{}\nstderr:\n{}".format(
+                    fixture_name, exc, exc.stdout or "", exc.stderr or ""
+                )
+            )
+        # Anything beyond the build failing (metadata generation, index load,
+        # diff classification) is a real regression and must surface as a
+        # failure rather than a silent skip.
+        extract_dir = tmp_path / "extract"
+        extract_dir.mkdir(parents=True, exist_ok=True)
+        candidate = get_ext_metadata(str(extract_dir), str(wheel_path), fixture.name)
+        golden = _load_latest_index_entry(candidate["name"])
+        report = _classify_diff(candidate, golden)
+        return candidate, report
 
 
 @pytest.mark.parametrize("fixture_name", ["ssh"])

@@ -56,8 +56,9 @@ def get_ext_metadata(ext_dir, ext_file, ext_name):
     metadata = {}
 
     azext_metadata = _get_azext_metadata(ext_dir)
-    if azext_metadata:
-        metadata.update(azext_metadata)
+    if not azext_metadata:
+        raise ValueError('azext_metadata.json for Extension "{}" Metadata is missing'.format(ext_name))
+    metadata.update(azext_metadata)
     metadata.update(generated_metadata)
     return metadata
 
