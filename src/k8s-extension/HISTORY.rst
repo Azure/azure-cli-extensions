@@ -3,6 +3,9 @@
 Release History
 ===============
 
+1.9.0
++++++++++++++++++++
+* microsoft.virtualnodes: Add new partner extension type CLI customization for Microsoft.virtualnodes.
 1.8.0
 +++++++++++++++++++
 * Migrate Extensions api-version to 2025-03-01
