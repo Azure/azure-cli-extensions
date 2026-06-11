@@ -17,14 +17,14 @@ from azure.cli.core.aaz import *
 class Show(AAZCommand):
     """Get an existing origin group within a profile.
 
-    :example: Get an existing origin group within a profile.
+    :example: AFDOriginGroups_Get
         az afd origin-group show --resource-group RG --profile-name profile1 --origin-group-name origingroup1
     """
 
     _aaz_info = {
-        "version": "2025-06-01",
+        "version": "2025-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/origingroups/{}", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/origingroups/{}", "2025-09-01-preview"],
         ]
     }
 
@@ -52,7 +52,7 @@ class Show(AAZCommand):
         )
         _args_schema.profile_name = AAZStrArg(
             options=["--profile-name"],
-            help="Name of the Azure Front Door Standard or Azure Front Door Premium which is unique within the resource group.",
+            help="Name of the Azure Front Door Standard or Azure Front Door Premium profile which is unique within the resource group.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -135,7 +135,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2025-09-01-preview",
                     required=True,
                 ),
             }

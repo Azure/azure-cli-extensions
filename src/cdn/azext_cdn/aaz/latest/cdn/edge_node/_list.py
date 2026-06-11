@@ -16,12 +16,15 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List are the global Point of Presence (POP) locations used to deliver CDN content to end users.
+
+    :example: EdgeNodes_List
+        az cdn edge-node list
     """
 
     _aaz_info = {
-        "version": "2025-06-01",
+        "version": "2025-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/providers/microsoft.cdn/edgenodes", "2025-06-01"],
+            ["mgmt-plane", "/providers/microsoft.cdn/edgenodes", "2025-09-01-preview"],
         ]
     }
 
@@ -79,7 +82,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2025-09-01-preview",
                     required=True,
                 ),
             }
@@ -116,7 +119,7 @@ class List(AAZCommand):
                 serialized_name="nextLink",
             )
             _schema_on_200.value = AAZListType(
-                flags={"read_only": True},
+                flags={"required": True},
             )
 
             value = cls._schema_on_200.value

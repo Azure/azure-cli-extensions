@@ -25,10 +25,11 @@ class CdnAfdRouteScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
         self.afd_origin_group_create_cmd(resource_group,
                                          profile_name,
                                          origin_group_name,
-                                         "--probe-request-type GET --probe-protocol Http --probe-interval-in-seconds 120 --probe-path /test1/azure.txt " +
+                                         "--probe-request-type GET --probe-protocol Http --probe-interval-in-seconds 120 --probe-path /test1/azure.txt "
                                          "--sample-size 4 --successful-samples-required 3 --additional-latency-in-milliseconds 50")
 
         origin_group_id = f'/subscriptions/{self.get_subscription_id()}/resourceGroups/{resource_group}/providers/Microsoft.Cdn/profiles/{profile_name}/originGroups/{origin_group_name}'
+        default_content_types = '["application/eot","application/font","application/font-sfnt","application/javascript","application/json","application/opentype","application/otf","application/pkcs7-mime","application/truetype","application/ttf","application/vnd.ms-fontobject","application/xhtml+xml","application/xml","application/xml+rss","application/x-font-opentype","application/x-font-truetype","application/x-font-ttf","application/x-httpd-cgi","application/x-javascript","application/x-mpegurl","application/x-opentype","application/x-otf","application/x-perl","application/x-ttf","font/eot","font/ttf","font/otf","font/opentype","image/svg+xml","text/css","text/csv","text/html","text/javascript","text/js","text/plain","text/richtext","text/tab-separated-values","text/xml","text/x-script","text/x-component","text/x-java-source"]'
 
         origin_name = self.create_random_name(prefix='origin', length=16)
         create_options = "--host-name huaiyiztesthost1.blob.core.chinacloudapi.cn " \
@@ -76,7 +77,8 @@ class CdnAfdRouteScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
         create_options_1 = f"--origin-group {origin_group_name} " \
                          + "--supported-protocols Https Http --link-to-default-domain Disabled " \
                          + "--https-redirect Enabled --forwarding-protocol MatchRequest " \
-                         + f"--custom-domains {custom_domain_name} --patterns-to-match /test2/*"
+                         + f"--formatted-custom-domains '[{{\"id\":\"{custom_domain_id}\"}}]' " \
+                         + "--patterns-to-match /test2/*"
         route_name_1 = self.create_random_name(prefix='route-wd', length=16)
         
         create_checks_1 = [JMESPathCheck('supportedProtocols[0]', "Https"),
@@ -101,8 +103,9 @@ class CdnAfdRouteScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
         create_options_1 = f"--origin-group {origin_group_name} " \
                          + "--supported-protocols Https Http --link-to-default-domain Disabled " \
                          + "--https-redirect Enabled --forwarding-protocol MatchRequest " \
-                         + "--enable-caching true --query-string-caching-behavior UseQueryString --enable-compression true " \
-                         + f"--custom-domains {custom_domain_name} --patterns-to-match /test2/*"
+                         + f"--cache-configuration '{{\"query-string-caching-behavior\":\"UseQueryString\",\"compression-settings\":{{\"is-compression-enabled\":true,\"content-types-to-compress\":{default_content_types}}}}}' " \
+                         + f"--formatted-custom-domains '[{{\"id\":\"{custom_domain_id}\"}}]' " \
+                         + "--patterns-to-match /test2/*"
         route_name_1 = self.create_random_name(prefix='route-wd', length=16)
         
         create_checks_1 = [JMESPathCheck('supportedProtocols[0]', "Https"),
@@ -143,7 +146,9 @@ class CdnAfdRouteScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
                          JMESPathCheck('cacheConfiguration.compressionSettings.contentTypesToCompress[0]', 'text/javascript'),
                          JMESPathCheck('cacheConfiguration.compressionSettings.contentTypesToCompress[1]', 'text/plain'),
                          JMESPathCheck('originGroup.id', origin_group_id)]
-        options = f'--custom-domains {custom_domain_name} --enable-caching True --forwarding-protocol HttpsOnly --query-string-caching-behavior IgnoreQueryString --enable-compression True --content-types-to-compress text/javascript text/plain'
+        options = f'--formatted-custom-domains \'[{{"id":"{custom_domain_id}"}}]\' ' \
+                  f'--forwarding-protocol HttpsOnly ' \
+                  '--cache-configuration \'{"query-string-caching-behavior":"IgnoreQueryString","compression-settings":{"is-compression-enabled":true,"content-types-to-compress":["text/javascript","text/plain"]}}\''
         self.afd_route_update_cmd(resource_group,
                                   profile_name,
                                   endpoint_name,
@@ -184,7 +189,8 @@ class CdnAfdRouteScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
                          JMESPathCheck('length(cacheConfiguration.compressionSettings.contentTypesToCompress)', 1),
                          JMESPathCheck('cacheConfiguration.compressionSettings.contentTypesToCompress[0]', 'text/css'),
                          JMESPathCheck('originGroup.id', origin_group_id)]
-        options = '--enabled-state Enabled --query-string-caching-behavior UseQueryString --content-types-to-compress text/css'
+        options = '--enabled-state Enabled ' \
+            '--cache-configuration \'{"query-string-caching-behavior":"UseQueryString","compression-settings":{"is-compression-enabled":true,"content-types-to-compress":["text/css"]}}\''
         self.afd_route_update_cmd(resource_group,
                                   profile_name,
                                   endpoint_name,
@@ -207,7 +213,8 @@ class CdnAfdRouteScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
                          JMESPathCheck('cacheConfiguration.compressionSettings.isCompressionEnabled', False),
                          JMESPathCheck('originGroup.id', origin_group_id),
                          JMESPathCheck('ruleSets[0].id', rule_set_id)]
-        options = f'--rule-sets {rule_set_name} --enable-compression False'
+        options = f'--formatted-rule-sets \'[{{"id":"{rule_set_id}"}}]\' ' \
+            '--cache-configuration \'{"query-string-caching-behavior":"UseQueryString","compression-settings":{"is-compression-enabled":false}}\''
         self.afd_route_update_cmd(resource_group,
                                   profile_name,
                                   endpoint_name,
@@ -226,7 +233,8 @@ class CdnAfdRouteScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
                          JMESPathCheck('originGroup.id', origin_group_id),
                          JMESPathCheck('length(ruleSets)', 0),
                          JMESPathCheck('cacheConfiguration.queryStringCachingBehavior', "UseQueryString")]
-        options = '--rule-sets null --https-redirect Disabled'
+        options = '--formatted-rule-sets null ' \
+            f'--https-redirect Disabled'
         self.afd_route_update_cmd(resource_group,
                                   profile_name,
                                   endpoint_name,
@@ -245,7 +253,7 @@ class CdnAfdRouteScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
                          JMESPathCheck('cacheConfiguration', None),
                          JMESPathCheck('originGroup.id', origin_group_id),
                          JMESPathCheck('length(ruleSets)', 0)]
-        options = '--enable-caching False'
+        options = '--cache-configuration null'
         self.afd_route_update_cmd(resource_group,
                                   profile_name,
                                   endpoint_name,
@@ -255,7 +263,7 @@ class CdnAfdRouteScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
 
         
         # Enable caching and compression with default extension types
-        options = '--enable-caching True --query-string-caching-behavior IncludeSpecifiedQueryStrings --query-parameters x y z --enable-compression True'
+        options = f'--cache-configuration \'{{"query-string-caching-behavior":"IncludeSpecifiedQueryStrings","query-parameters":"x,y,z","compression-settings":{{"is-compression-enabled":true,"content-types-to-compress":{default_content_types}}}}}\''
         update_checks = [JMESPathCheck('supportedProtocols[0]', "Https"),
                          JMESPathCheck('supportedProtocols[1]', "Http"),
                          JMESPathCheck('linkToDefaultDomain', "Enabled"),
@@ -288,7 +296,6 @@ class CdnAfdRouteScenarioTest(CdnAfdScenarioMixin, ScenarioTest):
         create_options = "--host-name plstestcli.blob.core.windows.net " \
                          + "--origin-host-header plstestcli.blob.core.windows.net " \
                          + "--priority 1 --weight 1000 --http-port 80 --https-port 443 --enabled-state Enabled"
-
         self.afd_origin_create_cmd(resource_group,
                                    profile_name,
                                    new_origin_group_name,
