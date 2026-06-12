@@ -17,6 +17,9 @@ Describe 'Azure VirtualNodes Testing' {
         $isAutoUpgradeMinorVersion = ($output | ConvertFrom-Json).autoUpgradeMinorVersion
         $isAutoUpgradeMinorVersion.ToString() -eq "True" | Should -BeTrue
 
+        $autoUpgradeMode = ($output | ConvertFrom-Json).autoUpgradeMode
+        $autoUpgradeMode -eq "compatible" | Should -BeTrue
+
         # Loop and retry until the extension installs
         $n = 0
         do
@@ -60,7 +63,7 @@ Describe 'Azure VirtualNodes Testing' {
         $? | Should -BeTrue
         $output | Should -Not -BeNullOrEmpty
 
-        $extensionExists = $output | ConvertFrom-Json | Where-Object { $_.extensionType -eq $extensionName }
+        $extensionExists = $output | ConvertFrom-Json | Where-Object { $_.name -eq $extensionName }
         $extensionExists | Should -BeNullOrEmpty
     }
 }
