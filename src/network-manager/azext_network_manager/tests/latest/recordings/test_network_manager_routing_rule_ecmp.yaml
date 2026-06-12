@@ -1,0 +1,280 @@
+interactions:
+- request:
+    body: '{"location": "eastus2", "properties": {"description": "My Test Network
+      Manager", "networkManagerScopeAccesses": ["Routing"], "networkManagerScopes":
+      {"subscriptions": ["/subscriptions/00000000-0000-0000-0000-000000000000"]}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '225'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --description --scope-accesses --network-manager-scopes -l --resource-group
+      User-Agent:
+      - AZURECLI/2.85.0 azsdk-python-core/1.38.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_rule_ecmp000001/providers/Microsoft.Network/networkManagers/TestNetworkManager?api-version=2023-09-01
+  response:
+    body:
+      string: '{"name":"TestNetworkManager","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_rule_ecmp000001/providers/Microsoft.Network/networkManagers/TestNetworkManager","location":"eastus2","type":"Microsoft.Network/networkManagers","tags":{},"etag":"","properties":{"description":"My
+        Test Network Manager","networkManagerScopes":{"managementGroups":[],"subscriptions":["/subscriptions/00000000-0000-0000-0000-000000000000"],"crossTenantScopes":[]},"provisioningState":"Succeeded","networkManagerScopeAccesses":["Routing"],"resourceGuid":"a8bf2696-7617-41e7-a5f2-693fbd3e3b17"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-04-08T02:21:18.1409519Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-08T02:21:18.1409519Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '844'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 08 Apr 2026 02:21:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=ed94de55-1f87-4278-9651-525e7ba467d6,objectId=4c73e7a5-a580-4613-82cf-af0b98695e15/eastus2/22942e4f-9044-40bd-9d15-46ae63697a8b
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 2C18D44B94714B5B99A06153ABE0294A Ref B: SG2AA1040518031 Ref C: 2026-04-08T02:21:17Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager group create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --network-manager-name -g
+      User-Agent:
+      - AZURECLI/2.85.0 azsdk-python-core/1.38.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_rule_ecmp000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkManagerGroup?api-version=2024-07-01
+  response:
+    body:
+      string: '{"name":"TestNetworkManagerGroup","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_rule_ecmp000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkManagerGroup","type":"Microsoft.Network/networkManagers/networkGroups","etag":"","properties":{"description":"","provisioningState":"Succeeded","memberType":"VirtualNetwork","resourceGuid":"d0c58b6b-717b-4e55-8f42-259196d59743"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-04-08T02:21:20.2741520Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-08T02:21:20.2741520Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '693'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 08 Apr 2026 02:21:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=ed94de55-1f87-4278-9651-525e7ba467d6,objectId=4c73e7a5-a580-4613-82cf-af0b98695e15/eastus2/a8875b75-33a6-4768-af9c-23382d0a6aa1
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 248CB048043F41C485E273B5BA5DA733 Ref B: SG2AA1040517060 Ref C: 2026-04-08T02:21:20Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager routing-config create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --manager-name --resource-group
+      User-Agent:
+      - AZURECLI/2.85.0 azsdk-python-core/1.38.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_rule_ecmp000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002?api-version=2024-05-01
+  response:
+    body:
+      string: '{"name":"routing-config-000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_rule_ecmp000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002","type":"Microsoft.Network/networkManagers/routingConfigurations","etag":"","properties":{"description":"","provisioningState":"Succeeded","resourceGuid":"2d52f104-deec-42ff-8970-14a7e9c812cf","routeTableUsageMode":"ManagedOnly"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-04-08T02:21:21.5905686Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-08T02:21:21.5905686Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '711'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 08 Apr 2026 02:21:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=ed94de55-1f87-4278-9651-525e7ba467d6,objectId=4c73e7a5-a580-4613-82cf-af0b98695e15/eastus2/5d11be8a-3f7b-4e62-9f53-02e805639379
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 7E480109E3424BEFA0AE6AE0EE97A95F Ref B: SG2AA1040515023 Ref C: 2026-04-08T02:21:21Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"appliesTo": [{"networkGroupId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_rule_ecmp000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkManagerGroup"}],
+      "disableBgpRoutePropagation": "True"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager routing-config rule-collection create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '305'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --config-name --manager-name --name --resource-group --applies-to --disable-bgp-route
+      User-Agent:
+      - AZURECLI/2.85.0 azsdk-python-core/1.38.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_rule_ecmp000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002/ruleCollections/rule-collection-000003?api-version=2024-05-01
+  response:
+    body:
+      string: '{"name":"rule-collection-000003","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_rule_ecmp000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002/ruleCollections/rule-collection-000003","type":"Microsoft.Network/networkManagers/routingConfigurations/ruleCollections","etag":"","properties":{"description":"","provisioningState":"Succeeded","resourceGuid":"36dfc4e2-68ee-4dac-88ce-48a6ce469889","appliesTo":[{"networkGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_rule_ecmp000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkManagerGroup"}],"disableBgpRoutePropagation":"True","localRouteSetting":"NotSpecified","peeringRoutePropagationRules":[]},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-04-08T02:21:22.9673008Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-04-08T02:21:22.9673008Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1084'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 08 Apr 2026 02:21:23 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=ed94de55-1f87-4278-9651-525e7ba467d6,objectId=4c73e7a5-a580-4613-82cf-af0b98695e15/eastus2/fc65d709-34cc-4a9a-a353-8b986080d29f
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: FFD0B9474DBA4E938055A6728354DF4C Ref B: SG2AA1040515062 Ref C: 2026-04-08T02:21:22Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"destination": {"destinationAddress": "10.0.0.0/16", "type":
+      "AddressPrefix"}, "nextHop": {"nextHopAddress": "10.1.0.4,10.1.0.5,10.1.0.6",
+      "nextHopType": "VirtualAppliance"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network manager routing-config rule-collection rule create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '191'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --config-name --manager-name --collection-name --name --resource-group --destination
+        --next-hop
+      User-Agent:
+      - AZURECLI/2.85.0 azsdk-python-core/1.38.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_routing_rule_ecmp000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/routingConfigurations/routing-config-000002/ruleCollections/rule-collection-000003/rules/rule-000004?api-version=2025-07-01
+  response:
+    body:
+      string: '{"error":{"message":"Attempting to use a feature 88939486-3f56-4b35-bd43-5d6b34df022f
+        which is not currently available.","code":"BadRequest"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '142'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 08 Apr 2026 02:21:23 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=ed94de55-1f87-4278-9651-525e7ba467d6,objectId=4c73e7a5-a580-4613-82cf-af0b98695e15/eastus2/dc06911d-3600-45dd-8d2b-e0e24db91ba0
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 6C4E517489354EB29A0F69926C4B0653 Ref B: SG2AA1040520034 Ref C: 2026-04-08T02:21:24Z'
+    status:
+      code: 400
+      message: Bad Request
+version: 1
