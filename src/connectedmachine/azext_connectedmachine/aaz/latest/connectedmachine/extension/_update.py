@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-11-10-preview",
+        "version": "2025-02-19-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/extensions/{}", "2024-11-10-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/extensions/{}", "2025-02-19-preview"],
         ]
     }
 
@@ -57,7 +57,7 @@ class Update(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-_\.]{1,54}$",
+                pattern="^[a-zA-Z0-9-_\\.]{1,54}$",
                 max_length=54,
                 min_length=1,
             ),
@@ -96,7 +96,7 @@ class Update(AAZCommand):
             arg_group="Properties",
             help="How the extension handler should be forced to update even if the extension configuration has not changed.",
         )
-        _args_schema.protected_settings = AAZFreeFormDictArg(
+        _args_schema.protected_settings = AAZDictArg(
             options=["--protected-settings"],
             arg_group="Properties",
             help="The extension can contain either protectedSettings or protectedSettingsFromKeyVault or no protected settings at all.",
@@ -106,7 +106,7 @@ class Update(AAZCommand):
             arg_group="Properties",
             help="The name of the extension handler publisher.",
         )
-        _args_schema.settings = AAZFreeFormDictArg(
+        _args_schema.settings = AAZDictArg(
             options=["--settings"],
             arg_group="Properties",
             help="Json formatted public settings for the extension.",
@@ -121,6 +121,12 @@ class Update(AAZCommand):
             arg_group="Properties",
             help="Specifies the version of the script handler.",
         )
+
+        protected_settings = cls._args_schema.protected_settings
+        protected_settings.Element = AAZAnyTypeArg()
+
+        settings = cls._args_schema.settings
+        settings.Element = AAZAnyTypeArg()
         return cls._args_schema
 
     def _execute_operations(self):
@@ -208,7 +214,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-11-10-preview",
+                    "api-version", "2025-02-19-preview",
                     required=True,
                 ),
             }
@@ -241,19 +247,19 @@ class Update(AAZCommand):
                 properties.set_prop("autoUpgradeMinorVersion", AAZBoolType, ".auto_upgrade_minor_version")
                 properties.set_prop("enableAutomaticUpgrade", AAZBoolType, ".enable_automatic_upgrade")
                 properties.set_prop("forceUpdateTag", AAZStrType, ".force_update_tag")
-                properties.set_prop("protectedSettings", AAZFreeFormDictType, ".protected_settings")
+                properties.set_prop("protectedSettings", AAZDictType, ".protected_settings")
                 properties.set_prop("publisher", AAZStrType, ".publisher")
-                properties.set_prop("settings", AAZFreeFormDictType, ".settings")
+                properties.set_prop("settings", AAZDictType, ".settings")
                 properties.set_prop("type", AAZStrType, ".type")
                 properties.set_prop("typeHandlerVersion", AAZStrType, ".type_handler_version")
 
             protected_settings = _builder.get(".properties.protectedSettings")
             if protected_settings is not None:
-                protected_settings.set_anytype_elements(".")
+                protected_settings.set_elements(AAZAnyType, ".")
 
             settings = _builder.get(".properties.settings")
             if settings is not None:
-                settings.set_anytype_elements(".")
+                settings.set_elements(AAZAnyType, ".")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -311,7 +317,7 @@ class Update(AAZCommand):
             properties.instance_view = AAZObjectType(
                 serialized_name="instanceView",
             )
-            properties.protected_settings = AAZFreeFormDictType(
+            properties.protected_settings = AAZDictType(
                 serialized_name="protectedSettings",
             )
             properties.provisioning_state = AAZStrType(
@@ -319,7 +325,7 @@ class Update(AAZCommand):
                 flags={"read_only": True},
             )
             properties.publisher = AAZStrType()
-            properties.settings = AAZFreeFormDictType()
+            properties.settings = AAZDictType()
             properties.type = AAZStrType()
             properties.type_handler_version = AAZStrType(
                 serialized_name="typeHandlerVersion",
@@ -341,6 +347,12 @@ class Update(AAZCommand):
             status.level = AAZStrType()
             status.message = AAZStrType()
             status.time = AAZStrType()
+
+            protected_settings = cls._schema_on_200.properties.protected_settings
+            protected_settings.Element = AAZAnyType()
+
+            settings = cls._schema_on_200.properties.settings
+            settings.Element = AAZAnyType()
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
