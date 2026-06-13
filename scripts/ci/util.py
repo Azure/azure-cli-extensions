@@ -10,7 +10,7 @@ import shlex
 import json
 import zipfile
 
-from subprocess import check_output
+from subprocess import check_call, check_output
 
 logger = logging.getLogger(__name__)
 
@@ -163,3 +163,67 @@ def diff_code(start, end):
                    f'end: {end}, '
                    f'diff_ref: {diff_ref}.')
     return diff_ref
+
+
+def find_modified_files_against_master_branch():
+    """
+    Find modified files from src/ only, using merge-base for accurate PR diff.
+    A: Added, C: Copied, M: Modified, R: Renamed, T: File type changed.
+    Deleted files don't count in diff.
+    """
+    ado_pr_target_branch = os.environ.get('ADO_PULL_REQUEST_TARGET_BRANCH')
+    if not ado_pr_target_branch or ado_pr_target_branch == '$(System.PullRequest.TargetBranch)':
+        logger.warning('ADO_PULL_REQUEST_TARGET_BRANCH is not available, skip diff.')
+        return []
+
+    normalized_branch = re.sub(
+        r'^(?:refs/remotes/origin/|refs/heads/|origin/)+', '', ado_pr_target_branch
+    )
+
+    ado_pr_target_branch = 'origin/{}'.format(normalized_branch)
+
+    logger.info('-' * 100)
+    logger.info('pull request target branch: %s', ado_pr_target_branch)
+
+    # Ensure target ref exists and has enough history for merge-base.
+    # Only use --deepen when the repo is a shallow clone.
+    is_shallow = os.path.isfile(os.path.join('.git', 'shallow'))
+    fetch_cmd = ['git', 'fetch', 'origin']
+    if is_shallow:
+        fetch_cmd.append('--deepen=50')
+    fetch_cmd.append('refs/heads/{}:refs/remotes/origin/{}'.format(normalized_branch, normalized_branch))
+    check_call(fetch_cmd)
+
+    try:
+        merge_base = check_output([
+            'git', 'merge-base', 'HEAD', ado_pr_target_branch
+        ]).decode('utf-8').strip()
+    except Exception:
+        if is_shallow:
+            logger.warning('merge-base failed after --deepen=50, falling back to --unshallow')
+            check_call([
+                'git',
+                'fetch',
+                'origin',
+                '--unshallow',
+                'refs/heads/{}:refs/remotes/origin/{}'.format(normalized_branch, normalized_branch),
+            ])
+            merge_base = check_output([
+                'git', 'merge-base', 'HEAD', ado_pr_target_branch
+            ]).decode('utf-8').strip()
+        else:
+            raise
+
+    logger.info('merge base: %s', merge_base)
+
+    cmd = ['git', '--no-pager', 'diff', '--name-only', '--diff-filter=ACMRT', merge_base, 'HEAD', '--', 'src/']
+    files = check_output(cmd).decode('utf-8').split('\n')
+    files = [f for f in files if len(f) > 0]
+
+    if files:
+        logger.info('modified files:')
+        logger.info('-' * 100)
+        for f in files:
+            logger.info(f)
+
+    return files
