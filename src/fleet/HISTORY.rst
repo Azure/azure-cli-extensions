@@ -185,3 +185,7 @@ Release History
 1.10.1
 ++++++
 * Add SDK generation script for regenerating vendored SDK from azure-rest-api-specs.
+
+1.11.0
+++++++
+* Add 2026-05-01-preview API version with vendored generated SDK.
