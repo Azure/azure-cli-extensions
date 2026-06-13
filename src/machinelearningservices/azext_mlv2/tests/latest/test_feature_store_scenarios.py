@@ -14,16 +14,16 @@ from azext_mlv2.tests.scenario_test_helper import MLBaseScenarioTest
 
 class FeatureStoreScenarioTest(MLBaseScenarioTest):
     def test_featureStore(self) -> None:
-        self.kwargs["resourceGroup"] = "test-rg-000006"
+        self.kwargs["resourceGroup"] = "kchawla-rg"
 
         fs_obj = self.cmd(
             "az ml feature-store create -n {workspaceName} --resource-group {resourceGroup} --subscription {subscription} --no-wait -f ./src/machinelearningservices/azext_mlv2/tests/test_configs/featurestore/featurestore.yaml"
         )
         self.assertEqual(fs_obj.output, "")
-        if not self.is_live:
+        if self.is_live:
             from time import sleep
-            
-            sleep(800)  # This sleep is only required for fresh recording of cassette
+
+            sleep(800)  # Wait for async create to propagate when recording live
 
         fs_obj_show = self.cmd("az ml feature-store show --name {workspaceName} --resource-group {resourceGroup} --subscription {subscription}")
         fs_obj_show = yaml.safe_load(fs_obj_show.output)
@@ -54,10 +54,10 @@ class FeatureStoreScenarioTest(MLBaseScenarioTest):
             "az ml feature-store update -n {workspaceName} --display-name {updatedDisplayName} --public-network-access {public_network_access} --set description={updatedDescription} -g {resourceGroup} --subscription {subscription} --no-wait"
         )
         self.assertEqual(fs_obj_update.output, "")
-        if not self.is_live:
+        if self.is_live:
             from time import sleep
 
-            sleep(100)  # This sleep is only required for fresh recording of cassette
+            sleep(100)  # Wait for async update to propagate when recording live
 
         fs_obj_show = self.cmd(
             "az ml feature-store show --resource-group {resourceGroup} --name {workspaceName} --subscription {subscription}"
@@ -73,7 +73,7 @@ class FeatureStoreScenarioTest(MLBaseScenarioTest):
         self.assertEqual(fs_obj_delete.output, "")
         
     def test_featurestore_managednetwork_provision(self) -> None:
-        self.kwargs["resourceGroup"] = "test-rg-000006"
+        self.kwargs["resourceGroup"] = "kchawla-rg"
 
         workspaceName = self.kwargs.get("workspaceName", None)
         workspaceName += "_mvnetprov"

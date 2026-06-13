@@ -24,7 +24,7 @@ def b64read(p):
 def create_cmd_str(file_name: str, var_name: str, suffix=None) -> str:
     if not suffix:
         suffix = ""
-    return f"az ml datastore create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/datastore/{file_name} --name {{{var_name}}} {suffix} -g testrg -w testworkspace"
+    return f"az ml datastore create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/datastore/{file_name} --name {{{var_name}}} {suffix} -g kchawla-rg -w kchawla-ws"
 
 
 class DatastoreScenarioTest(MLBaseScenarioTest):
@@ -101,7 +101,7 @@ class DatastoreScenarioTest(MLBaseScenarioTest):
     def test_datastore_validation_errors(self) -> None:
         with pytest.raises((ValidationException, CLIError)) as ex:
             self.cmd(
-                "az ml datastore create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/datastore/blob_store.yml --set type=azure_fake_storage -g testrg -w testworkspace"
+                "az ml datastore create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/datastore/blob_store.yml --set type=azure_fake_storage -g kchawla-rg -w kchawla-ws"
             )
             # TODO datastore team, fix this test
             # also note, when I run this test locally these assertions are not even hit
@@ -114,7 +114,7 @@ class DatastoreScenarioTest(MLBaseScenarioTest):
 
         with pytest.raises(CLIError) as ex:
             self.cmd(
-                "az ml datastore create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/datastore/datastore_missing_parameter.yml -g testrg -w testworkspace"
+                "az ml datastore create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/datastore/datastore_missing_parameter.yml -g kchawla-rg -w kchawla-ws"
             )
             assert ex.error_type == ValidationErrorType.MISSING_FIELD
             assert (
@@ -124,7 +124,7 @@ class DatastoreScenarioTest(MLBaseScenarioTest):
 
         with pytest.raises(CLIError) as ex:
             self.cmd(
-                "az ml datastore create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/datastore/datastore_unknown_parameter.yml -g testrg -w testworkspace"
+                "az ml datastore create --file ./src/machinelearningservices/azext_mlv2/tests/test_configs/datastore/datastore_unknown_parameter.yml -g kchawla-rg -w kchawla-ws"
             )
             assert ex.error_type == ValidationErrorType.UNKNOWN_FIELD
             assert (
