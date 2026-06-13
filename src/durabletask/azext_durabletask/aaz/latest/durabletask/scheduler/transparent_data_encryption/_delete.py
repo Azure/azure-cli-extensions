@@ -12,20 +12,18 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "durabletask taskhub delete",
+    "durabletask scheduler transparent-data-encryption delete",
+    is_preview=True,
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete a Task Hub
-
-    :example: Delete a taskhub in a scheduler
-        az durabletask taskhub delete --resource-group testrg --scheduler-name testscheduler --name testtuskhub
+    """Delete a Transparent Data Encryption
     """
 
     _aaz_info = {
         "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.durabletask/schedulers/{}/taskhubs/{}", "2026-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.durabletask/schedulers/{}/transparentdataencryptions/default", "2026-05-01-preview"],
         ]
     }
 
@@ -50,19 +48,10 @@ class Delete(AAZCommand):
             required=True,
         )
         _args_schema.scheduler_name = AAZStrArg(
-            options=["-s", "--scheduler-name"],
+            options=["--scheduler-name"],
             help="The name of the Scheduler",
             required=True,
             id_part="name",
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-]{3,64}$",
-            ),
-        )
-        _args_schema.name = AAZStrArg(
-            options=["-n", "--name"],
-            help="The name of the TaskHub",
-            required=True,
-            id_part="child_name_1",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,64}$",
             ),
@@ -71,7 +60,7 @@ class Delete(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.TaskHubsDelete(ctx=self.ctx)()
+        yield self.TransparentDataEncryptionsDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -82,7 +71,7 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class TaskHubsDelete(AAZHttpOperation):
+    class TransparentDataEncryptionsDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -121,7 +110,7 @@ class Delete(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DurableTask/schedulers/{schedulerName}/taskHubs/{taskHubName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DurableTask/schedulers/{schedulerName}/transparentDataEncryptions/default",
                 **self.url_parameters
             )
 
@@ -146,10 +135,6 @@ class Delete(AAZCommand):
                 ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "taskHubName", self.ctx.args.name,
                     required=True,
                 ),
             }
