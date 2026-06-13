@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a project catalog.
+
+    :example: Create a project catalog
+        az devcenter admin project-catalog create -g rg --project project -n catalog --git-hub path="/Environments" branch="main" secret-identifier="https://my.secret.net/secrets/dummy/xxxx" uri="https://domain.com/dummy/dummy.git"
     """
 
     _aaz_info = {
