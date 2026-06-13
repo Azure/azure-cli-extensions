@@ -17,7 +17,11 @@ import webbrowser
 import subprocess
 from math import isnan
 
-from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW, cf_agent_pools
+from azext_aks_preview._client_factory import (
+    CUSTOM_MGMT_AKS_PREVIEW,
+    CUSTOM_MGMT_AKS_PIS_PREVIEW,
+    cf_agent_pools,
+)
 from azext_aks_preview._consts import (
     ADDONS,
     ADDONS_DESCRIPTIONS,
@@ -125,6 +129,10 @@ from azext_aks_preview.machine import (
 from azext_aks_preview.jwtauthenticator import (
     aks_jwtauthenticator_add_internal,
     aks_jwtauthenticator_update_internal,
+)
+from azext_aks_preview.prepared_image_specification import (
+    ensure_pis_managed_identity_permission_for_agentpool,
+    ensure_pis_managed_identity_permission_for_cluster,
 )
 from azure.cli.command_modules.acs._helpers import (
     get_user_assigned_identity_by_resource_id
@@ -1184,6 +1192,8 @@ def aks_create(
     control_plane_scaling_size=None,
     # health monitor
     enable_continuous_control_plane_and_addon_monitor=False,
+    # prepared image specification
+    prepared_image_specification_id=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1217,6 +1227,8 @@ def aks_create(
     except DecoratorEarlyExitException:
         # exit gracefully
         return None
+
+    ensure_pis_managed_identity_permission_for_cluster(cmd, mc)
 
     # send request to create a real managed cluster
     return aks_create_decorator.create_mc(mc)
@@ -2006,6 +2018,8 @@ def aks_agentpool_add(
     localdns_config=None,
     # secondary network interfaces
     secondary_network_interfaces=None,
+    # prepared image specification
+    prepared_image_specification_id=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -2026,6 +2040,9 @@ def aks_agentpool_add(
     except DecoratorEarlyExitException:
         # exit gracefully
         return None
+
+    ensure_pis_managed_identity_permission_for_agentpool(cmd, agentpool, resource_group_name, cluster_name)
+
     # send request to add a real agentpool
     return aks_agentpool_add_decorator.add_agentpool(agentpool)
 
@@ -2086,6 +2103,8 @@ def aks_agentpool_update(
     gpu_mig_strategy=None,
     # crg
     crg_id=None,
+    # prepared image specification
+    prepared_image_specification_id=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -2106,6 +2125,9 @@ def aks_agentpool_update(
     except DecoratorEarlyExitException:
         # exit gracefully
         return None
+
+    ensure_pis_managed_identity_permission_for_agentpool(cmd, agentpool, resource_group_name, cluster_name)
+
     # send request to update the real agentpool
     return aks_agentpool_update_decorator.update_agentpool(agentpool)
 
@@ -5737,3 +5759,105 @@ def aks_jwtauthenticator_list(cmd, client, resource_group_name, cluster_name, ak
 def aks_jwtauthenticator_show(cmd, client, resource_group_name, cluster_name, name, aks_custom_headers=None):
     headers = get_aks_custom_headers(aks_custom_headers)
     return client.get(resource_group_name, cluster_name, name, headers=headers)
+
+
+def aks_prepared_image_specification_create(
+    cmd,
+    client,
+    resource_group_name,
+    name,
+    location=None,
+    tags=None,
+    container_images=None,
+    customization_scripts=None,
+    assign_identity=None,
+    version=None,
+    no_wait=False,
+):
+    PreparedImageSpecification = cmd.get_models(
+        "PreparedImageSpecification",
+        resource_type=CUSTOM_MGMT_AKS_PIS_PREVIEW,
+        operation_group="prepared_image_specifications",
+    )
+
+    PreparedImageSpecificationProperties = cmd.get_models(
+        "PreparedImageSpecificationProperties",
+        resource_type=CUSTOM_MGMT_AKS_PIS_PREVIEW,
+        operation_group="prepared_image_specifications",
+    )
+
+    PreparedImageSpecificationManagedIdentityProfile = cmd.get_models(
+        "PreparedImageSpecificationManagedIdentityProfile",
+        resource_type=CUSTOM_MGMT_AKS_PIS_PREVIEW,
+        operation_group="prepared_image_specifications",
+    )
+
+    if location is None:
+        location = get_rg_location(cmd.cli_ctx, resource_group_name)
+
+    identity_profile = None
+    if assign_identity is not None:
+        identity_profile = PreparedImageSpecificationManagedIdentityProfile(
+            resource_id=assign_identity,
+        )
+
+    pis = PreparedImageSpecification(
+        name=name,
+        location=location,
+        tags=tags,
+        properties=PreparedImageSpecificationProperties(
+            container_images=container_images,
+            customization_scripts=customization_scripts,
+            identity_profile=identity_profile,
+            version=version,
+        ),
+    )
+
+    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, name, pis)
+
+
+def aks_prepared_image_specification_update(
+    cmd,
+    client,
+    resource_group_name,
+    name,
+    tags=None,
+):
+    PreparedImageSpecificationPatch = cmd.get_models(
+        "PreparedImageSpecificationPatch",
+        resource_type=CUSTOM_MGMT_AKS_PIS_PREVIEW,
+        operation_group="prepared_image_specifications",
+    )
+
+    patch = PreparedImageSpecificationPatch(
+        tags=tags,
+    )
+
+    return client.update(resource_group_name, name, patch)
+
+
+def aks_prepared_image_specification_delete(cmd, client, resource_group_name, name, no_wait=False):
+    return sdk_no_wait(no_wait, client.begin_delete, resource_group_name, name)
+
+
+def aks_prepared_image_specification_show(cmd, client, resource_group_name, name):
+    return client.get(resource_group_name, name)
+
+
+def aks_prepared_image_specification_list(cmd, client, resource_group_name=None):
+    if resource_group_name is None:
+        return client.list_by_subscription()
+
+    return client.list_by_resource_group(resource_group_name)
+
+
+def aks_prepared_image_specification_version_delete(cmd, client, resource_group_name, pis_name, name, no_wait=False):
+    return sdk_no_wait(no_wait, client.begin_delete_version, resource_group_name, pis_name, name)
+
+
+def aks_prepared_image_specification_version_show(cmd, client, resource_group_name, pis_name, name):
+    return client.get_version(resource_group_name, pis_name, name)
+
+
+def aks_prepared_image_specification_version_list(cmd, client, resource_group_name, pis_name):
+    return client.list_versions(resource_group_name, pis_name)
