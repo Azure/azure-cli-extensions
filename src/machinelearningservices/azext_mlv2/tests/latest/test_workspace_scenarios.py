@@ -84,15 +84,15 @@ class WorkspaceScenarioTest(MLBaseScenarioTest):
 
     def test_workspace_managednetwork_outbound_rule_operations(self) -> None:
         workspaceName = self.kwargs.get("workspaceName", None)
-        workspaceName += "_mvnet"
+        workspaceName += "_mvnet2"
         ws_obj = self.cmd(
             f"az ml workspace create -g testrg -f ./src/machinelearningservices/azext_mlv2/tests/test_configs/workspace/workspace_mvnet.yaml -n {workspaceName} --no-wait"
         )
         assert ws_obj.output == ""
-        if not self.is_live:
+        if self.is_live:
             from time import sleep
 
-            sleep(120)  # This sleep is only required for fresh recording of cassette
+            sleep(600)  # Wait for async create to propagate when recording live
 
         ws_obj_s = self.cmd(f"az ml workspace show -g testrg -n {workspaceName}")
         ws_obj_s = yaml.safe_load(ws_obj_s.output)
@@ -171,10 +171,10 @@ class WorkspaceScenarioTest(MLBaseScenarioTest):
             f"az ml workspace update -g testrg -f ./src/machinelearningservices/azext_mlv2/tests/test_configs/workspace/workspace_update_mvnet.yaml -n {workspaceName} --no-wait"
         )
         assert ws_obj.output == ""
-        if not self.is_live:
+        if self.is_live:
             from time import sleep
 
-            sleep(120)  # This sleep is only required for fresh recording of cassette
+            sleep(300)  # Wait for async update to propagate when recording live
 
         # test show added outbound rules
         # FQDN
