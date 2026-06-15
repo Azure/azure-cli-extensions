@@ -23,9 +23,9 @@ class ContinueUpdateVersion(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}/continueupdateversion", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}/continueupdateversion", "2026-05-01-preview"],
         ]
     }
 
@@ -68,6 +68,13 @@ class ContinueUpdateVersion(AAZCommand):
             help="The mode by which the cluster will target the next grouping of servers to continue the update.",
             default="AlphaByRack",
             enum={"AlphaByRack": "AlphaByRack"},
+        )
+        _args_schema.safeguard_mode = AAZStrArg(
+            options=["--safeguard-mode"],
+            arg_group="ClusterContinueUpdateVersionParameters",
+            help="Specifies how safeguards are applied during the continue update version operation. Use All to run all pre‑operation validation checks. Use None to bypass safeguards. If not specified, the default is All.",
+            default="All",
+            enum={"All": "All", "None": "None"},
         )
         return cls._args_schema
 
@@ -152,7 +159,7 @@ class ContinueUpdateVersion(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -178,6 +185,7 @@ class ContinueUpdateVersion(AAZCommand):
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("machineGroupTargetingMode", AAZStrType, ".machine_group_targeting_mode")
+            _builder.set_prop("safeguardMode", AAZStrType, ".safeguard_mode")
 
             return self.serialize_content(_content_value)
 

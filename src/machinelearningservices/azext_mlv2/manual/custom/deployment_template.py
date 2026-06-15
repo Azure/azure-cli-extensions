@@ -144,10 +144,25 @@ def _ml_deployment_template_update(
     )
 
     try:
-        deployment_template = ml_client.deployment_templates.get(name=parameters["name"], version=parameters["version"])
+        deployment_template = ml_client.deployment_templates.get(
+            name=parameters["name"], version=parameters["version"]
+        )
 
-        deployment_template.description = parameters["description"]
-        deployment_template.tags = parameters["tags"]
+        # Detect if user tried to update immutable fields
+        original = deployment_template._to_dict()  # pylint: disable=protected-access
+        mutable_fields = {"tags", "description"}
+        for key, value in parameters.items():
+            if key not in mutable_fields and key in original and original[key] != value:
+                raise ValueError(
+                    f"Field '{key}' is immutable and cannot be updated. "
+                    "Only 'tags' and 'description' can be modified."
+                )
+
+        # Apply mutable field changes
+        if "description" in parameters:
+            deployment_template.description = parameters["description"]
+        if "tags" in parameters:
+            deployment_template.tags = parameters["tags"]
 
         deployment_template_result = ml_client.deployment_templates.create_or_update(deployment_template)
 

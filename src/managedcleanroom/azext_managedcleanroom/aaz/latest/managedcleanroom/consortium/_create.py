@@ -23,9 +23,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-10-31-preview",
+        "version": "2026-04-30-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cleanroom/consortiums/{}", "2025-10-31-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cleanroom/consortiums/{}", "2026-04-30-preview"],
         ]
     }
 
@@ -61,16 +61,15 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.consortium_type = AAZStrArg(
-            options=["--consortium-type"],
-            arg_group="Properties",
-            help="Gets or sets the consortium type.",
-            enum={"ConfidentialACI": "ConfidentialACI"},
-        )
         _args_schema.members = AAZListArg(
             options=["--members"],
             arg_group="Properties",
             help="Gets or sets the list of members to be added to the consortium.",
+        )
+        _args_schema.resource_location = AAZStrArg(
+            options=["--resource-location"],
+            arg_group="Properties",
+            help="Gets or sets the resource location for the consortium.",
         )
 
         members = cls._args_schema.members
@@ -96,6 +95,10 @@ class Create(AAZCommand):
             options=["is-operator"],
             help="Indicates if the member is an operator.",
             required=True,
+        )
+        _element.recovery_role = AAZStrArg(
+            options=["recovery-role"],
+            help="Gets or sets the recovery role for non-operator members.",
         )
 
         # define Arg Group "Resource"
@@ -208,7 +211,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-10-31-preview",
+                    "api-version", "2026-04-30-preview",
                     required=True,
                 ),
             }
@@ -240,8 +243,8 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("consortiumType", AAZStrType, ".consortium_type")
                 properties.set_prop("members", AAZListType, ".members")
+                properties.set_prop("resourceLocation", AAZStrType, ".resource_location")
 
             members = _builder.get(".properties.members")
             if members is not None:
@@ -253,6 +256,7 @@ class Create(AAZCommand):
                 _elements.set_prop("encryptionKeyPem", AAZStrType, ".encryption_key_pem", typ_kwargs={"flags": {"required": True}})
                 _elements.set_prop("identifier", AAZStrType, ".identifier", typ_kwargs={"flags": {"required": True}})
                 _elements.set_prop("isOperator", AAZBoolType, ".is_operator", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("recoveryRole", AAZStrType, ".recovery_role")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -301,10 +305,15 @@ class Create(AAZCommand):
             )
 
             properties = cls._schema_on_200_201.properties
-            properties.consortium_type = AAZStrType(
-                serialized_name="consortiumType",
+            properties.consortium_state = AAZStrType(
+                serialized_name="consortiumState",
+                flags={"read_only": True},
             )
             properties.endpoint = AAZStrType(
+                flags={"read_only": True},
+            )
+            properties.governance_type = AAZStrType(
+                serialized_name="governanceType",
                 flags={"read_only": True},
             )
             properties.health = AAZObjectType(
@@ -318,6 +327,9 @@ class Create(AAZCommand):
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
+            )
+            properties.resource_location = AAZStrType(
+                serialized_name="resourceLocation",
             )
             properties.service_certificate_pem = AAZStrType(
                 serialized_name="serviceCertificatePem",
@@ -373,6 +385,9 @@ class Create(AAZCommand):
             _element.is_operator = AAZBoolType(
                 serialized_name="isOperator",
                 flags={"required": True},
+            )
+            _element.recovery_role = AAZStrType(
+                serialized_name="recoveryRole",
             )
 
             system_data = cls._schema_on_200_201.system_data

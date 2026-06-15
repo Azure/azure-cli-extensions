@@ -71,10 +71,6 @@ def get_mc_snapshots_client(cli_ctx, subscription_id=None):
     return get_container_service_client(cli_ctx, subscription_id=subscription_id).managed_cluster_snapshots
 
 
-def get_compute_client(cli_ctx, *_):
-    return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_COMPUTE)
-
-
 def get_resource_groups_client(cli_ctx, subscription_id=None):
     return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES,
                                    subscription_id=subscription_id).resource_groups
@@ -159,3 +155,7 @@ def cf_load_balancers(cli_ctx, *_):
 
 def cf_jwt_authenticators(cli_ctx, *_):
     return get_container_service_client(cli_ctx).jwt_authenticators
+
+
+def cf_vm_skus(cli_ctx, *_):
+    return get_container_service_client(cli_ctx).vm_skus

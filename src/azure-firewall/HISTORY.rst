@@ -3,6 +3,15 @@
 Release History
 ===============
 
+2.2.0
+++++++
+* `az network firewall policy create` : Updated parameter `--identity` to support multiple MSIs
+* `az network firewall policy update` : Updated parameter `--identity` to support multiple MSIs
+
+2.1.1
+++++++
+* Update AzureFirewall model to support extended location.
+
 2.1.0
 ++++++
 * `az network firewall policy intrusion-detection add`: Update IDPS profile handling to use the latest supported profile values (`Off`, `Emerging`, `Core`, `Extended`).

@@ -9,3 +9,31 @@
 # pylint: disable=too-many-lines
 
 from knack.help_files import helps  # pylint: disable=unused-import
+
+helps['durabletask scheduler attach'] = """
+type: command
+short-summary: "[Experimental] Attach a Durable Task scheduler to a Function App or Container App."
+long-summary: |
+    This command is experimental and may change in future releases.
+
+    Assigns a Durable Task role to the target resource's managed identity
+    and configures the target's application settings or environment variables
+    with the scheduler endpoint and task hub name.
+examples:
+  - name: Attach a scheduler to a function app with the Worker role
+    text: |
+        az durabletask scheduler attach -g myResourceGroup -n myScheduler \\
+            --task-hub-name myTaskHub --role-type worker \\
+            --target /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRG/providers/Microsoft.Web/sites/myFunctionApp
+  - name: Attach a scheduler to a container app with the Data Contributor role
+    text: |
+        az durabletask scheduler attach -g myResourceGroup -n myScheduler \\
+            --task-hub-name myTaskHub --role-type contributor \\
+            --target /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRG/providers/Microsoft.App/containerApps/myContainerApp
+  - name: Attach using a user-assigned managed identity
+    text: |
+        az durabletask scheduler attach -g myResourceGroup -n myScheduler \\
+            --task-hub-name myTaskHub --role-type worker \\
+            --target /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRG/providers/Microsoft.Web/sites/myFunctionApp \\
+            --identity /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myIdentity
+"""

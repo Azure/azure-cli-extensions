@@ -17,17 +17,17 @@ helps['quantum execute'] = """
     examples:
       - name: Run QIR bitcode from a file in the current folder and wait for the result.
         text: |-
-            az quantum execute -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
+            az quantum execute -g MyResourceGroup -w MyWorkspace -t MyTarget \\
                 --job-name MyJob --job-input-format qir.v1 --job-input-file MyQirBitcode.bc \\
                 --entry-point MyQirEntryPoint
       - name: Run a Quil pass-through job on the Rigetti simulator and wait for the result.
         text: |-
-            az quantum execute -g MyResourceGroup -w MyWorkspace -l MyLocation \\
+            az quantum execute -g MyResourceGroup -w MyWorkspace \\
                -t rigetti.sim.qvm --job-name MyJob --job-input-file MyProgram.quil \\
                --job-input-format rigetti.quil.v1 --job-output-format rigetti.quil-results.v1
       - name: Submit a Qiskit circuit to the IonQ simulator with job params and wait for the results.
         text: |-
-            az quantum execute -g MyResourceGroup -w MyWorkspace -l MyLocation \\
+            az quantum execute -g MyResourceGroup -w MyWorkspace \\
                -t ionq.simulator --job-name MyJobName --job-input-file MyCircuit.json \\
                --job-input-format ionq.circuit.v1 --job-output-format ionq.quantum-results.v1 \\
                --job-params count=100 content-type=application/json
@@ -40,17 +40,17 @@ helps['quantum run'] = """
     examples:
       - name: Run QIR bitcode from a file in the current folder and wait for the result.
         text: |-
-            az quantum run -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
+            az quantum run -g MyResourceGroup -w MyWorkspace -t MyTarget \\
                 --job-name MyJob --job-input-format qir.v1 --job-input-file MyQirBitcode.bc \\
                 --entry-point MyQirEntryPoint
       - name: Run a Quil pass-through job on the Rigetti simulator and wait for the result.
         text: |-
-            az quantum run -g MyResourceGroup -w MyWorkspace -l MyLocation \\
+            az quantum run -g MyResourceGroup -w MyWorkspace \\
                -t rigetti.sim.qvm --job-name MyJob --job-input-file MyProgram.quil \\
                --job-input-format rigetti.quil.v1 --job-output-format rigetti.quil-results.v1
       - name: Submit a Qiskit circuit to the IonQ simulator with job params and wait for the results.
         text: |-
-            az quantum run -g MyResourceGroup -w MyWorkspace -l MyLocation \\
+            az quantum run -g MyResourceGroup -w MyWorkspace \\
                -t ionq.simulator --job-name MyJobName --job-input-file MyCircuit.json \\
                --job-input-format ionq.circuit.v1 --job-output-format ionq.quantum-results.v1 \\
                --job-params count=100 content-type=application/json
@@ -67,31 +67,31 @@ helps['quantum job list'] = """
     examples:
       - name: Get the list of jobs from an Azure Quantum workspace.
         text: |-
-            az quantum job list -g MyResourceGroup -w MyWorkspace -l MyLocation
+            az quantum job list -g MyResourceGroup -w MyWorkspace
       - name: List jobs that used the quantinuum provider.
         text: |-
-            az quantum job list -g MyResourceGroup -w MyWorkspace -l MyLocation --provider-id quantinuum
+            az quantum job list -g MyResourceGroup -w MyWorkspace --provider-id quantinuum
       - name: List jobs that ran on the ionq.simulator target.
         text: |-
-            az quantum job list -g MyResourceGroup -w MyWorkspace -l MyLocation --target-id ionq.simulator
+            az quantum job list -g MyResourceGroup -w MyWorkspace --target-id ionq.simulator
       - name: List jobs that completed successfully.
         text: |-
-            az quantum job list -g MyResourceGroup -w MyWorkspace -l MyLocation --status Succeeded
+            az quantum job list -g MyResourceGroup -w MyWorkspace --status Succeeded
       - name: List jobs created after January 15th, 2025.
         text: |-
-            az quantum job list -g MyResourceGroup -w MyWorkspace -l MyLocation --created-after 2025-01-15
+            az quantum job list -g MyResourceGroup -w MyWorkspace --created-after 2025-01-15
       - name: List jobs whose names start with "Generate...".
         text: |-
-            az quantum job list -g MyResourceGroup -w MyWorkspace -l MyLocation --job-name Generate
+            az quantum job list -g MyResourceGroup -w MyWorkspace --job-name Generate
       - name: Skip the first 50 jobs, start listing at the 51st job and list 10 jobs.
         text: |-
-            az quantum job list -g MyResourceGroup -w MyWorkspace -l MyLocation --skip 50 --top 10
+            az quantum job list -g MyResourceGroup -w MyWorkspace --skip 50 --top 10
       - name: Sort the job list by Target ID and display in tabular format.
         text: |-
-            az quantum job list -g MyResourceGroup -w MyWorkspace -l MyLocation --orderby Target -o table
+            az quantum job list -g MyResourceGroup -w MyWorkspace --orderby Target -o table
       - name: Sort the job list by Job Name in descending order, display in tabular format.
         text: |-
-            az quantum job list -g MyResourceGroup -w MyWorkspace -l MyLocation --orderby Name --order desc -o table
+            az quantum job list -g MyResourceGroup -w MyWorkspace --orderby Name --order desc -o table
 """
 
 helps['quantum job output'] = """
@@ -100,7 +100,7 @@ helps['quantum job output'] = """
     examples:
       - name: Print the results of a successful Azure Quantum job.
         text: |-
-            az quantum job output -g MyResourceGroup -w MyWorkspace -l MyLocation \\
+            az quantum job output -g MyResourceGroup -w MyWorkspace \\
                 -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy -o table
 """
 
@@ -110,7 +110,7 @@ helps['quantum job show'] = """
     examples:
       - name: Get the status of an Azure Quantum job.
         text: |-
-            az quantum job show -g MyResourceGroup -w MyWorkspace -l MyLocation \\
+            az quantum job show -g MyResourceGroup -w MyWorkspace \\
                 -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy --query status
 """
 
@@ -120,17 +120,17 @@ helps['quantum job submit'] = """
     examples:
       - name: Submit QIR bitcode from a file in the current folder.
         text: |-
-            az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
+            az quantum job submit -g MyResourceGroup -w MyWorkspace -t MyTarget \\
                 --job-name MyJob --job-input-format qir.v1 --job-input-file MyQirBitcode.bc \\
                 --entry-point MyQirEntryPoint
       - name: Submit a Quil pass-through job to the Rigetti simulator.
         text: |-
-            az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation \\
+            az quantum job submit -g MyResourceGroup -w MyWorkspace \\
                -t rigetti.sim.qvm --job-name MyJob --job-input-file MyProgram.quil \\
                --job-input-format rigetti.quil.v1 --job-output-format rigetti.quil-results.v1
       - name: Submit a IonQ JSON circuit to the IonQ simulator with job params.
         text: |-
-            az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation \\
+            az quantum job submit -g MyResourceGroup -w MyWorkspace \\
                -t ionq.simulator --job-name MyJobName --job-input-file MyCircuit.json \\
                --job-input-format ionq.circuit.v1 --job-output-format ionq.quantum-results.v1 \\
                --job-params count=100 content-type=application/json
@@ -142,7 +142,7 @@ helps['quantum job wait'] = """
     examples:
       - name: Wait for completion of a job, check at 60 second intervals.
         text: |-
-            az quantum job wait -g MyResourceGroup -w MyWorkspace -l MyLocation \\
+            az quantum job wait -g MyResourceGroup -w MyWorkspace \\
                 -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy --max-poll-wait-secs 60 -o table
 """
 
@@ -152,7 +152,7 @@ helps['quantum job cancel'] = """
     examples:
       - name: Cancel an Azure Quantum job by id.
         text: |-
-            az quantum job cancel -g MyResourceGroup -w MyWorkspace -l MyLocation \\
+            az quantum job cancel -g MyResourceGroup -w MyWorkspace \\
                 -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy
 """
 
@@ -211,7 +211,7 @@ helps['quantum target list'] = """
     examples:
       - name: Get the list of targets available in a Azure Quantum workspaces
         text: |-
-            az quantum target list -g MyResourceGroup -w MyWorkspace -l MyLocation
+            az quantum target list -g MyResourceGroup -w MyWorkspace
 """
 
 helps['quantum target set'] = """
@@ -288,9 +288,9 @@ helps['quantum workspace quotas'] = """
     type: command
     short-summary: List the quotas for the given (or current) Azure Quantum workspace.
     examples:
-      - name: List the quota information of a specified Azure Quantum workspace. If a default workspace has been set, the -g, -w, and -l parameters are not required.
+      - name: List the quota information of a specified Azure Quantum workspace. If a default workspace has been set, the -g and -w parameters are not required.
         text: |-
-            az quantum workspace quotas -g MyResourceGroup -w MyWorkspace -l MyLocation
+            az quantum workspace quotas -g MyResourceGroup -w MyWorkspace
 """
 
 helps['quantum workspace set'] = """
@@ -299,7 +299,7 @@ helps['quantum workspace set'] = """
     examples:
       - name: Set the default Azure Quantum workspace.
         text: |-
-            az quantum workspace set -g MyResourceGroup -w MyWorkspace -l MyLocation
+            az quantum workspace set -g MyResourceGroup -w MyWorkspace
 """
 
 helps['quantum workspace show'] = """

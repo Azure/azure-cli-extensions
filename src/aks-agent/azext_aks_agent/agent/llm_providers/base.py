@@ -175,6 +175,8 @@ class LLMProvider(ABC):
         """
         secret_key = cls.sanitize_k8s_secret_key(params)
         secret_value = params.get("api_key")
+        if not secret_value or not secret_value.strip():
+            return {}
         secret_data = {
             secret_key: base64.b64encode(secret_value.encode("utf-8")).decode("utf-8"),
         }
@@ -206,9 +208,13 @@ class LLMProvider(ABC):
         """Create a model config dictionary for the model list from the provider parameters.
         Returns a copy of params with the api_key replaced by environment variable reference.
         """
-        secret_key = cls.sanitize_k8s_secret_key(params)
         secured_params = params.copy()
-        secured_params.update({"api_key": f"{{{{ env.{secret_key} }}}}"})
+        api_key = params.get("api_key")
+        if api_key and api_key.strip():
+            secret_key = cls.sanitize_k8s_secret_key(params)
+            secured_params.update({"api_key": f"{{{{ env.{secret_key} }}}}"})
+        else:
+            secured_params.pop("api_key", None)
         return secured_params
 
     @classmethod

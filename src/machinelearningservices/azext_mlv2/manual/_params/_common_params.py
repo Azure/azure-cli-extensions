@@ -105,6 +105,14 @@ def add_description_param(c, help_message: str = "Description of the object."):
     )
 
 
+def add_display_name_param(c, help_message: str = "Display name of the object."):
+    c.argument(
+        "display_name",
+        options_list=["--display-name"],
+        help=help_message,
+    )
+
+
 def add_include_archived_param(c, help_message: str):
     c.argument(
         "include_archived",

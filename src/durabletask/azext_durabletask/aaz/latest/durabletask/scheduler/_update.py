@@ -16,12 +16,18 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a Scheduler
+
+    :example: Update a scheduler's IP allowlist and tags
+        az durabletask scheduler update --resource-group testrg --name testscheduler --ip-allowlist "[0.0.0.0/0]" --tags "{department:research}"
+
+    :example: Update a scheduler to disable public network access
+        az durabletask scheduler update --resource-group testrg --name testscheduler --public-network-access Disabled
     """
 
     _aaz_info = {
-        "version": "2025-11-01",
+        "version": "2026-02-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.durabletask/schedulers/{}", "2025-11-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.durabletask/schedulers/{}", "2026-02-01"],
         ]
     }
 
@@ -64,6 +70,13 @@ class Update(AAZCommand):
             options=["--ip-allowlist"],
             arg_group="Properties",
             help="IP allow list for durable task scheduler. Values can be IPv4, IPv6 or CIDR",
+        )
+        _args_schema.public_network_access = AAZStrArg(
+            options=["--public-network-access"],
+            arg_group="Properties",
+            help="Allow or disallow public network access to durable task scheduler",
+            nullable=True,
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
 
         ip_allowlist = cls._args_schema.ip_allowlist
@@ -181,7 +194,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-11-01",
+                    "api-version", "2026-02-01",
                     required=True,
                 ),
             }
@@ -280,7 +293,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-11-01",
+                    "api-version", "2026-02-01",
                     required=True,
                 ),
             }
@@ -344,6 +357,7 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("ipAllowlist", AAZListType, ".ip_allowlist", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("publicNetworkAccess", AAZStrType, ".public_network_access")
                 properties.set_prop("sku", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
 
             ip_allowlist = _builder.get(".properties.ipAllowlist")
@@ -404,6 +418,7 @@ class _UpdateHelper:
             serialized_name="systemData",
             flags={"read_only": True},
         )
+        cls._build_schema_system_data_read(scheduler_read.system_data)
         scheduler_read.tags = AAZDictType()
         scheduler_read.type = AAZStrType(
             flags={"read_only": True},
@@ -417,9 +432,16 @@ class _UpdateHelper:
             serialized_name="ipAllowlist",
             flags={"required": True},
         )
+        properties.private_endpoint_connections = AAZListType(
+            serialized_name="privateEndpointConnections",
+            flags={"read_only": True},
+        )
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
             flags={"read_only": True},
+        )
+        properties.public_network_access = AAZStrType(
+            serialized_name="publicNetworkAccess",
         )
         properties.sku = AAZObjectType(
             flags={"required": True},
@@ -427,6 +449,60 @@ class _UpdateHelper:
 
         ip_allowlist = _schema_scheduler_read.properties.ip_allowlist
         ip_allowlist.Element = AAZStrType()
+
+        private_endpoint_connections = _schema_scheduler_read.properties.private_endpoint_connections
+        private_endpoint_connections.Element = AAZObjectType()
+
+        _element = _schema_scheduler_read.properties.private_endpoint_connections.Element
+        _element.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        _element.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        _element.properties = AAZObjectType(
+            flags={"client_flatten": True},
+        )
+        _element.system_data = AAZObjectType(
+            serialized_name="systemData",
+            flags={"read_only": True},
+        )
+        cls._build_schema_system_data_read(_element.system_data)
+        _element.type = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        properties = _schema_scheduler_read.properties.private_endpoint_connections.Element.properties
+        properties.group_ids = AAZListType(
+            serialized_name="groupIds",
+            flags={"read_only": True},
+        )
+        properties.private_endpoint = AAZObjectType(
+            serialized_name="privateEndpoint",
+        )
+        properties.private_link_service_connection_state = AAZObjectType(
+            serialized_name="privateLinkServiceConnectionState",
+            flags={"required": True},
+        )
+        properties.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+
+        group_ids = _schema_scheduler_read.properties.private_endpoint_connections.Element.properties.group_ids
+        group_ids.Element = AAZStrType()
+
+        private_endpoint = _schema_scheduler_read.properties.private_endpoint_connections.Element.properties.private_endpoint
+        private_endpoint.id = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        private_link_service_connection_state = _schema_scheduler_read.properties.private_endpoint_connections.Element.properties.private_link_service_connection_state
+        private_link_service_connection_state.actions_required = AAZStrType(
+            serialized_name="actionsRequired",
+        )
+        private_link_service_connection_state.description = AAZStrType()
+        private_link_service_connection_state.status = AAZStrType()
 
         sku = _schema_scheduler_read.properties.sku
         sku.capacity = AAZIntType()
@@ -436,26 +512,6 @@ class _UpdateHelper:
         sku.redundancy_state = AAZStrType(
             serialized_name="redundancyState",
             flags={"read_only": True},
-        )
-
-        system_data = _schema_scheduler_read.system_data
-        system_data.created_at = AAZStrType(
-            serialized_name="createdAt",
-        )
-        system_data.created_by = AAZStrType(
-            serialized_name="createdBy",
-        )
-        system_data.created_by_type = AAZStrType(
-            serialized_name="createdByType",
-        )
-        system_data.last_modified_at = AAZStrType(
-            serialized_name="lastModifiedAt",
-        )
-        system_data.last_modified_by = AAZStrType(
-            serialized_name="lastModifiedBy",
-        )
-        system_data.last_modified_by_type = AAZStrType(
-            serialized_name="lastModifiedByType",
         )
 
         tags = _schema_scheduler_read.tags
@@ -468,6 +524,50 @@ class _UpdateHelper:
         _schema.system_data = cls._schema_scheduler_read.system_data
         _schema.tags = cls._schema_scheduler_read.tags
         _schema.type = cls._schema_scheduler_read.type
+
+    _schema_system_data_read = None
+
+    @classmethod
+    def _build_schema_system_data_read(cls, _schema):
+        if cls._schema_system_data_read is not None:
+            _schema.created_at = cls._schema_system_data_read.created_at
+            _schema.created_by = cls._schema_system_data_read.created_by
+            _schema.created_by_type = cls._schema_system_data_read.created_by_type
+            _schema.last_modified_at = cls._schema_system_data_read.last_modified_at
+            _schema.last_modified_by = cls._schema_system_data_read.last_modified_by
+            _schema.last_modified_by_type = cls._schema_system_data_read.last_modified_by_type
+            return
+
+        cls._schema_system_data_read = _schema_system_data_read = AAZObjectType(
+            flags={"read_only": True}
+        )
+
+        system_data_read = _schema_system_data_read
+        system_data_read.created_at = AAZStrType(
+            serialized_name="createdAt",
+        )
+        system_data_read.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        system_data_read.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+        )
+        system_data_read.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+        )
+        system_data_read.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+        )
+        system_data_read.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+        )
+
+        _schema.created_at = cls._schema_system_data_read.created_at
+        _schema.created_by = cls._schema_system_data_read.created_by
+        _schema.created_by_type = cls._schema_system_data_read.created_by_type
+        _schema.last_modified_at = cls._schema_system_data_read.last_modified_at
+        _schema.last_modified_by = cls._schema_system_data_read.last_modified_by
+        _schema.last_modified_by_type = cls._schema_system_data_read.last_modified_by_type
 
 
 __all__ = ["Update"]
