@@ -32,9 +32,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 11 Jun 2026 23:20:14 GMT
+      - Mon, 15 Jun 2026 17:20:46 GMT
       mise-correlation-id:
-      - c9079a1c-74ba-4e06-895a-a4feafc33153
+      - bcac9157-a1da-491a-bde2-fa9dd2f77503
       request-context:
       - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
       strict-transport-security:
@@ -48,7 +48,7 @@ interactions:
       x-ms-response-type:
       - standard
       x-request-time:
-      - '0.039'
+      - '0.196'
     status:
       code: 200
       message: OK
@@ -95,7 +95,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 11 Jun 2026 23:20:14 GMT
+      - Mon, 15 Jun 2026 17:20:47 GMT
       expires:
       - '-1'
       pragma:
@@ -115,9 +115,9 @@ interactions:
       x-ms-response-type:
       - standard
       x-msedge-ref:
-      - 'Ref A: C3EE438DFB7041F583EE0A4F2C125498 Ref B: MWH011020809029 Ref C: 2026-06-11T23:20:14Z'
+      - 'Ref A: 82FE63DC03814CF28A954D5B54C7EF78 Ref B: CO1AA3060816031 Ref C: 2026-06-15T17:20:48Z'
       x-request-time:
-      - '0.019'
+      - '0.014'
     status:
       code: 200
       message: OK
@@ -138,13 +138,14 @@ interactions:
   response:
     body:
       string: '{"type": "deploymenttemplates", "name": "test-deployment-template",
-        "stage": "Archived", "version": "1", "id": "azureml://registries/test-cli-reg/deploymenttemplates/test-deployment-template/versions/1",
+        "stage": "Development", "version": "1", "id": "azureml://registries/test-cli-reg/deploymenttemplates/test-deployment-template/versions/1",
         "description": "Updated_description_for_deployment_template_testing", "createdBy":
         {"userObjectId": "7b119936-993f-49c4-adcf-31b1c1caa15b", "userTenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
-        "userName": "Lava Kumar Repala"}, "capabilities": [], "createdTime": "2026-06-11T23:19:56.0823465+00:00",
-        "modifiedTime": "2026-06-11T23:20:13.176101+00:00", "tags": {"stage": "Open",
-        "environment": "test", "updated": "True"}, "deploymentTemplateType": "Managed",
-        "environmentId": "azureml://registries/kchawla-reg/environments/kchawla-environment/versions/1",
+        "userName": "Test User"}, "capabilities": [], "createdTime": "2026-06-11T23:19:56.0823465+00:00",
+        "modifiedTime": "2026-06-15T17:16:48.9599413+00:00", "tags": {"stage": "Open",
+        "author": "test-automation", "project": "cli-testing", "iteration": "second-update",
+        "validated": "True", "environment": "test", "updated": "True"}, "deploymentTemplateType":
+        "Managed", "environmentId": "azureml://registries/kchawla-reg/environments/kchawla-environment/versions/1",
         "environmentVariables": {"MODEL_BASE_PATH": "/var/azureml-app/azureml-models/tfs-model1/1",
         "MODEL_NAME": "half_plus_two", "ENABLE_INFERENCESERVER_DIAGNOSTICSLOG_AML_VISIBILITY":
         "True"}, "modelMountPath": "/var/azureml-app", "requestSettings": {"requestTimeout":
@@ -159,17 +160,17 @@ interactions:
         8501}'
     headers:
       azureml-served-by-cluster:
-      - vienna-westcentralus-01
+      - vienna-westcentralus-02
       connection:
       - keep-alive
       content-length:
-      - '1705'
+      - '1815'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 11 Jun 2026 23:20:15 GMT
+      - Mon, 15 Jun 2026 17:20:49 GMT
       mise-correlation-id:
-      - 73e6f4a4-1595-430b-8669-c913d362274a
+      - 377726e2-4be6-473e-9a9a-f5cce600f7db
       request-context:
       - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
       strict-transport-security:
@@ -183,7 +184,7 @@ interactions:
       x-ms-response-type:
       - standard
       x-request-time:
-      - '0.057'
+      - '0.097'
     status:
       code: 200
       message: OK
@@ -222,7 +223,7 @@ interactions:
         []}, "systemData": null}'
     headers:
       azureml-served-by-cluster:
-      - vienna-westcentralus-01
+      - vienna-westcentralus-02
       cache-control:
       - no-cache
       content-length:
@@ -230,7 +231,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 11 Jun 2026 23:20:15 GMT
+      - Mon, 15 Jun 2026 17:20:50 GMT
       expires:
       - '-1'
       pragma:
@@ -250,16 +251,17 @@ interactions:
       x-ms-response-type:
       - standard
       x-msedge-ref:
-      - 'Ref A: C03C04757296418689F2ADA845DF2B6F Ref B: CO6AA3150219049 Ref C: 2026-06-11T23:20:16Z'
+      - 'Ref A: 6BFF2DB1360B4403BD142C78277086DB Ref B: CO6AA3150220029 Ref C: 2026-06-15T17:20:50Z'
       x-request-time:
-      - '0.030'
+      - '0.014'
     status:
       code: 200
       message: OK
 - request:
     body: '{"stage": "Development", "description": "Updated_description_for_deployment_template_testing",
-      "tags": {"stage": "Open", "environment": "test", "updated": "True"}, "deploymentTemplateType":
-      "Managed", "environmentId": "azureml://registries/kchawla-reg/environments/kchawla-environment/versions/1",
+      "tags": {"stage": "Open", "author": "test-automation", "project": "cli-testing",
+      "iteration": "second-update", "validated": "True", "environment": "test", "updated":
+      "True"}, "deploymentTemplateType": "Managed", "environmentId": "azureml://registries/kchawla-reg/environments/kchawla-environment/versions/1",
       "environmentVariables": {"MODEL_BASE_PATH": "/var/azureml-app/azureml-models/tfs-model1/1",
       "MODEL_NAME": "half_plus_two", "ENABLE_INFERENCESERVER_DIAGNOSTICSLOG_AML_VISIBILITY":
       "True"}, "modelMountPath": "/var/azureml-app", "requestSettings": {"requestTimeout":
@@ -280,7 +282,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '1273'
+      - '1379'
       Content-Type:
       - application/json
       User-Agent:
@@ -290,10 +292,10 @@ interactions:
     uri: https://westcentralus.api.azureml.ms/genericasset/v2.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/000000000000000/providers/Microsoft.MachineLearningServices/registries/test-cli-reg/test-deployment-template/versions/1?api-version=0000-00-00
   response:
     body:
-      string: '{"location": "https://westcentralus.api.azureml.ms:443/assetstore/v1.0/operations/oPD7VKco_p64SyLiafmUHzLoQ6kgrrcMGdWqBKsqmeA"}'
+      string: '{"location": "https://westcentralus.api.azureml.ms:443/assetstore/v1.0/operations/vPFxFpxgEPo_hgba54fH_CITALN1oCj93B41zTbd5RU"}'
     headers:
       azureml-served-by-cluster:
-      - vienna-westcentralus-01
+      - vienna-westcentralus-02
       connection:
       - keep-alive
       content-length:
@@ -301,11 +303,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 11 Jun 2026 23:20:17 GMT
+      - Mon, 15 Jun 2026 17:20:52 GMT
       location:
-      - https://westcentralus.api.azureml.ms/assetstore/v1.0/operations/oPD7VKco_p64SyLiafmUHzLoQ6kgrrcMGdWqBKsqmeA
+      - https://westcentralus.api.azureml.ms/assetstore/v1.0/operations/vPFxFpxgEPo_hgba54fH_CITALN1oCj93B41zTbd5RU
       mise-correlation-id:
-      - 698ae992-5361-4d6d-932d-a33531903a24
+      - 647daaa8-ca60-4aee-82d6-4180f41198d8
       request-context:
       - appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d
       strict-transport-security:
@@ -315,7 +317,7 @@ interactions:
       x-ms-response-type:
       - standard
       x-request-time:
-      - '0.439'
+      - '0.394'
     status:
       code: 202
       message: Accepted

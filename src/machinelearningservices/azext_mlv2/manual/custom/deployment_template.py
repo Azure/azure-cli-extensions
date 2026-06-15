@@ -148,17 +148,7 @@ def _ml_deployment_template_update(
             name=parameters["name"], version=parameters["version"]
         )
 
-        # Detect if user tried to update immutable fields
-        original = deployment_template._to_dict()  # pylint: disable=protected-access
-        mutable_fields = {"tags", "description"}
-        for key, value in parameters.items():
-            if key not in mutable_fields and key in original and original[key] != value:
-                raise ValueError(
-                    f"Field '{key}' is immutable and cannot be updated. "
-                    "Only 'tags' and 'description' can be modified."
-                )
-
-        # Apply mutable field changes
+        # Only description and tags are mutable server-side; apply just those.
         if "description" in parameters:
             deployment_template.description = parameters["description"]
         if "tags" in parameters:

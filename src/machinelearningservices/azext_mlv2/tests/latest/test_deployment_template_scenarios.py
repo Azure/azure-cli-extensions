@@ -59,7 +59,7 @@ replication_locations:
             result = subprocess.run(
                 ["az", "ml", "registry", "create",
                  "-g", cls.resource_group, "--file", registry_yaml_path],
-                capture_output=True, text=True, shell=True,
+                capture_output=True, text=True, shell=False,
             )
             if result.returncode == 0:
                 print("[SETUP] Registry created successfully")
@@ -83,7 +83,7 @@ replication_locations:
                 subprocess.run(
                     ["az", "ml", "registry", "delete",
                      "-g", cls.resource_group, "--name", cls.registry_name, "--yes"],
-                    capture_output=True, text=True, shell=True,
+                    capture_output=True, text=True, shell=False,
                 )
                 print("[TEARDOWN] Registry delete submitted")
             except Exception as e:

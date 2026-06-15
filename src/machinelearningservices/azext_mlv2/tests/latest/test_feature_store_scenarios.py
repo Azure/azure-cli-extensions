@@ -14,7 +14,7 @@ from azext_mlv2.tests.scenario_test_helper import MLBaseScenarioTest
 
 class FeatureStoreScenarioTest(MLBaseScenarioTest):
     def test_featureStore(self) -> None:
-        self.kwargs["resourceGroup"] = "kchawla-rg"
+        self.kwargs["resourceGroup"] = "test-rg-000006"
 
         fs_obj = self.cmd(
             "az ml feature-store create -n {workspaceName} --resource-group {resourceGroup} --subscription {subscription} --no-wait -f ./src/machinelearningservices/azext_mlv2/tests/test_configs/featurestore/featurestore.yaml"
@@ -73,7 +73,7 @@ class FeatureStoreScenarioTest(MLBaseScenarioTest):
         self.assertEqual(fs_obj_delete.output, "")
         
     def test_featurestore_managednetwork_provision(self) -> None:
-        self.kwargs["resourceGroup"] = "kchawla-rg"
+        self.kwargs["resourceGroup"] = "test-rg-000006"
 
         workspaceName = self.kwargs.get("workspaceName", None)
         workspaceName += "_mvnetprov"
