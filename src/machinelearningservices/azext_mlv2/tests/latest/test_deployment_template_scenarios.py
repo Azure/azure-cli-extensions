@@ -181,11 +181,6 @@ replication_locations:
                 assert updated_template.get("description") == new_description
                 if "tags" in updated_template:
                     assert updated_template["tags"].get("environment") == "test"
-                    # In azure-ai-ml >= 1.34, ``tags`` is typed as
-                    # ``dict[str, str]`` so non-string values are returned as
-                    # their string form (``"True"``).  Accept either the
-                    # boolean or its string representation so the assertion
-                    # works across SDK upgrades.
                     assert updated_template["tags"].get("updated") in (True, "True", "true")
                 print(f"[TEST 04] Template updated successfully")
             else:
