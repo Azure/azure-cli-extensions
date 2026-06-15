@@ -23,6 +23,8 @@ helps['dataprotection backup-instance initialize'] = """
     examples:
       - name: Initialize backup instance request for Azure Disk
         text: az dataprotection backup-instance initialize --datasource-type AzureDisk -l southeastasia --policy-id {disk_policy_id} --datasource-id {disk_id}
+      - name: Initialize backup instance request for an AzureElasticSAN volume group
+        text: az dataprotection backup-instance initialize --datasource-type AzureElasticSAN -l southeastasia --policy-id {esan_policy_id} --datasource-id {volume_group_id} --friendly-name myEsanBackupInstance --backup-configuration {backup_configuration}
 """
 
 helps['dataprotection backup-instance update'] = """
@@ -61,6 +63,8 @@ helps['dataprotection backup-instance update-msi-permissions'] = """
         text: az dataprotection backup-instance update-msi-permissions --backup-instance backup_inst.json --resource-group samarth_resource_group --vault-name samarthbackupvault --datasource-type AzureDisk --operation Backup --permissions-scope ResourceGroup
       - name: Assign the required permissions needed to successfully enable restore for the datasource.
         text: az dataprotection backup-instance update-msi-permissions --datasource-type AzureKubernetesService --operation Restore --permissions-scope Resource --resource-group sampleRG --vault-name samplevault --restore-request-object aksrestore.json --snapshot-resource-group-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sampleRG
+      - name: Assign the required permissions needed to successfully enable backup for an AzureElasticSAN datasource.
+        text: az dataprotection backup-instance update-msi-permissions --backup-instance esan_backup_inst.json --resource-group sampleRG --vault-name samplevault --datasource-type AzureElasticSAN --operation Backup --permissions-scope ResourceGroup
 """
 
 helps['dataprotection backup-policy get-default-policy-template'] = """
@@ -71,6 +75,8 @@ helps['dataprotection backup-policy get-default-policy-template'] = """
         text: az dataprotection backup-policy get-default-policy-template --datasource-type AzureDisk
       - name: Get default policy template for Azure Data Lake Storage
         text: az dataprotection backup-policy get-default-policy-template --datasource-type AzureDataLakeStorage
+      - name: Get default policy template for AzureElasticSAN
+        text: az dataprotection backup-policy get-default-policy-template --datasource-type AzureElasticSAN
 """
 
 helps['dataprotection backup-policy trigger'] = """
@@ -193,6 +199,8 @@ helps['dataprotection backup-instance restore initialize-for-item-recovery'] = "
             --recovery-point-id {recovery_point_id} \\
             --target-resource-id {storage_account_id} \\
             --vaulted-blob-prefix-pattern '{"containers":[{"name":"container1","prefixmatch":["a","b"],"renameto":"container1renamed"},{"name":"container2","renameto":"container2renamed"}]}'
+      - name: Initialize item-level restore request for an AzureElasticSAN volume group
+        text: az dataprotection backup-instance restore initialize-for-item-recovery --datasource-type AzureElasticSAN --restore-location centraluseuap --source-datastore OperationalStore --backup-instance-id {backup_instance_id} --recovery-point-id {recovery_point_id} --target-resource-id {target_volume_group_id} --restore-configuration {restore_configuration}
 """
 
 helps['dataprotection resource-guard list-protected-operations'] = """
@@ -205,7 +213,7 @@ helps['dataprotection resource-guard list-protected-operations'] = """
 
 helps['dataprotection backup-instance initialize-backupconfig'] = """
     type: command
-    short-summary: Initialize JSON request body for initializing and configuring backup for AzureKubernetesService or AzureBlobs (for vaulted backups) resources. The generated JSON is meant for use with other CLI commands, and may not work as an input for non-CLI scenarios without modification.
+    short-summary: Initialize JSON request body for initializing and configuring backup for AzureKubernetesService, AzureElasticSAN or AzureBlobs (for vaulted backups) resources. The generated JSON is meant for use with other CLI commands, and may not work as an input for non-CLI scenarios without modification.
     examples:
       - name: Initialize backup configuration for AzureKubernetesService
         text: az dataprotection backup-instance initialize-backupconfig --datasource-type AzureKubernetesService --label-selectors key=val foo=bar --excluded-namespaces excludeNS1 excludeNS2
@@ -217,15 +225,19 @@ helps['dataprotection backup-instance initialize-backupconfig'] = """
         text: az dataprotection backup-instance initialize-backupconfig --datasource-type AzureBlob --auto-protection true
       - name: Initialize backup configuration for AzureDataLakeStorage with auto-protection and exclusion prefixes
         text: az dataprotection backup-instance initialize-backupconfig --datasource-type AzureDataLakeStorage --auto-protection true --exclusion-prefixes "logs-" "temp-"
+      - name: Initialize backup configuration for AzureElasticSAN
+        text: az dataprotection backup-instance initialize-backupconfig --datasource-type AzureElasticSAN --resource-selectors vol1 vol2 vol3
 
 """
 
 helps['dataprotection backup-instance initialize-restoreconfig'] = """
     type: command
-    short-summary: Initialize JSON request body for initializing and configuring restore of an AzureKubernetesService resource. The generated JSON is meant for use with other CLI commands, and may not work as an input for non-CLI scenarios without modification.
+    short-summary: Initialize JSON request body for initializing and configuring restore of an AzureKubernetesService or AzureElasticSAN resource. The generated JSON is meant for use with other CLI commands, and may not work as an input for non-CLI scenarios without modification.
     examples:
       - name: Initialize restore configuration
         text: az dataprotection backup-instance initialize-restoreconfig --datasource-type AzureKubernetesService
+      - name: Initialize restore configuration for AzureElasticSAN
+        text: az dataprotection backup-instance initialize-restoreconfig --datasource-type AzureElasticSAN --resource-identifiers source-vol1 source-vol2 --resource-name-overrides '{"source-vol1":"target-vol1","source-vol2":"target-vol2"}'
 """
 
 helps['dataprotection backup-instance validate-for-backup'] = """

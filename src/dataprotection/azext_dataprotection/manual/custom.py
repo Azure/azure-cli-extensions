@@ -94,7 +94,8 @@ def dataprotection_backup_instance_initialize_backupconfig(cmd, client, datasour
                                                            storage_account_name=None, storage_account_resource_group=None,
                                                            backup_hook_references=None,
                                                            auto_protection=None,
-                                                           auto_protection_exclusion_prefixes=None):
+                                                           auto_protection_exclusion_prefixes=None,
+                                                           resource_selectors=None):
     if datasource_type == "AzureKubernetesService":
         if any([vaulted_backup_containers, include_all_containers, storage_account_name, storage_account_resource_group,
                 auto_protection is not None, auto_protection_exclusion_prefixes is not None]):
@@ -132,8 +133,24 @@ def dataprotection_backup_instance_initialize_backupconfig(cmd, client, datasour
             return helper.get_blob_autoprotection_config(datasource_type, auto_protection_exclusion_prefixes)
         return helper.get_blob_backupconfig(cmd, client, vaulted_backup_containers, include_all_containers, storage_account_name, storage_account_resource_group, datasource_type)
 
+    if datasource_type == "AzureElasticSAN":
+        if any([excluded_resource_types, included_resource_types, excluded_namespaces, included_namespaces,
+                label_selectors, snapshot_volumes, include_cluster_scope_resources, backup_hook_references,
+                vaulted_backup_containers, include_all_containers, storage_account_name,
+                storage_account_resource_group, auto_protection is not None,
+                auto_protection_exclusion_prefixes is not None]):
+            raise InvalidArgumentValueError('For AzureElasticSAN, only --resource-selectors is applicable for the backup configuration.')
+        if not resource_selectors:
+            raise RequiredArgumentMissingError('--resource-selectors is required for AzureElasticSAN backup configuration. '
+                                               'Provide the list of volume group resource selectors to be backed up.')
+        return {
+            "object_type": "GenericBackupDatasourceParameters",
+            "resource_selectors": resource_selectors
+        }
+
     raise InvalidArgumentValueError('Given datasource type is not supported currently. '
-                                    'This command only supports "AzureBlob", "AzureDataLakeStorage" or "AzureKubernetesService" datasource types.')
+                                    'This command only supports "AzureBlob", "AzureDataLakeStorage", '
+                                    '"AzureKubernetesService" or "AzureElasticSAN" datasource types.')
 
 
 def dataprotection_backup_instance_initialize(datasource_type, datasource_id, datasource_location, policy_id,
@@ -401,6 +418,12 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
             raise InvalidArgumentValueError("Please provide a valid keyvault ID")
 
     manifest = helper.load_manifest(datasource_type)
+
+    # TODO [eSAN]: For AzureElasticSAN, the manifest role definition names
+    # (backupVaultPermissions / backupVaultRestorePermissions in Manifests/AzureElasticSAN.py)
+    # are placeholders pending confirmation from the DPP service team, and the Restore
+    # permission-grant path has not yet been validated end-to-end for this datasource type.
+    # Verify the actual Elastic SAN role names and restore-grant behaviour before GA.
 
     warning_message = helper.get_help_text_on_grant_permissions_templatized(datasource_type, operation)
     if not yes and not prompt_y_n(warning_message):
@@ -967,7 +990,23 @@ def dataprotection_backup_instance_initialize_restoreconfig(datasource_type, exc
                                                             include_cluster_scope_resources=None,
                                                             namespace_mappings=None, conflict_policy=None,
                                                             restore_hook_references=None, staging_resource_group_id=None,
-                                                            staging_storage_account_id=None, resource_modifier_reference=None):
+                                                            staging_storage_account_id=None, resource_modifier_reference=None,
+                                                            resource_identifiers=None, resource_name_overrides=None):
+    if datasource_type == "AzureElasticSAN":
+        if not resource_identifiers:
+            raise RequiredArgumentMissingError('--resource-identifiers is required for AzureElasticSAN restore configuration. '
+                                               'Provide the list of source volume group resource identifiers to restore.')
+        resource_selectors = {
+            "object_type": "ResourceListSelectionCriteria",
+            "resource_identifiers": resource_identifiers
+        }
+        if resource_name_overrides:
+            resource_selectors["resource_name_overrides"] = resource_name_overrides
+        return {
+            "object_type": "GenericRestoreDatasourceCriteria",
+            "resource_selectors": resource_selectors
+        }
+
     if datasource_type != "AzureKubernetesService":
         raise InvalidArgumentValueError("This command is currently not supported for datasource types other than AzureKubernetesService")
 
@@ -1039,7 +1078,8 @@ def restore_initialize_for_data_recovery(cmd, datasource_type, source_datastore,
         restore_request["restore_target_info"]["datasource_auth_credentials"] = helper.get_datasource_auth_credentials_info(secret_store_type, secret_store_uri)
 
     # AKS Data-level and Item-level are identical in their configuration, for our purpose, and restore criteria is required for item level
-    if datasource_type == 'AzureKubernetesService':
+    # AzureElasticSAN similarly requires item-level restore criteria (generic resource selectors).
+    if datasource_type in ('AzureKubernetesService', 'AzureElasticSAN'):
         restore_request["restore_target_info"]["object_type"] = "ItemLevelRestoreTargetInfo"
         restore_request["restore_target_info"]["restore_criteria"] = helper.get_resource_criteria_list(datasource_type, restore_configuration,
                                                                                                        None, None, None, None, None)
