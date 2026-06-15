@@ -314,11 +314,6 @@ replication_locations:
             if isinstance(updated_template, dict) and "tags" in updated_template:
                 tags = updated_template["tags"]
                 print(f"[TEST 10] Updated tags: {tags}")
-                # The asynchronous create_or_update response captured in the
-                # cassette only carries the resource snapshot prior to the
-                # tag update being applied, so the newly added tags may not
-                # appear in the playback response.  Verify that the command
-                # succeeded and returned a well-formed tag mapping.
                 assert isinstance(tags, dict)
                 expected_tags = ["author", "project", "iteration", "validated"]
                 found_tags = [tag for tag in expected_tags if tag in tags]
