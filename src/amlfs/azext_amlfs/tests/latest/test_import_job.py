@@ -46,11 +46,15 @@ class AmlfsImportJobScenario(ScenarioTest):
             'import_job': self.create_random_name('job', 10),
             'storage_account': storage_account,
             'import_container': self.create_random_name('import', 15),
-            'logging_container': self.create_random_name('logging', 15)
+            'logging_container': self.create_random_name('logging', 15),
+            'nat_pip': self.create_random_name('natpip', 12),
+            'nat_gw': self.create_random_name('natgw', 11),
         })
-        # Create prerequisites: identity, network
+        # Create prerequisites: network with NAT gateway for outbound access
         self.cmd('az network vnet create -n {vnet} -g {rg} --address-prefix 20.0.0.0/24')
-        subnet_id = self.cmd('az network vnet subnet create -n {subnet} -g {rg} --address-prefix 20.0.0.0/24 --vnet-name {vnet} ').get_output_in_json()['id']
+        self.cmd('az network public-ip create -n {nat_pip} -g {rg} --sku Standard --allocation-method Static --ip-tags "FirstPartyUsage=/NonProd"')
+        self.cmd('az network nat gateway create -n {nat_gw} -g {rg} --public-ip-addresses {nat_pip}')
+        subnet_id = self.cmd('az network vnet subnet create -n {subnet} -g {rg} --address-prefix 20.0.0.0/24 --vnet-name {vnet} --default-outbound-access false --nat-gateway {nat_gw}').get_output_in_json()['id']
 
         self.kwargs.update({
             'subnet_id': subnet_id

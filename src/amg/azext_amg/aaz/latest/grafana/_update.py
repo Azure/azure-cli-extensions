@@ -343,7 +343,7 @@ class _UpdateHelper:
         managed_grafana_read.id = AAZStrType(
             flags={"read_only": True},
         )
-        managed_grafana_read.identity = AAZObjectType()
+        managed_grafana_read.identity = AAZIdentityObjectType()
         managed_grafana_read.location = AAZStrType()
         managed_grafana_read.name = AAZStrType(
             flags={"read_only": True},

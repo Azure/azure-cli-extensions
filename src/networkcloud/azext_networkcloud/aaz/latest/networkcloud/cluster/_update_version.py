@@ -23,9 +23,9 @@ class UpdateVersion(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}/updateversion", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}/updateversion", "2026-05-01-preview"],
         ]
     }
 
@@ -62,6 +62,13 @@ class UpdateVersion(AAZCommand):
         # define Arg Group "ClusterUpdateVersionParameters"
 
         _args_schema = cls._args_schema
+        _args_schema.safeguard_mode = AAZStrArg(
+            options=["--safeguard-mode"],
+            arg_group="ClusterUpdateVersionParameters",
+            help="Specifies how safeguards are applied during the update version operation. Use All to run all pre‑operation validation checks. Use None to bypass safeguards. If not specified, the default is All.",
+            default="All",
+            enum={"All": "All", "None": "None"},
+        )
         _args_schema.target_cluster_version = AAZStrArg(
             options=["--target-cluster-version"],
             arg_group="ClusterUpdateVersionParameters",
@@ -151,7 +158,7 @@ class UpdateVersion(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -176,6 +183,7 @@ class UpdateVersion(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
+            _builder.set_prop("safeguardMode", AAZStrType, ".safeguard_mode")
             _builder.set_prop("targetClusterVersion", AAZStrType, ".target_cluster_version", typ_kwargs={"flags": {"required": True}})
 
             return self.serialize_content(_content_value)

@@ -23,9 +23,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2025-09-01",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/baremetalmachines/{}", "2025-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/baremetalmachines/{}", "2026-05-01-preview"],
         ]
     }
 
@@ -124,7 +124,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-09-01",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -210,6 +210,14 @@ class Show(AAZCommand):
                 serialized_name="bmcCredentials",
                 flags={"required": True},
             )
+            properties.bmc_ipv4_address = AAZStrType(
+                serialized_name="bmcIpv4Address",
+                flags={"read_only": True},
+            )
+            properties.bmc_ipv6_address = AAZStrType(
+                serialized_name="bmcIpv6Address",
+                flags={"read_only": True},
+            )
             properties.bmc_mac_address = AAZStrType(
                 serialized_name="bmcMacAddress",
                 flags={"required": True},
@@ -276,6 +284,10 @@ class Show(AAZCommand):
             properties.machine_sku_id = AAZStrType(
                 serialized_name="machineSkuId",
                 flags={"required": True},
+            )
+            properties.monitoring_configuration_status = AAZObjectType(
+                serialized_name="monitoringConfigurationStatus",
+                flags={"read_only": True},
             )
             properties.oam_ipv4_address = AAZStrType(
                 serialized_name="oamIpv4Address",
@@ -484,13 +496,41 @@ class Show(AAZCommand):
             machine_roles = cls._schema_on_200.properties.machine_roles
             machine_roles.Element = AAZStrType()
 
+            monitoring_configuration_status = cls._schema_on_200.properties.monitoring_configuration_status
+            monitoring_configuration_status.log_level = AAZStrType(
+                serialized_name="logLevel",
+            )
+            monitoring_configuration_status.metrics_level = AAZStrType(
+                serialized_name="metricsLevel",
+            )
+
             runtime_protection_status = cls._schema_on_200.properties.runtime_protection_status
+            runtime_protection_status.agent_health_status = AAZStrType(
+                serialized_name="agentHealthStatus",
+                flags={"read_only": True},
+            )
+            runtime_protection_status.agent_health_status_issues = AAZListType(
+                serialized_name="agentHealthStatusIssues",
+                flags={"read_only": True},
+            )
+            runtime_protection_status.agent_license_status = AAZStrType(
+                serialized_name="agentLicenseStatus",
+                flags={"read_only": True},
+            )
+            runtime_protection_status.definition_update_mode = AAZStrType(
+                serialized_name="definitionUpdateMode",
+                flags={"read_only": True},
+            )
             runtime_protection_status.definitions_last_updated = AAZStrType(
                 serialized_name="definitionsLastUpdated",
                 flags={"read_only": True},
             )
             runtime_protection_status.definitions_version = AAZStrType(
                 serialized_name="definitionsVersion",
+                flags={"read_only": True},
+            )
+            runtime_protection_status.enforcement_level = AAZStrType(
+                serialized_name="enforcementLevel",
                 flags={"read_only": True},
             )
             runtime_protection_status.scan_completed_time = AAZStrType(
@@ -505,6 +545,9 @@ class Show(AAZCommand):
                 serialized_name="scanStartedTime",
                 flags={"read_only": True},
             )
+
+            agent_health_status_issues = cls._schema_on_200.properties.runtime_protection_status.agent_health_status_issues
+            agent_health_status_issues.Element = AAZStrType()
 
             secret_rotation_status = cls._schema_on_200.properties.secret_rotation_status
             secret_rotation_status.Element = AAZObjectType()

@@ -399,7 +399,7 @@ package policy
 import future.keywords.every
 import future.keywords.in
 
-api_version := "0.10.0"
+api_version := "0.11.0"
 framework_version := "0.1.0"
 
 fragments := [...]
@@ -432,6 +432,7 @@ runtime_logging := data.framework.runtime_logging
 load_fragment := data.framework.load_fragment
 scratch_mount := data.framework.scratch_mount
 scratch_unmount := data.framework.scratch_unmount
+rw_mount_device := data.framework.rw_mount_device
 
 reason := {"errors": data.framework.errors}
 ```

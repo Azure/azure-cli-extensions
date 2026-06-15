@@ -18,14 +18,14 @@ from ..private_endpoint_util import PrivateEndpointUtil
 class Update(AAZCommand):
     """Update a collaboration.
 
-    :example: Create Collaboration
-        az managedcleanroom collaboration update --resource-group testrg --collaboration-name ContosoCollaboration --consortium-type ConfidentialACI --user-identity "{tenant-id:fd3c3665-1729-4b7b-9a38-238e83b0f98b,object-id:fd3c3665-1729-4b7b-9a38-238e83b0f98b,account-type:microsoft}"
+    :example: Update Collaboration
+        az managedcleanroom collaboration update --resource-group testrg --collaboration-name ContosoCollaboration --tags "env=testing"
     """
 
     _aaz_info = {
-        "version": "2025-10-31-preview",
+        "version": "2026-04-30-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cleanroom/collaborations/{}", "2025-10-31-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cleanroom/collaborations/{}", "2026-04-30-preview"],
         ]
     }
 
@@ -64,31 +64,11 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.consortium_type = AAZStrArg(
-            options=["--consortium-type"],
+        _args_schema.resource_location = AAZStrArg(
+            options=["--resource-location"],
             arg_group="Properties",
-            help="Gets or sets the consortium type.",
-            enum={"ConfidentialACI": "ConfidentialACI"},
-        )
-        _args_schema.user_identity = AAZObjectArg(
-            options=["--user-identity"],
-            arg_group="Properties",
-            help="Gets or sets the user identity.",
-        )
-
-        user_identity = cls._args_schema.user_identity
-        user_identity.account_type = AAZStrArg(
-            options=["account-type"],
-            help="Account type of the user identity.",
-            enum={"microsoft": "microsoft"},
-        )
-        user_identity.object_id = AAZStrArg(
-            options=["object-id"],
-            help="Object ID of the user identity.",
-        )
-        user_identity.tenant_id = AAZStrArg(
-            options=["tenant-id"],
-            help="Tenant ID of the user identity.",
+            help="Gets or sets the resource location for the collaboration.",
+            nullable=True,
         )
 
         # define Arg Group "Resource"
@@ -185,7 +165,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-10-31-preview",
+                    "api-version", "2026-04-30-preview",
                     required=True,
                 ),
             }
@@ -284,7 +264,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-10-31-preview",
+                    "api-version", "2026-04-30-preview",
                     required=True,
                 ),
             }
@@ -342,19 +322,12 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("consortiumType", AAZStrType, ".consortium_type", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("userIdentity", AAZObjectType, ".user_identity", typ_kwargs={"flags": {"required": True}})
-
-            user_identity = _builder.get(".properties.userIdentity")
-            if user_identity is not None:
-                user_identity.set_prop("accountType", AAZStrType, ".account_type", typ_kwargs={"flags": {"required": True}})
-                user_identity.set_prop("objectId", AAZStrType, ".object_id", typ_kwargs={"flags": {"required": True}})
-                user_identity.set_prop("tenantId", AAZStrType, ".tenant_id", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("resourceLocation", AAZStrType, ".resource_location")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -403,7 +376,7 @@ class _UpdateHelper:
             flags={"read_only": True},
         )
         collaboration_read.properties = AAZObjectType(
-            flags={"required": True, "client_flatten": True},
+            flags={"client_flatten": True},
         )
         collaboration_read.system_data = AAZObjectType(
             serialized_name="systemData",
@@ -419,13 +392,14 @@ class _UpdateHelper:
             serialized_name="clusterEndpoint",
             flags={"read_only": True},
         )
+        properties.collaboration_state = AAZStrType(
+            serialized_name="collaborationState",
+            flags={"read_only": True},
+        )
+        properties.collaborators = AAZListType()
         properties.consortium_arm_id = AAZStrType(
             serialized_name="consortiumArmId",
             flags={"read_only": True},
-        )
-        properties.consortium_type = AAZStrType(
-            serialized_name="consortiumType",
-            flags={"required": True},
         )
         properties.health = AAZObjectType(
             flags={"read_only": True},
@@ -438,12 +412,29 @@ class _UpdateHelper:
             serialized_name="provisioningState",
             flags={"read_only": True},
         )
-        properties.user_identity = AAZObjectType(
-            serialized_name="userIdentity",
-            flags={"required": True},
+        properties.resource_location = AAZStrType(
+            serialized_name="resourceLocation",
         )
         properties.workloads = AAZListType(
             flags={"read_only": True},
+        )
+
+        collaborators = _schema_collaboration_read.properties.collaborators
+        collaborators.Element = AAZObjectType()
+
+        _element = _schema_collaboration_read.properties.collaborators.Element
+        _element.is_collaboration_owner = AAZBoolType(
+            serialized_name="isCollaborationOwner",
+            flags={"read_only": True},
+        )
+        _element.object_id = AAZStrType(
+            serialized_name="objectId",
+        )
+        _element.tenant_id = AAZStrType(
+            serialized_name="tenantId",
+        )
+        _element.user_identifier = AAZStrType(
+            serialized_name="userIdentifier",
         )
 
         health = _schema_collaboration_read.properties.health
@@ -476,20 +467,6 @@ class _UpdateHelper:
 
         _element = _schema_collaboration_read.properties.managed_on_behalf_of_configuration.mobo_broker_resources.Element
         _element.id = AAZStrType()
-
-        user_identity = _schema_collaboration_read.properties.user_identity
-        user_identity.account_type = AAZStrType(
-            serialized_name="accountType",
-            flags={"required": True},
-        )
-        user_identity.object_id = AAZStrType(
-            serialized_name="objectId",
-            flags={"required": True},
-        )
-        user_identity.tenant_id = AAZStrType(
-            serialized_name="tenantId",
-            flags={"required": True},
-        )
 
         workloads = _schema_collaboration_read.properties.workloads
         workloads.Element = AAZObjectType()
