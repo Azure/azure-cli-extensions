@@ -109,8 +109,9 @@ def load_arguments(self, _):
         c.argument('auto_protection_exclusion_prefixes', type=str, nargs='+',
                    options_list=['--auto-protection-exclusion-prefixes', '--exclusion-prefixes'],
                    help='List of container name prefixes to exclude from auto-protection. Requires --auto-protection to be enabled.')
-
-    with self.argument_context('dataprotection backup-instance initialize') as c:
+        c.argument('resource_selectors', type=str, nargs='+',
+                   help='List of volume group resource selectors (for example, volume names) to be backed up. '
+                        'Use this parameter for DatasourceType AzureElasticSAN.')
         c.argument('datasource_type', arg_type=get_enum_type(get_datasource_types()), help="Specify the datasource type of the resource to be backed up")
         c.argument('datasource_id', type=str, help="ARM Id of the resource to be backed up")
         c.argument('datasource_location', options_list=['--datasource-location', '-l'], arg_type=get_location_type(self.cli_ctx))
@@ -313,6 +314,12 @@ def load_arguments(self, _):
         c.argument('resource_modifier_reference', type=validate_file_or_dict,
                    options_list=['--resource-modifier-reference', '--resource-modifier'],
                    help='Key value mapping for resource modifier reference')
+        c.argument('resource_identifiers', type=str, nargs='+',
+                   help='List of source volume group resource identifiers to restore. '
+                        'Use this parameter for DatasourceType AzureElasticSAN.')
+        c.argument('resource_name_overrides', type=validate_file_or_dict,
+                   help='Map of source resource names to target resource names to restore into. Any source name not '
+                        'included will be restored with a default naming format. Use this parameter for DatasourceType AzureElasticSAN.')
 
     with self.argument_context('dataprotection backup-instance restore initialize-for-data-recovery') as c:
         c.argument('target_resource_id', type=str, help="specify the resource ID to which the data will be restored.")
@@ -326,7 +333,7 @@ def load_arguments(self, _):
         c.argument('secret_store_uri', type=str, help="Specify the secret store uri to use for authentication")
         c.argument('rehydration_priority', arg_type=get_enum_type(get_rehydration_priority_values()), help="Specify the rehydration priority for rehydrate restore.")
         c.argument('rehydration_duration', type=int, help="Specify the rehydration duration for rehydrate restore.")
-        c.argument('restore_configuration', type=validate_file_or_dict, help="Restore configuration for restore. Use this parameter to restore with AzureKubernetesService.")
+        c.argument('restore_configuration', type=validate_file_or_dict, help="Restore configuration for restore. Use this parameter to restore with AzureKubernetesService or AzureElasticSAN.")
         c.argument('use_system_assigned_identity', options_list=['--mi-system-assigned', '--use-system-identity', '--use-system-assigned-identity'], arg_type=get_three_state_flag(), help="Use system assigned identity")
         c.argument('user_assigned_identity_arm_url', options_list=['--mi-user-assigned', '--user-assigned-identity-arm-url', '--uami'], type=str, help="ARM ID of the User Assigned Managed Identity")
 
@@ -356,7 +363,7 @@ def load_arguments(self, _):
         c.argument('container_list', type=str, nargs='+', help="specify the list of containers to restore.")
         c.argument('from_prefix_pattern', type=str, nargs='+', help="specify the prefix pattern for start range.")
         c.argument('to_prefix_pattern', type=str, nargs='+', help="specify the prefix pattern for end range.")
-        c.argument('restore_configuration', type=validate_file_or_dict, help="Restore configuration for restore. Use this parameter to restore with AzureKubernetesService.")
+        c.argument('restore_configuration', type=validate_file_or_dict, help="Restore configuration for restore. Use this parameter to restore with AzureKubernetesService or AzureElasticSAN.")
         c.argument('vaulted_blob_prefix_pattern', options_list=['--vaulted-blob-prefix-pattern', '--vaulted-blob-prefix'],
                    type=validate_file_or_dict, help="Specify the prefix pattern for vaulted blobs.")
         c.argument('use_system_assigned_identity', options_list=['--mi-system-assigned', '--use-system-identity', '--use-system-assigned-identity'], arg_type=get_three_state_flag(), help="Use system assigned identity")
