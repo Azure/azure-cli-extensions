@@ -319,3 +319,37 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         workspace_location = None
         _autoadd_providers(cmd, providers_in_region, providers_selected, workspace_location, True)
         assert providers_selected[0] == {"provider_id": "foo", "sku": "foo_credits_for_all_plan", "offer_id": "foo_offer", "publisher_id": "foo0123456789"}
+
+    def test_workspace_kind(self):
+        print("test_workspace_kind")
+        from ...vendored_sdks.azure_mgmt_quantum.models import WorkspaceResourceProperties, WorkspaceKind
+
+        # V1 workspace: workspace_kind is None by default (field omitted from request, service defaults to V1)
+        props = WorkspaceResourceProperties()
+        assert props.workspace_kind is None
+        serialized = props.serialize()
+        assert serialized.get("workspaceKind") is None
+
+        # V1 workspace: explicitly setting V1 serializes to "workspaceKind": "V1" in the JSON body
+        props = WorkspaceResourceProperties(workspace_kind=WorkspaceKind.V1)
+        assert props.workspace_kind == "V1"
+        serialized = props.serialize()
+        assert serialized.get("workspaceKind") == "V1"
+
+        # V2 workspace: serializes to "workspaceKind": "V2" in the JSON body
+        props = WorkspaceResourceProperties(workspace_kind=WorkspaceKind.V2)
+        assert props.workspace_kind == "V2"
+        serialized = props.serialize()
+        assert serialized.get("workspaceKind") == "V2"
+
+        # V2 workspace: workspace_kind can be set after construction (as done in the skip_role_assignment path)
+        props = WorkspaceResourceProperties()
+        props.workspace_kind = WorkspaceKind.V2
+        assert props.workspace_kind == "V2"
+        serialized = props.serialize()
+        assert serialized.get("workspaceKind") == "V2"
+
+        # ARM template parameter expression: workspace_kind or '' gives '' for None/V1-default, value otherwise
+        assert (None or '') == ''
+        assert (WorkspaceKind.V1 or '') == "V1"
+        assert (WorkspaceKind.V2 or '') == "V2"
