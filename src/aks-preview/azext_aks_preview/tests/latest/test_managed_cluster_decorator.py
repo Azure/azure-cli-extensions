@@ -6781,7 +6781,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
     def test_set_up_azure_monitor_profile_create_cp_without_amp_raises(self):
         # --enable-control-plane-metrics without --enable-azure-monitor-metrics on create
         # must fail validation early.
-        from azure.cli.core.azclierror import ArgumentUsageError
+        from azure.cli.core.azclierror import RequiredArgumentMissingError
 
         dec = AKSPreviewManagedClusterCreateDecorator(
             self.cmd,
@@ -6796,7 +6796,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             identity=self.models.ManagedClusterIdentity(type="SystemAssigned"),
         )
         dec.context.attach_mc(mc)
-        with self.assertRaises(ArgumentUsageError):
+        with self.assertRaises(RequiredArgumentMissingError):
             dec.set_up_azure_monitor_profile(mc)
 
     def test_set_up_image_cleaner(self):
