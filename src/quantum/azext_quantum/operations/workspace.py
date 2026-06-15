@@ -195,7 +195,7 @@ def _validate_storage_account(tier_or_kind_msg_text, tier_or_kind, supported_tie
 
 
 def create(cmd, resource_group_name, workspace_name, location, storage_account, skip_role_assignment=False,
-           provider_sku_list=None, auto_accept=False, skip_autoadd=False):
+           provider_sku_list=None, auto_accept=False, skip_autoadd=False, workspace_kind=None):
     """
     Create a new Azure Quantum workspace.
     """
@@ -215,6 +215,7 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account, 
     if skip_role_assignment:
         _add_quantum_providers(cmd, quantum_workspace, provider_sku_list, auto_accept, skip_autoadd)
         quantum_workspace.properties.api_key_enabled = True
+        quantum_workspace.properties.workspace_kind = workspace_kind
         poller = client.begin_create_or_update(info.resource_group, info.name, quantum_workspace, polling=False)
         while not poller.done():
             time.sleep(POLLING_TIME_DURATION)
@@ -269,7 +270,8 @@ def create(cmd, resource_group_name, workspace_name, location, storage_account, 
         'storageAccountSku': storage_account_sku,
         'storageAccountKind': storage_account_kind,
         'storageAccountAllowSharedKeyAccess': storage_account_allow_shared_key_access,
-        'storageAccountDeploymentName': "Microsoft.StorageAccount-" + time.strftime("%d-%b-%Y-%H-%M-%S", time.gmtime())
+        'storageAccountDeploymentName': "Microsoft.StorageAccount-" + time.strftime("%d-%b-%Y-%H-%M-%S", time.gmtime()),
+        'workspaceKind': workspace_kind or ''
     }
     parameters = {k: {'value': v} for k, v in parameters.items()}
 
