@@ -306,6 +306,14 @@ def load_command_table(self, _):
         g.custom_command("update", "aks_agentpool_manual_scale_update", supports_no_wait=True)
         g.custom_command("delete", "aks_agentpool_manual_scale_delete", supports_no_wait=True)
 
+    # AKS nodepool auto-scale command
+    with self.command_group(
+        "aks nodepool auto-scale", managed_clusters_sdk, client_factory=cf_agent_pools
+    ) as g:
+        g.custom_command("add", "aks_agentpool_auto_scale_add", supports_no_wait=True)
+        g.custom_command("update", "aks_agentpool_auto_scale_update", supports_no_wait=True)
+        g.custom_command("delete", "aks_agentpool_auto_scale_delete", supports_no_wait=True)
+
     with self.command_group(
         "aks machine", machines_sdk, client_factory=cf_machines
     ) as g:

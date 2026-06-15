@@ -411,6 +411,9 @@ helps['managedcleanroom frontend analytics dataset publish'] = """
         - name: --kek-maa-url
           type: string
           short-summary: MAA URL for KEK (CPK mode only)
+        - name: --subdirectory
+          type: string
+          short-summary: Optional subdirectory/prefix inside the storage container to mount
     examples:
         - name: Publish a dataset using SSE encryption with individual parameters
           text: |
@@ -454,6 +457,22 @@ helps['managedcleanroom frontend analytics dataset publish'] = """
               --collaboration-id my-collab-123 \
               --document-id my-dataset \
               --body @dataset-config.json
+        - name: Publish a dataset mounted at a subdirectory
+          text: |
+            az managedcleanroom frontend analytics dataset publish \
+              --collaboration-id my-collab-123 \
+              --document-id my-dataset \
+              --storage-account-url https://mystorageaccount.blob.core.windows.net \
+              --container-name datasets \
+              --storage-account-type AzureStorageAccount \
+              --encryption-mode SSE \
+              --schema-file @schema.json \
+              --access-mode ReadWrite \
+              --identity-name northwind-identity \
+              --identity-client-id fb907136-1234-5678-9abc-def012345678 \
+              --identity-tenant-id 72f988bf-1234-5678-9abc-def012345678 \
+              --identity-issuer-url https://oidc.example.com/issuer \
+              --subdirectory year=2026/month=05
 """
 
 

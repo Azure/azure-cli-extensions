@@ -48,7 +48,7 @@ class BackupInstanceCreateDeleteScenarioTest(ScenarioTest):
     def setUp(test):
         super().setUp()
         test.kwargs.update({
-            'location': 'centraluseuap',
+            'location': 'eastus',
             'rg': 'clitest-dpp-rg',
             'vaultName': 'clitest-bkp-vault-donotdelete',
         })
@@ -58,9 +58,9 @@ class BackupInstanceCreateDeleteScenarioTest(ScenarioTest):
         test.kwargs.update({
             'dataSourceType': "AzureDisk",
             'permissionsScope': "Resource",
-            'policyId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/diskpolicy',
+            'policyId': '/subscriptions/59e574f1-e278-4b66-875b-e3e4fe74ad88/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/diskpolicy',
             'diskName': 'clitest-disk-donotdelete',
-            'diskId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete',
+            'diskId': '/subscriptions/59e574f1-e278-4b66-875b-e3e4fe74ad88/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete',
             'policyRuleName': "BackupHourly"
         })
         backup_instance_guid = "b7e6f082-b310-11eb-8f55-9cfce85d4fa1"

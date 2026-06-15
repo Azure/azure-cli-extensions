@@ -18,8 +18,7 @@ from azure.cli.core.azclierror import ResourceNotFoundError
 from azure.cli.core.azclierror import AzureConnectionError
 from azure.cli.core.azclierror import ForbiddenError
 from azure.cli.core._profile import Profile
-from azure.core.exceptions import ResourceNotFoundError as ComputeClientResourceNotFoundError
-from azext_serialconsole._client_factory import _compute_client_factory
+from azure.core.exceptions import HttpResponseError
 from azext_serialconsole._client_factory import cf_serialconsole
 from azext_serialconsole._client_factory import cf_serial_port
 
@@ -603,34 +602,27 @@ def check_resource(cli_ctx, resource_group_name, vm_vmss_name, vmss_instanceid):
     check_serial_console_enabled(cli_ctx, storage_account_region)
 
     if vmss_instanceid:
-        if 'osName' in result.additional_properties and "windows" in result.additional_properties['osName'].lower():
+        if "windows" in result.get('osName', '').lower():
             GV.os_is_windows = True
 
-        power_state = ','.join(
-            [s.display_status for s in result.statuses if s.code.startswith('PowerState/')]).lower()
+        power_state = ','.join([s.get('displayStatus') for s in result.get('statuses', [])
+                                if s.get('code', '').startswith('PowerState/')]).lower()
         if "deallocating" in power_state or "deallocated" in power_state:
             error_message = "Azure Serial Console requires a virtual machine to be running."
             recommendation = 'Use "az vmss start" to start the Virtual Machine.'
-            raise AzureConnectionError(
-                error_message, recommendation=recommendation)
+            raise AzureConnectionError(error_message, recommendation=recommendation)
     else:
-        if (result.instance_view is not None and
-                result.instance_view.os_name is not None and
-                "windows" in result.instance_view.os_name.lower()):
+        if "windows" in result.get('instanceView', {}).get('osName', '').lower():
             GV.os_is_windows = True
-        if (result.storage_profile is not None and
-                result.storage_profile.image_reference is not None and
-                result.storage_profile.image_reference.offer is not None and
-                "windows" in result.storage_profile.image_reference.offer.lower()):
+        if "windows" in result.get('storageProfile', {}).get('imageReference', {}).get('offer', '').lower():
             GV.os_is_windows = True
 
-        power_state = ','.join(
-            [s.display_status for s in result.instance_view.statuses if s.code.startswith('PowerState/')])
+        power_state = ','.join([s.get('displayStatus') for s in result.get('instanceView', {}).get('statuses', [])
+                                if s.get('code', '').startswith('PowerState/')])
         if "deallocating" in power_state or "deallocated" in power_state:
             error_message = "Azure Serial Console requires a virtual machine to be running."
             recommendation = 'Use "az vm start" to start the Virtual Machine.'
-            raise AzureConnectionError(
-                error_message, recommendation=recommendation)
+            raise AzureConnectionError(error_message, recommendation=recommendation)
 
 
 def connect_serialconsole(cmd, resource_group_name, vm_vmss_name, vmss_instanceid=None):
@@ -680,21 +672,26 @@ def disable_serialconsole(cmd):
 
 
 def get_region_from_storage_account(cli_ctx, resource_group_name, vm_vmss_name, vmss_instanceid):
+    from azure.cli.command_modules.vm.aaz.latest.vmss.vms.instance_view import Show as VMSSVMSInstanceView
+    from azure.cli.command_modules.vm.operations.vm import VMShow
+    from azure.cli.command_modules.vm.operations.vmss import VMSSShow
     from azext_serialconsole._client_factory import storage_client_factory
     from knack.log import get_logger
 
     logger = get_logger(__name__)
-    result = None
     storage_account_region = None
-    client = _compute_client_factory(cli_ctx)
     scf = storage_client_factory(cli_ctx)
 
     if vmss_instanceid:
-        result_data = client.virtual_machine_scale_set_vms.get_instance_view(
-            resource_group_name, vm_vmss_name, vmss_instanceid)
+        command_args = {
+            'instance_id': vmss_instanceid,
+            'resource_group': resource_group_name,
+            'vm_scale_set_name': vm_vmss_name
+        }
+        result_data = VMSSVMSInstanceView(cli_ctx=cli_ctx)(command_args=command_args)
         result = result_data
 
-        if result_data.boot_diagnostics is None:
+        if result_data.get('bootDiagnostics') is None:
             error_message = "Azure Serial Console requires boot diagnostics to be enabled."
             recommendation = ('Use "az vmss update --name MyScaleSet --resource-group MyResourceGroup --set '
                               'virtualMachineProfile.diagnosticsProfile="{\\"bootDiagnostics\\": {\\"Enabled\\" : '
@@ -704,40 +701,44 @@ def get_region_from_storage_account(cli_ctx, resource_group_name, vm_vmss_name, 
                               'MyScaleSet -g MyResourceGroup --instance-ids *".')
             raise AzureConnectionError(
                 error_message, recommendation=recommendation)
-        if result.boot_diagnostics is not None:
-            logger.debug(result.boot_diagnostics)
-            if result.boot_diagnostics.console_screenshot_blob_uri is not None:
-                storage_account_url = result.boot_diagnostics.console_screenshot_blob_uri
+        if result.get('bootDiagnostics') is not None:
+            logger.debug(result.get('bootDiagnostics'))
+            if result.get('bootDiagnostics', {}).get('consoleScreenshotBlobUri') is not None:
+                storage_account_url = result['bootDiagnostics']['consoleScreenshotBlobUri']
                 storage_account_region = get_storage_account_info(storage_account_url, scf)
     else:
         try:
-            result_data = client.virtual_machines.get(
-                resource_group_name, vm_vmss_name, expand='instanceView')
+            command_args = {
+                'resource_group': resource_group_name,
+                'vm_name': vm_vmss_name,
+                'expand': 'instanceView'
+            }
+            result_data = VMShow(cli_ctx=cli_ctx)(command_args=command_args)
             result = result_data
-        except ComputeClientResourceNotFoundError as e:
+        except HttpResponseError as e:
             try:
-                client.virtual_machine_scale_sets.get(resource_group_name, vm_vmss_name)
-            except ComputeClientResourceNotFoundError:
+                command_args = {
+                    'resource_group': resource_group_name,
+                    'vm_scale_set_name': vm_vmss_name
+                }
+                VMSSShow(cli_ctx=cli_ctx)(command_args=command_args)
+            except HttpResponseError:
                 raise e from e
             error_message = e.message
             recommendation = ("We found that you specified a Virtual Machine Scale Set and not a VM. "
                               "Use the --instance-id parameter to select the VMSS instance you want to connect to.")
-            raise ResourceNotFoundError(
-                error_message, recommendation=recommendation) from e
+            raise ResourceNotFoundError(error_message, recommendation=recommendation) from e
 
-        if (result.diagnostics_profile is None or
-                result.diagnostics_profile.boot_diagnostics is None or
-                not result.diagnostics_profile.boot_diagnostics.enabled):
+        if (result.get('diagnosticsProfile', {}).get('bootDiagnostics') is None or
+                not result['diagnosticsProfile']['bootDiagnostics'].get('enabled')):
             error_message = "Azure Serial Console requires boot diagnostics to be enabled."
             recommendation = ('Use "az vm boot-diagnostics enable --name MyVM --resource-group MyResourceGroup" '
                               'to enable boot diagnostics. You can specify a custom storage account with the '
                               'parameter "--storage https://mystor.blob.windows.net/".')
-            raise AzureConnectionError(
-                error_message, recommendation=recommendation)
-        if result.diagnostics_profile is not None:
-            if result.diagnostics_profile.boot_diagnostics is not None:
-                storage_account_url = result.diagnostics_profile.boot_diagnostics.storage_uri
-                storage_account_region = get_storage_account_info(storage_account_url, scf)
+            raise AzureConnectionError(error_message, recommendation=recommendation)
+        if result.get('diagnosticsProfile', {}).get('bootDiagnostics') is not None:
+            storage_account_url = result['diagnosticsProfile']['bootDiagnostics'].get('storageUri')
+            storage_account_region = get_storage_account_info(storage_account_url, scf)
 
     return result, storage_account_region
 

@@ -6,7 +6,7 @@
 import os
 import sys
 import tempfile
-from typing import Optional, BinaryIO
+from typing import Optional
 
 from azext_confcom import oras_proxy, os_util, security_policy
 from azext_confcom._validators import resolve_stdio
@@ -27,6 +27,8 @@ from azext_confcom.command.fragment_attach import fragment_attach as _fragment_a
 from azext_confcom.command.fragment_push import fragment_push as _fragment_push
 from azext_confcom.command.containers_from_image import containers_from_image as _containers_from_image
 from azext_confcom.command.containers_from_vn2 import containers_from_vn2 as _containers_from_vn2
+from azext_confcom.command.containers_from_radius import containers_from_radius as _containers_from_radius
+from azext_confcom.command.radius_policy_insert import radius_policy_insert as _radius_policy_insert
 from knack.log import get_logger
 from packaging.version import Version
 
@@ -131,6 +133,7 @@ def acipolicygen_confcom(
             disable_stdio=(not stdio_enabled),
             exclude_default_fragments=exclude_default_fragments,
             platform=platform,
+            tar_mapping=tar_mapping,
         )
     elif arm_template:
         container_group_policies = security_policy.load_policy_from_arm_template_file(
@@ -144,11 +147,12 @@ def acipolicygen_confcom(
             rego_imports=fragments_list,
             exclude_default_fragments=exclude_default_fragments,
             platform=platform,
+            tar_mapping=tar_mapping,
         )
     elif image_name:
         container_group_policies = security_policy.load_policy_from_image_name(
             image_name, debug_mode=debug_mode, disable_stdio=(not stdio_enabled),
-            platform=platform,
+            platform=platform, tar_mapping=tar_mapping,
         )
     elif virtual_node_yaml_path:
         container_group_policies = security_policy.load_policy_from_virtual_node_yaml_file(
@@ -161,6 +165,7 @@ def acipolicygen_confcom(
             exclude_default_fragments=exclude_default_fragments,
             infrastructure_svn=infrastructure_svn,
             platform=platform,
+            tar_mapping=tar_mapping,
         )
     elif container_definitions:
         container_group_policies = AciPolicy(
@@ -325,14 +330,16 @@ def acifragmentgen_confcom(
 
     if image_name:
         policy = security_policy.load_policy_from_image_name(
-            image_name, debug_mode=debug_mode, disable_stdio=(not stdio_enabled)
+            image_name, debug_mode=debug_mode, disable_stdio=(not stdio_enabled),
+            tar_mapping=tar_mapping,
         )
     elif input_path:
         # this is using --input
         if not tar_mapping:
             tar_mapping = os_util.load_tar_mapping_from_config_file(input_path)
         policy = security_policy.load_policy_from_json_file(
-            input_path, debug_mode=debug_mode, disable_stdio=(not stdio_enabled)
+            input_path, debug_mode=debug_mode, disable_stdio=(not stdio_enabled),
+            tar_mapping=tar_mapping,
         )
     elif container_definitions:
         policy = AciPolicy(
@@ -559,7 +566,7 @@ def get_fragment_output_type(outraw):
 
 
 def fragment_attach(
-    signed_fragment: BinaryIO,
+    signed_fragment: Optional[str],
     manifest_tag: str,
     platform: Optional[str] = None,
 ) -> None:
@@ -571,7 +578,7 @@ def fragment_attach(
 
 
 def fragment_push(
-    signed_fragment: BinaryIO,
+    signed_fragment: Optional[str],
     manifest_tag: str,
 ) -> None:
     _fragment_push(
@@ -598,3 +605,31 @@ def containers_from_vn2(
         template=template,
         container_name=container_name,
     ))
+
+
+def containers_from_radius(
+    cmd,
+    template: str,
+    parameters: list,
+    container_index: int = 0,
+    platform: str = "aci",
+) -> None:
+    print(_containers_from_radius(
+        az_cli_command=cmd,
+        template=template,
+        parameters=parameters,
+        container_index=container_index,
+        platform=platform,
+    ))
+
+
+def radius_policy_insert(
+    policy_file,
+    template_path: str,
+    container_index: int = 0,
+) -> None:
+    _radius_policy_insert(
+        policy_file=policy_file,
+        template_path=template_path,
+        container_index=container_index,
+    )

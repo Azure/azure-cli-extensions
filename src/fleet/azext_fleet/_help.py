@@ -145,6 +145,8 @@ helps['fleet member list'] = """
     examples:
         - name: List all members for a given fleet.
           text: az fleet member list -g MyFleetResourceGroup -f MyFleetName
+        - name: List members filtered by a cluster mesh profile.
+          text: az fleet member list -g MyFleetResourceGroup -f MyFleetName --cluster-mesh-profile MyClusterMeshProfile
 """
 
 helps['fleet member show'] = """
@@ -583,4 +585,80 @@ helps['fleet namespace get-credentials'] = """
           text: az fleet namespace get-credentials -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --member MyFleetMember
         - name: Save kubeconfig to a specific file.
           text: az fleet namespace get-credentials -g MyFleetResourceGroup -f MyFleetName -n MyManagedNamespace --file ~/my-namespace-config
+"""
+
+helps['fleet clustermeshprofile'] = """
+    type: group
+    short-summary: Commands to manage cluster mesh profiles.
+"""
+
+helps['fleet clustermeshprofile create'] = """
+    type: command
+    short-summary: Create or update a cluster mesh profile.
+    parameters:
+        - name: --member-selector --selector -s
+          type: string
+          short-summary: "Kubernetes-style label selector for selecting Fleet members, e.g. 'env=production'."
+    examples:
+        - name: Create a cluster mesh profile with a label selector.
+          text: az fleet clustermeshprofile create -g MyFleetResourceGroup -f MyFleetName -n MyClusterMeshProfile --selector "env=production"
+        - name: Create a cluster mesh profile without a selector (no members selected initially).
+          text: az fleet clustermeshprofile create -g MyFleetResourceGroup -f MyFleetName -n MyClusterMeshProfile
+"""
+
+helps['fleet clustermeshprofile show'] = """
+    type: command
+    short-summary: Get a cluster mesh profile.
+    examples:
+        - name: Show the details of a cluster mesh profile.
+          text: az fleet clustermeshprofile show -g MyFleetResourceGroup -f MyFleetName -n MyClusterMeshProfile
+"""
+
+helps['fleet clustermeshprofile list'] = """
+    type: command
+    short-summary: List all cluster mesh profiles for a fleet.
+    examples:
+        - name: List all cluster mesh profiles for a given fleet.
+          text: az fleet clustermeshprofile list -g MyFleetResourceGroup -f MyFleetName
+"""
+
+helps['fleet clustermeshprofile delete'] = """
+    type: command
+    short-summary: Delete a cluster mesh profile. Members must be disconnected from the profile before it can be deleted.
+    examples:
+        - name: Delete a specific cluster mesh profile.
+          text: az fleet clustermeshprofile delete -g MyFleetResourceGroup -f MyFleetName -n MyClusterMeshProfile
+"""
+
+helps['fleet clustermeshprofile apply'] = """
+    type: command
+    short-summary: Apply the cluster mesh profile to selected fleet members.
+    examples:
+        - name: Apply a cluster mesh profile.
+          text: az fleet clustermeshprofile apply -g MyFleetResourceGroup -f MyFleetName -n MyClusterMeshProfile
+        - name: Preview what changes would be made without actually applying.
+          text: az fleet clustermeshprofile apply -g MyFleetResourceGroup -f MyFleetName -n MyClusterMeshProfile --what-if --output table
+"""
+
+helps['fleet clustermeshprofile list-members'] = """
+    type: command
+    short-summary: List fleet members for a cluster mesh profile.
+    long-summary: |
+        Without --selector, lists members currently applied to the mesh profile.
+        With --selector, lists members that would match the profile's label selector (i.e. candidates for the next apply).
+    examples:
+        - name: List members currently applied to the mesh.
+          text: az fleet clustermeshprofile list-members -g MyFleetResourceGroup -f MyFleetName -n MyClusterMeshProfile
+        - name: List members that would match the profile's selector.
+          text: az fleet clustermeshprofile list-members -g MyFleetResourceGroup -f MyFleetName -n MyClusterMeshProfile --selector
+"""
+
+helps['fleet clustermeshprofile wait'] = """
+    type: command
+    short-summary: Wait for a cluster mesh profile to reach a desired state.
+    examples:
+        - name: Wait for the cluster mesh profile to reach Connected state after apply.
+          text: az fleet clustermeshprofile wait -g MyFleetResourceGroup -f MyFleetName -n MyClusterMeshProfile --custom "properties.status.state=='Connected'"
+        - name: Wait for the cluster mesh profile to be created.
+          text: az fleet clustermeshprofile wait -g MyFleetResourceGroup -f MyFleetName -n MyClusterMeshProfile --created
 """

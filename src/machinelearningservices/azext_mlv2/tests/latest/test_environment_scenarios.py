@@ -169,14 +169,14 @@ class EnvironmentScenarioTest(MLBaseScenarioTest):
 
     def test_environment_show_registry(self) -> None:
         env_obj = self.cmd(
-            "az ml environment show -n 4c99f460-20cd-4821-8745-202aa7555604 -v 93435847-704b-4280-83f3-f735d8b5eff7 --registry-name testfeed"
+            "az ml environment show -n kchawla-env -v 1 --registry-name kchawla-reg"
         )
         env_obj = yaml.safe_load(env_obj.output)
         assert (
             env_obj["id"]
-            == "azureml://registries/testFeed/environments/4c99f460-20cd-4821-8745-202aa7555604/versions/93435847-704b-4280-83f3-f735d8b5eff7"
+            == "azureml://registries/kchawla-reg/environments/kchawla-env/versions/1"
         )
-        assert env_obj["name"] == "4c99f460-20cd-4821-8745-202aa7555604"
+        assert env_obj["name"] == "kchawla-env"
 
     def test_environment_list_registry(self) -> None:
         env_obj = self.cmd("az ml environment list --registry-name test-registry-ux-1")
@@ -187,12 +187,12 @@ class EnvironmentScenarioTest(MLBaseScenarioTest):
     def test_environment_create_in_registry(self) -> None:
 
         env_obj = self.cmd(
-            "az ml environment create -n conda_name_version_e2e  -v 2 -f ./src/machinelearningservices/azext_mlv2/tests/test_configs/environment/environment_conda_name_version.yml --registry-name testFeed"
+            "az ml environment create -n conda_name_version_e2e  -v 2 -f ./src/machinelearningservices/azext_mlv2/tests/test_configs/environment/environment_conda_name_version.yml --registry-name testfeed"
         )
         env_obj = yaml.safe_load(env_obj.output)
         assert len(env_obj) > 1
         env_obj_1 = self.cmd(
-            "az ml environment create -n docker_image_e2e  -v 2 -f ./src/machinelearningservices/azext_mlv2/tests/test_configs/environment/environment_docker_image.yml --registry-name testFeed"
+            "az ml environment create -n docker_image_e2e  -v 2 -f ./src/machinelearningservices/azext_mlv2/tests/test_configs/environment/environment_docker_image.yml --registry-name testfeed"
         )
         env_obj_1 = yaml.safe_load(env_obj_1.output)
         assert len(env_obj_1) > 1
@@ -200,7 +200,7 @@ class EnvironmentScenarioTest(MLBaseScenarioTest):
     def test_environment_archive_in_registry(self) -> None:
 
         env_archive_obj = self.cmd(
-            "az ml environment archive -n bani_env -v 1 --registry-name dsvm-test"
+            "az ml environment archive -n kchawla-env -v 1 --registry-name kchawla-reg"
         )
         assert env_archive_obj.output == ""
 

@@ -1,5 +1,9 @@
 Release History
 ===============
+1.0.0b4
+++++++
+* Migrate code from Azure SDK to AAZ based commands for compute operations (VM)
+
 1.0.0b3
 ++++++
 * Fixed an issue where admin commands were not being sent when the VM was using a custom boot diagnostics storage account.

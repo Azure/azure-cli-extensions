@@ -149,9 +149,9 @@ class AmgMigrateScenarioTest(ScenarioTest):
     def test_amg_migrate_override(self, resource_group):
         # Simple E2E test for migration where we create a new AMG instance, create a folder, data source, and dashboard, then migrate to a new AMG instance
         self.kwargs.update({
-            'name': self.create_random_name(prefix='clitestamgmigrate', length=23),
+            'name': self.create_random_name(prefix='clitestmigsrc', length=20),
             'location': 'westcentralus',
-            'name2': self.create_random_name(prefix='clitestamgmigrate', length=23)
+            'name2': self.create_random_name(prefix='clitestmigtgt', length=20)
         })
 
         owner = self._get_signed_in_user()

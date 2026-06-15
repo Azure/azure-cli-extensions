@@ -586,8 +586,8 @@ class ContainerImage:
         extraEnvironmentRules: Dict,
         platform: str = "linux/amd64",
         entrypoint: List[str] = None,
-        capabilities: Dict = copy.deepcopy(_CAPABILITIES),
-        user: Dict = copy.deepcopy(_DEFAULT_USER),
+        capabilities: Dict = None,
+        user: Dict = None,
         seccomp_profile_sha256: str = "",
         allowStdioAccess: bool = True,
         allowPrivilegeEscalation: bool = True,
@@ -611,8 +611,8 @@ class ContainerImage:
         self._allow_elevated = allow_elevated
         self._allow_stdio_access = allowStdioAccess
         self._seccomp_profile_sha256 = seccomp_profile_sha256
-        self._user = user or {}
-        self._capabilities = capabilities
+        self._user = user if user is not None else copy.deepcopy(_DEFAULT_USER)
+        self._capabilities = capabilities if capabilities is not None else copy.deepcopy(_CAPABILITIES)
         self._allow_privilege_escalation = allowPrivilegeEscalation
         self._identifier = id_val
         self._exec_processes = execProcesses or []

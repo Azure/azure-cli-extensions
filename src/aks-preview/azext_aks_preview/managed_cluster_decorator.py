@@ -888,13 +888,13 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
     def get_acns_enablement(self) -> Tuple[
         Union[bool, None],
         Union[bool, None],
+        Union[bool, None],
         Union[bool, None]
     ]:
-        """Get the enablement of acns (not including the performance suite)
-        :return: Tuple of 3 elements which can be bool or None
+        """Get the enablement of acns
+        :return: Tuple of 4 elements which can be bool or None
         """
-        enable_acns, enable_acns_observability, enable_acns_security, _ = self.get_acns_enablement_with_perf()
-        return enable_acns, enable_acns_observability, enable_acns_security
+        return self.get_acns_enablement_with_perf()
 
     def get_acns_enablement_with_perf(self) -> Tuple[
         Union[bool, None],
@@ -1821,6 +1821,61 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self._get_kubernetes_version(read_only=False)
 
+    def _validate_enable_fips_kubernetes_version(self) -> None:
+        kubernetes_version = self._get_kubernetes_version(read_only=True)
+        if not kubernetes_version:
+            return
+
+        version_parts = str(kubernetes_version).lstrip("v").split(".")
+        if len(version_parts) < 2:
+            return
+        try:
+            major = int(version_parts[0])
+            minor = int(version_parts[1].split("-")[0])
+        except ValueError:
+            return
+        if (major, minor) < (1, 34):
+            raise InvalidArgumentValueError("--enable-fips requires Kubernetes version 1.34 or later.")
+
+    def _get_enable_fips_from_mc(self) -> Optional[bool]:
+        if not self.mc:
+            return None
+        if hasattr(self.mc, "enable_fips") and self.mc.enable_fips is not None:
+            return self.mc.enable_fips
+        properties = getattr(self.mc, "properties", None)
+        if properties is not None:
+            return properties.get("enableFIPS")
+        return None
+
+    def get_enable_fips(self) -> bool:
+        """Obtain the value of enable_fips.
+        :return: bool
+        """
+        enable_fips = self.raw_param.get("enable_fips", False)
+        if enable_fips and self.get_disable_fips():
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-fips and --disable-fips at the same time."
+            )
+        if self.decorator_mode == DecoratorMode.CREATE:
+            value_obtained_from_mc = self._get_enable_fips_from_mc()
+            if value_obtained_from_mc is not None:
+                enable_fips = value_obtained_from_mc
+
+        if enable_fips:
+            self._validate_enable_fips_kubernetes_version()
+        return bool(enable_fips)
+
+    def get_disable_fips(self) -> bool:
+        """Obtain the value of disable_fips.
+        :return: bool
+        """
+        disable_fips = self.raw_param.get("disable_fips", False)
+        if disable_fips and self.raw_param.get("enable_fips", False):
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-fips and --disable-fips at the same time."
+            )
+        return bool(disable_fips)
+
     def get_disk_driver(self) -> Optional[ManagedClusterStorageProfileDiskCSIDriver]:
         """Obtain the value of storage_profile.disk_csi_driver
 
@@ -1828,9 +1883,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         enable_disk_driver = self.raw_param.get("enable_disk_driver")
         disable_disk_driver = self.raw_param.get("disable_disk_driver")
-        disk_driver_version = self.raw_param.get("disk_driver_version")
 
-        if not enable_disk_driver and not disable_disk_driver and not disk_driver_version:
+        if not enable_disk_driver and not disable_disk_driver:
             return None
         profile = self.models.ManagedClusterStorageProfileDiskCSIDriver()  # pylint: disable=no-member
 
@@ -1840,29 +1894,15 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 "--disable-disk-driver at the same time."
             )
 
-        if disable_disk_driver and disk_driver_version:
-            raise ArgumentUsageError(
-                "The parameter --disable-disk-driver cannot be used "
-                "when --disk-driver-version is specified.")
-
-        if self.decorator_mode == DecoratorMode.UPDATE and disk_driver_version and not enable_disk_driver:
-            raise ArgumentUsageError(
-                "Parameter --enable-disk-driver is required "
-                "when --disk-driver-version is specified during update.")
-
         if self.decorator_mode == DecoratorMode.CREATE:
             if disable_disk_driver:
                 profile.enabled = False
             else:
                 profile.enabled = True
-                if disk_driver_version:
-                    profile.version = disk_driver_version
 
         if self.decorator_mode == DecoratorMode.UPDATE:
             if enable_disk_driver:
                 profile.enabled = True
-                if disk_driver_version:
-                    profile.version = disk_driver_version
             elif disable_disk_driver:
                 msg = (
                     "Please make sure there are no existing PVs and PVCs "
@@ -3778,6 +3818,11 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self.raw_param.get("node_provisioning_mode")
 
+    def get_node_disruption_policy(self) -> Union[str, None]:
+        """Obtain the value of node_disruption_policy.
+        """
+        return self.raw_param.get("node_disruption_policy")
+
     def get_node_provisioning_default_pools(self) -> Union[str, None]:
         """Obtain the value of node_provisioning_default_pools.
         """
@@ -3970,6 +4015,13 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             raise RequiredArgumentMissingError('"--enable-hosted-system" requires "--sku automatic".')
         return enable_hosted_system
 
+    def get_control_plane_scaling_size(self) -> Union[str, None]:
+        """Obtain the value of control_plane_scaling_size.
+
+        :return: str or None
+        """
+        return self.raw_param.get("control_plane_scaling_size")
+
     def get_enable_continuous_control_plane_and_addon_monitor(self) -> bool:
         """Obtain the value of enable_continuous_control_plane_and_addon_monitor.
 
@@ -4115,7 +4167,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             network_profile.network_dataplane = self.context.get_network_dataplane()
 
         acns = None
-        (acns_enabled, acns_observability_enabled, acns_security_enabled) = self.context.get_acns_enablement()
+        (acns_enabled, acns_observability_enabled, acns_security_enabled, _) = self.context.get_acns_enablement()
         acns_advanced_networkpolicies = self.context.get_acns_advanced_networkpolicies()
         acns_transit_encryption_type = self.context.get_acns_transit_encryption_type()
         acns_datapath_acceleration_mode = self.context.get_acns_datapath_acceleration_mode()
@@ -4288,6 +4340,17 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 )
             )
 
+        return mc
+
+    def set_up_enable_fips(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up FIPS mode at the cluster level for the ManagedCluster object."""
+        self._ensure_mc(mc)
+
+        if self.context.get_enable_fips():
+            mc.enable_fips = True
+            if mc.agent_pool_profiles:
+                for agentpool in mc.agent_pool_profiles:
+                    agentpool.enable_fips = True
         return mc
 
     def set_up_service_account_image_pull(self, mc: ManagedCluster) -> ManagedCluster:
@@ -5069,6 +5132,23 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         return mc
 
+    def set_up_control_plane_scaling_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up the control plane scaling profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        control_plane_scaling_size = self.context.get_control_plane_scaling_size()
+        if control_plane_scaling_size is not None:
+            mc.control_plane_scaling_profile = (
+                self.models.ManagedClusterControlPlaneScalingProfile(  # pylint: disable=no-member
+                    scaling_size=control_plane_scaling_size,
+                )
+            )
+
+        return mc
+
     def set_up_health_monitor_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up health monitor profile for the ManagedCluster object.
 
@@ -5165,6 +5245,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_image_cleaner(mc)
         # set up image integrity
         mc = self.set_up_image_integrity(mc)
+        # set up FIPS mode at the cluster level
+        mc = self.set_up_enable_fips(mc)
         # set up service account image pull
         mc = self.set_up_service_account_image_pull(mc)
         # set up KMS infrastructure encryption
@@ -5211,6 +5293,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_agentpool_profile_ssh_access(mc)
         # set up bootstrap profile
         mc = self.set_up_bootstrap_profile(mc)
+        # set up control plane scaling profile
+        mc = self.set_up_control_plane_scaling_profile(mc)
         # set up static egress gateway profile
         mc = self.set_up_static_egress_gateway(mc)
         # set up health monitor profile
@@ -5827,7 +5911,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         self._ensure_mc(mc)
 
         acns = None
-        (acns_enabled, acns_observability_enabled, acns_security_enabled) = self.context.get_acns_enablement()
+        (acns_enabled, acns_observability_enabled,
+            acns_security_enabled, acns_perf_enabled) = self.context.get_acns_enablement()
         acns_advanced_networkpolicies = self.context.get_acns_advanced_networkpolicies()
         acns_transit_encryption_type = self.context.get_acns_transit_encryption_type()
         acns_datapath_acceleration_mode = self.context.get_acns_datapath_acceleration_mode()
@@ -5856,10 +5941,16 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 if acns.security.transit_encryption is None:
                     acns.security.transit_encryption = self.models.AdvancedNetworkingSecurityTransitEncryption()
                 acns.security.transit_encryption.type = acns_transit_encryption_type
-            if acns_datapath_acceleration_mode is not None:
-                if acns.performance is None:
-                    acns.performance = self.models.AdvancedNetworkingPerformance()
-                acns.performance.acceleration_mode = acns_datapath_acceleration_mode
+            if acns_perf_enabled is not None:
+                acns.performance = self.models.AdvancedNetworkingPerformance(
+                    acceleration_mode=acns_datapath_acceleration_mode,
+                )
+            elif not acns_enabled:
+                acns.performance = self.models.AdvancedNetworkingPerformance(
+                    acceleration_mode=CONST_ACNS_DATAPATH_ACCELERATION_MODE_NONE,
+                )
+            elif mc.network_profile.advanced_networking is not None:
+                acns.performance = mc.network_profile.advanced_networking.performance
             mc.network_profile.advanced_networking = acns
         return mc
 
@@ -6664,6 +6755,31 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         image_integrity_profile.enabled = shouldEnable_image_integrity
 
+        return mc
+
+    def update_enable_fips(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update FIPS mode at the cluster level for the ManagedCluster object."""
+        self._ensure_mc(mc)
+
+        if self.context.get_disable_fips():
+            mc.enable_fips = False
+            return mc
+
+        if not self.context.get_enable_fips():
+            return mc
+
+        non_fips_nodepools = [
+            agentpool.name
+            for agentpool in (mc.agent_pool_profiles or [])
+            if agentpool.enable_fips is not True
+        ]
+        if non_fips_nodepools:
+            raise InvalidArgumentValueError(
+                "--enable-fips requires all node pools in the cluster to be FIPS-enabled. "
+                "Enable FIPS on these node pools first: {}.".format(", ".join(non_fips_nodepools))
+            )
+
+        mc.enable_fips = True
         return mc
 
     def update_service_account_image_pull(self, mc: ManagedCluster) -> ManagedCluster:
@@ -7611,6 +7727,25 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
+    def update_node_disruption_policy(self, mc: ManagedCluster) -> ManagedCluster:
+        """Updates the nodeDisruptionPolicy field of the managed cluster
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        policy = self.context.get_node_disruption_policy()
+        if policy is not None:
+            if mc.node_disruption_profile is None:
+                mc.node_disruption_profile = (
+                    self.models.NodeDisruptionProfile()  # pylint: disable=no-member
+                )
+
+            # set policy
+            mc.node_disruption_profile.node_disruption_policy = policy
+
+        return mc
+
     def update_ai_toolchain_operator(self, mc: ManagedCluster) -> ManagedCluster:
         """Updates the aiToolchainOperatorProfile field of the managed cluster
 
@@ -8054,6 +8189,26 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
+    def update_control_plane_scaling_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update the control plane scaling profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        control_plane_scaling_size = self.context.get_control_plane_scaling_size()
+        if control_plane_scaling_size is not None:
+            if mc.control_plane_scaling_profile is None:
+                mc.control_plane_scaling_profile = (
+                    self.models.ManagedClusterControlPlaneScalingProfile(  # pylint: disable=no-member
+                        scaling_size=control_plane_scaling_size,
+                    )
+                )
+            else:
+                mc.control_plane_scaling_profile.scaling_size = control_plane_scaling_size
+
+        return mc
+
     def update_mc_profile_preview(self) -> ManagedCluster:
         """The overall controller used to update the preview ManagedCluster profile.
 
@@ -8073,6 +8228,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_image_cleaner(mc)
         # update image integrity
         mc = self.update_image_integrity(mc)
+        # update FIPS mode at the cluster level
+        mc = self.update_enable_fips(mc)
         # update service account image pull
         mc = self.update_service_account_image_pull(mc)
         # update KMS infrastructure encryption
@@ -8148,6 +8305,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_http_proxy_enabled(mc)
         # update user-defined scheduler configuration for kube-scheduler upstream
         mc = self.update_upstream_kubescheduler_user_configuration(mc)
+        # update node disruption policy
+        mc = self.update_node_disruption_policy(mc)
+        # update control plane scaling profile
+        mc = self.update_control_plane_scaling_profile(mc)
         # update ManagedSystem pools, must at end
         mc = self.update_managed_system_pools(mc)
 

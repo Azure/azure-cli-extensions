@@ -37,6 +37,9 @@ aks create:
     node_public_ip_prefix_id:
       rule_exclusions:
         - option_length_too_long
+    node_public_ip_prefix_ids:
+      rule_exclusions:
+        - option_length_too_long
     enable_private_cluster:
       rule_exclusions:
       - option_length_too_long
@@ -130,6 +133,11 @@ aks create:
     service_account_image_pull_default_managed_identity_id:
       rule_exclusions:
       - option_length_too_long
+aks nodepool add:
+  parameters:
+    node_public_ip_prefix_ids:
+      rule_exclusions:
+        - option_length_too_long
 aks update:
   parameters:
     aad_admin_group_object_ids:
@@ -3609,6 +3617,18 @@ confcom fragment attach:
 confcom containers from_image:
   parameters:
     image:
+      rule_exclusions:
+        - no_positional_parameters
+
+confcom containers from_radius:
+  parameters:
+    template:
+      rule_exclusions:
+        - no_positional_parameters
+
+confcom radius policy_insert:
+  parameters:
+    policy_file:
       rule_exclusions:
         - no_positional_parameters
 
