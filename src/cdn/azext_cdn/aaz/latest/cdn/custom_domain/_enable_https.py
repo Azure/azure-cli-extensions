@@ -17,17 +17,17 @@ from azure.cli.core.aaz import *
 class EnableHttps(AAZCommand):
     """Enable https delivery of the custom domain.
 
-    :example: Enable HTTPS for custom domain with resource name customdomain1 using a CDN-managed certificate
-        az cdn custom-domain enable-https -g group --profile-name profile --endpoint-name endpoint -n customdomain1
+    :example: CustomDomains_EnableCustomHttpsUsingCDNManagedCertificate
+        az cdn custom-domain enable-https --resource-group RG --profile-name profile1 --endpoint-name endpoint1 --custom-domain-name www-someDomain-net
 
-    :example: Enable HTTPS for custom domain with resource name customdomain1 using a CDN-managed certificate and set the minimum TLS version to 1.2
-        az cdn custom-domain enable-https -g group --profile-name profile --endpoint-name endpoint -n customdomain1 --min-tls-version 1.2
+    :example: CustomDomains_EnableCustomHttpsUsingYourOwnCertificate
+        az cdn custom-domain enable-https --resource-group RG --profile-name profile1 --endpoint-name endpoint1 --custom-domain-name www-someDomain-net --resource-group RG --profile-name profile1 --endpoint-name endpoint1 --custom-domain-name www-someDomain-net
     """
 
     _aaz_info = {
-        "version": "2025-06-01",
+        "version": "2025-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/endpoints/{}/customdomains/{}/enablecustomhttps", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/endpoints/{}/customdomains/{}/enablecustomhttps", "2025-09-01-preview"],
         ]
     }
 
@@ -65,6 +65,11 @@ class EnableHttps(AAZCommand):
             help="Name of the CDN profile which is unique within the resource group.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9]+(-*[a-zA-Z0-9])*$",
+                max_length=260,
+                min_length=1,
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -184,7 +189,7 @@ class EnableHttps(AAZCommand):
                     session,
                     self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
             if session.http_response.status_code in [200]:
@@ -193,7 +198,7 @@ class EnableHttps(AAZCommand):
                     session,
                     self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -244,7 +249,7 @@ class EnableHttps(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2025-09-01-preview",
                     required=True,
                 ),
             }
