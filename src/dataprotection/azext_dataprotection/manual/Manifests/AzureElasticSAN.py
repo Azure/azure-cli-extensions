@@ -6,8 +6,7 @@
 # NOTE: AzureElasticSAN (eSAN) backup is currently exposed only in the 2024-02-01-preview
 # DataProtection API. The backup-instance create/update body schema has been grafted with the
 # GenericBackupDatasourceParameters discriminator (see aaz .../backup_instance/_create.py and
-# _update.py "# [eSAN graft]"). The role definition names below are placeholders pending
-# confirmation from the DPP service team.
+# _update.py "# [eSAN graft]").
 
 manifest = '''
 {
@@ -26,17 +25,24 @@ manifest = '''
     "supportSecretStoreAuthentication": false,
     "backupVaultPermissions": [
         {
-            "roleDefinitionName": "Elastic SAN Volume Group Backup Reader",
+            "roleDefinitionName": "Elastic SAN Snapshot Exporter",
             "type": "DataSource"
         },
         {
-            "roleDefinitionName": "Elastic SAN Snapshot Contributor",
+            "roleDefinitionName": "Disk Snapshot Contributor",
             "type": "SnapshotRG"
         }
     ],
     "backupVaultRestorePermissions": [
         {
-            "roleDefinitionName": "Elastic SAN Volume Group Backup Contributor",
+            "roleDefinitionName": "Elastic SAN Volume Importer",
+            "type": "DataSource"
+        },
+        {
+            "roleDefinitionName": "Reader",
+            "type": "SnapshotRG"
+        }
+    ],
             "type": "DataSource"
         }
     ],
@@ -46,7 +52,7 @@ manifest = '''
         "disableAddRetentionRule": false,
         "disableCustomRetentionTag": true,
         "backupScheduleSupported": true,
-        "supportedBackupFrequency": [ "Daily", "Hourly" ],
+        "supportedBackupFrequency": [ "Daily", "Weekly" ],
         "defaultPolicy": {
             "policyRules": [
                 {
@@ -57,7 +63,7 @@ manifest = '''
                     "trigger": {
                         "schedule": {
                             "repeatingTimeIntervals": [
-                                "R/2024-02-08T13:00:00+00:00/PT4H"
+                                "R/2024-02-08T13:00:00+00:00/P1D"
                             ]
                         },
                         "taggingCriteria": [
@@ -76,7 +82,7 @@ manifest = '''
                         "dataStoreType": "OperationalStore",
                         "objectType": "DataStoreInfoBase"
                     },
-                    "name": "BackupHourly",
+                    "name": "BackupDaily",
                     "objectType": "AzureBackupRule"
                 },
                 {

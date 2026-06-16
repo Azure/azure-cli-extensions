@@ -419,11 +419,8 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
 
     manifest = helper.load_manifest(datasource_type)
 
-    # TODO [eSAN]: For AzureElasticSAN, the manifest role definition names
-    # (backupVaultPermissions / backupVaultRestorePermissions in Manifests/AzureElasticSAN.py)
-    # are placeholders pending confirmation from the DPP service team, and the Restore
-    # permission-grant path has not yet been validated end-to-end for this datasource type.
-    # Verify the actual Elastic SAN role names and restore-grant behaviour before GA.
+    # TODO [eSAN]: Re-validate role assignment behavior for Elastic SAN backup/restore
+    # flows after service-side RBAC guidance is finalized for GA.
 
     warning_message = helper.get_help_text_on_grant_permissions_templatized(datasource_type, operation)
     if not yes and not prompt_y_n(warning_message):
@@ -573,7 +570,8 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
                 role_assignments_arr.append(helper.get_permission_object_from_server_firewall_rule(rule.result()))
     elif operation == "Restore":
         if datasource_type not in ("AzureKubernetesService", "AzureDatabaseForMySQL",
-                                   "AzureDatabaseForPostgreSQLFlexibleServer", "AzureCosmosDB"):
+                                   "AzureDatabaseForPostgreSQLFlexibleServer", "AzureCosmosDB",
+                                   "AzureElasticSAN"):
             raise InvalidArgumentValueError("Set permissions for restore is currently not supported for given DataSourceType")
 
         for role_object in manifest['backupVaultRestorePermissions']:
@@ -995,7 +993,31 @@ def dataprotection_backup_instance_initialize_restoreconfig(datasource_type, exc
     if datasource_type == "AzureElasticSAN":
         if not resource_identifiers:
             raise RequiredArgumentMissingError('--resource-identifiers is required for AzureElasticSAN restore configuration. '
-                                               'Provide the list of source volume group resource identifiers to restore.')
+                                               'Provide the list of source volume identifiers (volume names or ARM IDs) to restore.')
+
+        selected_source_names = set()
+        for resource_identifier in resource_identifiers:
+            if not isinstance(resource_identifier, str) or not resource_identifier.strip():
+                raise InvalidArgumentValueError('Each value in --resource-identifiers must be a non-empty string.')
+            selected_source_names.add(resource_identifier.strip().split('/')[-1])
+
+        if resource_name_overrides is not None:
+            if not isinstance(resource_name_overrides, dict):
+                raise InvalidArgumentValueError('--resource-name-overrides must be a key-value map of source volume names to target volume names.')
+
+            target_volume_names = []
+            for source_name, target_name in resource_name_overrides.items():
+                if source_name not in selected_source_names:
+                    raise InvalidArgumentValueError(
+                        'Each key in --resource-name-overrides must match a selected source volume name from --resource-identifiers.'
+                    )
+                if not isinstance(target_name, str) or not target_name.strip():
+                    raise InvalidArgumentValueError('Each target volume name in --resource-name-overrides must be a non-empty string.')
+                target_volume_names.append(target_name.strip())
+
+            if len(target_volume_names) != len(set(target_volume_names)):
+                raise InvalidArgumentValueError('Target volume names in --resource-name-overrides must be unique.')
+
         resource_selectors = {
             "object_type": "ResourceListSelectionCriteria",
             "resource_identifiers": resource_identifiers

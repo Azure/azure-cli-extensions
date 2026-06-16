@@ -79,6 +79,89 @@ az dataprotection backup-instance validate-for-restore --name "testInstance1" --
 az dataprotection backup-instance restore trigger -g sarath-rg --vault-name sarath-vault \
     --backup-instance-name {backup_instance_name} --restore=request-object restore_request.json
 ```
+
+#### Azure Elastic SAN (preview) configure and restore scripts ####
+##### Configure backup for Elastic SAN volumes #####
+```
+# 1) Create backup configuration for selected source volumes in the chosen volume group
+az dataprotection backup-instance initialize-backupconfig \
+    --datasource-type AzureElasticSAN \
+    --resource-selectors volume001 volume002 > esan_backup_config.json
+
+# 2) Initialize backup instance payload (datasource-id is the source volume group ARM ID)
+az dataprotection backup-instance initialize \
+    --datasource-type AzureElasticSAN \
+    --datasource-location {location} \
+    --datasource-id {source_volume_group_id} \
+    --policy-id {esan_policy_id} \
+    --friendly-name esan-bi \
+    --backup-configuration @esan_backup_config.json > esan_backup_instance.json
+
+# 3) Grant missing backup permissions to vault MSI (Elastic SAN Snapshot Exporter + Disk Snapshot Contributor)
+az dataprotection backup-instance update-msi-permissions \
+    --datasource-type AzureElasticSAN \
+    --operation Backup \
+    --permissions-scope Resource \
+    --resource-group {vault_rg} \
+    --vault-name {vault_name} \
+    --backup-instance @esan_backup_instance.json
+
+# 4) Validate and configure backup
+az dataprotection backup-instance validate-for-backup \
+    --resource-group {vault_rg} \
+    --vault-name {vault_name} \
+    --backup-instance @esan_backup_instance.json
+
+az dataprotection backup-instance create \
+    --resource-group {vault_rg} \
+    --vault-name {vault_name} \
+    --backup-instance @esan_backup_instance.json
+```
+
+##### Restore Elastic SAN backup #####
+```
+# 1) Build restore configuration: select source volumes and optional target names
+az dataprotection backup-instance initialize-restoreconfig \
+    --datasource-type AzureElasticSAN \
+    --resource-identifiers source-vol1 source-vol2 \
+    --resource-name-overrides '{"source-vol1":"restored-vol1","source-vol2":"restored-vol2"}' > esan_restore_config.json
+
+# 2) Initialize restore request (target-resource-id is target volume group ARM ID)
+az dataprotection backup-instance restore initialize-for-item-recovery \
+    --datasource-type AzureElasticSAN \
+    --source-datastore OperationalStore \
+    --restore-location {location} \
+    --backup-instance-id {backup_instance_id} \
+    --recovery-point-id {recovery_point_id} \
+    --target-resource-id {target_volume_group_id} \
+    --restore-configuration @esan_restore_config.json > esan_restore_request.json
+
+# 3) Grant missing restore permissions to vault MSI
+#    - Elastic SAN Volume Importer on target Elastic SAN
+#    - Reader on snapshot resource group (pass --snapshot-resource-group-id)
+az dataprotection backup-instance update-msi-permissions \
+    --datasource-type AzureElasticSAN \
+    --operation Restore \
+    --permissions-scope Resource \
+    --resource-group {vault_rg} \
+    --vault-name {vault_name} \
+    --restore-request-object @esan_restore_request.json \
+    --snapshot-resource-group-id {snapshot_rg_id}
+
+# 4) Validate and trigger restore
+az dataprotection backup-instance validate-for-restore \
+    --resource-group {vault_rg} \
+    --vault-name {vault_name} \
+    --backup-instance-name {backup_instance_name} \
+    --restore-request-object @esan_restore_request.json
+
+az dataprotection backup-instance restore trigger \
+    --resource-group {vault_rg} \
+    --vault-name {vault_name} \
+    --backup-instance-name {backup_instance_name} \
+    --restore-request-object @esan_restore_request.json
+```
+
 #### dataprotection backup-vault ####
 ##### Create #####
 ```

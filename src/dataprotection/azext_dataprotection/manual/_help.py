@@ -64,7 +64,9 @@ helps['dataprotection backup-instance update-msi-permissions'] = """
       - name: Assign the required permissions needed to successfully enable restore for the datasource.
         text: az dataprotection backup-instance update-msi-permissions --datasource-type AzureKubernetesService --operation Restore --permissions-scope Resource --resource-group sampleRG --vault-name samplevault --restore-request-object aksrestore.json --snapshot-resource-group-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sampleRG
       - name: Assign the required permissions needed to successfully enable backup for an AzureElasticSAN datasource.
-        text: az dataprotection backup-instance update-msi-permissions --backup-instance esan_backup_inst.json --resource-group sampleRG --vault-name samplevault --datasource-type AzureElasticSAN --operation Backup --permissions-scope ResourceGroup
+        text: az dataprotection backup-instance update-msi-permissions --backup-instance esan_backup_inst.json --resource-group sampleRG --vault-name samplevault --datasource-type AzureElasticSAN --operation Backup --permissions-scope Resource
+      - name: Assign the required permissions needed to successfully enable restore for an AzureElasticSAN datasource.
+        text: az dataprotection backup-instance update-msi-permissions --datasource-type AzureElasticSAN --operation Restore --permissions-scope Resource --resource-group sampleRG --vault-name samplevault --restore-request-object esan_restore_request.json --snapshot-resource-group-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/esanSnapshotRg
 """
 
 helps['dataprotection backup-policy get-default-policy-template'] = """
@@ -226,7 +228,7 @@ helps['dataprotection backup-instance initialize-backupconfig'] = """
       - name: Initialize backup configuration for AzureDataLakeStorage with auto-protection and exclusion prefixes
         text: az dataprotection backup-instance initialize-backupconfig --datasource-type AzureDataLakeStorage --auto-protection true --exclusion-prefixes "logs-" "temp-"
       - name: Initialize backup configuration for AzureElasticSAN
-        text: az dataprotection backup-instance initialize-backupconfig --datasource-type AzureElasticSAN --resource-selectors vol1 vol2 vol3
+        text: az dataprotection backup-instance initialize-backupconfig --datasource-type AzureElasticSAN --resource-selectors volume001 volume002 volume003
 
 """
 
@@ -237,7 +239,7 @@ helps['dataprotection backup-instance initialize-restoreconfig'] = """
       - name: Initialize restore configuration
         text: az dataprotection backup-instance initialize-restoreconfig --datasource-type AzureKubernetesService
       - name: Initialize restore configuration for AzureElasticSAN
-        text: az dataprotection backup-instance initialize-restoreconfig --datasource-type AzureElasticSAN --resource-identifiers source-vol1 source-vol2 --resource-name-overrides '{"source-vol1":"target-vol1","source-vol2":"target-vol2"}'
+        text: az dataprotection backup-instance initialize-restoreconfig --datasource-type AzureElasticSAN --resource-identifiers source-vol1 source-vol2 --resource-name-overrides '{"source-vol1":"restored-vol1","source-vol2":"restored-vol2"}'
 """
 
 helps['dataprotection backup-instance validate-for-backup'] = """
