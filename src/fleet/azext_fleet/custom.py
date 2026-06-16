@@ -766,6 +766,17 @@ def create_auto_upgrade_profile(cmd,  # pylint: disable=unused-argument
     if channel == "NodeImage" and node_image_selection is not None:
         raise CLIError("node_image_selection must NOT be populated when channel type `NodeImage` is selected")
 
+    if channel == "SecurityPatch":
+        if node_image_selection is not None:
+            raise CLIError("node_image_selection must NOT be populated when "
+                           "channel type `SecurityPatch` is selected")
+        if target_kubernetes_version is not None:
+            raise CLIError("target_kubernetes_version must NOT be populated when "
+                           "channel type `SecurityPatch` is selected")
+        if long_term_support:
+            raise CLIError("long_term_support must NOT be set when "
+                           "channel type `SecurityPatch` is selected")
+
     upgrade_channel_model = cmd.get_models(
         "UpgradeChannel",
         resource_type=CUSTOM_MGMT_FLEET,

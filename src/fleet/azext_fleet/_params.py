@@ -128,7 +128,7 @@ def load_arguments(self, _):
     with self.argument_context('fleet autoupgradeprofile create') as c:
         c.argument('update_strategy_id', validator=validate_update_strategy_id,
                    help='The resource ID of the update strategy that the auto upgrade profile should follow.')
-        c.argument('channel', options_list=['--channel', '-c'], arg_type=get_enum_type(['Stable', 'Rapid', 'NodeImage', 'TargetKubernetesVersion']),
+        c.argument('channel', options_list=['--channel', '-c'], arg_type=get_enum_type(['Stable', 'Rapid', 'NodeImage', 'TargetKubernetesVersion', 'SecurityPatch']),
                    help='The auto upgrade channel type.')
         c.argument('node_image_selection', arg_type=get_enum_type(['Latest', 'Consistent']),
                    help='Node Image Selection is an option that lets you choose how your clusters\' nodes are upgraded.')
@@ -139,7 +139,7 @@ def load_arguments(self, _):
                 'This is the target Kubernetes version for auto-upgrade. The format must be "{major version}.{minor version}". '
                 'For example, "1.30". By default, this is empty. '
                 'If the upgrade channel is set to TargetKubernetesVersion, this field must not be empty. '
-                'If the upgrade channel is Rapid, Stable, or NodeImage, this field must be empty.'
+                'If the upgrade channel is Rapid, Stable, NodeImage, or SecurityPatch, this field must be empty.'
             )
         )
         c.argument('disabled', action='store_true',
