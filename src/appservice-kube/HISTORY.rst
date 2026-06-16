@@ -4,7 +4,7 @@ Release History
 ===============
 1.0.0b2
 ++++++
-* Remove unused compute SDK client factory and completers
+* Migrated code from Azure SDK to AAZ based for compute operations (get_vm_sizes)
 
 1.0.0b1
 ++++++
