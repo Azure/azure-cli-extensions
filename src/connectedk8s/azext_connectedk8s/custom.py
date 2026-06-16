@@ -73,6 +73,7 @@ from .vendored_sdks.preview_2025_08_01.models import (
     ConnectedClusterPatch,
     ConnectedClusterPatchProperties,
     ConnectedClusterProperties,
+    ConnectivityStatus,
     Gateway,
     OidcIssuerProfile,
     SecurityProfile,
@@ -1515,7 +1516,19 @@ def connected_cluster_exists(
     client: ConnectedClusterOperations, resource_group_name: str, cluster_name: str
 ) -> bool:
     try:
-        client.get(resource_group_name, cluster_name)
+        connected_cluster = client.get(resource_group_name, cluster_name)
+        connectivity_status = getattr(connected_cluster, "connectivity_status", None)
+
+        # Allow AgentNotInstalled -> Agent conversion:
+        # treat an existing ARM resource in AgentNotInstalled state as non-existent for onboarding flows.
+        if connectivity_status == ConnectivityStatus.AGENT_NOT_INSTALLED:
+            logger.info(
+                "Arc enabling the %s in resource group %s with connectivity status %s",
+                cluster_name,
+                resource_group_name,
+                connectivity_status,
+            )
+            return False
     except Exception as e:  # pylint: disable=broad-except
         utils.arm_exception_handler(
             e,
