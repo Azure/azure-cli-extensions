@@ -457,3 +457,7 @@ class UpgradeChannel(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     target Kubernetes version. For information on the behavior of update run for Kubernetes version
     upgrade, see
     https://learn.microsoft.com/en-us/azure/kubernetes-fleet/update-orchestration?tabs=azure-portal"""
+    SECURITY_PATCH = "SecurityPatch"
+    """Applies security patches to the nodes of the target clusters. For information on the behavior
+    of update run for security patch upgrade, see
+    https://learn.microsoft.com/en-us/azure/kubernetes-fleet/update-orchestration?tabs=azure-portal"""
