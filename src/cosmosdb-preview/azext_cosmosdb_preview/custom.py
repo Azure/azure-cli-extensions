@@ -53,7 +53,7 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     ResourceIdentityType,
     ManagedServiceIdentity,
     AnalyticalStorageConfiguration,
-    ManagedServiceIdentityUserAssignedIdentity,
+    ManagedServiceIdentityUserAssignedIdentities,
     CosmosCassandraDataTransferDataSourceSink,
     CosmosSqlDataTransferDataSourceSink,
     CosmosMongoDataTransferDataSourceSink,
@@ -1222,7 +1222,7 @@ def _create_database_account(client,
             user_identities = {}
             for x in assign_identity:
                 if x != SYSTEM_ID:
-                    user_identities[x] = ManagedServiceIdentityUserAssignedIdentity()  # pylint: disable=line-too-long
+                    user_identities[x] = ManagedServiceIdentityUserAssignedIdentities()  # pylint: disable=line-too-long
                 else:
                     enable_system = True
             if enable_system:
