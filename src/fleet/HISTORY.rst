@@ -188,4 +188,4 @@ Release History
 
 1.11.0
 ++++++
-* Add 2026-05-01-preview API version with vendored generated SDK.
+* Add 2026-06-02-preview API version with vendored generated SDK.

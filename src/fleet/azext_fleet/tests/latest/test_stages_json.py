@@ -9,7 +9,7 @@ import tempfile
 import os
 from unittest.mock import MagicMock, patch
 from azext_fleet.custom import get_update_run_strategy, build_gate_configs
-from azext_fleet.vendored_sdks.v2026_05_01_preview.models import (
+from azext_fleet.vendored_sdks.v2026_06_02_preview.models import (
     UpdateRunStrategy, UpdateStage, UpdateGroup, MemberSelector, GateConfiguration, ScheduledStartConfiguration,
 )
 from azure.cli.core.azclierror import (
