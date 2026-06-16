@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.4
++++++++++++++++
+* Fix creating stream analytics SQL reference input not triggering policy bug
+
 1.0.3
 +++++++++++++++
 * Fix stream analytics output help message
