@@ -33,6 +33,7 @@ from azure.cli.core.commands.parameters import (
     tags_type,
     zones_type,
 )
+from azure.cli.core.commands.validators import validate_file_or_dict
 from azext_aks_preview._validators import (
     validate_nat_gateway_managed_outbound_ipv6_count,
     validate_nat_gateway_v2_params,
@@ -251,6 +252,7 @@ from azext_aks_preview._validators import (
     validate_drain_batch_size,
     validate_resource_group_parameter,
     validate_location_resource_group_cluster_parameters,
+    validate_prepared_image_specification_id,
 )
 from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_ACSTOR_ALL,
@@ -1298,6 +1300,15 @@ def load_arguments(self, _):
             is_preview=True,
             help="Enable continuous control plane and addon monitor for the cluster.",
         )
+        # prepared image specification
+        c.argument(
+            'prepared_image_specification_id',
+            options_list=["--prepared-image-specification-id", "--pis-id"],
+            is_preview=True,
+            validator=validate_prepared_image_specification_id,
+            help='The resource ID of the prepared image specification to use for provisioning nodes in the default '
+                 'node pool.'
+        )
 
     with self.argument_context("aks update") as c:
         # managed cluster paramerters
@@ -2260,6 +2271,14 @@ def load_arguments(self, _):
                  'Example: \'[{"type":"Standard","vnetSubnetId":"/subscriptions/.../subnets/mysubnet"}]\'',
             is_preview=True,
         )
+        # prepared image specification
+        c.argument(
+            'prepared_image_specification_id',
+            options_list=["--prepared-image-specification-id", "--pis-id"],
+            is_preview=True,
+            validator=validate_prepared_image_specification_id,
+            help='The resource ID of the prepared image specification to use for provisioning nodes in the node pool.'
+        )
 
     with self.argument_context("aks nodepool update") as c:
         c.argument(
@@ -2383,6 +2402,14 @@ def load_arguments(self, _):
             arg_type=get_enum_type(gpu_mig_strategies),
             is_preview=True,
             help="Specify the GPU Multi-Instance GPU (MIG) strategy. Allowed values: Single, Mixed.",
+        )
+        # prepared image specification
+        c.argument(
+            'prepared_image_specification_id',
+            options_list=["--prepared-image-specification-id", "--pis-id"],
+            is_preview=True,
+            validator=validate_prepared_image_specification_id,
+            help='The resource ID of the prepared image specification to use for provisioning nodes in the node pool.'
         )
 
     with self.argument_context("aks nodepool upgrade") as c:
@@ -3448,6 +3475,91 @@ def load_arguments(self, _):
             options_list=["--all"],
             action="store_true",
             help="Show all VM SKU information including those not available for the current subscription.",
+        )
+
+    with self.argument_context("aks prepared-image-specification create") as c:
+        c.argument(
+            "name",
+            options_list=["--name", "-n"],
+            required=True,
+            help="The prepared image specification name.",
+        )
+        c.argument(
+            "container_images",
+            nargs="+",
+            help="Container images.",
+        )
+        c.argument(
+            "customization_scripts",
+            type=validate_file_or_dict,
+            help="Customization scripts. Expected value: json-string/@json-file.",
+        )
+        c.argument(
+            "assign_identity",
+            validator=validate_assign_identity,
+            help="Specify an existing user assigned identity.",
+        )
+        c.argument(
+            "version",
+            required=True,
+            help="The prepared image specification version.",
+        )
+
+    with self.argument_context("aks prepared-image-specification update") as c:
+        c.argument(
+            "name",
+            options_list=["--name", "-n"],
+            required=True,
+            help="The prepared image specification name.",
+        )
+
+    with self.argument_context("aks prepared-image-specification delete") as c:
+        c.argument(
+            "name",
+            options_list=["--name", "-n"],
+            required=True,
+            help="The prepared image specification name.",
+        )
+
+    with self.argument_context("aks prepared-image-specification show") as c:
+        c.argument(
+            "name",
+            options_list=["--name", "-n"],
+            required=True,
+            help="The prepared image specification name.",
+        )
+
+    with self.argument_context("aks prepared-image-specification version delete") as c:
+        c.argument(
+            "pis_name",
+            required=True,
+            help="The prepared image specification name.",
+        )
+        c.argument(
+            "name",
+            options_list=["--name", "-n"],
+            required=True,
+            help="The version name.",
+        )
+
+    with self.argument_context("aks prepared-image-specification version list") as c:
+        c.argument(
+            "pis_name",
+            required=True,
+            help="The prepared image specification name.",
+        )
+
+    with self.argument_context("aks prepared-image-specification version show") as c:
+        c.argument(
+            "pis_name",
+            required=True,
+            help="The prepared image specification name.",
+        )
+        c.argument(
+            "name",
+            options_list=["--name", "-n"],
+            required=True,
+            help="The version name.",
         )
 
 

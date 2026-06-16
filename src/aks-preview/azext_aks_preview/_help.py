@@ -4708,3 +4708,62 @@ helps['aks jwtauthenticator show'] = """
         - name: Show a specific JWT authenticator configuration
           text: az aks jwtauthenticator show -g MyResourceGroup --cluster-name MyCluster --name myjwt
 """
+
+helps['aks prepared-image-specification'] = """
+    type: group
+    short-summary: Commands to manage prepared image specifications.
+"""
+
+helps['aks prepared-image-specification create'] = """
+    type: command
+    short-summary: Create a new prepared image specification.
+    examples:
+        - name: Create a new prepared image specification specifying a container image.
+          text: az aks prepared-image-specification create -g MyResourceGroup -n MyPIS --version MyVersion --container-images myacr.azurecr.io/myimage:latest
+        - name: Create a new prepared image specification specifying a customization script.
+          text: az aks prepared-image-specification create -g MyResourceGroup -n MyPIS --version MyVersion --customization-scripts '[{"name":"myscript","script":"/bin/true","scriptType":"Bash","executionPoint":"NodeImageBuildTime"}]'
+        - name: Create a new prepared image specification specifying a managed identity.
+          text: az aks prepared-image-specification create -g MyResourceGroup -n MyPIS --version MyVersion --assign-identity /subscriptions/MySubscription/resourceGroups/AnotherResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/MyIdentity
+        - name: Create a new prepared image specification specifying tags.
+          text: az aks prepared-image-specification create -g MyResourceGroup -n MyPIS --version MyVersion --tags k1=v1 k2=v2
+"""
+
+helps['aks prepared-image-specification update'] = """
+    type: command
+    short-summary: Update a prepared image specification.
+"""
+
+helps['aks prepared-image-specification delete'] = """
+    type: command
+    short-summary: Delete a prepared image specification.
+"""
+
+helps['aks prepared-image-specification list'] = """
+    type: command
+    short-summary: List prepared image specifications.
+"""
+
+helps['aks prepared-image-specification show'] = """
+    type: command
+    short-summary: Show a prepared image specification.
+"""
+
+helps['aks prepared-image-specification version'] = """
+    type: group
+    short-summary: Commands to manage prepared image specification versions.
+"""
+
+helps['aks prepared-image-specification version delete'] = """
+    type: command
+    short-summary: Delete a prepared image specification version.
+"""
+
+helps['aks prepared-image-specification version list'] = """
+    type: command
+    short-summary: List prepared image specification versions.
+"""
+
+helps['aks prepared-image-specification version show'] = """
+    type: command
+    short-summary: Show a prepared image specification version.
+"""
