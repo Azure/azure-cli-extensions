@@ -29,7 +29,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='healthmodel',
+    name='health-models',
     version=VERSION,
     description='Microsoft Azure Command-Line Tools extension for Azure Monitor Health Models (Microsoft.CloudHealth).',
     long_description=README + '\n\n' + HISTORY,
@@ -37,10 +37,10 @@ setup(
     license='MIT',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/healthmodel',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/health-models',
     classifiers=CLASSIFIERS,
     packages=find_packages(),
     install_requires=DEPENDENCIES,
-    package_data={'azext_healthmodel': ['azext_metadata.json']},
+    package_data={'azext_health_models': ['azext_metadata.json']},
     python_requires='>=3.10',
 )

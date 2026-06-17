@@ -114,9 +114,9 @@ class HealthModelDualRegistrationTest(_HealthModelHelpBase):
         self._help('monitor health-models identity --help')
 
     def test_loader_command_table_is_monitor_only(self):
-        from azext_healthmodel import HealthModelCommandsLoader
+        from azext_health_models import HealthModelsCommandsLoader
 
-        loader = HealthModelCommandsLoader(cli_ctx=self.cli_ctx)
+        loader = HealthModelsCommandsLoader(cli_ctx=self.cli_ctx)
         loader.load_command_table(None)
 
         command_names = set(loader.command_table)

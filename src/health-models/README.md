@@ -1,11 +1,11 @@
-# Azure CLI healthmodel Extension #
+# Azure CLI health-models Extension #
 This is the extension for Azure Health Models.
 Azure Health Models (`Microsoft.CloudHealth`) represent the operational health of a workload as an entity graph. Entities are services or components, edges are parent-child relationships, and each entity carries health signals derived from metrics or logs. Signals roll up through the graph. Alerts can be configured to get notified on health changes.
 
 ### How to use ###
 Install this extension using the below CLI command
 ```
-az extension add --name healthmodel
+az extension add --name health-models
 ```
 
 ### Included Features ###
