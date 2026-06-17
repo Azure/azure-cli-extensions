@@ -943,7 +943,7 @@ def _evaluate_scenarios_workflow(cmd, resource_group_name, workspace_name,
                 "identity, and role assignments are all in place. Re-run "
                 "'az chaos workspace refresh-recommendation --name %s "
                 "--resource-group %s' in a couple of minutes, then "
-                "'az chaos scenario list -w %s -g %s'.",
+                "'az chaos scenario list --workspace-name %s -g %s'.",
                 failed_label,
                 f" after {max_attempts} attempts" if max_attempts > 1 else "",
                 workspace_name, resource_group_name,
@@ -1008,7 +1008,8 @@ def _build_setup_next_steps(resource_group_name, workspace_name, scenarios,
             f"--name {workspace_name} --resource-group {resource_group_name}"
         )
     steps.append(
-        f"az chaos scenario list -w {workspace_name} -g {resource_group_name}"
+        f"az chaos scenario list --workspace-name {workspace_name} "
+        f"-g {resource_group_name}"
     )
     example_scenario = (
         scenarios[0].get("name") if scenarios else "<scenario-name>"
@@ -1140,8 +1141,8 @@ class WorkspaceRefreshRecommendation(_RefreshRecommendation):
             "in resource group '%s'. Workspace evaluation has been refreshed; "
             "subsequent 'scenario config validate' / 'scenario run start' calls "
             "(for non-custom scenarios) now have a satisfied evaluation gate.\n"
-            "Run 'az chaos scenario list -w %s -g %s' to see updated "
-            "recommendation statuses.",
+            "Run 'az chaos scenario list --workspace-name %s -g %s' to see "
+            "updated recommendation statuses.",
             ws, rg, ws, rg,
         )
 

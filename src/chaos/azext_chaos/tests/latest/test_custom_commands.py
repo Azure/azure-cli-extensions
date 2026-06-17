@@ -1357,15 +1357,35 @@ class TestSetupHelpers(unittest.TestCase):
         self.assertIn("refresh-recommendation", joined)
         self.assertIn("scenario list", joined)
 
-    def test_build_next_steps_omits_refresh_when_evaluated(self):
+    def test_build_next_steps_uses_workspace_name_not_dash_w(self):
+        """Regression guard: next-step hints must use --workspace-name, never
+        the non-existent '-w' short flag (the parent workspace arg has no short
+        option; '-w' is an artifact that fails at the command line)."""
         from azext_chaos.custom import _build_setup_next_steps
-        steps = _build_setup_next_steps(
-            "rg", "ws", [{"name": "ZoneDown-1.0"}], evaluated=True
-        )
-        joined = "\n".join(steps)
-        self.assertNotIn("refresh-recommendation", joined)
-        # First discovered scenario name flows into the suggested commands.
-        self.assertIn("ZoneDown-1.0", joined)
+        for evaluated in (True, False):
+            steps = _build_setup_next_steps(
+                "rg", "ws", [{"name": "ZoneDown-1.0"}], evaluated=evaluated
+            )
+            joined = " ".join(steps)
+            self.assertNotIn(" -w ", joined)
+            self.assertIn("--workspace-name", joined)
+
+
+class TestNoDashWArtifact(unittest.TestCase):
+    """Repo-wide guard against the legacy '-w' workspace short-flag artifact.
+
+    '-w' was an early artifact (from hand-edits to generated files) that never
+    existed as a real alias for --workspace-name on non-workspace commands.
+    User-facing hint text that suggests 'scenario list -w ...' fails for users.
+    This test scans the custom module source so the artifact cannot silently
+    return via copied next-step hints.
+    """
+
+    def test_custom_module_has_no_scenario_list_dash_w(self):
+        import azext_chaos.custom as custom_mod
+        with open(custom_mod.__file__, 'r', encoding='utf-8') as f:
+            source = f.read()
+        self.assertNotIn("scenario list -w", source)
 
 
 class TestSetupOrchestration(unittest.TestCase):
