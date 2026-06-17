@@ -32,7 +32,7 @@ from azext_fleet.constants import SUPPORTED_GATE_TYPE_FILTERS
 from azext_fleet.constants import SUPPORTED_GATE_STATES_PATCH
 from azext_fleet.constants import FLEET_1P_APP_ID
 from azext_fleet.constants import POLLING_INTERVAL_SECS
-from azext_fleet.vendored_sdks.v2026_05_01_preview.models import (
+from azext_fleet.vendored_sdks.v2026_06_02_preview.models import (
     PropagationPolicy,
     PlacementProfile,
     PlacementV1ClusterResourcePlacementSpec,

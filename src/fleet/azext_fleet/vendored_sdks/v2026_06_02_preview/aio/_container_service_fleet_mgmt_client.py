@@ -75,7 +75,7 @@ class ContainerServiceFleetMgmtClient:  # pylint: disable=too-many-instance-attr
     :keyword cloud_setting: The cloud setting for which to get the ARM endpoint. Default value is
      None.
     :paramtype cloud_setting: ~azure.core.AzureClouds
-    :keyword api_version: Api Version. Default value is "2026-05-01-preview". Note that overriding
+    :keyword api_version: Api Version. Default value is "2026-06-02-preview". Note that overriding
      this default value may result in unsupported behavior.
     :paramtype api_version: str
     :keyword int polling_interval: Default waiting time between two polls for LRO operations if no

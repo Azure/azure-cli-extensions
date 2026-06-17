@@ -208,7 +208,7 @@ class AutoUpgradeProfile(ProxyResource):
      specified, the auto upgrade will run on all clusters which are members of the fleet.
     :vartype update_strategy_id: str
     :ivar channel: Configures how auto-upgrade will be run. Known values are: "Stable", "Rapid",
-     "NodeImage", and "TargetKubernetesVersion".
+     "NodeImage", "TargetKubernetesVersion", and "SecurityPatch".
     :vartype channel: str or ~azure.mgmt.containerservicefleet.models.UpgradeChannel
     :ivar node_image_selection: The node image upgrade to be applied to the target clusters in auto
      upgrade.
@@ -225,7 +225,7 @@ class AutoUpgradeProfile(ProxyResource):
     :ivar target_kubernetes_version: This is the target Kubernetes version for auto-upgrade. The
      format must be ``{major version}.{minor version}``. For example, "1.30". By default, this is
      empty. If upgrade channel is set to TargetKubernetesVersion, this field must not be empty. If
-     upgrade channel is Rapid, Stable or NodeImage, this field must be empty.
+     upgrade channel is not TargetKubernetesVersion, this field must be empty.
     :vartype target_kubernetes_version: str
     :ivar long_term_support: If upgrade channel is not TargetKubernetesVersion, this field must be
      False. If set to True: Fleet auto upgrade will continue generate update runs for patches of
@@ -281,7 +281,7 @@ class AutoUpgradeProfile(ProxyResource):
          not specified, the auto upgrade will run on all clusters which are members of the fleet.
         :paramtype update_strategy_id: str
         :keyword channel: Configures how auto-upgrade will be run. Known values are: "Stable", "Rapid",
-         "NodeImage", and "TargetKubernetesVersion".
+         "NodeImage", "TargetKubernetesVersion", and "SecurityPatch".
         :paramtype channel: str or ~azure.mgmt.containerservicefleet.models.UpgradeChannel
         :keyword node_image_selection: The node image upgrade to be applied to the target clusters in
          auto upgrade.
@@ -298,7 +298,7 @@ class AutoUpgradeProfile(ProxyResource):
         :keyword target_kubernetes_version: This is the target Kubernetes version for auto-upgrade. The
          format must be ``{major version}.{minor version}``. For example, "1.30". By default, this is
          empty. If upgrade channel is set to TargetKubernetesVersion, this field must not be empty. If
-         upgrade channel is Rapid, Stable or NodeImage, this field must be empty.
+         upgrade channel is not TargetKubernetesVersion, this field must be empty.
         :paramtype target_kubernetes_version: str
         :keyword long_term_support: If upgrade channel is not TargetKubernetesVersion, this field must
          be False. If set to True: Fleet auto upgrade will continue generate update runs for patches of
@@ -371,6 +371,8 @@ class AutoUpgradeProfileStatus(_serialization.Model):
     :ivar last_trigger_upgrade_versions: The target Kubernetes version or node image versions of
      the last trigger.
     :vartype last_trigger_upgrade_versions: list[str]
+    :ivar last_trigger_message: Additional information about the last trigger attempt.
+    :vartype last_trigger_message: str
     """
 
     _validation = {
@@ -378,6 +380,7 @@ class AutoUpgradeProfileStatus(_serialization.Model):
         "last_trigger_status": {"readonly": True},
         "last_trigger_error": {"readonly": True},
         "last_trigger_upgrade_versions": {"readonly": True},
+        "last_trigger_message": {"readonly": True},
     }
 
     _attribute_map = {
@@ -385,6 +388,7 @@ class AutoUpgradeProfileStatus(_serialization.Model):
         "last_trigger_status": {"key": "lastTriggerStatus", "type": "str"},
         "last_trigger_error": {"key": "lastTriggerError", "type": "ErrorDetail"},
         "last_trigger_upgrade_versions": {"key": "lastTriggerUpgradeVersions", "type": "[str]"},
+        "last_trigger_message": {"key": "lastTriggerMessage", "type": "str"},
     }
 
     def __init__(self, **kwargs: Any) -> None:
@@ -394,6 +398,7 @@ class AutoUpgradeProfileStatus(_serialization.Model):
         self.last_trigger_status: Optional[Union[str, "_models.AutoUpgradeLastTriggerStatus"]] = None
         self.last_trigger_error: Optional["_models.ErrorDetail"] = None
         self.last_trigger_upgrade_versions: Optional[list[str]] = None
+        self.last_trigger_message: Optional[str] = None
 
 
 class CiliumProperties(_serialization.Model):
