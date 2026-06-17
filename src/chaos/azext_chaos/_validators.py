@@ -10,31 +10,78 @@ import re
 from knack.util import CLIError
 
 
-# ARM resource IDs start with `/subscriptions/<guid>` and may continue
-# with deeper path segments (resource group, provider, child resources).
+# Workspace scopes are ARM resource identifiers. The service accepts a
+# subscription, resource group, individual resource, or service group (the
+# backend has no scope-type allow-list — it accepts any parseable ARM ID).
+# We accept the two structural roots that cover all of those:
+#   - ``/subscriptions/<guid>[/...]``  → subscription, resource group, resource
+#   - ``/providers/Microsoft.Management/serviceGroups/<name>`` → service group
 _ARM_SCOPE_PATTERN = re.compile(
     r'^/subscriptions/'
     r'[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}'
     r'(/.*)?$'
 )
+_SERVICE_GROUP_SCOPE_PATTERN = re.compile(
+    r'^/providers/Microsoft\.Management/serviceGroups/[^/]+/?$',
+    re.IGNORECASE,
+)
+
+
+def _is_valid_scope(scope):
+    """Return True if *scope* is a workspace-targetable ARM resource ID."""
+    return bool(
+        scope
+        and (_ARM_SCOPE_PATTERN.match(scope)
+             or _SERVICE_GROUP_SCOPE_PATTERN.match(scope))
+    )
 
 
 def validate_scope(namespace):
     """Validate that --scopes values are well-formed ARM resource IDs.
 
-    Each scope must start with ``/subscriptions/`` followed by a subscription
-    GUID and optionally deeper path segments (resource group, provider, etc.).
+    Accepts either a subscription-rooted ARM ID (``/subscriptions/<guid>`` and
+    optionally deeper — resource group or individual resource) or a
+    service-group ARM ID (``/providers/Microsoft.Management/serviceGroups/
+    <name>``). The error message advertises only the portal-supported scope
+    types (subscription, resource group, service group); deeper
+    subscription-rooted IDs (individual resources) are accepted but not
+    surfaced, to stay aligned with the portal without going out of our way to
+    block what the service accepts.
     """
     scopes = getattr(namespace, 'scopes', None)
     if not scopes:
         return
     for scope in scopes:
-        if not scope or not _ARM_SCOPE_PATTERN.match(scope):
+        if not _is_valid_scope(scope):
             raise CLIError(
                 f"Invalid ARM resource ID: '{scope}'. Each scope must be a "
-                "fully qualified ARM resource ID starting with "
-                "'/subscriptions/<subscription-id>', where <subscription-id> "
-                "is a GUID."
+                "fully qualified ARM resource ID for a subscription "
+                "('/subscriptions/<subscription-id>'), resource group "
+                "('/subscriptions/<subscription-id>/resourceGroups/<name>'), "
+                "or service group "
+                "('/providers/Microsoft.Management/serviceGroups/<name>')."
+            )
+
+
+def validate_user_assigned(namespace):
+    """Validate that --user-assigned values are user-assigned identity IDs.
+
+    Each value must be a fully qualified ARM resource ID for a
+    ``Microsoft.ManagedIdentity/userAssignedIdentities`` resource.
+    """
+    identities = getattr(namespace, 'user_assigned', None)
+    if not identities:
+        return
+    for identity in identities:
+        if (not identity
+                or not _ARM_SCOPE_PATTERN.match(identity)
+                or 'microsoft.managedidentity/userassignedidentities/'
+                not in identity.lower()):
+            raise CLIError(
+                f"Invalid user-assigned identity ID: '{identity}'. Each value "
+                "must be a fully qualified ARM resource ID of the form "
+                "'/subscriptions/<sub-id>/resourceGroups/<rg-name>/providers/"
+                "Microsoft.ManagedIdentity/userAssignedIdentities/<name>'."
             )
 
 

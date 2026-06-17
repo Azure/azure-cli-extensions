@@ -33,6 +33,17 @@ class TestHelpEntries(unittest.TestCase):
     def test_alias_help_exists(self):
         self.assertIn('chaos workspace evaluate-scenarios', helps)
 
+    def test_setup_help_exists(self):
+        self.assertIn('chaos setup', helps)
+
+    def test_setup_help_explains_required_scopes_and_format(self):
+        setup_help = helps['chaos setup']
+        self.assertIn('--scopes', setup_help)
+        self.assertIn('REQUIRED', setup_help)
+        # ARM resource ID format guidance is present for newcomers.
+        self.assertIn('/subscriptions/<sub-id>', setup_help)
+        self.assertIn('userAssignedIdentities', setup_help)
+
     def test_alias_help_mentions_canonical_name(self):
         alias_help = helps['chaos workspace evaluate-scenarios']
         self.assertIn(

@@ -14,6 +14,7 @@ from azext_chaos._table_format import (
     scenario_run_show_table_format,
     scenario_show_table_format,
     validation_show_table_format,
+    setup_table_format,
     workspace_discovery_show_table_format,
     workspace_evaluation_show_table_format,
     workspace_list_table_format,
@@ -103,6 +104,21 @@ def load_command_table(self, _):
             'cancel',
             'scenario_run_cancel',
             supports_no_wait=True,
+        )
+
+    # ── Composite (porcelain) commands ───────────────────────────────
+    # `chaos setup` is a top-level first-day-experience flow that wraps
+    # resource-group creation, workspace creation, Reader role assignment,
+    # and scenario evaluation. Its identity is the workflow, not any single
+    # API operation (see context/cli-design-philosophy.md).
+    with self.command_group(
+        'chaos',
+        operations_tmpl='azext_chaos.custom#{}',
+    ) as g:
+        g.custom_command(
+            'setup',
+            'setup',
+            table_transformer=setup_table_format,
         )
 
     _register_aaz_subclass_overrides(self)

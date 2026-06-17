@@ -189,3 +189,16 @@ def discovered_resource_show_table_format(result):
 
 def discovered_resource_list_table_format(results):
     return [discovered_resource_show_table_format(r) for r in results]
+
+
+# ── setup (composite) ────────────────────────────────────────────────────
+
+
+def setup_table_format(result):
+    """Table formatter for the `chaos setup` result.
+
+    The composite command returns a rich object; the most useful tabular view
+    is the list of discovered scenarios (full detail lives in ``-o json``).
+    """
+    scenarios = (result or {}).get('scenarios') or []
+    return [scenario_show_table_format(s) for s in scenarios]

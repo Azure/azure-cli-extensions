@@ -552,5 +552,30 @@ class TestCommandsWiring(unittest.TestCase):
         self.assertIn('table_transformer', start_call.kwargs)
 
 
+class TestSetupTableFormat(unittest.TestCase):
+    """Tests for setup_table_format."""
+
+    def test_projects_discovered_scenarios(self):
+        from azext_chaos._table_format import setup_table_format
+        result = {
+            "workspace": {"name": "ws"},
+            "scenarios": [
+                {"name": "ZoneDown-1.0",
+                 "properties": {"version": "1.0",
+                                "recommendation": {
+                                    "recommendationStatus": "Recommended"}}},
+            ],
+        }
+        rows = setup_table_format(result)
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]['Name'], 'ZoneDown-1.0')
+        self.assertEqual(rows[0]['Recommendation'], 'Recommended')
+
+    def test_empty_when_no_scenarios(self):
+        from azext_chaos._table_format import setup_table_format
+        self.assertEqual(setup_table_format({"scenarios": []}), [])
+        self.assertEqual(setup_table_format({}), [])
+
+
 if __name__ == '__main__':
     unittest.main()

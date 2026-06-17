@@ -63,6 +63,77 @@ long-summary: |
     a specific one.
 """
 
+# ── setup (composite / porcelain) ────────────────────────────────────────
+
+helps['chaos setup'] = """
+type: command
+short-summary: Stand up a ready-to-use Chaos Studio environment in one step.
+long-summary: |
+    First-day-experience command that orchestrates the full bootstrap workflow
+    so you do not have to run the individual commands yourself:
+
+      1. Creates the resource group if it does not already exist.
+      2. Creates the workspace with a managed identity (user-assigned if
+         '--user-assigned' is supplied, otherwise a system-assigned identity).
+      3. Grants that identity the built-in 'Reader' role on each '--scopes'
+         target (skip with '--skip-permissions') — discovery and evaluation run
+         under the workspace identity and cannot enumerate resources without it.
+         Re-assigning an existing role is a no-op.
+      4. Evaluates scenarios for the workspace (resource discovery + scenario
+         recommendations). When a NEW Reader assignment was just made, the
+         evaluation is retried for a few minutes to absorb Azure Resource Graph
+         propagation lag; pass '--skip-evaluation-wait' to run a single attempt
+         (e.g. in CI) and get a rerun hint instead of waiting.
+      5. Prints the discovered scenarios and the commands to run next.
+
+    This is a composite "porcelain" command: it wraps the granular 'workspace
+    create', 'workspace refresh-recommendation', and role-assignment operations
+    behind a single workflow verb. For fine-grained control, run those commands
+    directly.
+
+    WHY '--scopes' IS REQUIRED:
+    A workspace must declare which resources Chaos Studio is allowed to target —
+    there is no safe default. You are expected to already have a resource group
+    or service group (or a subscription) you plan to run experiments against.
+    Pass one or more ARM resource IDs as the scope. The Azure portal's Create
+    Workspace blade requires the same explicit choice.
+
+    ARM RESOURCE ID FORMATS (for '--scopes'):
+      Resource group (most common scope):
+        `/subscriptions/<sub-id>/resourceGroups/<rg-name>`
+      Subscription:
+        `/subscriptions/<sub-id>`
+      Service group:
+        `/providers/Microsoft.Management/serviceGroups/<service-group-name>`
+
+    ARM RESOURCE ID FORMAT (for '--user-assigned'):
+      User-assigned managed identity:
+        `/subscriptions/<sub-id>/resourceGroups/<rg-name>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/<identity-name>`
+
+    Tip: copy a resource group's ID with
+    `az group show -n <rg> --query id -o tsv`.
+examples:
+    - name: Bootstrap a workspace scoped to a resource group, using a system-assigned identity
+      text: >
+        az chaos setup --name MyWorkspace --resource-group MyRG --location westus2
+        --scopes "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyRG"
+    - name: Bootstrap with a user-assigned identity as the workspace identity
+      text: >
+        az chaos setup --name MyWorkspace --resource-group MyRG --location westus2
+        --scopes "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyRG"
+        --user-assigned "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/MyIdentity"
+    - name: Bootstrap a workspace scoped to a service group
+      text: >
+        az chaos setup --name MyWorkspace --resource-group MyRG --location westus2
+        --scopes "/providers/Microsoft.Management/serviceGroups/my-critical-services"
+    - name: Bootstrap scoped to multiple resource groups and manage RBAC yourself
+      text: >
+        az chaos setup --name MyWorkspace --resource-group MyRG --location westus2
+        --scopes "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AppRG"
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DataRG"
+        --skip-permissions
+"""
+
 # ── workspace commands ───────────────────────────────────────────────────
 
 helps['chaos workspace create'] = """

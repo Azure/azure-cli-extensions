@@ -5,6 +5,7 @@
 
 import json
 import time
+import uuid
 
 from azure.cli.core.aaz import has_value
 from azure.cli.core.util import send_raw_request
@@ -589,6 +590,467 @@ def scenario_run_cancel(cmd, resource_group_name, workspace_name,  # pylint: dis
         run_id, scenario_name, workspace_name, resource_group_name,
     )
     return None
+
+
+# ── az chaos setup (porcelain / composite first-day experience) ──────────
+# `az chaos setup` is a COMPOSITE (porcelain) command per the CLI design
+# philosophy (.github/skills/chaos-automation-codegen/context/
+# cli-design-philosophy.md). Its identity is the WORKFLOW — "stand up a
+# ready-to-use Chaos Studio environment" — not any single API operation, and
+# it is a CLI-surface-specific affordance (intentionally NOT mirrored to the
+# Terraform/PowerShell surfaces). Inspired by `az containerapp up` /
+# `az webapp up`: ensure the resource group, create the workspace + identity,
+# grant the identity the permissions discovery needs, evaluate scenarios, then
+# report the discovered scenarios and the commands to run next.
+
+# Azure built-in "Reader" role. The workspace's managed identity must hold
+# Reader on each in-scope resource for resource discovery + scenario evaluation
+# to succeed: discovery always runs under the workspace MI
+# (services/AP/.../TargetDiscoveryController.cs) and refreshRecommendations
+# orchestrates discover-then-evaluate
+# (services/GW/.../RefreshWorkspaceRecommendationsOrchestration.cs). GUID
+# verified against the Azure RBAC built-in roles reference:
+# https://learn.microsoft.com/azure/role-based-access-control/built-in-roles/general#reader
+_READER_ROLE_DEFINITION_GUID = "acdd72a7-3385-48ef-bd42-f606fba81ae7"
+
+_RESOURCE_GROUP_API_VERSION = "2021-04-01"
+_ROLE_ASSIGNMENT_API_VERSION = "2022-04-01"
+
+# Resource discovery runs under the workspace identity; a freshly-granted Reader
+# role can lag in Azure Resource Graph (typically clears in 1-3 min), so the
+# evaluate step retries a bounded number of times before reporting a hint.
+_EVALUATION_MAX_ATTEMPTS = 3
+_EVALUATION_RETRY_INTERVAL_SECONDS = 120
+
+
+def setup(cmd, resource_group_name, workspace_name, location, scopes,  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals
+          user_assigned=None, skip_permissions=False,
+          skip_evaluation_wait=False, tags=None):
+    """Stand up a ready-to-use Chaos Studio environment end to end.
+
+    Composite first-day-experience flow: ensure the resource group exists,
+    create the workspace with a managed identity, grant that identity the
+    Reader role discovery requires on each scope, evaluate scenarios, and
+    report the discovered scenarios plus suggested next commands.
+
+    Assigning Reader is idempotent — an already-present assignment is a no-op
+    (ARM reports ``RoleAssignmentExists``). Only when a *new* assignment is
+    created this run does the evaluate step wait out Azure Resource Graph
+    propagation (retrying a few times); pass ``--skip-evaluation-wait`` to force
+    a single attempt (e.g. in CI).
+    """
+    # 1. Resource group ──────────────────────────────────────────────────
+    _ensure_resource_group(cmd, resource_group_name, location)
+
+    # 2. Workspace ───────────────────────────────────────────────────────
+    workspace = _create_setup_workspace(
+        cmd, resource_group_name, workspace_name, location,
+        scopes, user_assigned, tags,
+    )
+
+    # 3. Permissions — Reader for the workspace identity on each scope ────
+    principal_ids = _resolve_workspace_principal_ids(workspace, user_assigned)
+    role_assignments = []
+    if skip_permissions:
+        logger.warning(
+            "Skipping permission setup (--skip-permissions). Evaluation will "
+            "still run, but it can only discover resources if the workspace "
+            "identity already holds the Reader role on the target scopes.",
+        )
+    elif not principal_ids:
+        logger.warning(
+            "Could not resolve the workspace identity principal ID; skipping "
+            "Reader role assignment. Grant Reader to the workspace identity on "
+            "the target scopes manually, then re-run "
+            "'az chaos workspace refresh-recommendation'.",
+        )
+    else:
+        for principal_id in principal_ids:
+            for scope in scopes:
+                assignment = _assign_reader_role(cmd, scope, principal_id)
+                if assignment:
+                    role_assignments.append(assignment)
+
+    # 4. Evaluate scenarios ──────────────────────────────────────────────
+    # Only wait out Azure Resource Graph propagation when we created a NEW role
+    # assignment this run — that is what lags. A pre-existing assignment
+    # (roleAssignmentName is None) is a no-op with no propagation delay, so a
+    # single evaluation attempt is enough.
+    created_new_assignment = any(
+        a.get("roleAssignmentName") for a in role_assignments
+    )
+    wait_for_propagation = created_new_assignment and not skip_evaluation_wait
+    evaluated = _evaluate_scenarios_workflow(
+        cmd, resource_group_name, workspace_name,
+        wait_for_propagation=wait_for_propagation,
+    )
+
+    # 5. Report ──────────────────────────────────────────────────────────
+    scenarios = _list_workspace_scenarios(
+        cmd, resource_group_name, workspace_name,
+    )
+    next_steps = _build_setup_next_steps(
+        resource_group_name, workspace_name, scenarios, evaluated,
+    )
+    _print_setup_summary(
+        resource_group_name, workspace_name, scenarios, next_steps,
+    )
+    return {
+        "workspace": workspace,
+        "identityPrincipalIds": principal_ids,
+        "roleAssignments": role_assignments,
+        "scenarios": scenarios,
+        "nextSteps": next_steps,
+    }
+
+
+def _ensure_resource_group(cmd, resource_group_name, location):
+    """Create the resource group if it does not already exist."""
+    from azure.cli.core.commands.client_factory import get_subscription_id
+    sub = get_subscription_id(cmd.cli_ctx)
+    rg_url = (
+        f"/subscriptions/{sub}/resourcegroups/{resource_group_name}"
+        f"?api-version={_RESOURCE_GROUP_API_VERSION}"
+    )
+    try:
+        existing = send_raw_request(cmd.cli_ctx, "GET", rg_url)
+        if existing.status_code == 200:
+            logger.warning(
+                "Using existing resource group '%s'.", resource_group_name,
+            )
+            return
+    except Exception:  # pylint: disable=broad-except
+        pass  # GET raises on 404 — fall through to create.
+    logger.warning(
+        "Creating resource group '%s' in location '%s'.",
+        resource_group_name, location,
+    )
+    send_raw_request(
+        cmd.cli_ctx, "PUT", rg_url,
+        body=json.dumps({"location": location}),
+        headers=["Content-Type=application/json"],
+    )
+
+
+def _create_setup_workspace(cmd, resource_group_name, workspace_name,  # pylint: disable=too-many-arguments,too-many-positional-arguments
+                            location, scopes, user_assigned, tags):
+    """PUT the workspace, poll the create LRO, and return the final resource.
+
+    When ``user_assigned`` is supplied the workspace uses a UserAssigned
+    identity; otherwise it uses a SystemAssigned identity (the workspace's own
+    system-assigned identity becomes the workspace identity).
+    """
+    if user_assigned:
+        identity = {
+            "type": "UserAssigned",
+            "userAssignedIdentities": {uid: {} for uid in user_assigned},
+        }
+    else:
+        identity = {"type": "SystemAssigned"}
+    body = {
+        "location": location,
+        "identity": identity,
+        "properties": {"scopes": list(scopes)},
+    }
+    if tags:
+        body["tags"] = tags
+    url = _build_arm_url(cmd.cli_ctx, resource_group_name, workspace_name, "")
+    logger.warning(
+        "Creating workspace '%s' (identity: %s).",
+        workspace_name, identity["type"],
+    )
+    response = send_raw_request(
+        cmd.cli_ctx, "PUT", url,
+        body=json.dumps(body), headers=["Content-Type=application/json"],
+    )
+    _poll_or_return(cmd, response)
+    # Re-GET for the authoritative identity block: ARM populates the managed
+    # identity ``principalId`` asynchronously and it may be absent on the
+    # initial create response.
+    final = send_raw_request(cmd.cli_ctx, "GET", url)
+    return final.json() if final.text else {}
+
+
+def _resolve_workspace_principal_ids(workspace, user_assigned):
+    """Return the identity principal IDs to grant Reader to.
+
+    For a system-assigned identity that is the single ``identity.principalId``.
+    For user-assigned identities it is the ``principalId`` of each assigned
+    identity (ARM resource-id keys are matched case-insensitively).
+    """
+    identity = (workspace or {}).get("identity") or {}
+    principal_ids = []
+    if user_assigned:
+        ua_map = identity.get("userAssignedIdentities") or {}
+        for uid in user_assigned:
+            entry = ua_map.get(uid)
+            if entry is None:
+                for key, value in ua_map.items():
+                    if key.lower() == uid.lower():
+                        entry = value
+                        break
+            if entry and entry.get("principalId"):
+                principal_ids.append(entry["principalId"])
+    else:
+        principal_id = identity.get("principalId")
+        if principal_id:
+            principal_ids.append(principal_id)
+    return principal_ids
+
+
+def _subscription_from_scope(scope):
+    """Extract the subscription GUID from an ARM scope id (best-effort)."""
+    segments = [s for s in (scope or "").strip("/").split("/") if s]
+    if len(segments) >= 2 and segments[0].lower() == "subscriptions":
+        return segments[1]
+    return None
+
+
+def _assign_reader_role(cmd, scope, principal_id):
+    """Assign the Reader role to a principal on a scope (idempotent).
+
+    Returns a record of the assignment, or ``None`` when it could not be made.
+    An already-existing assignment is treated as success. Other failures
+    (e.g. the caller lacks Owner / User Access Administrator) are surfaced as a
+    warning rather than aborting the whole setup.
+    """
+    sub = _subscription_from_scope(scope)
+    if not sub:
+        logger.warning(
+            "Skipping role assignment on '%s': could not parse a subscription "
+            "from the scope.", scope,
+        )
+        return None
+    role_definition_id = (
+        f"/subscriptions/{sub}/providers/Microsoft.Authorization"
+        f"/roleDefinitions/{_READER_ROLE_DEFINITION_GUID}"
+    )
+    assignment_name = str(uuid.uuid4())
+    url = (
+        f"{scope}/providers/Microsoft.Authorization/roleAssignments/"
+        f"{assignment_name}?api-version={_ROLE_ASSIGNMENT_API_VERSION}"
+    )
+    body = json.dumps({
+        "properties": {
+            "roleDefinitionId": role_definition_id,
+            "principalId": principal_id,
+            # ``ServicePrincipal`` lets ARM skip the directory lookup that can
+            # 400 with PrincipalNotFound right after a managed identity is
+            # created (Azure AD replication lag).
+            "principalType": "ServicePrincipal",
+        }
+    })
+    try:
+        send_raw_request(
+            cmd.cli_ctx, "PUT", url,
+            body=body, headers=["Content-Type=application/json"],
+        )
+        logger.warning(
+            "Granted Reader to identity %s on scope %s.", principal_id, scope,
+        )
+        return {
+            "scope": scope,
+            "principalId": principal_id,
+            "roleAssignmentName": assignment_name,
+        }
+    except Exception as ex:  # pylint: disable=broad-except
+        text = str(ex)
+        if "RoleAssignmentExists" in text or "already exists" in text.lower():
+            logger.warning(
+                "Reader already assigned to identity %s on scope %s.",
+                principal_id, scope,
+            )
+            return {
+                "scope": scope,
+                "principalId": principal_id,
+                "roleAssignmentName": None,
+            }
+        logger.warning(
+            "Could not assign Reader to identity %s on scope %s: %s. You may "
+            "need Owner or User Access Administrator on the scope. Assign "
+            "Reader manually, then re-run 'az chaos workspace "
+            "refresh-recommendation --name <ws> --resource-group <rg>'.",
+            principal_id, scope, text,
+        )
+        return None
+
+
+def _evaluate_scenarios_workflow(cmd, resource_group_name, workspace_name,
+                                 wait_for_propagation=False):
+    """Run the evaluate-scenarios workflow for the workspace.
+
+    This is the porcelain "evaluate scenarios" step. It is intentionally bound
+    to the SAME logical workflow exposed by
+    ``az chaos workspace evaluate-scenarios`` — NOT to the plumbing
+    ``refresh-recommendation`` op. Today that workflow maps 1:1 to
+    ``Workspaces_RefreshRecommendations`` (a single ``POST
+    /refreshRecommendations`` that orchestrates discover-then-evaluate). When
+    the spec splits that op into ``Workspaces_Discover`` +
+    ``Workspaces_Evaluate`` (2026-08-01-preview — see the
+    ``WorkspaceRefreshRecommendation`` docstring), update THIS helper (and
+    ``WorkspaceEvaluateScenarios``) to call both in sequence; ``setup``
+    inherits the new behavior automatically because it routes through here.
+
+    Resource discovery runs under the workspace identity, and a freshly-granted
+    Reader role can lag in Azure Resource Graph (1-3 min). When
+    ``wait_for_propagation`` is set, the whole evaluation is retried up to
+    ``_EVALUATION_MAX_ATTEMPTS`` times with
+    ``_EVALUATION_RETRY_INTERVAL_SECONDS`` between attempts so the common
+    first-run case returns discovered scenarios instead of a propagation-lag
+    failure. The rerun hint is only emitted once all attempts are exhausted.
+
+    Returns ``True`` when discovery/evaluation completed cleanly, ``False``
+    otherwise (never raises — the resource group, workspace, identity, and role
+    assignments are already provisioned by the time we get here).
+    """
+    max_attempts = _EVALUATION_MAX_ATTEMPTS if wait_for_propagation else 1
+    url = _build_arm_url(
+        cmd.cli_ctx, resource_group_name, workspace_name,
+        "/refreshRecommendations",
+    )
+    for attempt in range(1, max_attempts + 1):
+        if max_attempts > 1:
+            logger.warning(
+                "Evaluating scenarios for workspace '%s' (attempt %d/%d).",
+                workspace_name, attempt, max_attempts,
+            )
+        else:
+            logger.warning(
+                "Evaluating scenarios for workspace '%s'.", workspace_name,
+            )
+        response = send_raw_request(cmd.cli_ctx, "POST", url)
+        _poll_or_return(cmd, response)
+
+        failed_label = _setup_inner_lro_failure(
+            cmd, resource_group_name, workspace_name,
+        )
+        if not failed_label:
+            return True
+
+        if attempt < max_attempts:
+            logger.warning(
+                "Scenario evaluation did not complete (%s failed) — commonly "
+                "Azure Resource Graph propagation lag right after the Reader "
+                "role is granted to the workspace identity. Waiting %d seconds "
+                "before retrying...",
+                failed_label, _EVALUATION_RETRY_INTERVAL_SECONDS,
+            )
+            time.sleep(_EVALUATION_RETRY_INTERVAL_SECONDS)
+        else:
+            logger.warning(
+                "Workspace provisioned, but scenario evaluation did not "
+                "complete (%s failed)%s. The resource group, workspace, "
+                "identity, and role assignments are all in place. Re-run "
+                "'az chaos workspace refresh-recommendation --name %s "
+                "--resource-group %s' in a couple of minutes, then "
+                "'az chaos scenario list -w %s -g %s'.",
+                failed_label,
+                f" after {max_attempts} attempts" if max_attempts > 1 else "",
+                workspace_name, resource_group_name,
+                workspace_name, resource_group_name,
+            )
+    return False
+
+
+def _setup_inner_lro_failure(cmd, resource_group_name, workspace_name):
+    """Return a label if discovery/evaluation inner LRO is Failed, else None.
+
+    Soft (non-raising) sibling of ``_check_inner_lro`` — setup downgrades inner
+    failures to a warning instead of a non-zero exit.
+    """
+    checks = (
+        ("/discoveries/latest", "resource discovery"),
+        ("/evaluations/latest", "scenario evaluation"),
+    )
+    for path_suffix, label in checks:
+        url = _build_arm_url(
+            cmd.cli_ctx, resource_group_name, workspace_name, path_suffix,
+        )
+        try:
+            resp = send_raw_request(cmd.cli_ctx, "GET", url)
+        except Exception:  # pylint: disable=broad-except
+            continue  # /latest may legitimately 404 on a fresh workspace
+        if resp.status_code != 200 or not resp.text:
+            continue
+        try:
+            props = (resp.json() or {}).get("properties") or {}
+        except Exception:  # pylint: disable=broad-except
+            continue
+        if props.get("status") == "Failed":
+            return label
+    return None
+
+
+def _list_workspace_scenarios(cmd, resource_group_name, workspace_name):
+    """GET the catalog/discovered scenarios for the workspace."""
+    url = _build_arm_url(
+        cmd.cli_ctx, resource_group_name, workspace_name, "/scenarios",
+    )
+    try:
+        resp = send_raw_request(cmd.cli_ctx, "GET", url)
+    except Exception:  # pylint: disable=broad-except
+        return []
+    if resp.status_code != 200 or not resp.text:
+        return []
+    try:
+        return (resp.json() or {}).get("value") or []
+    except Exception:  # pylint: disable=broad-except
+        return []
+
+
+def _build_setup_next_steps(resource_group_name, workspace_name, scenarios,
+                            evaluated):
+    """Build the list of suggested next commands after setup completes."""
+    steps = []
+    if not evaluated:
+        steps.append(
+            f"az chaos workspace refresh-recommendation "
+            f"--name {workspace_name} --resource-group {resource_group_name}"
+        )
+    steps.append(
+        f"az chaos scenario list -w {workspace_name} -g {resource_group_name}"
+    )
+    example_scenario = (
+        scenarios[0].get("name") if scenarios else "<scenario-name>"
+    )
+    steps.append(
+        f"az chaos scenario config create --workspace-name {workspace_name} "
+        f"-g {resource_group_name} --scenario-name {example_scenario} "
+        f"--name <config-name> --parameters @params.json"
+    )
+    steps.append(
+        f"az chaos scenario run start --workspace-name {workspace_name} "
+        f"-g {resource_group_name} --scenario-name {example_scenario} "
+        f"--config-name <config-name>"
+    )
+    return steps
+
+
+def _print_setup_summary(resource_group_name, workspace_name, scenarios,
+                         next_steps):
+    """Emit the human-friendly post-setup summary (mirrors `containerapp up`)."""
+    logger.warning(
+        "\nChaos Studio workspace '%s' is ready in resource group '%s'.",
+        workspace_name, resource_group_name,
+    )
+    if scenarios:
+        logger.warning("Discovered %d scenario(s):", len(scenarios))
+        for scenario in scenarios:
+            name = scenario.get("name", "<unknown>")
+            recommendation = (
+                ((scenario.get("properties") or {}).get("recommendation")) or {}
+            ).get("recommendationStatus", "")
+            suffix = f" ({recommendation})" if recommendation else ""
+            logger.warning("  - %s%s", name, suffix)
+    else:
+        logger.warning(
+            "No scenarios discovered yet. If evaluation is still in progress "
+            "or needs a retry, re-run 'az chaos workspace "
+            "refresh-recommendation' and then 'az chaos scenario list'.",
+        )
+    logger.warning("\nNext steps:")
+    for step in next_steps:
+        logger.warning("  %s", step)
 
 
 # ── AAZCommand subclass overrides ────────────────────────────────────────

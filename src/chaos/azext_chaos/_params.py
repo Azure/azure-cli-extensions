@@ -5,11 +5,77 @@
 
 from azure.cli.core.commands.parameters import (
     get_location_type,
+    tags_type,
 )
-from azext_chaos._validators import validate_scope, validate_parameters_json
+from azext_chaos._validators import (
+    validate_scope,
+    validate_parameters_json,
+    validate_user_assigned,
+)
 
 
 def load_arguments(self, _):
+    # ── chaos setup (composite / porcelain) ──────────────────────────
+    with self.argument_context('chaos setup') as c:
+        c.argument(
+            'workspace_name',
+            options_list=['--name', '-n'],
+            help='Name of the Chaos Studio workspace to create.',
+        )
+        c.argument(
+            'location',
+            arg_type=get_location_type(self.cli_ctx),
+            help='Location for the workspace (and the resource group, if it '
+                 'is created).',
+        )
+        c.argument(
+            'scopes',
+            nargs='+',
+            validator=validate_scope,
+            help='Space-separated list of ARM resource IDs that the workspace '
+                 'is allowed to target: a resource group, subscription, or '
+                 'service group. Required — there is no default scope. '
+                 'Examples: '
+                 '`/subscriptions/<sub-id>/resourceGroups/<rg-name>` or '
+                 '`/providers/Microsoft.Management/serviceGroups/<name>`',
+        )
+        c.argument(
+            'user_assigned',
+            options_list=['--user-assigned', '--mi-user-assigned'],
+            nargs='+',
+            validator=validate_user_assigned,
+            help='Space-separated ARM resource ID(s) of user-assigned managed '
+                 'identities to use as the workspace identity. When omitted, '
+                 'the workspace uses a system-assigned identity. Example: '
+                 '`/subscriptions/<sub-id>/resourceGroups/<rg-name>/providers/'
+                 'Microsoft.ManagedIdentity/userAssignedIdentities/<name>`',
+        )
+        c.argument(
+            'skip_permissions',
+            options_list=['--skip-permissions'],
+            action='store_true',
+            default=False,
+            help='Skip granting the workspace identity the Reader role on the '
+                 'target scopes. Use when you manage RBAC out of band. '
+                 'Evaluation still runs, but can only discover resources if the '
+                 'identity already holds Reader on the scopes.',
+        )
+        c.argument(
+            'skip_evaluation_wait',
+            options_list=['--skip-evaluation-wait'],
+            action='store_true',
+            default=False,
+            help='Do not wait/retry for Azure Resource Graph propagation after '
+                 'a new Reader role assignment; run a single evaluation attempt '
+                 'and report a rerun hint if it has not propagated yet. Useful '
+                 'for non-interactive/CI runs.',
+        )
+        c.argument(
+            'tags',
+            arg_type=tags_type,
+            help='Space-separated tags in KEY=VALUE form for the workspace.',
+        )
+
     # ── chaos workspace ──────────────────────────────────────────────
     with self.argument_context('chaos workspace') as c:
         # Spec pattern: ^[^<>%&:?#/\\]+$  (minLength: 1)

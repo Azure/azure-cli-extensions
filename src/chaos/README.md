@@ -4,7 +4,8 @@ Azure CLI extension for Azure Chaos Studio v2 Workspaces.
 
 Provides the `az chaos` command group for workspace lifecycle management,
 scenario browsing, scenario configuration with validation and execution,
-and run history with per-run cancellation.
+and run history with per-run cancellation. The `az chaos setup` composite
+command bootstraps a complete environment in a single step.
 
 ## Installation
 
@@ -15,6 +16,23 @@ az extension add --name chaos
 ## Usage
 
 ```bash
+# Stand up a ready-to-use environment in one step (porcelain command):
+#   - creates the resource group (if missing)
+#   - creates the workspace + managed identity
+#   - grants the identity the Reader role on each scope
+#   - evaluates scenarios and reports what was discovered + next steps
+az chaos setup -n my-workspace -g MyRG --location eastus \
+    --scopes "/subscriptions/<sub-id>/resourceGroups/MyRG"
+
+# Valid --scopes targets: resource group, subscription, or service group
+# (/providers/Microsoft.Management/serviceGroups/<name>).
+
+# Use a user-assigned identity as the workspace identity (otherwise the
+# workspace's system-assigned identity is used):
+az chaos setup -n my-workspace -g MyRG --location eastus \
+    --scopes "/subscriptions/<sub-id>/resourceGroups/MyRG" \
+    --user-assigned "/subscriptions/<sub-id>/resourceGroups/MyRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myId"
+
 # Create a workspace with a system-assigned managed identity
 az chaos workspace create -g MyRG --workspace-name my-workspace --location eastus \
     --system-assigned "" \

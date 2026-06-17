@@ -36,11 +36,40 @@ class TestValidateScope(unittest.TestCase):
         validate_scope(ns)  # should not raise
 
     def test_valid_resource_scope(self):
+        # Individual resources are not advertised in help (the portal does not
+        # offer them), but the service accepts them, so the validator does not
+        # go out of its way to block them.
         ns = self._make_namespace(
             ["/subscriptions/00000000-0000-0000-0000-000000000000"
              "/resourceGroups/MyRG/providers/Microsoft.Compute/virtualMachines/myVM"]
         )
         validate_scope(ns)  # should not raise
+
+    def test_valid_service_group_scope(self):
+        ns = self._make_namespace(
+            ["/providers/Microsoft.Management/serviceGroups/my-critical-services"]
+        )
+        validate_scope(ns)  # should not raise
+
+    def test_valid_service_group_scope_case_insensitive(self):
+        ns = self._make_namespace(
+            ["/providers/microsoft.management/servicegroups/sg1"]
+        )
+        validate_scope(ns)  # should not raise
+
+    def test_mixed_subscription_and_service_group_scopes(self):
+        ns = self._make_namespace([
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/RG1",
+            "/providers/Microsoft.Management/serviceGroups/sg1",
+        ])
+        validate_scope(ns)  # should not raise
+
+    def test_invalid_service_group_missing_name(self):
+        ns = self._make_namespace(
+            ["/providers/Microsoft.Management/serviceGroups"]
+        )
+        with self.assertRaises(CLIError):
+            validate_scope(ns)
 
     def test_multiple_valid_scopes(self):
         ns = self._make_namespace([

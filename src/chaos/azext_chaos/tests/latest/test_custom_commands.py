@@ -1245,5 +1245,334 @@ class TestExtractRunIdRobust(unittest.TestCase):
         self.assertEqual(result['runId'], 'found-via-fallback')
 
 
+# ── az chaos setup (composite / porcelain) ───────────────────────────────
+
+
+class TestSetupHelpers(unittest.TestCase):
+    """Unit tests for the `chaos setup` building-block helpers."""
+
+    def test_subscription_from_scope_resource_group(self):
+        from azext_chaos.custom import _subscription_from_scope
+        scope = "/subscriptions/sub-123/resourceGroups/MyRG"
+        self.assertEqual(_subscription_from_scope(scope), "sub-123")
+
+    def test_subscription_from_scope_subscription_only(self):
+        from azext_chaos.custom import _subscription_from_scope
+        self.assertEqual(
+            _subscription_from_scope("/subscriptions/sub-abc"), "sub-abc"
+        )
+
+    def test_subscription_from_scope_invalid(self):
+        from azext_chaos.custom import _subscription_from_scope
+        self.assertIsNone(_subscription_from_scope("/not/a/scope"))
+        self.assertIsNone(_subscription_from_scope(""))
+
+    def test_resolve_principal_ids_system_assigned(self):
+        from azext_chaos.custom import _resolve_workspace_principal_ids
+        workspace = {"identity": {"type": "SystemAssigned",
+                                  "principalId": "sa-principal"}}
+        self.assertEqual(
+            _resolve_workspace_principal_ids(workspace, None), ["sa-principal"]
+        )
+
+    def test_resolve_principal_ids_user_assigned(self):
+        from azext_chaos.custom import _resolve_workspace_principal_ids
+        uid = ("/subscriptions/s/resourceGroups/rg/providers/"
+               "Microsoft.ManagedIdentity/userAssignedIdentities/mi")
+        workspace = {"identity": {
+            "type": "UserAssigned",
+            "userAssignedIdentities": {uid: {"principalId": "ua-principal"}},
+        }}
+        self.assertEqual(
+            _resolve_workspace_principal_ids(workspace, [uid]), ["ua-principal"]
+        )
+
+    def test_resolve_principal_ids_user_assigned_case_insensitive(self):
+        from azext_chaos.custom import _resolve_workspace_principal_ids
+        uid_upper = ("/subscriptions/S/resourceGroups/RG/providers/"
+                     "Microsoft.ManagedIdentity/userAssignedIdentities/MI")
+        uid_lower = uid_upper.lower()
+        workspace = {"identity": {
+            "type": "UserAssigned",
+            "userAssignedIdentities": {uid_lower: {"principalId": "ua-p"}},
+        }}
+        self.assertEqual(
+            _resolve_workspace_principal_ids(workspace, [uid_upper]), ["ua-p"]
+        )
+
+    def test_resolve_principal_ids_none_when_missing(self):
+        from azext_chaos.custom import _resolve_workspace_principal_ids
+        self.assertEqual(
+            _resolve_workspace_principal_ids({"identity": {}}, None), []
+        )
+
+    @patch('azext_chaos.custom.send_raw_request')
+    def test_assign_reader_role_uses_reader_guid(self, mock_send):
+        from azext_chaos.custom import (
+            _assign_reader_role, _READER_ROLE_DEFINITION_GUID,
+        )
+        mock_send.return_value = _make_response()
+        scope = "/subscriptions/sub-1/resourceGroups/MyRG"
+        result = _assign_reader_role(_make_cmd(), scope, "principal-1")
+
+        self.assertIsNotNone(result)
+        self.assertEqual(result["principalId"], "principal-1")
+        # Reader built-in role GUID, scoped to the scope's subscription.
+        sent_body = mock_send.call_args.kwargs.get("body") or mock_send.call_args[0][3]
+        self.assertIn(_READER_ROLE_DEFINITION_GUID, sent_body)
+        self.assertIn("ServicePrincipal", sent_body)
+
+    @patch('azext_chaos.custom.send_raw_request')
+    def test_assign_reader_role_idempotent_on_exists(self, mock_send):
+        from azext_chaos.custom import _assign_reader_role
+        mock_send.side_effect = CLIError(
+            "RoleAssignmentExists: The role assignment already exists."
+        )
+        result = _assign_reader_role(
+            _make_cmd(), "/subscriptions/s/resourceGroups/rg", "p1"
+        )
+        # Treated as success — assignment already present.
+        self.assertIsNotNone(result)
+        self.assertIsNone(result["roleAssignmentName"])
+
+    @patch('azext_chaos.custom.send_raw_request')
+    def test_assign_reader_role_returns_none_on_failure(self, mock_send):
+        from azext_chaos.custom import _assign_reader_role
+        mock_send.side_effect = CLIError("AuthorizationFailed")
+        result = _assign_reader_role(
+            _make_cmd(), "/subscriptions/s/resourceGroups/rg", "p1"
+        )
+        self.assertIsNone(result)
+
+    def test_assign_reader_role_skips_unparseable_scope(self):
+        from azext_chaos.custom import _assign_reader_role
+        self.assertIsNone(
+            _assign_reader_role(_make_cmd(), "/bad/scope", "p1")
+        )
+
+    def test_build_next_steps_includes_refresh_when_not_evaluated(self):
+        from azext_chaos.custom import _build_setup_next_steps
+        steps = _build_setup_next_steps("rg", "ws", [], evaluated=False)
+        joined = "\n".join(steps)
+        self.assertIn("refresh-recommendation", joined)
+        self.assertIn("scenario list", joined)
+
+    def test_build_next_steps_omits_refresh_when_evaluated(self):
+        from azext_chaos.custom import _build_setup_next_steps
+        steps = _build_setup_next_steps(
+            "rg", "ws", [{"name": "ZoneDown-1.0"}], evaluated=True
+        )
+        joined = "\n".join(steps)
+        self.assertNotIn("refresh-recommendation", joined)
+        # First discovered scenario name flows into the suggested commands.
+        self.assertIn("ZoneDown-1.0", joined)
+
+
+class TestSetupOrchestration(unittest.TestCase):
+    """Tests for the `setup` composite orchestration logic."""
+
+    def _patches(self):
+        return {
+            'rg': patch('azext_chaos.custom._ensure_resource_group'),
+            'ws': patch('azext_chaos.custom._create_setup_workspace'),
+            'pid': patch('azext_chaos.custom._resolve_workspace_principal_ids'),
+            'role': patch('azext_chaos.custom._assign_reader_role'),
+            'eval': patch('azext_chaos.custom._evaluate_scenarios_workflow'),
+            'list': patch('azext_chaos.custom._list_workspace_scenarios'),
+        }
+
+    def test_happy_path_assigns_roles_and_returns_scenarios(self):
+        from azext_chaos.custom import setup
+        p = self._patches()
+        with p['rg'] as m_rg, p['ws'] as m_ws, p['pid'] as m_pid, \
+                p['role'] as m_role, p['eval'] as m_eval, p['list'] as m_list:
+            m_ws.return_value = {"name": "ws", "identity": {}}
+            m_pid.return_value = ["principal-1"]
+            m_role.return_value = {"scope": "s", "principalId": "principal-1",
+                                   "roleAssignmentName": "ra-1"}
+            m_eval.return_value = True
+            m_list.return_value = [{"name": "ZoneDown-1.0"}]
+
+            scopes = ["/subscriptions/s/resourceGroups/rg"]
+            result = setup(
+                _make_cmd(), 'rg', 'ws', 'westus2', scopes,
+            )
+
+            m_rg.assert_called_once()
+            m_ws.assert_called_once()
+            # One role assignment: 1 principal x 1 scope.
+            self.assertEqual(m_role.call_count, 1)
+            self.assertEqual(len(result["roleAssignments"]), 1)
+            self.assertEqual(result["scenarios"], [{"name": "ZoneDown-1.0"}])
+            self.assertIn("nextSteps", result)
+            # A NEW assignment was created → evaluation waits for ARG propagation.
+            self.assertTrue(
+                m_eval.call_args.kwargs.get("wait_for_propagation")
+            )
+
+    def test_skip_permissions_skips_role_assignment(self):
+        from azext_chaos.custom import setup
+        p = self._patches()
+        with p['rg'], p['ws'] as m_ws, p['pid'] as m_pid, \
+                p['role'] as m_role, p['eval'] as m_eval, p['list'] as m_list:
+            m_ws.return_value = {"name": "ws", "identity": {}}
+            m_pid.return_value = ["principal-1"]
+            m_eval.return_value = True
+            m_list.return_value = []
+
+            result = setup(
+                _make_cmd(), 'rg', 'ws', 'westus2',
+                ["/subscriptions/s/resourceGroups/rg"],
+                skip_permissions=True,
+            )
+
+            m_role.assert_not_called()
+            self.assertEqual(result["roleAssignments"], [])
+            # No assignment made → no propagation wait.
+            self.assertFalse(
+                m_eval.call_args.kwargs.get("wait_for_propagation")
+            )
+
+    def test_preexisting_assignment_does_not_wait(self):
+        """A pre-existing (no-op) Reader assignment must not trigger the wait."""
+        from azext_chaos.custom import setup
+        p = self._patches()
+        with p['rg'], p['ws'] as m_ws, p['pid'] as m_pid, \
+                p['role'] as m_role, p['eval'] as m_eval, p['list'] as m_list:
+            m_ws.return_value = {"name": "ws", "identity": {}}
+            m_pid.return_value = ["principal-1"]
+            # roleAssignmentName=None ⇒ assignment already existed (no-op).
+            m_role.return_value = {"scope": "s", "principalId": "principal-1",
+                                   "roleAssignmentName": None}
+            m_eval.return_value = True
+            m_list.return_value = []
+
+            setup(_make_cmd(), 'rg', 'ws', 'westus2',
+                  ["/subscriptions/s/resourceGroups/rg"])
+
+            self.assertFalse(
+                m_eval.call_args.kwargs.get("wait_for_propagation")
+            )
+
+    def test_skip_evaluation_wait_forces_single_attempt(self):
+        from azext_chaos.custom import setup
+        p = self._patches()
+        with p['rg'], p['ws'] as m_ws, p['pid'] as m_pid, \
+                p['role'] as m_role, p['eval'] as m_eval, p['list'] as m_list:
+            m_ws.return_value = {"name": "ws", "identity": {}}
+            m_pid.return_value = ["principal-1"]
+            m_role.return_value = {"scope": "s", "principalId": "principal-1",
+                                   "roleAssignmentName": "ra-1"}
+            m_eval.return_value = True
+            m_list.return_value = []
+
+            setup(_make_cmd(), 'rg', 'ws', 'westus2',
+                  ["/subscriptions/s/resourceGroups/rg"],
+                  skip_evaluation_wait=True)
+
+            # New assignment, but the user opted out of waiting.
+            self.assertFalse(
+                m_eval.call_args.kwargs.get("wait_for_propagation")
+            )
+
+    def test_role_assigned_per_principal_per_scope(self):
+        from azext_chaos.custom import setup
+        p = self._patches()
+        with p['rg'], p['ws'] as m_ws, p['pid'] as m_pid, \
+                p['role'] as m_role, p['eval'] as m_eval, p['list'] as m_list:
+            m_ws.return_value = {"name": "ws", "identity": {}}
+            m_pid.return_value = ["p1", "p2"]
+            m_role.return_value = {"scope": "s", "principalId": "p",
+                                   "roleAssignmentName": "ra"}
+            m_eval.return_value = True
+            m_list.return_value = []
+
+            scopes = ["/subscriptions/s/resourceGroups/rg1",
+                      "/subscriptions/s/resourceGroups/rg2"]
+            setup(_make_cmd(), 'rg', 'ws', 'westus2', scopes)
+
+            # 2 principals x 2 scopes = 4 assignments.
+            self.assertEqual(m_role.call_count, 4)
+
+
+class TestEvaluateScenariosWorkflow(unittest.TestCase):
+    """Tests for the evaluate-scenarios workflow + ARG-propagation retry."""
+
+    @patch('azext_chaos.custom._setup_inner_lro_failure')
+    @patch('azext_chaos.custom._poll_or_return')
+    @patch('azext_chaos.custom.send_raw_request')
+    def test_success_first_attempt_no_sleep(self, mock_send, mock_poll,
+                                            mock_inner):
+        from azext_chaos.custom import _evaluate_scenarios_workflow
+        mock_send.return_value = _make_response()
+        mock_inner.return_value = None  # clean
+
+        with patch('azext_chaos.custom.time.sleep') as mock_sleep:
+            ok = _evaluate_scenarios_workflow(
+                _make_cmd(), 'rg', 'ws', wait_for_propagation=True,
+            )
+
+        self.assertTrue(ok)
+        self.assertEqual(mock_send.call_count, 1)  # single POST
+        mock_sleep.assert_not_called()
+
+    @patch('azext_chaos.custom._setup_inner_lro_failure')
+    @patch('azext_chaos.custom._poll_or_return')
+    @patch('azext_chaos.custom.send_raw_request')
+    def test_retries_then_succeeds(self, mock_send, mock_poll, mock_inner):
+        from azext_chaos.custom import _evaluate_scenarios_workflow
+        mock_send.return_value = _make_response()
+        # Fail once (propagation lag), then succeed.
+        mock_inner.side_effect = ["resource discovery", None]
+
+        with patch('azext_chaos.custom.time.sleep') as mock_sleep:
+            ok = _evaluate_scenarios_workflow(
+                _make_cmd(), 'rg', 'ws', wait_for_propagation=True,
+            )
+
+        self.assertTrue(ok)
+        self.assertEqual(mock_send.call_count, 2)  # POST retried once
+        self.assertEqual(mock_sleep.call_count, 1)
+
+    @patch('azext_chaos.custom._setup_inner_lro_failure')
+    @patch('azext_chaos.custom._poll_or_return')
+    @patch('azext_chaos.custom.send_raw_request')
+    def test_all_attempts_fail_returns_false(self, mock_send, mock_poll,
+                                             mock_inner):
+        from azext_chaos.custom import (
+            _evaluate_scenarios_workflow, _EVALUATION_MAX_ATTEMPTS,
+        )
+        mock_send.return_value = _make_response()
+        mock_inner.return_value = "resource discovery"  # always fails
+
+        with patch('azext_chaos.custom.time.sleep') as mock_sleep:
+            ok = _evaluate_scenarios_workflow(
+                _make_cmd(), 'rg', 'ws', wait_for_propagation=True,
+            )
+
+        self.assertFalse(ok)
+        self.assertEqual(mock_send.call_count, _EVALUATION_MAX_ATTEMPTS)
+        # One sleep between each pair of attempts.
+        self.assertEqual(mock_sleep.call_count, _EVALUATION_MAX_ATTEMPTS - 1)
+
+    @patch('azext_chaos.custom._setup_inner_lro_failure')
+    @patch('azext_chaos.custom._poll_or_return')
+    @patch('azext_chaos.custom.send_raw_request')
+    def test_no_wait_single_attempt_on_failure(self, mock_send, mock_poll,
+                                               mock_inner):
+        from azext_chaos.custom import _evaluate_scenarios_workflow
+        mock_send.return_value = _make_response()
+        mock_inner.return_value = "resource discovery"
+
+        with patch('azext_chaos.custom.time.sleep') as mock_sleep:
+            ok = _evaluate_scenarios_workflow(
+                _make_cmd(), 'rg', 'ws', wait_for_propagation=False,
+            )
+
+        self.assertFalse(ok)
+        self.assertEqual(mock_send.call_count, 1)  # no retry
+        mock_sleep.assert_not_called()
+
+
 if __name__ == '__main__':
     unittest.main()
