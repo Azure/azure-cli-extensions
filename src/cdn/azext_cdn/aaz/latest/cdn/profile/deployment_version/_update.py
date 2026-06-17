@@ -18,13 +18,13 @@ class Update(AAZCommand):
     """Update an existing DeploymentVersion within a profile.
 
     :example: DeploymentVersions_Update
-        az cdn profile deployment-version update --resource-group RG --profile-name profile1 --version-name dv1 --description "test deployment"
+        az cdn profile deployment-version update --resource-group RG --profile-name profile1 --version-name dv1 --description test deployment
     """
 
     _aaz_info = {
-        "version": "2025-05-01-preview",
+        "version": "2025-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/deploymentversions/{}", "2025-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/deploymentversions/{}", "2025-09-01-preview"],
         ]
     }
 
@@ -149,7 +149,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-05-01-preview",
+                    "api-version", "2025-09-01-preview",
                     required=True,
                 ),
             }

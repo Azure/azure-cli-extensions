@@ -1230,3 +1230,20 @@ def validate_nat_gateway_v2_params(namespace):
                 "--nat-gateway-outbound-ip-prefixes are only "
                 "valid with --outbound-type managedNATGatewayV2."
             )
+
+
+def validate_prepared_image_specification_id(namespace):
+    if namespace.prepared_image_specification_id:
+        if not is_valid_resource_id(namespace.prepared_image_specification_id):
+            raise InvalidArgumentValueError(
+                "--prepared-image-specification-id is not a valid Azure resource ID."
+            )
+        parsed = parse_resource_id(namespace.prepared_image_specification_id)
+        resource_type = (parsed.get("type", "") + "/" + parsed.get("resource_type", "")).lower()
+        resource_namespace = parsed.get("namespace", "").lower()
+        if resource_namespace != "microsoft.containerservice" or \
+                resource_type != "preparedimagespecifications/versions":
+            raise InvalidArgumentValueError(
+                "--prepared-image-specification-id must be a resource ID of type "
+                "Microsoft.ContainerService/preparedImageSpecifications/versions."
+            )

@@ -18,14 +18,14 @@ from azure.cli.core.aaz import *
 class Delete(AAZCommand):
     """Delete an existing route with the specified route name under the specified subscription, resource group, profile, and AzureFrontDoor endpoint.
 
-    :example: Delete an route named route1.
-        az afd route delete -g group --profile-name profile --endpoint-name endpoint1 --route-name route1
+    :example: Routes_Delete
+        az afd route delete --resource-group RG --profile-name profile1 --endpoint-name endpoint1 --route-name route1
     """
 
     _aaz_info = {
-        "version": "2025-06-01",
+        "version": "2025-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/afdendpoints/{}/routes/{}", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/afdendpoints/{}/routes/{}", "2025-09-01-preview"],
         ]
     }
 
@@ -168,7 +168,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2025-09-01-preview",
                     required=True,
                 ),
             }

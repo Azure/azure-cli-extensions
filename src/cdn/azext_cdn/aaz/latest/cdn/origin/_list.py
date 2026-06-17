@@ -16,12 +16,15 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List all of the existing origins within an endpoint.
+
+    :example: Origins_ListByEndpoint
+        az cdn origin list --resource-group RG --profile-name profile1 --endpoint-name endpoint1
     """
 
     _aaz_info = {
-        "version": "2025-06-01",
+        "version": "2025-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/endpoints/{}/origins", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/endpoints/{}/origins", "2025-09-01-preview"],
         ]
     }
 
@@ -51,6 +54,11 @@ class List(AAZCommand):
             options=["--profile-name"],
             help="Name of the CDN profile which is unique within the resource group.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9]+(-*[a-zA-Z0-9])*$",
+                max_length=260,
+                min_length=1,
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -127,7 +135,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2025-09-01-preview",
                     required=True,
                 ),
             }
@@ -164,7 +172,7 @@ class List(AAZCommand):
                 serialized_name="nextLink",
             )
             _schema_on_200.value = AAZListType(
-                flags={"read_only": True},
+                flags={"required": True},
             )
 
             value = cls._schema_on_200.value

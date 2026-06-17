@@ -16,12 +16,15 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get an existing origin within an endpoint.
+
+    :example: Origins_Get
+        az cdn origin show --resource-group RG --profile-name profile1 --endpoint-name endpoint1 --origin-name www-someDomain-net
     """
 
     _aaz_info = {
-        "version": "2025-06-01",
+        "version": "2025-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/endpoints/{}/origins/{}", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/endpoints/{}/origins/{}", "2025-09-01-preview"],
         ]
     }
 
@@ -58,6 +61,11 @@ class Show(AAZCommand):
             help="Name of the CDN profile which is unique within the resource group.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9]+(-*[a-zA-Z0-9])*$",
+                max_length=260,
+                min_length=1,
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -137,7 +145,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2025-09-01-preview",
                     required=True,
                 ),
             }

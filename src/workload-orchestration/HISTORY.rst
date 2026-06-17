@@ -2,6 +2,11 @@
 
 Release History
 ===============
+5.2.1
+++++++
+* **Auto-install of required az CLI dependencies** — ``az workload-orchestration cluster init`` (and any flow that invokes ``target_prepare``) now performs a pre-flight check for the ``connectedk8s``, ``k8s-extension``, and ``customlocation`` az CLI extensions, and installs any that are missing. Previously, missing dependencies surfaced as opaque ``command not recognized`` errors deep inside the cluster onboarding flow.
+* **Cleaner output for ``az workload-orchestration context capability-add``** — removed redundant ``Adding N: <names>`` log line that duplicated information already shown in the ``✓ Done (N total capabilities)`` summary.
+
 5.2.0
 ++++++
 * **CLI Onboarding Simplification** — reduces onboarding from 11 commands to 4:

@@ -17,14 +17,14 @@ from azure.cli.core.aaz import *
 class Update(AAZCommand):
     """Update a new origin group within the specified profile.
 
-    :example: Update a new origin group within the specified profile.
-        az afd origin-group update -g group --origin-group-name og1 --profile-name profile --probe-request-type HEAD --probe-protocol Https --probe-interval-in-seconds 120 --probe-path /test1/azure.txt
+    :example: AFDOriginGroups_Create
+        az afd origin-group update --resource-group RG --profile-name profile1 --origin-group-name origingroup1 --authentication "{type:UserAssignedIdentity,scope:'https://www.contoso.com/.default',user-assigned-identity:{id:/subscriptions/subid/resourcegroups/RG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/user-assigned-id-1}}" --probe-interval-in-seconds 10 --probe-path /path2 --probe-protocol NotSet --probe-request-type NotSet --additional-latency-in-milliseconds 1000 --sample-size 3 --successful-samples-required 3 --traffic-restoration-time-to-healed-or-new-endpoints-in-minutes 5
     """
 
     _aaz_info = {
-        "version": "2025-06-01",
+        "version": "2025-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/origingroups/{}", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/origingroups/{}", "2025-09-01-preview"],
         ]
     }
 
@@ -55,7 +55,7 @@ class Update(AAZCommand):
         )
         _args_schema.profile_name = AAZStrArg(
             options=["--profile-name"],
-            help="Name of the Azure Front Door Standard or Azure Front Door Premium which is unique within the resource group.",
+            help="Name of the Azure Front Door Standard or Azure Front Door Premium profile which is unique within the resource group.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -66,6 +66,40 @@ class Update(AAZCommand):
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
+        )
+
+        # define Arg Group "HealthProbeSettings"
+
+        _args_schema = cls._args_schema
+        _args_schema.probe_interval_in_seconds = AAZIntArg(
+            options=["--probe-interval-in-seconds"],
+            arg_group="HealthProbeSettings",
+            help="The number of seconds between health probes.Default is 240sec.",
+            nullable=True,
+            fmt=AAZIntArgFormat(
+                maximum=255,
+                minimum=1,
+            ),
+        )
+        _args_schema.probe_path = AAZStrArg(
+            options=["--probe-path"],
+            arg_group="HealthProbeSettings",
+            help="The path relative to the origin that is used to determine the health of the origin.",
+            nullable=True,
+        )
+        _args_schema.probe_protocol = AAZStrArg(
+            options=["--probe-protocol"],
+            arg_group="HealthProbeSettings",
+            help="Protocol to use for health probe.",
+            nullable=True,
+            enum={"Grpc": "Grpc", "Http": "Http", "Https": "Https", "NotSet": "NotSet"},
+        )
+        _args_schema.probe_request_type = AAZStrArg(
+            options=["--probe-request-type"],
+            arg_group="HealthProbeSettings",
+            help="The type of health probe request that is made.",
+            nullable=True,
+            enum={"GET": "GET", "HEAD": "HEAD", "NotSet": "NotSet"},
         )
 
         # define Arg Group "LoadBalancingSettings"
@@ -99,29 +133,6 @@ class Update(AAZCommand):
             help="Authentication settings for origin in origin group.",
             nullable=True,
         )
-        _args_schema.health_probe_settings = AAZObjectArg(
-            options=["--health-probe-settings"],
-            arg_group="Properties",
-            help="Health probe settings to the origin that is used to determine the health of the origin.",
-            nullable=True,
-        )
-        _args_schema.session_affinity_state = AAZStrArg(
-            options=["--session-affinity-state"],
-            arg_group="Properties",
-            help="Whether to allow session affinity on this host. Valid options are 'Enabled' or 'Disabled'",
-            nullable=True,
-            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
-        )
-        _args_schema.traffic_restoration_time_to_healed_or_new_endpoints_in_minutes = AAZIntArg(
-            options=["--traffic-restoration-time-to-healed-or-new-endpoints-in-minutes"],
-            arg_group="Properties",
-            help="Time in minutes to shift the traffic to the endpoint gradually when an unhealthy endpoint comes healthy or a new endpoint is added. Default is 10 mins. This property is currently not supported.",
-            nullable=True,
-            fmt=AAZIntArgFormat(
-                maximum=50,
-                minimum=0,
-            ),
-        )
 
         authentication = cls._args_schema.authentication
         authentication.scope = AAZStrArg(
@@ -146,34 +157,6 @@ class Update(AAZCommand):
             options=["id"],
             help="Resource ID.",
             nullable=True,
-        )
-
-        health_probe_settings = cls._args_schema.health_probe_settings
-        health_probe_settings.probe_interval_in_seconds = AAZIntArg(
-            options=["probe-interval-in-seconds"],
-            help="The number of seconds between health probes.Default is 240sec.",
-            nullable=True,
-            fmt=AAZIntArgFormat(
-                maximum=255,
-                minimum=1,
-            ),
-        )
-        health_probe_settings.probe_path = AAZStrArg(
-            options=["probe-path"],
-            help="The path relative to the origin that is used to determine the health of the origin.",
-            nullable=True,
-        )
-        health_probe_settings.probe_protocol = AAZStrArg(
-            options=["probe-protocol"],
-            help="Protocol to use for health probe.",
-            nullable=True,
-            enum={"Http": "Http", "Https": "Https", "NotSet": "NotSet"},
-        )
-        health_probe_settings.probe_request_type = AAZStrArg(
-            options=["probe-request-type"],
-            help="The type of health probe request that is made.",
-            nullable=True,
-            enum={"GET": "GET", "HEAD": "HEAD", "NotSet": "NotSet"},
         )
         return cls._args_schema
 
@@ -259,7 +242,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2025-09-01-preview",
                     required=True,
                 ),
             }
@@ -362,7 +345,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2025-09-01-preview",
                     required=True,
                 ),
             }
@@ -425,10 +408,8 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("authentication", AAZObjectType, ".authentication")
-                properties.set_prop("healthProbeSettings", AAZObjectType, ".health_probe_settings")
+                properties.set_prop("healthProbeSettings", AAZObjectType)
                 properties.set_prop("loadBalancingSettings", AAZObjectType)
-                properties.set_prop("sessionAffinityState", AAZStrType, ".session_affinity_state")
-                properties.set_prop("trafficRestorationTimeToHealedOrNewEndpointsInMinutes", AAZIntType, ".traffic_restoration_time_to_healed_or_new_endpoints_in_minutes")
 
             authentication = _builder.get(".properties.authentication")
             if authentication is not None:

@@ -65,6 +65,13 @@ class HorizonDBClusterMgmtScenarioTest(ScenarioTest):
         #     self.cmd('horizondb list',
         #              checks=[JMESPathCheck("[?name=='{}'] | length(@)".format(cluster_name), 1)])
 
+        # Update cluster
+        v_cores_update = v_cores - 2
+        show_result = self.cmd('horizondb update -g {} -n {} --v-cores {}'.format(
+            resource_group, cluster_name, v_cores_update)).get_output_in_json()
+
+        self.assertEqual(show_result['properties']['vCores'], v_cores_update)
+
         # Delete cluster
         self.cmd('horizondb delete -g {} -n {} --yes'.format(resource_group, cluster_name),
                  checks=NoneCheck())
