@@ -28,12 +28,17 @@ _LRO_POLL_INTERVAL_SECONDS = 5
 _LRO_TIMEOUT_SECONDS = 600  # 10 min default
 
 
-def _poll_or_return(cmd, response):
-    """Dispatch a raw HTTP response: return body for 200, poll for 201/202, raise on error."""
+def _poll_or_return(cmd, response, timeout=_LRO_TIMEOUT_SECONDS):
+    """Dispatch a raw HTTP response: return body for 200, poll for 201/202, raise on error.
+
+    ``timeout`` is the maximum seconds to poll an LRO; ``None`` means poll until
+    the service reaches a terminal state (used for scenario runs, which can
+    legitimately run longer than the default cap).
+    """
     if response.status_code == 200:
         return response.json() if response.text else None
     if response.status_code in (201, 202):
-        return _poll_lro(cmd, response)
+        return _poll_lro(cmd, response, timeout=timeout)
     try:
         error_body = response.json()
         message = error_body.get("error", {}).get("message", response.text)
@@ -42,7 +47,7 @@ def _poll_or_return(cmd, response):
     raise CLIError(f"Request failed ({response.status_code}): {message}")
 
 
-def _poll_lro(cmd, initial_response):
+def _poll_lro(cmd, initial_response, timeout=_LRO_TIMEOUT_SECONDS):
     """Choose polling strategy based on LRO headers."""
     headers = initial_response.headers
     async_url = headers.get("Azure-AsyncOperation")
@@ -52,16 +57,23 @@ def _poll_lro(cmd, initial_response):
     except (ValueError, TypeError):
         retry_after = _LRO_POLL_INTERVAL_SECONDS
     if async_url:
-        return _poll_async_operation(cmd, async_url, location_url, retry_after)
+        return _poll_async_operation(cmd, async_url, location_url, retry_after,
+                                     timeout=timeout)
     if location_url:
-        return _poll_location(cmd, location_url, retry_after)
+        return _poll_location(cmd, location_url, retry_after, timeout=timeout)
     return initial_response.json() if initial_response.text else None
 
 
-def _poll_async_operation(cmd, poll_url, location_url, retry_after):
+def _within_timeout(elapsed, timeout):
+    """True while polling should continue (``timeout=None`` means no cap)."""
+    return timeout is None or elapsed < timeout
+
+
+def _poll_async_operation(cmd, poll_url, location_url, retry_after,
+                          timeout=_LRO_TIMEOUT_SECONDS):
     """Poll Azure-AsyncOperation URL until terminal status."""
     elapsed = 0
-    while elapsed < _LRO_TIMEOUT_SECONDS:
+    while _within_timeout(elapsed, timeout):
         time.sleep(retry_after)
         elapsed += retry_after
         poll_resp = send_raw_request(cmd.cli_ctx, "GET", poll_url)
@@ -80,13 +92,13 @@ def _poll_async_operation(cmd, poll_url, location_url, retry_after):
                 final = send_raw_request(cmd.cli_ctx, "GET", location_url)
                 return final.json() if final.text else body
             return body
-    raise CLIError(f"Long-running operation timed out after {_LRO_TIMEOUT_SECONDS}s.")
+    raise CLIError(f"Long-running operation timed out after {timeout}s.")
 
 
-def _poll_location(cmd, poll_url, retry_after):
+def _poll_location(cmd, poll_url, retry_after, timeout=_LRO_TIMEOUT_SECONDS):
     """Poll Location URL until non-202 response."""
     elapsed = 0
-    while elapsed < _LRO_TIMEOUT_SECONDS:
+    while _within_timeout(elapsed, timeout):
         time.sleep(retry_after)
         elapsed += retry_after
         poll_resp = send_raw_request(cmd.cli_ctx, "GET", poll_url)
@@ -103,7 +115,7 @@ def _poll_location(cmd, poll_url, retry_after):
             retry_after = int(poll_resp.headers.get("Retry-After", retry_after))
         except (ValueError, TypeError):
             pass  # keep current retry_after
-    raise CLIError(f"Long-running operation timed out after {_LRO_TIMEOUT_SECONDS}s.")
+    raise CLIError(f"Long-running operation timed out after {timeout}s.")
 
 
 def _build_arm_url(cli_ctx, resource_group, workspace, path_suffix):
@@ -363,8 +375,18 @@ def scenario_run_start(cmd, resource_group_name, workspace_name,  # pylint: disa
             "operationStatusUrl": async_op or location or None,
         }
 
-    # Poll execute LRO to completion
-    run_result = _poll_or_return(cmd, exec_response)
+    # Poll execute LRO to completion. A scenario run's execute LRO stays
+    # in-progress for the full run duration (e.g. ZoneDown defaults to PT15M),
+    # which exceeds the default 600s poll cap — so poll until the service
+    # reaches a terminal state (timeout=None) instead of failing a healthy run.
+    # Users who do not want to block for the whole run should pass --no-wait.
+    logger.warning(
+        "Waiting for the scenario run to complete. This blocks for the full "
+        "run duration, which can be many minutes. Press Ctrl+C and use "
+        "'az chaos scenario run show'/'wait' to poll instead, or re-run with "
+        "--no-wait to return immediately with the run ID.",
+    )
+    run_result = _poll_or_return(cmd, exec_response, timeout=None)
 
     # Extract run ID from the completed ScenarioRun resource
     if isinstance(run_result, dict):

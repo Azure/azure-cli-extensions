@@ -16,7 +16,9 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Workspace
+    """Manage Chaos Studio workspaces.
+
+    Workspaces are the top-level resource for Chaos Studio v2. They define the scope of resources that can be targeted by chaos scenarios and the managed identity used for fault injection.
     """
     pass
 

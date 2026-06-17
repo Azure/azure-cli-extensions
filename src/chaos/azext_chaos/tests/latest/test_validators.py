@@ -149,6 +149,32 @@ class TestValidateParametersJson(unittest.TestCase):
         with self.assertRaises(CLIError):
             validate_parameters_json(ns)
 
+    def test_rejects_key_value_string(self):
+        # F7: a natural key=value mistake gets a targeted error with the hint.
+        ns = self._make_namespace("duration=PT10M")
+        with self.assertRaises(CLIError) as ctx:
+            validate_parameters_json(ns)
+        self.assertIn('JSON array', str(ctx.exception))
+
+    def test_rejects_json_object(self):
+        # F7: a JSON object (not an array) is rejected with the format hint.
+        ns = self._make_namespace('{"duration": "PT10M"}')
+        with self.assertRaises(CLIError) as ctx:
+            validate_parameters_json(ns)
+        self.assertIn('JSON array', str(ctx.exception))
+
+    def test_rejects_list_without_key_value(self):
+        # F7: array elements must be {key, value} objects.
+        ns = self._make_namespace('[{"name": "duration"}]')
+        with self.assertRaises(CLIError):
+            validate_parameters_json(ns)
+
+    def test_accepts_valid_key_value_array(self):
+        data = [{"key": "duration", "value": "PT10M"}]
+        ns = self._make_namespace(json.dumps(data))
+        validate_parameters_json(ns)
+        self.assertEqual(ns.parameters, data)
+
 
 if __name__ == '__main__':
     unittest.main()

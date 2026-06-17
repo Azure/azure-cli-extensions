@@ -85,13 +85,22 @@ def validate_user_assigned(namespace):
             )
 
 
+_PARAMETERS_FORMAT_HINT = (
+    "Expected a JSON array of {key, value} objects, e.g. "
+    "--parameters \"[{key:duration,value:PT10M}]\", or a file reference "
+    "--parameters @params.json containing that array. Note: a bare "
+    "key=value string or a JSON object ({...}) is not accepted."
+)
+
+
 def validate_parameters_json(namespace):
     """Validate and parse the --parameters argument.
 
-    Accepts either ``@filename.json`` (file reference) or a raw JSON string,
-    following the same convention as ``az rest --body``.  The parsed Python
-    object replaces the raw string on *namespace.parameters* so downstream
-    code receives a dict/list, not a string.
+    Accepts either ``@filename.json`` (file reference) or a raw JSON string
+    that decodes to a JSON array of ``{key, value}`` objects. The parsed Python
+    object replaces the raw string on *namespace.parameters* so downstream code
+    receives a list, not a string. Surfaces a format hint on every failure so
+    the accepted shape is discoverable from the error alone.
     """
     value = getattr(namespace, 'parameters', None)
     if not value:
@@ -101,19 +110,38 @@ def validate_parameters_json(namespace):
         file_path = value[1:]
         if not os.path.isfile(file_path):
             raise CLIError(
-                f"Parameters file not found: '{file_path}'."
+                f"Parameters file not found: '{file_path}'. "
+                f"{_PARAMETERS_FORMAT_HINT}"
             )
         with open(file_path, 'r', encoding='utf-8') as f:
             try:
-                namespace.parameters = json.load(f)
+                parsed = json.load(f)
             except json.JSONDecodeError as exc:
                 raise CLIError(
-                    f"Invalid JSON in parameters file '{file_path}': {exc}"
+                    f"Invalid JSON in parameters file '{file_path}': {exc}. "
+                    f"{_PARAMETERS_FORMAT_HINT}"
                 ) from exc
     else:
+        # Catch the most common non-JSON mistake (key=value) with a targeted
+        # message before the generic JSON parse error.
+        if '=' in value and not value.lstrip().startswith(('[', '{')):
+            raise CLIError(
+                f"Invalid --parameters value: '{value}'. "
+                f"{_PARAMETERS_FORMAT_HINT}"
+            )
         try:
-            namespace.parameters = json.loads(value)
+            parsed = json.loads(value)
         except json.JSONDecodeError as exc:
             raise CLIError(
-                f"Invalid JSON for --parameters: {exc}"
+                f"Invalid JSON for --parameters: {exc}. "
+                f"{_PARAMETERS_FORMAT_HINT}"
             ) from exc
+
+    if not isinstance(parsed, list) or not all(
+        isinstance(item, dict) and 'key' in item and 'value' in item
+        for item in parsed
+    ):
+        raise CLIError(
+            f"Invalid --parameters shape. {_PARAMETERS_FORMAT_HINT}"
+        )
+    namespace.parameters = parsed

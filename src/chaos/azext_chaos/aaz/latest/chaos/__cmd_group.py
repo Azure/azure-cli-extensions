@@ -16,7 +16,9 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Chaos
+    """Manage Azure Chaos Studio resources.
+
+    Create and manage Chaos Studio v2 workspaces, scenarios, scenario configurations, and runs for chaos engineering experiments.
     """
     pass
 

@@ -16,7 +16,9 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Run
+    """Manage scenario runs for a Chaos Studio scenario.
+
+    Scenario runs represent individual executions of a scenario configuration. Use 'start' to begin a new run, 'show' to inspect its status, and 'cancel' to stop a running execution.
     """
     pass
 

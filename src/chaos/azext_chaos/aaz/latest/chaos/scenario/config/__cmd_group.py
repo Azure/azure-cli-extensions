@@ -16,7 +16,9 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Configuration
+    """Manage scenario configurations for a Chaos Studio scenario.
+
+    Scenario configurations define the steps, branches, and fault parameters for a chaos experiment run. Use 'validate' to check a configuration before execution and 'fix-permissions' to grant the required RBAC roles.
     """
     pass
 

@@ -20,7 +20,7 @@ class Delete(AAZCommand):
     """Delete a scenario definition.
 
     :example: Delete a scenario configuration.
-        az chaos scenario config delete --resource-group exampleRG --workspace-name exampleWorkspace --scenario-name ZoneDown-1.0 --scenario-configuration-name my-config
+        az chaos scenario config delete --resource-group exampleRG --workspace-name exampleWorkspace --scenario-name ZoneDown-1.0 --name my-config
     """
 
     _aaz_info = {

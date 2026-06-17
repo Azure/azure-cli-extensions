@@ -19,7 +19,7 @@ class Create(AAZCommand):
     """Create a Workspace resource.
 
     :example: Create or update a Workspace.
-        az chaos workspace create --resource-group exampleRG --workspace-name exampleWorkspace --location eastus --tags '{key1:value1,key2:value2}'
+        az chaos workspace create --resource-group exampleRG --workspace-name exampleWorkspace --location eastus --scopes /subscriptions/6b052e15-03d3-4f17-b2e1-be7f07588291/resourceGroups/exampleRG --tags '{key1:value1,key2:value2}'
 
     :example: Create or update a Workspace with a user-assigned managed identity.
         az chaos workspace create --resource-group exampleRG --workspace-name exampleWorkspace --location eastus --mi-user-assigned /subscriptions/6b052e15-03d3-4f17-b2e1-be7f07588291/resourceGroups/exampleRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/exampleIdentity --scopes /subscriptions/6b052e15-03d3-4f17-b2e1-be7f07588291/resourceGroups/exampleRG

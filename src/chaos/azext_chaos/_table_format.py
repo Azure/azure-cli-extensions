@@ -118,11 +118,36 @@ def scenario_config_list_table_format(results):
 
 
 def scenario_run_show_table_format(result):
-    return _project(result, """{
+    """Table formatter for a scenario run.
+
+    Surfaces error detail (``properties.errors`` and
+    ``properties.executionErrors``) so a failed run is diagnosable from
+    ``--output table`` instead of only showing ``Status: Failed``. Full detail
+    (per-resource / permission errors) remains in ``--output json``.
+    """
+    props = result.get('properties') or {}
+    parts = []
+    for err in (props.get('errors') or []):
+        code = err.get('errorCode') or ''
+        msg = err.get('errorMessage') or ''
+        detail = f"{code}: {msg}".strip(': ')
+        if detail:
+            parts.append(detail)
+    exec_errors = props.get('executionErrors') or {}
+    if exec_errors:
+        code = exec_errors.get('errorCode') or ''
+        msg = exec_errors.get('errorMessage') or ''
+        detail = f"{code}: {msg}".strip(': ')
+        if detail:
+            parts.append(detail)
+    proj = dict(result)
+    proj['_error'] = '; '.join(parts)
+    return _project(proj, """{
         RunId: name,
         Status: properties.status,
         StartTime: properties.startTime,
-        EndTime: properties.endTime
+        EndTime: properties.endTime,
+        Error: _error
     }""")
 
 
@@ -174,16 +199,17 @@ def permission_fix_show_table_format(result):
 def discovered_resource_show_table_format(result):
     """Table formatter for a single discovered resource.
 
-    Columns derived from the ``DiscoveredResourceProperties`` schema:
-    namespace, resourceName, resourceType, fullyQualifiedIdentifier,
-    discoveredAt, scope.  We surface the most useful subset for table width.
+    Leads with the human-meaningful ``resourceName`` / ``resourceType`` rather
+    than the opaque ``name`` GUID. ``Id`` (the GUID) is retained because it is
+    the value passed to ``discovered-resource show --name``, but it no longer
+    leads the row.
     """
     return _project(result, """{
-        Name: name,
         ResourceName: properties.resourceName,
         ResourceType: properties.resourceType,
         Namespace: properties.namespace,
-        DiscoveredAt: properties.discoveredAt
+        DiscoveredAt: properties.discoveredAt,
+        Id: name
     }""")
 
 

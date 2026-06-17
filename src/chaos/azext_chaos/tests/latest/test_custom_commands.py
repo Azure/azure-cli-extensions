@@ -1594,5 +1594,39 @@ class TestEvaluateScenariosWorkflow(unittest.TestCase):
         mock_sleep.assert_not_called()
 
 
+class TestPollTimeout(unittest.TestCase):
+    """F2: poll timeout is parameterizable; None means poll until terminal."""
+
+    def test_within_timeout_none_never_caps(self):
+        from azext_chaos.custom import _within_timeout
+        self.assertTrue(_within_timeout(0, None))
+        self.assertTrue(_within_timeout(10_000_000, None))
+
+    def test_within_timeout_bounded(self):
+        from azext_chaos.custom import _within_timeout
+        self.assertTrue(_within_timeout(0, 600))
+        self.assertTrue(_within_timeout(599, 600))
+        self.assertFalse(_within_timeout(600, 600))
+        self.assertFalse(_within_timeout(601, 600))
+
+    @patch('azext_chaos.custom.send_raw_request')
+    @patch('azext_chaos.custom.time.sleep')
+    def test_async_poll_honors_no_timeout(self, mock_sleep, mock_send):
+        """With timeout=None, polling continues past the default 600s cap until
+        the service reports a terminal status (no premature timeout)."""
+        from azext_chaos.custom import _poll_async_operation
+        # 200 in-progress polls (each advancing elapsed by retry_after=5 →
+        # 1000s, well past the 600s default), then Succeeded.
+        in_progress = [
+            _make_response(json_body={"status": "Running"}) for _ in range(200)
+        ]
+        terminal = _make_response(json_body={"status": "Succeeded"})
+        mock_send.side_effect = in_progress + [terminal]
+        result = _poll_async_operation(
+            _make_cmd(), "https://poll", None, retry_after=5, timeout=None,
+        )
+        self.assertEqual(result.get("status"), "Succeeded")
+
+
 if __name__ == '__main__':
     unittest.main()

@@ -350,11 +350,15 @@ class TestDiscoveredResourceTableFormat(unittest.TestCase):
             },
         }
         table = discovered_resource_show_table_format(result)
-        self.assertEqual(table['Name'], 'myvm')
+        # F10e: leads with human-meaningful columns; the opaque GUID is now 'Id'.
+        self.assertEqual(table['Id'], 'myvm')
         self.assertEqual(table['ResourceName'], 'myvm')
         self.assertEqual(table['ResourceType'], 'virtualMachines')
         self.assertEqual(table['Namespace'], 'Microsoft.Compute')
         self.assertEqual(table['DiscoveredAt'], '2026-01-01T00:00:00Z')
+        # ResourceName must precede Id so the table does not lead with the GUID.
+        keys = list(table.keys())
+        self.assertLess(keys.index('ResourceName'), keys.index('Id'))
 
     def test_discovered_resource_list_table_format(self):
         from azext_chaos._table_format import (
@@ -376,8 +380,53 @@ class TestDiscoveredResourceTableFormat(unittest.TestCase):
         ]
         tables = discovered_resource_list_table_format(results)
         self.assertEqual(len(tables), 2)
-        self.assertEqual(tables[0]['Name'], 'r1')
+        self.assertEqual(tables[0]['Id'], 'r1')
+        self.assertEqual(tables[0]['ResourceName'], 'r1')
         self.assertEqual(tables[1]['Namespace'], 'ns2')
+
+
+class TestScenarioRunErrorSurfacing(unittest.TestCase):
+    """F4: a failed run's error detail is surfaced in --output table."""
+
+    def test_surfaces_errors_list(self):
+        from azext_chaos._table_format import scenario_run_show_table_format
+        result = {
+            'name': 'run-1',
+            'properties': {
+                'status': 'Failed',
+                'startTime': 't0',
+                'endTime': 't1',
+                'errors': [
+                    {'errorCode': 'AuthorizationFailed',
+                     'errorMessage': "Action 'shutdown' failed."},
+                ],
+            },
+        }
+        table = scenario_run_show_table_format(result)
+        self.assertEqual(table['Status'], 'Failed')
+        self.assertIn('AuthorizationFailed', table['Error'])
+        self.assertIn("Action 'shutdown' failed.", table['Error'])
+
+    def test_surfaces_execution_errors(self):
+        from azext_chaos._table_format import scenario_run_show_table_format
+        result = {
+            'name': 'run-2',
+            'properties': {
+                'status': 'Failed',
+                'executionErrors': {
+                    'errorCode': 'ProviderError',
+                    'errorMessage': 'provider rejected the action',
+                },
+            },
+        }
+        table = scenario_run_show_table_format(result)
+        self.assertIn('ProviderError', table['Error'])
+
+    def test_no_error_on_success(self):
+        from azext_chaos._table_format import scenario_run_show_table_format
+        result = {'name': 'run-3', 'properties': {'status': 'Succeeded'}}
+        table = scenario_run_show_table_format(result)
+        self.assertEqual(table['Error'], '')
 
 
 class TestWorkspaceDiscoveryEvaluationTableFormat(unittest.TestCase):

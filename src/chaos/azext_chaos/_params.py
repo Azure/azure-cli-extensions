@@ -164,11 +164,29 @@ def load_arguments(self, _):
         )
 
     with self.argument_context('chaos scenario config create') as c:
+        # ``--scenario-id`` is auto-derived from --workspace-name/--scenario-name
+        # by the ScenarioConfigCreate subclass (custom.py); hide it so users are
+        # not asked for a redundant full ARM ID.
+        c.ignore('scenario_id')
         c.argument(
             'parameters',
             options_list=['--parameters'],
             validator=validate_parameters_json,
-            help='Action parameters as a JSON string or @file.json reference.',
+            help='Action parameters as a JSON array of {key,value} objects '
+                 '(or @file.json containing that array). '
+                 'Example: --parameters "[{key:duration,value:PT10M}]" '
+                 'or --parameters @params.json',
+        )
+
+    with self.argument_context('chaos scenario config update') as c:
+        c.argument(
+            'parameters',
+            options_list=['--parameters'],
+            validator=validate_parameters_json,
+            help='Action parameters as a JSON array of {key,value} objects '
+                 '(or @file.json containing that array). '
+                 'Example: --parameters "[{key:duration,value:PT10M}]" '
+                 'or --parameters @params.json',
         )
 
     with self.argument_context('chaos scenario config delete') as c:
@@ -209,16 +227,18 @@ def load_arguments(self, _):
 
     with self.argument_context('chaos scenario run show') as c:
         # Spec pattern: ^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$
+        # Consistent with 'run cancel' and 'run wait': --run-id is canonical,
+        # with -n/--name as aliases.
         c.argument(
             'run_id',
-            options_list=['--run-id'],
+            options_list=['--run-id', '--name', '-n'],
             help='GUID of the scenario run.',
         )
 
     with self.argument_context('chaos scenario run cancel') as c:
         c.argument(
             'run_id',
-            options_list=['--run-id'],
+            options_list=['--run-id', '--name', '-n'],
             help='GUID of the scenario run to cancel.',
         )
 

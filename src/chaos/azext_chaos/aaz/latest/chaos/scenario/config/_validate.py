@@ -19,7 +19,7 @@ class Validate(AAZCommand):
     """Validate the given scenario configuration.
 
     :example: Validate a scenario configuration.
-        az chaos scenario config validate --resource-group exampleRG --workspace-name exampleWorkspace --scenario-name ZoneDown-1.0 --scenario-configuration-name my-config
+        az chaos scenario config validate --resource-group exampleRG --workspace-name exampleWorkspace --scenario-name ZoneDown-1.0 --name my-config
     """
 
     _aaz_info = {

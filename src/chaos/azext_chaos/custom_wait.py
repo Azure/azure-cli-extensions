@@ -41,6 +41,21 @@ class ScenarioRunWait(AAZWaitCommand):
         self._execute_operations()
         return self._output()
 
+    def __call__(self, *args, **kwargs):
+        # The AAZ wait framework (WaitCommandOperation.wait) RETURNS a CLIError
+        # on timeout instead of raising it. When the run id does not exist, the
+        # underlying GET 404s and that 404 is swallowed for --created/--exists/
+        # --custom; the loop then runs to timeout and *returns* a CLIError,
+        # which makes the command exit 0 — a silent CI trap. Convert that
+        # returned error into a raised one so a timed-out (or never-existing)
+        # run yields a non-zero exit. --deleted (404 == success) returns None
+        # and is unaffected.
+        from knack.util import CLIError
+        result = super().__call__(*args, **kwargs)
+        if isinstance(result, CLIError):
+            raise result
+        return result
+
     _args_schema = None
 
     @classmethod
@@ -56,7 +71,7 @@ class ScenarioRunWait(AAZWaitCommand):
             required=True,
         )
         _args_schema.run_id = AAZStrArg(
-            options=["-n", "--name", "--run-id"],
+            options=["--run-id", "--name", "-n"],
             help="The name of the ScenarioRun",
             required=True,
             id_part="child_name_2",

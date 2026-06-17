@@ -19,10 +19,10 @@ class Create(AAZCommand):
     """Create a scenario definition.
 
     :example: Create or update a scenario configuration with physical zone targeting.
-        az chaos scenario config create --resource-group exampleRG --workspace-name exampleWorkspace --scenario-name ZoneDown-1.0 --scenario-configuration-name my-config --exclusions "{resources:[/subscriptions/6b052e15-03d3-4f17-b2e1-be7f07588291/resourceGroups/exampleRG/providers/Microsoft.Compute/virtualMachines/protectedVM]}" --parameters "[{key:duration,value:PT10M}]" --filters "{locations:[westus2],physical-zones:[westus2-az1]}"
+        az chaos scenario config create --resource-group exampleRG --workspace-name exampleWorkspace --scenario-name ZoneDown-1.0 --name my-config --exclusions "{resources:[/subscriptions/6b052e15-03d3-4f17-b2e1-be7f07588291/resourceGroups/exampleRG/providers/Microsoft.Compute/virtualMachines/protectedVM]}" --parameters "[{key:duration,value:PT10M}]" --filters "{locations:[westus2],physical-zones:[westus2-az1]}"
 
     :example: Create or update a scenario configuration with availability zone targeting.
-        az chaos scenario config create --resource-group exampleRG --workspace-name exampleWorkspace --scenario-name ZoneDown-1.0 --scenario-configuration-name my-config --filters "{locations:[eastus],zones:[1]}" --parameters "[{key:duration,value:PT10M}]"
+        az chaos scenario config create --resource-group exampleRG --workspace-name exampleWorkspace --scenario-name ZoneDown-1.0 --name my-config --filters "{locations:[eastus],zones:[1]}" --parameters "[{key:duration,value:PT10M}]"
     """
 
     _aaz_info = {

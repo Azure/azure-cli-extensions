@@ -16,7 +16,9 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Discovered Resource
+    """Browse discovered resources in a Chaos Studio workspace.
+
+    Discovered resources are populated by workspace discovery scans (triggered via 'az chaos workspace refresh-recommendation'). Use 'list' to see all discovered resources and 'show' to inspect a specific one.
     """
     pass
 

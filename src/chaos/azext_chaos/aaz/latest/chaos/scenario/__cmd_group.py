@@ -16,7 +16,9 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Scenario
+    """Manage Chaos Studio scenarios within a workspace.
+
+    Scenarios define the fault-injection actions available in a workspace. Catalog scenarios are populated by workspace evaluation (see 'az chaos workspace refresh-recommendation'); custom scenarios can be created directly.
     """
     pass
 
