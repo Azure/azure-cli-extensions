@@ -31,7 +31,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
 setup(
     name='health-models',
     version=VERSION,
-    description='Microsoft Azure Command-Line Tools extension for Azure Monitor Health Models (Microsoft.CloudHealth).',
+    description='Support for managing Azure Monitor Health Models, including entities, signals, relationships, authentication settings, and discovery rules.',
     long_description=README + '\n\n' + HISTORY,
     long_description_content_type='text/markdown',
     license='MIT',
