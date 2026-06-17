@@ -267,6 +267,59 @@ class StreamAnalyticsClientTest(ScenarioTest):
         self.assertIn("RequestDisallowedByPolicy", str(cm.exception))
 
 
+    @ResourceGroupPreparer(name_prefix="cli_test_stream_analytics_", location="westus")
+    def test_input_sql_reference_authentication_mode(self):
+        self.kwargs.update({
+            "job_name": "job",
+            "input_name": "input",
+            "locale": "en-US"
+        })
+
+        self.cmd(
+            "stream-analytics job create -n {job_name} -g {rg} \
+            --data-locale {locale} \
+            --output-error-policy Drop --out-of-order-policy Drop \
+            --order-max-delay 0 --arrival-max-delay 5"
+        )
+
+        props = {
+            "type": "Reference",
+            "datasource": {
+                "type": "Microsoft.Sql/Server/Database",
+                "properties": {
+                    "server": "sql-server",
+                    "database": "sql-db",
+                    "user": "sql-user",
+                    "password": "Password123!",
+                    "fullSnapshotQuery": "SELECT * from a",
+                    "refreshType": "Static",
+                    "refreshRate": "00:00:00",
+                    "authenticationMode": "ConnectionString"
+                }
+            }
+        }
+        self.kwargs["properties"] = json.dumps(props)
+        self.cmd(
+            "stream-analytics input create -n {input_name} -g {rg} \
+            --job-name {job_name} \
+            --properties '{properties}'",
+            checks=[
+                self.check("name", "{input_name}"),
+                self.check("type", "Microsoft.StreamAnalytics/streamingjobs/inputs"),
+                self.check("properties.datasource.authenticationMode", "ConnectionString")
+            ]
+        )
+        self.cmd(
+            "stream-analytics input show -n {input_name} -g {rg} --job-name {job_name}",
+            checks=[
+                self.check("name", "{input_name}"),
+                self.check("properties.datasource.authenticationMode", "ConnectionString")
+            ]
+        )
+
+        self.cmd("stream-analytics input delete -n {input_name} -g {rg} --job-name {job_name} --yes")
+
+
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix="cli_test_stream_analytics_", location="westus")
     @StorageAccountPreparer(parameter_name="storage_account")
