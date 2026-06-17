@@ -37,8 +37,5 @@ E.g. to create an entity and a signal definition:
 
 ```
 az monitor health-models entity create --health-model-name "myModel" --resource-group "myRG" --name "frontend" --display-name "Frontend"
-
-
 az monitor health-models signal-definition create --health-model-name "myModel" --resource-group "myRG" --name "cpuPressure" --display-name "CPU Pressure" --refresh-interval PT5M --azure-resource-metric '{...}'
-
 ```
