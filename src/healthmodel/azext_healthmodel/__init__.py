@@ -4,28 +4,15 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core import AzCommandsLoader
-from azure.cli.core.commands import CliCommandType
-
-from azext_healthmodel._client_factory import cf_healthmodel
 
 
-class HealthModelCommandsLoader(AzCommandsLoader):
-
-    def __init__(self, cli_ctx=None):
-        custom_type = CliCommandType(
-            operations_tmpl='azext_healthmodel.custom#{}',
-            client_factory=cf_healthmodel,
-        )
-        super().__init__(cli_ctx=cli_ctx, custom_command_type=custom_type)
+class HealthModelCommandsLoader(AzCommandsLoader):  # pylint: disable=too-few-public-methods
 
     def load_command_table(self, args):
-        from azext_healthmodel.commands import load_command_table
-        load_command_table(self, args)
+        from azure.cli.core.aaz import load_aaz_command_table
+        from . import aaz
+        load_aaz_command_table(loader=self, aaz_pkg_name=aaz.__name__, args=args)
         return self.command_table
-
-    def load_arguments(self, command):
-        from azext_healthmodel._params import load_arguments
-        load_arguments(self, command)
 
 
 COMMAND_LOADER_CLS = HealthModelCommandsLoader

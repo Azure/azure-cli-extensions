@@ -3,9 +3,10 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from codecs import open  # pylint: disable=redefined-builtin
 from setuptools import setup, find_packages
 
-VERSION = '0.1.0'
+VERSION = '1.0.0b1'
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -20,18 +21,22 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = [
-    'azure-mgmt-cloudhealth>=1.0.0b2',
-]
+DEPENDENCIES = []
+
+with open('README.md', 'r', encoding='utf-8') as f:
+    README = f.read()
+with open('HISTORY.rst', 'r', encoding='utf-8') as f:
+    HISTORY = f.read()
 
 setup(
     name='healthmodel',
     version=VERSION,
-    description='Microsoft Azure Command-Line Tools CloudHealth Extension',
-    long_description='CLI extension for Microsoft.CloudHealth resource provider.',
+    description='Microsoft Azure Command-Line Tools extension for Azure Monitor Health Models (Microsoft.CloudHealth).',
+    long_description=README + '\n\n' + HISTORY,
+    long_description_content_type='text/markdown',
     license='MIT',
     author='Microsoft Corporation',
-    author_email='azpysdkhelp@microsoft.com',
+    author_email='azpycli@microsoft.com',
     url='https://github.com/Azure/azure-cli-extensions/tree/main/src/healthmodel',
     classifiers=CLASSIFIERS,
     packages=find_packages(),

@@ -1,0 +1,766 @@
+interactions:
+- request:
+    body: '{"location": "centralus"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - healthmodel create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '25'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --location
+      User-Agent:
+      - AZURECLI/2.85.0 azsdk-python-core/1.39.0 Python/3.14.6 (macOS-15.7.7-arm64-arm-64bit-Mach-O)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002?api-version=2026-01-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002","name":"clihm000002","type":"microsoft.cloudhealth/healthmodels","location":"centralus","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-06-15T20:59:30.2950259Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-06-15T20:59:30.2950259Z"},"properties":{"provisioningState":"Accepted"}}'
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CloudHealth/locations/CENTRALUS/operationStatuses/c766e1b9-bdcf-4880-916a-16ebed920d4d*83EE300613B9B0FD22FBB0BA8554A8BE8F9CE9C1EEA5C5E277C023E05C3453F1?api-version=2026-01-01-preview&t=639171539736700710&c=MIIHlTCCBn2gAwIBAgIRANClaz6RLmreUbR9r6zb9WMwDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgV1VTMiBDQSAwMTAeFw0yNjA0MTAwODE5MzhaFw0yNjEwMDUxNDE5MzhaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3E1D6z1LouZ_KTbiqwoLegZPXxfJtAxSDEzNd5eYoT9Z0mkVt2msmJzCj13_5ZeNe1Zc3emsD0Nva_lxqQqpnd8AFotdRR7SW2RoZL6e0AggjtVdUxBw3arEEVPONhRCC4X4NVXP3cSjKZjoedb5vjiI7gzkBBWu_gld6jaW4bNj5MMfx0_PNVx65CAOf2YmGYzF7zv4k3cn5-QHu9FINZ2XuhjINP6EvIDSw6H-2qVAnJw-mNb5e2KonH1tYO7nlEsUCon2rz_d7bnJURgwh_6MZ5tSOhlvvnEM1BnC_4jnVBCpBhgt-GLaYNMWZfQnMLxuc13rgCkS5b0JKPbMDQIDAQABo4IEkjCCBI4wgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQUz6DzOu55HJGf5hqPqj6oUQtuHzkwHwYDVR0jBBgwFoAUrONy-gOyc549lcjvh1uu3Ruh7WgwggGyBgNVHR8EggGpMIIBpTBpoGegZYZjaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3R1czIvY3Jscy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxLzc5L2N1cnJlbnQuY3JsMGugaaBnhmVodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC93ZXN0dXMyL2NybHMvY2NtZXdlc3R1czJwa2kvY2NtZXdlc3R1czJpY2EwMS83OS9jdXJyZW50LmNybDBaoFigVoZUaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3dlc3R1czIvY3Jscy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxLzc5L2N1cnJlbnQuY3JsMG-gbaBrhmlodHRwOi8vY2NtZXdlc3R1czJwa2kud2VzdHVzMi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWV3ZXN0dXMyaWNhMDEvNzkvY3VycmVudC5jcmwwggG3BggrBgEFBQcBAQSCAakwggGlMGwGCCsGAQUFBzAChmBodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdHVzMi9jYWNlcnRzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvY2VydC5jZXIwbgYIKwYBBQUHMAKGYmh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3R1czIvY2FjZXJ0cy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxL2NlcnQuY2VyMF0GCCsGAQUFBzAChlFodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vd2VzdHVzMi9jYWNlcnRzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvY2VydC5jZXIwZgYIKwYBBQUHMAKGWmh0dHA6Ly9jY21ld2VzdHVzMnBraS53ZXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZXdlc3R1czJpY2EwMTANBgkqhkiG9w0BAQsFAAOCAQEAnQMBcxghl--qhJL4CBD2951WWIqzswBZahCpYCb1uYtvUonEYArDTouihm73A1IMaA1hcof6i4mp4wlOCbJrwBz1o25Urh_E8AVOA1ylZkmsFxeAwRIXEH-HiAwvFsqrylOhL0jJvIDFa0jzjJTNlv5SkoW9fTaN0E16t8hjXVNvgecuZ56mGRaJku-UCWENmbdnq7Tn6ZMhxkpcUo1uXlbRbIWmSrnwBkZu9y949y3djVawgkZL3OzGb25vkxffx3kdRijKTXY3VNuHj9KRJ2mrrPHhFcw867D13Sc9-DVYBiHYW8bb-kvv1J7UCuJTE1jqyfCNTREat4NXicrPcg&s=wetansDSZE_evAfNeMiLaEnC5CKJjI-nbKd26vzCNlSv0dWyHOiUFzXZfCQhmtvFvnVzq38ru--OP-dWpULe0mhcMaQHhkyFWbGKWzsnLJ8B0kssWXH-Wuu-7ymRUB5AxFXi5lTyxIGm7EwSJAnGasWJQVOVfH7THfd38v8ZTmYa-rI5YQE1gB19q6MJbMoMbXasl_zzAr4FrVf4LZgrxNxx-u5HCYYeqnZ30g0b_WhUqDJfMpzMJmjMIVSvx-d_ebcHGBbZWFomoZx1_cKGiHeaSdfSoykR0wWuqncd-pChRmnYAj6eqA01iRXGWKCZtpZ5Gk_Qdk4ys7eMRXjHkA&h=PZljEX9YiRJLVeWGOIBcqrLrPq33EMk2hRgi-ALGuIc
+      cache-control:
+      - no-cache
+      content-length:
+      - '532'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 15 Jun 2026 20:59:32 GMT
+      etag:
+      - '"e100a5b6-0000-0300-0000-6a3067b50000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 85ff0ff0-2d69-4931-8966-c1554da9985c
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - REDACTED
+      x-ms-operation-identifier:
+      - REDACTED
+      x-ms-providerhub-traffic:
+      - REDACTED
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-ms-resource-provider-hint:
+      - REDACTED
+      x-msedge-ref:
+      - REDACTED
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - healthmodel create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --location
+      User-Agent:
+      - AZURECLI/2.85.0 azsdk-python-core/1.39.0 Python/3.14.6 (macOS-15.7.7-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CloudHealth/locations/CENTRALUS/operationStatuses/c766e1b9-bdcf-4880-916a-16ebed920d4d*83EE300613B9B0FD22FBB0BA8554A8BE8F9CE9C1EEA5C5E277C023E05C3453F1?api-version=2026-01-01-preview&t=639171539736700710&c=MIIHlTCCBn2gAwIBAgIRANClaz6RLmreUbR9r6zb9WMwDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UEAxMrQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgV1VTMiBDQSAwMTAeFw0yNjA0MTAwODE5MzhaFw0yNjEwMDUxNDE5MzhaMEAxPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3E1D6z1LouZ_KTbiqwoLegZPXxfJtAxSDEzNd5eYoT9Z0mkVt2msmJzCj13_5ZeNe1Zc3emsD0Nva_lxqQqpnd8AFotdRR7SW2RoZL6e0AggjtVdUxBw3arEEVPONhRCC4X4NVXP3cSjKZjoedb5vjiI7gzkBBWu_gld6jaW4bNj5MMfx0_PNVx65CAOf2YmGYzF7zv4k3cn5-QHu9FINZ2XuhjINP6EvIDSw6H-2qVAnJw-mNb5e2KonH1tYO7nlEsUCon2rz_d7bnJURgwh_6MZ5tSOhlvvnEM1BnC_4jnVBCpBhgt-GLaYNMWZfQnMLxuc13rgCkS5b0JKPbMDQIDAQABo4IEkjCCBI4wgZ0GA1UdIASBlTCBkjAMBgorBgEEAYI3ewEBMGYGCisGAQQBgjd7AgIwWDBWBggrBgEFBQcCAjBKHkgAMwAzAGUAMAAxADkAMgAxAC0ANABkADYANAAtADQAZgA4AGMALQBhADAANQA1AC0ANQBiAGQAYQBmAGYAZAA1AGUAMwAzAGQwDAYKKwYBBAGCN3sDAjAMBgorBgEEAYI3ewQCMAwGA1UdEwEB_wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMA4GA1UdDwEB_wQEAwIFoDAdBgNVHQ4EFgQUz6DzOu55HJGf5hqPqj6oUQtuHzkwHwYDVR0jBBgwFoAUrONy-gOyc549lcjvh1uu3Ruh7WgwggGyBgNVHR8EggGpMIIBpTBpoGegZYZjaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3R1czIvY3Jscy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxLzc5L2N1cnJlbnQuY3JsMGugaaBnhmVodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC93ZXN0dXMyL2NybHMvY2NtZXdlc3R1czJwa2kvY2NtZXdlc3R1czJpY2EwMS83OS9jdXJyZW50LmNybDBaoFigVoZUaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3dlc3R1czIvY3Jscy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxLzc5L2N1cnJlbnQuY3JsMG-gbaBrhmlodHRwOi8vY2NtZXdlc3R1czJwa2kud2VzdHVzMi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWV3ZXN0dXMyaWNhMDEvNzkvY3VycmVudC5jcmwwggG3BggrBgEFBQcBAQSCAakwggGlMGwGCCsGAQUFBzAChmBodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdHVzMi9jYWNlcnRzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvY2VydC5jZXIwbgYIKwYBBQUHMAKGYmh0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3R1czIvY2FjZXJ0cy9jY21ld2VzdHVzMnBraS9jY21ld2VzdHVzMmljYTAxL2NlcnQuY2VyMF0GCCsGAQUFBzAChlFodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vd2VzdHVzMi9jYWNlcnRzL2NjbWV3ZXN0dXMycGtpL2NjbWV3ZXN0dXMyaWNhMDEvY2VydC5jZXIwZgYIKwYBBQUHMAKGWmh0dHA6Ly9jY21ld2VzdHVzMnBraS53ZXN0dXMyLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZXdlc3R1czJpY2EwMTANBgkqhkiG9w0BAQsFAAOCAQEAnQMBcxghl--qhJL4CBD2951WWIqzswBZahCpYCb1uYtvUonEYArDTouihm73A1IMaA1hcof6i4mp4wlOCbJrwBz1o25Urh_E8AVOA1ylZkmsFxeAwRIXEH-HiAwvFsqrylOhL0jJvIDFa0jzjJTNlv5SkoW9fTaN0E16t8hjXVNvgecuZ56mGRaJku-UCWENmbdnq7Tn6ZMhxkpcUo1uXlbRbIWmSrnwBkZu9y949y3djVawgkZL3OzGb25vkxffx3kdRijKTXY3VNuHj9KRJ2mrrPHhFcw867D13Sc9-DVYBiHYW8bb-kvv1J7UCuJTE1jqyfCNTREat4NXicrPcg&s=wetansDSZE_evAfNeMiLaEnC5CKJjI-nbKd26vzCNlSv0dWyHOiUFzXZfCQhmtvFvnVzq38ru--OP-dWpULe0mhcMaQHhkyFWbGKWzsnLJ8B0kssWXH-Wuu-7ymRUB5AxFXi5lTyxIGm7EwSJAnGasWJQVOVfH7THfd38v8ZTmYa-rI5YQE1gB19q6MJbMoMbXasl_zzAr4FrVf4LZgrxNxx-u5HCYYeqnZ30g0b_WhUqDJfMpzMJmjMIVSvx-d_ebcHGBbZWFomoZx1_cKGiHeaSdfSoykR0wWuqncd-pChRmnYAj6eqA01iRXGWKCZtpZ5Gk_Qdk4ys7eMRXjHkA&h=PZljEX9YiRJLVeWGOIBcqrLrPq33EMk2hRgi-ALGuIc
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CloudHealth/locations/CENTRALUS/operationStatuses/00000000-0000-0000-0000-000000000001*83EE300613B9B0FD22FBB0BA8554A8BE8F9CE9C1EEA5C5E277C023E05C3453F1","name":"00000000-0000-0000-0000-000000000001*83EE300613B9B0FD22FBB0BA8554A8BE8F9CE9C1EEA5C5E277C023E05C3453F1","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002","status":"Succeeded","startTime":"2026-06-15T20:59:32.0225481Z","endTime":"2026-06-15T20:59:34.3200063Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '637'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 15 Jun 2026 20:59:34 GMT
+      etag:
+      - '"8000b333-0000-0300-0000-6a3067b60000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - REDACTED
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - REDACTED
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - healthmodel create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --location
+      User-Agent:
+      - AZURECLI/2.85.0 azsdk-python-core/1.39.0 Python/3.14.6 (macOS-15.7.7-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002?api-version=2026-01-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002","name":"clihm000002","type":"microsoft.cloudhealth/healthmodels","location":"centralus","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-06-15T20:59:30.2950259Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-06-15T20:59:30.2950259Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '533'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 15 Jun 2026 20:59:34 GMT
+      etag:
+      - '"1501808e-0000-0200-0000-6a3067b60000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - REDACTED
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - REDACTED
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - healthmodel show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.85.0 azsdk-python-core/1.39.0 Python/3.14.6 (macOS-15.7.7-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002?api-version=2026-01-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002","name":"clihm000002","type":"microsoft.cloudhealth/healthmodels","location":"centralus","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-06-15T20:59:30.2950259Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-06-15T20:59:30.2950259Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '533'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 15 Jun 2026 20:59:36 GMT
+      etag:
+      - '"1501808e-0000-0200-0000-6a3067b60000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - REDACTED
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - REDACTED
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - healthmodel update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --tags
+      User-Agent:
+      - AZURECLI/2.85.0 azsdk-python-core/1.39.0 Python/3.14.6 (macOS-15.7.7-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002?api-version=2026-01-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002","name":"clihm000002","type":"microsoft.cloudhealth/healthmodels","location":"centralus","tags":{},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-06-15T20:59:30.2950259Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-06-15T20:59:30.2950259Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '533'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 15 Jun 2026 20:59:36 GMT
+      etag:
+      - '"1501808e-0000-0200-0000-6a3067b60000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - REDACTED
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - REDACTED
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "centralus", "properties": {}, "tags": {"env": "test", "owner":
+      "cli"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - healthmodel update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '84'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --tags
+      User-Agent:
+      - AZURECLI/2.85.0 azsdk-python-core/1.39.0 Python/3.14.6 (macOS-15.7.7-arm64-arm-64bit-Mach-O)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002?api-version=2026-01-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002","name":"clihm000002","type":"microsoft.cloudhealth/healthmodels","location":"centralus","tags":{"env":"test","owner":"cli"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-06-15T20:59:30.2950259Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-06-15T20:59:37.4022779Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '559'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 15 Jun 2026 20:59:38 GMT
+      etag:
+      - '"e1002eb8-0000-0300-0000-6a3067b90000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 6d331880-7931-4650-84f1-3419451fcb26
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - REDACTED
+      x-ms-providerhub-traffic:
+      - REDACTED
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - REDACTED
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - healthmodel list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g
+      User-Agent:
+      - AZURECLI/2.85.0 azsdk-python-core/1.39.0 Python/3.14.6 (macOS-15.7.7-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels?api-version=2026-01-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002","name":"clihm000002","type":"microsoft.cloudhealth/healthmodels","location":"centralus","tags":{"env":"test","owner":"cli"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-06-15T20:59:30.2950259Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-06-15T20:59:37.4022779Z"},"properties":{"provisioningState":"Succeeded"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '571'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 15 Jun 2026 20:59:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - REDACTED
+      x-ms-providerhub-traffic:
+      - REDACTED
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - REDACTED
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"displayName": "CLI Test Entity", "impact": "Standard"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - healthmodel entity create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '72'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --health-model-name -n --display-name --impact
+      User-Agent:
+      - AZURECLI/2.85.0 azsdk-python-core/1.39.0 Python/3.14.6 (macOS-15.7.7-arm64-arm-64bit-Mach-O)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/client000003?api-version=2026-01-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/client000003","name":"client000003","type":"microsoft.cloudhealth/healthmodels/entities","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-06-15T20:59:39.6385728Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-06-15T20:59:39.6385728Z"},"properties":{"provisioningState":"Succeeded","displayName":"CLI
+        Test Entity","impact":"Standard"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '584'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 15 Jun 2026 20:59:39 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 2520c84a-7a21-480e-9e91-e9af7078f2ed
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - REDACTED
+      x-ms-providerhub-traffic:
+      - REDACTED
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - REDACTED
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - healthmodel entity show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --health-model-name -n
+      User-Agent:
+      - AZURECLI/2.85.0 azsdk-python-core/1.39.0 Python/3.14.6 (macOS-15.7.7-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/client000003?api-version=2026-01-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_healthmodel_crud000001/providers/microsoft.cloudhealth/healthmodels/clihm000002/entities/client000003","name":"client000003","type":"Microsoft.CloudHealth/healthmodels/entities","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-06-15T20:59:39.6385728Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-06-15T20:59:39.9571595Z"},"properties":{"provisioningState":"Succeeded","displayName":"CLI
+        Test Entity","impact":"Standard","healthState":"Unknown"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '608'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 15 Jun 2026 20:59:41 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 2b12e884-f295-480b-981d-4459ccefc73e
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - REDACTED
+      x-ms-providerhub-traffic:
+      - REDACTED
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - REDACTED
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - healthmodel entity list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --health-model-name
+      User-Agent:
+      - AZURECLI/2.85.0 azsdk-python-core/1.39.0 Python/3.14.6 (macOS-15.7.7-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities?api-version=2026-01-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_healthmodel_crud000001/providers/microsoft.cloudhealth/healthmodels/clihm000002/entities/client000003","name":"client000003","type":"Microsoft.CloudHealth/healthmodels/entities","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-06-15T20:59:39.6385728Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-06-15T20:59:39.9571595Z"},"properties":{"provisioningState":"Succeeded","displayName":"CLI
+        Test Entity","impact":"Standard","healthState":"Unknown"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_healthmodel_crud000001/providers/microsoft.cloudhealth/healthmodels/clihm000002/entities/clihm000002","name":"clihm000002","type":"Microsoft.CloudHealth/healthmodels/entities","systemData":{"lastModifiedAt":"2026-06-15T20:59:32.9645412Z"},"properties":{"displayName":"clihm000002","canvasPosition":{"x":0.0,"y":0.0},"impact":"Standard","healthState":"Unknown"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1065'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 15 Jun 2026 20:59:42 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - b3b11bac-4a95-4460-ba5c-bab397397840
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - REDACTED
+      x-ms-providerhub-traffic:
+      - REDACTED
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - REDACTED
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - healthmodel entity delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --health-model-name -n --yes
+      User-Agent:
+      - AZURECLI/2.85.0 azsdk-python-core/1.39.0 Python/3.14.6 (macOS-15.7.7-arm64-arm-64bit-Mach-O)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002/entities/client000003?api-version=2026-01-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 15 Jun 2026 20:59:44 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 7774de18-4f75-42ec-9487-ff2bf03caee4
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - REDACTED
+      x-ms-providerhub-traffic:
+      - REDACTED
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '199'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '2999'
+      x-msedge-ref:
+      - REDACTED
+    status:
+      code: 204
+      message: No Content
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - healthmodel delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n --yes
+      User-Agent:
+      - AZURECLI/2.85.0 azsdk-python-core/1.39.0 Python/3.14.6 (macOS-15.7.7-arm64-arm-64bit-Mach-O)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002?api-version=2026-01-01-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CloudHealth/locations/CENTRALUS/operationStatuses/735b7a95-4d18-4b85-9d90-658e5bd89319*83EE300613B9B0FD22FBB0BA8554A8BE8F9CE9C1EEA5C5E277C023E05C3453F1?api-version=2026-01-01-preview&t=639171539868352076&c=MIIHxDCCBqygAwIBAgIRAMRpkKdRWhWugxycwJTrwE0wDQYJKoZIhvcNAQELBQAwNTEzMDEGA1UEAxMqQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgQ1VTIENBIDAxMB4XDTI2MDQwNjIxMTYzOVoXDTI2MTAwMjAzMTYzOVowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC7Xc9AeQtjVzLBsmb02CAFQe0eb8_tS42dpPi7CRyNLajzokRblc2MXPl_-aAo65BzBZRSRFe29NOERHKda7m3Kdyjj9xeeKfMe4Stf-G8aGI83Q1QhKKOjYx1I1Gb7Ues4WldpcNNn9w42SV8nWE29bx_Lqq6w3oQTFQrf2mnGRegsVTNjOMIxsfPNA-t32pG4zsnkxTfs66UokpdlfI5K-V8rUw3FYytQGqD_7kidQ_4WQFXa1H7DIqv14ePhIpEloUr3uwcgwovYQylI2jnSpds866jxx8jDyWqKI_dQhtKzGePIPMcKiEZLWZSMBYf34Dxoh52SLiIKB__IpytAgMBAAGjggTCMIIEvjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBSr5bqFBCOJYj3_8ROJAAzOtTntDzAfBgNVHSMEGDAWgBT85FoKL4UO50S5B3N44NREB6IZETCCAcoGA1UdHwSCAcEwggG9MG-gbaBrhmlodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvNzYvY3VycmVudC5jcmwwcaBvoG2Ga2h0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2NlbnRyYWx1cy9jcmxzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxLzc2L2N1cnJlbnQuY3JsMGCgXqBchlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvNzYvY3VycmVudC5jcmwwdaBzoHGGb2h0dHA6Ly9jY21lY2VudHJhbHVzcGtpLmNlbnRyYWx1cy5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVjZW50cmFsdXNpY2EwMS83Ni9jdXJyZW50LmNybDCCAc8GCCsGAQUFBwEBBIIBwTCCAb0wcgYIKwYBBQUHMAKGZmh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjB0BggrBgEFBQcwAoZoaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NhY2VydHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvY2VydC5jZXIwYwYIKwYBBQUHMAKGV2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjBsBggrBgEFBQcwAoZgaHR0cDovL2NjbWVjZW50cmFsdXNwa2kuY2VudHJhbHVzLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWNlbnRyYWx1c2ljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBqPSAHbf_opPyMLbk1VzVSfRHW5DA7ieRh55DJH1hCGV-WPAw145BaFgXxNjHdle_NsF4WFxq0n2nhJtERb4q9P9OEUxUuxpO9rRZcGpDQQHn3Fexp-Fj1917PYHXC-dqfTyYqcPdZqdxij1MQkl34_Bi9sONorQc9aavBvQtI8HYjUJTY3c-55pAUVkiqF2rpz3y1MLtVXgwyAiXZw7duzgDsj6_jPvM3jlnPYMRbAX0R6qQjhwQKNwpSWU4E6teiydGvoMIjtxre0xNg2FjtoaTkOGXSQswIBr00PbgBfTIWRvvGo6yG7nOl1U8izZBVxEaHIGI6CJy9wLRFxhfL&s=JS6V_Tkqk6TDf81Y4DtUveGCINSltwBMg1TrMWIVxsfHLqUZWl1WwMQeg3aLJNT8FjnzgYpzI_YYfaPJVlFXptpkahZmil9aBrMsElLHe3drk2H1WGdd0mlpJ0N_LWUj4MBbZCCcKHjS691gzBYYFB82xT3GiBduDDZ970k2yYw_aa6BMfxTW6MCGqxEsuDiDjPgX4Vhc7n5CRXMq_NocWulrJoOxto5GUjnkDpxS_-KDGNRTaoEGsU1gkPWbB0yj63zlbo4fO4iKMIiu-hHqhIVI9AwWN4VN9b516eccsNrjdyKI0z-Hm4BDYyyv95cSUOCYjuQhOOycEl9R5EKHQ&h=iO_kqBZ91kRxcLfZnFea4OPKi2cIfdH5gNCcZZBUgqw
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 15 Jun 2026 20:59:46 GMT
+      etag:
+      - '"e100acbb-0000-0300-0000-6a3067c20000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CloudHealth/locations/CENTRALUS/operationStatuses/735b7a95-4d18-4b85-9d90-658e5bd89319*83EE300613B9B0FD22FBB0BA8554A8BE8F9CE9C1EEA5C5E277C023E05C3453F1?api-version=2026-01-01-preview&t=639171539868352076&c=MIIHxDCCBqygAwIBAgIRAMRpkKdRWhWugxycwJTrwE0wDQYJKoZIhvcNAQELBQAwNTEzMDEGA1UEAxMqQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgQ1VTIENBIDAxMB4XDTI2MDQwNjIxMTYzOVoXDTI2MTAwMjAzMTYzOVowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC7Xc9AeQtjVzLBsmb02CAFQe0eb8_tS42dpPi7CRyNLajzokRblc2MXPl_-aAo65BzBZRSRFe29NOERHKda7m3Kdyjj9xeeKfMe4Stf-G8aGI83Q1QhKKOjYx1I1Gb7Ues4WldpcNNn9w42SV8nWE29bx_Lqq6w3oQTFQrf2mnGRegsVTNjOMIxsfPNA-t32pG4zsnkxTfs66UokpdlfI5K-V8rUw3FYytQGqD_7kidQ_4WQFXa1H7DIqv14ePhIpEloUr3uwcgwovYQylI2jnSpds866jxx8jDyWqKI_dQhtKzGePIPMcKiEZLWZSMBYf34Dxoh52SLiIKB__IpytAgMBAAGjggTCMIIEvjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBSr5bqFBCOJYj3_8ROJAAzOtTntDzAfBgNVHSMEGDAWgBT85FoKL4UO50S5B3N44NREB6IZETCCAcoGA1UdHwSCAcEwggG9MG-gbaBrhmlodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvNzYvY3VycmVudC5jcmwwcaBvoG2Ga2h0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2NlbnRyYWx1cy9jcmxzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxLzc2L2N1cnJlbnQuY3JsMGCgXqBchlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvNzYvY3VycmVudC5jcmwwdaBzoHGGb2h0dHA6Ly9jY21lY2VudHJhbHVzcGtpLmNlbnRyYWx1cy5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVjZW50cmFsdXNpY2EwMS83Ni9jdXJyZW50LmNybDCCAc8GCCsGAQUFBwEBBIIBwTCCAb0wcgYIKwYBBQUHMAKGZmh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjB0BggrBgEFBQcwAoZoaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NhY2VydHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvY2VydC5jZXIwYwYIKwYBBQUHMAKGV2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjBsBggrBgEFBQcwAoZgaHR0cDovL2NjbWVjZW50cmFsdXNwa2kuY2VudHJhbHVzLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWNlbnRyYWx1c2ljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBqPSAHbf_opPyMLbk1VzVSfRHW5DA7ieRh55DJH1hCGV-WPAw145BaFgXxNjHdle_NsF4WFxq0n2nhJtERb4q9P9OEUxUuxpO9rRZcGpDQQHn3Fexp-Fj1917PYHXC-dqfTyYqcPdZqdxij1MQkl34_Bi9sONorQc9aavBvQtI8HYjUJTY3c-55pAUVkiqF2rpz3y1MLtVXgwyAiXZw7duzgDsj6_jPvM3jlnPYMRbAX0R6qQjhwQKNwpSWU4E6teiydGvoMIjtxre0xNg2FjtoaTkOGXSQswIBr00PbgBfTIWRvvGo6yG7nOl1U8izZBVxEaHIGI6CJy9wLRFxhfL&s=JS6V_Tkqk6TDf81Y4DtUveGCINSltwBMg1TrMWIVxsfHLqUZWl1WwMQeg3aLJNT8FjnzgYpzI_YYfaPJVlFXptpkahZmil9aBrMsElLHe3drk2H1WGdd0mlpJ0N_LWUj4MBbZCCcKHjS691gzBYYFB82xT3GiBduDDZ970k2yYw_aa6BMfxTW6MCGqxEsuDiDjPgX4Vhc7n5CRXMq_NocWulrJoOxto5GUjnkDpxS_-KDGNRTaoEGsU1gkPWbB0yj63zlbo4fO4iKMIiu-hHqhIVI9AwWN4VN9b516eccsNrjdyKI0z-Hm4BDYyyv95cSUOCYjuQhOOycEl9R5EKHQ&h=iO_kqBZ91kRxcLfZnFea4OPKi2cIfdH5gNCcZZBUgqw
+      mise-correlation-id:
+      - 14f4a182-6e15-4212-bfe0-9d94f95ae29f
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - REDACTED
+      x-ms-providerhub-traffic:
+      - REDACTED
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '199'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '2999'
+      x-ms-resource-provider-hint:
+      - REDACTED
+      x-msedge-ref:
+      - REDACTED
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - healthmodel delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --yes
+      User-Agent:
+      - AZURECLI/2.85.0 azsdk-python-core/1.39.0 Python/3.14.6 (macOS-15.7.7-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CloudHealth/locations/CENTRALUS/operationStatuses/735b7a95-4d18-4b85-9d90-658e5bd89319*83EE300613B9B0FD22FBB0BA8554A8BE8F9CE9C1EEA5C5E277C023E05C3453F1?api-version=2026-01-01-preview&t=639171539868352076&c=MIIHxDCCBqygAwIBAgIRAMRpkKdRWhWugxycwJTrwE0wDQYJKoZIhvcNAQELBQAwNTEzMDEGA1UEAxMqQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgQ1VTIENBIDAxMB4XDTI2MDQwNjIxMTYzOVoXDTI2MTAwMjAzMTYzOVowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC7Xc9AeQtjVzLBsmb02CAFQe0eb8_tS42dpPi7CRyNLajzokRblc2MXPl_-aAo65BzBZRSRFe29NOERHKda7m3Kdyjj9xeeKfMe4Stf-G8aGI83Q1QhKKOjYx1I1Gb7Ues4WldpcNNn9w42SV8nWE29bx_Lqq6w3oQTFQrf2mnGRegsVTNjOMIxsfPNA-t32pG4zsnkxTfs66UokpdlfI5K-V8rUw3FYytQGqD_7kidQ_4WQFXa1H7DIqv14ePhIpEloUr3uwcgwovYQylI2jnSpds866jxx8jDyWqKI_dQhtKzGePIPMcKiEZLWZSMBYf34Dxoh52SLiIKB__IpytAgMBAAGjggTCMIIEvjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBSr5bqFBCOJYj3_8ROJAAzOtTntDzAfBgNVHSMEGDAWgBT85FoKL4UO50S5B3N44NREB6IZETCCAcoGA1UdHwSCAcEwggG9MG-gbaBrhmlodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvNzYvY3VycmVudC5jcmwwcaBvoG2Ga2h0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2NlbnRyYWx1cy9jcmxzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxLzc2L2N1cnJlbnQuY3JsMGCgXqBchlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvNzYvY3VycmVudC5jcmwwdaBzoHGGb2h0dHA6Ly9jY21lY2VudHJhbHVzcGtpLmNlbnRyYWx1cy5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVjZW50cmFsdXNpY2EwMS83Ni9jdXJyZW50LmNybDCCAc8GCCsGAQUFBwEBBIIBwTCCAb0wcgYIKwYBBQUHMAKGZmh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjB0BggrBgEFBQcwAoZoaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NhY2VydHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvY2VydC5jZXIwYwYIKwYBBQUHMAKGV2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjBsBggrBgEFBQcwAoZgaHR0cDovL2NjbWVjZW50cmFsdXNwa2kuY2VudHJhbHVzLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWNlbnRyYWx1c2ljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBqPSAHbf_opPyMLbk1VzVSfRHW5DA7ieRh55DJH1hCGV-WPAw145BaFgXxNjHdle_NsF4WFxq0n2nhJtERb4q9P9OEUxUuxpO9rRZcGpDQQHn3Fexp-Fj1917PYHXC-dqfTyYqcPdZqdxij1MQkl34_Bi9sONorQc9aavBvQtI8HYjUJTY3c-55pAUVkiqF2rpz3y1MLtVXgwyAiXZw7duzgDsj6_jPvM3jlnPYMRbAX0R6qQjhwQKNwpSWU4E6teiydGvoMIjtxre0xNg2FjtoaTkOGXSQswIBr00PbgBfTIWRvvGo6yG7nOl1U8izZBVxEaHIGI6CJy9wLRFxhfL&s=JS6V_Tkqk6TDf81Y4DtUveGCINSltwBMg1TrMWIVxsfHLqUZWl1WwMQeg3aLJNT8FjnzgYpzI_YYfaPJVlFXptpkahZmil9aBrMsElLHe3drk2H1WGdd0mlpJ0N_LWUj4MBbZCCcKHjS691gzBYYFB82xT3GiBduDDZ970k2yYw_aa6BMfxTW6MCGqxEsuDiDjPgX4Vhc7n5CRXMq_NocWulrJoOxto5GUjnkDpxS_-KDGNRTaoEGsU1gkPWbB0yj63zlbo4fO4iKMIiu-hHqhIVI9AwWN4VN9b516eccsNrjdyKI0z-Hm4BDYyyv95cSUOCYjuQhOOycEl9R5EKHQ&h=iO_kqBZ91kRxcLfZnFea4OPKi2cIfdH5gNCcZZBUgqw
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CloudHealth/locations/CENTRALUS/operationStatuses/00000000-0000-0000-0000-000000000001*83EE300613B9B0FD22FBB0BA8554A8BE8F9CE9C1EEA5C5E277C023E05C3453F1","name":"00000000-0000-0000-0000-000000000001*83EE300613B9B0FD22FBB0BA8554A8BE8F9CE9C1EEA5C5E277C023E05C3453F1","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002","status":"Succeeded","startTime":"2026-06-15T20:59:46.2592915Z","endTime":"2026-06-15T20:59:48.5613435Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '637'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 15 Jun 2026 20:59:49 GMT
+      etag:
+      - '"8000b639-0000-0300-0000-6a3067c40000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - REDACTED
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - REDACTED
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - healthmodel delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --yes
+      User-Agent:
+      - AZURECLI/2.85.0 azsdk-python-core/1.39.0 Python/3.14.6 (macOS-15.7.7-arm64-arm-64bit-Mach-O)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CloudHealth/locations/CENTRALUS/operationStatuses/735b7a95-4d18-4b85-9d90-658e5bd89319*83EE300613B9B0FD22FBB0BA8554A8BE8F9CE9C1EEA5C5E277C023E05C3453F1?api-version=2026-01-01-preview&t=639171539868352076&c=MIIHxDCCBqygAwIBAgIRAMRpkKdRWhWugxycwJTrwE0wDQYJKoZIhvcNAQELBQAwNTEzMDEGA1UEAxMqQ0NNRSBHMSBUTFMgUlNBIDIwNDggU0hBMjU2IDIwNDkgQ1VTIENBIDAxMB4XDTI2MDQwNjIxMTYzOVoXDTI2MTAwMjAzMTYzOVowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC7Xc9AeQtjVzLBsmb02CAFQe0eb8_tS42dpPi7CRyNLajzokRblc2MXPl_-aAo65BzBZRSRFe29NOERHKda7m3Kdyjj9xeeKfMe4Stf-G8aGI83Q1QhKKOjYx1I1Gb7Ues4WldpcNNn9w42SV8nWE29bx_Lqq6w3oQTFQrf2mnGRegsVTNjOMIxsfPNA-t32pG4zsnkxTfs66UokpdlfI5K-V8rUw3FYytQGqD_7kidQ_4WQFXa1H7DIqv14ePhIpEloUr3uwcgwovYQylI2jnSpds866jxx8jDyWqKI_dQhtKzGePIPMcKiEZLWZSMBYf34Dxoh52SLiIKB__IpytAgMBAAGjggTCMIIEvjCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBSr5bqFBCOJYj3_8ROJAAzOtTntDzAfBgNVHSMEGDAWgBT85FoKL4UO50S5B3N44NREB6IZETCCAcoGA1UdHwSCAcEwggG9MG-gbaBrhmlodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvNzYvY3VycmVudC5jcmwwcaBvoG2Ga2h0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2NlbnRyYWx1cy9jcmxzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxLzc2L2N1cnJlbnQuY3JsMGCgXqBchlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvNzYvY3VycmVudC5jcmwwdaBzoHGGb2h0dHA6Ly9jY21lY2VudHJhbHVzcGtpLmNlbnRyYWx1cy5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWVjZW50cmFsdXNpY2EwMS83Ni9jdXJyZW50LmNybDCCAc8GCCsGAQUFBwEBBIIBwTCCAb0wcgYIKwYBBQUHMAKGZmh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjB0BggrBgEFBQcwAoZoaHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NhY2VydHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvY2VydC5jZXIwYwYIKwYBBQUHMAKGV2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjBsBggrBgEFBQcwAoZgaHR0cDovL2NjbWVjZW50cmFsdXNwa2kuY2VudHJhbHVzLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWNlbnRyYWx1c2ljYTAxMA0GCSqGSIb3DQEBCwUAA4IBAQBqPSAHbf_opPyMLbk1VzVSfRHW5DA7ieRh55DJH1hCGV-WPAw145BaFgXxNjHdle_NsF4WFxq0n2nhJtERb4q9P9OEUxUuxpO9rRZcGpDQQHn3Fexp-Fj1917PYHXC-dqfTyYqcPdZqdxij1MQkl34_Bi9sONorQc9aavBvQtI8HYjUJTY3c-55pAUVkiqF2rpz3y1MLtVXgwyAiXZw7duzgDsj6_jPvM3jlnPYMRbAX0R6qQjhwQKNwpSWU4E6teiydGvoMIjtxre0xNg2FjtoaTkOGXSQswIBr00PbgBfTIWRvvGo6yG7nOl1U8izZBVxEaHIGI6CJy9wLRFxhfL&s=JS6V_Tkqk6TDf81Y4DtUveGCINSltwBMg1TrMWIVxsfHLqUZWl1WwMQeg3aLJNT8FjnzgYpzI_YYfaPJVlFXptpkahZmil9aBrMsElLHe3drk2H1WGdd0mlpJ0N_LWUj4MBbZCCcKHjS691gzBYYFB82xT3GiBduDDZ970k2yYw_aa6BMfxTW6MCGqxEsuDiDjPgX4Vhc7n5CRXMq_NocWulrJoOxto5GUjnkDpxS_-KDGNRTaoEGsU1gkPWbB0yj63zlbo4fO4iKMIiu-hHqhIVI9AwWN4VN9b516eccsNrjdyKI0z-Hm4BDYyyv95cSUOCYjuQhOOycEl9R5EKHQ&h=iO_kqBZ91kRxcLfZnFea4OPKi2cIfdH5gNCcZZBUgqw
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CloudHealth/locations/CENTRALUS/operationStatuses/00000000-0000-0000-0000-000000000001*83EE300613B9B0FD22FBB0BA8554A8BE8F9CE9C1EEA5C5E277C023E05C3453F1","name":"00000000-0000-0000-0000-000000000001*83EE300613B9B0FD22FBB0BA8554A8BE8F9CE9C1EEA5C5E277C023E05C3453F1","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_healthmodel_crud000001/providers/Microsoft.CloudHealth/healthmodels/clihm000002","status":"Succeeded","startTime":"2026-06-15T20:59:46.2592915Z","endTime":"2026-06-15T20:59:48.5613435Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '637'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 15 Jun 2026 20:59:49 GMT
+      etag:
+      - '"8000b639-0000-0300-0000-6a3067c40000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - REDACTED
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - REDACTED
+    status:
+      code: 200
+      message: OK
+version: 1
