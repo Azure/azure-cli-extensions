@@ -2,9 +2,11 @@
 
 Release History
 ===============
-Upcoming Release
+
+1.11.2
 ++++++++++++++++
-* [Breaking] ``az dataprotection backup-policy retention-rule set`` validates against duplicate retention-rule names. AzureBlob: OperationalStore retention lifecycles must now use the retention rule name ``Default_OperationalStore``. Using ``--name Default`` with an OperationalStore lifecycle is no longer accepted. 
+* [Breaking] `az dataprotection backup-policy retention-rule set` validates against duplicate retention-rule names. AzureBlob: OperationalStore retention lifecycles must now use the retention rule name `--name Default_OperationalStore`. Using `--name Default` with an OperationalStore lifecycle for AzureBlobis no longer accepted. 
+
 1.11.1
 ++++++
 * Fixed `az dataprotection backup-instance update-msi-permissions --datasource-type AzureCosmosDB --operation Restore` erroring with "Set permissions for restore is currently not supported for given DataSourceType". The command now correctly assigns `Cosmos DB Operator` on the target Cosmos DB account to the backup vault's managed identity. Added live regression test `test_dataprotection_update_msi_permissions_cosmosdb_restore`.
