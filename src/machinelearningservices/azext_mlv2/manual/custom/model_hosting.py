@@ -17,6 +17,10 @@ from .utils import get_self_serve_base_url, get_location_from_base_url, get_regi
 from azure.cli.core.azclierror import BadRequestError, ForbiddenError, InvalidArgumentValueError, AzureInternalError
 
 
+# Command handlers receive the framework 'cmd' (and some CLI params like 'location')
+# that the MPSS endpoints do not need; suppress unused-argument for this module.
+# pylint: disable=unused-argument
+
 module_logger = get_logger(__name__)
 
 LOCATION = "location"
@@ -47,7 +51,7 @@ def handle_request_errors(func):
     def wrapper(*args, **kwargs):
         try:
             return func(*args, **kwargs)
-        except requests.ConnectionError as err:
+        except requests.ConnectionError:
             endpoint_target = get_location_from_base_url(args[0])
             log_and_raise_error(BadRequestError(
                 f"The MPSS endpoint target '{endpoint_target}' is not valid or the service is currently unavailable."))
@@ -62,26 +66,21 @@ def append_correlation_id_message(user_message, correlation_id, message_type="de
     if message_type == "assistance":
         if correlation_id:
             return f"{user_message}\nIf you need assistance, reference this ID: {correlation_id}"
-        else:
-            return f"{user_message}\nIf you need assistance, please contact Microsoft support."
+        return f"{user_message}\nIf you need assistance, please contact Microsoft support."
 
-    elif message_type == "reference":
+    if message_type == "reference":
         if correlation_id:
             return f"{user_message}\nReference ID: {correlation_id}"
-        else:
-            return user_message
+        return user_message
 
-    elif message_type == "persist":
+    if message_type == "persist":
         if correlation_id:
             return f"{user_message}\nIf the problem persists, contact Microsoft support with this ID: {correlation_id}"
-        else:
-            return f"{user_message}\nIf the problem persists, contact Microsoft support."
+        return f"{user_message}\nIf the problem persists, contact Microsoft support."
 
-    else:
-        if correlation_id:
-            return f"{user_message}\nPlease contact Microsoft support with this correlation ID: {correlation_id}"
-        else:
-            return f"{user_message}\nPlease contact Microsoft support. If possible, include the timestamp and command used."
+    if correlation_id:
+        return f"{user_message}\nPlease contact Microsoft support with this correlation ID: {correlation_id}"
+    return f"{user_message}\nPlease contact Microsoft support. If possible, include the timestamp and command used."
 
 
 @handle_request_errors
@@ -108,7 +107,7 @@ def make_request(url, headers, method="GET", data=None, params=None, stream=Fals
             return response
         try:
             return response.json()
-        except ValueError as e:
+        except ValueError:
             module_logger.debug(
                 f"Invalid JSON in successful response: {response.text[:200]}...")
             user_message = "Received an invalid response format from the service."
@@ -358,10 +357,9 @@ def ml_model_hosting_plan_details_update_status(cmd, publisher=None, location=No
 
 def ml_model_hosting_create_model(cmd, publisher=None, model=None, file=None):
     token = generate_token()
-    if (file != None):
+    if (file is not None):
         raise BadRequestError(
-            f"File param is depreciated, please rerun command without file parameter")
-
+            "File param is depreciated, please rerun command without file parameter")
 
     api_version = '2025-01-31'
     base_url = get_self_serve_base_url()
@@ -369,6 +367,7 @@ def ml_model_hosting_create_model(cmd, publisher=None, model=None, file=None):
     headers = {"Authorization": f"Bearer {token.token}",
                "Content-Type": "application/json"}
     return make_request(url, headers, method="PUT")
+
 
 def ml_model_hosting_approve_model(cmd, publisher=None, model=None, version=None, status=None):
     token = generate_token()
@@ -485,6 +484,7 @@ def ml_model_hosting_promote_to_prod_release_candidate(cmd, publisher=None, mode
 
     return make_request(url, headers, method="PUT")
 
+
 def ml_model_hosting_enable_marketplace_integration(cmd, publisher=None, file=None):
     token = generate_token()
     try:
@@ -544,7 +544,7 @@ def ml_model_hosting_attach_model_card(cmd, publisher=None, model=None, version=
     url = f"{base_url}/model-publisher-self-serve/publishers/{publisher}/models/{model}/model-card/applyModelCard?api-version={api_version}&version={version}"
     headers = {"Authorization": f"Bearer {token.token}",
                "Content-Type": "application/json"}
-    return make_request(url, headers, method = "POST", data={})
+    return make_request(url, headers, method="POST", data={})
 
 
 # Generate model card template
@@ -574,21 +574,23 @@ def ml_model_hosting_generate_model_card_template(cmd, model_card_dir=None):
         print("Model card template successfully created!")
     except requests.ConnectionError:
         module_logger.error("Network connection error, please retry")
-    except Exception as e:
-        module_logger.error(f"Unexpected error, please retry")
-
-    return
+    except Exception:  # pylint: disable=broad-except
+        module_logger.error("Unexpected error, please retry")
 
 # validate model card files
+
+
 def ml_model_hosting_validate_model_card_template(cmd, model_card_dir=None):
     cmd = [
         "asset", "validate",
         "--asset-path", model_card_dir,
     ]
     run_registry_mgmt_cmd(cmd)
-    return
+
 
 # apply model card tags & properties on given model
+
+
 def ml_model_hosting_apply_model_card_template(cmd, model_id=None, model_card_dir=None):
     print(f"Applying model card from {model_card_dir} to model {model_id}")
 
@@ -609,5 +611,3 @@ def ml_model_hosting_apply_model_card_template(cmd, model_id=None, model_card_di
         "--resource-group", registry_config["resource_group_name"]
     ]
     run_registry_mgmt_cmd(cmd)
-    return
-

@@ -502,16 +502,16 @@ def load_command_table(self, _):
     if private_features_enabled():
         with self.command_group("ml modelpublisher gpu-config", client_factory=cf_ml_cl, is_preview=True) as g:
             g.custom_command("create", "ml_model_hosting_create_config")
-            g.custom_command("show", "ml_model_hosting_show_config")
+            g.custom_show_command("show", "ml_model_hosting_show_config")
             g.custom_command("list", "ml_model_hosting_list_config")
         with self.command_group("ml modelpublisher plan", client_factory=cf_ml_cl, is_preview=True) as g:
             g.custom_command("create", "ml_model_hosting_create_plan")
-            g.custom_command("show", "ml_model_hosting_plan_config_show")
+            g.custom_show_command("show", "ml_model_hosting_plan_config_show")
             g.custom_command("list", "ml_model_hosting_plan_details_list")
             g.custom_command(
                 "update", "ml_model_hosting_plan_details_update_status")
         with self.command_group("ml modelpublisher", client_factory=cf_ml_cl, is_preview=True) as g:
-            g.custom_command("show", "ml_model_hosting_publisher_show")
+            g.custom_show_command("show", "ml_model_hosting_publisher_show")
             g.custom_command(
                 "update", "ml_model_hosting_update_publisher_details")
             g.custom_command("enable-marketplace-integration", "ml_model_hosting_enable_marketplace_integration")
@@ -520,13 +520,13 @@ def load_command_table(self, _):
                              "ml_model_hosting_set_registry")
         with self.command_group("ml modelpublisher model", client_factory=cf_ml_cl, is_preview=True) as g:
             g.custom_command("create", "ml_model_hosting_create_model")
-            g.custom_command("show", "ml_model_hosting_show_model")
+            g.custom_show_command("show", "ml_model_hosting_show_model")
             g.custom_command("list", "ml_model_hosting_list_model")
             g.custom_command("approval", "ml_model_hosting_approve_model")
         with self.command_group("ml modelpublisher release-candidate", client_factory=cf_ml_cl, is_preview=True) as g:
             g.custom_command(
                 "create", "ml_model_hosting_create_release_candidate")
-            g.custom_command("show", "ml_model_hosting_show_release_candidate")
+            g.custom_show_command("show", "ml_model_hosting_show_release_candidate")
             g.custom_command("list", "ml_model_hosting_list_release_candidate")
             g.custom_command("download-validation-result",
                              "ml_model_hosting_download_validation_result_release_candidate")
@@ -540,6 +540,5 @@ def load_command_table(self, _):
             g.custom_command("apply", "ml_model_hosting_apply_model_card_template")
         with self.command_group("ml modelpublisher model-card-internal", client_factory=cf_ml_cl, is_preview=True) as g:
             g.custom_command("update", "ml_model_hosting_update_model_card")
-            g.custom_command("show", "ml_model_hosting_get_model_card")
+            g.custom_show_command("show", "ml_model_hosting_get_model_card")
             g.custom_command("attach", "ml_model_hosting_attach_model_card")
-            pass

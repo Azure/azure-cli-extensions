@@ -231,3 +231,24 @@ def get_model_hosting_help():
         type: group
         short-summary: Used by Microsoft-PM's to add system tags to your model.
     """
+
+    helps[
+        "ml modelpublisher model-card-internal update"
+    ] = """
+        type: command
+        short-summary: Update system metadata on a model card from the specified YAML file.
+    """
+
+    helps[
+        "ml modelpublisher model-card-internal show"
+    ] = """
+        type: command
+        short-summary: Show the latest system metadata of a model card.
+    """
+
+    helps[
+        "ml modelpublisher model-card-internal attach"
+    ] = """
+        type: command
+        short-summary: Attach the model card system metadata to a specific model version.
+    """
