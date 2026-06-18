@@ -9,7 +9,7 @@ def add_model_hosting_file_param(c):
         options_list=["--file", "-f"],
         required=True,
         type=str,
-        help=f"Local path to the YAML file containing the configuration specification.",
+        help="Local path to the YAML file containing the configuration specification.",
     )
 
 
@@ -19,7 +19,7 @@ def add_model_param(c):
         options_list=["--model", "-m"],
         required=True,
         type=str,
-        help=f"Name of the model.",
+        help="Name of the model.",
     )
 
 
@@ -29,7 +29,7 @@ def add_publisher_param(c):
         options_list=["--publisher", "-p"],
         required=True,
         type=str,
-        help=f"Name of the publisher.",
+        help="Name of the publisher.",
     )
 
 
@@ -39,7 +39,7 @@ def add_location_param(c):
         options_list=["--location", "-l"],
         required=True,
         type=str,
-        help=f"Azure region for the gpu configuration.",
+        help="Azure region for the gpu configuration.",
     )
 
 
@@ -49,7 +49,7 @@ def add_transaction_id_param(c):
         options_list=["--transaction-id", "-t"],
         required=True,
         type=str,
-        help=f"Transaction id for the gpu configuration.",
+        help="Transaction id for the gpu configuration.",
     )
 
 
@@ -59,7 +59,7 @@ def add_size_param(c):
         options_list=["--size", "-s"],
         required=False,
         type=int,
-        help=f"Number of gpu configuration requests to display.",
+        help="Number of gpu configuration requests to display.",
     )
 
 
@@ -69,7 +69,7 @@ def add_page_param(c):
         options_list=["--page"],
         required=False,
         type=int,
-        help=f"Page number for pagination.",
+        help="Page number for pagination.",
     )
 
 
@@ -79,7 +79,7 @@ def add_display_name_param(c):
         options_list=["--name", "-n"],
         required=False,
         type=str,
-        help=f"Display name of publisher",
+        help="Display name of publisher",
     )
 
 
@@ -89,7 +89,7 @@ def add_description_param(c):
         options_list=["--description", "-d"],
         required=False,
         type=str,
-        help=f"Description of the publisher.",
+        help="Description of the publisher.",
     )
 
 
@@ -99,27 +99,27 @@ def add_website_param(c):
         options_list=["--website", "-w"],
         required=False,
         type=str,
-        help=f"Website of the publisher",
+        help="Website of the publisher",
     )
 
 
 def add_offer_id_param(c):
     c.argument(
         "offer_id",
-        options_list=["--offer-id", "-of"],
+        options_list=["--offer-id"],
         required=False,
         type=str,
-        help=f"Offer id of the plan",
+        help="Offer id of the plan",
     )
 
 
 def add_plan_id_param(c):
     c.argument(
         "plan_id",
-        options_list=["--plan-id", "-pl"],
+        options_list=["--plan-id"],
         required=False,
         type=str,
-        help=f"Plan id of the plan",
+        help="Plan id of the plan",
     )
 
 
@@ -129,8 +129,9 @@ def add_version_param(c):
         options_list=["--version", "-v"],
         required=True,
         type=str,
-        help=f"Version of the model.",
+        help="Version of the model.",
     )
+
 
 def add_status_param(c):
     c.argument(
@@ -138,55 +139,69 @@ def add_status_param(c):
         options_list=["--status", "-s"],
         required=True,
         type=str,
-        help=f"Model approval status.",
+        help="Model approval status.",
     )
+
+
+def add_request_status_param(c):
+    c.argument(
+        "status",
+        options_list=["--status"],
+        required=True,
+        type=str,
+        help="Requested status for the plan.",
+    )
+
 
 def add_validation_id_param(c):
     c.argument(
         "validation_id",
-        options_list=["--validation-id", "-vid"],
+        options_list=["--validation-id"],
         required=True,
         type=str,
-        help=f"Id of the validation run.",
+        help="Id of the validation run.",
     )
 
 
 def add_file_name_param(c):
     c.argument(
         "file_name",
-        options_list=["--file-name", "-fn"],
+        options_list=["--file-name"],
         required=False,
         type=str,
-        help=f"Name of the result file.",
+        help="Name of the result file.",
     )
 
 
 def add_target_path_param(c):
     c.argument(
         "result_path",
-        options_list=["--target-path", "-tp"],
+        options_list=["--target-path"],
         required=False,
         type=str,
-        help=f"Target path for the downloaded file.",
+        help="Target path for the downloaded file.",
     )
+
 
 def add_model_card_dir_param(c):
     c.argument(
         "model_card_dir",
-        options_list=["--model-card-dir", "-dir"],
+        options_list=["--model-card-dir"],
         required=True,
         type=str,
-        help=f"Path to the directory for model card configuration.",
+        help="Path to the directory for model card configuration.",
     )
+
 
 def add_model_id_param(c):
     c.argument(
         "model_id",
-        options_list=["--model-id", "-mid"],
+        options_list=["--model-id"],
         required=True,
         type=str,
-        help=f"ID of the model.",
+        help="ID of the model.",
     )
+
 
 def add_optional_model_hosting_file_param(c):
     c.argument(
@@ -194,7 +209,7 @@ def add_optional_model_hosting_file_param(c):
         options_list=["--file", "-f"],
         required=False,
         type=str,
-        help=f"[Depreciated] Local path to the YAML file containing the configuration specification.",
+        help="[Depreciated] Local path to the YAML file containing the configuration specification.",
     )
 
 
@@ -243,6 +258,7 @@ def load_model_hosting_params(self):
         add_publisher_param(c)
         add_location_param(c)
         add_plan_id_param(c)
+        add_request_status_param(c)
     with self.argument_context("ml modelpublisher model create") as c:
         add_publisher_param(c)
         add_model_param(c)

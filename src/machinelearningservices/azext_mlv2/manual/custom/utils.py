@@ -490,7 +490,7 @@ def _load_self_serve_config():
             config = json.load(config_file)
         return config
     except FileNotFoundError:
-        raise Exception(f"Configuration file not found at {config_path}")
+        raise Exception(f"Configuration file not found at {config_path}")  # pylint: disable=broad-exception-raised
 
 
 def _resolve_self_serve_target(location: str = None) -> Tuple[str, Dict]:
