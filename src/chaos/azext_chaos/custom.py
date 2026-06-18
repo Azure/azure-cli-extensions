@@ -645,7 +645,7 @@ _EVALUATION_MAX_ATTEMPTS = 3
 _EVALUATION_RETRY_INTERVAL_SECONDS = 120
 
 
-def setup(cmd, resource_group_name, workspace_name, location, scopes,  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals
+def setup(cmd, resource_group_name, workspace_name, scopes, location=None,  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals
           user_assigned=None, skip_permissions=False,
           skip_evaluation_wait=False, tags=None):
     """Stand up a ready-to-use Chaos Studio environment end to end.
@@ -655,6 +655,11 @@ def setup(cmd, resource_group_name, workspace_name, location, scopes,  # pylint:
     Reader role discovery requires on each scope, evaluate scenarios, and
     report the discovered scenarios plus suggested next commands.
 
+    ``--location`` is optional: when omitted it defaults to the resource
+    group's location if the group already exists. It is only required when the
+    resource group does not yet exist (setup creates it and has no other way to
+    choose a region).
+
     Assigning Reader is idempotent — an already-present assignment is a no-op
     (ARM reports ``RoleAssignmentExists``). Only when a *new* assignment is
     created this run does the evaluate step wait out Azure Resource Graph
@@ -662,6 +667,9 @@ def setup(cmd, resource_group_name, workspace_name, location, scopes,  # pylint:
     a single attempt (e.g. in CI).
     """
     # 1. Resource group ──────────────────────────────────────────────────
+    # Resolve the location before touching the RG: use --location if given,
+    # else the existing RG's location; error only if neither is available.
+    location = _resolve_setup_location(cmd, resource_group_name, location)
     _ensure_resource_group(cmd, resource_group_name, location)
 
     # 2. Workspace ───────────────────────────────────────────────────────
@@ -726,8 +734,8 @@ def setup(cmd, resource_group_name, workspace_name, location, scopes,  # pylint:
     }
 
 
-def _ensure_resource_group(cmd, resource_group_name, location):
-    """Create the resource group if it does not already exist."""
+def _get_resource_group(cmd, resource_group_name):
+    """GET the resource group; return its JSON body, or None if it does not exist."""
     from azure.cli.core.commands.client_factory import get_subscription_id
     sub = get_subscription_id(cmd.cli_ctx)
     rg_url = (
@@ -735,14 +743,55 @@ def _ensure_resource_group(cmd, resource_group_name, location):
         f"?api-version={_RESOURCE_GROUP_API_VERSION}"
     )
     try:
-        existing = send_raw_request(cmd.cli_ctx, "GET", rg_url)
-        if existing.status_code == 200:
-            logger.warning(
-                "Using existing resource group '%s'.", resource_group_name,
-            )
-            return
+        response = send_raw_request(cmd.cli_ctx, "GET", rg_url)
     except Exception:  # pylint: disable=broad-except
-        pass  # GET raises on 404 — fall through to create.
+        return None  # GET raises on 404
+    if response.status_code != 200 or not response.text:
+        return None
+    try:
+        return response.json()
+    except Exception:  # pylint: disable=broad-except
+        return None
+
+
+def _resolve_setup_location(cmd, resource_group_name, location):
+    """Resolve the location to use, defaulting to the existing RG's location.
+
+    ``--location`` is optional. When omitted we fall back to the resource
+    group's location if the group already exists. If the group does not exist
+    (setup would create it) we cannot pick a region, so we ask the user to
+    supply ``--location`` explicitly.
+    """
+    if location:
+        return location
+    existing = _get_resource_group(cmd, resource_group_name)
+    rg_location = (existing or {}).get("location")
+    if rg_location:
+        logger.warning(
+            "Using location '%s' from existing resource group '%s'.",
+            rg_location, resource_group_name,
+        )
+        return rg_location
+    raise CLIError(
+        f"--location/-l is required: resource group '{resource_group_name}' "
+        "does not exist, so setup must create it and has no region to default "
+        "to. Re-run with --location, or pre-create the resource group."
+    )
+
+
+def _ensure_resource_group(cmd, resource_group_name, location):
+    """Create the resource group if it does not already exist."""
+    from azure.cli.core.commands.client_factory import get_subscription_id
+    if _get_resource_group(cmd, resource_group_name) is not None:
+        logger.warning(
+            "Using existing resource group '%s'.", resource_group_name,
+        )
+        return
+    sub = get_subscription_id(cmd.cli_ctx)
+    rg_url = (
+        f"/subscriptions/{sub}/resourcegroups/{resource_group_name}"
+        f"?api-version={_RESOURCE_GROUP_API_VERSION}"
+    )
     logger.warning(
         "Creating resource group '%s' in location '%s'.",
         resource_group_name, location,

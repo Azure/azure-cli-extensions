@@ -1415,7 +1415,7 @@ class TestSetupOrchestration(unittest.TestCase):
 
             scopes = ["/subscriptions/s/resourceGroups/rg"]
             result = setup(
-                _make_cmd(), 'rg', 'ws', 'westus2', scopes,
+                _make_cmd(), 'rg', 'ws', scopes, location='westus2',
             )
 
             m_rg.assert_called_once()
@@ -1441,8 +1441,9 @@ class TestSetupOrchestration(unittest.TestCase):
             m_list.return_value = []
 
             result = setup(
-                _make_cmd(), 'rg', 'ws', 'westus2',
+                _make_cmd(), 'rg', 'ws',
                 ["/subscriptions/s/resourceGroups/rg"],
+                location='westus2',
                 skip_permissions=True,
             )
 
@@ -1467,8 +1468,9 @@ class TestSetupOrchestration(unittest.TestCase):
             m_eval.return_value = True
             m_list.return_value = []
 
-            setup(_make_cmd(), 'rg', 'ws', 'westus2',
-                  ["/subscriptions/s/resourceGroups/rg"])
+            setup(_make_cmd(), 'rg', 'ws',
+                  ["/subscriptions/s/resourceGroups/rg"],
+                  location='westus2')
 
             self.assertFalse(
                 m_eval.call_args.kwargs.get("wait_for_propagation")
@@ -1486,8 +1488,9 @@ class TestSetupOrchestration(unittest.TestCase):
             m_eval.return_value = True
             m_list.return_value = []
 
-            setup(_make_cmd(), 'rg', 'ws', 'westus2',
+            setup(_make_cmd(), 'rg', 'ws',
                   ["/subscriptions/s/resourceGroups/rg"],
+                  location='westus2',
                   skip_evaluation_wait=True)
 
             # New assignment, but the user opted out of waiting.
@@ -1509,10 +1512,36 @@ class TestSetupOrchestration(unittest.TestCase):
 
             scopes = ["/subscriptions/s/resourceGroups/rg1",
                       "/subscriptions/s/resourceGroups/rg2"]
-            setup(_make_cmd(), 'rg', 'ws', 'westus2', scopes)
+            setup(_make_cmd(), 'rg', 'ws', scopes, location='westus2')
 
             # 2 principals x 2 scopes = 4 assignments.
             self.assertEqual(m_role.call_count, 4)
+
+
+class TestResolveSetupLocation(unittest.TestCase):
+    """F-location: --location is optional only when the RG already exists."""
+
+    @patch('azext_chaos.custom._get_resource_group')
+    def test_explicit_location_wins(self, mock_get_rg):
+        from azext_chaos.custom import _resolve_setup_location
+        loc = _resolve_setup_location(_make_cmd(), 'rg', 'westus2')
+        self.assertEqual(loc, 'westus2')
+        mock_get_rg.assert_not_called()  # no RG lookup needed
+
+    @patch('azext_chaos.custom._get_resource_group')
+    def test_defaults_to_existing_rg_location(self, mock_get_rg):
+        from azext_chaos.custom import _resolve_setup_location
+        mock_get_rg.return_value = {"location": "eastus"}
+        loc = _resolve_setup_location(_make_cmd(), 'rg', None)
+        self.assertEqual(loc, 'eastus')
+
+    @patch('azext_chaos.custom._get_resource_group')
+    def test_raises_when_rg_missing_and_no_location(self, mock_get_rg):
+        from azext_chaos.custom import _resolve_setup_location
+        mock_get_rg.return_value = None  # RG does not exist
+        with self.assertRaises(CLIError) as ctx:
+            _resolve_setup_location(_make_cmd(), 'rg', None)
+        self.assertIn('--location', str(ctx.exception))
 
 
 class TestEvaluateScenariosWorkflow(unittest.TestCase):

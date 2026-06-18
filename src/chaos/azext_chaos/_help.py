@@ -72,7 +72,11 @@ long-summary: |
     First-day-experience command that orchestrates the full bootstrap workflow
     so you do not have to run the individual commands yourself:
 
-      1. Creates the resource group if it does not already exist.
+      1. Creates the resource group if it does not already exist. If the group
+         already exists it is reused, and '--location' is optional (it defaults
+         to the group's location). If the group does not exist, '--location' is
+         required because setup creates the group and has no region to default
+         to.
       2. Creates the workspace with a managed identity (user-assigned if
          '--user-assigned' is supplied, otherwise a system-assigned identity).
       3. Grants that identity the built-in 'Reader' role on each '--scopes'

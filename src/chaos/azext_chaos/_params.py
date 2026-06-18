@@ -25,8 +25,11 @@ def load_arguments(self, _):
         c.argument(
             'location',
             arg_type=get_location_type(self.cli_ctx),
-            help='Location for the workspace (and the resource group, if it '
-                 'is created).',
+            help='Location for the workspace. Optional only when the '
+                 'resource group already exists (defaults to the resource '
+                 "group's location). Required when the resource group does "
+                 'not exist, because setup creates it and has no region to '
+                 'default to.',
         )
         c.argument(
             'scopes',
