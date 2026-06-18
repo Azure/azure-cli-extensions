@@ -115,60 +115,62 @@ def make_request(url, headers, method="GET", data=None, params=None, stream=Fals
                 user_message, correlation_id)
             raise AzureInternalError(user_message)
 
+    if response.status_code == 400:
+        try:
+            error_data = response.json()
+            error_message = error_data.get('title', 'Invalid request')
+            error_details = error_data.get('errors', '')
+        except ValueError:
+            module_logger.debug(
+                f"Invalid JSON in 400 response: {response.text[:200]}...")
+            error_message = "Bad request"
+            error_details = "The request was invalid, but error details are not available."
+
+        user_message = f"{error_message}"
+        if error_details:
+            user_message += f"\nDetails: {error_details}"
+        user_message += "\nPlease check your input and try again."
+        user_message = append_correlation_id_message(
+            user_message, correlation_id, "assistance")
+        module_logger.warning(user_message)
+        raise BadRequestError(user_message)
+
+    if response.status_code == 403:
+        user_message = ("Access denied. You don't have permission to perform this action.\n"
+                        "Please contact your administrator or Microsoft support for access.")
+        user_message = append_correlation_id_message(
+            user_message, correlation_id, "reference")
+        module_logger.warning(user_message)
+        raise ForbiddenError(user_message)
+
+    if response.status_code == 404:
+        user_message = response.text.strip() or "The requested resource was not found."
+        user_message = append_correlation_id_message(
+            user_message, correlation_id, "reference")
+        module_logger.warning(user_message)
+        raise ResourceNotFoundError(user_message)
+
     if 400 <= response.status_code < 500:
-        if response.status_code == 400:
-            try:
-                error_data = response.json()
-                error_message = error_data.get('title', 'Invalid request')
-                error_details = error_data.get('errors', '')
-            except ValueError:
-                module_logger.debug(
-                    f"Invalid JSON in 400 response: {response.text[:200]}...")
-                error_message = "Bad request"
-                error_details = "The request was invalid, but error details are not available."
+        user_message = f"Client error occurred (Status: {response.status_code})."
+        user_message = append_correlation_id_message(
+            user_message, correlation_id, "assistance")
+        module_logger.warning(user_message)
+        raise BadRequestError(user_message)
 
-            user_message = f"{error_message}"
-            if error_details:
-                user_message += f"\nDetails: {error_details}"
-            user_message += "\nPlease check your input and try again."
-            user_message = append_correlation_id_message(
-                user_message, correlation_id, "assistance")
-
-            module_logger.warning(user_message)
-
-        elif response.status_code == 403:
-            user_message = ("Access denied. You don't have permission to perform this action.\n"
-                            "Please contact your administrator or Microsoft support for access.")
-            user_message = append_correlation_id_message(
-                user_message, correlation_id, "reference")
-            module_logger.warning(user_message)
-
-        elif response.status_code == 404:
-            user_message = response.text.strip()
-            module_logger.warning(user_message)
-            return response
-
-        else:
-            user_message = f"Client error occurred (Status: {response.status_code})."
-            user_message = append_correlation_id_message(
-                user_message, correlation_id, "assistance")
-            module_logger.warning(user_message)
-
-    elif 500 <= response.status_code < 600:
+    if 500 <= response.status_code < 600:
         user_message = f"Server error occurred (Status: {response.status_code})."
         user_message = append_correlation_id_message(
             user_message, correlation_id, "persist")
         module_logger.error(user_message)
         raise AzureInternalError(user_message)
 
-    else:
-        user_message = f"An unexpected error occurred (Status: {response.status_code})."
-        user_message = append_correlation_id_message(
-            user_message, correlation_id)
-        module_logger.error(user_message)
-        module_logger.debug(
-            f"Unexpected error - Status: {response.status_code}, Response: {response.text}, Correlation ID: {correlation_id}")
-        raise AzureInternalError(user_message)
+    user_message = f"An unexpected error occurred (Status: {response.status_code})."
+    user_message = append_correlation_id_message(
+        user_message, correlation_id)
+    module_logger.error(user_message)
+    module_logger.debug(
+        f"Unexpected error - Status: {response.status_code}, Response: {response.text}, Correlation ID: {correlation_id}")
+    raise AzureInternalError(user_message)
 
 
 def _download_file_from_response(response, file_name=None, result_path=None, file_type_description="file"):
@@ -190,6 +192,11 @@ def _download_file_from_response(response, file_name=None, result_path=None, fil
         filename_match = re.search(r'filename=([^;]+)', content_disp)
         if filename_match:
             output_filename = filename_match.group(1).strip('"\'')
+
+    if not output_filename:
+        raise BadRequestError(
+            "Could not determine the output file name from the server response. "
+            "Please provide one explicitly with --file-name.")
 
     output_dir = result_path if result_path else os.getcwd()
     file_path = os.path.join(output_dir, output_filename)
@@ -218,7 +225,7 @@ def ml_model_hosting_create_config(cmd, publisher=None, model=None, file=None):
     validate_config_file(gpu_config)
 
     api_version = '2024-10-31'
-    base_url = get_self_serve_base_url()
+    base_url = get_self_serve_base_url(location=gpu_config.get('location'))
     url = f"{base_url}/model-publisher-self-serve/publishers/{publisher}/models/{model}/gpu-config?api-version={api_version}"
     headers = {"Authorization": f"Bearer {token.token}",
                "Content-Type": "application/json"}
@@ -230,7 +237,7 @@ def ml_model_hosting_create_config(cmd, publisher=None, model=None, file=None):
 def ml_model_hosting_show_config(cmd, publisher=None, location=None, model=None, transaction_id=None):
     token = generate_token()
     api_version = '2024-10-31'
-    base_url = get_self_serve_base_url()
+    base_url = get_self_serve_base_url(location=location)
     url = f"{base_url}/model-publisher-self-serve/publishers/{publisher}/models/{model}/gpu-config/{transaction_id}?api-version={api_version}"
     headers = {"Authorization": f"Bearer {token.token}",
                "Content-Type": "application/json"}
@@ -241,7 +248,7 @@ def ml_model_hosting_show_config(cmd, publisher=None, location=None, model=None,
 def ml_model_hosting_list_config(cmd, publisher=None, location=None, model=None, size=None, page=None):
     token = generate_token()
     api_version = '2024-10-31'
-    base_url = get_self_serve_base_url()
+    base_url = get_self_serve_base_url(location=location)
     url = f"{base_url}/model-publisher-self-serve/publishers/{publisher}/models/{model}/gpu-config"
     params = {"api-version": api_version,
               "currentPage": page, "pageSize": size}
@@ -322,7 +329,7 @@ def ml_model_hosting_create_plan(cmd, publisher=None, model=None, file=None):
 def ml_model_hosting_plan_details_list(cmd, publisher=None, location=None, model=None):
     token = generate_token()
     api_version = '2024-12-31'
-    base_url = get_self_serve_base_url()
+    base_url = get_self_serve_base_url(location=location)
     url = f"{base_url}/model-publisher-self-serve/publishers/{publisher}/models/{model}/plan-details?api-version={api_version}"
     headers = {"Authorization": f"Bearer {token.token}",
                "Content-Type": "application/json"}
@@ -333,7 +340,7 @@ def ml_model_hosting_plan_details_list(cmd, publisher=None, location=None, model
 def ml_model_hosting_plan_config_show(cmd, publisher=None, location=None, model=None, plan_id=None, offer_id=None):
     token = generate_token()
     api_version = '2024-12-31'
-    base_url = get_self_serve_base_url()
+    base_url = get_self_serve_base_url(location=location)
     plan_details_url = f"{base_url}/model-publisher-self-serve/publishers/{publisher}/models/{model}/plan-details?api-version={api_version}"
     url = f"{plan_details_url}&offerId={offer_id}&planId={plan_id}" if offer_id and plan_id else f"{plan_details_url}&offerId={offer_id}" if offer_id else f"{plan_details_url}&planId={plan_id}" if plan_id else plan_details_url
     headers = {"Authorization": f"Bearer {token.token}",
@@ -345,7 +352,7 @@ def ml_model_hosting_plan_config_show(cmd, publisher=None, location=None, model=
 def ml_model_hosting_plan_details_update_status(cmd, publisher=None, location=None, model=None, plan_id=None, status=None):
     token = generate_token()
     api_version = '2024-12-31'
-    base_url = get_self_serve_base_url()
+    base_url = get_self_serve_base_url(location=location)
     url = f"{base_url}/model-publisher-self-serve/publishers/{publisher}/models/{model}/plan-details/requestStatus?api-version={api_version}&planId={plan_id}"
     parameters = {"requestedStatus": status}
     payload = json.dumps(parameters)
@@ -359,7 +366,7 @@ def ml_model_hosting_create_model(cmd, publisher=None, model=None, file=None):
     token = generate_token()
     if (file is not None):
         raise BadRequestError(
-            "File param is depreciated, please rerun command without file parameter")
+            "File param is deprecated, please rerun command without file parameter")
 
     api_version = '2025-01-31'
     base_url = get_self_serve_base_url()
@@ -544,7 +551,7 @@ def ml_model_hosting_attach_model_card(cmd, publisher=None, model=None, version=
     url = f"{base_url}/model-publisher-self-serve/publishers/{publisher}/models/{model}/model-card/applyModelCard?api-version={api_version}&version={version}"
     headers = {"Authorization": f"Bearer {token.token}",
                "Content-Type": "application/json"}
-    return make_request(url, headers, method="POST", data={})
+    return make_request(url, headers, method="POST", data=json.dumps({}))
 
 
 # Generate model card template
