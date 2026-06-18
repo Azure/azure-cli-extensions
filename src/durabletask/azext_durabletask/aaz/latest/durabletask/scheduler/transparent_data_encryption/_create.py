@@ -12,19 +12,20 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "durabletask taskhub create",
+    "durabletask scheduler transparent-data-encryption create",
+    is_preview=True,
 )
 class Create(AAZCommand):
-    """Create a Task Hub
+    """Create a Transparent Data Encryption
 
-    :example: Create a taskhub in a scheduler
-        az durabletask taskhub create --resource-group testrg --scheduler-name testscheduler --name testtaskhub
+    :example: Configure Transparent Data Encryption
+        az durabletask scheduler transparent-data-encryption create --resource-group rgdurabletask --scheduler-name testscheduler --key-source CustomerManaged --key-vault-key-uri https://myencryption.vault.azure.net/keys/encryptionKey
     """
 
     _aaz_info = {
         "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.durabletask/schedulers/{}/taskhubs/{}", "2026-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.durabletask/schedulers/{}/transparentdataencryptions/default", "2026-05-01-preview"],
         ]
     }
 
@@ -49,16 +50,8 @@ class Create(AAZCommand):
             required=True,
         )
         _args_schema.scheduler_name = AAZStrArg(
-            options=["-s", "--scheduler-name"],
+            options=["--scheduler-name"],
             help="The name of the Scheduler",
-            required=True,
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-]{3,64}$",
-            ),
-        )
-        _args_schema.name = AAZStrArg(
-            options=["-n", "--name"],
-            help="The name of the TaskHub",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,64}$",
@@ -68,19 +61,23 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.capabilities = AAZListArg(
-            options=["--capabilities"],
+        _args_schema.key_source = AAZStrArg(
+            options=["--key-source"],
             arg_group="Properties",
-            help="A set of Task Hub capabilities that can be enabled or disabled for a Task Hub",
+            help="The key source for the transparent data encryption",
+            default="CustomerManaged",
+            enum={"CustomerManaged": "CustomerManaged", "MicrosoftManaged": "MicrosoftManaged"},
         )
-
-        capabilities = cls._args_schema.capabilities
-        capabilities.Element = AAZStrArg()
+        _args_schema.key_vault_key_uri = AAZStrArg(
+            options=["--key-vault-key-uri"],
+            arg_group="Properties",
+            help="The URI of the key in Key Vault to be used for transparent data encryption",
+        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.TaskHubsCreateOrUpdate(ctx=self.ctx)()
+        yield self.TransparentDataEncryptionsCreateOrReplace(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -95,7 +92,7 @@ class Create(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class TaskHubsCreateOrUpdate(AAZHttpOperation):
+    class TransparentDataEncryptionsCreateOrReplace(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -125,7 +122,7 @@ class Create(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DurableTask/schedulers/{schedulerName}/taskHubs/{taskHubName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DurableTask/schedulers/{schedulerName}/transparentDataEncryptions/default",
                 **self.url_parameters
             )
 
@@ -150,10 +147,6 @@ class Create(AAZCommand):
                 ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "taskHubName", self.ctx.args.name,
                     required=True,
                 ),
             }
@@ -192,11 +185,8 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("capabilities", AAZListType, ".capabilities")
-
-            capabilities = _builder.get(".properties.capabilities")
-            if capabilities is not None:
-                capabilities.set_elements(AAZStrType, ".")
+                properties.set_prop("keySource", AAZStrType, ".key_source", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("keyVaultKeyUri", AAZStrType, ".key_vault_key_uri")
 
             return self.serialize_content(_content_value)
 
@@ -234,18 +224,17 @@ class Create(AAZCommand):
             )
 
             properties = cls._schema_on_200_201.properties
-            properties.capabilities = AAZListType()
-            properties.dashboard_url = AAZStrType(
-                serialized_name="dashboardUrl",
-                flags={"read_only": True},
+            properties.key_source = AAZStrType(
+                serialized_name="keySource",
+                flags={"required": True},
+            )
+            properties.key_vault_key_uri = AAZStrType(
+                serialized_name="keyVaultKeyUri",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-
-            capabilities = cls._schema_on_200_201.properties.capabilities
-            capabilities.Element = AAZStrType()
 
             system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(

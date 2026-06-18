@@ -12,15 +12,17 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "durabletask taskhub wait",
+    "durabletask scheduler transparent-data-encryption show",
+    is_preview=True,
 )
-class Wait(AAZWaitCommand):
-    """Place the CLI in a waiting state until a condition is met.
+class Show(AAZCommand):
+    """Get a Transparent Data Encryption
     """
 
     _aaz_info = {
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.durabletask/schedulers/{}/taskhubs/{}", "2026-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.durabletask/schedulers/{}/transparentdataencryptions/default", "2026-05-01-preview"],
         ]
     }
 
@@ -44,19 +46,10 @@ class Wait(AAZWaitCommand):
             required=True,
         )
         _args_schema.scheduler_name = AAZStrArg(
-            options=["-s", "--scheduler-name"],
+            options=["--scheduler-name"],
             help="The name of the Scheduler",
             required=True,
             id_part="name",
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-]{3,64}$",
-            ),
-        )
-        _args_schema.name = AAZStrArg(
-            options=["-n", "--name"],
-            help="The name of the TaskHub",
-            required=True,
-            id_part="child_name_1",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,64}$",
             ),
@@ -65,7 +58,7 @@ class Wait(AAZWaitCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.TaskHubsGet(ctx=self.ctx)()
+        self.TransparentDataEncryptionsGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -77,10 +70,10 @@ class Wait(AAZWaitCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class TaskHubsGet(AAZHttpOperation):
+    class TransparentDataEncryptionsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -94,7 +87,7 @@ class Wait(AAZWaitCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DurableTask/schedulers/{schedulerName}/taskHubs/{taskHubName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DurableTask/schedulers/{schedulerName}/transparentDataEncryptions/default",
                 **self.url_parameters
             )
 
@@ -119,10 +112,6 @@ class Wait(AAZWaitCommand):
                 ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "taskHubName", self.ctx.args.name,
                     required=True,
                 ),
             }
@@ -181,18 +170,17 @@ class Wait(AAZWaitCommand):
             )
 
             properties = cls._schema_on_200.properties
-            properties.capabilities = AAZListType()
-            properties.dashboard_url = AAZStrType(
-                serialized_name="dashboardUrl",
-                flags={"read_only": True},
+            properties.key_source = AAZStrType(
+                serialized_name="keySource",
+                flags={"required": True},
+            )
+            properties.key_vault_key_uri = AAZStrType(
+                serialized_name="keyVaultKeyUri",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-
-            capabilities = cls._schema_on_200.properties.capabilities
-            capabilities.Element = AAZStrType()
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
@@ -217,8 +205,8 @@ class Wait(AAZWaitCommand):
             return cls._schema_on_200
 
 
-class _WaitHelper:
-    """Helper class for Wait"""
+class _ShowHelper:
+    """Helper class for Show"""
 
 
-__all__ = ["Wait"]
+__all__ = ["Show"]
