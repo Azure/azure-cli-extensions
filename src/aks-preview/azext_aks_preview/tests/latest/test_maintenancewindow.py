@@ -16,6 +16,13 @@ from azure.cli.core.azclierror import (
     MutuallyExclusiveArgumentError,
     RequiredArgumentMissingError,
 )
+from azure.cli.testsdk import ScenarioTest
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
+
+from azext_aks_preview.tests.latest.recording_processors import KeyReplacer
+from azext_aks_preview.tests.latest.custom_preparers import (
+    AKSCustomResourceGroupPreparer,
+)
 
 
 def _base_raw_parameters():
@@ -463,6 +470,105 @@ class TestAksMaintenancewindowCreateConfigFile(unittest.TestCase):
                     tags=None, config_file="/tmp/fake.json", no_wait=False,
                 )
         self.assertEqual(self._put_body()["location"], "northeurope")
+
+
+class AksMaintenanceWindowScenarioTest(ScenarioTest):
+    """End-to-end recorded scenario for the standalone MaintenanceWindow peer
+    resource: create -> show -> update -> list -> delete -> show(404).
+
+    The MaintenanceWindow resource type is served only in regions where the
+    Microsoft.ContainerService/AKSSharedMaintenanceWindowPreview feature is
+    enabled (preview API 2026-04-02-preview). The cassette was recorded against
+    a subscription with that feature registered; on playback the recorded
+    interactions are replayed so no live feature/region dependency is needed.
+    """
+
+    def __init__(self, method_name):
+        super(AksMaintenanceWindowScenarioTest, self).__init__(
+            method_name,
+            recording_processors=[KeyReplacer()],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17,
+        name_prefix="clitest",
+        location="centraluseuap",
+    )
+    def test_aks_maintenancewindow_crud(self, resource_group, resource_group_location):
+        mw_name = self.create_random_name("cliakmw", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "mw_name": mw_name,
+                "location": resource_group_location,
+            }
+        )
+
+        # create: a weekly Saturday window.
+        create_cmd = (
+            "aks maintenancewindow create --resource-group={resource_group} "
+            "--name={mw_name} --location={location} --schedule-type Weekly "
+            "--day-of-week Saturday --interval-weeks 1 --start-time 02:00 "
+            "--duration 8 --utc-offset=+00:00 --tags env=test --no-wait"
+        )
+        self.cmd(create_cmd)
+
+        # show: the created window round-trips with the schedule we sent.
+        show_cmd = (
+            "aks maintenancewindow show --resource-group={resource_group} "
+            "--name={mw_name} -o json"
+        )
+        self.cmd(
+            show_cmd,
+            checks=[
+                self.check("name", "{mw_name}"),
+                self.check("properties.provisioningState", "Succeeded"),
+                self.check("properties.schedule.weekly.dayOfWeek", "Saturday"),
+                self.check("properties.schedule.weekly.intervalWeeks", 1),
+                self.check("properties.startTime", "02:00"),
+                self.check("properties.durationHours", 8),
+                self.check("tags.env", "test"),
+            ],
+        )
+
+        # update: change the duration only; existing schedule/tags preserved.
+        update_cmd = (
+            "aks maintenancewindow update --resource-group={resource_group} "
+            "--name={mw_name} --duration 6 --no-wait"
+        )
+        self.cmd(update_cmd)
+
+        self.cmd(
+            show_cmd,
+            checks=[
+                self.check("properties.durationHours", 6),
+                self.check("properties.schedule.weekly.dayOfWeek", "Saturday"),
+                self.check("tags.env", "test"),
+            ],
+        )
+
+        # list (by resource group): the window is present.
+        list_cmd = (
+            "aks maintenancewindow list --resource-group={resource_group} -o json"
+        )
+        self.cmd(
+            list_cmd,
+            checks=[
+                self.check("length(@)", 1),
+                self.check("[0].name", "{mw_name}"),
+            ],
+        )
+
+        # delete.
+        delete_cmd = (
+            "aks maintenancewindow delete --resource-group={resource_group} "
+            "--name={mw_name} --yes --no-wait"
+        )
+        self.cmd(delete_cmd)
+
+        # show after delete: not found.
+        self.cmd(show_cmd, expect_failure=True)
 
 
 if __name__ == "__main__":

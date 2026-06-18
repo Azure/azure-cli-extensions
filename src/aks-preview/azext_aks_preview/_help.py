@@ -2052,23 +2052,23 @@ helps['aks maintenancewindow create'] = """
           text: |
             az aks maintenancewindow create -g rg-maintenance -n production-weekends -l eastus \\
               --schedule-type Weekly --day-of-week Saturday --interval-weeks 1 \\
-              --start-time "02:00" --duration 8 --utc-offset "-07:00" \\
+              --start-time "02:00" --duration 8 --utc-offset=-07:00 \\
               --tags environment=production
         - name: Create a daily window every 2 days from a specific start date.
           text: |
             az aks maintenancewindow create -g rg-maintenance -n nightly -l eastus \\
               --schedule-type Daily --interval-days 2 \\
-              --start-date 2026-06-01 --start-time "00:00" --duration 6 --utc-offset "-08:00"
+              --start-date 2026-06-01 --start-time "00:00" --duration 6 --utc-offset=-08:00
         - name: Create an absolute monthly window on the 15th.
           text: |
             az aks maintenancewindow create -g rg-maintenance -n monthly-15 -l eastus \\
               --schedule-type AbsoluteMonthly --day-of-month 15 --interval-months 1 \\
-              --start-time "09:30" --duration 6 --utc-offset "+05:30"
+              --start-time "09:30" --duration 6 --utc-offset=+05:30
         - name: Create a relative monthly window on the last Friday.
           text: |
             az aks maintenancewindow create -g rg-maintenance -n last-friday -l eastus \\
               --schedule-type RelativeMonthly --day-of-week Friday --week-index Last --interval-months 1 \\
-              --start-time "01:00" --duration 4 --utc-offset "+00:00"
+              --start-time "01:00" --duration 4 --utc-offset=+00:00
         - name: Create a weekly window with blackout dates via a config file.
           text: |
             az aks maintenancewindow create -g rg-maintenance -n weekly-with-holidays -l eastus \\
@@ -2138,6 +2138,17 @@ helps['aks maintenancewindow update'] = """
                   "notAllowedDates": [ { "start": "2026-12-23", "end": "2027-01-05" } ]
                 }
               }
+"""
+
+helps['aks maintenancewindow wait'] = """
+    type: command
+    short-summary: Wait for a MaintenanceWindow to reach a desired state.
+    long-summary: |
+        If an operation on a MaintenanceWindow was interrupted or was started
+        with `--no-wait`, use this command to wait for it to complete.
+    examples:
+        - name: Wait for a MaintenanceWindow to be created.
+          text: az aks maintenancewindow wait -g rg-maintenance -n production-weekends --created
 """
 
 helps['aks namespace'] = """
