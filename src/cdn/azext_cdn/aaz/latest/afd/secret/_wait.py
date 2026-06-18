@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/secrets/{}", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/secrets/{}", "2025-09-01-preview"],
         ]
     }
 
@@ -131,7 +131,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2025-09-01-preview",
                     required=True,
                 ),
             }
@@ -226,9 +226,7 @@ class Wait(AAZWaitCommand):
             )
 
             subject_alternative_names = cls._schema_on_200.properties.parameters.discriminate_by("type", "AzureFirstPartyManagedCertificate").subject_alternative_names
-            subject_alternative_names.Element = AAZStrType(
-                flags={"read_only": True},
-            )
+            subject_alternative_names.Element = AAZStrType()
 
             disc_customer_certificate = cls._schema_on_200.properties.parameters.discriminate_by("type", "CustomerCertificate")
             disc_customer_certificate.certificate_authority = AAZStrType(
@@ -252,6 +250,7 @@ class Wait(AAZWaitCommand):
             )
             disc_customer_certificate.subject_alternative_names = AAZListType(
                 serialized_name="subjectAlternativeNames",
+                flags={"read_only": True},
             )
             disc_customer_certificate.thumbprint = AAZStrType(
                 flags={"read_only": True},
@@ -261,9 +260,7 @@ class Wait(AAZWaitCommand):
             )
 
             subject_alternative_names = cls._schema_on_200.properties.parameters.discriminate_by("type", "CustomerCertificate").subject_alternative_names
-            subject_alternative_names.Element = AAZStrType(
-                flags={"read_only": True},
-            )
+            subject_alternative_names.Element = AAZStrType()
 
             disc_managed_certificate = cls._schema_on_200.properties.parameters.discriminate_by("type", "ManagedCertificate")
             disc_managed_certificate.expiration_date = AAZStrType(
@@ -272,6 +269,21 @@ class Wait(AAZWaitCommand):
             )
             disc_managed_certificate.subject = AAZStrType(
                 flags={"read_only": True},
+            )
+
+            disc_mtls_certificate_chain = cls._schema_on_200.properties.parameters.discriminate_by("type", "MtlsCertificateChain")
+            disc_mtls_certificate_chain.expiration_date = AAZStrType(
+                serialized_name="expirationDate",
+                flags={"read_only": True},
+            )
+            disc_mtls_certificate_chain.secret_source = AAZObjectType(
+                serialized_name="secretSource",
+                flags={"required": True},
+            )
+            _WaitHelper._build_schema_resource_reference_read(disc_mtls_certificate_chain.secret_source)
+            disc_mtls_certificate_chain.secret_version = AAZStrType(
+                serialized_name="secretVersion",
+                flags={"required": True},
             )
 
             disc_url_signing_key = cls._schema_on_200.properties.parameters.discriminate_by("type", "UrlSigningKey")

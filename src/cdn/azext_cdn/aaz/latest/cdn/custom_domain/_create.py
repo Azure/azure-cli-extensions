@@ -17,14 +17,14 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Create a new custom domain within an endpoint.
 
-    :example: Create a custom domain with resource name customdomain1 within an endpoint and profile.
-        az cdn custom-domain create -g group --endpoint-name endpoint --profile-name profile -n customdomain1 --hostname www.example.com
+    :example: CustomDomains_Create
+        az cdn custom-domain create --resource-group RG --profile-name profile1 --endpoint-name endpoint1 --custom-domain-name www-someDomain-net --hostname www.someDomain.net
     """
 
     _aaz_info = {
-        "version": "2025-06-01",
+        "version": "2025-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/endpoints/{}/customdomains/{}", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/endpoints/{}/customdomains/{}", "2025-09-01-preview"],
         ]
     }
 
@@ -168,7 +168,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2025-09-01-preview",
                     required=True,
                 ),
             }

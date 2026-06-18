@@ -56,7 +56,8 @@ datasource_map = {
     "AzureDatabaseForPostgreSQL": "Microsoft.DBforPostgreSQL/servers/databases",
     "AzureKubernetesService": "Microsoft.ContainerService/managedClusters",
     "AzureDatabaseForPostgreSQLFlexibleServer": "Microsoft.DBforPostgreSQL/flexibleServers",
-    "AzureDatabaseForMySQL": "Microsoft.DBforMySQL/flexibleServers"
+    "AzureDatabaseForMySQL": "Microsoft.DBforMySQL/flexibleServers",
+    "AzureCosmosDB": "Microsoft.DocumentDB/databaseAccounts"
 }
 
 # This is ideally temporary, as Backup Vault contains secondary region information. But in some cases
@@ -1001,6 +1002,8 @@ def get_help_word_from_permission_type(permission_type, datasource_type):
             helptext_dsname = "Postgres flexible server"
         if datasource_type == 'AzureDatabaseForMySQL':
             helptext_dsname = "MySQL server"
+        if datasource_type == 'AzureCosmosDB':
+            helptext_dsname = "Cosmos DB account"
 
         return helptext_dsname
 
@@ -1107,7 +1110,14 @@ def convert_dict_keys_snake_to_camel(dictionary):
     return new_dictionary
 
 
+_SNAKE_TO_CAMEL_OVERRIDES = {
+    "resource_id": "resourceID",
+}
+
+
 def convert_string_snake_to_camel(string):
+    if string in _SNAKE_TO_CAMEL_OVERRIDES:
+        return _SNAKE_TO_CAMEL_OVERRIDES[string]
     new_string = re.sub(r'_([a-z])', lambda m: m.group(1).upper(), string)
     return new_string
 

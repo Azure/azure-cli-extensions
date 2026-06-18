@@ -9,7 +9,7 @@ from azure.cli.testsdk import (
     NoneCheck,
     ResourceGroupPreparer,
     ScenarioTest)
-from .constants import DEFAULT_LOCATION, CLUSTER_NAME_PREFIX, CLUSTER_NAME_MAX_LENGTH
+from .constants import DEFAULT_LOCATION, CLUSTER_NAME_PREFIX, CLUSTER_NAME_MAX_LENGTH, PASSWORD_PREFIX
 
 
 class HorizonDBClusterMgmtScenarioTest(ScenarioTest):
@@ -26,7 +26,7 @@ class HorizonDBClusterMgmtScenarioTest(ScenarioTest):
         location = self.location
         cluster_name = self.create_random_name(CLUSTER_NAME_PREFIX, CLUSTER_NAME_MAX_LENGTH)
         admin_user = 'horizonadmin'
-        admin_password = 'H0riz0nP@ssw0rd!'
+        admin_password = self.create_random_name(PASSWORD_PREFIX, 20)
         version = '17'
         v_cores = 4
         replica_count = 3
@@ -64,6 +64,13 @@ class HorizonDBClusterMgmtScenarioTest(ScenarioTest):
         #     # List clusters in subscription scope and ensure the cluster is returned
         #     self.cmd('horizondb list',
         #              checks=[JMESPathCheck("[?name=='{}'] | length(@)".format(cluster_name), 1)])
+
+        # Update cluster
+        v_cores_update = v_cores - 2
+        show_result = self.cmd('horizondb update -g {} -n {} --v-cores {}'.format(
+            resource_group, cluster_name, v_cores_update)).get_output_in_json()
+
+        self.assertEqual(show_result['properties']['vCores'], v_cores_update)
 
         # Delete cluster
         self.cmd('horizondb delete -g {} -n {} --yes'.format(resource_group, cluster_name),

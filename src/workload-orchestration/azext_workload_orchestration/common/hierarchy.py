@@ -277,8 +277,10 @@ def _create_sg_level(  # pylint: disable=too-many-arguments
 
     # 1. Create ServiceGroup
     _eprint(f"{parent_prefix}{connector}{name} ({level})")
+    sg_url = f"{get_arm_endpoint(cmd)}{sg_id}"
+    sg_existed = _arm_get(cmd, sg_url, SERVICE_GROUP_API_VERSION) is not None
     try:
-        _arm_put(cmd, f"{get_arm_endpoint(cmd)}{sg_id}", {
+        _arm_put(cmd, sg_url, {
             "properties": {
                 "displayName": name,
                 "parent": {"resourceId": parent_id},
@@ -359,9 +361,11 @@ def _create_sg_level(  # pylint: disable=too-many-arguments
 
     children = node.get("children")
     has_children = children is not None
+    sg_label = "(reused) " if sg_existed else "(created) "
     site_label = "(reused) " if existing_sg_site else ""
     config_label = "(reused) " if config_reused else ""
     ref_label = "(reused) " if existing_ref else ""
+    _eprint(f"{child_prefix}├── ServiceGroup '{name}' {sg_label}✓")
     _eprint(f"{child_prefix}├── Site '{effective_site_name}' {site_label}✓")
     _eprint(f"{child_prefix}├── Configuration '{config_name}' {config_label}✓")
     if has_children:

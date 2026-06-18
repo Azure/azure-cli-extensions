@@ -295,6 +295,12 @@ class RegistryDiscoveryReplacer(RecordingProcessor):
         u = urlparse(request.uri)
         self.__should_process_next_response = bool(self.REGISTRY_DISCOVERY_ENDPOINT_RE.match(u.path))
 
+        if self.__should_process_next_response and u.query:
+            # Strip query parameters from discovery requests to ensure consistent matching
+            # across SDK versions (some add ?api-version=v1.0, others don't)
+            u = u._replace(query="")
+            request.uri = u.geturl()
+
         return request
 
     def process_response(self, response):
@@ -311,6 +317,28 @@ class RegistryDiscoveryReplacer(RecordingProcessor):
 
         response["body"]["string"] = json.dumps(response_body)
         return response
+
+
+class RegistryDiscoveryQueryStripper(RecordingProcessor):
+    """Strips query parameters from registry discovery URLs during replay matching.
+
+    SDK versions may add query parameters (e.g. ?api-version=v1.0) to discovery
+    requests that weren't present when the cassette was recorded. This processor
+    strips them so VCR's query matcher can find the recorded response.
+
+    Unlike RegistryDiscoveryReplacer, this class does NOT override process_response,
+    so it is safe to use in replay_processors without causing bytes/str issues
+    during cassette load.
+    """
+
+    REGISTRY_DISCOVERY_ENDPOINT_RE = re.compile("^/registrymanagement/v1.0/registries/[^/]+/discovery$")
+
+    def process_request(self, request):
+        u = urlparse(request.uri)
+        if self.REGISTRY_DISCOVERY_ENDPOINT_RE.match(u.path) and u.query:
+            u = u._replace(query="")
+            request.uri = u.geturl()
+        return request
 
 
 class HostNormalizer(RecordingProcessor):

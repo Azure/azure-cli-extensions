@@ -372,3 +372,62 @@ helps[
         - name: Input a VN2 Template and generate container definitions for all containers
           text: az confcom containers from_vn2 vn2.yaml
     """
+
+helps[
+    "confcom containers from_radius"
+] = """
+    type: command
+    short-summary: Create a Security Policy Container Definition based on a Radius Bicep template.
+
+    parameters:
+        - name: --parameters -p
+          type: string
+          short-summary: 'Parameter file(s) for the Radius Bicep template. Can be specified multiple times.'
+
+        - name: --idx
+          type: int
+          short-summary: 'Index of the container definition in the template to use (0-based). Defaults to 0.'
+
+        - name: --platform
+          type: string
+          short-summary: 'The target platform to create the container definition for (aci or vn2). Defaults to aci.'
+
+    examples:
+        - name: Generate a container definition from a Radius Bicep template
+          text: az confcom containers from_radius ./app.bicep
+        - name: Generate a container definition from a Radius Bicep template with parameters
+          text: az confcom containers from_radius ./app.bicep --parameters ./params.bicepparam
+        - name: Generate a container definition for the second container in the template
+          text: az confcom containers from_radius ./app.bicep --idx 1
+"""
+
+helps[
+    "confcom radius"
+] = """
+    type: group
+    short-summary: Commands to manage security policies for Radius Bicep templates.
+"""
+
+helps[
+    "confcom radius policy_insert"
+] = """
+    type: command
+    short-summary: Insert a generated security policy into a Radius Bicep template.
+
+    parameters:
+        - name: --template -t
+          type: string
+          short-summary: 'Path to the Radius Bicep template to update with the policy.'
+
+        - name: --idx
+          type: int
+          short-summary: 'Index of the container in the template to update (0-based). Defaults to 0.'
+
+    examples:
+        - name: Insert a policy file into a Radius Bicep template
+          text: az confcom radius policy_insert ./policy.rego --template ./app.bicep
+        - name: Pipe a generated policy directly into a Radius Bicep template
+          text: az confcom acipolicygen --template-file ./template.json --print-policy --outraw | az confcom radius policy_insert --template ./app.bicep
+        - name: Insert a policy into the second container of a Radius Bicep template
+          text: az confcom radius policy_insert ./policy.rego --template ./app.bicep --idx 1
+"""

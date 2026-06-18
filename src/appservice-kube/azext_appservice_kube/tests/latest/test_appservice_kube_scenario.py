@@ -37,6 +37,7 @@ class WebappBasicE2EKubeTest(ScenarioTest):
         self.cmd('webapp update -g {} -n {} --https-only false'.format(resource_group, webapp_name), checks=[JMESPathCheck("httpsOnly", False)])
 
     @ResourceGroupPreparer(location="eastus")
+    @AllowLargeResponse
     def test_win_webapp_quick_create_kube(self, resource_group):
         webapp_name = self.create_random_name(prefix='webapp-quick', length=24)
         plan = self.create_random_name(prefix='plan-quick', length=24)
@@ -53,6 +54,7 @@ class WebappBasicE2EKubeTest(ScenarioTest):
         self.cmd('webapp update -g {} -n {} --https-only false'.format(resource_group, webapp_name), checks=[JMESPathCheck("httpsOnly", False)])
 
     @ResourceGroupPreparer(name_prefix="clitest", random_name_length=24, location="eastus")
+    @AllowLargeResponse
     def test_win_webapp_quick_create_runtime_kube(self, resource_group):
         webapp_name = self.create_random_name(prefix='webapp-quick', length=24)
         webapp_name_2 = self.create_random_name(prefix='webapp-quick', length=24)
@@ -73,6 +75,7 @@ class WebappBasicE2EKubeTest(ScenarioTest):
         self.cmd('webapp update -g {} -n {} --https-only false'.format(resource_group, webapp_name), checks=[JMESPathCheck("httpsOnly", False)])
 
     @ResourceGroupPreparer(name_prefix="clitest", random_name_length=24, location="eastus")
+    @AllowLargeResponse
     def test_list_runtimes(self, resource_group):
         r = self.cmd('webapp list-runtimes', checks=[JMESPathCheckExists("linux"), JMESPathCheckExists("windows"),
                                                      StringContainCheckIgnoreCase('NODE:20-lts')]).get_output_in_json()

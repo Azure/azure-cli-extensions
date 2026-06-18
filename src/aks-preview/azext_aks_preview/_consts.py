@@ -169,10 +169,6 @@ CONST_ACNS_DATAPATH_ACCELERATION_MODE_BPFVETH = "BpfVeth"
 CONST_NETWORK_POD_IP_ALLOCATION_MODE_DYNAMIC_INDIVIDUAL = "DynamicIndividual"
 CONST_NETWORK_POD_IP_ALLOCATION_MODE_STATIC_BLOCK = "StaticBlock"
 
-# disk driver versions
-CONST_DISK_DRIVER_V1 = "v1"
-CONST_DISK_DRIVER_V2 = "v2"
-
 # consts for addons
 # application load balancer (Application Gateway for Containers)
 CONST_APPLICATION_LOAD_BALANCER_ADDON_NAME = "applicationLoadBalancer"
@@ -418,3 +414,8 @@ CONST_K8S_EXTENSION_TYPE_CLIENT_FACTORY_MOD_NAME = "azext_k8s_extension_types._c
 CONST_K8S_EXTENSION_NAME = "k8s-extension"
 CONST_K8S_EXTENSION_ACTION_MOD_NAME = "azext_k8s_extension.action"
 CONST_K8S_EXTENSION_FORMAT_MOD_NAME = "azext_k8s_extension._format"
+
+# Node Disruption Policy Consts
+CONST_NODE_DISRUPTION_POLICY_ALLOW = "Allow"
+CONST_NODE_DISRUPTION_POLICY_BLOCK = "Block"
+CONST_NODE_DISRUPTION_POLICY_ALLOW_DURING_MAINTENANCE_WINDOW = "AllowDuringMaintenanceWindow"

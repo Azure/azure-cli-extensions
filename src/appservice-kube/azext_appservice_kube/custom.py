@@ -23,7 +23,6 @@ from azure.cli.command_modules.appservice.custom import (
     _format_fx_version,
     _get_extension_version_functionapp,
     _validate_app_service_environment_id,
-    _get_location_from_webapp,
     validate_and_convert_to_int,
     validate_range_of_int_flag,
     get_app_settings,
@@ -50,6 +49,10 @@ from azure.cli.command_modules.appservice.custom import (
     get_app_service_plan_from_webapp)
 from azure.cli.command_modules.appservice._constants import LINUX_OS_NAME, FUNCTIONS_NO_V2_REGIONS
 from azure.cli.command_modules.appservice.utils import retryable_method, get_sku_tier
+try:
+    from azure.cli.command_modules.appservice.utils import _get_location_from_webapp
+except ImportError:
+    from azure.cli.command_modules.appservice.custom import _get_location_from_webapp
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.commands import LongRunningOperation
 from azure.mgmt.applicationinsights import ApplicationInsightsManagementClient
@@ -453,9 +456,10 @@ def create_app_service_plan(cmd, resource_group_name, name, is_linux, hyper_v, p
 
 
 def get_vm_sizes(cli_ctx, location):
-    from ._client_factory import cf_compute_service
-
-    return cf_compute_service(cli_ctx).virtual_machine_sizes.list(location)
+    from azure.cli.command_modules.vm.operations.vm import VMListSizes
+    return VMListSizes(cli_ctx=cli_ctx)(command_args={
+        'location': location
+    })
 
 
 def _get_kube_env_from_custom_location(cmd, custom_location, resource_group):

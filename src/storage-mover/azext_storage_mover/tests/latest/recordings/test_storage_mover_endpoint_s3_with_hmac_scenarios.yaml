@@ -1,0 +1,576 @@
+interactions:
+- request:
+    body: '{"location": "westcentralus", "properties": {"description": "MoverDesc"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-mover create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '73'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n -l --description
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002?api-version=2025-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002","name":"storage-mover000002","type":"microsoft.storagemover/storagemovers","location":"westcentralus","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-05-19T10:17:15.6032867Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-05-19T10:17:15.6032867Z"},"properties":{"description":"MoverDesc","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '558'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 19 May 2026 10:17:15 GMT
+      etag:
+      - '"00008cda-0000-0600-0000-6a0c38ab0000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - cdeb1f4d-9b81-49bc-b739-a429ee2ef629
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/westcentralus/e2dbe06c-7046-4893-840d-04e8d95c4d37
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: D75F51AC732A4AADA6DCAB05B8C6934C Ref B: SIN221080711003 Ref C: 2026-05-19T10:17:14Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"description": "endpointS3Desc", "endpointKind": "Source",
+      "endpointType": "S3WithHMAC", "credentials": {"accessKeyUri": "https://smb-demo-kv.vault.azure.net/secrets/s3-access-key",
+      "secretKeyUri": "https://smb-demo-kv.vault.azure.net/secrets/s3-secret-key",
+      "type": "AzureKeyVaultS3WithHMAC"}, "sourceType": "MINIO", "sourceUri": "https://s3.example.com/bucket"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-mover endpoint create-for-s3-with-hmac
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '380'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --storage-mover-name -n --source-uri --source-type --access-key-uri --secret-key-uri
+        --endpoint-kind --description
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/endpoints/test-ep-s3hmac000003?api-version=2025-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/endpoints/test-ep-s3hmac000003","name":"test-ep-s3hmac000003","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-05-19T10:17:17.658753Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-05-19T10:17:17.658753Z"},"properties":{"sourceType":"MINIO","sourceUri":"https://s3.example.com/bucket","credentials":{"accessKeyUri":"https://smb-demo-kv.vault.azure.net/secrets/s3-access-key","secretKeyUri":"https://smb-demo-kv.vault.azure.net/secrets/s3-secret-key","type":"AzureKeyVaultS3WithHMAC"},"endpointType":"S3WithHMAC","endpointKind":"Source","description":"endpointS3Desc","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '892'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 19 May 2026 10:17:18 GMT
+      etag:
+      - '"0000056e-0000-0600-0000-6a0c38ae0000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 8fd00a9c-e11c-4e8d-bf9a-c6072b1797df
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/westindia/b42b782a-83c5-482b-8d94-515884668d64
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 8ADF65254CDC4F76A7CB355FBEB8B1AE Ref B: PNQ231110909023 Ref C: 2026-05-19T10:17:16Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-mover endpoint show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --storage-mover-name -n
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/endpoints/test-ep-s3hmac000003?api-version=2025-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/endpoints/test-ep-s3hmac000003","name":"test-ep-s3hmac000003","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-05-19T10:17:17.658753Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-05-19T10:17:17.658753Z"},"properties":{"sourceType":"MINIO","sourceUri":"https://s3.example.com/bucket","credentials":{"accessKeyUri":"https://smb-demo-kv.vault.azure.net/secrets/s3-access-key","secretKeyUri":"https://smb-demo-kv.vault.azure.net/secrets/s3-secret-key","type":"AzureKeyVaultS3WithHMAC"},"endpointType":"S3WithHMAC","endpointKind":"Source","description":"endpointS3Desc","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '892'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 19 May 2026 10:17:19 GMT
+      etag:
+      - '"0000056e-0000-0600-0000-6a0c38ae0000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 244bdc1c-b89c-4856-9215-652d6d780441
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/westcentralus/86833821-549b-4add-b7bb-56d46db56374
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 8C6DDEE90F61461FAE9282CC97B8B097 Ref B: PNQ231110909042 Ref C: 2026-05-19T10:17:19Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-mover endpoint update-for-s3-with-hmac
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --storage-mover-name -n --description
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/endpoints/test-ep-s3hmac000003?api-version=2025-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/endpoints/test-ep-s3hmac000003","name":"test-ep-s3hmac000003","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-05-19T10:17:17.658753Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-05-19T10:17:17.658753Z"},"properties":{"sourceType":"MINIO","sourceUri":"https://s3.example.com/bucket","credentials":{"accessKeyUri":"https://smb-demo-kv.vault.azure.net/secrets/s3-access-key","secretKeyUri":"https://smb-demo-kv.vault.azure.net/secrets/s3-secret-key","type":"AzureKeyVaultS3WithHMAC"},"endpointType":"S3WithHMAC","endpointKind":"Source","description":"endpointS3Desc","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '892'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 19 May 2026 10:17:19 GMT
+      etag:
+      - '"0000056e-0000-0600-0000-6a0c38ae0000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - bba5dd53-2b24-4e51-8777-eb34828ae332
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/westcentralus/bd3f415f-3ab5-4a42-8d82-afe1fa313e50
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: FC844F622582424BA232C39980135654 Ref B: SIN221080711019 Ref C: 2026-05-19T10:17:19Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"description": "endpointS3DescUpdate", "endpointKind":
+      "Source", "endpointType": "S3WithHMAC", "credentials": {"accessKeyUri": "https://smb-demo-kv.vault.azure.net/secrets/s3-access-key",
+      "secretKeyUri": "https://smb-demo-kv.vault.azure.net/secrets/s3-secret-key",
+      "type": "AzureKeyVaultS3WithHMAC"}, "sourceType": "MINIO", "sourceUri": "https://s3.example.com/bucket"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-mover endpoint update-for-s3-with-hmac
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '386'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --storage-mover-name -n --description
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/endpoints/test-ep-s3hmac000003?api-version=2025-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/endpoints/test-ep-s3hmac000003","name":"test-ep-s3hmac000003","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-05-19T10:17:17.658753Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-05-19T10:17:20.7001109Z"},"properties":{"sourceType":"MINIO","sourceUri":"https://s3.example.com/bucket","credentials":{"accessKeyUri":"https://smb-demo-kv.vault.azure.net/secrets/s3-access-key","secretKeyUri":"https://smb-demo-kv.vault.azure.net/secrets/s3-secret-key","type":"AzureKeyVaultS3WithHMAC"},"endpointType":"S3WithHMAC","endpointKind":"Source","description":"endpointS3DescUpdate","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '899'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 19 May 2026 10:17:20 GMT
+      etag:
+      - '"0000126e-0000-0600-0000-6a0c38b00000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - ee529656-fc3f-48e8-94b3-3236f23f5e31
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/westcentralus/4097c468-96be-4874-bd85-b43a8bd2c842
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 3268C10EC3AC4F679CC990CFFFB94E52 Ref B: SIN221080712045 Ref C: 2026-05-19T10:17:20Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-mover endpoint delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --storage-mover-name -n -y
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/endpoints/test-ep-s3hmac000003?api-version=2025-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 19 May 2026 10:17:21 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 1096fb87-1c0b-46b2-8e70-f508bce925b5
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/westcentralus/e6fbb6f6-b4bd-415c-954c-d6a5bed8313c
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '799'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '11999'
+      x-msedge-ref:
+      - 'Ref A: 5729F0E47EF54716BA9FC508C1093C10 Ref B: SIN221080715021 Ref C: 2026-05-19T10:17:21Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"description": "endpointS3NoKind", "endpointType": "S3WithHMAC",
+      "credentials": {"accessKeyUri": "https://smb-demo-kv.vault.azure.net/secrets/s3-access-key",
+      "secretKeyUri": "https://smb-demo-kv.vault.azure.net/secrets/s3-secret-key",
+      "type": "AzureKeyVaultS3WithHMAC"}, "sourceType": "MINIO", "sourceUri": "https://s3.example.com/bucket"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-mover endpoint create-for-s3-with-hmac
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '356'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --storage-mover-name -n --source-uri --source-type --access-key-uri --secret-key-uri
+        --description
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/endpoints/test-ep-s3nk000004?api-version=2025-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/endpoints/test-ep-s3nk000004","name":"test-ep-s3nk000004","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-05-19T10:17:23.0850264Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-05-19T10:17:23.0850264Z"},"properties":{"sourceType":"MINIO","sourceUri":"https://s3.example.com/bucket","credentials":{"accessKeyUri":"https://smb-demo-kv.vault.azure.net/secrets/s3-access-key","secretKeyUri":"https://smb-demo-kv.vault.azure.net/secrets/s3-secret-key","type":"AzureKeyVaultS3WithHMAC"},"endpointType":"S3WithHMAC","endpointKind":"Source","description":"endpointS3NoKind","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '892'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 19 May 2026 10:17:22 GMT
+      etag:
+      - '"0000236e-0000-0600-0000-6a0c38b30000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - c45c6e34-e22c-4c26-bd6b-4f5d837e2329
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/westcentralus/a0fabdbd-8615-45d1-a4c9-2373e4565439
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 6AACA425995A45C99F2A9B36D8B7F7FF Ref B: SIN221080712045 Ref C: 2026-05-19T10:17:22Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-mover endpoint show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --storage-mover-name -n
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/endpoints/test-ep-s3nk000004?api-version=2025-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/endpoints/test-ep-s3nk000004","name":"test-ep-s3nk000004","type":"microsoft.storagemover/storagemovers/endpoints","systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-05-19T10:17:23.0850264Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-05-19T10:17:23.0850264Z"},"properties":{"sourceType":"MINIO","sourceUri":"https://s3.example.com/bucket","credentials":{"accessKeyUri":"https://smb-demo-kv.vault.azure.net/secrets/s3-access-key","secretKeyUri":"https://smb-demo-kv.vault.azure.net/secrets/s3-secret-key","type":"AzureKeyVaultS3WithHMAC"},"endpointType":"S3WithHMAC","endpointKind":"Source","description":"endpointS3NoKind","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '892'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 19 May 2026 10:17:23 GMT
+      etag:
+      - '"0000236e-0000-0600-0000-6a0c38b30000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - bc6519a7-92bf-440e-b390-f235af259f0f
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/westcentralus/49b46dc2-6cfa-4ce8-b6a6-a2250d7b02c0
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 961688D9A7CC4350A84483BEDB6F7C26 Ref B: SIN221080719049 Ref C: 2026-05-19T10:17:23Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-mover endpoint delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --storage-mover-name -n -y
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/endpoints/test-ep-s3nk000004?api-version=2025-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 19 May 2026 10:17:24 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 38548aee-eb86-406f-96b9-28cfb17d02ab
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/westcentralus/7798fa85-8b98-4075-9ea9-dfe9102a7e20
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '798'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '11998'
+      x-msedge-ref:
+      - 'Ref A: 088A775B4ECB4DE881197E8AE91A4C8B Ref B: SIN221080712037 Ref C: 2026-05-19T10:17:24Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-mover endpoint show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --storage-mover-name -n
+      User-Agent:
+      - AZURECLI/2.76.0 azsdk-python-core/1.35.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002/endpoints/nonexistentendpoint?api-version=2025-12-01
+  response:
+    body:
+      string: '{"error":{"code":"ResourceNotFound","message":"The resource ''Microsoft.StorageMover/storageMovers/storage-mover000002/endpoints/nonexistentendpoint''
+        could not be found."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '171'
+      content-type:
+      - application/json
+      date:
+      - Tue, 19 May 2026 10:17:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=ade47690-3254-48fb-af97-0c4da9dd127c/westcentralus/513536db-a4cb-4448-8d8f-45f24a9ecb69
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 318E21C55E8740379B2E526CBCAEB86A Ref B: SIN221080715035 Ref C: 2026-05-19T10:17:25Z'
+    status:
+      code: 404
+      message: Not Found
+version: 1

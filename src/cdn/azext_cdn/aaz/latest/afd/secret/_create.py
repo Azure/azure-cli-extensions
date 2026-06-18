@@ -17,14 +17,20 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Create a new Secret within the specified profile.
 
-    :example: Creates a secret using the specified certificate version.
-        az afd secret create -g group --profile-name profile --secret-name secret1 --secret-version version1 --secret-source /subscriptions/sub1/resourceGroups/rg1/providers/Microsoft.KeyVault/vaults/vault1/secrets/cert1
+    :example: Secrets_CreateCustomerCertificateType
+        az afd secret create --resource-group RG --profile-name profile1 --secret-name secret1 --parameters "{secretSource:{id:/subscriptions/subid/resourcegroups/RG/providers/Microsoft.KeyVault/vault/kvName/secrets/certificatename},secretVersion:abcdef1234578900abcdef1234567890,useLatestVersion:False,customer-certificate:{secret-source:{id:/subscriptions/subid/resourcegroups/RG/providers/Microsoft.KeyVault/vault/kvName/secrets/certificatename},secret-version:abcdef1234578900abcdef1234567890,use-latest-version:False}}"
+
+    :example: Secrets_CreateMtlsCertificateChainType
+        az afd secret create --resource-group RG --profile-name profile1 --secret-name secret1 --parameters "{secretSource:{id:/subscriptions/subid/resourcegroups/RG/providers/Microsoft.KeyVault/vault/kvName/secrets/certificatename},secretVersion:abcdef1234578900abcdef1234567890,useLatestVersion:False,customer-certificate:{secret-source:{id:/subscriptions/subid/resourcegroups/RG/providers/Microsoft.KeyVault/vault/kvName/secrets/certificatename},secret-version:abcdef1234578900abcdef1234567890,use-latest-version:False}}" --resource-group RG --profile-name profile1 --secret-name secret1 --parameters "{secretSource:{id:/subscriptions/subid/resourcegroups/RG/providers/Microsoft.KeyVault/vaults/kvName/secrets/mTLSCertificateChainname},secretVersion:abcdef1234578900abcdef1234567890,mtls-certificate-chain:{secret-source:{id:/subscriptions/subid/resourcegroups/RG/providers/Microsoft.KeyVault/vaults/kvName/secrets/mTLSCertificateChainname},secret-version:abcdef1234578900abcdef1234567890}}"
+
+    :example: Secrets_CreateUrlSigningKeyType
+        az afd secret create --resource-group RG --profile-name profile1 --secret-name secret1 --parameters "{secretSource:{id:/subscriptions/subid/resourcegroups/RG/providers/Microsoft.KeyVault/vault/kvName/secrets/certificatename},secretVersion:abcdef1234578900abcdef1234567890,useLatestVersion:False,customer-certificate:{secret-source:{id:/subscriptions/subid/resourcegroups/RG/providers/Microsoft.KeyVault/vault/kvName/secrets/certificatename},secret-version:abcdef1234578900abcdef1234567890,use-latest-version:False}}" --resource-group RG --profile-name profile1 --secret-name secret1 --parameters "{secretSource:{id:/subscriptions/subid/resourcegroups/RG/providers/Microsoft.KeyVault/vaults/kvName/secrets/mTLSCertificateChainname},secretVersion:abcdef1234578900abcdef1234567890,mtls-certificate-chain:{secret-source:{id:/subscriptions/subid/resourcegroups/RG/providers/Microsoft.KeyVault/vaults/kvName/secrets/mTLSCertificateChainname},secret-version:abcdef1234578900abcdef1234567890}}" --resource-group RG --profile-name profile1 --secret-name secret1 --parameters "{keyId:customKeyId,secretSource:{id:/subscriptions/subid/resourcegroups/RG/providers/Microsoft.KeyVault/vault/kvName/secrets/urlsigningkeyname},secretVersion:abcdef1234578900abcdef1234567890,url-signing-key:{key-id:customKeyId,secret-source:{id:/subscriptions/subid/resourcegroups/RG/providers/Microsoft.KeyVault/vault/kvName/secrets/urlsigningkeyname},secret-version:abcdef1234578900abcdef1234567890}}"
     """
 
     _aaz_info = {
-        "version": "2025-06-01",
+        "version": "2025-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/secrets/{}", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/secrets/{}", "2025-09-01-preview"],
         ]
     }
 
@@ -76,7 +82,6 @@ class Create(AAZCommand):
         parameters = cls._args_schema.parameters
         parameters.azure_first_party_managed_certificate = AAZObjectArg(
             options=["azure-first-party-managed-certificate"],
-            blank={},
         )
         parameters.customer_certificate = AAZObjectArg(
             options=["customer-certificate"],
@@ -85,9 +90,21 @@ class Create(AAZCommand):
             options=["managed-certificate"],
             blank={},
         )
+        parameters.mtls_certificate_chain = AAZObjectArg(
+            options=["mtls-certificate-chain"],
+        )
         parameters.url_signing_key = AAZObjectArg(
             options=["url-signing-key"],
         )
+
+        azure_first_party_managed_certificate = cls._args_schema.parameters.azure_first_party_managed_certificate
+        azure_first_party_managed_certificate.subject_alternative_names = AAZListArg(
+            options=["subject-alternative-names"],
+            help="The list of SANs.",
+        )
+
+        subject_alternative_names = cls._args_schema.parameters.azure_first_party_managed_certificate.subject_alternative_names
+        subject_alternative_names.Element = AAZStrArg()
 
         customer_certificate = cls._args_schema.parameters.customer_certificate
         customer_certificate.secret_source = AAZObjectArg(
@@ -103,6 +120,19 @@ class Create(AAZCommand):
         customer_certificate.use_latest_version = AAZBoolArg(
             options=["use-latest-version"],
             help="Whether to use the latest version for the certificate",
+        )
+
+        mtls_certificate_chain = cls._args_schema.parameters.mtls_certificate_chain
+        mtls_certificate_chain.secret_source = AAZObjectArg(
+            options=["secret-source"],
+            help="Resource reference to the Azure Key Vault secret. Expected to be in format of /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.KeyVault/vaults/{vaultName}/secrets/{secretName}",
+            required=True,
+        )
+        cls._build_args_resource_reference_create(mtls_certificate_chain.secret_source)
+        mtls_certificate_chain.secret_version = AAZStrArg(
+            options=["secret-version"],
+            help="Version of the secret to be used",
+            required=True,
         )
 
         url_signing_key = cls._args_schema.parameters.url_signing_key
@@ -227,7 +257,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2025-09-01-preview",
                     required=True,
                 ),
             }
@@ -263,17 +293,32 @@ class Create(AAZCommand):
                 parameters.set_const("type", "AzureFirstPartyManagedCertificate", AAZStrType, ".azure_first_party_managed_certificate", typ_kwargs={"flags": {"required": True}})
                 parameters.set_const("type", "CustomerCertificate", AAZStrType, ".customer_certificate", typ_kwargs={"flags": {"required": True}})
                 parameters.set_const("type", "ManagedCertificate", AAZStrType, ".managed_certificate", typ_kwargs={"flags": {"required": True}})
+                parameters.set_const("type", "MtlsCertificateChain", AAZStrType, ".mtls_certificate_chain", typ_kwargs={"flags": {"required": True}})
                 parameters.set_const("type", "UrlSigningKey", AAZStrType, ".url_signing_key", typ_kwargs={"flags": {"required": True}})
                 parameters.discriminate_by("type", "AzureFirstPartyManagedCertificate")
                 parameters.discriminate_by("type", "CustomerCertificate")
                 parameters.discriminate_by("type", "ManagedCertificate")
+                parameters.discriminate_by("type", "MtlsCertificateChain")
                 parameters.discriminate_by("type", "UrlSigningKey")
+
+            disc_azure_first_party_managed_certificate = _builder.get(".properties.parameters{type:AzureFirstPartyManagedCertificate}")
+            if disc_azure_first_party_managed_certificate is not None:
+                disc_azure_first_party_managed_certificate.set_prop("subjectAlternativeNames", AAZListType, ".azure_first_party_managed_certificate.subject_alternative_names")
+
+            subject_alternative_names = _builder.get(".properties.parameters{type:AzureFirstPartyManagedCertificate}.subjectAlternativeNames")
+            if subject_alternative_names is not None:
+                subject_alternative_names.set_elements(AAZStrType, ".")
 
             disc_customer_certificate = _builder.get(".properties.parameters{type:CustomerCertificate}")
             if disc_customer_certificate is not None:
                 _CreateHelper._build_schema_resource_reference_create(disc_customer_certificate.set_prop("secretSource", AAZObjectType, ".customer_certificate.secret_source", typ_kwargs={"flags": {"required": True}}))
                 disc_customer_certificate.set_prop("secretVersion", AAZStrType, ".customer_certificate.secret_version")
                 disc_customer_certificate.set_prop("useLatestVersion", AAZBoolType, ".customer_certificate.use_latest_version")
+
+            disc_mtls_certificate_chain = _builder.get(".properties.parameters{type:MtlsCertificateChain}")
+            if disc_mtls_certificate_chain is not None:
+                _CreateHelper._build_schema_resource_reference_create(disc_mtls_certificate_chain.set_prop("secretSource", AAZObjectType, ".mtls_certificate_chain.secret_source", typ_kwargs={"flags": {"required": True}}))
+                disc_mtls_certificate_chain.set_prop("secretVersion", AAZStrType, ".mtls_certificate_chain.secret_version", typ_kwargs={"flags": {"required": True}})
 
             disc_url_signing_key = _builder.get(".properties.parameters{type:UrlSigningKey}")
             if disc_url_signing_key is not None:
@@ -405,9 +450,7 @@ class _CreateHelper:
         )
 
         subject_alternative_names = _schema_secret_read.properties.parameters.discriminate_by("type", "AzureFirstPartyManagedCertificate").subject_alternative_names
-        subject_alternative_names.Element = AAZStrType(
-            flags={"read_only": True},
-        )
+        subject_alternative_names.Element = AAZStrType()
 
         disc_customer_certificate = _schema_secret_read.properties.parameters.discriminate_by("type", "CustomerCertificate")
         disc_customer_certificate.certificate_authority = AAZStrType(
@@ -431,6 +474,7 @@ class _CreateHelper:
         )
         disc_customer_certificate.subject_alternative_names = AAZListType(
             serialized_name="subjectAlternativeNames",
+            flags={"read_only": True},
         )
         disc_customer_certificate.thumbprint = AAZStrType(
             flags={"read_only": True},
@@ -440,9 +484,7 @@ class _CreateHelper:
         )
 
         subject_alternative_names = _schema_secret_read.properties.parameters.discriminate_by("type", "CustomerCertificate").subject_alternative_names
-        subject_alternative_names.Element = AAZStrType(
-            flags={"read_only": True},
-        )
+        subject_alternative_names.Element = AAZStrType()
 
         disc_managed_certificate = _schema_secret_read.properties.parameters.discriminate_by("type", "ManagedCertificate")
         disc_managed_certificate.expiration_date = AAZStrType(
@@ -451,6 +493,21 @@ class _CreateHelper:
         )
         disc_managed_certificate.subject = AAZStrType(
             flags={"read_only": True},
+        )
+
+        disc_mtls_certificate_chain = _schema_secret_read.properties.parameters.discriminate_by("type", "MtlsCertificateChain")
+        disc_mtls_certificate_chain.expiration_date = AAZStrType(
+            serialized_name="expirationDate",
+            flags={"read_only": True},
+        )
+        disc_mtls_certificate_chain.secret_source = AAZObjectType(
+            serialized_name="secretSource",
+            flags={"required": True},
+        )
+        cls._build_schema_resource_reference_read(disc_mtls_certificate_chain.secret_source)
+        disc_mtls_certificate_chain.secret_version = AAZStrType(
+            serialized_name="secretVersion",
+            flags={"required": True},
         )
 
         disc_url_signing_key = _schema_secret_read.properties.parameters.discriminate_by("type", "UrlSigningKey")

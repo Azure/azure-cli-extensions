@@ -28,6 +28,7 @@ from azure.cli.core.profiles import ResourceType
 from azure.cli.core.util import (
     read_file_content,
     sdk_no_wait,
+    shell_safe_json_parse,
 )
 from azure.core import MatchConditions
 from knack.log import get_logger
@@ -338,6 +339,29 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
                 ))
         return res
 
+    def get_node_public_ip_prefix_ids(self) -> Union[List[str], None]:
+        """Obtain the value of node_public_ip_prefix_ids.
+
+        Parse the comma-separated string into a list of resource IDs.
+
+        :return: list of strings or None
+        """
+        node_public_ip_prefix_ids = self.raw_param.get("node_public_ip_prefix_ids")
+        if node_public_ip_prefix_ids is None:
+            return None
+        if isinstance(node_public_ip_prefix_ids, str):
+            parsed = [x.strip() for x in node_public_ip_prefix_ids.split(",") if x.strip()]
+            if not parsed:
+                raise InvalidArgumentValueError(
+                    "--node-public-ip-prefix-ids must contain at least one public IP prefix resource ID."
+                )
+            return parsed
+        if isinstance(node_public_ip_prefix_ids, list) and not node_public_ip_prefix_ids:
+            raise InvalidArgumentValueError(
+                "--node-public-ip-prefix-ids must contain at least one public IP prefix resource ID."
+            )
+        return node_public_ip_prefix_ids
+
     def get_node_taints(self) -> Union[List[str], None]:
         """Obtain the value of node_taints.
 
@@ -606,6 +630,19 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
             )
         return enable_artifact_streaming
 
+    def get_enable_os_disk_full_caching(self) -> bool:
+        """Obtain the value of enable_os_disk_full_caching.
+        :return: bool
+        """
+        enable_os_disk_full_caching = self.raw_param.get("enable_os_disk_full_caching")
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.agentpool and
+                self.agentpool.enable_os_disk_full_caching is not None
+            ):
+                enable_os_disk_full_caching = self.agentpool.enable_os_disk_full_caching
+        return enable_os_disk_full_caching
+
     def get_enable_managed_gpu(self) -> Union[bool, None]:
         """Obtain the value of enable_managed_gpu.
         :return: bool
@@ -868,6 +905,12 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         """
         return self.raw_param.get("if_none_match")
 
+    def get_prepared_image_specification_id(self) -> Union[str, None]:
+        """Obtain the value of prepared_image_specification_id.
+        :return: str or None
+        """
+        return self.raw_param.get('prepared_image_specification_id')
+
     def get_gateway_prefix_size(self) -> Union[int, None]:
         """Obtain the value of gateway_prefix_size.
         :return: int or None
@@ -947,6 +990,39 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
                 )
             return profile
         return None
+
+    def get_secondary_network_interfaces(self):
+        """Obtain the value of secondary_network_interfaces.
+
+        Parse inline JSON or @file reference into a list of AgentPoolNetworkInterface models.
+        """
+        raw = self.raw_param.get("secondary_network_interfaces")
+        if raw is None:
+            return None
+        if isinstance(raw, str):
+            if raw.startswith("@"):
+                data = get_file_json(raw[1:])
+            else:
+                data = shell_safe_json_parse(raw)
+        else:
+            data = raw
+        if not isinstance(data, list):
+            raise InvalidArgumentValueError(
+                "--secondary-network-interfaces must be a JSON array."
+            )
+        result = []
+        for idx, item in enumerate(data):
+            if not isinstance(item, dict):
+                raise InvalidArgumentValueError(
+                    f"--secondary-network-interfaces: element at index {idx} "
+                    f"must be a JSON object, got {type(item).__name__}."
+                )
+            result.append(self.models.AgentPoolNetworkInterface(
+                type=item.get("type"),
+                vnet_subnet_id=item.get("vnetSubnetId"),
+                enable_accelerated_networking=item.get("enableAcceleratedNetworking"),
+            ))
+        return result
 
     def build_localdns_profile(self, agentpool: AgentPool) -> AgentPool:
         """Build local DNS profile for the AgentPool object if provided via --localdns-config."""
@@ -1291,6 +1367,15 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         if ip_tags:
             agentpool.network_profile.node_public_ip_tags = ip_tags
 
+        node_public_ip_prefix_ids = self.context.get_node_public_ip_prefix_ids()
+        if node_public_ip_prefix_ids:
+            agentpool.network_profile.node_public_ip_prefix_i_ds = node_public_ip_prefix_ids
+            agentpool.enable_node_public_ip = True
+
+        secondary_nics = self.context.get_secondary_network_interfaces()
+        if secondary_nics is not None:
+            agentpool.network_profile.secondary_network_interfaces = secondary_nics
+
         return agentpool
 
     def set_up_taints(self, agentpool: AgentPool) -> AgentPool:
@@ -1325,6 +1410,14 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
                     self.models.AgentPoolArtifactStreamingProfile()  # pylint: disable=no-member
                 )
             agentpool.artifact_streaming_profile.enabled = True
+        return agentpool
+
+    def set_up_os_disk_full_caching(self, agentpool: AgentPool) -> AgentPool:
+        """Set up enable_os_disk_full_caching property for the AgentPool object."""
+        self._ensure_agentpool(agentpool)
+
+        if self.context.get_enable_os_disk_full_caching():
+            agentpool.enable_os_disk_full_caching = True
         return agentpool
 
     def set_up_managed_gpu(self, agentpool: AgentPool) -> AgentPool:
@@ -1573,6 +1666,18 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         self._ensure_agentpool(agentpool)
         return self.context.build_localdns_profile(agentpool)
 
+    def set_up_prepared_image_specification(self, agentpool: AgentPool) -> AgentPool:
+        """Set up prepared image specification profile for the AgentPool object."""
+        self._ensure_agentpool(agentpool)
+
+        prepared_image_specification_id = self.context.get_prepared_image_specification_id()
+        if prepared_image_specification_id is not None:
+            agentpool.prepared_image_specification_profile = self.models.PreparedImageSpecificationProfile(  # pylint: disable=no-member
+                prepared_image_specification_id=prepared_image_specification_id,
+            )
+
+        return agentpool
+
     def construct_agentpool_profile_preview(self) -> AgentPool:
         """The overall controller used to construct the preview AgentPool profile.
 
@@ -1606,6 +1711,8 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool = self.set_up_init_taints(agentpool)
         # set up artifact streaming
         agentpool = self.set_up_artifact_streaming(agentpool)
+        # set up os disk full caching
+        agentpool = self.set_up_os_disk_full_caching(agentpool)
         # set up managed gpu
         agentpool = self.set_up_managed_gpu(agentpool)
         # set up skip_gpu_driver_install
@@ -1634,6 +1741,8 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool = self.set_up_upgrade_strategy(agentpool)
         # set up blue green upgrade settings
         agentpool = self.set_up_blue_green_upgrade_settings(agentpool)
+        # set up prepared image specification
+        agentpool = self.set_up_prepared_image_specification(agentpool)
         # DO NOT MOVE: keep this at the bottom, restore defaults
         agentpool = self._restore_defaults_in_agentpool(agentpool)
         return agentpool
@@ -1982,6 +2091,21 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
 
         return agentpool
 
+    def update_prepared_image_specification(self, agentpool: AgentPool) -> AgentPool:
+        """Update prepared image specification profile for the AgentPool object."""
+        self._ensure_agentpool(agentpool)
+
+        prepared_image_specification_id = self.context.get_prepared_image_specification_id()
+        if prepared_image_specification_id is not None:
+            if prepared_image_specification_id == "":
+                prepared_image_specification_id = None
+
+            agentpool.prepared_image_specification_profile = self.models.PreparedImageSpecificationProfile(  # pylint: disable=no-member
+                prepared_image_specification_id=prepared_image_specification_id,
+            )
+
+        return agentpool
+
     def update_agentpool_profile_preview(self, agentpools: List[AgentPool] = None) -> AgentPool:
         """The overall controller used to update the preview AgentPool profile.
 
@@ -2049,6 +2173,9 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
 
         # update crg id
         agentpool = self.update_crg(agentpool)
+
+        # update prepared image specification
+        agentpool = self.update_prepared_image_specification(agentpool)
 
         return agentpool
 
