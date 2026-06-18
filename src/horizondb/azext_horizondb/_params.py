@@ -65,8 +65,8 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements, too-many-
             help='Defines how replicas are placed across availability zones.')
 
         parameter_group_arg_type = CLIArgumentType(
-            options_list=['--parameter-group', '--parameter-group-id'],
-            help='The resource ID of the parameter group to assign to this cluster.')
+            options_list=['--parameter-group'],
+            help='The resource ID of parameter group.')
 
         with self.argument_context('horizondb') as c:
             c.argument('resource_group_name', arg_type=resource_group_name_type)

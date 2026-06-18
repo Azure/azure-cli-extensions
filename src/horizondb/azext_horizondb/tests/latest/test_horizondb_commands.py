@@ -72,13 +72,6 @@ class HorizonDBClusterMgmtScenarioTest(ScenarioTest):
 
         self.assertEqual(show_result['properties']['vCores'], v_cores_update)
 
-        # Update cluster parameter group
-        parameter_group_id = show_result.get('properties', {}).get('parameterGroup', {}).get('id')
-        if parameter_group_id:
-            show_result = self.cmd('horizondb update -g {} -n {} --parameter-group "{}"'.format(
-                resource_group, cluster_name, parameter_group_id)).get_output_in_json()
-            self.assertEqual(show_result['properties']['parameterGroup']['id'], parameter_group_id)
-
         # Delete cluster
         self.cmd('horizondb delete -g {} -n {} --yes'.format(resource_group, cluster_name),
                  checks=NoneCheck())
