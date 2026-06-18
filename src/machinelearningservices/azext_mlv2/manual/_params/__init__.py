@@ -8,6 +8,7 @@
 # regenerated.
 # --------------------------------------------------------------------------
 from azext_mlv2.manual._params._component_params import load_component_params
+from azext_mlv2.manual.custom.utils import private_features_enabled
 
 from ._azure_openai_deployment_params import load_azure_openai_deployment_params
 from ._batch_deployment_params import load_batch_deployment_params
@@ -25,6 +26,7 @@ from ._index_params import load_index_params
 from ._job_params import load_job_params
 from ._marketplace_subscription_params import load_marketplace_subscription_params
 from ._model_params import load_model_params
+from ._model_hosting_params import load_model_hosting_params
 from ._online_deployment_params import load_online_deployment_params
 from ._online_endpoint_params import load_online_endpoint_params
 from ._registry_params import load_registry_params
@@ -63,3 +65,5 @@ def load_arguments(self, _):
     load_azure_openai_deployment_params(self)
     load_index_params(self)
     load_capability_host_params(self)
+    if private_features_enabled():
+        load_model_hosting_params(self)

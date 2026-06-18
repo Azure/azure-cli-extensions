@@ -28,6 +28,7 @@ from ._index_help import get_index_help
 from ._job_help import get_job_help
 from ._marketplace_subscription_help import get_marketplace_subscription_help
 from ._model_help import get_model_help
+from ._model_hosting_help import get_model_hosting_help
 from ._online_deployment_help import get_online_deployment_help
 from ._online_endpoint_help import get_online_endpoint_help
 from ._registry_help import get_registry_help
@@ -40,6 +41,7 @@ from ._capability_host_help import get_capability_host_help
 
 get_environment_help()
 get_model_help()
+get_model_hosting_help()
 get_data_help()
 get_job_help()
 get_marketplace_subscription_help()

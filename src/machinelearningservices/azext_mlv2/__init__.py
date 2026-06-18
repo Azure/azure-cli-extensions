@@ -7,6 +7,8 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
+import os
+os.environ["AZURE_ML_CLI_PRIVATE_FEATURES_ENABLED"] = "True"
 
 from azure.cli.core import AzCommandsLoader
 
