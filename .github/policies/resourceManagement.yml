@@ -3953,19 +3953,6 @@ configuration:
             pattern: '[Release] Update index.json for extension'
             isRegex: False
         - titleContains:
-            pattern: '[ datashare ]'
-            isRegex: False
-      then:
-      description: '[ datashare ]  Notify to review Update index.json PR'
-    - if:
-      - payloadType: Pull_Request
-      - isAction:
-          action: Opened
-      - and:
-        - titleContains:
-            pattern: '[Release] Update index.json for extension'
-            isRegex: False
-        - titleContains:
             pattern: '[ edgeorder ]'
             isRegex: False
       then:
@@ -3973,19 +3960,6 @@ configuration:
           users:
           - necusjz
       description: '[ edgeorder ] Notify to review Update index.json PR'
-    - if:
-      - payloadType: Pull_Request
-      - isAction:
-          action: Opened
-      - and:
-        - titleContains:
-            pattern: '[Release] Update index.json for extension'
-            isRegex: False
-        - titleContains:
-            pattern: '[ cosmosdb-preview ]'
-            isRegex: False
-      then:
-      description: '[ cosmosdb-preview ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -4011,71 +3985,6 @@ configuration:
             pattern: '[Release] Update index.json for extension'
             isRegex: False
         - titleContains:
-            pattern: '[ aks-preview ]'
-            isRegex: False
-      then:
-      description: '[ aks-preview ] Notify to review Update index.json PR'
-    - if:
-      - payloadType: Pull_Request
-      - isAction:
-          action: Opened
-      - and:
-        - titleContains:
-            pattern: '[Release] Update index.json for extension'
-            isRegex: False
-        - titleContains:
-            pattern: '[ connectedk8s ]'
-            isRegex: False
-      then:
-      description: '[ connectedk8s ] Notify to review Update index.json PR'
-    - if:
-      - payloadType: Pull_Request
-      - isAction:
-          action: Opened
-      - and:
-        - titleContains:
-            pattern: '[Release] Update index.json for extension'
-            isRegex: False
-        - titleContains:
-            pattern: '[ appservice-kube ]'
-            isRegex: False
-      then:
-      description: '[ appservice-kube ] Notify to review Update index.json PR'
-    - if:
-      - payloadType: Pull_Request
-      - isAction:
-          action: Opened
-      - and:
-        - titleContains:
-            pattern: '[Release] Update index.json for extension'
-            isRegex: False
-        - titleContains:
-            pattern: '[ account ]'
-            isRegex: False
-      then:
-      description: '[ account ] Notify to review Update index.json PR'
-    - if:
-      - payloadType: Pull_Request
-      - isAction:
-          action: Opened
-      - and:
-        - titleContains:
-            pattern: '[Release] Update index.json for extension'
-            isRegex: False
-        - titleContains:
-            pattern: '[ vmware ]'
-            isRegex: False
-      then:
-      description: '[ vmware ] Notify to review Update index.json PR'
-    - if:
-      - payloadType: Pull_Request
-      - isAction:
-          action: Opened
-      - and:
-        - titleContains:
-            pattern: '[Release] Update index.json for extension'
-            isRegex: False
-        - titleContains:
             pattern: '[ stream-analytics ]'
             isRegex: False
       then:
@@ -4092,71 +4001,6 @@ configuration:
             pattern: '[Release] Update index.json for extension'
             isRegex: False
         - titleContains:
-            pattern: '[ confidentialledger ]'
-            isRegex: False
-      then:
-      description: '[ confidentialledger ] Notify to review Update index.json PR'
-    - if:
-      - payloadType: Pull_Request
-      - isAction:
-          action: Opened
-      - and:
-        - titleContains:
-            pattern: '[Release] Update index.json for extension'
-            isRegex: False
-        - titleContains:
-            pattern: '[ hack ]'
-            isRegex: False
-      then:
-      description: '[ hack ] Notify to review Update index.json PR'
-    - if:
-      - payloadType: Pull_Request
-      - isAction:
-          action: Opened
-      - and:
-        - titleContains:
-            pattern: '[Release] Update index.json for extension'
-            isRegex: False
-        - titleContains:
-            pattern: '[ alertsmanagement ]'
-            isRegex: False
-      then:
-      description: '[ alertsmanagement ] Notify to review Update index.json PR'
-    - if:
-      - payloadType: Pull_Request
-      - isAction:
-          action: Opened
-      - and:
-        - titleContains:
-            pattern: '[Release] Update index.json for extension'
-            isRegex: False
-        - titleContains:
-            pattern: '[ vm-repair ]'
-            isRegex: False
-      then:
-      description: '[ vm-repair ] Notify to review Update index.json PR'
-    - if:
-      - payloadType: Pull_Request
-      - isAction:
-          action: Opened
-      - and:
-        - titleContains:
-            pattern: '[Release] Update index.json for extension'
-            isRegex: False
-        - titleContains:
-            pattern: '[ image-copy ]'
-            isRegex: False
-      then:
-      description: '[ image-copy ] Notify to review Update index.json PR'
-    - if:
-      - payloadType: Pull_Request
-      - isAction:
-          action: Opened
-      - and:
-        - titleContains:
-            pattern: '[Release] Update index.json for extension'
-            isRegex: False
-        - titleContains:
             pattern: '[ quantum ]'
             isRegex: False
       then:
@@ -4164,32 +4008,6 @@ configuration:
           users:
           - necusjz
       description: '[ quantum ] Notify to review Update index.json PR'
-    - if:
-      - payloadType: Pull_Request
-      - isAction:
-          action: Opened
-      - and:
-        - titleContains:
-            pattern: '[Release] Update index.json for extension'
-            isRegex: False
-        - titleContains:
-            pattern: '[ rdbms-connect ]'
-            isRegex: False
-      then:
-      description: '[ rdbms-connect ] Notify to review Update index.json PR'
-    - if:
-      - payloadType: Pull_Request
-      - isAction:
-          action: Opened
-      - and:
-        - titleContains:
-            pattern: '[Release] Update index.json for extension'
-            isRegex: False
-        - titleContains:
-            pattern: '[ azurestackhci ]'
-            isRegex: False
-      then:
-      description: '[ azurestackhci ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -4250,19 +4068,6 @@ configuration:
             pattern: '[Release] Update index.json for extension'
             isRegex: False
         - titleContains:
-            pattern: '[ databricks ]'
-            isRegex: False
-      then:
-      description: '[ databricks ] Notify to review Update index.json PR'
-    - if:
-      - payloadType: Pull_Request
-      - isAction:
-          action: Opened
-      - and:
-        - titleContains:
-            pattern: '[Release] Update index.json for extension'
-            isRegex: False
-        - titleContains:
             pattern: '[ resource-mover ]'
             isRegex: False
       then:
@@ -4270,84 +4075,6 @@ configuration:
           users:
           - necusjz
       description: '[ resource-mover ] Notify to review Update index.json PR'
-    - if:
-      - payloadType: Pull_Request
-      - isAction:
-          action: Opened
-      - and:
-        - titleContains:
-            pattern: '[Release] Update index.json for extension'
-            isRegex: False
-        - titleContains:
-            pattern: '[ k8s-configuration ]'
-            isRegex: False
-      then:
-      description: '[ k8s-configuration ] Notify to review Update index.json PR'
-    - if:
-      - payloadType: Pull_Request
-      - isAction:
-          action: Opened
-      - and:
-        - titleContains:
-            pattern: '[Release] Update index.json for extension'
-            isRegex: False
-        - titleContains:
-            pattern: '[ storage-preview ]'
-            isRegex: False
-      then:
-      description: '[ storage-preview ] Notify to review Update index.json PR'
-    - if:
-      - payloadType: Pull_Request
-      - isAction:
-          action: Opened
-      - and:
-        - titleContains:
-            pattern: '[Release] Update index.json for extension'
-            isRegex: False
-        - titleContains:
-            pattern: '[ enterprise-edge ]'
-            isRegex: False
-      then:
-      description: '[ enterprise-edge ] Notify to review Update index.json PR'
-    - if:
-      - payloadType: Pull_Request
-      - isAction:
-          action: Opened
-      - and:
-        - titleContains:
-            pattern: '[Release] Update index.json for extension'
-            isRegex: False
-        - titleContains:
-            pattern: '[ k8s-extension ]'
-            isRegex: False
-      then:
-      description: '[ k8s-extension ] Notify to review Update index.json PR'
-    - if:
-      - payloadType: Pull_Request
-      - isAction:
-          action: Opened
-      - and:
-        - titleContains:
-            pattern: '[Release] Update index.json for extension'
-            isRegex: False
-        - titleContains:
-            pattern: '[ communication ]'
-            isRegex: False
-      then:
-      description: '[ communication ] Notify to review Update index.json PR'
-    - if:
-      - payloadType: Pull_Request
-      - isAction:
-          action: Opened
-      - and:
-        - titleContains:
-            pattern: '[Release] Update index.json for extension'
-            isRegex: False
-        - titleContains:
-            pattern: '[ connectedvmware ]'
-            isRegex: False
-      then:
-      description: '[ connectedvmware ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -4373,19 +4100,6 @@ configuration:
             pattern: '[Release] Update index.json for extension'
             isRegex: False
         - titleContains:
-            pattern: '[ init ]'
-            isRegex: False
-      then:
-      description: '[ init ] Notify to review Update index.json PR'
-    - if:
-      - payloadType: Pull_Request
-      - isAction:
-          action: Opened
-      - and:
-        - titleContains:
-            pattern: '[Release] Update index.json for extension'
-            isRegex: False
-        - titleContains:
             pattern: '[ network-manager ]'
             isRegex: False
       then:
@@ -4402,32 +4116,6 @@ configuration:
             pattern: '[Release] Update index.json for extension'
             isRegex: False
         - titleContains:
-            pattern: '[ azure-firewall ]'
-            isRegex: False
-      then:
-      description: '[ azure-firewall ] Notify to review Update index.json PR'
-    - if:
-      - payloadType: Pull_Request
-      - isAction:
-          action: Opened
-      - and:
-        - titleContains:
-            pattern: '[Release] Update index.json for extension'
-            isRegex: False
-        - titleContains:
-            pattern: '[ acrtransfer ]'
-            isRegex: False
-      then:
-      description: '[ acrtransfer ] Notify to review Update index.json PR'
-    - if:
-      - payloadType: Pull_Request
-      - isAction:
-          action: Opened
-      - and:
-        - titleContains:
-            pattern: '[Release] Update index.json for extension'
-            isRegex: False
-        - titleContains:
             pattern: '[ virtual-wan ]'
             isRegex: False
       then:
@@ -4435,32 +4123,6 @@ configuration:
           users:
           - necusjz
       description: '[ virtual-wan ] Notify to review Update index.json PR'
-    - if:
-      - payloadType: Pull_Request
-      - isAction:
-          action: Opened
-      - and:
-        - titleContains:
-            pattern: '[Release] Update index.json for extension'
-            isRegex: False
-        - titleContains:
-            pattern: '[ ssh ]'
-            isRegex: False
-      then:
-      description: '[ ssh ] Notify to review Update index.json PR'
-    - if:
-      - payloadType: Pull_Request
-      - isAction:
-          action: Opened
-      - and:
-        - titleContains:
-            pattern: '[Release] Update index.json for extension'
-            isRegex: False
-        - titleContains:
-            pattern: '[ image-gallery ]'
-            isRegex: False
-      then:
-      description: '[ image-gallery ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -4493,84 +4155,6 @@ configuration:
           users:
           - necusjz
       description: '[ support ] Notify to review Update index.json PR'
-    - if:
-      - payloadType: Pull_Request
-      - isAction:
-          action: Opened
-      - and:
-        - titleContains:
-            pattern: '[Release] Update index.json for extension'
-            isRegex: False
-        - titleContains:
-            pattern: '[ logz ]'
-            isRegex: False
-      then:
-      description: '[ logz ] Notify to review Update index.json PR'
-    - if:
-      - payloadType: Pull_Request
-      - isAction:
-          action: Opened
-      - and:
-        - titleContains:
-            pattern: '[Release] Update index.json for extension'
-            isRegex: False
-        - titleContains:
-            pattern: '[ kusto ]'
-            isRegex: False
-      then:
-      description: '[ kusto ] Notify to review Update index.json PR'
-    - if:
-      - payloadType: Pull_Request
-      - isAction:
-          action: Opened
-      - and:
-        - titleContains:
-            pattern: '[Release] Update index.json for extension'
-            isRegex: False
-        - titleContains:
-            pattern: '[ connectedmachine ]'
-            isRegex: False
-      then:
-      description: '[ connectedmachine ] Notify to review Update index.json PR'
-    - if:
-      - payloadType: Pull_Request
-      - isAction:
-          action: Opened
-      - and:
-        - titleContains:
-            pattern: '[Release] Update index.json for extension'
-            isRegex: False
-        - titleContains:
-            pattern: '[ functionapp ]'
-            isRegex: False
-      then:
-      description: '[ functionapp ] Notify to review Update index.json PR'
-    - if:
-      - payloadType: Pull_Request
-      - isAction:
-          action: Opened
-      - and:
-        - titleContains:
-            pattern: '[Release] Update index.json for extension'
-            isRegex: False
-        - titleContains:
-            pattern: '[ diskpool ]'
-            isRegex: False
-      then:
-      description: '[ diskpool ] Notify to review Update index.json PR'
-    - if:
-      - payloadType: Pull_Request
-      - isAction:
-          action: Opened
-      - and:
-        - titleContains:
-            pattern: '[Release] Update index.json for extension'
-            isRegex: False
-        - titleContains:
-            pattern: '[ spring-cloud ]'
-            isRegex: False
-      then:
-      description: '[ spring-cloud ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
       - isAction:
