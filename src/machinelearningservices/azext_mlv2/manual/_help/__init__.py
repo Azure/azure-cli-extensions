@@ -41,7 +41,6 @@ from ._capability_host_help import get_capability_host_help
 
 get_environment_help()
 get_model_help()
-get_model_hosting_help()
 get_data_help()
 get_job_help()
 get_marketplace_subscription_help()
@@ -68,6 +67,7 @@ get_capability_host_help()
 
 if private_features_enabled():
     get_virtualcluster_help()
+    get_model_hosting_help()
 
 helps[
     "ml"

@@ -558,12 +558,17 @@ def run_registry_mgmt_cmd(args):
     Runs registry management command with the provided arguments.
     :param args: List of arguments to pass to the registry management command.
     """
-    return subprocess.run(
-        ["registry-mgmt"] + args,
-        stdout=None,  # None = inherit parent's stdout for seamless output as registry tool prints unicode chars
-        stderr=None,  # None = inherit parent's stderr for seamless output as registry tool prints unicode chars
-        text=True,
-    )
+    try:
+        return subprocess.run(
+            ["registry-mgmt"] + args,
+            stdout=None,  # None = inherit parent's stdout for seamless output as registry tool prints unicode chars
+            stderr=None,  # None = inherit parent's stderr for seamless output as registry tool prints unicode chars
+            text=True,
+            check=True,
+        )
+    except subprocess.CalledProcessError as ex:
+        log_and_raise_error(
+            f"registry-mgmt command failed with exit code {ex.returncode}. See the output above for details.")
 
 
 def parse_azureml_model_uri(uri: str):

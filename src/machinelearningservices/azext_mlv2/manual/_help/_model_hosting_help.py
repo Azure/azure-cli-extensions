@@ -75,7 +75,7 @@ def get_model_hosting_help():
         "ml modelpublisher plan"
     ] = """
         type: group
-        short-summary: Model publishers can use this command to create plan for their model by specifying details in defined yaml and later fetch the exisiting plan details.
+        short-summary: Model publishers can use this command to create plan for their model by specifying details in defined yaml and later fetch the existing plan details.
     """
 
     helps[

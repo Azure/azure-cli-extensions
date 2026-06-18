@@ -209,7 +209,7 @@ def add_optional_model_hosting_file_param(c):
         options_list=["--file", "-f"],
         required=False,
         type=str,
-        help="[Depreciated] Local path to the YAML file containing the configuration specification.",
+        help="[Deprecated] Local path to the YAML file containing the configuration specification.",
     )
 
 
