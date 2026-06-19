@@ -859,10 +859,7 @@ def cli_cosmosdb_create(cmd,
                         default_priority_level=None,
                         enable_prpp_autoscale=None,
                         enable_partition_merge=None,
-                        capacity_mode=None,
-                        soft_deletion_enabled=None,
-                        soft_deletion_retention_period_in_minutes=None,
-                        min_minutes_before_permanent_deletion_allowed=None):
+                        capacity_mode=None):
     """Create a new Azure Cosmos DB database account."""
 
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
@@ -921,10 +918,7 @@ def cli_cosmosdb_create(cmd,
                                     default_priority_level=default_priority_level,
                                     enable_prpp_autoscale=enable_prpp_autoscale,
                                     enable_partition_merge=enable_partition_merge,
-                                    capacity_mode=capacity_mode,
-                                    soft_deletion_enabled=soft_deletion_enabled,
-                                    soft_deletion_retention_period_in_minutes=soft_deletion_retention_period_in_minutes,
-                                    min_minutes_before_permanent_deletion_allowed=min_minutes_before_permanent_deletion_allowed)
+                                    capacity_mode=capacity_mode)
 
 
 # pylint: disable=too-many-branches
@@ -962,9 +956,7 @@ def cli_cosmosdb_update(client,
                         enable_prpp_autoscale=None,
                         enable_partition_merge=None,
                         capacity_mode=None,
-                        soft_deletion_enabled=None,
-                        soft_deletion_retention_period_in_minutes=None,
-                        min_minutes_before_permanent_deletion_allowed=None):
+                        soft_delete_configuration=None):
     """Update an existing Azure Cosmos DB database account. """
     existing = client.get(resource_group_name, account_name)
 
@@ -1030,17 +1022,6 @@ def cli_cosmosdb_update(client,
     if analytical_storage_schema_type is not None:
         analytical_storage_configuration = AnalyticalStorageConfiguration()
         analytical_storage_configuration.schema_type = analytical_storage_schema_type
-
-    soft_delete_configuration = None
-    if soft_deletion_enabled is not None or \
-            soft_deletion_retention_period_in_minutes is not None or \
-            min_minutes_before_permanent_deletion_allowed is not None:
-        from azure.mgmt.cosmosdb.models import SoftDeleteConfiguration  # pylint: disable=no-name-in-module
-        soft_delete_configuration = SoftDeleteConfiguration(
-            soft_deletion_enabled=soft_deletion_enabled,
-            soft_delete_retention_period_in_minutes=soft_deletion_retention_period_in_minutes,
-            min_minutes_before_permanent_deletion_allowed=min_minutes_before_permanent_deletion_allowed
-        )
 
     params = DatabaseAccountUpdateParameters(
         locations=locations,
@@ -1221,10 +1202,7 @@ def _create_database_account(client,
                              enable_prpp_autoscale=None,
                              disable_ttl=None,
                              enable_partition_merge=None,
-                             capacity_mode=None,
-                             soft_deletion_enabled=None,
-                             soft_deletion_retention_period_in_minutes=None,
-                             min_minutes_before_permanent_deletion_allowed=None):
+                             capacity_mode=None):
     consistency_policy = None
     if default_consistency_level is not None:
         consistency_policy = ConsistencyPolicy(default_consistency_level=default_consistency_level,
@@ -1319,17 +1297,6 @@ def _create_database_account(client,
         analytical_storage_configuration = AnalyticalStorageConfiguration()
         analytical_storage_configuration.schema_type = analytical_storage_schema_type
 
-    soft_delete_configuration = None
-    if soft_deletion_enabled is not None or \
-            soft_deletion_retention_period_in_minutes is not None or \
-            min_minutes_before_permanent_deletion_allowed is not None:
-        from azure.mgmt.cosmosdb.models import SoftDeleteConfiguration  # pylint: disable=no-name-in-module
-        soft_delete_configuration = SoftDeleteConfiguration(
-            soft_deletion_enabled=soft_deletion_enabled,
-            soft_delete_retention_period_in_minutes=soft_deletion_retention_period_in_minutes,
-            min_minutes_before_permanent_deletion_allowed=min_minutes_before_permanent_deletion_allowed
-        )
-
     create_mode = CreateMode.restore.value if is_restore_request else CreateMode.default.value
     params = None
     restore_parameters = None
@@ -1390,8 +1357,7 @@ def _create_database_account(client,
         default_priority_level=default_priority_level,
         enable_per_region_per_partition_autoscale=enable_prpp_autoscale,
         enable_partition_merge=enable_partition_merge,
-        capacity_mode=capacity_mode,
-        soft_delete_configuration=soft_delete_configuration
+        capacity_mode=capacity_mode
     )
 
     async_docdb_create = client.begin_create_or_update(resource_group_name, account_name, params)

@@ -569,8 +569,10 @@ examples:
     text: az cosmosdb update --capabilities EnableGremlin --name MyCosmosDBDatabaseAccount --resource-group MyResourceGroup
   - name: Update an Azure Cosmos DB database account to enable materialized views.
     text: az cosmosdb update --name MyCosmosDBDatabaseAccount --resource-group MyResourceGroup --enable-materialized-views true
-  - name: Enable soft deletion with 1440 minutes (24 hours) retention.
-    text: az cosmosdb update --name MyCosmosDBDatabaseAccount --resource-group MyResourceGroup --soft-deletion-enabled true --sd-retention 1440 --min-purge-minutes 60
+  - name: Enable soft deletion on the account with a 1440 minutes (24 hours) retention period.
+    text: az cosmosdb update --name MyCosmosDBDatabaseAccount --resource-group MyResourceGroup --soft-delete-config '{"softDeletionEnabled":true,"softDeleteRetentionPeriodInMinutes":1440,"minMinutesBeforePermanentDeletionAllowed":60}'
+  - name: Configure soft deletion on the account from a JSON file.
+    text: az cosmosdb update --name MyCosmosDBDatabaseAccount --resource-group MyResourceGroup --soft-delete-config @soft-delete-config.json
 """
 
 # restore account

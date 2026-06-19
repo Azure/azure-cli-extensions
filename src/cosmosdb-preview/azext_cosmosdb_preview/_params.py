@@ -32,7 +32,8 @@ from azext_cosmosdb_preview._validators import (
     validate_mongoMI_role_assignment_id,
     validate_fleetspace_body,
     validate_fleetspaceAccount_body,
-    validate_fleet_analytics_body)
+    validate_fleet_analytics_body,
+    validate_soft_delete_configuration)
 
 from azext_cosmosdb_preview.actions import (
     CreateGremlinDatabaseRestoreResource,
@@ -486,9 +487,7 @@ def load_arguments(self, _):
 
     with self.argument_context('cosmosdb update') as c:
         c.argument('key_uri', help="The URI of the key vault", is_preview=True)
-        c.argument('soft_deletion_enabled', options_list=['--soft-deletion-enabled'], arg_type=get_three_state_flag(), help="Flag to enable or disable soft deletion on the account.", is_preview=True, arg_group='Soft Delete')
-        c.argument('soft_deletion_retention_period_in_minutes', options_list=['--soft-deletion-retention-period-in-minutes', '--sd-retention'], type=int, help="Soft deletion retention period in minutes. Must be at least equal to min_minutes_before_permanent_deletion_allowed.", is_preview=True, arg_group='Soft Delete')
-        c.argument('min_minutes_before_permanent_deletion_allowed', options_list=['--min-minutes-before-permanent-deletion-allowed', '--min-purge-minutes'], type=int, help="Minimum minutes before permanent deletion is allowed for soft-deleted resources.", is_preview=True, arg_group='Soft Delete')
+        c.argument('soft_delete_configuration', options_list=['--soft-delete-config'], validator=validate_soft_delete_configuration, completer=FilesCompleter(), help="Soft delete configuration for the account, as a JSON string or a path to a JSON file, e.g. --soft-delete-config @soft-delete-config.json. Supported keys: softDeletionEnabled (bool), softDeleteRetentionPeriodInMinutes (int) and minMinutesBeforePermanentDeletionAllowed (int).", is_preview=True, arg_group='Soft Delete')
 
     with self.argument_context('cosmosdb restore') as c:
         c.argument('target_database_account_name', options_list=['--target-database-account-name', '-n'], help='Name of the new target Cosmos DB database account after the restore')
