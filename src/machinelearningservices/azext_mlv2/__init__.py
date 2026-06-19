@@ -7,18 +7,12 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
-import os
-
 from azure.cli.core import AzCommandsLoader
 
 from azext_mlv2.generated._help import helps  # pylint: disable=unused-import
 
-# Enable private/preview features (incl. the modelpublisher command group) before
-# importing manual help, which evaluates private-feature gating at import time.
-os.environ["AZURE_ML_CLI_PRIVATE_FEATURES_ENABLED"] = "True"
-
 try:
-    from azext_mlv2.manual._help import helps  # noqa: E402  # pylint: disable=reimported,wrong-import-position
+    from azext_mlv2.manual._help import helps  # pylint: disable=reimported
 except ImportError as e:
     print(e)
 

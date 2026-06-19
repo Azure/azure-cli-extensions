@@ -64,10 +64,10 @@ get_feature_store_entity_help()
 get_azure_openai_deployment_help()
 get_index_help()
 get_capability_host_help()
+get_model_hosting_help()
 
 if private_features_enabled():
     get_virtualcluster_help()
-    get_model_hosting_help()
 
 helps[
     "ml"
