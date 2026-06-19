@@ -738,6 +738,21 @@ helps['aks create'] = f"""
         - name: --enable-hosted-system
           type: bool
           short-summary: Create a cluster with fully hosted system components. This applies only when creating a new automatic cluster.
+          long-summary: |
+              Deterministically opts the cluster into HOBO (Hosted Overlay System Pool). AKS hosts and manages the system node pool.
+              This is also implied when you provide the BYO VNet subnet trio.
+        - name: --sys-node-subnet-id --system-node-subnet-id
+          type: string
+          short-summary: Resource ID of the subnet to be used by AKS-managed hosted system nodes (BYO VNet HOBO).
+          long-summary: |
+              Must be provided together with `--node-subnet-id` and `--apiserver-subnet-id`,
+              and all three subnets must belong to the same VNet. Only valid with `--sku automatic`.
+        - name: --node-subnet-id
+          type: string
+          short-summary: Resource ID of the subnet joined by tenant worker nodes in BYO VNet HOBO clusters.
+          long-summary: |
+              Must be provided together with `--system-node-subnet-id` and `--apiserver-subnet-id`,
+              and all three subnets must belong to the same VNet. Only valid with `--sku automatic`.
         - name: --control-plane-scaling-size --cp-scaling-size
           type: string
           short-summary: (PREVIEW) The control plane scaling size for the cluster.
@@ -840,6 +855,10 @@ helps['aks create'] = f"""
           text: az aks create -g MyResourceGroup -n MyManagedCluster --control-plane-scaling-size H4
         - name: Create an automatic cluster with hosted system components enabled.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --sku automatic --enable-hosted-system
+        - name: Create a hosted-system automatic cluster in a BYO VNet.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --sku automatic --system-node-subnet-id <systemNodeSubnetID> --node-subnet-id <nodeSubnetID> --apiserver-subnet-id <apiserverSubnetID>
+        - name: Create a hosted-system automatic cluster in a BYO VNet with Load Balancer outbound.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --sku automatic --enable-hosted-system --system-node-subnet-id <systemNodeSubnetID> --node-subnet-id <nodeSubnetID> --apiserver-subnet-id <apiserverSubnetID> --outbound-type loadBalancer
 
 """
 
