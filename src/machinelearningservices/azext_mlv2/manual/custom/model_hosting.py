@@ -25,6 +25,10 @@ module_logger = get_logger(__name__)
 
 LOCATION = "location"
 
+# Network timeout (seconds) for MPSS HTTP calls; generous enough for uploads/
+# downloads but bounded so a hung connection can't block the CLI indefinitely.
+REQUEST_TIMEOUT = 300
+
 
 def validate_config_file(config) -> None:
     if not isinstance(config, dict):
@@ -92,13 +96,13 @@ def append_correlation_id_message(user_message, correlation_id, message_type="de
 def make_request(url, headers, method="GET", data=None, params=None, stream=False):
     if method == "GET":
         response = requests.get(url, headers=headers,
-                                params=params, stream=stream)
+                                params=params, stream=stream, timeout=REQUEST_TIMEOUT)
     elif method == "PUT":
-        response = requests.put(url, headers=headers, data=data)
+        response = requests.put(url, headers=headers, data=data, timeout=REQUEST_TIMEOUT)
     elif method == "PATCH":
-        response = requests.patch(url, headers=headers, data=data)
+        response = requests.patch(url, headers=headers, data=data, timeout=REQUEST_TIMEOUT)
     elif method == "POST":
-        response = requests.post(url, headers=headers, data=data)
+        response = requests.post(url, headers=headers, data=data, timeout=REQUEST_TIMEOUT)
     else:
         raise InvalidArgumentValueError(f"Unsupported HTTP method: {method}")
 
@@ -204,6 +208,12 @@ def _download_file_from_response(response, file_name=None, result_path=None, fil
         raise BadRequestError(
             "Could not determine the output file name from the server response. "
             "Please provide one explicitly with --file-name.")
+
+    # Sanitize to a bare file name so a server-supplied content-disposition value
+    # (e.g. "../../etc/passwd") cannot write outside the target directory.
+    output_filename = os.path.basename(output_filename)
+    if not output_filename:
+        raise BadRequestError("The resolved output file name is not valid.")
 
     output_dir = result_path if result_path else os.getcwd()
     file_path = os.path.join(output_dir, output_filename)
@@ -568,12 +578,12 @@ def ml_model_hosting_generate_model_card_template(cmd, model_card_dir=None):
     print(f"Creating model card template at {model_card_dir}")
     os.makedirs(model_card_dir, exist_ok=True)
 
-    try:
-        github_branch = "mpss/model_card"
-        github_template_folder_path = "assets/models/template"
-        api_url = f"https://api.github.com/repos/Azure/azureml-assets/contents/{github_template_folder_path}?ref={github_branch}"
+    github_branch = "mpss/model_card"
+    github_template_folder_path = "assets/models/template"
+    api_url = f"https://api.github.com/repos/Azure/azureml-assets/contents/{github_template_folder_path}?ref={github_branch}"
 
-        response = requests.get(api_url)
+    try:
+        response = requests.get(api_url, timeout=REQUEST_TIMEOUT)
         response.raise_for_status()
 
         items = response.json()
@@ -581,17 +591,19 @@ def ml_model_hosting_generate_model_card_template(cmd, model_card_dir=None):
         for item in items:
             if item["type"] == "file":
                 download_url = item["download_url"]
-                file_name = os.path.join(model_card_dir, item["name"])
-                file_resp = requests.get(download_url)
+                file_name = os.path.join(model_card_dir, os.path.basename(item["name"]))
+                file_resp = requests.get(download_url, timeout=REQUEST_TIMEOUT)
                 file_resp.raise_for_status()
                 with open(file_name, "wb") as f:
                     f.write(file_resp.content)
                 print(f"Created {item['name']}")
         print("Model card template successfully created!")
-    except requests.ConnectionError:
-        module_logger.error("Network connection error, please retry")
-    except Exception:  # pylint: disable=broad-except
-        module_logger.error("Unexpected error, please retry")
+    except requests.ConnectionError as err:
+        raise BadRequestError(
+            "Network connection error while downloading the model card template. Please retry.") from err
+    except requests.RequestException as err:
+        raise AzureInternalError(
+            f"Failed to download the model card template: {err}") from err
 
 # validate model card files
 
