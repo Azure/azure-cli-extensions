@@ -644,6 +644,52 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
         updated_continuous_tier = updated_account['backupPolicy']['continuousModeProperties']['tier']
         assert updated_continuous_tier == 'Continuous30Days'
 
+        # Update account to Continuous 35 days
+        self.cmd('az cosmosdb update -n {acc} -g {rg} --backup-policy-type Continuous --continuous-tier Continuous35Days')
+        updated_account = self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
+        print(updated_account)
+
+        assert updated_account is not None
+        assert updated_account['backupPolicy'] is not None
+        assert updated_account['backupPolicy']['continuousModeProperties'] is not None
+
+        updated_continuous_tier = updated_account['backupPolicy']['continuousModeProperties']['tier']
+        assert updated_continuous_tier == 'Continuous35Days'
+
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_provision_continuous35days', location='eastus2')
+    def test_cosmosdb_sql_continuous35days(self, resource_group):
+        col = self.create_random_name(prefix='cli', length=15)
+        db_name = self.create_random_name(prefix='cli', length=15)
+
+        self.kwargs.update({
+            'acc': self.create_random_name(prefix='cli-continuous35-', length=25),
+            'db_name': db_name,
+            'col': col,
+            'loc': 'eastus2'
+        })
+
+        self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --continuous-tier Continuous35Days --locations regionName={loc} --kind GlobalDocumentDB')
+        account = self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
+        print(account)
+
+        assert account is not None
+        assert account['backupPolicy'] is not None
+        assert account['backupPolicy']['continuousModeProperties'] is not None
+
+        continuous_tier = account['backupPolicy']['continuousModeProperties']['tier']
+        assert continuous_tier == 'Continuous35Days'
+
+        self.cmd('az cosmosdb update -n {acc} -g {rg} --backup-policy-type Continuous --continuous-tier Continuous7Days')
+        updated_account = self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
+        print(updated_account)
+
+        assert updated_account is not None
+        assert updated_account['backupPolicy'] is not None
+        assert updated_account['backupPolicy']['continuousModeProperties'] is not None
+
+        updated_continuous_tier = updated_account['backupPolicy']['continuousModeProperties']['tier']
+        assert updated_continuous_tier == 'Continuous7Days'
+
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_oldestRestorableTime', location='eastus2')
     def test_cosmosdb_sql_oldestRestorableTime(self, resource_group):
