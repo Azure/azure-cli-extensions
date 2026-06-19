@@ -43,9 +43,6 @@ manifest = '''
             "type": "SnapshotRG"
         }
     ],
-            "type": "DataSource"
-        }
-    ],
     "policySettings": {
         "supportedRetentionTags": [ "Daily", "Weekly" ],
         "supportedDatastoreTypes": [ "OperationalStore" ],

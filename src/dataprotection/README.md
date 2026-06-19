@@ -126,12 +126,13 @@ az dataprotection backup-instance initialize-restoreconfig \
     --resource-identifiers source-vol1 source-vol2 \
     --resource-name-overrides '{"source-vol1":"restored-vol1","source-vol2":"restored-vol2"}' > esan_restore_config.json
 
-# 2) Initialize restore request (target-resource-id is target volume group ARM ID)
+# 2) Initialize restore request (target-resource-id is target volume group ARM ID).
+#    Elastic SAN supports alternate-location restore only, so pass --target-resource-id
+#    (do not pass --backup-instance-id; the two are mutually exclusive).
 az dataprotection backup-instance restore initialize-for-item-recovery \
     --datasource-type AzureElasticSAN \
     --source-datastore OperationalStore \
     --restore-location {location} \
-    --backup-instance-id {backup_instance_id} \
     --recovery-point-id {recovery_point_id} \
     --target-resource-id {target_volume_group_id} \
     --restore-configuration @esan_restore_config.json > esan_restore_request.json
