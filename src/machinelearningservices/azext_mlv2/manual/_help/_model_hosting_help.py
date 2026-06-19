@@ -46,28 +46,28 @@ def get_model_hosting_help():
         "ml modelpublisher show"
     ] = """
             type: command
-            short-summary: Displays publisher details for a given a publisher.
+            short-summary: Displays publisher details for a given publisher.
 
     """
     helps[
         "ml modelpublisher update"
     ] = """
             type: command
-            short-summary: Updates publisher details for a given a publisher.
+            short-summary: Updates publisher details for a given publisher.
 
     """
     helps[
         "ml modelpublisher registry"
     ] = """
             type: group
-            short-summary: Source registry details for a given a publisher.
+            short-summary: Source registry details for a given publisher.
 
     """
     helps[
         "ml modelpublisher registry set"
     ] = """
             type: command
-            short-summary: Set source registry details for a given a publisher.
+            short-summary: Set source registry details for a given publisher.
 
     """
 
@@ -229,7 +229,7 @@ def get_model_hosting_help():
         "ml modelpublisher model-card-internal"
     ] = """
         type: group
-        short-summary: Used by Microsoft-PM's to add system tags to your model.
+        short-summary: Used by Microsoft PMs to add system tags to your model.
     """
 
     helps[

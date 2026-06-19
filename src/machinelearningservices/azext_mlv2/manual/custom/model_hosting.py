@@ -107,9 +107,11 @@ def make_request(url, headers, method="GET", data=None, params=None, stream=Fals
 
     correlation_id = response.headers.get("x-mpss-correlation-id")
 
-    if response.status_code == 200:
+    if 200 <= response.status_code < 300:
         if stream:
             return response
+        if not response.content:
+            return None
         try:
             return response.json()
         except ValueError:
@@ -209,7 +211,9 @@ def _download_file_from_response(response, file_name=None, result_path=None, fil
     os.makedirs(os.path.dirname(os.path.abspath(file_path)), exist_ok=True)
 
     with open(file_path, 'wb') as file:
-        file.write(response.content)
+        for chunk in response.iter_content(chunk_size=8192):
+            if chunk:
+                file.write(chunk)
 
     module_logger.info(
         f"Downloaded {file_type_description} ({os.path.getsize(file_path)/1024:.1f} KB) saved to: {file_path}")
