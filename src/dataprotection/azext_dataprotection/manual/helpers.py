@@ -57,7 +57,8 @@ datasource_map = {
     "AzureKubernetesService": "Microsoft.ContainerService/managedClusters",
     "AzureDatabaseForPostgreSQLFlexibleServer": "Microsoft.DBforPostgreSQL/flexibleServers",
     "AzureDatabaseForMySQL": "Microsoft.DBforMySQL/flexibleServers",
-    "AzureCosmosDB": "Microsoft.DocumentDB/databaseAccounts"
+    "AzureCosmosDB": "Microsoft.DocumentDB/databaseAccounts",
+    "AzureElasticSAN": "Microsoft.ElasticSan/elasticSans/volumeGroups"
 }
 
 # This is ideally temporary, as Backup Vault contains secondary region information. But in some cases
@@ -570,6 +571,15 @@ def get_resource_criteria_list(datasource_type, restore_configuration, container
             restore_criteria = restore_configuration
         else:
             raise RequiredArgumentMissingError("Please input parameter restore_configuration for AKS cluster restore.\n\
+                                               Use command initialize-restoreconfig for creating the RestoreConfiguration")
+        restore_criteria_list.append(restore_criteria)
+        return restore_criteria_list
+
+    if datasource_type == "AzureElasticSAN":
+        if restore_configuration is not None:
+            restore_criteria = restore_configuration
+        else:
+            raise RequiredArgumentMissingError("Please input parameter restore_configuration for AzureElasticSAN restore.\n\
                                                Use command initialize-restoreconfig for creating the RestoreConfiguration")
         restore_criteria_list.append(restore_criteria)
         return restore_criteria_list
