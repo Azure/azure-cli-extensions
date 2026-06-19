@@ -24595,3 +24595,51 @@ spec:
             "aks delete -g {resource_group} -n {name} --yes --no-wait",
             checks=[self.is_empty()],
         )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westus2"
+    )
+    def test_aks_create_node_disruption_policy(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "resource_type": "Microsoft.ContainerService/ManagedClusters",
+                "network_plugin": "azure",
+                "network_plugin_mode": "overlay",
+            }
+        )
+
+        # create aks cluster with node disruption policy set to "Block"
+        self.cmd(
+            "aks create "
+            "--resource-group={resource_group} "
+            "--name={name} "
+            "--ssh-key-value={ssh_key_value} "
+            "--network-plugin={network_plugin} "
+            "--network-plugin-mode={network_plugin_mode} "
+            "--network-policy=none "
+            "--node-disruption-policy=Block "
+            "--node-count=3",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.networkPolicy", "none"),
+                self.check("nodeDisruptionProfile.nodeDisruptionPolicy", "Block"),
+            ],
+        )
+
+        # attempt to change network policy which should be blocked by node disruption policy
+        self.cmd(
+            "aks update --resource-group={resource_group} --name={name} --network-policy=azure",
+            expect_failure=True,
+        )
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )

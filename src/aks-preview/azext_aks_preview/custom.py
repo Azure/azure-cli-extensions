@@ -1168,6 +1168,8 @@ def aks_create(
     ephemeral_disk_nvme_perf_tier=None,
     node_provisioning_mode=None,
     node_provisioning_default_pools=None,
+    # node disruption policy
+    node_disruption_policy=None,
     ssh_access=CONST_SSH_ACCESS_LOCALUSER,
     # trusted launch
     enable_secure_boot=False,

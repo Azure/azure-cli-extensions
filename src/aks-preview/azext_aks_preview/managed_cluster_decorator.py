@@ -5091,6 +5091,25 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         return mc
 
+    def set_up_node_disruption_policy(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up the nodeDisruptionPolicy field of the managed cluster
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        policy = self.context.get_node_disruption_policy()
+        if policy is not None:
+            if mc.node_disruption_profile is None:
+                mc.node_disruption_profile = (
+                    self.models.NodeDisruptionProfile()  # pylint: disable=no-member
+                )
+
+            # set policy
+            mc.node_disruption_profile.node_disruption_policy = policy
+
+        return mc
+
     def set_up_ai_toolchain_operator(self, mc: ManagedCluster) -> ManagedCluster:
         self._ensure_mc(mc)
 
@@ -5289,6 +5308,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_azure_container_storage(mc)
         # set up node provisioning profile
         mc = self.set_up_node_provisioning_profile(mc)
+        # set up node disruption policy
+        mc = self.set_up_node_disruption_policy(mc)
         # set up agentpool profile ssh access
         mc = self.set_up_agentpool_profile_ssh_access(mc)
         # set up bootstrap profile
