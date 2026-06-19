@@ -47,6 +47,7 @@ from azure.ai.ml.exceptions import (
     ValidationErrorType,
     ValidationException,
 )
+from azure.cli.core.azclierror import FileOperationError
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.telemetry import add_extension_event
@@ -489,8 +490,8 @@ def _load_self_serve_config():
             module_logger.debug(f"Found configuration file at {config_path}")
             config = json.load(config_file)
         return config
-    except FileNotFoundError:
-        raise Exception(f"Configuration file not found at {config_path}")  # pylint: disable=broad-exception-raised
+    except FileNotFoundError as err:
+        raise FileOperationError(f"Configuration file not found at {config_path}") from err
 
 
 def _resolve_self_serve_target(location: str = None) -> Tuple[str, Dict]:
