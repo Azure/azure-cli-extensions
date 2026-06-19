@@ -5,17 +5,62 @@
 # --------------------------------------------------------------------------------------------
 
 import json
-from azure.cli.core.azclierror import InvalidArgumentValueError
+from azure.cli.core.azclierror import InvalidArgumentValueError, ValidationError
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.mgmt.core.tools import parse_resource_id
 from knack.log import get_logger
+from knack.prompting import prompt_y_n, NoTTYException
 
 logger = get_logger(__name__)
 
 
+K8S_EXTENSION_NAME = "k8s-extension"
+
 # Tag used to identify storage accounts created for AKS backup
 # Format: AKSAzureBackup: <location>
 AKS_BACKUP_TAG_KEY = "AKSAzureBackup"
+
+
+def _ensure_k8s_extension(cmd, yes=False):
+    """Ensure the k8s-extension CLI extension is installed and importable.
+
+    If the extension is not installed, prompt the user to install it
+    (or install silently when ``yes`` is True). Raises
+    ``ValidationError`` if the user declines.
+    """
+    from azure.cli.core.extension.operations import add_extension_to_path
+
+    try:
+        add_extension_to_path(K8S_EXTENSION_NAME)
+        from importlib import import_module
+        import_module("azext_k8s_extension.custom")  # verify importable
+        return
+    except (ImportError, Exception):  # pylint: disable=broad-except
+        pass
+
+    install_msg = (
+        f"The '{K8S_EXTENSION_NAME}' CLI extension is required to install "
+        "the data protection extension on the AKS cluster but is not "
+        "installed. Install it now?"
+    )
+    proceed = yes
+    if not proceed:
+        try:
+            proceed = prompt_y_n(install_msg, default="y")
+        except NoTTYException:
+            proceed = False
+    if not proceed:
+        raise ValidationError(
+            f"The '{K8S_EXTENSION_NAME}' CLI extension is required for "
+            "AKS backup operations.\n"
+            f"Run `az extension add --name {K8S_EXTENSION_NAME}` "
+            "and retry, or rerun with --yes to auto-install."
+        )
+
+    logger.warning("Installing CLI extension '%s'...", K8S_EXTENSION_NAME)
+    from azure.cli.core.extension.operations import add_extension
+    add_extension(cmd=cmd, extension_name=K8S_EXTENSION_NAME)
+    add_extension_to_path(K8S_EXTENSION_NAME)
 
 
 def _check_and_assign_role(cmd, role, assignee, scope, identity_name="identity", max_retries=3, retry_delay=10):
@@ -436,6 +481,7 @@ def _setup_storage_account(cmd, cluster_subscription_id, storage_account_id,
                            cluster_resource_group_name, resource_tags):
     """Create or use storage account."""
     from azure.mgmt.storage import StorageManagementClient
+    from azure.mgmt.storage.models import Sku, StorageAccountCreateParameters
 
     storage_client = get_mgmt_service_client(
         cmd.cli_ctx, StorageManagementClient,
@@ -475,14 +521,14 @@ def _setup_storage_account(cmd, cluster_subscription_id, storage_account_id,
             if resource_tags:
                 sa_tags.update(resource_tags)
 
-            storage_params = {
-                "location": cluster_location,
-                "kind": "StorageV2",
-                "sku": {"name": "Standard_LRS"},
-                "allow_blob_public_access": False,
-                "allow_shared_key_access": False,
-                "tags": sa_tags
-            }
+            storage_params = StorageAccountCreateParameters(
+                location=cluster_location,
+                kind="StorageV2",
+                sku=Sku(name="Standard_LRS"),
+                allow_blob_public_access=False,
+                allow_shared_key_access=False,
+                tags=sa_tags,
+            )
             backup_storage_account = storage_client.storage_accounts.begin_create(
                 resource_group_name=backup_resource_group_name,
                 account_name=backup_storage_account_name,
@@ -506,7 +552,7 @@ def _install_backup_extension(cmd, cluster_subscription_id,
                               backup_storage_account_name,
                               backup_storage_account_container_name,
                               backup_resource_group_name,
-                              backup_storage_account):
+                              backup_storage_account, yes=False):
     """Install backup extension on the cluster."""
     backup_extension = _create_backup_extension(
         cmd,
@@ -516,7 +562,8 @@ def _install_backup_extension(cmd, cluster_subscription_id,
         backup_storage_account_name,
         backup_storage_account_container_name,
         backup_resource_group_name,
-        cluster_subscription_id)
+        cluster_subscription_id,
+        yes=yes)
 
     _check_and_assign_role(
         cmd,
@@ -1009,14 +1056,14 @@ def _show_plan_and_confirm(cluster_subscription_id, cluster_name,
     logger.warning("  RBAC role assignments listed above.")
     logger.warning("")
 
-    from knack.prompting import prompt_y_n
     return prompt_y_n("Do you want to proceed?", default='y')
 
 
 def _setup_extension_and_storage(
         cmd, cluster_subscription_id, cluster_resource_group_name,
         cluster_name, storage_account_id, blob_container_name,
-        backup_resource_group_name, cluster_location, resource_tags):
+        backup_resource_group_name, cluster_location, resource_tags,
+        yes=False):
     """Setup backup extension and storage account (steps 3 & 4).
 
     If the extension is already installed, reuses its configured storage
@@ -1074,7 +1121,8 @@ def _setup_extension_and_storage(
             cmd, cluster_subscription_id,
             cluster_resource_group_name, cluster_name,
             sa_result[1], sa_result[2],
-            backup_resource_group_name, backup_storage_account)
+            backup_resource_group_name, backup_storage_account,
+            yes=yes)
 
     return backup_storage_account
 
@@ -1141,7 +1189,8 @@ def dataprotection_enable_backup_helper(
         cmd, cluster_subscription_id, cluster_resource_group_name,
         cluster_name, configuration_params.get("storageAccountResourceId"),
         configuration_params.get("blobContainerName"),
-        backup_resource_group_name, cluster_location, resource_tags)
+        backup_resource_group_name, cluster_location, resource_tags,
+        yes=yes)
 
     # Step 5: Setup backup vault
     logger.warning("[5/8] Setting up backup vault...")
@@ -1503,7 +1552,7 @@ def _create_backup_extension(
         cmd, subscription_id, resource_group_name, cluster_name,
         storage_account_name, storage_account_container_name,
         storage_account_resource_group,
-        storage_account_subscription_id):
+        storage_account_subscription_id, yes=False):
     """Create or reuse the data protection k8s extension."""
     from azext_dataprotection.vendored_sdks.azure_mgmt_kubernetesconfiguration import SourceControlConfigurationClient
     k8s_configuration_client = get_mgmt_service_client(
@@ -1555,9 +1604,11 @@ def _create_backup_extension(
 
     logger.warning("Installing data protection extension (azure-aks-backup)...")
 
+    _ensure_k8s_extension(cmd, yes=yes)
+
     from azure.cli.core.extension.operations import add_extension_to_path
     from importlib import import_module
-    add_extension_to_path("k8s-extension")
+    add_extension_to_path(K8S_EXTENSION_NAME)
     k8s_ext_client_factory = import_module(
         "azext_k8s_extension._client_factory")
     k8s_extension_module = import_module("azext_k8s_extension.custom")
