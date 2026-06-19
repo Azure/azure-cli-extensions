@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "monitor health-models discovery-rule show",
 )
 class Show(AAZCommand):
-    """Get a discovery rule.
+    """Get a DiscoveryRule
 
-    :example: Get a discovery rule
-        az monitor health-models discovery-rule show --resource-group myRG --health-model-name myModel --name vmDiscovery
+    :example: DiscoveryRules_Get
+        az monitor health-models discovery-rule show --resource-group myResourceGroup --health-model-name myHealthModel --discovery-rule-name myDiscoveryRule
     """
 
     _aaz_info = {
-        "version": "2026-01-01-preview",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/discoveryrules/{}", "2026-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/discoveryrules/{}", "2026-05-01-preview"],
         ]
     }
 
@@ -136,7 +136,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-01-preview",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -188,6 +188,9 @@ class Show(AAZCommand):
             properties.add_recommended_signals = AAZStrType(
                 serialized_name="addRecommendedSignals",
                 flags={"required": True},
+            )
+            properties.add_resource_health_signal = AAZStrType(
+                serialized_name="addResourceHealthSignal",
             )
             properties.authentication_setting = AAZStrType(
                 serialized_name="authenticationSetting",

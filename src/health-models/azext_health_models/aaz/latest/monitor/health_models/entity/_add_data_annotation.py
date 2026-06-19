@@ -12,27 +12,26 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "monitor health-models authentication-setting list",
+    "monitor health-models entity add-data-annotation",
 )
-class List(AAZCommand):
-    """List AuthenticationSetting resources by HealthModel
+class AddDataAnnotation(AAZCommand):
+    """Add a data annotation to an entity
 
-    :example: AuthenticationSettings_ListByHealthModel
-        az monitor health-models authentication-setting list --resource-group my-resource-group --health-model-name my-health-model
+    :example: Entities_AddDataAnnotation
+        az monitor health-models entity add-data-annotation --resource-group rgopenapi --health-model-name myHealthModel --entity-name entity1 --annotation-details "{environment:production,deploymentId:deploy-2026-04-10-001,changedBy:release-pipeline}" --description Production deployment of v2.4.1
     """
 
     _aaz_info = {
         "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/authenticationsettings", "2026-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/entities/{}/adddataannotation", "2026-05-01-preview"],
         ]
     }
 
-    AZ_SUPPORT_PAGINATION = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_paging(self._execute_operations, self._output)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -45,10 +44,20 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.entity_name = AAZStrArg(
+            options=["--entity-name"],
+            help="Name of the entity. Must be unique within a health model.",
+            required=True,
+            id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-]{1,258}[a-zA-Z0-9]$",
+            ),
+        )
         _args_schema.health_model_name = AAZStrArg(
             options=["--health-model-name"],
             help="Name of health model resource",
             required=True,
+            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z][a-zA-Z0-9-]{1,42}[a-zA-Z0-9]$",
             ),
@@ -56,11 +65,36 @@ class List(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
+
+        # define Arg Group "Body"
+
+        _args_schema = cls._args_schema
+        _args_schema.annotation_details = AAZDictArg(
+            options=["--annotation-details"],
+            arg_group="Body",
+            help="Annotation details as a dynamic key-value pair bag. Service-enforced limits: a maximum of 10 entries per annotation and a maximum value length of 256 characters. Requests exceeding these limits will be rejected with a 400 response.",
+            required=True,
+        )
+        _args_schema.description = AAZStrArg(
+            options=["--description"],
+            arg_group="Body",
+            help="Optional description of the annotation",
+            fmt=AAZStrArgFormat(
+                max_length=4096,
+            ),
+        )
+
+        annotation_details = cls._args_schema.annotation_details
+        annotation_details.Element = AAZStrArg(
+            fmt=AAZStrArgFormat(
+                max_length=256,
+            ),
+        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.AuthenticationSettingsListByHealthModel(ctx=self.ctx)()
+        self.EntitiesAddDataAnnotation(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -72,11 +106,10 @@ class List(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
-        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
-        return result, next_link
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        return result
 
-    class AuthenticationSettingsListByHealthModel(AAZHttpOperation):
+    class EntitiesAddDataAnnotation(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -90,13 +123,13 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.CloudHealth/healthmodels/{healthModelName}/authenticationsettings",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.CloudHealth/healthmodels/{healthModelName}/entities/{entityName}/addDataAnnotation",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "GET"
+            return "POST"
 
         @property
         def error_format(self):
@@ -105,6 +138,10 @@ class List(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
+                **self.serialize_url_param(
+                    "entityName", self.ctx.args.entity_name,
+                    required=True,
+                ),
                 **self.serialize_url_param(
                     "healthModelName", self.ctx.args.health_model_name,
                     required=True,
@@ -134,10 +171,29 @@ class List(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+            )
+            _builder.set_prop("annotationDetails", AAZDictType, ".annotation_details", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("description", AAZStrType, ".description")
+
+            annotation_details = _builder.get(".annotationDetails")
+            if annotation_details is not None:
+                annotation_details.set_elements(AAZStrType, ".")
+
+            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -157,76 +213,28 @@ class List(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.next_link = AAZStrType(
-                serialized_name="nextLink",
-            )
-            _schema_on_200.value = AAZListType(
+            _schema_on_200.annotation_details = AAZDictType(
+                serialized_name="annotationDetails",
                 flags={"required": True},
             )
-
-            value = cls._schema_on_200.value
-            value.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element
-            _element.id = AAZStrType(
+            _schema_on_200.annotation_id = AAZStrType(
+                serialized_name="annotationId",
                 flags={"read_only": True},
             )
-            _element.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.properties = AAZObjectType()
-            _element.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _element.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.value.Element.properties
-            properties.authentication_kind = AAZStrType(
-                serialized_name="authenticationKind",
-                flags={"required": True},
-            )
-            properties.display_name = AAZStrType(
-                serialized_name="displayName",
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-
-            disc_managed_identity = cls._schema_on_200.value.Element.properties.discriminate_by("authentication_kind", "ManagedIdentity")
-            disc_managed_identity.managed_identity_name = AAZStrType(
-                serialized_name="managedIdentityName",
-                flags={"required": True},
-            )
-
-            system_data = cls._schema_on_200.value.Element.system_data
-            system_data.created_at = AAZStrType(
+            _schema_on_200.created_at = AAZStrType(
                 serialized_name="createdAt",
+                flags={"read_only": True},
             )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
+            _schema_on_200.description = AAZStrType()
+
+            annotation_details = cls._schema_on_200.annotation_details
+            annotation_details.Element = AAZStrType()
 
             return cls._schema_on_200
 
 
-class _ListHelper:
-    """Helper class for List"""
+class _AddDataAnnotationHelper:
+    """Helper class for AddDataAnnotation"""
 
 
-__all__ = ["List"]
+__all__ = ["AddDataAnnotation"]

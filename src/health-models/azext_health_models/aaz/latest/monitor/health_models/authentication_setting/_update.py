@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "monitor health-models authentication-setting update",
 )
 class Update(AAZCommand):
-    """Update an authentication setting.
+    """Update a AuthenticationSetting
 
-    :example: Update the display name of an authentication setting
-        az monitor health-models authentication-setting update --resource-group myRG --health-model-name myModel --name myAuth --display-name "Auth for production"
+    :example: AuthenticationSettings_CreateOrUpdate
+        az monitor health-models authentication-setting update --resource-group myResourceGroup --health-model-name myHealthModel --authentication-setting-name myAuthSetting
     """
 
     _aaz_info = {
-        "version": "2026-01-01-preview",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/authenticationsettings/{}", "2026-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/authenticationsettings/{}", "2026-05-01-preview"],
         ]
     }
 
@@ -180,7 +180,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-01-preview",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -283,7 +283,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-01-preview",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }

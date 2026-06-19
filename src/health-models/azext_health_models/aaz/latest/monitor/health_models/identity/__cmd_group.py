@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "monitor health-models identity",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage system- and user-assigned managed identities on a health model.
+    """Manage Identity
     """
     pass
 

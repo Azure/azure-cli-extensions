@@ -15,19 +15,16 @@ from azure.cli.core.aaz import *
     "monitor health-models authentication-setting create",
 )
 class Create(AAZCommand):
-    """Create an authentication setting backed by a managed identity.
+    """Create a AuthenticationSetting
 
-    :example: Create an authentication setting backed by the model's system-assigned identity
-        az monitor health-models authentication-setting create --resource-group myRG --health-model-name myModel --name myAuth --managed-identity SystemAssigned
-
-    :example: Create an authentication setting backed by a user-assigned identity
-        az monitor health-models authentication-setting create --resource-group myRG --health-model-name myModel --name myAuth --managed-identity /subscriptions/.../userAssignedIdentities/myUai
+    :example: AuthenticationSettings_CreateOrUpdate
+        az monitor health-models authentication-setting create --resource-group myResourceGroup --health-model-name myHealthModel --authentication-setting-name myAuthSetting --display-name myDisplayName
     """
 
     _aaz_info = {
-        "version": "2026-01-01-preview",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/authenticationsettings/{}", "2026-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/authenticationsettings/{}", "2026-05-01-preview"],
         ]
     }
 
@@ -182,7 +179,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-01-preview",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }

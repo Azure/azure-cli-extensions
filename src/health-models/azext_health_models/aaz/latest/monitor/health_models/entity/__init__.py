@@ -9,10 +9,13 @@
 # flake8: noqa
 
 from .__cmd_group import *
+from ._add_data_annotation import *
 from ._create import *
 from ._delete import *
+from ._get_data_annotations import *
 from ._get_history import *
 from ._get_signal_history import *
+from ._get_signal_recommendations import *
 from ._ingest_health_report import *
 from ._list import *
 from ._show import *

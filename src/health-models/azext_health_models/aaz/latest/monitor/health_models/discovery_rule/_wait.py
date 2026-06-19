@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/discoveryrules/{}", "2026-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/discoveryrules/{}", "2026-05-01-preview"],
         ]
     }
 
@@ -132,7 +132,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-01-preview",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -184,6 +184,9 @@ class Wait(AAZWaitCommand):
             properties.add_recommended_signals = AAZStrType(
                 serialized_name="addRecommendedSignals",
                 flags={"required": True},
+            )
+            properties.add_resource_health_signal = AAZStrType(
+                serialized_name="addResourceHealthSignal",
             )
             properties.authentication_setting = AAZStrType(
                 serialized_name="authenticationSetting",

@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "monitor health-models authentication-setting show",
 )
 class Show(AAZCommand):
-    """Get an authentication setting.
+    """Get a AuthenticationSetting
 
-    :example: Get an authentication setting
-        az monitor health-models authentication-setting show --resource-group myRG --health-model-name myModel --name myAuth
+    :example: AuthenticationSettings_Get
+        az monitor health-models authentication-setting show --resource-group my-resource-group --health-model-name my-health-model --authentication-setting-name my-auth-setting
     """
 
     _aaz_info = {
-        "version": "2026-01-01-preview",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/authenticationsettings/{}", "2026-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/authenticationsettings/{}", "2026-05-01-preview"],
         ]
     }
 
@@ -136,7 +136,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-01-preview",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }

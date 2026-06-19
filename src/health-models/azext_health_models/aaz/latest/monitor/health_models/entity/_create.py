@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "monitor health-models entity create",
 )
 class Create(AAZCommand):
-    """Create an entity in a health model.
+    """Create a Entity
 
-    :example: Create an entity in a health model
-        az monitor health-models entity create --resource-group myRG --health-model-name myModel --name webTier --display-name "Web Tier" --impact Standard
+    :example: Entities_CreateOrUpdate
+        az monitor health-models entity create --resource-group rgopenapi --health-model-name myHealthModel --entity-name uszrxbdkxesdrxhmagmzywebgbjj --display-name My entity --canvas-position "{x:14,y:13}" --icon "{icon-name:Custom,custom-data:rcitntvapruccrhtxmkqjphbxunkz}" --health-objective 62 --impact Standard --tags "{key1376:'sample tag'}" --signal-groups "{azure-resource:{authentication-setting:auth123,azure-resource-id:/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/rg1/providers/Microsoft.Compute/virtualMachines/vm1,azure-resource-kind:functionapp,signals:[{signalKind:AzureResourceMetric,name:uniqueSignalName1,signal-definition-name:sigdef1,metric-namespace:microsoft.compute/virtualMachines,metric-name:cpuusage,aggregation-type:None,dimension-filter:'node eq '/node1'/',display-name:'CPU usage',refresh-interval:PT1M,time-grain:PT1M,data-unit:Count,evaluation-rules:{degradedRule:{operator:LowerThan,threshold:10},unhealthyRule:{operator:LowerThan,threshold:1}}}]},azure-log-analytics:{authentication-setting:auth123,log-analytics-workspace-resource-id:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.OperationalInsights/workspaces/myworkspace,signals:[{signalKind:LogAnalyticsQuery,name:uniqueSignalName2,signal-definition-name:null,evaluation-rules:{degradedRule:{operator:GreaterThan,threshold:1},unhealthyRule:{operator:GreaterThan,threshold:5}},refresh-interval:PT1M,query-text:'print 1',time-grain:PT30M,value-column-name:result,display-name:'Test LA signal',data-unit:'my unit'}]},azure-monitor-workspace:{authentication-setting:auth123,azure-monitor-workspace-resource-id:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.OperationalInsights/workspaces/myworkspace,signals:[{signalKind:PrometheusMetricsQuery,name:pod-cpu-usage,signal-definition-name:PodCpuUsageDefinition,display-name:'Pod CPU Usage',refresh-interval:PT1M,data-unit:Percent,query-text:\\'rate(container_cpu_usage_seconds_total{pod=~"my-app-.*"}[5m]) * 100\\',time-grain:PT5M,evaluation-rules:{degradedRule:{operator:GreaterThan,threshold:70},unhealthyRule:{operator:GreaterThan,threshold:90}}}]},dependencies:{aggregation-type:MinHealthy,unit:Percentage,degraded-threshold:80,unhealthy-threshold:50}}" --alerts "{unhealthy:{severity:Sev1,description:'Alert description',actionGroupIds:[/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.Insights/actionGroups/myactiongroup]},degraded:{severity:Sev4,description:'Alert description',actionGroupIds:[/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.Insights/actionGroups/myactiongroup]}}"
     """
 
     _aaz_info = {
-        "version": "2026-01-01-preview",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/entities/{}", "2026-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/entities/{}", "2026-05-01-preview"],
         ]
     }
 
@@ -247,7 +247,7 @@ class Create(AAZCommand):
             options=["refresh-interval"],
             help="Interval in which the signal is being evaluated. Defaults to PT1M (1 minute).",
             default="PT1M",
-            enum={"PT10M": "PT10M", "PT1H": "PT1H", "PT1M": "PT1M", "PT2H": "PT2H", "PT30M": "PT30M", "PT5M": "PT5M"},
+            enum={"PT10M": "PT10M", "PT15M": "PT15M", "PT1H": "PT1H", "PT1M": "PT1M", "PT2H": "PT2H", "PT30M": "PT30M", "PT5M": "PT5M"},
         )
         _element.signal_definition_name = AAZStrArg(
             options=["signal-definition-name"],
@@ -340,7 +340,7 @@ class Create(AAZCommand):
             options=["refresh-interval"],
             help="Interval in which the signal is being evaluated. Defaults to PT1M (1 minute).",
             default="PT1M",
-            enum={"PT10M": "PT10M", "PT1H": "PT1H", "PT1M": "PT1M", "PT2H": "PT2H", "PT30M": "PT30M", "PT5M": "PT5M"},
+            enum={"PT10M": "PT10M", "PT15M": "PT15M", "PT1H": "PT1H", "PT1M": "PT1M", "PT2H": "PT2H", "PT30M": "PT30M", "PT5M": "PT5M"},
         )
         _element.signal_definition_name = AAZStrArg(
             options=["signal-definition-name"],
@@ -380,12 +380,24 @@ class Create(AAZCommand):
                 min_length=0,
             ),
         )
+        azure_resource.resource_health = AAZObjectArg(
+            options=["resource-health"],
+            help="Optional configuration for automatically adding a signal based on the resource's availability state in Azure Resource Health.",
+        )
         azure_resource.signals = AAZListArg(
             options=["signals"],
             help="Signals assigned to this group.",
             fmt=AAZListArgFormat(
                 max_length=50,
             ),
+        )
+
+        resource_health = cls._args_schema.signal_groups.azure_resource.resource_health
+        resource_health.enabled = AAZStrArg(
+            options=["enabled"],
+            help="Whether to automatically add a signal for the Azure resource's availability state from Azure Resource Health. Defaults to Enabled.",
+            default="Enabled",
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
 
         signals = cls._args_schema.signal_groups.azure_resource.signals
@@ -402,14 +414,6 @@ class Create(AAZCommand):
             help="Unit of the signal result (e.g. Bytes, MilliSeconds, Percent, Count))",
             fmt=AAZStrArgFormat(
                 max_length=100,
-                min_length=1,
-            ),
-        )
-        _element.dimension = AAZStrArg(
-            options=["dimension"],
-            help="Optional: Dimension to split by",
-            fmt=AAZStrArgFormat(
-                max_length=256,
                 min_length=1,
             ),
         )
@@ -462,7 +466,7 @@ class Create(AAZCommand):
             options=["refresh-interval"],
             help="Interval in which the signal is being evaluated. Defaults to PT1M (1 minute).",
             default="PT1M",
-            enum={"PT10M": "PT10M", "PT1H": "PT1H", "PT1M": "PT1M", "PT2H": "PT2H", "PT30M": "PT30M", "PT5M": "PT5M"},
+            enum={"PT10M": "PT10M", "PT15M": "PT15M", "PT1H": "PT1H", "PT1M": "PT1M", "PT2H": "PT2H", "PT30M": "PT30M", "PT5M": "PT5M"},
         )
         _element.signal_definition_name = AAZStrArg(
             options=["signal-definition-name"],
@@ -596,26 +600,39 @@ class Create(AAZCommand):
     @classmethod
     def _build_args_threshold_rule_v2_create(cls, _schema):
         if cls._args_threshold_rule_v2_create is not None:
+            _schema.look_back_window = cls._args_threshold_rule_v2_create.look_back_window
             _schema.operator = cls._args_threshold_rule_v2_create.operator
+            _schema.sensitivity = cls._args_threshold_rule_v2_create.sensitivity
             _schema.threshold = cls._args_threshold_rule_v2_create.threshold
             return
 
         cls._args_threshold_rule_v2_create = AAZObjectArg()
 
         threshold_rule_v2_create = cls._args_threshold_rule_v2_create
+        threshold_rule_v2_create.look_back_window = AAZStrArg(
+            options=["look-back-window"],
+            help="ISO 8601 duration for the historical look-back window used by dynamic threshold computation. Only applicable when operator is Dynamic.",
+            enum={"PT15M": "PT15M", "PT1H": "PT1H", "PT30M": "PT30M", "PT5M": "PT5M"},
+        )
         threshold_rule_v2_create.operator = AAZStrArg(
             options=["operator"],
             help="Operator how to compare the signal value with the threshold",
             required=True,
-            enum={"Equal": "Equal", "GreaterThan": "GreaterThan", "GreaterThanOrEqual": "GreaterThanOrEqual", "LessThan": "LessThan", "LessThanOrEqual": "LessThanOrEqual", "NotEqual": "NotEqual"},
+            enum={"Dynamic": "Dynamic", "Equal": "Equal", "GreaterThan": "GreaterThan", "GreaterThanOrEqual": "GreaterThanOrEqual", "LessThan": "LessThan", "LessThanOrEqual": "LessThanOrEqual", "NotEqual": "NotEqual"},
+        )
+        threshold_rule_v2_create.sensitivity = AAZStrArg(
+            options=["sensitivity"],
+            help="Sensitivity level for dynamic threshold detection. Only applicable when operator is Dynamic.",
+            enum={"High": "High", "Low": "Low", "Medium": "Medium"},
         )
         threshold_rule_v2_create.threshold = AAZFloatArg(
             options=["threshold"],
             help="Threshold value",
-            required=True,
         )
 
+        _schema.look_back_window = cls._args_threshold_rule_v2_create.look_back_window
         _schema.operator = cls._args_threshold_rule_v2_create.operator
+        _schema.sensitivity = cls._args_threshold_rule_v2_create.sensitivity
         _schema.threshold = cls._args_threshold_rule_v2_create.threshold
 
     def _execute_operations(self):
@@ -703,7 +720,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-01-preview",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -813,7 +830,12 @@ class Create(AAZCommand):
                 azure_resource.set_prop("authenticationSetting", AAZStrType, ".authentication_setting", typ_kwargs={"flags": {"required": True}})
                 azure_resource.set_prop("azureResourceId", AAZStrType, ".azure_resource_id", typ_kwargs={"flags": {"required": True}})
                 azure_resource.set_prop("azureResourceKind", AAZStrType, ".azure_resource_kind")
+                azure_resource.set_prop("resourceHealth", AAZObjectType, ".resource_health")
                 azure_resource.set_prop("signals", AAZListType, ".signals")
+
+            resource_health = _builder.get(".properties.signalGroups.azureResource.resourceHealth")
+            if resource_health is not None:
+                resource_health.set_prop("enabled", AAZStrType, ".enabled")
 
             signals = _builder.get(".properties.signalGroups.azureResource.signals")
             if signals is not None:
@@ -823,7 +845,6 @@ class Create(AAZCommand):
             if _elements is not None:
                 _elements.set_prop("aggregationType", AAZStrType, ".aggregation_type")
                 _elements.set_prop("dataUnit", AAZStrType, ".data_unit")
-                _elements.set_prop("dimension", AAZStrType, ".dimension")
                 _elements.set_prop("dimensionFilter", AAZStrType, ".dimension_filter")
                 _elements.set_prop("displayName", AAZStrType, ".display_name")
                 _CreateHelper._build_schema_evaluation_rule_create(_elements.set_prop("evaluationRules", AAZObjectType, ".evaluation_rules"))
@@ -1063,7 +1084,65 @@ class Create(AAZCommand):
             azure_resource.azure_resource_kind = AAZStrType(
                 serialized_name="azureResourceKind",
             )
+            azure_resource.resource_health = AAZObjectType(
+                serialized_name="resourceHealth",
+            )
             azure_resource.signals = AAZListType()
+
+            resource_health = cls._schema_on_200_201.properties.signal_groups.azure_resource.resource_health
+            resource_health.enabled = AAZStrType()
+            resource_health.signal_name = AAZStrType(
+                serialized_name="signalName",
+                flags={"read_only": True},
+            )
+            resource_health.status = AAZObjectType(
+                flags={"read_only": True},
+            )
+
+            status = cls._schema_on_200_201.properties.signal_groups.azure_resource.resource_health.status
+            status.additional_context = AAZStrType(
+                serialized_name="additionalContext",
+            )
+            status.availability_reported_time = AAZStrType(
+                serialized_name="availabilityReportedTime",
+                flags={"read_only": True},
+            )
+            status.availability_state = AAZStrType(
+                serialized_name="availabilityState",
+                flags={"read_only": True},
+            )
+            status.category = AAZStrType(
+                flags={"read_only": True},
+            )
+            status.detailed_status = AAZStrType(
+                serialized_name="detailedStatus",
+                flags={"read_only": True},
+            )
+            status.error = AAZStrType(
+                flags={"read_only": True},
+            )
+            status.health_state = AAZStrType(
+                serialized_name="healthState",
+                flags={"read_only": True},
+            )
+            status.reason_chronicity = AAZStrType(
+                serialized_name="reasonChronicity",
+                flags={"read_only": True},
+            )
+            status.reason_type = AAZStrType(
+                serialized_name="reasonType",
+                flags={"read_only": True},
+            )
+            status.reported_at = AAZStrType(
+                serialized_name="reportedAt",
+                flags={"read_only": True},
+            )
+            status.summary = AAZStrType(
+                flags={"read_only": True},
+            )
+            status.value = AAZFloatType(
+                flags={"read_only": True},
+            )
 
             signals = cls._schema_on_200_201.properties.signal_groups.azure_resource.signals
             signals.Element = AAZObjectType()
@@ -1075,7 +1154,6 @@ class Create(AAZCommand):
             _element.data_unit = AAZStrType(
                 serialized_name="dataUnit",
             )
-            _element.dimension = AAZStrType()
             _element.dimension_filter = AAZStrType(
                 serialized_name="dimensionFilter",
             )
@@ -1209,8 +1287,10 @@ class _CreateHelper:
     def _build_schema_threshold_rule_v2_create(cls, _builder):
         if _builder is None:
             return
+        _builder.set_prop("lookBackWindow", AAZStrType, ".look_back_window")
         _builder.set_prop("operator", AAZStrType, ".operator", typ_kwargs={"flags": {"required": True}})
-        _builder.set_prop("threshold", AAZFloatType, ".threshold", typ_kwargs={"flags": {"required": True}})
+        _builder.set_prop("sensitivity", AAZStrType, ".sensitivity")
+        _builder.set_prop("threshold", AAZFloatType, ".threshold")
 
     _schema_alert_configuration_read = None
 
@@ -1270,6 +1350,7 @@ class _CreateHelper:
     @classmethod
     def _build_schema_signal_status_read(cls, _schema):
         if cls._schema_signal_status_read is not None:
+            _schema.additional_context = cls._schema_signal_status_read.additional_context
             _schema.error = cls._schema_signal_status_read.error
             _schema.health_state = cls._schema_signal_status_read.health_state
             _schema.reported_at = cls._schema_signal_status_read.reported_at
@@ -1281,6 +1362,9 @@ class _CreateHelper:
         )
 
         signal_status_read = _schema_signal_status_read
+        signal_status_read.additional_context = AAZStrType(
+            serialized_name="additionalContext",
+        )
         signal_status_read.error = AAZStrType(
             flags={"read_only": True},
         )
@@ -1296,6 +1380,7 @@ class _CreateHelper:
             flags={"read_only": True},
         )
 
+        _schema.additional_context = cls._schema_signal_status_read.additional_context
         _schema.error = cls._schema_signal_status_read.error
         _schema.health_state = cls._schema_signal_status_read.health_state
         _schema.reported_at = cls._schema_signal_status_read.reported_at
@@ -1306,21 +1391,27 @@ class _CreateHelper:
     @classmethod
     def _build_schema_threshold_rule_v2_read(cls, _schema):
         if cls._schema_threshold_rule_v2_read is not None:
+            _schema.look_back_window = cls._schema_threshold_rule_v2_read.look_back_window
             _schema.operator = cls._schema_threshold_rule_v2_read.operator
+            _schema.sensitivity = cls._schema_threshold_rule_v2_read.sensitivity
             _schema.threshold = cls._schema_threshold_rule_v2_read.threshold
             return
 
         cls._schema_threshold_rule_v2_read = _schema_threshold_rule_v2_read = AAZObjectType()
 
         threshold_rule_v2_read = _schema_threshold_rule_v2_read
+        threshold_rule_v2_read.look_back_window = AAZStrType(
+            serialized_name="lookBackWindow",
+        )
         threshold_rule_v2_read.operator = AAZStrType(
             flags={"required": True},
         )
-        threshold_rule_v2_read.threshold = AAZFloatType(
-            flags={"required": True},
-        )
+        threshold_rule_v2_read.sensitivity = AAZStrType()
+        threshold_rule_v2_read.threshold = AAZFloatType()
 
+        _schema.look_back_window = cls._schema_threshold_rule_v2_read.look_back_window
         _schema.operator = cls._schema_threshold_rule_v2_read.operator
+        _schema.sensitivity = cls._schema_threshold_rule_v2_read.sensitivity
         _schema.threshold = cls._schema_threshold_rule_v2_read.threshold
 
 

@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "monitor health-models relationship update",
 )
 class Update(AAZCommand):
-    """Update a relationship.
+    """Update a Relationship
 
-    :example: Update the display name of a relationship
-        az monitor health-models relationship update --resource-group myRG --health-model-name myModel --name webToDb --display-name "Web depends on DB"
+    :example: Relationships_CreateOrUpdate
+        az monitor health-models relationship update --resource-group rgopenapi --health-model-name model1 --relationship-name rel1
     """
 
     _aaz_info = {
-        "version": "2026-01-01-preview",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/relationships/{}", "2026-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/relationships/{}", "2026-05-01-preview"],
         ]
     }
 
@@ -180,7 +180,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-01-preview",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -283,7 +283,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-01-preview",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }

@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "monitor health-models entity ingest-health-report",
 )
 class IngestHealthReport(AAZCommand):
-    """Push an external health report for a signal on an entity.
+    """Ingest a health report for a specific signal on an entity (the entity must already exist)
 
-    :example: Push an external health report for a signal on an entity
-        az monitor health-models entity ingest-health-report --resource-group myRG --health-model-name myModel --entity-name webTier --signal-name synthetic-probe --health-state Healthy --value 1 --expires-in-minutes 10 --additional-context "HTTP 200 from synthetic probe"
+    :example: Entities_IngestHealthReport
+        az monitor health-models entity ingest-health-report --resource-group rgopenapi --health-model-name myHealthModel --entity-name entity1 --signal-name uniqueSignalName1 --value 85.5 --health-state Degraded --evaluation-rules "{degraded-rule:{operator:GreaterThan,threshold:70},unhealthy-rule:{operator:GreaterThan,threshold:90}}" --expires-in-minutes 60 --additional-context CPU usage elevated due to batch processing job
     """
 
     _aaz_info = {
-        "version": "2026-01-01-preview",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/entities/{}/ingesthealthreport", "2026-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/entities/{}/ingesthealthreport", "2026-05-01-preview"],
         ]
     }
 
@@ -133,26 +133,39 @@ class IngestHealthReport(AAZCommand):
     @classmethod
     def _build_args_threshold_rule_v2_create(cls, _schema):
         if cls._args_threshold_rule_v2_create is not None:
+            _schema.look_back_window = cls._args_threshold_rule_v2_create.look_back_window
             _schema.operator = cls._args_threshold_rule_v2_create.operator
+            _schema.sensitivity = cls._args_threshold_rule_v2_create.sensitivity
             _schema.threshold = cls._args_threshold_rule_v2_create.threshold
             return
 
         cls._args_threshold_rule_v2_create = AAZObjectArg()
 
         threshold_rule_v2_create = cls._args_threshold_rule_v2_create
+        threshold_rule_v2_create.look_back_window = AAZStrArg(
+            options=["look-back-window"],
+            help="ISO 8601 duration for the historical look-back window used by dynamic threshold computation. Only applicable when operator is Dynamic.",
+            enum={"PT15M": "PT15M", "PT1H": "PT1H", "PT30M": "PT30M", "PT5M": "PT5M"},
+        )
         threshold_rule_v2_create.operator = AAZStrArg(
             options=["operator"],
             help="Operator how to compare the signal value with the threshold",
             required=True,
-            enum={"Equal": "Equal", "GreaterThan": "GreaterThan", "GreaterThanOrEqual": "GreaterThanOrEqual", "LessThan": "LessThan", "LessThanOrEqual": "LessThanOrEqual", "NotEqual": "NotEqual"},
+            enum={"Dynamic": "Dynamic", "Equal": "Equal", "GreaterThan": "GreaterThan", "GreaterThanOrEqual": "GreaterThanOrEqual", "LessThan": "LessThan", "LessThanOrEqual": "LessThanOrEqual", "NotEqual": "NotEqual"},
+        )
+        threshold_rule_v2_create.sensitivity = AAZStrArg(
+            options=["sensitivity"],
+            help="Sensitivity level for dynamic threshold detection. Only applicable when operator is Dynamic.",
+            enum={"High": "High", "Low": "Low", "Medium": "Medium"},
         )
         threshold_rule_v2_create.threshold = AAZFloatArg(
             options=["threshold"],
             help="Threshold value",
-            required=True,
         )
 
+        _schema.look_back_window = cls._args_threshold_rule_v2_create.look_back_window
         _schema.operator = cls._args_threshold_rule_v2_create.operator
+        _schema.sensitivity = cls._args_threshold_rule_v2_create.sensitivity
         _schema.threshold = cls._args_threshold_rule_v2_create.threshold
 
     def _execute_operations(self):
@@ -220,7 +233,7 @@ class IngestHealthReport(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-01-preview",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -267,8 +280,10 @@ class _IngestHealthReportHelper:
     def _build_schema_threshold_rule_v2_create(cls, _builder):
         if _builder is None:
             return
+        _builder.set_prop("lookBackWindow", AAZStrType, ".look_back_window")
         _builder.set_prop("operator", AAZStrType, ".operator", typ_kwargs={"flags": {"required": True}})
-        _builder.set_prop("threshold", AAZFloatType, ".threshold", typ_kwargs={"flags": {"required": True}})
+        _builder.set_prop("sensitivity", AAZStrType, ".sensitivity")
+        _builder.set_prop("threshold", AAZFloatType, ".threshold")
 
 
 __all__ = ["IngestHealthReport"]

@@ -49,6 +49,15 @@ class HealthModelHelpSmokeTest(_HealthModelHelpBase):
     def test_healthmodel_entity_ingest_health_report_help(self):
         self._help('monitor health-models entity ingest-health-report --help')
 
+    def test_healthmodel_entity_add_data_annotation_help(self):
+        self._help('monitor health-models entity add-data-annotation --help')
+
+    def test_healthmodel_entity_get_data_annotations_help(self):
+        self._help('monitor health-models entity get-data-annotations --help')
+
+    def test_healthmodel_entity_get_signal_recommendations_help(self):
+        self._help('monitor health-models entity get-signal-recommendations --help')
+
     def test_healthmodel_signaldefinition_create_help(self):
         # Discriminator polymorphism — verifies AAZ emitted the polymorphic args.
         self._help('monitor health-models signal-definition create --help')
@@ -79,6 +88,15 @@ class HealthModelArgValidationTest(ScenarioTest):
 
     def test_healthmodel_entity_create_missing_args(self):
         self._expect_arg_error('monitor health-models entity create')
+
+    def test_healthmodel_new_entity_actions_missing_args(self):
+        for verb in (
+            'add-data-annotation',
+            'get-data-annotations',
+            'get-signal-recommendations',
+        ):
+            with self.subTest(verb=verb):
+                self._expect_arg_error(f'monitor health-models entity {verb}')
 
 
 class HealthModelDualRegistrationTest(_HealthModelHelpBase):

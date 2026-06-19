@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "monitor health-models relationship create",
 )
 class Create(AAZCommand):
-    """Create a relationship between two entities.
+    """Create a Relationship
 
-    :example: Create a parent-child relationship between two entities
-        az monitor health-models relationship create --resource-group myRG --health-model-name myModel --name webToDb --parent-entity-name webTier --child-entity-name dbTier
+    :example: Relationships_CreateOrUpdate
+        az monitor health-models relationship create --resource-group rgopenapi --health-model-name model1 --relationship-name rel1 --display-name My relationship --parent-entity-name Entity1 --child-entity-name Entity2 --tags "{key9681:ixfvzsfnpvkkbrce}"
     """
 
     _aaz_info = {
-        "version": "2026-01-01-preview",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/relationships/{}", "2026-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/relationships/{}", "2026-05-01-preview"],
         ]
     }
 
@@ -192,7 +192,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-01-preview",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }

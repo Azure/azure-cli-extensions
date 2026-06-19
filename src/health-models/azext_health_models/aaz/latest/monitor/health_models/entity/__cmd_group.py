@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "monitor health-models entity",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage entities (nodes) in a health model.
+    """Manage Entity
     """
     pass
 

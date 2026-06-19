@@ -16,16 +16,16 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete an entity.
+    """Delete a Entity
 
-    :example: Delete an entity
-        az monitor health-models entity delete --resource-group myRG --health-model-name myModel --name webTier --yes
+    :example: Entities_Delete
+        az monitor health-models entity delete --resource-group rgopenapi --health-model-name model1 --entity-name U4VTRFlUkm9kR6H23-c-6U-XHq7n
     """
 
     _aaz_info = {
-        "version": "2026-01-01-preview",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/entities/{}", "2026-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/entities/{}", "2026-05-01-preview"],
         ]
     }
 
@@ -159,7 +159,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-01-preview",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }

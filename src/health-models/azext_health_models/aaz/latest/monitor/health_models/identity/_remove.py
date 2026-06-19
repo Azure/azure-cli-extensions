@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "monitor health-models identity remove",
 )
 class Remove(AAZCommand):
-    """Remove a system- or user-assigned managed identity from a health model.
+    """Remove the user or system managed identities.
 
-    :example: Remove all managed identities from a health model
-        az monitor health-models identity remove --resource-group myRG --name myModel --system-assigned --user-assigned
+    :example: HealthModels_Create
+        az monitor health-models identity remove --resource-group rgopenapi --health-model-name model1
     """
 
     _aaz_info = {
-        "version": "2026-01-01-preview",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}", "2026-01-01-preview", "identity"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}", "2026-05-01-preview", "identity"],
         ]
     }
 
@@ -166,7 +166,7 @@ class Remove(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-01-preview",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -265,7 +265,7 @@ class Remove(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-01-preview",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }

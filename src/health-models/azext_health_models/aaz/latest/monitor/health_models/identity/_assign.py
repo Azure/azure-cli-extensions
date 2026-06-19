@@ -15,19 +15,16 @@ from azure.cli.core.aaz import *
     "monitor health-models identity assign",
 )
 class Assign(AAZCommand):
-    """Assign a system- or user-assigned managed identity to a health model.
+    """Assign the user or system managed identities.
 
-    :example: Assign system-assigned identity to a health model
-        az monitor health-models identity assign --resource-group myRG --name myModel --system-assigned
-
-    :example: Assign a user-assigned identity to a health model
-        az monitor health-models identity assign --resource-group myRG --name myModel --user-assigned /subscriptions/.../userAssignedIdentities/myUai
+    :example: HealthModels_Create
+        az monitor health-models identity assign --resource-group rgopenapi --health-model-name model1
     """
 
     _aaz_info = {
-        "version": "2026-01-01-preview",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}", "2026-01-01-preview", "identity"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}", "2026-05-01-preview", "identity"],
         ]
     }
 
@@ -169,7 +166,7 @@ class Assign(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-01-preview",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -268,7 +265,7 @@ class Assign(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-01-preview",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }

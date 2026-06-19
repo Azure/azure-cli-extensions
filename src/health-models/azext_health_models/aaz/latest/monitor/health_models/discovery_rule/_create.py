@@ -15,19 +15,16 @@ from azure.cli.core.aaz import *
     "monitor health-models discovery-rule create",
 )
 class Create(AAZCommand):
-    """Create a discovery rule.
+    """Create a DiscoveryRule
 
-    :example: Create a Resource Graph discovery rule
-        az monitor health-models discovery-rule create --resource-group myRG --health-model-name myModel --name vmDiscovery --authentication-setting myAuth --discover-relationships Enabled --add-recommended-signals Enabled --resource-graph-query "resources | where type =~ 'microsoft.compute/virtualmachines'"
-
-    :example: Create an Application Insights topology discovery rule
-        az monitor health-models discovery-rule create --resource-group myRG --health-model-name myModel --name aiDiscovery --authentication-setting myAuth --discover-relationships Enabled --add-recommended-signals Enabled --application-insights-resource-id /subscriptions/.../components/myAppInsights
+    :example: DiscoveryRules_CreateOrUpdate
+        az monitor health-models discovery-rule create --resource-group myResourceGroup --health-model-name myHealthModel --discovery-rule-name myDiscoveryRule --authentication-setting authSetting1 --display-name myDisplayName --discover-relationships Enabled --add-recommended-signals Enabled --specification "{resourceGraphQuery:'resources | where subscriptionId == '/7ddfffd7-9b32-40df-1234-828cbd55d6f4'/ | where resourceGroup == '/my-rg'/',resource-graph-query:{resource-graph-query:'resources | where subscriptionId == '/7ddfffd7-9b32-40df-1234-828cbd55d6f4'/ | where resourceGroup == '/my-rg'/'}}" --add-resource-health-signal Enabled
     """
 
     _aaz_info = {
-        "version": "2026-01-01-preview",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/discoveryrules/{}", "2026-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/discoveryrules/{}", "2026-05-01-preview"],
         ]
     }
 
@@ -75,6 +72,13 @@ class Create(AAZCommand):
             options=["--add-recommended-signals"],
             arg_group="Properties",
             help="Whether to add all recommended signals to the discovered entities.",
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
+        _args_schema.add_resource_health_signal = AAZStrArg(
+            options=["--add-resource-health-signal"],
+            arg_group="Properties",
+            help="Whether to automatically add a signal for the Azure resource's availability state from Azure Resource Health to the discovered entities. Defaults to `Enabled`: discovery rules updated via this API version without setting this field will begin emitting a Resource Health availability signal. Pass `Disabled` to preserve pre-`2026-05-01-preview` behavior.",
+            default="Enabled",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
         _args_schema.authentication_setting = AAZStrArg(
@@ -218,7 +222,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-01-preview",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -248,6 +252,7 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("addRecommendedSignals", AAZStrType, ".add_recommended_signals", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("addResourceHealthSignal", AAZStrType, ".add_resource_health_signal")
                 properties.set_prop("authenticationSetting", AAZStrType, ".authentication_setting", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("discoverRelationships", AAZStrType, ".discover_relationships", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("displayName", AAZStrType, ".display_name")
@@ -307,6 +312,9 @@ class Create(AAZCommand):
             properties.add_recommended_signals = AAZStrType(
                 serialized_name="addRecommendedSignals",
                 flags={"required": True},
+            )
+            properties.add_resource_health_signal = AAZStrType(
+                serialized_name="addResourceHealthSignal",
             )
             properties.authentication_setting = AAZStrType(
                 serialized_name="authenticationSetting",

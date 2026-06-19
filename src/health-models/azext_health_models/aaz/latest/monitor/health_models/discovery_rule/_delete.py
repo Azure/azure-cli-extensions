@@ -16,16 +16,16 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete a discovery rule.
+    """Delete a DiscoveryRule
 
-    :example: Delete a discovery rule
-        az monitor health-models discovery-rule delete --resource-group myRG --health-model-name myModel --name vmDiscovery --yes
+    :example: DiscoveryRules_Delete
+        az monitor health-models discovery-rule delete --resource-group my-resource-group --health-model-name my-health-model --discovery-rule-name my-discovery-rule
     """
 
     _aaz_info = {
-        "version": "2026-01-01-preview",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/discoveryrules/{}", "2026-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/discoveryrules/{}", "2026-05-01-preview"],
         ]
     }
 
@@ -159,7 +159,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-01-preview",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }

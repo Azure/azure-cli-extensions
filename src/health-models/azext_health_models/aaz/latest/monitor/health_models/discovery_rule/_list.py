@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "monitor health-models discovery-rule list",
 )
 class List(AAZCommand):
-    """List discovery rules in a health model.
+    """List DiscoveryRule resources by HealthModel
 
-    :example: List discovery rules in a health model
-        az monitor health-models discovery-rule list --resource-group myRG --health-model-name myModel
+    :example: DiscoveryRules_ListByHealthModel
+        az monitor health-models discovery-rule list --resource-group my-resource-group --health-model-name my-health-model
     """
 
     _aaz_info = {
-        "version": "2026-01-01-preview",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/discoveryrules", "2026-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/discoveryrules", "2026-05-01-preview"],
         ]
     }
 
@@ -134,7 +134,7 @@ class List(AAZCommand):
                     "timestamp", self.ctx.args.timestamp,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2026-01-01-preview",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -197,6 +197,9 @@ class List(AAZCommand):
             properties.add_recommended_signals = AAZStrType(
                 serialized_name="addRecommendedSignals",
                 flags={"required": True},
+            )
+            properties.add_resource_health_signal = AAZStrType(
+                serialized_name="addResourceHealthSignal",
             )
             properties.authentication_setting = AAZStrType(
                 serialized_name="authenticationSetting",

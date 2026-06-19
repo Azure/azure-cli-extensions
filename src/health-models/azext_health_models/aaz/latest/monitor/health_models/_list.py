@@ -15,20 +15,20 @@ from azure.cli.core.aaz import *
     "monitor health-models list",
 )
 class List(AAZCommand):
-    """List health models in a resource group or across the subscription.
+    """List HealthModel resources by subscription ID
 
-    :example: List health models in a resource group
-        az monitor health-models list --resource-group myRG
-
-    :example: List health models in the subscription
+    :example: HealthModels_ListBySubscription
         az monitor health-models list
+
+    :example: HealthModels_ListByResourceGroup
+        az monitor health-models list --resource-group rgopenapi
     """
 
     _aaz_info = {
-        "version": "2026-01-01-preview",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.cloudhealth/healthmodels", "2026-01-01-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels", "2026-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.cloudhealth/healthmodels", "2026-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels", "2026-05-01-preview"],
         ]
     }
 
@@ -115,7 +115,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-01-preview",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -285,7 +285,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-01-preview",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }

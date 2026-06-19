@@ -33,6 +33,8 @@ az monitor health-models delete --name "myModel" --resource-group "myRG"
 #### Sub-resources ####
 The model is composed of `entity`, `signal-definition`, `relationship`, `authentication-setting`, and `discovery-rule` collections, plus `identity` for managed-identity assignment. Each follows the same `create / show / list / update / delete` pattern.
 
+Entity actions also include `add-data-annotation`, `get-data-annotations`, `get-signal-recommendations`, `get-history`, `get-signal-history`, and `ingest-health-report`.
+
 E.g. to create an entity and a signal definition:
 
 ```

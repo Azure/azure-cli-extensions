@@ -16,16 +16,16 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete a signal definition.
+    """Delete a SignalDefinition
 
-    :example: Delete a signal definition
-        az monitor health-models signal-definition delete --resource-group myRG --health-model-name myModel --name cpuPressure --yes
+    :example: SignalDefinitions_Delete
+        az monitor health-models signal-definition delete --resource-group rgopenapi --health-model-name model1 --signal-definition-name sig
     """
 
     _aaz_info = {
-        "version": "2026-01-01-preview",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/signaldefinitions/{}", "2026-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/signaldefinitions/{}", "2026-05-01-preview"],
         ]
     }
 
@@ -159,7 +159,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-01-preview",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }

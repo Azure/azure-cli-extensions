@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "monitor health-models signal-definition",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage signal definitions in a health model.
+    """Manage Signaldefinition
     """
     pass
 

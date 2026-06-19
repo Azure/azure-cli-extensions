@@ -15,19 +15,16 @@ from azure.cli.core.aaz import *
     "monitor health-models create",
 )
 class Create(AAZCommand):
-    """Create a health model.
+    """Create a HealthModel
 
-    :example: Create a health model
-        az monitor health-models create --resource-group myRG --name myModel --location eastus
-
-    :example: Create a health model with a system-assigned managed identity
-        az monitor health-models create --resource-group myRG --name myModel --location eastus --mi-system-assigned
+    :example: HealthModels_Create
+        az monitor health-models create --resource-group rgopenapi --health-model-name model1 --type SystemAssigned, UserAssigned --user-assigned-identities "{/subscriptions/4980D7D5-4E07-47AD-AD34-E76C6BC9F061/resourceGroups/rgopenapi/providers/Microsoft.ManagedIdentity/userAssignedIdentities/ua1:{}}" --tags "{key2961:hbljozzkqrpcthsjtfkyozpwyx}" --location eastus2
     """
 
     _aaz_info = {
-        "version": "2026-01-01-preview",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}", "2026-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}", "2026-05-01-preview"],
         ]
     }
 
@@ -181,7 +178,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-01-preview",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }

@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "monitor health-models",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Azure Monitor health models.
+    """Manage Healthmodel
     """
     pass
 

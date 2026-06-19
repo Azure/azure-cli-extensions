@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "monitor health-models signal-definition update",
 )
 class Update(AAZCommand):
-    """Update a signal definition.
+    """Update a SignalDefinition
 
-    :example: Update the refresh interval of a signal definition
-        az monitor health-models signal-definition update --resource-group myRG --health-model-name myModel --name cpuPressure --refresh-interval PT10M
+    :example: SignalDefinitions_CreateOrUpdate
+        az monitor health-models signal-definition update --resource-group rgopenapi --health-model-name myHealthModel --signal-definition-name sig1
     """
 
     _aaz_info = {
-        "version": "2026-01-01-preview",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/signaldefinitions/{}", "2026-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/signaldefinitions/{}", "2026-05-01-preview"],
         ]
     }
 
@@ -114,7 +114,7 @@ class Update(AAZCommand):
             arg_group="Properties",
             help="Interval in which the signal is being evaluated. Defaults to PT1M (1 minute).",
             nullable=True,
-            enum={"PT10M": "PT10M", "PT1H": "PT1H", "PT1M": "PT1M", "PT2H": "PT2H", "PT30M": "PT30M", "PT5M": "PT5M"},
+            enum={"PT10M": "PT10M", "PT15M": "PT15M", "PT1H": "PT1H", "PT1M": "PT1M", "PT2H": "PT2H", "PT30M": "PT30M", "PT5M": "PT5M"},
         )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
@@ -128,15 +128,6 @@ class Update(AAZCommand):
             options=["aggregation-type"],
             help="Type of aggregation to apply to the metric",
             enum={"Average": "Average", "Count": "Count", "Maximum": "Maximum", "Minimum": "Minimum", "None": "None", "Total": "Total"},
-        )
-        azure_resource_metric.dimension = AAZStrArg(
-            options=["dimension"],
-            help="Optional: Dimension to split by",
-            nullable=True,
-            fmt=AAZStrArgFormat(
-                max_length=256,
-                min_length=1,
-            ),
         )
         azure_resource_metric.dimension_filter = AAZStrArg(
             options=["dimension-filter"],
@@ -247,7 +238,9 @@ class Update(AAZCommand):
     @classmethod
     def _build_args_threshold_rule_v2_update(cls, _schema):
         if cls._args_threshold_rule_v2_update is not None:
+            _schema.look_back_window = cls._args_threshold_rule_v2_update.look_back_window
             _schema.operator = cls._args_threshold_rule_v2_update.operator
+            _schema.sensitivity = cls._args_threshold_rule_v2_update.sensitivity
             _schema.threshold = cls._args_threshold_rule_v2_update.threshold
             return
 
@@ -256,17 +249,32 @@ class Update(AAZCommand):
         )
 
         threshold_rule_v2_update = cls._args_threshold_rule_v2_update
+        threshold_rule_v2_update.look_back_window = AAZStrArg(
+            options=["look-back-window"],
+            help="ISO 8601 duration for the historical look-back window used by dynamic threshold computation. Only applicable when operator is Dynamic.",
+            nullable=True,
+            enum={"PT15M": "PT15M", "PT1H": "PT1H", "PT30M": "PT30M", "PT5M": "PT5M"},
+        )
         threshold_rule_v2_update.operator = AAZStrArg(
             options=["operator"],
             help="Operator how to compare the signal value with the threshold",
-            enum={"Equal": "Equal", "GreaterThan": "GreaterThan", "GreaterThanOrEqual": "GreaterThanOrEqual", "LessThan": "LessThan", "LessThanOrEqual": "LessThanOrEqual", "NotEqual": "NotEqual"},
+            enum={"Dynamic": "Dynamic", "Equal": "Equal", "GreaterThan": "GreaterThan", "GreaterThanOrEqual": "GreaterThanOrEqual", "LessThan": "LessThan", "LessThanOrEqual": "LessThanOrEqual", "NotEqual": "NotEqual"},
+        )
+        threshold_rule_v2_update.sensitivity = AAZStrArg(
+            options=["sensitivity"],
+            help="Sensitivity level for dynamic threshold detection. Only applicable when operator is Dynamic.",
+            nullable=True,
+            enum={"High": "High", "Low": "Low", "Medium": "Medium"},
         )
         threshold_rule_v2_update.threshold = AAZFloatArg(
             options=["threshold"],
             help="Threshold value",
+            nullable=True,
         )
 
+        _schema.look_back_window = cls._args_threshold_rule_v2_update.look_back_window
         _schema.operator = cls._args_threshold_rule_v2_update.operator
+        _schema.sensitivity = cls._args_threshold_rule_v2_update.sensitivity
         _schema.threshold = cls._args_threshold_rule_v2_update.threshold
 
     def _execute_operations(self):
@@ -351,7 +359,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-01-preview",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -454,7 +462,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-01-preview",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -540,7 +548,6 @@ class Update(AAZCommand):
             disc_azure_resource_metric = _builder.get(".properties{signalKind:AzureResourceMetric}")
             if disc_azure_resource_metric is not None:
                 disc_azure_resource_metric.set_prop("aggregationType", AAZStrType, ".azure_resource_metric.aggregation_type", typ_kwargs={"flags": {"required": True}})
-                disc_azure_resource_metric.set_prop("dimension", AAZStrType, ".azure_resource_metric.dimension")
                 disc_azure_resource_metric.set_prop("dimensionFilter", AAZStrType, ".azure_resource_metric.dimension_filter")
                 disc_azure_resource_metric.set_prop("metricName", AAZStrType, ".azure_resource_metric.metric_name", typ_kwargs={"flags": {"required": True}})
                 disc_azure_resource_metric.set_prop("metricNamespace", AAZStrType, ".azure_resource_metric.metric_namespace", typ_kwargs={"flags": {"required": True}})
@@ -575,8 +582,10 @@ class _UpdateHelper:
     def _build_schema_threshold_rule_v2_update(cls, _builder):
         if _builder is None:
             return
+        _builder.set_prop("lookBackWindow", AAZStrType, ".look_back_window")
         _builder.set_prop("operator", AAZStrType, ".operator", typ_kwargs={"flags": {"required": True}})
-        _builder.set_prop("threshold", AAZFloatType, ".threshold", typ_kwargs={"flags": {"required": True}})
+        _builder.set_prop("sensitivity", AAZStrType, ".sensitivity")
+        _builder.set_prop("threshold", AAZFloatType, ".threshold")
 
     _schema_signal_definition_read = None
 
@@ -651,7 +660,6 @@ class _UpdateHelper:
             serialized_name="aggregationType",
             flags={"required": True},
         )
-        disc_azure_resource_metric.dimension = AAZStrType()
         disc_azure_resource_metric.dimension_filter = AAZStrType(
             serialized_name="dimensionFilter",
         )
@@ -720,21 +728,27 @@ class _UpdateHelper:
     @classmethod
     def _build_schema_threshold_rule_v2_read(cls, _schema):
         if cls._schema_threshold_rule_v2_read is not None:
+            _schema.look_back_window = cls._schema_threshold_rule_v2_read.look_back_window
             _schema.operator = cls._schema_threshold_rule_v2_read.operator
+            _schema.sensitivity = cls._schema_threshold_rule_v2_read.sensitivity
             _schema.threshold = cls._schema_threshold_rule_v2_read.threshold
             return
 
         cls._schema_threshold_rule_v2_read = _schema_threshold_rule_v2_read = AAZObjectType()
 
         threshold_rule_v2_read = _schema_threshold_rule_v2_read
+        threshold_rule_v2_read.look_back_window = AAZStrType(
+            serialized_name="lookBackWindow",
+        )
         threshold_rule_v2_read.operator = AAZStrType(
             flags={"required": True},
         )
-        threshold_rule_v2_read.threshold = AAZFloatType(
-            flags={"required": True},
-        )
+        threshold_rule_v2_read.sensitivity = AAZStrType()
+        threshold_rule_v2_read.threshold = AAZFloatType()
 
+        _schema.look_back_window = cls._schema_threshold_rule_v2_read.look_back_window
         _schema.operator = cls._schema_threshold_rule_v2_read.operator
+        _schema.sensitivity = cls._schema_threshold_rule_v2_read.sensitivity
         _schema.threshold = cls._schema_threshold_rule_v2_read.threshold
 
 

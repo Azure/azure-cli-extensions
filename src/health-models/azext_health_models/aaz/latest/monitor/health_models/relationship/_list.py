@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "monitor health-models relationship list",
 )
 class List(AAZCommand):
-    """List relationships in a health model.
+    """List Relationship resources by HealthModel
 
-    :example: List relationships in a health model
-        az monitor health-models relationship list --resource-group myRG --health-model-name myModel
+    :example: Relationships_ListByHealthModel
+        az monitor health-models relationship list --resource-group rgopenapi --health-model-name model1
     """
 
     _aaz_info = {
-        "version": "2026-01-01-preview",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/relationships", "2026-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/relationships", "2026-05-01-preview"],
         ]
     }
 
@@ -134,7 +134,7 @@ class List(AAZCommand):
                     "timestamp", self.ctx.args.timestamp,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2026-01-01-preview",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }

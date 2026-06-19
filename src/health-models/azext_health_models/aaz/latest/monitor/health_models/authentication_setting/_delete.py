@@ -16,16 +16,16 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete an authentication setting.
+    """Delete a AuthenticationSetting
 
-    :example: Delete an authentication setting
-        az monitor health-models authentication-setting delete --resource-group myRG --health-model-name myModel --name myAuth --yes
+    :example: AuthenticationSettings_Delete
+        az monitor health-models authentication-setting delete --resource-group my-resource-group --health-model-name my-health-model --authentication-setting-name my-auth-setting
     """
 
     _aaz_info = {
-        "version": "2026-01-01-preview",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/authenticationsettings/{}", "2026-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/authenticationsettings/{}", "2026-05-01-preview"],
         ]
     }
 
@@ -159,7 +159,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-01-preview",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }

@@ -15,19 +15,16 @@ from azure.cli.core.aaz import *
     "monitor health-models entity get-history",
 )
 class GetHistory(AAZCommand):
-    """Get the health state transition history for an entity.
+    """Retrieve the health state transition history for an entity
 
-    :example: Get the last 24 hours of health state transitions for an entity
-        az monitor health-models entity get-history --resource-group myRG --health-model-name myModel --entity-name webTier
-
-    :example: Get health state history for a custom time window
-        az monitor health-models entity get-history --resource-group myRG --health-model-name myModel --entity-name webTier --start-at 2026-01-01T00:00:00Z --end-at 2026-01-02T00:00:00Z
+    :example: Entities_GetHistory
+        az monitor health-models entity get-history --resource-group rgopenapi --health-model-name myHealthModel --entity-name entity1 --start-at 2025-12-11T10:00:00Z --end-at 2025-12-12T10:00:00Z --top 4
     """
 
     _aaz_info = {
-        "version": "2026-01-01-preview",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/entities/{}/gethistory", "2026-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/entities/{}/gethistory", "2026-05-01-preview"],
         ]
     }
 
@@ -80,12 +77,30 @@ class GetHistory(AAZCommand):
                 protocol="iso",
             ),
         )
+        _args_schema.next_marker = AAZStrArg(
+            options=["--next-marker"],
+            arg_group="Body",
+            help="An opaque string value that identifies the portion of the result set to be returned with the next operation. Must not be combined with startAt or endAt.",
+            fmt=AAZStrArgFormat(
+                max_length=4096,
+            ),
+        )
         _args_schema.start_at = AAZDateTimeArg(
             options=["--start-at"],
             arg_group="Body",
             help="Start time for the history query. Defaults to 24 hours ago if not specified.",
             fmt=AAZDateTimeFormat(
                 protocol="iso",
+            ),
+        )
+        _args_schema.top = AAZIntArg(
+            options=["--top"],
+            arg_group="Body",
+            help="Maximum number of health state transitions to return per page. Defaults to 1000.",
+            default=1000,
+            fmt=AAZIntArgFormat(
+                maximum=1000,
+                minimum=1,
             ),
         )
         return cls._args_schema
@@ -159,7 +174,7 @@ class GetHistory(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-01-preview",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -185,7 +200,9 @@ class GetHistory(AAZCommand):
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("endAt", AAZStrType, ".end_at")
+            _builder.set_prop("nextMarker", AAZStrType, ".next_marker")
             _builder.set_prop("startAt", AAZStrType, ".start_at")
+            _builder.set_prop("top", AAZIntType, ".top")
 
             return self.serialize_content(_content_value)
 
@@ -213,6 +230,9 @@ class GetHistory(AAZCommand):
             )
             _schema_on_200.history = AAZListType(
                 flags={"required": True},
+            )
+            _schema_on_200.next_marker = AAZStrType(
+                serialized_name="nextMarker",
             )
 
             history = cls._schema_on_200.history

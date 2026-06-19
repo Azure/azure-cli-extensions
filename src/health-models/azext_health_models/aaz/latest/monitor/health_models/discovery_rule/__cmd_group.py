@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "monitor health-models discovery-rule",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage discovery rules that auto-populate a health model.
+    """Manage Discoveryrule
     """
     pass
 

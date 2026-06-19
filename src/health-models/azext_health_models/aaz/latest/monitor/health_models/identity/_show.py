@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "monitor health-models identity show",
 )
 class Show(AAZCommand):
-    """Show the managed identities currently assigned to a health model.
+    """Show the details of managed identities.
 
-    :example: Show managed identities assigned to a health model
-        az monitor health-models identity show --resource-group myRG --name myModel
+    :example: HealthModels_Get
+        az monitor health-models identity show --resource-group rgopenapi --health-model-name myHealthModel
     """
 
     _aaz_info = {
-        "version": "2026-01-01-preview",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}", "2026-01-01-preview", "identity"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}", "2026-05-01-preview", "identity"],
         ]
     }
 
@@ -134,7 +134,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-01-preview",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }

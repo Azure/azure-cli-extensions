@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "monitor health-models entity show",
 )
 class Show(AAZCommand):
-    """Get an entity.
+    """Get a Entity
 
-    :example: Get an entity
-        az monitor health-models entity show --resource-group myRG --health-model-name myModel --name webTier
+    :example: Entities_Get
+        az monitor health-models entity show --resource-group rgopenapi --health-model-name myHealthModel --entity-name entity1
     """
 
     _aaz_info = {
-        "version": "2026-01-01-preview",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/entities/{}", "2026-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/entities/{}", "2026-05-01-preview"],
         ]
     }
 
@@ -136,7 +136,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-01-preview",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -365,7 +365,65 @@ class Show(AAZCommand):
             azure_resource.azure_resource_kind = AAZStrType(
                 serialized_name="azureResourceKind",
             )
+            azure_resource.resource_health = AAZObjectType(
+                serialized_name="resourceHealth",
+            )
             azure_resource.signals = AAZListType()
+
+            resource_health = cls._schema_on_200.properties.signal_groups.azure_resource.resource_health
+            resource_health.enabled = AAZStrType()
+            resource_health.signal_name = AAZStrType(
+                serialized_name="signalName",
+                flags={"read_only": True},
+            )
+            resource_health.status = AAZObjectType(
+                flags={"read_only": True},
+            )
+
+            status = cls._schema_on_200.properties.signal_groups.azure_resource.resource_health.status
+            status.additional_context = AAZStrType(
+                serialized_name="additionalContext",
+            )
+            status.availability_reported_time = AAZStrType(
+                serialized_name="availabilityReportedTime",
+                flags={"read_only": True},
+            )
+            status.availability_state = AAZStrType(
+                serialized_name="availabilityState",
+                flags={"read_only": True},
+            )
+            status.category = AAZStrType(
+                flags={"read_only": True},
+            )
+            status.detailed_status = AAZStrType(
+                serialized_name="detailedStatus",
+                flags={"read_only": True},
+            )
+            status.error = AAZStrType(
+                flags={"read_only": True},
+            )
+            status.health_state = AAZStrType(
+                serialized_name="healthState",
+                flags={"read_only": True},
+            )
+            status.reason_chronicity = AAZStrType(
+                serialized_name="reasonChronicity",
+                flags={"read_only": True},
+            )
+            status.reason_type = AAZStrType(
+                serialized_name="reasonType",
+                flags={"read_only": True},
+            )
+            status.reported_at = AAZStrType(
+                serialized_name="reportedAt",
+                flags={"read_only": True},
+            )
+            status.summary = AAZStrType(
+                flags={"read_only": True},
+            )
+            status.value = AAZFloatType(
+                flags={"read_only": True},
+            )
 
             signals = cls._schema_on_200.properties.signal_groups.azure_resource.signals
             signals.Element = AAZObjectType()
@@ -377,7 +435,6 @@ class Show(AAZCommand):
             _element.data_unit = AAZStrType(
                 serialized_name="dataUnit",
             )
-            _element.dimension = AAZStrType()
             _element.dimension_filter = AAZStrType(
                 serialized_name="dimensionFilter",
             )
@@ -546,6 +603,7 @@ class _ShowHelper:
     @classmethod
     def _build_schema_signal_status_read(cls, _schema):
         if cls._schema_signal_status_read is not None:
+            _schema.additional_context = cls._schema_signal_status_read.additional_context
             _schema.error = cls._schema_signal_status_read.error
             _schema.health_state = cls._schema_signal_status_read.health_state
             _schema.reported_at = cls._schema_signal_status_read.reported_at
@@ -557,6 +615,9 @@ class _ShowHelper:
         )
 
         signal_status_read = _schema_signal_status_read
+        signal_status_read.additional_context = AAZStrType(
+            serialized_name="additionalContext",
+        )
         signal_status_read.error = AAZStrType(
             flags={"read_only": True},
         )
@@ -572,6 +633,7 @@ class _ShowHelper:
             flags={"read_only": True},
         )
 
+        _schema.additional_context = cls._schema_signal_status_read.additional_context
         _schema.error = cls._schema_signal_status_read.error
         _schema.health_state = cls._schema_signal_status_read.health_state
         _schema.reported_at = cls._schema_signal_status_read.reported_at
@@ -582,21 +644,27 @@ class _ShowHelper:
     @classmethod
     def _build_schema_threshold_rule_v2_read(cls, _schema):
         if cls._schema_threshold_rule_v2_read is not None:
+            _schema.look_back_window = cls._schema_threshold_rule_v2_read.look_back_window
             _schema.operator = cls._schema_threshold_rule_v2_read.operator
+            _schema.sensitivity = cls._schema_threshold_rule_v2_read.sensitivity
             _schema.threshold = cls._schema_threshold_rule_v2_read.threshold
             return
 
         cls._schema_threshold_rule_v2_read = _schema_threshold_rule_v2_read = AAZObjectType()
 
         threshold_rule_v2_read = _schema_threshold_rule_v2_read
+        threshold_rule_v2_read.look_back_window = AAZStrType(
+            serialized_name="lookBackWindow",
+        )
         threshold_rule_v2_read.operator = AAZStrType(
             flags={"required": True},
         )
-        threshold_rule_v2_read.threshold = AAZFloatType(
-            flags={"required": True},
-        )
+        threshold_rule_v2_read.sensitivity = AAZStrType()
+        threshold_rule_v2_read.threshold = AAZFloatType()
 
+        _schema.look_back_window = cls._schema_threshold_rule_v2_read.look_back_window
         _schema.operator = cls._schema_threshold_rule_v2_read.operator
+        _schema.sensitivity = cls._schema_threshold_rule_v2_read.sensitivity
         _schema.threshold = cls._schema_threshold_rule_v2_read.threshold
 
 

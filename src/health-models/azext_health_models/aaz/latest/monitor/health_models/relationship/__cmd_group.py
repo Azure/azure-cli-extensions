@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "monitor health-models relationship",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage parent-child relationships (edges) between entities.
+    """Manage Relationship
     """
     pass
 

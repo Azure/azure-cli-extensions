@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "monitor health-models authentication-setting",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage authentication settings used by signal definitions and discovery rules.
+    """Manage Authenticationsetting
     """
     pass
 

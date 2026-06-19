@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "monitor health-models entity get-signal-history",
+    "monitor health-models entity get-data-annotations",
 )
-class GetSignalHistory(AAZCommand):
-    """Retrieve the time series history for a signal on an entity
+class GetDataAnnotation(AAZCommand):
+    """Retrieve data annotations for an entity
 
-    :example: Entities_GetSignalHistory
-        az monitor health-models entity get-signal-history --resource-group rgopenapi --health-model-name myHealthModel --entity-name entity1 --signal-name uniqueSignalName1 --start-at 2025-12-11T10:00:00Z --end-at 2025-12-12T10:00:00Z --top 7
+    :example: Entities_GetDataAnnotations
+        az monitor health-models entity get-data-annotations --resource-group rgopenapi --health-model-name myHealthModel --entity-name entity1 --start-at 2026-04-09T00:00:00Z --end-at 2026-04-10T23:59:59Z
     """
 
     _aaz_info = {
         "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/entities/{}/getsignalhistory", "2026-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cloudhealth/healthmodels/{}/entities/{}/getdataannotations", "2026-05-01-preview"],
         ]
     }
 
@@ -72,7 +72,7 @@ class GetSignalHistory(AAZCommand):
         _args_schema.end_at = AAZDateTimeArg(
             options=["--end-at"],
             arg_group="Body",
-            help="End time for the history query. Defaults to now if not specified.",
+            help="End of UTC time range. Defaults to now if not specified.",
             fmt=AAZDateTimeFormat(
                 protocol="iso",
             ),
@@ -85,19 +85,10 @@ class GetSignalHistory(AAZCommand):
                 max_length=4096,
             ),
         )
-        _args_schema.signal_name = AAZStrArg(
-            options=["--signal-name"],
-            arg_group="Body",
-            help="Name of the signal to get history for",
-            required=True,
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9][a-zA-Z0-9-]{1,258}[a-zA-Z0-9]$",
-            ),
-        )
         _args_schema.start_at = AAZDateTimeArg(
             options=["--start-at"],
             arg_group="Body",
-            help="Start time for the history query. Defaults to 24 hours ago if not specified.",
+            help="Start of UTC time range. Defaults to 24 hours ago if not specified.",
             fmt=AAZDateTimeFormat(
                 protocol="iso",
             ),
@@ -105,10 +96,10 @@ class GetSignalHistory(AAZCommand):
         _args_schema.top = AAZIntArg(
             options=["--top"],
             arg_group="Body",
-            help="Maximum number of data points to return per page. Defaults to 1000.",
-            default=1000,
+            help="Maximum number of annotations to return per page. Defaults to 100.",
+            default=100,
             fmt=AAZIntArgFormat(
-                maximum=1000,
+                maximum=100,
                 minimum=1,
             ),
         )
@@ -116,7 +107,7 @@ class GetSignalHistory(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.EntitiesGetSignalHistory(ctx=self.ctx)()
+        self.EntitiesGetDataAnnotations(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -131,7 +122,7 @@ class GetSignalHistory(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class EntitiesGetSignalHistory(AAZHttpOperation):
+    class EntitiesGetDataAnnotations(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -145,7 +136,7 @@ class GetSignalHistory(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.CloudHealth/healthmodels/{healthModelName}/entities/{entityName}/getSignalHistory",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.CloudHealth/healthmodels/{healthModelName}/entities/{entityName}/getDataAnnotations",
                 **self.url_parameters
             )
 
@@ -210,7 +201,6 @@ class GetSignalHistory(AAZCommand):
             )
             _builder.set_prop("endAt", AAZStrType, ".end_at")
             _builder.set_prop("nextMarker", AAZStrType, ".next_marker")
-            _builder.set_prop("signalName", AAZStrType, ".signal_name", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("startAt", AAZStrType, ".start_at")
             _builder.set_prop("top", AAZIntType, ".top")
 
@@ -234,43 +224,43 @@ class GetSignalHistory(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.entity_name = AAZStrType(
-                serialized_name="entityName",
+            _schema_on_200.annotations = AAZListType(
                 flags={"required": True},
             )
-            _schema_on_200.history = AAZListType(
+            _schema_on_200.entity_name = AAZStrType(
+                serialized_name="entityName",
                 flags={"required": True},
             )
             _schema_on_200.next_marker = AAZStrType(
                 serialized_name="nextMarker",
             )
-            _schema_on_200.signal_name = AAZStrType(
-                serialized_name="signalName",
-                flags={"required": True},
-            )
 
-            history = cls._schema_on_200.history
-            history.Element = AAZObjectType()
+            annotations = cls._schema_on_200.annotations
+            annotations.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.history.Element
-            _element.additional_context = AAZStrType(
-                serialized_name="additionalContext",
-            )
-            _element.health_state = AAZStrType(
-                serialized_name="healthState",
+            _element = cls._schema_on_200.annotations.Element
+            _element.annotation_details = AAZDictType(
+                serialized_name="annotationDetails",
                 flags={"required": True},
             )
-            _element.occurred_at = AAZStrType(
-                serialized_name="occurredAt",
-                flags={"required": True},
+            _element.annotation_id = AAZStrType(
+                serialized_name="annotationId",
+                flags={"read_only": True},
             )
-            _element.value = AAZFloatType()
+            _element.created_at = AAZStrType(
+                serialized_name="createdAt",
+                flags={"read_only": True},
+            )
+            _element.description = AAZStrType()
+
+            annotation_details = cls._schema_on_200.annotations.Element.annotation_details
+            annotation_details.Element = AAZStrType()
 
             return cls._schema_on_200
 
 
-class _GetSignalHistoryHelper:
-    """Helper class for GetSignalHistory"""
+class _GetDataAnnotationHelper:
+    """Helper class for GetDataAnnotation"""
 
 
-__all__ = ["GetSignalHistory"]
+__all__ = ["GetDataAnnotation"]
