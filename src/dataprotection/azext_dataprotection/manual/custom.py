@@ -189,6 +189,14 @@ def dataprotection_backup_instance_initialize(datasource_type, datasource_id, da
                                                 Use command az dataprotection backup-instance initialize-backupconfig \
                                                 for creating the backup-configuration")
         if backup_configuration:
+            if isinstance(backup_configuration, str):
+                try:
+                    backup_configuration = json.loads(backup_configuration)
+                except json.JSONDecodeError as ex:
+                    raise InvalidArgumentValueError(
+                        "Invalid backup configuration. Please provide a valid JSON object."
+                    ) from ex
+
             if datasource_type == "AzureBlob" or datasource_type == "AzureDataLakeStorage":
                 for key in ['excluded_resource_types', 'included_resource_types', 'excluded_namespaces', 'included_namespaces',
                             'label_selectors', 'snapshot_volumes', 'include_cluster_scope_resources']:

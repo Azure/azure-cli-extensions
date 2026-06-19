@@ -15,6 +15,68 @@ from ..utils import track_job_to_completion, wait_for_job_exclusivity_on_datasou
 
 class ConfigScenarioTest(ScenarioTest):
 
+    def test_dataprotection_esan_backupconfig_initialize(self):
+        self.cmd('az dataprotection backup-instance initialize-backupconfig '
+                 '--datasource-type AzureElasticSAN '
+                 '--resource-selectors source-vol-1',
+                 checks=[
+                     self.check('object_type', 'GenericBackupDatasourceParameters'),
+                     self.check('length(resource_selectors)', 1),
+                     self.check('resource_selectors[0]', 'source-vol-1'),
+                 ])
+
+    def test_dataprotection_esan_backupconfig_requires_resource_selectors(self):
+        from azure.cli.core.azclierror import RequiredArgumentMissingError
+        with self.assertRaises(RequiredArgumentMissingError):
+            self.cmd('az dataprotection backup-instance initialize-backupconfig '
+                     '--datasource-type AzureElasticSAN')
+
+    def test_dataprotection_esan_backupconfig_rejects_foreign_parameters(self):
+        from azure.cli.core.azclierror import InvalidArgumentValueError
+        with self.assertRaises(InvalidArgumentValueError):
+            self.cmd('az dataprotection backup-instance initialize-backupconfig '
+                     '--datasource-type AzureElasticSAN '
+                     '--resource-selectors source-vol-1 '
+                     '--included-namespaces ns1')
+
+    def test_dataprotection_esan_restoreconfig_initialize(self):
+        payload = '{"source-vol-1":"target-vol-1"}'
+        self.cmd('az dataprotection backup-instance initialize-restoreconfig '
+                 '--datasource-type AzureElasticSAN '
+                 '--resource-identifiers source-vol-1 '
+                 f'--resource-name-overrides "{payload}"',
+                 checks=[
+                     self.check('object_type', 'GenericRestoreDatasourceCriteria'),
+                     self.check('resource_selectors.object_type', 'ResourceListSelectionCriteria'),
+                     self.check('length(resource_selectors.resource_identifiers)', 1),
+                     self.check('resource_selectors.resource_identifiers[0]', 'source-vol-1'),
+                     self.check('resource_selectors.resource_name_overrides.source-vol-1', 'target-vol-1'),
+                 ])
+
+    def test_dataprotection_esan_restoreconfig_requires_resource_identifiers(self):
+        from azure.cli.core.azclierror import RequiredArgumentMissingError
+        with self.assertRaises(RequiredArgumentMissingError):
+            self.cmd('az dataprotection backup-instance initialize-restoreconfig '
+                     '--datasource-type AzureElasticSAN')
+
+    def test_dataprotection_esan_restoreconfig_override_key_mismatch(self):
+        from azure.cli.core.azclierror import InvalidArgumentValueError
+        payload = '{"source-vol-x":"target-vol-1"}'
+        with self.assertRaises(InvalidArgumentValueError):
+            self.cmd('az dataprotection backup-instance initialize-restoreconfig '
+                     '--datasource-type AzureElasticSAN '
+                     '--resource-identifiers source-vol-1 '
+                     f'--resource-name-overrides "{payload}"')
+
+    def test_dataprotection_esan_restoreconfig_override_target_duplicates(self):
+        from azure.cli.core.azclierror import InvalidArgumentValueError
+        payload = '{"source-vol-1":"target-vol","source-vol-2":"target-vol"}'
+        with self.assertRaises(InvalidArgumentValueError):
+            self.cmd('az dataprotection backup-instance initialize-restoreconfig '
+                     '--datasource-type AzureElasticSAN '
+                     '--resource-identifiers source-vol-1 source-vol-2 '
+                     f'--resource-name-overrides "{payload}"')
+
     @AllowLargeResponse()
     @unittest.skip("Tests are passing in local but not getting recorded and failing on cloud. Finding a fix.")
     def test_dataprotection_aks_backup_and_restore_initialize_configs(test):
