@@ -27,6 +27,11 @@ LOCATION = "location"
 
 
 def validate_config_file(config) -> None:
+    if not isinstance(config, dict):
+        raise BadRequestError(
+            "The YAML file is empty or not a valid mapping of fields. "
+            "Please provide a YAML file with the required configuration fields.")
+
     required_fields = [LOCATION]
     # Sanity check to ensure all required fields are present
     missing_fields = [
