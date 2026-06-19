@@ -1035,7 +1035,7 @@ def cli_cosmosdb_update(client,
     if soft_deletion_enabled is not None or \
             soft_deletion_retention_period_in_minutes is not None or \
             min_minutes_before_permanent_deletion_allowed is not None:
-        from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import SoftDeleteConfiguration  # pylint: disable=no-name-in-module
+        from azure.mgmt.cosmosdb.models import SoftDeleteConfiguration  # pylint: disable=no-name-in-module
         soft_delete_configuration = SoftDeleteConfiguration(
             soft_deletion_enabled=soft_deletion_enabled,
             soft_delete_retention_period_in_minutes=soft_deletion_retention_period_in_minutes,
@@ -1323,7 +1323,7 @@ def _create_database_account(client,
     if soft_deletion_enabled is not None or \
             soft_deletion_retention_period_in_minutes is not None or \
             min_minutes_before_permanent_deletion_allowed is not None:
-        from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import SoftDeleteConfiguration  # pylint: disable=no-name-in-module
+        from azure.mgmt.cosmosdb.models import SoftDeleteConfiguration  # pylint: disable=no-name-in-module
         soft_delete_configuration = SoftDeleteConfiguration(
             soft_deletion_enabled=soft_deletion_enabled,
             soft_delete_retention_period_in_minutes=soft_deletion_retention_period_in_minutes,
@@ -3468,7 +3468,7 @@ def cli_cosmosdb_sql_softdeleted_account_delete(client,
                                                 location,
                                                 account_name):
     """Purge a soft-deleted Cosmos DB account."""
-    from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import SoftDeleteActionKind
+    from azure.mgmt.cosmosdb.models import SoftDeleteActionKind
     return client.begin_purge(resource_group, location, account_name, soft_delete_action_kind=SoftDeleteActionKind.PERMANENT_DELETE_RESOURCE)
 
 
@@ -3477,7 +3477,7 @@ def cli_cosmosdb_sql_softdeleted_account_recover(client,
                                                  location,
                                                  account_name):
     """Recover a soft-deleted Cosmos DB account."""
-    from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import SoftDeleteActionKind
+    from azure.mgmt.cosmosdb.models import SoftDeleteActionKind
     return client.begin_restore(resource_group, location, account_name, soft_delete_action_kind=SoftDeleteActionKind.RESTORE_SOFT_DELETED_RESOURCE)
 
 
@@ -3506,7 +3506,7 @@ def cli_cosmosdb_sql_softdeleted_database_delete(client,
                                                  account_name,
                                                  database_name):
     """Purge a soft-deleted database."""
-    from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import SoftDeleteActionKind
+    from azure.mgmt.cosmosdb.models import SoftDeleteActionKind
     return client.begin_purge(resource_group, location, account_name, database_name, soft_delete_action_kind=SoftDeleteActionKind.PERMANENT_DELETE_RESOURCE)
 
 
@@ -3516,7 +3516,7 @@ def cli_cosmosdb_sql_softdeleted_database_recover(client,
                                                   account_name,
                                                   database_name):
     """Recover a soft-deleted database."""
-    from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import SoftDeleteActionKind
+    from azure.mgmt.cosmosdb.models import SoftDeleteActionKind
     return client.begin_restore(resource_group, location, account_name, database_name, soft_delete_action_kind=SoftDeleteActionKind.RESTORE_SOFT_DELETED_RESOURCE)
 
 
@@ -3548,7 +3548,7 @@ def cli_cosmosdb_sql_softdeleted_container_delete(client,
                                                    database_name,
                                                    container_name):
     """Purge a soft-deleted container."""
-    from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import SoftDeleteActionKind
+    from azure.mgmt.cosmosdb.models import SoftDeleteActionKind
     return client.begin_purge(resource_group, location, account_name, database_name, container_name, soft_delete_action_kind=SoftDeleteActionKind.PERMANENT_DELETE_RESOURCE)
 
 
@@ -3559,5 +3559,5 @@ def cli_cosmosdb_sql_softdeleted_container_recover(client,
                                                     database_name,
                                                     container_name):
     """Recover a soft-deleted container."""
-    from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import SoftDeleteActionKind
+    from azure.mgmt.cosmosdb.models import SoftDeleteActionKind
     return client.begin_restore(resource_group, location, account_name, database_name, container_name, soft_delete_action_kind=SoftDeleteActionKind.RESTORE_SOFT_DELETED_RESOURCE)

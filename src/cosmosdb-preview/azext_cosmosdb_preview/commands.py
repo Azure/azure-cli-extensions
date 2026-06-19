@@ -225,15 +225,15 @@ def load_command_table(self, _):
 
     # Soft-deleted resources SDK types
     cosmosdb_softdeleted_accounts_sdk = CliCommandType(
-        operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#SoftDeletedDatabaseAccountsOperations.{}',
+        operations_tmpl='azure.mgmt.cosmosdb.operations#SoftDeletedDatabaseAccountsOperations.{}',
         client_factory=cf_softdeleted_database_accounts)
 
     cosmosdb_softdeleted_sql_databases_sdk = CliCommandType(
-        operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#SoftDeletedSqlDatabasesOperations.{}',
+        operations_tmpl='azure.mgmt.cosmosdb.operations#SoftDeletedSqlDatabasesOperations.{}',
         client_factory=cf_softdeleted_sql_databases)
 
     cosmosdb_softdeleted_sql_containers_sdk = CliCommandType(
-        operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#SoftDeletedSqlContainersOperations.{}',
+        operations_tmpl='azure.mgmt.cosmosdb.operations#SoftDeletedSqlContainersOperations.{}',
         client_factory=cf_softdeleted_sql_containers)
 
     # define commands
