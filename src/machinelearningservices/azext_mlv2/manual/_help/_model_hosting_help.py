@@ -187,7 +187,7 @@ def get_model_hosting_help():
         "ml modelpublisher release-candidate promote-to-prod"
     ] = """
         type: command
-        short-summary: Promotes to production a specific release candidate of the model .
+        short-summary: Promotes to production a specific release candidate of the model.
     """
 
     helps[

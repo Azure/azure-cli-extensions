@@ -94,6 +94,9 @@ def append_correlation_id_message(user_message, correlation_id, message_type="de
 
 @handle_request_errors
 def make_request(url, headers, method="GET", data=None, params=None, stream=False):
+    if params:
+        # Drop unset query params so requests doesn't serialize e.g. currentPage=None
+        params = {k: v for k, v in params.items() if v is not None}
     if method == "GET":
         response = requests.get(url, headers=headers,
                                 params=params, stream=stream, timeout=REQUEST_TIMEOUT)
@@ -538,7 +541,7 @@ def ml_model_hosting_update_model_card(cmd, publisher=None, model=None, file=Non
     except Exception as e:
         user_message = "Failed to read or parse the YAML file for model card."
         module_logger.debug(e)
-        raise AzureInternalError(user_message)
+        raise AzureInternalError(user_message) from e
 
     token = generate_token()
     api_version = '2025-03-31'

@@ -47,7 +47,7 @@ from azure.ai.ml.exceptions import (
     ValidationErrorType,
     ValidationException,
 )
-from azure.cli.core.azclierror import FileOperationError
+from azure.cli.core.azclierror import CLIInternalError, FileOperationError
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.telemetry import add_extension_event
@@ -486,7 +486,7 @@ def _load_self_serve_config():
     """
     config_path = path.abspath(path.join(path.dirname(__file__), "..", "config", "self-serve-config.json"))
     try:
-        with open(config_path, "r") as config_file:
+        with open(config_path, "r", encoding="utf-8") as config_file:
             module_logger.debug(f"Found configuration file at {config_path}")
             config = json.load(config_file)
         return config
@@ -568,8 +568,9 @@ def run_registry_mgmt_cmd(args):
             check=True,
         )
     except subprocess.CalledProcessError as ex:
-        log_and_raise_error(
-            f"registry-mgmt command failed with exit code {ex.returncode}. See the output above for details.")
+        raise CLIInternalError(
+            f"registry-mgmt command failed with exit code {ex.returncode}. "
+            "See the output above for details.") from ex
 
 
 def parse_azureml_model_uri(uri: str):
