@@ -13,6 +13,9 @@ from knack.util import CLIError
 CUSTOM_MGMT_AKS_PREVIEW = CustomResourceType('azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks',
                                              'ContainerServiceClient')
 
+CUSTOM_MGMT_AKS_PIS_PREVIEW = CustomResourceType('azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks_pis',
+                                                 'ContainerServiceClient')
+
 # Note: cf_xxx, as the client_factory option value of a command group at command declaration, it should ignore
 # parameters other than cli_ctx; get_xxx_client is used as the client of other services in the command implementation,
 # and usually accepts subscription_id as a parameter to reconfigure the subscription when sending the request
@@ -21,6 +24,10 @@ CUSTOM_MGMT_AKS_PREVIEW = CustomResourceType('azext_aks_preview.vendored_sdks.az
 # container service clients
 def get_container_service_client(cli_ctx, subscription_id=None):
     return get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_AKS_PREVIEW, subscription_id=subscription_id)
+
+
+def get_container_service_pis_client(cli_ctx, subscription_id=None):
+    return get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_AKS_PIS_PREVIEW, subscription_id=subscription_id)
 
 
 def cf_container_services(cli_ctx, *_):
@@ -69,10 +76,6 @@ def cf_mc_snapshots(cli_ctx, *_):
 
 def get_mc_snapshots_client(cli_ctx, subscription_id=None):
     return get_container_service_client(cli_ctx, subscription_id=subscription_id).managed_cluster_snapshots
-
-
-def get_compute_client(cli_ctx, *_):
-    return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_COMPUTE)
 
 
 def get_resource_groups_client(cli_ctx, subscription_id=None):
@@ -163,3 +166,7 @@ def cf_jwt_authenticators(cli_ctx, *_):
 
 def cf_vm_skus(cli_ctx, *_):
     return get_container_service_client(cli_ctx).vm_skus
+
+
+def cf_prepared_image_specifications(cli_ctx, *_, subscription_id=None):
+    return get_container_service_pis_client(cli_ctx, subscription_id=subscription_id).prepared_image_specifications

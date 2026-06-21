@@ -23,9 +23,9 @@ class Replace(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-01-01-preview",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/baremetalmachines/{}/replace", "2026-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/baremetalmachines/{}/replace", "2026-05-01-preview"],
         ]
     }
 
@@ -116,14 +116,14 @@ class Replace(AAZCommand):
         )
 
         bmc_credentials = cls._args_schema.bmc_credentials
-        bmc_credentials.password = AAZStrArg(
+        bmc_credentials.password = AAZPasswordArg(
             options=["password"],
             help="The password of the administrator of the device used during initialization.",
             required=True,
             fmt=AAZStrArgFormat(
                 min_length=1,
             ),
-            blank=AAZPromptInput(
+            blank=AAZPromptPasswordInput(
                 msg="Administrator password of device:",
             ),
         )
@@ -218,7 +218,7 @@ class Replace(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-01-01-preview",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }

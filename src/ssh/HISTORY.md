@@ -1,5 +1,9 @@
 Release History
 ===============
+2.0.9
+-----
+* Migrate code from Azure SDK to AAZ based commands for compute operations (VM)
+
 2.0.8
 -----
 * Add Entra ID SSH Login support for all clouds

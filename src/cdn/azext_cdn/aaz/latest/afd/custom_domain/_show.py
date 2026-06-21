@@ -17,14 +17,14 @@ from azure.cli.core.aaz import *
 class Show(AAZCommand):
     """Get an existing AzureFrontDoor domain with the specified domain name under the specified subscription, resource group and profile.
 
-    :example: show details of the custom domain within the specified profile.
-        az afd custom-domain show -g group --profile-name profile  --custom-domain-name customDomainName
+    :example: AFDCustomDomains_Get
+        az afd custom-domain show --resource-group RG --profile-name profile1 --custom-domain-name domain1
     """
 
     _aaz_info = {
-        "version": "2025-06-01",
+        "version": "2025-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/customdomains/{}", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/customdomains/{}", "2025-09-01-preview"],
         ]
     }
 
@@ -135,7 +135,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2025-09-01-preview",
                     required=True,
                 ),
             }
@@ -205,6 +205,9 @@ class Show(AAZCommand):
                 serialized_name="hostName",
                 flags={"required": True},
             )
+            properties.mtls_settings = AAZObjectType(
+                serialized_name="mtlsSettings",
+            )
             properties.pre_validated_custom_domain_resource_id = AAZObjectType(
                 serialized_name="preValidatedCustomDomainResourceId",
             )
@@ -227,6 +230,47 @@ class Show(AAZCommand):
 
             extended_properties = cls._schema_on_200.properties.extended_properties
             extended_properties.Element = AAZStrType()
+
+            mtls_settings = cls._schema_on_200.properties.mtls_settings
+            mtls_settings.scenario = AAZStrType(
+                flags={"required": True},
+            )
+
+            disc_client_certificate_required_and_validated = cls._schema_on_200.properties.mtls_settings.discriminate_by("scenario", "ClientCertificateRequiredAndValidated")
+            disc_client_certificate_required_and_validated.allowed_fqdns = AAZListType(
+                serialized_name="allowedFqdns",
+            )
+            disc_client_certificate_required_and_validated.certificate_revocation_check = AAZStrType(
+                serialized_name="certificateRevocationCheck",
+            )
+            disc_client_certificate_required_and_validated.secrets = AAZListType(
+                flags={"required": True},
+            )
+
+            allowed_fqdns = cls._schema_on_200.properties.mtls_settings.discriminate_by("scenario", "ClientCertificateRequiredAndValidated").allowed_fqdns
+            allowed_fqdns.Element = AAZStrType()
+
+            secrets = cls._schema_on_200.properties.mtls_settings.discriminate_by("scenario", "ClientCertificateRequiredAndValidated").secrets
+            secrets.Element = AAZObjectType()
+            _ShowHelper._build_schema_resource_reference_read(secrets.Element)
+
+            disc_client_certificate_validated_if_presented = cls._schema_on_200.properties.mtls_settings.discriminate_by("scenario", "ClientCertificateValidatedIfPresented")
+            disc_client_certificate_validated_if_presented.allowed_fqdns = AAZListType(
+                serialized_name="allowedFqdns",
+            )
+            disc_client_certificate_validated_if_presented.certificate_revocation_check = AAZStrType(
+                serialized_name="certificateRevocationCheck",
+            )
+            disc_client_certificate_validated_if_presented.secrets = AAZListType(
+                flags={"required": True},
+            )
+
+            allowed_fqdns = cls._schema_on_200.properties.mtls_settings.discriminate_by("scenario", "ClientCertificateValidatedIfPresented").allowed_fqdns
+            allowed_fqdns.Element = AAZStrType()
+
+            secrets = cls._schema_on_200.properties.mtls_settings.discriminate_by("scenario", "ClientCertificateValidatedIfPresented").secrets
+            secrets.Element = AAZObjectType()
+            _ShowHelper._build_schema_resource_reference_read(secrets.Element)
 
             tls_settings = cls._schema_on_200.properties.tls_settings
             tls_settings.certificate_type = AAZStrType(

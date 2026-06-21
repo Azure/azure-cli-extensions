@@ -17,14 +17,14 @@ from azure.cli.core.aaz import *
 class Usage(AAZCommand):
     """Checks the quota and actual usage of endpoints under the given Azure Front Door profile.
 
-    :example: List resource usage within the specific AFD profile.
-        az afd profile usage -g group --profile-name profile
+    :example: AFDProfiles_ListResourceUsage
+        az afd profile usage --resource-group RG --profile-name profile1
     """
 
     _aaz_info = {
-        "version": "2025-06-01",
+        "version": "2025-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/usages", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/usages", "2025-09-01-preview"],
         ]
     }
 
@@ -126,7 +126,7 @@ class Usage(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2025-09-01-preview",
                     required=True,
                 ),
             }
@@ -162,7 +162,9 @@ class Usage(AAZCommand):
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
             )
-            _schema_on_200.value = AAZListType()
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()

@@ -97,6 +97,8 @@ from azure.cli.core.azclierror import (
     UnknownError,
     CLIError,
 )
+from azure.cli.core.commands import AzCliCommandInvoker
+from azure.cli.core.util import todict
 from azure.cli.command_modules.acs._consts import (
     CONST_OUTBOUND_TYPE_LOAD_BALANCER,
     CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
@@ -3123,6 +3125,83 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
                 ctx_5.get_kubernetes_version(), "custom_kubernetes_version"
             )
 
+    def test_get_enable_fips(self):
+        # default
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_enable_fips(), False)
+
+        # custom value with supported Kubernetes version
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_fips": True,
+                    "kubernetes_version": "1.34.0",
+                }
+            ),
+            self.models,
+            DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_2.get_enable_fips(), True)
+
+        # custom value with unsupported Kubernetes version
+        ctx_3 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_fips": True,
+                    "kubernetes_version": "1.33.9",
+                }
+            ),
+            self.models,
+            DecoratorMode.CREATE,
+        )
+        with self.assertRaises(InvalidArgumentValueError):
+            ctx_3.get_enable_fips()
+
+        # CREATE: value on attached mc overrides raw parameter default
+        ctx_4 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"enable_fips": False}),
+            self.models,
+            DecoratorMode.CREATE,
+        )
+        mc_4 = self.models.ManagedCluster(
+            location="test_location",
+            kubernetes_version="1.34.0",
+        )
+        mc_4.properties["enableFIPS"] = True
+        ctx_4.attach_mc(mc_4)
+        self.assertEqual(ctx_4.get_enable_fips(), True)
+
+        ctx_5 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"disable_fips": True}),
+            self.models,
+            DecoratorMode.UPDATE,
+        )
+        self.assertEqual(ctx_5.get_disable_fips(), True)
+
+        ctx_6 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_fips": True,
+                    "disable_fips": True,
+                    "kubernetes_version": "1.34.0",
+                }
+            ),
+            self.models,
+            DecoratorMode.UPDATE,
+        )
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_6.get_enable_fips()
+
     def test_get_disk_driver(self):
         ctx_1 = AKSPreviewManagedClusterContext(
             self.cmd,
@@ -5851,6 +5930,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
                 "pod_ip_allocation_mode": "DynamicIndividual",
                 "enable_node_public_ip": True,
                 "node_public_ip_prefix_id": "test_node_public_ip_prefix_id",
+                "node_public_ip_prefix_ids": None,
                 "enable_cluster_autoscaler": True,
                 "min_count": 5,
                 "max_count": 20,
@@ -7588,6 +7668,72 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         dec_4.context.attach_mc(mc_4)
         with self.assertRaises(MutuallyExclusiveArgumentError):
             dec_mc_4 = dec_4.set_up_bootstrap_profile(mc_4)
+
+    def test_set_up_enable_fips(self):
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.set_up_enable_fips(mc_1)
+        ground_truth_mc_1 = self.models.ManagedCluster(location="test_location")
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        dec_2 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_fips": True,
+                "kubernetes_version": "1.34.0",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        agentpool_profile = self.models.ManagedClusterAgentPoolProfile(
+            name="nodepool1",
+            enable_fips=False,
+        )
+        mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            kubernetes_version="1.34.0",
+            agent_pool_profiles=[agentpool_profile],
+        )
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.set_up_enable_fips(mc_2)
+        ground_truth_agentpool_profile = self.models.ManagedClusterAgentPoolProfile(
+            name="nodepool1",
+            enable_fips=True,
+        )
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            kubernetes_version="1.34.0",
+            agent_pool_profiles=[ground_truth_agentpool_profile],
+        )
+        ground_truth_mc_2.enable_fips = True
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+        self.assertEqual(
+            todict(dec_mc_2, AzCliCommandInvoker.remove_additional_prop_layer).get("enableFips"),
+            True,
+        )
+
+        dec_3 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_fips": True,
+                "kubernetes_version": "1.33.9",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            kubernetes_version="1.33.9",
+        )
+        dec_3.context.attach_mc(mc_3)
+        with self.assertRaises(InvalidArgumentValueError):
+            dec_3.set_up_enable_fips(mc_3)
 
     def test_set_up_static_egress_gateway(self):
         dec_0 = AKSPreviewManagedClusterCreateDecorator(
@@ -13873,6 +14019,130 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         normalClusterCalculated = noopDecorator3.update_k8s_support_plan(normalCluster)
         self.assertEqual(normalClusterCalculated, normalCluster)
 
+    def test_update_enable_fips(self):
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            kubernetes_version="1.34.0",
+        )
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.update_enable_fips(mc_1)
+        self.assertEqual(dec_mc_1, mc_1)
+
+        dec_2 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_fips": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        agentpool_profile = self.models.ManagedClusterAgentPoolProfile(
+            name="nodepool1",
+            enable_fips=True,
+        )
+        mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            kubernetes_version="1.34.0",
+            agent_pool_profiles=[agentpool_profile],
+        )
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.update_enable_fips(mc_2)
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            kubernetes_version="1.34.0",
+            agent_pool_profiles=[agentpool_profile],
+        )
+        ground_truth_mc_2.enable_fips = True
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+        self.assertEqual(
+            todict(dec_mc_2, AzCliCommandInvoker.remove_additional_prop_layer).get("enableFips"),
+            True,
+        )
+
+        dec_3 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_fips": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        non_fips_agentpool_profile = self.models.ManagedClusterAgentPoolProfile(
+            name="nodepool2",
+            enable_fips=False,
+        )
+        mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            kubernetes_version="1.34.0",
+            agent_pool_profiles=[non_fips_agentpool_profile],
+        )
+        dec_3.context.attach_mc(mc_3)
+        with self.assertRaises(InvalidArgumentValueError):
+            dec_3.update_enable_fips(mc_3)
+
+        dec_4 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_fips": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_4 = self.models.ManagedCluster(
+            location="test_location",
+            kubernetes_version="1.33.9",
+        )
+        dec_4.context.attach_mc(mc_4)
+        with self.assertRaises(InvalidArgumentValueError):
+            dec_4.update_enable_fips(mc_4)
+
+        dec_5 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"disable_fips": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        agentpool_profile_5 = self.models.ManagedClusterAgentPoolProfile(
+            name="nodepool1",
+            enable_fips=True,
+        )
+        mc_5 = self.models.ManagedCluster(
+            location="test_location",
+            kubernetes_version="1.34.0",
+            agent_pool_profiles=[agentpool_profile_5],
+        )
+        mc_5.properties["enableFIPS"] = True
+        dec_5.context.attach_mc(mc_5)
+        dec_mc_5 = dec_5.update_enable_fips(mc_5)
+        ground_truth_mc_5 = self.models.ManagedCluster(
+            location="test_location",
+            kubernetes_version="1.34.0",
+            agent_pool_profiles=[agentpool_profile_5],
+        )
+        ground_truth_mc_5.enable_fips = False
+        self.assertEqual(dec_mc_5, ground_truth_mc_5)
+        self.assertEqual(
+            todict(dec_mc_5, AzCliCommandInvoker.remove_additional_prop_layer).get("enableFips"),
+            False,
+        )
+
+        dec_6 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_fips": True,
+                "disable_fips": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_6 = self.models.ManagedCluster(
+            location="test_location",
+            kubernetes_version="1.34.0",
+        )
+        dec_6.context.attach_mc(mc_6)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            dec_6.update_enable_fips(mc_6)
+
     def test_mc_get_node_init_taints(self):
         # Default, not set.
         ctx_1 = AKSPreviewManagedClusterContext(
@@ -15954,6 +16224,81 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             ),
         )
         self.assertEqual(dec_mc_5, ground_truth_mc_5)
+
+    def test_update_control_plane_scaling_profile(self):
+        # Test default behavior - no change when not specified
+        dec_0 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_0 = self.models.ManagedCluster(location="test_location")
+        dec_0.context.attach_mc(mc_0)
+        dec_mc_0 = dec_0.update_control_plane_scaling_profile(mc_0)
+        self.assertIsNone(dec_mc_0.control_plane_scaling_profile)
+
+        # Test updating scaling size on a cluster with existing profile (upgrade H4 -> H8)
+        from azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.models import (
+            ManagedClusterControlPlaneScalingProfile,
+        )
+
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "control_plane_scaling_size": "H8",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            control_plane_scaling_profile=ManagedClusterControlPlaneScalingProfile(
+                scaling_size="H4",
+            ),
+        )
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.update_control_plane_scaling_profile(mc_1)
+        self.assertEqual(dec_mc_1.control_plane_scaling_profile.scaling_size, "H8")
+
+        # Test updating scaling size on a cluster with existing profile (downgrade H8 -> H2)
+        dec_2 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "control_plane_scaling_size": "H2",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            control_plane_scaling_profile=ManagedClusterControlPlaneScalingProfile(
+                scaling_size="H8",
+            ),
+        )
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.update_control_plane_scaling_profile(mc_2)
+        self.assertEqual(dec_mc_2.control_plane_scaling_profile.scaling_size, "H2")
+
+        # Test setting scaling size when profile doesn't exist (passthrough to RP for validation)
+        dec_3 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "control_plane_scaling_size": "H4",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_3 = self.models.ManagedCluster(location="test_location")
+        dec_3.context.attach_mc(mc_3)
+        dec_mc_3 = dec_3.update_control_plane_scaling_profile(mc_3)
+        ground_truth_mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            control_plane_scaling_profile=ManagedClusterControlPlaneScalingProfile(
+                scaling_size="H4",
+            ),
+        )
+        self.assertEqual(dec_mc_3, ground_truth_mc_3)
 
     def test_update_ingress_profile_gateway_api(self):
         # Test enabling Gateway API

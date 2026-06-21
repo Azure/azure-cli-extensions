@@ -17,14 +17,14 @@ from azure.cli.core.aaz import *
 class Purge(AAZCommand):
     """Removes a content from AzureFrontDoor.
 
-    :example: Remove all cached contents under directory "/script" for domain www.contoso.com
-        az afd endpoint purge -g group --profile-name profile --domains www.contoso.com --content-paths '/scripts/*'
+    :example: AFDEndpoints_PurgeContent
+        az afd endpoint purge --resource-group RG --profile-name profile1 --endpoint-name endpoint1 --content-paths "[/folder1]" --domains "[endpoint1-abcdefghijklmnop.z01.azurefd.net]"
     """
 
     _aaz_info = {
-        "version": "2025-06-01",
+        "version": "2025-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/afdendpoints/{}/purge", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/afdendpoints/{}/purge", "2025-09-01-preview"],
         ]
     }
 
@@ -78,7 +78,7 @@ class Purge(AAZCommand):
         _args_schema.domains = AAZListArg(
             options=["--domains"],
             arg_group="Contents",
-            help="List of domains. Example: \"www.contoso.com, www.contoso1.com\"",
+            help="List of domains.",
         )
 
         content_paths = cls._args_schema.content_paths
@@ -169,7 +169,7 @@ class Purge(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2025-09-01-preview",
                     required=True,
                 ),
             }

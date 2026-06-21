@@ -78,6 +78,11 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements, too-many-
             c.argument('v_cores', arg_type=v_cores_arg_type)
             c.argument('zone_placement_policy', arg_type=zone_placement_policy_arg_type)
 
+        with self.argument_context('horizondb update') as c:
+            c.argument('tags', tags_type)
+            c.argument('administrator_login_password', arg_type=administrator_login_password_arg_type)
+            c.argument('v_cores', arg_type=v_cores_arg_type)
+
         with self.argument_context('horizondb delete') as c:
             c.argument('yes', arg_type=yes_arg_type)
 

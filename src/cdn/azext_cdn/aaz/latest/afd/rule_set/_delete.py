@@ -18,14 +18,14 @@ from azure.cli.core.aaz import *
 class Delete(AAZCommand):
     """Delete an existing AzureFrontDoor rule set with the specified rule set name under the specified subscription, resource group and profile.
 
-    :example: Delete a rule set with the name ruleset1.
-        az afd rule-set delete -g group --rule-set-name ruleset1 --profile-name profile
+    :example: RuleSets_Delete
+        az afd rule-set delete --resource-group RG --profile-name profile1 --rule-set-name ruleSet1
     """
 
     _aaz_info = {
-        "version": "2025-06-01",
+        "version": "2025-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/rulesets/{}", "2025-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cdn/profiles/{}/rulesets/{}", "2025-09-01-preview"],
         ]
     }
 
@@ -158,7 +158,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2025-06-01",
+                    "api-version", "2025-09-01-preview",
                     required=True,
                 ),
             }

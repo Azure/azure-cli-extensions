@@ -22,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2026-02-01",
+        "version": "2026-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.durabletask/schedulers/{}/taskhubs/{}", "2026-02-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.durabletask/schedulers/{}/taskhubs/{}", "2026-05-01-preview"],
         ]
     }
 
@@ -64,6 +64,18 @@ class Create(AAZCommand):
                 pattern="^[a-zA-Z0-9-]{3,64}$",
             ),
         )
+
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.capabilities = AAZListArg(
+            options=["--capabilities"],
+            arg_group="Properties",
+            help="A set of Task Hub capabilities that can be enabled or disabled for a Task Hub",
+        )
+
+        capabilities = cls._args_schema.capabilities
+        capabilities.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
@@ -151,7 +163,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2026-02-01",
+                    "api-version", "2026-05-01-preview",
                     required=True,
                 ),
             }
@@ -176,6 +188,15 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
+            _builder.set_prop("properties", AAZObjectType)
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("capabilities", AAZListType, ".capabilities")
+
+            capabilities = _builder.get(".properties.capabilities")
+            if capabilities is not None:
+                capabilities.set_elements(AAZStrType, ".")
 
             return self.serialize_content(_content_value)
 
@@ -213,6 +234,7 @@ class Create(AAZCommand):
             )
 
             properties = cls._schema_on_200_201.properties
+            properties.capabilities = AAZListType()
             properties.dashboard_url = AAZStrType(
                 serialized_name="dashboardUrl",
                 flags={"read_only": True},
@@ -221,6 +243,9 @@ class Create(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+
+            capabilities = cls._schema_on_200_201.properties.capabilities
+            capabilities.Element = AAZStrType()
 
             system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(

@@ -268,6 +268,16 @@ def cleanup_scenario10(test):
     pass
 
 
+def cleanup_scenario11(test):
+    """Env cleanup_scenario11"""
+    pass
+
+
+def cleanup_scenario12(test):
+    """Env cleanup_scenario12"""
+    pass
+
+
 def call_scenario10(test):
     """# Testcase: scenario10 separation of cluster creation and update processes with user-assigned identity for compatibility with the new cluster simulator"""
     setup_scenario10(test)
@@ -291,8 +301,8 @@ def setup_scenario11(test):
     pass
 
 
-def cleanup_scenario11(test):
-    """Env cleanup_scenario11"""
+def setup_scenario12(test):
+    """Env setup_scenario12"""
     pass
 
 
@@ -300,7 +310,14 @@ def call_scenario11(test):
     """# Testcase: scenario11 inspect action"""
     setup_scenario11(test)
     step_update_inspect_secnario1(test, checks=[])
-    cleanup_scenario10(test)
+    cleanup_scenario11(test)
+
+
+def call_scenario12(test):
+    """# Testcase: scenario12 rotate credential action"""
+    setup_scenario12(test)
+    step_update_rotate_credential_secnario1(test, checks=[])
+    cleanup_scenario12(test)
 
 
 def step_create_scenario1(test, checks=None):
@@ -638,7 +655,7 @@ def step_update_vulnerability_scanning_settings_scenario2(test, checks=None):
 
 
 def step_update_inspect_secnario1(test, checks=None):
-    """ClusterManager inspect operation"""
+    """cluster inspect operation"""
     if checks is None:
         checks = []
     test.cmd(
@@ -646,6 +663,16 @@ def step_update_inspect_secnario1(test, checks=None):
         "--resource-group {rg} "
         "--additional-actions {additionalActions} "
         "--filter-devices {filterDevices}"
+    )
+
+
+def step_update_rotate_credential_secnario1(test, checks=None):
+    """cluster rotate-credential operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud cluster rotate-credential --name {nameClusterUpdate} "
+        "--resource-group {rg} --credentials {rotateCredential}"
     )
 
 
@@ -747,6 +774,7 @@ class ClusterScenarioTest(ScenarioTest):
                 "clusterTypeMultiRack": CONFIG.get("CLUSTER", "cluster_type_multirack"),
                 "additionalActions": CONFIG.get("CLUSTER", "inspect_actions"),
                 "filterDevices": CONFIG.get("CLUSTER", "filter_devices"),
+                "rotateCredential": CONFIG.get("CLUSTER", "rotate_credential"),
             }
         )
 
@@ -856,3 +884,7 @@ class ClusterScenarioTest(ScenarioTest):
     def test_cluster_scenario11(self):
         """test scenario for Cluster Inspect"""
         call_scenario11(self)
+
+    def test_cluster_scenario12(self):
+        """test scenario for Cluster Rotate Credential"""
+        call_scenario12(self)

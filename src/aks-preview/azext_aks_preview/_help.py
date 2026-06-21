@@ -55,6 +55,14 @@ helps['aks create'] = f"""
         - name: --node-osdisk-type
           type: string
           short-summary: OS disk type to be used for machines in a given agent pool. Defaults to 'Ephemeral' when possible in conjunction with VM size and OS disk size. May not be changed for this pool after creation. ('Ephemeral' or 'Managed')
+        - name: --enable-osdisk-fc --enable-osdisk-full-caching
+          type: bool
+          short-summary: Enable the full-cache ephemeral OS disk feature for the default node pool.
+          long-summary: |-
+            When enabled, the entire operating system is cached on the local
+            ephemeral OS disk to mitigate E17 events caused by network failures.
+            Requires Ephemeral OS disk and a VM size with sufficient cache.
+            This property is immutable after the node pool is created.
         - name: --node-osdisk-diskencryptionset-id -d
           type: string
           short-summary: ResourceId of the disk encryption set to use for enabling encryption at rest on agent node os disk.
@@ -283,6 +291,20 @@ helps['aks create'] = f"""
         - name: --enable-fips-image
           type: bool
           short-summary: Use FIPS-enabled OS on agent nodes.
+        - name: --enable-fips
+          type: bool
+          short-summary: Enable FIPS mode at the cluster level.
+          long-summary: |-
+            Enables FIPS compliance for all AKS-managed components, such as the node
+            operating system, addons, and managed containerized components
+            (https://aka.ms/aks/components/docs). See Enable cluster-wide FIPS
+            (https://aka.ms/aks/fips) for more details.
+            Requires Kubernetes version 1.34 or later and the
+            Microsoft.ContainerService/EnableFIPSPreview feature to be registered
+            on the subscription. All node pools must be FIPS-enabled; this command
+            enables FIPS on the default node pool during cluster creation. Some
+            addons and extensions aren't supported with cluster-wide FIPS. Verify
+            addon and extension compatibility before enabling this preview feature.
         - name: --workspace-resource-id
           type: string
           short-summary: The resource ID of an existing Log Analytics Workspace to use for storing monitoring data. If not specified, uses the default Log Analytics Workspace if it exists, otherwise creates one.
@@ -358,6 +380,10 @@ helps['aks create'] = f"""
         - name: --node-public-ip-prefix-id
           type: string
           short-summary: Public IP prefix ID used to assign public IPs to VMSS nodes.
+        - name: --node-public-ip-prefix-ids
+          type: string
+          short-summary: Comma-separated list of public IP prefix resource IDs for dual-stack node public IPs (IPv4 and/or IPv6).
+          long-summary: At most one IPv4 and one IPv6 prefix may be specified. Automatically enables --enable-node-public-ip. Cannot be used with --node-public-ip-prefix-id. Requires the NodePublicIPv6PrefixPreview feature flag.
         - name: --enable-managed-identity
           type: bool
           short-summary: Using managed identity to manage cluster resource group. You can explicitly specify "--service-principal" and "--client-secret" to disable managed identity, otherwise it will be enabled.
@@ -1243,6 +1269,27 @@ helps['aks update'] = """
         - name: --disable-image-integrity
           type: bool
           short-summary: Disable ImageIntegrity Service.
+        - name: --enable-fips
+          type: bool
+          short-summary: Enable FIPS mode at the cluster level.
+          long-summary: |-
+            Enables FIPS compliance for all AKS-managed components, such as the node
+            operating system, addons, and managed containerized components
+            (https://aka.ms/aks/components/docs). See Enable cluster-wide FIPS
+            (https://aka.ms/aks/fips) for more details.
+            Requires Kubernetes version 1.34 or later and the
+            Microsoft.ContainerService/EnableFIPSPreview feature to be registered
+            on the subscription. Existing node pools must already be FIPS-enabled
+            before enabling this cluster-level setting, and future node pools must
+            also be created with FIPS enabled. Some addons and extensions aren't
+            supported with cluster-wide FIPS. Verify addon and extension
+            compatibility before enabling this preview feature.
+        - name: --disable-fips
+          type: bool
+          short-summary: Disable FIPS mode at the cluster level.
+          long-summary: |-
+            Disables cluster-wide FIPS enforcement for AKS-managed components.
+            This doesn't disable FIPS on existing node pools.
         - name: --enable-service-account-image-pull
           type: bool
           short-summary: Enable service account based image pull. For more information, see https://aka.ms/aks/identity-binding/acr-image-pull/docs.
@@ -1497,6 +1544,8 @@ helps['aks update'] = """
         text: az aks update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n MyManagedCluster
       - name: Disable cluster-autoscaler for an existing cluster
         text: az aks update --disable-cluster-autoscaler -g MyResourceGroup -n MyManagedCluster
+      - name: Disable FIPS mode at the cluster level.
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --disable-fips
       - name: Update min-count or max-count for cluster autoscaler.
         text: az aks update --update-cluster-autoscaler --min-count 1 --max-count 10 -g MyResourceGroup -n MyManagedCluster
       - name: Upgrade load balancer sku to standard
@@ -2100,6 +2149,14 @@ helps['aks nodepool add'] = """
         - name: --node-osdisk-type
           type: string
           short-summary: OS disk type to be used for machines in a given agent pool. Defaults to 'Ephemeral' when possible in conjunction with VM size and OS disk size. May not be changed for this pool after creation. ('Ephemeral' or 'Managed')
+        - name: --enable-osdisk-fc --enable-osdisk-full-caching
+          type: bool
+          short-summary: Enable the full-cache ephemeral OS disk feature for the node pool.
+          long-summary: |-
+            When enabled, the entire operating system is cached on the local
+            ephemeral OS disk to mitigate E17 events caused by network failures.
+            Requires Ephemeral OS disk and a VM size with sufficient cache.
+            This property is immutable after the node pool is created.
         - name: --max-pods -m
           type: int
           short-summary: The maximum number of pods deployable to a node.
@@ -2155,6 +2212,10 @@ helps['aks nodepool add'] = """
         - name: --node-public-ip-prefix-id
           type: string
           short-summary: Public IP prefix ID used to assign public IPs to VMSS nodes. Must use VMSS agent pool type.
+        - name: --node-public-ip-prefix-ids
+          type: string
+          short-summary: Comma-separated list of public IP prefix resource IDs for dual-stack node public IPs (IPv4 and/or IPv6).
+          long-summary: At most one IPv4 and one IPv6 prefix may be specified. Automatically enables --enable-node-public-ip. Cannot be used with --node-public-ip-prefix-id. Requires the NodePublicIPv6PrefixPreview feature flag.
         - name: --labels
           type: string
           short-summary: The node labels for the node pool. See https://aka.ms/node-labels for syntax of labels.
@@ -2275,6 +2336,13 @@ helps['aks nodepool add'] = """
         - name: --localdns-config
           type: string
           short-summary: Set the localDNS Profile for a nodepool with a JSON config file.
+        - name: --secondary-network-interfaces --secondary-nics
+          type: string
+          short-summary: Secondary network interface configurations as a JSON string or `@filename`.
+          long-summary: |-
+            Specify secondary NICs to attach to each node. Accepts inline JSON or `@filename`.
+            Example: '[{"type":"Standard","vnetSubnetId":"/subscriptions/.../subnets/mysubnet","enableAcceleratedNetworking":true}]'
+            Supported NIC types are "Standard" (requires vnetSubnetId) and "Dynamic".
         - name: --upgrade-strategy
           type: string
           short-summary: Upgrade strategy for the node pool. Allowed values are "Rolling" or "BlueGreen". Default is "Rolling".
@@ -4639,4 +4707,63 @@ helps['aks jwtauthenticator show'] = """
     examples:
         - name: Show a specific JWT authenticator configuration
           text: az aks jwtauthenticator show -g MyResourceGroup --cluster-name MyCluster --name myjwt
+"""
+
+helps['aks prepared-image-specification'] = """
+    type: group
+    short-summary: Commands to manage prepared image specifications.
+"""
+
+helps['aks prepared-image-specification create'] = """
+    type: command
+    short-summary: Create a new prepared image specification.
+    examples:
+        - name: Create a new prepared image specification specifying a container image.
+          text: az aks prepared-image-specification create -g MyResourceGroup -n MyPIS --version MyVersion --container-images myacr.azurecr.io/myimage:latest
+        - name: Create a new prepared image specification specifying a customization script.
+          text: az aks prepared-image-specification create -g MyResourceGroup -n MyPIS --version MyVersion --customization-scripts '[{"name":"myscript","script":"/bin/true","scriptType":"Bash","executionPoint":"NodeImageBuildTime"}]'
+        - name: Create a new prepared image specification specifying a managed identity.
+          text: az aks prepared-image-specification create -g MyResourceGroup -n MyPIS --version MyVersion --assign-identity /subscriptions/MySubscription/resourceGroups/AnotherResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/MyIdentity
+        - name: Create a new prepared image specification specifying tags.
+          text: az aks prepared-image-specification create -g MyResourceGroup -n MyPIS --version MyVersion --tags k1=v1 k2=v2
+"""
+
+helps['aks prepared-image-specification update'] = """
+    type: command
+    short-summary: Update a prepared image specification.
+"""
+
+helps['aks prepared-image-specification delete'] = """
+    type: command
+    short-summary: Delete a prepared image specification.
+"""
+
+helps['aks prepared-image-specification list'] = """
+    type: command
+    short-summary: List prepared image specifications.
+"""
+
+helps['aks prepared-image-specification show'] = """
+    type: command
+    short-summary: Show a prepared image specification.
+"""
+
+helps['aks prepared-image-specification version'] = """
+    type: group
+    short-summary: Commands to manage prepared image specification versions.
+"""
+
+helps['aks prepared-image-specification version delete'] = """
+    type: command
+    short-summary: Delete a prepared image specification version.
+"""
+
+helps['aks prepared-image-specification version list'] = """
+    type: command
+    short-summary: List prepared image specification versions.
+"""
+
+helps['aks prepared-image-specification version show'] = """
+    type: command
+    short-summary: Show a prepared image specification version.
 """
