@@ -618,6 +618,92 @@ class AzureBlobSourceSinkDetails(_serialization.Model):
         self.endpoint_url = endpoint_url
 
 
+class Resource(_serialization.Model):
+    """Common fields that are returned in the response for all Azure Resource Manager resources.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
+    :vartype type: str
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
+    :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
+    """
+
+    _validation = {
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+    }
+
+    def __init__(self, **kwargs: Any) -> None:
+        """ """
+        super().__init__(**kwargs)
+        self.id: Optional[str] = None
+        self.name: Optional[str] = None
+        self.type: Optional[str] = None
+        self.system_data: Optional["_models.SystemData"] = None
+
+
+class AzureResourceManagerCommonTypesTrackedResourceUpdate(Resource):  # pylint: disable=name-too-long
+    """The resource model definition for an Azure Resource Manager tracked top level resource which
+    has 'tags' and a 'location'.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
+    :vartype type: str
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
+    :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
+    :ivar tags: Resource tags.
+    :vartype tags: dict[str, str]
+    """
+
+    _validation = {
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "tags": {"key": "tags", "type": "{str}"},
+    }
+
+    def __init__(self, *, tags: Optional[dict[str, str]] = None, **kwargs: Any) -> None:
+        """
+        :keyword tags: Resource tags.
+        :paramtype tags: dict[str, str]
+        """
+        super().__init__(**kwargs)
+        self.tags = tags
+
+
 class BackupInformation(_serialization.Model):
     """Backup information of a resource.
 
@@ -1502,8 +1588,9 @@ class CassandraKeyspaceGetPropertiesResource(CassandraKeyspaceResource):
         self.etag: Optional[str] = None
 
 
-class Resource(_serialization.Model):
-    """Common fields that are returned in the response for all Azure Resource Manager resources.
+class ProxyResource(Resource):
+    """The resource model definition for a Azure Resource Manager proxy resource. It will not have
+    tags and a location.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
@@ -1520,30 +1607,8 @@ class Resource(_serialization.Model):
     :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
     """
 
-    _validation = {
-        "id": {"readonly": True},
-        "name": {"readonly": True},
-        "type": {"readonly": True},
-        "system_data": {"readonly": True},
-    }
 
-    _attribute_map = {
-        "id": {"key": "id", "type": "str"},
-        "name": {"key": "name", "type": "str"},
-        "type": {"key": "type", "type": "str"},
-        "system_data": {"key": "systemData", "type": "SystemData"},
-    }
-
-    def __init__(self, **kwargs: Any) -> None:
-        """ """
-        super().__init__(**kwargs)
-        self.id: Optional[str] = None
-        self.name: Optional[str] = None
-        self.type: Optional[str] = None
-        self.system_data: Optional["_models.SystemData"] = None
-
-
-class CassandraKeyspaceGetResults(Resource):
+class CassandraKeyspaceGetResults(ProxyResource):
     """An Azure Cosmos DB Cassandra keyspace.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -1559,10 +1624,15 @@ class CassandraKeyspaceGetResults(Resource):
     :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
      information.
     :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
-    :ivar tags: Resource tags.
-    :vartype tags: dict[str, str]
-    :ivar location: The geo-location where the resource lives.
+    :ivar location: The location of the resource group to which the resource belongs.
     :vartype location: str
+    :ivar tags: Tags are a list of key-value pairs that describe the resource. These tags can be
+     used in viewing and grouping this resource (across resource groups). A maximum of 15 tags can
+     be provided for a resource. Each tag must have a key no greater than 128 characters and value
+     no greater than 256 characters. For example, the default experience for a template type is set
+     with \\"defaultExperience\\": \\"Cassandra\\". Current \\"defaultExperience\\" values also
+     include \\"Table\\", \\"Graph\\", \\"DocumentDB\\", and \\"MongoDB\\".
+    :vartype tags: dict[str, str]
     :ivar identity: Identity for the resource.
     :vartype identity: ~azure.mgmt.cosmosdb.models.ManagedServiceIdentity
     :ivar resource:
@@ -1583,8 +1653,8 @@ class CassandraKeyspaceGetResults(Resource):
         "name": {"key": "name", "type": "str"},
         "type": {"key": "type", "type": "str"},
         "system_data": {"key": "systemData", "type": "SystemData"},
-        "tags": {"key": "tags", "type": "{str}"},
         "location": {"key": "location", "type": "str"},
+        "tags": {"key": "tags", "type": "{str}"},
         "identity": {"key": "identity", "type": "ManagedServiceIdentity"},
         "resource": {"key": "properties.resource", "type": "CassandraKeyspaceGetPropertiesResource"},
         "options": {"key": "properties.options", "type": "CassandraKeyspaceGetPropertiesOptions"},
@@ -1593,18 +1663,23 @@ class CassandraKeyspaceGetResults(Resource):
     def __init__(
         self,
         *,
-        tags: Optional[dict[str, str]] = None,
         location: Optional[str] = None,
+        tags: Optional[dict[str, str]] = None,
         identity: Optional["_models.ManagedServiceIdentity"] = None,
         resource: Optional["_models.CassandraKeyspaceGetPropertiesResource"] = None,
         options: Optional["_models.CassandraKeyspaceGetPropertiesOptions"] = None,
         **kwargs: Any
     ) -> None:
         """
-        :keyword tags: Resource tags.
-        :paramtype tags: dict[str, str]
-        :keyword location: The geo-location where the resource lives.
+        :keyword location: The location of the resource group to which the resource belongs.
         :paramtype location: str
+        :keyword tags: Tags are a list of key-value pairs that describe the resource. These tags can be
+         used in viewing and grouping this resource (across resource groups). A maximum of 15 tags can
+         be provided for a resource. Each tag must have a key no greater than 128 characters and value
+         no greater than 256 characters. For example, the default experience for a template type is set
+         with \\"defaultExperience\\": \\"Cassandra\\". Current \\"defaultExperience\\" values also
+         include \\"Table\\", \\"Graph\\", \\"DocumentDB\\", and \\"MongoDB\\".
+        :paramtype tags: dict[str, str]
         :keyword identity: Identity for the resource.
         :paramtype identity: ~azure.mgmt.cosmosdb.models.ManagedServiceIdentity
         :keyword resource:
@@ -1613,8 +1688,8 @@ class CassandraKeyspaceGetResults(Resource):
         :paramtype options: ~azure.mgmt.cosmosdb.models.CassandraKeyspaceGetPropertiesOptions
         """
         super().__init__(**kwargs)
-        self.tags = tags
         self.location = location
+        self.tags = tags
         self.identity = identity
         self.resource = resource
         self.options = options
@@ -1702,26 +1777,6 @@ class CassandraRoleAssignmentListResult(_serialization.Model):
         super().__init__(**kwargs)
         self.value = value
         self.next_link = next_link
-
-
-class ProxyResource(Resource):
-    """The resource model definition for a Azure Resource Manager proxy resource. It will not have
-    tags and a location.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    :ivar id: Fully qualified resource ID for the resource. E.g.
-     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
-    :vartype id: str
-    :ivar name: The name of the resource.
-    :vartype name: str
-    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
-     "Microsoft.Storage/storageAccounts".
-    :vartype type: str
-    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
-     information.
-    :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
-    """
 
 
 class CassandraRoleAssignmentResource(ProxyResource):
@@ -2368,7 +2423,7 @@ class CassandraTableGetPropertiesResource(CassandraTableResource):
         self.etag: Optional[str] = None
 
 
-class CassandraTableGetResults(Resource):
+class CassandraTableGetResults(ProxyResource):
     """An Azure Cosmos DB Cassandra table.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -2384,10 +2439,15 @@ class CassandraTableGetResults(Resource):
     :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
      information.
     :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
-    :ivar tags: Resource tags.
-    :vartype tags: dict[str, str]
-    :ivar location: The geo-location where the resource lives.
+    :ivar location: The location of the resource group to which the resource belongs.
     :vartype location: str
+    :ivar tags: Tags are a list of key-value pairs that describe the resource. These tags can be
+     used in viewing and grouping this resource (across resource groups). A maximum of 15 tags can
+     be provided for a resource. Each tag must have a key no greater than 128 characters and value
+     no greater than 256 characters. For example, the default experience for a template type is set
+     with \\"defaultExperience\\": \\"Cassandra\\". Current \\"defaultExperience\\" values also
+     include \\"Table\\", \\"Graph\\", \\"DocumentDB\\", and \\"MongoDB\\".
+    :vartype tags: dict[str, str]
     :ivar identity: Identity for the resource.
     :vartype identity: ~azure.mgmt.cosmosdb.models.ManagedServiceIdentity
     :ivar resource:
@@ -2408,8 +2468,8 @@ class CassandraTableGetResults(Resource):
         "name": {"key": "name", "type": "str"},
         "type": {"key": "type", "type": "str"},
         "system_data": {"key": "systemData", "type": "SystemData"},
-        "tags": {"key": "tags", "type": "{str}"},
         "location": {"key": "location", "type": "str"},
+        "tags": {"key": "tags", "type": "{str}"},
         "identity": {"key": "identity", "type": "ManagedServiceIdentity"},
         "resource": {"key": "properties.resource", "type": "CassandraTableGetPropertiesResource"},
         "options": {"key": "properties.options", "type": "CassandraTableGetPropertiesOptions"},
@@ -2418,18 +2478,23 @@ class CassandraTableGetResults(Resource):
     def __init__(
         self,
         *,
-        tags: Optional[dict[str, str]] = None,
         location: Optional[str] = None,
+        tags: Optional[dict[str, str]] = None,
         identity: Optional["_models.ManagedServiceIdentity"] = None,
         resource: Optional["_models.CassandraTableGetPropertiesResource"] = None,
         options: Optional["_models.CassandraTableGetPropertiesOptions"] = None,
         **kwargs: Any
     ) -> None:
         """
-        :keyword tags: Resource tags.
-        :paramtype tags: dict[str, str]
-        :keyword location: The geo-location where the resource lives.
+        :keyword location: The location of the resource group to which the resource belongs.
         :paramtype location: str
+        :keyword tags: Tags are a list of key-value pairs that describe the resource. These tags can be
+         used in viewing and grouping this resource (across resource groups). A maximum of 15 tags can
+         be provided for a resource. Each tag must have a key no greater than 128 characters and value
+         no greater than 256 characters. For example, the default experience for a template type is set
+         with \\"defaultExperience\\": \\"Cassandra\\". Current \\"defaultExperience\\" values also
+         include \\"Table\\", \\"Graph\\", \\"DocumentDB\\", and \\"MongoDB\\".
+        :paramtype tags: dict[str, str]
         :keyword identity: Identity for the resource.
         :paramtype identity: ~azure.mgmt.cosmosdb.models.ManagedServiceIdentity
         :keyword resource:
@@ -2438,8 +2503,8 @@ class CassandraTableGetResults(Resource):
         :paramtype options: ~azure.mgmt.cosmosdb.models.CassandraTableGetPropertiesOptions
         """
         super().__init__(**kwargs)
-        self.tags = tags
         self.location = location
+        self.tags = tags
         self.identity = identity
         self.resource = resource
         self.options = options
@@ -2650,7 +2715,7 @@ class CassandraViewGetPropertiesResource(CassandraViewResource):
         self.etag: Optional[str] = None
 
 
-class CassandraViewGetResults(Resource):
+class CassandraViewGetResults(ProxyResource):
     """An Azure Cosmos DB Cassandra view.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -2666,10 +2731,15 @@ class CassandraViewGetResults(Resource):
     :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
      information.
     :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
-    :ivar tags: Resource tags.
-    :vartype tags: dict[str, str]
-    :ivar location: The geo-location where the resource lives.
+    :ivar location: The location of the resource group to which the resource belongs.
     :vartype location: str
+    :ivar tags: Tags are a list of key-value pairs that describe the resource. These tags can be
+     used in viewing and grouping this resource (across resource groups). A maximum of 15 tags can
+     be provided for a resource. Each tag must have a key no greater than 128 characters and value
+     no greater than 256 characters. For example, the default experience for a template type is set
+     with \\"defaultExperience\\": \\"Cassandra\\". Current \\"defaultExperience\\" values also
+     include \\"Table\\", \\"Graph\\", \\"DocumentDB\\", and \\"MongoDB\\".
+    :vartype tags: dict[str, str]
     :ivar identity: Identity for the resource.
     :vartype identity: ~azure.mgmt.cosmosdb.models.ManagedServiceIdentity
     :ivar resource:
@@ -2690,8 +2760,8 @@ class CassandraViewGetResults(Resource):
         "name": {"key": "name", "type": "str"},
         "type": {"key": "type", "type": "str"},
         "system_data": {"key": "systemData", "type": "SystemData"},
-        "tags": {"key": "tags", "type": "{str}"},
         "location": {"key": "location", "type": "str"},
+        "tags": {"key": "tags", "type": "{str}"},
         "identity": {"key": "identity", "type": "ManagedServiceIdentity"},
         "resource": {"key": "properties.resource", "type": "CassandraViewGetPropertiesResource"},
         "options": {"key": "properties.options", "type": "CassandraViewGetPropertiesOptions"},
@@ -2700,18 +2770,23 @@ class CassandraViewGetResults(Resource):
     def __init__(
         self,
         *,
-        tags: Optional[dict[str, str]] = None,
         location: Optional[str] = None,
+        tags: Optional[dict[str, str]] = None,
         identity: Optional["_models.ManagedServiceIdentity"] = None,
         resource: Optional["_models.CassandraViewGetPropertiesResource"] = None,
         options: Optional["_models.CassandraViewGetPropertiesOptions"] = None,
         **kwargs: Any
     ) -> None:
         """
-        :keyword tags: Resource tags.
-        :paramtype tags: dict[str, str]
-        :keyword location: The geo-location where the resource lives.
+        :keyword location: The location of the resource group to which the resource belongs.
         :paramtype location: str
+        :keyword tags: Tags are a list of key-value pairs that describe the resource. These tags can be
+         used in viewing and grouping this resource (across resource groups). A maximum of 15 tags can
+         be provided for a resource. Each tag must have a key no greater than 128 characters and value
+         no greater than 256 characters. For example, the default experience for a template type is set
+         with \\"defaultExperience\\": \\"Cassandra\\". Current \\"defaultExperience\\" values also
+         include \\"Table\\", \\"Graph\\", \\"DocumentDB\\", and \\"MongoDB\\".
+        :paramtype tags: dict[str, str]
         :keyword identity: Identity for the resource.
         :paramtype identity: ~azure.mgmt.cosmosdb.models.ManagedServiceIdentity
         :keyword resource:
@@ -2720,8 +2795,8 @@ class CassandraViewGetResults(Resource):
         :paramtype options: ~azure.mgmt.cosmosdb.models.CassandraViewGetPropertiesOptions
         """
         super().__init__(**kwargs)
-        self.tags = tags
         self.location = location
+        self.tags = tags
         self.identity = identity
         self.resource = resource
         self.options = options
@@ -3245,7 +3320,7 @@ class ClusterKey(_serialization.Model):
         self.order_by = order_by
 
 
-class ClusterResource(Resource):
+class ClusterResource(ProxyResource):
     """Representation of a managed Cassandra cluster.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -3263,10 +3338,15 @@ class ClusterResource(Resource):
     :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
     :ivar properties: Properties of a managed Cassandra cluster.
     :vartype properties: ~azure.mgmt.cosmosdb.models.ClusterResourceProperties
-    :ivar tags: Resource tags.
-    :vartype tags: dict[str, str]
-    :ivar location: The geo-location where the resource lives.
+    :ivar location: The location of the resource group to which the resource belongs.
     :vartype location: str
+    :ivar tags: Tags are a list of key-value pairs that describe the resource. These tags can be
+     used in viewing and grouping this resource (across resource groups). A maximum of 15 tags can
+     be provided for a resource. Each tag must have a key no greater than 128 characters and value
+     no greater than 256 characters. For example, the default experience for a template type is set
+     with \\"defaultExperience\\": \\"Cassandra\\". Current \\"defaultExperience\\" values also
+     include \\"Table\\", \\"Graph\\", \\"DocumentDB\\", and \\"MongoDB\\".
+    :vartype tags: dict[str, str]
     :ivar identity: Identity for the resource.
     :vartype identity: ~azure.mgmt.cosmosdb.models.ManagedCassandraManagedServiceIdentity
     """
@@ -3284,8 +3364,8 @@ class ClusterResource(Resource):
         "type": {"key": "type", "type": "str"},
         "system_data": {"key": "systemData", "type": "SystemData"},
         "properties": {"key": "properties", "type": "ClusterResourceProperties"},
-        "tags": {"key": "tags", "type": "{str}"},
         "location": {"key": "location", "type": "str"},
+        "tags": {"key": "tags", "type": "{str}"},
         "identity": {"key": "identity", "type": "ManagedCassandraManagedServiceIdentity"},
     }
 
@@ -3293,25 +3373,30 @@ class ClusterResource(Resource):
         self,
         *,
         properties: Optional["_models.ClusterResourceProperties"] = None,
-        tags: Optional[dict[str, str]] = None,
         location: Optional[str] = None,
+        tags: Optional[dict[str, str]] = None,
         identity: Optional["_models.ManagedCassandraManagedServiceIdentity"] = None,
         **kwargs: Any
     ) -> None:
         """
         :keyword properties: Properties of a managed Cassandra cluster.
         :paramtype properties: ~azure.mgmt.cosmosdb.models.ClusterResourceProperties
-        :keyword tags: Resource tags.
-        :paramtype tags: dict[str, str]
-        :keyword location: The geo-location where the resource lives.
+        :keyword location: The location of the resource group to which the resource belongs.
         :paramtype location: str
+        :keyword tags: Tags are a list of key-value pairs that describe the resource. These tags can be
+         used in viewing and grouping this resource (across resource groups). A maximum of 15 tags can
+         be provided for a resource. Each tag must have a key no greater than 128 characters and value
+         no greater than 256 characters. For example, the default experience for a template type is set
+         with \\"defaultExperience\\": \\"Cassandra\\". Current \\"defaultExperience\\" values also
+         include \\"Table\\", \\"Graph\\", \\"DocumentDB\\", and \\"MongoDB\\".
+        :paramtype tags: dict[str, str]
         :keyword identity: Identity for the resource.
         :paramtype identity: ~azure.mgmt.cosmosdb.models.ManagedCassandraManagedServiceIdentity
         """
         super().__init__(**kwargs)
         self.properties = properties
-        self.tags = tags
         self.location = location
+        self.tags = tags
         self.identity = identity
 
 
@@ -5524,7 +5609,7 @@ class DatabaseAccountCreateUpdateParameters(ARMResourceProperties):
         self.enforce_hierarchical_partition_key_id_last_level = enforce_hierarchical_partition_key_id_last_level
 
 
-class DatabaseAccountGetResults(Resource):
+class DatabaseAccountGetResults(ProxyResource):
     """An Azure Cosmos DB database account.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -5540,10 +5625,15 @@ class DatabaseAccountGetResults(Resource):
     :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
      information.
     :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
-    :ivar tags: Resource tags.
-    :vartype tags: dict[str, str]
-    :ivar location: The geo-location where the resource lives.
+    :ivar location: The location of the resource group to which the resource belongs.
     :vartype location: str
+    :ivar tags: Tags are a list of key-value pairs that describe the resource. These tags can be
+     used in viewing and grouping this resource (across resource groups). A maximum of 15 tags can
+     be provided for a resource. Each tag must have a key no greater than 128 characters and value
+     no greater than 256 characters. For example, the default experience for a template type is set
+     with \\"defaultExperience\\": \\"Cassandra\\". Current \\"defaultExperience\\" values also
+     include \\"Table\\", \\"Graph\\", \\"DocumentDB\\", and \\"MongoDB\\".
+    :vartype tags: dict[str, str]
     :ivar identity: Identity for the resource.
     :vartype identity: ~azure.mgmt.cosmosdb.models.ManagedServiceIdentity
     :ivar kind: Indicates the type of database account. This can only be set at database account
@@ -5722,8 +5812,8 @@ class DatabaseAccountGetResults(Resource):
         "name": {"key": "name", "type": "str"},
         "type": {"key": "type", "type": "str"},
         "system_data": {"key": "systemData", "type": "SystemData"},
-        "tags": {"key": "tags", "type": "{str}"},
         "location": {"key": "location", "type": "str"},
+        "tags": {"key": "tags", "type": "{str}"},
         "identity": {"key": "identity", "type": "ManagedServiceIdentity"},
         "kind": {"key": "kind", "type": "str"},
         "provisioning_state": {"key": "properties.provisioningState", "type": "str"},
@@ -5804,8 +5894,8 @@ class DatabaseAccountGetResults(Resource):
     def __init__(  # pylint: disable=too-many-locals
         self,
         *,
-        tags: Optional[dict[str, str]] = None,
         location: Optional[str] = None,
+        tags: Optional[dict[str, str]] = None,
         identity: Optional["_models.ManagedServiceIdentity"] = None,
         kind: Optional[Union[str, "_models.DatabaseAccountKind"]] = None,
         ip_rules: Optional[list["_models.IpAddressOrRange"]] = None,
@@ -5852,10 +5942,15 @@ class DatabaseAccountGetResults(Resource):
         **kwargs: Any
     ) -> None:
         """
-        :keyword tags: Resource tags.
-        :paramtype tags: dict[str, str]
-        :keyword location: The geo-location where the resource lives.
+        :keyword location: The location of the resource group to which the resource belongs.
         :paramtype location: str
+        :keyword tags: Tags are a list of key-value pairs that describe the resource. These tags can be
+         used in viewing and grouping this resource (across resource groups). A maximum of 15 tags can
+         be provided for a resource. Each tag must have a key no greater than 128 characters and value
+         no greater than 256 characters. For example, the default experience for a template type is set
+         with \\"defaultExperience\\": \\"Cassandra\\". Current \\"defaultExperience\\" values also
+         include \\"Table\\", \\"Graph\\", \\"DocumentDB\\", and \\"MongoDB\\".
+        :paramtype tags: dict[str, str]
         :keyword identity: Identity for the resource.
         :paramtype identity: ~azure.mgmt.cosmosdb.models.ManagedServiceIdentity
         :keyword kind: Indicates the type of database account. This can only be set at database account
@@ -5983,8 +6078,8 @@ class DatabaseAccountGetResults(Resource):
         :paramtype enforce_hierarchical_partition_key_id_last_level: bool
         """
         super().__init__(**kwargs)
-        self.tags = tags
         self.location = location
+        self.tags = tags
         self.identity = identity
         self.kind = kind
         self.provisioning_state: Optional[str] = None
@@ -8022,11 +8117,24 @@ class FleetResource(TrackedResource):
         self.provisioning_state: Optional[Union[str, "_models.Status"]] = None
 
 
-class FleetResourceUpdate(_serialization.Model):
-    """Represents a fleet resource for updates.
+class FleetResourceUpdate(AzureResourceManagerCommonTypesTrackedResourceUpdate):
+    """An Azure Cosmos DB FleetResource.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
+    :vartype type: str
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
+    :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
+    :ivar tags: Resource tags.
+    :vartype tags: dict[str, str]
     :ivar provisioning_state: A provisioning state of the Fleet. Known values are: "Uninitialized",
      "Initializing", "InternallyReady", "Online", "Deleting", "Succeeded", "Failed", "Canceled",
      "Updating", and "Creating".
@@ -8034,16 +8142,28 @@ class FleetResourceUpdate(_serialization.Model):
     """
 
     _validation = {
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
         "provisioning_state": {"readonly": True},
     }
 
     _attribute_map = {
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "tags": {"key": "tags", "type": "{str}"},
         "provisioning_state": {"key": "properties.provisioningState", "type": "str"},
     }
 
-    def __init__(self, **kwargs: Any) -> None:
-        """ """
-        super().__init__(**kwargs)
+    def __init__(self, *, tags: Optional[dict[str, str]] = None, **kwargs: Any) -> None:
+        """
+        :keyword tags: Resource tags.
+        :paramtype tags: dict[str, str]
+        """
+        super().__init__(tags=tags, **kwargs)
         self.provisioning_state: Optional[Union[str, "_models.Status"]] = None
 
 
@@ -9105,7 +9225,7 @@ class GraphResourceGetPropertiesResource(GraphResource):
     """
 
 
-class GraphResourceGetResults(Resource):
+class GraphResourceGetResults(ProxyResource):
     """An Azure Cosmos DB Graph resource.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -9121,10 +9241,15 @@ class GraphResourceGetResults(Resource):
     :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
      information.
     :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
-    :ivar tags: Resource tags.
-    :vartype tags: dict[str, str]
-    :ivar location: The geo-location where the resource lives.
+    :ivar location: The location of the resource group to which the resource belongs.
     :vartype location: str
+    :ivar tags: Tags are a list of key-value pairs that describe the resource. These tags can be
+     used in viewing and grouping this resource (across resource groups). A maximum of 15 tags can
+     be provided for a resource. Each tag must have a key no greater than 128 characters and value
+     no greater than 256 characters. For example, the default experience for a template type is set
+     with \\"defaultExperience\\": \\"Cassandra\\". Current \\"defaultExperience\\" values also
+     include \\"Table\\", \\"Graph\\", \\"DocumentDB\\", and \\"MongoDB\\".
+    :vartype tags: dict[str, str]
     :ivar identity: Identity for the resource.
     :vartype identity: ~azure.mgmt.cosmosdb.models.ManagedServiceIdentity
     :ivar resource:
@@ -9145,8 +9270,8 @@ class GraphResourceGetResults(Resource):
         "name": {"key": "name", "type": "str"},
         "type": {"key": "type", "type": "str"},
         "system_data": {"key": "systemData", "type": "SystemData"},
-        "tags": {"key": "tags", "type": "{str}"},
         "location": {"key": "location", "type": "str"},
+        "tags": {"key": "tags", "type": "{str}"},
         "identity": {"key": "identity", "type": "ManagedServiceIdentity"},
         "resource": {"key": "properties.resource", "type": "GraphResourceGetPropertiesResource"},
         "options": {"key": "properties.options", "type": "GraphResourceGetPropertiesOptions"},
@@ -9155,18 +9280,23 @@ class GraphResourceGetResults(Resource):
     def __init__(
         self,
         *,
-        tags: Optional[dict[str, str]] = None,
         location: Optional[str] = None,
+        tags: Optional[dict[str, str]] = None,
         identity: Optional["_models.ManagedServiceIdentity"] = None,
         resource: Optional["_models.GraphResourceGetPropertiesResource"] = None,
         options: Optional["_models.GraphResourceGetPropertiesOptions"] = None,
         **kwargs: Any
     ) -> None:
         """
-        :keyword tags: Resource tags.
-        :paramtype tags: dict[str, str]
-        :keyword location: The geo-location where the resource lives.
+        :keyword location: The location of the resource group to which the resource belongs.
         :paramtype location: str
+        :keyword tags: Tags are a list of key-value pairs that describe the resource. These tags can be
+         used in viewing and grouping this resource (across resource groups). A maximum of 15 tags can
+         be provided for a resource. Each tag must have a key no greater than 128 characters and value
+         no greater than 256 characters. For example, the default experience for a template type is set
+         with \\"defaultExperience\\": \\"Cassandra\\". Current \\"defaultExperience\\" values also
+         include \\"Table\\", \\"Graph\\", \\"DocumentDB\\", and \\"MongoDB\\".
+        :paramtype tags: dict[str, str]
         :keyword identity: Identity for the resource.
         :paramtype identity: ~azure.mgmt.cosmosdb.models.ManagedServiceIdentity
         :keyword resource:
@@ -9175,8 +9305,8 @@ class GraphResourceGetResults(Resource):
         :paramtype options: ~azure.mgmt.cosmosdb.models.GraphResourceGetPropertiesOptions
         """
         super().__init__(**kwargs)
-        self.tags = tags
         self.location = location
+        self.tags = tags
         self.identity = identity
         self.resource = resource
         self.options = options
@@ -9414,7 +9544,7 @@ class GremlinDatabaseGetPropertiesResource(GremlinDatabaseResource):
         self.etag: Optional[str] = None
 
 
-class GremlinDatabaseGetResults(Resource):
+class GremlinDatabaseGetResults(ProxyResource):
     """An Azure Cosmos DB Gremlin database.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -9430,10 +9560,15 @@ class GremlinDatabaseGetResults(Resource):
     :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
      information.
     :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
-    :ivar tags: Resource tags.
-    :vartype tags: dict[str, str]
-    :ivar location: The geo-location where the resource lives.
+    :ivar location: The location of the resource group to which the resource belongs.
     :vartype location: str
+    :ivar tags: Tags are a list of key-value pairs that describe the resource. These tags can be
+     used in viewing and grouping this resource (across resource groups). A maximum of 15 tags can
+     be provided for a resource. Each tag must have a key no greater than 128 characters and value
+     no greater than 256 characters. For example, the default experience for a template type is set
+     with \\"defaultExperience\\": \\"Cassandra\\". Current \\"defaultExperience\\" values also
+     include \\"Table\\", \\"Graph\\", \\"DocumentDB\\", and \\"MongoDB\\".
+    :vartype tags: dict[str, str]
     :ivar identity: Identity for the resource.
     :vartype identity: ~azure.mgmt.cosmosdb.models.ManagedServiceIdentity
     :ivar resource:
@@ -9454,8 +9589,8 @@ class GremlinDatabaseGetResults(Resource):
         "name": {"key": "name", "type": "str"},
         "type": {"key": "type", "type": "str"},
         "system_data": {"key": "systemData", "type": "SystemData"},
-        "tags": {"key": "tags", "type": "{str}"},
         "location": {"key": "location", "type": "str"},
+        "tags": {"key": "tags", "type": "{str}"},
         "identity": {"key": "identity", "type": "ManagedServiceIdentity"},
         "resource": {"key": "properties.resource", "type": "GremlinDatabaseGetPropertiesResource"},
         "options": {"key": "properties.options", "type": "GremlinDatabaseGetPropertiesOptions"},
@@ -9464,18 +9599,23 @@ class GremlinDatabaseGetResults(Resource):
     def __init__(
         self,
         *,
-        tags: Optional[dict[str, str]] = None,
         location: Optional[str] = None,
+        tags: Optional[dict[str, str]] = None,
         identity: Optional["_models.ManagedServiceIdentity"] = None,
         resource: Optional["_models.GremlinDatabaseGetPropertiesResource"] = None,
         options: Optional["_models.GremlinDatabaseGetPropertiesOptions"] = None,
         **kwargs: Any
     ) -> None:
         """
-        :keyword tags: Resource tags.
-        :paramtype tags: dict[str, str]
-        :keyword location: The geo-location where the resource lives.
+        :keyword location: The location of the resource group to which the resource belongs.
         :paramtype location: str
+        :keyword tags: Tags are a list of key-value pairs that describe the resource. These tags can be
+         used in viewing and grouping this resource (across resource groups). A maximum of 15 tags can
+         be provided for a resource. Each tag must have a key no greater than 128 characters and value
+         no greater than 256 characters. For example, the default experience for a template type is set
+         with \\"defaultExperience\\": \\"Cassandra\\". Current \\"defaultExperience\\" values also
+         include \\"Table\\", \\"Graph\\", \\"DocumentDB\\", and \\"MongoDB\\".
+        :paramtype tags: dict[str, str]
         :keyword identity: Identity for the resource.
         :paramtype identity: ~azure.mgmt.cosmosdb.models.ManagedServiceIdentity
         :keyword resource:
@@ -9484,8 +9624,8 @@ class GremlinDatabaseGetResults(Resource):
         :paramtype options: ~azure.mgmt.cosmosdb.models.GremlinDatabaseGetPropertiesOptions
         """
         super().__init__(**kwargs)
-        self.tags = tags
         self.location = location
+        self.tags = tags
         self.identity = identity
         self.resource = resource
         self.options = options
@@ -9852,7 +9992,7 @@ class GremlinGraphGetPropertiesResource(GremlinGraphResource):
         self.etag: Optional[str] = None
 
 
-class GremlinGraphGetResults(Resource):
+class GremlinGraphGetResults(ProxyResource):
     """An Azure Cosmos DB Gremlin graph.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -9868,10 +10008,15 @@ class GremlinGraphGetResults(Resource):
     :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
      information.
     :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
-    :ivar tags: Resource tags.
-    :vartype tags: dict[str, str]
-    :ivar location: The geo-location where the resource lives.
+    :ivar location: The location of the resource group to which the resource belongs.
     :vartype location: str
+    :ivar tags: Tags are a list of key-value pairs that describe the resource. These tags can be
+     used in viewing and grouping this resource (across resource groups). A maximum of 15 tags can
+     be provided for a resource. Each tag must have a key no greater than 128 characters and value
+     no greater than 256 characters. For example, the default experience for a template type is set
+     with \\"defaultExperience\\": \\"Cassandra\\". Current \\"defaultExperience\\" values also
+     include \\"Table\\", \\"Graph\\", \\"DocumentDB\\", and \\"MongoDB\\".
+    :vartype tags: dict[str, str]
     :ivar identity: Identity for the resource.
     :vartype identity: ~azure.mgmt.cosmosdb.models.ManagedServiceIdentity
     :ivar resource:
@@ -9892,8 +10037,8 @@ class GremlinGraphGetResults(Resource):
         "name": {"key": "name", "type": "str"},
         "type": {"key": "type", "type": "str"},
         "system_data": {"key": "systemData", "type": "SystemData"},
-        "tags": {"key": "tags", "type": "{str}"},
         "location": {"key": "location", "type": "str"},
+        "tags": {"key": "tags", "type": "{str}"},
         "identity": {"key": "identity", "type": "ManagedServiceIdentity"},
         "resource": {"key": "properties.resource", "type": "GremlinGraphGetPropertiesResource"},
         "options": {"key": "properties.options", "type": "GremlinGraphGetPropertiesOptions"},
@@ -9902,18 +10047,23 @@ class GremlinGraphGetResults(Resource):
     def __init__(
         self,
         *,
-        tags: Optional[dict[str, str]] = None,
         location: Optional[str] = None,
+        tags: Optional[dict[str, str]] = None,
         identity: Optional["_models.ManagedServiceIdentity"] = None,
         resource: Optional["_models.GremlinGraphGetPropertiesResource"] = None,
         options: Optional["_models.GremlinGraphGetPropertiesOptions"] = None,
         **kwargs: Any
     ) -> None:
         """
-        :keyword tags: Resource tags.
-        :paramtype tags: dict[str, str]
-        :keyword location: The geo-location where the resource lives.
+        :keyword location: The location of the resource group to which the resource belongs.
         :paramtype location: str
+        :keyword tags: Tags are a list of key-value pairs that describe the resource. These tags can be
+         used in viewing and grouping this resource (across resource groups). A maximum of 15 tags can
+         be provided for a resource. Each tag must have a key no greater than 128 characters and value
+         no greater than 256 characters. For example, the default experience for a template type is set
+         with \\"defaultExperience\\": \\"Cassandra\\". Current \\"defaultExperience\\" values also
+         include \\"Table\\", \\"Graph\\", \\"DocumentDB\\", and \\"MongoDB\\".
+        :paramtype tags: dict[str, str]
         :keyword identity: Identity for the resource.
         :paramtype identity: ~azure.mgmt.cosmosdb.models.ManagedServiceIdentity
         :keyword resource:
@@ -9922,8 +10072,8 @@ class GremlinGraphGetResults(Resource):
         :paramtype options: ~azure.mgmt.cosmosdb.models.GremlinGraphGetPropertiesOptions
         """
         super().__init__(**kwargs)
-        self.tags = tags
         self.location = location
+        self.tags = tags
         self.identity = identity
         self.resource = resource
         self.options = options
@@ -11705,7 +11855,7 @@ class MongoDBCollectionGetPropertiesResource(MongoDBCollectionResource):
         self.etag: Optional[str] = None
 
 
-class MongoDBCollectionGetResults(Resource):
+class MongoDBCollectionGetResults(ProxyResource):
     """An Azure Cosmos DB MongoDB collection.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -11721,10 +11871,15 @@ class MongoDBCollectionGetResults(Resource):
     :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
      information.
     :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
-    :ivar tags: Resource tags.
-    :vartype tags: dict[str, str]
-    :ivar location: The geo-location where the resource lives.
+    :ivar location: The location of the resource group to which the resource belongs.
     :vartype location: str
+    :ivar tags: Tags are a list of key-value pairs that describe the resource. These tags can be
+     used in viewing and grouping this resource (across resource groups). A maximum of 15 tags can
+     be provided for a resource. Each tag must have a key no greater than 128 characters and value
+     no greater than 256 characters. For example, the default experience for a template type is set
+     with \\"defaultExperience\\": \\"Cassandra\\". Current \\"defaultExperience\\" values also
+     include \\"Table\\", \\"Graph\\", \\"DocumentDB\\", and \\"MongoDB\\".
+    :vartype tags: dict[str, str]
     :ivar identity: Identity for the resource.
     :vartype identity: ~azure.mgmt.cosmosdb.models.ManagedServiceIdentity
     :ivar resource:
@@ -11745,8 +11900,8 @@ class MongoDBCollectionGetResults(Resource):
         "name": {"key": "name", "type": "str"},
         "type": {"key": "type", "type": "str"},
         "system_data": {"key": "systemData", "type": "SystemData"},
-        "tags": {"key": "tags", "type": "{str}"},
         "location": {"key": "location", "type": "str"},
+        "tags": {"key": "tags", "type": "{str}"},
         "identity": {"key": "identity", "type": "ManagedServiceIdentity"},
         "resource": {"key": "properties.resource", "type": "MongoDBCollectionGetPropertiesResource"},
         "options": {"key": "properties.options", "type": "MongoDBCollectionGetPropertiesOptions"},
@@ -11755,18 +11910,23 @@ class MongoDBCollectionGetResults(Resource):
     def __init__(
         self,
         *,
-        tags: Optional[dict[str, str]] = None,
         location: Optional[str] = None,
+        tags: Optional[dict[str, str]] = None,
         identity: Optional["_models.ManagedServiceIdentity"] = None,
         resource: Optional["_models.MongoDBCollectionGetPropertiesResource"] = None,
         options: Optional["_models.MongoDBCollectionGetPropertiesOptions"] = None,
         **kwargs: Any
     ) -> None:
         """
-        :keyword tags: Resource tags.
-        :paramtype tags: dict[str, str]
-        :keyword location: The geo-location where the resource lives.
+        :keyword location: The location of the resource group to which the resource belongs.
         :paramtype location: str
+        :keyword tags: Tags are a list of key-value pairs that describe the resource. These tags can be
+         used in viewing and grouping this resource (across resource groups). A maximum of 15 tags can
+         be provided for a resource. Each tag must have a key no greater than 128 characters and value
+         no greater than 256 characters. For example, the default experience for a template type is set
+         with \\"defaultExperience\\": \\"Cassandra\\". Current \\"defaultExperience\\" values also
+         include \\"Table\\", \\"Graph\\", \\"DocumentDB\\", and \\"MongoDB\\".
+        :paramtype tags: dict[str, str]
         :keyword identity: Identity for the resource.
         :paramtype identity: ~azure.mgmt.cosmosdb.models.ManagedServiceIdentity
         :keyword resource:
@@ -11775,8 +11935,8 @@ class MongoDBCollectionGetResults(Resource):
         :paramtype options: ~azure.mgmt.cosmosdb.models.MongoDBCollectionGetPropertiesOptions
         """
         super().__init__(**kwargs)
-        self.tags = tags
         self.location = location
+        self.tags = tags
         self.identity = identity
         self.resource = resource
         self.options = options
@@ -12014,7 +12174,7 @@ class MongoDBDatabaseGetPropertiesResource(MongoDBDatabaseResource):
         self.etag: Optional[str] = None
 
 
-class MongoDBDatabaseGetResults(Resource):
+class MongoDBDatabaseGetResults(ProxyResource):
     """An Azure Cosmos DB MongoDB database.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -12030,10 +12190,15 @@ class MongoDBDatabaseGetResults(Resource):
     :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
      information.
     :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
-    :ivar tags: Resource tags.
-    :vartype tags: dict[str, str]
-    :ivar location: The geo-location where the resource lives.
+    :ivar location: The location of the resource group to which the resource belongs.
     :vartype location: str
+    :ivar tags: Tags are a list of key-value pairs that describe the resource. These tags can be
+     used in viewing and grouping this resource (across resource groups). A maximum of 15 tags can
+     be provided for a resource. Each tag must have a key no greater than 128 characters and value
+     no greater than 256 characters. For example, the default experience for a template type is set
+     with \\"defaultExperience\\": \\"Cassandra\\". Current \\"defaultExperience\\" values also
+     include \\"Table\\", \\"Graph\\", \\"DocumentDB\\", and \\"MongoDB\\".
+    :vartype tags: dict[str, str]
     :ivar identity: Identity for the resource.
     :vartype identity: ~azure.mgmt.cosmosdb.models.ManagedServiceIdentity
     :ivar resource:
@@ -12054,8 +12219,8 @@ class MongoDBDatabaseGetResults(Resource):
         "name": {"key": "name", "type": "str"},
         "type": {"key": "type", "type": "str"},
         "system_data": {"key": "systemData", "type": "SystemData"},
-        "tags": {"key": "tags", "type": "{str}"},
         "location": {"key": "location", "type": "str"},
+        "tags": {"key": "tags", "type": "{str}"},
         "identity": {"key": "identity", "type": "ManagedServiceIdentity"},
         "resource": {"key": "properties.resource", "type": "MongoDBDatabaseGetPropertiesResource"},
         "options": {"key": "properties.options", "type": "MongoDBDatabaseGetPropertiesOptions"},
@@ -12064,18 +12229,23 @@ class MongoDBDatabaseGetResults(Resource):
     def __init__(
         self,
         *,
-        tags: Optional[dict[str, str]] = None,
         location: Optional[str] = None,
+        tags: Optional[dict[str, str]] = None,
         identity: Optional["_models.ManagedServiceIdentity"] = None,
         resource: Optional["_models.MongoDBDatabaseGetPropertiesResource"] = None,
         options: Optional["_models.MongoDBDatabaseGetPropertiesOptions"] = None,
         **kwargs: Any
     ) -> None:
         """
-        :keyword tags: Resource tags.
-        :paramtype tags: dict[str, str]
-        :keyword location: The geo-location where the resource lives.
+        :keyword location: The location of the resource group to which the resource belongs.
         :paramtype location: str
+        :keyword tags: Tags are a list of key-value pairs that describe the resource. These tags can be
+         used in viewing and grouping this resource (across resource groups). A maximum of 15 tags can
+         be provided for a resource. Each tag must have a key no greater than 128 characters and value
+         no greater than 256 characters. For example, the default experience for a template type is set
+         with \\"defaultExperience\\": \\"Cassandra\\". Current \\"defaultExperience\\" values also
+         include \\"Table\\", \\"Graph\\", \\"DocumentDB\\", and \\"MongoDB\\".
+        :paramtype tags: dict[str, str]
         :keyword identity: Identity for the resource.
         :paramtype identity: ~azure.mgmt.cosmosdb.models.ManagedServiceIdentity
         :keyword resource:
@@ -12084,8 +12254,8 @@ class MongoDBDatabaseGetResults(Resource):
         :paramtype options: ~azure.mgmt.cosmosdb.models.MongoDBDatabaseGetPropertiesOptions
         """
         super().__init__(**kwargs)
-        self.tags = tags
         self.location = location
+        self.tags = tags
         self.identity = identity
         self.resource = resource
         self.options = options
@@ -17195,19 +17365,55 @@ class SoftDeleteConfiguration(_serialization.Model):
         self.soft_delete_retention_period_in_minutes = soft_delete_retention_period_in_minutes
 
 
-class SoftDeletedDatabaseAccountGetResult(_serialization.Model):
+class SoftDeletedDatabaseAccountGetResult(ProxyResource):
     """A Azure Cosmos DB soft-deleted database account.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: The unique resource identifier of the ARM resource.
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
     :vartype id: str
-    :ivar name: The name of the ARM resource.
+    :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of Azure resource.
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
     :vartype type: str
-    :ivar location: The location of the resource group to which the resource belongs.
-    :vartype location: str
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
+    :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
+    :ivar properties: The resource-specific properties for this resource.
+    :vartype properties: ~azure.mgmt.cosmosdb.models.SoftDeletedDatabaseAccountProperties
+    """
+
+    _validation = {
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "properties": {"key": "properties", "type": "SoftDeletedDatabaseAccountProperties"},
+    }
+
+    def __init__(
+        self, *, properties: Optional["_models.SoftDeletedDatabaseAccountProperties"] = None, **kwargs: Any
+    ) -> None:
+        """
+        :keyword properties: The resource-specific properties for this resource.
+        :paramtype properties: ~azure.mgmt.cosmosdb.models.SoftDeletedDatabaseAccountProperties
+        """
+        super().__init__(**kwargs)
+        self.properties = properties
+
+
+class SoftDeletedDatabaseAccountProperties(_serialization.Model):
+    """The properties of a soft-deleted database account.
+
     :ivar account_name: The name of the database account.
     :vartype account_name: str
     :ivar soft_deletion_metadata: Metadata related to the soft deletion of the database account.
@@ -17218,27 +17424,16 @@ class SoftDeletedDatabaseAccountGetResult(_serialization.Model):
     :vartype resource: ~azure.mgmt.cosmosdb.models.SoftDeletedDatabaseAccountResource
     """
 
-    _validation = {
-        "id": {"readonly": True},
-        "name": {"readonly": True},
-        "type": {"readonly": True},
-    }
-
     _attribute_map = {
-        "id": {"key": "id", "type": "str"},
-        "name": {"key": "name", "type": "str"},
-        "type": {"key": "type", "type": "str"},
-        "location": {"key": "location", "type": "str"},
-        "account_name": {"key": "properties.accountName", "type": "str"},
-        "soft_deletion_metadata": {"key": "properties.softDeletionMetadata", "type": "SoftDeletionMetadata"},
-        "soft_delete_configuration": {"key": "properties.softDeleteConfiguration", "type": "SoftDeleteConfiguration"},
-        "resource": {"key": "properties.resource", "type": "SoftDeletedDatabaseAccountResource"},
+        "account_name": {"key": "accountName", "type": "str"},
+        "soft_deletion_metadata": {"key": "softDeletionMetadata", "type": "SoftDeletionMetadata"},
+        "soft_delete_configuration": {"key": "softDeleteConfiguration", "type": "SoftDeleteConfiguration"},
+        "resource": {"key": "resource", "type": "SoftDeletedDatabaseAccountResource"},
     }
 
     def __init__(
         self,
         *,
-        location: Optional[str] = None,
         account_name: Optional[str] = None,
         soft_deletion_metadata: Optional["_models.SoftDeletionMetadata"] = None,
         soft_delete_configuration: Optional["_models.SoftDeleteConfiguration"] = None,
@@ -17246,8 +17441,6 @@ class SoftDeletedDatabaseAccountGetResult(_serialization.Model):
         **kwargs: Any
     ) -> None:
         """
-        :keyword location: The location of the resource group to which the resource belongs.
-        :paramtype location: str
         :keyword account_name: The name of the database account.
         :paramtype account_name: str
         :keyword soft_deletion_metadata: Metadata related to the soft deletion of the database account.
@@ -17258,10 +17451,6 @@ class SoftDeletedDatabaseAccountGetResult(_serialization.Model):
         :paramtype resource: ~azure.mgmt.cosmosdb.models.SoftDeletedDatabaseAccountResource
         """
         super().__init__(**kwargs)
-        self.id: Optional[str] = None
-        self.name: Optional[str] = None
-        self.type: Optional[str] = None
-        self.location = location
         self.account_name = account_name
         self.soft_deletion_metadata = soft_deletion_metadata
         self.soft_delete_configuration = soft_delete_configuration
@@ -17315,16 +17504,16 @@ class SoftDeletedDatabaseAccountsListResult(_serialization.Model):
     """The List operation response, that contains the soft-deleted database accounts and their
     properties.
 
-    Variables are only populated by the server, and will be ignored when sending a request.
+    All required parameters must be populated in order to send to server.
 
-    :ivar value: List of soft-deleted database accounts and their properties.
+    :ivar value: The SoftDeletedDatabaseAccountGetResult items on this page. Required.
     :vartype value: list[~azure.mgmt.cosmosdb.models.SoftDeletedDatabaseAccountGetResult]
-    :ivar next_link: The URL to get the next set of results.
+    :ivar next_link: The link to the next page of items.
     :vartype next_link: str
     """
 
     _validation = {
-        "value": {"readonly": True},
+        "value": {"required": True},
     }
 
     _attribute_map = {
@@ -17332,71 +17521,98 @@ class SoftDeletedDatabaseAccountsListResult(_serialization.Model):
         "next_link": {"key": "nextLink", "type": "str"},
     }
 
-    def __init__(self, *, next_link: Optional[str] = None, **kwargs: Any) -> None:
+    def __init__(
+        self,
+        *,
+        value: list["_models.SoftDeletedDatabaseAccountGetResult"],
+        next_link: Optional[str] = None,
+        **kwargs: Any
+    ) -> None:
         """
-        :keyword next_link: The URL to get the next set of results.
+        :keyword value: The SoftDeletedDatabaseAccountGetResult items on this page. Required.
+        :paramtype value: list[~azure.mgmt.cosmosdb.models.SoftDeletedDatabaseAccountGetResult]
+        :keyword next_link: The link to the next page of items.
         :paramtype next_link: str
         """
         super().__init__(**kwargs)
-        self.value: Optional[list["_models.SoftDeletedDatabaseAccountGetResult"]] = None
+        self.value = value
         self.next_link = next_link
 
 
-class SoftDeletedSqlContainerGetResult(_serialization.Model):
+class SoftDeletedSqlContainerGetResult(ProxyResource):
     """An Azure Cosmos DB soft-deleted SQL container.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: The unique resource identifier of the ARM resource.
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
     :vartype id: str
-    :ivar name: The name of the ARM resource.
+    :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of Azure resource.
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
     :vartype type: str
-    :ivar location: The location of the resource group to which the resource belongs.
-    :vartype location: str
-    :ivar soft_deletion_metadata: Metadata related to the soft deletion of the SQL container.
-    :vartype soft_deletion_metadata: ~azure.mgmt.cosmosdb.models.SoftDeletionMetadata
-    :ivar resource: The resource information for the soft-deleted SQL container.
-    :vartype resource: ~azure.mgmt.cosmosdb.models.SoftDeletedSqlContainerResource
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
+    :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
+    :ivar properties: The resource-specific properties for this resource.
+    :vartype properties: ~azure.mgmt.cosmosdb.models.SoftDeletedSqlContainerProperties
     """
 
     _validation = {
         "id": {"readonly": True},
         "name": {"readonly": True},
         "type": {"readonly": True},
+        "system_data": {"readonly": True},
     }
 
     _attribute_map = {
         "id": {"key": "id", "type": "str"},
         "name": {"key": "name", "type": "str"},
         "type": {"key": "type", "type": "str"},
-        "location": {"key": "location", "type": "str"},
-        "soft_deletion_metadata": {"key": "properties.softDeletionMetadata", "type": "SoftDeletionMetadata"},
-        "resource": {"key": "properties.resource", "type": "SoftDeletedSqlContainerResource"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "properties": {"key": "properties", "type": "SoftDeletedSqlContainerProperties"},
+    }
+
+    def __init__(
+        self, *, properties: Optional["_models.SoftDeletedSqlContainerProperties"] = None, **kwargs: Any
+    ) -> None:
+        """
+        :keyword properties: The resource-specific properties for this resource.
+        :paramtype properties: ~azure.mgmt.cosmosdb.models.SoftDeletedSqlContainerProperties
+        """
+        super().__init__(**kwargs)
+        self.properties = properties
+
+
+class SoftDeletedSqlContainerProperties(_serialization.Model):
+    """The properties of a soft-deleted SQL container.
+
+    :ivar soft_deletion_metadata: Metadata related to the soft deletion of the SQL container.
+    :vartype soft_deletion_metadata: ~azure.mgmt.cosmosdb.models.SoftDeletionMetadata
+    :ivar resource: The resource information for the soft-deleted SQL container.
+    :vartype resource: ~azure.mgmt.cosmosdb.models.SoftDeletedSqlContainerResource
+    """
+
+    _attribute_map = {
+        "soft_deletion_metadata": {"key": "softDeletionMetadata", "type": "SoftDeletionMetadata"},
+        "resource": {"key": "resource", "type": "SoftDeletedSqlContainerResource"},
     }
 
     def __init__(
         self,
         *,
-        location: Optional[str] = None,
         soft_deletion_metadata: Optional["_models.SoftDeletionMetadata"] = None,
         resource: Optional["_models.SoftDeletedSqlContainerResource"] = None,
         **kwargs: Any
     ) -> None:
         """
-        :keyword location: The location of the resource group to which the resource belongs.
-        :paramtype location: str
         :keyword soft_deletion_metadata: Metadata related to the soft deletion of the SQL container.
         :paramtype soft_deletion_metadata: ~azure.mgmt.cosmosdb.models.SoftDeletionMetadata
         :keyword resource: The resource information for the soft-deleted SQL container.
         :paramtype resource: ~azure.mgmt.cosmosdb.models.SoftDeletedSqlContainerResource
         """
         super().__init__(**kwargs)
-        self.id: Optional[str] = None
-        self.name: Optional[str] = None
-        self.type: Optional[str] = None
-        self.location = location
         self.soft_deletion_metadata = soft_deletion_metadata
         self.resource = resource
 
@@ -17459,16 +17675,16 @@ class SoftDeletedSqlContainersListResult(_serialization.Model):
     """The List operation response, that contains the soft-deleted SQL containers and their
     properties.
 
-    Variables are only populated by the server, and will be ignored when sending a request.
+    All required parameters must be populated in order to send to server.
 
-    :ivar value: List of soft-deleted SQL containers and their properties.
+    :ivar value: The SoftDeletedSqlContainerGetResult items on this page. Required.
     :vartype value: list[~azure.mgmt.cosmosdb.models.SoftDeletedSqlContainerGetResult]
-    :ivar next_link: The URL to get the next set of results.
+    :ivar next_link: The link to the next page of items.
     :vartype next_link: str
     """
 
     _validation = {
-        "value": {"readonly": True},
+        "value": {"required": True},
     }
 
     _attribute_map = {
@@ -17476,71 +17692,94 @@ class SoftDeletedSqlContainersListResult(_serialization.Model):
         "next_link": {"key": "nextLink", "type": "str"},
     }
 
-    def __init__(self, *, next_link: Optional[str] = None, **kwargs: Any) -> None:
+    def __init__(
+        self, *, value: list["_models.SoftDeletedSqlContainerGetResult"], next_link: Optional[str] = None, **kwargs: Any
+    ) -> None:
         """
-        :keyword next_link: The URL to get the next set of results.
+        :keyword value: The SoftDeletedSqlContainerGetResult items on this page. Required.
+        :paramtype value: list[~azure.mgmt.cosmosdb.models.SoftDeletedSqlContainerGetResult]
+        :keyword next_link: The link to the next page of items.
         :paramtype next_link: str
         """
         super().__init__(**kwargs)
-        self.value: Optional[list["_models.SoftDeletedSqlContainerGetResult"]] = None
+        self.value = value
         self.next_link = next_link
 
 
-class SoftDeletedSqlDatabaseGetResult(_serialization.Model):
+class SoftDeletedSqlDatabaseGetResult(ProxyResource):
     """An Azure Cosmos DB soft-deleted SQL database.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: The unique resource identifier of the ARM resource.
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".
     :vartype id: str
-    :ivar name: The name of the ARM resource.
+    :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of Azure resource.
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
     :vartype type: str
-    :ivar location: The location of the resource group to which the resource belongs.
-    :vartype location: str
-    :ivar soft_deletion_metadata: Metadata related to the soft deletion of the SQL database.
-    :vartype soft_deletion_metadata: ~azure.mgmt.cosmosdb.models.SoftDeletionMetadata
-    :ivar resource: The resource information for the soft-deleted SQL database.
-    :vartype resource: ~azure.mgmt.cosmosdb.models.SoftDeletedSqlDatabaseResource
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
+    :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
+    :ivar properties: The resource-specific properties for this resource.
+    :vartype properties: ~azure.mgmt.cosmosdb.models.SoftDeletedSqlDatabaseProperties
     """
 
     _validation = {
         "id": {"readonly": True},
         "name": {"readonly": True},
         "type": {"readonly": True},
+        "system_data": {"readonly": True},
     }
 
     _attribute_map = {
         "id": {"key": "id", "type": "str"},
         "name": {"key": "name", "type": "str"},
         "type": {"key": "type", "type": "str"},
-        "location": {"key": "location", "type": "str"},
-        "soft_deletion_metadata": {"key": "properties.softDeletionMetadata", "type": "SoftDeletionMetadata"},
-        "resource": {"key": "properties.resource", "type": "SoftDeletedSqlDatabaseResource"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "properties": {"key": "properties", "type": "SoftDeletedSqlDatabaseProperties"},
+    }
+
+    def __init__(
+        self, *, properties: Optional["_models.SoftDeletedSqlDatabaseProperties"] = None, **kwargs: Any
+    ) -> None:
+        """
+        :keyword properties: The resource-specific properties for this resource.
+        :paramtype properties: ~azure.mgmt.cosmosdb.models.SoftDeletedSqlDatabaseProperties
+        """
+        super().__init__(**kwargs)
+        self.properties = properties
+
+
+class SoftDeletedSqlDatabaseProperties(_serialization.Model):
+    """The properties of a soft-deleted SQL database.
+
+    :ivar soft_deletion_metadata: Metadata related to the soft deletion of the SQL database.
+    :vartype soft_deletion_metadata: ~azure.mgmt.cosmosdb.models.SoftDeletionMetadata
+    :ivar resource: The resource information for the soft-deleted SQL database.
+    :vartype resource: ~azure.mgmt.cosmosdb.models.SoftDeletedSqlDatabaseResource
+    """
+
+    _attribute_map = {
+        "soft_deletion_metadata": {"key": "softDeletionMetadata", "type": "SoftDeletionMetadata"},
+        "resource": {"key": "resource", "type": "SoftDeletedSqlDatabaseResource"},
     }
 
     def __init__(
         self,
         *,
-        location: Optional[str] = None,
         soft_deletion_metadata: Optional["_models.SoftDeletionMetadata"] = None,
         resource: Optional["_models.SoftDeletedSqlDatabaseResource"] = None,
         **kwargs: Any
     ) -> None:
         """
-        :keyword location: The location of the resource group to which the resource belongs.
-        :paramtype location: str
         :keyword soft_deletion_metadata: Metadata related to the soft deletion of the SQL database.
         :paramtype soft_deletion_metadata: ~azure.mgmt.cosmosdb.models.SoftDeletionMetadata
         :keyword resource: The resource information for the soft-deleted SQL database.
         :paramtype resource: ~azure.mgmt.cosmosdb.models.SoftDeletedSqlDatabaseResource
         """
         super().__init__(**kwargs)
-        self.id: Optional[str] = None
-        self.name: Optional[str] = None
-        self.type: Optional[str] = None
-        self.location = location
         self.soft_deletion_metadata = soft_deletion_metadata
         self.resource = resource
 
@@ -17581,16 +17820,16 @@ class SoftDeletedSqlDatabaseResource(_serialization.Model):
 class SoftDeletedSqlDatabasesListResult(_serialization.Model):
     """The List operation response, that contains the soft-deleted SQL databases and their properties.
 
-    Variables are only populated by the server, and will be ignored when sending a request.
+    All required parameters must be populated in order to send to server.
 
-    :ivar value: List of soft-deleted SQL databases and their properties.
+    :ivar value: The SoftDeletedSqlDatabaseGetResult items on this page. Required.
     :vartype value: list[~azure.mgmt.cosmosdb.models.SoftDeletedSqlDatabaseGetResult]
-    :ivar next_link: The URL to get the next set of results.
+    :ivar next_link: The link to the next page of items.
     :vartype next_link: str
     """
 
     _validation = {
-        "value": {"readonly": True},
+        "value": {"required": True},
     }
 
     _attribute_map = {
@@ -17598,13 +17837,17 @@ class SoftDeletedSqlDatabasesListResult(_serialization.Model):
         "next_link": {"key": "nextLink", "type": "str"},
     }
 
-    def __init__(self, *, next_link: Optional[str] = None, **kwargs: Any) -> None:
+    def __init__(
+        self, *, value: list["_models.SoftDeletedSqlDatabaseGetResult"], next_link: Optional[str] = None, **kwargs: Any
+    ) -> None:
         """
-        :keyword next_link: The URL to get the next set of results.
+        :keyword value: The SoftDeletedSqlDatabaseGetResult items on this page. Required.
+        :paramtype value: list[~azure.mgmt.cosmosdb.models.SoftDeletedSqlDatabaseGetResult]
+        :keyword next_link: The link to the next page of items.
         :paramtype next_link: str
         """
         super().__init__(**kwargs)
-        self.value: Optional[list["_models.SoftDeletedSqlDatabaseGetResult"]] = None
+        self.value = value
         self.next_link = next_link
 
 
@@ -17955,7 +18198,7 @@ class SqlContainerGetPropertiesResource(SqlContainerResource):
         self.etag: Optional[str] = None
 
 
-class SqlContainerGetResults(Resource):
+class SqlContainerGetResults(ProxyResource):
     """An Azure Cosmos DB container.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -17971,10 +18214,15 @@ class SqlContainerGetResults(Resource):
     :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
      information.
     :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
-    :ivar tags: Resource tags.
-    :vartype tags: dict[str, str]
-    :ivar location: The geo-location where the resource lives.
+    :ivar location: The location of the resource group to which the resource belongs.
     :vartype location: str
+    :ivar tags: Tags are a list of key-value pairs that describe the resource. These tags can be
+     used in viewing and grouping this resource (across resource groups). A maximum of 15 tags can
+     be provided for a resource. Each tag must have a key no greater than 128 characters and value
+     no greater than 256 characters. For example, the default experience for a template type is set
+     with \\"defaultExperience\\": \\"Cassandra\\". Current \\"defaultExperience\\" values also
+     include \\"Table\\", \\"Graph\\", \\"DocumentDB\\", and \\"MongoDB\\".
+    :vartype tags: dict[str, str]
     :ivar identity: Identity for the resource.
     :vartype identity: ~azure.mgmt.cosmosdb.models.ManagedServiceIdentity
     :ivar resource:
@@ -17995,8 +18243,8 @@ class SqlContainerGetResults(Resource):
         "name": {"key": "name", "type": "str"},
         "type": {"key": "type", "type": "str"},
         "system_data": {"key": "systemData", "type": "SystemData"},
-        "tags": {"key": "tags", "type": "{str}"},
         "location": {"key": "location", "type": "str"},
+        "tags": {"key": "tags", "type": "{str}"},
         "identity": {"key": "identity", "type": "ManagedServiceIdentity"},
         "resource": {"key": "properties.resource", "type": "SqlContainerGetPropertiesResource"},
         "options": {"key": "properties.options", "type": "SqlContainerGetPropertiesOptions"},
@@ -18005,18 +18253,23 @@ class SqlContainerGetResults(Resource):
     def __init__(
         self,
         *,
-        tags: Optional[dict[str, str]] = None,
         location: Optional[str] = None,
+        tags: Optional[dict[str, str]] = None,
         identity: Optional["_models.ManagedServiceIdentity"] = None,
         resource: Optional["_models.SqlContainerGetPropertiesResource"] = None,
         options: Optional["_models.SqlContainerGetPropertiesOptions"] = None,
         **kwargs: Any
     ) -> None:
         """
-        :keyword tags: Resource tags.
-        :paramtype tags: dict[str, str]
-        :keyword location: The geo-location where the resource lives.
+        :keyword location: The location of the resource group to which the resource belongs.
         :paramtype location: str
+        :keyword tags: Tags are a list of key-value pairs that describe the resource. These tags can be
+         used in viewing and grouping this resource (across resource groups). A maximum of 15 tags can
+         be provided for a resource. Each tag must have a key no greater than 128 characters and value
+         no greater than 256 characters. For example, the default experience for a template type is set
+         with \\"defaultExperience\\": \\"Cassandra\\". Current \\"defaultExperience\\" values also
+         include \\"Table\\", \\"Graph\\", \\"DocumentDB\\", and \\"MongoDB\\".
+        :paramtype tags: dict[str, str]
         :keyword identity: Identity for the resource.
         :paramtype identity: ~azure.mgmt.cosmosdb.models.ManagedServiceIdentity
         :keyword resource:
@@ -18025,8 +18278,8 @@ class SqlContainerGetResults(Resource):
         :paramtype options: ~azure.mgmt.cosmosdb.models.SqlContainerGetPropertiesOptions
         """
         super().__init__(**kwargs)
-        self.tags = tags
         self.location = location
+        self.tags = tags
         self.identity = identity
         self.resource = resource
         self.options = options
@@ -18235,7 +18488,7 @@ class SqlDatabaseGetPropertiesResource(SqlDatabaseResource):
         self.users = users
 
 
-class SqlDatabaseGetResults(Resource):
+class SqlDatabaseGetResults(ProxyResource):
     """An Azure Cosmos DB SQL database.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -18251,10 +18504,15 @@ class SqlDatabaseGetResults(Resource):
     :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
      information.
     :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
-    :ivar tags: Resource tags.
-    :vartype tags: dict[str, str]
-    :ivar location: The geo-location where the resource lives.
+    :ivar location: The location of the resource group to which the resource belongs.
     :vartype location: str
+    :ivar tags: Tags are a list of key-value pairs that describe the resource. These tags can be
+     used in viewing and grouping this resource (across resource groups). A maximum of 15 tags can
+     be provided for a resource. Each tag must have a key no greater than 128 characters and value
+     no greater than 256 characters. For example, the default experience for a template type is set
+     with \\"defaultExperience\\": \\"Cassandra\\". Current \\"defaultExperience\\" values also
+     include \\"Table\\", \\"Graph\\", \\"DocumentDB\\", and \\"MongoDB\\".
+    :vartype tags: dict[str, str]
     :ivar identity: Identity for the resource.
     :vartype identity: ~azure.mgmt.cosmosdb.models.ManagedServiceIdentity
     :ivar resource:
@@ -18275,8 +18533,8 @@ class SqlDatabaseGetResults(Resource):
         "name": {"key": "name", "type": "str"},
         "type": {"key": "type", "type": "str"},
         "system_data": {"key": "systemData", "type": "SystemData"},
-        "tags": {"key": "tags", "type": "{str}"},
         "location": {"key": "location", "type": "str"},
+        "tags": {"key": "tags", "type": "{str}"},
         "identity": {"key": "identity", "type": "ManagedServiceIdentity"},
         "resource": {"key": "properties.resource", "type": "SqlDatabaseGetPropertiesResource"},
         "options": {"key": "properties.options", "type": "SqlDatabaseGetPropertiesOptions"},
@@ -18285,18 +18543,23 @@ class SqlDatabaseGetResults(Resource):
     def __init__(
         self,
         *,
-        tags: Optional[dict[str, str]] = None,
         location: Optional[str] = None,
+        tags: Optional[dict[str, str]] = None,
         identity: Optional["_models.ManagedServiceIdentity"] = None,
         resource: Optional["_models.SqlDatabaseGetPropertiesResource"] = None,
         options: Optional["_models.SqlDatabaseGetPropertiesOptions"] = None,
         **kwargs: Any
     ) -> None:
         """
-        :keyword tags: Resource tags.
-        :paramtype tags: dict[str, str]
-        :keyword location: The geo-location where the resource lives.
+        :keyword location: The location of the resource group to which the resource belongs.
         :paramtype location: str
+        :keyword tags: Tags are a list of key-value pairs that describe the resource. These tags can be
+         used in viewing and grouping this resource (across resource groups). A maximum of 15 tags can
+         be provided for a resource. Each tag must have a key no greater than 128 characters and value
+         no greater than 256 characters. For example, the default experience for a template type is set
+         with \\"defaultExperience\\": \\"Cassandra\\". Current \\"defaultExperience\\" values also
+         include \\"Table\\", \\"Graph\\", \\"DocumentDB\\", and \\"MongoDB\\".
+        :paramtype tags: dict[str, str]
         :keyword identity: Identity for the resource.
         :paramtype identity: ~azure.mgmt.cosmosdb.models.ManagedServiceIdentity
         :keyword resource:
@@ -18305,8 +18568,8 @@ class SqlDatabaseGetResults(Resource):
         :paramtype options: ~azure.mgmt.cosmosdb.models.SqlDatabaseGetPropertiesOptions
         """
         super().__init__(**kwargs)
-        self.tags = tags
         self.location = location
+        self.tags = tags
         self.identity = identity
         self.resource = resource
         self.options = options
@@ -19003,7 +19266,7 @@ class SqlStoredProcedureGetPropertiesResource(SqlStoredProcedureResource):
         self.etag: Optional[str] = None
 
 
-class SqlStoredProcedureGetResults(Resource):
+class SqlStoredProcedureGetResults(ProxyResource):
     """An Azure Cosmos DB storedProcedure.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -19019,10 +19282,15 @@ class SqlStoredProcedureGetResults(Resource):
     :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
      information.
     :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
-    :ivar tags: Resource tags.
-    :vartype tags: dict[str, str]
-    :ivar location: The geo-location where the resource lives.
+    :ivar location: The location of the resource group to which the resource belongs.
     :vartype location: str
+    :ivar tags: Tags are a list of key-value pairs that describe the resource. These tags can be
+     used in viewing and grouping this resource (across resource groups). A maximum of 15 tags can
+     be provided for a resource. Each tag must have a key no greater than 128 characters and value
+     no greater than 256 characters. For example, the default experience for a template type is set
+     with \\"defaultExperience\\": \\"Cassandra\\". Current \\"defaultExperience\\" values also
+     include \\"Table\\", \\"Graph\\", \\"DocumentDB\\", and \\"MongoDB\\".
+    :vartype tags: dict[str, str]
     :ivar identity: Identity for the resource.
     :vartype identity: ~azure.mgmt.cosmosdb.models.ManagedServiceIdentity
     :ivar resource:
@@ -19041,8 +19309,8 @@ class SqlStoredProcedureGetResults(Resource):
         "name": {"key": "name", "type": "str"},
         "type": {"key": "type", "type": "str"},
         "system_data": {"key": "systemData", "type": "SystemData"},
-        "tags": {"key": "tags", "type": "{str}"},
         "location": {"key": "location", "type": "str"},
+        "tags": {"key": "tags", "type": "{str}"},
         "identity": {"key": "identity", "type": "ManagedServiceIdentity"},
         "resource": {"key": "properties.resource", "type": "SqlStoredProcedureGetPropertiesResource"},
     }
@@ -19050,25 +19318,30 @@ class SqlStoredProcedureGetResults(Resource):
     def __init__(
         self,
         *,
-        tags: Optional[dict[str, str]] = None,
         location: Optional[str] = None,
+        tags: Optional[dict[str, str]] = None,
         identity: Optional["_models.ManagedServiceIdentity"] = None,
         resource: Optional["_models.SqlStoredProcedureGetPropertiesResource"] = None,
         **kwargs: Any
     ) -> None:
         """
-        :keyword tags: Resource tags.
-        :paramtype tags: dict[str, str]
-        :keyword location: The geo-location where the resource lives.
+        :keyword location: The location of the resource group to which the resource belongs.
         :paramtype location: str
+        :keyword tags: Tags are a list of key-value pairs that describe the resource. These tags can be
+         used in viewing and grouping this resource (across resource groups). A maximum of 15 tags can
+         be provided for a resource. Each tag must have a key no greater than 128 characters and value
+         no greater than 256 characters. For example, the default experience for a template type is set
+         with \\"defaultExperience\\": \\"Cassandra\\". Current \\"defaultExperience\\" values also
+         include \\"Table\\", \\"Graph\\", \\"DocumentDB\\", and \\"MongoDB\\".
+        :paramtype tags: dict[str, str]
         :keyword identity: Identity for the resource.
         :paramtype identity: ~azure.mgmt.cosmosdb.models.ManagedServiceIdentity
         :keyword resource:
         :paramtype resource: ~azure.mgmt.cosmosdb.models.SqlStoredProcedureGetPropertiesResource
         """
         super().__init__(**kwargs)
-        self.tags = tags
         self.location = location
+        self.tags = tags
         self.identity = identity
         self.resource = resource
 
@@ -19307,7 +19580,7 @@ class SqlTriggerGetPropertiesResource(SqlTriggerResource):
         self.etag: Optional[str] = None
 
 
-class SqlTriggerGetResults(Resource):
+class SqlTriggerGetResults(ProxyResource):
     """An Azure Cosmos DB trigger.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -19323,10 +19596,15 @@ class SqlTriggerGetResults(Resource):
     :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
      information.
     :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
-    :ivar tags: Resource tags.
-    :vartype tags: dict[str, str]
-    :ivar location: The geo-location where the resource lives.
+    :ivar location: The location of the resource group to which the resource belongs.
     :vartype location: str
+    :ivar tags: Tags are a list of key-value pairs that describe the resource. These tags can be
+     used in viewing and grouping this resource (across resource groups). A maximum of 15 tags can
+     be provided for a resource. Each tag must have a key no greater than 128 characters and value
+     no greater than 256 characters. For example, the default experience for a template type is set
+     with \\"defaultExperience\\": \\"Cassandra\\". Current \\"defaultExperience\\" values also
+     include \\"Table\\", \\"Graph\\", \\"DocumentDB\\", and \\"MongoDB\\".
+    :vartype tags: dict[str, str]
     :ivar identity: Identity for the resource.
     :vartype identity: ~azure.mgmt.cosmosdb.models.ManagedServiceIdentity
     :ivar resource:
@@ -19345,8 +19623,8 @@ class SqlTriggerGetResults(Resource):
         "name": {"key": "name", "type": "str"},
         "type": {"key": "type", "type": "str"},
         "system_data": {"key": "systemData", "type": "SystemData"},
-        "tags": {"key": "tags", "type": "{str}"},
         "location": {"key": "location", "type": "str"},
+        "tags": {"key": "tags", "type": "{str}"},
         "identity": {"key": "identity", "type": "ManagedServiceIdentity"},
         "resource": {"key": "properties.resource", "type": "SqlTriggerGetPropertiesResource"},
     }
@@ -19354,25 +19632,30 @@ class SqlTriggerGetResults(Resource):
     def __init__(
         self,
         *,
-        tags: Optional[dict[str, str]] = None,
         location: Optional[str] = None,
+        tags: Optional[dict[str, str]] = None,
         identity: Optional["_models.ManagedServiceIdentity"] = None,
         resource: Optional["_models.SqlTriggerGetPropertiesResource"] = None,
         **kwargs: Any
     ) -> None:
         """
-        :keyword tags: Resource tags.
-        :paramtype tags: dict[str, str]
-        :keyword location: The geo-location where the resource lives.
+        :keyword location: The location of the resource group to which the resource belongs.
         :paramtype location: str
+        :keyword tags: Tags are a list of key-value pairs that describe the resource. These tags can be
+         used in viewing and grouping this resource (across resource groups). A maximum of 15 tags can
+         be provided for a resource. Each tag must have a key no greater than 128 characters and value
+         no greater than 256 characters. For example, the default experience for a template type is set
+         with \\"defaultExperience\\": \\"Cassandra\\". Current \\"defaultExperience\\" values also
+         include \\"Table\\", \\"Graph\\", \\"DocumentDB\\", and \\"MongoDB\\".
+        :paramtype tags: dict[str, str]
         :keyword identity: Identity for the resource.
         :paramtype identity: ~azure.mgmt.cosmosdb.models.ManagedServiceIdentity
         :keyword resource:
         :paramtype resource: ~azure.mgmt.cosmosdb.models.SqlTriggerGetPropertiesResource
         """
         super().__init__(**kwargs)
-        self.tags = tags
         self.location = location
+        self.tags = tags
         self.identity = identity
         self.resource = resource
 
@@ -19573,7 +19856,7 @@ class SqlUserDefinedFunctionGetPropertiesResource(SqlUserDefinedFunctionResource
         self.etag: Optional[str] = None
 
 
-class SqlUserDefinedFunctionGetResults(Resource):
+class SqlUserDefinedFunctionGetResults(ProxyResource):
     """An Azure Cosmos DB userDefinedFunction.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -19589,10 +19872,15 @@ class SqlUserDefinedFunctionGetResults(Resource):
     :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
      information.
     :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
-    :ivar tags: Resource tags.
-    :vartype tags: dict[str, str]
-    :ivar location: The geo-location where the resource lives.
+    :ivar location: The location of the resource group to which the resource belongs.
     :vartype location: str
+    :ivar tags: Tags are a list of key-value pairs that describe the resource. These tags can be
+     used in viewing and grouping this resource (across resource groups). A maximum of 15 tags can
+     be provided for a resource. Each tag must have a key no greater than 128 characters and value
+     no greater than 256 characters. For example, the default experience for a template type is set
+     with \\"defaultExperience\\": \\"Cassandra\\". Current \\"defaultExperience\\" values also
+     include \\"Table\\", \\"Graph\\", \\"DocumentDB\\", and \\"MongoDB\\".
+    :vartype tags: dict[str, str]
     :ivar identity: Identity for the resource.
     :vartype identity: ~azure.mgmt.cosmosdb.models.ManagedServiceIdentity
     :ivar resource:
@@ -19611,8 +19899,8 @@ class SqlUserDefinedFunctionGetResults(Resource):
         "name": {"key": "name", "type": "str"},
         "type": {"key": "type", "type": "str"},
         "system_data": {"key": "systemData", "type": "SystemData"},
-        "tags": {"key": "tags", "type": "{str}"},
         "location": {"key": "location", "type": "str"},
+        "tags": {"key": "tags", "type": "{str}"},
         "identity": {"key": "identity", "type": "ManagedServiceIdentity"},
         "resource": {"key": "properties.resource", "type": "SqlUserDefinedFunctionGetPropertiesResource"},
     }
@@ -19620,25 +19908,30 @@ class SqlUserDefinedFunctionGetResults(Resource):
     def __init__(
         self,
         *,
-        tags: Optional[dict[str, str]] = None,
         location: Optional[str] = None,
+        tags: Optional[dict[str, str]] = None,
         identity: Optional["_models.ManagedServiceIdentity"] = None,
         resource: Optional["_models.SqlUserDefinedFunctionGetPropertiesResource"] = None,
         **kwargs: Any
     ) -> None:
         """
-        :keyword tags: Resource tags.
-        :paramtype tags: dict[str, str]
-        :keyword location: The geo-location where the resource lives.
+        :keyword location: The location of the resource group to which the resource belongs.
         :paramtype location: str
+        :keyword tags: Tags are a list of key-value pairs that describe the resource. These tags can be
+         used in viewing and grouping this resource (across resource groups). A maximum of 15 tags can
+         be provided for a resource. Each tag must have a key no greater than 128 characters and value
+         no greater than 256 characters. For example, the default experience for a template type is set
+         with \\"defaultExperience\\": \\"Cassandra\\". Current \\"defaultExperience\\" values also
+         include \\"Table\\", \\"Graph\\", \\"DocumentDB\\", and \\"MongoDB\\".
+        :paramtype tags: dict[str, str]
         :keyword identity: Identity for the resource.
         :paramtype identity: ~azure.mgmt.cosmosdb.models.ManagedServiceIdentity
         :keyword resource:
         :paramtype resource: ~azure.mgmt.cosmosdb.models.SqlUserDefinedFunctionGetPropertiesResource
         """
         super().__init__(**kwargs)
-        self.tags = tags
         self.location = location
+        self.tags = tags
         self.identity = identity
         self.resource = resource
 
@@ -19939,7 +20232,7 @@ class TableGetPropertiesResource(TableResource):
         self.etag: Optional[str] = None
 
 
-class TableGetResults(Resource):
+class TableGetResults(ProxyResource):
     """An Azure Cosmos DB Table.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -19955,10 +20248,15 @@ class TableGetResults(Resource):
     :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
      information.
     :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
-    :ivar tags: Resource tags.
-    :vartype tags: dict[str, str]
-    :ivar location: The geo-location where the resource lives.
+    :ivar location: The location of the resource group to which the resource belongs.
     :vartype location: str
+    :ivar tags: Tags are a list of key-value pairs that describe the resource. These tags can be
+     used in viewing and grouping this resource (across resource groups). A maximum of 15 tags can
+     be provided for a resource. Each tag must have a key no greater than 128 characters and value
+     no greater than 256 characters. For example, the default experience for a template type is set
+     with \\"defaultExperience\\": \\"Cassandra\\". Current \\"defaultExperience\\" values also
+     include \\"Table\\", \\"Graph\\", \\"DocumentDB\\", and \\"MongoDB\\".
+    :vartype tags: dict[str, str]
     :ivar identity: Identity for the resource.
     :vartype identity: ~azure.mgmt.cosmosdb.models.ManagedServiceIdentity
     :ivar resource:
@@ -19979,8 +20277,8 @@ class TableGetResults(Resource):
         "name": {"key": "name", "type": "str"},
         "type": {"key": "type", "type": "str"},
         "system_data": {"key": "systemData", "type": "SystemData"},
-        "tags": {"key": "tags", "type": "{str}"},
         "location": {"key": "location", "type": "str"},
+        "tags": {"key": "tags", "type": "{str}"},
         "identity": {"key": "identity", "type": "ManagedServiceIdentity"},
         "resource": {"key": "properties.resource", "type": "TableGetPropertiesResource"},
         "options": {"key": "properties.options", "type": "TableGetPropertiesOptions"},
@@ -19989,18 +20287,23 @@ class TableGetResults(Resource):
     def __init__(
         self,
         *,
-        tags: Optional[dict[str, str]] = None,
         location: Optional[str] = None,
+        tags: Optional[dict[str, str]] = None,
         identity: Optional["_models.ManagedServiceIdentity"] = None,
         resource: Optional["_models.TableGetPropertiesResource"] = None,
         options: Optional["_models.TableGetPropertiesOptions"] = None,
         **kwargs: Any
     ) -> None:
         """
-        :keyword tags: Resource tags.
-        :paramtype tags: dict[str, str]
-        :keyword location: The geo-location where the resource lives.
+        :keyword location: The location of the resource group to which the resource belongs.
         :paramtype location: str
+        :keyword tags: Tags are a list of key-value pairs that describe the resource. These tags can be
+         used in viewing and grouping this resource (across resource groups). A maximum of 15 tags can
+         be provided for a resource. Each tag must have a key no greater than 128 characters and value
+         no greater than 256 characters. For example, the default experience for a template type is set
+         with \\"defaultExperience\\": \\"Cassandra\\". Current \\"defaultExperience\\" values also
+         include \\"Table\\", \\"Graph\\", \\"DocumentDB\\", and \\"MongoDB\\".
+        :paramtype tags: dict[str, str]
         :keyword identity: Identity for the resource.
         :paramtype identity: ~azure.mgmt.cosmosdb.models.ManagedServiceIdentity
         :keyword resource:
@@ -20009,8 +20312,8 @@ class TableGetResults(Resource):
         :paramtype options: ~azure.mgmt.cosmosdb.models.TableGetPropertiesOptions
         """
         super().__init__(**kwargs)
-        self.tags = tags
         self.location = location
+        self.tags = tags
         self.identity = identity
         self.resource = resource
         self.options = options
@@ -20765,7 +21068,7 @@ class ThroughputSettingsGetPropertiesResource(ThroughputSettingsResource):
         self.etag: Optional[str] = None
 
 
-class ThroughputSettingsGetResults(Resource):
+class ThroughputSettingsGetResults(ProxyResource):
     """An Azure Cosmos DB resource throughput.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -20781,10 +21084,15 @@ class ThroughputSettingsGetResults(Resource):
     :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
      information.
     :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
-    :ivar tags: Resource tags.
-    :vartype tags: dict[str, str]
-    :ivar location: The geo-location where the resource lives.
+    :ivar location: The location of the resource group to which the resource belongs.
     :vartype location: str
+    :ivar tags: Tags are a list of key-value pairs that describe the resource. These tags can be
+     used in viewing and grouping this resource (across resource groups). A maximum of 15 tags can
+     be provided for a resource. Each tag must have a key no greater than 128 characters and value
+     no greater than 256 characters. For example, the default experience for a template type is set
+     with \\"defaultExperience\\": \\"Cassandra\\". Current \\"defaultExperience\\" values also
+     include \\"Table\\", \\"Graph\\", \\"DocumentDB\\", and \\"MongoDB\\".
+    :vartype tags: dict[str, str]
     :ivar identity: Identity for the resource.
     :vartype identity: ~azure.mgmt.cosmosdb.models.ManagedServiceIdentity
     :ivar resource:
@@ -20803,8 +21111,8 @@ class ThroughputSettingsGetResults(Resource):
         "name": {"key": "name", "type": "str"},
         "type": {"key": "type", "type": "str"},
         "system_data": {"key": "systemData", "type": "SystemData"},
-        "tags": {"key": "tags", "type": "{str}"},
         "location": {"key": "location", "type": "str"},
+        "tags": {"key": "tags", "type": "{str}"},
         "identity": {"key": "identity", "type": "ManagedServiceIdentity"},
         "resource": {"key": "properties.resource", "type": "ThroughputSettingsGetPropertiesResource"},
     }
@@ -20812,25 +21120,30 @@ class ThroughputSettingsGetResults(Resource):
     def __init__(
         self,
         *,
-        tags: Optional[dict[str, str]] = None,
         location: Optional[str] = None,
+        tags: Optional[dict[str, str]] = None,
         identity: Optional["_models.ManagedServiceIdentity"] = None,
         resource: Optional["_models.ThroughputSettingsGetPropertiesResource"] = None,
         **kwargs: Any
     ) -> None:
         """
-        :keyword tags: Resource tags.
-        :paramtype tags: dict[str, str]
-        :keyword location: The geo-location where the resource lives.
+        :keyword location: The location of the resource group to which the resource belongs.
         :paramtype location: str
+        :keyword tags: Tags are a list of key-value pairs that describe the resource. These tags can be
+         used in viewing and grouping this resource (across resource groups). A maximum of 15 tags can
+         be provided for a resource. Each tag must have a key no greater than 128 characters and value
+         no greater than 256 characters. For example, the default experience for a template type is set
+         with \\"defaultExperience\\": \\"Cassandra\\". Current \\"defaultExperience\\" values also
+         include \\"Table\\", \\"Graph\\", \\"DocumentDB\\", and \\"MongoDB\\".
+        :paramtype tags: dict[str, str]
         :keyword identity: Identity for the resource.
         :paramtype identity: ~azure.mgmt.cosmosdb.models.ManagedServiceIdentity
         :keyword resource:
         :paramtype resource: ~azure.mgmt.cosmosdb.models.ThroughputSettingsGetPropertiesResource
         """
         super().__init__(**kwargs)
-        self.tags = tags
         self.location = location
+        self.tags = tags
         self.identity = identity
         self.resource = resource
 

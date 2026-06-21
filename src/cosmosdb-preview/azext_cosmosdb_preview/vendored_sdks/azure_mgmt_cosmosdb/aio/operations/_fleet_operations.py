@@ -423,7 +423,7 @@ class FleetOperations:
         self,
         resource_group_name: str,
         fleet_name: str,
-        body: Optional[_models.FleetResourceUpdate] = None,
+        body: _models.FleetResourceUpdate,
         *,
         content_type: str = "application/json",
         **kwargs: Any
@@ -435,7 +435,7 @@ class FleetOperations:
         :type resource_group_name: str
         :param fleet_name: Cosmos DB fleet name. Needs to be unique under a subscription. Required.
         :type fleet_name: str
-        :param body: The parameters to provide for the current fleet. Default value is None.
+        :param body: The parameters to provide for the current fleet. Required.
         :type body: ~azure.mgmt.cosmosdb.models.FleetResourceUpdate
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
@@ -450,7 +450,7 @@ class FleetOperations:
         self,
         resource_group_name: str,
         fleet_name: str,
-        body: Optional[IO[bytes]] = None,
+        body: IO[bytes],
         *,
         content_type: str = "application/json",
         **kwargs: Any
@@ -462,7 +462,7 @@ class FleetOperations:
         :type resource_group_name: str
         :param fleet_name: Cosmos DB fleet name. Needs to be unique under a subscription. Required.
         :type fleet_name: str
-        :param body: The parameters to provide for the current fleet. Default value is None.
+        :param body: The parameters to provide for the current fleet. Required.
         :type body: IO[bytes]
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
@@ -477,7 +477,7 @@ class FleetOperations:
         self,
         resource_group_name: str,
         fleet_name: str,
-        body: Optional[Union[_models.FleetResourceUpdate, IO[bytes]]] = None,
+        body: Union[_models.FleetResourceUpdate, IO[bytes]],
         **kwargs: Any
     ) -> _models.FleetResource:
         """Updates the properties of an existing Azure Cosmos DB Fleet.
@@ -488,7 +488,7 @@ class FleetOperations:
         :param fleet_name: Cosmos DB fleet name. Needs to be unique under a subscription. Required.
         :type fleet_name: str
         :param body: The parameters to provide for the current fleet. Is either a FleetResourceUpdate
-         type or a IO[bytes] type. Default value is None.
+         type or a IO[bytes] type. Required.
         :type body: ~azure.mgmt.cosmosdb.models.FleetResourceUpdate or IO[bytes]
         :return: FleetResource or the result of cls(response)
         :rtype: ~azure.mgmt.cosmosdb.models.FleetResource
@@ -507,19 +507,15 @@ class FleetOperations:
 
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._config.api_version))
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        content_type = content_type if body else None
         cls: ClsType[_models.FleetResource] = kwargs.pop("cls", None)
 
-        content_type = content_type or "application/json" if body else None
+        content_type = content_type or "application/json"
         _json = None
         _content = None
         if isinstance(body, (IOBase, bytes)):
             _content = body
         else:
-            if body is not None:
-                _json = self._serialize.body(body, "FleetResourceUpdate")
-            else:
-                _json = None
+            _json = self._serialize.body(body, "FleetResourceUpdate")
 
         _request = build_update_request(
             resource_group_name=resource_group_name,
