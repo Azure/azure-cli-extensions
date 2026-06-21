@@ -197,7 +197,7 @@ def _download_file_from_response(response, file_name=None, result_path=None, fil
     Returns:
         dict: Dictionary containing the saved file path
     """
-    if response.status_code != 200:
+    if not 200 <= response.status_code < 300:
         return None
 
     output_filename = file_name
@@ -627,12 +627,14 @@ def ml_model_hosting_apply_model_card_template(cmd, model_id=None, model_card_di
 
     info = parse_azureml_model_uri(model_id)
     if not info:
-        return
+        raise InvalidArgumentValueError(
+            f"Invalid --model-id '{model_id}'. Expected format: "
+            "azureml://registries/<registry>/models/<model>/versions/<version>")
 
     registry_config = get_registry_info(info["registry_name"])
     if not registry_config:
-        module_logger.error(f"Failed to get registry info for {info['registry_name']}")
-        return
+        raise AzureInternalError(
+            f"Failed to resolve registry info for '{info['registry_name']}'.")
 
     cmd = [
         "asset", "deploy",
