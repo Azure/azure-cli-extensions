@@ -363,12 +363,12 @@ def ml_model_hosting_plan_config_show(cmd, publisher=None, location=None, model=
     token = generate_token()
     api_version = '2024-12-31'
     base_url = get_self_serve_base_url(location=location)
-    plan_details_url = f"{base_url}/model-publisher-self-serve/publishers/{publisher}/models/{model}/plan-details?api-version={api_version}"
-    url = f"{plan_details_url}&offerId={offer_id}&planId={plan_id}" if offer_id and plan_id else f"{plan_details_url}&offerId={offer_id}" if offer_id else f"{plan_details_url}&planId={plan_id}" if plan_id else plan_details_url
+    url = f"{base_url}/model-publisher-self-serve/publishers/{publisher}/models/{model}/plan-details"
+    params = {"api-version": api_version, "offerId": offer_id, "planId": plan_id}
     headers = {"Authorization": f"Bearer {token.token}",
                "Content-Type": "application/json"}
 
-    return make_request(url, headers)
+    return make_request(url, headers, params=params)
 
 
 def ml_model_hosting_plan_details_update_status(cmd, publisher=None, location=None, model=None, plan_id=None, status=None):
