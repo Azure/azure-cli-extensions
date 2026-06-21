@@ -492,6 +492,9 @@ def _load_self_serve_config():
         return config
     except FileNotFoundError as err:
         raise FileOperationError(f"Configuration file not found at {config_path}") from err
+    except json.JSONDecodeError as err:
+        raise FileOperationError(
+            f"Configuration file at {config_path} is not valid JSON: {err}") from err
 
 
 def _resolve_self_serve_target(location: str = None) -> Tuple[str, Dict]:
@@ -567,6 +570,10 @@ def run_registry_mgmt_cmd(args):
             text=True,
             check=True,
         )
+    except FileNotFoundError as ex:
+        raise CLIInternalError(
+            "The 'registry-mgmt' tool was not found. Install it with "
+            "'pip install azureml-registry-tools' and ensure it is on your PATH.") from ex
     except subprocess.CalledProcessError as ex:
         raise CLIInternalError(
             f"registry-mgmt command failed with exit code {ex.returncode}. "
