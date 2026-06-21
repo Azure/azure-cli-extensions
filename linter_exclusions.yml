@@ -3618,3 +3618,11 @@ relationship dependency-of create:
 relationship service-group-member create:
   rule_exclusions:
     - missing_command_example
+
+cosmosdb sql softdeleted-database list:
+  rule_exclusions:
+    - no_ids_for_list_commands
+
+cosmosdb sql softdeleted-container list:
+  rule_exclusions:
+    - no_ids_for_list_commands

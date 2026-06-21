@@ -4,6 +4,10 @@ Release History
 
 1.7.0
 ++++++
+* Add support for soft-deleted resource operations for SQL API
+* New command group `az cosmosdb softdeleted-account` to list, show, delete (purge), and recover soft-deleted accounts
+* New command group `az cosmosdb sql softdeleted-database` to list, show, delete (purge), and recover soft-deleted databases
+* New command group `az cosmosdb sql softdeleted-container` to list, show, delete (purge), and recover soft-deleted containers
 * Add support for new Continuous 35 Days backup mode (PITR Premium).
 
 1.6.2

@@ -32,7 +32,8 @@ from azext_cosmosdb_preview._validators import (
     validate_mongoMI_role_assignment_id,
     validate_fleetspace_body,
     validate_fleetspaceAccount_body,
-    validate_fleet_analytics_body)
+    validate_fleet_analytics_body,
+    validate_soft_delete_configuration)
 
 from azext_cosmosdb_preview.actions import (
     CreateGremlinDatabaseRestoreResource,
@@ -486,6 +487,7 @@ def load_arguments(self, _):
 
     with self.argument_context('cosmosdb update') as c:
         c.argument('key_uri', help="The URI of the key vault", is_preview=True)
+        c.argument('soft_delete_configuration', options_list=['--soft-delete-config'], validator=validate_soft_delete_configuration, completer=FilesCompleter(), help="Soft delete configuration for the account, as a JSON string or a path to a JSON file, e.g. --soft-delete-config @soft-delete-config.json. Supported keys: softDeletionEnabled (bool), softDeleteRetentionPeriodInMinutes (int) and minMinutesBeforePermanentDeletionAllowed (int).", is_preview=True, arg_group='Soft Delete')
 
     with self.argument_context('cosmosdb restore') as c:
         c.argument('target_database_account_name', options_list=['--target-database-account-name', '-n'], help='Name of the new target Cosmos DB database account after the restore')
@@ -828,6 +830,78 @@ def load_arguments(self, _):
         c.argument('role_definition_name', options_list=['--role-definition-name', '-n'], help="Unique Name of the Role Definition that this Role Assignment refers to. Eg. 'Contoso Reader Role'.")
         c.argument('scope', options_list=['--scope', '-s'], help="Data plane resource path at which this Role Assignment is being granted.")
         c.argument('principal_id', options_list=['--principal-id', '-p'], help="AAD Object ID of the principal to which this Role Assignment is being granted.")
+
+    # Soft-deleted Account
+    with self.argument_context('cosmosdb softdeleted-account list') as c:
+        c.argument('location', options_list=['--location', '-l'], help="Location of the soft-deleted accounts.", required=True)
+        c.argument('resource_group_name', options_list=['--resource-group', '-g'], help="Name of the resource group. If provided, lists only soft-deleted accounts in that resource group.", required=False)
+
+    with self.argument_context('cosmosdb softdeleted-account show') as c:
+        c.argument('location', options_list=['--location', '-l'], help="Location of the soft-deleted account.", required=True)
+        c.argument('account_name', options_list=['--name', '-n'], help="Name of the soft-deleted Cosmos DB account.", required=True)
+        c.argument('resource_group', options_list=['--resource-group', '-g'], help="Name of the resource group.", required=True)
+
+    with self.argument_context('cosmosdb softdeleted-account delete') as c:
+        c.argument('location', options_list=['--location', '-l'], help="Location of the soft-deleted account.", required=True)
+        c.argument('account_name', options_list=['--name', '-n'], help="Name of the soft-deleted Cosmos DB account to purge.", required=True)
+        c.argument('resource_group', options_list=['--resource-group', '-g'], help="Name of the resource group.", required=True)
+
+    with self.argument_context('cosmosdb softdeleted-account recover') as c:
+        c.argument('location', options_list=['--location', '-l'], help="Location of the soft-deleted account.", required=True)
+        c.argument('account_name', options_list=['--name', '-n'], help="Name of the soft-deleted Cosmos DB account to recover.", required=True)
+        c.argument('resource_group', options_list=['--resource-group', '-g'], help="Name of the resource group.", required=True)
+
+    # Soft-deleted Database
+    with self.argument_context('cosmosdb sql softdeleted-database list') as c:
+        c.argument('location', options_list=['--location', '-l'], help="Location of the account.", required=True)
+        c.argument('account_name', options_list=['--account-name', '-a'], help="Name of the Cosmos DB account.", required=True)
+        c.argument('resource_group', options_list=['--resource-group', '-g'], help="Name of the resource group.", required=True)
+
+    with self.argument_context('cosmosdb sql softdeleted-database show') as c:
+        c.argument('location', options_list=['--location', '-l'], help="Location of the account.", required=True)
+        c.argument('account_name', options_list=['--account-name', '-a'], help="Name of the Cosmos DB account.", required=True)
+        c.argument('database_name', options_list=['--name', '-n'], help="Name of the soft-deleted database.", required=True)
+        c.argument('resource_group', options_list=['--resource-group', '-g'], help="Name of the resource group.", required=True)
+
+    with self.argument_context('cosmosdb sql softdeleted-database delete') as c:
+        c.argument('location', options_list=['--location', '-l'], help="Location of the account.", required=True)
+        c.argument('account_name', options_list=['--account-name', '-a'], help="Name of the Cosmos DB account.", required=True)
+        c.argument('database_name', options_list=['--name', '-n'], help="Name of the soft-deleted database to purge.", required=True)
+        c.argument('resource_group', options_list=['--resource-group', '-g'], help="Name of the resource group.", required=True)
+
+    with self.argument_context('cosmosdb sql softdeleted-database recover') as c:
+        c.argument('location', options_list=['--location', '-l'], help="Location of the account.", required=True)
+        c.argument('account_name', options_list=['--account-name', '-a'], help="Name of the Cosmos DB account.", required=True)
+        c.argument('database_name', options_list=['--name', '-n'], help="Name of the soft-deleted database to recover.", required=True)
+        c.argument('resource_group', options_list=['--resource-group', '-g'], help="Name of the resource group.", required=True)
+
+    # Soft-deleted Collection
+    with self.argument_context('cosmosdb sql softdeleted-container list') as c:
+        c.argument('location', options_list=['--location', '-l'], help="Location of the account.", required=True)
+        c.argument('account_name', options_list=['--account-name', '-a'], help="Name of the Cosmos DB account.", required=True)
+        c.argument('database_name', options_list=['--database-name', '-d'], help="Name of the database.", required=True)
+        c.argument('resource_group', options_list=['--resource-group', '-g'], help="Name of the resource group.", required=True)
+
+    with self.argument_context('cosmosdb sql softdeleted-container show') as c:
+        c.argument('location', options_list=['--location', '-l'], help="Location of the account.", required=True)
+        c.argument('account_name', options_list=['--account-name', '-a'], help="Name of the Cosmos DB account.", required=True)
+        c.argument('database_name', options_list=['--database-name', '-d'], help="Name of the database.", required=True)
+        c.argument('container_name', options_list=['--name', '-n'], help="Name of the soft-deleted container.", required=True)
+        c.argument('resource_group', options_list=['--resource-group', '-g'], help="Name of the resource group.", required=True)
+
+    with self.argument_context('cosmosdb sql softdeleted-container delete') as c:
+        c.argument('location', options_list=['--location', '-l'], help="Location of the account.", required=True)
+        c.argument('account_name', options_list=['--account-name', '-a'], help="Name of the Cosmos DB account.", required=True)
+        c.argument('database_name', options_list=['--database-name', '-d'], help="Name of the database.", required=True)
+        c.argument('container_name', options_list=['--name', '-n'], help="Name of the soft-deleted container to purge.", required=True)
+        c.argument('resource_group', options_list=['--resource-group', '-g'], help="Name of the resource group.", required=True)
+
+    with self.argument_context('cosmosdb sql softdeleted-container recover') as c:
+        c.argument('location', options_list=['--location', '-l'], help="Location of the account.", required=True)
+        c.argument('account_name', options_list=['--account-name', '-a'], help="Name of the Cosmos DB account.", required=True)
+        c.argument('database_name', options_list=['--database-name', '-d'], help="Name of the database.", required=True)
+        c.argument('container_name', options_list=['--name', '-n'], help="Name of the soft-deleted container to recover.", required=True)
+        c.argument('resource_group', options_list=['--resource-group', '-g'], help="Name of the resource group.", required=True)
 
     # Cosmos DB Fleet
     with self.argument_context('cosmosdb fleet') as c:
