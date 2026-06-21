@@ -608,6 +608,10 @@ def get_registry_info(registry_name: str):
     """
     credential = DefaultAzureCredential()
     ml_client = MLClient(credential, registry_name=registry_name)
+    if not ml_client.subscription_id or not ml_client.resource_group_name:
+        raise CLIInternalError(
+            f"Could not resolve the subscription and resource group for registry '{registry_name}'. "
+            "Ensure the registry exists and that you have access to it.")
     return {
         "registry_name": registry_name,
         "subscription_id": ml_client.subscription_id,
@@ -618,8 +622,12 @@ def get_registry_info(registry_name: str):
 def load_inline_md_files(spec_path: str) -> dict:
     spec_path = Path(spec_path).resolve()
     base_dir = spec_path.parent
-    with spec_path.open() as f:
+    with spec_path.open(encoding="utf-8") as f:
         spec_content = yaml.safe_load(f)
+
+    if not isinstance(spec_content, dict):
+        raise FileOperationError(
+            f"The YAML file '{spec_path}' is empty or not a valid mapping of fields.")
 
     desc = spec_content.get("description")
     if isinstance(desc, str) and desc.endswith(".md"):
