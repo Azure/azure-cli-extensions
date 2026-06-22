@@ -17,6 +17,10 @@ Pending
 ++++++++
 * `az aks create / update`: Add `--enable-control-plane-metrics` and `az aks update`: `--disable-control-plane-metrics` flags to opt clusters into Azure Monitor managed Prometheus control plane metrics (kube-apiserver, etcd, etc.) via the first-class API property `azureMonitorProfile.metrics.controlPlane.enabled` (replaces the AFEC-gated preview).
 
+21.0.0b6
++++++++
+* Set `principalType` when creating role assignments to avoid `PrincipalNotFound` failures caused by Microsoft Entra ID replication delay for freshly created identities.
+
 21.0.0b5
 +++++++
 * `az aks prepared-image-specification`: Add new command.
